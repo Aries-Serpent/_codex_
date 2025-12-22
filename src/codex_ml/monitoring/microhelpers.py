@@ -50,6 +50,8 @@ def _ensure_nvml() -> bool:
         _NVML_READY = True
         return True
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -72,6 +74,8 @@ def get_proc_stats() -> dict[str, Any]:
         rss_mb = p.memory_info().rss / (1024 * 1024)
         return {"cpu_pct": float(cpu_pct), "rss_mb": float(rss_mb)}
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {}
 
 
@@ -84,6 +88,8 @@ def get_sys_stats() -> dict[str, Any]:
         mem_pct = _psutil.virtual_memory().percent
         return {"cpu_pct": float(cpu_pct), "mem_pct": float(mem_pct)}
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {}
 
 
@@ -100,17 +106,23 @@ def get_gpu_stats() -> list[dict[str, Any]]:
             try:
                 util = nvmlDeviceGetUtilizationRates(h)
                 util_pct = float(getattr(util, "gpu", 0.0))
-            except NVMLError:
+            except NVMLError as e:
+               logger.debug(f"NVMLError: {e}")
+                logger.warning(f"NVMLError: {e}", exc_info=True)
                 util_pct = 0.0
             try:
                 mem = nvmlDeviceGetMemoryInfo(h)
                 mem_used_mb = float(mem.used) / (1024 * 1024)
                 mem_total_mb = float(mem.total) / (1024 * 1024)
-            except NVMLError:
+            except NVMLError as e:
+               logger.debug(f"NVMLError: {e}")
+                logger.warning(f"NVMLError: {e}", exc_info=True)
                 mem_used_mb = mem_total_mb = 0.0
             try:
                 temp_c = float(nvmlDeviceGetTemperature(h, NVML_TEMPERATURE_GPU))
-            except NVMLError:
+            except NVMLError as e:
+               logger.debug(f"NVMLError: {e}")
+                logger.warning(f"NVMLError: {e}", exc_info=True)
                 temp_c = 0.0
             out.append(
                 {
@@ -123,6 +135,8 @@ def get_gpu_stats() -> list[dict[str, Any]]:
             )
         return out
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return []
     finally:
         # Keep NVML initialized to amortize cost; process exit will clean up.

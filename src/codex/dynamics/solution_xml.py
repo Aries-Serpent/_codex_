@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Emit unmanaged Dynamics 365 Solution XML from config-as-data."""
 
 from __future__ import annotations
@@ -11,6 +13,7 @@ try:
     # We use xml.etree for construction (safe) and defusedxml for serialization (extra safety)
     from xml.etree.ElementTree import Element, SubElement
 except ImportError as exc:
+    logger.debug(f"ImportError: {exc}")
     raise ImportError(
         "defusedxml is required for safe XML handling in solution_xml; install it via pip"
     ) from exc

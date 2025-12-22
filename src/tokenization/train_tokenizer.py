@@ -17,7 +17,9 @@ from ingestion import ingest
 try:  # pragma: no cover - optional dependency
     try:
         import hydra
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         import config_legacy as hydra
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
@@ -192,6 +194,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
         except OSError as exc:
+            logger.debug(f"OSError: {exc}")
             if "seed_sentencepiece" not in str(exc):
                 raise
             train_kwargs.pop("seed_sentencepiece", None)
@@ -204,6 +207,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             try:  # pragma: no cover - optional dependency handling
                 import sentencepiece_model_pb2
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 try:
                     from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
                 except Exception:  # pragma: no cover - dependency still missing
@@ -213,6 +218,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))
             tok = SentencePieceUnigramTokenizer.from_spm(processor)

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Optional storage backends for synchronising checkpoints to remote targets."""
 
 from __future__ import annotations

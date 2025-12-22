@@ -38,6 +38,7 @@ def _analyze_path(path: Path) -> Dict[str, Any]:
                 1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines()
             )
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return {
         "path": str(path),
@@ -58,6 +59,7 @@ def analyze(
         else:
             typer.echo(f"Analyze {target}: files={res['files']} lines={res['total_lines']}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Analyze error: {e}", err=True)
         raise typer.Exit(code=3)
 
@@ -75,6 +77,7 @@ def audit(
         else:
             typer.echo(f"Audit {target}: files={res['files']} lines={res['total_lines']}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Audit error: {e}", err=True)
         raise typer.Exit(code=3)
 
@@ -101,6 +104,7 @@ def diff(
         else:
             typer.echo(f"Diff files={delta_files:+} lines={delta_lines:+}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Diff error: {e}", err=True)
         raise typer.Exit(code=3)
 

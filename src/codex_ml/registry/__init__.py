@@ -17,6 +17,8 @@ on first access and caches it in ``globals()`` so subsequent lookups are fast.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from importlib import import_module
 from typing import Any

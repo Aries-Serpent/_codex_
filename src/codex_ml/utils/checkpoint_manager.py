@@ -62,11 +62,14 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
                 load_kwargs["weights_only"] = True
             data = torch.load(target, **load_kwargs)
         except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
+            logger.debug(f"Exception: {torch_error}")
             # Use safe pickle loading as fallback
             from utils.safe_pickle import safe_pickle_load
             try:
                 data = safe_pickle_load(str(target), use_restricted_unpickler=True)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 raise torch_error
     else:  # pragma: no cover - exercised when torch is unavailable
         # Use safe pickle loading to prevent code execution vulnerabilities

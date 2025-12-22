@@ -18,6 +18,8 @@ monitoring deployments.
 """
 
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 DEFAULT_LOG_FILE_MODE = 0o600  # Owner read/write only
 
@@ -51,5 +53,6 @@ def get_log_file_mode() -> int:
         try:
             return int(env_mode, 8)  # Octal conversion
         except ValueError as e:
+           logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)  # Fall through to default
     return DEFAULT_LOG_FILE_MODE

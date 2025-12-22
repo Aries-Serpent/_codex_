@@ -41,6 +41,8 @@ try:
         detect_encoding as _repo_detect_encoding,  # type: ignore
     )
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore
 
 # Try to import the io_text.read_text helper if available. Some historical
@@ -49,6 +51,8 @@ except Exception:
 try:
     from .io_text import read_text as _io_read_text  # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _io_read_text = None  # type: ignore
 
 
@@ -80,6 +84,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
     # BOM checks
@@ -91,6 +97,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     safe_encodings = {"utf-8", "utf-16", "utf-32", "cp1252", "windows-1252", "iso-8859-1"}
@@ -102,6 +109,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         best = result.best() if result is not None else None
         enc = best.encoding.lower().replace("_", "-") if best and best.encoding else None
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         enc = None
     if enc:
         enc_norm = "cp1252" if enc == "windows-1252" else enc
@@ -113,6 +122,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             data.decode(enc)
             return enc
         except (UnicodeDecodeError, LookupError):
+            logger.debug("Exception caught, continuing", exc_info=True)
             continue
         except Exception as exc:  # nosec B112 - intentional continue; add trace for diagnostics
             logger.debug("ingestion.utils: probing encodings failed: %s", exc, exc_info=True)
@@ -132,6 +142,8 @@ def _detect_encoding(path: Union[str, Path]) -> str:
         try:
             return _repo_detect_encoding(p)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # fall through to fallback detector
             pass
     return _fallback_detect_encoding(p)
@@ -241,6 +253,7 @@ def _manual_read_text(
     try:
         data = p.read_bytes()
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         raise RuntimeError(f"Failed to read bytes from {p}: {exc}") from exc
 
     enc = encoding
@@ -250,6 +263,8 @@ def _manual_read_text(
     try:
         text = data.decode(enc if isinstance(enc, str) else "utf-8", errors)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Fallback: try common encodings with replacement to ensure we return something
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
             try:
@@ -257,6 +272,8 @@ def _manual_read_text(
                 enc = trial
                 break
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         else:
             # As a last resort, decode as utf-8 with replacement
@@ -289,16 +306,24 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
         # Try the most featureful call first
         try:
             result = _io_read_text(p, encoding=encoding, errors=errors)  # type: ignore[misc]
-        except TypeError:
+        except TypeError as e:
+           logger.debug(f"TypeError: {e}")
+            logger.warning(f"TypeError: {e}", exc_info=True)
             # The helper may not accept encoding/errors kwargs — try positional and fewer args
             try:
                 result = _io_read_text(p, encoding)  # type: ignore[misc]
-            except TypeError:
+            except TypeError as e:
+               logger.debug(f"TypeError: {e}")
+                logger.warning(f"TypeError: {e}", exc_info=True)
                 try:
                     result = _io_read_text(p)  # type: ignore[misc]
                 except Exception:
+                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)
                     result = None
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # If the helper raised for any reason, fall back to manual reader below
             result = None
 

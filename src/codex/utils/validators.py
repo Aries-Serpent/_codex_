@@ -57,6 +57,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
     try:
         content = path.read_text()
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Failed to read file: {e}")
         return issues
 
@@ -107,6 +108,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
         try:
             ast.parse(content)
         except SyntaxError as e:
+            logger.debug(f"SyntaxError: {e}")
             issues["valid_syntax"] = False
             logger.error(f"Syntax error in {file_path}: {e}")
 
@@ -148,6 +150,7 @@ def validate_with_checksum(
             logger.info(f"Checksum computed: {sha} ({file_path})")
             return True, sha
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Checksum validation failed: {e}")
         return False, ""
 
@@ -182,6 +185,7 @@ def validate_with_diff(
             logger.info(f"Files differ: {original_file} vs {modified_file}")
             return False, result.stdout
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Diff validation failed: {e}")
         return False, ""
 
@@ -214,6 +218,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 ast.parse(content)
                 logger.info(f"Python syntax valid: {file_path}")
             except SyntaxError as e:
+                logger.debug(f"SyntaxError: {e}")
                 checks["syntax_valid"] = False
                 logger.error(f"Python syntax error: {e}")
 
@@ -225,6 +230,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 logger.error(f"Bash syntax error: {result.stderr.decode()}")
 
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Code quality check failed: {e}")
 
     return checks

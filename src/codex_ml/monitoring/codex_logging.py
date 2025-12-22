@@ -94,6 +94,8 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
     try:  # pragma: no cover - optional dependency
         mlflow.set_tracking_uri(uri)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
         pass
 
@@ -418,6 +420,8 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             gpu = False
 
     components: list[TelemetryComponentStatus] = []
@@ -558,6 +562,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             mlflow_active, mlflow_detail = _start_mlflow_offline(
                 cfg["mlflow"].get("tracking_uri"),
@@ -567,6 +572,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
@@ -632,6 +638,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             try:
                 mlflow.set_tracking_uri(tracking_uri)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         mlflow_active, mlflow_detail = _start_mlflow_offline(
             getattr(args, "mlflow_tracking_uri", ""),
@@ -641,6 +648,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             try:
                 mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
@@ -689,6 +697,7 @@ def _codex_sample_system() -> dict[str, Any]:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("psutil metrics unavailable", exc_info=exc)
     elif not _PSUTIL_WARNED:
         logger.warning("psutil not installed; system metrics will be unavailable")
@@ -724,6 +733,7 @@ def _codex_sample_system() -> dict[str, Any]:
             pynvml.nvmlShutdown()
             gpu_done = True
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("NVML sampling failed", exc_info=exc)
             gpu_done = False
 
@@ -740,6 +750,7 @@ def _codex_sample_system() -> dict[str, Any]:
                     try:
                         util = float(torch.cuda.utilization(i))
                     except Exception as exc:
+                       logger.debug(f"Exception: {exc}")
                         logger.debug("torch CUDA utilization unavailable", exc_info=exc)
                         util = None
                 if util:
@@ -756,6 +767,7 @@ def _codex_sample_system() -> dict[str, Any]:
                 metrics["gpus"] = gpus
                 metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("torch CUDA sampling failed", exc_info=exc)
 
     return metrics
@@ -771,6 +783,8 @@ def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
         try:
             out[k] = float(v)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
     return out
 
@@ -785,18 +799,21 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
             for k, v in values.items():
                 loggers.tb.add_scalar(k, v, step)
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("tensorboard add_scalar failed", exc_info=exc)
 
     if loggers.wb is not None:
         try:  # pragma: no cover - wandb optional
             loggers.wb.log({**values, "step": step})
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("wandb log failed", exc_info=exc)
 
     if loggers.mlflow_active and mlflow is not None:
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.debug("mlflow log_metrics failed", exc_info=exc)
 
 

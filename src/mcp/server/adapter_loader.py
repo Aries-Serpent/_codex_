@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import asyncio
 import importlib
@@ -59,4 +61,6 @@ async def lazy_connect_all(timeout: float = 1.0) -> bool:
         await asyncio.wait_for(_connect(), timeout=timeout)
         return True
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False

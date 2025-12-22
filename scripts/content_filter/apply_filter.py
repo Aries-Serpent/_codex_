@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Content Filter (P2 Full Implementation with Knob Normalization)
 
 - Allowlist filtering (profiles A/B/C with combinable syntax e.g. A+B+C)
@@ -126,7 +128,8 @@ def process_allowlist(exts: List[str]) -> Tuple[List[str], List[str]]:
         if path.is_absolute():
             try:
                 rel = path.relative_to(Path.cwd()).as_posix()
-            except ValueError:
+            except ValueError as e:
+                logger.debug(f"ValueError: {e}")
                 rel = path.as_posix()
         else:
             rel = path.as_posix()
@@ -210,6 +213,7 @@ def main():
                 try:
                     sidecar.write_text("\n".join(redacted_lines), encoding="utf-8")
                 except Exception as e:
+                    logger.debug(f"Exception: {e}")
                     warnings.append(f"write_fail:{rel}:{e}")
 
         report = {

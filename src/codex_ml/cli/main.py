@@ -40,6 +40,7 @@ if typer is not None:
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     from codex_ml.cli import _load_training_config
@@ -157,7 +158,9 @@ if typer is not None:
                 for depth in (2, 3):
                     try:
                         root = cli_path.parents[depth]
-                    except IndexError:
+                    except IndexError as e:
+                       logger.debug(f"IndexError: {e}")
+                        logger.warning(f"IndexError: {e}", exc_info=True)
                         continue
                     search_roots.append(root / "configs" / "training" / "continual")
 
@@ -186,6 +189,7 @@ if typer is not None:
             try:
                 return None if value is None else int(value)
             except (TypeError, ValueError):
+                logger.debug("Exception caught, returning", exc_info=True)
                 return None
 
         actual_epochs = _int_value(
@@ -384,6 +388,7 @@ if typer is not None:
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             raise typer.BadParameter(str(exc)) from exc
 
         result = build_service_package(
@@ -482,6 +487,8 @@ else:
             try:
                 from codex.training import main as _functional_training
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training

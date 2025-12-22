@@ -31,6 +31,8 @@ def _resolve_pipeline_path(path: Path) -> Path:
         try:
             hydra_initialized = bool(GlobalHydra.instance().is_initialized())
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             hydra_initialized = False
 
     if _HAS_HYDRA_UTILS and hydra_initialized:

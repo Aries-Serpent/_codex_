@@ -9,6 +9,8 @@ Normalizes text for consistent processing:
 """
 
 import re
+import logging
+logger = logging.getLogger(__name__)
 import unicodedata
 from typing import Optional
 

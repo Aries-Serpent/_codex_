@@ -55,14 +55,17 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 

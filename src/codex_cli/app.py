@@ -61,6 +61,8 @@ def _split_smoke_impl(seed: int) -> None:
         try:
             import random
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             echo(f"torch unavailable: {exc}")
             raise Exit(code=1)
         rng = random.Random(int(seed))  # nosec B311 - deterministic CLI shuffle
@@ -118,7 +120,9 @@ if _USE_TYPER:
                                 break
                         elif stripped:
                             break
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -133,6 +137,7 @@ if _USE_TYPER:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1)
         if not isinstance(data, dict):
@@ -154,7 +159,9 @@ if _USE_TYPER:
         for name, description, path in entries:
             try:
                 relative = path.relative_to(Path.cwd())
-            except ValueError:
+            except ValueError as e:
+               logger.debug(f"ValueError: {e}")
+                logger.warning(f"ValueError: {e}", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 
@@ -276,7 +283,9 @@ else:  # pragma: no cover - click fallback
                                 break
                         elif stripped:
                             break
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -291,6 +300,7 @@ else:  # pragma: no cover - click fallback
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1)
         if not isinstance(data, dict):
@@ -348,7 +358,9 @@ else:  # pragma: no cover - click fallback
         for name, description, path in entries:
             try:
                 relative = path.relative_to(Path.cwd())
-            except ValueError:
+            except ValueError as e:
+               logger.debug(f"ValueError: {e}")
+                logger.warning(f"ValueError: {e}", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 

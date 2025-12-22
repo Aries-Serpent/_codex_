@@ -29,6 +29,8 @@ def _fsync_directory(dir_path: Path) -> None:
         finally:
             os.close(fd)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Windows/non-POSIX may not support O_DIRECTORY
         pass
 

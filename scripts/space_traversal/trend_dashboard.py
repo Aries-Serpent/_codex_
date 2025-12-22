@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Capability Audit Trending Dashboard Generator (v1.0.0)
 
 Generates visual trending analysis across multiple audit runs:
@@ -71,6 +73,7 @@ def load_audit_runs(history_dir: Path) -> List[Dict]:
                 data["_filename"] = json_file.name
                 runs.append(data)
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Error loading {json_file}: {e}", file=sys.stderr)
 
     return runs

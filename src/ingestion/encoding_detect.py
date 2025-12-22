@@ -57,6 +57,8 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
     try:
         return name.lower().replace("_", "-")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -83,6 +85,8 @@ def detect_encoding(
     try:
         raw = p.read_bytes()[: max(1024, int(sample_size))]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Could not read file (missing file, permission, etc) — return default.
         return default
 
@@ -95,6 +99,8 @@ def detect_encoding(
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # If something odd happens while checking BOMs, continue gracefully.
         pass
 
@@ -104,6 +110,8 @@ def detect_encoding(
             res = _chardet.detect(raw) or {}
             enc = _norm_encoding(res.get("encoding"))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
             # Normalize windows-1252 to cp1252 for consistency with previous code
@@ -117,6 +125,8 @@ def detect_encoding(
             best = result.best() if result is not None else None
             enc = _norm_encoding(getattr(best, "encoding", None))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
             return "cp1252" if enc == "windows-1252" else enc
@@ -129,6 +139,8 @@ def detect_encoding(
             best = result.best() if result is not None else None
             enc = _norm_encoding(getattr(best, "encoding", None))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
             return "cp1252" if enc == "windows-1252" else enc
@@ -139,8 +151,11 @@ def detect_encoding(
             raw.decode(trial)
             return trial
         except (UnicodeDecodeError, LookupError):
+            logger.debug("Exception caught, continuing", exc_info=True)
             continue
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Any other unexpected error skip to next trial
             continue
 

@@ -2,6 +2,8 @@
 """Harden a GitHub repository without touching workflows."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import base64

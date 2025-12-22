@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 [Verification]: Import Conflict Checker
 Purpose: Verifies if local directories are shadowing standard libraries or
 causing ambiguous imports between root and src/.
@@ -27,7 +29,8 @@ try:
     import yaml
 
     HAS_YAML = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_YAML = False
 
 
@@ -39,6 +42,7 @@ def load_inventory():
     try:
         return yaml.safe_load(inv_path.read_text(encoding="utf-8"))
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"[WARN] Failed to load inventory: {e}")
         return {"inventory": [], "policy": {}}
 
@@ -72,6 +76,7 @@ def check_import(
                 return False, origin
         return True, origin
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         if not quiet:
             print(f"  [CRITICAL] Import crashed: {e}")
         return False, str(e)

@@ -24,7 +24,8 @@ from typing import List, Tuple
 try:
     from .fix_subprocess_libcst import transform_file as _transform_file_libcst
     HAS_LIBCST = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_LIBCST = False
     _transform_file_libcst = None
 

@@ -219,6 +219,8 @@ def distributed_context() -> dict[str, Any]:
                 context["world_size"] = max(context["world_size"], dist.get_world_size())
                 context["rank"] = max(context["rank"], dist.get_rank())
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             context.setdefault("backend_error", "unavailable")
     return context
 
@@ -232,6 +234,7 @@ def _coerce_metric_value(raw: Any) -> float | None:
     try:
         return float(raw)
     except (TypeError, ValueError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return None
 
 

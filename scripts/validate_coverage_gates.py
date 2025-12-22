@@ -16,6 +16,8 @@ and exits with status ``1`` so CI can gate the change.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import re
 import sys
@@ -43,7 +45,9 @@ def _read_text(path: Path) -> str | None:
 
     try:
         return path.read_text(encoding="utf-8")
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return None
     except OSError as exc:  # pragma: no cover - filesystem errors are uncommon
         return f"<error: {exc}>"

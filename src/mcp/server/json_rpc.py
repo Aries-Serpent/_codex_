@@ -241,6 +241,7 @@ class JsonRpcHandler:
             try:
                 await self._dispatch(request)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 # Log but don't respond to notifications
                 self._logger.warning(
                     "Notification error for %s: %s",
@@ -258,12 +259,15 @@ class JsonRpcHandler:
             ).to_dict()
             
         except JsonRpcError as e:
+           logger.debug(f"JsonRpcError: {e}")
+            logger.debug("Exception caught, returning", exc_info=True)
             return JsonRpcResponse(
                 id=request.id,
                 error=e.to_dict()
             ).to_dict()
             
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self._logger.exception(
                 "Unhandled error in method %s",
                 request.method

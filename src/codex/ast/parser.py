@@ -7,6 +7,8 @@ Design: FR-AST-001 (Universal Parser)
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import hashlib
@@ -21,7 +23,9 @@ try:
     from libcst.metadata import MetadataWrapper, PositionProvider
 
     LIBCST_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     LIBCST_AVAILABLE = False
     cst = None  # type: ignore
     MetadataWrapper = None  # type: ignore
@@ -80,6 +84,7 @@ class UniversalParser:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.parse_string(code, file_path)
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             return None
@@ -129,6 +134,7 @@ class UniversalParser:
             return root
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             # Fallback to stdlib ast
@@ -159,6 +165,7 @@ class UniversalParser:
             return root
 
         except SyntaxError as e:
+            logger.debug(f"SyntaxError: {e}")
             if self.strict:
                 raise ParseError(str(e), file_path, e.lineno or 0) from e
             return None

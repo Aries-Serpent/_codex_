@@ -6,6 +6,8 @@ especially for optional dependency imports (numpy, scipy, etc.).
 """
 
 from typing import Optional
+import logging
+logger = logging.getLogger(__name__)
 
 
 # Package name constant - single source of truth for pip install instructions

@@ -1,3 +1,4 @@
+logger = logging.getLogger(__name__)
 """Helper for optional imports with explicit logging."""
 
 from __future__ import annotations

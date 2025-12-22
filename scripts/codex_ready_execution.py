@@ -7,6 +7,8 @@ records when something fails. It is intentionally offline-friendly.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -90,7 +92,9 @@ def scan_repository(patterns: Sequence[str]) -> list[SearchResult]:
                             )
                         )
                         break
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
+           logger.debug(f"UnicodeDecodeError: {e}")
+            logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
             continue
     return results
 

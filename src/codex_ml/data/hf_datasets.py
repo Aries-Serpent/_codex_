@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """HuggingFace dataset loaders with streaming support."""
 
 from __future__ import annotations
@@ -44,6 +46,8 @@ def load_hf_dataset(name: str, split: str = "train", fallback_path: str | None =
             **extra,
         )  # nosec B615: revision pinned via ensure_pinned_kwargs
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         if fallback_path:
             from .registry import get_dataset
 

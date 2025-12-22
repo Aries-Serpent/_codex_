@@ -1,5 +1,7 @@
 # src/codex_ml/analysis/metrics.py
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import math

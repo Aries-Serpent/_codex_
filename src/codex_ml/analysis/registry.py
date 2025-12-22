@@ -35,5 +35,7 @@ try:  # pragma: no cover - import side effects only
     register_extractor("parso", extract_parso)
     register_extractor("degraded", extract_degraded)
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     # Registration is best-effort; failures fall back to manual wiring.
     pass

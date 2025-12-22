@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Helpers for recording run-level metadata alongside metric logs."""
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ def _stringify_path(value: Any) -> str | None:
     try:
         return str(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -28,6 +32,8 @@ def _coerce_int(value: Any) -> int | None:
     try:
         return int(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -53,6 +59,8 @@ def build_run_metadata(
         try:
             commit = lookup()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             commit = None
         if commit:
             payload["git_commit"] = commit

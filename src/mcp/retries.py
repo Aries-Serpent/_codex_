@@ -1,5 +1,7 @@
 # Minimal retry / backoff helper (exponential backoff with jitter)
 import functools
+import logging
+logger = logging.getLogger(__name__)
 import secrets
 import time
 from typing import Callable, Tuple

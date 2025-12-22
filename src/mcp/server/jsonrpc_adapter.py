@@ -65,6 +65,8 @@ async def _dispatch_method(p: Dict[str, Any], adapter: BackendAdapter) -> Dict[s
             validated = CallToolParams.model_validate(params or {})
             params = validated.model_dump()
     except ValidationError as ve:
+       logger.debug(f"ValidationError: {ve}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return {
             "jsonrpc": "2.0",
             "error": {"code": -32602, "message": "Invalid params", "data": ve.errors()},
@@ -102,6 +104,7 @@ async def _dispatch_method(p: Dict[str, Any], adapter: BackendAdapter) -> Dict[s
                     )
                     return {"jsonrpc": "2.0", "result": {"hits": results}, "id": req_id}
                 except Exception as exc:
+                   logger.debug(f"Exception: {exc}")
                     logger.exception("Adapter query failed: %s", exc)
                     return {
                         "jsonrpc": "2.0",

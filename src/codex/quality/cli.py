@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Code smell detection CLI - Phase 2 implementation stub."""
 
 import click
@@ -32,6 +34,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
         click.echo(f"  • Max nesting: {smells.get('max_nesting', {}).get('threshold', 4)} levels")
         click.echo(f"  • God class: {smells.get('god_class', {}).get('methods_threshold', 20)} methods")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         click.echo(f"⚠️  Could not load config: {e}", err=True)
     
     # TODO: Phase 2 - Implement smell detection

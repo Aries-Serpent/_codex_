@@ -21,6 +21,8 @@ from typing import Union
 try:
     from .encoding_detect import detect_encoding  # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     detect_encoding = None  # type: ignore
 
 
@@ -38,6 +40,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
     # BOM checks
@@ -49,6 +53,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # defensive: fall through to other strategies
         pass
 
@@ -63,6 +69,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         enc = getattr(best, "encoding", None)
         enc_norm = enc.lower().replace("_", "-") if enc else None
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         enc_norm = None
 
     if enc_norm:
@@ -76,8 +84,10 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             data.decode(enc)
             return enc
         except (UnicodeDecodeError, LookupError):
+            logger.debug("Exception caught, continuing", exc_info=True)
             continue
         except (OSError, UnicodeError, ValueError) as exc:
+           logger.debug(f"Exception: {exc}")
             logging.getLogger(__name__).debug("fallback decode with %s failed", enc, exc_info=exc)
             continue
 
@@ -119,6 +129,8 @@ def read_text(
         try:
             used_encoding = detect_encoding(p)  # type: ignore[arg-type]
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Defensive fallback: if detection fails, default to utf-8
             used_encoding = "utf-8"
 
@@ -126,6 +138,8 @@ def read_text(
     try:
         raw = p.read_bytes()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return "", used_encoding
 
     # Attempt to decode using the chosen encoding and provided error policy.
@@ -142,6 +156,8 @@ def read_text(
                 used_encoding = enc
                 break
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 decoded = None
                 continue
         if decoded is None:
@@ -152,6 +168,7 @@ def read_text(
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
     except (AttributeError, UnicodeError) as exc:
+       logger.debug(f"Exception: {exc}")
         logging.getLogger(__name__).debug("text normalization skipped", exc_info=exc)
 
     return text, used_encoding

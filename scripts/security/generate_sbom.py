@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 import argparse
 import json
 import os
@@ -16,6 +18,8 @@ def list_distributions():
         for dist in distributions():
             yield dist
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Fallback: pip freeze
         import pkgutil
 
@@ -40,6 +44,8 @@ def sbom() -> dict:
                 }
             )
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         pass
     return {
         "bomFormat": "CycloneDX",

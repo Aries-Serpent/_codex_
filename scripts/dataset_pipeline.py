@@ -9,6 +9,8 @@ This script provides comprehensive dataset management including:
 - Quality scoring and validation
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import hashlib
@@ -105,6 +107,8 @@ class FileProcessor:
                     sha256.update(chunk)
             return sha256.hexdigest()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return ""
 
     @classmethod
@@ -130,6 +134,7 @@ class FileProcessor:
             return json.dumps(metadata), quality
             
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process documentation {filepath}: {e}", file=sys.stderr)
             return None, 0.5
 
@@ -166,7 +171,9 @@ class FileProcessor:
                     
                     return json.dumps(metadata), quality
                     
-                except SyntaxError:
+                except SyntaxError as e:
+                   logger.debug(f"SyntaxError: {e}")
+                    logger.warning(f"SyntaxError: {e}", exc_info=True)
                     return None, 0.3
             
             # For other languages, basic metrics
@@ -185,6 +192,7 @@ class FileProcessor:
             return json.dumps(metadata), quality
             
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process source code {filepath}: {e}", file=sys.stderr)
             return None, 0.5
 
@@ -211,6 +219,7 @@ class FileProcessor:
             return json.dumps(metadata), quality
             
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process config {filepath}: {e}", file=sys.stderr)
             return None, 0.5
 
@@ -245,6 +254,8 @@ class FileProcessor:
                 compressed = gzip.compress(f.read())
                 size_compressed = len(compressed)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             size_compressed = stat.st_size
         
         compression_ratio = size_compressed / max(stat.st_size, 1)
@@ -315,6 +326,7 @@ class DatasetManager:
                     try:
                         tar.add(pf.path, arcname=pf.relative_path)
                     except Exception as e:
+                        logger.debug(f"Exception: {e}")
                         print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
         
         elif format == "zip":
@@ -323,6 +335,7 @@ class DatasetManager:
                     try:
                         zf.write(pf.path, arcname=pf.relative_path)
                     except Exception as e:
+                        logger.debug(f"Exception: {e}")
                         print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
         
         print(f"✓ Created archive: {archive_path}")

@@ -49,6 +49,8 @@ def _resolve_auto_tokenizer():
         try:
             from transformers import AutoTokenizer as _Imported
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             _AutoTokenizer = None  # ensure consistency if import keeps failing
         else:
             _AutoTokenizer = _Imported
@@ -475,11 +477,15 @@ class HFTokenizer(TokenizerAdapter):
                 )
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Fallback: try a minimal encode call (some tokenizers accept simple call)
             try:
                 ids = self._tk.encode(text, add_special_tokens=add_special_tokens)
                 result = list(ids)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Last resort: return empty sequence to avoid raising in user code.
                 result = []
         key = tuple(result)
@@ -538,12 +544,16 @@ class HFTokenizer(TokenizerAdapter):
             input_ids = enc.get("input_ids", [])
             return [list(seq) for seq in input_ids]
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Graceful fallback: encode individually
             fallback: list[list[int]] = []
             for t in texts:
                 try:
                     fallback.append(self.encode(t, add_special_tokens=add_special_tokens))
                 except Exception:
+                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)
                     fallback.append([])
             if return_dict:
                 # Provide a minimal, consistent dictionary shape
@@ -596,10 +606,14 @@ class HFTokenizer(TokenizerAdapter):
         try:
             return self._tk.decode(list(key), skip_special_tokens=skip_special_tokens)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             try:
                 tokens = [self._tk.convert_ids_to_tokens(int(i)) for i in key]
                 return self._tk.convert_tokens_to_string(tokens)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 return None
 
     def _cache_decoded(self, key: tuple[int, ...], skip_special_tokens: bool, text: str) -> None:
@@ -624,6 +638,8 @@ class HFTokenizer(TokenizerAdapter):
         try:
             return _CallableInt(int(getattr(self._tk, "vocab_size", 0) or 0))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return _CallableInt(0)
 
     @property
@@ -634,6 +650,8 @@ class HFTokenizer(TokenizerAdapter):
         try:
             return getattr(self._tk, "pad_token_id", None)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
 
     @property
@@ -644,6 +662,8 @@ class HFTokenizer(TokenizerAdapter):
         try:
             return getattr(self._tk, "eos_token_id", None)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
 
     # Backwards-compatible aliases

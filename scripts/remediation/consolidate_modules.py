@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Python Module Consolidation Script
 
 Consolidates duplicate Python modules by:
@@ -37,6 +39,7 @@ class ModuleConsolidator:
 
             return files_with_refs
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Error finding references: {e}")
             return []
 
@@ -66,6 +69,7 @@ class ModuleConsolidator:
                 return True
             return False
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Error updating {file_path}: {e}")
             return False
 

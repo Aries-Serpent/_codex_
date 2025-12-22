@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Validate a decoded validator snapshot against a permissive schema or perform lightweight checks.
 
 Features:
@@ -92,12 +94,14 @@ def main(argv=None) -> int:
     try:
         payload = _load_json(args.json)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         print(f"JSON parse error: {exc}", file=sys.stderr)
         return 3
 
     try:
         validate_snapshot(payload, args.schema)
     except ValidationError as exc:
+        logger.debug(f"ValidationError: {exc}")
         print(f"Validation failed: {exc}", file=sys.stderr)
         return 1
     print("Snapshot validated successfully")

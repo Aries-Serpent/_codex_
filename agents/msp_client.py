@@ -307,6 +307,7 @@ class EnhancedMSPClient(MSPClient):
                 response.raise_for_status()
                 return response.json()
             except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException) as e:
+                logger.debug(f"Exception: {e}")
                 last_exception = e
                 if attempt < max_retries - 1:
                     wait_time = backoff_factor * (2**attempt)
@@ -468,6 +469,7 @@ class EnhancedMSPClient(MSPClient):
             response = self.client.get("/v1/validate", headers=headers)
             return response.status_code == 200
         except httpx.HTTPStatusError:
+            logger.debug("Exception caught, returning", exc_info=True)
             return False
 
     def get_metrics(self) -> Dict[str, Any]:

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Minimal command-line interface for running Codex training loops."""
 
 from __future__ import annotations
@@ -12,7 +14,9 @@ from typing import Any
 
 try:
     from hydra import compose, initialize_config_dir
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     from config_legacy import compose, initialize_config_dir
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig

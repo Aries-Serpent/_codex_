@@ -67,7 +67,9 @@ def is_gpu_available() -> bool:
         import torch
 
         return torch.cuda.is_available()
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         return False
 
 
@@ -174,6 +176,7 @@ def safe_accelerate_init(
         return result
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         error_msg = f"{type(e).__name__}: {e}"
 
         if raise_on_error:

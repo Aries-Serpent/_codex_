@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
 """Codex-ready sequential task runner derived from the 2025-09-16 status update."""
 from __future__ import annotations
@@ -115,6 +117,7 @@ class CodexTaskRunner:
                 ],
             )
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task1-Preparation", exc, "Reading README.md")
 
         # Phase 2: Search & Mapping
@@ -131,6 +134,7 @@ class CodexTaskRunner:
             )
             log_change("Mapped model/training artefacts: " + ", ".join(candidates))
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task1-Search", exc, "Collecting candidate files")
 
         # Phase 3: Best-Effort Construction
@@ -188,6 +192,7 @@ class CodexTaskRunner:
                 "Reviewed README data pipeline references to align with dataset split automation (HS#4)."
             )
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task2-Preparation", exc, "Reading README for data sections")
         save_gap_snapshot(
             "data_eval_safety_preparation",
@@ -212,6 +217,7 @@ class CodexTaskRunner:
             )
             log_change("Mapped data/eval/safety artefacts: " + ", ".join(candidates))
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task2-Search", exc, "Collecting data/eval files")
 
         # Phase 3
@@ -272,6 +278,7 @@ class CodexTaskRunner:
                 "Captured current configuration/deployment guidance to expand with new examples (HS#3, HS#10)."
             )
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task3-Preparation", exc, "Reading README for configuration guidance")
         save_gap_snapshot(
             "config_cli_docs_preparation",
@@ -298,6 +305,7 @@ class CodexTaskRunner:
             )
             log_change("Mapped configuration/CLI/doc artefacts: " + ", ".join(candidates))
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("Task3-Search", exc, "Collecting configs/CLI/doc files")
 
         # Phase 3

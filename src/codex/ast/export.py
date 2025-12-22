@@ -12,6 +12,8 @@ Supported formats:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import sqlite3
@@ -153,6 +155,8 @@ class KnowledgeGraphExporter:
             )
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.debug("Exception caught, returning", exc_info=True)
             return ExportResult(
                 format=format,
                 output_path=output_path,

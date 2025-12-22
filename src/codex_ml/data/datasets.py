@@ -14,6 +14,8 @@ The intent is not to cover all data sources, but to:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -55,7 +57,9 @@ def get_dataset_spec(name: str) -> DatasetSpec:
 
     try:
         return _DATASET_REGISTRY[name]
-    except KeyError:
+    except KeyError as e:
+       logger.debug(f"KeyError: {e}")
+        logger.warning(f"KeyError: {e}", exc_info=True)
         raise KeyError(f"Dataset {name!r} is not registered") from None
 
 

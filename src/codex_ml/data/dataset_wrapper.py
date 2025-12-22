@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Deterministic dataset helpers built on Hugging Face :mod:`datasets`."""
 
 from __future__ import annotations

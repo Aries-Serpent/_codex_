@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -70,7 +72,9 @@ def _parse_requirements_lock(path: Path) -> Iterable[PackageRecord]:
     records: list[PackageRecord] = []
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return records
     for raw in lines:
         line = raw.strip()
@@ -91,7 +95,9 @@ def _parse_uv_lock(path: Path) -> Iterable[PackageRecord]:
     records: list[PackageRecord] = []
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return records
 
     current_name: str | None = None

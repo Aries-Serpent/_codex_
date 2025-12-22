@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 trend_aggregator.py — Trend aggregation across past audit manifests/reports
 
 Features:
@@ -45,6 +47,7 @@ def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
                 dt = datetime.fromisoformat(timestamp.replace("UTC", "").strip())
                 timestamp = dt.timestamp()
             except (ValueError, TypeError) as e:
+                logger.debug(f"Exception: {e}")
                 # Fallback to 0 if parsing fails
                 timestamp = 0
 
@@ -53,6 +56,7 @@ def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
 
         return {"timestamp": timestamp, "capabilities": capabilities, "source": str(path)}
     except (IOError, json.JSONDecodeError) as e:
+        logger.debug(f"Exception: {e}")
         print(f"Failed to load {path}: {e}", file=sys.stderr)
         return None
 

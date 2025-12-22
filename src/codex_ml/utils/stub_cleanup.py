@@ -151,6 +151,7 @@ class StubAnalyzer:
                                     return True
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to parse {file_path} for abstract method detection: {e}")
 
         return False
@@ -235,6 +236,7 @@ class StubAnalyzer:
                     )
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to analyze {file_path}: {e}")
 
     def _determine_priority(self, line: str) -> str:

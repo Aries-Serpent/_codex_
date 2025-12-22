@@ -624,8 +624,10 @@ def load_app_config(
     try:
         file_cfg = OmegaConf.load(str(config_path))
     except FileNotFoundError as exc:
+        logger.debug(f"FileNotFoundError: {exc}")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
     def _to_plain(mapping: Mapping[str, Any]) -> dict[str, Any]:
@@ -708,15 +710,19 @@ def load_app_config(
                             if isinstance(current, float):
                                 return float(text)
                         except Exception as e:
+                           logger.debug(f"Exception: {e}")
                             logger.warning(f"Exception: {e}", exc_info=True)
                     return new_value
 
                 coerced = _coerce(current_value, value)
                 setattr(instance, key, coerced)
             return instance
-        except ConfigError:
+        except ConfigError as e:
+           logger.debug(f"ConfigError: {e}")
+            logger.warning(f"ConfigError: {e}", exc_info=True)
             raise
         except ValueError as exc:
+            logger.debug(f"ValueError: {exc}")
             parts: list[str] = []
             for chunk in str(exc).split(";"):
                 chunk = chunk.strip()
@@ -846,6 +852,7 @@ def get_config(
         import hydra
         from hydra import compose, initialize_config_dir
     except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         raise ImportError(
             "hydra-core is required for unified config loading. "
             "Install with: pip install hydra-core"

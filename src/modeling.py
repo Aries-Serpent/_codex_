@@ -124,6 +124,7 @@ def _resolve_dtype(name: str | None) -> torch.dtype:
     try:
         return _DTYPE_MAP[name.lower()]
     except KeyError as exc:
+        logger.debug(f"KeyError: {exc}")
         raise ValueError(
             f"Unsupported dtype '{name}'. Expected one of {sorted(_DTYPE_MAP)}"
         ) from exc
@@ -288,6 +289,8 @@ def _ensure_bf16_capability(
         tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
         supported = tensor.dtype == torch.bfloat16
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         supported = False
 
     if supported:

@@ -1,5 +1,7 @@
 """Mint short-lived GitHub App installation tokens with optional scoping.
 
+import logging
+logger = logging.getLogger(__name__)
 The script is intentionally lightweight and offline-friendly: it only performs
 network calls when executed without ``--dry-run`` and after verifying that the
 Codex runtime permits outbound connections to ``api.github.com``.

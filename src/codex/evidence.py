@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Shared helpers for writing append-only evidence artifacts."""
 
 from __future__ import annotations
@@ -62,4 +64,6 @@ def _git_commit_sha() -> str:
             .strip()
         )
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return "unknown"

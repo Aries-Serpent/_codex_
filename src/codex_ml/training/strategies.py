@@ -109,6 +109,7 @@ class FunctionalStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
@@ -187,6 +188,7 @@ class FunctionalStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         else:
             for cb in callbacks:
@@ -197,6 +199,7 @@ class FunctionalStrategy:
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
 
         if functional_overrides:
@@ -235,6 +238,7 @@ class LegacyStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
             _legacy(
@@ -251,6 +255,7 @@ class LegacyStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         return TrainingResult(
             status=status,
@@ -319,7 +324,9 @@ class ContinualReplayStrategy:
         if format_hint in {"text", "txt"}:
             try:
                 payload = target_path.read_text(encoding="utf-8")
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 return [], []
             texts = [line.strip() for line in payload.splitlines() if line.strip()]
             return texts, []
@@ -353,7 +360,9 @@ class ContinualReplayStrategy:
             else:
                 try:
                     resolved.append(dict(phase))
-                except TypeError:
+                except TypeError as e:
+                   logger.debug(f"TypeError: {e}")
+                    logger.warning(f"TypeError: {e}", exc_info=True)
                     resolved.append(dict(vars(phase)))
         return resolved
 
@@ -483,6 +492,8 @@ STRATEGY_REGISTRY = {
 def resolve_strategy(name: str) -> BackendStrategy:
     try:
         return STRATEGY_REGISTRY[name]
-    except KeyError:
+    except KeyError as e:
+       logger.debug(f"KeyError: {e}")
+        logger.warning(f"KeyError: {e}", exc_info=True)
         choices = list(STRATEGY_REGISTRY)
         raise ValueError(f"Unknown backend strategy: {name!r}. Choices={choices}")

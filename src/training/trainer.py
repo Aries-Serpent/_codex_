@@ -70,6 +70,7 @@ def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, A
     try:
         result = _TORCH_LOAD_FN(path, **kwargs)
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             result = _TORCH_LOAD_FN(path, **kwargs)
@@ -206,6 +207,7 @@ class Trainer:
             try:
                 resolved_seed = int(cfg.seed)
             except (TypeError, ValueError) as exc:
+                logger.debug(f"Exception: {exc}")
                 raise ValueError("TrainerConfig.seed must be an int") from exc
             _set_seed(resolved_seed)
             cfg.seed = resolved_seed
@@ -371,6 +373,7 @@ class Trainer:
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
             monitor_value = data.get("monitor")
@@ -382,6 +385,7 @@ class Trainer:
             try:
                 monitor_float = float(monitor_value)
             except (TypeError, ValueError):
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
             entries.append((monitor_float, checkpoint_path, meta_path))
         if not entries:
@@ -397,6 +401,8 @@ class Trainer:
             try:
                 payload = json.loads(pointer.read_text(encoding="utf-8"))
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 payload = {}
             path_hint = payload.get("path")
             if path_hint:
@@ -408,6 +414,7 @@ class Trainer:
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
             checkpoint_path = meta_path.with_suffix(".pt")

@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Knob Normalization Utilities (P2)
 
 Additions in P2:
@@ -76,7 +78,8 @@ def normalize_int(
         return default, None
     try:
         val = int(raw)
-    except ValueError:
+    except ValueError as e:
+        logger.debug(f"ValueError: {e}")
         return default, f"invalid_int:{raw}"
     if min_val is not None and val < min_val:
         return default, f"int_below_min:{raw}"
@@ -111,7 +114,8 @@ def normalize_float(
         return default, None
     try:
         val = float(raw)
-    except ValueError:
+    except ValueError as e:
+        logger.debug(f"ValueError: {e}")
         return default, f"invalid_float:{raw}"
     if min_val is not None and val < min_val:
         return default, f"float_below_min:{raw}"

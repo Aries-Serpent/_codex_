@@ -5,6 +5,8 @@ Includes retry logic, rate limit handling, and typed responses.
 """
 
 import asyncio
+import logging
+logger = logging.getLogger(__name__)
 import os
 import time
 from datetime import datetime, timezone
@@ -311,6 +313,7 @@ class GitHubClient:
             return None
 
         except GitHubAPIError as e:
+            logger.debug(f"GitHubAPIError: {e}")
             raise WorkflowTriggerError(
                 workflow=str(workflow_id),
                 reason=e.message,
@@ -441,7 +444,9 @@ class GitHubClient:
                 f"/repos/{owner}/{repo}/actions/runs/{run_id}/cancel"
             )
             return True
-        except GitHubAPIError:
+        except GitHubAPIError as e:
+           logger.debug(f"GitHubAPIError: {e}")
+            logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
     async def rerun_workflow(
@@ -468,7 +473,9 @@ class GitHubClient:
                 json={"enable_debug_logging": enable_debug},
             )
             return True
-        except GitHubAPIError:
+        except GitHubAPIError as e:
+           logger.debug(f"GitHubAPIError: {e}")
+            logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
     # =========================================================================

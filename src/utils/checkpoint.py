@@ -191,7 +191,9 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
         else:
             try:
                 iterable_states = list(cuda_state)
-            except TypeError:
+            except TypeError as e:
+               logger.debug(f"TypeError: {e}")
+                logger.warning(f"TypeError: {e}", exc_info=True)
                 iterable_states = [cuda_state]
         for idx, tensor_state in enumerate(iterable_states):
             with suppress(Exception):
@@ -239,6 +241,7 @@ def _torch_load(path: str, *, map_location: str | None = None) -> Any:
     try:
         return load_fn(path, **kwargs)
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(path, **kwargs)
@@ -294,12 +297,14 @@ def save_checkpoint(
             try:
                 tmp_path.unlink()
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 LOGGER.warning("Temporary checkpoint cleanup failed for %s: %s", tmp_path, exc)
 
     if archive_latest and target.is_symlink():
         try:
             target.unlink()
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
     return None
 
@@ -336,6 +341,8 @@ def load_checkpoint(
         state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
         return state
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         fallback = _load_legacy_checkpoint_payload(path, map_location=kwargs.get("map_location"))
         if fallback is None:
             raise
@@ -364,6 +371,8 @@ def _load_legacy_checkpoint_payload(
         try:
             loaded = _torch_load(str(path), map_location=map_location)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             loaded = None
         if isinstance(loaded, Mapping):
             candidate = loaded
@@ -373,6 +382,8 @@ def _load_legacy_checkpoint_payload(
             from utils.safe_pickle import safe_pickle_load
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
         if not isinstance(loaded, Mapping):
             return None

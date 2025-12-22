@@ -32,7 +32,9 @@ hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
     try:
         from hydra.utils import to_absolute_path as _hydra_to_absolute_path
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         from config_legacy.utils import to_absolute_path as _hydra_to_absolute_path
 
     from omegaconf import DictConfig, OmegaConf

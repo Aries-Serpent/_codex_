@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from typing import Any, Callable, Dict
@@ -7,7 +9,9 @@ try:
     import torch
 
     TORCH_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     TORCH_AVAILABLE = False
     from types import ModuleType
 

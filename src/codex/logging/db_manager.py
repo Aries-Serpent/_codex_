@@ -23,7 +23,9 @@ except Exception as exc:  # pragma: no cover
 
 try:
     from .config import DEFAULT_LOG_DB
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 

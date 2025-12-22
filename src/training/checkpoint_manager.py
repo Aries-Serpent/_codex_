@@ -26,6 +26,8 @@ try:
         dump_rng_state,  # type: ignore
     )
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     # fall back to existing local implementation below (if present)
     pass
 
@@ -187,16 +189,21 @@ class CheckpointManager:
                                 }
                             )
                         except (TypeError, ValueError):
+                            logger.debug("Exception caught, continuing", exc_info=True)
                             continue
                 elif "value" in data and "step" in data:
                     path = data.get("path")
                     if path is None and self._best_file.exists():
                         try:
                             path = os.readlink(self._best_file)
-                        except OSError:
+                        except OSError as e:
+                           logger.debug(f"OSError: {e}")
+                            logger.warning(f"OSError: {e}", exc_info=True)
                             try:
                                 path = self._best_file.read_text(encoding="utf-8").strip()
                             except Exception:
+                                logger.warning("Exception occurred", exc_info=True)
+                                logger.warning("Exception occurred", exc_info=True)
                                 path = None
                     if path is not None:
                         try:
@@ -210,6 +217,8 @@ class CheckpointManager:
                         except (TypeError, ValueError):
                             pass  # Malformed checkpoint data; skip
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
         self._best = self._best_records[0]["value"] if self._best_records else None
@@ -222,6 +231,8 @@ class CheckpointManager:
         try:
             return int(path.stem.split("-")[1])
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return -1
 
     # ------------------------------------------------------------------
@@ -348,6 +359,7 @@ class CheckpointManager:
             try:
                 p.unlink()
             except FileNotFoundError as e:
+               logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[Dict[str, float]]) -> None:
@@ -398,11 +410,14 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError as e:
+               logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 link.write_text(str(target), encoding="utf-8")
         for child in list(self._best_dir.iterdir()):
             if child.name not in desired:
@@ -410,17 +425,21 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError as e:
+                   logger.debug(f"FileNotFoundError: {e}")
                     logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:
                 os.symlink(best_target, self._best_file)
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 self._best_file.write_text(best_target, encoding="utf-8")
 
     @staticmethod

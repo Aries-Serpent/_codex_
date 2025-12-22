@@ -76,6 +76,7 @@ def _coerce_epoch(value: Any) -> Any:
         try:
             return converter(value)
         except (TypeError, ValueError):
+            logger.debug("Exception caught, continuing", exc_info=True)
             continue
     return value
 
@@ -100,6 +101,8 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
         df.to_parquet(out_parquet)
         return True
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -232,6 +235,7 @@ def cmd_ingest(args: argparse.Namespace) -> int:
         try:
             _validate_with_jsonschema(input_path, schema_path)
         except ValueError as exc:
+            logger.debug(f"ValueError: {exc}")
             print(f"[metrics-cli] {exc}", file=sys.stderr)
             return 3
 
@@ -300,6 +304,7 @@ def _summarize(path: Path) -> dict[str, Any]:
             try:
                 epochs.add(int(record["epoch"]))
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         for key, value in record.items():
             if key == "epoch":

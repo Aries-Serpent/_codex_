@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 
@@ -10,6 +12,8 @@ def init_wandb_offline(project: str = "codex"):
     try:
         import wandb  # type: ignore
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     mode = os.environ.get("WANDB_MODE", "offline")
     if mode == "offline" or not os.environ.get("WANDB_API_KEY"):
@@ -22,6 +26,8 @@ def init_mlflow_local():
     try:
         import mlflow  # type: ignore  # noqa: F401
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 

@@ -6,6 +6,8 @@ repository navigation, search, and understanding. It combines semantic,
 structural, content, and metadata indices for efficient discovery.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import ast
@@ -98,6 +100,7 @@ class RepositoryIndexer:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
         except (SyntaxError, UnicodeDecodeError, ValueError) as e:
+            logger.debug(f"Exception: {e}")
             print(f"⚠ Warning: Could not parse {filepath}: {e}", file=sys.stderr)
             return entities
 
@@ -183,6 +186,7 @@ class RepositoryIndexer:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
         except (SyntaxError, UnicodeDecodeError, ValueError):
+            logger.debug("Exception caught, returning", exc_info=True)
             return imports
 
         for node in ast.walk(tree):

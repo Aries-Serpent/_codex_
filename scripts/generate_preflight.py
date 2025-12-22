@@ -7,6 +7,8 @@ Usage: python scripts/generate_preflight.py --task "Apply security patch" --file
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import subprocess

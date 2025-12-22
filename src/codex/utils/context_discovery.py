@@ -48,6 +48,7 @@ def run_git_command(cmd: str) -> Optional[str]:
         )
         return result.stdout.strip() if result.returncode == 0 else None
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Git command failed: {cmd} - {e}")
         return None
 
@@ -95,7 +96,9 @@ def get_pr_number(interactive: bool = True) -> str:
             pr_num = user_input if user_input else "N/A"
             logger.info(f"PR number provided by user: {pr_num}")
             return pr_num
-        except EOFError:
+        except EOFError as e:
+           logger.debug(f"EOFError: {e}")
+            logger.warning(f"EOFError: {e}", exc_info=True)
             logger.warning("Cannot prompt (no TTY), using N/A")
             return "N/A"
     else:

@@ -12,6 +12,8 @@ Usage:
 """
 
 import subprocess
+import logging
+logger = logging.getLogger(__name__)
 import sys
 import json
 from pathlib import Path
@@ -56,6 +58,7 @@ class CoverageAnalyzer:
                 print(result.stderr)
             return result.returncode == 0
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Error running coverage: {e}")
             return False
 

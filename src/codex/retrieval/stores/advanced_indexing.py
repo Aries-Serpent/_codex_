@@ -145,7 +145,9 @@ class HNSWIndex:
         """Create the underlying FAISS HNSW index."""
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for HNSW indexing. "
                 "Install with: pip install faiss-cpu (or faiss-gpu for GPU support)"
@@ -181,7 +183,9 @@ class HNSWIndex:
 
         try:
             import numpy as np
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
         if vectors.shape[1] != self.dimension:
@@ -215,7 +219,9 @@ class HNSWIndex:
 
         try:
             import numpy as np
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
         if query.ndim == 1:
@@ -256,7 +262,9 @@ class HNSWIndex:
 
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
         faiss.write_index(self._index, filepath)
@@ -270,7 +278,9 @@ class HNSWIndex:
         """
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
         self._index = faiss.read_index(filepath)
@@ -327,7 +337,9 @@ class IVFPQIndex:
         """Create the underlying FAISS IVF-PQ index."""
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for IVF-PQ indexing. "
                 "Install with: pip install faiss-cpu (or faiss-gpu for GPU support)"
@@ -369,7 +381,9 @@ class IVFPQIndex:
 
         try:
             import numpy as np
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
         if training_vectors.shape[1] != self.dimension:
@@ -401,7 +415,9 @@ class IVFPQIndex:
 
         try:
             import numpy as np
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
         if vectors.shape[1] != self.dimension:
@@ -432,7 +448,9 @@ class IVFPQIndex:
 
         try:
             import numpy as np
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
         if query.ndim == 1:
@@ -471,7 +489,9 @@ class IVFPQIndex:
 
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
         faiss.write_index(self._index, filepath)
@@ -485,7 +505,9 @@ class IVFPQIndex:
         """
         try:
             import faiss
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
         self._index = faiss.read_index(filepath)

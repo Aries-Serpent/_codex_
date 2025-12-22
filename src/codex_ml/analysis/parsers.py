@@ -36,18 +36,21 @@ def parse_tiered(code: str) -> ParseResult:
     try:
         return ParseResult(mode="ast", ast_tree=ast.parse(code))
     except SyntaxError as e:
+       logger.debug(f"SyntaxError: {e}")
         logger.warning(f"SyntaxError: {e}", exc_info=True)
     # Secondary: LibCST (formatting-preserving)
     if cst is not None:
         try:
             return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     # Tertiary: Parso (tolerant/partial)
     if parso is not None:
         try:
             return ParseResult(mode="parso", parso_tree=parso.parse(code))
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     # Last resort: degraded
     return ParseResult(mode="degraded", degraded=True)

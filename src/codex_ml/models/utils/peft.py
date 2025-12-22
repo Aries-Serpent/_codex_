@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Optional PEFT/LoRA integration helpers."""
 
 from __future__ import annotations
@@ -36,7 +38,9 @@ def apply_lora_if_available(
     if isinstance(selected_task_type, str):
         try:
             selected_task_type = TaskType[selected_task_type]
-        except KeyError:
+        except KeyError as e:
+           logger.debug(f"KeyError: {e}")
+            logger.warning(f"KeyError: {e}", exc_info=True)
             selected_task_type = TaskType(selected_task_type)
 
     modules: Optional[Sequence[str]]

@@ -126,6 +126,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
     try:
         content = path.read_text(encoding="utf-8", errors="ignore")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         return "", [f"Error reading file: {e}"]
 
     all_changes: List[str] = []

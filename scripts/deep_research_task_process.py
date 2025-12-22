@@ -109,7 +109,9 @@ _REPO_MARKERS = (".git", "pyproject.toml", ".pre-commit-config.yaml")
 def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
     try:
         return any((p / m).exists() for m in markers)
-    except PermissionError:
+    except PermissionError as e:
+       logger.debug(f"PermissionError: {e}")
+        logger.warning(f"PermissionError: {e}", exc_info=True)
         return False
 
 
@@ -235,6 +237,7 @@ def _log_error(step: str, error: str, context: str | None = None) -> None:
         if not DRY_RUN:
             ERRORS_LOG.open("a", encoding="utf-8").write(json.dumps(record) + "\n")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         sys.stderr.write(f"[FATAL-LOG-FAIL] {record}\n")
     # Diagnostic prompt (retains pattern for upstream analysis)
     sys.stderr.write(
@@ -256,9 +259,11 @@ def _atomic_write_text(path: Path, content: str, encoding: str = "utf-8") -> Non
             fh.write(content)
         os.replace(tmp_path, path)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         try:
             os.unlink(tmp_path)
         except OSError as cleanup_err:
+           logger.debug(f"OSError: {cleanup_err}")
             logging.debug("temporary file cleanup failed: %s", cleanup_err)
         raise
 
@@ -275,6 +280,7 @@ def _append_change(path: Path, action: str, rationale: str, new_content: str) ->
         if not DRY_RUN:
             CHANGE_LOG.open("a", encoding="utf-8").write(block)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         _log_error("log change", str(e), str(path))
 
 
@@ -298,6 +304,7 @@ def _read_text(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         return ""
 
 
@@ -319,8 +326,11 @@ def _run_command(
         )
         return proc.returncode, proc.stdout, proc.stderr
     except subprocess.CalledProcessError as e:
+        logger.debug("Exception caught, returning", exc_info=True)
         return e.returncode, e.stdout or "", e.stderr or ""
     except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return 1, "", str(e)
 
 
@@ -363,6 +373,7 @@ def phase1_preparation() -> None:
             try:
                 size = p.stat().st_size
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
                 size = 0
             ext = p.suffix.lower()
             if ext in CODE_EXTS:
@@ -377,10 +388,12 @@ def phase1_preparation() -> None:
                 content = p.read_text(encoding="utf-8", errors="ignore")
                 sha_val = hashlib.sha256(content.encode("utf-8")).hexdigest()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
                 sha_val = None
             try:
                 mtime_iso = datetime.fromtimestamp(p.stat().st_mtime).isoformat()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
                 mtime_iso = ""
             items.append(
                 {
@@ -396,6 +409,7 @@ def phase1_preparation() -> None:
         if not DRY_RUN:
             _atomic_write_text(INVENTORY_JSON, json.dumps(items, indent=2))
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         _log_error("1: Preparation - write inventory", str(e), str(INVENTORY_JSON))
     _v("Phase 1: Preparation complete")
 
@@ -567,6 +581,7 @@ jobs:
                 "- **Rationale:** Removed obsolete build workflow (merged into ci.yml)\n\n"
             )
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             _log_error("3.4: Unify CI workflows", str(e), str(BUILD_WORKFLOW_DISABLED))
 
 
@@ -1084,6 +1099,7 @@ def phase3_construction() -> None:
             _v(label)
             task.func()
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             _log_error(label, str(e), "internal task execution")
     _v("Phase 3: Construction complete")
 
@@ -1129,6 +1145,7 @@ def phase4_results() -> None:
         if not DRY_RUN:
             _atomic_write_text(RESULTS_LOG, "\n".join(lines) + "\n")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         _log_error("results summary write", str(e), str(RESULTS_LOG))
     _v("Phase 4: Results Summary complete")
 
@@ -1154,6 +1171,7 @@ def run_all() -> int:
         print("\nOperation interrupted by user. Partial changes may have been applied.")
         return 130  # Conventional for SIGINT
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error during execution: {e}")
         _log_error("run_all", str(e), "Unexpected top-level exception")
         return 1

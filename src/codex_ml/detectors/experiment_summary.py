@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
@@ -20,6 +22,8 @@ def detector_experiment_summary(
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return DetectorResult(
             name="experiment_summary",
             score=0.0,

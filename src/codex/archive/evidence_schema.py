@@ -7,6 +7,8 @@ with automatic migration capabilities.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
@@ -16,7 +18,9 @@ try:
     import jsonschema
 
     HAS_JSONSCHEMA = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     HAS_JSONSCHEMA = False
 
 

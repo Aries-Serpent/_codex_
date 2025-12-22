@@ -401,7 +401,9 @@ class FeatureStore:
             import pandas as pd
             import pyarrow as pa
             import pyarrow.parquet as pq
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             logger.error(
                 "pandas and pyarrow required for parquet materialization. "
                 "Install with: pip install pandas pyarrow"

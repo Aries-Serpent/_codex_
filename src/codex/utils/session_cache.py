@@ -63,6 +63,7 @@ class FileCache:
             logger.debug(f"Cached file ({len(content)} bytes): {file_path}")
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to cache file {file_path}: {e}")
             return False
 

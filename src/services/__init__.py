@@ -10,6 +10,8 @@ The github module provides GitHub API client functionality.
 
 # Import workflow services (lightweight, no external deps beyond PyYAML/Pydantic)
 from .workflow import WorkflowInventory, WorkflowParser
+import logging
+logger = logging.getLogger(__name__)
 
 __all__: list[str] = [
     "WorkflowInventory",
@@ -21,6 +23,8 @@ try:
     from .github import GitHubClient
     
     __all__.append("GitHubClient")
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     # httpx not installed, skip GitHub client
     pass

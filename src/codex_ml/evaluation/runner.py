@@ -28,6 +28,8 @@ Usage:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import time
@@ -38,7 +40,9 @@ from typing import Any, Callable, Dict, List, Optional, Union
 try:
     import torch
     from torch.utils.data import DataLoader
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None
     DataLoader = None
 
@@ -148,6 +152,8 @@ class EvaluationRunner:
                         return result
                     return {self.name: float(result)}
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
+                    logger.debug("Exception caught, returning", exc_info=True)
                     return {f"{self.name}_error": str(e)}
 
         name = getattr(metric, "__name__", "custom_metric")
@@ -245,6 +251,7 @@ class EvaluationRunner:
                 computed = metric.compute()
                 metric_results.update(computed)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 print(f"Warning: Metric {metric.name} failed: {e}")
                 metric_results[f"{metric.name}_error"] = str(e)
 
@@ -337,6 +344,7 @@ class EvaluationRunner:
 
             print("Logged results to tracking writer")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: Failed to log to tracking writer: {e}")
 
 

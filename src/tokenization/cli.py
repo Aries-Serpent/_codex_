@@ -127,6 +127,8 @@ def _format_context(context: dict[str, Any] | str | None) -> str:
     try:
         return json.dumps(context, sort_keys=True, default=str)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return str(context)
 
 
@@ -154,6 +156,7 @@ def _append_error_block(
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
         return
 
@@ -161,6 +164,7 @@ def _append_error_block(
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block + "\n")
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
 
 
@@ -183,6 +187,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
     try:
         return build_tokenizer(tokenizer_path)
     except FileNotFoundError as exc:
+        logger.debug(f"FileNotFoundError: {exc}")
         _fail(
             step,
             f"Tokenizer not found at {tokenizer_path}",
@@ -190,6 +195,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
             "Could you confirm the tokenizer path or share how to generate it?",
         )
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _fail(
             step,
             f"Failed to load tokenizer from {tokenizer_path}: {exc}",
@@ -280,6 +286,7 @@ def inspect(tokenizer_path: Path) -> None:
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             _append_error_block(
                 "inspect",
                 f"Failed to parse manifest.json: {exc}",
@@ -308,6 +315,7 @@ def inspect(tokenizer_path: Path) -> None:
             try:
                 tokenizer_cfg = json.loads(config_path.read_text(encoding="utf-8"))
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "inspect",
                     f"Failed to parse tokenizer.json: {exc}",
@@ -359,6 +367,7 @@ def encode(
         try:
             payload = input_path.read_text(encoding="utf-8")
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             _fail(
                 "encode",
                 f"Failed to read input text from {input_path}: {exc}",
@@ -373,6 +382,7 @@ def encode(
             max_length=pad_to or None,
         )
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _fail(
             "encode",
             f"Tokenizer encode failed: {exc}",
@@ -403,6 +413,7 @@ def encode(
         else:
             ids_source = list(ids_candidate)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _fail(
             "encode",
             f"Unable to interpret input_ids: {exc}",
@@ -434,6 +445,7 @@ def encode(
             try:
                 tokens = [str(converter(i)) for i in ids_list]
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "encode",
                     f"Failed to convert ids to tokens: {exc}",
@@ -465,6 +477,7 @@ def decode(
     try:
         id_list = [int(item.strip()) for item in ids.split(",") if item.strip()]
     except ValueError as exc:
+        logger.debug(f"ValueError: {exc}")
         _fail(
             "decode",
             f"Invalid token id list '{ids}': {exc}",
@@ -488,7 +501,9 @@ def decode(
 
     try:
         decoded = decode_fn(id_list, **kwargs)
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             decoded = decode_fn(id_list)
         except Exception as exc:  # pragma: no cover - backend guard
@@ -503,6 +518,7 @@ def decode(
                 "What changes are needed so decoding succeeds?",
             )
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _fail(
             "decode",
             f"Tokenizer decode failed: {exc}",
@@ -525,6 +541,7 @@ def export(src: Path, dst: Path) -> None:
     try:
         dst.mkdir(parents=True, exist_ok=True)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _fail(
             "export",
             f"Failed to prepare export directory {dst}: {exc}",
@@ -540,6 +557,7 @@ def export(src: Path, dst: Path) -> None:
             try:
                 shutil.copy2(candidate, target)
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "export",
                     f"Failed to copy {candidate} to {target}: {exc}",
@@ -562,6 +580,7 @@ def export(src: Path, dst: Path) -> None:
     try:
         readme_path.write_text(readme_contents, encoding="utf-8")
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _append_error_block(
             "export",
             f"Failed to write README.md: {exc}",

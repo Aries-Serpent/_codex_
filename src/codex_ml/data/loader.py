@@ -87,6 +87,8 @@ class CacheManifest:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
             version=str(data.get("version", "1")),
@@ -125,7 +127,9 @@ def _decode_bytes(
 ) -> str:
     try:
         return raw.decode(encoding)
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
+       logger.debug(f"UnicodeDecodeError: {e}")
+        logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
         if validate_utf8:
             raise
         if fallback_encoding:
@@ -234,6 +238,7 @@ def _cache_key(path: Path, **params: Any) -> str:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))
     except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
     return h.hexdigest()
 
@@ -372,9 +377,12 @@ def load_dataset(
             if isinstance(data, list):
                 return data
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()
             except FileNotFoundError as e:
+               logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)
 
     fmt = _detect_dataset_format(path)

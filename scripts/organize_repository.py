@@ -90,6 +90,8 @@ def analyze_file(filepath: Path) -> Dict:
             "word_count": len(content.split()),
         }
     except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return {"filename": filepath.name, "path": str(filepath), "error": str(e)}
 
 
@@ -189,11 +191,16 @@ def organize_repository(
             shutil.move(str(md_file), str(dest))
             archived_files.append(dest)
             logger.info(f"Archived: {md_file.name}")
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.error(f"File not found - {md_file.name}")
-        except PermissionError:
+        except PermissionError as e:
+           logger.debug(f"PermissionError: {e}")
+            logger.warning(f"PermissionError: {e}", exc_info=True)
             logger.error(f"Permission denied - {md_file.name}")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Unexpected error archiving {md_file.name}: {e}")
 
     # Create archive index

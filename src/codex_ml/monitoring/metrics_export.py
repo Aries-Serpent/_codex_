@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Prometheus metrics export helpers."""
 
 from __future__ import annotations

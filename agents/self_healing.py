@@ -327,6 +327,7 @@ class SelfHealingEngine:
                 with open(py_file, "r", encoding="utf-8") as f:
                     compile(f.read(), py_file, "exec")
             except SyntaxError as e:
+                logger.debug(f"SyntaxError: {e}")
                 issues.append(
                     DetectedIssue(
                         issue_id=f"syntax_{len(issues)}",
@@ -353,6 +354,7 @@ class SelfHealingEngine:
             try:
                 __import__(module.replace("/", ".").replace("src.", ""))
             except ImportError as e:
+                logger.debug(f"ImportError: {e}")
                 issues.append(
                     DetectedIssue(
                         issue_id=f"import_{len(issues)}",
@@ -364,6 +366,7 @@ class SelfHealingEngine:
                     )
                 )
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # Other errors are not import-related
 
         return issues
@@ -563,6 +566,7 @@ class SelfHealingEngine:
                     if result.stderr:
                         output_lines.append(result.stderr)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 output_lines.append(f"Error executing {cmd}: {e}")
                 action.success = False
                 return False, "\n".join(output_lines)
@@ -576,6 +580,7 @@ class SelfHealingEngine:
                     f.write(content)
                 output_lines.append(f"Updated: {path}")
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 output_lines.append(f"Error writing {path}: {e}")
                 action.success = False
                 return False, "\n".join(output_lines)

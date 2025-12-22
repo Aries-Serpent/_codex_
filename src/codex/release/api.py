@@ -28,6 +28,8 @@ def _templated_bytes(data: bytes, vars: dict) -> bytes:
     try:
         s = data.decode("utf-8", "ignore")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return data
     for k, v in vars.items():
         s = s.replace("{{" + str(k) + "}}", str(v))
@@ -210,6 +212,8 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
                 item_row, _ = dal.fetch_by_tombstone(component.tombstone)
                 item_id = item_row.id
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 item_id = None
             dal.add_release_component(
                 release_meta_id=release_meta_id,

@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import json
@@ -32,6 +34,8 @@ def _export_file(src: str, dst: str, fmt: str, *, echo, bad_param_exc) -> None:
                 ).dict()
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             rows.append(r)
     if fmt == "csv":
         keys = [

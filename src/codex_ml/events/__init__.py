@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Cloud events integration for multi-cloud support."""
 
 __all__ = [
@@ -14,10 +16,14 @@ __all__ += ["AzureEventPublisher", "AWSEventPublisher", "TrainingEventEmitter"]
 
 try:
     from .azure_events import AzureEventPublisher
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     AzureEventPublisher = None  # type: ignore
 
 try:
     from .aws_events import AWSEventPublisher
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     AWSEventPublisher = None  # type: ignore

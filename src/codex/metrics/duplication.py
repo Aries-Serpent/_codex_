@@ -130,13 +130,16 @@ class DuplicationDetector:
             duplicates = self._parse_pylint_output(result.stdout, result.stderr)
             return duplicates
 
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.warning("pylint not found. Install with: pip install pylint")
             return []
         except subprocess.TimeoutExpired:
             logger.error(f"pylint timed out scanning {directory}")
             return []
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Error running pylint: {e}")
             return []
 

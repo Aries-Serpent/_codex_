@@ -113,6 +113,7 @@ def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
                 if "import " in code:
                     out.imports.append({"raw": code})
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return out
 

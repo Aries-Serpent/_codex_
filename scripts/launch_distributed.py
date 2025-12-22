@@ -14,6 +14,8 @@ Usage:
         train.py --config config.yaml
 """
 import argparse
+import logging
+logger = logging.getLogger(__name__)
 import os
 import subprocess
 import sys

@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Dynamic Detector: Inference Serving (P4)
 
 Identifies serving layer components (FastAPI / Flask, server modules, gRPC, model serving).

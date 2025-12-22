@@ -165,6 +165,8 @@ class ReasoningHarness:
             try:
                 tensor = torch.as_tensor(tensor)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 raise TypeError("hidden_states must be convertible to a tensor")
         tensor = tensor.to(device=device, dtype=torch.float32)
         if tensor.ndim >= 2:
@@ -205,6 +207,7 @@ class ReasoningHarness:
                     tensor = self._pool_hidden_states(hidden_states, head_device, size)
                     return tensor, mode_used
                 except Exception as exc:
+                   logger.debug(f"Exception: {exc}")
                     logger.warning(
                         "Activation vectorization failed; falling back to weights: %s",
                         exc,

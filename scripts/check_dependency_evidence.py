@@ -11,6 +11,8 @@ Exit codes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import sys
@@ -34,6 +36,8 @@ def main() -> int:
             try:
                 obj = json.loads(s)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 print(f"[schema] line {i} invalid JSON", file=sys.stderr)
                 bad += 1
                 continue

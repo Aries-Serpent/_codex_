@@ -10,6 +10,8 @@ Heuristic:
 - Writes secret_entropy_report.json with findings; does NOT mutate originals (non-destructive).
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import math
@@ -42,6 +44,8 @@ def scan_file(path: Path, entropy_threshold: float, allow_prefixes: List[str]) -
     try:
         txt = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return []
 
     findings = []
@@ -58,7 +62,9 @@ def main():
     ent_raw = os.getenv("SECRET_ENTROPY_THRESHOLD", "3.5")
     try:
         threshold = float(ent_raw)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         threshold = 3.5
 
     allow = [p.strip() for p in os.getenv("ALLOWLIST_SECRET_PREFIXES", "").split(",") if p.strip()]

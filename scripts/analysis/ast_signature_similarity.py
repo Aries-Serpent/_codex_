@@ -16,6 +16,8 @@ Environment Knobs (parsed via scripts/config/parse_knobs.py schema):
   AST_SIMILARITY_MIN_NODES=10   -> skip files with fewer AST nodes
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import hashlib
@@ -47,7 +49,9 @@ def extract_ast_signature(code: str) -> Optional[Dict]:
         dump = ast.dump(tree, annotate_fields=False)
         struct_hash = hashlib.md5(dump.encode(, usedforsecurity=False)).hexdigest()
         return {"nodes": dict(counts), "hash": struct_hash}
-    except SyntaxError:
+    except SyntaxError as e:
+       logger.debug(f"SyntaxError: {e}")
+        logger.warning(f"SyntaxError: {e}", exc_info=True)
         return None
 
 
@@ -96,6 +100,8 @@ def compute_uniqueness(paths: List[Path], min_nodes: int = 10) -> float:
             if sig and sum(sig["nodes"].values()) >= min_nodes:
                 signatures.append(sig)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
 
     if len(signatures) < 2:

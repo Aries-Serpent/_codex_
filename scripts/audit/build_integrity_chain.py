@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Build Audit Integrity Chain artifacts and a manifest with SHA256 hashes.
 
 Artifacts (created or hashed if present):

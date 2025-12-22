@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Refactor Import Tool (safe AST-based import rewrites)
 
 Usage:
@@ -37,6 +39,7 @@ def load_mappings(mapping_arg: str) -> Dict[str, str]:
     try:
         return json.loads(mapping_arg)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         raise RuntimeError(f"Invalid mapping: {e}")
 
 
@@ -57,7 +60,8 @@ def process_file(path: Path, mappings: Dict[str, str]) -> Tuple[bool, str]:
     src = path.read_text(encoding="utf-8")
     try:
         tree = ast.parse(src)
-    except SyntaxError:
+    except SyntaxError as e:
+        logger.debug(f"SyntaxError: {e}")
         return False, src
     changed = False
 
@@ -108,6 +112,7 @@ def run_dry_run(mappings: Dict[str, str], limit: int = 100) -> List[Tuple[Path, 
             if len(changes) >= limit:
                 break
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: skipping {p}: {e}")
     return changes
 

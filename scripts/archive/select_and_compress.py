@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Archive & Pointer (P2) with Knob Normalization
 
 - Honors ARCHIVE_POINTER_STYLE: embedded | sidecar | both
@@ -138,6 +140,7 @@ def main(argv=None):
                 compressed_sha + "\n", encoding="utf-8"
             )
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             # degrade to embedded-only
             data = json.loads(pointer_json.read_text())
             data.setdefault("warnings", []).append(f"sidecar_write_fail:{e}")

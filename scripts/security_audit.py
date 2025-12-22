@@ -7,6 +7,8 @@ This script checks that all security-critical dependencies meet their
 minimum required versions to address known CVEs.
 """
 import subprocess
+import logging
+logger = logging.getLogger(__name__)
 import sys
 from typing import Dict, List, Tuple
 
@@ -57,6 +59,8 @@ def check_package_version(package: str, min_version: str) -> Tuple[bool, str]:
                 return True, installed  # Equal versions
         return False, "unknown"
     except (subprocess.CalledProcessError, ValueError, IndexError) as e:
+       logger.debug(f"Exception: {e}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return False, f"error: {e}"
 
 

@@ -26,6 +26,7 @@ def _connect(path: str) -> sqlite3.Connection:
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return cx
 

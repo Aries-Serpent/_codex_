@@ -7,6 +7,8 @@ provided via `--db-path`.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -28,6 +30,8 @@ def resolved_db_path(path: str | None) -> pathlib.Path:
 
         return pathlib.Path(logging_config.DEFAULT_LOG_DB)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return DEFAULT_DB
 
 

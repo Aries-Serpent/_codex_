@@ -54,7 +54,9 @@ def load_criticality_map(path: Path) -> dict[str, Any]:
         import yaml
         with open(path) as f:
             return yaml.safe_load(f) or {}
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         logger.warning("PyYAML not installed, using default criticality map")
         return {
             "critical_paths": ["src/agents/**", "src/config/**"],
@@ -69,6 +71,7 @@ def load_criticality_map(path: Path) -> dict[str, Any]:
             },
         }
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Error loading criticality map: {e}")
         return {}
 
@@ -157,7 +160,9 @@ def score_all_alerts(
     try:
         with open(alerts_file) as f:
             alerts = json.load(f)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         logger.error(f"Alerts file not found: {alerts_file}")
         return
     except json.JSONDecodeError as e:

@@ -23,6 +23,8 @@ Integration:
   Severity classification can use elevated context for higher weights.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -77,6 +79,8 @@ def load_file_content(file_path: Path) -> Optional[FileContent]:
     try:
         text = file_path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
     lines = text.splitlines()

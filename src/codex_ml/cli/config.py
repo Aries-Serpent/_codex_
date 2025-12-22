@@ -94,7 +94,9 @@ def register_configs() -> None:
     try:
         try:
             from hydra.core.config_store import ConfigStore
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             from config_legacy.core.config_store import ConfigStore
 
         from codex_ml.utils.hydra_cs import safe_exists
@@ -166,6 +168,8 @@ def _load_defaults_from_yaml(text: str) -> list[str] | None:
     try:
         data = yaml.safe_load(text) or {}
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
     if not isinstance(data, dict):

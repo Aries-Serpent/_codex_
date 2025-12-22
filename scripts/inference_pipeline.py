@@ -10,6 +10,8 @@ Production hardening:
  - Keep strict offline default via WANDB_MODE=offline; add --allow-online hidden flag for test harnesses.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import hashlib
@@ -97,6 +99,8 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
         try:
             torch.use_deterministic_algorithms(True, warn_only=False)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Older torch versions may not support warn_only
             torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
@@ -111,6 +115,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
     try:
         module_path, func_name = path_str.split(":", maxsplit=1)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         raise TypeError(
             f"preprocessor_override must be 'module_path:callable'; got: {path_str}"
         ) from e
@@ -118,6 +123,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
     try:
         module = importlib.import_module(module_path)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         raise ImportError(
             f"Failed to import module '{module_path}' for override '{path_str}': {e}"
         ) from e
@@ -129,6 +135,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
     try:
         sig.bind(None, None, None)
     except TypeError as e:
+        logger.debug(f"TypeError: {e}")
         raise TypeError(
             "Preprocessor override must accept (text, tokenizer, max_input_length) "
             "as positional arguments"
@@ -206,6 +213,8 @@ def _tokenizer_identity(tokenizer: Any) -> str:
     try:
         rep = tokenizer.__repr__()[:64]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         rep = cls
     return f"{cls}:{rep}"
 

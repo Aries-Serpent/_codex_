@@ -8,6 +8,8 @@ Enforce security policy gates:
 Exit code: 0 pass, 1 fail
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import subprocess
@@ -29,6 +31,8 @@ def bandit_check(threshold: str) -> Tuple[bool, str]:
     try:
         data = json.loads(out or "{}")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False, "Bandit JSON parse error"
     severity_rank = {"none": 0, "low": 1, "medium": 2, "high": 3}
     max_allowed = severity_rank.get(threshold.lower(), 3)
@@ -47,6 +51,8 @@ def pip_audit_check(max_critical: int, max_high: int) -> Tuple[bool, str]:
     try:
         data = json.loads(out or "[]")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False, "pip-audit JSON parse error"
     crit = sum(
         1 for v in data for a in v.get("vulns", []) if a.get("severity", "").lower() == "critical"

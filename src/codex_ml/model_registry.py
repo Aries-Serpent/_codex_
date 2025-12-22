@@ -127,6 +127,8 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
         try:
             adapter_name = load_adapter(adapter_path)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             adapter_name = None
         else:
             set_active = getattr(model, "set_active_adapters", None)
@@ -135,10 +137,13 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                     set_active(adapter_name)
                     return
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
     try:
         setattr(model, "lora_adapter_path", adapter_path)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Silently ignore failures; attaching metadata is best effort.
         pass
 
@@ -157,6 +162,8 @@ def _to_bool(value: Any, default: bool) -> bool:
     try:
         return bool(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return default
 
 
@@ -164,6 +171,8 @@ def _to_int(value: Any, default: int) -> int:
     try:
         return int(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return default
 
 
@@ -171,6 +180,8 @@ def _to_float(value: Any, default: float) -> float:
     try:
         return float(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return default
 
 
@@ -307,12 +318,14 @@ def get_model(
             try:
                 model = model.to(dtype=torch_dtype)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
     normalised_device = _normalise_device(device)
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if lora_adapter:
@@ -342,6 +355,8 @@ def get_model(
             ),
         )
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Attaching metadata is best-effort only.
         pass
 

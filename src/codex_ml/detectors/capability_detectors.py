@@ -65,6 +65,8 @@ def _check_file_content(filepath: str | Path, patterns: list[str]) -> dict[str, 
         content = path.read_text(encoding="utf-8", errors="ignore")
         return {p: p in content for p in patterns}
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {p: False for p in patterns}
 
 

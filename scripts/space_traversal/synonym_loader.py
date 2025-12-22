@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Capability Synonym Loader (P6)
 
 Expands found_patterns in capabilities_raw.json using a synonym map.
@@ -47,6 +49,7 @@ def load_synonym_map(path: Path) -> Dict[str, list[str]]:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"[WARN] Failed to load synonym map: {e}", file=sys.stderr)
         return {}
 

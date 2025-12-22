@@ -16,7 +16,9 @@ try:
     import boto3
 
     _HAS_BOTO3 = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     _HAS_BOTO3 = False
     logger.warning("boto3 not installed. AWS EventBridge support disabled.")
 
@@ -48,6 +50,7 @@ class AWSEventPublisher(EventPublisher):
             self.client = boto3.client("events", region_name=self.region_name)
             logger.info(f"AWS EventBridge client initialized (region={self.region_name})")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to initialize AWS EventBridge client: {e}")
             self.client = None
 
@@ -85,6 +88,7 @@ class AWSEventPublisher(EventPublisher):
             return True
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish to AWS EventBridge: {e}")
             return False
 
@@ -130,6 +134,7 @@ class AWSEventPublisher(EventPublisher):
                     logger.info(f"Published {len(batch)} events to AWS EventBridge")
 
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to publish batch to AWS EventBridge: {e}")
                 all_success = False
 

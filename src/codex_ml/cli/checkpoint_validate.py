@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Validate Codex checkpoint directories and metadata."""
 
 from __future__ import annotations
@@ -69,6 +71,7 @@ def validate_checkpoint(
             try:
                 recorded = sha_path.read_text(encoding="utf-8").strip()
             except FileNotFoundError as exc:
+                logger.debug(f"FileNotFoundError: {exc}")
                 raise CheckpointValidationError(f"missing digest file: {sha_path}") from exc
             if recorded != digest:
                 raise CheckpointValidationError(
@@ -132,6 +135,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         try:
             info = validate_checkpoint(path, expect_schema=schema)
         except CheckpointValidationError as exc:
+            logger.debug(f"CheckpointValidationError: {exc}")
             typer.echo(str(exc), err=True)
             raise typer.Exit(code=2) from exc
         if show:

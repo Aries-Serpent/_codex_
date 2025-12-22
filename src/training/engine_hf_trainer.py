@@ -167,6 +167,8 @@ except Exception:  # pragma: no cover - datasets missing
             try:
                 return len(col)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 return 0
 
 
@@ -379,7 +381,9 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
         return True
     try:
         return Path(norm).expanduser().exists()
-    except OSError:
+    except OSError as e:
+       logger.debug(f"OSError: {e}")
+        logger.warning(f"OSError: {e}", exc_info=True)
         return False
 
 
@@ -405,6 +409,7 @@ def get_hf_revision(identifier: PathLike[str] | str) -> str:
     try:
         revision, _ = ensure_pinned_kwargs(norm, overrides)
     except ValueError as exc:
+        logger.debug(f"ValueError: {exc}")
         if env_revision:
             raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
         raise RuntimeError(
@@ -474,7 +479,9 @@ def build_trainer(
             if training_steps is None and hasattr(train_ds, "__len__"):
                 try:
                     training_steps = args.num_train_epochs * (len(train_ds) // batch_size + 1)
-                except TypeError:
+                except TypeError as e:
+                   logger.debug(f"TypeError: {e}")
+                    logger.warning(f"TypeError: {e}", exc_info=True)
                     training_steps = num_steps
             if training_steps is not None:
                 trainer.lr_scheduler = get_scheduler(
@@ -575,6 +582,8 @@ def _compute_metrics(eval_pred):
         log_probs = log_probs - np.log(np.exp(log_probs).sum(axis=-1, keepdims=True))
         loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         loss = None
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
     return {"token_accuracy": float(acc), "perplexity": ppl}
@@ -634,6 +643,8 @@ class NDJSONMetricsWriter:
             try:
                 data = LogRecord(**obj).redacted().dict()  # type: ignore[arg-type]
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
             self._async.write(data)
@@ -649,6 +660,7 @@ class NDJSONMetricsWriter:
         try:
             self.close()
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Best effort cleanup; __del__ cannot raise exceptions
 
 
@@ -873,6 +885,8 @@ def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] |
     try:
         normalized = _convert(cfg)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     return normalized if isinstance(normalized, dict) else None
 
@@ -958,13 +972,17 @@ def run_hf_trainer(
         try:
             cfg = safe_load(config_path.read_text()) or {}
         except MissingPyYAMLError as exc:
+            logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
                 "PyYAML is required to parse training configs passed to EngineHfTrainer. "
                 'Install it via ``pip install "PyYAML>=6.0"`` before retrying.'
             ) from exc
         except YAMLError as exc:
+            logger.debug(f"YAMLError: {exc}")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             cfg = {}
         if config_snapshot is None and cfg:
             config_snapshot = _sanitize_config_snapshot(cfg)
@@ -1085,6 +1103,7 @@ def run_hf_trainer(
                 cfg["task_type"] = str(lora_task_type)
             model = apply_lora(model, cfg)
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("lora_import", str(exc), "peft")
 
     # Setup checkpoint callbacks
@@ -1138,6 +1157,7 @@ def run_hf_trainer(
 
             callbacks = [_CheckpointCallback()]
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
     # Initialize logging only when explicitly requested
@@ -1214,6 +1234,7 @@ def run_hf_trainer(
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Logging failure; continue with training
 
     # TensorBoard logging
@@ -1226,6 +1247,7 @@ def run_hf_trainer(
             writer.flush()
             writer.close()
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # TensorBoard logging failure; continue with training
 
     # Persist metrics to JSON and NDJSON for downstream analytics
@@ -1258,6 +1280,8 @@ def run_hf_trainer(
                 shutil.copy2(config_path, target_path)
             copied_resume_config = target_path
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             copied_resume_config = None
 
     manifest = {

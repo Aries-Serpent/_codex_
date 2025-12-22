@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch

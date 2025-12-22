@@ -73,6 +73,8 @@ class WorkflowContext:
             try:
                 rollback(self)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Rollbacks should not interrupt remaining cleanup.
                 self.failed_phases.append(f"rollback:{label}")
 

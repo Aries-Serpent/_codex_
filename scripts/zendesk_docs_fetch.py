@@ -6,6 +6,8 @@ Constraints:
 - Writes under docs/vendors/zendesk/YYYY-MM-DD/<section>/<page>.html.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import datetime as dt

@@ -5,6 +5,8 @@ This script automatically generates __init__.py files with proper exports
 for all codex packages to ensure consistency and prevent manual maintenance drift.
 """
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
 import ast
 import sys
 from typing import List
@@ -24,6 +26,7 @@ def extract_public_symbols(filepath: Path) -> List[str]:
     try:
         tree = ast.parse(filepath.read_text(), filename=str(filepath))
     except (SyntaxError, UnicodeDecodeError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return []
 
     symbols = []

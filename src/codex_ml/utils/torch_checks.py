@@ -8,6 +8,8 @@ reinstalling offline builds.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import importlib.util
@@ -89,6 +91,8 @@ def inspect_torch(module: ModuleType | None = None) -> TorchStatus:
     try:
         data_module = importlib.import_module("torch.utils.data")
     except Exception as exc:
+       logger.debug(f"Exception: {exc}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return TorchStatus(
             ok=False,
             detail=f"torch.utils.data import failed: {exc!r}",

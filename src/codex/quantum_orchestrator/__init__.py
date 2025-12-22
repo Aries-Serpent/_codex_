@@ -18,6 +18,8 @@ Version: 0.3.0
 # Core orchestrator
 # MLOps integration
 from .mlops_bridge import (
+import logging
+logger = logging.getLogger(__name__)
     DistributedCoordinator,
     LoggingAdapter,
     Metric,
@@ -80,7 +82,9 @@ try:
     )
 
     QFT_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     QFT_AVAILABLE = False
 
 __all__ = [

@@ -50,6 +50,8 @@ class InternalRepoSearch(SearchProvider):
                 text=True,
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return []
 
         results: list[dict[str, Any]] = []
@@ -57,6 +59,7 @@ class InternalRepoSearch(SearchProvider):
             try:
                 event = json.loads(line)
             except json.JSONDecodeError:
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
             if event.get("type") == "match":
                 data = event.get("data", {})
@@ -88,6 +91,7 @@ class ExternalWebSearch(SearchProvider):
             payload = net.safe_fetch(url, timeout=10)
             data = json.loads(payload.decode("utf-8"))
         except (urllib.error.URLError, ValueError, OSError):
+            logger.debug("Exception caught, returning", exc_info=True)
             return []
 
         results: list[dict[str, Any]] = []
@@ -113,6 +117,8 @@ class SearchRegistry:
             try:
                 results.extend(provider.search(query))
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Each provider is responsible for handling its own errors. If
                 # an unexpected exception bubbles up we swallow it here so that
                 # other providers still run.

@@ -117,6 +117,7 @@ def send_webhook(
                     timestamp=time.time(),
                 )
         except HTTPError as e:
+           logger.debug(f"HTTPError: {e}")
             logger.warning(f"Webhook HTTP error (attempt {attempt + 1}): {e.code}")
             if attempt == max_retries - 1:
                 return WebhookDelivery(
@@ -128,6 +129,7 @@ def send_webhook(
                     timestamp=time.time(),
                 )
         except URLError as e:
+           logger.debug(f"URLError: {e}")
             logger.warning(f"Webhook URL error (attempt {attempt + 1}): {e}")
             if attempt == max_retries - 1:
                 return WebhookDelivery(
@@ -139,6 +141,7 @@ def send_webhook(
                     timestamp=time.time(),
                 )
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Webhook error (attempt {attempt + 1}): {e}")
             if attempt == max_retries - 1:
                 return WebhookDelivery(
@@ -236,6 +239,7 @@ def send_slack_notification(
                 timestamp=time.time(),
             )
     except (URLError, HTTPError) as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Slack notification failed: {e}")
         return WebhookDelivery(
             url=webhook_url,
@@ -301,6 +305,7 @@ def send_teams_notification(
                 timestamp=time.time(),
             )
     except (URLError, HTTPError) as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Teams notification failed: {e}")
         return WebhookDelivery(
             url=webhook_url,

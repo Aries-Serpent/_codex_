@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Vector Stores Detector
 
 Detects vector store implementations for semantic search, embeddings storage,

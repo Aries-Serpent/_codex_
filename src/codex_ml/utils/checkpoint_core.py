@@ -105,6 +105,7 @@ def _git_sha_try() -> str | None:
                     return ref_path.read_text(encoding="utf-8").strip()[:40]
             return ref[:40]
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             return None
     return None
 
@@ -115,11 +116,13 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             snap["numpy"] = np.random.get_state()
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     if torch is not None:
         try:
             snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
@@ -130,6 +133,7 @@ def _rng_snapshot() -> dict[str, Any]:
                     {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return snap
 
@@ -139,12 +143,14 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
         if "python" in snap:
             random.setstate(snap["python"])
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     if np is not None:
         try:
             if "numpy" in snap:
                 np.random.set_state(snap["numpy"])
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     if torch is not None:
         try:
@@ -154,6 +160,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
                     torch.set_rng_state(torch_cpu_state)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
@@ -176,6 +183,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -246,6 +254,7 @@ def _config_hash(config: dict[str, Any] | None) -> str | None:
         payload = json.dumps(config, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -259,6 +268,7 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
         try:
             torch_save(state, buf)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
             buf.truncate(0)
             pickle.dump(state, buf, protocol=pickle.HIGHEST_PROTOCOL)
@@ -333,6 +343,7 @@ def _torch_supports_weights_only() -> bool:
         core_version = version.split("+")[0]
         return Version(core_version) >= Version("2.0.0")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -351,6 +362,7 @@ def _deserialize_payload(
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
+            logger.debug(f"TypeError: {exc}")
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
                 fallback_kwargs = dict(kwargs)
@@ -358,10 +370,12 @@ def _deserialize_payload(
                 try:
                     return torch_load(buf, **fallback_kwargs)
                 except Exception:
+                    logger.warning("Exception occurred", exc_info=True)
                     buf.seek(0)
             else:
                 buf.seek(0)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
     # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
     from utils.safe_pickle import safe_pickle_load
@@ -403,6 +417,7 @@ def _load_index(root: Path) -> dict[str, Any]:
     try:
         return json.loads(p.read_text(encoding="utf-8"))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         return {
             "schema_version": SCHEMA_VERSION,
             "metric_key": None,
@@ -439,6 +454,7 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
         try:
             (root / rel).unlink(missing_ok=True)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     idx["entries"] = keep
 
@@ -480,6 +496,7 @@ def save_checkpoint(
             try:
                 metric_value = float(metrics[metric_key])
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
                 metric_value = metrics[metric_key]
 
     # Build metadata
@@ -488,6 +505,7 @@ def save_checkpoint(
         try:
             candidate = snapshot_config(config)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             candidate = {}
         if candidate:
             snapshot_data = dict(candidate)
@@ -557,6 +575,7 @@ def save_checkpoint(
         try:
             shutil.copyfile(ckpt_path, state_alias)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if attach_integrity is not None:
@@ -569,6 +588,7 @@ def save_checkpoint(
                 relative_to=root,
             )
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if keep_last:
@@ -580,6 +600,7 @@ def save_checkpoint(
             try:
                 shutil.rmtree(old)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
     # Update index for this checkpoint directory
@@ -624,16 +645,19 @@ def save_checkpoint(
     try:
         manifest = dict(collect_run_metadata())
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         manifest = {}
     try:
         provenance = collect_run_meta()
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         write_run_manifest(root, manifest)
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     return ckpt_path, meta

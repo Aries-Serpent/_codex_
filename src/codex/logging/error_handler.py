@@ -132,6 +132,7 @@ class CodexErrorHandler:
             try:
                 return func(*args, **kwargs)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 self.log_error(
                     e,
                     context={

@@ -99,11 +99,15 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         return {}
     try:
         text = path.read_text(encoding="utf-8")
-    except OSError:
+    except OSError as e:
+       logger.debug(f"OSError: {e}")
+        logger.warning(f"OSError: {e}", exc_info=True)
         return {}
     try:
         data = yaml.safe_load(text)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {}
     return data or {}
 
@@ -318,7 +322,9 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
 
     try:
         rel_file = str(path.relative_to(root))
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         rel_file = str(path)
 
     return FileAudit(

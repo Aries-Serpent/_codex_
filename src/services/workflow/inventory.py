@@ -104,6 +104,7 @@ class WorkflowInventory:
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
 
         # Build dependency graph
@@ -287,6 +288,7 @@ class WorkflowInventory:
                 logger.info(f"Refreshed workflow: {filename}")
                 return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Error refreshing {filename}: {e}")
 
         return False

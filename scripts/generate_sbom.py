@@ -5,6 +5,8 @@ This script generates a CycloneDX-format SBOM containing all project dependencie
 for supply chain security and vulnerability tracking.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import subprocess
@@ -167,6 +169,7 @@ Examples:
         print(f"\n✅ SBOM generation complete: {sbom_path}")
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"\n❌ SBOM generation failed: {e}", file=sys.stderr)
         return 1
 

@@ -222,7 +222,9 @@ class PROperator:
                 logger.info("GitHub client initialized")
             else:
                 logger.warning("GITHUB_TOKEN not set, PR creation disabled")
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("PyGithub not installed, PR creation disabled")
     
     def generate_pr_content(
@@ -311,6 +313,7 @@ class PROperator:
                 )
                 logger.info("Created branch: %s", content.branch_name)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 if "already exists" not in str(e).lower():
                     raise
                 logger.info("Branch already exists: %s", content.branch_name)
@@ -329,6 +332,8 @@ class PROperator:
                             branch=content.branch_name,
                         )
                     except Exception:
+                        logger.warning("Exception occurred", exc_info=True)
+                        logger.warning("Exception occurred", exc_info=True)
                         # File doesn't exist, create it
                         repo.create_file(
                             path=path,
@@ -363,6 +368,7 @@ class PROperator:
             )
             
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error("Failed to create PR: %s", e)
             return PRResult(
                 success=False,

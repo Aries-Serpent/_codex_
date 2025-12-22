@@ -146,6 +146,7 @@ class NDJSONLogger:
                 try:
                     shutil.move(str(src), str(dst))
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
 
     def write(self, record: dict[str, object]) -> None:
@@ -161,4 +162,5 @@ class NDJSONLogger:
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(line + "\n")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)

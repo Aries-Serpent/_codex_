@@ -6,6 +6,8 @@ optimizations to maximize throughput and minimize latency.
 """
 
 import asyncio
+import logging
+logger = logging.getLogger(__name__)
 import time
 from collections import deque
 from dataclasses import dataclass
@@ -106,6 +108,7 @@ class RequestBatcher:
                 for future, result in zip(futures, results):
                     future.set_result(result)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 for future in futures:
                     future.set_exception(e)
 

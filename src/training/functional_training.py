@@ -91,6 +91,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
     try:
         metrics = collect_system_metrics()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
         LOGGER.debug("Failed to collect system metrics for training metrics payload", exc_info=True)
         return None
     if not isinstance(metrics, dict):
@@ -148,7 +149,9 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
         return True
     try:
         return Path(norm).expanduser().exists()
-    except OSError:
+    except OSError as e:
+       logger.debug(f"OSError: {e}")
+        logger.warning(f"OSError: {e}", exc_info=True)
         return False
 
 
@@ -228,6 +231,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         {"run": training_cfg.get("run_name", "")},
                     )
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)  # Metadata write failure; continue training
 
     if args.engine == "hf":
@@ -458,6 +462,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             )
             model = get_peft_model(model, lcfg)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # PEFT configuration failed; use base model
 
     metrics_path: Optional[Path] = None
@@ -476,6 +481,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 encoding="utf-8",
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             config_snapshot = None
     else:
         metrics_root = Path(cfg.log_dir)
@@ -486,12 +492,14 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         try:
             metrics_path.unlink()
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # File deletion failed; continue with training
 
     def _safe_len(data: Any) -> int | None:
         try:
             return int(len(data))  # type: ignore[arg-type]
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             return None
 
     metadata_logger: Any = metrics_logger
@@ -549,6 +557,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             )
             system_logger.start()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             system_logger = None
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
@@ -578,6 +587,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             if rng := extra.get("rng_state"):
                 load_rng_state(rng)
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # RNG state restore failed; use default initialization
 
     train_loader = DataLoader(
@@ -617,6 +627,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                 max_grad_norm=cfg.dp_max_grad_norm,
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
             privacy_engine = None
 
     use_amp = cfg.dtype in {"fp16", "bf16"} and torch.cuda.is_available()
@@ -649,6 +660,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     }
                     mlf.log_params(_as_flat_params(params))
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)  # MLflow parameter logging failed; continue training
 
             for epoch in range(start_epoch, cfg.epochs):
@@ -700,11 +712,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                         try:
                             _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
                         except Exception:
+                            logger.warning("Exception occurred", exc_info=True)
                             print(f"step {global_step}: loss {loss_val:.4f}")
                         if cfg.mlflow_enable:
                             try:
                                 mlf.log_metrics({"train/loss": loss_val}, step=global_step)
                             except Exception as e:
+                               logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)  # MLflow metric logging failed; continue training
                             _append_metric(
                                 {
@@ -748,6 +762,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             try:
                                 _codex_log_all(global_step, numeric_metrics, loggers)
                             except Exception as e:
+                               logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)  # Codex logging failed; continue training
                         if cfg.mlflow_enable:
                             try:
@@ -756,6 +771,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                     step=global_step,
                                 )
                             except Exception as e:
+                               logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)  # MLflow eval metric logging failed; continue training
                             _append_metric(
                                 {
@@ -797,6 +813,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                     {"train/privacy_epsilon": float(eps)}, step=global_step
                                 )
                             except Exception as e:
+                               logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)  # MLflow privacy metric logging failed; continue training
                             _append_metric(
                                 {
@@ -807,12 +824,14 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                 }
                             )
                     except Exception as e:
+                       logger.debug(f"Exception: {e}")
                         logger.warning(f"Exception: {e}", exc_info=True)  # Privacy accounting failed; continue training
         finally:
             if system_logger is not None:
                 try:
                     system_logger.stop()
                 except Exception as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)  # System logger cleanup failed; continue
 
         result = {"global_step": global_step, "history": history, "best_val": best_val}
@@ -843,8 +862,10 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     try:
                         mlf.log_artifact(str(artifact))
                     except Exception:
+                        logger.warning("Exception occurred", exc_info=True)
                         continue  # Artifact logging failed; try next artifact
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # MLflow final metrics logging failed; continue
     return result
 

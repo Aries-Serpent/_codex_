@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 
 # ---- [BEGIN: Testable Entrypoint for direct import by test suite] ----
@@ -111,10 +113,12 @@ def decode_b64_gz_bytes(b64_bytes: bytes) -> bytes:
     try:
         decoded = base64.b64decode(b64_bytes)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         raise RuntimeError(f"base64 decode error: {exc}")
     try:
         return gzip.decompress(decoded)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         raise RuntimeError(f"gunzip decompress error: {exc}")
 
 
@@ -330,12 +334,14 @@ def main(argv: Optional[List[str]] = None) -> int:
                 return 2
             decoded_json = load_from_local(args.input, args.max_bytes)
     except RuntimeError as exc:
+        logger.debug(f"RuntimeError: {exc}")
         eprint(f"Decode/Gunzip error: {exc}")
         return 3
     except json.JSONDecodeError as exc:
         eprint(f"JSON parse error: {exc}")
         return 4
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         eprint(f"Unexpected error loading input: {exc}")
         return 3
 
@@ -366,6 +372,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             validate.validate_snapshot(decoded_json, schema_path_obj)
             schema_validated = True
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             eprint(f"Schema validation failed: {exc}")
             return 6
     else:
@@ -381,6 +388,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         write_outputs(out_dir, decoded_json, findings)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         eprint(f"Error writing outputs: {exc}")
         return 5
 
@@ -427,6 +435,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 if not args.quiet:
                     print(f"Wrote baseline to: {baseline_path}")
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             eprint(f"Baseline write failed: {exc}")
 
     # --- Stable manifest ---

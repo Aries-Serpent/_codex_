@@ -4,6 +4,8 @@ Includes a minimal NDJSON logger factory used by evaluation and smoke tests.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Mapping
@@ -41,6 +43,8 @@ class _NDJSONMetricsLogger:
                 "mem_vms_mb": mem.vms / (1024 * 1024),
             }
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return {}
 
     def log(self, record: Mapping[str, Any]) -> None:

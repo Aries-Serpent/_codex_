@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Tokenizer registry and helpers."""
 
 from __future__ import annotations
@@ -42,6 +44,8 @@ def init_tokenizer_plugins(*, force: bool = False) -> int:
     try:
         from codex_ml.plugins import load_plugins
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         _TOKENIZER_PLUGINS_LOADED = True
         return 0
 
@@ -259,7 +263,9 @@ def _call_tokenizer(
     kwargs.setdefault("return_attention_mask", True)
     try:
         encoding = tokenizer(text, **kwargs)
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         encode_plus = getattr(tokenizer, "encode_plus", None)
         if callable(encode_plus):
             encoding = encode_plus(text, **kwargs)

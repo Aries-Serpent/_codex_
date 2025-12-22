@@ -17,6 +17,8 @@ python scripts/refresh_requirements_lock.py --skip-validate # generate lock with
 ```
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import datetime as _dt
@@ -196,6 +198,8 @@ def _load_lock_versions() -> dict[str, tuple[Requirement, str | None]]:
         try:
             req = Requirement(line)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Skip entries that cannot be parsed as standard requirements.
             continue
         version = None
@@ -245,6 +249,7 @@ def verify_lock_alignment() -> None:
             try:
                 ver = Version(version)
             except InvalidVersion:
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
             if req.specifier and not req.specifier.contains(ver, prereleases=True):
                 mismatched.append(f"{req.name}=={version} does not satisfy '{req}' from {source}")

@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Safeguard Keywords Detector
 
 Scans codebase for defensive programming patterns and safeguard keywords.

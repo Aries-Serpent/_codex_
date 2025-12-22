@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Database access layer for the Codex archive."""
 
 from __future__ import annotations
@@ -487,6 +489,8 @@ class ArchiveDAL:
                 yield execute_sql
                 self._conn.commit()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 self._conn.rollback()
                 raise
             finally:

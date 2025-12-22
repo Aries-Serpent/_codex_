@@ -5,6 +5,8 @@ It writes newline-delimited JSON with atomic appends, optional rotation, and det
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -121,7 +123,9 @@ class NDJSONLogger:
             if time.time() - self._rollover_ts >= self.max_age_s:
                 try:
                     size = self.path.stat().st_size
-                except FileNotFoundError:
+                except FileNotFoundError as e:
+                   logger.debug(f"FileNotFoundError: {e}")
+                    logger.warning(f"FileNotFoundError: {e}", exc_info=True)
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -132,7 +136,9 @@ class NDJSONLogger:
 
         try:
             size = self.path.stat().st_size
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -143,6 +149,7 @@ class NDJSONLogger:
             try:
                 self.path.unlink()
             except FileNotFoundError as e:
+               logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             self._rollover_ts = time.time()
             return
@@ -214,7 +221,9 @@ class NDJSONLogger:
 
         try:
             return self.path.stat().st_mtime
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             return time.time()
 
     @staticmethod

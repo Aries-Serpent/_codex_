@@ -26,6 +26,8 @@ Classification (default thresholds):
 Order: evaluate high first, then medium, then low.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -60,6 +62,7 @@ def main():
     try:
         data = json.loads(IN_REPORT.read_text())
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"[ERR] Failed to parse entropy report: {e}", file=sys.stderr)
         return 2
 

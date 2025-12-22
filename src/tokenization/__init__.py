@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Tokenization utilities."""
 
 __all__: list[str] = []

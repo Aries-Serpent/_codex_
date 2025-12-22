@@ -4,6 +4,8 @@ Fix shell=False in subprocess calls across the codebase.
 Replaces shell=False with shell=False and uses shlex.split for command parsing.
 """
 import re
+import logging
+logger = logging.getLogger(__name__)
 from pathlib import Path
 import sys
 
@@ -54,6 +56,7 @@ def fix_shell_true_in_file(file_path: Path) -> bool:
         
         return False
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error processing {file_path}: {e}", file=sys.stderr)
         return False
 

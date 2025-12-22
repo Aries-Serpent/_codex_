@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """CLI utilities for inspecting plugin registries."""
 
 from __future__ import annotations

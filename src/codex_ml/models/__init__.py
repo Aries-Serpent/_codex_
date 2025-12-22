@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Model registry for codex_ml using the plugin framework."""
 
 from __future__ import annotations

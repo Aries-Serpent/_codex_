@@ -16,6 +16,7 @@ def fix_try_except_pass(file_path: Path) -> int:
         
         # Skip if already has logging for most exceptions
         if content.count('logger.warning') > 5:
+            logger.debug("Exception caught, returning", exc_info=True)
             return 0
         
         # Add logging imports if needed
@@ -74,6 +75,7 @@ def fix_try_except_pass(file_path: Path) -> int:
         
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error processing {file_path}: {e}", file=sys.stderr)
         return 0
 

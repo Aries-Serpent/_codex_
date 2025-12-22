@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 [Analysis]: Legacy Import Detector (v1.2.1)
 Scans the codebase for imports that reference the 'Split Brain' root directories
 (training, tokenization, models) instead of the `src` namespace.
@@ -87,6 +89,7 @@ def scan_dirs(dirs, include_relative=False):
                 results.extend(visitor.found)
                 count += 1
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 print(f"[ERR] parsing {py_file}: {e}", file=sys.stderr)
     print(
         f"[*] Scanned {count} files. Found {len(results)} legacy import occurrences (include_relative={include_relative})."

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Status Update Audit Report Generator (v1.1.0)
 
 Purpose:
@@ -34,6 +36,7 @@ try:
 
     import yaml  # type: ignore
 except Exception as exc:
+    logger.debug(f"Exception: {exc}")
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
     raise SystemExit(1) from exc
 

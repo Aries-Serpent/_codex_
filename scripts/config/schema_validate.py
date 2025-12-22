@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Schema Validation (P4)
 
 Validates:
@@ -32,6 +34,7 @@ def load_yaml(p: Path):
     try:
         return yaml.safe_load(p.read_text(encoding="utf-8"))
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         return {"_error": str(e)}
 
 

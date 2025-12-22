@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -101,10 +103,14 @@ def main(argv=None) -> int:
     try:
         try:
             import hydra
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             import config_legacy as hydra
         from omegaconf import DictConfig, OmegaConf
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return _print_missing("hydra-core")
 
     from codex_ml.training.unified_training import run_unified_training

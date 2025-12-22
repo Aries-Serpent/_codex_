@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 P1 Refactoring Automation Script
 
 Executes high-priority refactoring tickets from CODE_LEVEL_REFACTORING_TICKETS.md

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 [Remediation]: Root Directory Sanitation
 Purpose: Moves generated report and summary files from the repository root
 to a dedicated archive directory to reduce cognitive load and clutter.
@@ -79,6 +81,7 @@ def main():
             shutil.move(str(src_file), str(dest_file))
             moved_count += 1
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"  [!] Failed to move {src_file.name}: {e}", file=sys.stderr)
             errors += 1
 

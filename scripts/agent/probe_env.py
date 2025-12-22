@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import json
+import logging
+logger = logging.getLogger(__name__)
 import os
 import platform
 import shutil
@@ -37,6 +39,7 @@ def main():
 
         info["top_level_modules"] = sorted({m.name for m in pkgutil.iter_modules()})[:50]
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         log_warn(f"Failed to enumerate top-level modules: {exc}")
         info["top_level_modules"] = []
 
@@ -47,6 +50,7 @@ def main():
         )
         info["pkgs_head"] = out.strip().splitlines()[:50]
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         log_warn(f"pip freeze snapshot failed: {exc}")
 
     # ulimit (platform-aware)
@@ -55,6 +59,7 @@ def main():
             out = subprocess.check_output(["bash", "-lc", "ulimit -a"], text=True, timeout=5)
             info["limits"]["ulimit"] = out.strip()
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             log_warn(f"ulimit probe failed: {e}")
     else:
         print("[INFO] Skipping ulimit on non-Unix platform", file=sys.stderr)

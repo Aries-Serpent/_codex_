@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Consolidation planning for near-duplicate files."""
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ from .similarity import Similarity, compute_similarity
 def _serialise_path(path: Path, root: Path) -> str:
     try:
         return path.relative_to(root).as_posix()
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         return path.as_posix()
 
 

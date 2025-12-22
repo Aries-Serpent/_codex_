@@ -6,6 +6,8 @@ Applies the autonomous self-review protocol to code changes,
 ensuring comprehensive validation before committing.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import subprocess
@@ -48,6 +50,7 @@ class CodeChangeReviewer:
             return [f for f in files if f.exists()]
             
         except subprocess.CalledProcessError:
+            logger.debug("Exception caught, returning", exc_info=True)
             return []
 
     def analyze_python_file(self, filepath: Path) -> List[Tuple[IssueType, Priority, str]]:
@@ -99,6 +102,7 @@ class CodeChangeReviewer:
                         ))
             
         except (SyntaxError, UnicodeDecodeError) as e:
+            logger.debug(f"Exception: {e}")
             issues.append((
                 IssueType.RISK,
                 Priority.CRITICAL,

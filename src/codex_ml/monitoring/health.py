@@ -117,7 +117,9 @@ class HealthChecker:
             import torch
 
             checks["pytorch"] = "cuda" if torch.cuda.is_available() else "cpu"
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             checks["pytorch"] = "not_installed"
 
         data_dir = Path("./data")

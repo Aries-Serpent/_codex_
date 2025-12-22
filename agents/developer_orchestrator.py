@@ -19,6 +19,8 @@ The orchestrator assists in developing Python and console applications by:
 """
 
 from dataclasses import dataclass, field
+import logging
+logger = logging.getLogger(__name__)
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
@@ -26,7 +28,9 @@ try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
 try:
@@ -36,7 +40,9 @@ try:
     )
 
     ADVANCED_PHYSICS = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     ADVANCED_PHYSICS = False
 
 # Import logging utilities
@@ -44,7 +50,9 @@ try:
     from codex.logging.session_logger import log_message
 
     LOGGING_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     LOGGING_AVAILABLE = False
 
     # Fallback to print if logging not available
@@ -189,7 +197,9 @@ class PhysicsGuidedDeveloperOrchestrator:
         if "app_type" in requirements:
             try:
                 self.app_type = AppType(requirements["app_type"])
-            except ValueError:
+            except ValueError as e:
+               logger.debug(f"ValueError: {e}")
+                logger.warning(f"ValueError: {e}", exc_info=True)
                 self.app_type = AppType.PYTHON_CONSOLE
         else:
             self.app_type = AppType.PYTHON_CONSOLE
@@ -772,6 +782,7 @@ def test_main_imports():
         import main
         assert True
     except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         pytest.fail(f"Failed to import main: {e}")
 '''
 
@@ -820,6 +831,7 @@ def test_main_imports():
         try:
             os.makedirs(output_dir, exist_ok=True)
         except OSError as e:
+            logger.debug(f"OSError: {e}")
             raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
 
         # Verify directory is valid and writable after creation/access
@@ -850,10 +862,13 @@ def test_main_imports():
                                 os.close(fd)
                             exported_files[comp.name] = filepath
                             self._log("system", f"Exported {comp.name} to {filepath}")
-                        except FileExistsError:
+                        except FileExistsError as e:
+                           logger.debug(f"FileExistsError: {e}")
+                            logger.warning(f"FileExistsError: {e}", exc_info=True)
                             exported_files[comp.name] = f"Skipped (file exists): {filepath}"
                             self._log("system", f"Skipped {comp.name} (file exists)")
                 except OSError as e:
+                    logger.debug(f"OSError: {e}")
                     error_msg = f"Failed to write {filepath}: {e}"
                     exported_files[comp.name] = error_msg
                     self._log("system", error_msg)
@@ -880,6 +895,7 @@ def test_main_imports():
             ast.parse(code)
             self._log("system", f"Code syntax valid for {component_id or 'component'}")
         except SyntaxError as e:
+            logger.debug(f"SyntaxError: {e}")
             result["valid"] = False
             result["errors"].append(f"Syntax error at line {e.lineno}: {e.msg}")
             self._log("system", f"Syntax error in {component_id or 'component'}: {e}")
@@ -1024,6 +1040,7 @@ def test_main_imports():
                     results["steps_failed"].append(f"Unknown step: {step}")
 
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 results["steps_failed"].append(f"{step}: {str(e)}")
                 self._log("system", f"Workflow step {step} failed: {e}")
 

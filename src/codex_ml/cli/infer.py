@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Minimal inference CLI for loading a model and generating text."""
 
 from __future__ import annotations
@@ -135,6 +137,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             try:
                 prompt_decision = moderation_adapter.enforce(prompt_text, stage="prompt")
             except ModerationRejection as exc:
+                logger.debug(f"ModerationRejection: {exc}")
                 log_event(
                     logger,
                     "moderation.block",
@@ -160,6 +163,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             try:
                 output_decision = moderation_adapter.enforce(text, stage="output")
             except ModerationRejection as exc:
+                logger.debug(f"ModerationRejection: {exc}")
                 log_event(
                     logger,
                     "moderation.block",
@@ -180,7 +184,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         (art_dir / f"{ts}.txt").write_text(text, encoding="utf-8")
         try:
             pkg_version = version("codex")
-        except PackageNotFoundError:
+        except PackageNotFoundError as e:
+           logger.debug(f"PackageNotFoundError: {e}")
+            logger.warning(f"PackageNotFoundError: {e}", exc_info=True)
             pkg_version = "0.0"
         manifest = {
             "prompt": args.prompt,

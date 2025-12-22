@@ -26,7 +26,9 @@ try:
     import pyarrow.ipc as ipc
 
     ARROW_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     ARROW_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")
 
@@ -73,6 +75,7 @@ class ArrowLoader:
                     self.schema = reader.schema
                     self.num_batches = reader.num_record_batches
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid Arrow IPC file: {e}")
 
     def load(self) -> List[Dict[str, Any]]:

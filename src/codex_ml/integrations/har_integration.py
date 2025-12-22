@@ -374,6 +374,7 @@ class HARCache:
                     key = self._make_key(entry.request.method, entry.request.url)
                     self._index[key] = har_file
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to index {har_file}: {e}")
 
     def _make_key(self, method: str, url: str) -> str:
@@ -389,6 +390,7 @@ class HARCache:
                     if entry.request.method == method and entry.request.url == url:
                         return entry
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to load cached entry: {e}")
         return None
 
@@ -405,6 +407,7 @@ class HARCache:
             try:
                 cache_file.unlink()
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # Ignore file deletion errors during cleanup
         self._index.clear()
         return count

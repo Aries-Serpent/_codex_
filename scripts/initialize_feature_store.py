@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 try:
     from codex_ml.features.feature_store import FeatureStore, FeatureGroup
 except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     print(f"Error importing feature store: {e}")
     print("Make sure the package is installed: pip install -e .")
     sys.exit(1)
@@ -108,6 +109,7 @@ def register_feature_groups(store: FeatureStore, config: dict, dry_run: bool = F
             logger.info(f"    ✓ Registered {name} v{version}")
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"    ✗ Failed to register {name}: {e}")
 
     if not dry_run:
@@ -142,6 +144,7 @@ def verify_feature_store(store: FeatureStore):
         logger.info("✓ Feature store verification complete")
 
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"✗ Verification failed: {e}")
 
 
@@ -184,6 +187,7 @@ def main():
     try:
         config = load_config(str(config_path))
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Failed to load config: {e}")
         return 1
 

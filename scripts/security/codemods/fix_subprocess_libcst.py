@@ -256,6 +256,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
     try:
         source = path.read_text(encoding="utf-8", errors="ignore")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         return "", [f"Error reading file: {e}"]
 
     try:
@@ -284,6 +285,7 @@ import shlex'")
         logger.error(f"Syntax error in {file_path}: {e}")
         return "", [f"Syntax error: {e}"]
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Error transforming {file_path}: {e}")
         return "", [f"Transformation error: {e}"]
 

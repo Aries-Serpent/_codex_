@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -34,7 +36,8 @@ def parse_timestamp(raw: str | None) -> datetime | None:
         if raw.endswith("Z"):
             raw = raw[:-1] + "+00:00"
         dt = datetime.fromisoformat(raw)
-    except ValueError:
+    except ValueError as e:
+        logger.debug(f"ValueError: {e}")
         return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)

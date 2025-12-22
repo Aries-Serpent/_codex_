@@ -4,6 +4,8 @@ Fix MD5 usage by adding usedforsecurity=False parameter.
 This is safe for non-cryptographic uses like checksums and cache keys.
 """
 import re
+import logging
+logger = logging.getLogger(__name__)
 from pathlib import Path
 import sys
 
@@ -45,6 +47,7 @@ def fix_md5_in_file(file_path: Path) -> bool:
         
         return False
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error processing {file_path}: {e}", file=sys.stderr)
         return False
 

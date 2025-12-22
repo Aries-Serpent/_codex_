@@ -6,6 +6,8 @@ automatic failover, and rollback capabilities.
 """
 
 import time
+import logging
+logger = logging.getLogger(__name__)
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, Dict, Optional
@@ -269,6 +271,8 @@ class BlueGreenDeployment:
             try:
                 return self.health_check_fn(deployment)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 return False
         return True
 

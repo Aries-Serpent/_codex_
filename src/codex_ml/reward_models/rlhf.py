@@ -9,6 +9,7 @@ pulling in heavyweight dependencies.
 """
 
 from __future__ import annotations
+logger = logging.getLogger(__name__)
 
 import logging
 from collections import defaultdict

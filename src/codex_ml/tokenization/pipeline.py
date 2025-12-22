@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Tokenizer pipeline utilities exposed via the Codex CLI."""
 
 from __future__ import annotations
@@ -26,11 +28,13 @@ def _load_yaml_config(path: Path) -> dict[str, Any]:
     except FileNotFoundError as exc:  # pragma: no cover - Click handles presentation
         raise TokenizerPipelineError(f"config not found: {path}") from exc
     except MissingPyYAMLError as exc:
+        logger.debug(f"MissingPyYAMLError: {exc}")
         raise TokenizerPipelineError(
             'PyYAML is required to parse tokenizer configs. Install it via ``pip install "PyYAML>=6.0"`` '
             "before running tokenizer commands."
         ) from exc
     except YAMLError as exc:
+        logger.debug(f"YAMLError: {exc}")
         raise TokenizerPipelineError(f"failed to parse config {path}: {exc}") from exc
     if not isinstance(data, dict):
         raise TokenizerPipelineError("tokenizer config must be a mapping")
@@ -50,6 +54,7 @@ def load_train_config(config_path: str) -> TrainTokenizerConfig:
     try:
         return TrainTokenizerConfig(**kwargs)
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         raise TokenizerPipelineError(f"invalid tokenizer config: {exc}") from exc
 
 

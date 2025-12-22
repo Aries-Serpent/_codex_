@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Execution utilities for Codex ML."""
 
 from __future__ import annotations
@@ -7,4 +9,5 @@ from __future__ import annotations
 try:
     from .codex_exec import CodexExecutor, execute_codex  # noqa: F401
 except ImportError as e:
+   logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)  # Module may not have these exports

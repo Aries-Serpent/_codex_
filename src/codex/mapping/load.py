@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """CSV mapping loaders with typed validation and evidence logging."""
 
 from __future__ import annotations
@@ -69,6 +71,7 @@ def _load_csv(path: Path, model: type[T]) -> MappingLoadResult[T]:
             try:
                 records.append(model.model_validate(row))
             except ValidationError as exc:
+                logger.debug(f"ValidationError: {exc}")
                 _log_deferred(candidate, idx, row, exc.errors(include_url=False))
                 deferred += 1
     return MappingLoadResult(records=records, deferred=deferred)

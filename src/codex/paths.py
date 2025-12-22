@@ -8,6 +8,8 @@ Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.3.3:
 """
 
 import os
+import logging
+logger = logging.getLogger(__name__)
 from pathlib import Path
 from typing import Optional
 

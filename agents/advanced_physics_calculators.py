@@ -14,6 +14,8 @@ Version: 1.0.0
 """
 
 import math
+import logging
+logger = logging.getLogger(__name__)
 import random
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
@@ -22,7 +24,9 @@ try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
     # Minimal numpy stubs for type hints
@@ -36,7 +40,9 @@ try:
     from scipy.ndimage import maximum_filter
 
     SCIPY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     maximum_filter = None  # type: ignore
     SCIPY_AVAILABLE = False
 

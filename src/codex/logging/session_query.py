@@ -105,7 +105,9 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
     for table in tables:
         try:
             safe = _sanitize_table(table)
-        except ValueError:
+        except ValueError as e:
+           logger.debug(f"ValueError: {e}")
+            logger.warning(f"ValueError: {e}", exc_info=True)
             continue
         cur = conn.execute(f"PRAGMA table_info({safe})")
         cols = [row[1] for row in cur.fetchall()]

@@ -1,5 +1,7 @@
 # BEGIN: CODEX_ACTIVATIONS
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from typing import Callable
 
@@ -7,6 +9,8 @@ try:
     import torch
     import torch.nn as nn
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     torch, nn = None, None  # type: ignore
 _REGISTRY: dict[str, Callable] = {}
 

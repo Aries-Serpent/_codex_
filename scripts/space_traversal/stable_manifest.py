@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Produce a stable manifest JSON for a given output directory.
 
 Features:
@@ -57,7 +59,8 @@ def _stable_list(values: list[Any]) -> list[Any]:
             normalized.append(item)
     try:
         return sorted(normalized, key=lambda value: json.dumps(value, sort_keys=True))
-    except TypeError:
+    except TypeError as e:
+        logger.debug(f"TypeError: {e}")
         return normalized
 
 

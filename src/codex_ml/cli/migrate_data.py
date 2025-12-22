@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """CLI tool for migrating assignment mapping files between versions."""
 
 from __future__ import annotations
@@ -76,6 +78,7 @@ def migrate(
             raise typer.Exit(1)
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Error during migration: {e}", err=True)
         raise typer.Exit(1)
 

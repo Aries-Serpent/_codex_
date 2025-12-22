@@ -136,6 +136,7 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         dist.init_process_group(backend=chosen_backend, **init_kwargs)
         return True
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _warn_failed_init(chosen_backend, flag_used or env_flag, exc)
         return False
 

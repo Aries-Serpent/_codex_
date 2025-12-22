@@ -6,6 +6,8 @@ of common repository operations.
 """
 
 import json
+import logging
+logger = logging.getLogger(__name__)
 import shutil
 import subprocess
 from dataclasses import dataclass, field
@@ -80,6 +82,7 @@ class WorkflowStep:
                 return {"success": True, "message": "No action defined"}
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self.status = StepStatus.FAILED
             return {"success": False, "error": str(e)}
 
@@ -735,7 +738,9 @@ class WorkflowNavigator:
 
         try:
             current_path.symlink_to(filename)
-        except OSError:
+        except OSError as e:
+           logger.debug(f"OSError: {e}")
+            logger.warning(f"OSError: {e}", exc_info=True)
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)
 

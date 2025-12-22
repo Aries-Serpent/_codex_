@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Serving package for ML inference"""
 
 from .inference_server import (
@@ -11,7 +13,9 @@ from .inference_server import (
 
 try:
     from .model_loader import ModelLoader
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     ModelLoader = None
 
 __all__ = [

@@ -6,6 +6,8 @@ Perplexity = exp(average negative log-likelihood)
 """
 
 from typing import Any, Dict
+import logging
+logger = logging.getLogger(__name__)
 import math
 
 import sys
@@ -18,7 +20,9 @@ from codex_ml.evaluation.runner import MetricAdapter
 try:
     import torch
     import torch.nn.functional as F
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None
     F = None
 

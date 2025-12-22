@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """FastAPI application exposing health and text generation endpoints."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Top-level data package exports with lazy loader bindings."""
 
 from __future__ import annotations

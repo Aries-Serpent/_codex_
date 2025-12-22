@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import argparse
+import logging
+logger = logging.getLogger(__name__)
 import hashlib
 import json
 import sys

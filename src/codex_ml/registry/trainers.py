@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Trainer registry built on the shared registry infrastructure."""
 
 from __future__ import annotations
@@ -27,6 +29,7 @@ def get_trainer(name: str) -> Callable[..., Any]:
         try:
             signature = inspect.signature(trainer)
         except (TypeError, ValueError):
+            logger.debug("Exception caught, returning", exc_info=True)
             return trainer
         if len(signature.parameters) == 0:
             resolved = trainer()

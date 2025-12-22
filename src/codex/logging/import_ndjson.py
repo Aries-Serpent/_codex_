@@ -109,6 +109,8 @@ def _parse_ts(ts: str | None) -> float | None:
     try:
         return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 
@@ -125,6 +127,7 @@ def _open_locked(path: Path):
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         f.close()
 
@@ -164,6 +167,7 @@ def import_session(
                 try:
                     obj = json.loads(line)
                 except json.JSONDecodeError:
+                    logger.debug("Exception caught, continuing", exc_info=True)
                     continue
                 ts = _parse_ts(obj.get("ts"))
                 role = obj.get("role") or "system"

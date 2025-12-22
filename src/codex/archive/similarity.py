@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Similarity utilities for consolidation heuristics."""
 
 from __future__ import annotations
@@ -47,6 +49,8 @@ def py_ast_hash(text: str) -> str:
         dump = ast.dump(tree, annotate_fields=True, include_attributes=False)
         return hashlib.sha256(dump.encode("utf-8")).hexdigest()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return ""
 
 

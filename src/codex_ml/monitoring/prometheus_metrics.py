@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Prometheus metrics registry helpers for Codex workflows."""
 
 from __future__ import annotations

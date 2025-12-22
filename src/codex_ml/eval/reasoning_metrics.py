@@ -207,7 +207,9 @@ def calculate_latency_delta(
             return float(delta)
 
         return float(p_latency)
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         # Fallback without numpy
         sorted_latencies = sorted(latencies)
         idx = int(len(sorted_latencies) * percentile / 100.0)
@@ -263,7 +265,9 @@ def calculate_judge_disagreement(
                 disagreements.append(min(cv, 1.0))  # Cap at 1.0
 
         return float(np.mean(disagreements)) if disagreements else 0.0
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         # Fallback without numpy
         disagreements = []
 

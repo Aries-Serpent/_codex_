@@ -23,6 +23,8 @@ avoids touching CI workflows.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import datetime as _dt
@@ -136,6 +138,8 @@ def parse_requirements(req_path: Path) -> List[str]:
             if stripped and not stripped.startswith("#"):
                 entries.append(stripped)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         pass
     return entries
 
@@ -152,6 +156,8 @@ def detect_seed_calls(repo_root: Path) -> Dict[str, Any]:
         try:
             text = path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         for pattern in patterns:
             if pattern in text:
@@ -254,6 +260,8 @@ def run_repo_mapping(ctx: AuditContext) -> None:
         try:
             total_py_lines += sum(1 for _ in path.open("r", encoding="utf-8", errors="ignore"))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
     kloc = total_py_lines / 1000 if total_py_lines else 0
     ctx.audit_data["stub_density"] = {
@@ -290,6 +298,8 @@ def run_capability_extraction(ctx: AuditContext) -> None:
             try:
                 text = path.read_text(encoding="utf-8", errors="ignore")
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
             if any(keyword in text for keyword in keywords):
                 hits.append(str(path.relative_to(repo_root)))

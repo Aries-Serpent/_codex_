@@ -89,6 +89,7 @@ class JSONLMemoryBackend(MemoryProtocol):
                     matches.append(entry)
                     
                 except (json.JSONDecodeError, KeyError, ValueError) as e:
+                   logger.debug(f"Exception: {e}")
                     logger.warning(f"Skipping invalid memory entry: {e}")
                     continue
         

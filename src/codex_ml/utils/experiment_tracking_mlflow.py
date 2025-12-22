@@ -1,3 +1,4 @@
+logger = logging.getLogger(__name__)
 """Offline-safe MLflow adapter utilities."""
 
 from __future__ import annotations
@@ -130,6 +131,8 @@ def maybe_mlflow(
         with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
             yield mlflow
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Degrade gracefully to a no-op logger when MLflow is unavailable.
         yield _NoOpLogger()
 
