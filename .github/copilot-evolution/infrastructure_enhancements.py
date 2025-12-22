@@ -344,6 +344,13 @@ class ArtifactLifecycleManager:
         self.artifacts: Dict[str, Artifact] = {}
 
         # Default retention policies (days)
+        # Rationale:
+        # - docker (90): Container images need long-term availability for rollbacks
+        # - binary (30): Binaries are rebuilt frequently, older ones rarely needed
+        # - archive (60): Archives are for backup/audit, moderate retention
+        # - documentation (365): Docs should be available for reference for a year
+        # - test_results (14): Test results are short-lived, only recent ones matter
+        # - coverage (30): Coverage reports are analyzed monthly
         self.retention_policies = {
             "docker": 90,
             "binary": 30,

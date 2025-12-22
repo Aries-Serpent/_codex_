@@ -290,7 +290,7 @@ class ExternalKnowledgeIntegrator:
                 "url": "https://arxiv.org/abs/1706.03762",
                 "abstract": "The transformer architecture that revolutionized NLP and deep learning.",
                 "relevance": 0.95,
-                "citations": 50000,
+                "citations": 50000,  # Landmark paper citation count (approximate)
             },
             {
                 "title": "A Survey of Reinforcement Learning",

@@ -126,6 +126,10 @@ class MLStrategySelector:
         }
 
         # Keyword to strategy mapping (base knowledge)
+        # Note: This mapping is intentionally inline for simplicity.
+        # For production use, consider externalizing to a JSON config file
+        # at self.model_path / "keyword_strategy_map.json" to enable
+        # runtime updates without code changes.
         self.keyword_strategy_map: Dict[str, str] = {
             "docker": "docker_tag_error",
             "tag": "docker_tag_error",
