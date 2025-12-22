@@ -305,7 +305,7 @@ google-auth==2.40.3
     # via
     #   databricks-sdk
     #   google-api-core
-googleapis-common-protos==1.70.0
+googleapis-common-protos==1.72.0
     # via google-api-core
 grandalf==0.8
     # via dvc
