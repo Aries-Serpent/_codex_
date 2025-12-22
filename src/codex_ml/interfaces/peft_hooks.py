@@ -1,6 +1,8 @@
 """Guarded PEFT/LoRA helper utilities."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from typing import Any
@@ -62,8 +64,8 @@ def enable_peft(model: Any, peft_cfg: Any, adapter_name: str = "lora") -> Any:
     adapted = get_peft_model(model, peft_cfg, adapter_name=adapter_name)
     try:  # pragma: no cover - optional diagnostics
         adapted.print_trainable_parameters()
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     return adapted
 
 

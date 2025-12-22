@@ -1,6 +1,8 @@
 """Unified CLI for codex, using click for subcommands and input validation."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import json

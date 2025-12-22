@@ -9,6 +9,8 @@ advanced MLOps reproducibility tooling, without introducing hard dependencies.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib.util
 import os

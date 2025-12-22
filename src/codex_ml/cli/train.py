@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
 import os
 import sys
 from pathlib import Path
@@ -143,8 +144,8 @@ def _apply_prompt_sanitization(
                 config_obj[key] = sanitised
             elif isinstance(config_obj, dict):
                 config_obj[key] = sanitised
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
     return total
 
 
@@ -280,8 +281,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     try:
         if sample_rate is not None:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
 
@@ -316,8 +317,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         cfg.seed = seed
         try:
             cfg.reproducibility["seed"] = seed
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)
 
     grad_accum = cfg.get("grad_accum", 1)

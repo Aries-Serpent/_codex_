@@ -24,6 +24,7 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+logger = logging.getLogger(__name__)
 import os
 import pathlib
 import sys
@@ -75,8 +76,8 @@ def _log_path(name: str) -> pathlib.Path:
             # fails we still continue (logging is best-effort).
             try:
                 LOG_DIR.mkdir(parents=True, exist_ok=True)
-            except OSError:
-                pass
+            except OSError as e:
+                logger.warning(f"OSError: {e}", exc_info=True)
     return (LOG_DIR / name).resolve()
 
 

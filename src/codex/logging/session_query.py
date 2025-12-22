@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+logger = logging.getLogger(__name__)
 import os
 import re
 import sqlite3

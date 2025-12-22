@@ -7,6 +7,8 @@ Error Capture, and Finalization.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field

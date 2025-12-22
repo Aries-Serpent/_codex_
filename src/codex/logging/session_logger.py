@@ -22,6 +22,7 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+logger = logging.getLogger(__name__)
 import os
 import sqlite3
 import threading
@@ -81,16 +82,16 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def _close_pool() -> None:
@@ -135,8 +136,8 @@ def init_db(db_path: Optional[Path] = None):
         conn = sqlite3.connect(p)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
         try:
             conn.execute(
                 """CREATE TABLE IF NOT EXISTS session_events(
@@ -381,8 +382,8 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     conn = sqlite3.connect(path)
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

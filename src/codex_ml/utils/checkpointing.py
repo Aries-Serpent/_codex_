@@ -132,8 +132,8 @@ def _random_seed_with_snapshot(a: Any | None = None, version: int = 2) -> None:
     _ORIGINAL_RANDOM_SEED(a, version)
     try:
         register_seed_snapshot(python_state=random.getstate())
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -159,8 +159,8 @@ if TORCH_AVAILABLE:
                 torch_state=torch.get_rng_state().tolist(),
                 torch_cuda_state=cuda_state,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
         return result
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -943,8 +943,8 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                 tensor_ctor = getattr(torch, "tensor", None)
                 if setter is not None and tensor_ctor is not None and "cpu" in torch_payload:
                     setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
             try:
                 if (
                     "cuda" in torch_payload
@@ -1190,8 +1190,8 @@ class CheckpointManager:
                 json.dumps(meta_sidecar, indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
         return ckpt_path
 
     # ------------------------------------------------------------------

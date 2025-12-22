@@ -6,5 +6,5 @@ from __future__ import annotations
 # Note: codex_exec does not define __all__, so we import selectively
 try:
     from .codex_exec import CodexExecutor, execute_codex  # noqa: F401
-except ImportError:
-    pass  # Module may not have these exports
+except ImportError as e:
+    logger.warning(f"ImportError: {e}", exc_info=True)  # Module may not have these exports

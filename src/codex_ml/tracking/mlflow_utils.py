@@ -17,6 +17,8 @@ Key behaviours for callers:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import contextlib
 import hashlib
@@ -432,8 +434,8 @@ def init_run(
         commit = current_commit_hash()
         if commit:
             _mlf.set_tag("git_commit", commit[:7])
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     if config is not None:
         try:
@@ -443,7 +445,7 @@ def init_run(
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
             _mlf.set_tag("config_hash", digest)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     return run

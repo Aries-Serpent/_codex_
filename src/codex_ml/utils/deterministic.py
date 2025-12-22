@@ -57,8 +57,8 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
         if hasattr(tf.config.experimental, "enable_op_determinism"):
             tf.config.experimental.enable_op_determinism()
             logger.info("TensorFlow deterministic ops enabled")
-    except ImportError:
-        pass  # TensorFlow not installed
+    except ImportError as e:
+        logger.warning(f"ImportError: {e}", exc_info=True)  # TensorFlow not installed
     except Exception as e:
         logger.warning(f"Failed to enable TensorFlow deterministic mode: {e}")
 
@@ -87,8 +87,8 @@ def disable_deterministic_mode() -> None:
             torch.backends.cudnn.benchmark = True
 
         logger.info("PyTorch deterministic algorithms disabled")
-    except ImportError:
-        pass
+    except ImportError as e:
+        logger.warning(f"ImportError: {e}", exc_info=True)
     except Exception as e:
         logger.warning(f"Failed to disable PyTorch deterministic mode: {e}")
 

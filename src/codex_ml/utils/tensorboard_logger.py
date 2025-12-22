@@ -5,6 +5,8 @@ TensorBoard is unavailable or disabled.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 from contextlib import contextmanager

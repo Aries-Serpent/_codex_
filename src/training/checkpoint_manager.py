@@ -5,6 +5,8 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -345,8 +347,8 @@ class CheckpointManager:
                 continue
             try:
                 p.unlink()
-            except FileNotFoundError:
-                pass  # File already deleted; no action needed
+            except FileNotFoundError as e:
+                logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[Dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
@@ -395,8 +397,8 @@ class CheckpointManager:
             try:
                 if link.exists() or link.is_symlink():
                     link.unlink()
-            except FileNotFoundError:
-                pass  # Symlink/file already removed; continue
+            except FileNotFoundError as e:
+                logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -407,13 +409,13 @@ class CheckpointManager:
                 try:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
-                except FileNotFoundError:
-                    pass  # Child already deleted; continue cleanup
+                except FileNotFoundError as e:
+                    logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
-        except FileNotFoundError:
-            pass  # Best file symlink doesn't exist; continue
+        except FileNotFoundError as e:
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

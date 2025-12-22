@@ -1,6 +1,8 @@
 """Evaluation metrics used across Codex ML evaluation tooling."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import math
 from typing import Iterable, List, Optional, Sequence

@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import json
@@ -347,8 +349,8 @@ def cache_dataset(
                 finally:
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
-                    except Exception:
-                        pass  # File lock release failed; continue cleanup
+                    except Exception as e:
+                        logger.warning(f"Exception: {e}", exc_info=True)  # File lock release failed; continue cleanup
         except Exception:
             # Skip samples that fail to serialize
             continue

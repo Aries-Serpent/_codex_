@@ -27,6 +27,8 @@ Behavior:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -37,8 +39,8 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception:
-    pass
+except Exception as e:
+    logger.warning(f"Exception: {e}", exc_info=True)
 import sys
 from datetime import datetime
 from pathlib import Path

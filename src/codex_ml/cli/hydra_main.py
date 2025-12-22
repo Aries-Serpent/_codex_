@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+logger = logging.getLogger(__name__)
 import platform
 import sys
 import uuid

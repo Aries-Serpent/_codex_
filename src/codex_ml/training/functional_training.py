@@ -13,6 +13,8 @@ checkpoint saving via ``codex_ml.utils.checkpointing``.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import math
@@ -215,8 +217,8 @@ def train(
         if metrics_path.exists():
             try:
                 metrics_path.unlink()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         try:
             config_snapshot = artifact_root / "config.json"
             config_snapshot.write_text(
@@ -237,8 +239,8 @@ def train(
             if callable(size_attr):
                 try:
                     return int(size_attr(0))
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
             try:
                 return int(len(tensor))
             except Exception:
@@ -277,8 +279,8 @@ def train(
         try:
             with metrics_path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, sort_keys=True) + "\n")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
@@ -321,8 +323,8 @@ def train(
                     "training.lora": config.lora_enable,
                 }
                 log_params_safe(_as_flat_params(params))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
 
         grad_accum = max(int(config.gradient_accumulation_steps), 1)
 
@@ -369,13 +371,13 @@ def train(
                         if writer is not None:
                             try:
                                 writer.add_scalar("train/loss", loss_value, global_step)
-                            except Exception:
-                                pass
+                            except Exception as e:
+                                logger.warning(f"Exception: {e}", exc_info=True)
                         if config.mlflow_enable:
                             try:
                                 log_metric_safe("train/loss", float(loss_value), step=global_step)
-                            except Exception:
-                                pass
+                            except Exception as e:
+                                logger.warning(f"Exception: {e}", exc_info=True)
                             _append_metric(
                                 {
                                     "phase": "train",
@@ -387,8 +389,8 @@ def train(
                         if config.wandb_enable:
                             try:
                                 wb.log({"train/loss": loss_value}, step=global_step)
-                            except Exception:
-                                pass
+                            except Exception as e:
+                                logger.warning(f"Exception: {e}", exc_info=True)
 
             if step_since_update != 0:
                 _optimizer_step()
@@ -456,8 +458,8 @@ def train(
                         writer.add_scalar(
                             "val/perplexity", float(metrics["val_perplexity"]), global_step
                         )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning(f"Exception: {e}", exc_info=True)
                 if config.mlflow_enable:
                     try:
                         log_metric_safe(
@@ -470,8 +472,8 @@ def train(
                             float(metrics["val_token_accuracy"]),
                             step=global_step,
                         )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning(f"Exception: {e}", exc_info=True)
                     _append_metric(
                         {
                             "phase": "eval",
@@ -490,8 +492,8 @@ def train(
                             wb_payload["eval/token_accuracy"] = float(metrics["val_token_accuracy"])
                         if wb_payload:
                             wb.log(wb_payload, step=global_step)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning(f"Exception: {e}", exc_info=True)
 
         if config.mlflow_enable:
             try:
@@ -520,8 +522,8 @@ def train(
                     artifacts.append(env_dir)
                 for artifact in artifacts:
                     log_artifact_safe(str(artifact))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         if config.wandb_enable:
             try:
                 final_payload = {
@@ -531,21 +533,21 @@ def train(
                 }
                 if final_payload:
                     wb.log(final_payload, step=global_step)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
 
     if stop_event is not None and system_thread is not None:
         try:
             stop_event.set()
             system_thread.join(timeout=5.0)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     if writer is not None:
         try:
             writer.flush()
             writer.close()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     return metrics

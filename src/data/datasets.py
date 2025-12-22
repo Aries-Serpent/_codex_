@@ -1,6 +1,8 @@
 """Utility datasets and data loader helpers for Codex smoke tests."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass

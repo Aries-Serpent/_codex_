@@ -1,4 +1,6 @@
 import hashlib
+import logging
+logger = logging.getLogger(__name__)
 import json
 import os
 import re

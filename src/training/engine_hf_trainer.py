@@ -23,6 +23,8 @@ Features:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 # ruff: noqa: E402, I001
 
@@ -646,8 +648,8 @@ class NDJSONMetricsWriter:
     def __del__(self) -> None:  # pragma: no cover - best effort
         try:
             self.close()
-        except Exception:
-            pass  # Best effort cleanup; __del__ cannot raise exceptions
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)  # Best effort cleanup; __del__ cannot raise exceptions
 
 
 class CSVMetricsWriter:
@@ -1211,8 +1213,8 @@ def run_hf_trainer(
                 **sysd,
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-        except Exception:
-            pass  # Logging failure; continue with training
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)  # Logging failure; continue with training
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1223,8 +1225,8 @@ def run_hf_trainer(
                     writer.add_scalar(k, v, trainer.state.global_step)
             writer.flush()
             writer.close()
-        except Exception:
-            pass  # TensorBoard logging failure; continue with training
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)  # TensorBoard logging failure; continue with training
 
     # Persist metrics to JSON and NDJSON for downstream analytics
     metrics_json = output_dir / "metrics.json"

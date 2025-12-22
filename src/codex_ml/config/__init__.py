@@ -1,6 +1,8 @@
 """Configuration schemas and loaders for Codex ML commands."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass, field, is_dataclass
@@ -705,8 +707,8 @@ def load_app_config(
                                 return int(text)
                             if isinstance(current, float):
                                 return float(text)
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            logger.warning(f"Exception: {e}", exc_info=True)
                     return new_value
 
                 coerced = _coerce(current_value, value)

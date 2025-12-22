@@ -1,6 +1,8 @@
 """Utilities for running evaluation loops during training."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections.abc import Callable, Iterable, Mapping, MutableMapping
 from datetime import datetime, timezone
@@ -32,8 +34,8 @@ def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mappin
             try:
                 moved[key] = value.to(device)
                 continue
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         moved[key] = value
     return moved
 

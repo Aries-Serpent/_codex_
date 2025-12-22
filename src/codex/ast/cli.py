@@ -9,6 +9,8 @@ Exit codes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
@@ -35,8 +37,8 @@ def _analyze_path(path: Path) -> Dict[str, Any]:
             total_lines += sum(
                 1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines()
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
     return {
         "path": str(path),
         "files": len(files),

@@ -1,6 +1,8 @@
 """Metrics NDJSON ingestion and summary utilities."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import csv
@@ -297,8 +299,8 @@ def _summarize(path: Path) -> dict[str, Any]:
         if "epoch" in record:
             try:
                 epochs.add(int(record["epoch"]))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         for key, value in record.items():
             if key == "epoch":
                 continue

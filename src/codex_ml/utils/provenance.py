@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+logger = logging.getLogger(__name__)
 import os
 import platform
 import shutil
@@ -147,8 +148,8 @@ def _gpu_metadata() -> MutableMapping[str, Any]:
             details["gpus"] = [
                 torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
             ]
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     query = _capture_command(
         [
@@ -227,8 +228,8 @@ def environment_summary() -> dict[str, Any]:
         from codex_ml.monitoring.codex_logging import _codex_sample_system
 
         info["system_metrics"] = _codex_sample_system()
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     return info
 
 

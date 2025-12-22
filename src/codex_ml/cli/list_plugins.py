@@ -1,6 +1,8 @@
 """List Codex ML plugins with structured logging and safe fallbacks."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json

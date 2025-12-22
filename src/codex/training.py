@@ -5,6 +5,8 @@
 # ruff: noqa: I001
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import hashlib
@@ -155,8 +157,8 @@ def save_checkpoint(
             write_hash_sidecar(p)
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     return str(p)
 
 
@@ -988,15 +990,15 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                     import torch
 
                     torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
             if optimizer is not None and sched_name and last_sched is None:
                 last_sched = _codex_maybe_scheduler(optimizer, sched_name)
             if last_sched is not None:
                 try:
                     last_sched.step()
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
             rec = {
                 "ts": int(time.time()),
                 "epoch": int(epoch),
@@ -1090,16 +1092,16 @@ def codex_train_step(
             try:
                 scaler.unscale_(optimizer)
                 clip_grad_norm_(model.parameters(), grad_clip)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         scaler.step(optimizer)
         scaler.update()
     else:
         if grad_clip is not None:
             try:
                 clip_grad_norm_(model.parameters(), grad_clip)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         optimizer.step()
 
     if scheduler:

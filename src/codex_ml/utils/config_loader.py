@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -118,8 +120,8 @@ else:
 finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 class _AttrDictConfig(DictConfig):

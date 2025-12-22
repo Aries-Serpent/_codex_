@@ -351,8 +351,8 @@ def transform(
                                     description=f"Add type annotations to function '{node.name}' (requires validation)",
                                 ))
                                 break  # Only suggest once per file
-                except SyntaxError:
-                    pass  # Skip files with syntax errors
+                except SyntaxError as e:
+                    logger.warning(f"SyntaxError: {e}", exc_info=True)  # Skip files with syntax errors
             
             # === Tier C: Suggest Only ===
             if tier is None or tier == Tier.C:

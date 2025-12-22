@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
 import os
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field

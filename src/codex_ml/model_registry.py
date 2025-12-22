@@ -8,6 +8,8 @@ LoRA adapter activation is supported when the underlying model exposes the
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -132,8 +134,8 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                 try:
                     set_active(adapter_name)
                     return
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
     try:
         setattr(model, "lora_adapter_path", adapter_path)
     except Exception:
@@ -304,14 +306,14 @@ def get_model(
         if torch_dtype is not None:
             try:
                 model = model.to(dtype=torch_dtype)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
     normalised_device = _normalise_device(device)
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     if lora_adapter:
         _activate_lora_adapter(model, lora_adapter)

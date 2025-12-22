@@ -1,6 +1,8 @@
 """Evaluation runner orchestrating metric computation and report generation."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import hashlib
@@ -588,10 +590,10 @@ def run_evaluation(
 
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-            except Exception:
-                pass  # Silently ignore param logging errors
-        except Exception:
-            pass  # Silently ignore MLflow errors
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore param logging errors
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
 
     # For the pluggable sink feature, use the first sink if multiple are specified
     # The remaining sinks will be handled by the dedicated writers later

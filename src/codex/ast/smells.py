@@ -5,6 +5,8 @@ Design: FR-AST-007 (Code Smell Detector)
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import re

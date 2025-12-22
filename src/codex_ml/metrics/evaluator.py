@@ -1,6 +1,8 @@
 """Best-effort scalar metrics computed from model outputs."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections import Counter
 from typing import Iterable, Mapping
@@ -124,8 +126,8 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             if common > 0:
                 accuracy_tensor = (preds[..., :common] == target[..., :common]).float()
                 record["token_accuracy"] = float(accuracy_tensor.mean().item())
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     text_preds = _as_str_list(getattr(outputs, "predictions", None))
     if text_preds is None and isinstance(outputs, Mapping):

@@ -1,6 +1,8 @@
 """Lightweight click-based CLI for common Codex ML workflows."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import random
@@ -54,8 +56,8 @@ def _seed_everything(seed: int) -> None:
         torch.manual_seed(seed)
         if torch.cuda.is_available():  # pragma: no cover - GPU dependent
             torch.cuda.manual_seed_all(seed)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 @click.group()

@@ -1,6 +1,8 @@
 """Codex ML command-line interfaces."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import importlib.resources as importlib_resources
@@ -37,8 +39,8 @@ if typer is not None:
             from codex_ml.cli import tokenizer as tokenizer_cli
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     from codex_ml.cli import _load_training_config
 

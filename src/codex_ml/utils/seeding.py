@@ -3,6 +3,8 @@ Centralized, import-light helpers for reproducible and deterministic runs.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import contextlib
 import os
@@ -26,8 +28,8 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         import numpy as np
 
         np.random.seed(seed)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         import torch
 
@@ -35,8 +37,8 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         if hasattr(torch, "cuda") and callable(getattr(torch.cuda, "manual_seed_all", None)):
             try:
                 torch.cuda.manual_seed_all(seed)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         try:
             backend = torch.backends.cudnn
             backend.deterministic = deterministic
@@ -50,10 +52,10 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             else:
                 with contextlib.suppress(Exception):
                     torch.use_deterministic_algorithms(False)
-        except Exception:
-            pass
-    except Exception:
-        pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def set_deterministic(enabled: bool = True) -> None:
@@ -68,10 +70,10 @@ def set_deterministic(enabled: bool = True) -> None:
             backend = torch.backends.cudnn
             backend.deterministic = enabled
             backend.benchmark = not enabled
-        except Exception:
-            pass
-    except Exception:
-        pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 __all__ = ["set_reproducible", "set_deterministic"]

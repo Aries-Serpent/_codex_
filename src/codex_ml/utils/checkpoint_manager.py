@@ -1,6 +1,8 @@
 """Lightweight checkpoint save/load helpers with pruning support."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 import pickle

@@ -7,6 +7,8 @@ remaining optional so environments without Typer can still query metadata.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import importlib

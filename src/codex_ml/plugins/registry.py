@@ -10,6 +10,8 @@ Public API:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import sys
@@ -48,8 +50,8 @@ def _iter_entry_points(group: str):
             for ep in getattr(dist, "entry_points", ()):
                 if getattr(ep, "group", None) == group:
                     collected.append(ep)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     unique: dict[tuple[str, str], Any] = {}
     for ep in collected:
         key = (getattr(ep, "name", ""), getattr(ep, "value", ""))
@@ -83,8 +85,8 @@ def _activate_editable_distribution(ep: Any) -> None:
             if entry.startswith("import "):
                 try:
                     exec(entry, {})  # pragma: no cover - executes .pth bootstrap  # nosec B102
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
                 continue
             if entry not in sys.path:
                 sys.path.insert(0, entry)

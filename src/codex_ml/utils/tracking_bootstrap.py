@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 from typing import Optional
@@ -21,8 +23,8 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     resolved["MLFLOW_TRACKING_URI"] = uri
     try:
         mlflow.set_tracking_uri(resolved["MLFLOW_TRACKING_URI"])
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     return resolved
 
 
@@ -52,6 +54,6 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
         if run is not None:
             try:
                 run.finish()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
     return resolved

@@ -16,6 +16,8 @@ Notes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import inspect
 import os
@@ -321,8 +323,8 @@ def _collect_system_metrics() -> Dict[str, float]:
 
         cpu_percent = float(psutil.cpu_percent(interval=None))
         memory_percent = float(psutil.virtual_memory().percent)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     metrics: Dict[str, float] = {}
     if cpu_percent is not None:

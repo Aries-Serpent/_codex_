@@ -2,6 +2,8 @@
 
 The helpers in this module are intentionally lightweight so they can be used
 from training scripts, offline verifiers, and tests without pulling in the
+import logging
+logger = logging.getLogger(__name__)
 heavier checkpoint machinery.
 """
 

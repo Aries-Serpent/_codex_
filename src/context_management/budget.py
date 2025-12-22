@@ -6,6 +6,8 @@ Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 """
 
 import re
+import logging
+logger = logging.getLogger(__name__)
 from typing import List, Dict, Optional, Tuple, Callable
 from dataclasses import dataclass, field
 from enum import IntEnum
@@ -260,8 +262,8 @@ class TokenBudgetEnforcer:
                         self.budget.current_usage -= saved
                         block.token_count = summary_tokens
                         continue
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
 
             # Remove block
             to_remove.append(idx)
@@ -288,5 +290,5 @@ class TokenBudgetEnforcer:
                     if saved > 0:
                         self.budget.current_usage -= saved
                         block.token_count = new_tokens
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)

@@ -30,8 +30,8 @@ def _default_created_at() -> int:
     if override:
         try:
             return int(float(override))
-        except ValueError:
-            pass
+        except ValueError as e:
+            logger.warning(f"ValueError: {e}", exc_info=True)
     return int(time.time())
 
 

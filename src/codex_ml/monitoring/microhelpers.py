@@ -2,6 +2,8 @@
 """Lightweight, offline-safe system sampling helpers (psutil/NVML guarded)."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import datetime as _dt
 from typing import Any

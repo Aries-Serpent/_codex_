@@ -142,8 +142,8 @@ class NDJSONLogger:
         if self.backup_count <= 0:
             try:
                 self.path.unlink()
-            except FileNotFoundError:
-                pass
+            except FileNotFoundError as e:
+                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             self._rollover_ts = time.time()
             return
 

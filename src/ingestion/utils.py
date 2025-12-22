@@ -90,8 +90,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             return "utf-16"
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     safe_encodings = {"utf-8", "utf-16", "utf-32", "cp1252", "windows-1252", "iso-8859-1"}
 

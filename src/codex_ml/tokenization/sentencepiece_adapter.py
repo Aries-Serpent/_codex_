@@ -12,6 +12,8 @@ avoids heavy dependencies and therefore expects the caller to have the
 
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import numbers

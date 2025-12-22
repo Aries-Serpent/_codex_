@@ -1,6 +1,8 @@
 """Checkpoint helpers with checksum verification and RNG persistence."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import inspect

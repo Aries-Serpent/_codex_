@@ -90,8 +90,8 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.encode(None)
-    except TypeError:
-        pass
+    except TypeError as e:
+        logger.warning(f"TypeError: {e}", exc_info=True)
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError("encode must reject non-string input with TypeError")
 
@@ -102,8 +102,8 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode(["bad"])
-    except ValueError:
-        pass
+    except ValueError as e:
+        logger.warning(f"ValueError: {e}", exc_info=True)
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError("decode must raise ValueError for non-integer ids")
 

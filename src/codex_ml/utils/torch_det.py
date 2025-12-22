@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 def seed_worker(worker_id):
     try:
         import random

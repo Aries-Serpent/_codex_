@@ -1,6 +1,8 @@
 """Utility helpers for the Codex archival workflow."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import datetime as _dt
 import hashlib

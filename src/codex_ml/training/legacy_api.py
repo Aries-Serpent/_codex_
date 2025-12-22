@@ -472,8 +472,8 @@ def _stop_system_metrics_logger(logger: Any) -> None:
     if callable(stopper):
         try:
             stopper()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
@@ -1529,7 +1529,7 @@ def _evaluate_model(
 
     try:
         result.setdefault("num_batches", float(len(loader)))
-    except TypeError:
-        pass
+    except TypeError as e:
+        logger.warning(f"TypeError: {e}", exc_info=True)
 
     return result

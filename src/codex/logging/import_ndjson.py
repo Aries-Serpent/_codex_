@@ -27,6 +27,8 @@ Example CLI usage::
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import contextlib
@@ -122,8 +124,8 @@ def _open_locked(path: Path):
         if fcntl is not None:  # pragma: no cover - depends on platform
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         f.close()
 
 

@@ -10,6 +10,8 @@ avoids triggering any GitHub Actions or network access.
 # ruff: noqa: E501,E701,E702
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 import re
@@ -20,8 +22,8 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception:
-    pass
+except Exception as e:
+    logger.warning(f"Exception: {e}", exc_info=True)
 from typing import Optional, Union
 
 # Common column name variants seen in repo/README and typical SQLite logs.
@@ -45,8 +47,8 @@ def open_db(
         conn = sqlite3.connect(path)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
         return conn
     for k in env_keys:
         v = os.getenv(k)
@@ -54,8 +56,8 @@ def open_db(
             conn = sqlite3.connect(v)
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
             return conn
     # Probe a few common locations used within this repository
     for guess in (
@@ -68,15 +70,15 @@ def open_db(
             conn = sqlite3.connect(guess)
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
             return conn
     # Fallback to an in-memory database so callers can still operate
     conn = sqlite3.connect(":memory:")
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     return conn
 
 

@@ -557,8 +557,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
             mlflow_active, mlflow_detail = _start_mlflow_offline(
                 cfg["mlflow"].get("tracking_uri"),
                 cfg["mlflow"].get("experiment"),
@@ -566,8 +566,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             if mlflow_active and tracking_uri and mlflow is not None:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
         loggers = CodexLoggers(
@@ -631,8 +631,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
             try:
                 mlflow.set_tracking_uri(tracking_uri)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         mlflow_active, mlflow_detail = _start_mlflow_offline(
             getattr(args, "mlflow_tracking_uri", ""),
             getattr(args, "mlflow_experiment", "codex"),
@@ -640,8 +640,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         if mlflow_active and getattr(args, "mlflow_tracking_uri", None) and mlflow is not None:
             try:
                 mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
     loggers = CodexLoggers(

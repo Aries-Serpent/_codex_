@@ -404,8 +404,8 @@ class HARCache:
         for cache_file in self._index.values():
             try:
                 cache_file.unlink()
-            except Exception:
-                pass  # Ignore file deletion errors during cleanup
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)  # Ignore file deletion errors during cleanup
         self._index.clear()
         return count
 

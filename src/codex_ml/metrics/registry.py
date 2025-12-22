@@ -10,6 +10,8 @@ must be deterministic and side-effect free.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import math
@@ -612,8 +614,8 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
         scorer = CHRF()
         return float(scorer.corpus_score(preds, [targets]).score)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency
         from nltk.translate.chrf_score import corpus_chrf

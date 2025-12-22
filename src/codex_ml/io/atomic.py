@@ -65,8 +65,8 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
         if tmp_path.exists():
             try:
                 tmp_path.unlink()
-            except OSError:
-                pass
+            except OSError as e:
+                logger.warning(f"OSError: {e}", exc_info=True)
 
 
 def atomic_write_json(path: Path | str, obj: dict[str, Any]) -> None:

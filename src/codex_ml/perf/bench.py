@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import importlib
@@ -17,8 +19,8 @@ def _maybe_cuda_sync() -> None:
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def _target_numpy_matmul(n: int = 2048) -> None:

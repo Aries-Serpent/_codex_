@@ -1,6 +1,8 @@
 """Tokenization API exports with deprecation helpers."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import warnings
 from pathlib import Path

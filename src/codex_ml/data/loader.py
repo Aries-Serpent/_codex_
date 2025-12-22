@@ -1,6 +1,8 @@
 """Streaming-friendly dataset loader with caching and deterministic helpers."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import hashlib
@@ -231,8 +233,8 @@ def _cache_key(path: Path, **params: Any) -> str:
     try:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))
-    except FileNotFoundError:
-        pass
+    except FileNotFoundError as e:
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
     return h.hexdigest()
 
 
@@ -372,8 +374,8 @@ def load_dataset(
         except Exception:
             try:
                 cache_file.unlink()
-            except FileNotFoundError:
-                pass
+            except FileNotFoundError as e:
+                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
 
     fmt = _detect_dataset_format(path)
 

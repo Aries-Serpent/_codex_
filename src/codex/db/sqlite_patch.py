@@ -19,6 +19,7 @@ Limitations:
 
 import atexit
 import logging
+logger = logging.getLogger(__name__)
 import os
 import sqlite3
 import threading
@@ -71,8 +72,8 @@ class PooledConnectionProxy:
         else:
             try:
                 self._conn.rollback()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         # Returning False ensures exceptions propagate like the standard
         # sqlite3 context manager.
         return False
@@ -91,8 +92,8 @@ class PooledConnectionProxy:
             elif isinstance(_CONN_POOL, list):
                 try:
                     _CONN_POOL.remove(self._conn)
-                except ValueError:
-                    pass
+                except ValueError as e:
+                    logger.warning(f"ValueError: {e}", exc_info=True)
         return self._conn.close()
 
 
@@ -165,6 +166,6 @@ def _close_all():
         for k, conn in list(_CONN_POOL.items()):
             try:
                 conn.close()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)
         _CONN_POOL.clear()

@@ -363,8 +363,8 @@ class SelfHealingEngine:
                         location=module,
                     )
                 )
-            except Exception:
-                pass  # Other errors are not import-related
+            except Exception as e:
+                logger.warning(f"Exception: {e}", exc_info=True)  # Other errors are not import-related
 
         return issues
 

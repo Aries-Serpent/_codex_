@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import json
 import logging
+logger = logging.getLogger(__name__)
 import math
 from contextlib import suppress
 from dataclasses import dataclass

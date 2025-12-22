@@ -15,6 +15,8 @@ Public API:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from typing import Iterator, Optional, Union
@@ -97,8 +99,8 @@ def detect_encoding(path: Union[str, Path]) -> str:
     if _io_text__detect_encoding is not None:
         try:
             return _io_text__detect_encoding(p)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     # Fallback conservative detector: BOM checks, then try a few encodings
     try:
@@ -114,8 +116,8 @@ def detect_encoding(path: Union[str, Path]) -> str:
             return "utf-16"
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     for enc in ("utf-8", "cp1252", "iso-8859-1"):
         try:
@@ -206,8 +208,8 @@ def _manual_read_text(
         text = text.replace("\r\n", "\n").replace("\r", "\n")
         if text and text[0] == "\ufeff":
             text = text.lstrip("\ufeff")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     return text, str(enc)
 
