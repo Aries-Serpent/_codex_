@@ -183,7 +183,7 @@ jobs:
       
       - name: Create issue on critical failure
         if: needs.validate-imports.result == 'failure' || needs.lint-check.result == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.create({
