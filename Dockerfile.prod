@@ -5,7 +5,7 @@
 # =============================================================================
 # Stage 1: Builder - Install dependencies and build the package
 # =============================================================================
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
@@ -38,7 +38,7 @@ RUN pip install --no-cache-dir .
 # =============================================================================
 # Stage 2: Runtime - Minimal image with only installed packages
 # =============================================================================
-FROM python:3.11-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
