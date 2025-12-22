@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-${{ matrix.python-version }}-unit-shard${{ matrix.shard }}
           path: |
@@ -218,7 +218,7 @@ jobs:
 
       - name: Upload coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-${{ matrix.python-version }}-${{ matrix.test-type }}
           path: |
@@ -228,7 +228,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-${{ matrix.python-version }}-${{ matrix.test-type }}
           path: |
@@ -268,7 +268,7 @@ jobs:
           coverage report || true
 
       - name: Upload combined coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: combined-coverage
           path: combined-coverage.xml

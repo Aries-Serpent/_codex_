@@ -108,7 +108,7 @@ jobs:
           head -50 archive_candidates.txt >> organization_analysis.md || echo "No candidates found" >> organization_analysis.md
 
       - name: Upload Analysis Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: organization-analysis
           path: |
@@ -191,7 +191,7 @@ jobs:
           echo "✅ Organization guide created"
 
       - name: Upload Guide
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: organization-guide
           path: ORGANIZATION_GUIDE.md
@@ -299,7 +299,7 @@ jobs:
           cat cost_tracking.json
 
       - name: Upload Cost Data
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: cost-tracking
           path: cost_tracking.json
