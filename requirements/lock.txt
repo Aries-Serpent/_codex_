@@ -373,7 +373,7 @@ importlib-metadata==8.7.0
     #   opentelemetry-api
 iniconfig==2.1.0
     # via pytest
-ipykernel==7.0.1
+ipykernel==7.1.0
     # via jupyterlab
 ipython==9.6.0
     # via
