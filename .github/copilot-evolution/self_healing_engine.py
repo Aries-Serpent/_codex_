@@ -92,7 +92,17 @@ class SelfHealingEngine:
         )
 
     def _default_config(self) -> Dict[str, Any]:
-        """Default configuration for healing engine."""
+        """
+        Default configuration for healing engine.
+
+        Returns a dictionary with the following configuration parameters:
+        - max_healing_attempts: Maximum retries for healing a single failure
+        - confidence_threshold: Minimum confidence for pattern learning
+        - enable_aggressive_healing: Allow risky healing strategies
+        - fallback_to_conservative: Use conservative strategies on failure
+        - log_all_attempts: Log all healing attempts for debugging
+        - pattern_learning: Enable learning from successful healings
+        """
         return {
             "max_healing_attempts": 3,
             "confidence_threshold": 0.7,
