@@ -25,7 +25,7 @@ jobs:
           DATE=$(date -u +%Y-%m-%d)
           python scripts/status/render_full_markdown_report.py --json "reports/daily/${DATE}.json" --out "reports/daily/${DATE}.md" || true
       - name: Upload enriched status
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: daily-status-enriched
           path: |
