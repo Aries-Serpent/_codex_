@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, MutableMapping
 from uuid import uuid4
 
+from codex_ml.logging.permissions import get_log_file_mode
+
 DEFAULT_MAX_BYTES = 64 * 1024 * 1024  # 64 MiB per shard by default
 DEFAULT_MAX_AGE_S = 24 * 60 * 60  # rotate at least daily
 DEFAULT_BACKUP_COUNT = 5
@@ -79,9 +81,11 @@ class NDJSONLogger:
         data = (payload + "\n").encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(data))
-            # Security: 0o640 permissions for log files (owner: rw, group: r, world: none)
-            # Changed from 0o644 to prevent world-readable logs which may contain sensitive data
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
+            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
+            # to ML experiment data, embedded API keys/tokens, and cross-user information disclosure.
+            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            file_mode = get_log_file_mode()
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:
                 os.write(fd, data)
             finally:
@@ -101,9 +105,11 @@ class NDJSONLogger:
         blob = payload.encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(blob))
-            # Security: 0o640 permissions for log files (owner: rw, group: r, world: none)
-            # Changed from 0o644 to prevent world-readable logs which may contain sensitive data
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
+            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
+            # to ML experiment data, embedded API keys/tokens, and cross-user information disclosure.
+            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            file_mode = get_log_file_mode()
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:
                 os.write(fd, blob)
             finally:

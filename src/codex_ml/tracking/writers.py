@@ -23,6 +23,7 @@ from codex_ml.logging.ndjson_logger import (
     NDJSONLogger,
     is_legacy_mode,
 )
+from codex_ml.logging.permissions import get_log_file_mode
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
 from codex_ml.utils.optional_dependencies import format_optional_dependency_error
 
@@ -157,9 +158,11 @@ class _SummaryRotator:
         with self._lock:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._rotate_if_needed(len(data))
-            # Security: Use 0o640 permissions (owner read/write, group read, world none)
-            # Changed from 0o644 to prevent world-readable tracking data which may contain sensitive info
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
+            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
+            # to ML tracking summaries which may contain sensitive experiment metadata, API keys, or tokens.
+            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            file_mode = get_log_file_mode()
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:
                 os.write(fd, data)
             finally:
