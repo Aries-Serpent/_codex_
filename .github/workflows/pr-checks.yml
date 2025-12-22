@@ -19,17 +19,17 @@ jobs:
     name: PR Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
       # SECURITY: Read-only cache from main branch
       - name: Restore cache from main (read-only)
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: /tmp/uv-cache
           key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
