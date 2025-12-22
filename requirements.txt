@@ -12,3 +12,5 @@ numpy>=1.26
 # Updated to >=2.2.2 to fix CVE-2024-XXXXX (RCE vulnerability in torch.load)
 torch>=2.2.2,<3.0.0
 transformers>=4.41
+# Security: XML parsing protection against XXE attacks
+defusedxml>=0.7.1,<1.0.0
