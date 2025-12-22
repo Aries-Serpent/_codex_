@@ -781,9 +781,17 @@ class AutomatedResearcher:
         task.status = "in_progress"
 
         # Search external sources
-        results = self.knowledge_integrator.search_knowledge(
-            f"{task.concept} {task.research_question}"
-        )
+        try:
+            results = self.knowledge_integrator.search_knowledge(
+                f"{task.concept} {task.research_question}"
+            )
+        except NotImplementedError:
+            logger.warning(
+                "Knowledge integrator search_knowledge is not implemented; "
+                "skipping external research for task %s",
+                task_id,
+            )
+            results = []
 
         # Process results into findings
         for result in results:
