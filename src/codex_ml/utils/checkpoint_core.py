@@ -361,7 +361,16 @@ def _deserialize_payload(
                 buf.seek(0)
         except Exception:
             buf.seek(0)
-    return pickle.load(buf)  # nosec B301
+    # Use safe pickle loading to prevent code execution vulnerabilities
+    from utils.safe_pickle import safe_pickle_load
+    
+    # Read data into buffer first
+    import io
+    with open(path, 'rb') as f:
+        data = f.read()
+    
+    buf = io.BytesIO(data)
+    return safe_pickle_load(str(path), use_restricted_unpickler=True)
 
 
 _CKPT_COUNTER = count()

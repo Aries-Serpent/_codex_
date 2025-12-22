@@ -357,7 +357,9 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         with path.open("rb") as fh:
-            return pickle.load(fh)  # nosec B301
+            # Use safe pickle loading to prevent code execution vulnerabilities
+        from utils.safe_pickle import safe_pickle_load
+        return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except Exception as exc:
         errors.append(exc)
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
@@ -1223,7 +1225,9 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             with open(path / "state.pkl", "rb") as fh:
-                state = pickle.load(fh)  # nosec B301
+                # Use safe pickle loading to prevent code execution vulnerabilities
+            from utils.safe_pickle import safe_pickle_load
+            state = safe_pickle_load(str(checkpoint_path), use_restricted_unpickler=True)
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

@@ -29,10 +29,15 @@ class LanguageClassifier:
 
         if model_path and Path(model_path).exists():
             try:
-                with open(model_path, "rb") as f:
-                    data = pickle.load(f)
-                    self.model = data.get("model")
-                    self.vectorizer = data.get("vectorizer")
+                # Use safe pickle loading to prevent code execution vulnerabilities
+                from utils.safe_pickle import safe_pickle_load
+                
+                data = safe_pickle_load(
+                    model_path,
+                    use_restricted_unpickler=True  # Enable class whitelisting
+                )
+                self.model = data.get("model")
+                self.vectorizer = data.get("vectorizer")
             except Exception as e:
                 warnings.warn(f"Failed to load ML model: {e}")
 

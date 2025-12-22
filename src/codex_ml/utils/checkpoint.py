@@ -129,7 +129,9 @@ def _load_payload(path: Path, map_location: str | None = None) -> Any:
         with suppress(RuntimeError):
             return _torch_load(path, map_location=map_location)
     with path.open("rb") as fh:  # pragma: no cover - pickle fallback
-        return pickle.load(fh)  # nosec B301
+        # Use safe pickle loading to prevent code execution vulnerabilities
+    from utils.safe_pickle import safe_pickle_load
+    return safe_pickle_load(str(path), use_restricted_unpickler=True)
 
 
 def _capture_rng_state_raw() -> dict[str, Any]:

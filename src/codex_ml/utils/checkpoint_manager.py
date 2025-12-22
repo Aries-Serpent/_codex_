@@ -54,14 +54,16 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
         try:
             data = torch.load(target, map_location="cpu")  # nosec B614
         except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
-            with target.open("rb") as handle:
-                try:
-                    data = pickle.load(handle)  # nosec B301
-                except Exception:
-                    raise torch_error
+            # Use safe pickle loading as fallback
+            from utils.safe_pickle import safe_pickle_load
+            try:
+                data = safe_pickle_load(str(target), use_restricted_unpickler=True)
+            except Exception:
+                raise torch_error
     else:  # pragma: no cover - exercised when torch is unavailable
-        with target.open("rb") as handle:
-            data = pickle.load(handle)  # nosec B301
+        # Use safe pickle loading to prevent code execution vulnerabilities
+        from utils.safe_pickle import safe_pickle_load
+        data = safe_pickle_load(str(target), use_restricted_unpickler=True)
     if not isinstance(data, dict):
         raise TypeError("checkpoint payload must be a mapping")
     return data

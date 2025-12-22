@@ -364,7 +364,9 @@ def load_dataset(
 
     if cache_file.exists():
         try:
-            data = pickle.loads(cache_file.read_bytes())  # nosec B301
+            # Use safe pickle loading to prevent code execution vulnerabilities  
+            from utils.safe_pickle import safe_pickle_load
+            data = safe_pickle_load(str(cache_file), use_restricted_unpickler=True)
             if isinstance(data, list):
                 return data
         except Exception:
