@@ -158,9 +158,7 @@ class _SummaryRotator:
         with self._lock:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._rotate_if_needed(len(data))
-            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
-            # to ML tracking summaries which may contain sensitive experiment metadata, API keys, or tokens.
-            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            # Security: See permissions.py for policy documentation
             file_mode = get_log_file_mode()
             fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:

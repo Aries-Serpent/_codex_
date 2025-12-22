@@ -81,9 +81,7 @@ class NDJSONLogger:
         data = (payload + "\n").encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(data))
-            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
-            # to ML experiment data, embedded API keys/tokens, and cross-user information disclosure.
-            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            # Security: See permissions.py for policy documentation
             file_mode = get_log_file_mode()
             fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:
@@ -105,9 +103,7 @@ class NDJSONLogger:
         blob = payload.encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(blob))
-            # Security: Use owner-only permissions (0o600) by default to prevent unauthorized access
-            # to ML experiment data, embedded API keys/tokens, and cross-user information disclosure.
-            # Override via CODEX_LOG_FILE_MODE environment variable for shared monitoring deployments.
+            # Security: See permissions.py for policy documentation
             file_mode = get_log_file_mode()
             fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
             try:

@@ -8,12 +8,18 @@ All log files use owner-only permissions (0o600) by default to prevent:
 - Cross-user information disclosure
 
 Override via CODEX_LOG_FILE_MODE for shared monitoring deployments.
+
+Security Comment (Referenced in Implementation Files)
+-----------------------------------------------------
+Use owner-only permissions (0o600) by default to prevent unauthorized access
+to ML experiment data, embedded API keys/tokens, and cross-user information
+disclosure. Override via CODEX_LOG_FILE_MODE environment variable for shared
+monitoring deployments.
 """
 
 import os
 
 DEFAULT_LOG_FILE_MODE = 0o600  # Owner read/write only
-DEFAULT_BACKUP_MODE = 0o600  # Consistent with active files
 
 
 def get_log_file_mode() -> int:

@@ -4,11 +4,30 @@ import os
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from codex_ml.logging.ndjson_logger import NDJSONLogger
 from codex_ml.logging.permissions import (
     DEFAULT_LOG_FILE_MODE,
     get_log_file_mode,
 )
+
+
+@pytest.fixture
+def env_mode_override():
+    """Fixture to safely override and restore CODEX_LOG_FILE_MODE."""
+    original_value = os.environ.get("CODEX_LOG_FILE_MODE")
+    
+    def _set_mode(mode_str):
+        os.environ["CODEX_LOG_FILE_MODE"] = mode_str
+    
+    yield _set_mode
+    
+    # Restore original value
+    if original_value is None:
+        os.environ.pop("CODEX_LOG_FILE_MODE", None)
+    else:
+        os.environ["CODEX_LOG_FILE_MODE"] = original_value
 
 
 def test_default_permissions():
@@ -26,55 +45,31 @@ def test_default_permissions():
         )
 
 
-def test_environment_override():
+def test_environment_override(env_mode_override):
     """Verify CODEX_LOG_FILE_MODE environment override works."""
-    original_value = os.environ.get("CODEX_LOG_FILE_MODE")
-    try:
-        os.environ["CODEX_LOG_FILE_MODE"] = "0o640"
-        assert get_log_file_mode() == 0o640
-    finally:
-        # Restore original value
-        if original_value is None:
-            os.environ.pop("CODEX_LOG_FILE_MODE", None)
-        else:
-            os.environ["CODEX_LOG_FILE_MODE"] = original_value
+    env_mode_override("0o640")
+    assert get_log_file_mode() == 0o640
 
 
-def test_environment_override_integration():
+def test_environment_override_integration(env_mode_override):
     """Verify environment override is applied to actual log files."""
-    original_value = os.environ.get("CODEX_LOG_FILE_MODE")
-    try:
-        os.environ["CODEX_LOG_FILE_MODE"] = "0o640"
+    env_mode_override("0o640")
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            log_path = Path(tmpdir) / "test_override.ndjson"
-            logger = NDJSONLogger(log_path)
-            logger.log({"test": "override"})
+    with tempfile.TemporaryDirectory() as tmpdir:
+        log_path = Path(tmpdir) / "test_override.ndjson"
+        logger = NDJSONLogger(log_path)
+        logger.log({"test": "override"})
 
-            # Check file permissions
-            stat_info = log_path.stat()
-            mode = stat_info.st_mode & 0o777
-            assert mode == 0o640, f"Expected 0o640, got {oct(mode)}"
-    finally:
-        # Restore original value
-        if original_value is None:
-            os.environ.pop("CODEX_LOG_FILE_MODE", None)
-        else:
-            os.environ["CODEX_LOG_FILE_MODE"] = original_value
+        # Check file permissions
+        stat_info = log_path.stat()
+        mode = stat_info.st_mode & 0o777
+        assert mode == 0o640, f"Expected 0o640, got {oct(mode)}"
 
 
-def test_invalid_environment_value():
+def test_invalid_environment_value(env_mode_override):
     """Verify invalid CODEX_LOG_FILE_MODE falls back to default."""
-    original_value = os.environ.get("CODEX_LOG_FILE_MODE")
-    try:
-        os.environ["CODEX_LOG_FILE_MODE"] = "invalid_mode"
-        assert get_log_file_mode() == DEFAULT_LOG_FILE_MODE
-    finally:
-        # Restore original value
-        if original_value is None:
-            os.environ.pop("CODEX_LOG_FILE_MODE", None)
-        else:
-            os.environ["CODEX_LOG_FILE_MODE"] = original_value
+    env_mode_override("invalid_mode")
+    assert get_log_file_mode() == DEFAULT_LOG_FILE_MODE
 
 
 def test_batch_logging_permissions():
