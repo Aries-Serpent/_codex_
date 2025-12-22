@@ -20,7 +20,7 @@ import json
 import logging
 import re
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -186,50 +186,29 @@ class ExternalKnowledgeIntegrator:
         """
         Search for knowledge across external sources.
 
-        Note: This is a simulated search that returns mock results
-        for offline operation. In production, this would make actual
-        API calls to external sources.
+        This default implementation is a stub and does not perform any
+        real external API calls. A concrete implementation must be
+        provided that integrates with the desired knowledge sources
+        (e.g., arXiv, documentation sites, code hosts).
 
         Args:
             query: Search query
             source_types: Types of sources to search
             max_results: Maximum results to return
 
+        Raises:
+            NotImplementedError: Always raised to indicate that external
+                knowledge search requires API credentials and a concrete
+                integration.
+
         Returns:
-            List of search results
+            List of search results (when implemented).
         """
-        source_types = source_types or list(
-            set(s.source_type for s in self.sources.values())
+        raise NotImplementedError(
+            "search_knowledge requires integration with external knowledge "
+            "sources and appropriate API credentials. Provide a concrete "
+            "implementation or use a mock/stub adapter in tests."
         )
-
-        results = []
-        query_lower = query.lower()
-
-        # Generate simulated results based on query
-        if "quantum" in query_lower:
-            results.extend(self._generate_quantum_results(query))
-        if "security" in query_lower:
-            results.extend(self._generate_security_results(query))
-        if "machine learning" in query_lower or "ml" in query_lower:
-            results.extend(self._generate_ml_results(query))
-        if "python" in query_lower:
-            results.extend(self._generate_python_results(query))
-
-        # Add general results if few specific matches
-        if len(results) < 3:
-            results.extend(self._generate_general_results(query))
-
-        # Cache results
-        cache_key = hashlib.md5(query.encode()).hexdigest()
-        self.cached_results[cache_key] = {
-            "query": query,
-            "results": results[:max_results],
-            "timestamp": datetime.utcnow().isoformat(),
-        }
-
-        logger.info(f"🔍 Found {len(results[:max_results])} results for '{query}'")
-
-        return results[:max_results]
 
     def _generate_quantum_results(self, query: str) -> List[Dict[str, Any]]:
         """Generate quantum computing related results."""

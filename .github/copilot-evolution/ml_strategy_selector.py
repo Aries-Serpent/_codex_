@@ -125,12 +125,37 @@ class MLStrategySelector:
             "is_test_file": 0.05,
         }
 
-        # Keyword to strategy mapping (base knowledge)
-        # Note: This mapping is intentionally inline for simplicity.
-        # For production use, consider externalizing to a JSON config file
-        # at self.model_path / "keyword_strategy_map.json" to enable
-        # runtime updates without code changes.
-        self.keyword_strategy_map: Dict[str, str] = {
+        # Keyword to strategy mapping - loaded from config or defaults
+        self.keyword_strategy_map: Dict[str, str] = self._load_keyword_strategy_map()
+
+        logger.info(
+            f"✅ MLStrategySelector initialized | "
+            f"Auto-merge threshold: {self.auto_merge_threshold:.0%}"
+        )
+
+    def _load_keyword_strategy_map(self) -> Dict[str, str]:
+        """
+        Load keyword-to-strategy mapping from config file or use defaults.
+
+        The mapping can be externalized to a JSON file at:
+        self.model_path / "keyword_strategy_map.json"
+
+        This enables runtime updates without code changes.
+        """
+        config_file = self.model_path / "keyword_strategy_map.json"
+
+        # Try to load from config file
+        if config_file.exists():
+            try:
+                with open(config_file) as f:
+                    mapping = json.load(f)
+                    logger.info(f"📋 Loaded keyword_strategy_map from {config_file}")
+                    return mapping
+            except Exception as e:
+                logger.warning(f"Failed to load keyword_strategy_map: {e}, using defaults")
+
+        # Default mapping
+        return {
             "docker": "docker_tag_error",
             "tag": "docker_tag_error",
             "invalid reference": "docker_tag_error",
@@ -157,11 +182,6 @@ class MLStrategySelector:
             "empty": "empty_result",
             "no patterns": "empty_result",
         }
-
-        logger.info(
-            f"✅ MLStrategySelector initialized | "
-            f"Auto-merge threshold: {self.auto_merge_threshold:.0%}"
-        )
 
     def _load_weights(self) -> Dict[str, float]:
         """Load strategy weights from disk."""

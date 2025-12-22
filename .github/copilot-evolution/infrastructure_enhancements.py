@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -334,8 +335,25 @@ class ArtifactLifecycleManager:
     - Artifact metadata tracking
     """
 
-    def __init__(self, storage_path: Optional[Path] = None):
-        """Initialize artifact lifecycle manager."""
+    def __init__(
+        self,
+        storage_path: Optional[Path] = None,
+        retention_policies: Optional[Dict[str, int]] = None,
+    ):
+        """
+        Initialize artifact lifecycle manager.
+
+        Args:
+            storage_path: Path for artifact storage
+            retention_policies: Custom retention policies (days) per artifact type.
+                              Can also be configured via environment variables:
+                              - ARTIFACT_RETENTION_DOCKER (default: 90)
+                              - ARTIFACT_RETENTION_BINARY (default: 30)
+                              - ARTIFACT_RETENTION_ARCHIVE (default: 60)
+                              - ARTIFACT_RETENTION_DOCUMENTATION (default: 365)
+                              - ARTIFACT_RETENTION_TEST_RESULTS (default: 14)
+                              - ARTIFACT_RETENTION_COVERAGE (default: 30)
+        """
         self.storage_path = storage_path or Path(
             ".github/copilot-evolution/data/artifacts"
         )
@@ -351,7 +369,24 @@ class ArtifactLifecycleManager:
         # - documentation (365): Docs should be available for reference for a year
         # - test_results (14): Test results are short-lived, only recent ones matter
         # - coverage (30): Coverage reports are analyzed monthly
-        self.retention_policies = {
+        self.retention_policies = self._load_retention_policies(retention_policies)
+
+        self._load_artifacts()
+
+        logger.info(
+            f"✅ ArtifactLifecycleManager initialized | "
+            f"Artifacts: {len(self.artifacts)}"
+        )
+
+    def _load_retention_policies(
+        self, custom_policies: Optional[Dict[str, int]]
+    ) -> Dict[str, int]:
+        """
+        Load retention policies from custom config or environment variables.
+
+        Priority: custom_policies > environment variables > defaults
+        """
+        defaults = {
             "docker": 90,
             "binary": 30,
             "archive": 60,
@@ -360,12 +395,26 @@ class ArtifactLifecycleManager:
             "coverage": 30,
         }
 
-        self._load_artifacts()
+        # Apply environment variable overrides
+        env_prefix = "ARTIFACT_RETENTION_"
+        for key in defaults:
+            env_key = f"{env_prefix}{key.upper()}"
+            env_value = os.environ.get(env_key)
+            if env_value:
+                try:
+                    defaults[key] = int(env_value)
+                    logger.info(f"📋 Loaded {key} retention from {env_key}: {defaults[key]} days")
+                except ValueError:
+                    logger.warning(f"Invalid value for {env_key}: {env_value}")
 
-        logger.info(
-            f"✅ ArtifactLifecycleManager initialized | "
-            f"Artifacts: {len(self.artifacts)}"
-        )
+        # Apply custom policy overrides
+        if custom_policies:
+            for key, value in custom_policies.items():
+                if key in defaults:
+                    defaults[key] = value
+                    logger.info(f"📋 Custom {key} retention: {value} days")
+
+        return defaults
 
     def _load_artifacts(self) -> None:
         """Load artifacts from disk."""

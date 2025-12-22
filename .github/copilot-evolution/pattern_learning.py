@@ -20,7 +20,7 @@ import json
 import logging
 import math
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -708,6 +708,8 @@ class AntiPatternDetector:
         detected = []
         content_lower = content.lower()
         context = context or {}
+        if context:
+            logger.debug("AntiPattern detection context: %s", context)
 
         for ap in self.anti_patterns.values():
             signature = ap.detection_signature
