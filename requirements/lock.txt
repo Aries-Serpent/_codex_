@@ -1163,7 +1163,7 @@ transformers==4.57.3
     #   codex-ml (pyproject.toml)
     #   lm-eval
     #   peft
-triton==3.4.0
+triton==3.5.1
     # via torch
 typepy==1.3.4
     # via
