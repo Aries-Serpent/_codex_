@@ -185,7 +185,7 @@ jobs:
             grype-${{ matrix.variant }}.sarif
       - name: Upload Grype SARIF to GitHub Security
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: grype-${{ matrix.variant }}.sarif
           category: grype-${{ matrix.variant }}
