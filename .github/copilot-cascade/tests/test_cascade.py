@@ -3,13 +3,9 @@
 Tests all components with mocking for CLI availability.
 """
 
-import asyncio
-import json
-import os
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -18,7 +14,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from cli_integration import (
     CascadeOrchestrator,
-    CLIResponse,
     ContextCompressor,
     CopilotCLIExecutor,
     DelegationTask,
@@ -400,7 +395,7 @@ class TestPublicAPI:
         assert 'task_id' in results
 
 
-class TestIntegration:
+class TestIntegrationPRFlow:
     """Integration tests."""
     
     @pytest.mark.asyncio

@@ -1,0 +1,27 @@
+{
+  "name": "codex-cascade-system",
+  "version": "1.0.0",
+  "description": "Copilot CLI Cascade Delegation System for _codex_ repository - Hybrid Python/Node.js project. npm scripts are used as a lightweight task runner for Python tooling; running Python tests requires pytest to be installed in the active Python environment.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"This is a hybrid Python/Node.js project. To run Python tests, use 'npm run test:python' (requires pytest installed in your Python environment).\" && exit 0",
+    "test:python": "pytest .github/copilot-cascade/tests/",
+    "cascade": "python .github/copilot-cascade/cli_integration.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aries-Serpent/_codex_.git"
+  },
+  "keywords": [
+    "copilot",
+    "cascade",
+    "delegation",
+    "ai",
+    "automation"
+  ],
+  "author": "Aries-Serpent",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
