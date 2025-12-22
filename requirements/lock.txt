@@ -1054,7 +1054,7 @@ six==1.17.0
     #   python-dateutil
     #   rfc3339-validator
     #   rouge-score
-smart-open==7.3.1
+smart-open==7.5.0
     # via ray
 smmap==5.0.2
     # via gitdb
