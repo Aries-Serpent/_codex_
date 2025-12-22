@@ -223,7 +223,7 @@ dvc-http==2.32.0
     # via dvc
 dvc-objects==5.1.2
     # via dvc-data
-dvc-render==0.7.0
+dvc-render==1.0.2
     # via dvc
 dvc-studio-client==0.22.0
     # via dvc
