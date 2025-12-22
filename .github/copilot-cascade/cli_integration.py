@@ -307,7 +307,7 @@ class SmartDelegationRouter:
     def __init__(self):
         self.complexity_thresholds = {
             'simple': 3,
-            'medium': 7,
+            'medium': 9,  # Allow complex security scans to go to CLI
             'complex': 10
         }
     

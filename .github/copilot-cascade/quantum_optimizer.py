@@ -35,6 +35,8 @@ if PHYSICS_AVAILABLE and NUMPY_AVAILABLE:
     import numpy as np
 else:
     # Fallback implementations
+    import random as _random
+    
     class np:  # type: ignore
         @staticmethod
         def array(x):
@@ -46,14 +48,10 @@ else:
                 return [math.exp(i) for i in x]
             return math.exp(x)
         
-        @staticmethod
-        def random():
-            class Random:
-                @staticmethod
-                def random():
-                    import random
-                    return random.random()
-            return Random()
+        class random:
+            @staticmethod
+            def random():
+                return _random.random()
 
 logger = logging.getLogger(__name__)
 
