@@ -1,0 +1,150 @@
+# Code Quality Configuration
+# Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md recommendations
+# Version: 1.0.0
+# Last Updated: 2025-12-21
+
+# Code smell detection thresholds
+code_smells:
+  long_function:
+    threshold: 50
+    severity: warning
+    description: "Functions should be under 50 lines for maintainability"
+    # Stricter threshold for critical code
+    critical_paths:
+      threshold: 40
+      severity: error
+      patterns:
+        - "*/auth/*"
+        - "*/security/*"
+        - "*/payment/*"
+  
+  max_arguments:
+    threshold: 5
+    severity: warning
+    description: "Maximum 5 parameters; consider parameter objects"
+    # More lenient for UI/config code
+    lenient_paths:
+      threshold: 7
+      severity: warning
+      patterns:
+        - "*/ui/*"
+        - "*/config/*"
+  
+  max_nesting:
+    threshold: 4
+    severity: warning
+    description: "Maximum nesting depth of 4 levels"
+    # Strictly enforce for critical code
+    critical_paths:
+      threshold: 3
+      severity: error
+      patterns:
+        - "*/auth/*"
+        - "*/security/*"
+  
+  god_class:
+    methods_threshold: 20
+    lines_threshold: 500
+    coupling_threshold: 10
+    severity: warning
+    description: "Classes exceeding multiple thresholds may violate SRP"
+    # Multiple criteria must be exceeded
+    require_multiple: true
+    # Error if significantly over threshold
+    error_multiplier: 1.5  # 30 methods OR 750 lines
+
+# Complexity metrics
+complexity:
+  cyclomatic:
+    warning: 10
+    error: 15
+    critical: 20
+  
+  cognitive:
+    warning: 15
+    error: 25
+    critical: 35
+  
+  maintainability_index:
+    excellent: 85  # A grade
+    good: 70       # B grade
+    acceptable: 55 # C grade
+    poor: 40       # D grade
+    # Below 40 is F grade
+
+# Context-specific profiles
+profiles:
+  strict:
+    description: "For critical business logic"
+    code_smells:
+      long_function: {threshold: 40, severity: error}
+      max_arguments: {threshold: 4, severity: error}
+      max_nesting: {threshold: 3, severity: error}
+      god_class: {methods_threshold: 15, severity: error}
+  
+  standard:
+    description: "Default profile for most code"
+    # Uses thresholds defined above
+  
+  lenient:
+    description: "For UI/integration code"
+    code_smells:
+      long_function: {threshold: 60, severity: warning}
+      max_arguments: {threshold: 7, severity: warning}
+      max_nesting: {threshold: 5, severity: warning}
+      god_class: {methods_threshold: 25, severity: warning}
+
+# Directory-specific overrides
+path_overrides:
+  - pattern: "src/agents/*"
+    profile: standard
+  
+  - pattern: "src/auth/*"
+    profile: strict
+  
+  - pattern: "src/ui/*"
+    profile: lenient
+  
+  - pattern: "tests/*"
+    profile: lenient
+    # Tests can be longer and more nested
+
+# Exclusions
+exclude_patterns:
+  - "*/generated/*"
+  - "*/migrations/*"
+  - "*/vendor/*"
+  - "*/__pycache__/*"
+  - "*/node_modules/*"
+
+# Reporting
+reporting:
+  formats:
+    - json
+    - html
+    - yaml
+  
+  output_dir: ".codex/reports"
+  
+  include_in_report:
+    - file_path
+    - smell_type
+    - severity
+    - line_number
+    - description
+    - suggestion
+
+# Integration
+integration:
+  ci:
+    enabled: true
+    fail_on: [error, critical]
+    warn_on: [warning]
+  
+  pre_commit:
+    enabled: false  # Opt-in
+    fail_on: [error, critical]
+  
+  ide:
+    enabled: true  # LSP integration
+    show_severity: [warning, error, critical]

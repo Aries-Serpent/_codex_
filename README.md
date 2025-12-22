@@ -49,7 +49,7 @@
 **Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
 **Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths  
 **Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
-**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
+**Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
 **Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
@@ -116,6 +116,28 @@ This creates an HTML interface specifically designed for ChatGPT 5.1 Agent mode 
 ## Documentation
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
+
+### 📁 Repository Organization
+
+| Directory | Purpose |
+|-----------|---------|
+| `docs/` | Primary documentation, guides, and references |
+| `docs/mcp/` | MCP (Model Context Protocol) documentation |
+| `docs/archive/` | Historical planning docs and session reports |
+| `docs/api/` | API reference documentation |
+| `reports/` | Generated reports, diagnostics, and manifests |
+| `coverage_reports/` | Test coverage JSON reports |
+| `configs/` | Configuration files and templates |
+| `scripts/` | Utility scripts and automation |
+| `tools/` | Development and validation tools |
+
+### 🔧 Administrator Guide
+
+**New to managing this repository?** See the admin documentation:
+
+- **[Admin Implementation Guide](docs/ADMIN_IMPLEMENTATION_GUIDE.md)** - Complete setup for GitHub Apps, secrets, and workflows
+- **[Admin Quick Start](docs/ADMIN_QUICKSTART.md)** - 5-minute critical setup
+- **[Admin FAQ](docs/ADMIN_FAQ.md)** - Common questions and troubleshooting
 
 ### 🆕 Latest Updates (December 2025)
 
@@ -249,7 +271,7 @@ python -m http.server -d artifacts/docs/api 8000
 
 ### New to _codex_?
 
-👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
+👉 **Start here**: [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
 
 ### Quick Links - Status & Validation
 
@@ -264,7 +286,7 @@ python -m http.server -d artifacts/docs/api 8000
 
 ### Quick Links - General
 
-- **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
+- **General Onboarding**: [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 - **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
 - **Contribution Guidelines**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
@@ -502,7 +524,7 @@ path:docs/ "mermaid" in:file
 
 ### Quick Navigation
 
-- **Getting Started**: Start with [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
+- **Getting Started**: Start with [`NEWCOMER_GUIDE.md`](docs/NEWCOMER_GUIDE.md)
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Architecture**: Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - **Security**: Report vulnerabilities via [SECURITY.md](SECURITY.md)

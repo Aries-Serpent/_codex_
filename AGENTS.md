@@ -406,6 +406,7 @@ graph TD
 - **Configuration**: Hydra/OmegaConf-driven YAML configs in `configs/` and `hydra/`. Training dataclasses in `training/config.py`.
 - **Testing**: Pytest configuration in `pytest.ini`; nox automation in `noxfile.py`; pre-commit hooks in `.pre-commit-config.yaml`.
 - **Docs**: Reference materials in `docs/` and `README.md`; status and audit artifacts under `.codex/` and `reports/`.
+- **Admin Guide**: Repository administrators should see `docs/ADMIN_IMPLEMENTATION_GUIDE.md` for GitHub App, secrets, and workflow configuration.
 
 ## Project Structure
 ```
@@ -420,12 +421,17 @@ graph TD
 ├── configs/ & hydra/       # YAML configs, Hydra defaults/overrides
 ├── cli/                    # Repo-wide CLI utilities and audit runners
 ├── tests/                  # Pytest suites (markers defined in pytest.ini)
+├── docs/                   # Primary documentation and guides
+│   ├── mcp/                # MCP (Model Context Protocol) documentation
+│   ├── archive/            # Historical planning docs and session reports
+│   └── api/                # API reference documentation
+├── reports/                # Generated reports, diagnostics, and manifests
+├── coverage_reports/       # Test coverage JSON reports
 ├── noxfile.py              # Session orchestration (tests, ML/eval envs, hygiene)
 ├── .pre-commit-config.yaml # Lint/security hooks (ruff, black, isort, bandit, detect-secrets)
 ├── pyproject.toml          # Packaging metadata and entry points
 ├── .codex/                 # Evidence, logs, task mappings (do not delete)
-├── scripts/space_traversal/ # Audit pipeline v1.5.x modules
-└── docs/                   # Guides, status reports, diagrams
+└── scripts/space_traversal/ # Audit pipeline v1.5.x modules
 ```
 
 **Note on services/ directories:**

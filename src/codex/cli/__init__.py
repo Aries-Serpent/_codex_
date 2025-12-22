@@ -47,10 +47,11 @@ def _load_click_cli() -> Any:
 
 cli = _load_click_cli()
 
-# Also expose CLI groups for testing
+# Also expose CLI groups and helpers for testing
 logs = None
 tokenizer_group = None
 repro_group = None
+_fix_pool = None
 
 if cli is not None:
     # Import the groups from the loaded module
@@ -59,8 +60,9 @@ if cli is not None:
         logs = getattr(_cli_module, "logs", None)
         tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
         repro_group = getattr(_cli_module, "repro_group", None)
+        _fix_pool = getattr(_cli_module, "_fix_pool", None)
 
-__all__ = ["app", "main", "cli", "logs", "tokenizer_group", "repro_group"]
+__all__ = ["app", "main", "cli", "logs", "tokenizer_group", "repro_group", "_fix_pool"]
 
 if cli is None:
     # Non-fatal import warning, but tests will fail if Click CLI is required.
