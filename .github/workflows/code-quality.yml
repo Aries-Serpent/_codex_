@@ -110,7 +110,7 @@ jobs:
       
       - name: Upload Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: code-quality-report
           path: .codex/reports/smells.json
@@ -151,7 +151,7 @@ jobs:
       
       - name: Upload AST Similarity Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ast-similarity-report
           path: audit_artifacts/ast_similarity.json
