@@ -30,7 +30,7 @@ jobs:
     outputs:
       cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -71,7 +71,7 @@ jobs:
         shard: [1, 2, 3, 4]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -143,7 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Setup Python
         uses: actions/setup-python@v5

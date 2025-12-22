@@ -9,7 +9,7 @@ jobs:
   prune:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Prune history (keep 90 days)
         run: |
           python scripts/connectors/prune_rate_limit_history.py --days 90
