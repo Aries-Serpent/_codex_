@@ -1,7 +1,7 @@
 # Basic, reproducible test image for running pytest in CI and locally
 # Maintainer note: This image is designed for deterministic test execution.
 # Update pinned versions in requirements-test.txt with care.
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
