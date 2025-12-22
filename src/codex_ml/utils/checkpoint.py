@@ -80,7 +80,9 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
     if map_location is not None:
         kwargs["map_location"] = map_location
     if _TORCH_SUPPORTS_WEIGHTS_ONLY:
-        kwargs["weights_only"] = False
+        # Security: Use weights_only=True to prevent arbitrary code execution
+        # This is the secure default for PyTorch >=2.2.2 (CVE-2024-XXXXX)
+        kwargs["weights_only"] = True
     try:
         return load_fn(source, **kwargs)
     except TypeError as exc:
