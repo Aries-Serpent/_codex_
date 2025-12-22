@@ -1224,10 +1224,9 @@ class CheckpointManager:
                 with contextlib.suppress(Exception):
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
-            with open(path / "state.pkl", "rb") as fh:
-                # Use safe pickle loading to prevent code execution vulnerabilities
+            # Use safe pickle loading to prevent code execution vulnerabilities
             from utils.safe_pickle import safe_pickle_load
-            state = safe_pickle_load(str(checkpoint_path), use_restricted_unpickler=True)
+            state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

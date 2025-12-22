@@ -361,16 +361,14 @@ def _deserialize_payload(
                 buf.seek(0)
         except Exception:
             buf.seek(0)
-    # Use safe pickle loading to prevent code execution vulnerabilities
+    # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
     from utils.safe_pickle import safe_pickle_load
     
-    # Read data into buffer first
-    import io
-    with open(path, 'rb') as f:
-        data = f.read()
-    
-    buf = io.BytesIO(data)
-    return safe_pickle_load(str(path), use_restricted_unpickler=True)
+    # safe_pickle_load expects a file path or file object, but we have bytes
+    # We need to use the RestrictedUnpickler directly with the buffer
+    buf.seek(0)
+    from utils.safe_pickle import RestrictedUnpickler
+    return RestrictedUnpickler(buf).load()
 
 
 _CKPT_COUNTER = count()

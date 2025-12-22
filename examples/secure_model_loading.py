@@ -1,8 +1,28 @@
 """
-Example: Safe PyTorch model loading in production.
+Secure PyTorch Model Loading Example
 
-This example demonstrates secure patterns for loading PyTorch models
-in production environments.
+This example demonstrates how to safely load PyTorch models using the
+safe_torch_loader utility to prevent RCE vulnerabilities (CVE-2024-XXXXX).
+
+SECURITY BEST PRACTICES:
+1. Always use weights_only=True when loading models
+2. Only load models from trusted sources
+3. When saving models for distribution, save state_dict (not full model objects)
+4. Use torch.save() only for models you trust completely
+5. For production, consider using safetensors format instead of pickle
+
+Example of safe save/load pattern:
+    # SAFE: Save only the state dictionary
+    torch.save(model.state_dict(), 'model.pth')
+    
+    # SAFE: Load with weights_only=True
+    model = MyModel()
+    state_dict = torch.load('model.pth', weights_only=True)
+    model.load_state_dict(state_dict)
+    
+    # UNSAFE: Saving/loading full model objects
+    torch.save(model, 'model.pth')  # Can include arbitrary Python objects
+    model = torch.load('model.pth')  # Vulnerable to RCE attacks
 """
 import logging
 from pathlib import Path
@@ -135,12 +155,16 @@ def main():
     test_checkpoint_path = "/tmp/test_secure_model.pth"
     
     logger.info("Saving test model...")
+    # SECURITY NOTE: We save the state_dict (not the full model object)
+    # This is compatible with weights_only=True loading and is the recommended
+    # practice for distributing models. Only save full model objects for
+    # trusted, internal use cases.
     torch.save(test_model.state_dict(), test_checkpoint_path)
     
     # Load model securely
     logger.info("Loading model securely...")
     loader = SecureModelLoader(SimpleModel, device="cpu")
-    model = loader.load_model(test_checkpoint_path)
+    loaded_model = loader.load_model(test_checkpoint_path)
     
     # Run inference
     logger.info("Running inference...")

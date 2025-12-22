@@ -52,7 +52,13 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
         raise FileNotFoundError(path)
     if torch is not None and hasattr(torch, "load"):
         try:
-            data = torch.load(target, map_location="cpu")  # nosec B614
+            # Security: Use weights_only=True to prevent arbitrary code execution (CVE-2024-XXXXX)
+            load_kwargs = {"map_location": "cpu"}
+            # Check if torch.load supports weights_only parameter (PyTorch >= 2.0)
+            import inspect
+            if "weights_only" in inspect.signature(torch.load).parameters:
+                load_kwargs["weights_only"] = True
+            data = torch.load(target, **load_kwargs)
         except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
             # Use safe pickle loading as fallback
             from utils.safe_pickle import safe_pickle_load

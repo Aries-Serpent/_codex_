@@ -36,7 +36,7 @@ class RestrictedUnpickler(pickle.Unpickler):
     """
     
     # Whitelist of allowed modules and their safe classes
-    SAFE_MODULES: dict[str, Set[str]] = {
+    SAFE_MODULES: dict[str, set[str]] = {
         'builtins': {'int', 'float', 'str', 'list', 'dict', 'tuple', 'set', 'frozenset', 'bool', 'NoneType', 'bytes', 'bytearray'},
         'collections': {'OrderedDict', 'defaultdict', 'Counter', 'deque'},
         'collections.abc': {'Iterable', 'Iterator', 'Mapping', 'MutableMapping', 'Sequence', 'MutableSequence'},
