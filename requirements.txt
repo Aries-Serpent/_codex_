@@ -9,5 +9,6 @@ numpy>=1.26
 # Pin torch to stable versions to avoid dependency conflicts with:
 # - torchvision/torchaudio compatibility matrix
 # - Dependabot update failures on bleeding edge versions
-torch>=2.1.0,<2.3.0
+# Updated to >=2.2.2 to fix CVE-2024-XXXXX (RCE vulnerability in torch.load)
+torch>=2.2.2,<3.0.0
 transformers>=4.41
