@@ -86,7 +86,7 @@ jobs:
           
       - name: Create Issue for Critical Findings
         if: steps.analyze.outputs.issues_count > 0
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const healthScore = '${{ steps.analyze.outputs.health_score }}';

@@ -96,7 +96,7 @@ jobs:
       
       - name: Add PR comment
         if: steps.detect.outputs.duplicate_count > 0 && github.event.pull_request.number
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
