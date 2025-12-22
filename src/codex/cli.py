@@ -1555,10 +1555,8 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
 
 
 # Expose CLI groups as module attributes for testing and dynamic imports
-# This allows `import codex.cli; codex.cli.logs` to work correctly
-logs = logs
-tokenizer_group = tokenizer_group
-repro_group = repro_group
+# These are already defined above and don't need reassignment
+__all__ = ["cli", "logs", "tokenizer_group", "repro_group"]
 
 
 if __name__ == "__main__":

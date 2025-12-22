@@ -2,4 +2,6 @@
 API middleware modules for security and request handling.
 """
 
-__all__ = ["form_validator"]
+from .form_validator import SecureMultipartMiddleware
+
+__all__ = ["SecureMultipartMiddleware"]
