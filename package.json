@@ -1,7 +1,7 @@
 {
   "name": "codex-cascade-system",
   "version": "1.0.0",
-  "description": "Copilot CLI Cascade Delegation System for _codex_ repository",
+  "description": "Copilot CLI Cascade Delegation System for _codex_ repository - Hybrid Python/Node.js project",
   "private": true,
   "scripts": {
     "test": "pytest .github/copilot-cascade/tests/",
