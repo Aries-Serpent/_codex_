@@ -119,7 +119,7 @@ jobs:
             -o syft-json=sbom-${{ matrix.variant }}.syft.json
 
       - name: Install Grype
-        uses: anchore/scan-action/download-grype@v3
+        uses: anchore/scan-action/download-grype@v7
 
       - name: Scan with Grype
         run: |
@@ -225,7 +225,7 @@ jobs:
 
       - name: Create drift alert issue
         if: steps.compare.outputs.drift_detected == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.create({

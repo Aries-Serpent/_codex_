@@ -54,7 +54,7 @@ jobs:
           
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results
           path: .github/copilot-evolution/data/test_results.json
@@ -117,7 +117,7 @@ jobs:
           "
           
       - name: Upload pattern report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pattern-report
           path: .github/copilot-evolution/data/pattern_report.json
@@ -253,7 +253,7 @@ jobs:
           "
           
       - name: Upload evolution artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: evolution-state
           path: |
@@ -276,7 +276,7 @@ jobs:
           path: ./evolution-state
           
       - name: Create summary comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
