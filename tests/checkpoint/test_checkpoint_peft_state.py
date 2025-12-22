@@ -38,7 +38,6 @@ def _make_model() -> torch.nn.Module:
         r=2,
         lora_alpha=4,
         lora_dropout=0.0,
-        target_modules=["weight"],
         task_type=TaskType.FEATURE_EXTRACTION,
     )
     return get_peft_model(base, cfg)

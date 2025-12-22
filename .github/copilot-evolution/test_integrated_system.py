@@ -182,15 +182,22 @@ class IntegratedSystemTester:
             assert "knowledge_gaps" in result, "No knowledge gaps detected"
             assert len(result["knowledge_gaps"]) > 0, "Gaps list is empty"
             
+            # Note: knowledge_gaps in result contains concept strings, not KnowledgeGap objects
+            # The actual KnowledgeGap objects are stored in system.hunger_engine.knowledge_gaps
             logger.info(f"Detected {len(result['knowledge_gaps'])} knowledge gaps")
-            for gap in result["knowledge_gaps"][:3]:
-                logger.info(f"  - {gap.concept} in {gap.domain}")
+            for gap_concept in result["knowledge_gaps"][:3]:
+                logger.info(f"  - {gap_concept}")
+            
+            # Get domains from the hunger engine's internal state
+            domains = list(set(
+                g.domain for g in system.hunger_engine.knowledge_gaps.values()
+            ))
             
             return {
                 "success": True,
                 "data": {
                     "gaps_detected": len(result["knowledge_gaps"]),
-                    "domains": list(set(g.domain for g in result["knowledge_gaps"]))
+                    "domains": domains
                 }
             }
             
@@ -249,18 +256,21 @@ class IntegratedSystemTester:
             
             result = await system.receive_knowledge(knowledge)
             
-            assert result["status"] == "integrated", f"Integration failed: {result.get('error')}"
-            assert "capabilities_enhanced" in result, "No capabilities enhanced"
+            # The integration result is nested inside result["integration"]
+            integration = result.get("integration", result)
+            
+            assert integration.get("status") == "integrated", f"Integration failed: {integration.get('error')}"
+            assert "capabilities_enhanced" in integration, "No capabilities enhanced"
             
             logger.info(f"Knowledge integrated successfully")
-            logger.info(f"  Capabilities enhanced: {len(result['capabilities_enhanced'])}")
-            logger.info(f"  Fitness delta: {result.get('fitness_delta', 0):.3f}")
+            logger.info(f"  Capabilities enhanced: {len(integration['capabilities_enhanced'])}")
+            logger.info(f"  Status: {integration['status']}")
             
             return {
                 "success": True,
                 "data": {
-                    "capabilities_added": len(result["capabilities_enhanced"]),
-                    "fitness_improved": result.get("fitness_delta", 0) > 0
+                    "capabilities_added": len(integration["capabilities_enhanced"]),
+                    "status": integration["status"]
                 }
             }
             

@@ -284,9 +284,10 @@ class TestMathematicalProperties:
         prob = math.exp(-energy / temperature)
 
         # Should be valid probability-like value
-        assert 0.0 < prob <= 1.0
+        # Note: 0.0 is valid for physically inaccessible states (high E/T)
+        assert 0.0 <= prob <= 1.0
 
-        # Higher energy -> lower probability
+        # Higher energy -> lower probability (monotonicity check)
         higher_energy = energy + 10.0
         higher_energy_prob = math.exp(-higher_energy / temperature)
         assert higher_energy_prob <= prob

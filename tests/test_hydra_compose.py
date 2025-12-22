@@ -41,7 +41,7 @@ def test_composes_and_overrides() -> None:
     with initialize(version_base="1.3", config_path=None):
         cfg = compose(
             config_name="app",
-            overrides=["experiment=debug", "training.max_epochs=2"],
+            overrides=["+experiment=debug", "training.max_epochs=2"],
         )
 
     assert cfg.training.max_epochs == 2
