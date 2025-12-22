@@ -1,7 +1,6 @@
 """Code analysis CLI - Phase 1 implementation stub."""
 
 import click
-from pathlib import Path
 
 
 @click.command()

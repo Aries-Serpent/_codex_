@@ -2,7 +2,6 @@
 
 import click
 import yaml
-from pathlib import Path
 
 
 @click.command()
