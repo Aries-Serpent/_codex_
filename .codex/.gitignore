@@ -1,0 +1,9 @@
+# Codex local data - do not commit
+*.db
+*.sqlite
+cache/
+reports/
+!README.md
+!.gitignore
+config/*.yaml
+!config/*.example
