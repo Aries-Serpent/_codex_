@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
@@ -28,7 +28,7 @@ class MemoryEntry:
     
     content: str | Dict[str, Any]
     id: UUID = field(default_factory=uuid4)
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     agent_id: Optional[str] = None
     session_id: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
@@ -70,7 +70,6 @@ class MemoryQuery:
         session_id: Filter by session ID
         limit: Maximum number of results
         since: Only return memories after this timestamp
-        metadata_filters: Additional metadata-based filters
     """
     
     text: Optional[str] = None
@@ -78,7 +77,6 @@ class MemoryQuery:
     session_id: Optional[str] = None
     limit: int = 10
     since: Optional[datetime] = None
-    metadata_filters: Dict[str, Any] = field(default_factory=dict)
 
 
 class MemoryProtocol(ABC):

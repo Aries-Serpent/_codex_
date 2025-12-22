@@ -5,8 +5,10 @@ Provides JSONL and SQLite implementations of the MemoryProtocol.
 
 from __future__ import annotations
 
+import fcntl
 import json
 import logging
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List
@@ -31,14 +33,26 @@ class JSONLMemoryBackend(MemoryProtocol):
         self.storage_path = Path(storage_path)
         self.storage_path.parent.mkdir(parents=True, exist_ok=True)
         
-        # Ensure file exists
+        # Ensure file exists with secure permissions
         if not self.storage_path.exists():
-            self.storage_path.touch()
+            # Create with owner-only permissions (0o600) for security
+            fd = os.open(
+                self.storage_path,
+                os.O_CREAT | os.O_WRONLY,
+                0o600
+            )
+            os.close(fd)
     
     def store(self, entry: MemoryEntry) -> None:
-        """Append entry to JSONL file."""
+        """Append entry to JSONL file with file locking."""
         with open(self.storage_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(entry.to_dict()) + "\n")
+            # Acquire exclusive lock to prevent race conditions
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                f.write(json.dumps(entry.to_dict()) + "\n")
+                f.flush()
+            finally:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
     
     def retrieve(self, query: MemoryQuery) -> List[MemoryEntry]:
         """Retrieve entries by scanning the entire file.
@@ -83,56 +97,78 @@ class JSONLMemoryBackend(MemoryProtocol):
         return matches[:query.limit]
     
     def delete(self, entry_id: UUID) -> bool:
-        """Delete entry by rewriting file without it."""
+        """Delete entry by rewriting file without it (with file locking)."""
         if not self.storage_path.exists():
             return False
         
         entries = []
         found = False
         
+        # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if not line.strip():
-                    continue
-                try:
-                    data = json.loads(line)
-                    if UUID(data["id"]) == entry_id:
-                        found = True
+            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+            try:
+                for line in f:
+                    if not line.strip():
                         continue
-                    entries.append(line)
-                except (json.JSONDecodeError, KeyError, ValueError):
-                    entries.append(line)
+                    try:
+                        data = json.loads(line)
+                        if UUID(data["id"]) == entry_id:
+                            found = True
+                            continue
+                        entries.append(line)
+                    except (json.JSONDecodeError, KeyError, ValueError):
+                        entries.append(line)
+            finally:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
         
+        # Write with exclusive lock if found
         if found:
             with open(self.storage_path, "w", encoding="utf-8") as f:
-                f.writelines(entries)
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                try:
+                    f.writelines(entries)
+                    f.flush()
+                finally:
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
         
         return found
     
     def clear_session(self, session_id: str) -> int:
-        """Remove all entries for a session."""
+        """Remove all entries for a session (with file locking)."""
         if not self.storage_path.exists():
             return 0
         
         entries = []
         deleted_count = 0
         
+        # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if not line.strip():
-                    continue
-                try:
-                    data = json.loads(line)
-                    if data.get("session_id") == session_id:
-                        deleted_count += 1
+            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+            try:
+                for line in f:
+                    if not line.strip():
                         continue
-                    entries.append(line)
-                except (json.JSONDecodeError, KeyError):
-                    entries.append(line)
+                    try:
+                        data = json.loads(line)
+                        if data.get("session_id") == session_id:
+                            deleted_count += 1
+                            continue
+                        entries.append(line)
+                    except (json.JSONDecodeError, KeyError):
+                        entries.append(line)
+            finally:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
         
+        # Write with exclusive lock if any deleted
         if deleted_count > 0:
             with open(self.storage_path, "w", encoding="utf-8") as f:
-                f.writelines(entries)
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                try:
+                    f.writelines(entries)
+                    f.flush()
+                finally:
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
         
         return deleted_count
     
@@ -167,6 +203,13 @@ class SQLiteMemoryBackend(MemoryProtocol):
     def __init__(self, db_path: Path | str):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Create database with secure permissions
+        if not self.db_path.exists():
+            # Create file with owner-only permissions (0o600)
+            fd = os.open(self.db_path, os.O_CREAT | os.O_WRONLY, 0o600)
+            os.close(fd)
+        
         self._init_db()
     
     def _init_db(self) -> None:
@@ -190,9 +233,19 @@ class SQLiteMemoryBackend(MemoryProtocol):
             conn.commit()
     
     def store(self, entry: MemoryEntry) -> None:
-        """Store entry in SQLite."""
+        """Store entry in SQLite with timezone-aware timestamps."""
         with sqlite3.connect(self.db_path) as conn:
             data = entry.to_dict()
+            # Ensure timestamp is timezone-aware (UTC)
+            timestamp_str = data["timestamp"]
+            if not timestamp_str.endswith('+00:00') and not timestamp_str.endswith('Z'):
+                # Add UTC timezone if missing
+                from datetime import datetime, timezone
+                dt = datetime.fromisoformat(timestamp_str)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                timestamp_str = dt.isoformat()
+            
             conn.execute(
                 """
                 INSERT OR REPLACE INTO memories 
@@ -202,7 +255,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
                 (
                     data["id"],
                     json.dumps(data["content"]),
-                    data["timestamp"],
+                    timestamp_str,
                     data.get("agent_id"),
                     data.get("session_id"),
                     json.dumps(data.get("metadata", {})),

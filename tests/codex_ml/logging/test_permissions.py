@@ -85,3 +85,30 @@ def test_batch_logging_permissions():
         assert mode == DEFAULT_LOG_FILE_MODE, (
             f"Expected {oct(DEFAULT_LOG_FILE_MODE)}, got {oct(mode)}"
         )
+
+
+def test_tracking_writer_permissions():
+    """Verify tracking writer also uses correct permissions."""
+    import sys
+    import os
+    
+    # Check if codex_ml.tracking is available
+    try:
+        from codex_ml.tracking.writers import OfflineJSONWriter
+    except ImportError:
+        # Skip test if tracking module not available
+        return
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tracking_path = Path(tmpdir) / "tracking" / "summary.jsonl"
+        
+        # Create writer and write data
+        writer = OfflineJSONWriter(tracking_path)
+        writer.append({"test": "tracking_data"})
+        
+        # Check file permissions
+        stat_info = tracking_path.stat()
+        mode = stat_info.st_mode & 0o777
+        assert mode == DEFAULT_LOG_FILE_MODE, (
+            f"Expected {oct(DEFAULT_LOG_FILE_MODE)}, got {oct(mode)}"
+        )

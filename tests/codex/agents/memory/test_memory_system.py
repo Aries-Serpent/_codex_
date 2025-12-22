@@ -1,10 +1,8 @@
 """Tests for agent memory system."""
 
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-
-import pytest
 
 from codex.agents.memory import (
     JSONLMemoryBackend,
@@ -72,8 +70,11 @@ class TestJSONLBackend:
             entry = MemoryEntry(content="To be deleted")
             backend.store(entry)
             
-            assert backend.delete(entry.id) is True
-            assert backend.delete(entry.id) is False  # Already deleted
+            deleted_first = backend.delete(entry.id)
+            assert deleted_first is True
+            
+            deleted_second = backend.delete(entry.id)
+            assert deleted_second is False  # Already deleted
     
     def test_clear_session(self):
         """Test clearing all memories for a session."""
@@ -121,12 +122,12 @@ class TestSQLiteBackend:
             backend = SQLiteMemoryBackend(Path(tmpdir) / "memories.db")
             
             old_entry = MemoryEntry(content="Old memory")
-            old_entry.timestamp = datetime.utcnow() - timedelta(days=7)
+            old_entry.timestamp = datetime.now(timezone.utc) - timedelta(days=7)
             backend.store(old_entry)
             
             backend.store(MemoryEntry(content="Recent memory"))
             
-            query = MemoryQuery(since=datetime.utcnow() - timedelta(days=1))
+            query = MemoryQuery(since=datetime.now(timezone.utc) - timedelta(days=1))
             results = backend.retrieve(query)
             
             assert len(results) == 1

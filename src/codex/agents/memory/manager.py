@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .backends import JSONLMemoryBackend, SQLiteMemoryBackend
+from .backends import SQLiteMemoryBackend
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class MemoryManager:
     
     Examples:
         >>> manager = MemoryManager(agent_id="assistant-1")
-        >>> manager.store("User prefers concise responses", importance="high")
+        >>> manager.store("User prefers concise responses", metadata={"importance": "high"})
         >>> memories = manager.recall("user preferences")
     """
     
