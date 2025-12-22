@@ -315,6 +315,13 @@ ruff check src/
 - Log security events appropriately
 - Handle exceptions gracefully
 
+## Code Scanning Findings
+
+For a comprehensive report of all code scanning findings from GitHub Security:
+- **[Security Scan Report](./docs/SECURITY_SCAN_REPORT.md)** - Detailed table of all Bandit, CodeQL, and Semgrep findings
+- Total: 25 findings (6 Errors, 9 Warnings, 10 Notes)
+- Report includes direct links to each finding with severity and file location
+
 ## Contact Information
 
 For security-related questions or concerns:
@@ -330,7 +337,7 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2025-11-02
+Last updated: 2025-12-22
 
 ---
 
