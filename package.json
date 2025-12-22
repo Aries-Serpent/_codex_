@@ -1,0 +1,32 @@
+{
+  "name": "codex-cascade-system",
+  "version": "1.0.0",
+  "description": "Copilot CLI Cascade Delegation System for _codex_ repository",
+  "private": true,
+  "scripts": {
+    "test": "pytest .github/copilot-cascade/tests/",
+    "cascade": "python -m .github.copilot-cascade.cli_integration"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aries-Serpent/_codex_.git"
+  },
+  "keywords": [
+    "copilot",
+    "cascade",
+    "delegation",
+    "ai",
+    "automation"
+  ],
+  "author": "Aries-Serpent",
+  "license": "MIT",
+  "dependencies": {
+    "@github/copilot": "^0.0.369"
+  },
+  "devDependencies": {
+    "yaml": "^2.3.4"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
