@@ -82,17 +82,21 @@ def test_correlation_mismatched_lengths():
 
     agg = MetricsAggregator()
 
-    # Test case 1: coverage_metrics is empty
-    with pytest.raises(ValueError, match="must have the same length"):
+    # Test case 1: coverage_metrics is empty - this triggers "At least 2 data points" first
+    with pytest.raises(ValueError, match="At least 2 data points required"):
         agg.correlate_complexity_coverage([1.0, 2.0], [])
 
-    # Test case 2: coverage_metrics is shorter
-    with pytest.raises(ValueError, match="must have the same length"):
+    # Test case 2: coverage_metrics is shorter - this also triggers "At least 2 data points"
+    with pytest.raises(ValueError, match="At least 2 data points required"):
         agg.correlate_complexity_coverage([1.0, 2.0, 3.0], [10.0])
 
-    # Test case 3: complexity_metrics is shorter
-    with pytest.raises(ValueError, match="must have the same length"):
+    # Test case 3: complexity_metrics is shorter - also triggers "At least 2 data points"
+    with pytest.raises(ValueError, match="At least 2 data points required"):
         agg.correlate_complexity_coverage([1.0], [10.0, 20.0, 30.0])
+
+    # Test case 4: Both have 2+ elements but different lengths - triggers length mismatch
+    with pytest.raises(ValueError, match="must have the same length"):
+        agg.correlate_complexity_coverage([1.0, 2.0, 3.0], [10.0, 20.0])
 
 
 def test_correlation_insufficient_data():
