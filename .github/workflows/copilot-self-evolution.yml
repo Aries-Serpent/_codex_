@@ -54,11 +54,12 @@ jobs:
           
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: .github/copilot-evolution/data/test_results.json
           retention-days: 30
+          if-no-files-found: warn
   
   extract-codex-patterns:
     name: Extract _codex_ Patterns
@@ -116,11 +117,12 @@ jobs:
           "
           
       - name: Upload pattern report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: pattern-report
           path: .github/copilot-evolution/data/pattern_report.json
           retention-days: 30
+          if-no-files-found: warn
   
   evolve-system:
     name: Evolution Cycle
@@ -251,13 +253,14 @@ jobs:
           "
           
       - name: Upload evolution artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: evolution-state
           path: |
             .github/copilot-evolution/data/evolution_state.json
             .github/copilot-evolution/data/continuation_prompt.md
           retention-days: 90
+          if-no-files-found: warn
   
   post-evolution-summary:
     name: Post Evolution Summary
