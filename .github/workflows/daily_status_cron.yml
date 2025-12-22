@@ -17,7 +17,7 @@ jobs:
         run: |
           bash scripts/status/generate_daily_report.sh
       - name: Upload skeleton
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: daily-status
           path: reports/daily/*.json
