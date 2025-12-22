@@ -38,7 +38,7 @@ jobs:
       archive_candidates: ${{ steps.analyze.outputs.archive_candidates }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -134,7 +134,7 @@ jobs:
     if: inputs.action == 'organize' || inputs.action == 'full-cleanup'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create Organization PR
         if: inputs.dry_run != 'true'
@@ -203,7 +203,7 @@ jobs:
     if: inputs.action == 'archive' || inputs.action == 'full-cleanup'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Analysis
         uses: actions/download-artifact@v4
