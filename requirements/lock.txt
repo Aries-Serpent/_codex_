@@ -217,13 +217,13 @@ dulwich==0.24.6
     #   scmrepo
 dvc==3.64.2
     # via codex-ml (pyproject.toml)
-dvc-data==1.11.0
+dvc-data==3.17.0
     # via dvc
 dvc-http==2.32.0
     # via dvc
-dvc-objects==5.1.2
+dvc-objects==5.2.0
     # via dvc-data
-dvc-render==0.7.0
+dvc-render==1.0.2
     # via dvc
 dvc-studio-client==0.22.0
     # via dvc
@@ -540,7 +540,7 @@ multidict==6.7.0
     #   yarl
 multipart==1.3.0
     # via litestar
-multiprocess==0.70.16
+multiprocess==0.70.18
     # via
     #   datasets
     #   evaluate
@@ -809,7 +809,7 @@ pure-eval==0.2.3
     # via stack-data
 py-spy==0.4.1
     # via ray
-pyarrow==21.0.0
+pyarrow==22.0.0
     # via
     #   datasets
     #   mlflow
@@ -1107,7 +1107,7 @@ threadpoolctl==3.6.0
     # via scikit-learn
 tinycss2==1.4.0
     # via bleach
-tokenizers==0.21.4
+tokenizers==0.22.1
     # via
     #   codex-ml (pyproject.toml)
     #   transformers
