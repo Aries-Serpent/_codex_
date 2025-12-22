@@ -46,7 +46,7 @@ jobs:
       has_regressions: ${{ steps.analyze.outputs.has_regressions }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -165,7 +165,7 @@ jobs:
     if: inputs.create_improvement_pr == 'true' && needs.audit-gap-analysis.outputs.gap_count > '0'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Audit Results
         uses: actions/download-artifact@v4
@@ -237,7 +237,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Calculate Usage Metrics
         id: usage
