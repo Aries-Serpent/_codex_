@@ -48,7 +48,7 @@ jobs:
       
       - name: Install Python dependencies
         run: |
-          pip install aiohttp pyyaml pytest pytest-asyncio
+          pip install -r .github/copilot-cascade/requirements.txt
       
       - name: Get changed files
         id: files

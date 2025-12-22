@@ -28,50 +28,83 @@ Example Usage:
     >>> dashboard = monitor.get_dashboard_data()
 """
 
-from .cli_integration import (
-    # Core types
-    DelegationTask,
-    CLIResponse,
-    TaskType,
-    ModelType,
-    
-    # Components
-    ContextCompressor,
-    CopilotCLIExecutor,
-    SmartDelegationRouter,
-    TokenBudgetManager,
-    CascadeOrchestrator,
-    
-    # Public API
-    cascade_task,
-    delegate_sync,
-    get_orchestrator,
-)
+# Conditional imports to handle test environment
+try:
+    from .cli_integration import (
+        # Core types
+        DelegationTask,
+        CLIResponse,
+        TaskType,
+        ModelType,
+
+        # Components
+        ContextCompressor,
+        CopilotCLIExecutor,
+        SmartDelegationRouter,
+        TokenBudgetManager,
+        CascadeOrchestrator,
+
+        # Public API
+        cascade_task,
+        delegate_sync,
+        get_orchestrator,
+    )
+except ImportError:
+    # Handle relative imports when used as package
+    from cli_integration import (
+        DelegationTask,
+        CLIResponse,
+        TaskType,
+        ModelType,
+        ContextCompressor,
+        CopilotCLIExecutor,
+        SmartDelegationRouter,
+        TokenBudgetManager,
+        CascadeOrchestrator,
+        cascade_task,
+        delegate_sync,
+        get_orchestrator,
+    )
 
 # Enhanced modules
-from .mcp_server import (
-    MCPIntegration,
-    MCPServer,
-    MCPRequest,
-    MCPResponse,
-    MCPConnectionMode,
-    get_mcp_integration,
-    mcp_execute,
-)
+try:
+    from .mcp_server import (
+        MCPIntegration,
+        MCPServer,
+        MCPRequest,
+        MCPResponse,
+        MCPConnectionMode,
+        get_mcp_integration,
+        mcp_execute,
+    )
+except ImportError:
+    from mcp_server import (
+        MCPIntegration, MCPServer, MCPRequest, MCPResponse,
+        MCPConnectionMode, get_mcp_integration, mcp_execute
+    )
 
-from .quantum_optimizer import (
-    QuantumOptimizer,
-    QuantumState,
-    get_quantum_optimizer,
-)
+try:
+    from .quantum_optimizer import (
+        QuantumOptimizer,
+        QuantumState,
+        get_quantum_optimizer,
+    )
+except ImportError:
+    from quantum_optimizer import QuantumOptimizer, QuantumState, get_quantum_optimizer
 
-from .monitoring import (
-    CascadeMonitor,
-    CascadeMetrics,
-    get_monitor,
-    record_cascade,
-    get_dashboard_data,
-)
+try:
+    from .monitoring import (
+        CascadeMonitor,
+        CascadeMetrics,
+        get_monitor,
+        record_cascade,
+        get_dashboard_data,
+    )
+except ImportError:
+    from monitoring import (
+        CascadeMonitor, CascadeMetrics, get_monitor,
+        record_cascade, get_dashboard_data
+    )
 
 __version__ = '2.0.0'
 __author__ = 'Codex AI System'
