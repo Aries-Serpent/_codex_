@@ -11,7 +11,7 @@ def test_baseline_init():
     """Test baseline database initialization."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
-        manager = BaselineManager(str(db_path))
+        BaselineManager(str(db_path))
         assert db_path.exists()
 
 

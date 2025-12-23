@@ -35,6 +35,20 @@ def test_delta_result_has_changes():
     assert not result_no_changes.has_changes()
 
 
+def test_delta_result_total_changes():
+    """Test DeltaResult total_changes."""
+    result = DeltaResult(
+        added=["a.py", "b.py"],
+        removed=["c.py"],
+        modified=["d.py", "e.py", "f.py"],
+        unchanged=["g.py"],
+    )
+    assert result.total_changes() == 6  # 2 added + 1 removed + 3 modified
+
+    result_empty = DeltaResult(added=[], removed=[], modified=[], unchanged=["x.py"])
+    assert result_empty.total_changes() == 0
+
+
 def test_detect_added_files():
     """Test detection of added files."""
     with tempfile.TemporaryDirectory() as tmpdir:

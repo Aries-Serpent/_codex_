@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import TYPE_CHECKING, Dict, List
+
+if TYPE_CHECKING:
+    from codex.ast.baseline import BaselineManager
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +41,7 @@ class DeltaResult:
 class DeltaAnalyzer:
     """Analyzes differences between AST baselines and current state."""
 
-    def __init__(self, baseline_manager):
+    def __init__(self, baseline_manager: "BaselineManager") -> None:
         """Initialize delta analyzer.
 
         Args:
@@ -101,7 +104,7 @@ class DeltaAnalyzer:
             current_data: Current AST data with 'ast_hash' key
 
         Returns:
-            Status: 'added', 'modified', 'unchanged', or 'removed'
+            Status: 'added', 'modified', or 'unchanged'
         """
         baseline = self.baseline_manager.get_baseline(file_path)
 
