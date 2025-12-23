@@ -5,6 +5,8 @@ Command-line interface for MLflow Model Registry operations.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -33,6 +35,7 @@ def list_models_command(args: argparse.Namespace) -> int:
 
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
@@ -58,6 +61,7 @@ def list_versions_command(args: argparse.Namespace) -> int:
 
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
@@ -82,6 +86,7 @@ def promote_model_command(args: argparse.Namespace) -> int:
 
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
@@ -114,6 +119,7 @@ def compare_models_command(args: argparse.Namespace) -> int:
 
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
@@ -130,6 +136,7 @@ def export_model_command(args: argparse.Namespace) -> int:
         print(f"✓ Exported {args.name} version {args.version} to {output_path}")
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
@@ -161,6 +168,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
 
         return 0
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 

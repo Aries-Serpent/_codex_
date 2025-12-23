@@ -40,6 +40,7 @@ def _fallback_validate(clean_csv: Path) -> tuple[bool, Path]:
             try:
                 value = int(row["value"])
             except ValueError as exc:
+                logger.debug(f"ValueError: {exc}")
                 raise RuntimeError("GE validation failed for cleaned dataset.") from exc
             if not 0 <= value <= 2:
                 raise RuntimeError("GE validation failed for cleaned dataset.")
@@ -64,6 +65,8 @@ def run_clean_checkpoint(
     try:
         suite = context.get_expectation_suite(suite_name)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         suite = context.add_or_update_expectation_suite(suite_name)
 
     validator = context.sources.pandas_default.read_csv(str(clean_csv))
@@ -92,7 +95,9 @@ def run_clean_checkpoint(
 
     try:
         success_flag = results.success
-    except AttributeError:
+    except AttributeError as e:
+       logger.debug(f"AttributeError: {e}")
+        logger.warning(f"AttributeError: {e}", exc_info=True)
         try:
             success_flag = results["success"]  # type: ignore[index]
         except (TypeError, KeyError) as exc:  # pragma: no cover - defensive guard

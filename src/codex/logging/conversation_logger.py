@@ -6,6 +6,8 @@ Provides start_session, log_message, and end_session helpers that forward to
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import os
@@ -23,8 +25,9 @@ def _connect(path: str) -> sqlite3.Connection:
     # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     return cx
 
 

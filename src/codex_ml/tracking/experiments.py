@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Offline-first experiment tracking helpers."""
 
 from __future__ import annotations
@@ -104,6 +106,7 @@ def load_events(run_dir: Path) -> list[dict[str, Any]]:
             try:
                 events.append(json.loads(line))
             except json.JSONDecodeError:
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
     return events
 

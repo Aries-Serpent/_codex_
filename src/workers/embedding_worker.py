@@ -130,6 +130,7 @@ def run_worker(
                     seen.add(compute_checksum(it))
                 save_checkpoint(checkpoint_path, seen)
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             increment("worker_batch_failures")
             logger.exception("Failed to upsert batch: %s", exc)
 

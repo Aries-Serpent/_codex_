@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Audit Runner Orchestrator — v1.5.0 (Space Traversal Workflow)
 
 Capability audit pipeline for the _codex_ ML platform implementing the
@@ -50,21 +52,24 @@ try:
     from scripts.space_traversal import dup_similarity
 
     HAS_DUP_SIMILARITY = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_DUP_SIMILARITY = False
 
 try:
     from scripts.space_traversal import coverage_ingest
 
     HAS_COVERAGE_INGEST = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_COVERAGE_INGEST = False
 
 try:
     from scripts.space_traversal import trend_aggregator
 
     HAS_TREND_AGGREGATOR = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_TREND_AGGREGATOR = False
 
 # v1.5.x trend database imports
@@ -72,49 +77,56 @@ try:
     from scripts.space_traversal.trend_db import TrendDatabase, create_snapshot_from_artifacts
 
     HAS_TREND_DB = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_TREND_DB = False
 
 try:
     from scripts.space_traversal import trend_compare
 
     HAS_TREND_COMPARE = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_TREND_COMPARE = False
 
 try:
     from scripts.space_traversal import viz_ascii
 
     HAS_VIZ_ASCII = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_VIZ_ASCII = False
 
 try:
     from scripts.space_traversal import viz_html
 
     HAS_VIZ_HTML = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_VIZ_HTML = False
 
 try:
     from scripts.space_traversal import viz_cli_builder
 
     HAS_VIZ_CLI_BUILDER = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_VIZ_CLI_BUILDER = False
 
 try:
     from scripts.space_traversal import viz_api_collection
 
     HAS_VIZ_API_COLLECTION = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_VIZ_API_COLLECTION = False
 
 try:
     from scripts.space_traversal import viz_swagger
 
     HAS_VIZ_SWAGGER = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_VIZ_SWAGGER = False
 
 
@@ -305,6 +317,7 @@ def load_dynamic_detectors() -> List[Callable]:
                 try:
                     spec.loader.exec_module(module)
                 except Exception as e:
+                    logger.debug(f"Exception: {e}")
                     warn(f"Detector module {py.name} raised during import: {e} — skipping.")
                     continue
                 # Prefer detect_v2 then detect
@@ -317,6 +330,7 @@ def load_dynamic_detectors() -> List[Callable]:
                 else:
                     warn(f"No usable detector function in {py.name}; skipping.")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Failed to load detector {py.name}: {e}")
     return funcs
 
@@ -498,11 +512,13 @@ def stage_s3_capabilities(cfg, facets):
                 try:
                     det = func(ctx_index)
                 except Exception as e:
+                    logger.debug(f"Exception: {e}")
                     warn(f"Detector {func} raised: {e}")
                     continue
                 try:
                     normalized = _normalize_detector_output(det)
                 except Exception as e:
+                    logger.debug(f"Exception: {e}")
                     warn(f"Detector {func} returned invalid shape: {e}")
                     continue
                 capabilities.append(normalized)
@@ -651,6 +667,7 @@ def duplication_ratio(
                 max_tokens_per_file=max_tokens,
             )
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Failed to use token_similarity heuristic: {e}, falling back to simple")
             # Fallback to simple mode
             stems = [Path(f).stem for f in evidence_files]
@@ -896,6 +913,7 @@ def stage_s4_scoring(cfg, raw_caps):
             if discovered_cov:
                 cov_map = discovered_cov
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Coverage discovery failed: {e}")
 
     # Fallback: check for existing coverage_map.json
@@ -960,6 +978,7 @@ def stage_s4_scoring(cfg, raw_caps):
         try:
             components_norm = {k: round(float(v), 6) for k, v in components.items()}
         except (ValueError, TypeError) as e:
+            logger.debug(f"Exception: {e}")
             # Fallback: keep original values if conversion fails
             components_norm = components
             print(
@@ -1247,6 +1266,7 @@ def stage_s7_manifest(cfg):
                     "avg_percent": 0.0,
                 }
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             manifest.setdefault("warnings", []).append(f"coverage_stats_error: {e}")
 
     tpl_dir = Path(_get_matrix_template(cfg)).parent
@@ -1769,6 +1789,7 @@ def run_full(cfg):
             trend_aggregator.generate_trend_report(trend_data, output_path)
             info(f"Trend report generated: {output_path}")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Trend aggregation failed: {e}")
     elif trends_cfg.get("enabled", False) and not HAS_TREND_AGGREGATOR:
         warn("Trends enabled but trend_aggregator module not available")
@@ -1794,6 +1815,7 @@ def run_full(cfg):
                     stderr=subprocess.DEVNULL,
                 ).strip()
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                logger.debug(f"Exception: {e}")
                 # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
                 warn(f"Could not retrieve git info: {e}")
 
@@ -1802,6 +1824,7 @@ def run_full(cfg):
             run_id = db.store_snapshot(snapshot)
             info(f"Stored audit snapshot in trend database: {run_id[:8]}...")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Auto-store trend failed: {e}")
 
     info("Audit complete.")
@@ -1861,6 +1884,7 @@ def run_stage(cfg, stage_id: str):
             trend_aggregator.generate_trend_report(trend_data, output_path)
             info(f"Trend report generated: {output_path}")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             warn(f"Trend aggregation failed: {e}")
             sys.exit(2)
     else:

@@ -176,7 +176,8 @@ class _SummaryRotator:
             if time.time() - self._rollover_ts >= self.max_age_s:
                 try:
                     size = self.path.stat().st_size
-                except FileNotFoundError:
+                except FileNotFoundError as e:
+                    logger.debug(f"FileNotFoundError: {e}")
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -187,7 +188,8 @@ class _SummaryRotator:
 
         try:
             size = self.path.stat().st_size
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            logger.debug(f"FileNotFoundError: {e}")
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -776,7 +778,8 @@ try:
     from mlflow.tracking import MlflowClient
 
     MLFLOW_CLIENT_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     MlflowClient = None
     MLFLOW_CLIENT_AVAILABLE = False
 
@@ -823,6 +826,7 @@ class MLflowMetricWriter:
             self._initialized = True
             logger.info(f"MLflow initialized: {self.tracking_uri}")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to initialize MLflow: {e}")
             self._initialized = False
 
@@ -850,6 +854,7 @@ class MLflowMetricWriter:
             mlflow.log_metrics(metrics, step=step)
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log metrics to MLflow: {e}")
             return False
 
@@ -900,6 +905,7 @@ class MLflowParamWriter:
             mlflow.log_params(str_params)
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log params: {e}")
             return False
 
@@ -967,6 +973,7 @@ class MLflowArtifactWriter:
             mlflow.log_artifact(str(local_path), artifact_path)
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log artifact: {e}")
             return False
 
@@ -989,6 +996,7 @@ class MLflowArtifactWriter:
             mlflow.log_dict(data, filename)
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log dict artifact: {e}")
             return False
 
@@ -1034,7 +1042,8 @@ class MLflowArtifactWriter:
                     import mlflow.pytorch
 
                     mlflow.pytorch.log_model(model, artifact_path)
-                except ImportError:
+                except ImportError as e:
+                   logger.debug(f"ImportError: {e}")
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
             else:
@@ -1044,7 +1053,8 @@ class MLflowArtifactWriter:
                     from sklearn.base import BaseEstimator
 
                     is_sklearn = isinstance(model, BaseEstimator)
-                except ImportError:
+                except ImportError as e:
+                    logger.debug(f"ImportError: {e}")
                     # Fallback: check characteristic methods (may have false positives)
                     model_module = getattr(type(model), "__module__", "")
                     has_fit = callable(getattr(model, "fit", None))
@@ -1057,7 +1067,8 @@ class MLflowArtifactWriter:
                         import mlflow.sklearn
 
                         mlflow.sklearn.log_model(model, artifact_path)
-                    except ImportError:
+                    except ImportError as e:
+                       logger.debug(f"ImportError: {e}")
                         logger.warning(
                             "mlflow.sklearn is not available; cannot log scikit-learn model."
                         )
@@ -1067,6 +1078,7 @@ class MLflowArtifactWriter:
                     return False
             return True
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log model: {e}")
             return False
 
@@ -1103,6 +1115,7 @@ class MLflowRunManager:
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
             self._run.__enter__()
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to start MLflow run: {e}")
 
         return self
@@ -1113,6 +1126,7 @@ class MLflowRunManager:
             try:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to end MLflow run: {e}")
             finally:
                 self._run = None

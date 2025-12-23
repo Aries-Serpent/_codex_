@@ -13,6 +13,8 @@ Core Principles:
 """
 
 import json
+import logging
+logger = logging.getLogger(__name__)
 import math
 import random
 from dataclasses import dataclass, field
@@ -729,6 +731,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                             self.migrations.append(migration)
                             deprecated_found += 1
             except (OSError, UnicodeDecodeError) as e:
+                logger.debug(f"Exception: {e}")
                 print(f"  Warning: Could not read {py_file}: {e}")
 
         assessment = {
@@ -860,6 +863,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                         Path(file_path).write_text(content, encoding="utf-8")
 
             except (OSError, UnicodeDecodeError) as e:
+                logger.debug(f"Exception: {e}")
                 results["migrations_failed"] += len(file_migrations)
                 results["errors"].append(f"{file_path}: {str(e)}")
 
@@ -1770,6 +1774,7 @@ class TaskDecomposer:
                 results[task_id] = task.result
 
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 task.status = "failed"
                 task.error = str(e)
                 results[task_id] = {"error": str(e)}

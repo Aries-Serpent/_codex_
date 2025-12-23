@@ -8,6 +8,8 @@ Phases implemented: 1..6 (see top-level plan).
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import difflib
 import json
@@ -20,6 +22,8 @@ try:
 
     _codex_sqlite_auto()
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     pass
 import textwrap
 from pathlib import Path
@@ -44,6 +48,8 @@ def git_root() -> Path:
         out = run(["git", "rev-parse", "--show-toplevel"], capture_output=True).stdout.strip()
         return Path(out)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return Path.cwd()
 
 
@@ -53,6 +59,7 @@ def require_clean_worktree() -> None:
         if out.strip():
             raise RuntimeError("Working tree not clean. Commit or stash before running.")
     except FileNotFoundError as e:
+        logger.debug(f"FileNotFoundError: {e}")
         sys.stderr.write(
             "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(
                 str(e)
@@ -152,6 +159,8 @@ def search_candidates(root: Path):
         try:
             txt = p.read_text(encoding="utf-8", errors="ignore")
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         for sym in (
             r"\blog_event\b",
@@ -198,6 +207,8 @@ try:
     from src.codex.logging.db import init_db as _shared_init_db      # type: ignore
     from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _shared_log_event = None
     _shared_init_db = None
     _shared_DB_LOCK = None
@@ -490,12 +501,14 @@ def main() -> None:
             "Add tests for context manager, helper, and CLI",
         )
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("3.2 implement modules", e, context="writing files")
 
     # Phase 3.3: docs
     try:
         patch_readme(ROOT / "README.md")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("3.3 update README", e, context="README patch")
 
     # Phase 4: controlled pruning
@@ -512,6 +525,7 @@ def main() -> None:
                     f"- Potential duplication detected in: {dupes}. Construction preserved; evaluate and prune if truly redundant.\n"
                 )
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("4.x prune analysis", e, context="duplication scan")
 
     # Phase 6: results

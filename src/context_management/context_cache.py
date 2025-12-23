@@ -8,6 +8,8 @@ Reference: Context Engineering Guide 2025 - 25-40% token savings through caching
 """
 
 import hashlib
+import logging
+logger = logging.getLogger(__name__)
 import json
 import os
 from typing import Dict, Optional, Any, List, Tuple

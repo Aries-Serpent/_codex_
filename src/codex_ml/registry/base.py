@@ -16,6 +16,8 @@ component packages.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from importlib import metadata
@@ -180,6 +182,7 @@ class Registry:
                     source=f"entry_point:{ep.value}",
                 )
             except RegistryConflictError as conflict:
+                logger.debug(f"RegistryConflictError: {conflict}")
                 # Preserve the conflict details but continue scanning.
                 self._failed_entry_points[key] = conflict
         self._entry_points_loaded = True

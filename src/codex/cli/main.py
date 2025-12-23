@@ -35,7 +35,9 @@ try:
     else:
         TYPER_AVAILABLE = False
         import argparse
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     TYPER_AVAILABLE = False
     import argparse
 
@@ -63,6 +65,7 @@ if TYPER_AVAILABLE:
             typer.echo(f"   Location: {snapshot.snapshot_dir}")
             typer.echo(f"   Hash: {snapshot.content_hash[:16]}...")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             typer.echo(f"❌ Error: {e}", err=True)
             raise typer.Exit(1)
     

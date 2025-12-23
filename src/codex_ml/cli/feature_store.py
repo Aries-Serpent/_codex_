@@ -8,6 +8,8 @@ Provides commands for:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import sys
@@ -18,7 +20,9 @@ try:
     import typer
     from rich.console import Console
     from rich.table import Table
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)
 
@@ -65,6 +69,7 @@ def register(
         console.print(f"[green]✓[/green] Registered feature group: {name} v{version}")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error registering feature group: {e}")
         raise typer.Exit(code=1)
 
@@ -127,6 +132,7 @@ def list(
         console.print(f"\n[dim]Total features: {len(features)}[/dim]")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing features: {e}")
         raise typer.Exit(code=1)
 
@@ -197,6 +203,7 @@ def health(
         console.print(f"\n[dim]Healthy: {healthy_count}/{total_count}[/dim]")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error generating health report: {e}")
         raise typer.Exit(code=1)
 
@@ -239,6 +246,7 @@ def materialize(
         console.print(f"\n[dim]Use Python API for full materialization functionality[/dim]")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error materializing features: {e}")
         raise typer.Exit(code=1)
 
@@ -278,6 +286,7 @@ def versions(
         console.print(f"\n[dim]Total versions: {len(versions)}[/dim]")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing versions: {e}")
         raise typer.Exit(code=1)
 
@@ -349,6 +358,7 @@ def info(
                 console.print(f"  • {warning}")
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error getting feature info: {e}")
         raise typer.Exit(code=1)
 

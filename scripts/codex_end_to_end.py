@@ -7,6 +7,8 @@ the ``query_logs`` CLI. The script exits non-zero if any step fails.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import subprocess
 import sys

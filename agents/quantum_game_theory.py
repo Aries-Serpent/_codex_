@@ -34,7 +34,9 @@ try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     # Provide minimal numpy-like interface for type hints
     NUMPY_AVAILABLE = False
 

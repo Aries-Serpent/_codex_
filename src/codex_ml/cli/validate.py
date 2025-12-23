@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import difflib
 import sys
@@ -121,6 +123,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
     except exit_cls:
         raise
     except ValidationError as exc:
+        logger.debug(f"ValidationError: {exc}")
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
         raise exit_cls(code=2) from exc
     except Exception as exc:  # pragma: no cover - defensive fallback

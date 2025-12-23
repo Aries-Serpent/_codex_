@@ -14,6 +14,8 @@ Exit codes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import json
@@ -36,7 +38,9 @@ def _load_config(path: Path) -> Dict[str, Any]:
         # Proper fallback for tomllib (Python 3.11+) vs tomli (Python <3.11)
         try:
             import tomllib
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             import tomli as tomllib  # type: ignore
         return tomllib.loads(text)
     typer.echo("Unsupported config format (use .json or .toml)", err=True)

@@ -24,6 +24,7 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+logger = logging.getLogger(__name__)
 import os
 import pathlib
 import sys
@@ -70,13 +71,16 @@ def _log_path(name: str) -> pathlib.Path:
         # Directory may have been deleted mid-execution; recreate.
         try:
             LOG_DIR.mkdir(parents=True, exist_ok=True)
-        except OSError:
+        except OSError as e:
+           logger.debug(f"OSError: {e}")
+            logger.warning(f"OSError: {e}", exc_info=True)
             # Last resort: attempt a second time with a short fallback; if this
             # fails we still continue (logging is best-effort).
             try:
                 LOG_DIR.mkdir(parents=True, exist_ok=True)
-            except OSError:
-                pass
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
     return (LOG_DIR / name).resolve()
 
 
@@ -108,6 +112,7 @@ def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
             with path.open(mode, encoding="utf-8", buffering=1) as f:
                 f.write(text)
         except (OSError, IOError) as err2:
+           logger.debug(f"Exception: {err2}")
             logging.exception("Failed to write text to %s", path)
             logging.warning("write failed after retries for %s: %s", path, err2)
 
@@ -127,6 +132,7 @@ def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
             with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
         except (OSError, IOError, json.JSONDecodeError) as err2:
+           logger.debug(f"Exception: {err2}")
             logging.exception("Failed to append JSON line to %s", path)
             logging.warning("write failed after retries for %s: %s", path, err2)
 

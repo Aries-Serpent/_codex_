@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Archival Compliance Checker (P6 Atomic Patchset)
 
 Purpose:
@@ -121,6 +123,7 @@ def evidence_has_entry(original_path: str) -> bool:
             if rec.get("path") == original_path or rec.get("original_path") == original_path:
                 return True
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         # Best-effort: ignore errors reading/parsing evidence file (e.g., file corruption, permission issues)
         print(
             f"[WARN] Could not read or parse evidence file {EVIDENCE} for path '{original_path}': {e}",
@@ -192,7 +195,8 @@ def main(argv=None):
     else:
         try:
             diff_entries = git_relevant_changes(args.base, args.head)
-        except RuntimeError:
+        except RuntimeError as e:
+            logger.debug(f"RuntimeError: {e}")
             return 3
 
     result = evaluate_entries(diff_entries)

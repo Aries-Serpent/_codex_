@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """GitHub API exceptions."""
 
 from typing import Optional

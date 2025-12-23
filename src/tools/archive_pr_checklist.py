@@ -23,6 +23,8 @@ changing the helper.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import subprocess
@@ -87,7 +89,9 @@ def _git_staged_files(repo_root: Path) -> list[str]:
             check=False,
             text=True,
         )
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return []
     if proc.returncode != 0:
         return []

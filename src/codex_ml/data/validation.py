@@ -408,7 +408,9 @@ class SchemaValidationRule(ValidationRule):
         """Validate against schema."""
         try:
             import jsonschema
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("jsonschema not installed, skipping schema validation")
             return ValidationResult(
                 rule_name=self.name,
@@ -436,6 +438,7 @@ class SchemaValidationRule(ValidationRule):
                 message="Data matches schema",
             )
         except jsonschema.ValidationError as e:
+            logger.debug("Exception caught, returning", exc_info=True)
             return ValidationResult(
                 rule_name=self.name,
                 is_valid=False,

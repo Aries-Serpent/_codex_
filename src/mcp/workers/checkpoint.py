@@ -1,5 +1,7 @@
 # Simple file-based checkpoint helper. Stores processed ids/checksums per input file.
 import json
+import logging
+logger = logging.getLogger(__name__)
 from pathlib import Path
 from typing import Set
 
@@ -11,6 +13,8 @@ def load_checkpoint(path: str) -> Set[str]:
     try:
         return set(json.loads(p.read_text()))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return set()
 
 

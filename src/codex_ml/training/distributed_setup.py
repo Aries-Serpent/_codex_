@@ -97,6 +97,7 @@ def setup_distributed(
         return True
 
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Failed to initialize distributed: {e}")
         return False
 

@@ -17,6 +17,8 @@ Key behaviours for callers:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import contextlib
 import hashlib
@@ -52,6 +54,8 @@ try:  # pragma: no cover - optional dependency
     _mlf = _m
     _HAS_MLFLOW = True
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _mlf = None
     _HAS_MLFLOW = False
 
@@ -116,6 +120,7 @@ def _ensure_mlflow_available() -> None:
         _mlf = _m
         _HAS_MLFLOW = True
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         _mlf = None
         _HAS_MLFLOW = False
         err = build_optional_dependency_error("mlflow", "experiment tracking")
@@ -300,6 +305,8 @@ def log_metrics(
         try:
             ml.log_metric(k, float(v), step=step)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # be robust; drop bad values quietly
             pass
 
@@ -412,6 +419,8 @@ def current_commit_hash() -> str:
         repo = git.Repo(search_parent_directories=True)
         return repo.head.commit.hexsha
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return ""
 
 
@@ -432,18 +441,22 @@ def init_run(
         commit = current_commit_hash()
         if commit:
             _mlf.set_tag("git_commit", commit[:7])
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     if config is not None:
         try:
             try:
                 payload = json.dumps(config, sort_keys=True, default=str)
-            except TypeError:
+            except TypeError as e:
+               logger.debug(f"TypeError: {e}")
+                logger.warning(f"TypeError: {e}", exc_info=True)
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
             _mlf.set_tag("config_hash", digest)
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     return run

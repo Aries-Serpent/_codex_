@@ -10,6 +10,8 @@ would use the sigstore-python SDK.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import json
@@ -118,6 +120,7 @@ class SignstoreClient:
             return len(signature) > 0 and signature.startswith("MOCK_SIG_")
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Signature verification failed: {e}")
             return False
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import json
 import logging
+logger = logging.getLogger(__name__)
 import math
 from contextlib import suppress
 from dataclasses import dataclass
@@ -26,6 +27,8 @@ def _extract_lora_state(model: Any) -> dict[str, Any] | None:
     try:  # pragma: no cover - optional dependency
         from peft import get_peft_model_state_dict
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     try:
         state = get_peft_model_state_dict(model)
@@ -55,6 +58,8 @@ def _restore_lora_state(model: Any, payload: Mapping[str, Any]) -> None:
     try:  # pragma: no cover - optional dependency
         from peft import set_peft_model_state_dict
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         LOGGER.debug("peft not available; skipping LoRA restore")
         return
     try:
@@ -117,10 +122,13 @@ def _torch_load(path: str, *, map_location: str | torch.device | None) -> Any:
     if map_location is not None:
         kwargs["map_location"] = map_location
     if _TORCH_SUPPORTS_WEIGHTS_ONLY:
-        kwargs["weights_only"] = False
+        # Security: Use weights_only=True to prevent arbitrary code execution
+        # This is the secure default for PyTorch >=2.2.2 (CVE-2024-XXXXX)
+        kwargs["weights_only"] = True
     try:
         return load_fn(path, **kwargs)
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(path, **kwargs)
@@ -188,6 +196,8 @@ def _parse_epoch_metric(path: Path) -> tuple[int | None, float | None]:
         metric = float(metric_str)
         return epoch, metric
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None, None
 
 

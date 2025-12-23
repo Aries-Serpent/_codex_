@@ -1,4 +1,5 @@
 from __future__ import annotations
+logger = logging.getLogger(__name__)
 
 import logging
 import os
@@ -44,6 +45,7 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
             [str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True
         ).strip()
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         LOGGER.debug("Unable to read git commit from %s: %s", root, exc)
         return None
 

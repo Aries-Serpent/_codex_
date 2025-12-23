@@ -4,6 +4,8 @@ Extend/replace with rich Hydra Structured Configs as needed.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -85,6 +87,7 @@ def load_yaml(path: str | Path) -> dict:
         with open(path, "r", encoding="utf-8") as f:
             return safe_load(f) or {}
     except MissingPyYAMLError as exc:
+        logger.debug(f"MissingPyYAMLError: {exc}")
         raise RuntimeError(
             'PyYAML is required to validate configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
             f"before loading {path}."

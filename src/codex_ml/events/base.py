@@ -144,6 +144,7 @@ class EventBus(EventPublisher, EventSubscriber):
             try:
                 callback(event)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Error in event callback: {e}")
 
         logger.info(f"Published event: {event.event_type.value} (id={event.event_id})")

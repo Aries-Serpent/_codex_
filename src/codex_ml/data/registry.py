@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Dataset registry with entry-point discovery for ``codex_ml``."""
 
 from __future__ import annotations

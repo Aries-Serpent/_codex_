@@ -11,6 +11,8 @@ Usage:
     python scripts/manage_plugins.py info PLUGIN_NAME --group GROUP
 """
 import argparse
+import logging
+logger = logging.getLogger(__name__)
 import json
 import sys
 from pathlib import Path
@@ -208,6 +210,7 @@ def main():
         elif args.command == "info":
             return cmd_info(args)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
 

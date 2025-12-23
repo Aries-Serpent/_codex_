@@ -8,6 +8,8 @@ This tool provides advanced deduplication and space optimization:
 - Storage optimization recommendations
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import hashlib
@@ -59,6 +61,7 @@ class ContentDeduplicator:
                     sha256.update(chunk)
             return sha256.hexdigest()
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             print(f"Warning: Could not read {filepath}: {e}", file=sys.stderr)
             return ""
 

@@ -349,6 +349,7 @@ class DeploymentOrchestrator:
                 self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -413,6 +414,7 @@ class DeploymentOrchestrator:
                     self.logger.error(f"Merge failed: {stderr}")
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -505,6 +507,7 @@ class DeploymentOrchestrator:
                                     initial_conclusion=summary_conclusion,
                                 )
                             except TimeoutError as timeout_err:
+                                logger.debug(f"TimeoutError: {timeout_err}")
                                 result.status = PhaseStatus.FAILED
                                 timeout_message = str(timeout_err)
                                 result.errors.append(timeout_message)
@@ -586,6 +589,7 @@ class DeploymentOrchestrator:
                     result.status = PhaseStatus.FAILED
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -734,6 +738,7 @@ class DeploymentOrchestrator:
                 self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -795,6 +800,7 @@ class DeploymentOrchestrator:
                 )
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")

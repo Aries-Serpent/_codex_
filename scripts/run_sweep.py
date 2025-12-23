@@ -7,6 +7,8 @@ sequentially.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import csv
@@ -32,7 +34,9 @@ def _safe_yaml_load(text: str) -> Dict[str, object]:
 
     try:
         from yaml import YAMLError, safe_load  # type: ignore
-    except ModuleNotFoundError:
+    except ModuleNotFoundError as e:
+       logger.debug(f"ModuleNotFoundError: {e}")
+        logger.warning(f"ModuleNotFoundError: {e}", exc_info=True)
         try:
             data = _minimal_yaml_load(text)
         except Exception as exc:  # pragma: no cover - defensive
@@ -111,6 +115,8 @@ def main() -> None:
             try:
                 metrics = _safe_yaml_load(metrics_path.read_text())
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 metrics = {}
         summary.append({"run_id": idx, **combo, **metrics})
 

@@ -49,6 +49,8 @@ def _discover_epoch_dirs(root: Path) -> list[Path]:
         try:
             epoch = int(m.group(1))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         out.append((epoch, p))
     out.sort(key=lambda x: x[0])
@@ -63,6 +65,8 @@ def _read_latest_epoch(root: Path) -> Optional[int]:
         data = json.loads(latest.read_text())
         return int(data.get("epoch"))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 

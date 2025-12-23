@@ -165,6 +165,7 @@ class RuntimeTracer:
             if result.exit_code == 0 and result.stdout:
                 return result.stdout
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
             logger.debug("Help detection failed for %s: %s", entry_point, exc)
@@ -235,6 +236,7 @@ class RuntimeTracer:
                     try:
                         stdin_input = input_file.read_text(encoding="utf-8")
                     except Exception as e:
+                       logger.debug(f"Exception: {e}")
                         logger.warning("Could not read input file %s: %s", input_file, e)
                 
                 if enable_tracing:
@@ -321,6 +323,7 @@ class RuntimeTracer:
                 probe_result["detected_type"] = "cli"
                 
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             # Ignore errors during source code inspection - this is best-effort detection.
             # Missing type information doesn't prevent the rest of the analysis.
             logger.debug("Entry point probe failed for %s: %s", entry_point, exc)

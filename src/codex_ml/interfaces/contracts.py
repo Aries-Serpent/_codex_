@@ -7,6 +7,8 @@ specialization track.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -80,7 +82,9 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         tokens = adapter.encode("contract smoke test")
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         raise
     except Exception as exc:  # pragma: no cover - adapter-specific errors
         raise TokenizationContractError(f"encode failed: {exc}") from exc
@@ -90,8 +94,9 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.encode(None)
-    except TypeError:
-        pass
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError("encode must reject non-string input with TypeError")
 
@@ -102,8 +107,9 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode(["bad"])
-    except ValueError:
-        pass
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError("decode must raise ValueError for non-integer ids")
 

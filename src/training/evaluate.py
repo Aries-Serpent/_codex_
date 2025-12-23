@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Simple evaluation helpers for language-model datasets."""
 
 from __future__ import annotations
@@ -25,6 +27,7 @@ def _infer_device(model: Any) -> str | None:
         try:
             first = next(iterator)
         except StopIteration:
+            logger.debug("Exception caught, returning", exc_info=True)
             return None
         dev = getattr(first, "device", None)
         return str(dev) if dev is not None else None
@@ -135,7 +138,9 @@ def evaluate(
     mean_loss = sum(losses) / count
     try:
         perplexity = math.exp(mean_loss)
-    except OverflowError:
+    except OverflowError as e:
+       logger.debug(f"OverflowError: {e}")
+        logger.warning(f"OverflowError: {e}", exc_info=True)
         perplexity = float("inf")
     return {"loss": mean_loss, "perplexity": perplexity, "count": count}
 

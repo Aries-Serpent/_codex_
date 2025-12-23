@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Batch restoration utilities for the archive CLI."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Utilities for semantic versioning of Codex artifacts."""
 
 from __future__ import annotations

@@ -5,6 +5,7 @@ Follows specification from reports/specs/_codex__Checkpoint_BestK_Retention_Spec
 """
 
 from __future__ import annotations
+logger = logging.getLogger(__name__)
 
 import json
 import logging
@@ -58,6 +59,7 @@ class CheckpointIndex:
                 data = json.load(f)
             return [CheckpointEntry(**entry) for entry in data]
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             LOGGER.warning(f"Failed to load index, using empty: {e}")
             return []
 
@@ -89,6 +91,7 @@ class CheckpointIndex:
                     os.fsync(f.fileno())
                 os.replace(temp_path, self.index_path)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 if temp_path.exists():
                     temp_path.unlink()
                 raise RuntimeError(f"Failed to save index atomically: {e}") from e
@@ -160,6 +163,7 @@ def prune_checkpoints(
                 else:
                     LOGGER.warning(f"Checkpoint file not found (already deleted?): {file_path}")
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 errors.append(f"Failed to delete {file_path}: {e}")
                 LOGGER.error(f"Failed to delete {file_path}: {e}")
 
@@ -200,6 +204,7 @@ def save_checkpoint_with_retention(
     try:
         import torch
     except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         raise ImportError("PyTorch required for checkpoint saving") from e
 
     checkpoint_dir = Path(checkpoint_dir)
@@ -245,6 +250,7 @@ def save_checkpoint_with_retention(
                     file_to_delete.unlink()
                     LOGGER.info(f"Pruned checkpoint: {file_to_delete}")
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 LOGGER.warning(f"Failed to delete pruned checkpoint {file_to_delete}: {e}")
 
     return checkpoint_path

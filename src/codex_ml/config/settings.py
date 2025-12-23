@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Settings and schema definitions for Codex ML configuration."""
 
 from __future__ import annotations
@@ -27,6 +29,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
         try:
             return ConfigDict(**config)
         except TypeError as exc:
+            logger.debug(f"TypeError: {exc}")
             # If ConfigDict rejects unknown keys, filter to known parameters
             valid_keys = {"extra", "arbitrary_types_allowed", "validate_assignment"}
             filtered = {k: v for k, v in config.items() if k in valid_keys}

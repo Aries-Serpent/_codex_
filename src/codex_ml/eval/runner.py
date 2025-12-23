@@ -1,6 +1,8 @@
 """Evaluation runner orchestrating metric computation and report generation."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import hashlib
@@ -45,6 +47,8 @@ def _append_error_report(
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # If error reporting fails we swallow the exception to avoid cascading failures.
         return
 
@@ -53,6 +57,8 @@ def _append_error_report(
         context_payload = context or {}
         context_str = json.dumps(context_payload, sort_keys=True, default=str)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         context_str = repr(context)
 
     block_lines = [
@@ -70,6 +76,8 @@ def _append_error_report(
         with error_file.open("a", encoding="utf-8") as fh:
             fh.write("\n".join(block_lines))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Suppress logging failures to keep evaluation running.
         return
 
@@ -191,6 +199,7 @@ def _coerce_token_sequence(record: dict[str, Any], key: str, index: int) -> list
     try:
         coerced = [int(token) for token in tokens]
     except (TypeError, ValueError) as exc:
+        logger.debug(f"Exception: {exc}")
         raise EvaluationError(f"Record {index} has invalid '{key}' values: {exc}") from exc
     return coerced
 
@@ -270,9 +279,11 @@ def _invoke_registry_metric(
         try:
             return attempt()
         except TypeError as exc:
+            logger.debug(f"TypeError: {exc}")
             last_type_error = exc
             continue
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             append_error_entry(
                 "metric.execute",
                 str(exc),
@@ -310,6 +321,7 @@ def _compute_metrics(
                     get_registered_metric(registered_name),
                 )
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 append_error_entry(
                     "metric-registry.load",
                     str(exc),
@@ -317,6 +329,7 @@ def _compute_metrics(
                     "Should this registry metric be reviewed or disabled?",
                 )
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         append_error_entry(
             "metric-registry.enumerate",
             str(exc),
@@ -588,10 +601,12 @@ def run_evaluation(
 
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-            except Exception:
-                pass  # Silently ignore param logging errors
-        except Exception:
-            pass  # Silently ignore MLflow errors
+            except Exception as e:
+               logger.debug(f"Exception: {e}")
+                logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore param logging errors
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
 
     # For the pluggable sink feature, use the first sink if multiple are specified
     # The remaining sinks will be handled by the dedicated writers later
@@ -634,6 +649,7 @@ def run_evaluation(
                 fieldnames=fieldnames if sink_kind == "csv" else None,
             )
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
@@ -643,6 +659,8 @@ def run_evaluation(
 
         set_global_determinism(1337)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Determinism module not available or failed to initialize
         pass
 
@@ -653,6 +671,8 @@ def run_evaluation(
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
         pass
 
@@ -663,6 +683,8 @@ def run_evaluation(
 
             PerfSampler().run(steps=3)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
             pass
 
@@ -670,7 +692,9 @@ def run_evaluation(
     # Convert run_id to integer using hash for arbitrary strings
     try:
         run_int = int(run_id, 16)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         # Fall back to hashing for non-hexadecimal run_ids
         run_int = int(hashlib.sha256(run_id.encode("utf-8")).hexdigest()[:16], 16)
     seconds_range = 3153600000  # ~100 years in seconds

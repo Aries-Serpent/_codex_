@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -143,8 +145,9 @@ class NDJSONLogger:
             if src.exists():
                 try:
                     shutil.move(str(src), str(dst))
-                except Exception:
-                    pass
+                except Exception as e:
+                   logger.debug(f"Exception: {e}")
+                    logger.warning(f"Exception: {e}", exc_info=True)
 
     def write(self, record: dict[str, object]) -> None:
         line = json.dumps(record, ensure_ascii=False)
@@ -158,5 +161,6 @@ class NDJSONLogger:
                 self._rotate()
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(line + "\n")
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)

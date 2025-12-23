@@ -1,6 +1,8 @@
 """Typer application for Zendesk configuration workflows."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import json
@@ -325,6 +327,7 @@ def apply(
     try:
         validate_plan({"resource": resource, "operations": operations_list})
     except ValidationError as exc:
+        logger.debug(f"ValidationError: {exc}")
         raise typer.BadParameter(f"Invalid plan for resource '{resource}': {exc}") from exc
 
     handlers = _APPLY_HANDLERS
@@ -338,8 +341,10 @@ def apply(
         if not dry_run:
             update_artifact_version(f"zendesk/{resource}", operations_list)
     except ValueError as exc:
+        logger.debug(f"ValueError: {exc}")
         raise typer.BadParameter(str(exc)) from exc
     except ImportError as exc:
+        logger.debug(f"ImportError: {exc}")
         if dry_run:
             typer.echo(f"SDK missing but continuing due to --dry-run: {exc}", err=True)
         else:
@@ -499,6 +504,7 @@ def _coerce_model_sequence(
             else:
                 models.append(model_cls.model_validate(item))
         except ValidationError as exc:
+            logger.debug(f"ValidationError: {exc}")
             raise typer.BadParameter(f"Invalid {resource} entry in {source}: {exc}") from exc
     return models
 
@@ -547,7 +553,9 @@ def _collect_objects(client: object, attribute: str) -> list[Any]:
         return result
     try:
         return list(result)
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         return []
 
 

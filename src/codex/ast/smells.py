@@ -5,6 +5,8 @@ Design: FR-AST-007 (Code Smell Detector)
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import re
@@ -235,6 +237,8 @@ class CodeSmellDetector:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.detect_string(code, file_path)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return []
 
     def detect_string(
@@ -254,7 +258,9 @@ class CodeSmellDetector:
 
         try:
             tree = ast.parse(code)
-        except SyntaxError:
+        except SyntaxError as e:
+           logger.debug(f"SyntaxError: {e}")
+            logger.warning(f"SyntaxError: {e}", exc_info=True)
             return smells
 
         for rule in self.rules.values():

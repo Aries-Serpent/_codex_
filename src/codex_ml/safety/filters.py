@@ -144,7 +144,9 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
     """
     try:
         text = path.read_text(encoding="utf-8")
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return None
     except Exception as exc:  # pragma: no cover - defensive
         logger.warning("Unable to read safety policy %s: %s", path, exc)
@@ -308,14 +310,20 @@ def _parse_scalar(value: str) -> Any:
         return False
     try:
         return int(value)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         try:
             return float(value)
-        except ValueError:
+        except ValueError as e:
+           logger.debug(f"ValueError: {e}")
+            logger.warning(f"ValueError: {e}", exc_info=True)
             pass
     try:
         return ast.literal_eval(value)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return value
 
 

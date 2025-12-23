@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from contextlib import suppress
 from dataclasses import dataclass, field
@@ -41,7 +43,9 @@ class PluginRegistry:
                 continue
             try:
                 self.register(plugin)
-            except ValueError:
+            except ValueError as e:
+               logger.debug(f"ValueError: {e}")
+                logger.warning(f"ValueError: {e}", exc_info=True)
                 continue
             count += 1
         return count

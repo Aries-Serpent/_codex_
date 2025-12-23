@@ -14,6 +14,8 @@ Index schema:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -28,6 +30,8 @@ def _read_index(index_path: Path) -> Dict[str, Any]:
     try:
         return json.loads(index_path.read_text())
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {"entries": []}
 
 
@@ -103,6 +107,8 @@ def update_and_prune(
                 if p.exists():
                     p.unlink()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Log or ignore; failure leaves extra file (acceptable fallback)
                 pass
 
@@ -123,6 +129,8 @@ def _infer_step_from_name(name: str) -> int:
             num_part = core.split(".")[0]
             return int(num_part)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return -1
     return -1
 

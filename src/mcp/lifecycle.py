@@ -174,6 +174,7 @@ class LifecycleManager:
             self._logger.info("Server initialized successfully")
             
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self._logger.error("Initialization failed: %s", e)
             await self.transition_to(ServerState.ERROR)
             raise
@@ -213,6 +214,7 @@ class LifecycleManager:
             try:
                 hook()
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 self._logger.error("Shutdown hook failed: %s", e)
         
         await self.transition_to(ServerState.STOPPED)
@@ -267,6 +269,7 @@ class LifecycleManager:
                     all_healthy = False
                     messages.append(result.message)
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 all_healthy = False
                 details[f"check_{i}"] = {"healthy": False, "error": str(e)}
                 messages.append(f"Check {i} failed: {e}")

@@ -1,5 +1,7 @@
 # src/codex_ml/analysis/providers.py
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -44,6 +46,8 @@ class InternalRepoSearch(SearchProvider):
                                 }
                             )
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         return {"status": "ok", "query": query, "results": results}
 
@@ -59,6 +63,7 @@ def _coerce_bool(value: Optional[str], default: bool = False) -> bool:
     try:
         return bool(int(value))
     except (TypeError, ValueError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return default
 
 
@@ -68,6 +73,7 @@ def _normalise_timeout(value: Optional[str], default: float) -> float:
     try:
         return float(value)
     except (TypeError, ValueError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return default
 
 
@@ -200,6 +206,7 @@ class ExternalWebSearch(SearchProvider):
             status_code = getattr(response, "status_code", None)
             response.raise_for_status()
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             result["status"] = "error"
             if status_code is not None:
                 result["status_code"] = status_code
@@ -220,6 +227,7 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = response.json()
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 result["status"] = "error"
                 result["error"] = f"invalid-json: {exc}"
                 return result
@@ -233,12 +241,15 @@ class ExternalWebSearch(SearchProvider):
     def _load_offline_index(self, path: Path, query: str, result: dict[str, Any]) -> dict[str, Any]:
         try:
             raw_text = path.read_text(encoding="utf-8")
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             result["status"] = "error"
             result["reason"] = "offline-missing"
             result["error"] = f"offline index not found: {path}"
             return result
         except OSError as exc:
+            logger.debug(f"OSError: {exc}")
             result["status"] = "error"
             result["reason"] = "offline-unreadable"
             result["error"] = str(exc)
@@ -251,6 +262,7 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = json.loads(raw_text)
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 result["status"] = "error"
                 result["reason"] = "offline-invalid"
                 result["error"] = str(exc)

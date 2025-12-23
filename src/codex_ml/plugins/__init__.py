@@ -1,3 +1,4 @@
+logger = logging.getLogger(__name__)
 """Plugin registry utilities for codex_ml."""
 
 from __future__ import annotations

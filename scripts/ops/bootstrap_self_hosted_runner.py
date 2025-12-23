@@ -36,7 +36,10 @@ def _exec(cmd: str, dry_run: bool) -> int:
     print(f"$ {cmd}")
     if dry_run:
         return 0
-    return subprocess.call(cmd, shell=True)
+    # Use shlex.split for safe command parsing instead of shell=False
+    import shlex
+    cmd_list = shlex.split(cmd)
+    return subprocess.call(cmd_list, shell=False)
 
 
 def main():

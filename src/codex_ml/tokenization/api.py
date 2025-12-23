@@ -1,6 +1,8 @@
 """Tokenization API exports with deprecation helpers."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import warnings
 from pathlib import Path
@@ -208,9 +210,13 @@ def deprecated_legacy_access(name: str):
     )
     try:
         value = provider()
-    except ModuleNotFoundError:
+    except ModuleNotFoundError as e:
+       logger.debug(f"ModuleNotFoundError: {e}")
+        logger.warning(f"ModuleNotFoundError: {e}", exc_info=True)
         raise
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         if name == "SPTokenizer":  # pragma: no cover - optional dependency guard
             raise
         raise

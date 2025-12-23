@@ -148,6 +148,7 @@ def analyze_file(file_path: Path) -> List[Tuple[int, str, str]]:
         return detector.issues
 
     except (SyntaxError, UnicodeDecodeError) as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return []
 
@@ -192,6 +193,7 @@ def fix_redundant_pass(
         return True
 
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Failed to fix {file_path}: {e}")
         return False
 

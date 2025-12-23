@@ -164,7 +164,9 @@ def _listify_texts(value: Any) -> list[str]:
         return [value]
     try:
         return [str(item) for item in list(value)]
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         return [str(value)]
 
 
@@ -451,16 +453,22 @@ def _start_system_metrics_logger(path: Path, interval: float):
     try:
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         logger.start()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     return logger
 
@@ -472,8 +480,9 @@ def _stop_system_metrics_logger(logger: Any) -> None:
     if callable(stopper):
         try:
             stopper()
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
@@ -526,6 +535,8 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
         try:
             return bool(int(raw))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return bool(raw)
 
     checkpoint_dir = _scalar(None, "checkpoint_dir")
@@ -836,6 +847,7 @@ def run_functional_training(
                         sanitized_text, stage=stage, bypass=safety_cfg.bypass
                     )
                 except SafetyViolation as exc:
+                    logger.debug(f"SafetyViolation: {exc}")
                     match_ids: list[str] = []
                     for match in exc.decision.matches:
                         if isinstance(match, dict):
@@ -857,6 +869,7 @@ def run_functional_training(
                 try:
                     moderation_decision = moderation_adapter.enforce(sanitized_text, stage=stage)
                 except ModerationRejection as exc:
+                    logger.debug(f"ModerationRejection: {exc}")
                     context = json.dumps(
                         {
                             "stage": stage,
@@ -904,6 +917,8 @@ def run_functional_training(
 
             import torch
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [
                 {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
@@ -1153,6 +1168,7 @@ def run_functional_training(
         try:
             iterator = list(seq)
         except TypeError as err:
+            logger.debug(f"TypeError: {err}")
             raise TypeError("Tokenizer encodings must be sequences") from err
         normalized: list[int] = []
         for item in iterator:
@@ -1518,7 +1534,9 @@ def _evaluate_model(
     elif "val_loss" in result:
         try:
             result["val_perplexity"] = float(math.exp(result["val_loss"]))
-        except OverflowError:
+        except OverflowError as e:
+           logger.debug(f"OverflowError: {e}")
+            logger.warning(f"OverflowError: {e}", exc_info=True)
             result["val_perplexity"] = float("inf")
     if "token_accuracy" in metrics:
         result["val_token_accuracy"] = float(metrics["token_accuracy"])
@@ -1529,7 +1547,8 @@ def _evaluate_model(
 
     try:
         result.setdefault("num_batches", float(len(loader)))
-    except TypeError:
-        pass
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
 
     return result

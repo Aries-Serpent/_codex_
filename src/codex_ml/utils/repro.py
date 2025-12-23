@@ -1,4 +1,6 @@
 import hashlib
+import logging
+logger = logging.getLogger(__name__)
 import json
 import os
 import re
@@ -142,6 +144,8 @@ def compute_directory_hash(
             rel_path = filepath.relative_to(dirpath)
             hashes[str(rel_path)] = compute_file_hash(filepath)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
 
     return hashes

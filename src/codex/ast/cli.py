@@ -9,6 +9,8 @@ Exit codes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
@@ -35,8 +37,9 @@ def _analyze_path(path: Path) -> Dict[str, Any]:
             total_lines += sum(
                 1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines()
             )
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
     return {
         "path": str(path),
         "files": len(files),
@@ -56,6 +59,7 @@ def analyze(
         else:
             typer.echo(f"Analyze {target}: files={res['files']} lines={res['total_lines']}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Analyze error: {e}", err=True)
         raise typer.Exit(code=3)
 
@@ -73,6 +77,7 @@ def audit(
         else:
             typer.echo(f"Audit {target}: files={res['files']} lines={res['total_lines']}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Audit error: {e}", err=True)
         raise typer.Exit(code=3)
 
@@ -99,6 +104,7 @@ def diff(
         else:
             typer.echo(f"Diff files={delta_files:+} lines={delta_lines:+}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         typer.echo(f"Diff error: {e}", err=True)
         raise typer.Exit(code=3)
 

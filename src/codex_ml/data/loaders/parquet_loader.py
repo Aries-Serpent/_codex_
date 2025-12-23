@@ -26,7 +26,9 @@ try:
     import pyarrow.parquet as pq
 
     PARQUET_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     PARQUET_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")
 
@@ -72,6 +74,7 @@ class ParquetLoader:
             self.parquet_file = pq.ParquetFile(self.file_path)
             self.metadata = self.parquet_file.metadata
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid Parquet file: {e}")
 
     def load(self) -> List[Dict[str, Any]]:

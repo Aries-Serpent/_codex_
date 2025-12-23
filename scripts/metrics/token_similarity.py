@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Token Similarity Engine (P4)
 
 Computes token-level similarity across evidence files for each capability

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Minimal text-generation CLI for local smoke testing."""
 
 from __future__ import annotations
@@ -102,6 +104,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             try:
                 prompt = filters.enforce(prompt, stage="prompt", bypass=bypass)
             except SafetyViolation as exc:
+                logger.debug(f"SafetyViolation: {exc}")
                 log_event(
                     logger,
                     "cli.finish",
@@ -131,6 +134,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             try:
                 text = filters.enforce(text, stage="output", bypass=bypass)
             except SafetyViolation as exc:
+                logger.debug(f"SafetyViolation: {exc}")
                 log_event(
                     logger,
                     "cli.finish",

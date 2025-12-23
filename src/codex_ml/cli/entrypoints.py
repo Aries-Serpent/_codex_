@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -87,12 +89,14 @@ def _load_main(module_path: str, failures: list[str]) -> int | None:
     except SystemExit:
         raise
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}.main() raised {exc!r}")
         return None
 
     try:
         return int(result)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
         return None
 
@@ -106,6 +110,7 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
     except SystemExit:
         raise
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}: execution failed ({exc})")
         return False
 
@@ -243,12 +248,14 @@ def eval_main() -> int:
                 )
                 return rc
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
                 override_failed = True
                 override_error = str(exc)
         try:
             rc = _eval_dispatch(namespace)
         except SystemExit as exc:
+            logger.debug(f"SystemExit: {exc}")
             rc = int(getattr(exc, "code", 0) or 0)
             payload = {
                 "prog": parser.prog,

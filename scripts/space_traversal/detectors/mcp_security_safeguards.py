@@ -1,6 +1,8 @@
 """Detector for MCP security safeguards such as confirmation prompts or dry-run toggles."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from typing import Any, Dict

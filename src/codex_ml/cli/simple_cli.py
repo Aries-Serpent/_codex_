@@ -1,6 +1,8 @@
 """Lightweight click-based CLI for common Codex ML workflows."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import random
@@ -54,8 +56,9 @@ def _seed_everything(seed: int) -> None:
         torch.manual_seed(seed)
         if torch.cuda.is_available():  # pragma: no cover - GPU dependent
             torch.cuda.manual_seed_all(seed)
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 @click.group()
@@ -132,6 +135,7 @@ def build_tokenizer(config_path: Path, dry_run: bool) -> None:
     try:
         result_path = run_tokenizer_train(str(config_path), dry_run=dry_run)
     except TokenizerPipelineError as exc:
+        logger.debug(f"TokenizerPipelineError: {exc}")
         raise click.ClickException(str(exc)) from exc
     click.echo(str(result_path))
 

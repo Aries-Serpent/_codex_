@@ -12,6 +12,8 @@ avoids heavy dependencies and therefore expects the caller to have the
 
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import numbers
@@ -39,6 +41,8 @@ def _get_sentencepiece():
         spm = sentencepiece_module
         return sentencepiece_module
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.
         from types import SimpleNamespace
@@ -71,6 +75,8 @@ def _get_sentencepiece():
                         data = json.loads(Path(model_file).read_text(encoding="utf-8"))
                         self.vocab = list(data.get("vocab", []))
                     except Exception:
+                        logger.warning("Exception occurred", exc_info=True)
+                        logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
             def encode(self, text: str, out_type=int):
@@ -151,7 +157,9 @@ class SentencePieceAdapter:
         cls = module.SentencePieceProcessor
         try:
             proc = cls(model_file=str(self.model_path))
-        except TypeError:
+        except TypeError as e:
+           logger.debug(f"TypeError: {e}")
+            logger.warning(f"TypeError: {e}", exc_info=True)
             proc = cls()
             loader = getattr(proc, "Load", None) or getattr(proc, "load", None)
             if loader is None:  # pragma: no cover - defensive

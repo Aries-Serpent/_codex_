@@ -112,7 +112,9 @@ class PromptSanitizer:
             temp_sanitizer = PromptSanitizer(strict=True)
             temp_sanitizer.sanitize(prompt)
             return True
-        except ValueError:
+        except ValueError as e:
+           logger.debug(f"ValueError: {e}")
+            logger.warning(f"ValueError: {e}", exc_info=True)
             return False
 
     def get_violations(self, prompt: str) -> List[str]:

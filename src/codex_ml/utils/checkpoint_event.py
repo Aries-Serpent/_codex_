@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import json
@@ -59,6 +61,8 @@ def maybe_emit_checkpoint_saved_event(
         out.flush()
         return True
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False
 
 

@@ -91,6 +91,7 @@ class RollbackExecutor:
             }
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self._log_action("rollback_mlflow", "error", str(e))
             return {"feature": "mlflow", "status": "error", "error": str(e)}
 
@@ -144,6 +145,7 @@ class RollbackExecutor:
             return {"feature": "feature_store", "status": "success", "actions": actions}
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self._log_action("rollback_feature_store", "error", str(e))
             return {"feature": "feature_store", "status": "error", "error": str(e)}
 
@@ -186,6 +188,7 @@ class RollbackExecutor:
             }
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             self._log_action("rollback_validation", "error", str(e))
             return {"feature": "data_validation", "status": "error", "error": str(e)}
 

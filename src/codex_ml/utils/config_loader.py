@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,7 +22,9 @@ try:  # pragma: no cover - optional dependency
     try:
         from hydra import compose, initialize_config_dir
         from hydra.errors import MissingConfigException
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         from config_legacy import compose, initialize_config_dir
         from config_legacy.errors import MissingConfigException
 
@@ -118,8 +122,9 @@ else:
 finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 class _AttrDictConfig(DictConfig):
@@ -176,6 +181,7 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
+            logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
                 f"before loading {path}."
@@ -196,6 +202,7 @@ def _apply_overrides_to_mapping(
         try:
             parsed = safe_load(value)
         except MissingPyYAMLError as exc:
+            logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
                 "before specifying overrides."
@@ -300,6 +307,7 @@ def load_config(*, config_path: str) -> DictConfig:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
+            logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
                 f"before loading {config_path}."

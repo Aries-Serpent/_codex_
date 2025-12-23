@@ -104,6 +104,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
                 text = text[:MAX_FILE_SIZE]
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             # Defensive error handling (safeguard)
             logger.debug(f"Error reading {path}: {e}")
             continue

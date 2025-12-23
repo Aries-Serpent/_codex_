@@ -250,6 +250,8 @@ class CircuitBreaker:
                 self.record_success()
                 return result
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 self.record_failure()
                 raise
 

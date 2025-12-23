@@ -71,21 +71,27 @@ def read_text_safe(
         return content
         
     except UnicodeDecodeError as e:
+       logger.debug(f"UnicodeDecodeError: {e}")
         logger.error(
             f"Failed to decode {path} with encoding {encoding}: {e}. "
             f"Try different encoding or use errors='replace'"
         )
         raise
     
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         logger.error(f"File not found: {path}")
         raise
     
-    except PermissionError:
+    except PermissionError as e:
+       logger.debug(f"PermissionError: {e}")
+        logger.warning(f"PermissionError: {e}", exc_info=True)
         logger.error(f"Permission denied reading {path}")
         raise
     
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Unexpected error reading {path}: {type(e).__name__}: {e}")
         raise
 
@@ -126,7 +132,9 @@ def read_text_safe_fallback(
             logger.info(f"Successfully decoded {path} with encoding {encoding}")
             return content, encoding
         
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
+           logger.debug(f"UnicodeDecodeError: {e}")
+            logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
             continue
     
     # All strict encodings failed, try utf-8 with replace

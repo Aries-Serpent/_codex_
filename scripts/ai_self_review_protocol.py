@@ -66,7 +66,7 @@ class Issue:
     def __post_init__(self):
         if not self.id:
             content = f"{self.type.value}:{self.location}:{self.description}"
-            self.id = hashlib.md5(content.encode()).hexdigest()[:12]
+            self.id = hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:12]
 
 
 @dataclass
@@ -116,7 +116,7 @@ class SelfReviewProtocol:
         # Generate session ID
         timestamp = datetime.now().isoformat()
         session_content = f"{task_description}:{timestamp}"
-        session_id = hashlib.md5(session_content.encode()).hexdigest()[:16]
+        session_id = hashlib.md5(session_content.encode(, usedforsecurity=False)).hexdigest()[:16]
         
         self.report = ReviewReport(
             session_id=session_id,

@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 MCP Protocol Surface Detector
 
 Detect presence of MCP server protocol surface (endpoints or RPC handlers).

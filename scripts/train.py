@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 #!/usr/bin/env python
 """CLI wrapper around :func:`src.training.engine_hf_trainer.run_hf_trainer`."""
 

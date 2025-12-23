@@ -8,6 +8,8 @@ pipelines.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import json
@@ -96,12 +98,18 @@ def _load_config(config_path: str | Path | None) -> _DataConfig:
     target = Path(config_path) if config_path is not None else base
     try:
         mapping = _load_yaml_config(target)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         # Fallback to baked defaults when config is missing.
         return _default_config()
-    except MissingPyYAMLError:
+    except MissingPyYAMLError as e:
+       logger.debug(f"MissingPyYAMLError: {e}")
+        logger.warning(f"MissingPyYAMLError: {e}", exc_info=True)
         return _default_config()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return _default_config()
 
     cfg = _extract_config(mapping)
@@ -168,6 +176,7 @@ def _read_json(path: Path) -> list[dict[str, Any]]:
         with path.open("r", encoding="utf-8") as fh:
             payload = json.load(fh)
     except json.JSONDecodeError:
+        logger.debug("Exception caught, returning", exc_info=True)
         return [{"text": path.read_text(encoding="utf-8")}]
 
     if isinstance(payload, list):

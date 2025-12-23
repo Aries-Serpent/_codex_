@@ -149,8 +149,6 @@ class GitHubAPIClient:
     
     async def _post_with_urllib(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Fallback: Post request using urllib (synchronous)."""
-        import json
-        
         request = urllib.request.Request(
             url,
             data=json.dumps(payload).encode('utf-8'),
@@ -230,7 +228,6 @@ class GitHubAPIClient:
         else:
             request = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
-                import json
                 return json.loads(response.read().decode('utf-8'))
     
     async def get_pr_files(self, repo: str, pr_number: int) -> List[Dict[str, Any]]:
@@ -256,7 +253,6 @@ class GitHubAPIClient:
         else:
             request = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(request, timeout=self.config.timeout) as response:
-                import json
                 return json.loads(response.read().decode('utf-8'))
     
     async def get_pr_diff(self, repo: str, pr_number: int) -> str:

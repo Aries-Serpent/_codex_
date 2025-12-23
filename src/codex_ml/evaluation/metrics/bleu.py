@@ -6,6 +6,8 @@ Uses sacrebleu library if available, otherwise provides basic implementation.
 """
 
 from typing import Any, Dict, List
+import logging
+logger = logging.getLogger(__name__)
 
 import sys
 import os
@@ -18,7 +20,9 @@ try:
     import sacrebleu
 
     HAS_SACREBLEU = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     HAS_SACREBLEU = False
 
 
@@ -83,6 +87,8 @@ class BleuMetric(MetricAdapter):
                 f"{self.name}_precisions": bleu.precisions,
             }
         except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}
 
     def _compute_basic(self) -> Dict[str, float]:

@@ -9,6 +9,8 @@ never written through a text handle.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import io
 import json
@@ -153,7 +155,9 @@ def _write_payload(destination: Path, entry: ZipInfo, data: bytes) -> None:
     if is_text_hint:
         try:
             text = data.decode("utf-8")
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
+           logger.debug(f"UnicodeDecodeError: {e}")
+            logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
             destination.write_bytes(data)
             return
         destination.write_text(text, encoding="utf-8")

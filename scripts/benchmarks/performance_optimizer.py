@@ -60,6 +60,7 @@ class PerformanceOptimizer:
                 elapsed = (time.perf_counter() - start) * 1000  # ms
                 times.append(elapsed)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.debug(f"Benchmark iteration {i} failed: {e}")
                 continue
 
@@ -106,9 +107,11 @@ class PerformanceOptimizer:
 
             return result
 
-        except ImportError:
+        except ImportError as e:
+            logger.debug(f"ImportError: {e}")
             return {"name": "mlflow_logging", "status": "skipped", "reason": "MLflow not available"}
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             return {"name": "mlflow_logging", "status": "error", "error": str(e)}
 
     def benchmark_feature_retrieval(self) -> Dict[str, Any]:
@@ -146,6 +149,7 @@ class PerformanceOptimizer:
             return result
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             return {"name": "feature_retrieval", "status": "error", "error": str(e)}
 
     def benchmark_validation_overhead(self) -> Dict[str, Any]:
@@ -182,6 +186,7 @@ class PerformanceOptimizer:
             return result
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             return {"name": "validation_overhead", "status": "error", "error": str(e)}
 
     def benchmark_config_loading(self) -> Dict[str, Any]:
@@ -208,6 +213,7 @@ class PerformanceOptimizer:
             return result
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             return {"name": "config_loading", "status": "error", "error": str(e)}
 
     def run_all_benchmarks(self) -> Dict[str, Any]:

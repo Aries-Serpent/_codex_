@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
 import mimetypes
 import os
 import subprocess
@@ -176,6 +177,7 @@ class ArchiveService:
             try:
                 payload = self._get_restore_payload(tombstone_id)
             except LookupError as exc:
+                logger.debug(f"LookupError: {exc}")
                 self._record_restore_failure(
                     tombstone_id=tombstone_id,
                     actor=actor,
@@ -216,6 +218,7 @@ class ArchiveService:
                 with timer("decompress") as decompress_timer:
                     restored = decompress_payload(blob, codec)
             except (RuntimeError, ValueError) as exc:
+                logger.debug(f"Exception: {exc}")
                 self._record_restore_failure(
                     tombstone_id=tombstone_id,
                     actor=actor,

@@ -175,8 +175,11 @@ def _run_script(
         )
         return result.stdout, result.stderr, result.returncode
     except subprocess.TimeoutExpired:
+        logger.debug("Exception caught, returning", exc_info=True)
         return "", f"Timeout after {timeout}s", -1
     except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.debug("Exception caught, returning", exc_info=True)
         return "", str(e), -1
 
 

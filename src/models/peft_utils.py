@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Helpers for interrogating optional PEFT adapters at runtime."""
 
 from __future__ import annotations
@@ -16,11 +18,13 @@ def summarize_peft(model: Any) -> Dict[str, Any]:
     try:
         from peft.utils import get_model_status  # type: ignore
     except (ImportError, ModuleNotFoundError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return {"peft": "unavailable"}
 
     try:
         status = get_model_status(model)  # type: ignore
     except (ValueError, AttributeError, TypeError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return {"peft": "not_wrapped"}
 
     return {

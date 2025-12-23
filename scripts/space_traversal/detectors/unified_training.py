@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 Unified Training Detector
 
 Detects unified training infrastructure including configuration and execution.

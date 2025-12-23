@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Differential privacy configuration helpers."""
 
 from __future__ import annotations

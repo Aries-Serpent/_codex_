@@ -10,6 +10,8 @@ This is a convenience complement to nox session 'verify_hygiene'.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -32,6 +34,8 @@ def load_lines() -> List[Dict[str, Any]]:
         try:
             data.append(json.loads(s))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             print(f"[verify_hygiene] malformed evidence at line {i}", file=sys.stderr)
     return data
 

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Atomic file-system helpers for sidecar persistence."""
 
 from __future__ import annotations
@@ -58,15 +60,18 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
         os.replace(tmp_path, path)
         try:
             _fsync_dir(path.parent)
-        except OSError:
+        except OSError as e:
+           logger.debug(f"OSError: {e}")
+            logger.warning(f"OSError: {e}", exc_info=True)
             # Best-effort: some filesystems or platforms may not support directory fsync.
             pass
     finally:
         if tmp_path.exists():
             try:
                 tmp_path.unlink()
-            except OSError:
-                pass
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
 
 
 def atomic_write_json(path: Path | str, obj: dict[str, Any]) -> None:

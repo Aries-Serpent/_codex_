@@ -1,4 +1,5 @@
 from __future__ import annotations
+logger = logging.getLogger(__name__)
 
 import logging
 import os
@@ -59,6 +60,7 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
             try:  # pragma: no cover - defensive cleanup
                 run.finish()
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 LOGGER.debug("W&B run cleanup raised but was suppressed: %s", exc)
 
 

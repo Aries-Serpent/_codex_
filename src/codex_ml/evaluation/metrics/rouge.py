@@ -6,6 +6,8 @@ Uses rouge-score library if available, otherwise provides basic implementation.
 """
 
 from typing import Any, Dict, List
+import logging
+logger = logging.getLogger(__name__)
 
 import sys
 import os
@@ -18,7 +20,9 @@ try:
     from rouge_score import rouge_scorer
 
     HAS_ROUGE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     HAS_ROUGE = False
 
 
@@ -95,6 +99,8 @@ class RougeMetric(MetricAdapter):
 
             return results
         except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}
 
     def _compute_basic(self) -> Dict[str, float]:

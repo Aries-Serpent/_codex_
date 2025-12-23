@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Minimal training engine façade with optional MLflow logging."""
 
 from __future__ import annotations

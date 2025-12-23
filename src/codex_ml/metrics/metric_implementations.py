@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Reference metric implementations used by Codex training loops."""
 
 from __future__ import annotations
@@ -160,7 +162,9 @@ class F1Score(MetricBase):
                 positive = 1 if self.num_classes in {None, 2} else labels[-1]
                 try:
                     idx = labels.index(positive)
-                except ValueError:
+                except ValueError as e:
+                   logger.debug(f"ValueError: {e}")
+                    logger.warning(f"ValueError: {e}", exc_info=True)
                     return {self.name: 0.0}
                 return {self.name: f1_scores[idx]}
             case _:
@@ -203,7 +207,9 @@ class RecallScore(MetricBase):
                 positive = 1 if self.num_classes in {None, 2} else labels[-1]
                 try:
                     idx = labels.index(positive)
-                except ValueError:
+                except ValueError as e:
+                   logger.debug(f"ValueError: {e}")
+                    logger.warning(f"ValueError: {e}", exc_info=True)
                     return {self.name: 0.0}
                 return {self.name: recalls[idx]}
             case _:

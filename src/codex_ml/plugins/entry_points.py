@@ -58,6 +58,7 @@ class PluginValidator:
         try:
             return importlib.metadata.version("codex_ml")
         except importlib.metadata.PackageNotFoundError:
+            logger.debug("Exception caught, returning", exc_info=True)
             return "0.0.0"
 
     def validate_plugin(self, plugin_info: PluginInfo) -> tuple[bool, Optional[str]]:
@@ -81,6 +82,7 @@ class PluginValidator:
                         f"but {self.codex_version} is installed"
                     )
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to parse version for {plugin_info.name}: {e}")
 
         # Check dependencies
@@ -98,6 +100,7 @@ class PluginValidator:
             importlib.metadata.version(pkg_name)
             return True
         except importlib.metadata.PackageNotFoundError:
+            logger.debug("Exception caught, returning", exc_info=True)
             return False
 
 
@@ -172,6 +175,7 @@ class EntryPointPluginRegistry:
                         self.load_plugin(group, ep.name)
 
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to discover plugins in group {group}: {e}")
 
         return discovered
@@ -206,6 +210,7 @@ class EntryPointPluginRegistry:
                 **metadata,
             )
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to load entry point {entry_point.name}: {e}")
             return PluginInfo(
                 name=entry_point.name,
@@ -269,6 +274,7 @@ class EntryPointPluginRegistry:
             return instance
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             error_msg = f"Failed to load plugin {name}: {e}"
             plugin_info.error = error_msg
             logger.error(error_msg)

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Utility helpers and modules re-exported for convenience."""
 
 from __future__ import annotations

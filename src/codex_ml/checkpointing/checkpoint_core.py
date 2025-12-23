@@ -6,6 +6,8 @@ WHY:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import inspect
 import json
@@ -93,6 +95,7 @@ def load_checkpoint(
     try:
         payload = torch.load(weights, **kwargs)  # nosec B614
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             payload = torch.load(weights, **kwargs)  # nosec B614
@@ -104,6 +107,8 @@ def load_checkpoint(
             with open(metadata, encoding="utf-8") as f:
                 meta = json.load(f)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility
     checkpoint_version = payload.get("_schema_version") or payload.get("schema_version", "1.0")

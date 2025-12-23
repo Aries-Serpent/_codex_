@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Database migration system for trend storage.
 
 Provides versioned schema migrations for the audit trend database.

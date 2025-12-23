@@ -24,6 +24,8 @@ after attaching the merged configuration for inspection.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import inspect
 from typing import Any, Optional
@@ -110,6 +112,8 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             setattr(model, "peft_config", dict(merged))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Silently ignore attribute setting failures
             pass
         return model
@@ -131,6 +135,8 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             setattr(adapted, "peft_config", dict(merged))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
             pass
         return adapted
@@ -139,6 +145,8 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             setattr(model, "peft_config", dict(merged))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures in fallback case
             pass
         return model

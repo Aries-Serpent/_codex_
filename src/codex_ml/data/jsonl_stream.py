@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Streaming JSONL reader utilities."""
 
 from __future__ import annotations
@@ -34,6 +36,7 @@ def iter_jsonl(path: str | Path, *, strict: bool = True) -> Iterator[dict[str, o
             try:
                 obj = json.loads(stripped)
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 if strict:
                     raise ValueError(
                         f"Invalid JSON on line {line_number} in {file_path}: {exc}"

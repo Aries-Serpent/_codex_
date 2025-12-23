@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)
 
 Enhanced features:

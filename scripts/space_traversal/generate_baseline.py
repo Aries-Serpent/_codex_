@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+import logging
+logger = logging.getLogger(__name__)
 Generate baseline file from decoded Phase-A snapshot input.
 
 This script can:
@@ -23,7 +25,8 @@ from typing import Any
 
 try:
     from scripts.space_traversal import stable_manifest
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     stable_manifest = None
 
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024
@@ -133,12 +136,14 @@ def main(argv=None):
     try:
         decoded = _load_decoded(input_path)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         print(f"Decode error: {exc}", file=sys.stderr)
         return 3
 
     try:
         build_baseline(decoded, stable_output=stable_output, output_path=output_path)
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         print(f"Write baseline error: {exc}", file=sys.stderr)
         return 4
 

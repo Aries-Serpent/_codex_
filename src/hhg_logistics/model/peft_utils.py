@@ -65,6 +65,7 @@ def load_hf_llm(
                 trust_remote_code=trust_remote_code,
             )
         except ValueError as err:
+           logger.debug(f"ValueError: {err}")
             logger.info(
                 "Falling back to slow tokenizer for %s because fast tokenizer is unavailable: %s",
                 tok_name,

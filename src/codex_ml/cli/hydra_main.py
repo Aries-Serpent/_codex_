@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+logger = logging.getLogger(__name__)
 import platform
 import sys
 import uuid
@@ -63,7 +64,9 @@ _CORPUS_CHOICES = tuple(sorted(list_reasoning_corpora()))
 try:  # pragma: no cover - hydra optional at runtime
     try:
         import hydra
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         import config_legacy as hydra
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
@@ -121,6 +124,8 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         if isinstance(container, Mapping):
             return container
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         LOGGER.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
     return {}
 
@@ -148,6 +153,8 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
     try:
         cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {}
 
     if overrides:
@@ -241,6 +248,8 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
                     merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
                     resolved = OmegaConf.to_container(merged_cfg, resolve=True)
                 except Exception:
+                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)
                     LOGGER.debug("Hydra defaults merge failed", exc_info=True)
                     combined = dict(defaults)
                     combined.update(dict(resolved))

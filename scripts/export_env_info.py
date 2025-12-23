@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
 """Export environment and version info as JSON."""
 import json
@@ -17,6 +19,8 @@ try:
     info["torch"] = torch.__version__
     info["cuda"] = torch.version.cuda if torch.cuda.is_available() else None
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     info["torch"] = None
     info["cuda"] = None
 print(json.dumps(info, indent=2))

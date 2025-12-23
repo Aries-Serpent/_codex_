@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -359,6 +360,8 @@ def _get_registry_factory(name: str):
 
         return get_model(name)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 

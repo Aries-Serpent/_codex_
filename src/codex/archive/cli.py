@@ -1,3 +1,4 @@
+logger = logging.getLogger(__name__)
 """Click-based CLI for the Codex tombstone archive (enhanced with config/batch/health)."""
 
 from __future__ import annotations
@@ -257,6 +258,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
         service.dal.list_items(limit=0)
         click.echo("[DEBUG] Backend validation: OK", err=True)
     except Exception as validation_err:
+        logger.debug(f"Exception: {validation_err}")
         sanitized = redact_text_credentials(str(validation_err)).strip()
         detail = f"{type(validation_err).__name__}" + (f": {sanitized}" if sanitized else "")
         message = f"Archive backend validation failed: {detail}"
@@ -274,6 +276,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     try:
         path = service.restore_to_path(tombstone, output_path=output, actor=actor)
     except LookupError as lookup_err:
+        logger.debug(f"LookupError: {lookup_err}")
         message = f"Tombstone not found in archive backend: {lookup_err}"
         click.echo(f"ERROR: {message}", err=True)
         log_restore(
@@ -292,6 +295,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
         )
         sys.exit(1)
     except RuntimeError as runtime_err:
+        logger.debug(f"RuntimeError: {runtime_err}")
         message = f"Restore failed: {runtime_err}"
         click.echo(f"ERROR: {message}", err=True)
         log_restore(
@@ -510,7 +514,9 @@ def show_standardization_status() -> None:
             status_icon = "✅" if status else "❌"
             click.echo(f"  {status_icon} {standard.upper()}")
         click.echo()
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -540,7 +546,9 @@ def validate_standardization(
     try:
         from .evidence_schema import EvidenceSchemaValidator
         from .standardization import StandardizationManager
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -585,12 +593,14 @@ def validate_standardization(
                 validator.validate(record, version=version)
                 valid_records += 1
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 if repair and version == "1.0":
                     try:
                         validator.migrate_to_v2(record)
                         valid_records += 1
                         repaired_records += 1
                     except Exception as repair_err:
+                        logger.debug(f"Exception: {repair_err}")
                         issues.append(
                             f"Line {line_no}: Schema error: {e} (repair failed: {repair_err})"
                         )
@@ -606,6 +616,7 @@ def validate_standardization(
                     if not sig_valid["valid"]:
                         warnings.append(f"Line {line_no}: Signature verification failed")
                 except Exception as e:
+                    logger.debug(f"Exception: {e}")
                     warnings.append(f"Line {line_no}: Could not verify signature: {e}")
 
     # Report results
@@ -641,7 +652,9 @@ def migrate_evidence_to_v2() -> None:
     """Migrate evidence log from v1 to v2 schema (optional, non-breaking)."""
     try:
         from .evidence_schema import EvidenceSchemaValidator
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -671,6 +684,7 @@ def migrate_evidence_to_v2() -> None:
             else:
                 migrated_records.append(record)  # Already v2
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             errors.append(f"Line {line_no}: {e}")
 
     if errors:

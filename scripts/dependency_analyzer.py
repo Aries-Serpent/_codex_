@@ -111,6 +111,7 @@ def analyze_python_file(file_path: Path) -> Dict[str, Any]:
         }
 
     except (SyntaxError, UnicodeDecodeError) as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return {}
 
@@ -149,6 +150,7 @@ def find_references_to_file(
                             references[str(file_path)].append(f"Line {i}: {line.strip()[:80]}")
 
             except (UnicodeDecodeError, PermissionError):
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
 
     return dict(references)
@@ -228,6 +230,7 @@ def check_config_file_references(target_file: Path, root_directory: Path) -> Lis
                 references.append(str(config_path))
 
         except (UnicodeDecodeError, PermissionError):
+            logger.debug("Exception caught, continuing", exc_info=True)
             continue
 
     return references

@@ -93,7 +93,9 @@ class CodexEarlyStoppingCallback:
                 early_stopping_patience=config.patience, early_stopping_threshold=config.threshold
             )
             self.is_hf_callback = True
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("transformers not available, using custom implementation")
             self.callback = self
             self.is_hf_callback = False
@@ -132,7 +134,9 @@ def inject_early_stopping(
         has_early_stopping = any(
             isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback)) for cb in callbacks
         )
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         has_early_stopping = any(isinstance(cb, CodexEarlyStoppingCallback) for cb in callbacks)
 
     if has_early_stopping and not force:

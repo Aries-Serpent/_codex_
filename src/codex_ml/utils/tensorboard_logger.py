@@ -5,6 +5,8 @@ TensorBoard is unavailable or disabled.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 from contextlib import contextmanager
@@ -56,7 +58,9 @@ def get_tb_writer(
         # Try torch.utils.tensorboard first (comes with PyTorch)
         try:
             from torch.utils.tensorboard import SummaryWriter
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             # Fallback to standalone tensorboard
             from tensorboardX import SummaryWriter
 
@@ -68,11 +72,15 @@ def get_tb_writer(
 
         yield writer
 
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         # TensorBoard not available - gracefully degrade
         yield None
 
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Any other error - gracefully degrade
         yield None
 
@@ -82,6 +90,8 @@ def get_tb_writer(
             try:
                 writer.close()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Silently ignore close errors to ensure cleanup doesn't fail
                 # the entire context. Common errors include already-closed writers
                 # or filesystem issues during flush.
@@ -101,9 +111,13 @@ def is_tensorboard_available() -> bool:
             from torch.utils.tensorboard import SummaryWriter  # noqa: F401
 
             return True
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             from tensorboardX import SummaryWriter  # noqa: F401
 
             return True
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         return False

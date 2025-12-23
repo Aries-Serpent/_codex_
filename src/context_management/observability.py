@@ -290,8 +290,9 @@ class ContextObserver:
         if self._alert_callback:
             try:
                 self._alert_callback(alert)
-            except Exception:
-                pass
+            except Exception as e:
+               logger.debug(f"Exception: {e}")
+                logger.warning(f"Exception: {e}", exc_info=True)
 
         # Also log the alert
         self.log(

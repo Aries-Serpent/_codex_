@@ -14,7 +14,9 @@ try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
     np = None
 

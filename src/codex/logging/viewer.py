@@ -24,6 +24,8 @@ Notes:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -34,7 +36,9 @@ import sys
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     _codex_sqlite_auto = None
 else:
     try:  # pragma: no cover - best effort
@@ -198,7 +202,9 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
         return None
     try:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         return value
 
 
@@ -280,6 +286,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 print(f"{ts} {prefix}{msg}")
         return 0
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 

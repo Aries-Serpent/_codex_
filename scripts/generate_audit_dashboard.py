@@ -26,7 +26,9 @@ try:
     )
 
     PLANNING_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     PLANNING_AVAILABLE = False
 
 # Supported file extensions for badge styling
@@ -47,6 +49,7 @@ def format_timestamp(timestamp: float) -> str:
     try:
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
     except (ValueError, OSError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return "Unknown"
 
 
@@ -70,7 +73,9 @@ def scan_directory(base_path: Path) -> list[dict[str, Any]]:
                         "type": item.suffix or "file",
                     }
                 )
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 # Skip files that can't be accessed
                 pass
 
@@ -86,6 +91,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
         with open(manifest_path, encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, OSError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return {}
 
 
@@ -104,6 +110,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
             # gaps.json is optional; if corrupt, log warning and continue with empty gaps data.
             logger.warning(f"Could not parse gaps.json (corrupt JSON): {e}")
         except OSError as e:
+            logger.debug(f"OSError: {e}")
             # gaps.json is optional; if unreadable, log warning and continue with empty gaps data.
             logger.warning(f"Could not read gaps.json (I/O error): {e}")
 
@@ -119,7 +126,9 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
                 if line.startswith("## Phase "):
                     phases.append(line.strip("# ").strip())
             plans_data["phases"] = phases
-        except OSError:
+        except OSError as e:
+           logger.debug(f"OSError: {e}")
+            logger.warning(f"OSError: {e}", exc_info=True)
             # The plan file is optional; skip if it cannot be read.
             pass
 
@@ -362,7 +371,9 @@ def generate_html_dashboard(
             from planning_components import generate_planning_css
 
             html_content += generate_planning_css()
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             pass
 
     html_content += """

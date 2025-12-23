@@ -10,6 +10,8 @@ This module provides:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import json
@@ -319,6 +321,7 @@ def summarize_ndjson_to_sqlite(
     try:
         import sqlite3
     except ImportError as exc:
+        logger.debug(f"ImportError: {exc}")
         raise ImportError("sqlite3 is required for SQLite export") from exc
 
     logs = load_ndjson_logs(ndjson_path)

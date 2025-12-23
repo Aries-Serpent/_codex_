@@ -12,6 +12,8 @@ Backward compatible (original signatures unchanged).
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import asyncio
 import codecs
@@ -64,7 +66,9 @@ def _resolve_connector_cache_root() -> Path:
     if override:
         try:
             return Path(override).expanduser().resolve()
-        except OSError:
+        except OSError as e:
+           logger.debug(f"OSError: {e}")
+            logger.warning(f"OSError: {e}", exc_info=True)
             return Path(override).expanduser()
     return _DEFAULT_CONNECTOR_CACHE
 
@@ -72,7 +76,9 @@ def _resolve_connector_cache_root() -> Path:
 def _run_connector_coro(coro):
     try:
         loop = asyncio.get_running_loop()
-    except RuntimeError:
+    except RuntimeError as e:
+       logger.debug(f"RuntimeError: {e}")
+        logger.warning(f"RuntimeError: {e}", exc_info=True)
         return asyncio.run(coro)
     if loop.is_running():  # pragma: no cover - defensive for event-loop environments
         new_loop = asyncio.new_event_loop()
@@ -95,6 +101,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
     try:
         connector = get_connector(name)
     except KeyError as exc:
+        logger.debug(f"KeyError: {exc}")
         raise ValueError(f"unknown connector: {name}") from exc
 
     cache_base = (cache_root or _resolve_connector_cache_root()).expanduser() / name
@@ -110,6 +117,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         else:
             remote_files = list(_run_connector_coro(connector.list_files(normalized)))
     except ConnectorError as exc:
+        logger.debug(f"ConnectorError: {exc}")
         raise RuntimeError(f"connector list failed for {uri}: {exc}") from exc
 
     if not remote_files:
@@ -125,6 +133,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         try:
             payload = _run_connector_coro(connector.read_file(remote_file))
         except ConnectorError as exc:
+            logger.debug(f"ConnectorError: {exc}")
             raise RuntimeError(f"connector read failed for {uri}: {exc}") from exc
         destination.write_bytes(payload)
         materialized.append(destination)
@@ -154,6 +163,8 @@ def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
             try:
                 obj = json.loads(line)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 skipped += 1
                 continue
             if not isinstance(obj, dict):
@@ -519,6 +530,8 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
         )
         log_error("data.safety", "dataset sample sanitized", context)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
         pass
 

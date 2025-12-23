@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import shutil
+import logging
+logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path
 
@@ -26,13 +28,15 @@ def main(retain: int = 5):
             shutil.rmtree(d)
             print(f"[INFO] removed baseline: {d}")
         except OSError as e:
+            logger.debug(f"OSError: {e}")
             print(f"[WARN] failed to remove {d}: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":
     try:
         n = int(sys.argv[1]) if len(sys.argv) > 1 else 5
-    except ValueError:
+    except ValueError as e:
+        logger.debug(f"ValueError: {e}")
         print(f"[ERR] invalid retain argument: {sys.argv[1]}", file=sys.stderr)
         sys.exit(1)
     main(n)

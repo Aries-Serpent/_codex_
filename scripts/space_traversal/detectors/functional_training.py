@@ -1,5 +1,7 @@
 """Detector for functional training capability.
 
+import logging
+logger = logging.getLogger(__name__)
 Detects functional, composable training patterns including
 training loops, steps, epochs, and pipeline composition.
 

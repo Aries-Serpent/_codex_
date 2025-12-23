@@ -303,8 +303,10 @@ def analyze_file(file_path: Path, exclude_abstract: bool = True) -> StubAnalysis
         result.total_stubs = len(detector.stubs)
 
     except SyntaxError as e:
+        logger.debug(f"SyntaxError: {e}")
         result.errors.append(f"Syntax error in {file_path}: {e}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         result.errors.append(f"Error analyzing {file_path}: {e}")
 
     return result

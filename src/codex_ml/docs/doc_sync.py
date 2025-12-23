@@ -4,6 +4,8 @@ Ensures documentation matches implementation.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import ast
 import re
@@ -36,6 +38,7 @@ class DocumentationValidator:
             content = file_path.read_text()
             tree = ast.parse(content)
         except (SyntaxError, FileNotFoundError):
+            logger.debug("Exception caught, returning", exc_info=True)
             return issues
 
         for node in ast.walk(tree):

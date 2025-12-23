@@ -63,16 +63,22 @@ class WorkflowParser:
             if metadata and use_cache:
                 self._cache[file_path] = metadata
             return metadata
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.error(f"Workflow file not found: {file_path}")
             return None
-        except PermissionError:
+        except PermissionError as e:
+           logger.debug(f"PermissionError: {e}")
+            logger.warning(f"PermissionError: {e}", exc_info=True)
             logger.error(f"Permission denied reading workflow: {file_path}")
             return None
         except UnicodeDecodeError as e:
+           logger.debug(f"UnicodeDecodeError: {e}")
             logger.error(f"Invalid UTF-8 encoding in {file_path}: {e}")
             return None
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to parse workflow {file_path}: {e}", exc_info=True)
             return None
 
@@ -145,12 +151,15 @@ class WorkflowParser:
             logger.debug(f"Problematic content near error: {content[:200]}...")
             return None
         except KeyError as e:
+           logger.debug(f"KeyError: {e}")
             logger.error(f"Missing required field in {file_path}: {e}")
             return None
         except ValueError as e:
+           logger.debug(f"ValueError: {e}")
             logger.error(f"Invalid value in {file_path}: {e}")
             return None
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Unexpected error parsing {file_path}: {e}", exc_info=True)
             return None
 
@@ -284,7 +293,9 @@ class WorkflowParser:
             input_type_str = input_config.get("type", "string").lower()
             try:
                 input_type = InputType(input_type_str)
-            except ValueError:
+            except ValueError as e:
+               logger.debug(f"ValueError: {e}")
+                logger.warning(f"ValueError: {e}", exc_info=True)
                 input_type = InputType.STRING
 
             # Parse options (for choice type)

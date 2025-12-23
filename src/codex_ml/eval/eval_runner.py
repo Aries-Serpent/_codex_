@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Standalone evaluation runner emitting NDJSON/CSV metrics with optional CLI."""
 
 from __future__ import annotations

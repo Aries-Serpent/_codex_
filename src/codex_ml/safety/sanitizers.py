@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import re
 from dataclasses import dataclass, field
@@ -63,6 +65,8 @@ def _safe_load_yaml(policy_yaml: str) -> Dict:
     try:
         data = yaml.safe_load(policy_yaml)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return {}
     return data if isinstance(data, dict) else {}
 
@@ -74,6 +78,8 @@ def _extend_patterns(base: list[Pattern[str]], patterns: Iterable[str] | None) -
         try:
             compiled = re.compile(pattern)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         base.append(compiled)
 

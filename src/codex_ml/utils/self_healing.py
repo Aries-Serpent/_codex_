@@ -233,6 +233,7 @@ def auto_remediate(
                 return result
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             last_exception = e
             attempt += 1
 

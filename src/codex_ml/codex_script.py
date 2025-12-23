@@ -6,6 +6,8 @@ across random number generators, thread pools, and ML frameworks.
 """
 
 import os
+import logging
+logger = logging.getLogger(__name__)
 from typing import Any
 
 
@@ -47,8 +49,9 @@ def _init_determinism_from_env() -> dict[str, Any]:
         import numpy as np
 
         np.random.seed(seed)
-    except ImportError:
-        pass
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
 
     # Apply PyTorch settings if available
     try:
@@ -60,8 +63,9 @@ def _init_determinism_from_env() -> dict[str, Any]:
             torch.cuda.manual_seed_all(seed)
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
-    except ImportError:
-        pass
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
 
     # Apply TensorFlow settings if available
     try:
@@ -70,8 +74,9 @@ def _init_determinism_from_env() -> dict[str, Any]:
         tf.random.set_seed(seed)
         tf.config.threading.set_intra_op_parallelism_threads(num_threads)
         tf.config.threading.set_inter_op_parallelism_threads(num_threads)
-    except ImportError:
-        pass
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
 
     return {"determinism_enabled": True, "seed": seed, "num_threads": num_threads}
 

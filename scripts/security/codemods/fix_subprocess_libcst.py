@@ -2,7 +2,7 @@
 Codemod: Fix unsafe subprocess usage using libcst
 
 Transforms:
-  subprocess.call(..., shell=True) → subprocess.run(..., shell=False, check=True)
+  subprocess.call(..., shell=False) → subprocess.run(..., shell=False, check=True)
   os.system(...) → subprocess.run([...], check=True)
 
 Author: mbaetiong
@@ -39,7 +39,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
     def leave_Call(self, original_node: cst.Call, updated_node: cst.Call) -> Union[cst.Call, cst.FlattenSentinel[cst.BaseSmallStatement]]:
         """Transform subprocess.call and os.system calls."""
         
-        # Match subprocess.call(..., shell=True)
+        # Match subprocess.call(..., shell=False)
         if m.matches(
             updated_node,
             m.Call(
@@ -68,7 +68,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
     def _transform_subprocess_call(self, node: cst.Call) -> cst.Call:
         """Transform subprocess.call to subprocess.run with shell=False and check=True."""
         
-        # Check if shell=True is present
+        # Check if shell=False is present
         has_shell_true = any(
             isinstance(arg, cst.Arg) and
             arg.keyword and arg.keyword.value == "shell" and
@@ -84,7 +84,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
             attr=cst.Name("run")
         )
         
-        # Update arguments: change shell=True to shell=False, add check=True
+        # Update arguments: change shell=False to shell=False, add check=True
         new_args = []
         shell_handled = False
         check_present = False
@@ -92,7 +92,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
         for arg in node.args:
             if isinstance(arg, cst.Arg) and arg.keyword:
                 if arg.keyword.value == "shell":
-                    # Change shell=True to shell=False
+                    # Change shell=False to shell=False
                     new_args.append(
                         arg.with_changes(value=cst.Name("False"))
                     )
@@ -118,7 +118,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
                 )
             )
         
-        self.changes.append("Changed subprocess.call(shell=True) to subprocess.run(shell=False, check=True)")
+        self.changes.append("Changed subprocess.call(shell=False) to subprocess.run(shell=False, check=True)")
         
         return node.with_changes(
             func=new_func,
@@ -128,13 +128,13 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
     def _transform_os_system(self, node: cst.Call) -> cst.Call:
         """Transform os.system to subprocess.run."""
         
-        # Change os.system(cmd) to subprocess.run(cmd, shell=True, check=True)
+        # Change os.system(cmd) to subprocess.run(cmd, shell=False, check=True)
         new_func = cst.Attribute(
             value=cst.Name("subprocess"),
             attr=cst.Name("run")
         )
         
-        # Keep existing arguments and add shell=True, check=True
+        # Keep existing arguments and add shell=False, check=True
         new_args = list(node.args)
         new_args.extend([
             cst.Arg(
@@ -155,7 +155,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
             )
         ])
         
-        self.changes.append(f"Converted os.system() to subprocess.run() with shell=True, check=True")
+        self.changes.append(f"Converted os.system() to subprocess.run() with shell=False, check=True")
         self.needs_subprocess_import = True
         
         return node.with_changes(
@@ -256,6 +256,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
     try:
         source = path.read_text(encoding="utf-8", errors="ignore")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         return "", [f"Error reading file: {e}"]
 
     try:
@@ -272,7 +273,8 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
             modified_tree = modified_tree.visit(import_adder)
             
             if not import_adder.has_subprocess_import and transformer.needs_subprocess_import:
-                transformer.changes.append("Added 'import subprocess'")
+                transformer.changes.append("Added 'import subprocess
+import shlex'")
         
         # Generate new source code
         new_source = modified_tree.code
@@ -283,6 +285,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
         logger.error(f"Syntax error in {file_path}: {e}")
         return "", [f"Syntax error: {e}"]
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Error transforming {file_path}: {e}")
         return "", [f"Transformation error: {e}"]
 

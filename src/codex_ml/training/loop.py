@@ -5,6 +5,8 @@ with real optimizers, schedulers, and gradient accumulation.
 """
 
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
 from typing import Any, Dict, Iterable
 
 from codex_ml.interfaces.contracts import TrainingContractError

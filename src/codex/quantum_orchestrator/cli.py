@@ -17,6 +17,8 @@ Examples:
 """
 
 import json
+import logging
+logger = logging.getLogger(__name__)
 import sys
 import time
 from pathlib import Path
@@ -46,9 +48,12 @@ try:
         )
 
         QFT_AVAILABLE = True
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         QFT_AVAILABLE = False
 except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     click.echo(f"Error importing quantum orchestrator: {e}", err=True)
     click.echo("Make sure numpy is installed: pip install numpy", err=True)
     sys.exit(1)

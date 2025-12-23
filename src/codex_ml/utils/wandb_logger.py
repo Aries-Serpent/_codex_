@@ -61,7 +61,9 @@ class WandBLogger:
 
             mode = os.getenv("WANDB_MODE", "offline")
             return mode != "disabled"
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             logger.info("W&B not installed, using fallback logging")
             return False
 
@@ -78,6 +80,7 @@ class WandBLogger:
 
             logger.info(f"✓ W&B initialized (mode={mode}, project={self.project})")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to initialize W&B: {e}. Using fallback.")
             self.wandb_available = False
             self._init_fallback()
@@ -107,6 +110,7 @@ class WandBLogger:
 
                 wandb.log(metrics, step=step)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"W&B logging failed: {e}")
                 self._log_fallback(metrics, step)
         else:
@@ -131,6 +135,7 @@ class WandBLogger:
                 wandb.finish()
                 logger.info("✓ W&B session finished")
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to finish W&B: {e}")
 
 

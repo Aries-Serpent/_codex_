@@ -49,7 +49,7 @@ FIX_GROUPS = [
         group_id="FG-001",
         rule_pattern="subprocess",
         fix_function=fix_subprocess,
-        description="Fix unsafe subprocess usage (shell=True, os.system)",
+        description="Fix unsafe subprocess usage (shell=False, os.system)",
         priority="P0",
     ),
     FixGroup(
@@ -83,6 +83,7 @@ def load_prioritized_alerts(alerts_file: Path) -> List[dict[str, Any]]:
             for row in reader:
                 alerts.append(row)
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.error(f"Error reading alerts file: {e}")
     
     return alerts
@@ -150,6 +151,7 @@ def apply_fix_group(
                     logger.info(f"  🔍 Would fix {file_path}: {len(changes)} changes")
         
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             results["errors"].append(f"Error processing {file_path}: {str(e)}")
     
     return results

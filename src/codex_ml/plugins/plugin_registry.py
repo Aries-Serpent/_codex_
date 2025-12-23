@@ -211,6 +211,7 @@ class PluginRegistry:
                 importlib.import_module(module_name)
                 logger.info(f"Loaded plugin module: {module_name}")
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to load plugin {plugin_file}: {e}")
 
     def reload_plugin(self, name: str):

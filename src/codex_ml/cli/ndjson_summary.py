@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Offline-friendly NDJSON metrics summarization helpers and CLI shims."""
 
 from __future__ import annotations
@@ -66,10 +68,13 @@ def _load_rows(run_dir: Path, *, pattern: str | None = None) -> list[dict[str, A
                     try:
                         payload = json.loads(line)
                     except json.JSONDecodeError:
+                        logger.debug("Exception caught, continuing", exc_info=True)
                         continue
                     if isinstance(payload, dict):
                         rows.append(payload)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             continue
     return rows
 
@@ -277,6 +282,7 @@ def _handle_summarize(args: argparse.Namespace) -> int:
         summarizer = NdjsonSummarizer(run_dir)
         summary = summarizer.summarise()
     except FileNotFoundError as exc:
+        logger.debug(f"FileNotFoundError: {exc}")
         raise SystemExit(str(exc)) from exc
     suffix = args.output.lower()
     dest = (
@@ -321,6 +327,7 @@ def summarize(args: argparse.Namespace) -> int:
     try:
         rows = _load_rows(inp if inp.is_dir() else inp, pattern=pattern if inp.is_dir() else None)
     except FileNotFoundError as exc:
+        logger.debug(f"FileNotFoundError: {exc}")
         raise SystemExit(str(exc)) from exc
     summary_rows = _summarise_rows(rows)
     total_rows = len(rows)

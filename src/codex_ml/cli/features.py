@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """CLI for feature store management."""
 
 import json
@@ -32,6 +34,7 @@ def list_features(
             console.print(f"  • {name}")
         console.print()
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1)
 
@@ -91,6 +94,7 @@ def check_health(
 
         console.print(table)
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1)
 
@@ -115,6 +119,7 @@ def export_metadata(
 
         console.print(f"✅ Exported metadata for {len(metadata)} features to {output}")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1)
 
@@ -129,6 +134,7 @@ def clear_cache(
         store.clear_cache()
         console.print("✅ Feature cache cleared")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1)
 

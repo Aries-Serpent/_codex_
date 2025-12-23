@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+import logging
+logger = logging.getLogger(__name__)
 Trend Aggregator (P5)
 
 Aggregates historical capability_scored.json files into trend_scores.json:

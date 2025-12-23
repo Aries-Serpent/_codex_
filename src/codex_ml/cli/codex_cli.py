@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import json
@@ -289,6 +291,8 @@ def config_sweep(
             if maybe_path:
                 resolved_dataset_path = Path(maybe_path)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             resolved_dataset_path = None
     if resolved_dataset_path is not None and resolved_dataset_path.exists():
         dataset_hash = _hash_dataset(resolved_dataset_path)
@@ -504,6 +508,7 @@ def resume(
     try:
         cfg_obj, raw_cfg = load_app_config(config_path, tuple())
     except ConfigError as exc:
+        logger.debug(f"ConfigError: {exc}")
         raise click.ClickException(str(exc)) from exc
 
     training_cfg = getattr(raw_cfg, "training", raw_cfg)
@@ -564,7 +569,9 @@ def repo_map(reasoning: bool) -> None:
 
     try:
         click.echo(render_repo_map(reasoning=reasoning))
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         # Back-compat with older render_repo_map signatures lacking the flag.
         click.echo(render_repo_map())
 
@@ -607,6 +614,7 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
             run_metadata_dir=run_metadata_dir,
         )
     except RuntimeError as exc:
+        logger.debug(f"RuntimeError: {exc}")
         click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
         raise SystemExit(1) from exc
 

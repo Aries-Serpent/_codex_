@@ -7,6 +7,8 @@ Generated: 2025-11-19 04:20:17
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import math
 
@@ -16,4 +18,6 @@ def perplexity_from_loss(loss: float) -> float:
     try:
         return float(math.exp(float(loss)))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return float("inf")

@@ -1,6 +1,8 @@
 """Evaluation metrics used across Codex ML evaluation tooling."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import math
 from typing import Iterable, List, Optional, Sequence
@@ -109,6 +111,7 @@ def perplexity(
             try:
                 nll_values.append(float(value))
             except (TypeError, ValueError) as exc:
+                logger.debug(f"Exception: {exc}")
                 raise MetricError("perplexity", f"invalid NLL value: {exc}") from exc
     if not nll_values:
         raise MetricError("perplexity", "no valid loss values to average")
@@ -301,9 +304,13 @@ def bleu(
         score = sacrebleu.corpus_bleu(hyp, [ref])
         return float(score.score / 100.0)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         try:
             from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
         hyp_tok = [(c.lower() if lowercase else c).split() for c in candidates]
         ref_tok = [[(r.lower() if lowercase else r).split()] for r in references]
@@ -312,6 +319,8 @@ def bleu(
             score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)
             return float(score)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
 
 
@@ -328,6 +337,8 @@ def rouge_l(
     try:
         from rouge_score import rouge_scorer
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores: list[float] = []

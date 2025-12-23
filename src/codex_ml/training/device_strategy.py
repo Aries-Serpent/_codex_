@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -34,6 +35,8 @@ def _supports_bfloat16() -> bool:
                 # Ampere (8.x) and newer support bfloat16 efficiently
                 return capability[0] >= 8
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Try alternative check
                 checker = getattr(torch.cuda, "is_bf16_supported", None)
                 if callable(checker):
@@ -157,6 +160,7 @@ class DeviceConfig:
                 model = model.to(device=target_device, dtype=self.dtype)
             return model
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             LOGGER.warning(
                 "[codex] failed to place model on %s (%s); falling back to CPU fp32",
                 self.device,
@@ -181,6 +185,7 @@ class DeviceConfig:
         try:
             return tensor.to(device=torch.device(self.device), dtype=self.dtype)
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             LOGGER.warning(
                 "[codex] failed to move tensor to %s (%s); returning CPU copy",
                 self.device,
@@ -224,6 +229,7 @@ class DeviceMapper:
         try:
             return cls._STRATEGIES[key]
         except KeyError as exc:
+            logger.debug(f"KeyError: {exc}")
             raise KeyError(f"device strategy not registered: {name}") from exc
 
     @classmethod

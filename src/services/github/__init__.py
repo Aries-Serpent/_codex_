@@ -5,6 +5,8 @@ for workflow operations including triggering, monitoring, and artifact retrieval
 """
 
 from .client import GitHubClient
+import logging
+logger = logging.getLogger(__name__)
 from .types import (
     WorkflowInfo,
     WorkflowRun,

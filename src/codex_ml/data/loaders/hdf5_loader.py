@@ -26,7 +26,9 @@ try:
     import numpy as np  # noqa: F401 - imported to check availability
 
     HDF5_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     HDF5_AVAILABLE = False
     logger.warning("h5py not installed. Install: pip install h5py")
 
@@ -77,6 +79,7 @@ class HDF5Loader:
                 if dataset_path != "/" and dataset_path not in f:
                     raise KeyError(f"Dataset path not found: {dataset_path}")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid HDF5 file: {e}")
 
     def load(self):

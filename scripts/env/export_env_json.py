@@ -2,6 +2,8 @@
 """Dump environment summary to a JSON file (default: env.json)."""
 
 import json
+import logging
+logger = logging.getLogger(__name__)
 import platform
 import subprocess
 import sys

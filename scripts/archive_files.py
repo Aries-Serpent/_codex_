@@ -117,10 +117,12 @@ def verify_safe_to_archive(file_path: Path) -> ArchiveVerificationResult:
                                 # Only need first reference to determine safety
                                 break
                 except (UnicodeDecodeError, OSError):
+                    logger.debug("Exception caught, continuing", exc_info=True)
                     continue
             if refs:
                 return ArchiveVerificationResult(False, f"File referenced in: {refs[0]}")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             # If analysis fails, be conservative
             logger.warning(f"Could not verify references for {file_path.name}: {e}")
 

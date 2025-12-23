@@ -1,6 +1,8 @@
 """Helpers to capture minimal run metadata for checkpoint sidecars."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import subprocess
@@ -22,6 +24,8 @@ def _git_rev_parse() -> str | None:
             timeout=2,
         )
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     return out.decode("utf-8").strip()
 
@@ -33,6 +37,8 @@ def _git_read_head(repo: Path) -> str | None:
     try:
         ref = head.read_text(encoding="utf-8").strip()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     if ref.startswith("ref:"):
         _, ref_path = ref.split(":", 1)
@@ -41,6 +47,8 @@ def _git_read_head(repo: Path) -> str | None:
             try:
                 return ref_file.read_text(encoding="utf-8").strip()
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 return None
         return None
     return ref or None
@@ -59,6 +67,8 @@ def _sha256_file(path: Path) -> str | None:
                 hasher.update(chunk)
         return hasher.hexdigest()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
 
 

@@ -15,6 +15,8 @@ Public API:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from typing import Iterator, Optional, Union
@@ -26,6 +28,8 @@ try:
         detect_encoding as _repo_detect_encoding,  # type: ignore
     )
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore
 
 try:
@@ -35,12 +39,16 @@ try:
     # - read_text(path, encoding, errors) -> (str, used_encoding)
     from .io_text import read_text as _io_text_read_text  # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _io_text_read_text = None  # type: ignore
 
 try:
     # Some callers expect _detect_encoding from io_text
     from .io_text import _detect_encoding as _io_text__detect_encoding  # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _io_text__detect_encoding = None  # type: ignore
 
 # Deterministic shuffle and legacy read_text_file may live in utils
@@ -48,6 +56,8 @@ try:
     from .utils import deterministic_shuffle as _deterministic_shuffle  # type: ignore
     from .utils import read_text_file as _utils_read_text_file  # type: ignore
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _deterministic_shuffle = None  # type: ignore
     _utils_read_text_file = None  # type: ignore
 
@@ -92,18 +102,23 @@ def detect_encoding(path: Union[str, Path]) -> str:
         try:
             return _repo_detect_encoding(p)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Fall through to other detectors
             pass
     if _io_text__detect_encoding is not None:
         try:
             return _io_text__detect_encoding(p)
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
 
     # Fallback conservative detector: BOM checks, then try a few encodings
     try:
         raw = p.read_bytes()[:65536]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
     # BOM checks
@@ -114,14 +129,17 @@ def detect_encoding(path: Union[str, Path]) -> str:
             return "utf-16"
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     for enc in ("utf-8", "cp1252", "iso-8859-1"):
         try:
             raw.decode(enc)
             return enc
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
 
     return "utf-8"
@@ -142,17 +160,23 @@ def _call_repo_read_text(
     try:
         # Newer helpers may return (text, used_encoding)
         result = _io_text_read_text(path, encoding=encoding, errors=errors)  # type: ignore[misc]
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             # Older helper may accept (path, encoding)
             result = _io_text_read_text(path, encoding)  # type: ignore[misc]
-        except TypeError:
+        except TypeError as e:
+           logger.debug(f"TypeError: {e}")
+            logger.warning(f"TypeError: {e}", exc_info=True)
             try:
                 # Very old: only path
                 result = _io_text_read_text(path)  # type: ignore[misc]
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 raise RuntimeError(f"repo read_text failed: {exc}") from exc
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         # Pass up other errors as runtime errors
         raise RuntimeError(f"repo read_text failed: {exc}") from exc
 
@@ -178,6 +202,7 @@ def _manual_read_text(
     try:
         raw = path.read_bytes()
     except Exception as exc:
+        logger.debug(f"Exception: {exc}")
         raise RuntimeError(f"Failed to read bytes from {path}: {exc}") from exc
 
     enc = encoding
@@ -188,6 +213,8 @@ def _manual_read_text(
     try:
         text = raw.decode(enc, errors)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Try common fallbacks
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
             try:
@@ -195,6 +222,8 @@ def _manual_read_text(
                 enc = trial
                 break
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         else:
             # As a last resort
@@ -206,8 +235,9 @@ def _manual_read_text(
         text = text.replace("\r\n", "\n").replace("\r", "\n")
         if text and text[0] == "\ufeff":
             text = text.lstrip("\ufeff")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
     return text, str(enc)
 
@@ -233,6 +263,8 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
             txt, used = _call_repo_read_text(p, encoding=encoding, errors=errors)
             return txt
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Fall through to manual reader
             pass
 
@@ -302,6 +334,7 @@ def ingest(
                         break
                     yield chunk
         except Exception as exc:
+            logger.debug(f"Exception: {exc}")
             # Surface as runtime error to calling code (ingestion pipelines should catch)
             raise RuntimeError(f"Failed to stream file {file_path}: {exc}") from exc
 

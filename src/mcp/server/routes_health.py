@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -13,6 +15,8 @@ def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None
         try:
             adapter_status = adapter.health_check()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             adapter_status = {"status": "degraded"}
         payload = {
             "service": "mcp-facade",
@@ -28,5 +32,7 @@ def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None
         try:
             adapter_status = adapter.health_check()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             adapter_status = {"status": "degraded"}
         return JSONResponse(content={"status": "ok", "adapter": adapter_path, "adapter_status": adapter_status})

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Deterministic JSONL loader with optional validation split."""
 
 from __future__ import annotations
@@ -27,6 +29,7 @@ def _extract_texts_from_line(line: str) -> Iterable[str]:
     try:
         obj = json.loads(line)
     except json.JSONDecodeError:
+        logger.debug("Exception caught, returning", exc_info=True)
         return [line]
     if isinstance(obj, dict) and "text" in obj:
         return _normalise_text(obj["text"])

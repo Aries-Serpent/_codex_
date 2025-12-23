@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from types import ModuleType
 from typing import IO, Any, Optional, Type

@@ -11,6 +11,8 @@ Outputs:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import fnmatch
@@ -74,6 +76,8 @@ def find_stubs() -> List[Dict[str, object]]:
         try:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         for pattern in STUB_PATTERNS:
             for match in re.finditer(pattern, text):
@@ -97,6 +101,8 @@ def detect_tokenizers() -> Dict[str, Iterable[str]]:
         try:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         if (
             "from tokenizers" in text

@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import html
 import re
@@ -36,6 +38,8 @@ def pdf_to_text_bytes(p: Path) -> bytes:
         txt = extract_text(p.as_posix()) or ""
         return txt.encode("utf-8")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         raw = p.read_bytes()
         return b"[PDF_EXTRACTOR_MISSING]\n" + raw
 

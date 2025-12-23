@@ -6,6 +6,8 @@ requirements so downstream tooling can parse remediation steps.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from datetime import datetime
 from pathlib import Path
@@ -51,6 +53,8 @@ def append_error(step_number: str, description: str, message: str, context: str)
         with _ERROR_LOG_PATH.open("a", encoding="utf-8") as handle:
             handle.write(entry)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # The error log must never raise a secondary exception; downstream
         # callers still need the original error to propagate.
         return

@@ -7,6 +7,8 @@ management where AI handles routine maintenance, optimization, and evolution
 through self-directed actions, proactive monitoring, and intelligent decision-making.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple
@@ -112,6 +114,8 @@ class CodeHealthSensor:
                             high_complexity_files.append((str(py_file), node.name, complexity))
             
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         
         if high_complexity_files:
@@ -156,11 +160,13 @@ class CodeHealthSensor:
                 lines = content.split('\n')
                 for i in range(0, len(lines) - 10, 5):
                     chunk = '\n'.join(lines[i:i+10])
-                    chunk_hash = hashlib.md5(chunk.encode()).hexdigest()
+                    chunk_hash = hashlib.md5(chunk.encode(, usedforsecurity=False)).hexdigest()
                     if chunk_hash not in code_hashes:
                         code_hashes[chunk_hash] = []
                     code_hashes[chunk_hash].append(str(py_file))
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         
         duplicates = {h: files for h, files in code_hashes.items() if len(set(files)) > 1}
@@ -222,6 +228,8 @@ class CodeHealthSensor:
                     security_issues.append((str(py_file), "pickle usage"))
                 
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 continue
         
         status = HealthStatus.WARNING if security_issues else HealthStatus.HEALTHY
@@ -321,7 +329,7 @@ class ActionProposer:
         """Generate unique action ID."""
         timestamp = datetime.now().isoformat()
         content = f"{prefix}:{timestamp}"
-        return hashlib.md5(content.encode()).hexdigest()[:12]
+        return hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:12]
 
 
 class AutonomousAgent:

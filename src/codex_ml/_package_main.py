@@ -6,6 +6,8 @@ Otherwise we print a brief usage note.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import sys
@@ -16,6 +18,8 @@ def _run_cli() -> int:
         # Prefer module execution to avoid import-time side effects
         mod = importlib.import_module("codex_ml.cli")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         sys.stdout.write("codex_ml: package entrypoint\nTry: python -m codex_ml.cli --help\n")
         return 0
     if hasattr(mod, "main"):

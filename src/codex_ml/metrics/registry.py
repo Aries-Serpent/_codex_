@@ -10,6 +10,8 @@ must be deterministic and side-effect free.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import math
@@ -65,6 +67,8 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block)
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
         pass
 
@@ -93,6 +97,8 @@ def _load_policy_from_file() -> Optional[str]:
     try:
         raw = path.read_text(encoding="utf-8")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     # Minimal TOML parse: look for 'policy = "<value>"'
     for line in raw.splitlines():
@@ -204,7 +210,9 @@ def _register_metric_from_plugin(
             override=override,
             source="entry_point",
         )
-    except RegistryConflictError:
+    except RegistryConflictError as e:
+       logger.debug(f"RegistryConflictError: {e}")
+        logger.warning(f"RegistryConflictError: {e}", exc_info=True)
         if fn is None:
             append_error_entry(
                 "metric-plugin.register",
@@ -248,6 +256,8 @@ def init_metric_plugins(*, force: bool = False) -> int:
     try:
         from codex_ml.plugins import load_plugins
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return 0
 
     return load_plugins("codex_ml.metrics", register=_register_metric_from_plugin)
@@ -285,6 +295,7 @@ def register(
         try:
             metric_registry.register(name, target, override=override)
         except RegistryConflictError as exc:
+            logger.debug(f"RegistryConflictError: {exc}")
             append_error_entry(
                 "metric.register",
                 str(exc),
@@ -612,8 +623,9 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
         scorer = CHRF()
         return float(scorer.corpus_score(preds, [targets]).score)
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency
         from nltk.translate.chrf_score import corpus_chrf

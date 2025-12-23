@@ -9,6 +9,8 @@ Usage:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -25,8 +27,9 @@ def _enable_mlflow(uri: str | None) -> dict[str, Any]:
             os.environ["MLFLOW_TRACKING_URI"] = uri
             try:
                 mlflow.set_tracking_uri(uri)
-            except Exception:
-                pass
+            except Exception as e:
+               logger.debug(f"Exception: {e}")
+                logger.warning(f"Exception: {e}", exc_info=True)
         result["enabled"] = True
         result["tracking_uri"] = os.environ.get("MLFLOW_TRACKING_URI") or result["tracking_uri"]
     except Exception as exc:  # pragma: no cover - depends on optional dep

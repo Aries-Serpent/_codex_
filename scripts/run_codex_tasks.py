@@ -19,6 +19,8 @@ Run it locally via:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import re
 import subprocess
@@ -65,6 +67,8 @@ def search_for_gaps() -> None:
         try:
             text = path.read_text(encoding="utf-8")
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
         for pattern in patterns:
             for match in re.finditer(pattern, text):
@@ -110,18 +114,22 @@ def main() -> None:
     try:
         update_readme()
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("1.update_readme", e)
     try:
         search_for_gaps()
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("2.search_for_gaps", e)
     try:
         run_quality_gates()
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("3.run_quality_gates", e)
     try:
         append_changelog()
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         log_error("4.append_changelog", e)
     print(
         "Codex maintenance tasks complete. See docs/gaps_report.md, logs/error_captures.log, and docs/CHANGELOG.md for details."

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
 """Simple stub scanner for generating stub analysis report."""
 import re
@@ -50,6 +52,7 @@ def scan_for_stubs(source_dirs):
                         stubs.append((py_file, i, "NotImplementedError", message, "P0"))
 
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 print(f"Warning: Failed to scan {py_file}: {e}")
 
     return stubs

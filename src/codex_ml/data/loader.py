@@ -1,6 +1,8 @@
 """Streaming-friendly dataset loader with caching and deterministic helpers."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import csv
 import hashlib
@@ -85,6 +87,8 @@ class CacheManifest:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
             version=str(data.get("version", "1")),
@@ -123,7 +127,9 @@ def _decode_bytes(
 ) -> str:
     try:
         return raw.decode(encoding)
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
+       logger.debug(f"UnicodeDecodeError: {e}")
+        logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
         if validate_utf8:
             raise
         if fallback_encoding:
@@ -231,8 +237,9 @@ def _cache_key(path: Path, **params: Any) -> str:
     try:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))
-    except FileNotFoundError:
-        pass
+    except FileNotFoundError as e:
+       logger.debug(f"FileNotFoundError: {e}")
+        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
     return h.hexdigest()
 
 
@@ -364,14 +371,19 @@ def load_dataset(
 
     if cache_file.exists():
         try:
-            data = pickle.loads(cache_file.read_bytes())  # nosec B301
+            # Use safe pickle loading to prevent code execution vulnerabilities  
+            from utils.safe_pickle import safe_pickle_load
+            data = safe_pickle_load(str(cache_file), use_restricted_unpickler=True)
             if isinstance(data, list):
                 return data
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()
-            except FileNotFoundError:
-                pass
+            except FileNotFoundError as e:
+               logger.debug(f"FileNotFoundError: {e}")
+                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
 
     fmt = _detect_dataset_format(path)
 

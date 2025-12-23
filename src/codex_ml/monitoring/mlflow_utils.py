@@ -6,6 +6,8 @@ This module re-exports those symbols and restores the legacy
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 from typing import Optional

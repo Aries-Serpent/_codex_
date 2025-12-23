@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 # BEGIN: CODEX_IFACE_RL
 """Reinforcement-learning agent interfaces with a default bandit agent."""
 

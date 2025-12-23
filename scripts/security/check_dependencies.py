@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 import argparse
 import json
 from pathlib import Path
@@ -30,6 +32,8 @@ def load_allowlist(p: Path) -> Dict[str, str]:
 
         data = yaml.safe_load(p.read_text())
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         data = None
     if isinstance(data, dict):
         return {k.lower(): str(v) for k, v in data.items()}

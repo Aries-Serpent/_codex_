@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Lightweight registry for model loader callables."""
 
 from __future__ import annotations
@@ -40,6 +42,7 @@ def get_model(name: str) -> _ModelFactory:
     try:
         return _MODELS[name]
     except KeyError as exc:
+        logger.debug(f"KeyError: {exc}")
         raise exc
 
 

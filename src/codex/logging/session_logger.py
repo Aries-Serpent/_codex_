@@ -22,6 +22,7 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+logger = logging.getLogger(__name__)
 import os
 import sqlite3
 import threading
@@ -55,6 +56,8 @@ try:
     from .db import init_db as _shared_init_db
     from .db import log_event as _shared_log_event
 except Exception:
+    logger.warning("Exception occurred", exc_info=True)
+    logger.warning("Exception occurred", exc_info=True)
     _shared_DB_LOCK = None
     _shared_init_db = None
     try:  # Fallback: rely on monkeypatch adapters
@@ -81,16 +84,19 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
 
 
 def _close_pool() -> None:
@@ -135,8 +141,9 @@ def init_db(db_path: Optional[Path] = None):
         conn = sqlite3.connect(p)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception:
-            pass
+        except Exception as e:
+           logger.debug(f"Exception: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
         try:
             conn.execute(
                 """CREATE TABLE IF NOT EXISTS session_events(
@@ -166,6 +173,8 @@ def init_db(db_path: Optional[Path] = None):
         finally:
             conn.close()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         with _DB_LOCK:
             _INITIALIZING_PATHS.pop(key, None)
         leader_event.set()
@@ -217,6 +226,8 @@ def _fallback_log_event(
         )
         conn.commit()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         if USE_POOL:
             try:
                 conn.close()
@@ -252,7 +263,9 @@ def log_event(
                     db_path=db_path,
                 )
                 return
-            except TypeError:
+            except TypeError as e:
+               logger.debug(f"TypeError: {e}")
+                logger.warning(f"TypeError: {e}", exc_info=True)
                 # Legacy adapters expect positional ``session_id``/``role`` arguments.
                 try:
                     if meta is not None:
@@ -260,10 +273,14 @@ def log_event(
                     else:
                         _shared_log_event(session_id, role, message, db_path)
                     return
-                except TypeError:
+                except TypeError as e:
+                   logger.debug(f"TypeError: {e}")
+                    logger.warning(f"TypeError: {e}", exc_info=True)
                     try:
                         _shared_log_event(session_id, role, message)
-                    except TypeError:
+                    except TypeError as e:
+                       logger.debug(f"TypeError: {e}")
+                        logger.warning(f"TypeError: {e}", exc_info=True)
                         logging.getLogger(__name__).debug(
                             "shared log_event compatibility fallback failed",
                             exc_info=True,
@@ -271,7 +288,9 @@ def log_event(
             return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
-        except TypeError:
+        except TypeError as e:
+           logger.debug(f"TypeError: {e}")
+            logger.warning(f"TypeError: {e}", exc_info=True)
             _shared_log_event(session_id, role, message, db_path=db_path)
         return
     return _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
@@ -365,6 +384,8 @@ class SessionLogger:
                     db_path=self.db_path,
                 )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             import logging
 
             logging.exception("session_end DB log failed")
@@ -381,8 +402,9 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     conn = sqlite3.connect(path)
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

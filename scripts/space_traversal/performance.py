@@ -108,6 +108,7 @@ class FileCache:
                     # Expired - remove file
                     path.unlink(missing_ok=True)
             except (json.JSONDecodeError, IOError) as e:
+                logger.debug(f"Exception: {e}")
                 # Corrupt or unreadable cache file; log and treat as cache miss.
                 logger.debug(f"Cache read error for key '{key}': {e}")
         return None
@@ -180,6 +181,7 @@ class FileCache:
                         path.unlink()
                         count += 1
             except (json.JSONDecodeError, IOError) as e:
+                logger.debug(f"Exception: {e}")
                 # Corrupt or unreadable cache file during cleanup; log for manual intervention.
                 logger.warning(f"Unable to clean cache file '{path}': {e}")
         return count

@@ -5,6 +5,8 @@ managing evaluation loops, and collecting metrics in a unified format.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import csv
@@ -57,6 +59,7 @@ def _summarise_log(path: str) -> None:
                 val = float(value)
                 break
             except (TypeError, ValueError):
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
         if val is None:
             continue

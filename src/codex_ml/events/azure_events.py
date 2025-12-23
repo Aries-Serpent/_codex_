@@ -17,7 +17,9 @@ try:
     from azure.eventgrid import EventGridEvent, EventGridPublisherClient
 
     _HAS_AZURE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     _HAS_AZURE = False
     logger.warning("azure-eventgrid not installed. Azure Event Grid support disabled.")
 
@@ -92,6 +94,7 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish to Azure Event Grid: {e}")
             return False
 
@@ -127,5 +130,6 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish batch to Azure Event Grid: {e}")
             return False

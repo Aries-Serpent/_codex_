@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """JSON Lines dataset loader with deterministic caching and splitting."""
 
 from __future__ import annotations
@@ -33,6 +35,7 @@ def _iter_jsonl(path: Path) -> Iterator[Mapping[str, Any]]:
             try:
                 payload = json.loads(line)
             except json.JSONDecodeError:
+                logger.debug("Exception caught, continuing", exc_info=True)
                 continue
             if isinstance(payload, Mapping):
                 yield payload

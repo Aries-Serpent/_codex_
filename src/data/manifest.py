@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Dataset manifest helpers used by the modular training stack."""
 
 from __future__ import annotations
@@ -30,8 +32,9 @@ def _default_created_at() -> int:
     if override:
         try:
             return int(float(override))
-        except ValueError:
-            pass
+        except ValueError as e:
+           logger.debug(f"ValueError: {e}")
+            logger.warning(f"ValueError: {e}", exc_info=True)
     return int(time.time())
 
 

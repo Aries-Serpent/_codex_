@@ -173,6 +173,7 @@ class CurriculumScheduler:
                 logger.info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to load state, creating new: {e}")
 
         return CurriculumState(curriculum_name=self.curriculum_name)
@@ -184,6 +185,7 @@ class CurriculumScheduler:
                 json.dump(self.state.to_dict(), f, indent=2)
             logger.info(f"Saved curriculum state to {self.state_file}")
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to save state: {e}")
             raise
 
@@ -413,7 +415,9 @@ def load_curriculum_from_config(config_path: str) -> List[TrainingPhase]:
     """
     try:
         import yaml
-    except ImportError:
+    except ImportError as e:
+       logger.debug(f"ImportError: {e}")
+        logger.warning(f"ImportError: {e}", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml")
 
     with open(config_path) as f:

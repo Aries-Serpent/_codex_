@@ -1,5 +1,7 @@
 # src/codex_ml/cli/audit_pipeline.py
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -34,6 +36,8 @@ def _to_serializable(obj: Any) -> Any:
         json.dumps(obj)
         return obj
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return str(obj)
 
 
@@ -140,6 +144,7 @@ def audit_repo(
             try:
                 outcome = prov.search(q)
             except Exception as exc:
+                logger.debug(f"Exception: {exc}")
                 evidence.append(
                     {
                         "provider": prov.__class__.__name__.lower(),

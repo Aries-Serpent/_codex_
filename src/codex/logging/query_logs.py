@@ -27,6 +27,8 @@ Behavior:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -37,8 +39,9 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception:
-    pass
+except Exception as e:
+   logger.debug(f"Exception: {e}")
+    logger.warning(f"Exception: {e}", exc_info=True)
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -303,6 +306,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 _print_rich(rows, mapcol, args.show_meta)
         return 0
     except (ValueError, SystemExit) as exc:
+        logger.debug(f"Exception: {exc}")
         print(str(exc), file=sys.stderr)
         return 2
     except Exception as exc:  # pragma: no cover - top-level guard

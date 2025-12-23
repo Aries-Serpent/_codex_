@@ -255,6 +255,7 @@ class SandboxManager:
             )
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             duration_ms = (time.time() - start_time) * 1000
 
             return ExecutionResult(
@@ -311,6 +312,7 @@ class SandboxManager:
                 raise ValueError(f"Path traversal detected in script path: {path_str}")
                 
         except (ValueError, OSError) as e:
+            logger.debug(f"Exception: {e}")
             raise ValueError(f"Path validation failed: {e}")
 
         # Create tracing wrapper script

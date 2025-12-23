@@ -1,6 +1,8 @@
 """HuggingFace tokenizer adapter."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path

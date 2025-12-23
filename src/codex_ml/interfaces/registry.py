@@ -5,6 +5,8 @@ string keys. Interfaces are loaded on demand via entry-points or config.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import os
@@ -35,8 +37,9 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         ERRORS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with ERRORS_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
-    except Exception:
-        pass
+    except Exception as e:
+       logger.debug(f"Exception: {e}")
+        logger.warning(f"Exception: {e}", exc_info=True)
     sys.stderr.write(
         (
             f"Question for ChatGPT @codex {ts}:\n"

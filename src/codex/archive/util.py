@@ -1,6 +1,8 @@
 """Utility helpers for the Codex archival workflow."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import datetime as _dt
 import hashlib
@@ -138,7 +140,9 @@ def redact_url_credentials(url: str | None) -> str:
 
     try:
         parsed = urlsplit(url)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         return url
 
     if not parsed.username and not parsed.password:

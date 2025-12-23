@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 GitHub Actions Usage Tracker for Audit Pipeline v1.5.x
 
 Tracks GitHub Actions usage, costs, and provides analytics for

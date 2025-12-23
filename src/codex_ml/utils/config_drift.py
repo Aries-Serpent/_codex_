@@ -136,7 +136,9 @@ class ConfigDrift:
             baseline = self.load_baseline(baseline_path)
             diff = self.compare(baseline)
             return bool(diff["added"] or diff["removed"] or diff["modified"])
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.warning(f"Baseline not found: {baseline_path}")
             return False
 

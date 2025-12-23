@@ -174,6 +174,7 @@ class AgentOrchestrator:
             try:
                 self.task_queue.put_nowait((prompt, task_type, kwargs))
             except asyncio.QueueFull:
+                logger.debug("Exception caught, returning", exc_info=True)
                 return ExecutionResult(
                     success=False,
                     model="",
@@ -217,6 +218,7 @@ class AgentOrchestrator:
             return result
 
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             async with self._lock:
                 agent.status = AgentStatus.ERROR
 

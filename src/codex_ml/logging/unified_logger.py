@@ -43,7 +43,9 @@ class MLflowBackend(LoggerBackend):
             self.mlflow = mlflow
             if tracking_uri:
                 mlflow.set_tracking_uri(tracking_uri)
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("MLflow not installed. Install: pip install mlflow")
 
     def start_run(self, run_name=None):
@@ -68,7 +70,9 @@ class TensorBoardBackend(LoggerBackend):
             from torch.utils.tensorboard import SummaryWriter
 
             self.writer = SummaryWriter(log_dir)
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("TensorBoard not installed. Install: pip install tensorboard")
 
     def start_run(self, run_name=None):
@@ -96,7 +100,9 @@ class WandBBackend(LoggerBackend):
             self.wandb = wandb
             self.project = project
             self.entity = entity
-        except ImportError:
+        except ImportError as e:
+           logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("Weights & Biases not installed. Install: pip install wandb")
 
     def start_run(self, run_name=None):
@@ -127,6 +133,7 @@ class LoggerRegistry:
             try:
                 backend.start_run(run_name)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed start on {name}: {e}")
 
     def end_run(self):
@@ -134,6 +141,7 @@ class LoggerRegistry:
             try:
                 backend.end_run()
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed end: {e}")
 
     def log_metrics(self, metrics: Dict, step: Optional[int] = None):
@@ -141,6 +149,7 @@ class LoggerRegistry:
             try:
                 backend.log_metrics(metrics, step)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed log: {e}")
 
     def log_params(self, params: Dict):
@@ -148,6 +157,7 @@ class LoggerRegistry:
             try:
                 backend.log_params(params)
             except Exception as e:
+               logger.debug(f"Exception: {e}")
                 logger.error(f"Failed params: {e}")
 
 

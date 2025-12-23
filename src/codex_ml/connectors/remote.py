@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Offline-friendly remote connector implementations."""
 
 from __future__ import annotations
@@ -54,6 +56,7 @@ class RemoteConnector(Connector):
         try:
             entries = await self._local.list_files(path)
         except ConnectorError as exc:
+            logger.debug(f"ConnectorError: {exc}")
             record_health_event(
                 "connectors.remote",
                 "list_failed",
@@ -72,6 +75,7 @@ class RemoteConnector(Connector):
         try:
             data = await self._local.read_file(path)
         except ConnectorError as exc:
+            logger.debug(f"ConnectorError: {exc}")
             record_health_event(
                 "connectors.remote",
                 "read_failed",

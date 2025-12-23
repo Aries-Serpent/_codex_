@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 MCP Server Lifecycle Management Capability Detector
 
 Tracks startup, shutdown, healthz endpoints, and application lifecycle hooks.

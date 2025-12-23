@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -47,6 +49,8 @@ def _sloc_of_bytes(b: bytes) -> int:
     try:
         text = b.decode("utf-8", "ignore")
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return 0
     sloc = 0
     for ln in text.splitlines():
@@ -70,6 +74,8 @@ def stat_file(p: Path) -> FileMeta:
     try:
         b = p.read_bytes()
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         b = b""
     return FileMeta(
         path=p.as_posix(),

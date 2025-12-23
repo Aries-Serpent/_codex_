@@ -95,6 +95,7 @@ class VectorStoreFactory:
             logger.info(f"Successfully created {store_type} store")
             return instance
         except Exception as e:
+           logger.debug(f"Exception: {e}")
             logger.error(f"Failed to create {store_type} store: {e}")
             raise
 
@@ -138,7 +139,9 @@ try:
     from codex.retrieval.stores.faiss_store import FAISSStore
 
     VectorStoreRegistry.register("faiss", FAISSStore)
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("FAISS store not available for registration")
 
 # Auto-register Pinecone store
@@ -146,7 +149,9 @@ try:
     from codex.retrieval.stores.pinecone_store import PineconeStore
 
     VectorStoreRegistry.register("pinecone", PineconeStore)
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Pinecone store not available for registration")
 
 # Auto-register Weaviate store
@@ -154,7 +159,9 @@ try:
     from codex.retrieval.stores.weaviate_store import WeaviateStore
 
     VectorStoreRegistry.register("weaviate", WeaviateStore)
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Weaviate store not available for registration")
 
 # Auto-register PGVector store
@@ -162,7 +169,9 @@ try:
     from codex.retrieval.stores.pgvector_store import PGVectorStore
 
     VectorStoreRegistry.register("pgvector", PGVectorStore)
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("PGVector store not available for registration")
 
 

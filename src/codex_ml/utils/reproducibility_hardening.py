@@ -61,6 +61,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["python_random"] = True
         logger.debug("✓ Python random seeded")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         status["python_random"] = False
         logger.warning(f"Failed to seed Python random: {e}")
 
@@ -70,6 +71,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["python_hash_seed"] = True
         logger.debug("✓ PYTHONHASHSEED set")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         status["python_hash_seed"] = False
         logger.warning(f"Failed to set PYTHONHASHSEED: {e}")
 
@@ -80,10 +82,12 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         np.random.seed(seed)
         status["numpy"] = True
         logger.debug("✓ NumPy seeded")
-    except ImportError:
+    except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         status["numpy"] = None  # Not installed
         logger.debug("NumPy not available (skipped)")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         status["numpy"] = False
         logger.warning(f"Failed to seed NumPy: {e}")
 
@@ -124,12 +128,14 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
                 status["torch_deterministic_algorithms"] = True
                 logger.debug("✓ PyTorch deterministic algorithms enabled (strict mode)")
             except Exception as e:
+                logger.debug(f"Exception: {e}")
                 status["torch_deterministic_algorithms"] = False
                 logger.warning(f"Failed to enable deterministic algorithms: {e}")
         else:
             status["torch_deterministic_algorithms"] = None  # Not enabled in non-strict mode
 
-    except ImportError:
+    except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         status["torch"] = None  # Not installed
         status["torch_cuda"] = None
         status["cudnn_deterministic"] = None
@@ -137,6 +143,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["torch_deterministic_algorithms"] = None
         logger.debug("PyTorch not available (skipped)")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         status["torch"] = False
         logger.warning(f"Failed to seed PyTorch: {e}")
 
@@ -157,11 +164,13 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         else:
             status["tensorflow_deterministic"] = None
 
-    except ImportError:
+    except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         status["tensorflow"] = None  # Not installed
         status["tensorflow_deterministic"] = None
         logger.debug("TensorFlow not available (skipped)")
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         status["tensorflow"] = False
         logger.warning(f"Failed to seed TensorFlow: {e}")
 
@@ -240,6 +249,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["git_dirty"] = bool(git_status)
 
     except Exception as e:
+        logger.debug(f"Exception: {e}")
         snapshot["git_commit"] = None
         snapshot["git_dirty"] = None
         logger.debug(f"Git information not available: {e}")
@@ -252,6 +262,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             )
             snapshot["pip_freeze"] = pip_freeze.strip().split("\n")
         except Exception as e:
+            logger.debug(f"Exception: {e}")
             snapshot["pip_freeze"] = []
             logger.warning(f"Failed to capture pip freeze: {e}")
     else:
@@ -281,13 +292,15 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             snapshot["gpu_count"] = 0
             snapshot["gpu_devices"] = []
 
-    except ImportError:
+    except ImportError as e:
+        logger.debug(f"ImportError: {e}")
         snapshot["cuda_available"] = None
         snapshot["cuda_version"] = None
         snapshot["cudnn_version"] = None
         snapshot["gpu_count"] = None
         snapshot["gpu_devices"] = None
     except Exception as e:
+       logger.debug(f"Exception: {e}")
         logger.warning(f"Failed to capture GPU information: {e}")
 
     # 6. Selected environment variables

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Session-scoped structured logging utilities."""
 
 from __future__ import annotations
@@ -110,7 +112,9 @@ class SessionLogger:
             try:
                 path.unlink()
                 removed.append(path)
-            except OSError:
+            except OSError as e:
+               logger.debug(f"OSError: {e}")
+                logger.warning(f"OSError: {e}", exc_info=True)
                 continue
 
         return removed
@@ -128,6 +132,7 @@ class SessionLogger:
                 try:
                     yield json.loads(line)
                 except json.JSONDecodeError:
+                    logger.debug("Exception caught, continuing", exc_info=True)
                     continue
 
 

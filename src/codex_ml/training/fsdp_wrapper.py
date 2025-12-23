@@ -13,6 +13,8 @@ Version: 1.0.0
 """
 
 import os
+import logging
+logger = logging.getLogger(__name__)
 import functools
 from typing import Optional, Dict, Any, Callable, Union, List
 from pathlib import Path
@@ -42,7 +44,9 @@ try:
     )
 
     TORCH_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+   logger.debug(f"ImportError: {e}")
+    logger.warning(f"ImportError: {e}", exc_info=True)
     TORCH_AVAILABLE = False
     # Define mock classes for offline/testing
     FSDP = None

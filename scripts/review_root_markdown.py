@@ -11,6 +11,8 @@ for archival based on:
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import argparse
 import json
@@ -162,6 +164,8 @@ class MarkdownAnalyzer:
                         pass  # Skip invalid paths during reference building
 
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 pass  # Skip files that cannot be processed
 
     def _analyze_file(self, path: Path) -> MarkdownFile:
@@ -174,6 +178,8 @@ class MarkdownAnalyzer:
         try:
             content = path.read_text(errors="ignore").lower()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             content = ""
 
         # Determine category

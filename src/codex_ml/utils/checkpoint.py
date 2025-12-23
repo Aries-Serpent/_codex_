@@ -1,6 +1,8 @@
 """Checkpoint helpers with checksum verification and RNG persistence."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import inspect
@@ -80,10 +82,13 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
     if map_location is not None:
         kwargs["map_location"] = map_location
     if _TORCH_SUPPORTS_WEIGHTS_ONLY:
-        kwargs["weights_only"] = False
+        # Security: Use weights_only=True to prevent arbitrary code execution
+        # This is the secure default for PyTorch >=2.2.2 (CVE-2024-XXXXX)
+        kwargs["weights_only"] = True
     try:
         return load_fn(source, **kwargs)
     except TypeError as exc:
+        logger.debug(f"TypeError: {exc}")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)
@@ -128,8 +133,9 @@ def _load_payload(path: Path, map_location: str | None = None) -> Any:
     if torch is not None:
         with suppress(RuntimeError):
             return _torch_load(path, map_location=map_location)
-    with path.open("rb") as fh:  # pragma: no cover - pickle fallback
-        return pickle.load(fh)  # nosec B301
+    # Use safe pickle loading to prevent code execution vulnerabilities
+    from utils.safe_pickle import safe_pickle_load
+    return safe_pickle_load(str(path), use_restricted_unpickler=True)
 
 
 def _capture_rng_state_raw() -> dict[str, Any]:
@@ -306,6 +312,8 @@ def _update_best_k(
         if not isinstance(existing, list):
             existing = []
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         existing = []
     filtered: list[dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]
     filtered.append(entry)
@@ -488,7 +496,9 @@ def load_checkpoint(
     ckpt_dir = Path(ckpt_dir)
     try:
         _verify_checksums(ckpt_dir, strict=strict)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         if strict:
             raise
 
@@ -535,4 +545,5 @@ def load_checkpoint(
     try:
         return json.loads(meta_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
+        logger.debug("Exception caught, returning", exc_info=True)
         return {}

@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import json
 import shutil
@@ -25,6 +27,8 @@ def _epoch_sort_key(path: Path) -> tuple[int, str]:
         suffix = name.rsplit("-", 1)[-1]
         return int(suffix), name
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return (10**12, name)
 
 
@@ -39,7 +43,9 @@ def _is_epoch_dir(path: Path) -> bool:
         return False
     try:
         int(suffix)
-    except ValueError:
+    except ValueError as e:
+       logger.debug(f"ValueError: {e}")
+        logger.warning(f"ValueError: {e}", exc_info=True)
         return False
     return True
 
@@ -51,6 +57,8 @@ def _load_metric(dir_path: Path, metric: str) -> Optional[float]:
     try:
         data = json.loads(meta_path.read_text(encoding="utf-8"))
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None
     value = data.get(metric)
     if value is None and isinstance(data.get("metrics"), dict):
@@ -60,6 +68,7 @@ def _load_metric(dir_path: Path, metric: str) -> Optional[float]:
     try:
         return float(value)
     except (TypeError, ValueError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return None
 
 

@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """System metrics callback for optional CPU/GPU sampling."""
 
 from __future__ import annotations

@@ -70,6 +70,7 @@ class PineconeAdapter(BackendAdapter):
             self._connected = True
             logger.info("Connected to Pinecone index %s", self._index_name)
         except Exception as exc:
+           logger.debug(f"Exception: {exc}")
             logger.exception("Failed to initialize Pinecone: %s", exc)
             self._connected = False
 
@@ -123,6 +124,8 @@ class PineconeAdapter(BackendAdapter):
             with Timer("pinecone_upsert_latency"):
                 self._index_upsert(vectors=vectors, namespace=namespace)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone upsert failed")
             raise
@@ -149,6 +152,8 @@ class PineconeAdapter(BackendAdapter):
             with Timer("pinecone_query_latency"):
                 resp = self._index_query(vector=query_embedding, top_k=top_k, filter=filters, namespace=namespace)
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone query failed")
             return []
@@ -190,6 +195,8 @@ class PineconeAdapter(BackendAdapter):
                 self._index_delete(ids=[id], namespace=namespace)
             return True
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone delete failed")
             return False
@@ -203,5 +210,7 @@ class PineconeAdapter(BackendAdapter):
                 stats = self._index.describe_index_stats()
                 info["stats"] = stats
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             logger.debug("Failed to fetch Pinecone index stats during health_check")
         return info

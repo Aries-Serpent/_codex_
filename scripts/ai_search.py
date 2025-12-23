@@ -5,6 +5,8 @@ This module provides efficient search capabilities across the multi-layered
 repository indices for AI assistants and agents.
 """
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import json
@@ -41,31 +43,41 @@ class AIRepositorySearch:
         try:
             with open(self.index_dir / "content_index.json", 'r') as f:
                 self.content_index = json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: content_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "semantic_index.json", 'r') as f:
                 self.semantic_index = json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: semantic_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "structural_index.json", 'r') as f:
                 self.structural_index = json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: structural_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "entity_index.json", 'r') as f:
                 self.entity_index = json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: entity_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "metadata_index.json", 'r') as f:
                 self.metadata_index = json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+           logger.debug(f"FileNotFoundError: {e}")
+            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: metadata_index.json not found", file=sys.stderr)
 
     def search_by_keyword(self, keyword: str, max_results: int = 10) -> List[SearchResult]:

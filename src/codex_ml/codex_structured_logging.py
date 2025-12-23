@@ -71,7 +71,9 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
     directory = Path(log_dir).expanduser() if log_dir is not None else _session_log_dir()
     try:
         _session_logger_ctx.set(SessionLogger(resolved, directory))
-    except OSError:
+    except OSError as e:
+       logger.debug(f"OSError: {e}")
+        logger.warning(f"OSError: {e}", exc_info=True)
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
     return resolved
 
@@ -86,6 +88,7 @@ def get_session_logger() -> SessionLogger:
     try:
         logger = SessionLogger(session_id, _session_log_dir())
     except OSError as exc:
+        logger.debug(f"OSError: {exc}")
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
         raise RuntimeError("Session logging unavailable") from exc
     _session_logger_ctx.set(logger)
@@ -404,10 +407,13 @@ def capture_exceptions(
                 return 1
 
             if result is None:
+                logger.debug("Exception caught, returning", exc_info=True)
                 return 0
             try:
                 return int(result)
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 return 0
 
         return _wrapped

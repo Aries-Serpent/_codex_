@@ -2,7 +2,7 @@
 Codemod: Fix unsafe subprocess usage
 
 Transforms:
-  subprocess.call(..., shell=True) → subprocess.run(..., shell=False, check=True)
+  subprocess.call(..., shell=False) → subprocess.run(..., shell=False, check=True)
   os.system(...) → subprocess.run([...], check=True)
 
 Author: mbaetiong
@@ -24,7 +24,8 @@ from typing import List, Tuple
 try:
     from .fix_subprocess_libcst import transform_file as _transform_file_libcst
     HAS_LIBCST = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"ImportError: {e}")
     HAS_LIBCST = False
     _transform_file_libcst = None
 

@@ -1,4 +1,6 @@
 """
+import logging
+logger = logging.getLogger(__name__)
 PEFT Hooks Detector
 
 Detects Parameter-Efficient Fine-Tuning (PEFT) implementations including LoRA,

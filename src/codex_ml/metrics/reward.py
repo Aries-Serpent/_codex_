@@ -5,6 +5,8 @@ supporting both scalar rewards and dictionary payloads with reward fields.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections.abc import Mapping, Sequence
 
@@ -17,6 +19,7 @@ def _coerce_reward(value: object) -> float:
     try:
         return float(value)  # type: ignore[arg-type]
     except (TypeError, ValueError):
+        logger.debug("Exception caught, returning", exc_info=True)
         return 0.0
 
 

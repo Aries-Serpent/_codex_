@@ -6,6 +6,8 @@ which computes metrics over predictions vs targets.
 """
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from typing import Any
@@ -181,7 +183,9 @@ def evaluate_dataloader(
                         for name, value in vars(outputs).items()
                         if not name.startswith("_") and not callable(value)
                     }
-                except TypeError:
+                except TypeError as e:
+                   logger.debug(f"TypeError: {e}")
+                    logger.warning(f"TypeError: {e}", exc_info=True)
                     # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)
                     output_mapping = {
                         name: value

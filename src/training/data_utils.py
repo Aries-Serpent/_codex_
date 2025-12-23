@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import hashlib
 import json
@@ -131,6 +133,8 @@ def split_dataset(
                     cached_train_idx = [int(i) for i in data["train_idx"]]
                     cached_val_idx = [int(i) for i in data["val_idx"]]
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Ignore malformed cache and proceed to recompute
                 cached_train_idx = cached_val_idx = None
 
@@ -168,6 +172,8 @@ def split_dataset(
                 encoding="utf-8",
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Best-effort cache; ignore failures
             pass
 
@@ -214,6 +220,8 @@ def split_texts(
                     # defensive cast and copies
                     return list(data["train"]), list(data["val"])
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # fall through to recompute
                 pass
 
@@ -239,6 +247,8 @@ def split_texts(
                 encoding="utf-8",
             )
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Best-effort caching; ignore failures
             pass
 
@@ -267,6 +277,8 @@ class TextDataset:
                     # Expecting a mapping with 'input_ids'
                     ids = out["input_ids"]  # type: ignore[index]
             except Exception:
+                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)
                 # Skip samples that fail tokenization
                 continue
 
@@ -347,9 +359,12 @@ def cache_dataset(
                 finally:
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
-                    except Exception:
-                        pass  # File lock release failed; continue cleanup
+                    except Exception as e:
+                       logger.debug(f"Exception: {e}")
+                        logger.warning(f"Exception: {e}", exc_info=True)  # File lock release failed; continue cleanup
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Skip samples that fail to serialize
             continue
 
@@ -370,6 +385,8 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
             _require_torch()
             yield {k: torch.tensor(data[k]) for k in data.files}
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             # Skip unreadable/corrupted shards
             continue
 

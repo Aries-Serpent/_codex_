@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 """Minimal callback primitives shared by the training loops."""
 
 from __future__ import annotations

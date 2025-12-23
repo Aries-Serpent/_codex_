@@ -1,6 +1,8 @@
 """Entry-point plugin loader utilities."""
 
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 from typing import Any, Callable, Iterable, Optional
 
@@ -20,16 +22,22 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
 
     try:
         return metadata.entry_points(group=group)
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         # Python <3.10 compatibility: entry_points() returns dict-like object
         try:
             eps = metadata.entry_points()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return ()
         if hasattr(eps, "select"):
             return eps.select(group=group)
         return [ep for ep in eps if getattr(ep, "group", None) == group]
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return ()
 
 
@@ -45,15 +53,21 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             hook(register)
             return True
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return False
 
     if callable(target):
         try:
             target(register)
             return True
-        except TypeError:
+        except TypeError as e:
+           logger.debug(f"TypeError: {e}")
+            logger.warning(f"TypeError: {e}", exc_info=True)
             return False
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return False
 
     return False
@@ -68,14 +82,20 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
     try:
         register(name, target)
         return True
-    except TypeError:
+    except TypeError as e:
+       logger.debug(f"TypeError: {e}")
+        logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             decorator = register(name)
             decorator(target)
             return True
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             return False
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -101,6 +121,8 @@ def load_plugins(group: str, *, register: Optional[RegisterFn] = None) -> int:
         try:
             target = ep.load()
         except Exception:
+            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)
             continue
 
         if _call_plugin_hook(target, register):

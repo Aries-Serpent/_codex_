@@ -1,4 +1,6 @@
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
 
 import importlib
 import types
@@ -15,6 +17,8 @@ def optional_import(name: str) -> tuple[types.ModuleType | None, bool]:
     try:
         return importlib.import_module(name), True
     except Exception:
+        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)
         return None, False
 
 
