@@ -125,7 +125,8 @@ def _posix_append_bytes(path: Path, data: bytes) -> None:
             f.write(data)
         return
     # POSIX path
-    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+    # Security: Use 0o600 (owner-only read/write) for sensitive files
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
     try:
         os.write(fd, data)
     finally:
