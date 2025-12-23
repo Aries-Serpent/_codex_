@@ -263,3 +263,9 @@ artifacts/security/detect-secrets.txt
 # Validation logs
 .codex/validation/*/pre-commit.log
 .hypothesis/
+
+# Agent state (session data) - keep structure, ignore session files
+.codex/agent_state/session_*.json
+.codex/agent_metrics/*.json
+!.codex/agent_state/.gitkeep
+!.codex/agent_metrics/.gitkeep
