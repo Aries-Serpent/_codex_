@@ -445,7 +445,7 @@ class GitHubClient:
             )
             return True
         except GitHubAPIError as e:
-           logger.debug(f"GitHubAPIError: {e}")
+            logger.debug(f"GitHubAPIError: {e}")
             logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
@@ -474,7 +474,7 @@ class GitHubClient:
             )
             return True
         except GitHubAPIError as e:
-           logger.debug(f"GitHubAPIError: {e}")
+            logger.debug(f"GitHubAPIError: {e}")
             logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
