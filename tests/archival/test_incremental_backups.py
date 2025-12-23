@@ -14,6 +14,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
+from .security_utils import safe_extract_tarfile
+
 
 class TestIncrementalBackups:
     """Test incremental backup functionality"""
@@ -206,12 +208,10 @@ class TestIncrementalBackups:
         restore_dir.mkdir()
 
         # Extract full backup
-        with tarfile.open(full_backup, "r:gz") as tar:
-            tar.extractall(restore_dir)
+        safe_extract_tarfile(full_backup, restore_dir)
 
         # Extract incremental
-        with tarfile.open(inc1_backup, "r:gz") as tar:
-            tar.extractall(restore_dir)
+        safe_extract_tarfile(inc1_backup, restore_dir)
 
         # Verify both files present
         assert (restore_dir / "file1.txt").exists()
@@ -383,8 +383,7 @@ class TestBackupVerification:
         # Test restoration
         restore_dir = tmp_path / "restore_test"
         restore_dir.mkdir()
-        with tarfile.open(backup_path, "r:gz") as tar:
-            tar.extractall(restore_dir)
+        safe_extract_tarfile(backup_path, restore_dir)
 
         # Verify restoration
         restored_file = restore_dir / "test.txt"

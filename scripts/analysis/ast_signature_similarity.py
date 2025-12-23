@@ -47,10 +47,9 @@ def extract_ast_signature(code: str) -> Optional[Dict]:
             counts[type(node).__name__] += 1
         # Create a normalized AST dump for structural hashing
         dump = ast.dump(tree, annotate_fields=False)
-        struct_hash = hashlib.md5(dump.encode(, usedforsecurity=False)).hexdigest()
+        struct_hash = hashlib.md5(dump.encode('utf-8'), usedforsecurity=False).hexdigest()
         return {"nodes": dict(counts), "hash": struct_hash}
     except SyntaxError as e:
-       logger.debug(f"SyntaxError: {e}")
         logger.warning(f"SyntaxError: {e}", exc_info=True)
         return None
 
@@ -100,7 +99,6 @@ def compute_uniqueness(paths: List[Path], min_nodes: int = 10) -> float:
             if sig and sum(sig["nodes"].values()) >= min_nodes:
                 signatures.append(sig)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             continue
 

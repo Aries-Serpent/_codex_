@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Optional
 
 from fastapi import APIRouter, HTTPException, Request, status
 
+from src.utils.log_sanitizer import sanitize_log_input
 from ..config import settings
 from ..schemas.requests import KBQueryRequest
 from ..schemas.responses import AuditRef, KBQueryResponse, KBSearchResult
@@ -88,7 +89,9 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
     request_id = str(uuid.uuid4())
 
-    logger.info(f"KB query request {request_id} from tenant {tenant_id}")
+    logger.info(
+        f"KB query request {sanitize_log_input(request_id)} from tenant {sanitize_log_input(tenant_id)}"
+    )
 
     try:
         # Query the knowledge base

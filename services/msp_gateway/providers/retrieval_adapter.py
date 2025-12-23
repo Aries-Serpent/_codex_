@@ -7,6 +7,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 from codex.retrieval import RetrievalEngine
+from src.utils.log_sanitizer import sanitize_log_input
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,9 @@ class RetrievalAdapter:
             )
             return results
         except Exception as e:
-            logger.error(f"Error querying knowledge base for tenant {tenant_id}: {e}")
+            logger.error(
+                f"Error querying knowledge base for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(str(e))}"
+            )
             return []
 
     def build_index(
