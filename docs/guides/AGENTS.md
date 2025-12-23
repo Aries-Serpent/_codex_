@@ -38,3 +38,13 @@ from codex.security.storage import SecureStorage
 ---
 
 **See**: [Main AGENTS.md](../../AGENTS.md) | [Security Module Docs](../../src/codex/security/)
+
+---
+
+## 📂 Module Reference Paths
+
+**Security Module**: `src/codex/security/` - Already documented above  
+**AST Module**: `src/codex/ast/` - Code analysis and parsing  
+**Agent Directory**: `agents/` - Agent implementations  
+**Agent Scripts**: `scripts/agent/` - Agent automation
+

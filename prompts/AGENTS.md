@@ -37,3 +37,13 @@ user_prompt = sanitize_log(user_input)
 ---
 
 **See**: [Main AGENTS.md](../AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
+
+---
+
+## 📂 Related Module Paths
+
+**Security Module**: `src/codex/security/` - Security utilities for prompts  
+**AST Module**: `src/codex/ast/` - Code parsing for prompt generation  
+**Agent Directory**: `agents/` - Agent configurations  
+**Agent Scripts**: `scripts/agent/` - Automation scripts
+

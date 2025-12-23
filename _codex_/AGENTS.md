@@ -29,3 +29,13 @@ from codex.security.storage import SecureStorage
 ---
 
 **See**: [Main AGENTS.md](../AGENTS.md) - Complete repository guidance
+
+---
+
+## 📂 Repository Module Paths
+
+**Security Module**: `src/codex/security/` - Security utilities  
+**AST Module**: `src/codex/ast/` - Syntax tree analysis  
+**Agent Directory**: `agents/` - Agent implementations  
+**Agent Scripts**: `scripts/agent/` - Automation scripts
+

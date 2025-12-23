@@ -813,3 +813,14 @@ Using this AGENTS.md, analyze how Codex interacts with the repository and sugges
 - **Feedback loops**: Store iteration prompts or summaries in `.codex/` alongside status updates for traceability; prefer NDJSON for machine parsing.
 - **Rollback**: Keep manifests and checkpoints immutable; prefer `resume` with explicit paths and disable new features via `--no-mlflow` or env flags if regressions are suspected.
 - **Knowledge base**: Cross-link docs/quickstart.md and docs/tracking.md for metrics/MLflow usage; keep AGENTS.md in sync after significant process changes.
+
+---
+
+## 📂 Key Module Paths Reference
+
+**Security Module**: `src/codex/security/` - Security utilities, encryption, sanitization  
+**AST Module**: `src/codex/ast/` - Abstract syntax tree parsing and analysis  
+**Agents**: `agents/` - AI agent implementations and orchestration  
+**Agent Scripts**: `scripts/agent/` - Agent automation scripts
+
+For detailed module documentation, see respective README files in each directory.

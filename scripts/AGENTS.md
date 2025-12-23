@@ -46,3 +46,13 @@ logger.info(f"Input: {sanitize_log(user_data)}")
 ---
 
 **See**: [Main AGENTS.md](../AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
+
+---
+
+## 📂 Related Module Paths
+
+**Security Module**: `src/codex/security/` - Use for log sanitization, encryption  
+**AST Module**: `src/codex/ast/` - Code analysis utilities  
+**Agent Directory**: `agents/` - Agent implementations  
+**Agent Scripts**: `scripts/agent/` - This directory - automation scripts
+

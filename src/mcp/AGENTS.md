@@ -48,3 +48,13 @@ async def handler(request: Request):
 ---
 
 **See**: [Main AGENTS.md](../../AGENTS.md) | [Security Guidelines](../../docs/security/SECURITY_GUIDELINES.md) | [MCP Docs](server/README.md)
+
+---
+
+## 📂 Related Module Paths
+
+**Security Module**: `src/codex/security/` - Use in MCP handlers  
+**AST Module**: `src/codex/ast/` - Code analysis integration  
+**Agent Directory**: `agents/` - Agent implementations  
+**Agent Scripts**: `scripts/agent/` - Automation utilities
+
