@@ -13,6 +13,8 @@ import zipfile
 
 import pytest
 
+from .security_utils import safe_extract_tarfile
+
 
 class TestLargeFileHandling:
     """Test archival operations with large files"""
@@ -62,8 +64,7 @@ class TestLargeFileHandling:
         # Extract
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "large_source.bin"
         assert extracted_file.exists()
