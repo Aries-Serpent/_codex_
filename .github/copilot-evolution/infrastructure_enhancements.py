@@ -127,7 +127,7 @@ class DockerTagManager:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize Docker tag manager."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/docker_tags"
+            "data/docker_tags"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -355,7 +355,7 @@ class ArtifactLifecycleManager:
                               - ARTIFACT_RETENTION_COVERAGE (default: 30)
         """
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/artifacts"
+            "data/artifacts"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -584,7 +584,7 @@ class MultiArchBuilder:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize multi-arch builder."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/builds"
+            "data/builds"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -796,7 +796,7 @@ class ProgressiveDeployment:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize progressive deployment."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/deployments"
+            "data/deployments"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

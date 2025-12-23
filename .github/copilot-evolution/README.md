@@ -73,72 +73,112 @@ Together, these create a continuously improving AI system that knows what it doe
 ### Installation
 
 ```bash
+# Navigate to the module directory
+cd .github/copilot-evolution
+
 # Install dependencies
-pip install -r .github/copilot-evolution/requirements.txt
-pip install -r .github/copilot-knowledge-hunger/requirements.txt
+pip install -r requirements.txt
+```
+
+### Running Tests
+
+```bash
+# Ensure you're in the module directory
+cd .github/copilot-evolution
+
+# Run all integration tests
+python test_integrated_system.py
+
+# All 7 tests should pass:
+# ✅ test_pattern_extraction
+# ✅ test_pattern_correlation
+# ✅ test_knowledge_gap_detection
+# ✅ test_question_generation
+# ✅ test_knowledge_integration
+# ✅ test_evolution_cycle
+# ✅ test_security_scenario
 ```
 
 ### Usage: Quantum Evolution
 
 ```python
-from copilot_evolution.quantum_correlator import QuantumCorrelator
-from copilot_evolution.codex_integrator import CodexIntegrator
+import sys
+sys.path.insert(0, '.github/copilot-evolution')
 
-# Initialize
-correlator = QuantumCorrelator(repo_path="/path/to/_codex_")
-integrator = CodexIntegrator(repo_path="/path/to/_codex_")
+from quantum_correlator import QuantumPatternCorrelator
 
-# Correlate patterns
-patterns = await correlator.correlate_patterns(current_context)
+# Initialize with correct repository path
+# When running from .github/copilot-evolution/, use "../.."
+correlator = QuantumPatternCorrelator(repo_path="../..")
 
-# Integrate with _codex_ knowledge
-enhanced = await integrator.enhance_with_codex_patterns(patterns)
+# Extract patterns from repository
+target_files = [
+    'agents/quantum*.py',
+    'scripts/security/**/*.py',
+    '.github/copilot-security/*.py'
+]
 
-# Generate continuation
-continuation = correlator.generate_continuation_prompt(enhanced)
+patterns = await correlator.extract_codex_patterns(target_files)
+
+# Correlate patterns across domains
+correlations = await correlator.correlate_patterns(patterns)
+
+# Generate report
+report = correlator.generate_report()
 ```
 
 ### Usage: Knowledge Hunger
 
 ```python
-from copilot_knowledge_hunger.knowledge_detector import KnowledgeDetector
-from copilot_knowledge_hunger.question_presenter import QuestionPresenter
+import sys
+sys.path.insert(0, '.github/copilot-evolution')
 
-# Initialize
-detector = KnowledgeDetector()
-presenter = QuestionPresenter()
+from integrated_system import IntegratedEvolutionSystem
 
-# Detect gaps
-gaps = await detector.detect_knowledge_gaps(task_context)
+# Initialize the integrated system
+system = IntegratedEvolutionSystem()
 
-# Generate questions
-questions = await detector.generate_questions(gaps)
+# Process a task and detect knowledge gaps
+task = {
+    "description": "Implement quantum encryption",
+    "domain": "security",
+    "undefined_concepts": ["quantum_key_distribution", "BB84_protocol"]
+}
 
-# Present for human research
-formatted = presenter.present_questions(questions, context)
-print(formatted)
+result = await system.process_task_with_learning(task)
+
+# Review detected gaps and questions
+print(f"Knowledge gaps: {result['knowledge_gaps']}")
+print(f"Questions generated: {len(result['questions'])}")
+
+for question in result['questions']:
+    print(f"\nQ: {question.question_text}")
+    print(f"   Type: {question.question_type}")
+    print(f"   Hints: {question.research_hints}")
 ```
 
 ### Usage: Knowledge Integration
 
 ```python
-from copilot_knowledge_hunger.knowledge_integrator import KnowledgeIntegrator
+from integrated_system import IntegratedEvolutionSystem
 
-integrator = KnowledgeIntegrator()
+system = IntegratedEvolutionSystem()
 
 # Human provides answer (any format)
-answer = {
+knowledge = {
     "question_id": "q_12345",
-    "answer": "Quantum entanglement in distributed systems...",
-    "examples": ["code example 1", "code example 2"]
+    "answer": "Quantum key distribution (QKD) uses quantum mechanics principles...",
+    "sources": ["Wikipedia", "arXiv:quant-ph/0512258"],
+    "confidence": 0.9
 }
 
 # Integrate instantly
-result = await integrator.integrate_knowledge(answer)
+result = await system.receive_knowledge(knowledge)
 
 # Show growth
-print(f"Capabilities gained: {result['capabilities_enhanced']}")
-print(f"New questions: {result['new_questions_generated']}")
+integration = result.get("integration", result)
+print(f"Status: {integration['status']}")
+print(f"Capabilities enhanced: {len(integration['capabilities_enhanced'])}")
 ```
 
 ## 📊 Integration Points

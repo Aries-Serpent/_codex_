@@ -91,7 +91,7 @@ jobs:
           from quantum_correlator import QuantumPatternCorrelator
           
           async def extract():
-              correlator = QuantumPatternCorrelator()
+              correlator = QuantumPatternCorrelator(repo_path='../..')
               
               target_files = [
                   'agents/quantum*.py',
@@ -270,7 +270,7 @@ jobs:
     
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: evolution-state
           path: ./evolution-state
