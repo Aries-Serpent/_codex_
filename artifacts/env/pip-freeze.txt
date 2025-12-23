@@ -49,7 +49,7 @@ Eel==0.18.1
 et_xmlfile==2.0.0
 fastapi==0.115.8
 ffmpeg-python==0.2.0
-filelock==3.16.1
+filelock==3.20.1
 flake8==7.2.0
 Flask==3.1.1
 flask-cors==6.0.1
