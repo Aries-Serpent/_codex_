@@ -34,14 +34,14 @@ dependencies = [
   "lm-eval>=0.4.2,<1",
   "ray[serve]>=2.9,<3",
   "fastapi>=0.110,<1",
-  "starlette>=0.27,<0.51",
+  "starlette>=0.37.2,<0.51",
   "httpx>=0.26,<1",
   "evidently>=0.4.28,<1",
   "numpy>=1.26,<3",
   "scikit-learn>=1.4,<2",
   "duckdb>=0.10",
   "sentencepiece>=0.1.99",
-  "torch>=2.1",
+  "torch>=2.2.2",
   "typer>=0.12",
   # AST Analysis Core Dependencies
   "libcst>=1.0.0",
@@ -92,7 +92,7 @@ dev = [
   "pytest-mock>=3.14",
   "tomli>=2.0; python_version < '3.11'",
 ]
-dist = ["torch>=2.1; platform_system != 'Windows'"]
+dist = ["torch>=2.2.2; platform_system != 'Windows'"]
 gpu = ["nvidia-ml-py3>=7.352.0"]
 logging = [
   "duckdb>=0.10",
@@ -109,7 +109,7 @@ ml = [
   "datasets>=2.19,<5",
   "peft>=0.11,<1",
   "sentencepiece>=0.1.99",
-  "torch>=2.1",
+  "torch>=2.2.2",
   "transformers>=4.41,<5",
   "accelerate>=0.31,<2",
 ]
@@ -137,7 +137,7 @@ test = [
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
   "transformers>=4.41,<5",
-  "torch>=2.1; platform_system != 'Windows'",
+  "torch>=2.2.2; platform_system != 'Windows'",
   "datasets>=2.19,<5",
   "accelerate>=0.31,<2",
   "sentencepiece>=0.1.99",
@@ -151,7 +151,7 @@ tracking = [
   "pandas>=2.0",
 ]
 train = [
-  "torch>=2.1; platform_system != 'Windows'",
+  "torch>=2.2.2; platform_system != 'Windows'",
   "transformers>=4.41,<5",
   "accelerate>=0.31,<2",
   "peft>=0.11,<1",
@@ -187,7 +187,7 @@ all = [
   "tensorboard>=2.14",
   "tokenizers>=0.15",
   "tomli>=2.0; python_version < '3.11'",
-  "torch>=2.1",
+  "torch>=2.2.2",
   "transformers>=4.41,<5",
   "wandb>=0.16",
 ]
