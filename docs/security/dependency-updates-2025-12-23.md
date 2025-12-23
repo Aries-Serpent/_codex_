@@ -6,7 +6,7 @@ Verified all critical dependencies are at secure versions. No vulnerable version
 
 ## Verified Secure Versions
 
-### torch (CVE-2024-XXXXX - RCE)
+### torch (RCE hardening note)
 - **Current**: `torch>=2.2.2,<3.0.0` (requirements.txt), `torch==2.9.1+cpu` (lock.txt)
 - **Required**: >=2.2.0
 - **Status**: ✅ SECURE

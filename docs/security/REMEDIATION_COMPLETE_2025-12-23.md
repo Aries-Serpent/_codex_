@@ -16,7 +16,7 @@
 | # | Type | Package/File | Severity | Status |
 |---|------|-------------|----------|--------|
 | 1 | CVE-2025-68146 | filelock 3.16.1 → 3.20.1 | CRITICAL | ✅ Fixed |
-| 2 | Duplicate Logging | registry.py, parser.py, smells.py | ERROR | ✅ Fixed |
+| 2 | Duplicate Logging | registry.py, parser.py | ERROR | ✅ Fixed |
 
 ### 🔴 HIGH - ✅ VERIFIED SECURE
 

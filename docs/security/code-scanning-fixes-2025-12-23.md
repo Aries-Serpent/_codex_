@@ -40,7 +40,7 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 ### 5. Duplicate Logging Statements
 **File**: `src/codex_ml/plugins/registry.py`
 **Status**: ✅ FIXED
-**Fix**: Removed duplicate `logger.warning()` calls on lines 46-47, 56-57, 92-93
+**Fix**: Removed duplicate `logger.warning()` calls on lines 46-47, 56-57, 90
 
 ### 6. XML Parsing
 **File**: `src/codex/dynamics/solution_xml.py`
