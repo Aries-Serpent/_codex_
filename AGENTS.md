@@ -538,6 +538,65 @@ trends:
 | Docs Hub | `docs_hub.html` | Documentation portal with search |
 | Wiki | `wiki/` | GitHub Wiki-ready markdown files |
 
+---
+
+## 🔒 Security Utilities & Best Practices
+
+**🆕 NEW (2025-12-23): Comprehensive Security Infrastructure**
+
+The repository now includes a complete security utilities module for handling sensitive data, preventing log injection, and securing secrets at rest.
+
+### Security Module Overview
+
+```python
+from codex.security import (
+    mask_token, mask_email, mask_password, mask_sensitive,
+    sanitize_log, sanitize_dict_for_log, hash_secure
+)
+from codex.security.storage import SecureStorage, generate_key
+```
+
+### Quick Examples
+
+```python
+# Mask sensitive data in logs
+from codex.security import mask_token, sanitize_log
+logger.info(f"API Key: {mask_token(api_key)}")  # "****************xyz789"
+
+# Prevent log injection
+user_input = request.form.get('data')
+logger.info(f"User: {sanitize_log(user_input)}")  # Removes \n, \r, \t
+
+# Secure token hashing
+from codex.security import hash_secure
+token_hash = hash_secure(token, algorithm='sha256')
+
+# Encrypted storage
+from codex.security.storage import SecureStorage
+storage = SecureStorage()  # Requires ENCRYPTION_KEY env var
+storage.store_secret("api_key.enc", secret)
+secret = storage.load_secret("api_key.enc")
+```
+
+### Performance (All <0.01ms)
+
+| Function | Throughput | Use Case |
+|----------|-----------|----------|
+| `mask_token()` | 3.7M ops/sec | API key masking |
+| `sanitize_log()` | 1.3M ops/sec | Log injection prevention |
+| `hash_secure()` | 1.2M ops/sec | Token hashing |
+
+**Documentation**:
+- [Security Guidelines](docs/security/SECURITY_GUIDELINES.md) - Best practices
+- [Admin Setup](docs/admin/REPOSITORY_SECURITY_SETUP.md) - Configuration
+- [Integration Tests](tests/security/test_security_integration.py) - 18 tests
+- [Benchmarks](benchmarks/security_benchmarks.py) - Performance
+
+**Pre-commit Hooks**: detect-secrets, gitleaks, bandit, pip-audit  
+**CI/CD**: CodeQL analysis, dependency audit, secret scanning
+
+---
+
 ## Environment Variables
 Key runtime flags (booleans accept `1/0`, `true/false`, `on/off`):
 

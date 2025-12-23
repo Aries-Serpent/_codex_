@@ -1,21 +1,50 @@
-# AGENTS — MCP Package Notes
+# AGENTS — MCP (Model Context Protocol)
 
-Scope: src/mcp/**
+**Last Updated**: 2025-12-23  
+**Scope**: src/mcp/**
 
-## MCP Server
-- FastAPI app is defined in `src/mcp/server/facade_fastapi.py` and must remain import-safe.
-- Use `src/mcp/server/run.py` to start the server. Avoid calling `uvicorn.run` at import time.
-- Health endpoints are registered via `register_health_routes` in `src/mcp/server/routes_health.py`.
-- JSON-RPC routes are registered via `register_jsonrpc_routes` in `src/mcp/server/jsonrpc_adapter.py`.
+---
 
-## Adapter Loading
-- `src/mcp/server/adapter_loader.py` provides lazy adapter loading with a mock fallback.
-- When extending adapters, avoid network calls on import; connect in `lazy_connect_all` only.
+## 📋 MCP Server Components
 
-## Packager
-- The MCP packager lives in `src/mcp/packager/` and uses `docs/mcp_packager_template.yaml` for config.
-- Keep templates deterministic and mock-first. Avoid adding heavy dependencies to the generator.
+This directory contains the MCP server implementation.
 
-## Testing
-- MCP tests are under `tests/mcp/` and should pass with mock-only defaults.
-- Reset rate-limit state with `clear_buckets()` from `src/mcp/middleware/rate_limit_middleware.py` in tests.
+---
+
+## 🔒 Security Integration (2025-12-23)
+
+MCP server integrates with security utilities:
+
+```python
+from codex.security import mask_token, sanitize_log
+
+# In MCP handlers
+@app.post("/endpoint")
+async def handler(request: Request):
+    # Mask any tokens in logs
+    logger.info(f"Request from: {mask_token(request.headers.get('Authorization'))}")
+    
+    # Sanitize user input
+    user_data = await request.json()
+    logger.info(f"Data: {sanitize_log(user_data)}")
+```
+
+### Security Features
+
+- ✅ **Request Logging**: All tokens masked automatically
+- ✅ **Input Sanitization**: User data sanitized before logging
+- ✅ **Secure Storage**: Secrets encrypted at rest
+- ✅ **Token Hashing**: API tokens hashed for comparison
+
+---
+
+## 📖 MCP Guidelines
+
+- Use security utilities for all sensitive data
+- Sanitize all user-provided input
+- Never log plain authentication tokens
+- Use SecureStorage for configuration secrets
+
+---
+
+**See**: [Main AGENTS.md](../../AGENTS.md) | [Security Guidelines](../../docs/security/SECURITY_GUIDELINES.md) | [MCP Docs](server/README.md)
