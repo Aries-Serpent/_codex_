@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 
 import yaml
 
+from src.utils.log_sanitizer import sanitize_log_input
 from .config import settings
 
 logger = logging.getLogger(__name__)
@@ -167,7 +168,9 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        logger.warning(f"Blocked prompt for tenant {tenant_id}: {error}")
+        logger.warning(
+            f"Blocked prompt for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(error)}"
+        )
         return False, error
 
     # Check prompt length (basic validation)
@@ -185,5 +188,7 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, List[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        logger.info(f"Applied redactions for tenant {tenant_id}: {redactions}")
+        logger.info(
+            f"Applied redactions for tenant {sanitize_log_input(tenant_id)}: {sanitize_log_input(str(redactions))}"
+        )
     return redacted, redactions

@@ -14,6 +14,7 @@ from fastapi.concurrency import run_in_threadpool
 from codex.rag.postprocess import postprocess_output
 from codex.rag.prompt import build_prompt
 
+from src.utils.log_sanitizer import sanitize_log_input
 from ..config import settings
 from ..providers.model_adapter import create_model_adapter
 from ..schemas.requests import InferRequest
@@ -108,7 +109,9 @@ async def infer(request: Request, infer_request: InferRequest):
 
     request_id = str(uuid.uuid4())
 
-    logger.info(f"Inference request {request_id} from tenant {tenant_id}")
+    logger.info(
+        f"Inference request {sanitize_log_input(request_id)} from tenant {sanitize_log_input(tenant_id)}"
+    )
 
     # Validate prompt
     is_valid, error_msg = validate_prompt(infer_request.prompt, tenant_id)

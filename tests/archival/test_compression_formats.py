@@ -85,8 +85,7 @@ class TestTarGzCompression:
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "metadata_test.txt"
         assert extracted_file.exists()
@@ -221,8 +220,7 @@ class TestTarXzCompression:
 
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:xz") as tar:
-            tar.extractall(extract_dir)
+        safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()

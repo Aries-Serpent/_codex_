@@ -13,6 +13,7 @@ from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from src.utils.log_sanitizer import sanitize_log_input
 from ..config import settings
 from ..security import auth_manager
 
@@ -127,7 +128,7 @@ class TenantRegistry:
         # Register API key
         auth_manager.register_api_key(api_key, tenant_id)
 
-        logger.info(f"Created tenant: {tenant_id}")
+        logger.info(f"Created tenant: {sanitize_log_input(tenant_id)}")
         return tenant_data
 
     def get_tenant(self, tenant_id: str) -> Optional[Dict[str, Any]]:
@@ -300,7 +301,7 @@ class TenantRegistry:
         if api_key:
             auth_manager.revoke_api_key(api_key)
 
-        logger.info(f"Deleted (deactivated) tenant: {tenant_id}")
+        logger.info(f"Deleted (deactivated) tenant: {sanitize_log_input(tenant_id)}")
 
     def update_tenant(
         self,
@@ -385,8 +386,8 @@ class TenantRegistry:
 
         logger.info(
             "Tenant %s updated with fields: %s",
-            tenant_id,
-            ", ".join(updated_fields.keys()) if updated_fields else "updated_at",
+            sanitize_log_input(tenant_id),
+            sanitize_log_input(", ".join(updated_fields.keys()) if updated_fields else "updated_at"),
         )
 
         return tenant

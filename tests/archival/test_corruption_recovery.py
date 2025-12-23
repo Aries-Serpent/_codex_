@@ -14,6 +14,8 @@ import zipfile
 
 import pytest
 
+from .security_utils import safe_extract_tarfile
+
 
 class TestCorruptionDetection:
     """Test detection of corrupted archives"""
@@ -174,8 +176,7 @@ class TestCorruptionRecovery:
         # Extract and verify against manifest
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        safe_extract_tarfile(archive_path, extract_dir)
 
         # Verify files using manifest
         extracted_manifest_path = extract_dir / "manifest.json"
@@ -245,8 +246,7 @@ class TestCorruptionRecovery:
         extract_dir.mkdir()
 
         try:
-            with tarfile.open(archive_path, "r:gz") as tar:
-                tar.extractall(extract_dir)
+            safe_extract_tarfile(archive_path, extract_dir)
         except Exception:
             # Some files might still be extracted
             pass
@@ -294,8 +294,7 @@ class TestChecksumValidation:
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        safe_extract_tarfile(archive_path, extract_dir)
 
         # Verify checksums
         for filename, expected_checksum in file_checksums.items():

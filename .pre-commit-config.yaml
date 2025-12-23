@@ -71,4 +71,31 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      # AST Code Smell Detection
+      - id: ast-smell-check
+        name: AST Code Smell Check (error-level only)
+        entry: python3 -c
+        language: system
+        types: [python]
+        pass_filenames: true
+        # Only check Python files in src/, agents/, scripts/
+        files: ^(src|agents|scripts)/.*\.py$
+        args:
+          - |
+            import sys
+            from pathlib import Path
+            from codex.ast import CodeSmellDetector, SmellSeverity
+            detector = CodeSmellDetector()
+            has_errors = False
+            for filepath in sys.argv[1:]:
+                try:
+                    smells = detector.detect_file(filepath)
+                    for smell in smells:
+                        if smell.severity == SmellSeverity.ERROR:
+                            print(f'{filepath}:{smell.line_start}: [{smell.rule_id}] {smell.message}')
+                            has_errors = True
+                except Exception as e:
+                    print(f'Warning: Failed to analyze {filepath}: {e}', file=sys.stderr)
+            sys.exit(1 if has_errors else 0)
+
 
