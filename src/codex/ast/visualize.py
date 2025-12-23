@@ -1,31 +1,28 @@
 """
 HTML visualization generator for AST analysis.
 """
-from pathlib import Path
-from typing import List, Dict
-import json
 
-from .node import StandardizedASTNode
+import json
+from pathlib import Path
+from typing import Dict, List
+
 from .graph import ASTGraph
+from .node import StandardizedASTNode
 
 
 class HTMLVisualizer:
     """Generate interactive HTML visualizations of AST."""
-    
+
     def __init__(self):
         """Initialize visualizer."""
-        self.template_dir = Path(__file__).parent / 'templates'
-    
+        self.template_dir = Path(__file__).parent / "templates"
+
     def render_html(
-        self,
-        nodes: List[StandardizedASTNode],
-        graph: ASTGraph,
-        metrics: Dict,
-        output_path: str
+        self, nodes: List[StandardizedASTNode], graph: ASTGraph, metrics: Dict, output_path: str
     ):
         """
         Generate HTML report.
-        
+
         Args:
             nodes: List of AST nodes
             graph: AST graph
@@ -34,7 +31,7 @@ class HTMLVisualizer:
         """
         # Prepare data
         nodes_data = [self._node_to_dict(n) for n in nodes[:100]]  # Limit for performance
-        
+
         html = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -131,14 +128,14 @@ class HTMLVisualizer:
 </body>
 </html>
 """
-        
+
         Path(output_path).write_text(html)
-    
+
     def _node_to_dict(self, node: StandardizedASTNode) -> Dict:
         """Convert node to dictionary for JSON serialization."""
         return {
-            'id': node.id,
-            'type': node.type,
-            'name': getattr(node, 'name', ''),
-            'children': len(node.children) if node.children else 0
+            "id": node.id,
+            "type": node.type,
+            "name": getattr(node, "name", ""),
+            "children": len(node.children) if node.children else 0,
         }

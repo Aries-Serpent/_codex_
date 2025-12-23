@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from src.mcp.backends.interface import BackendAdapter  # type: ignore
 from src.mcp.observability.metrics import Timer, increment  # type: ignore
 from src.mcp.server.adapter_loader import load_adapter
+
 from .schemas import CallToolParams, ListToolsParams, NegotiateParams  # type: ignore
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,9 @@ def _get_adapter() -> BackendAdapter:
 
 
 # Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.
-async def handle_jsonrpc_request(payload: Any, adapter: BackendAdapter) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+async def handle_jsonrpc_request(
+    payload: Any, adapter: BackendAdapter
+) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     if isinstance(payload, list):
         tasks = [asyncio.create_task(_dispatch_method(p, adapter)) for p in payload]
         results = await asyncio.gather(*tasks)
@@ -118,4 +121,8 @@ async def _dispatch_method(p: Dict[str, Any], adapter: BackendAdapter) -> Dict[s
                 "id": req_id,
             }
 
-    return {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": req_id}
+    return {
+        "jsonrpc": "2.0",
+        "error": {"code": -32601, "message": "Method not found"},
+        "id": req_id,
+    }
