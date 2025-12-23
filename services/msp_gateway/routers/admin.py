@@ -62,7 +62,10 @@ async def create_tenant(tenant_request: TenantCreateRequest):
         logger.error(f"Error creating tenant: {sanitize_log_input(str(e))}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
-        logger.error(f"Unexpected error creating tenant: {e}", exc_info=True)
+        logger.error(
+            f"Unexpected error creating tenant: {sanitize_log_input(str(e))}",
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )

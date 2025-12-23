@@ -19,7 +19,6 @@ Example:
 """
 
 import hashlib
-from typing import Optional
 
 
 def mask_token(token: str, show_last: int = 4) -> str:
