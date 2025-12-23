@@ -8,6 +8,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Response, status
 
+from src.utils.log_sanitizer import sanitize_log_input
 from ..config import settings
 from ..middleware.tenant_context import tenant_registry
 from ..schemas.requests import TenantCreateRequest, TenantUpdateRequest
@@ -31,7 +32,7 @@ async def create_tenant(tenant_request: TenantCreateRequest):
     if not settings.admin_api_enabled:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
 
-    logger.info(f"Creating tenant: {tenant_request.tenant_id}")
+    logger.info(f"Creating tenant: {sanitize_log_input(tenant_request.tenant_id)}")
 
     try:
         tenant_data = tenant_registry.create_tenant(
@@ -54,11 +55,11 @@ async def create_tenant(tenant_request: TenantCreateRequest):
             metadata=tenant_data["metadata"],
         )
 
-        logger.info(f"Tenant created successfully: {tenant_request.tenant_id}")
+        logger.info(f"Tenant created successfully: {sanitize_log_input(tenant_request.tenant_id)}")
         return response
 
     except ValueError as e:
-        logger.error(f"Error creating tenant: {e}")
+        logger.error(f"Error creating tenant: {sanitize_log_input(str(e))}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         logger.error(f"Unexpected error creating tenant: {e}", exc_info=True)
@@ -166,7 +167,7 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-    logger.info(f"Tenant updated: {tenant_id}")
+    logger.info(f"Tenant updated: {sanitize_log_input(tenant_id)}")
 
     return TenantResponse(
         tenant_id=updated_tenant["tenant_id"],
@@ -201,5 +202,5 @@ async def delete_tenant(tenant_id: str):
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-    logger.info(f"Tenant deactivated: {tenant_id}")
+    logger.info(f"Tenant deactivated: {sanitize_log_input(tenant_id)}")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
