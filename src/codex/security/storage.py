@@ -102,6 +102,13 @@ class SecureStorage:
                 "Install with: pip install cryptography"
             )
         
+        # Validate algorithm early before any state is set
+        if algorithm not in ('fernet', 'aes-gcm', 'chacha20'):
+            raise ValueError(
+                f"Unsupported algorithm: {algorithm}. "
+                f"Use 'fernet', 'aes-gcm', or 'chacha20'."
+            )
+        
         if key is None:
             key = os.getenv("ENCRYPTION_KEY")
         
@@ -123,11 +130,6 @@ class SecureStorage:
             # ChaCha20-Poly1305 requires 32-byte key
             key_bytes = self._ensure_key_bytes(key, length=32)
             self.cipher = ChaCha20Poly1305(key_bytes)
-        else:
-            raise ValueError(
-                f"Unsupported algorithm: {algorithm}. "
-                f"Use 'fernet', 'aes-gcm', or 'chacha20'."
-            )
     
     def _ensure_key_bytes(self, key: str, length: int) -> bytes:
         """
@@ -148,7 +150,8 @@ class SecureStorage:
             key_bytes = urlsafe_b64decode(key)
             if len(key_bytes) == length:
                 return key_bytes
-        except:
+        except (binascii.Error, ValueError):
+            # Expected when key is not base64-encoded
             pass
         
         # Try hex decode
@@ -156,7 +159,8 @@ class SecureStorage:
             key_bytes = bytes.fromhex(key)
             if len(key_bytes) == length:
                 return key_bytes
-        except:
+        except (ValueError, AttributeError):
+            # Expected when key is not hex-encoded
             pass
         
         # Hash the key to get required length
@@ -186,6 +190,9 @@ class SecureStorage:
             ciphertext = self.cipher.encrypt(nonce, data_bytes, None)
             # Prepend nonce to ciphertext
             return nonce + ciphertext
+        else:
+            # Should never reach here due to validation in __init__
+            raise ValueError(f"Unsupported algorithm: {self.algorithm}")
         
     def decrypt(self, encrypted: bytes) -> str:
         """
@@ -209,6 +216,9 @@ class SecureStorage:
             ciphertext = encrypted[12:]
             plaintext = self.cipher.decrypt(nonce, ciphertext, None)
             return plaintext.decode('utf-8')
+        else:
+            # Should never reach here due to validation in __init__
+            raise ValueError(f"Unsupported algorithm: {self.algorithm}")
     
     def store_secret(self, filepath: str, secret: str) -> None:
         """
@@ -318,7 +328,7 @@ def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tup
         algorithm=hashes.SHA256(),
         length=32,
         salt=salt,
-        iterations=480000,  # OWASP recommendation 2023
+        iterations=600000,  # OWASP recommendation 2023 (updated from 480,000)
         backend=default_backend()
     )
     

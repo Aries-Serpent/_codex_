@@ -15,12 +15,9 @@ Usage:
     python scripts/check_documentation_updates.py --fix
 """
 
-import os
 import sys
-import re
-import json
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict
 from datetime import datetime
 
 # Add src to path
@@ -79,8 +76,8 @@ class DocumentationChecker:
         # Read README content
         try:
             readme_content = readme_path.read_text()
-        except:
-            issues.append(f"Cannot read {readme_path}")
+        except Exception as e:
+            issues.append(f"Cannot read {readme_path}: {e}")
             return issues
         
         # Check for common issues
@@ -104,11 +101,8 @@ class DocumentationChecker:
         
         try:
             content = agents_path.read_text()
-        except:
-            return [f"Cannot read {agents_path}"]
-        
-        # Find directory
-        agents_dir = agents_path.parent
+        except Exception as e:
+            return [f"Cannot read {agents_path}: {e}"]
         
         # Check for critical modules that should be documented
         critical_dirs = [
@@ -125,9 +119,20 @@ class DocumentationChecker:
                     f"{agents_path}: Missing documentation for {crit_dir}"
                 )
         
-        # Check for recent update marker
-        if '2025-12-23' not in content and '2025-12' not in content:
-            issues.append(f"{agents_path}: No recent update date (should include 2025-12-23)")
+        # Check for recent update marker - flexible date check
+        from datetime import datetime, timedelta
+        today = datetime.now()
+        last_6_months = [
+            (today - timedelta(days=30 * i)).strftime('%Y-%m')
+            for i in range(6)
+        ]
+        
+        has_recent_date = any(date_str in content for date_str in last_6_months)
+        if not has_recent_date:
+            issues.append(
+                f"{agents_path}: No recent update date "
+                f"(expected one of: {', '.join(last_6_months[:3])}...)"
+            )
         
         return issues
     
