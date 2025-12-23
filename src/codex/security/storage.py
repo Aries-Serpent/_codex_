@@ -38,7 +38,7 @@ from typing import Optional, Literal
 try:
     from cryptography.fernet import Fernet
     from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
     CRYPTO_AVAILABLE = True
@@ -324,7 +324,7 @@ def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tup
     if salt is None:
         salt = os.urandom(16)
     
-    kdf = PBKDF2(
+    kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
         salt=salt,

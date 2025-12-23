@@ -157,8 +157,8 @@ class DocumentationChecker:
                     content = doc_path.read_text()
                     if len(content) < 500:
                         issues.append(f"{doc}: Too short, needs expansion")
-                except:
-                    issues.append(f"{doc}: Cannot read file")
+                except Exception as e:
+                    issues.append(f"{doc}: Cannot read file - {e}")
         
         return issues
     
@@ -177,7 +177,8 @@ class DocumentationChecker:
                     if 'from codex.security import' in content:
                         found_examples = True
                         break
-                except:
+                except Exception:
+                    # Cannot read file, skip it
                     continue
             
             if not found_examples:
@@ -188,7 +189,8 @@ class DocumentationChecker:
                         issues.append(
                             "Security module missing usage examples in main README.md"
                         )
-                except:
+                except Exception:
+                    # README.md check is best-effort; ignore errors reading this optional file.
                     pass
         
         return issues

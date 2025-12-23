@@ -5,7 +5,6 @@ Integration tests for security modules.
 import pytest
 import os
 import tempfile
-from unittest.mock import patch, MagicMock
 
 
 class TestSecurityMasking:
@@ -18,7 +17,8 @@ class TestSecurityMasking:
         token = "sk_live_abc123xyz789"
         masked = mask_token(token)
         
-        assert "xyz789" in masked
+        # Default shows last 4 characters
+        assert "z789" in masked
         assert "sk_live" not in masked
         assert len(masked) == len(token)
     
@@ -240,8 +240,10 @@ class TestIntegrationScenarios:
         log_output = log_stream.getvalue()
         
         assert "sk_live" not in log_output  # Key is masked
-        assert "xyz789" in log_output  # Last 6 chars visible
-        assert "\n" not in log_output.split("User data:")[1]  # Injection prevented
+        assert "z789" in log_output  # Last 4 chars visible (default)
+        # Check that the malicious newline was removed from user input
+        user_data_line = log_output.split("User data:")[1].strip()
+        assert "normalmalicious_injection" in user_data_line  # Newline removed, words merged
     
     def test_token_comparison_workflow(self):
         """Test secure token comparison workflow."""
