@@ -81,7 +81,7 @@ faker==37.11.0  # requirements/lock.txt
 fastapi==0.111.0  # requirements/lock.txt
 fastapi-cli==0.0.8  # requirements/lock.txt
 fastjsonschema==2.21.2  # requirements/lock.txt
-filelock==3.19.1  # requirements/lock.txt
+filelock==3.20.1  # requirements/lock.txt
 flask==3.1.2  # requirements/lock.txt
 flatten-dict==0.4.2  # requirements/lock.txt
 flufl-lock==8.2.0  # requirements/lock.txt

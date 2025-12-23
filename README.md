@@ -631,6 +631,61 @@ gh workflow run scheduled-dependency-audit.yml \
 - ✅ Automated Python version compatibility testing
 - ✅ GitHub Security integration for SARIF alerts
 
+## 🔒 Security Utilities
+
+**New in v2.0**: Comprehensive security utilities for sensitive data handling.
+
+### Quick Start
+
+```python
+from codex.security import mask_token, sanitize_log, hash_secure
+from codex.security.storage import SecureStorage
+
+# Mask sensitive data in logs
+logger.info(f"API Key: {mask_token(api_key)}")
+# Output: "API Key: ****************xyz789"
+
+# Prevent log injection attacks
+user_input = request.form.get('data')
+logger.info(f"User provided: {sanitize_log(user_input)}")
+
+# Secure token hashing for comparison
+token_hash = hash_secure(token, algorithm='sha256')
+
+# Encrypted storage for secrets
+storage = SecureStorage()  # Requires ENCRYPTION_KEY env var
+storage.store_secret("secrets/api_key.enc", api_key)
+api_key = storage.load_secret("secrets/api_key.enc")
+```
+
+### Performance
+
+All security functions are highly optimized for production use:
+
+| Function | Throughput | Use Case |
+|----------|-----------|----------|
+| `mask_token()` | 3.7M ops/sec | API key masking |
+| `mask_password()` | 12.4M ops/sec | Password hiding |
+| `sanitize_log()` | 1.3M ops/sec | Log injection prevention |
+| `hash_secure()` | 1.2M ops/sec | SHA-256 token hashing |
+
+**Benchmark Results**: All functions <0.01ms average (see `benchmarks/security_benchmarks.py`)
+
+### Documentation
+
+- **[Security Guidelines](docs/security/SECURITY_GUIDELINES.md)** - Best practices & examples
+- **[Complete Status Report](docs/security/COMPLETE_STATUS_REPORT.md)** - Implementation details
+- **[API Reference](src/codex/security/__init__.py)** - Full function documentation
+
+### Features
+
+✅ **Unified Security Module** - Single import for all security utilities  
+✅ **Encrypted Storage** - Fernet (AES-128-CBC + HMAC) for secrets at rest  
+✅ **Log Injection Prevention** - Sanitize user input before logging  
+✅ **Secure Hashing** - SHA-256/SHA-512 (no MD5/SHA-1)  
+✅ **Performance** - <0.01ms per operation for hot paths  
+✅ **Testing** - 18 integration tests covering all utilities  
+
 ## MCP Packager
 
 Generate MCP package scaffolds using the built-in packager. See [docs/mcp_packager.md](docs/mcp_packager.md) and the sample config at [docs/mcp_packager_template.yaml](docs/mcp_packager_template.yaml).

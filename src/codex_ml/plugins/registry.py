@@ -44,7 +44,6 @@ def _iter_entry_points(group: str):
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         items = []
     collected.extend(items)
     try:  # pragma: no cover - best effort fallback
@@ -53,8 +52,7 @@ def _iter_entry_points(group: str):
                 if getattr(ep, "group", None) == group:
                     collected.append(ep)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.debug(f"Exception: {e}")
     unique: dict[tuple[str, str], Any] = {}
     for ep in collected:
         key = (getattr(ep, "name", ""), getattr(ep, "value", ""))
@@ -89,8 +87,7 @@ def _activate_editable_distribution(ep: Any) -> None:
                 try:
                     exec(entry, {})  # pragma: no cover - executes .pth bootstrap  # nosec B102
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    logger.debug(f"Exception: {e}")
                 continue
             if entry not in sys.path:
                 sys.path.insert(0, entry)

@@ -1,30 +1,49 @@
-# AGENTS — Prompts Directory Guidance
+# AGENTS — Prompts
 
-> **Updated**: 2025-12-16
+**Last Updated**: 2025-12-23  
+**Scope**: prompts/**
 
-## Scope
-These instructions apply to all files within `prompts/` and its subdirectories.
+---
 
-## Requirements
-- Keep prompts and templates concise, explicit, and action-oriented for AI agents.
-- Emphasize the distinction between `VERIFIED`, `INFERRED`, and `UNKNOWN`; require evidence links for `VERIFIED` claims.
-- Provide concrete tool/RAG usage guidance and discourage unsupported assumptions.
-- Use markdown or YAML that is valid and machine-consumable; avoid trailing whitespace and unrenderable placeholders.
-- Do not include secrets or environment-specific credentials.
+## 📋 Prompt Templates
 
-## Copilot Task Execution Protocol (CTEP)
+This directory contains prompt templates and task templates for agents.
 
-When creating prompts for task execution, consider using CTEP format:
-- Include progress trackers with checkboxes
-- Specify codebase audit requirements
-- Define completion criteria
+---
 
-See `.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
+## 🔒 Security Guidelines for Prompts
 
-## Validation
-- For YAML templates, ensure they parse with `yaml.safe_load`.
-- For markdown system prompts, include clear section headings and bullet lists for quick retrieval.
+When creating prompts that handle sensitive data:
 
-## Related Documentation
-- [Main AGENTS.md](/AGENTS.md) - Comprehensive operations playbook
-- [CTEP Protocol](/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
+```python
+from codex.security import mask_sensitive, sanitize_log
+
+# Mask any credentials in prompts
+prompt = f"Process data with key: {mask_sensitive(api_key)}"
+
+# Sanitize user-provided prompt content
+user_prompt = sanitize_log(user_input)
+```
+
+---
+
+## 📖 Best Practices
+
+- Never include actual secrets in prompt templates
+- Use placeholder values like `<API_KEY>` or `${SECRET}`
+- Document required environment variables
+- Test prompts with security utilities
+
+---
+
+**See**: [Main AGENTS.md](../AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
+
+---
+
+## 📂 Related Module Paths
+
+**Security Module**: `src/codex/security/` - Security utilities for prompts  
+**AST Module**: `src/codex/ast/` - Code parsing for prompt generation  
+**Agent Directory**: `agents/` - Agent configurations  
+**Agent Scripts**: `scripts/agent/` - Automation scripts
+
