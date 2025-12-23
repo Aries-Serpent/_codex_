@@ -4,7 +4,7 @@ Loads relevant context based on current task.
 """
 import yaml
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List
 
 
 class AgentContextLoader:
@@ -44,7 +44,7 @@ class AgentContextLoader:
         return self.config.get('execution_directives', {})
     
     def get_relevant_context(self, task_type: str) -> List[str]:
-        """Get relevant context files for task type."""
+        """Get relevant context files/directories for task type that exist on disk."""
         context_map = {
             'ast_implementation': [
                 'docs/admin/AST_IMPLEMENTATION_STATUS.md',
@@ -60,7 +60,13 @@ class AgentContextLoader:
                 'agents/agent_memory.py'
             ]
         }
-        return context_map.get(task_type, [])
+        configured_paths = context_map.get(task_type, [])
+        existing_paths: List[str] = []
+        for path_str in configured_paths:
+            path_obj = Path(path_str)
+            if path_obj.exists():
+                existing_paths.append(str(path_obj))
+        return existing_paths
     
     def generate_continuation_prompt(self, session_state: Dict) -> str:
         """Generate continuation prompt with full context."""

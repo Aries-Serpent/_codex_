@@ -113,7 +113,7 @@ class HTMLVisualizer:
             }});
         
         nodes.append("title")
-            .text(d => `Type: ${{d.type}}\\nName: ${{d.name || 'N/A'}}\\nChildren: ${{d.children || 0}}`);
+            .text(d => 'Type: ' + d.type + '\\nName: ' + (d.name || 'N/A') + '\\nChildren: ' + (d.children || 0));
         
         // Add labels
         svg.selectAll("text")

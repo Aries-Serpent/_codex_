@@ -155,7 +155,7 @@ class KnowledgeGraphExporter:
             )
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return ExportResult(
                 format=format,

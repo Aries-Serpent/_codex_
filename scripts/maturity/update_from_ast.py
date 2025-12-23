@@ -42,7 +42,11 @@ def main():
                 smells = detector.detect(tree)
                 
                 total_smells += len(smells)
-                error_smells += sum(1 for s in smells if s.severity.name == 'ERROR')
+                error_smells += sum(
+                    1
+                    for s in smells
+                    if getattr(getattr(s, "severity", None), "name", None) == "ERROR"
+                )
                 
                 current_files[str(py_file)] = {
                     'node_count': len(tree.children) if tree.children else 0,

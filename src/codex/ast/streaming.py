@@ -2,7 +2,7 @@
 Streaming AST parser for large files.
 Processes files in chunks to minimize memory usage.
 """
-from typing import Iterator, Optional
+from typing import Iterator, Optional, Tuple
 from pathlib import Path
 import logging
 
@@ -70,7 +70,7 @@ class StreamingParser:
         self,
         directory: str,
         pattern: str = "**/*.py"
-    ) -> Iterator[tuple[str, StandardizedASTNode]]:
+    ) -> Iterator[Tuple[str, StandardizedASTNode]]:
         """
         Parse all files in directory, streaming results.
         

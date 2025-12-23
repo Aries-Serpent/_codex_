@@ -36,7 +36,8 @@ class TestParallelParser:
         parser = ParallelParser()
         file_paths = [str(f) for f in tmp_path.glob("*.py")]
         
-        results = parser.parse_files(file_paths, progress_callback=progress)
+        # Parse files with progress callback (results not used in test)
+        parser.parse_files(file_paths, progress_callback=progress)
         
         assert len(progress_calls) == 3
         assert progress_calls[-1][1] == 3  # Final call shows all completed

@@ -77,13 +77,20 @@ def mask_password(password: str) -> str:
         password: Password to mask
         
     Returns:
-        Fixed mask string
+        Fixed mask string. Returns a distinct marker for empty passwords
+        to aid debugging while not exposing actual password values.
         
     Example:
         >>> mask_password("mySecretP@ssw0rd")
         '***'
+        >>> mask_password("")
+        '(empty)'
     """
-    return "***" if password else "***"
+    if password:
+        # Non-empty password: return fixed mask to avoid leaking length or content
+        return "***"
+    # Empty or missing password: use a distinct marker to aid debugging
+    return "(empty)"
 
 
 def hash_for_logging(sensitive_value: str, prefix: str = "") -> str:

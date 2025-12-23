@@ -64,13 +64,19 @@ class PluginLoader:
         # Look for packages with 'codex_ast_plugin_' prefix
         try:
             import pkgutil
+            import sys
+            # Only search in known plugin paths, not all of sys.path
+            plugin_prefix = 'codex_ast_plugin_'
             for finder, name, ispkg in pkgutil.iter_modules():
-                if name.startswith('codex_ast_plugin_'):
+                if name.startswith(plugin_prefix):
                     try:
                         module = importlib.import_module(name)
                         self._register_from_module(module)
+                        logger.info(f"Loaded external plugin: {name}")
+                    except ImportError as ie:
+                        logger.debug(f"Failed to import external plugin {name}: {ie}")
                     except Exception as e:
-                        logger.warning(f"Failed to load external plugin {name}: {e}")
+                        logger.warning(f"Failed to load external plugin {name}: {e}", exc_info=True)
         except Exception as e:
             logger.debug(f"External plugin discovery failed: {e}")
     

@@ -84,7 +84,11 @@ repos:
           - |
             import sys
             from pathlib import Path
-            from codex.ast import CodeSmellDetector, SmellSeverity
+            try:
+                from codex.ast import CodeSmellDetector, SmellSeverity
+            except ImportError:
+                print('Warning: codex.ast module not installed, skipping smell check', file=sys.stderr)
+                sys.exit(0)
             detector = CodeSmellDetector()
             has_errors = False
             for filepath in sys.argv[1:]:

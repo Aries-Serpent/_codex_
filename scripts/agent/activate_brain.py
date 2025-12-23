@@ -7,10 +7,29 @@ import sys
 from pathlib import Path
 
 # Add paths
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+repo_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(repo_root))
 
-from .github.copilot.context_loader import AgentContextLoader
-from .codex.agent_state.state_manager import AgentStateManager
+# Import with fallback for missing modules
+try:
+    # Try absolute import from repository root
+    sys.path.insert(0, str(repo_root / ".github" / "copilot"))
+    from context_loader import AgentContextLoader
+except ImportError:
+    # Fallback implementation
+    class AgentContextLoader:
+        """Fallback context loader when module not available."""
+        def __init__(self):
+            self.config = {}
+
+try:
+    from codex.agent_state.state_manager import AgentStateManager
+except ImportError:
+    # Fallback implementation
+    class AgentStateManager:
+        """Fallback state manager when module not available."""
+        def list_sessions(self):
+            return []
 
 
 def activate_brain():
