@@ -26,6 +26,7 @@ Usage:
 import hashlib
 import re
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 # Re-export existing utilities from src/utils for backward compatibility
 try:
@@ -147,6 +148,64 @@ def mask_sensitive(value: str, show_chars: int = 4) -> str:
     return f"{value[:show_chars]}***{value[-show_chars:]}"
 
 
+def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
+    """
+    Validate that a URL belongs to an allowed domain.
+    
+    This function prevents URL substring sanitization vulnerabilities by
+    properly parsing the URL and checking the domain component, not just
+    searching for the domain string anywhere in the URL.
+    
+    Args:
+        url: URL to validate
+        allowed_domains: List of allowed domain names (e.g., ['example.com', 'api.example.com'])
+                        If None, returns True for any valid URL with a domain.
+    
+    Returns:
+        True if URL is from an allowed domain, False otherwise
+    
+    Example:
+        >>> sanitize_url("http://example.com/path", ["example.com"])
+        True
+        >>> sanitize_url("http://evil.com/example.com", ["example.com"])
+        False
+        >>> sanitize_url("http://example.com.evil.com", ["example.com"])
+        False
+        >>> sanitize_url("http://evilexample.com", ["example.com"])
+        False
+    
+    Security Note:
+        This prevents attacks where malicious URLs contain the allowed domain
+        as a substring in the path, query parameters, or as part of a different
+        domain name.
+    """
+    if not url:
+        return False
+    
+    try:
+        parsed = urlparse(url)
+        netloc = parsed.netloc.lower()
+        
+        # Remove port if present
+        if ':' in netloc:
+            netloc = netloc.split(':', 1)[0]
+        
+        # If no allowed domains specified, just check that we have a valid domain
+        if allowed_domains is None:
+            return bool(netloc)
+        
+        # Check if domain matches exactly or is a subdomain
+        for allowed_domain in allowed_domains:
+            allowed_lower = allowed_domain.lower()
+            if netloc == allowed_lower or netloc.endswith('.' + allowed_lower):
+                return True
+        
+        return False
+    except Exception:
+        # If URL parsing fails, consider it invalid
+        return False
+
+
 # Convenience re-exports for common use cases
 __all__ = [
     # Masking functions
@@ -158,6 +217,7 @@ __all__ = [
     'sanitize_log',
     'sanitize_log_input',
     'sanitize_dict_for_log',
+    'sanitize_url',
     # Hashing functions
     'hash_secure',
 ]

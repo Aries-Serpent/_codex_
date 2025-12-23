@@ -193,3 +193,21 @@ policy:
     usage_trend_threshold_pct: 10
     usage_trend_window_days: 90
     low_risk_tests_threshold: 10
+  
+  # Duplicate file detection policy
+  duplicate_policy:
+    # Patterns to ignore in duplicate detection (intentional duplicates)
+    ignore_patterns:
+      - "**/__init__.py"      # Python package markers
+      - "**/conftest.py"       # Pytest configuration files
+      - "**/.gitkeep"          # Git directory placeholder files
+    
+    # Files that require investigation or documentation
+    requires_investigation:
+      - path: "src/tokenization/loader.py"
+        duplicate_of: "tokenization/loader.py"
+        status: "pending_review"
+        notes: "Determine canonical location and remove duplicate"
+    
+    # Reference documentation
+    policy_document: ".github/DUPLICATE_FILES_POLICY.md"

@@ -30,8 +30,102 @@ class TestSecurityMasking:
         masked = mask_email(email)
         
         assert "@" in masked
-        assert "example.com" in masked
+        # Verify domain is preserved - this is intentional for email masking
+        # Note: For URL validation, use sanitize_url() instead
+        assert masked.endswith("example.com")
         assert "user" not in masked
+    
+    def test_mask_email_preserves_domain(self):
+        """Test that email masking correctly preserves the full domain."""
+        from codex.security import mask_email
+        
+        # These should all preserve the domain correctly
+        assert mask_email("admin@example.com").endswith("example.com")
+        assert mask_email("test@subdomain.example.com").endswith("subdomain.example.com")
+        assert "@" in mask_email("user@test.org")
+
+
+class TestURLSanitization:
+    """Test URL sanitization to prevent substring injection attacks."""
+    
+    def test_sanitize_url_allows_exact_domain(self):
+        """Test that exact domain matches are allowed."""
+        from codex.security import sanitize_url
+        
+        assert sanitize_url("http://example.com", ["example.com"]) is True
+        assert sanitize_url("https://example.com/path", ["example.com"]) is True
+        assert sanitize_url("http://example.com:8080/api", ["example.com"]) is True
+    
+    def test_sanitize_url_allows_subdomains(self):
+        """Test that valid subdomains are allowed."""
+        from codex.security import sanitize_url
+        
+        assert sanitize_url("http://api.example.com", ["example.com"]) is True
+        assert sanitize_url("https://www.example.com", ["example.com"]) is True
+        assert sanitize_url("http://subdomain.api.example.com", ["example.com"]) is True
+    
+    def test_sanitize_url_blocks_path_injection(self):
+        """Test that domain in path is blocked (HIGH SEVERITY)."""
+        from codex.security import sanitize_url
+        
+        # These should all be blocked - domain appears in path, not netloc
+        assert sanitize_url("http://evil.com/example.com", ["example.com"]) is False
+        assert sanitize_url("https://malicious.org/path/example.com", ["example.com"]) is False
+        assert sanitize_url("http://attacker.net/redirect?to=example.com", ["example.com"]) is False
+    
+    def test_sanitize_url_blocks_domain_prefix_attack(self):
+        """Test that domains with allowed domain as suffix are blocked."""
+        from codex.security import sanitize_url
+        
+        # These should be blocked - not a subdomain, just has the string as suffix
+        assert sanitize_url("http://evilexample.com", ["example.com"]) is False
+        assert sanitize_url("https://fakeexample.com/api", ["example.com"]) is False
+        assert sanitize_url("http://notexample.com", ["example.com"]) is False
+    
+    def test_sanitize_url_blocks_domain_suffix_attack(self):
+        """Test that domains with allowed domain followed by other chars are blocked."""
+        from codex.security import sanitize_url
+        
+        # These should be blocked - domain followed by malicious suffix
+        assert sanitize_url("http://example.com.evil.com", ["example.com"]) is False
+        assert sanitize_url("https://example.com.attacker.net", ["example.com"]) is False
+        assert sanitize_url("http://example.com-phishing.org", ["example.com"]) is False
+    
+    def test_sanitize_url_handles_empty_input(self):
+        """Test handling of empty or invalid URLs."""
+        from codex.security import sanitize_url
+        
+        assert sanitize_url("", ["example.com"]) is False
+        assert sanitize_url("not-a-url", ["example.com"]) is False
+        assert sanitize_url("javascript:alert(1)", ["example.com"]) is False
+    
+    def test_sanitize_url_case_insensitive(self):
+        """Test that domain matching is case-insensitive."""
+        from codex.security import sanitize_url
+        
+        assert sanitize_url("http://EXAMPLE.COM", ["example.com"]) is True
+        assert sanitize_url("http://Example.Com/path", ["example.com"]) is True
+        assert sanitize_url("http://API.EXAMPLE.COM", ["example.com"]) is True
+    
+    def test_sanitize_url_multiple_allowed_domains(self):
+        """Test validation with multiple allowed domains."""
+        from codex.security import sanitize_url
+        
+        allowed = ["example.com", "trusted.org", "api.service.net"]
+        
+        assert sanitize_url("http://example.com", allowed) is True
+        assert sanitize_url("https://trusted.org", allowed) is True
+        assert sanitize_url("http://api.service.net", allowed) is True
+        assert sanitize_url("http://evil.com", allowed) is False
+    
+    def test_sanitize_url_no_allowed_domains(self):
+        """Test that without allowed domains, any valid URL passes."""
+        from codex.security import sanitize_url
+        
+        # When allowed_domains is None, just check for valid URL structure
+        assert sanitize_url("http://example.com", None) is True
+        assert sanitize_url("https://any-domain.org", None) is True
+        assert sanitize_url("", None) is False
     
     def test_mask_password_always_hidden(self):
         """Test password is always fully masked."""
