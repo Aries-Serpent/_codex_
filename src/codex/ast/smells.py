@@ -259,8 +259,7 @@ class CodeSmellDetector:
         try:
             tree = ast.parse(code)
         except SyntaxError as e:
-           logger.debug(f"SyntaxError: {e}")
-            logger.warning(f"SyntaxError: {e}", exc_info=True)
+            logger.debug(f"SyntaxError: {e}")
             return smells
 
         for rule in self.rules.values():

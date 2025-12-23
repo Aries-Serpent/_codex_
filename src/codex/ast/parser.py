@@ -24,8 +24,7 @@ try:
 
     LIBCST_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    logger.debug(f"ImportError: {e}")
     LIBCST_AVAILABLE = False
     cst = None  # type: ignore
     MetadataWrapper = None  # type: ignore
