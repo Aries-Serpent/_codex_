@@ -119,7 +119,7 @@ class ExternalKnowledgeIntegrator:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize external knowledge integrator."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/knowledge"
+            "data/knowledge"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -353,7 +353,7 @@ class ConceptGraph:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize concept graph."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/concept_graph"
+            "data/concept_graph"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -699,7 +699,7 @@ class AutomatedResearcher:
     ):
         """Initialize automated researcher."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/research"
+            "data/research"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -912,7 +912,7 @@ class TestGenerator:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize test generator."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/generated_tests"
+            "data/generated_tests"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

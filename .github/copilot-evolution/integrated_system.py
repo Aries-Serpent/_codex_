@@ -73,7 +73,7 @@ class KnowledgeHungerEngine:
     
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize knowledge hunger engine."""
-        self.storage_path = storage_path or Path(".github/copilot-knowledge-hunger/data")
+        self.storage_path = storage_path or Path("data")
         self.storage_path.mkdir(parents=True, exist_ok=True)
         
         self.knowledge_gaps: Dict[str, KnowledgeGap] = {}

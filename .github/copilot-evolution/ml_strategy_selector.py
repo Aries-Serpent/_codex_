@@ -101,7 +101,7 @@ class MLStrategySelector:
             auto_merge_threshold: Confidence threshold for auto-merge
             learning_rate: Learning rate for weight updates
         """
-        self.model_path = model_path or Path(".github/copilot-evolution/data/ml_model")
+        self.model_path = model_path or Path("data/ml_model")
         self.model_path.mkdir(parents=True, exist_ok=True)
 
         self.auto_merge_threshold = auto_merge_threshold
@@ -473,7 +473,7 @@ class CrossRepoPatternSharing:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize cross-repo pattern sharing."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/shared_patterns"
+            "data/shared_patterns"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

@@ -101,7 +101,7 @@ class SemanticPatternClusterer:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize semantic pattern clusterer."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/clusters"
+            "data/clusters"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -397,7 +397,7 @@ class PatternEvolutionTracker:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize pattern evolution tracker."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/evolution"
+            "data/evolution"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -572,7 +572,7 @@ class AntiPatternDetector:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize anti-pattern detector."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/antipatterns"
+            "data/antipatterns"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -789,7 +789,7 @@ class BestPracticeRecommender:
     def __init__(self, storage_path: Optional[Path] = None):
         """Initialize best practice recommender."""
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/best_practices"
+            "data/best_practices"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

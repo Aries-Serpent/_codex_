@@ -486,7 +486,7 @@ class AutomatedPRGenerator:
             auto_merge_threshold: Confidence threshold for auto-merge
         """
         self.storage_path = storage_path or Path(
-            ".github/copilot-evolution/data/prs"
+            "data/prs"
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
