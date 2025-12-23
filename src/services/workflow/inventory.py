@@ -23,7 +23,7 @@ class WorkflowInventory:
     """Manages inventory of GitHub Actions workflows.
 
     Features:
-    - Scans .github/workflows directory
+    - Scans . github/workflows directory
     - Parses workflow YAML files
     - Builds dependency graph between workflows
     - Caches parsed results
@@ -45,12 +45,12 @@ class WorkflowInventory:
     """
 
     def __init__(self, workflows_dir: Path | str):
-        """Initialize workflow inventory.
+        """Initialize workflow inventory. 
 
         Args:
             workflows_dir: Path to .github/workflows directory.
         """
-        self.workflows_dir = Path(workflows_dir)
+        self. workflows_dir = Path(workflows_dir)
         self.parser = WorkflowParser()
         self._workflows: Dict[str, WorkflowMetadata] = {}
         self._dependencies: List[WorkflowDependency] = []
@@ -69,16 +69,16 @@ class WorkflowInventory:
         """Scan workflows directory and parse all workflow files.
 
         Args:
-            force_refresh: If True, clear cache and reparse everything.
+            force_refresh:  If True, clear cache and reparse everything.
 
         Returns:
             Number of workflows successfully parsed.
         """
-        if force_refresh:
+        if force_refresh: 
             self._workflows.clear()
             self.parser.clear_cache()
 
-        if not self.workflows_dir.exists():
+        if not self. workflows_dir.exists():
             logger.error(f"Workflows directory not found: {self.workflows_dir}")
             return 0
 
@@ -91,8 +91,8 @@ class WorkflowInventory:
 
         for workflow_file in workflow_files:
             # Skip disabled workflows
-            if workflow_file.suffix == ".disabled" or ".disabled" in workflow_file.suffixes:
-                logger.debug(f"Skipping disabled workflow: {workflow_file.name}")
+            if workflow_file.suffix == ".disabled" or ". disabled" in workflow_file.suffixes:
+                logger.debug(f"Skipping disabled workflow:  {workflow_file.name}")
                 continue
 
             try:
@@ -100,11 +100,11 @@ class WorkflowInventory:
                 if metadata:
                     self._workflows[workflow_file.name] = metadata
                     parsed_count += 1
-                    logger.debug(f"Parsed workflow: {workflow_file.name}")
+                    logger. debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
-                    logger.warning(f"Failed to parse workflow: {workflow_file.name}")
-            except Exception as e:
-               logger.debug(f"Exception: {e}")
+                    logger. warning(f"Failed to parse workflow: {workflow_file.name}")
+            except Exception as e: 
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
 
         # Build dependency graph
@@ -134,7 +134,7 @@ class WorkflowInventory:
         """
         return [w for w in self._workflows.values() if w.is_triggerable]
 
-    def get_reusable(self) -> List[WorkflowMetadata]:
+    def get_reusable(self) -> List[WorkflowMetadata]: 
         """Get all reusable workflows (workflow_call).
 
         Returns:
@@ -146,7 +146,7 @@ class WorkflowInventory:
         """Get workflows by trigger type.
 
         Args:
-            trigger_type: Trigger type to filter by.
+            trigger_type:  Trigger type to filter by. 
 
         Returns:
             List of workflows with the specified trigger.
@@ -154,10 +154,10 @@ class WorkflowInventory:
         return [w for w in self._workflows.values() if trigger_type in w.trigger_types]
 
     def get_workflow_dependencies(self, filename: str) -> List[str]:
-        """Get workflows that this workflow depends on.
+        """Get workflows that this workflow depends on. 
 
         Args:
-            filename: Workflow filename.
+            filename:  Workflow filename.
 
         Returns:
             List of dependency workflow filenames.
@@ -165,10 +165,10 @@ class WorkflowInventory:
         return [dep.target for dep in self._dependencies if dep.source == filename]
 
     def get_workflow_dependents(self, filename: str) -> List[str]:
-        """Get workflows that depend on this workflow.
+        """Get workflows that depend on this workflow. 
 
         Args:
-            filename: Workflow filename.
+            filename:  Workflow filename.
 
         Returns:
             List of dependent workflow filenames.
@@ -186,7 +186,7 @@ class WorkflowInventory:
         total_triggers = 0
 
         for workflow in self._workflows.values():
-            total_jobs += len(workflow.jobs)
+            total_jobs += len(workflow. jobs)
             total_triggers += len(workflow.triggers)
 
             for trigger in workflow.triggers:
@@ -214,7 +214,7 @@ class WorkflowInventory:
                     for dep_workflow in trigger.workflows:
                         # Try to find the actual workflow file
                         dep_filename = self._find_workflow_by_name(dep_workflow)
-                        if dep_filename:
+                        if dep_filename: 
                             self._dependencies.append(
                                 WorkflowDependency(
                                     source=filename,
@@ -225,27 +225,27 @@ class WorkflowInventory:
                             )
 
             # Check for workflow_call usage in jobs
-            for job in workflow.jobs.values():
+            for job in workflow. jobs.values():
                 if job.uses:
-                    # Extract workflow reference (e.g., "./.github/workflows/reusable.yml")
+                    # Extract workflow reference (e.g., ". /.github/workflows/reusable.yml")
                     if job.uses.startswith("./"):
                         # Local workflow reference
-                        parts = job.uses.split("@")[0]  # Remove @ref if present
-                        workflow_path = Path(parts.lstrip("./"))
-                        dep_filename = workflow_path.name
+                        parts = job.uses. split("@")[0]  # Remove @ref if present
+                        workflow_path = Path(parts. lstrip("./"))
+                        dep_filename = workflow_path. name
 
                         if dep_filename in self._workflows:
                             self._dependencies.append(
                                 WorkflowDependency(
                                     source=filename,
                                     target=dep_filename,
-                                    trigger_type=TriggerType.WORKFLOW_CALL,
+                                    trigger_type=TriggerType. WORKFLOW_CALL,
                                     required=True,
                                 )
                             )
 
     def _find_workflow_by_name(self, workflow_name: str) -> Optional[str]:
-        """Find workflow filename by workflow name.
+        """Find workflow filename by workflow name. 
 
         Args:
             workflow_name: Workflow name (from 'name' field).
@@ -259,7 +259,7 @@ class WorkflowInventory:
         return None
 
     def list_workflows(self) -> List[str]:
-        """List all workflow filenames.
+        """List all workflow filenames. 
 
         Returns:
             Sorted list of workflow filenames.
@@ -277,10 +277,10 @@ class WorkflowInventory:
         """
         workflow_path = self.workflows_dir / filename
         if not workflow_path.exists():
-            logger.error(f"Workflow file not found: {workflow_path}")
+            logger. error(f"Workflow file not found: {workflow_path}")
             return False
 
-        try:
+        try: 
             metadata = self.parser.parse_file(workflow_path, use_cache=False)
             if metadata:
                 self._workflows[filename] = metadata
@@ -288,7 +288,7 @@ class WorkflowInventory:
                 logger.info(f"Refreshed workflow: {filename}")
                 return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error refreshing {filename}: {e}")
 
         return False
