@@ -1,17 +1,11 @@
 """
-Integration tests for unified security module.
-
-Tests the consolidated security utilities to ensure:
-- Proper masking of sensitive data
-- Effective log injection prevention
-- Secure hashing functionality
-- Encrypted storage operations
+Integration tests for security modules.
 """
 
 import pytest
 import os
 import tempfile
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 
 
 class TestSecurityMasking:

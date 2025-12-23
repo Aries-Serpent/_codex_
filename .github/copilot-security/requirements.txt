@@ -9,7 +9,7 @@ Generated: 2025-12-21
 """
 
 # Core async and HTTP libraries
-aiohttp>=3.9.0
+aiohttp>=3.9.5
 asyncio-throttle>=1.0.0
 
 # GitHub API client
