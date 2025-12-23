@@ -216,7 +216,6 @@ codex-smell = "codex.quality.cli:smell_main"
 codex-metrics = "codex.ast.cli:metrics_main"
 # AST Standardization Tools (Phase 1 Complete)
 codex-ast = "codex.ast.cli:app"
-codex-ast-analyze = "codex.ast.cli:app"
 # NEW: Reporting Tools  
 codex-report = "codex.reporting.cli:report_main"
 codex-dashboard = "codex.reporting.cli:dashboard_main"

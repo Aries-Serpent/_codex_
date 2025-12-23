@@ -12,7 +12,9 @@ Supported formats:
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json
@@ -155,7 +157,7 @@ class KnowledgeGraphExporter:
             )
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return ExportResult(
                 format=format,
@@ -179,9 +181,7 @@ class KnowledgeGraphExporter:
     def _node_to_full_dict(self, node: StandardizedASTNode) -> Dict:
         """Convert node and all children to dictionary."""
         data = node.to_dict()
-        data["children_full"] = [
-            self._node_to_full_dict(child) for child in node.children
-        ]
+        data["children_full"] = [self._node_to_full_dict(child) for child in node.children]
         return data
 
     def _graph_to_dict(self) -> Dict:
@@ -208,8 +208,7 @@ class KnowledgeGraphExporter:
         return {
             "summary": self.metrics.summary(),
             "entities": {
-                entity_id: metrics.to_dict()
-                for entity_id, metrics in self.metrics.metrics.items()
+                entity_id: metrics.to_dict() for entity_id, metrics in self.metrics.metrics.items()
             },
         }
 
@@ -243,18 +242,14 @@ class KnowledgeGraphExporter:
             edge_id = 0
             for source, targets in self.graph.edges.items():
                 for target in targets:
-                    lines.append(
-                        f'    <edge id="e{edge_id}" source="{source}" target="{target}"/>'
-                    )
+                    lines.append(f'    <edge id="e{edge_id}" source="{source}" target="{target}"/>')
                     edge_id += 1
 
         # Export parent-child edges
         for node in self.nodes:
             for n in node.walk():
                 for child in n.children:
-                    lines.append(
-                        f'    <edge source="{n.node_id}" target="{child.node_id}"/>'
-                    )
+                    lines.append(f'    <edge source="{n.node_id}" target="{child.node_id}"/>')
 
         lines.append("  </graph>")
         lines.append("</graphml>")
@@ -287,9 +282,7 @@ class KnowledgeGraphExporter:
                     node_ids.add(n.node_id)
                     color = type_colors.get(n.type.value, "#FFFFFF")
                     label = f"{n.type.value}\\n{n.name}"
-                    lines.append(
-                        f'  "{n.node_id}" [label="{label}", fillcolor="{color}"];'
-                    )
+                    lines.append(f'  "{n.node_id}" [label="{label}", fillcolor="{color}"];')
 
         # Export dependency edges (red for cycles)
         if self.graph:
@@ -302,9 +295,7 @@ class KnowledgeGraphExporter:
             for source, targets in self.graph.edges.items():
                 for target in targets:
                     if (source, target) in cycle_edges:
-                        lines.append(
-                            f'  "{source}" -> "{target}" [color=red, penwidth=2];'
-                        )
+                        lines.append(f'  "{source}" -> "{target}" [color=red, penwidth=2];')
                     else:
                         lines.append(f'  "{source}" -> "{target}";')
 
@@ -330,7 +321,8 @@ class KnowledgeGraphExporter:
         cursor = conn.cursor()
 
         # Create tables
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE nodes (
                 node_id TEXT PRIMARY KEY,
                 type TEXT NOT NULL,
@@ -342,9 +334,11 @@ class KnowledgeGraphExporter:
                 parent_id TEXT,
                 FOREIGN KEY (parent_id) REFERENCES nodes(node_id)
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE edges (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source TEXT NOT NULL,
@@ -353,9 +347,11 @@ class KnowledgeGraphExporter:
                 FOREIGN KEY (source) REFERENCES nodes(node_id),
                 FOREIGN KEY (target) REFERENCES nodes(node_id)
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE metrics (
                 entity_id TEXT PRIMARY KEY,
                 cyclomatic_complexity INTEGER,
@@ -366,21 +362,26 @@ class KnowledgeGraphExporter:
                 quality_tier TEXT,
                 FOREIGN KEY (entity_id) REFERENCES nodes(node_id)
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE metadata (
                 key TEXT PRIMARY KEY,
                 value TEXT
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE cycles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cycle_nodes TEXT NOT NULL
             )
-        """)
+        """
+        )
 
         # Insert metadata
         for key, value in self.metadata.items():
@@ -507,9 +508,7 @@ class KnowledgeGraphExporter:
             lines.append("## Dependency Analysis")
             lines.append("")
             lines.append(f"- **Total nodes**: {len(self.graph.nodes)}")
-            lines.append(
-                f"- **Total edges**: {sum(len(t) for t in self.graph.edges.values())}"
-            )
+            lines.append(f"- **Total edges**: {sum(len(t) for t in self.graph.edges.values())}")
 
             cycles = self.graph.detect_cycles()
             if cycles:

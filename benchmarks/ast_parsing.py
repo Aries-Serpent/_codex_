@@ -1,8 +1,6 @@
 """
 Benchmarks for AST parsing performance.
 """
-import pytest
-from pathlib import Path
 
 from codex.ast import parse_python
 
@@ -35,40 +33,39 @@ class ComplexSystem:
         self.cache = {}
         self.handlers = []
     
-""" + "\n".join([
-    f"    def method_{i}(self, x):\n        return x + {i}"
-    for i in range(100)
-])
+""" + "\n".join(
+    [f"    def method_{i}(self, x):\n        return x + {i}" for i in range(100)]
+)
 
 
 class TestParsingBenchmarks:
     """Benchmark AST parsing performance."""
-    
+
     def test_parse_small_file(self, benchmark):
         """Benchmark parsing small file."""
         result = benchmark(parse_python, SMALL_CODE, "small.py")
         assert result is not None
-    
+
     def test_parse_medium_file(self, benchmark):
         """Benchmark parsing medium file."""
         result = benchmark(parse_python, MEDIUM_CODE, "medium.py")
         assert result is not None
-    
+
     def test_parse_large_file(self, benchmark):
         """Benchmark parsing large file."""
         result = benchmark(parse_python, LARGE_CODE, "large.py")
         assert result is not None
-    
+
     def test_parse_multiple_files(self, benchmark):
         """Benchmark parsing multiple files."""
         codes = [SMALL_CODE, MEDIUM_CODE, LARGE_CODE]
-        
+
         def parse_all():
             results = []
             for i, code in enumerate(codes):
                 node = parse_python(code, f"file_{i}.py")
                 results.append(node)
             return results
-        
+
         results = benchmark(parse_all)
         assert len(results) == 3
