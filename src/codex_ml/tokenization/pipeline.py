@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Tokenizer pipeline utilities exposed via the Codex CLI."""
 
-from __future__ import annotations
 
 import json
 from dataclasses import asdict, fields

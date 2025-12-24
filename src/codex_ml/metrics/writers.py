@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Structured metric writers with JSONL/CSV backends and schema validation."""
 
-from __future__ import annotations
 
 import csv
 import json

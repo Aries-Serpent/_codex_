@@ -1,9 +1,9 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
 """CLI wrapper around :func:`src.training.engine_hf_trainer.run_hf_trainer`."""
 
-from __future__ import annotations
 
 import argparse
 import importlib

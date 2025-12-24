@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal metrics logging utilities for `_codex_`."""
 
-from __future__ import annotations
 
 import json
 import os

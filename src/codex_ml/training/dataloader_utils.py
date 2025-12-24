@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Reproducible DataLoader helpers."""
 
-from __future__ import annotations
 
 import random
 from typing import Optional

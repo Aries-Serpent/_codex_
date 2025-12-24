@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Helpers for recording run-level metadata alongside metric logs."""
 
-from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Callable, Mapping, MutableMapping, Sequence

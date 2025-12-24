@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Utilities for establishing deterministic seeds across common libraries."""
 
-from __future__ import annotations
 
 import os
 import random

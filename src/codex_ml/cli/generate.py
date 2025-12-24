@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal text-generation CLI for local smoke testing."""
 
-from __future__ import annotations
 
 import argparse
 import sys

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Streaming dataset helpers for continual-learning style ingestion."""
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

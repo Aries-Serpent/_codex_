@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Standalone HF tokenizer adapter backed by the `tokenizers` library."""
 
-from __future__ import annotations
 
 import warnings
 from typing import Any

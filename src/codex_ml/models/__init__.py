@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Model registry for codex_ml using the plugin framework."""
 
-from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, Optional, Type

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Lightweight registry for model loader callables."""
 
-from __future__ import annotations
 
 import os
 from typing import Any, Callable, Mapping

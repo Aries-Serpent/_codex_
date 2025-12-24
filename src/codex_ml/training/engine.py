@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal training engine façade with optional MLflow logging."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path

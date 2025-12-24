@@ -1,7 +1,7 @@
+from __future__ import annotations
 logger = logging.getLogger(__name__)
 """Offline-safe MLflow adapter utilities."""
 
-from __future__ import annotations
 
 import logging
 import os

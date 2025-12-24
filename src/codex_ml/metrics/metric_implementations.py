@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Reference metric implementations used by Codex training loops."""
 
-from __future__ import annotations
 
 import json
 import math

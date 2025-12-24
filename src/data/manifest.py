@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Dataset manifest helpers used by the modular training stack."""
 
-from __future__ import annotations
 
 import hashlib
 import json

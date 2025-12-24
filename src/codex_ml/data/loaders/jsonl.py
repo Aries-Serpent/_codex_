@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """JSON Lines dataset loader with deterministic caching and splitting."""
 
-from __future__ import annotations
 
 import hashlib
 import json

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """CLI tool for migrating assignment mapping files between versions."""
 
-from __future__ import annotations
 
 import json
 import tempfile

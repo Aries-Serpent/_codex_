@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Helpers for interrogating optional PEFT adapters at runtime."""
 
-from __future__ import annotations
 
 from typing import Any, Dict
 
