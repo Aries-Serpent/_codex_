@@ -72,8 +72,8 @@ except (ImportError, ModuleNotFoundError) as exc:
     try:
         sys.modules["utils"] = importlib.import_module("src.utils")
     except (ImportError, ModuleNotFoundError) as nested_exc:
+        # Fallback failed - utils package unavailable, tests will skip if needed
         logger.debug(f"Could not import src.utils: {nested_exc}")
-        pass
 
 HEAVY_MODULES = [
     "numpy",
