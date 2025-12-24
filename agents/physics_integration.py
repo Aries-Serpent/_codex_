@@ -17,7 +17,7 @@ try:
 
     ADVANCED_PHYSICS_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     ADVANCED_PHYSICS_AVAILABLE = False
 
@@ -29,7 +29,7 @@ try:
 
     PHYSICS_ORCHESTRATOR_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     PHYSICS_ORCHESTRATOR_AVAILABLE = False
 
@@ -39,7 +39,7 @@ try:
 
     LOGGING_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     LOGGING_AVAILABLE = False
 

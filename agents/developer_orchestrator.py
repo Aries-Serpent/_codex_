@@ -29,7 +29,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
@@ -41,7 +41,7 @@ try:
 
     ADVANCED_PHYSICS = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     ADVANCED_PHYSICS = False
 
@@ -51,7 +51,7 @@ try:
 
     LOGGING_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     LOGGING_AVAILABLE = False
 
@@ -198,7 +198,7 @@ class PhysicsGuidedDeveloperOrchestrator:
             try:
                 self.app_type = AppType(requirements["app_type"])
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 self.app_type = AppType.PYTHON_CONSOLE
         else:
@@ -863,7 +863,7 @@ def test_main_imports():
                             exported_files[comp.name] = filepath
                             self._log("system", f"Exported {comp.name} to {filepath}")
                         except FileExistsError as e:
-                           logger.debug(f"FileExistsError: {e}")
+                            logger.debug(f"FileExistsError: {e}")
                             logger.warning(f"FileExistsError: {e}", exc_info=True)
                             exported_files[comp.name] = f"Skipped (file exists): {filepath}"
                             self._log("system", f"Skipped {comp.name} (file exists)")
@@ -963,7 +963,7 @@ def test_main_imports():
 
         Args:
             workflow_steps: Optional list of phase names to execute.
-                           If None, executes standard workflow.
+                            If None, executes standard workflow.
 
         Returns:
             Workflow execution results

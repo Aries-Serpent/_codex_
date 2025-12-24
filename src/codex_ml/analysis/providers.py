@@ -242,7 +242,7 @@ class ExternalWebSearch(SearchProvider):
         try:
             raw_text = path.read_text(encoding="utf-8")
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             result["status"] = "error"
             result["reason"] = "offline-missing"

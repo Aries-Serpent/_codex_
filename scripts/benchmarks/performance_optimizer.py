@@ -60,7 +60,7 @@ class PerformanceOptimizer:
                 elapsed = (time.perf_counter() - start) * 1000  # ms
                 times.append(elapsed)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.debug(f"Benchmark iteration {i} failed: {e}")
                 continue
 

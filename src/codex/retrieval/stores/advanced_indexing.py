@@ -36,7 +36,7 @@ class HNSWConfig:
 
     Attributes:
         M: Number of bi-directional links per node (default: 32)
-           Higher M = better recall, more memory, slower build
+            Higher M = better recall, more memory, slower build
         ef_construction: Size of dynamic candidate list during construction (default: 200)
                         Higher ef_construction = better quality, slower build
         ef_search: Size of dynamic candidate list during search (default: 100)
@@ -69,11 +69,11 @@ class IVFPQConfig:
 
     Attributes:
         nlist: Number of inverted lists/clusters (default: 1000)
-               Recommended: sqrt(N) to sqrt(N)/2 for N vectors
+                Recommended: sqrt(N) to sqrt(N)/2 for N vectors
         m: Number of sub-quantizers (default: 8)
-           Higher m = better accuracy, more memory
+            Higher m = better accuracy, more memory
         nbits: Number of bits per sub-quantizer (default: 8)
-               Options: 4, 8 (8 bits = 256 levels per subquantizer)
+                Options: 4, 8 (8 bits = 256 levels per subquantizer)
         nprobe: Number of lists to probe during search (default: 10)
                 Higher nprobe = better recall, slower search
         metric: Distance metric ('l2', 'ip')
@@ -146,7 +146,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for HNSW indexing. "
@@ -184,7 +184,7 @@ class HNSWIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -220,7 +220,7 @@ class HNSWIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -263,7 +263,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -279,7 +279,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -338,7 +338,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for IVF-PQ indexing. "
@@ -382,7 +382,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -416,7 +416,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -449,7 +449,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -490,7 +490,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -506,7 +506,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 

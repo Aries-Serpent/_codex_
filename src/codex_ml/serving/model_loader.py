@@ -200,7 +200,7 @@ class ModelLoader:
             return model_data
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to load model: {e}")
             raise RuntimeError(f"Model loading failed: {e}") from e
 
@@ -265,7 +265,7 @@ class ModelLoader:
         try:
             from transformers import AutoConfig, AutoModel, AutoTokenizer
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError(
                 "transformers is required for HuggingFace models. "
@@ -343,7 +343,7 @@ class ModelLoader:
             }
             return dtype_map.get(dtype_str)
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("torch not available, ignoring dtype specification")
             return None
@@ -418,7 +418,7 @@ class ModelLoader:
                 with open(path, "rb") as f:
                     f.read(1)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Cannot read checkpoint file: {e}")
                 return False
 

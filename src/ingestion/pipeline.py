@@ -571,7 +571,7 @@ def ingest_directory(
             try:
                 yield from pipeline.stream(file_path)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning("Error processing %s: %s", file_path, e)
 
 

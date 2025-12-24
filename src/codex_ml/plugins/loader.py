@@ -23,7 +23,7 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
     try:
         return metadata.entry_points(group=group)
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         # Python <3.10 compatibility: entry_points() returns dict-like object
         try:
@@ -62,7 +62,7 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             target(register)
             return True
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             return False
         except Exception:
@@ -83,7 +83,7 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
         register(name, target)
         return True
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             decorator = register(name)

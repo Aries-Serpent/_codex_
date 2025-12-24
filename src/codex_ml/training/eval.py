@@ -37,7 +37,7 @@ def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mappin
                 moved[key] = value.to(device)
                 continue
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         moved[key] = value
     return moved

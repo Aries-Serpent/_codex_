@@ -497,7 +497,7 @@ def load_checkpoint(
     try:
         _verify_checksums(ckpt_dir, strict=strict)
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         if strict:
             raise

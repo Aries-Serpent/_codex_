@@ -110,7 +110,7 @@ def detect_encoding(path: Union[str, Path]) -> str:
         try:
             return _io_text__detect_encoding(p)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     # Fallback conservative detector: BOM checks, then try a few encodings
@@ -130,7 +130,7 @@ def detect_encoding(path: Union[str, Path]) -> str:
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     for enc in ("utf-8", "cp1252", "iso-8859-1"):
@@ -161,13 +161,13 @@ def _call_repo_read_text(
         # Newer helpers may return (text, used_encoding)
         result = _io_text_read_text(path, encoding=encoding, errors=errors)  # type: ignore[misc]
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             # Older helper may accept (path, encoding)
             result = _io_text_read_text(path, encoding)  # type: ignore[misc]
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             try:
                 # Very old: only path
@@ -236,7 +236,7 @@ def _manual_read_text(
         if text and text[0] == "\ufeff":
             text = text.lstrip("\ufeff")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     return text, str(enc)

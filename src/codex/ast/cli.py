@@ -38,7 +38,7 @@ def _analyze_path(path: Path) -> Dict[str, Any]:
                 1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines()
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return {
         "path": str(path),

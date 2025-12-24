@@ -570,7 +570,7 @@ def repo_map(reasoning: bool) -> None:
     try:
         click.echo(render_repo_map(reasoning=reasoning))
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         # Back-compat with older render_repo_map signatures lacking the flag.
         click.echo(render_repo_map())

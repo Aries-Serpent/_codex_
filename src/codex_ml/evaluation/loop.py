@@ -4,8 +4,8 @@ CPU-safe, deterministic-ready reference implementation.
 
 Public API:
     evaluate_epoch(model, dataloader, criterion, device="cpu",
-                   metrics=None, logger=None, max_batches=None, seed=None,
-                   deterministic=False) -> Dict[str, Any]
+                    metrics=None, logger=None, max_batches=None, seed=None,
+                    deterministic=False) -> Dict[str, Any]
 
 Notes:
 - Lazy torch import to avoid heavy import cost if only metadata is inspected.
@@ -330,7 +330,7 @@ def _collect_system_metrics() -> Dict[str, float]:
         cpu_percent = float(psutil.cpu_percent(interval=None))
         memory_percent = float(psutil.virtual_memory().percent)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     metrics: Dict[str, float] = {}

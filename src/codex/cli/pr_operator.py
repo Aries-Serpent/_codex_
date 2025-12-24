@@ -223,7 +223,7 @@ class PROperator:
             else:
                 logger.warning("GITHUB_TOKEN not set, PR creation disabled")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("PyGithub not installed, PR creation disabled")
     
@@ -368,7 +368,7 @@ class PROperator:
             )
             
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error("Failed to create PR: %s", e)
             return PRResult(
                 success=False,

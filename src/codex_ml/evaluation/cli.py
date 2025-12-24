@@ -39,7 +39,7 @@ def _load_config(path: Path) -> Dict[str, Any]:
         try:
             import tomllib
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             import tomli as tomllib  # type: ignore
         return tomllib.loads(text)

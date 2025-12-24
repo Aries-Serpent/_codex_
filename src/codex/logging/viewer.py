@@ -37,7 +37,7 @@ import sys
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     _codex_sqlite_auto = None
 else:
@@ -203,7 +203,7 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
     try:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         return value
 

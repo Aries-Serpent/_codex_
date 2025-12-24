@@ -66,7 +66,7 @@ def _forward_to_cli(argv: Sequence[str]) -> int:
         try:
             cli_entry.main(args=forwarded, prog_name="codex-ml", standalone_mode=False)
         except SystemExit as exc:
-           logger.debug(f"SystemExit: {exc}")
+            logger.debug(f"SystemExit: {exc}")
             logger.debug("Exception caught, returning", exc_info=True)
             return int(exc.code or 0)
         return 0

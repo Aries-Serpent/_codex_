@@ -1057,7 +1057,7 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
                 cursor = conn.execute(
                     """
                     SELECT DISTINCT session_id, MIN(ts) as first_seen, MAX(ts) as last_seen,
-                           COUNT(*) as message_count
+                            COUNT(*) as message_count
                     FROM session_events
                     GROUP BY session_id
                     ORDER BY last_seen DESC
@@ -1540,7 +1540,7 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
     try:
         from services.workflow.inventory import WorkflowInventory
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)

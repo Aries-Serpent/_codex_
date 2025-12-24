@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Atomic file-system helpers for sidecar persistence."""
 
-from __future__ import annotations
 
 import json
 import os
@@ -61,7 +61,7 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
         try:
             _fsync_dir(path.parent)
         except OSError as e:
-           logger.debug(f"OSError: {e}")
+            logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # Best-effort: some filesystems or platforms may not support directory fsync.
             pass
@@ -70,7 +70,7 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
             try:
                 tmp_path.unlink()
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
 
 

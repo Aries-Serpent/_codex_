@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Optional PEFT/LoRA integration helpers."""
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union
 
@@ -39,7 +39,7 @@ def apply_lora_if_available(
         try:
             selected_task_type = TaskType[selected_task_type]
         except KeyError as e:
-           logger.debug(f"KeyError: {e}")
+            logger.debug(f"KeyError: {e}")
             logger.warning(f"KeyError: {e}", exc_info=True)
             selected_task_type = TaskType(selected_task_type)
 

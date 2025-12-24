@@ -83,7 +83,7 @@ def resolve_db_path(cli_db: Optional[str]) -> str:
     1. ``--db`` flag
     2. ``CODEX_DB_PATH`` or ``CODEX_LOG_DB_PATH`` environment variables
     3. First existing entry in ``DEFAULT_DB_CANDIDATES`` (search stops after the
-       first hit and only inspects top-level ``.codex`` or ``data`` directories).
+        first hit and only inspects top-level ``.codex`` or ``data`` directories).
     """
     if cli_db:
         return cli_db
@@ -106,7 +106,7 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
         try:
             safe = _sanitize_table(table)
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             continue
         cur = conn.execute(f"PRAGMA table_info({safe})")

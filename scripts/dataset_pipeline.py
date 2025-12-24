@@ -172,7 +172,7 @@ class FileProcessor:
                     return json.dumps(metadata), quality
                     
                 except SyntaxError as e:
-                   logger.debug(f"SyntaxError: {e}")
+                    logger.debug(f"SyntaxError: {e}")
                     logger.warning(f"SyntaxError: {e}", exc_info=True)
                     return None, 0.3
             
@@ -412,16 +412,16 @@ def main():
     
     parser = argparse.ArgumentParser(description="Enhanced dataset pipeline")
     parser.add_argument("--repo", type=Path, default=Path.cwd(),
-                       help="Repository path")
+                        help="Repository path")
     parser.add_argument("--output", type=Path,
-                       help="Output directory for datasets")
+                        help="Output directory for datasets")
     parser.add_argument("--version", default="v1.0",
-                       help="Dataset version")
+                        help="Dataset version")
     parser.add_argument("--format", default="tar.gz",
-                       choices=["tar.gz", "zip"],
-                       help="Archive format")
+                        choices=["tar.gz", "zip"],
+                        help="Archive format")
     parser.add_argument("--no-archive", action="store_true",
-                       help="Skip archive creation (manifest only)")
+                        help="Skip archive creation (manifest only)")
     
     args = parser.parse_args()
     

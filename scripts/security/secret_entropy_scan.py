@@ -63,7 +63,7 @@ def main():
     try:
         threshold = float(ent_raw)
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         threshold = 3.5
 

@@ -21,7 +21,7 @@ try:
     import torch
     import torch.nn.functional as F
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None
     F = None

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Configuration helpers for the archive command surface."""
 
-from __future__ import annotations
 
 import os
 import typing as _t
@@ -53,7 +53,7 @@ def _coerce_int(value: object, *, default: int) -> int:
         try:
             return int(value.strip())
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             return default
     return default
@@ -66,7 +66,7 @@ def _coerce_float(value: object, *, default: float) -> float:
         try:
             return float(value.strip())
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             return default
     return default

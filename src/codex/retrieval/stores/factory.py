@@ -95,7 +95,7 @@ class VectorStoreFactory:
             logger.info(f"Successfully created {store_type} store")
             return instance
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to create {store_type} store: {e}")
             raise
 
@@ -140,7 +140,7 @@ try:
 
     VectorStoreRegistry.register("faiss", FAISSStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("FAISS store not available for registration")
 
@@ -150,7 +150,7 @@ try:
 
     VectorStoreRegistry.register("pinecone", PineconeStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Pinecone store not available for registration")
 
@@ -160,7 +160,7 @@ try:
 
     VectorStoreRegistry.register("weaviate", WeaviateStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Weaviate store not available for registration")
 
@@ -170,7 +170,7 @@ try:
 
     VectorStoreRegistry.register("pgvector", PGVectorStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("PGVector store not available for registration")
 

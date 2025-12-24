@@ -157,7 +157,7 @@ class CircuitBreaker:
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Health probe error: {e}")
                     self._on_failure()
                     raise
@@ -359,7 +359,7 @@ class CircuitBreaker:
 
             logger.debug(f"Circuit breaker state saved to {state_file}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to save circuit breaker state: {e}")
 
     def _load_state(self) -> None:
@@ -393,7 +393,7 @@ class CircuitBreaker:
                 f"failures={self.failure_count}"
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to load circuit breaker state: {e}, starting fresh")
 
 
@@ -499,7 +499,7 @@ class FallbackHandler:
         try:
             return func(*args, **kwargs)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Primary function failed: {e}, attempting fallback")
 
             # Try cache fallback

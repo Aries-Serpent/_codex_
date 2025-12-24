@@ -178,7 +178,7 @@ def _run_script(
         logger.debug("Exception caught, returning", exc_info=True)
         return "", f"Timeout after {timeout}s", -1
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return "", str(e), -1
 

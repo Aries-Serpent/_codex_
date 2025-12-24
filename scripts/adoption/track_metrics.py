@@ -145,7 +145,7 @@ class AdoptionTracker:
                     f"{mlflow_metrics['artifacts_stored']} artifacts"
                 )
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Error collecting MLflow metrics: {e}")
 
         return mlflow_metrics
@@ -173,7 +173,7 @@ class AdoptionTracker:
                         f"✓ Feature Store: {fs_metrics['feature_groups_defined']} groups defined"
                     )
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Error reading feature store config: {e}")
             else:
                 logger.warning("YAML library not available, skipping feature group count")
@@ -186,7 +186,7 @@ class AdoptionTracker:
                 fs_metrics["feature_groups_registered"] = registered
                 logger.info(f"✓ Feature Store: {registered} groups registered")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Error checking feature store storage: {e}")
 
         return fs_metrics

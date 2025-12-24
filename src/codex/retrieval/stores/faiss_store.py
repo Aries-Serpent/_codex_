@@ -71,7 +71,7 @@ class FAISSStore(VectorStore):
             self.faiss = faiss
             logger.info(f"FAISS version: {faiss.__version__}")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
 

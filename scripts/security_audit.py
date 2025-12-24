@@ -59,7 +59,7 @@ def check_package_version(package: str, min_version: str) -> Tuple[bool, str]:
                 return True, installed  # Equal versions
         return False, "unknown"
     except (subprocess.CalledProcessError, ValueError, IndexError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return False, f"error: {e}"
 

@@ -98,10 +98,10 @@ class AdoptionMetricsCollector:
                 metrics["adoption_score"] = min(1.0, len(all_runs) / TARGET_RUN_COUNT)
 
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.debug("MLflow not available")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"MLflow metrics collection failed: {e}")
 
         return metrics
@@ -166,7 +166,7 @@ class AdoptionMetricsCollector:
             metrics["adoption_score"] = min(1.0, len(features) / 10.0)
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"Feature store metrics failed: {e}")
 
         return metrics
@@ -226,7 +226,7 @@ class AdoptionMetricsCollector:
                 metrics["adoption_score"] = min(1.0, len(recent_reports) / 50.0)
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"Validation metrics failed: {e}")
 
         return metrics
@@ -284,7 +284,7 @@ class AdoptionMetricsCollector:
             metrics["adoption_score"] = min(1.0, recent_count / 20.0)
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"Evaluation metrics failed: {e}")
 
         return metrics
@@ -334,7 +334,7 @@ class AdoptionMetricsCollector:
                 metrics["adoption_score"] = enabled_count / 3.0
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"Training enhancements metrics failed: {e}")
 
         return metrics

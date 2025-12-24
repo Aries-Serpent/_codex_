@@ -35,7 +35,7 @@ def _safe_yaml_load(text: str) -> Dict[str, object]:
     try:
         from yaml import YAMLError, safe_load  # type: ignore
     except ModuleNotFoundError as e:
-       logger.debug(f"ModuleNotFoundError: {e}")
+        logger.debug(f"ModuleNotFoundError: {e}")
         logger.warning(f"ModuleNotFoundError: {e}", exc_info=True)
         try:
             data = _minimal_yaml_load(text)

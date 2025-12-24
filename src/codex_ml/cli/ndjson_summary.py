@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Offline-friendly NDJSON metrics summarization helpers and CLI shims."""
 
-from __future__ import annotations
 
 import argparse
 import csv
@@ -73,7 +73,7 @@ def _load_rows(run_dir: Path, *, pattern: str | None = None) -> list[dict[str, A
                     if isinstance(payload, dict):
                         rows.append(payload)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             continue
     return rows

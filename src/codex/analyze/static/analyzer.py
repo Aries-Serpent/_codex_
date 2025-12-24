@@ -307,13 +307,13 @@ def _run_ruff(source_dir: Path) -> List[LintIssue]:
                     file_path=item.get("filename", ""),
                 ))
     except FileNotFoundError as e:
-       logger.debug(f"FileNotFoundError: {e}")
+        logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         logger.warning("ruff not found, skipping lint check")
     except subprocess.TimeoutExpired:
         logger.warning("ruff timed out")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning("ruff failed: %s", e)
 
     return issues
@@ -351,13 +351,13 @@ def _run_bandit(source_dir: Path) -> List[SecurityIssue]:
                     file_path=item.get("filename", ""),
                 ))
     except FileNotFoundError as e:
-       logger.debug(f"FileNotFoundError: {e}")
+        logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         logger.warning("bandit not found, skipping security scan")
     except subprocess.TimeoutExpired:
         logger.warning("bandit timed out")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning("bandit failed: %s", e)
 
     return issues
@@ -387,7 +387,7 @@ def analyze_file(file_path: Path, base_dir: Path) -> Optional[FileAnalysis]:
         try:
             tree = ast.parse(content)
         except SyntaxError as e:
-           logger.debug(f"SyntaxError: {e}")
+            logger.debug(f"SyntaxError: {e}")
             logger.warning("Syntax error in %s: %s", file_path, e)
             return FileAnalysis(
                 path=str(file_path.relative_to(base_dir)),
@@ -416,7 +416,7 @@ def analyze_file(file_path: Path, base_dir: Path) -> Optional[FileAnalysis]:
         )
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error("Error analyzing %s: %s", file_path, e)
         return None
 

@@ -236,7 +236,7 @@ class RuntimeTracer:
                     try:
                         stdin_input = input_file.read_text(encoding="utf-8")
                     except Exception as e:
-                       logger.debug(f"Exception: {e}")
+                        logger.debug(f"Exception: {e}")
                         logger.warning("Could not read input file %s: %s", input_file, e)
                 
                 if enable_tracing:

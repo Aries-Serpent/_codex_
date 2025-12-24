@@ -263,7 +263,7 @@ class TokenBudgetEnforcer:
                         block.token_count = summary_tokens
                         continue
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
 
             # Remove block
@@ -292,5 +292,5 @@ class TokenBudgetEnforcer:
                         self.budget.current_usage -= saved
                         block.token_count = new_tokens
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)

@@ -1,7 +1,7 @@
+from __future__ import annotations
 logger = logging.getLogger(__name__)
 """Click-based CLI for the Codex tombstone archive (enhanced with config/batch/health)."""
 
-from __future__ import annotations
 
 import json
 import logging
@@ -515,7 +515,7 @@ def show_standardization_status() -> None:
             click.echo(f"  {status_icon} {standard.upper()}")
         click.echo()
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
@@ -547,7 +547,7 @@ def validate_standardization(
         from .evidence_schema import EvidenceSchemaValidator
         from .standardization import StandardizationManager
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
@@ -653,7 +653,7 @@ def migrate_evidence_to_v2() -> None:
     try:
         from .evidence_schema import EvidenceSchemaValidator
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)

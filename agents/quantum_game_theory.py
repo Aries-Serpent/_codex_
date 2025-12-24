@@ -35,7 +35,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     # Provide minimal numpy-like interface for type hints
     NUMPY_AVAILABLE = False
@@ -695,7 +695,7 @@ class QuantumInspiredGameEngine:
 
         For dimension=2, this is:
         U(θ, φ) = [[cos(θ/2), -e^{iφ} sin(θ/2)],
-                   [e^{-iφ} sin(θ/2), cos(θ/2)]]
+                    [e^{-iφ} sin(θ/2), cos(θ/2)]]
 
         For higher dimensions, extends to block-diagonal rotations.
         """

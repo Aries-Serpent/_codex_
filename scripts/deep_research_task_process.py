@@ -110,7 +110,7 @@ def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
     try:
         return any((p / m).exists() for m in markers)
     except PermissionError as e:
-       logger.debug(f"PermissionError: {e}")
+        logger.debug(f"PermissionError: {e}")
         logger.warning(f"PermissionError: {e}", exc_info=True)
         return False
 
@@ -263,7 +263,7 @@ def _atomic_write_text(path: Path, content: str, encoding: str = "utf-8") -> Non
         try:
             os.unlink(tmp_path)
         except OSError as cleanup_err:
-           logger.debug(f"OSError: {cleanup_err}")
+            logger.debug(f"OSError: {cleanup_err}")
             logging.debug("temporary file cleanup failed: %s", cleanup_err)
         raise
 
@@ -329,7 +329,7 @@ def _run_command(
         logger.debug("Exception caught, returning", exc_info=True)
         return e.returncode, e.stdout or "", e.stderr or ""
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return 1, "", str(e)
 
@@ -605,11 +605,11 @@ Thank you for considering contributing to this project!
 1. Create a branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Run quality checks:
-   ```
-   pre-commit run --all-files
-   mypy .
-   pytest
-   ```
+    ```
+    pre-commit run --all-files
+    mypy .
+    pytest
+    ```
 4. Submit a pull request
 """
     original = text

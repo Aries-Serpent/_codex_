@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Session-scoped structured logging utilities."""
 
-from __future__ import annotations
 
 import json
 import os
@@ -113,7 +113,7 @@ class SessionLogger:
                 path.unlink()
                 removed.append(path)
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 continue
 

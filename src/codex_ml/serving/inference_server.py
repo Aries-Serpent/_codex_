@@ -121,7 +121,7 @@ class AuthManager:
             payload = jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
             return payload
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise AuthenticationError("python-jose not installed for JWT support")
         except JWTError as e:
@@ -217,7 +217,7 @@ class ModelServer:
             self.circuit_breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5))
             logger.info("Circuit breaker enabled")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             self.circuit_breaker = None
             logger.warning("Circuit breaker not available (resilience module not found)")

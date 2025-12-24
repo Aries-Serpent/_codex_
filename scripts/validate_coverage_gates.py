@@ -46,7 +46,7 @@ def _read_text(path: Path) -> str | None:
     try:
         return path.read_text(encoding="utf-8")
     except FileNotFoundError as e:
-       logger.debug(f"FileNotFoundError: {e}")
+        logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return None
     except OSError as exc:  # pragma: no cover - filesystem errors are uncommon

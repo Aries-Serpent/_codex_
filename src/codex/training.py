@@ -58,7 +58,7 @@ from codex_utils.repro import log_env_info
 try:
     from training.functional_training import TrainCfg, run_custom_trainer
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
@@ -164,7 +164,7 @@ def save_checkpoint(
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return str(p)
 
@@ -353,7 +353,7 @@ def run_functional_training(
             try:
                 dataset_paths.append(Path(entry))
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 continue
 
@@ -380,7 +380,7 @@ def run_functional_training(
                 try:
                     key = str(candidate.resolve()) if candidate.exists() else str(candidate)
                 except OSError as e:
-                   logger.debug(f"OSError: {e}")
+                    logger.debug(f"OSError: {e}")
                     logger.warning(f"OSError: {e}", exc_info=True)
                     key = str(candidate)
                 if key in seen:
@@ -1020,7 +1020,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
 
                     torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             if optimizer is not None and sched_name and last_sched is None:
                 last_sched = _codex_maybe_scheduler(optimizer, sched_name)
@@ -1028,7 +1028,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                 try:
                     last_sched.step()
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             rec = {
                 "ts": int(time.time()),
@@ -1124,7 +1124,7 @@ def codex_train_step(
                 scaler.unscale_(optimizer)
                 clip_grad_norm_(model.parameters(), grad_clip)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         scaler.step(optimizer)
         scaler.update()
@@ -1133,7 +1133,7 @@ def codex_train_step(
             try:
                 clip_grad_norm_(model.parameters(), grad_clip)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         optimizer.step()
 

@@ -44,7 +44,7 @@ class AIRepositorySearch:
             with open(self.index_dir / "content_index.json", 'r') as f:
                 self.content_index = json.load(f)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: content_index.json not found", file=sys.stderr)
 
@@ -52,7 +52,7 @@ class AIRepositorySearch:
             with open(self.index_dir / "semantic_index.json", 'r') as f:
                 self.semantic_index = json.load(f)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: semantic_index.json not found", file=sys.stderr)
 
@@ -60,7 +60,7 @@ class AIRepositorySearch:
             with open(self.index_dir / "structural_index.json", 'r') as f:
                 self.structural_index = json.load(f)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: structural_index.json not found", file=sys.stderr)
 
@@ -68,7 +68,7 @@ class AIRepositorySearch:
             with open(self.index_dir / "entity_index.json", 'r') as f:
                 self.entity_index = json.load(f)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: entity_index.json not found", file=sys.stderr)
 
@@ -76,7 +76,7 @@ class AIRepositorySearch:
             with open(self.index_dir / "metadata_index.json", 'r') as f:
                 self.metadata_index = json.load(f)
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: metadata_index.json not found", file=sys.stderr)
 
@@ -291,12 +291,12 @@ def main():
     parser = argparse.ArgumentParser(description="Search AI-indexed repository")
     parser.add_argument("query", help="Search query")
     parser.add_argument("--type", choices=["keyword", "entity", "path", "multi"],
-                       default="multi", help="Search type")
+                        default="multi", help="Search type")
     parser.add_argument("--max-results", type=int, default=10,
-                       help="Maximum number of results")
+                        help="Maximum number of results")
     parser.add_argument("--index-dir", type=Path,
-                       default=Path(__file__).parent.parent / ".codex" / "ai_index",
-                       help="Index directory")
+                        default=Path(__file__).parent.parent / ".codex" / "ai_index",
+                        help="Index directory")
     
     args = parser.parse_args()
     

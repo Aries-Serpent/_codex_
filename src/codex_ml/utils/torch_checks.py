@@ -91,7 +91,7 @@ def inspect_torch(module: ModuleType | None = None) -> TorchStatus:
     try:
         data_module = importlib.import_module("torch.utils.data")
     except Exception as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Exception caught, returning", exc_info=True)
         return TorchStatus(
             ok=False,

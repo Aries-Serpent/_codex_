@@ -366,7 +366,7 @@ class SelfHealingEngine:
                     )
                 )
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # Other errors are not import-related
 
         return issues

@@ -115,7 +115,7 @@ def analyze_file(file_path: Path) -> Tuple[bool, List[Tuple[int, str, str]]]:
         return detector.has_logging_import, detector.print_calls
 
     except (SyntaxError, UnicodeDecodeError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return False, []
 
@@ -163,7 +163,7 @@ def convert_print_to_logger(
         return changes_made
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Failed to convert {file_path}: {e}")
         return False
 
@@ -269,7 +269,7 @@ def add_logging_import(file_path: Path, dry_run: bool = True) -> bool:
         return True
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Failed to add logging import to {file_path}: {e}")
         return False
 

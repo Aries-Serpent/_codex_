@@ -120,7 +120,7 @@ class Phase6Deployer:
                 }
                 all_valid = False
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"  ✗ Error validating {config_file}: {e}")
                 self.results["validations"][config_file] = {"status": "error", "error": str(e)}
                 all_valid = False
@@ -199,7 +199,7 @@ class Phase6Deployer:
                 return False
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"✗ Error initializing feature store: {e}")
             self.results["deployments"]["feature_store"] = {"status": "error", "error": str(e)}
             return False
@@ -266,7 +266,7 @@ class Phase6Deployer:
             return True
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"✗ Error setting up monitoring: {e}")
             self.results["deployments"]["monitoring"] = {"status": "error", "error": str(e)}
             return False
@@ -332,7 +332,7 @@ class Phase6Deployer:
                 return False
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"✗ Error running integration tests: {e}")
             self.results["tests"]["integration"] = {"status": "error", "error": str(e)}
             return False
@@ -359,7 +359,7 @@ class Phase6Deployer:
                 logger.warning("  ⚠ MLflow might be enabled by default")
                 checks.append(False)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.info("  ✓ Base config doesn't enforce MLflow")
             checks.append(True)
 
@@ -380,7 +380,7 @@ class Phase6Deployer:
                     logger.warning("  ⚠ Training API might be broken")
                     checks.append(False)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"  ⚠ Could not verify training API: {e}")
             checks.append(False)
 

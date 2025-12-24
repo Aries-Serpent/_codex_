@@ -136,7 +136,7 @@ class ContextMemory:
                 try:
                     summary = self._summarizer(chunk_content)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Failed to summarize chunk; storing without summary", exc_info=exc)
 
             # Create chunk
@@ -158,7 +158,7 @@ class ContextMemory:
                 try:
                     self._embeddings[chunk_id] = self._embedder(chunk_content)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Failed to embed chunk %s; proceeding without embedding", chunk_id, exc_info=exc)
 
         # Persist if storage configured
@@ -254,7 +254,7 @@ class ContextMemory:
                     chunk.summary = summary
                     summaries.append(summary)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Chunk summarization failed; using fallback content", exc_info=exc)
                     summaries.append(chunk.content[:200] + "...")
 
@@ -266,7 +266,7 @@ class ContextMemory:
         try:
             return self._summarizer(combined)
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.warning("Failed to summarize combined content; returning raw aggregation", exc_info=exc)
             return combined
 
@@ -413,7 +413,7 @@ class ContextMemory:
         try:
             query_embedding = self._embedder(query)
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.warning("Query embedding failed; falling back to existing order", exc_info=exc)
             return chunks
 
@@ -494,5 +494,5 @@ class ContextMemory:
                 self._chunks[cid] = chunk
                 self._total_tokens += chunk.token_count
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.error("Failed to load memory from %s", path, exc_info=exc)

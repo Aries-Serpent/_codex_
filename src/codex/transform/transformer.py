@@ -186,7 +186,7 @@ def _run_black(file_path: Path) -> Optional[str]:
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Black formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -209,7 +209,7 @@ def _run_isort(file_path: Path) -> Optional[str]:
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Isort formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -354,7 +354,7 @@ def transform(
                                 ))
                                 break  # Only suggest once per file
                 except SyntaxError as e:
-                   logger.debug(f"SyntaxError: {e}")
+                    logger.debug(f"SyntaxError: {e}")
                     logger.warning(f"SyntaxError: {e}", exc_info=True)  # Skip files with syntax errors
             
             # === Tier C: Suggest Only ===

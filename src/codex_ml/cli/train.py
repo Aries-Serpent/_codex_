@@ -12,14 +12,14 @@ from typing import Any, Sequence
 try:
     from hydra.utils import to_absolute_path
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     from config_legacy.utils import to_absolute_path
 
 try:
     import hydra
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     import config_legacy as hydra
 from codex_ml.codex_structured_logging import (
@@ -151,7 +151,7 @@ def _apply_prompt_sanitization(
             elif isinstance(config_obj, dict):
                 config_obj[key] = sanitised
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return total
 
@@ -289,7 +289,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         if sample_rate is not None:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
@@ -326,7 +326,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         try:
             cfg.reproducibility["seed"] = seed
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)
 

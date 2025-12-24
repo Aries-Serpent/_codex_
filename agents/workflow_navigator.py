@@ -739,7 +739,7 @@ class WorkflowNavigator:
         try:
             current_path.symlink_to(filename)
         except OSError as e:
-           logger.debug(f"OSError: {e}")
+            logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)

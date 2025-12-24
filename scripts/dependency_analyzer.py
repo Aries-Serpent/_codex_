@@ -111,7 +111,7 @@ def analyze_python_file(file_path: Path) -> Dict[str, Any]:
         }
 
     except (SyntaxError, UnicodeDecodeError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return {}
 

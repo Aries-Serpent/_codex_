@@ -131,7 +131,7 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
                 accuracy_tensor = (preds[..., :common] == target[..., :common]).float()
                 record["token_accuracy"] = float(accuracy_tensor.mean().item())
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     text_preds = _as_str_list(getattr(outputs, "predictions", None))

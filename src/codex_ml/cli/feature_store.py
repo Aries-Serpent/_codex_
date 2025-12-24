@@ -21,7 +21,7 @@ try:
     from rich.console import Console
     from rich.table import Table
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)

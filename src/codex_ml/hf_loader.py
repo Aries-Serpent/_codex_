@@ -242,7 +242,7 @@ def load_causal_lm(
             **loader_kwargs,
         )
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.
         loader_kwargs.pop("torch_dtype", None)

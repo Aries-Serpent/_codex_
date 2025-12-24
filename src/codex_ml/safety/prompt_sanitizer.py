@@ -47,7 +47,7 @@ class PromptSanitizer:
 
         Args:
             strict: If True, raise ValueError on unsafe prompts.
-                   If False, redact unsafe patterns with [REDACTED].
+                    If False, redact unsafe patterns with [REDACTED].
         """
         self.strict = strict
         self.patterns = [re.compile(p, re.IGNORECASE) for p in self.INJECTION_PATTERNS]
@@ -113,7 +113,7 @@ class PromptSanitizer:
             temp_sanitizer.sanitize(prompt)
             return True
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             return False
 

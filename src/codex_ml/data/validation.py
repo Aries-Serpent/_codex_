@@ -409,7 +409,7 @@ class SchemaValidationRule(ValidationRule):
         try:
             import jsonschema
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("jsonschema not installed, skipping schema validation")
             return ValidationResult(

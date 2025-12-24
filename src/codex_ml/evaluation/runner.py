@@ -41,7 +41,7 @@ try:
     import torch
     from torch.utils.data import DataLoader
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None
     DataLoader = None
@@ -152,7 +152,7 @@ class EvaluationRunner:
                         return result
                     return {self.name: float(result)}
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.debug("Exception caught, returning", exc_info=True)
                     return {f"{self.name}_error": str(e)}
 

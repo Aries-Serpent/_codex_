@@ -19,7 +19,7 @@ try:
 
     MLFLOW_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     MLFLOW_AVAILABLE = False
     logger.info("MLflow not installed. Install with: pip install mlflow")
@@ -87,7 +87,7 @@ class MLflowTracker:
                 f"experiment: {self.experiment_name}"
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(
                 f"MLflow initialization failed: {e}. " f"Continuing without MLflow tracking."
             )
@@ -111,7 +111,7 @@ class MLflowTracker:
             self.run_id = mlflow.active_run().info.run_id
             logger.info(f"Started MLflow run: {self.run_id}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to start MLflow run: {e}")
             self.active = False
 
@@ -125,7 +125,7 @@ class MLflowTracker:
             logger.info(f"Ended MLflow run: {self.run_id}")
             self.run_id = None
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to end MLflow run: {e}")
 
     def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None):
@@ -141,7 +141,7 @@ class MLflowTracker:
         try:
             mlflow.log_metrics(metrics, step=step)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log metrics to MLflow: {e}")
 
     def log_params(self, params: Dict[str, Any]):
@@ -158,7 +158,7 @@ class MLflowTracker:
             str_params = {k: str(v) for k, v in params.items()}
             mlflow.log_params(str_params)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log params to MLflow: {e}")
 
     def log_artifact(self, local_path: str, artifact_path: Optional[str] = None):
@@ -178,7 +178,7 @@ class MLflowTracker:
 
             mlflow.log_artifact(local_path, artifact_path)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log artifact to MLflow: {e}")
 
     def log_artifacts(self, local_dir: str, artifact_path: Optional[str] = None):
@@ -198,7 +198,7 @@ class MLflowTracker:
 
             mlflow.log_artifacts(local_dir, artifact_path)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log artifacts to MLflow: {e}")
 
     def set_tags(self, tags: Dict[str, str]):
@@ -213,7 +213,7 @@ class MLflowTracker:
         try:
             mlflow.set_tags(tags)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to set MLflow tags: {e}")
 
     def __enter__(self):

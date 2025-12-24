@@ -131,7 +131,7 @@ class DuplicationDetector:
             return duplicates
 
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.warning("pylint not found. Install with: pip install pylint")
             return []
@@ -139,7 +139,7 @@ class DuplicationDetector:
             logger.error(f"pylint timed out scanning {directory}")
             return []
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error running pylint: {e}")
             return []
 

@@ -83,7 +83,7 @@ def load_prioritized_alerts(alerts_file: Path) -> List[dict[str, Any]]:
             for row in reader:
                 alerts.append(row)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Error reading alerts file: {e}")
     
     return alerts
@@ -165,9 +165,9 @@ def main() -> None:
     
     parser = argparse.ArgumentParser(description="Run security codemods")
     parser.add_argument("--dry-run", action="store_true", default=True, 
-                       help="Don't make actual changes (default: True)")
+                        help="Don't make actual changes (default: True)")
     parser.add_argument("--apply", action="store_true", 
-                       help="Actually apply changes")
+                        help="Actually apply changes")
     parser.add_argument("--group", type=str, help="Only run specific fix group")
     args = parser.parse_args()
     
