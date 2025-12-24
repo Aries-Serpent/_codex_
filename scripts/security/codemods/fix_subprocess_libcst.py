@@ -273,8 +273,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
             modified_tree = modified_tree.visit(import_adder)
             
             if not import_adder.has_subprocess_import and transformer.needs_subprocess_import:
-                transformer.changes.append("Added 'import subprocess
-import shlex'")
+                transformer.changes.append("Added 'import subprocess; import shlex'")
         
         # Generate new source code
         new_source = modified_tree.code
@@ -285,7 +284,7 @@ import shlex'")
         logger.error(f"Syntax error in {file_path}: {e}")
         return "", [f"Syntax error: {e}"]
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Error transforming {file_path}: {e}")
         return "", [f"Transformation error: {e}"]
 
