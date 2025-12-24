@@ -32,7 +32,7 @@ class TestSecurityMasking:
         assert "@" in masked
         # Verify domain is preserved - this is intentional for email masking
         # Note: For URL validation, use sanitize_url() instead
-        assert masked.endswith("example.com")
+        assert masked.endswith("@example.com"), f"Domain validation failed: {masked}"
         assert "user" not in masked
     
     def test_mask_email_preserves_domain(self):
@@ -40,8 +40,8 @@ class TestSecurityMasking:
         from codex.security import mask_email
         
         # These should all preserve the domain correctly
-        assert mask_email("admin@example.com").endswith("example.com")
-        assert mask_email("test@subdomain.example.com").endswith("subdomain.example.com")
+        assert mask_email("admin@example.com").endswith("@example.com")
+        assert mask_email("test@subdomain.example.com").endswith("@subdomain.example.com")
         assert "@" in mask_email("user@test.org")
 
 

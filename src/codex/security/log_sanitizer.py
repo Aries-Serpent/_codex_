@@ -181,7 +181,14 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500, mask_secrets: bool 
         if isinstance(value, dict):
             result[key] = sanitize_dict_for_log(value, max_length, mask_secrets)
         elif isinstance(value, (list, tuple)):
-            result[key] = [sanitize_log(str(v), max_length) for v in value]
+            if mask_secrets:
+                result[key] = [
+                    mask_sensitive(sanitize_log(str(item), max_length)) if not isinstance(item, dict)
+                    else sanitize_dict_for_log(item, max_length, mask_secrets)
+                    for item in value
+                ]
+            else:
+                result[key] = [sanitize_log(str(item), max_length) for item in value]
         else:
             str_value = sanitize_log(value, max_length)
             if mask_secrets:
