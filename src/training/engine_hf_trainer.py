@@ -382,7 +382,7 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
     try:
         return Path(norm).expanduser().exists()
     except OSError as e:
-       logger.debug(f"OSError: {e}")
+        logger.debug(f"OSError: {e}")
         logger.warning(f"OSError: {e}", exc_info=True)
         return False
 
@@ -480,7 +480,7 @@ def build_trainer(
                 try:
                     training_steps = args.num_train_epochs * (len(train_ds) // batch_size + 1)
                 except TypeError as e:
-                   logger.debug(f"TypeError: {e}")
+                    logger.debug(f"TypeError: {e}")
                     logger.warning(f"TypeError: {e}", exc_info=True)
                     training_steps = num_steps
             if training_steps is not None:
@@ -660,7 +660,7 @@ class NDJSONMetricsWriter:
         try:
             self.close()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Best effort cleanup; __del__ cannot raise exceptions
 
 
@@ -1234,7 +1234,7 @@ def run_hf_trainer(
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Logging failure; continue with training
 
     # TensorBoard logging
@@ -1247,7 +1247,7 @@ def run_hf_trainer(
             writer.flush()
             writer.close()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # TensorBoard logging failure; continue with training
 
     # Persist metrics to JSON and NDJSON for downstream analytics

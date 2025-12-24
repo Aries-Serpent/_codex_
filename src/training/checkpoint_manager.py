@@ -431,14 +431,14 @@ class CheckpointManager:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:
                 os.symlink(best_target, self._best_file)
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 self._best_file.write_text(best_target, encoding="utf-8")
 

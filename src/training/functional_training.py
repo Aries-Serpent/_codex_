@@ -824,14 +824,14 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                 }
                             )
                     except Exception as e:
-                       logger.debug(f"Exception: {e}")
+                        logger.debug(f"Exception: {e}")
                         logger.warning(f"Exception: {e}", exc_info=True)  # Privacy accounting failed; continue training
         finally:
             if system_logger is not None:
                 try:
                     system_logger.stop()
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)  # System logger cleanup failed; continue
 
         result = {"global_step": global_step, "history": history, "best_val": best_val}
@@ -865,7 +865,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                         logger.warning("Exception occurred", exc_info=True)
                         continue  # Artifact logging failed; try next artifact
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # MLflow final metrics logging failed; continue
     return result
 
