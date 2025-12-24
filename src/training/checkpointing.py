@@ -43,8 +43,8 @@ def _extract_lora_state(model: Any) -> dict[str, Any] | None:
         try:
             if hasattr(tensor, "detach") and hasattr(tensor, "cpu"):
                 tensor = tensor.detach().cpu()
-        except Exception:  # pragma: no cover - optional conversion failures
-            pass
+        except Exception as exc:  # pragma: no cover - optional conversion failures
+            LOGGER.debug(f"Failed to detach/move tensor to CPU for key {key}: {exc}")
         cpu_state[str(key)] = tensor
     return cpu_state if cpu_state else None
 
