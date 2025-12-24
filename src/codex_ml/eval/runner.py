@@ -602,10 +602,10 @@ def run_evaluation(
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore param logging errors
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
 
     # For the pluggable sink feature, use the first sink if multiple are specified
@@ -693,7 +693,7 @@ def run_evaluation(
     try:
         run_int = int(run_id, 16)
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         # Fall back to hashing for non-hexadecimal run_ids
         run_int = int(hashlib.sha256(run_id.encode("utf-8")).hexdigest()[:16], 16)

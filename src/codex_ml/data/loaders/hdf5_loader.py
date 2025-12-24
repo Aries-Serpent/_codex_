@@ -27,7 +27,7 @@ try:
 
     HDF5_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     HDF5_AVAILABLE = False
     logger.warning("h5py not installed. Install: pip install h5py")

@@ -9,7 +9,7 @@
    For imports, use: from src.services.workflow import WorkflowInventory
    
    For a complete navigation guide, see the AGENTS document in the repo root
-   and, if present, .codex/ai_agent_manifest.json.
+    and, if present, .codex/ai_agent_manifest.json.
 """
 
 __all__: list[str] = []

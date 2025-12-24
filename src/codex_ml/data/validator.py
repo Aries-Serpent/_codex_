@@ -48,7 +48,7 @@ class DatasetValidator:
             LOGGER.info("✓ Manifest valid: %s", manifest_path)
             return True
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise
         except ValidationError as exc:

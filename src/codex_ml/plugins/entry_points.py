@@ -82,7 +82,7 @@ class PluginValidator:
                         f"but {self.codex_version} is installed"
                     )
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to parse version for {plugin_info.name}: {e}")
 
         # Check dependencies
@@ -175,7 +175,7 @@ class EntryPointPluginRegistry:
                         self.load_plugin(group, ep.name)
 
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to discover plugins in group {group}: {e}")
 
         return discovered
@@ -210,7 +210,7 @@ class EntryPointPluginRegistry:
                 **metadata,
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to load entry point {entry_point.name}: {e}")
             return PluginInfo(
                 name=entry_point.name,

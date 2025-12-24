@@ -185,7 +185,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             pkg_version = version("codex")
         except PackageNotFoundError as e:
-           logger.debug(f"PackageNotFoundError: {e}")
+            logger.debug(f"PackageNotFoundError: {e}")
             logger.warning(f"PackageNotFoundError: {e}", exc_info=True)
             pkg_version = "0.0"
         manifest = {

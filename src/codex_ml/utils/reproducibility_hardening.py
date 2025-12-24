@@ -300,7 +300,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["gpu_count"] = None
         snapshot["gpu_devices"] = None
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Failed to capture GPU information: {e}")
 
     # 6. Selected environment variables

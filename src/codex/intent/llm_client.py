@@ -145,7 +145,7 @@ class CodexLLMClient:
                 else:
                     logger.warning("OPENAI_API_KEY not set, LLM features disabled")
             except ImportError as e:
-               logger.debug(f"ImportError: {e}")
+                logger.debug(f"ImportError: {e}")
                 logger.warning(f"ImportError: {e}", exc_info=True)
                 logger.warning("openai package not installed, LLM features disabled")
     
@@ -285,7 +285,7 @@ Return ONLY valid JSON, no explanation or markdown."""
                 return None
                 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error("LLM call failed: %s", e)
             return None
     
@@ -320,6 +320,6 @@ Be concise and factual. Do not invent functionality not present in the code."""
             )
             return response.choices[0].message.content
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error("Summarization failed: %s", e)
             return None

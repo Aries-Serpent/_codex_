@@ -106,7 +106,7 @@ class IntentSpec:
             with path.open("w", encoding="utf-8") as f:
                 yaml.dump(self.to_dict(), f, default_flow_style=False)
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             # Fallback to JSON
             with path.open("w", encoding="utf-8") as f:
@@ -305,7 +305,7 @@ def infer_intent(
                 logger.info("Enhanced intent with LLM: confidence=%.2f", intent.confidence)
                 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning("LLM enhancement failed, using heuristic only: %s", e)
             intent.assumptions.append(f"LLM enhancement failed: {e}")
     
