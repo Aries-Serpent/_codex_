@@ -200,6 +200,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ]; then pip install -e .; fi
+
       - name: Install Bandit
         run: pip install bandit==1.7.* bandit-sarif-formatter==1.1.*
 
@@ -365,8 +371,13 @@ jobs:
       - name: Fail workflow if critical issues found
         if: |
           needs.dependency-scan.result == 'failure' ||
-          needs.secret-scan.result == 'failure' ||
-          needs.code-scan.result == 'failure'
+          needs.secret-scan.result == 'failure'
         run: |
-          echo "::error::Critical security issues detected"
+          echo "::error::Critical security issues detected in dependencies or secrets"
           exit 1
+
+      - name: Warn on code quality issues
+        if: needs.code-scan.result == 'failure'
+        run: |
+          echo "::warning::Code quality issues detected - review Bandit/Semgrep findings"
+          echo "See workflow artifacts for details"

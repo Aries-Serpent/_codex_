@@ -77,8 +77,8 @@ if "CheckpointManager" not in globals():
             if _np is not None:  # pragma: no branch - optional dependency
                 try:
                     state["numpy"] = _numpy_state_payload(_np.random.get_state())  # type: ignore[attr-defined]
-                except Exception:  # pragma: no cover - defensive
-                    pass
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.debug(f"Failed to capture numpy random state: {exc}")
 
             if _torch is not None:
                 torch_state: dict[str, Any] = {}
@@ -91,8 +91,8 @@ if "CheckpointManager" not in globals():
                         )
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
-                except Exception:  # pragma: no cover - torch optional
-                    pass
+                except Exception as exc:  # pragma: no cover - torch optional
+                    logger.debug(f"Failed to capture torch CPU random state: {exc}")
                 try:
                     if (
                         hasattr(_torch, "cuda")
@@ -104,8 +104,8 @@ if "CheckpointManager" not in globals():
                             tensor.tolist()
                             for tensor in _torch.cuda.get_rng_state_all()  # type: ignore[call-arg]
                         ]
-                except Exception:  # pragma: no cover - cuda optional
-                    pass
+                except Exception as exc:  # pragma: no cover - cuda optional
+                    logger.debug(f"Failed to capture CUDA random state: {exc}")
                 if torch_state:
                     state["torch"] = torch_state
             return state
