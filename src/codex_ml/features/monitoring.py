@@ -13,7 +13,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class FeatureHealthStatus:
         last_updated: Last update timestamp
         freshness_minutes: Minutes since last update
         error_count: Number of errors in monitoring window
-        warnings: List of warning messages
+        warnings: list of warning messages
         freshness_level: Freshness classification
     """
 
@@ -68,7 +68,7 @@ class FeatureHealthStatus:
     last_updated: str
     freshness_minutes: float
     error_count: int = 0
-    warnings: List[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     freshness_level: str = "UNKNOWN"
 
 
@@ -94,8 +94,8 @@ class FeatureHealthMonitor:
         """
         self.feature_store = feature_store
         self.freshness_threshold = timedelta(minutes=freshness_threshold_minutes)
-        self.feature_updates: Dict[str, datetime] = {}
-        self.error_counts: Dict[str, int] = {}
+        self.feature_updates: dict[str, datetime] = {}
+        self.error_counts: dict[str, int] = {}
 
     def record_feature_update(self, feature_name: str):
         """Record feature update timestamp.
@@ -185,18 +185,18 @@ class FeatureHealthMonitor:
             freshness_level=freshness_level,
         )
 
-    def check_all_features(self, feature_names: List[str]) -> Dict[str, FeatureHealthStatus]:
+    def check_all_features(self, feature_names: list[str]) -> dict[str, FeatureHealthStatus]:
         """Check health of all features.
 
         Args:
-            feature_names: List of feature names to check
+            feature_names: list of feature names to check
 
         Returns:
             Dictionary mapping feature names to health status
         """
         return {name: self.check_feature_health(name) for name in feature_names}
 
-    def get_freshness_report(self) -> Dict[str, int]:
+    def get_freshness_report(self) -> dict[str, int]:
         """Get freshness distribution report.
 
         Returns:
@@ -210,14 +210,14 @@ class FeatureHealthMonitor:
 
         return report
 
-    def alert_stale_features(self, threshold_hours: int = 24) -> List[str]:
+    def alert_stale_features(self, threshold_hours: int = 24) -> list[str]:
         """Get list of stale features.
 
         Args:
             threshold_hours: Hours threshold for staleness
 
         Returns:
-            List of stale feature names
+            list of stale feature names
         """
         threshold_minutes = threshold_hours * 60
         stale_features = []
@@ -253,7 +253,7 @@ class FeatureHealthMonitor:
         age_hours = age.total_seconds() / 3600
         return threshold_hours - age_hours
 
-    def get_freshness_distribution(self) -> Dict[str, float]:
+    def get_freshness_distribution(self) -> dict[str, float]:
         """Get distribution of feature freshness as percentages.
 
         Returns:
@@ -267,11 +267,11 @@ class FeatureHealthMonitor:
 
         return {level: (count / total) * 100 for level, count in report.items()}
 
-    def check_all(self, feature_names: List[str]) -> Dict[str, FeatureHealthStatus]:
+    def check_all(self, feature_names: list[str]) -> dict[str, FeatureHealthStatus]:
         """Check health of all features (alias for check_all_features).
 
         Args:
-            feature_names: List of feature names to check
+            feature_names: list of feature names to check
 
         Returns:
             Dictionary mapping feature names to health status
@@ -280,9 +280,9 @@ class FeatureHealthMonitor:
 
     def generate_alerts(
         self,
-        health_statuses: Dict[str, FeatureHealthStatus],
+        health_statuses: dict[str, FeatureHealthStatus],
         sla_minutes: int = 120,
-    ) -> List[HealthAlert]:
+    ) -> list[HealthAlert]:
         """Generate alerts for unhealthy features.
 
         Args:
@@ -290,7 +290,7 @@ class FeatureHealthMonitor:
             sla_minutes: SLA threshold in minutes
 
         Returns:
-            List of health alerts
+            list of health alerts
         """
         alerts = []
         now = datetime.now()
@@ -343,7 +343,7 @@ class FeatureHealthMonitor:
 
     def generate_health_report(
         self,
-        health_statuses: Dict[str, FeatureHealthStatus],
+        health_statuses: dict[str, FeatureHealthStatus],
         format: str = "markdown",
         include_recommendations: bool = True,
     ) -> str:
@@ -366,7 +366,7 @@ class FeatureHealthMonitor:
 
     def _generate_json_report(
         self,
-        health_statuses: Dict[str, FeatureHealthStatus],
+        health_statuses: dict[str, FeatureHealthStatus],
         include_recommendations: bool,
     ) -> str:
         """Generate JSON health report."""
@@ -399,7 +399,7 @@ class FeatureHealthMonitor:
 
     def _generate_markdown_report(
         self,
-        health_statuses: Dict[str, FeatureHealthStatus],
+        health_statuses: dict[str, FeatureHealthStatus],
         include_recommendations: bool,
     ) -> str:
         """Generate Markdown health report."""
@@ -454,8 +454,8 @@ class FeatureHealthMonitor:
 
     def _generate_recommendations(
         self,
-        health_statuses: Dict[str, FeatureHealthStatus],
-    ) -> List[str]:
+        health_statuses: dict[str, FeatureHealthStatus],
+    ) -> list[str]:
         """Generate recommendations based on health statuses."""
         recommendations = []
 
@@ -492,7 +492,7 @@ class FeatureHealthMonitor:
 
         return recommendations
 
-    def check_health(self) -> Dict[str, Any]:
+    def check_health(self) -> dict[str, Any]:
         """Check health of all features in feature store.
 
         Returns:
@@ -518,7 +518,7 @@ class FeatureHealthMonitor:
                             except (ValueError, AttributeError):
                                 pass
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Could not load features from store: {e}")
                 feature_names = list(self.feature_updates.keys())
 
@@ -554,7 +554,7 @@ class FeatureHealthMonitor:
 
     def save_health_report(
         self, output_path: Optional[str] = None, format: str = "json"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Save health report to file.
 
         Args:
@@ -595,13 +595,13 @@ class FeatureHealthMonitor:
 
         return report
 
-    def get_stale_features(self, threshold_hours: int = 24) -> List[str]:
+    def get_stale_features(self, threshold_hours: int = 24) -> list[str]:
         """Get list of stale features.
 
         Args:
             threshold_hours: Hours threshold for staleness (default: 24)
 
         Returns:
-            List of stale feature names
+            list of stale feature names
         """
         return self.alert_stale_features(threshold_hours=threshold_hours)

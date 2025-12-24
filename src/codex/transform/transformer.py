@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class Patch:
     tier: Tier
     description: str
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "file_path": self.file_path,
@@ -87,13 +87,13 @@ class TransformResult:
     """
     snapshot_id: str
     timestamp: datetime
-    tier_a_patches: List[Patch] = field(default_factory=list)
-    tier_b_patches: List[Patch] = field(default_factory=list)
-    tier_c_suggestions: List[Dict[str, Any]] = field(default_factory=list)
+    tier_a_patches: list[Patch] = field(default_factory=list)
+    tier_b_patches: list[Patch] = field(default_factory=list)
+    tier_c_suggestions: list[dict[str, Any]] = field(default_factory=list)
     applied: bool = False
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "snapshot_id": self.snapshot_id,
@@ -186,7 +186,7 @@ def _run_black(file_path: Path) -> Optional[str]:
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Black formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -209,7 +209,7 @@ def _run_isort(file_path: Path) -> Optional[str]:
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Isort formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -354,7 +354,7 @@ def transform(
                                 ))
                                 break  # Only suggest once per file
                 except SyntaxError as e:
-                   logger.debug(f"SyntaxError: {e}")
+                    logger.debug(f"SyntaxError: {e}")
                     logger.warning(f"SyntaxError: {e}", exc_info=True)  # Skip files with syntax errors
             
             # === Tier C: Suggest Only ===

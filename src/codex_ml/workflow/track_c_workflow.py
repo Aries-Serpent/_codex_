@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Callable, Dict, Iterable, List, Mapping, MutableMapping, Sequence
+from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 PhaseAction = Callable[["WorkflowContext", "CapabilityPlan"], None]
 RollbackAction = Callable[["WorkflowContext"], None]
@@ -36,9 +36,9 @@ class ErrorRecord:
     step: str
     message: str
     exception_type: str
-    context: Dict[str, object] = field(default_factory=dict)
+    context: dict[str, object] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "timestamp": self.timestamp.isoformat(timespec="seconds"),
             "phase": self.phase,
@@ -54,15 +54,15 @@ class ErrorRecord:
 class WorkflowContext:
     capability: str
     offline_mode: bool = True
-    phase_history: List[str] = field(default_factory=list)
-    routes: MutableMapping[str, List[str]] = field(default_factory=dict)
-    artifacts: List[str] = field(default_factory=list)
-    pruned: List[str] = field(default_factory=list)
-    errors: List[ErrorRecord] = field(default_factory=list)
-    rollbacks: List[tuple[str, RollbackAction]] = field(default_factory=list)
-    notes: List[str] = field(default_factory=list)
-    failed_phases: List[str] = field(default_factory=list)
-    summary: Dict[str, object] = field(default_factory=dict)
+    phase_history: list[str] = field(default_factory=list)
+    routes: MutableMapping[str, list[str]] = field(default_factory=dict)
+    artifacts: list[str] = field(default_factory=list)
+    pruned: list[str] = field(default_factory=list)
+    errors: list[ErrorRecord] = field(default_factory=list)
+    rollbacks: list[tuple[str, RollbackAction]] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    failed_phases: list[str] = field(default_factory=list)
+    summary: dict[str, object] = field(default_factory=dict)
 
     def register_rollback(self, label: str, rollback: RollbackAction) -> None:
         self.rollbacks.append((label, rollback))
@@ -96,7 +96,7 @@ class CapabilityPlan:
 
 class CapabilityRouter:
     def __init__(self, plans: Iterable[CapabilityPlan] | None = None) -> None:
-        self._plans: Dict[str, CapabilityPlan] = {}
+        self._plans: dict[str, CapabilityPlan] = {}
         if plans:
             for plan in plans:
                 self.register(plan)
@@ -187,7 +187,7 @@ def _best_effort_construction_phase(ctx: WorkflowContext, plan: CapabilityPlan) 
 
 
 def _controlled_pruning_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:
-    pruned_local: List[str] = []
+    pruned_local: list[str] = []
     if ctx.artifacts:
         for artifact in list(ctx.artifacts):
             rule_match = any(rule in artifact for rule in plan.pruning_rules)
@@ -240,7 +240,7 @@ PHASE_IMPLEMENTATIONS: Mapping[str, PhaseAction] = {
 }
 
 
-CAPABILITY_ROUTING: Dict[str, CapabilityPlan] = {
+CAPABILITY_ROUTING: dict[str, CapabilityPlan] = {
     "tokenization": CapabilityPlan(
         name="tokenization",
         aliases=("token", "bpe"),

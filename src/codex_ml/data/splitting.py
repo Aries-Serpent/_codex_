@@ -6,7 +6,6 @@ guaranteed determinism and reproducibility.
 """
 
 import logging
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
     np = None
@@ -26,7 +25,7 @@ def split_indices(
     train_ratio: float = 0.8,
     val_ratio: float = 0.1,
     seed: int = 42,
-) -> Tuple[List[int], List[int], List[int]]:
+) -> tuple[list[int], list[int], list[int]]:
     """Split indices deterministically into train/val/test sets.
 
     WARNING: Cross-Platform Reproducibility Limitation
@@ -46,7 +45,7 @@ def split_indices(
         seed: Random seed for reproducibility
 
     Returns:
-        Tuple of (train_indices, val_indices, test_indices)
+        tuple of (train_indices, val_indices, test_indices)
 
     Raises:
         ValueError: If ratios don't sum to <= 1.0 or n <= 0

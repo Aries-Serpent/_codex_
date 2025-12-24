@@ -14,7 +14,7 @@ import logging
 import os
 import socket
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import torch.distributed as dist
 
@@ -192,7 +192,7 @@ class MultiNodeCoordinator:
             f"node {self.cluster_config.node_rank}/{self.cluster_config.num_nodes}"
         )
 
-        # Set environment variables
+        # set environment variables
         os.environ["MASTER_ADDR"] = self.cluster_config.master_addr
         os.environ["MASTER_PORT"] = str(self.cluster_config.master_port)
         os.environ["WORLD_SIZE"] = str(
@@ -212,7 +212,7 @@ class MultiNodeCoordinator:
 
         return success
 
-    def monitor_health(self) -> Dict[str, Any]:
+    def monitor_health(self) -> dict[str, Any]:
         """Monitor health of all nodes.
 
         Returns:
@@ -242,9 +242,9 @@ class MultiNodeCoordinator:
 
     def aggregate_metrics(
         self,
-        local_metrics: Dict[str, float],
+        local_metrics: dict[str, float],
         reduction: str = "mean",
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Aggregate metrics across all nodes.
 
         Args:
@@ -345,7 +345,7 @@ def setup_multi_node_training(
     return coordinator
 
 
-def get_node_info() -> Dict[str, Any]:
+def get_node_info() -> dict[str, Any]:
     """Get information about current node.
 
     Returns:

@@ -6,7 +6,6 @@ tasks simultaneously using numpy broadcasting and einsum operations.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -22,7 +21,7 @@ class BatchState:
     positions: np.ndarray  # Shape: (N, 5) - N task positions
     velocities: np.ndarray  # Shape: (N, 5) - N task velocities
     masses: np.ndarray  # Shape: (N,) - N task masses
-    task_ids: List[str]  # Length N - task identifiers
+    task_ids: list[str]  # Length N - task identifiers
 
     def __len__(self) -> int:
         return len(self.task_ids)
@@ -153,7 +152,7 @@ class VectorizedEvolution:
 
         return currents
 
-    def batch_compute_probabilities(self, spinors: np.ndarray) -> Dict[str, np.ndarray]:
+    def batch_compute_probabilities(self, spinors: np.ndarray) -> dict[str, np.ndarray]:
         """
         Compute probability distributions for all spinors.
 
@@ -259,9 +258,9 @@ class SpatialIndex:
 
     def __init__(self, cell_size: float = 2.0):
         self.cell_size = cell_size
-        self.grid: Dict[Tuple[int, ...], List[int]] = {}
+        self.grid: dict[tuple[int, ...], list[int]] = {}
 
-    def _get_cell(self, position: np.ndarray) -> Tuple[int, ...]:
+    def _get_cell(self, position: np.ndarray) -> tuple[int, ...]:
         """Get grid cell for a position."""
         return tuple((position / self.cell_size).astype(int))
 
@@ -285,7 +284,7 @@ class SpatialIndex:
         position: np.ndarray,
         positions: np.ndarray,
         radius: float,
-    ) -> List[int]:
+    ) -> list[int]:
         """
         Find all neighbors within radius of position.
 
@@ -295,7 +294,7 @@ class SpatialIndex:
             radius: Search radius
 
         Returns:
-            List of neighbor indices
+            list of neighbor indices
         """
         # Get cells to check (current + adjacent)
         center_cell = self._get_cell(position)
@@ -316,7 +315,7 @@ class SpatialIndex:
 
         return neighbors
 
-    def _get_adjacent_cells(self, cell: Tuple[int, ...]) -> List[Tuple[int, ...]]:
+    def _get_adjacent_cells(self, cell: tuple[int, ...]) -> list[tuple[int, ...]]:
         """Get current cell and all adjacent cells."""
         cells = [cell]
 
@@ -399,7 +398,7 @@ class BatchGradientComputer:
         return gradients
 
 
-def extract_batch_state(tasks: Dict[str, TaskState]) -> BatchState:
+def extract_batch_state(tasks: dict[str, TaskState]) -> BatchState:
     """
     Extract batch state from task dictionary.
 
@@ -433,7 +432,7 @@ def extract_batch_state(tasks: Dict[str, TaskState]) -> BatchState:
     )
 
 
-def apply_batch_state(batch: BatchState, tasks: Dict[str, TaskState]) -> None:
+def apply_batch_state(batch: BatchState, tasks: dict[str, TaskState]) -> None:
     """
     Apply batch state back to task dictionary.
 

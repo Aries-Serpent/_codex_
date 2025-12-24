@@ -1,9 +1,9 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 # BEGIN: CODEX_IFACE_RL
 """Reinforcement-learning agent interfaces with a default bandit agent."""
 
-from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod

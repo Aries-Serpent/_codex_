@@ -8,13 +8,13 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 | Name | codex-ml |
 | Build backend | setuptools.build_meta |
 | Layout | src/ |
-| Python | >=3.10 |
+| Python | >=3.11 |
 | Console scripts | codex-train, codex-eval, codex-list-plugins |
 | License | MIT (SPDX) with license-files (LICENSE, LICENSES/*) |
 | Wheel builder | ./scripts/build_wheel.sh |
 
 ## Prerequisites
-- Python 3.10+
+- Python 3.11+
 - pip, build, wheel (pip install build wheel)
 - Optional: twine (for metadata checks)
 
@@ -50,7 +50,7 @@ except Exception:
 
 data = _toml.load(open('pyproject.toml','rb'))
 assert data['project']['license']=='MIT'
-assert data['project']['requires-python'].startswith('>=3.10')
+assert data['project']['requires-python'].startswith('>=3.11')
 print('ok: license & python floor')
 PY
 ```text

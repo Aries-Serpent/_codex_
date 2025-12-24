@@ -192,7 +192,7 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
             try:
                 iterable_states = list(cuda_state)
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 iterable_states = [cuda_state]
         for idx, tensor_state in enumerate(iterable_states):

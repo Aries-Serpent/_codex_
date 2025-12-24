@@ -442,7 +442,7 @@ def init_run(
         if commit:
             _mlf.set_tag("git_commit", commit[:7])
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     if config is not None:
@@ -450,13 +450,13 @@ def init_run(
             try:
                 payload = json.dumps(config, sort_keys=True, default=str)
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
             _mlf.set_tag("config_hash", digest)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     return run

@@ -4,7 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from typing import Iterable, Sequence
 
 from codex_ml.workflow import DEFAULT_ROUTER, run_capability
 from codex_ml.workflow.track_c_workflow import SIX_PHASES, WorkflowContext
@@ -51,8 +51,8 @@ def _validate_phase_order(ctx: WorkflowContext, expected: Sequence[str]) -> bool
     return list(ctx.phase_history) == list(expected)
 
 
-def _summarize_contexts(contexts: Iterable[WorkflowContext]) -> List[dict]:
-    summaries: List[dict] = []
+def _summarize_contexts(contexts: Iterable[WorkflowContext]) -> list[dict]:
+    summaries: list[dict] = []
     for ctx in contexts:
         summaries.append(
             {
@@ -76,7 +76,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if offline_mode and not _gate_offline_mode(offline_mode):
         parser.error("Offline gate failed; networked execution is not permitted.")
 
-    contexts: List[WorkflowContext] = []
+    contexts: list[WorkflowContext] = []
     for capability in args.capabilities:
         contexts.append(
             run_capability(capability, offline_mode=offline_mode, router=DEFAULT_ROUTER)

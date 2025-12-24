@@ -59,7 +59,7 @@ def get_tb_writer(
         try:
             from torch.utils.tensorboard import SummaryWriter
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             # Fallback to standalone tensorboard
             from tensorboardX import SummaryWriter
@@ -73,7 +73,7 @@ def get_tb_writer(
         yield writer
 
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         # TensorBoard not available - gracefully degrade
         yield None
@@ -112,12 +112,12 @@ def is_tensorboard_available() -> bool:
 
             return True
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             from tensorboardX import SummaryWriter  # noqa: F401
 
             return True
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         return False

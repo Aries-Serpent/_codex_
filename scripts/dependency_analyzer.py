@@ -22,7 +22,7 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -47,9 +47,9 @@ class DependencyAnalyzer(ast.NodeVisitor):
 
     def __init__(self, file_path: Path):
         self.file_path = file_path
-        self.imports: Set[str] = set()
-        self.from_imports: Dict[str, Set[str]] = defaultdict(set)
-        self.string_references: Set[str] = set()
+        self.imports: set[str] = set()
+        self.from_imports: dict[str, set[str]] = defaultdict(set)
+        self.string_references: set[str] = set()
 
     def visit_Import(self, node: ast.Import) -> None:
         """Visit import statements."""
@@ -85,7 +85,7 @@ class DependencyAnalyzer(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def analyze_python_file(file_path: Path) -> Dict[str, Any]:
+def analyze_python_file(file_path: Path) -> dict[str, Any]:
     """
     Analyze a Python file for dependencies.
 
@@ -111,7 +111,7 @@ def analyze_python_file(file_path: Path) -> Dict[str, Any]:
         }
 
     except (SyntaxError, UnicodeDecodeError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return {}
 
@@ -119,8 +119,8 @@ def analyze_python_file(file_path: Path) -> Dict[str, Any]:
 def find_references_to_file(
     target_file: Path,
     search_directory: Path,
-    extensions: List[str] = [".py", ".json", ".yaml", ".yml", ".toml", ".cfg"],
-) -> Dict[str, List[str]]:
+    extensions: list[str] = [".py", ".json", ".yaml", ".yml", ".toml", ".cfg"],
+) -> dict[str, list[str]]:
     """
     Find all references to a target file across the codebase.
 
@@ -156,7 +156,7 @@ def find_references_to_file(
     return dict(references)
 
 
-def analyze_imports_of_file(target_file: Path, search_directory: Path) -> List[Dict[str, Any]]:
+def analyze_imports_of_file(target_file: Path, search_directory: Path) -> list[dict[str, Any]]:
     """
     Find Python files that import the target file.
 
@@ -197,7 +197,7 @@ def analyze_imports_of_file(target_file: Path, search_directory: Path) -> List[D
     return importing_files
 
 
-def check_config_file_references(target_file: Path, root_directory: Path) -> List[str]:
+def check_config_file_references(target_file: Path, root_directory: Path) -> list[str]:
     """
     Check if file is referenced in configuration files.
 
@@ -236,7 +236,7 @@ def check_config_file_references(target_file: Path, root_directory: Path) -> Lis
     return references
 
 
-def assess_safe_removal(target_file: Path, root_directory: Path) -> Tuple[str, str, Dict[str, Any]]:
+def assess_safe_removal(target_file: Path, root_directory: Path) -> tuple[str, str, dict[str, Any]]:
     """
     Assess whether a file can be safely removed.
 
@@ -279,7 +279,7 @@ def assess_safe_removal(target_file: Path, root_directory: Path) -> Tuple[str, s
 
 
 def generate_removal_report(
-    file_path: Path, safety_level: str, reason: str, details: Dict[str, Any], output_path: Path
+    file_path: Path, safety_level: str, reason: str, details: dict[str, Any], output_path: Path
 ) -> None:
     """Generate detailed removal safety report."""
     lines = [

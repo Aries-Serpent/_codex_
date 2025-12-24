@@ -3,10 +3,9 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 from pathlib import Path
-from typing import Set
 
 
-def load_checkpoint(path: str) -> Set[str]:
+def load_checkpoint(path: str) -> set[str]:
     p = Path(path)
     if not p.exists():
         return set()
@@ -18,6 +17,6 @@ def load_checkpoint(path: str) -> Set[str]:
         return set()
 
 
-def save_checkpoint(path: str, seen: Set[str]):
+def save_checkpoint(path: str, seen: set[str]):
     p = Path(path)
     p.write_text(json.dumps(list(seen)))

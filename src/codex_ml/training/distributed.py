@@ -17,7 +17,7 @@ import logging
 import os
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import torch
 import torch.distributed as dist
@@ -78,7 +78,7 @@ class DistributedConfig:
             master_port=os.environ.get("MASTER_PORT", "29500"),
         )
 
-    def to_env(self) -> Dict[str, str]:
+    def to_env(self) -> dict[str, str]:
         """Export config to environment variables."""
         return {
             "DISTRIBUTED_ENABLED": str(self.enabled).lower(),
@@ -134,7 +134,7 @@ class DistributedManager:
             return False
 
         try:
-            # Set environment variables
+            # set environment variables
             os.environ["MASTER_ADDR"] = self.config.master_addr
             os.environ["MASTER_PORT"] = self.config.master_port
 
@@ -145,7 +145,7 @@ class DistributedManager:
                 world_size=self.config.world_size,
             )
 
-            # Set CUDA device
+            # set CUDA device
             if torch.cuda.is_available():
                 torch.cuda.set_device(self.config.local_rank)
 
@@ -158,7 +158,7 @@ class DistributedManager:
             return True
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to initialize distributed training: {e}")
             self._initialized = False
             return False
@@ -286,7 +286,7 @@ def launch_distributed(
     fn: Callable,
     world_size: int,
     args: tuple = (),
-    kwargs: Optional[Dict[str, Any]] = None,
+    kwargs: Optional[dict[str, Any]] = None,
     backend: str = "nccl",
 ) -> None:
     """Launch distributed training across multiple processes.

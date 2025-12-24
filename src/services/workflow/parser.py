@@ -7,7 +7,7 @@ Extracts workflow metadata including triggers, inputs, jobs, and dependencies.
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -36,7 +36,7 @@ class WorkflowParser:
 
     def __init__(self):
         """Initialize the parser."""
-        self._cache: Dict[Path, WorkflowMetadata] = {}
+        self._cache: dict[Path, WorkflowMetadata] = {}
 
     def parse_file(self, file_path: Path, use_cache: bool = True) -> Optional[WorkflowMetadata]:
         """Parse a workflow file.
@@ -64,21 +64,21 @@ class WorkflowParser:
                 self._cache[file_path] = metadata
             return metadata
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.error(f"Workflow file not found: {file_path}")
             return None
         except PermissionError as e:
-           logger.debug(f"PermissionError: {e}")
+            logger.debug(f"PermissionError: {e}")
             logger.warning(f"PermissionError: {e}", exc_info=True)
             logger.error(f"Permission denied reading workflow: {file_path}")
             return None
         except UnicodeDecodeError as e:
-           logger.debug(f"UnicodeDecodeError: {e}")
+            logger.debug(f"UnicodeDecodeError: {e}")
             logger.error(f"Invalid UTF-8 encoding in {file_path}: {e}")
             return None
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to parse workflow {file_path}: {e}", exc_info=True)
             return None
 
@@ -151,28 +151,28 @@ class WorkflowParser:
             logger.debug(f"Problematic content near error: {content[:200]}...")
             return None
         except KeyError as e:
-           logger.debug(f"KeyError: {e}")
+            logger.debug(f"KeyError: {e}")
             logger.error(f"Missing required field in {file_path}: {e}")
             return None
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.error(f"Invalid value in {file_path}: {e}")
             return None
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Unexpected error parsing {file_path}: {e}", exc_info=True)
             return None
 
-    def _parse_triggers(self, on_config: Any) -> List[WorkflowTrigger]:
+    def _parse_triggers(self, on_config: Any) -> list[WorkflowTrigger]:
         """Parse trigger configuration.
 
         Args:
             on_config: The 'on' section of the workflow.
 
         Returns:
-            List of parsed triggers.
+            list of parsed triggers.
         """
-        triggers: List[WorkflowTrigger] = []
+        triggers: list[WorkflowTrigger] = []
 
         if not on_config:
             return triggers
@@ -263,7 +263,7 @@ class WorkflowParser:
 
         return triggers
 
-    def _parse_inputs(self, on_config: Any) -> Dict[str, WorkflowInput]:
+    def _parse_inputs(self, on_config: Any) -> dict[str, WorkflowInput]:
         """Parse workflow_dispatch inputs.
 
         Args:
@@ -272,7 +272,7 @@ class WorkflowParser:
         Returns:
             Dictionary of input name to WorkflowInput.
         """
-        inputs: Dict[str, WorkflowInput] = {}
+        inputs: dict[str, WorkflowInput] = {}
 
         if not isinstance(on_config, dict):
             return inputs
@@ -294,7 +294,7 @@ class WorkflowParser:
             try:
                 input_type = InputType(input_type_str)
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 input_type = InputType.STRING
 
@@ -317,7 +317,7 @@ class WorkflowParser:
 
         return inputs
 
-    def _parse_jobs(self, jobs_config: Dict[str, Any]) -> Dict[str, WorkflowJob]:
+    def _parse_jobs(self, jobs_config: dict[str, Any]) -> dict[str, WorkflowJob]:
         """Parse job definitions.
 
         Args:

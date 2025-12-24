@@ -1,10 +1,10 @@
 from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
-from typing import Any, Dict
+from typing import Any
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detects schema validation capabilities (Pydantic models, OpenAPI specs) for MCP.
     Looks for BaseModel usage in code and presence of openapi.yaml.

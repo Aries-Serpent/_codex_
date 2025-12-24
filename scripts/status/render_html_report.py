@@ -12,10 +12,10 @@ import html
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def load_json(path: Path) -> Dict[str, Any]:
+def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -99,7 +99,7 @@ def default_template() -> str:
 """
 
 
-def render_rows_caps(data: Dict[str, Any]) -> str:
+def render_rows_caps(data: dict[str, Any]) -> str:
     rows = []
     for c in data.get("snapshot", {}).get("capabilities", []):
         parts = [
@@ -116,7 +116,7 @@ def render_rows_caps(data: Dict[str, Any]) -> str:
     return "\n".join(rows) or '<tr><td colspan="6" class="small">N/A</td></tr>'
 
 
-def render_rows_findings(data: Dict[str, Any]) -> str:
+def render_rows_findings(data: dict[str, Any]) -> str:
     rows = []
     for f in data.get("snapshot", {}).get("findings", []):
         parts = [
@@ -133,7 +133,7 @@ def render_rows_findings(data: Dict[str, Any]) -> str:
     return "\n".join(rows) or '<tr><td colspan="6" class="small">N/A</td></tr>'
 
 
-def render_rows_patches(data: Dict[str, Any]) -> str:
+def render_rows_patches(data: dict[str, Any]) -> str:
     rows = []
     for p in data.get("patches", []):
         parts = [

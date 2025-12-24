@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Optional, Any
 
 
 class WorkflowFrequency(Enum):
@@ -46,11 +46,11 @@ class WorkflowStep:
     action: str
     command: Optional[str] = None
     uses: Optional[str] = None  # Reference to another workflow or function
-    outputs: List[str] = field(default_factory=list)
+    outputs: list[str] = field(default_factory=list)
     optional: bool = False
     status: StepStatus = StepStatus.PENDING
 
-    def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, context: dict[str, Any]) -> dict[str, Any]:
         """Execute this step"""
         self.status = StepStatus.RUNNING
 
@@ -96,12 +96,12 @@ class Workflow:
     description: str
     frequency: WorkflowFrequency
     deterministic: bool = True
-    steps: List[WorkflowStep] = field(default_factory=list)
-    aliases: List[str] = field(default_factory=list)
-    entry_points: List[str] = field(default_factory=list)
+    steps: list[WorkflowStep] = field(default_factory=list)
+    aliases: list[str] = field(default_factory=list)
+    entry_points: list[str] = field(default_factory=list)
     category: str = "general"
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary for serialization"""
         return {
             "workflow_id": self.workflow_id,
@@ -135,7 +135,7 @@ class WorkflowNavigator:
 
     def __init__(self, workspace_dir: Path = None):
         self.workspace_dir = workspace_dir or Path.cwd()
-        self.workflows: Dict[str, Workflow] = {}
+        self.workflows: dict[str, Workflow] = {}
         self.workflow_state_dir = self.workspace_dir / ".codex" / "workflows" / "state"
         self.workflow_state_dir.mkdir(parents=True, exist_ok=True)
 
@@ -398,13 +398,13 @@ class WorkflowNavigator:
         """
         return self.workflows.get(identifier.upper())
 
-    def create_workflow(self, identifier: str, steps: List[WorkflowStep], **kwargs) -> str:
+    def create_workflow(self, identifier: str, steps: list[WorkflowStep], **kwargs) -> str:
         """
         Create and register a new workflow with the given steps.
 
         Args:
             identifier: Workflow ID
-            steps: List of workflow steps
+            steps: list of workflow steps
             **kwargs: Additional workflow parameters (name, description, frequency, etc.)
 
         Returns:
@@ -503,7 +503,7 @@ class WorkflowNavigator:
 
         return False
 
-    def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
+    def get_workflow_status(self, workflow_id: str) -> dict[str, Any]:
         """
         Get the status of a workflow.
 
@@ -575,8 +575,8 @@ class WorkflowNavigator:
         return None
 
     def execute(
-        self, identifier: str, context: Dict[str, Any] = None, dry_run: bool = False
-    ) -> Dict[str, Any]:
+        self, identifier: str, context: dict[str, Any] = None, dry_run: bool = False
+    ) -> dict[str, Any]:
         """
         Execute a workflow by ID, alias, or description
 
@@ -660,8 +660,8 @@ class WorkflowNavigator:
         return {"success": True, "workflow_id": workflow.workflow_id, "results": results}
 
     def execute_chain(
-        self, workflow_ids: List[str], context: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+        self, workflow_ids: list[str], context: dict[str, Any] = None
+    ) -> dict[str, Any]:
         """Execute multiple workflows in sequence"""
         print(f"\n{'#'*60}")
         print(f"EXECUTING WORKFLOW CHAIN")
@@ -695,8 +695,8 @@ class WorkflowNavigator:
 
     def list_workflows(
         self, frequency: Optional[WorkflowFrequency] = None, category: Optional[str] = None
-    ) -> List[Workflow]:
-        """List available workflows with optional filtering"""
+    ) -> list[Workflow]:
+        """list available workflows with optional filtering"""
         # Get unique workflows (remove duplicates from aliases)
         unique_workflows = {}
         for workflow in self.workflows.values():
@@ -712,7 +712,7 @@ class WorkflowNavigator:
 
         return workflows
 
-    def _save_workflow_state(self, workflow: Workflow, results: List[Dict], success: bool) -> None:
+    def _save_workflow_state(self, workflow: Workflow, results: list[dict], success: bool) -> None:
         """Save workflow execution state"""
         timestamp = datetime.now().isoformat()
 
@@ -739,12 +739,12 @@ class WorkflowNavigator:
         try:
             current_path.symlink_to(filename)
         except OSError as e:
-           logger.debug(f"OSError: {e}")
+            logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # On Windows, symlinks may fail, so just copy
             shutil.copy(filepath, current_path)
 
-    def get_workflow_suggestions(self, current_state: Dict[str, Any]) -> List[Workflow]:
+    def get_workflow_suggestions(self, current_state: dict[str, Any]) -> list[Workflow]:
         """
         Suggest workflows based on current state
 
@@ -789,7 +789,7 @@ if __name__ == "__main__":
     print("WORKFLOW NAVIGATOR DEMONSTRATION")
     print("=" * 60)
 
-    # List all workflows
+    # list all workflows
     print("\nAvailable Workflows:")
     for workflow in navigator.list_workflows():
         print(f"  {workflow.workflow_id:15s} - {workflow.name} ({workflow.frequency.value})")

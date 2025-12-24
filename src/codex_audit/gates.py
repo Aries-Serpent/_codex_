@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Tuple
+from typing import Callable, Iterable
 
-GateCheck = Callable[[Path], Tuple[str, str]]
+GateCheck = Callable[[Path], tuple[str, str]]
 
 
 @dataclass
@@ -27,7 +27,7 @@ class GateResult:
     ra_rule: str
     rollback: str
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> dict[str, str]:
         return {
             "gate_id": self.gate_id,
             "category": self.category,
@@ -40,7 +40,7 @@ class GateResult:
 
 
 def _dir_exists_check(target: str) -> GateCheck:
-    def check(repo_root: Path) -> Tuple[str, str]:
+    def check(repo_root: Path) -> tuple[str, str]:
         path = repo_root / target
         status = "pass" if path.exists() else "fail"
         detail = f"Path {'found' if path.exists() else 'missing'}: {target}"
@@ -50,7 +50,7 @@ def _dir_exists_check(target: str) -> GateCheck:
 
 
 def _file_exists_check(target: str) -> GateCheck:
-    def check(repo_root: Path) -> Tuple[str, str]:
+    def check(repo_root: Path) -> tuple[str, str]:
         path = repo_root / target
         status = "pass" if path.exists() else "warn"
         detail = f"File {'present' if path.exists() else 'absent'}: {target}"
@@ -59,7 +59,7 @@ def _file_exists_check(target: str) -> GateCheck:
     return check
 
 
-def _offline_check(_: Path) -> Tuple[str, str]:
+def _offline_check(_: Path) -> tuple[str, str]:
     return "pass", "Offline-only gate satisfied (no network calls invoked)."
 
 
@@ -109,12 +109,12 @@ GATE_DEFINITIONS: Iterable[GateDefinition] = (
 )
 
 
-def run_gates(repo_root: Path | None = None, output_path: Path | None = None) -> List[GateResult]:
+def run_gates(repo_root: Path | None = None, output_path: Path | None = None) -> list[GateResult]:
     root = repo_root or Path.cwd()
     target = output_path or Path("artifacts/gate_results.json")
     target.parent.mkdir(parents=True, exist_ok=True)
 
-    results: List[GateResult] = []
+    results: list[GateResult] = []
     for definition in GATE_DEFINITIONS:
         status, detail = definition.check(root)
         rollback = (

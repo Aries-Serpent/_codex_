@@ -29,7 +29,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
 
         np.random.seed(seed)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         import torch
@@ -39,7 +39,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             try:
                 torch.cuda.manual_seed_all(seed)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
             backend = torch.backends.cudnn
@@ -55,10 +55,10 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
                 with contextlib.suppress(Exception):
                     torch.use_deterministic_algorithms(False)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -75,10 +75,10 @@ def set_deterministic(enabled: bool = True) -> None:
             backend.deterministic = enabled
             backend.benchmark = not enabled
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 

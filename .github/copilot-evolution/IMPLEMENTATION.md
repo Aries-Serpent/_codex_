@@ -213,12 +213,14 @@ Actions → Copilot Self-Evolution Pipeline → Run workflow
 
 ## 📊 State Persistence
 
-All state is automatically saved:
+All state is automatically saved to the `data/` directory (relative to `.github/copilot-evolution/`):
 
-- **Evolution State**: `.github/copilot-evolution/data/evolution_state.json`
-- **Analyzer State**: `.github/ai-evolution/data/analyzer_state.json`
-- **Test Results**: `.github/copilot-evolution/data/test_results.json`
-- **Pattern Reports**: `.github/copilot-evolution/data/pattern_report.json`
+- **Evolution State**: `data/evolution_state.json`
+- **Test Results**: `data/test_results.json`
+- **Pattern Reports**: `data/pattern_report.json`
+- **Knowledge State**: `data/hunger_state.json`
+
+**Note**: When running from `.github/copilot-evolution/`, all paths are relative. The workflow uploads these as artifacts using full paths from repository root (`.github/copilot-evolution/data/...`).
 
 ### State Schema
 
@@ -317,9 +319,16 @@ Expected growth rates:
 
 ### Environment Variables
 
-- `CODEX_REPO_PATH` - Repository root (default: ".")
-- `EVOLUTION_DATA_DIR` - State storage (default: ".github/copilot-evolution/data")
+- `CODEX_REPO_PATH` - Repository root (default: "../.." when running from `.github/copilot-evolution/`)
+- `EVOLUTION_DATA_DIR` - State storage (default: "data" - relative to module directory)
 - `LOG_LEVEL` - Logging level (default: "INFO")
+
+**Important**: All paths are now relative to the module directory (`.github/copilot-evolution/`). When running tests or modules:
+
+```bash
+cd .github/copilot-evolution  # Change to module directory first
+python test_integrated_system.py  # Paths resolve correctly
+```
 
 ### Customize Evolution
 

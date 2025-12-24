@@ -17,17 +17,17 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import yaml
 
 
-def _deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+def _deep_merge(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     """Deep-merge dict b into dict a, returning a new dict.
 
     Values in b take precedence over values in a.
     """
-    result: Dict[str, Any] = deepcopy(a)
+    result: dict[str, Any] = deepcopy(a)
     for key, b_val in b.items():
         if key in result and isinstance(result[key], dict) and isinstance(b_val, dict):
             result[key] = _deep_merge(result[key], b_val)
@@ -36,7 +36,7 @@ def _deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def load_base_config(repo_root: Optional[Path] = None) -> Dict[str, Any]:
+def load_base_config(repo_root: Optional[Path] = None) -> dict[str, Any]:
     """Load conf/config.yaml from the given repo_root (or the current directory)."""
     root = repo_root or Path(".")
     cfg_path = root / "conf" / "config.yaml"
@@ -50,7 +50,7 @@ def load_base_config(repo_root: Optional[Path] = None) -> Dict[str, Any]:
 
 def load_experiment_config(
     experiment_name: str, repo_root: Optional[Path] = None
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load conf/experiment/<experiment_name>.yaml."""
     root = repo_root or Path(".")
     exp_path = root / "conf" / "experiment" / f"{experiment_name}.yaml"
@@ -64,7 +64,7 @@ def load_experiment_config(
 
 def load_config(
     experiment_name: Optional[str] = None, repo_root: Optional[Path] = None
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load the base config, optionally overlaying an experiment override.
 
     If experiment_name is None, only conf/config.yaml is used.

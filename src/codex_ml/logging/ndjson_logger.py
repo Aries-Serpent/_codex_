@@ -124,7 +124,7 @@ class NDJSONLogger:
                 try:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
-                   logger.debug(f"FileNotFoundError: {e}")
+                    logger.debug(f"FileNotFoundError: {e}")
                     logger.warning(f"FileNotFoundError: {e}", exc_info=True)
                     size = 0
                 if size > 0:
@@ -137,7 +137,7 @@ class NDJSONLogger:
         try:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             return
         if size + incoming_bytes <= self.max_bytes:
@@ -149,7 +149,7 @@ class NDJSONLogger:
             try:
                 self.path.unlink()
             except FileNotFoundError as e:
-               logger.debug(f"FileNotFoundError: {e}")
+                logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             self._rollover_ts = time.time()
             return
@@ -222,7 +222,7 @@ class NDJSONLogger:
         try:
             return self.path.stat().st_mtime
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             return time.time()
 

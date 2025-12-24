@@ -12,7 +12,7 @@ import json
 import os
 import warnings as _warnings
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
@@ -37,7 +37,7 @@ if "CheckpointManager" not in globals():
     import os
     import random
     from pathlib import Path
-    from typing import Any, Dict, Optional
+    from typing import Any, Optional
 
     try:  # Prefer canonical helpers when available.
         from codex_ml.utils.checkpointing import (  # type: ignore
@@ -197,7 +197,7 @@ class CheckpointManager:
                         try:
                             path = os.readlink(self._best_file)
                         except OSError as e:
-                           logger.debug(f"OSError: {e}")
+                            logger.debug(f"OSError: {e}")
                             logger.warning(f"OSError: {e}", exc_info=True)
                             try:
                                 path = self._best_file.read_text(encoding="utf-8").strip()
@@ -241,10 +241,10 @@ class CheckpointManager:
         self,
         step: int,
         payload: bytes,
-        metrics: Optional[Dict[str, float]] = None,
+        metrics: Optional[dict[str, float]] = None,
         prefix: str = "ckpt",
         *,
-        rng_state: Optional[Dict[str, Any] | bool] = None,
+        rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Path:
         """Persist ``payload`` under ``<prefix>-{step}.pt`` and manage retention."""
         path = self.root / f"{prefix}-{step}.pt"
@@ -253,7 +253,7 @@ class CheckpointManager:
         os.replace(tmp, path)
         self._prune(prefix)
         self._update_best(path, step, metrics)
-        rng_payload: Optional[Dict[str, Any]]
+        rng_payload: Optional[dict[str, Any]]
         if rng_state is True:
             rng_payload = dump_rng_state()
         elif isinstance(rng_state, dict):
@@ -280,11 +280,11 @@ class CheckpointManager:
         self,
         step: int,
         payload: bytes,
-        metrics: Optional[Dict[str, float]],
+        metrics: Optional[dict[str, float]],
         save_steps: int,
         prefix: str = "ckpt",
         *,
-        rng_state: Optional[Dict[str, Any] | bool] = None,
+        rng_state: Optional[dict[str, Any] | bool] = None,
     ) -> Optional[Path]:
         if save_steps and step % save_steps == 0:
             return self.save_now(step, payload, metrics, prefix, rng_state=rng_state)
@@ -305,7 +305,7 @@ class CheckpointManager:
                 self.optimizer = None
                 self.lr_scheduler = None
                 self.scaler = None
-                self._logs: Optional[Dict[str, float]] = None
+                self._logs: Optional[dict[str, float]] = None
 
             def on_train_begin(self, args, state, control, **kwargs):
                 self.model = kwargs.get("model")
@@ -359,10 +359,10 @@ class CheckpointManager:
             try:
                 p.unlink()
             except FileNotFoundError as e:
-               logger.debug(f"FileNotFoundError: {e}")
+                logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # File already deleted; no action needed
 
-    def _update_best(self, path: Path, step: int, metrics: Optional[Dict[str, float]]) -> None:
+    def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
             return
         val = float(metrics[self.metric])
@@ -410,13 +410,13 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError as e:
-               logger.debug(f"FileNotFoundError: {e}")
+                logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 link.write_text(str(target), encoding="utf-8")
         for child in list(self._best_dir.iterdir()):
@@ -425,20 +425,20 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError as e:
-                   logger.debug(f"FileNotFoundError: {e}")
+                    logger.debug(f"FileNotFoundError: {e}")
                     logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:
                 os.symlink(best_target, self._best_file)
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 self._best_file.write_text(best_target, encoding="utf-8")
 

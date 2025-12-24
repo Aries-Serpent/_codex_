@@ -826,7 +826,7 @@ class MLflowMetricWriter:
             self._initialized = True
             logger.info(f"MLflow initialized: {self.tracking_uri}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to initialize MLflow: {e}")
             self._initialized = False
 
@@ -854,7 +854,7 @@ class MLflowMetricWriter:
             mlflow.log_metrics(metrics, step=step)
             return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log metrics to MLflow: {e}")
             return False
 
@@ -905,7 +905,7 @@ class MLflowParamWriter:
             mlflow.log_params(str_params)
             return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log params: {e}")
             return False
 
@@ -973,7 +973,7 @@ class MLflowArtifactWriter:
             mlflow.log_artifact(str(local_path), artifact_path)
             return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log artifact: {e}")
             return False
 
@@ -996,7 +996,7 @@ class MLflowArtifactWriter:
             mlflow.log_dict(data, filename)
             return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log dict artifact: {e}")
             return False
 
@@ -1043,7 +1043,7 @@ class MLflowArtifactWriter:
 
                     mlflow.pytorch.log_model(model, artifact_path)
                 except ImportError as e:
-                   logger.debug(f"ImportError: {e}")
+                    logger.debug(f"ImportError: {e}")
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
             else:
@@ -1068,7 +1068,7 @@ class MLflowArtifactWriter:
 
                         mlflow.sklearn.log_model(model, artifact_path)
                     except ImportError as e:
-                       logger.debug(f"ImportError: {e}")
+                        logger.debug(f"ImportError: {e}")
                         logger.warning(
                             "mlflow.sklearn is not available; cannot log scikit-learn model."
                         )
@@ -1078,7 +1078,7 @@ class MLflowArtifactWriter:
                     return False
             return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log model: {e}")
             return False
 
@@ -1115,7 +1115,7 @@ class MLflowRunManager:
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
             self._run.__enter__()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to start MLflow run: {e}")
 
         return self
@@ -1126,7 +1126,7 @@ class MLflowRunManager:
             try:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to end MLflow run: {e}")
             finally:
                 self._run = None

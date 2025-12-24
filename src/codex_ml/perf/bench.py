@@ -20,7 +20,7 @@ def _maybe_cuda_sync() -> None:
         if torch.cuda.is_available():
             torch.cuda.synchronize()
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 

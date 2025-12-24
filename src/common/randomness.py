@@ -68,7 +68,7 @@ def set_seed(seed: int | None) -> int:
                         backends.cudnn.deterministic = True  # type: ignore[attr-defined]
                         backends.cudnn.benchmark = False  # type: ignore[attr-defined]
                     except Exception as exc:
-                       logger.debug(f"Exception: {exc}")
+                        logger.debug(f"Exception: {exc}")
                         logger.debug("Unable to set CuDNN deterministic flags: %s", exc)
 
     return seed

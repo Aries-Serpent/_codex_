@@ -13,7 +13,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 
 def list_checkpoints(
@@ -21,8 +21,8 @@ def list_checkpoints(
     pattern: str = "*.pt",
     min_age_days: Optional[int] = None,
     max_age_days: Optional[int] = None,
-) -> List[dict]:
-    """List checkpoints with metadata."""
+) -> list[dict]:
+    """list checkpoints with metadata."""
     if not checkpoint_dir.exists():
         return []
 
@@ -55,10 +55,10 @@ def list_checkpoints(
 
 
 def apply_retention_policy(
-    checkpoints: List[dict],
+    checkpoints: list[dict],
     keep_last_n: int = 5,
     keep_days: int = 30,
-) -> Tuple[List[dict], List[dict]]:
+) -> tuple[list[dict], list[dict]]:
     """Apply retention policy and return (to_keep, to_delete)."""
     # Sort by age (newest first)
     sorted_ckpts = sorted(checkpoints, key=lambda x: x["age_days"])
@@ -87,8 +87,8 @@ def main():
     parser = argparse.ArgumentParser(description="Checkpoint management CLI")
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
-    # List command
-    list_parser = subparsers.add_parser("list", help="List checkpoints")
+    # list command
+    list_parser = subparsers.add_parser("list", help="list checkpoints")
     list_parser.add_argument(
         "--checkpoint-dir",
         type=Path,

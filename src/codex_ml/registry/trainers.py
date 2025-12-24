@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Trainer registry built on the shared registry infrastructure."""
 
-from __future__ import annotations
 
 import inspect
 from typing import Any, Callable

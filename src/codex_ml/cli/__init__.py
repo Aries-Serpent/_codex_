@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Codex ML command line interface."""
 
-from __future__ import annotations
 
 import argparse
 import os

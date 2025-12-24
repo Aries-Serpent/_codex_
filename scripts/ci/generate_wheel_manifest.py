@@ -17,7 +17,6 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Dict
 
 
 def compute_sha256(filepath: Path) -> str:
@@ -29,7 +28,7 @@ def compute_sha256(filepath: Path) -> str:
     return sha256_hash.hexdigest()
 
 
-def generate_manifest(wheelhouse_dir: Path, platform: str, python_version: str) -> Dict:
+def generate_manifest(wheelhouse_dir: Path, platform: str, python_version: str) -> dict:
     """Generate wheel manifest with hashes."""
     wheels = []
 

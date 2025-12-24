@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Prometheus metrics export helpers."""
 
-from __future__ import annotations
 
 try:  # Optional dependency for Prometheus integration
     from prometheus_client import REGISTRY, CollectorRegistry, generate_latest

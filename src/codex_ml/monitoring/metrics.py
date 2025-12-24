@@ -61,7 +61,7 @@ class MetricsCollector:
 
             logger.info("Prometheus metrics collector initialized")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning(
                 "prometheus_client not available. " "Install with: pip install prometheus-client"
@@ -86,7 +86,7 @@ class MetricsCollector:
         try:
             self._request_counter.labels(method=method, endpoint=endpoint, status=str(status)).inc()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Failed to record request metric: %s", e)
 
     def record_latency(self, duration: float, method: str = "GET", endpoint: str = "/"):
@@ -103,7 +103,7 @@ class MetricsCollector:
         try:
             self._latency_histogram.labels(method=method, endpoint=endpoint).observe(duration)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Failed to record latency metric: %s", e)
 
     def record_error(self, error_type: str, endpoint: str = "/"):
@@ -119,7 +119,7 @@ class MetricsCollector:
         try:
             self._error_counter.labels(type=error_type, endpoint=endpoint).inc()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Failed to record error metric: %s", e)
 
     def inc_active_requests(self):
@@ -166,7 +166,7 @@ def get_metrics_router():
         from fastapi import APIRouter, Response
         from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         raise ImportError(
             "FastAPI and prometheus_client are required for metrics endpoint. "

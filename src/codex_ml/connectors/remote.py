@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Offline-friendly remote connector implementations."""
 
-from __future__ import annotations
 
 import json
 from datetime import datetime

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 import os
 import time
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -27,7 +27,7 @@ class ContextItem(BaseModel):
 
     id: str
     content: str
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class QueryRequest(BaseModel):
@@ -35,7 +35,7 @@ class QueryRequest(BaseModel):
 
     query: str
     top_k: int = Field(default=DEFAULT_TOP_K, ge=1, le=MAX_TOP_K)
-    filters: Optional[Dict[str, Any]] = None
+    filters: Optional[dict[str, Any]] = None
 
     @validator("query")
     def _ensure_query(cls, value: str) -> str:  # noqa: D401
@@ -48,10 +48,10 @@ class QueryRequest(BaseModel):
 class ContextUpsertRequest(BaseModel):
     """Request payload for /mcp/v1/context."""
 
-    items: List[ContextItem]
+    items: list[ContextItem]
 
     @validator("items")
-    def _ensure_items(cls, value: List[ContextItem]) -> List[ContextItem]:  # noqa: D401
+    def _ensure_items(cls, value: list[ContextItem]) -> list[ContextItem]:  # noqa: D401
         if not value:
             raise ValueError("at least one item is required")
         return value
@@ -64,8 +64,8 @@ class InMemoryVectorStore:
     Supabase, or Pinecone when scaling beyond previews.
     """
 
-    def __init__(self, items: Optional[List[ContextItem]] = None) -> None:
-        self._items: List[ContextItem] = items or []
+    def __init__(self, items: Optional[list[ContextItem]] = None) -> None:
+        self._items: list[ContextItem] = items or []
 
     @classmethod
     def seeded(cls) -> "InMemoryVectorStore":
@@ -86,7 +86,7 @@ class InMemoryVectorStore:
         self._items = list(index.values())
         return len(new_items)
 
-    def query(self, query: str, top_k: int, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def query(self, query: str, top_k: int, filters: Optional[dict[str, Any]] = None) -> list[dict[str, Any]]:
         """Return top_k matches using naive scoring.
 
         The scoring is simple substring presence + metadata match to keep
@@ -94,7 +94,7 @@ class InMemoryVectorStore:
         """
 
         normalized = query.lower()
-        matches: List[Dict[str, Any]] = []
+        matches: list[dict[str, Any]] = []
         for item in self._items:
             if filters and any(item.metadata.get(k) != v for k, v in filters.items()):
                 continue
@@ -166,16 +166,16 @@ def create_app(store: Optional[InMemoryVectorStore] = None) -> FastAPI:
         _enforce_rate_limit(enabled=False)
 
     @app.get("/mcp/v1/health")
-    def health() -> Dict[str, Any]:
+    def health() -> dict[str, Any]:
         return {"status": "healthy", "documents": app.state.vector_store.count(), "timestamp": int(time.time())}
 
     @app.post("/mcp/v1/query", dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)])
-    def query(request: QueryRequest) -> Dict[str, Any]:
+    def query(request: QueryRequest) -> dict[str, Any]:
         results = app.state.vector_store.query(request.query, request.top_k, request.filters)
         return {"results": results}
 
     @app.post("/mcp/v1/context", dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)])
-    def push_context(request: ContextUpsertRequest) -> Dict[str, Any]:
+    def push_context(request: ContextUpsertRequest) -> dict[str, Any]:
         upserted = app.state.vector_store.upsert_many(request.items)
         return {"upserted": upserted}
 

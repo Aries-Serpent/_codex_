@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from src.mcp.packager.config import PackageConfig
 
@@ -119,7 +119,7 @@ def _write_serverless(output: Path, config: PackageConfig) -> None:
 
 
 def _write_manifest(output: Path, config: PackageConfig) -> None:
-    manifest: Dict[str, Any] = {
+    manifest: dict[str, Any] = {
         "name": config.name,
         "template": config.template,
         "features": config.features,

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Dataset registry utilities for Codex data loaders."""
 
-from __future__ import annotations
 
 import importlib
 from typing import Any, Callable

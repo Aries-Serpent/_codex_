@@ -10,9 +10,12 @@ Components:
 - smells: CodeSmellDetector rules engine (FR-AST-007)
 - export: KnowledgeGraphExporter multi-format (FR-AST-011)
 - cli: CLI tools (analyze, audit, diff) (FR-AST-013)
+- language_registry: Multi-language support via tree-sitter
+- baseline: SQLite-backed baseline storage for incremental analysis
+- delta: Change detection (added/removed/modified)
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 from .export import ExportFormat, ExportResult, KnowledgeGraphExporter, export_knowledge_graph
 from .graph import DependencyGraph
@@ -20,6 +23,11 @@ from .metrics import CodeMetrics, MetricsAggregator
 from .node import NodeType, SourceLocation, StandardizedASTNode
 from .parser import ParseError, UniversalParser, parse_python
 from .smells import CodeSmell, CodeSmellDetector, SmellCategory, SmellSeverity, detect_smells
+
+# New components for incremental analysis
+from .baseline import BaselineManager
+from .delta import DeltaAnalyzer, DeltaResult
+from .language_registry import LanguageRegistry
 
 __all__ = [
     # Node representation (BLOCK-ARCH-001)
@@ -46,4 +54,11 @@ __all__ = [
     "ExportFormat",
     "ExportResult",
     "export_knowledge_graph",
+    # Language registry (multi-language support)
+    "LanguageRegistry",
+    # Baseline management (incremental analysis)
+    "BaselineManager",
+    # Delta analysis (change detection)
+    "DeltaAnalyzer",
+    "DeltaResult",
 ]

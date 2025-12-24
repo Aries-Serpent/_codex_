@@ -15,7 +15,7 @@ import json
 import os
 import re
 import sys
-from typing import Any, Dict
+from typing import Any
 
 CPU_SUFFIX_RE = re.compile(r"\+cpu\b")
 
@@ -26,7 +26,7 @@ def _cpu_index_enabled() -> bool:
     return ("/whl/cpu" in idx) or ("/whl/cpu" in ex) or (os.getenv("CODEX_FORCE_CPU") == "1")
 
 
-def _template() -> Dict[str, Any]:
+def _template() -> dict[str, Any]:
     return {
         "torch_import_ok": False,
         "torch_version": "",

@@ -10,7 +10,7 @@ completion through autonomous self-healing cycles.
 from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Optional, Tuple, Any
+from typing import Optional, Any
 from enum import Enum
 from datetime import datetime
 import json
@@ -66,7 +66,7 @@ class Issue:
     def __post_init__(self):
         if not self.id:
             content = f"{self.type.value}:{self.location}:{self.description}"
-            self.id = hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:12]
+            self.id = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()[:12]
 
 
 @dataclass
@@ -75,11 +75,11 @@ class ReviewCycle:
     cycle_number: int
     started_at: str
     completed_at: Optional[str] = None
-    issues_identified: List[Issue] = field(default_factory=list)
-    issues_fixed: List[str] = field(default_factory=list)  # Issue IDs
-    issues_deferred: List[str] = field(default_factory=list)  # Issue IDs
-    changes_made: List[str] = field(default_factory=list)
-    validation_results: Dict[str, Any] = field(default_factory=dict)
+    issues_identified: list[Issue] = field(default_factory=list)
+    issues_fixed: list[str] = field(default_factory=list)  # Issue IDs
+    issues_deferred: list[str] = field(default_factory=list)  # Issue IDs
+    changes_made: list[str] = field(default_factory=list)
+    validation_results: dict[str, Any] = field(default_factory=dict)
     convergence_score: float = 0.0
 
 
@@ -91,7 +91,7 @@ class ReviewReport:
     started_at: str
     completed_at: Optional[str] = None
     status: ReviewStatus = ReviewStatus.DRAFT
-    cycles: List[ReviewCycle] = field(default_factory=list)
+    cycles: list[ReviewCycle] = field(default_factory=list)
     total_issues_identified: int = 0
     total_issues_fixed: int = 0
     total_issues_deferred: int = 0
@@ -116,7 +116,7 @@ class SelfReviewProtocol:
         # Generate session ID
         timestamp = datetime.now().isoformat()
         session_content = f"{task_description}:{timestamp}"
-        session_id = hashlib.md5(session_content.encode(, usedforsecurity=False)).hexdigest()[:16]
+        session_id = hashlib.md5(session_content.encode(), usedforsecurity=False).hexdigest()[:16]
         
         self.report = ReviewReport(
             session_id=session_id,
@@ -125,7 +125,7 @@ class SelfReviewProtocol:
         )
         
         self.current_cycle = 0
-        self.all_issues: Dict[str, Issue] = {}  # Issue ID -> Issue
+        self.all_issues: dict[str, Issue] = {}  # Issue ID -> Issue
 
     def start_cycle(self) -> ReviewCycle:
         """Start a new review cycle."""
@@ -228,7 +228,7 @@ class SelfReviewProtocol:
         
         return fixed_high_priority / len(high_priority_issues)
 
-    def check_convergence(self) -> Tuple[bool, str]:
+    def check_convergence(self) -> tuple[bool, str]:
         """Check if the review has converged (ready to complete)."""
         # Must have minimum cycles
         if self.current_cycle < self.MIN_CYCLES:
@@ -254,7 +254,7 @@ class SelfReviewProtocol:
         
         return True, "Convergence criteria met"
 
-    def complete_cycle(self, changes_made: List[str]) -> ReviewCycle:
+    def complete_cycle(self, changes_made: list[str]) -> ReviewCycle:
         """Complete the current review cycle."""
         if not self.report.cycles:
             raise ValueError("No active cycle to complete")
@@ -302,7 +302,7 @@ class SelfReviewProtocol:
         
         return report_path
 
-    def _to_dict(self) -> Dict[str, Any]:
+    def _to_dict(self) -> dict[str, Any]:
         """Convert report to dictionary for serialization."""
         report_dict = asdict(self.report)
         

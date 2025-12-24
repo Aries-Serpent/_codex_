@@ -18,7 +18,6 @@ import math
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 ART_DIR = Path("audit_artifacts")
 REPORT = ART_DIR / "secret_entropy_report.json"
@@ -40,7 +39,7 @@ def windows(content: str, min_len=16, max_len=48):
             yield content[i : i + L]
 
 
-def scan_file(path: Path, entropy_threshold: float, allow_prefixes: List[str]) -> List[Dict]:
+def scan_file(path: Path, entropy_threshold: float, allow_prefixes: list[str]) -> list[dict]:
     try:
         txt = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
@@ -63,7 +62,7 @@ def main():
     try:
         threshold = float(ent_raw)
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         threshold = 3.5
 

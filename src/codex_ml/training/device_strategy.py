@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 LOGGER = logging.getLogger(__name__)
 
@@ -197,7 +197,7 @@ class DeviceConfig:
 class DeviceMapper:
     """Lightweight registry for reusable DeviceConfig strategies."""
 
-    _STRATEGIES: Dict[str, DeviceConfig] = {}
+    _STRATEGIES: dict[str, DeviceConfig] = {}
 
     @classmethod
     def register_strategy(cls, name: str, config: DeviceConfig) -> None:
@@ -234,10 +234,10 @@ class DeviceMapper:
 
     @classmethod
     def list_strategies(cls) -> list[str]:
-        """List all registered strategy names.
+        """list all registered strategy names.
 
         Returns:
-            List of strategy names
+            list of strategy names
         """
         return sorted(cls._STRATEGIES.keys())
 

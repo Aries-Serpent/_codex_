@@ -28,7 +28,7 @@ def _enable_mlflow(uri: str | None) -> dict[str, Any]:
             try:
                 mlflow.set_tracking_uri(uri)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         result["enabled"] = True
         result["tracking_uri"] = os.environ.get("MLFLOW_TRACKING_URI") or result["tracking_uri"]

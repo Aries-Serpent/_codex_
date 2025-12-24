@@ -6,7 +6,7 @@ import importlib
 import importlib.util
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Type
+from typing import Optional, Type
 
 from . import AnalysisPlugin, ASTPlugin
 
@@ -25,8 +25,8 @@ class PluginLoader:
 
     def __init__(self):
         """Initialize plugin loader."""
-        self._ast_plugins: Dict[str, ASTPlugin] = {}
-        self._analysis_plugins: Dict[str, AnalysisPlugin] = {}
+        self._ast_plugins: dict[str, ASTPlugin] = {}
+        self._analysis_plugins: dict[str, AnalysisPlugin] = {}
         self._loaded = False
 
     def discover_plugins(self):
@@ -137,8 +137,8 @@ class PluginLoader:
 
         return self._analysis_plugins.get(name)
 
-    def list_plugins(self) -> Dict[str, List[str]]:
-        """List all registered plugins."""
+    def list_plugins(self) -> dict[str, list[str]]:
+        """list all registered plugins."""
         if not self._loaded:
             self.discover_plugins()
 

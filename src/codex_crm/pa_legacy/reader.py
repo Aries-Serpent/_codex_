@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Readers for legacy Power Automate export packages."""
 
-from __future__ import annotations
 
 import json
 import zipfile

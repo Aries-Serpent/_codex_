@@ -6,12 +6,12 @@ should handle model weights, optimizer state, and RNG.
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def save_checkpoint(path: Path, payload: Dict[str, Any]) -> None:
+def save_checkpoint(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
-def load_checkpoint(path: Path) -> Dict[str, Any]:
+def load_checkpoint(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))

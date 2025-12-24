@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 import click
 import numpy as np
@@ -49,7 +49,7 @@ try:
 
         QFT_AVAILABLE = True
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         QFT_AVAILABLE = False
 except ImportError as e:
@@ -66,7 +66,7 @@ except ImportError as e:
 
 def create_test_tasks(
     count: int, constants: Optional[PhysicsConstants] = None
-) -> Dict[str, TaskState]:
+) -> dict[str, TaskState]:
     """
     Create a set of test tasks for demonstration.
 

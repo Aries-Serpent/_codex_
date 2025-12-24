@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class CheckpointIntegrity:
 
         return sha256.hexdigest()
 
-    def save_integrity(self, metadata: Optional[Dict] = None) -> Path:
+    def save_integrity(self, metadata: Optional[dict] = None) -> Path:
         """Compute and save integrity hash with optional metadata.
 
         Args:
@@ -134,11 +134,11 @@ class CheckpointIntegrity:
         logger.info(f"✓ Checkpoint integrity validated: {self.checkpoint_path}")
         return True
 
-    def get_integrity_info(self) -> Optional[Dict]:
+    def get_integrity_info(self) -> Optional[dict]:
         """Get integrity information if available.
 
         Returns:
-            Dict with integrity info, or None if not available
+            dict with integrity info, or None if not available
         """
         if not self.hash_path.exists():
             return None
@@ -161,7 +161,7 @@ def validate_checkpoint(checkpoint_path: Path | str, strict: bool = True) -> boo
     return integrity.validate(strict=strict)
 
 
-def add_integrity_hash(checkpoint_path: Path | str, metadata: Optional[Dict] = None) -> Path:
+def add_integrity_hash(checkpoint_path: Path | str, metadata: Optional[dict] = None) -> Path:
     """Add integrity hash to checkpoint (convenience function).
 
     Args:

@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class ConfigDrift:
     potentially affecting reproducibility.
     """
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         """Initialize config drift detector.
 
         Args:
@@ -97,14 +97,14 @@ class ConfigDrift:
 
         return cls(baseline["config"])
 
-    def compare(self, other: "ConfigDrift") -> Dict[str, List[str]]:
+    def compare(self, other: "ConfigDrift") -> dict[str, list[str]]:
         """Compare this config with another for drift.
 
         Args:
             other: Another ConfigDrift instance to compare against
 
         Returns:
-            Dict with keys 'added', 'removed', 'modified' listing changed keys
+            dict with keys 'added', 'removed', 'modified' listing changed keys
         """
         result = {"added": [], "removed": [], "modified": []}
 
@@ -137,7 +137,7 @@ class ConfigDrift:
             diff = self.compare(baseline)
             return bool(diff["added"] or diff["removed"] or diff["modified"])
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.warning(f"Baseline not found: {baseline_path}")
             return False
@@ -179,7 +179,7 @@ class ConfigDrift:
 
 
 def detect_config_drift(
-    current_config: Dict[str, Any], baseline_path: Path | str, strict: bool = False
+    current_config: dict[str, Any], baseline_path: Path | str, strict: bool = False
 ) -> bool:
     """Detect configuration drift (convenience function).
 
@@ -195,7 +195,7 @@ def detect_config_drift(
     return drift.validate_against_baseline(baseline_path, strict=strict)
 
 
-def embed_config_hash(config: Dict[str, Any], checkpoint_data: Dict[str, Any]) -> Dict[str, Any]:
+def embed_config_hash(config: dict[str, Any], checkpoint_data: dict[str, Any]) -> dict[str, Any]:
     """Embed config hash in checkpoint metadata (convenience function).
 
     Args:

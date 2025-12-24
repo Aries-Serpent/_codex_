@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Validate Codex checkpoint directories and metadata."""
 
-from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence

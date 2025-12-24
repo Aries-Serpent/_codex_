@@ -14,7 +14,7 @@ keep tooling runnable in constrained environments.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Dict, Iterable, List, Mapping, MutableMapping, Sequence
+from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 Number = float | int
 
@@ -48,13 +48,13 @@ class MetricRegistry:
             raise KeyError(f"Unknown metric: {name}")
         return self._metrics[name]
 
-    def list_metrics(self) -> List[str]:
+    def list_metrics(self) -> list[str]:
         return sorted(self._metrics.keys())
 
     def compute(
         self, names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]
-    ) -> Dict[str, float | None]:
-        results: Dict[str, float | None] = {}
+    ) -> dict[str, float | None]:
+        results: dict[str, float | None] = {}
         for name in names:
             metric = self.get(name)
             if len(labels) == 0:
@@ -109,7 +109,7 @@ def get_registry() -> MetricRegistry:
     return _REGISTRY
 
 
-def list_metrics() -> List[str]:
+def list_metrics() -> list[str]:
     return get_registry().list_metrics()
 
 

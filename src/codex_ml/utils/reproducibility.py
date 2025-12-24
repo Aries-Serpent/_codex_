@@ -17,7 +17,7 @@ import os
 import random
 import secrets
 from dataclasses import asdict, dataclass
-from typing import Any, Dict
+from typing import Any
 
 _np_spec = importlib.util.find_spec("numpy")
 if _np_spec is not None:
@@ -41,7 +41,7 @@ class SeedConfig:
 
 
 def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
-    """Set global RNG seeds for random / numpy / torch (if available).
+    """set global RNG seeds for random / numpy / torch (if available).
 
     Parameters
     ----------
@@ -80,7 +80,7 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
     return SeedConfig(seed=seed)
 
 
-def capture_rng_snapshot() -> Dict[str, Any]:
+def capture_rng_snapshot() -> dict[str, Any]:
     """Capture a tiny, implementation-agnostic snapshot of RNG-related state.
 
     This is not a full serialization of RNG engines; it is only a hint for
@@ -89,7 +89,7 @@ def capture_rng_snapshot() -> Dict[str, Any]:
     - recorded versions of dependencies
     - deterministic algorithm configs
     """
-    snapshot: Dict[str, Any] = {
+    snapshot: dict[str, Any] = {
         "env_seed": os.environ.get("CODEX_GLOBAL_SEED"),
     }
 
@@ -114,6 +114,6 @@ def capture_rng_snapshot() -> Dict[str, Any]:
     return snapshot
 
 
-def seed_config_as_dict(cfg: SeedConfig) -> Dict[str, Any]:
+def seed_config_as_dict(cfg: SeedConfig) -> dict[str, Any]:
     """Convert SeedConfig to a dict (helper to keep dataclasses internal)."""
     return asdict(cfg)

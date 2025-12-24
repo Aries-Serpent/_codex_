@@ -15,7 +15,6 @@ tests or from the examples directory without external dependencies.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List
 
 from codex_ml.config import load as cfg_load
 from codex_ml.data.simple_dataset import Sample, SimpleDataset
@@ -32,7 +31,7 @@ class MinimalRunResult:
     score: float
 
 
-def _build_dummy_samples() -> List[Sample]:
+def _build_dummy_samples() -> list[Sample]:
     return [
         Sample(text="hello codex", label=1),
         Sample(text="goodbye codex", label=0),

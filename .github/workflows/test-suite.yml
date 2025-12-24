@@ -133,7 +133,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10']
+        python-version: ['3.11']
         test-type: [smoke, unit, ml]
         include:
           # Run comprehensive tests only on Python 3.11 with longer timeout
@@ -315,7 +315,7 @@ jobs:
             let coverageMsg = '## 🧪 Test Suite Results\n\n';
             coverageMsg += `**Workflow Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n`;
             coverageMsg += '**Test Matrix**:\n';
-            coverageMsg += '- Python versions: 3.10, 3.11, 3.12\n';
+            coverageMsg += '- Python versions: 3.11, 3.12\n';
             coverageMsg += '- Test types: smoke, unit, ml, comprehensive\n\n';
             coverageMsg += '### 📦 Artifacts\n\n';
             coverageMsg += 'Download detailed reports from the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n';

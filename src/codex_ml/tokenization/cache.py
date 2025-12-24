@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class TokenizationCache:
@@ -27,10 +27,10 @@ class TokenizationCache:
         Args:
             ttl_hours: Time-to-live for cache entries in hours
         """
-        self.cache: Dict[str, Dict[str, Any]] = {}
+        self.cache: dict[str, dict[str, Any]] = {}
         self.ttl = timedelta(hours=ttl_hours)
 
-    def _get_cache_key(self, text: str, tokenizer_config: Dict[str, Any]) -> str:
+    def _get_cache_key(self, text: str, tokenizer_config: dict[str, Any]) -> str:
         """Generate cache key from text and tokenizer config.
 
         The key is a hash of both the text and the tokenizer configuration
@@ -47,7 +47,7 @@ class TokenizationCache:
         combined = f"{text}|{config_str}"
         return hashlib.sha256(combined.encode()).hexdigest()
 
-    def get(self, text: str, tokenizer_config: Dict[str, Any]) -> Optional[List[Any]]:
+    def get(self, text: str, tokenizer_config: dict[str, Any]) -> Optional[list[Any]]:
         """Get tokens from cache if available and not expired.
 
         Args:
@@ -67,7 +67,7 @@ class TokenizationCache:
                 del self.cache[key]
         return None
 
-    def set(self, text: str, tokenizer_config: Dict[str, Any], tokens: List[Any]) -> None:
+    def set(self, text: str, tokenizer_config: dict[str, Any], tokens: list[Any]) -> None:
         """Store tokens in cache.
 
         Args:
@@ -112,11 +112,11 @@ class TokenizationCache:
         """
         return len(self.cache)
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         """Get cache statistics.
 
         Returns:
-            Dict containing cache statistics including size and oldest entry age
+            dict containing cache statistics including size and oldest entry age
         """
         if not self.cache:
             return {"size": 0, "oldest_entry_age_seconds": 0, "expired_count": 0}

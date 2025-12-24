@@ -1,13 +1,13 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Helpers for interrogating optional PEFT adapters at runtime."""
 
-from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 
-def summarize_peft(model: Any) -> Dict[str, Any]:
+def summarize_peft(model: Any) -> dict[str, Any]:
     """Return a compact summary describing the adapter wiring for ``model``.
 
     The helper gracefully handles environments without the ``peft`` package

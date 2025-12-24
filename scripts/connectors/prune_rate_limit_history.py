@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 import argparse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import List
 
 
 def parse_ts_from_name(path: Path) -> datetime | None:
@@ -18,9 +17,9 @@ def parse_ts_from_name(path: Path) -> datetime | None:
         return None
 
 
-def prune_older_than(directory: Path, keep_days: int) -> List[str]:
+def prune_older_than(directory: Path, keep_days: int) -> list[str]:
     cutoff = datetime.now(timezone.utc) - timedelta(days=keep_days)
-    removed: List[str] = []
+    removed: list[str] = []
     for path in sorted(directory.glob("ratelimit_*.json")):
         ts = parse_ts_from_name(path)
         if ts and ts < cutoff:
@@ -29,7 +28,7 @@ def prune_older_than(directory: Path, keep_days: int) -> List[str]:
     return removed
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Prune rate-limit history JSON files older than the configured window"
     )

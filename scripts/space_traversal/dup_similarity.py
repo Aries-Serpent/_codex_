@@ -27,10 +27,9 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, List, Set
 
 
-def _stem_tokens(path: str) -> Set[str]:
+def _stem_tokens(path: str) -> set[str]:
     """
     Tokenize the file stem into simple, deterministic tokens.
     - Lowercase
@@ -44,7 +43,7 @@ def _stem_tokens(path: str) -> Set[str]:
     return {t for t in toks if t}
 
 
-def _jaccard(a: Set[str], b: Set[str]) -> float:
+def _jaccard(a: set[str], b: set[str]) -> float:
     if not a and not b:
         return 0.0
     inter = a & b
@@ -54,7 +53,7 @@ def _jaccard(a: Set[str], b: Set[str]) -> float:
     return len(inter) / len(union)
 
 
-def _tokenize_content(content: str, max_tokens: int = 1000) -> Set[str]:
+def _tokenize_content(content: str, max_tokens: int = 1000) -> set[str]:
     """
     Tokenize file content into deterministic tokens.
 
@@ -63,7 +62,7 @@ def _tokenize_content(content: str, max_tokens: int = 1000) -> Set[str]:
         max_tokens: Maximum number of tokens to extract (for performance)
 
     Returns:
-        Set of lowercase alphanumeric tokens
+        set of lowercase alphanumeric tokens
     """
     # Split on non-alphanumeric, lowercase, filter empties and short tokens
     tokens = re.split(r"[^a-z0-9]+", content.lower())
@@ -73,7 +72,7 @@ def _tokenize_content(content: str, max_tokens: int = 1000) -> Set[str]:
     return set(tokens)
 
 
-def _deterministic_sample_pairs(n: int, max_pairs: int) -> List[tuple]:
+def _deterministic_sample_pairs(n: int, max_pairs: int) -> list[tuple]:
     """
     Deterministically sample pairs for comparison when total pairs > max_pairs.
 
@@ -84,7 +83,7 @@ def _deterministic_sample_pairs(n: int, max_pairs: int) -> List[tuple]:
         max_pairs: Maximum number of pairs to sample
 
     Returns:
-        List of (i, j) tuples representing pairs to compare
+        list of (i, j) tuples representing pairs to compare
     """
     all_pairs = [(i, j) for i in range(n) for j in range(i + 1, n)]
     total_pairs = len(all_pairs)
@@ -119,8 +118,8 @@ def _deterministic_sample_pairs(n: int, max_pairs: int) -> List[tuple]:
 
 
 def duplication_ratio_token_similarity(
-    evidence_files: List[str],
-    file_cache: Dict[str, str],
+    evidence_files: list[str],
+    file_cache: dict[str, str],
     threshold: float = 0.7,
     max_pairwise: int = 1000,
     max_tokens_per_file: int = 1000,
@@ -135,7 +134,7 @@ def duplication_ratio_token_similarity(
     - Returns duplication ratio in [0, 1]
 
     Args:
-        evidence_files: List of file paths to compare
+        evidence_files: list of file paths to compare
         file_cache: Dictionary mapping file paths to their content
         threshold: Jaccard similarity threshold to consider files similar (default 0.7)
         max_pairwise: Maximum number of pairwise comparisons (default 1000)
@@ -179,7 +178,7 @@ def duplication_ratio_token_similarity(
     return max(0.0, min(1.0, ratio))
 
 
-def estimate(evidence_files: List[str], repo_root: Path) -> float:
+def estimate(evidence_files: list[str], repo_root: Path) -> float:
     """
     Estimate duplication ratio using pairwise token similarity among evidence files.
 

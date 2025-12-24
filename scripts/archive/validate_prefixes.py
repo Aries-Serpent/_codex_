@@ -25,14 +25,13 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 ALLOWED_PREFIXES = ("patchset_", "bundle_", "har_")
 REPORT_PATH = Path("audit_artifacts/prefix_validation_report.json")
 
 
-def validate_prefixes(root: Path) -> Dict[str, List[str]]:
-    violations: List[str] = []
+def validate_prefixes(root: Path) -> dict[str, list[str]]:
+    violations: list[str] = []
     if not root.exists():
         return {"checked": [], "violations": [], "allowed": list(ALLOWED_PREFIXES)}
     candidates = []

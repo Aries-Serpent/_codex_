@@ -22,7 +22,7 @@ Integration:
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -58,7 +58,7 @@ class EntangledPair:
             return "correlated"
         return "anti-correlated"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "task_a": self.task_a,
@@ -84,7 +84,7 @@ class EntanglementMetrics:
     anticorrelated_outcomes: int = 0
     bell_violations: int = 0  # Count of S > 2
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "pairs_created": self.pairs_created,
             "pairs_measured": self.pairs_measured,
@@ -113,20 +113,20 @@ class EntanglementManager:
 
     def __init__(self):
         # Primary storage: canonical pair key -> EntangledPair
-        self.entangled_pairs: Dict[Tuple[str, str], EntangledPair] = {}
+        self.entangled_pairs: dict[tuple[str, str], EntangledPair] = {}
 
         # Reverse index: task_id -> pair key (for O(1) lookup)
-        self._task_to_pair: Dict[str, Tuple[str, str]] = {}
+        self._task_to_pair: dict[str, tuple[str, str]] = {}
 
         # Metrics
         self.metrics = EntanglementMetrics()
 
         # Event hooks
-        self._on_entangle: List[Callable[[str, str, BellState], None]] = []
-        self._on_measure: List[Callable[[EntangledPair], None]] = []
-        self._on_disentangle: List[Callable[[str, str], None]] = []
+        self._on_entangle: list[Callable[[str, str, BellState], None]] = []
+        self._on_measure: list[Callable[[EntangledPair], None]] = []
+        self._on_disentangle: list[Callable[[str, str], None]] = []
 
-    def _canonical_key(self, task_a: str, task_b: str) -> Tuple[str, str]:
+    def _canonical_key(self, task_a: str, task_b: str) -> tuple[str, str]:
         """Create canonical (sorted) pair key."""
         return (task_a, task_b) if task_a < task_b else (task_b, task_a)
 
@@ -232,7 +232,7 @@ class EntanglementManager:
         self,
         state: OrchestratorState,
         task_id: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Measure an entangled task, collapsing both in the pair."""
         if task_id not in self._task_to_pair:
             return {"entangled": False, "task_id": task_id, "error": "not_entangled"}
@@ -376,11 +376,11 @@ class EntanglementManager:
 
     # === Status and Metrics ===
 
-    def get_all_pairs(self) -> List[EntangledPair]:
+    def get_all_pairs(self) -> list[EntangledPair]:
         """Get all entangled pairs."""
         return list(self.entangled_pairs.values())
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get entanglement metrics."""
         return {
             **self.metrics.to_dict(),
@@ -402,14 +402,14 @@ class TransactionalTaskGroup:
 
     def __init__(self, entanglement_manager: EntanglementManager):
         self.entanglement = entanglement_manager
-        self.groups: Dict[str, List[str]] = {}
-        self._group_metadata: Dict[str, Dict[str, Any]] = {}
+        self.groups: dict[str, list[str]] = {}
+        self._group_metadata: dict[str, dict[str, Any]] = {}
 
     def create_group(
         self,
         group_id: str,
         state: OrchestratorState,
-        task_ids: List[str],
+        task_ids: list[str],
         bell_state: BellState = BellState.PHI_PLUS,
     ) -> bool:
         """Create a transactional group with chain entanglement."""
@@ -453,7 +453,7 @@ class TransactionalTaskGroup:
         self,
         state: OrchestratorState,
         group_id: str,
-    ) -> Dict[str, bool]:
+    ) -> dict[str, bool]:
         """Attempt to commit (complete) all tasks in group."""
         if group_id not in self.groups:
             return {}
@@ -487,7 +487,7 @@ class TransactionalTaskGroup:
 
         return True
 
-    def get_group_status(self, group_id: str) -> Optional[Dict[str, Any]]:
+    def get_group_status(self, group_id: str) -> Optional[dict[str, Any]]:
         """Get status of a transaction group."""
         if group_id not in self.groups:
             return None

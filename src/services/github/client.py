@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 import os
 import time
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import httpx
 
@@ -47,7 +47,7 @@ class GitHubClient:
         ```python
         client = GitHubClient()
         
-        # List workflows
+        # list workflows
         workflows = await client.list_workflows("owner", "repo")
         
         # Trigger a workflow
@@ -90,7 +90,7 @@ class GitHubClient:
         self.max_retries = max_retries
         self._rate_limit: Optional[RateLimitInfo] = None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get request headers."""
         headers = {
             "Accept": "application/vnd.github+json",
@@ -133,8 +133,8 @@ class GitHubClient:
         self,
         method: str,
         path: str,
-        json: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        json: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
         retry_count: int = 0,
     ) -> httpx.Response:
         """Make API request with retry logic.
@@ -205,8 +205,8 @@ class GitHubClient:
     async def _get(
         self,
         path: str,
-        params: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        params: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Make GET request."""
         response = await self._request("GET", path, params=params)
         return response.json()
@@ -214,8 +214,8 @@ class GitHubClient:
     async def _post(
         self,
         path: str,
-        json: Optional[Dict[str, Any]] = None,
-    ) -> Optional[Dict[str, Any]]:
+        json: Optional[dict[str, Any]] = None,
+    ) -> Optional[dict[str, Any]]:
         """Make POST request."""
         response = await self._request("POST", path, json=json)
         if response.status_code == 204:
@@ -232,8 +232,8 @@ class GitHubClient:
         repo: str,
         per_page: int = 30,
         page: int = 1,
-    ) -> List[WorkflowInfo]:
-        """List repository workflows.
+    ) -> list[WorkflowInfo]:
+        """list repository workflows.
 
         Args:
             owner: Repository owner.
@@ -242,7 +242,7 @@ class GitHubClient:
             page: Page number.
 
         Returns:
-            List of workflow info objects.
+            list of workflow info objects.
         """
         data = await self._get(
             f"/repos/{owner}/{repo}/actions/workflows",
@@ -277,7 +277,7 @@ class GitHubClient:
         repo: str,
         workflow_id: Union[int, str],
         ref: str = "main",
-        inputs: Optional[Dict[str, Any]] = None,
+        inputs: Optional[dict[str, Any]] = None,
     ) -> Optional[int]:
         """Trigger workflow via workflow_dispatch.
 
@@ -334,8 +334,8 @@ class GitHubClient:
         status: Optional[RunStatus] = None,
         per_page: int = 30,
         page: int = 1,
-    ) -> List[WorkflowRun]:
-        """List workflow runs.
+    ) -> list[WorkflowRun]:
+        """list workflow runs.
 
         Args:
             owner: Repository owner.
@@ -348,9 +348,9 @@ class GitHubClient:
             page: Page number.
 
         Returns:
-            List of workflow runs.
+            list of workflow runs.
         """
-        params: Dict[str, Any] = {"per_page": per_page, "page": page}
+        params: dict[str, Any] = {"per_page": per_page, "page": page}
         if branch:
             params["branch"] = branch
         if event:
@@ -445,7 +445,7 @@ class GitHubClient:
             )
             return True
         except GitHubAPIError as e:
-           logger.debug(f"GitHubAPIError: {e}")
+            logger.debug(f"GitHubAPIError: {e}")
             logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
@@ -474,7 +474,7 @@ class GitHubClient:
             )
             return True
         except GitHubAPIError as e:
-           logger.debug(f"GitHubAPIError: {e}")
+            logger.debug(f"GitHubAPIError: {e}")
             logger.warning(f"GitHubAPIError: {e}", exc_info=True)
             return False
 
@@ -490,8 +490,8 @@ class GitHubClient:
         filter_status: Optional[str] = None,
         per_page: int = 30,
         page: int = 1,
-    ) -> List[WorkflowJob]:
-        """List jobs for a workflow run.
+    ) -> list[WorkflowJob]:
+        """list jobs for a workflow run.
 
         Args:
             owner: Repository owner.
@@ -502,9 +502,9 @@ class GitHubClient:
             page: Page number.
 
         Returns:
-            List of workflow jobs.
+            list of workflow jobs.
         """
-        params: Dict[str, Any] = {"per_page": per_page, "page": page}
+        params: dict[str, Any] = {"per_page": per_page, "page": page}
         if filter_status:
             params["filter"] = filter_status
 
@@ -554,8 +554,8 @@ class GitHubClient:
         run_id: int,
         per_page: int = 30,
         page: int = 1,
-    ) -> List[ArtifactInfo]:
-        """List artifacts for a workflow run.
+    ) -> list[ArtifactInfo]:
+        """list artifacts for a workflow run.
 
         Args:
             owner: Repository owner.
@@ -565,7 +565,7 @@ class GitHubClient:
             page: Page number.
 
         Returns:
-            List of artifact info objects.
+            list of artifact info objects.
         """
         data = await self._get(
             f"/repos/{owner}/{repo}/actions/runs/{run_id}/artifacts",
@@ -649,7 +649,7 @@ class GitHubClientSync:
         """Run coroutine synchronously."""
         return asyncio.get_event_loop().run_until_complete(coro)
 
-    def list_workflows(self, *args: Any, **kwargs: Any) -> List[WorkflowInfo]:
+    def list_workflows(self, *args: Any, **kwargs: Any) -> list[WorkflowInfo]:
         return self._run(self._async_client.list_workflows(*args, **kwargs))
 
     def get_workflow(self, *args: Any, **kwargs: Any) -> WorkflowInfo:
@@ -660,7 +660,7 @@ class GitHubClientSync:
 
     def list_workflow_runs(
         self, *args: Any, **kwargs: Any
-    ) -> List[WorkflowRun]:
+    ) -> list[WorkflowRun]:
         return self._run(
             self._async_client.list_workflow_runs(*args, **kwargs)
         )
@@ -668,7 +668,7 @@ class GitHubClientSync:
     def get_workflow_run(self, *args: Any, **kwargs: Any) -> WorkflowRun:
         return self._run(self._async_client.get_workflow_run(*args, **kwargs))
 
-    def list_workflow_jobs(self, *args: Any, **kwargs: Any) -> List[WorkflowJob]:
+    def list_workflow_jobs(self, *args: Any, **kwargs: Any) -> list[WorkflowJob]:
         return self._run(
             self._async_client.list_workflow_jobs(*args, **kwargs)
         )
@@ -678,7 +678,7 @@ class GitHubClientSync:
 
     def list_run_artifacts(
         self, *args: Any, **kwargs: Any
-    ) -> List[ArtifactInfo]:
+    ) -> list[ArtifactInfo]:
         return self._run(
             self._async_client.list_run_artifacts(*args, **kwargs)
         )

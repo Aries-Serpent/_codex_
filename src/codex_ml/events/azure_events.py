@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import List, Optional
+from typing import Optional
 
 from .base import Event, EventPublisher
 
@@ -18,7 +18,7 @@ try:
 
     _HAS_AZURE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     _HAS_AZURE = False
     logger.warning("azure-eventgrid not installed. Azure Event Grid support disabled.")
@@ -49,7 +49,7 @@ class AzureEventPublisher(EventPublisher):
 
         if not self.topic_endpoint or not self.topic_key:
             logger.warning(
-                "Azure Event Grid not configured. Set AZURE_EVENT_GRID_ENDPOINT "
+                "Azure Event Grid not configured. set AZURE_EVENT_GRID_ENDPOINT "
                 "and AZURE_EVENT_GRID_KEY environment variables."
             )
             self.client = None
@@ -94,11 +94,11 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish to Azure Event Grid: {e}")
             return False
 
-    def publish_batch(self, events: List[Event]) -> bool:
+    def publish_batch(self, events: list[Event]) -> bool:
         """Publish batch of events to Azure Event Grid.
 
         Args:
@@ -130,6 +130,6 @@ class AzureEventPublisher(EventPublisher):
             return True
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish batch to Azure Event Grid: {e}")
             return False

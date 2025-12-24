@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Similarity utilities for consolidation heuristics."""
 
-from __future__ import annotations
 
 import ast
 import hashlib

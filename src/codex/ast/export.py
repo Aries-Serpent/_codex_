@@ -22,7 +22,7 @@ import sqlite3
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from .graph import DependencyGraph
 from .metrics import MetricsAggregator
@@ -49,7 +49,7 @@ class ExportResult:
     success: bool
     error: Optional[str] = None
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Serialize to dictionary."""
         return {
             "format": self.format.value,
@@ -71,29 +71,29 @@ class KnowledgeGraphExporter:
 
     def __init__(self):
         """Initialize exporter."""
-        self.nodes: List[StandardizedASTNode] = []
+        self.nodes: list[StandardizedASTNode] = []
         self.graph: Optional[DependencyGraph] = None
         self.metrics: Optional[MetricsAggregator] = None
-        self.metadata: Dict[str, Any] = {}
+        self.metadata: dict[str, Any] = {}
 
     def add_node(self, node: StandardizedASTNode) -> None:
         """Add AST node to export set."""
         self.nodes.append(node)
 
-    def add_nodes(self, nodes: List[StandardizedASTNode]) -> None:
+    def add_nodes(self, nodes: list[StandardizedASTNode]) -> None:
         """Add multiple AST nodes."""
         self.nodes.extend(nodes)
 
     def set_graph(self, graph: DependencyGraph) -> None:
-        """Set dependency graph for export."""
+        """set dependency graph for export."""
         self.graph = graph
 
     def set_metrics(self, metrics: MetricsAggregator) -> None:
-        """Set metrics aggregator for export."""
+        """set metrics aggregator for export."""
         self.metrics = metrics
 
     def set_metadata(self, key: str, value: Any) -> None:
-        """Set metadata for export."""
+        """set metadata for export."""
         self.metadata[key] = value
 
     def export(
@@ -178,13 +178,13 @@ class KnowledgeGraphExporter:
         }
         return json.dumps(data, indent=2, default=str)
 
-    def _node_to_full_dict(self, node: StandardizedASTNode) -> Dict:
+    def _node_to_full_dict(self, node: StandardizedASTNode) -> dict:
         """Convert node and all children to dictionary."""
         data = node.to_dict()
         data["children_full"] = [self._node_to_full_dict(child) for child in node.children]
         return data
 
-    def _graph_to_dict(self) -> Dict:
+    def _graph_to_dict(self) -> dict:
         """Convert dependency graph to dictionary."""
         if not self.graph:
             return {}
@@ -200,7 +200,7 @@ class KnowledgeGraphExporter:
             "cycles": self.graph.detect_cycles(),
         }
 
-    def _metrics_to_dict(self) -> Dict:
+    def _metrics_to_dict(self) -> dict:
         """Convert metrics to dictionary."""
         if not self.metrics:
             return {}
@@ -480,7 +480,7 @@ class KnowledgeGraphExporter:
         lines.append("## Code Structure")
         lines.append("")
 
-        type_counts: Dict[str, int] = {}
+        type_counts: dict[str, int] = {}
         for node in self.nodes:
             for n in node.walk():
                 type_counts[n.type.value] = type_counts.get(n.type.value, 0) + 1
@@ -494,7 +494,7 @@ class KnowledgeGraphExporter:
                 lines.append(f"| {node_type} | {count} |")
             lines.append("")
 
-        # List top-level nodes
+        # list top-level nodes
         lines.append("### Modules")
         lines.append("")
         for node in self.nodes:
@@ -553,7 +553,7 @@ def _escape_xml(text: str) -> str:
 
 # Convenience function
 def export_knowledge_graph(
-    nodes: List[StandardizedASTNode],
+    nodes: list[StandardizedASTNode],
     format: ExportFormat = ExportFormat.JSON,
     output_path: Optional[Union[str, Path]] = None,
     graph: Optional[DependencyGraph] = None,
@@ -562,7 +562,7 @@ def export_knowledge_graph(
     """Export AST nodes to specified format.
 
     Args:
-        nodes: List of AST nodes to export
+        nodes: list of AST nodes to export
         format: Target format
         output_path: Optional output file path
         graph: Optional dependency graph

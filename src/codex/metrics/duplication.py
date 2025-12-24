@@ -13,7 +13,7 @@ import re
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +33,12 @@ class DuplicateBlock:
     """Represents a duplicate code block"""
 
     hash: str
-    lines: Tuple[int, int]  # (start_line, end_line)
-    occurrences: List[Dict[str, Any]]  # List of {file, start, end}
+    lines: tuple[int, int]  # (start_line, end_line)
+    occurrences: list[dict[str, Any]]  # list of {file, start, end}
     severity: str = "medium"  # low, medium, high
     clone_type: str = "Type-1"  # Type-1, Type-2, Type-3, Type-4
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return {
             "hash": self.hash,
@@ -56,11 +56,11 @@ class DuplicationRatio:
     ratio: float
     total_lines: int
     duplicate_lines: int
-    duplicate_blocks: List[DuplicateBlock] = field(default_factory=list)
+    duplicate_blocks: list[DuplicateBlock] = field(default_factory=list)
     files_scanned: int = 0
     files_with_duplicates: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return {
             "ratio": self.ratio,
@@ -95,7 +95,7 @@ class DuplicationDetector:
 
     def detect_with_pylint(
         self, directory: Path, min_similarity_lines: Optional[int] = None
-    ) -> List[DuplicateBlock]:
+    ) -> list[DuplicateBlock]:
         """
         Detect duplicates using pylint's duplicate-code checker
 
@@ -104,7 +104,7 @@ class DuplicationDetector:
             min_similarity_lines: Minimum lines for pylint (defaults to self.min_lines)
 
         Returns:
-            List of duplicate blocks found
+            list of duplicate blocks found
         """
         min_lines = min_similarity_lines or self.min_lines
 
@@ -131,7 +131,7 @@ class DuplicationDetector:
             return duplicates
 
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.warning("pylint not found. Install with: pip install pylint")
             return []
@@ -139,11 +139,11 @@ class DuplicationDetector:
             logger.error(f"pylint timed out scanning {directory}")
             return []
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error running pylint: {e}")
             return []
 
-    def _parse_pylint_output(self, stdout: str, stderr: str) -> List[DuplicateBlock]:
+    def _parse_pylint_output(self, stdout: str, stderr: str) -> list[DuplicateBlock]:
         """
         Parse pylint JSON output to extract duplicates
 
@@ -152,7 +152,7 @@ class DuplicationDetector:
             stderr: pylint stderr
 
         Returns:
-            List of duplicate blocks
+            list of duplicate blocks
         """
         duplicates = []
 
@@ -164,7 +164,7 @@ class DuplicationDetector:
 
         return duplicates
 
-    def _parse_pylint_stderr(self, stderr: str) -> List[DuplicateBlock]:
+    def _parse_pylint_stderr(self, stderr: str) -> list[DuplicateBlock]:
         """
         Parse pylint stderr for duplicate code messages
 
@@ -179,7 +179,7 @@ class DuplicationDetector:
             stderr: pylint stderr output
 
         Returns:
-            List of duplicate blocks
+            list of duplicate blocks
         """
         blocks = []
         lines = stderr.split("\n")
@@ -264,7 +264,7 @@ def detect_duplicates(
     directory: Path,
     min_lines: int = DEFAULT_MIN_LINES,
     ignore_trivial: bool = True,
-) -> List[DuplicateBlock]:
+) -> list[DuplicateBlock]:
     """
     Convenience function to detect duplicates in a directory
 
@@ -274,7 +274,7 @@ def detect_duplicates(
         ignore_trivial: Whether to ignore trivial patterns
 
     Returns:
-        List of duplicate blocks found
+        list of duplicate blocks found
     """
     detector = DuplicationDetector(
         min_lines=min_lines,
@@ -285,21 +285,21 @@ def detect_duplicates(
 
 
 def calculate_duplication_ratio(
-    duplicates: List[DuplicateBlock],
+    duplicates: list[DuplicateBlock],
     total_lines: int,
 ) -> DuplicationRatio:
     """
     Calculate duplication ratio from duplicate blocks
 
     Args:
-        duplicates: List of duplicate blocks
+        duplicates: list of duplicate blocks
         total_lines: Total lines in codebase
 
     Returns:
         DuplicationRatio object with calculated metrics
     """
     # Use set to handle overlapping duplicates
-    duplicate_lines_set: Set[Tuple[str, int]] = set()
+    duplicate_lines_set: set[tuple[str, int]] = set()
 
     for block in duplicates:
         for occurrence in block.occurrences:

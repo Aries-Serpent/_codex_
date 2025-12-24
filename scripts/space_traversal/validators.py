@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from typing import Dict, List, Tuple
 
 
 def load_json(path: str) -> dict:
@@ -9,7 +8,7 @@ def load_json(path: str) -> dict:
         return json.load(fh)
 
 
-def check_low_threshold(gaps_path: str) -> Tuple[int, List[dict]]:
+def check_low_threshold(gaps_path: str) -> tuple[int, list[dict]]:
     """
     Returns (count_low, low_list), where low_list contains entries with:
     { id, score, components, missing_patterns?, ... } as provided by S5.
@@ -19,7 +18,7 @@ def check_low_threshold(gaps_path: str) -> Tuple[int, List[dict]]:
     return len(low), low
 
 
-def check_missing_detectors(scored_path: str, overrides: Dict[str, List[str]]) -> List[str]:
+def check_missing_detectors(scored_path: str, overrides: dict[str, list[str]]) -> list[str]:
     """
     Ensures all override keys (canonical IDs) appear in scored capabilities.
     Returns the list of missing canonical IDs.
@@ -32,9 +31,9 @@ def check_missing_detectors(scored_path: str, overrides: Dict[str, List[str]]) -
 
 
 def emit_summary(
-    low_list: List[dict],
-    missing_detector_ids: List[str],
-    thresholds: Dict[str, float],
+    low_list: list[dict],
+    missing_detector_ids: list[str],
+    thresholds: dict[str, float],
 ) -> str:
     """Produce a deterministic markdown summary for job logs/step summary."""
     lines = []

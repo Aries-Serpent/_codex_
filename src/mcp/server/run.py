@@ -5,7 +5,7 @@ import logging
 import os
 import socket
 import sys
-from typing import Optional, Tuple
+from typing import Optional
 
 import importlib
 import time
@@ -69,7 +69,7 @@ def main() -> None:
     uvicorn.run(app, host=host, port=port, log_level=args.log_level)
 
 
-def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, diagnostics: bool) -> Tuple[str, int]:
+def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, diagnostics: bool) -> tuple[str, int]:
     attempts = max(0, fallbacks)
     for offset in range(attempts + 1):
         candidate = port + offset
@@ -90,7 +90,7 @@ def _is_public_bind(host: str) -> bool:
     return host in {"0.0.0.0", "::"}
 
 
-def _check_bind(host: str, port: int) -> Tuple[bool, Optional[str]]:
+def _check_bind(host: str, port: int) -> tuple[bool, Optional[str]]:
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -98,7 +98,7 @@ def _check_bind(host: str, port: int) -> Tuple[bool, Optional[str]]:
         sock.close()
         return True, None
     except OSError as exc:
-       logger.debug(f"OSError: {exc}")
+        logger.debug(f"OSError: {exc}")
         logger.debug("Exception caught, returning", exc_info=True)
         return False, str(exc)
 

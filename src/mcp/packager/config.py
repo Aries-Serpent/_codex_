@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -17,6 +17,6 @@ class PackageConfig:
     include_docs: bool = True
     include_serverless: bool = False
     serverless_target: Optional[str] = None
-    dependencies: List[str] = field(default_factory=list)
-    env: Dict[str, str] = field(default_factory=dict)
-    features: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    env: dict[str, str] = field(default_factory=dict)
+    features: list[str] = field(default_factory=list)

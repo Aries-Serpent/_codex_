@@ -3,10 +3,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 import time
-from typing import Dict
 
 # In-memory token-bucket per principal (scoped to process). Replace with Redis for multi-process.
-_BUCKETS: Dict[str, Dict] = {}
+_BUCKETS: dict[str, dict] = {}
 DEFAULT_RATE = 5
 BURST = 10
 

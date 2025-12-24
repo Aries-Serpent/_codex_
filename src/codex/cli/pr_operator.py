@@ -23,7 +23,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,8 @@ class PRConfig:
     repo: str
     base_branch: str = "main"
     draft: bool = True
-    labels: List[str] = field(default_factory=lambda: DEFAULT_LABELS.copy())
-    assignees: List[str] = field(default_factory=list)
+    labels: list[str] = field(default_factory=lambda: DEFAULT_LABELS.copy())
+    assignees: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -59,13 +59,13 @@ class PRContent:
         title: PR title
         body: PR body (markdown)
         branch_name: Name of the PR branch
-        files_changed: List of changed files
+        files_changed: list of changed files
         snapshot_id: Reference snapshot ID
     """
     title: str
     body: str
     branch_name: str
-    files_changed: List[str] = field(default_factory=list)
+    files_changed: list[str] = field(default_factory=list)
     snapshot_id: Optional[str] = None
 
 
@@ -82,7 +82,7 @@ class PRResult:
     success: bool
     pr_number: Optional[int] = None
     pr_url: Optional[str] = None
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
 
 def _sanitize_branch_name(name: str) -> str:
@@ -223,7 +223,7 @@ class PROperator:
             else:
                 logger.warning("GITHUB_TOKEN not set, PR creation disabled")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("PyGithub not installed, PR creation disabled")
     
@@ -282,7 +282,7 @@ class PROperator:
     def create_pr(
         self,
         content: PRContent,
-        files: Optional[Dict[str, str]] = None,
+        files: Optional[dict[str, str]] = None,
     ) -> PRResult:
         """Create a GitHub PR.
         
@@ -296,7 +296,7 @@ class PROperator:
         if not self._github:
             return PRResult(
                 success=False,
-                errors=["GitHub client not available. Set GITHUB_TOKEN and install PyGithub."],
+                errors=["GitHub client not available. set GITHUB_TOKEN and install PyGithub."],
             )
         
         try:
@@ -368,7 +368,7 @@ class PROperator:
             )
             
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error("Failed to create PR: %s", e)
             return PRResult(
                 success=False,

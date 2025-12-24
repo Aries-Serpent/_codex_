@@ -19,14 +19,13 @@ import os
 import pkgutil
 import sys
 import time
-from typing import List
 
 
 def utc() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
-def scan() -> List[str]:
+def scan() -> list[str]:
     mods = []
     for m in pkgutil.iter_modules():
         n = m.name

@@ -95,7 +95,10 @@ class IntegratedSystemTester:
         try:
             from quantum_correlator import QuantumPatternCorrelator
             
-            correlator = QuantumPatternCorrelator()
+            # Use correct repo path relative to test directory
+            # Tests run from .github/copilot-evolution/, so "../.." points to repository root
+            # This is necessary to access files like agents/quantum_game_theory.py
+            correlator = QuantumPatternCorrelator(repo_path="../..")
             
             # Extract from smaller set for testing
             target_files = [
@@ -333,7 +336,8 @@ class IntegratedSystemTester:
             
             # Initialize systems
             evolution = IntegratedEvolutionSystem()
-            correlator = QuantumPatternCorrelator()
+            # Use correct repo path - tests run from .github/copilot-evolution/
+            correlator = QuantumPatternCorrelator(repo_path="../..")
             
             # Scenario: SQL injection vulnerability fix
             task = {
@@ -388,7 +392,7 @@ class IntegratedSystemTester:
     
     def save_results(self, results: Dict[str, Any], output_file: str = "test_results.json"):
         """Save test results to file."""
-        output_path = Path(".github/copilot-evolution/data") / output_file
+        output_path = Path("data") / output_file
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(output_path, 'w') as f:

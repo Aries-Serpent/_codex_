@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 import time
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Optional
 import threading
 
 
@@ -47,7 +47,7 @@ class RequestBatcher:
         self.queue: deque = deque()
         self.lock = threading.Lock()
         self.batch_ready = threading.Event()
-        self.results: Dict[str, Any] = {}
+        self.results: dict[str, Any] = {}
         self._stop = False
 
     async def add_request(self, data: Any, process_fn: Callable, priority: int = 0) -> Any:
@@ -191,7 +191,7 @@ class ModelWarmer:
     def __init__(self, model: Any):
         self.model = model
 
-    def warmup(self, num_samples: int = 10, input_shape: Tuple[int, ...] = (1, 512)):
+    def warmup(self, num_samples: int = 10, input_shape: tuple[int, ...] = (1, 512)):
         """
         Warm up model with dummy predictions.
 

@@ -4,7 +4,7 @@ import json
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 _ALLOWED_CATEGORIES = {"VERIFIED", "INFERRED", "PLANNED", "SUMMARY", "AUDIT", "ASSERTED"}
 
@@ -20,9 +20,9 @@ class HonestyStatement:
     verified: bool
     workflow: str | None = None
     timestamp: str = field(default_factory=_utc_now)
-    metadata: Dict[str, Any] | None = None
+    metadata: dict[str, Any] | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
         if self.metadata is None:
             payload.pop("metadata", None)
@@ -32,10 +32,10 @@ class HonestyStatement:
 @dataclass
 class HonestyMetadata:
     workflow: str
-    statements: List[HonestyStatement] = field(default_factory=list)
+    statements: list[HonestyStatement] = field(default_factory=list)
 
-    def summary(self) -> Dict[str, Any]:
-        category_counts: Dict[str, int] = {}
+    def summary(self) -> dict[str, Any]:
+        category_counts: dict[str, int] = {}
         verified_count = 0
         for statement in self.statements:
             category_counts[statement.category] = category_counts.get(statement.category, 0) + 1
@@ -60,11 +60,11 @@ class HonestyRecorder:
         self._metadata = HonestyMetadata(workflow=workflow)
 
     @property
-    def statements(self) -> List[HonestyStatement]:
+    def statements(self) -> list[HonestyStatement]:
         return list(self._metadata.statements)
 
     def record_statement(
-        self, content: str, category: str, verified: bool, metadata: Dict[str, Any] | None = None
+        self, content: str, category: str, verified: bool, metadata: dict[str, Any] | None = None
     ) -> HonestyStatement:
         if not content:
             raise ValueError("content is required for honesty statements")

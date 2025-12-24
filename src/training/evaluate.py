@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Simple evaluation helpers for language-model datasets."""
 
-from __future__ import annotations
 
 import contextlib
 import json
@@ -139,7 +139,7 @@ def evaluate(
     try:
         perplexity = math.exp(mean_loss)
     except OverflowError as e:
-       logger.debug(f"OverflowError: {e}")
+        logger.debug(f"OverflowError: {e}")
         logger.warning(f"OverflowError: {e}", exc_info=True)
         perplexity = float("inf")
     return {"loss": mean_loss, "perplexity": perplexity, "count": count}

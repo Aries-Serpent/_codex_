@@ -21,7 +21,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Callable
+from typing import Any, Callable
 import statistics
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -37,7 +37,7 @@ class PerformanceOptimizer:
 
     def benchmark_function(
         self, func: Callable, name: str, iterations: int = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Benchmark a function and return performance metrics.
 
         Args:
@@ -46,7 +46,7 @@ class PerformanceOptimizer:
             iterations: Number of iterations (default: self.iterations)
 
         Returns:
-            Dict with performance metrics
+            dict with performance metrics
         """
         iterations = iterations or self.iterations
         times = []
@@ -60,7 +60,7 @@ class PerformanceOptimizer:
                 elapsed = (time.perf_counter() - start) * 1000  # ms
                 times.append(elapsed)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.debug(f"Benchmark iteration {i} failed: {e}")
                 continue
 
@@ -84,7 +84,7 @@ class PerformanceOptimizer:
             "p99_ms": times[int(n * 0.99)],
         }
 
-    def benchmark_mlflow_logging(self) -> Dict[str, Any]:
+    def benchmark_mlflow_logging(self) -> dict[str, Any]:
         """Benchmark MLflow metric logging performance."""
         try:
             import mlflow
@@ -114,7 +114,7 @@ class PerformanceOptimizer:
             logger.debug(f"Exception: {e}")
             return {"name": "mlflow_logging", "status": "error", "error": str(e)}
 
-    def benchmark_feature_retrieval(self) -> Dict[str, Any]:
+    def benchmark_feature_retrieval(self) -> dict[str, Any]:
         """Benchmark feature store retrieval performance."""
         try:
             from src.codex_ml.features.feature_store import FeatureStore
@@ -152,7 +152,7 @@ class PerformanceOptimizer:
             logger.debug(f"Exception: {e}")
             return {"name": "feature_retrieval", "status": "error", "error": str(e)}
 
-    def benchmark_validation_overhead(self) -> Dict[str, Any]:
+    def benchmark_validation_overhead(self) -> dict[str, Any]:
         """Benchmark data validation overhead."""
         try:
             import pandas as pd
@@ -189,7 +189,7 @@ class PerformanceOptimizer:
             logger.debug(f"Exception: {e}")
             return {"name": "validation_overhead", "status": "error", "error": str(e)}
 
-    def benchmark_config_loading(self) -> Dict[str, Any]:
+    def benchmark_config_loading(self) -> dict[str, Any]:
         """Benchmark configuration loading performance."""
         try:
             import yaml
@@ -216,7 +216,7 @@ class PerformanceOptimizer:
             logger.debug(f"Exception: {e}")
             return {"name": "config_loading", "status": "error", "error": str(e)}
 
-    def run_all_benchmarks(self) -> Dict[str, Any]:
+    def run_all_benchmarks(self) -> dict[str, Any]:
         """Run all performance benchmarks.
 
         Returns:
@@ -255,14 +255,14 @@ class PerformanceOptimizer:
 
         return report
 
-    def _generate_recommendations(self, report: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(self, report: dict[str, Any]) -> list[str]:
         """Generate optimization recommendations for agents.
 
         Args:
             report: Complete benchmark report
 
         Returns:
-            List of actionable recommendations
+            list of actionable recommendations
         """
         recommendations = []
 

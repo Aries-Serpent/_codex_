@@ -19,7 +19,6 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = [
@@ -47,7 +46,7 @@ def ensure_dirs():
 
 def main() -> int:
     ensure_dirs()
-    entries: List[Dict] = []
+    entries: list[dict] = []
 
     # Hash existing artifacts (create minimal placeholders if missing)
     for rel in ARTIFACTS:

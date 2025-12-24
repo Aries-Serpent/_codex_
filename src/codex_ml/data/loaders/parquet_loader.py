@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ try:
 
     PARQUET_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     PARQUET_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")
@@ -47,7 +47,7 @@ class ParquetLoader:
     """
 
     def __init__(
-        self, file_path: Path, columns: Optional[List[str]] = None, use_threads: bool = True
+        self, file_path: Path, columns: Optional[list[str]] = None, use_threads: bool = True
     ):
         """
         Initialize Parquet loader
@@ -77,12 +77,12 @@ class ParquetLoader:
             logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid Parquet file: {e}")
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         """
         Load entire Parquet file into memory
 
         Returns:
-            List of dictionaries (records)
+            list of dictionaries (records)
         """
         logger.info(f"Loading Parquet: {self.file_path}")
 
@@ -101,7 +101,7 @@ class ParquetLoader:
         logger.info(f"Loaded {len(records)} records from Parquet")
         return records
 
-    def load_batched(self, batch_size: int = 10000) -> Iterator[List[Dict[str, Any]]]:
+    def load_batched(self, batch_size: int = 10000) -> Iterator[list[dict[str, Any]]]:
         """
         Stream Parquet file in batches (memory efficient)
 
@@ -122,7 +122,7 @@ class ParquetLoader:
 
             yield df.to_dict("records")
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """
         Extract Parquet file metadata
 
@@ -139,7 +139,7 @@ class ParquetLoader:
             "file_size_bytes": self.file_path.stat().st_size,
         }
 
-    def get_column_stats(self) -> Dict[str, Dict[str, Any]]:
+    def get_column_stats(self) -> dict[str, dict[str, Any]]:
         """
         Get statistics for each column
 
@@ -163,7 +163,7 @@ class ParquetLoader:
 
 def load_parquet(
     file_path: Path,
-    columns: Optional[List[str]] = None,
+    columns: Optional[list[str]] = None,
     batch_size: Optional[int] = None,
     use_threads: bool = True,
 ):
@@ -177,7 +177,7 @@ def load_parquet(
         use_threads: Enable multi-threaded reading
 
     Returns:
-        List of dicts or generator of batches
+        list of dicts or generator of batches
 
     Examples:
         >>> # Load all at once

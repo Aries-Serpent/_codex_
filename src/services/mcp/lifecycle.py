@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import logging
-from typing import Callable, Dict, List, Optional, Any
+from typing import Callable, Optional, Any
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +18,10 @@ class LifecycleManager:
     """Manages application lifecycle events."""
 
     def __init__(self):
-        self._startup_hooks: List[Callable] = []
-        self._shutdown_hooks: List[Callable] = []
-        self._health_checks: List[Callable] = []
-        self._resources: Dict[str, Any] = {}
+        self._startup_hooks: list[Callable] = []
+        self._shutdown_hooks: list[Callable] = []
+        self._health_checks: list[Callable] = []
+        self._resources: dict[str, Any] = {}
         self._is_healthy = False
         self._is_ready = False
         self._health_check_timeout = 2.0
@@ -65,18 +65,18 @@ class LifecycleManager:
             self._is_healthy = True
             logger.info(f"Initialized ({len(executed)} hooks)")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Startup failed: {e}")
             await self._rollback_startup(executed)
             raise RuntimeError(f"Startup failed: {e}") from e
 
-    async def _rollback_startup(self, executed: List[Callable]) -> None:
+    async def _rollback_startup(self, executed: list[Callable]) -> None:
         """Rollback startup. Safeguard: graceful error handling."""
         for hook in reversed(executed):
             try:
                 logger.debug(f"Rolling back: {hook.__name__}")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Rollback error: {e}")
 
     async def shutdown(self) -> None:
@@ -90,7 +90,7 @@ class LifecycleManager:
                 else:
                     hook()
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Shutdown hook failed: {e}")
         await self._cleanup_resources()
         self._is_healthy = False
@@ -118,7 +118,7 @@ class LifecycleManager:
                         close()
                 logger.debug(f"Cleaned: {name}")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Cleanup failed for {name}: {e}")
         self._resources.clear()
 
@@ -130,7 +130,7 @@ class LifecycleManager:
         """Check ready status."""
         return self._is_ready
 
-    def healthz(self) -> Dict[str, Any]:
+    def healthz(self) -> dict[str, Any]:
         """Generate health check response."""
         checks_ok = True
         for check in self._health_checks:
@@ -143,7 +143,7 @@ class LifecycleManager:
                         loop = asyncio.get_event_loop()
                         running = loop.is_running()
                     except RuntimeError as e:
-                       logger.debug(f"RuntimeError: {e}")
+                        logger.debug(f"RuntimeError: {e}")
                         logger.warning(f"RuntimeError: {e}", exc_info=True)
                         running = False
 
@@ -158,7 +158,7 @@ class LifecycleManager:
                 if not bool(result):
                     checks_ok = False
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Health check failed: {e}")
                 checks_ok = False
 

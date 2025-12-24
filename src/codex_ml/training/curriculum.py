@@ -12,7 +12,7 @@ import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -34,14 +34,14 @@ class TrainingPhase:
     id: str
     dataset: str
     steps: int
-    metrics: List[str] = field(default_factory=list)
-    min_metric_threshold: Optional[Dict[str, float]] = None
-    max_metric_threshold: Optional[Dict[str, float]] = None
+    metrics: list[str] = field(default_factory=list)
+    min_metric_threshold: Optional[dict[str, float]] = None
+    max_metric_threshold: Optional[dict[str, float]] = None
     learning_rate: Optional[float] = None
     batch_size: Optional[int] = None
     description: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": self.id,
@@ -63,13 +63,13 @@ class PhaseResult:
     phase_id: str
     status: PhaseStatus
     steps_completed: int
-    metrics: Dict[str, float] = field(default_factory=dict)
+    metrics: dict[str, float] = field(default_factory=dict)
     checkpoint_path: Optional[str] = None
     start_time: Optional[str] = None
     end_time: Optional[str] = None
     error_message: Optional[str] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             "phase_id": self.phase_id,
@@ -89,11 +89,11 @@ class CurriculumState:
 
     curriculum_name: str
     current_phase_index: int = 0
-    phase_results: List[PhaseResult] = field(default_factory=list)
+    phase_results: list[PhaseResult] = field(default_factory=list)
     global_step: int = 0
     is_complete: bool = False
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             "curriculum_name": self.curriculum_name,
@@ -104,7 +104,7 @@ class CurriculumState:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> CurriculumState:
+    def from_dict(cls, data: dict[str, Any]) -> CurriculumState:
         """Create from dictionary"""
         phase_results = [
             PhaseResult(
@@ -139,7 +139,7 @@ class CurriculumScheduler:
 
     def __init__(
         self,
-        phases: List[TrainingPhase],
+        phases: list[TrainingPhase],
         curriculum_name: str,
         checkpoint_dir: Optional[str] = None,
         state_file: Optional[str] = None,
@@ -147,7 +147,7 @@ class CurriculumScheduler:
         """Initialize curriculum scheduler
 
         Args:
-            phases: List of training phases
+            phases: list of training phases
             curriculum_name: Name of the curriculum
             checkpoint_dir: Directory for phase checkpoints
             state_file: Path to curriculum state file
@@ -173,7 +173,7 @@ class CurriculumScheduler:
                 logger.info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to load state, creating new: {e}")
 
         return CurriculumState(curriculum_name=self.curriculum_name)
@@ -185,7 +185,7 @@ class CurriculumScheduler:
                 json.dump(self.state.to_dict(), f, indent=2)
             logger.info(f"Saved curriculum state to {self.state_file}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to save state: {e}")
             raise
 
@@ -206,7 +206,7 @@ class CurriculumScheduler:
         return self.phases[self.state.current_phase_index]
 
     def can_progress_to_next_phase(
-        self, current_metrics: Dict[str, float]
+        self, current_metrics: dict[str, float]
     ) -> tuple[bool, Optional[str]]:
         """Check if ready to progress to next phase
 
@@ -214,7 +214,7 @@ class CurriculumScheduler:
             current_metrics: Current training metrics
 
         Returns:
-            Tuple of (can_progress, reason)
+            tuple of (can_progress, reason)
         """
         phase = self.get_current_phase()
         if not phase:
@@ -281,7 +281,7 @@ class CurriculumScheduler:
     def complete_phase(
         self,
         phase_id: str,
-        metrics: Dict[str, float],
+        metrics: dict[str, float],
         checkpoint_path: Optional[str] = None,
     ) -> PhaseResult:
         """Mark a phase as complete
@@ -319,7 +319,7 @@ class CurriculumScheduler:
         return result
 
     def update_phase_progress(
-        self, phase_id: str, steps: int, metrics: Optional[Dict[str, float]] = None
+        self, phase_id: str, steps: int, metrics: Optional[dict[str, float]] = None
     ) -> None:
         """Update progress for current phase
 
@@ -376,7 +376,7 @@ class CurriculumScheduler:
         """
         return self.checkpoint_dir / f"{self.curriculum_name}-{phase_id}.pt"
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get curriculum summary
 
         Returns:
@@ -404,19 +404,19 @@ class CurriculumScheduler:
         logger.info(f"Reset curriculum: {self.curriculum_name}")
 
 
-def load_curriculum_from_config(config_path: str) -> List[TrainingPhase]:
+def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
     """Load curriculum phases from YAML config
 
     Args:
         config_path: Path to curriculum config file
 
     Returns:
-        List of TrainingPhases
+        list of TrainingPhases
     """
     try:
         import yaml
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml")
 

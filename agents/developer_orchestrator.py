@@ -22,14 +22,14 @@ from dataclasses import dataclass, field
 import logging
 logger = logging.getLogger(__name__)
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
@@ -41,7 +41,7 @@ try:
 
     ADVANCED_PHYSICS = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     ADVANCED_PHYSICS = False
 
@@ -51,7 +51,7 @@ try:
 
     LOGGING_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     LOGGING_AVAILABLE = False
 
@@ -93,14 +93,14 @@ class RequirementVariable:
     variable_type: str  # str, int, float, bool, list, dict
     required: bool = True
     default_value: Any = None
-    suggested_values: List[Any] = field(default_factory=list)
+    suggested_values: list[Any] = field(default_factory=list)
     current_value: Any = None
 
     def is_satisfied(self) -> bool:
         """Check if variable has a value."""
         return self.current_value is not None or not self.required
 
-    def suggest_from_chaos(self, cnn: Optional["ChaoticNeuralNetwork"] = None) -> List[Any]:
+    def suggest_from_chaos(self, cnn: Optional["ChaoticNeuralNetwork"] = None) -> list[Any]:
         """Generate suggestions using chaos theory for exploration."""
         if not ADVANCED_PHYSICS or cnn is None:
             return self.suggested_values
@@ -128,13 +128,13 @@ class CodeComponent:
     name: str
     component_type: str  # module, class, function, test
     description: str
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     priority: float = 0.5  # 0-1, for EM field routing
     complexity: float = 1.0  # For fractal analysis
     implementation_status: str = "pending"  # pending, in_progress, complete
     code: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "component_id": self.component_id,
@@ -164,8 +164,8 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     def __init__(self, session_id: Optional[str] = None):
         self.app_type: Optional[AppType] = None
-        self.required_variables: Dict[str, RequirementVariable] = {}
-        self.components: Dict[str, CodeComponent] = {}
+        self.required_variables: dict[str, RequirementVariable] = {}
+        self.components: dict[str, CodeComponent] = {}
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
         self.session_id = session_id or "dev_orchestrator"
 
@@ -174,14 +174,14 @@ class PhysicsGuidedDeveloperOrchestrator:
         if ADVANCED_PHYSICS:
             self.physics_orchestrator = AdvancedPhysicsOrchestrator()
 
-        self.development_history: List[Dict[str, Any]] = []
-        self.suggestions_cache: Dict[str, List[Any]] = {}
+        self.development_history: list[dict[str, Any]] = []
+        self.suggestions_cache: dict[str, list[Any]] = {}
 
     def _log(self, role: str, message: str) -> None:
         """Log a message using session logger."""
         log_message(self.session_id, role, message)
 
-    def analyze_user_requirements(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_user_requirements(self, requirements: dict[str, Any]) -> dict[str, Any]:
         """
         Analyze user requirements and identify missing variables.
 
@@ -198,7 +198,7 @@ class PhysicsGuidedDeveloperOrchestrator:
             try:
                 self.app_type = AppType(requirements["app_type"])
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 self.app_type = AppType.PYTHON_CONSOLE
         else:
@@ -302,7 +302,7 @@ class PhysicsGuidedDeveloperOrchestrator:
                     ),
                     "commands": RequirementVariable(
                         name="commands",
-                        description="List of CLI commands",
+                        description="list of CLI commands",
                         variable_type="list",
                         required=True,
                     ),
@@ -322,7 +322,7 @@ class PhysicsGuidedDeveloperOrchestrator:
                     ),
                     "endpoints": RequirementVariable(
                         name="endpoints",
-                        description="List of API endpoints",
+                        description="list of API endpoints",
                         variable_type="list",
                         required=True,
                     ),
@@ -375,7 +375,7 @@ class PhysicsGuidedDeveloperOrchestrator:
                 }
             )
 
-    def suggest_architecture(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
+    def suggest_architecture(self, requirements: dict[str, Any]) -> dict[str, Any]:
         """
         Suggest optimal architecture using physics paradigms.
 
@@ -425,7 +425,7 @@ class PhysicsGuidedDeveloperOrchestrator:
 
         return architecture
 
-    def _generate_components(self, requirements: Dict[str, Any]) -> List[CodeComponent]:
+    def _generate_components(self, requirements: dict[str, Any]) -> list[CodeComponent]:
         """Generate code components based on requirements."""
         components = []
 
@@ -500,12 +500,12 @@ class PhysicsGuidedDeveloperOrchestrator:
         self.components = {comp.component_id: comp for comp in components}
         return components
 
-    def _build_component_tree(self, components: List[CodeComponent]) -> Dict[str, Any]:
+    def _build_component_tree(self, components: list[CodeComponent]) -> dict[str, Any]:
         """
         Build hierarchical tree from components for fractal analysis.
 
         Args:
-            components: List of CodeComponent objects
+            components: list of CodeComponent objects
 
         Returns:
             Nested dictionary where keys are component names and values are
@@ -523,7 +523,7 @@ class PhysicsGuidedDeveloperOrchestrator:
 
         return tree
 
-    def _determine_implementation_order(self, components: List[CodeComponent]) -> List[str]:
+    def _determine_implementation_order(self, components: list[CodeComponent]) -> list[str]:
         """Determine optimal implementation order using dependency analysis."""
         # Topological sort based on dependencies
         order = []
@@ -548,14 +548,14 @@ class PhysicsGuidedDeveloperOrchestrator:
 
         return order
 
-    def _extract_dependencies(self, components: List[CodeComponent]) -> Dict[str, List[str]]:
+    def _extract_dependencies(self, components: list[CodeComponent]) -> dict[str, list[str]]:
         """Extract dependency graph."""
         return {comp.component_id: comp.dependencies for comp in components}
 
     def generate_code(
         self,
-        component_id: Union[str, Dict[str, Any]],
-        specifications: Optional[Dict[str, Any]] = None,
+        component_id: Union[str, dict[str, Any]],
+        specifications: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Generate code for a specific component or from specifications directly.
@@ -602,7 +602,7 @@ class PhysicsGuidedDeveloperOrchestrator:
 
         return code
 
-    def _generate_app_from_specs(self, specs: Dict[str, Any]) -> str:
+    def _generate_app_from_specs(self, specs: dict[str, Any]) -> str:
         """Generate a simple application from specifications."""
         app_name = specs.get("app_name", "my_app")
         app_type = specs.get("app_type", "cli")
@@ -623,7 +623,7 @@ if __name__ == "__main__":
 '''
         return code
 
-    def _generate_generic_code(self, specs: Dict[str, Any]) -> str:
+    def _generate_generic_code(self, specs: dict[str, Any]) -> str:
         """Generate generic code from specifications."""
         return f"""# Generated code from specifications
 # Specs: {specs}
@@ -633,7 +633,7 @@ def placeholder():
     pass
 """
 
-    def _generate_main_module(self, specs: Dict[str, Any]) -> str:
+    def _generate_main_module(self, specs: dict[str, Any]) -> str:
         """Generate main module code."""
         app_name = (
             self.required_variables.get(
@@ -747,7 +747,7 @@ if __name__ == '__main__':
         else:
             return f"# API framework: {framework}\n# TODO: Implement\n"
 
-    def _generate_function(self, component: CodeComponent, specs: Dict[str, Any]) -> str:
+    def _generate_function(self, component: CodeComponent, specs: dict[str, Any]) -> str:
         """Generate function code."""
         return f'''
 def {component.name}(*args, **kwargs):
@@ -765,7 +765,7 @@ def {component.name}(*args, **kwargs):
     raise NotImplementedError("{component.name} not yet implemented")
 '''
 
-    def _generate_tests(self, specs: Dict[str, Any]) -> str:
+    def _generate_tests(self, specs: dict[str, Any]) -> str:
         """Generate test code."""
         return '''"""
 Unit tests for the application.
@@ -786,7 +786,7 @@ def test_main_imports():
         pytest.fail(f"Failed to import main: {e}")
 '''
 
-    def get_development_status(self) -> Dict[str, Any]:
+    def get_development_status(self) -> dict[str, Any]:
         """Get current development status."""
         total_components = len(self.components)
         completed = sum(
@@ -807,7 +807,7 @@ def test_main_imports():
             },
         }
 
-    def export_project(self, output_dir: str = ".", overwrite: bool = False) -> Dict[str, str]:
+    def export_project(self, output_dir: str = ".", overwrite: bool = False) -> dict[str, str]:
         """
         Export generated code to files.
 
@@ -863,7 +863,7 @@ def test_main_imports():
                             exported_files[comp.name] = filepath
                             self._log("system", f"Exported {comp.name} to {filepath}")
                         except FileExistsError as e:
-                           logger.debug(f"FileExistsError: {e}")
+                            logger.debug(f"FileExistsError: {e}")
                             logger.warning(f"FileExistsError: {e}", exc_info=True)
                             exported_files[comp.name] = f"Skipped (file exists): {filepath}"
                             self._log("system", f"Skipped {comp.name} (file exists)")
@@ -875,7 +875,7 @@ def test_main_imports():
 
         return exported_files
 
-    def validate_code(self, code: str, component_id: Optional[str] = None) -> Dict[str, Any]:
+    def validate_code(self, code: str, component_id: Optional[str] = None) -> dict[str, Any]:
         """
         Validate generated code for syntax and quality.
 
@@ -912,7 +912,7 @@ def test_main_imports():
 
         return result
 
-    def prioritize_tasks(self, tasks: Optional[List[Dict[str, Any]]] = None) -> List[str]:
+    def prioritize_tasks(self, tasks: Optional[list[dict[str, Any]]] = None) -> list[str]:
         """
         Prioritize development tasks using physics-based scoring.
 
@@ -921,7 +921,7 @@ def test_main_imports():
                   If None, uses components as tasks
 
         Returns:
-            List of task IDs in priority order
+            list of task IDs in priority order
         """
         if tasks is None:
             # Use components as tasks
@@ -957,13 +957,13 @@ def test_main_imports():
         self._log("system", f"Prioritized {len(result)} tasks")
         return result
 
-    def execute_workflow(self, workflow_steps: Optional[List[str]] = None) -> Dict[str, Any]:
+    def execute_workflow(self, workflow_steps: Optional[list[str]] = None) -> dict[str, Any]:
         """
         Execute a development workflow through all phases.
 
         Args:
             workflow_steps: Optional list of phase names to execute.
-                           If None, executes standard workflow.
+                            If None, executes standard workflow.
 
         Returns:
             Workflow execution results

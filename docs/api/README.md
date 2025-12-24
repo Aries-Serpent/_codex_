@@ -219,7 +219,7 @@ The API documentation covers the following main modules:
 
 API documentation generation requires:
 
-- Python 3.10+
+- Python 3.11+
 - pdoc3 (automatically installed by the build script)
 
 ### Optional Dependencies

@@ -1,8 +1,8 @@
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Dynamic detector for MCP & tools integration capability.
 

@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 
 class ActionType(Enum):
@@ -47,7 +47,7 @@ class ForceVector:
 
     name: str = ""
     magnitude: float = 0.0  # 0.0 to 1.0
-    direction: Union[float, List[float]] = 0.0  # angle in radians or 3D vector
+    direction: Union[float, list[float]] = 0.0  # angle in radians or 3D vector
     priority: float = 1.0  # weight factor
     x: float = 0.0  # x component for 3D vector representation
     y: float = 0.0  # y component for 3D vector representation
@@ -58,7 +58,7 @@ class ForceVector:
         # If x, y, z are provided (non-zero) and magnitude is 0, calculate magnitude
         if (self.x != 0.0 or self.y != 0.0 or self.z != 0.0) and self.magnitude == 0.0:
             self.magnitude = math.sqrt(self.x**2 + self.y**2 + self.z**2)
-            # Set direction as 3D vector
+            # set direction as 3D vector
             if self.magnitude > 0:
                 self.direction = [
                     self.x / self.magnitude,
@@ -66,7 +66,7 @@ class ForceVector:
                     self.z / self.magnitude,
                 ]
 
-    def get_components(self) -> Tuple[float, float]:
+    def get_components(self) -> tuple[float, float]:
         """Get x, y components of force vector"""
         if isinstance(self.direction, (list, tuple)):
             # 3D vector - project to 2D
@@ -97,7 +97,7 @@ class ActionPath:
 
     # Alternative interface support
     energy: float = 0.0  # Alias for total_energy
-    trajectory: List[Any] = field(default_factory=list)  # Path trajectory
+    trajectory: list[Any] = field(default_factory=list)  # Path trajectory
 
     # Calculated scores
     total_energy: float = field(default=0.0, init=False)
@@ -153,12 +153,12 @@ class DecisionState:
     available_resources: float = 1.0  # 0-1 scale
     time_available: float = 1.0  # 0-1 scale
     current_velocity: float = 0.5  # Progress rate 0-1
-    context: Dict[str, Any] = field(default_factory=dict)
-    active_forces: List[Any] = field(default_factory=list)  # Optional force vectors
-    constraints: List[Any] = field(default_factory=list)  # Optional constraints
+    context: dict[str, Any] = field(default_factory=dict)
+    active_forces: list[Any] = field(default_factory=list)  # Optional force vectors
+    constraints: list[Any] = field(default_factory=list)  # Optional constraints
 
     # Alternative interface support
-    state_vector: List[float] = field(default_factory=list)  # Quantum-like state representation
+    state_vector: list[float] = field(default_factory=list)  # Quantum-like state representation
     energy: float = 0.0  # System energy level
     coherence: float = 1.0  # State coherence (0-1)
 
@@ -178,10 +178,10 @@ class PhysicsInspiredOrchestrator:
 
     def __init__(self, config_path: Optional[Path] = None):
         self.config = self._load_config(config_path)
-        self.decision_history: List[Dict] = []
-        self.force_vectors: List[ForceVector] = []
+        self.decision_history: list[dict] = []
+        self.force_vectors: list[ForceVector] = []
 
-    def _load_config(self, config_path: Optional[Path]) -> Dict:
+    def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load orchestrator configuration (internal)"""
         default_config = {
             "deliberation_time": 5.0,  # seconds to think before acting
@@ -199,16 +199,16 @@ class PhysicsInspiredOrchestrator:
 
         return default_config
 
-    def load_config(self) -> Dict:
+    def load_config(self) -> dict:
         """
         Public method to load and return current configuration.
 
         Returns:
-            Dict: Current orchestrator configuration
+            dict: Current orchestrator configuration
         """
         return self.config.copy()
 
-    def assess_situation(self, state: DecisionState) -> Dict[str, float]:
+    def assess_situation(self, state: DecisionState) -> dict[str, float]:
         """
         ASSESS: Analyze current situation and gather information
 
@@ -248,8 +248,8 @@ class PhysicsInspiredOrchestrator:
         return assessment
 
     def deliberate_paths(
-        self, state: DecisionState, possible_actions: List[ActionPath]
-    ) -> List[ActionPath]:
+        self, state: DecisionState, possible_actions: list[ActionPath]
+    ) -> list[ActionPath]:
         """
         DELIBERATE: Calculate physics properties for each path and rank them
 
@@ -303,7 +303,7 @@ class PhysicsInspiredOrchestrator:
         return ranked_paths
 
     def optimize_path(
-        self, ranked_paths: List[ActionPath], state: DecisionState
+        self, ranked_paths: list[ActionPath], state: DecisionState
     ) -> Optional[ActionPath]:
         """
         OPTIMIZE: Select the best path based on constraints and optimization
@@ -348,7 +348,7 @@ class PhysicsInspiredOrchestrator:
         print(f"\n⚠️  No path meets all constraints")
         return None
 
-    def act(self, optimal_path: Optional[ActionPath], state: DecisionState) -> Dict:
+    def act(self, optimal_path: Optional[ActionPath], state: DecisionState) -> dict:
         """
         ACT: Execute the chosen path with full commitment
 
@@ -390,7 +390,7 @@ class PhysicsInspiredOrchestrator:
 
         return result
 
-    def optimize(self, paths: List[ActionPath]) -> Optional[ActionPath]:
+    def optimize(self, paths: list[ActionPath]) -> Optional[ActionPath]:
         """
         Optimize a list of action paths and return the best one.
 
@@ -398,7 +398,7 @@ class PhysicsInspiredOrchestrator:
         and returns the highest-scoring path that meets basic criteria.
 
         Args:
-            paths: List of ActionPath objects to optimize
+            paths: list of ActionPath objects to optimize
 
         Returns:
             The optimal ActionPath, or None if no paths are viable
@@ -419,7 +419,7 @@ class PhysicsInspiredOrchestrator:
         # Return the best path (could add constraint checking here if needed)
         return ranked_paths[0] if ranked_paths else None
 
-    def orchestrate(self, state: DecisionState, possible_actions: List[ActionPath]) -> Dict:
+    def orchestrate(self, state: DecisionState, possible_actions: list[ActionPath]) -> dict:
         """
         Complete orchestration cycle: ASSESS → DELIBERATE → OPTIMIZE → ACT
 
@@ -673,8 +673,8 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
     def __init__(self, config_path: Optional[Path] = None):
         super().__init__(config_path)
-        self.migrations: List[ImportMigration] = []
-        self.completed_migrations: List[ImportMigration] = []
+        self.migrations: list[ImportMigration] = []
+        self.completed_migrations: list[ImportMigration] = []
         self.migration_map = {
             # Training module migrations
             "from training.": "from src.training.",
@@ -683,7 +683,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
             "import models.": "import src.models.",
         }
 
-    def assess_imports(self, repo_root: Path) -> Dict[str, Any]:
+    def assess_imports(self, repo_root: Path) -> dict[str, Any]:
         """
         ASSESS PHASE: Identify all deprecated imports in the codebase.
 
@@ -751,7 +751,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
         return assessment
 
-    def deliberate_migrations(self) -> List[ImportMigration]:
+    def deliberate_migrations(self) -> list[ImportMigration]:
         """
         DELIBERATE PHASE: Rank migrations by optimization score.
         """
@@ -775,8 +775,8 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         return ranked
 
     def optimize_migration_plan(
-        self, ranked_migrations: List[ImportMigration], energy_budget: float = 500.0
-    ) -> List[ImportMigration]:
+        self, ranked_migrations: list[ImportMigration], energy_budget: float = 500.0
+    ) -> list[ImportMigration]:
         """
         OPTIMIZE PHASE: Select migrations within energy budget.
         """
@@ -802,8 +802,8 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         return selected
 
     def execute_migrations(
-        self, migrations: List[ImportMigration], dry_run: bool = True
-    ) -> Dict[str, Any]:
+        self, migrations: list[ImportMigration], dry_run: bool = True
+    ) -> dict[str, Any]:
         """
         ACTION PHASE: Execute the selected migrations.
         """
@@ -812,7 +812,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         print(f"{'='*60}")
         print(f"Mode: {'DRY RUN' if dry_run else 'EXECUTE'}")
 
-        results: Dict[str, Any] = {
+        results: dict[str, Any] = {
             "migrations_attempted": 0,
             "migrations_successful": 0,
             "migrations_failed": 0,
@@ -821,7 +821,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         }
 
         # Group migrations by file for efficiency
-        by_file: Dict[str, List[ImportMigration]] = {}
+        by_file: dict[str, list[ImportMigration]] = {}
         for m in migrations:
             by_file.setdefault(m.file_path, []).append(m)
 
@@ -884,7 +884,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
     def run_migration_cycle(
         self, repo_root: Path, energy_budget: float = 500.0, dry_run: bool = True
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Complete migration cycle using physics-inspired orchestration.
 
@@ -946,12 +946,12 @@ class FlowVector:
     analogous to electromagnetic field lines or fluid streamlines.
     """
 
-    position: Tuple[float, float]  # Current position in decision space
-    velocity: Tuple[float, float]  # Current velocity (direction + magnitude)
-    gradient: Tuple[float, float]  # Gradient of potential field at position
+    position: tuple[float, float]  # Current position in decision space
+    velocity: tuple[float, float]  # Current velocity (direction + magnitude)
+    gradient: tuple[float, float]  # Gradient of potential field at position
     diffusion_coefficient: float = 0.1  # Controls randomness/exploration
 
-    def step(self, dt: float = 0.1) -> Tuple[float, float]:
+    def step(self, dt: float = 0.1) -> tuple[float, float]:
         """
         Take a step following the flow, with optional diffusion (exploration).
 
@@ -998,10 +998,10 @@ class DiffusionFlowModel:
         self.dimensions = dimensions
         self.resolution = resolution
         self._diffusion_coefficient = diffusion_coefficient  # Controls exploration/randomness
-        self.potential_field: Dict[Tuple[int, ...], float] = {}
-        self.flow_vectors: List[FlowVector] = []
-        self.attractors: List[Tuple[float, ...]] = []  # Goal positions
-        self.repulsors: List[Tuple[float, ...]] = []  # Obstacles
+        self.potential_field: dict[tuple[int, ...], float] = {}
+        self.flow_vectors: list[FlowVector] = []
+        self.attractors: list[tuple[float, ...]] = []  # Goal positions
+        self.repulsors: list[tuple[float, ...]] = []  # Obstacles
 
     @property
     def diffusion_coefficient(self) -> float:
@@ -1016,12 +1016,12 @@ class DiffusionFlowModel:
         """
         return self._diffusion_coefficient
 
-    def add_attractor(self, position: Tuple[float, ...], strength: float = 1.0) -> None:
+    def add_attractor(self, position: tuple[float, ...], strength: float = 1.0) -> None:
         """Add an attractor (goal) to the field"""
         self.attractors.append((*position, strength))
         self._recalculate_field()
 
-    def add_repulsor(self, position: Tuple[float, ...], strength: float = 1.0) -> None:
+    def add_repulsor(self, position: tuple[float, ...], strength: float = 1.0) -> None:
         """Add a repulsor (obstacle) to the field"""
         self.repulsors.append((*position, strength))
         self._recalculate_field()
@@ -1052,7 +1052,7 @@ class DiffusionFlowModel:
 
                 self.potential_field[(i, j)] = potential
 
-    def get_gradient(self, position: Tuple[float, float]) -> Tuple[float, float]:
+    def get_gradient(self, position: tuple[float, float]) -> tuple[float, float]:
         """
         Calculate gradient of potential field at position.
 
@@ -1076,7 +1076,7 @@ class DiffusionFlowModel:
         # Negate for descent direction
         return (-grad_x, -grad_y)
 
-    def create_flow_at(self, position: Tuple[float, float], diffusion: float = 0.1) -> FlowVector:
+    def create_flow_at(self, position: tuple[float, float], diffusion: float = 0.1) -> FlowVector:
         """Create a flow vector at the given position"""
         gradient = self.get_gradient(position)
         # Initial velocity follows gradient
@@ -1089,8 +1089,8 @@ class DiffusionFlowModel:
         return flow
 
     def simulate_flow(
-        self, start_position: Tuple[float, float], steps: int = 100, dt: float = 0.1
-    ) -> List[Tuple[float, float]]:
+        self, start_position: tuple[float, float], steps: int = 100, dt: float = 0.1
+    ) -> list[tuple[float, float]]:
         """
         Simulate agent flow from start position toward attractors.
 
@@ -1120,8 +1120,8 @@ class DiffusionFlowModel:
         return trajectory
 
     def integrate_with_mental_mapping(
-        self, problem_position: Tuple[float, float], goal_position: Tuple[float, float]
-    ) -> Dict[str, Any]:
+        self, problem_position: tuple[float, float], goal_position: tuple[float, float]
+    ) -> dict[str, Any]:
         """
         Integration point for MentalMappingModel.
 
@@ -1150,7 +1150,7 @@ class EnergyState:
     Inspired by statistical mechanics and thermodynamics.
     """
 
-    configuration: Dict[str, Any]
+    configuration: dict[str, Any]
     energy: float = 0.0
     entropy: float = 0.0
     temperature: float = 1.0
@@ -1202,8 +1202,8 @@ class EnergyLandscape:
 
     def __init__(self, temperature: float = 1.0):
         self.temperature = temperature
-        self.states: List[EnergyState] = []
-        self.history: List[EnergyState] = []
+        self.states: list[EnergyState] = []
+        self.history: list[EnergyState] = []
         self.partition_function: float = 0.0
 
     def add_state(self, state: EnergyState) -> None:
@@ -1308,7 +1308,7 @@ class EnergyLandscape:
 
     def integrate_with_self_appraisal(
         self, decision_quality: float, expected_confidence: float
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Integration point for self-appraisal system.
 
@@ -1340,9 +1340,9 @@ class SwarmParticle:
     Represents an agent in a swarm, inspired by particle swarm optimization.
     """
 
-    position: Tuple[float, ...]
-    velocity: Tuple[float, ...]
-    personal_best_position: Tuple[float, ...] = field(default=None)
+    position: tuple[float, ...]
+    velocity: tuple[float, ...]
+    personal_best_position: tuple[float, ...] = field(default=None)
     personal_best_score: float = field(default=float("-inf"))
 
     def __post_init__(self):
@@ -1387,12 +1387,12 @@ class SwarmIntelligence:
         self.cognitive = cognitive  # c1: attraction to personal best
         self.social = social  # c2: attraction to global best
 
-        self.particles: List[SwarmParticle] = []
-        self.global_best_position: Optional[Tuple[float, ...]] = None
+        self.particles: list[SwarmParticle] = []
+        self.global_best_position: Optional[tuple[float, ...]] = None
         self.global_best_score: float = float("-inf")
-        self.iteration_history: List[Dict] = []
+        self.iteration_history: list[dict] = []
 
-    def initialize_swarm(self, bounds: List[Tuple[float, float]]) -> None:
+    def initialize_swarm(self, bounds: list[tuple[float, float]]) -> None:
         """
         Initialize swarm with random positions within bounds.
         """
@@ -1408,7 +1408,7 @@ class SwarmIntelligence:
             self.particles.append(particle)
 
     def evaluate_fitness(
-        self, position: Tuple[float, ...], fitness_function: Optional[callable] = None
+        self, position: tuple[float, ...], fitness_function: Optional[callable] = None
     ) -> float:
         """
         Evaluate fitness at a position.
@@ -1424,8 +1424,8 @@ class SwarmIntelligence:
     def update_swarm(
         self,
         fitness_function: Optional[callable] = None,
-        bounds: Optional[List[Tuple[float, float]]] = None,
-    ) -> Dict[str, Any]:
+        bounds: Optional[list[tuple[float, float]]] = None,
+    ) -> dict[str, Any]:
         """
         Perform one iteration of swarm optimization.
 
@@ -1507,9 +1507,9 @@ class SwarmIntelligence:
         self,
         fitness_function: callable = None,
         objective_function: callable = None,  # Alias for backward compatibility
-        bounds: List[Tuple[float, float]] = None,
+        bounds: list[tuple[float, float]] = None,
         max_iterations: int = 50,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Run full swarm optimization.
 
@@ -1555,8 +1555,8 @@ class SwarmIntelligence:
         }
 
     def coordinate_agents(
-        self, agent_positions: List[Tuple[float, ...]], target_position: Tuple[float, ...]
-    ) -> List[Tuple[float, ...]]:
+        self, agent_positions: list[tuple[float, ...]], target_position: tuple[float, ...]
+    ) -> list[tuple[float, ...]]:
         """
         Integration point for multi-agent coordination.
 
@@ -1568,7 +1568,7 @@ class SwarmIntelligence:
             SwarmParticle(position=pos, velocity=tuple(0.0 for _ in pos)) for pos in agent_positions
         ]
 
-        # Set target as global best
+        # set target as global best
         self.global_best_position = target_position
         self.global_best_score = float("inf")
 
@@ -1593,7 +1593,7 @@ class SwarmIntelligence:
         """Alias for num_particles (backward compatibility)."""
         return self.num_particles
 
-    def optimize(self, *args, **kwargs) -> Dict[str, Any]:
+    def optimize(self, *args, **kwargs) -> dict[str, Any]:
         """Alias for run_optimization (backward compatibility)."""
         return self.run_optimization(*args, **kwargs)
 
@@ -1607,7 +1607,7 @@ class SubTask:
     task_id: str
     description: str
     parent_task_id: Optional[str] = None
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
 
     # Task properties
     estimated_energy: float = 10.0
@@ -1642,13 +1642,13 @@ class TaskDecomposer:
 
     def __init__(self, max_workers: int = 4):
         self.max_workers = max_workers
-        self.tasks: Dict[str, SubTask] = {}
-        self.execution_order: List[List[str]] = []  # Batches of parallel tasks
-        self.completed_tasks: List[str] = []
+        self.tasks: dict[str, SubTask] = {}
+        self.execution_order: list[list[str]] = []  # Batches of parallel tasks
+        self.completed_tasks: list[str] = []
 
     def decompose_task(
         self, task: ActionPath, decomposition_strategy: str = "energy_balanced"
-    ) -> List[SubTask]:
+    ) -> list[SubTask]:
         """
         Decompose a high-level task into sub-tasks.
 
@@ -1714,7 +1714,7 @@ class TaskDecomposer:
 
         return sub_tasks
 
-    def build_execution_plan(self) -> List[List[str]]:
+    def build_execution_plan(self) -> list[list[str]]:
         """
         Build execution plan respecting dependencies.
 
@@ -1747,8 +1747,8 @@ class TaskDecomposer:
         return self.execution_order
 
     def execute_batch(
-        self, batch: List[str], executor: Optional[callable] = None
-    ) -> Dict[str, Any]:
+        self, batch: list[str], executor: Optional[callable] = None
+    ) -> dict[str, Any]:
         """
         Execute a batch of tasks (simulated parallel execution).
         """
@@ -1781,7 +1781,7 @@ class TaskDecomposer:
 
         return results
 
-    def run_orchestration(self, executor: Optional[callable] = None) -> Dict[str, Any]:
+    def run_orchestration(self, executor: Optional[callable] = None) -> dict[str, Any]:
         """
         Run full task orchestration.
         """
@@ -1806,7 +1806,7 @@ class TaskDecomposer:
             "results": all_results,
         }
 
-    def integrate_with_action_path(self, action: ActionPath) -> Dict[str, Any]:
+    def integrate_with_action_path(self, action: ActionPath) -> dict[str, Any]:
         """
         Integration point for ActionPath hierarchical planning.
 
@@ -1862,8 +1862,8 @@ class ReflectionLoop:
         self.k_d = k_derivative  # Rate of change response
 
         # Tracking
-        self.decision_history: List[Dict[str, Any]] = []
-        self.error_history: List[float] = []
+        self.decision_history: list[dict[str, Any]] = []
+        self.error_history: list[float] = []
         self.cumulative_error: float = 0.0
         self.last_error: float = 0.0
 
@@ -1872,8 +1872,8 @@ class ReflectionLoop:
         self.risk_threshold: float = 0.5
 
     def record_decision(
-        self, decision: Dict[str, Any], predicted_outcome: float, actual_outcome: float
-    ) -> Dict[str, Any]:
+        self, decision: dict[str, Any], predicted_outcome: float, actual_outcome: float
+    ) -> dict[str, Any]:
         """
         Record a decision and its outcome for learning.
         """
@@ -1953,7 +1953,7 @@ class ReflectionLoop:
         else:
             return "minor_calibration_recommended"
 
-    def get_performance_metrics(self) -> Dict[str, Any]:
+    def get_performance_metrics(self) -> dict[str, Any]:
         """
         Calculate overall performance metrics.
         """
@@ -2010,8 +2010,8 @@ class QuantumState:
     until measurement collapses them to a definite outcome.
     """
 
-    amplitudes: Dict[str, complex]  # State amplitudes (complex numbers)
-    basis_states: List[str] = field(default_factory=list)  # Possible states
+    amplitudes: dict[str, complex]  # State amplitudes (complex numbers)
+    basis_states: list[str] = field(default_factory=list)  # Possible states
 
     def __post_init__(self):
         if not self.basis_states and self.amplitudes:
@@ -2032,7 +2032,7 @@ class QuantumState:
             return 0.0
         return abs(self.amplitudes[state]) ** 2
 
-    def get_probabilities(self) -> Dict[str, float]:
+    def get_probabilities(self) -> dict[str, float]:
         """Get probability distribution over all states"""
         return {k: abs(v) ** 2 for k, v in self.amplitudes.items()}
 
@@ -2130,10 +2130,10 @@ class QuantumWalkExplorer:
 
         # State: position ⊗ direction
         # Amplitudes stored as dict: (position, direction) -> amplitude
-        self.state: Dict[Tuple[int, int], complex] = {}
+        self.state: dict[tuple[int, int], complex] = {}
         self._initialize_state()
 
-        self.walk_history: List[Dict[int, float]] = []
+        self.walk_history: list[dict[int, float]] = []
 
     def _initialize_state(self) -> None:
         """Initialize walker at center in uniform superposition of directions"""
@@ -2202,7 +2202,7 @@ class QuantumWalkExplorer:
             distribution[pos] = distribution.get(pos, 0) + prob
         self.walk_history.append(distribution)
 
-    def run_walk(self, steps: int = 20) -> Dict[str, Any]:
+    def run_walk(self, steps: int = 20) -> dict[str, Any]:
         """
         Run quantum walk for specified steps.
 
@@ -2232,7 +2232,7 @@ class QuantumWalkExplorer:
             "quantum_advantage": f"O(t) vs O(√t) classical spread",
         }
 
-    def explore_decision_tree(self, decisions: List[str], target_decision: str) -> Dict[str, Any]:
+    def explore_decision_tree(self, decisions: list[str], target_decision: str) -> dict[str, Any]:
         """
         Use quantum walk to explore decision tree.
 
@@ -2281,9 +2281,9 @@ class SuperpositionExplorer:
     """
 
     def __init__(self):
-        self.paths: List[ActionPath] = []
+        self.paths: list[ActionPath] = []
         self.superposition_state: Optional[QuantumState] = None
-        self.evaluation_history: List[Dict] = []
+        self.evaluation_history: list[dict] = []
 
     def add_path(self, path: ActionPath) -> None:
         """Add a path to the superposition"""
@@ -2371,7 +2371,7 @@ class SuperpositionExplorer:
                 {"iteration": i, "probabilities": self.superposition_state.get_probabilities()}
             )
 
-    def measure_optimal_path(self) -> Tuple[ActionPath, float]:
+    def measure_optimal_path(self) -> tuple[ActionPath, float]:
         """
         Measure superposition to get optimal path.
 
@@ -2393,8 +2393,8 @@ class SuperpositionExplorer:
         return self.paths[path_idx], max_prob
 
     def explore_all_paths(
-        self, paths: List[ActionPath], grover_iterations: int = 3
-    ) -> Dict[str, Any]:
+        self, paths: list[ActionPath], grover_iterations: int = 3
+    ) -> dict[str, Any]:
         """
         Complete superposition exploration workflow.
 
@@ -2460,8 +2460,8 @@ class PINNValidator:
     """
 
     def __init__(self):
-        self.constraints: List[Dict[str, Any]] = []
-        self.validation_history: List[Dict] = []
+        self.constraints: list[dict[str, Any]] = []
+        self.validation_history: list[dict] = []
 
         # Default physics constraints
         self._add_default_constraints()
@@ -2510,7 +2510,7 @@ class PINNValidator:
         """
         return path.friction / 10
 
-    def validate_path(self, path: ActionPath) -> Dict[str, Any]:
+    def validate_path(self, path: ActionPath) -> dict[str, Any]:
         """
         Validate a path against all physics constraints.
 
@@ -2545,7 +2545,7 @@ class PINNValidator:
         self.validation_history.append(result)
         return result
 
-    def _generate_recommendation(self, residuals: Dict[str, float], physics_score: float) -> str:
+    def _generate_recommendation(self, residuals: dict[str, float], physics_score: float) -> str:
         """Generate actionable recommendation based on validation"""
         if physics_score >= 0.9:
             return "path_optimal"
@@ -2558,7 +2558,7 @@ class PINNValidator:
         else:
             return "path_infeasible"
 
-    def validate_batch(self, paths: List[ActionPath]) -> Dict[str, Any]:
+    def validate_batch(self, paths: list[ActionPath]) -> dict[str, Any]:
         """
         Validate multiple paths and rank by physics compliance.
         """
@@ -2610,8 +2610,8 @@ class QuantumPhysicsOrchestrator:
         self.swarm = SwarmIntelligence()
         self.reflection = ReflectionLoop()
 
-        self.entanglements: List[EntangledDependency] = []
-        self.decision_log: List[Dict] = []
+        self.entanglements: list[EntangledDependency] = []
+        self.decision_log: list[dict] = []
 
     def add_entanglement(self, decision_a: str, decision_b: str, correlation: float = 0.5) -> None:
         """Add entanglement between two decisions"""
@@ -2622,25 +2622,25 @@ class QuantumPhysicsOrchestrator:
         )
 
     def assess_with_quantum_walk(
-        self, decisions: List[str], target: str, steps: int = 20
-    ) -> Dict[str, Any]:
+        self, decisions: list[str], target: str, steps: int = 20
+    ) -> dict[str, Any]:
         """Use quantum walk to explore and assess decisions"""
         self.quantum_walk = QuantumWalkExplorer(num_positions=len(decisions))
         return self.quantum_walk.explore_decision_tree(decisions, target)
 
     def explore_in_superposition(
-        self, paths: List[ActionPath], iterations: int = 3
-    ) -> Dict[str, Any]:
+        self, paths: list[ActionPath], iterations: int = 3
+    ) -> dict[str, Any]:
         """Explore paths using superposition"""
         return self.superposition.explore_all_paths(paths, iterations)
 
-    def validate_physics(self, paths: List[ActionPath]) -> Dict[str, Any]:
+    def validate_physics(self, paths: list[ActionPath]) -> dict[str, Any]:
         """Validate paths against physics constraints"""
         return self.pinn_validator.validate_batch(paths)
 
     def optimize_with_energy(
-        self, paths: List[ActionPath], temperature: float = 1.0
-    ) -> Dict[str, Any]:
+        self, paths: list[ActionPath], temperature: float = 1.0
+    ) -> dict[str, Any]:
         """Optimize using energy landscape"""
         self.energy_landscape = EnergyLandscape(temperature=temperature)
 
@@ -2666,8 +2666,8 @@ class QuantumPhysicsOrchestrator:
         }
 
     def run_full_orchestration(
-        self, paths: List[ActionPath], target_action: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, paths: list[ActionPath], target_action: Optional[str] = None
+    ) -> dict[str, Any]:
         """
         Run complete quantum-physics orchestration workflow.
 
@@ -2712,10 +2712,10 @@ class QuantumPhysicsOrchestrator:
 
     def coordinate_multi_agent(
         self,
-        agent_positions: List[Tuple[float, ...]],
-        target: Tuple[float, ...],
+        agent_positions: list[tuple[float, ...]],
+        target: tuple[float, ...],
         use_swarm: bool = True,
-    ) -> List[Tuple[float, ...]]:
+    ) -> list[tuple[float, ...]]:
         """
         Coordinate multiple agents using swarm intelligence.
 
@@ -2729,7 +2729,7 @@ class QuantumPhysicsOrchestrator:
                 tuple(p + 0.1 * (t - p) for p, t in zip(pos, target)) for pos in agent_positions
             ]
 
-    def get_decision_summary(self) -> Dict[str, Any]:
+    def get_decision_summary(self) -> dict[str, Any]:
         """Get summary of all decisions made"""
         return {
             "total_decisions": len(self.decision_log),
@@ -2806,7 +2806,7 @@ class QuantumOperator:
         for i in range(n):
             self.number[i][i] = float(i)
 
-    def apply_creation(self, state: List[float]) -> List[float]:
+    def apply_creation(self, state: list[float]) -> list[float]:
         """
         Apply creation operator to state.
 
@@ -2819,7 +2819,7 @@ class QuantumOperator:
                 result[i] += self.creation[i][j] * state[j]
         return result
 
-    def apply_annihilation(self, state: List[float]) -> List[float]:
+    def apply_annihilation(self, state: list[float]) -> list[float]:
         """
         Apply annihilation operator to state.
 
@@ -2832,7 +2832,7 @@ class QuantumOperator:
                 result[i] += self.annihilation[i][j] * state[j]
         return result
 
-    def get_occupation_number(self, state: List[float]) -> float:
+    def get_occupation_number(self, state: list[float]) -> float:
         """
         Calculate expectation value of number operator.
 
@@ -2846,7 +2846,7 @@ class QuantumOperator:
         expectation = sum(s * r for s, r in zip(state, result))
         return expectation
 
-    def coherent_state(self, alpha: complex) -> List[complex]:
+    def coherent_state(self, alpha: complex) -> list[complex]:
         """
         Generate coherent state |α⟩ = e^(-|α|²/2) Σ (αⁿ/√n!)|n⟩
 
@@ -2866,8 +2866,8 @@ class QuantumOperator:
         return state
 
     def evolve_state(
-        self, state: List[float], time: float, hamiltonian_coefficient: float = 1.0
-    ) -> List[complex]:
+        self, state: list[float], time: float, hamiltonian_coefficient: float = 1.0
+    ) -> list[complex]:
         """
         Time evolution of state under number operator Hamiltonian.
 
@@ -2901,11 +2901,11 @@ class ConservationLawChecker:
 
     def __init__(self, tolerance: float = 1e-6):
         self.tolerance = tolerance
-        self.conservation_history: List[Dict[str, Any]] = []
+        self.conservation_history: list[dict[str, Any]] = []
 
     def check_energy_conservation(
-        self, initial_state: Dict[str, float], final_state: Dict[str, float]
-    ) -> Dict[str, Any]:
+        self, initial_state: dict[str, float], final_state: dict[str, float]
+    ) -> dict[str, Any]:
         """
         Check if total energy is conserved.
 
@@ -2928,8 +2928,8 @@ class ConservationLawChecker:
         return result
 
     def check_momentum_conservation(
-        self, momenta: List[Tuple[float, float]], forces_applied: List[Tuple[float, float]] = None
-    ) -> Dict[str, Any]:
+        self, momenta: list[tuple[float, float]], forces_applied: list[tuple[float, float]] = None
+    ) -> dict[str, Any]:
         """
         Check momentum conservation: Σp = constant (if no external forces)
 
@@ -2957,7 +2957,7 @@ class ConservationLawChecker:
 
         return result
 
-    def check_probability_conservation(self, probabilities: List[float]) -> Dict[str, Any]:
+    def check_probability_conservation(self, probabilities: list[float]) -> dict[str, Any]:
         """
         Check probability conservation: Σp_i = 1
         """
@@ -2976,8 +2976,8 @@ class ConservationLawChecker:
         return result
 
     def check_resource_budget(
-        self, allocated: Dict[str, float], consumed: Dict[str, float], budget: Dict[str, float]
-    ) -> Dict[str, Any]:
+        self, allocated: dict[str, float], consumed: dict[str, float], budget: dict[str, float]
+    ) -> dict[str, Any]:
         """
         Check resource budget conservation.
 
@@ -3007,7 +3007,7 @@ class ConservationLawChecker:
 
         return result
 
-    def validate_transition(self, before: ActionPath, after: ActionPath) -> Dict[str, Any]:
+    def validate_transition(self, before: ActionPath, after: ActionPath) -> dict[str, Any]:
         """
         Validate a state transition respects physics.
 
@@ -3057,10 +3057,10 @@ class PathIntegralCalculator:
 
     def __init__(self, hbar: float = 1.0):
         self.hbar = hbar  # Effective Planck constant (controls quantum effects)
-        self.path_history: List[Dict[str, Any]] = []
+        self.path_history: list[dict[str, Any]] = []
 
     def calculate_action(
-        self, path: List[Dict[str, float]], lagrangian: Optional[callable] = None
+        self, path: list[dict[str, float]], lagrangian: Optional[callable] = None
     ) -> float:
         """
         Calculate action along a path.
@@ -3088,7 +3088,7 @@ class PathIntegralCalculator:
         return complex(math.cos(phase), math.sin(phase))
 
     def propagator(
-        self, paths: List[List[Dict[str, float]]], weights: Optional[List[float]] = None
+        self, paths: list[list[dict[str, float]]], weights: Optional[list[float]] = None
     ) -> complex:
         """
         Calculate propagator by summing over all paths.
@@ -3110,14 +3110,14 @@ class PathIntegralCalculator:
 
         return propagator
 
-    def transition_probability(self, paths: List[List[Dict[str, float]]]) -> float:
+    def transition_probability(self, paths: list[list[dict[str, float]]]) -> float:
         """
         Calculate transition probability: P = |K|²
         """
         K = self.propagator(paths)
         return abs(K) ** 2
 
-    def find_classical_path(self, paths: List[List[Dict[str, float]]]) -> Tuple[int, float]:
+    def find_classical_path(self, paths: list[list[dict[str, float]]]) -> tuple[int, float]:
         """
         Find the classical (stationary action) path.
 
@@ -3132,8 +3132,8 @@ class PathIntegralCalculator:
         return min_idx, actions[min_idx]
 
     def analyze_paths(
-        self, paths: List[List[Dict[str, float]]], path_labels: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        self, paths: list[list[dict[str, float]]], path_labels: Optional[list[str]] = None
+    ) -> dict[str, Any]:
         """
         Complete path integral analysis.
 
@@ -3185,7 +3185,7 @@ class PathIntegralCalculator:
         self.path_history.append(result)
         return result
 
-    def evaluate_decision_paths(self, action_paths: List[ActionPath]) -> Dict[str, Any]:
+    def evaluate_decision_paths(self, action_paths: list[ActionPath]) -> dict[str, Any]:
         """
         Evaluate ActionPath objects using path integral formalism.
 
@@ -3242,8 +3242,8 @@ class HamiltonianEvolver:
             grid_size: Size of spatial grid for discretization (optional)
         """
         self.grid_size = grid_size
-        self.trajectory: List[Tuple[float, float]] = []
-        self.hamiltonian_history: List[float] = []
+        self.trajectory: list[tuple[float, float]] = []
+        self.hamiltonian_history: list[float] = []
 
     def harmonic_hamiltonian(
         self, q: float, p: float, omega: float = 1.0, mass: float = 1.0
@@ -3275,7 +3275,7 @@ class HamiltonianEvolver:
 
     def evolve(
         self, q0: float, p0: float, hamiltonian: callable = None, dt: float = 0.1, steps: int = 100
-    ) -> List[Tuple[float, float, float]]:
+    ) -> list[tuple[float, float, float]]:
         """
         Evolve state using symplectic integrator (leapfrog).
 
@@ -3314,9 +3314,9 @@ class HamiltonianEvolver:
     def find_fixed_points(
         self,
         hamiltonian: callable = None,
-        search_range: Tuple[float, float] = (-2, 2),
+        search_range: tuple[float, float] = (-2, 2),
         resolution: int = 20,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Find fixed points (stable equilibria) of the system.
 
@@ -3361,7 +3361,7 @@ class HamiltonianEvolver:
 
     def analyze_decision_dynamics(
         self, action_path: ActionPath, time_horizon: int = 50
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Analyze decision dynamics for an ActionPath.
 
@@ -3420,7 +3420,7 @@ class PhysicsCalculatorSuite:
         self.pinn = PINNValidator()
         self.reflection = ReflectionLoop()
 
-    def full_analysis(self, paths: List[ActionPath]) -> Dict[str, Any]:
+    def full_analysis(self, paths: list[ActionPath]) -> dict[str, Any]:
         """
         Run full physics analysis on decision paths.
 
@@ -3474,7 +3474,7 @@ class PhysicsCalculatorSuite:
 
         return results
 
-    def get_calculator_status(self) -> Dict[str, str]:
+    def get_calculator_status(self) -> dict[str, str]:
         """Get status of all calculators"""
         return {
             "quantum_operator": "active",

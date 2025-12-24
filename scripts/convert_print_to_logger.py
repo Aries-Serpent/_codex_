@@ -22,7 +22,6 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -37,7 +36,7 @@ class PrintDetector(ast.NodeVisitor):
 
     def __init__(self, filename: str):
         self.filename = filename
-        self.print_calls: List[Tuple[int, str, str]] = []  # (line, context, suggested_level)
+        self.print_calls: list[tuple[int, str, str]] = []  # (line, context, suggested_level)
         self.has_logging_import = False
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
@@ -94,7 +93,7 @@ class PrintDetector(ast.NodeVisitor):
             return "info"
 
 
-def analyze_file(file_path: Path) -> Tuple[bool, List[Tuple[int, str, str]]]:
+def analyze_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
     """
     Analyze a Python file for print() calls.
 
@@ -115,13 +114,13 @@ def analyze_file(file_path: Path) -> Tuple[bool, List[Tuple[int, str, str]]]:
         return detector.has_logging_import, detector.print_calls
 
     except (SyntaxError, UnicodeDecodeError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Could not parse {file_path}: {e}")
         return False, []
 
 
 def convert_print_to_logger(
-    file_path: Path, print_calls: List[Tuple[int, str, str]], dry_run: bool = True
+    file_path: Path, print_calls: list[tuple[int, str, str]], dry_run: bool = True
 ) -> bool:
     """
     Convert print() calls to logger calls.
@@ -163,7 +162,7 @@ def convert_print_to_logger(
         return changes_made
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Failed to convert {file_path}: {e}")
         return False
 
@@ -269,7 +268,7 @@ def add_logging_import(file_path: Path, dry_run: bool = True) -> bool:
         return True
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Failed to add logging import to {file_path}: {e}")
         return False
 

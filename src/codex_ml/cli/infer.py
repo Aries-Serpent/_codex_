@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal inference CLI for loading a model and generating text."""
 
-from __future__ import annotations
 
 import json
 import os
@@ -185,7 +185,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             pkg_version = version("codex")
         except PackageNotFoundError as e:
-           logger.debug(f"PackageNotFoundError: {e}")
+            logger.debug(f"PackageNotFoundError: {e}")
             logger.warning(f"PackageNotFoundError: {e}", exc_info=True)
             pkg_version = "0.0"
         manifest = {

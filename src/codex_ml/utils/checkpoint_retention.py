@@ -44,7 +44,7 @@ def _is_epoch_dir(path: Path) -> bool:
     try:
         int(suffix)
     except ValueError as e:
-       logger.debug(f"ValueError: {e}")
+        logger.debug(f"ValueError: {e}")
         logger.warning(f"ValueError: {e}", exc_info=True)
         return False
     return True

@@ -10,7 +10,7 @@ Patterns detected: vector, embedding, similarity, search, retrieval
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 TARGET_DIR = "codex_addons/vector_stores/"
 VECTOR_KEYWORDS = {
@@ -57,7 +57,7 @@ def _read_text(path_input) -> str:
         return ""
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detect vector store implementations in the codebase.
 
@@ -70,7 +70,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Detection result with evidence files, patterns, and metadata
     """
-    files: List[Dict[str, Any]] = file_index.get("files", [])
+    files: list[dict[str, Any]] = file_index.get("files", [])
 
     # Path-based detection (primary)
     path_evidence = [
@@ -78,7 +78,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     ]
 
     # Content-based detection (secondary)
-    content_evidence: Dict[str, List[str]] = {}
+    content_evidence: dict[str, list[str]] = {}
     for entry in files:
         rel_path = entry.get("path", "")
 

@@ -116,7 +116,7 @@ def export_alerts() -> list[dict[str, Any]]:
     try:
         import requests
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         logger.warning("requests not installed, using offline mode")
         return export_alerts_offline()
@@ -156,7 +156,7 @@ def export_alerts() -> list[dict[str, Any]]:
             page += 1
             
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error fetching alerts: {e}")
             break
     

@@ -19,7 +19,6 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -28,9 +27,9 @@ logger = logging.getLogger(__name__)
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
 
-def fix_fstring_sql(content: str) -> Tuple[str, List[str]]:
+def fix_fstring_sql(content: str) -> tuple[str, list[str]]:
     """Fix f-string SQL injection patterns."""
-    changes: List[str] = []
+    changes: list[str] = []
 
     # Pattern: cursor.execute(f"... {var}...")
     fstring_pattern = r'(\w+\.execute\s*\(\s*)f(["\'])(.*?)\2(\s*\))'
@@ -84,9 +83,9 @@ def fix_fstring_sql(content: str) -> Tuple[str, List[str]]:
     return new_content, changes
 
 
-def fix_concat_sql(content: str) -> Tuple[str, List[str]]:
+def fix_concat_sql(content: str) -> tuple[str, list[str]]:
     """Fix string concatenation SQL injection patterns."""
-    changes: List[str] = []
+    changes: list[str] = []
 
     # Pattern: cursor.execute("SELECT..." + var)
     concat_pattern = r'(\w+\.execute\s*\(\s*)(["\'])([^"\']+)\2\s*\+\s*(\w+)(\s*\))'
@@ -109,7 +108,7 @@ def fix_concat_sql(content: str) -> Tuple[str, List[str]]:
     return new_content, changes
 
 
-def transform_file(file_path: str) -> Tuple[str, List[str]]:
+def transform_file(file_path: str) -> tuple[str, list[str]]:
     """Transform a single file."""
     # Input validation (safeguard)
     if not file_path or not isinstance(file_path, str):
@@ -129,7 +128,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
         logger.debug(f"Exception: {e}")
         return "", [f"Error reading file: {e}"]
 
-    all_changes: List[str] = []
+    all_changes: list[str] = []
 
     # Apply fixes
     content, changes = fix_fstring_sql(content)

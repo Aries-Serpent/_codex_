@@ -1,9 +1,9 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
 """Dump environment variables and version info in JSON."""
 
-from __future__ import annotations
 
 import json
 import os

@@ -167,7 +167,7 @@ def load_model_with_optional_lora(
     try:
         cfg = LoraConfig(task_type=task_type_value, **cfg_kwargs)
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         cfg = LoraConfig(**cfg_kwargs)
 

@@ -67,7 +67,7 @@ def _resolve_connector_cache_root() -> Path:
         try:
             return Path(override).expanduser().resolve()
         except OSError as e:
-           logger.debug(f"OSError: {e}")
+            logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             return Path(override).expanduser()
     return _DEFAULT_CONNECTOR_CACHE
@@ -77,7 +77,7 @@ def _run_connector_coro(coro):
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError as e:
-       logger.debug(f"RuntimeError: {e}")
+        logger.debug(f"RuntimeError: {e}")
         logger.warning(f"RuntimeError: {e}", exc_info=True)
         return asyncio.run(coro)
     if loop.is_running():  # pragma: no cover - defensive for event-loop environments

@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 _LATENCY_QUANTUM = Decimal("0.0000001")
 
@@ -15,8 +15,8 @@ class PerformanceMetrics:
     request_count: int = 0
     batch_count: int = 0
     total_latency: float = 0.0
-    latencies: List[float] = field(default_factory=list)
-    batch_sizes: List[int] = field(default_factory=list)
+    latencies: list[float] = field(default_factory=list)
+    batch_sizes: list[int] = field(default_factory=list)
     throughput_window: float = 60.0
     window_requests: int = 0
     window_start: float = field(default_factory=time.time)
@@ -72,7 +72,7 @@ class PerformanceMetrics:
             return 0.0
         return sum(self.batch_sizes) / len(self.batch_sizes)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "request_count": self.request_count,
             "batch_count": self.batch_count,

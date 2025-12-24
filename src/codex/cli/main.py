@@ -36,7 +36,7 @@ try:
         TYPER_AVAILABLE = False
         import argparse
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     TYPER_AVAILABLE = False
     import argparse

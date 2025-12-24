@@ -85,17 +85,17 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -142,18 +142,18 @@ def init_db(db_path: Optional[Path] = None):
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         try:
             conn.execute(
                 """CREATE TABLE IF NOT EXISTS session_events(
-                       ts REAL NOT NULL,
-                       session_id TEXT NOT NULL,
-                       role TEXT NOT NULL,
-                       message TEXT NOT NULL,
-                       seq INTEGER,
-                       meta TEXT
-                   )"""
+                        ts REAL NOT NULL,
+                        session_id TEXT NOT NULL,
+                        role TEXT NOT NULL,
+                        message TEXT NOT NULL,
+                        seq INTEGER,
+                        meta TEXT
+                    )"""
             )
             cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
             if "seq" not in cols:
@@ -264,7 +264,7 @@ def log_event(
                 )
                 return
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 # Legacy adapters expect positional ``session_id``/``role`` arguments.
                 try:
@@ -274,12 +274,12 @@ def log_event(
                         _shared_log_event(session_id, role, message, db_path)
                     return
                 except TypeError as e:
-                   logger.debug(f"TypeError: {e}")
+                    logger.debug(f"TypeError: {e}")
                     logger.warning(f"TypeError: {e}", exc_info=True)
                     try:
                         _shared_log_event(session_id, role, message)
                     except TypeError as e:
-                       logger.debug(f"TypeError: {e}")
+                        logger.debug(f"TypeError: {e}")
                         logger.warning(f"TypeError: {e}", exc_info=True)
                         logging.getLogger(__name__).debug(
                             "shared log_event compatibility fallback failed",
@@ -289,7 +289,7 @@ def log_event(
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             _shared_log_event(session_id, role, message, db_path=db_path)
         return
@@ -403,7 +403,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("BEGIN")

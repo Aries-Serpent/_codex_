@@ -16,7 +16,7 @@ import importlib.metadata
 import logging
 import sys
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, Type
+from typing import Any, Callable, Optional, Type
 from packaging import version as pkg_version
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class PluginInfo:
     module_name: str
     version: Optional[str] = None
     description: Optional[str] = None
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     required_codex_version: Optional[str] = None
     plugin_class: Optional[Type] = None
     loaded: bool = False
@@ -68,7 +68,7 @@ class PluginValidator:
             plugin_info: Plugin information
 
         Returns:
-            Tuple of (is_valid, error_message)
+            tuple of (is_valid, error_message)
         """
         # Check version compatibility
         if plugin_info.required_codex_version:
@@ -82,7 +82,7 @@ class PluginValidator:
                         f"but {self.codex_version} is installed"
                     )
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to parse version for {plugin_info.name}: {e}")
 
         # Check dependencies
@@ -121,14 +121,14 @@ class EntryPointPluginRegistry:
 
     def __init__(self, validator: Optional[PluginValidator] = None):
         self.validator = validator or PluginValidator()
-        self._plugins: Dict[str, Dict[str, PluginInfo]] = {}
-        self._loaded_instances: Dict[str, Any] = {}
+        self._plugins: dict[str, dict[str, PluginInfo]] = {}
+        self._loaded_instances: dict[str, Any] = {}
 
     def discover_plugins(
         self,
-        groups: Optional[List[str]] = None,
+        groups: Optional[list[str]] = None,
         auto_load: bool = False,
-    ) -> Dict[str, List[PluginInfo]]:
+    ) -> dict[str, list[PluginInfo]]:
         """Discover plugins from entry points.
 
         Args:
@@ -175,7 +175,7 @@ class EntryPointPluginRegistry:
                         self.load_plugin(group, ep.name)
 
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to discover plugins in group {group}: {e}")
 
         return discovered
@@ -210,7 +210,7 @@ class EntryPointPluginRegistry:
                 **metadata,
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to load entry point {entry_point.name}: {e}")
             return PluginInfo(
                 name=entry_point.name,
@@ -300,8 +300,8 @@ class EntryPointPluginRegistry:
     def list_plugins(
         self,
         group: Optional[str] = None,
-    ) -> Dict[str, List[str]]:
-        """List all discovered plugins.
+    ) -> dict[str, list[str]]:
+        """list all discovered plugins.
 
         Args:
             group: Optional group filter
@@ -340,9 +340,9 @@ _global_registry = EntryPointPluginRegistry()
 
 
 def discover_plugins(
-    groups: Optional[List[str]] = None,
+    groups: Optional[list[str]] = None,
     auto_load: bool = False,
-) -> Dict[str, List[PluginInfo]]:
+) -> dict[str, list[PluginInfo]]:
     """Discover plugins from entry points (convenience function).
 
     Args:
@@ -362,7 +362,7 @@ def validate_plugin(plugin_info: PluginInfo) -> tuple[bool, Optional[str]]:
         plugin_info: Plugin information
 
     Returns:
-        Tuple of (is_valid, error_message)
+        tuple of (is_valid, error_message)
     """
     validator = PluginValidator()
     return validator.validate_plugin(plugin_info)

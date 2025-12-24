@@ -7,7 +7,7 @@ Requires: pip install "ray[train]"
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ try:
 
     RAY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     RAY_AVAILABLE = False
     logger.debug("Ray not installed, Ray-based distributed training unavailable")
@@ -45,7 +45,7 @@ class RayDistributedTrainer:
         train_fn: Callable,
         num_workers: int = 2,
         use_gpu: bool = True,
-        resources_per_worker: Optional[Dict[str, float]] = None,
+        resources_per_worker: Optional[dict[str, float]] = None,
     ):
         if not RAY_AVAILABLE:
             raise ImportError("Ray is not installed. Install with: pip install 'ray[train]'")
@@ -60,7 +60,7 @@ class RayDistributedTrainer:
 
     def train(
         self,
-        train_config: Dict[str, Any],
+        train_config: dict[str, Any],
         num_epochs: int = 10,
     ) -> Any:
         """Run distributed training.
@@ -90,7 +90,7 @@ class RayDistributedTrainer:
         return result
 
 
-def ray_train_loop(config: Dict[str, Any]) -> None:
+def ray_train_loop(config: dict[str, Any]) -> None:
     """Example Ray training loop.
 
     This function runs on each worker.

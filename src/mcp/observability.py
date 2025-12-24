@@ -11,7 +11,7 @@ import asyncio
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 from contextlib import contextmanager
 from functools import wraps
 import threading
@@ -26,7 +26,7 @@ class MetricValue:
     
     name: str
     value: float
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
     metric_type: str = "gauge"  # gauge, counter, histogram
 
@@ -41,8 +41,8 @@ class TraceSpan:
     operation_name: str
     start_time: float = field(default_factory=time.time)
     end_time: Optional[float] = None
-    tags: Dict[str, Any] = field(default_factory=dict)
-    logs: List[Dict[str, Any]] = field(default_factory=list)
+    tags: dict[str, Any] = field(default_factory=dict)
+    logs: list[dict[str, Any]] = field(default_factory=list)
     status: str = "ok"
     
     @property
@@ -58,17 +58,17 @@ class MetricsRegistry:
     
     def __init__(self) -> None:
         """Initialize the metrics registry."""
-        self._counters: Dict[str, float] = {}
-        self._gauges: Dict[str, float] = {}
-        self._histograms: Dict[str, List[float]] = {}
+        self._counters: dict[str, float] = {}
+        self._gauges: dict[str, float] = {}
+        self._histograms: dict[str, list[float]] = {}
         self._lock = threading.Lock()
-        self._labels: Dict[str, Dict[str, str]] = {}
+        self._labels: dict[str, dict[str, str]] = {}
         
     def increment_counter(
         self,
         name: str,
         value: float = 1.0,
-        labels: Optional[Dict[str, str]] = None
+        labels: Optional[dict[str, str]] = None
     ) -> None:
         """Increment a counter metric.
         
@@ -87,9 +87,9 @@ class MetricsRegistry:
         self,
         name: str,
         value: float,
-        labels: Optional[Dict[str, str]] = None
+        labels: Optional[dict[str, str]] = None
     ) -> None:
-        """Set a gauge metric value.
+        """set a gauge metric value.
         
         Args:
             name: Metric name.
@@ -106,7 +106,7 @@ class MetricsRegistry:
         self,
         name: str,
         value: float,
-        labels: Optional[Dict[str, str]] = None
+        labels: Optional[dict[str, str]] = None
     ) -> None:
         """Record an observation for a histogram metric.
         
@@ -126,7 +126,7 @@ class MetricsRegistry:
     def _make_key(
         self,
         name: str,
-        labels: Optional[Dict[str, str]] = None
+        labels: Optional[dict[str, str]] = None
     ) -> str:
         """Make a unique key for a metric with labels."""
         if not labels:
@@ -145,13 +145,13 @@ class MetricsRegistry:
         """
         return key.split("{")[0]
     
-    def get_all_metrics(self) -> List[MetricValue]:
+    def get_all_metrics(self) -> list[MetricValue]:
         """Get all collected metrics.
         
         Returns:
-            List of all metric values.
+            list of all metric values.
         """
-        metrics: List[MetricValue] = []
+        metrics: list[MetricValue] = []
         
         with self._lock:
             for key, value in self._counters.items():
@@ -208,7 +208,7 @@ class Tracer:
     
     def __init__(self) -> None:
         """Initialize the tracer."""
-        self._spans: List[TraceSpan] = []
+        self._spans: list[TraceSpan] = []
         self._lock = threading.Lock()
         self._span_counter = 0
         
@@ -223,7 +223,7 @@ class Tracer:
         operation_name: str,
         trace_id: Optional[str] = None,
         parent_span_id: Optional[str] = None,
-        tags: Optional[Dict[str, Any]] = None
+        tags: Optional[dict[str, Any]] = None
     ) -> TraceSpan:
         """Start a new trace span.
         
@@ -286,7 +286,7 @@ class Tracer:
         operation_name: str,
         trace_id: Optional[str] = None,
         parent_span_id: Optional[str] = None,
-        tags: Optional[Dict[str, Any]] = None
+        tags: Optional[dict[str, Any]] = None
     ):
         """Context manager for tracing an operation.
         
@@ -315,14 +315,14 @@ class Tracer:
             self.finish_span(span, status="error")
             raise
     
-    def get_spans(self, trace_id: Optional[str] = None) -> List[TraceSpan]:
+    def get_spans(self, trace_id: Optional[str] = None) -> list[TraceSpan]:
         """Get collected spans.
         
         Args:
             trace_id: Optional filter by trace ID.
             
         Returns:
-            List of trace spans.
+            list of trace spans.
         """
         with self._lock:
             if trace_id:
@@ -380,7 +380,7 @@ class MCPMetrics:
         )
     
     def set_active_connections(self, count: int) -> None:
-        """Set the number of active connections.
+        """set the number of active connections.
         
         Args:
             count: Number of active connections.

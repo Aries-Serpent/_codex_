@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import logging
 import os
-from typing import Any, Dict, Iterable, Set
+from typing import Any, Iterable
 
 from src.mcp.embeddings.batcher import batch_iterable, compute_checksum  # type: ignore
 from src.mcp.embeddings.chunking import chunk_texts  # type: ignore
@@ -46,7 +46,7 @@ def _load_embedder_class(path: str):
 
 
 @retry_on_exception(tries=3)
-def _upsert_with_retry(adapter, namespace: str, items: Iterable[Dict[str, Any]]):
+def _upsert_with_retry(adapter, namespace: str, items: Iterable[dict[str, Any]]):
     adapter.upsert_batch(namespace, items)
 
 
@@ -76,7 +76,7 @@ def run_worker(
         items = json.load(fh)
 
     # Load checkpoint if provided
-    seen: Set[str] = set()
+    seen: set[str] = set()
     if checkpoint_path:
         seen = load_checkpoint(checkpoint_path)
 

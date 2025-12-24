@@ -2,22 +2,22 @@
 # Minimal typed abstract base class used by adapters and tests.
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, Optional
 
 
-class VectorItem(Dict):
+class VectorItem(dict):
     """
     Minimal vector item representation:
     {
       "id": str,
-      "embedding": List[float],
+      "embedding": list[float],
       "content": str,
-      "metadata": Dict[str, Any]
+      "metadata": dict[str, Any]
     }
     """
 
 
-class BackendResponse(Dict):
+class BackendResponse(dict):
     """
     Query result item:
     {
@@ -48,10 +48,10 @@ class BackendAdapter(ABC):
     def query_top_k(
         self,
         namespace: str,
-        query_embedding: List[float],
+        query_embedding: list[float],
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[BackendResponse]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[BackendResponse]:
         """Return top_k results with scores and metadata."""
         raise NotImplementedError
 
@@ -61,6 +61,6 @@ class BackendAdapter(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Return backend health information (status, details)."""
         raise NotImplementedError

@@ -8,12 +8,11 @@ packaging tools to include the plan documents alongside source code.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 
 __all__ = ["list_plan_documents"]
 
 
-def list_plan_documents(base_dir: Path | None = None) -> List[Path]:
+def list_plan_documents(base_dir: Path | None = None) -> list[Path]:
     """Return available plan documents within the ``codex_plans`` package.
 
     Parameters

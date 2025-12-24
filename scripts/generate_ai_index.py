@@ -13,7 +13,7 @@ from pathlib import Path
 import ast
 import json
 import hashlib
-from typing import Dict, List, Any, Optional
+from typing import Any, Optional
 from dataclasses import dataclass, asdict, field
 import re
 from datetime import datetime
@@ -30,15 +30,15 @@ class CodeEntity:
     line_end: int
     signature: Optional[str] = None
     docstring: Optional[str] = None
-    dependencies: List[str] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     complexity: int = 1
     hash: str = ""
 
     def __post_init__(self):
         if not self.hash:
             content = f"{self.type}:{self.name}:{self.path}:{self.line_start}"
-            self.hash = hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:16]
+            self.hash = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()[:16]
 
 
 @dataclass
@@ -49,12 +49,12 @@ class FileIndex:
     language: str
     size: int
     last_modified: str
-    entities: List[CodeEntity] = field(default_factory=list)
-    imports: List[str] = field(default_factory=list)
-    exports: List[str] = field(default_factory=list)
+    entities: list[CodeEntity] = field(default_factory=list)
+    imports: list[str] = field(default_factory=list)
+    exports: list[str] = field(default_factory=list)
     summary: str = ""
-    keywords: List[str] = field(default_factory=list)
-    semantic_tags: List[str] = field(default_factory=list)
+    keywords: list[str] = field(default_factory=list)
+    semantic_tags: list[str] = field(default_factory=list)
 
 
 class RepositoryIndexer:
@@ -78,11 +78,11 @@ class RepositoryIndexer:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Indices
-        self.semantic_index: Dict[str, List[str]] = {}  # keyword -> file paths
-        self.structural_index: Dict[str, Any] = {}  # module hierarchy
-        self.content_index: Dict[str, FileIndex] = {}  # file path -> FileIndex
-        self.metadata_index: Dict[str, Any] = {}  # aggregated metadata
-        self.entity_index: Dict[str, CodeEntity] = {}  # entity hash -> CodeEntity
+        self.semantic_index: dict[str, list[str]] = {}  # keyword -> file paths
+        self.structural_index: dict[str, Any] = {}  # module hierarchy
+        self.content_index: dict[str, FileIndex] = {}  # file path -> FileIndex
+        self.metadata_index: dict[str, Any] = {}  # aggregated metadata
+        self.entity_index: dict[str, CodeEntity] = {}  # entity hash -> CodeEntity
 
     def should_skip_dir(self, dir_path: Path) -> bool:
         """Check if directory should be skipped."""
@@ -92,7 +92,7 @@ class RepositoryIndexer:
             for skip in self.SKIP_DIRS
         )
 
-    def extract_python_entities(self, filepath: Path) -> List[CodeEntity]:
+    def extract_python_entities(self, filepath: Path) -> list[CodeEntity]:
         """Extract code entities from Python file using AST."""
         entities = []
         
@@ -164,7 +164,7 @@ class RepositoryIndexer:
             args.append(arg.arg)
         return f"{node.name}({', '.join(args)})"
 
-    def _extract_tags(self, node: ast.AST) -> List[str]:
+    def _extract_tags(self, node: ast.AST) -> list[str]:
         """Extract semantic tags from AST node."""
         tags = []
         
@@ -178,7 +178,7 @@ class RepositoryIndexer:
         
         return tags
 
-    def extract_imports(self, filepath: Path) -> List[str]:
+    def extract_imports(self, filepath: Path) -> list[str]:
         """Extract import statements from Python file."""
         imports = []
         
@@ -199,7 +199,7 @@ class RepositoryIndexer:
 
         return imports
 
-    def extract_keywords(self, content: str, docstring: Optional[str] = None) -> List[str]:
+    def extract_keywords(self, content: str, docstring: Optional[str] = None) -> list[str]:
         """Extract semantic keywords from content."""
         keywords = set()
         

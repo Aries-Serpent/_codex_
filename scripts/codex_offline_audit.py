@@ -36,7 +36,7 @@ import sys
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Ensure repository modules are importable when script is invoked directly.
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -68,12 +68,12 @@ class AuditContext:
     repo_root: Path
     output_dir: Path
     logger: Any
-    errors: List[Dict[str, Any]] = field(default_factory=list)
-    phase_results: List[PhaseResult] = field(default_factory=list)
-    audit_data: Dict[str, Any] = field(default_factory=dict)
-    env_info: Dict[str, Any] = field(default_factory=dict)
-    capability_matrix: Dict[str, Any] = field(default_factory=dict)
-    reproducibility: Dict[str, Any] = field(default_factory=dict)
+    errors: list[dict[str, Any]] = field(default_factory=list)
+    phase_results: list[PhaseResult] = field(default_factory=list)
+    audit_data: dict[str, Any] = field(default_factory=dict)
+    env_info: dict[str, Any] = field(default_factory=dict)
+    capability_matrix: dict[str, Any] = field(default_factory=dict)
+    reproducibility: dict[str, Any] = field(default_factory=dict)
 
 
 def timestamp() -> str:
@@ -119,7 +119,7 @@ def write_text(path: Path, text: str) -> None:
         fh.write(text)
 
 
-def gather_python_env() -> Dict[str, Any]:
+def gather_python_env() -> dict[str, Any]:
     import platform
 
     return {
@@ -130,8 +130,8 @@ def gather_python_env() -> Dict[str, Any]:
     }
 
 
-def parse_requirements(req_path: Path) -> List[str]:
-    entries: List[str] = []
+def parse_requirements(req_path: Path) -> list[str]:
+    entries: list[str] = []
     try:
         for line in req_path.read_text(encoding="utf-8").splitlines():
             stripped = line.strip()
@@ -144,14 +144,14 @@ def parse_requirements(req_path: Path) -> List[str]:
     return entries
 
 
-def detect_seed_calls(repo_root: Path) -> Dict[str, Any]:
+def detect_seed_calls(repo_root: Path) -> dict[str, Any]:
     patterns = {
         "torch.manual_seed": 0,
         "random.seed": 0,
         "np.random.seed": 0,
         "numpy.random.seed": 0,
     }
-    locations: Dict[str, List[str]] = {k: [] for k in patterns}
+    locations: dict[str, list[str]] = {k: [] for k in patterns}
     for path in repo_root.rglob("*.py"):
         try:
             text = path.read_text(encoding="utf-8", errors="ignore")
@@ -201,7 +201,7 @@ def run_preparation(ctx: AuditContext) -> None:
     ctx.env_info = env_info
     write_json(ctx.output_dir / "env_report.json", env_info)
 
-    git_meta: Dict[str, Any] = {}
+    git_meta: dict[str, Any] = {}
     try:
         git_meta["commit"] = (
             subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ctx.repo_root)
@@ -285,15 +285,15 @@ def infer_status(present: bool, partial: bool = False) -> str:
 def run_capability_extraction(ctx: AuditContext) -> None:
     repo_root = ctx.repo_root
 
-    def find_files(patterns: List[str]) -> List[str]:
-        matches: List[str] = []
+    def find_files(patterns: list[str]) -> list[str]:
+        matches: list[str] = []
         for pattern in patterns:
             for path in repo_root.rglob(pattern):
                 matches.append(str(path.relative_to(repo_root)))
         return sorted(set(matches))
 
-    def search_text(keywords: List[str]) -> List[str]:
-        hits: List[str] = []
+    def search_text(keywords: list[str]) -> list[str]:
+        hits: list[str] = []
         for path in repo_root.rglob("*.py"):
             try:
                 text = path.read_text(encoding="utf-8", errors="ignore")
@@ -305,10 +305,10 @@ def run_capability_extraction(ctx: AuditContext) -> None:
                 hits.append(str(path.relative_to(repo_root)))
         return sorted(set(hits))
 
-    capability_matrix: Dict[str, Dict[str, Any]] = {}
+    capability_matrix: dict[str, dict[str, Any]] = {}
 
     def add_capability(
-        name: str, present_files: List[str], evidence: List[str], notes: str
+        name: str, present_files: list[str], evidence: list[str], notes: str
     ) -> None:
         capability_matrix[name] = {
             "status": "Implemented" if present_files else "Missing",
@@ -493,10 +493,10 @@ def run_training_and_tokenizer(ctx: AuditContext) -> None:
     import traceback
 
     phase_number = 5
-    trainer_result: Dict[str, Any] = {
+    trainer_result: dict[str, Any] = {
         "status": "not_run",
     }
-    trainer_log_lines: List[str] = []
+    trainer_log_lines: list[str] = []
     trainer_path = ctx.output_dir / "trainer_smoke.json"
     trainer_log_path = ctx.output_dir / "trainer_smoke.log"
 
@@ -549,7 +549,7 @@ def run_training_and_tokenizer(ctx: AuditContext) -> None:
     write_json(trainer_path, trainer_result)
     write_text(trainer_log_path, "\n".join(trainer_log_lines))
 
-    tokenizer_result: Dict[str, Any] = {"status": "not_run"}
+    tokenizer_result: dict[str, Any] = {"status": "not_run"}
     tokenizer_path = ctx.output_dir / "tokenizer_check.json"
 
     tokenizer_files = []
@@ -704,7 +704,7 @@ def finalize_errors(ctx: AuditContext) -> None:
 
 
 def package_artifacts(ctx: AuditContext) -> None:
-    artifacts: List[Dict[str, Any]] = []
+    artifacts: list[dict[str, Any]] = []
     for path in sorted(ctx.output_dir.glob("**/*")):
         if path.is_file():
             digest = sha256(path.read_bytes()).hexdigest()

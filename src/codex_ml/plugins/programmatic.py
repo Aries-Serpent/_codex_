@@ -44,7 +44,7 @@ class PluginRegistry:
             try:
                 self.register(plugin)
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 continue
             count += 1

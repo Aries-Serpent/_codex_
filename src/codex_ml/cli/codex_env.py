@@ -6,7 +6,6 @@ import argparse
 import shlex
 import subprocess
 from pathlib import Path
-from typing import List
 
 
 def _run(cmd: str, cwd: Path) -> int:
@@ -34,7 +33,7 @@ def _cmd_task_sequence(args: argparse.Namespace) -> int:
 
 def _cmd_mltests(args: argparse.Namespace) -> int:
     root = Path(args.repo_root).resolve()
-    parts: List[str] = ["python tools/codex_mltest_runner.py"]
+    parts: list[str] = ["python tools/codex_mltest_runner.py"]
     if args.category:
         for cat in args.category:
             parts.append(f"--category {cat}")
@@ -105,7 +104,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
     func = getattr(args, "func", None)

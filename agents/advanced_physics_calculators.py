@@ -18,14 +18,14 @@ import logging
 logger = logging.getLogger(__name__)
 import random
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
@@ -41,7 +41,7 @@ try:
 
     SCIPY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     maximum_filter = None  # type: ignore
     SCIPY_AVAILABLE = False
@@ -72,10 +72,10 @@ class ChaoticAttractor:
     """
 
     attractor_type: str = "lorenz"  # logistic, lorenz, henon
-    parameters: Dict[str, float] = field(default_factory=dict)
+    parameters: dict[str, float] = field(default_factory=dict)
     state: np.ndarray = field(default_factory=lambda: np.array([1.0, 1.0, 1.0]))
-    history: List[np.ndarray] = field(default_factory=list)
-    initial_state: Optional[Tuple[float, ...]] = None
+    history: list[np.ndarray] = field(default_factory=list)
+    initial_state: Optional[tuple[float, ...]] = None
     sigma: Optional[float] = None
     rho: Optional[float] = None
     beta: Optional[float] = None
@@ -201,7 +201,7 @@ class ChaoticAttractor:
 
         return self.state
 
-    def get_trajectory(self, steps: int = 100, dt: float = 0.01) -> List[np.ndarray]:
+    def get_trajectory(self, steps: int = 100, dt: float = 0.01) -> list[np.ndarray]:
         """
         Generate trajectory of attractor evolution.
 
@@ -210,7 +210,7 @@ class ChaoticAttractor:
             dt: Time step for continuous systems
 
         Returns:
-            List of state vectors forming the trajectory
+            list of state vectors forming the trajectory
         """
         trajectory = [self.state.copy()]
 
@@ -295,7 +295,7 @@ class ChaoticNeuralNetwork:
             ChaoticAttractor(attractor_type=attractor_type) for _ in range(self.num_neurons)
         ]
         self.coupling_strength = coupling_strength
-        self.exploration_history: List[Dict[str, Any]] = []
+        self.exploration_history: list[dict[str, Any]] = []
 
     def couple_neurons(self) -> None:
         """
@@ -328,7 +328,7 @@ class ChaoticNeuralNetwork:
         r = 3.9  # Chaotic regime
         return r * x * (1 - x)
 
-    def forward(self, input_data: List[float]) -> List[float]:
+    def forward(self, input_data: list[float]) -> list[float]:
         """
         Forward pass through the chaotic neural network.
 
@@ -370,19 +370,19 @@ class ChaoticNeuralNetwork:
         return np.array([n.state[0] for n in self.neurons])
 
     def generate_test_parameters(
-        self, param_ranges: List[Tuple[float, float]], num_tests: int = 100
-    ) -> List[List[float]]:
+        self, param_ranges: list[tuple[float, float]], num_tests: int = 100
+    ) -> list[list[float]]:
         """
         Generate chaotic test parameters for randomized testing.
 
         Uses chaotic dynamics to create diverse, non-repetitive test cases.
 
         Args:
-            param_ranges: List of (min, max) tuples for each parameter
+            param_ranges: list of (min, max) tuples for each parameter
             num_tests: Number of test cases to generate
 
         Returns:
-            List of parameter vectors
+            list of parameter vectors
         """
         test_cases = []
 
@@ -451,10 +451,10 @@ class FractalAnalyzer:
 
     def __init__(self, max_depth: int = 10):
         self.max_depth = max_depth
-        self.analysis_history: List[Dict[str, Any]] = []
+        self.analysis_history: list[dict[str, Any]] = []
 
     def box_counting_dimension(
-        self, points: np.ndarray, box_sizes: Optional[List[float]] = None
+        self, points: np.ndarray, box_sizes: Optional[list[float]] = None
     ) -> float:
         """
         Calculate fractal dimension using box-counting method.
@@ -465,7 +465,7 @@ class FractalAnalyzer:
 
         Args:
             points: Array of points (n_points, n_dimensions)
-            box_sizes: List of box sizes to try (defaults to powers of 2)
+            box_sizes: list of box sizes to try (defaults to powers of 2)
 
         Returns:
             Estimated fractal dimension
@@ -517,8 +517,8 @@ class FractalAnalyzer:
         return dimension
 
     def analyze_code_tree(
-        self, tree_structure: Dict[str, Any], current_depth: int = 0
-    ) -> Dict[str, Any]:
+        self, tree_structure: dict[str, Any], current_depth: int = 0
+    ) -> dict[str, Any]:
         """
         Analyze code tree structure using fractal decomposition.
 
@@ -588,7 +588,7 @@ class FractalAnalyzer:
 
         return depth_ratio * branching_score
 
-    def _estimate_tree_dimension(self, tree_stats: Dict[str, Any]) -> float:
+    def _estimate_tree_dimension(self, tree_stats: dict[str, Any]) -> float:
         """
         Estimate fractal dimension of tree structure.
 
@@ -608,8 +608,8 @@ class FractalAnalyzer:
         return min(dimension, 3.0)  # Cap at 3D
 
     def detect_anomalies(
-        self, structures: List[Dict[str, Any]], threshold: float = 2.0
-    ) -> List[Dict[str, Any]]:
+        self, structures: list[dict[str, Any]], threshold: float = 2.0
+    ) -> list[dict[str, Any]]:
         """
         Detect anomalies in code structures using fractal analysis.
 
@@ -617,11 +617,11 @@ class FractalAnalyzer:
         dimensions from the mean.
 
         Args:
-            structures: List of code tree structures to analyze
+            structures: list of code tree structures to analyze
             threshold: Standard deviation threshold for anomaly detection
 
         Returns:
-            List of anomalous structures with details
+            list of anomalous structures with details
         """
         dimensions = []
         analyses = []
@@ -812,14 +812,14 @@ class FluidFlowScheduler:
     """
 
     def __init__(self, num_channels: int = 5):
-        self.channels: Dict[str, FluidChannel] = {}
+        self.channels: dict[str, FluidChannel] = {}
         for i in range(num_channels):
             channel_id = f"channel_{i}"
             self.channels[channel_id] = FluidChannel(
                 channel_id=channel_id, capacity=100.0, viscosity=random.uniform(0.05, 0.2)
             )
 
-        self.flow_history: List[Dict[str, Any]] = []
+        self.flow_history: list[dict[str, Any]] = []
 
     def add_channel(self, channel: FluidChannel) -> None:
         """Add a new channel to the network."""
@@ -843,7 +843,7 @@ class FluidFlowScheduler:
         else:
             return False
 
-    def balance_pressure(self) -> Dict[str, Any]:
+    def balance_pressure(self) -> dict[str, Any]:
         """
         Balance pressure across channels using fluid dynamics.
 
@@ -900,7 +900,7 @@ class FluidFlowScheduler:
             "pressure_variance": np.var([ch.pressure for ch in self.channels.values()]),
         }
 
-    def detect_bottlenecks(self, threshold: float = 0.8) -> List[str]:
+    def detect_bottlenecks(self, threshold: float = 0.8) -> list[str]:
         """
         Detect bottleneck channels.
 
@@ -910,7 +910,7 @@ class FluidFlowScheduler:
             threshold: Capacity utilization threshold (0-1)
 
         Returns:
-            List of bottleneck channel IDs
+            list of bottleneck channel IDs
         """
         bottlenecks = []
 
@@ -922,7 +922,7 @@ class FluidFlowScheduler:
 
         return bottlenecks
 
-    def optimize_flow(self, iterations: int = 10) -> Dict[str, Any]:
+    def optimize_flow(self, iterations: int = 10) -> dict[str, Any]:
         """
         Optimize flow distribution using iterative pressure balancing.
 
@@ -954,7 +954,7 @@ class FluidFlowScheduler:
             },
         }
 
-    def calculate_turbulence(self) -> Dict[str, Any]:
+    def calculate_turbulence(self) -> dict[str, Any]:
         """
         Calculate turbulence levels in each channel.
 
@@ -1007,9 +1007,9 @@ class EMFieldRouter:
         else:
             self.grid_resolution = grid_resolution
             self.grid_size = grid_resolution
-        self.charges: List[Tuple[np.ndarray, float]] = []  # (position, charge)
+        self.charges: list[tuple[np.ndarray, float]] = []  # (position, charge)
         self.potential_field: Optional[np.ndarray] = None
-        self.electric_field: Optional[Tuple[np.ndarray, np.ndarray]] = None
+        self.electric_field: Optional[tuple[np.ndarray, np.ndarray]] = None
 
     def add_charge(self, position: np.ndarray, charge: float) -> None:
         """
@@ -1052,7 +1052,7 @@ class EMFieldRouter:
         dy_pot, dx_pot = np.gradient(potential)
         self.electric_field = (-dx_pot, -dy_pot)
 
-    def get_field_at_position(self, position: np.ndarray) -> Tuple[float, np.ndarray]:
+    def get_field_at_position(self, position: np.ndarray) -> tuple[float, np.ndarray]:
         """
         Get potential and electric field at a specific position.
 
@@ -1075,7 +1075,7 @@ class EMFieldRouter:
 
     def route_agent(
         self, start_position: np.ndarray, steps: int = 50, step_size: float = 0.02
-    ) -> List[np.ndarray]:
+    ) -> list[np.ndarray]:
         """
         Route an agent along field lines.
 
@@ -1107,7 +1107,7 @@ class EMFieldRouter:
 
         return trajectory
 
-    def prioritize_regions(self, num_regions: int = 5) -> List[Dict[str, Any]]:
+    def prioritize_regions(self, num_regions: int = 5) -> list[dict[str, Any]]:
         """
         Identify high-priority regions based on field strength.
 
@@ -1198,12 +1198,12 @@ class WavePropagator:
         self.field = np.zeros((grid_size, grid_size))
         self.velocity = np.zeros((grid_size, grid_size))
 
-        self.sources: List[Dict[str, Any]] = []
-        self.history: List[np.ndarray] = []
+        self.sources: list[dict[str, Any]] = []
+        self.history: list[np.ndarray] = []
 
     def add_source(
         self,
-        position: Tuple[int, int],
+        position: tuple[int, int],
         amplitude: float = 1.0,
         frequency: float = 1.0,
         phase: float = 0.0,
@@ -1221,7 +1221,7 @@ class WavePropagator:
             {"position": position, "amplitude": amplitude, "frequency": frequency, "phase": phase}
         )
 
-    def propagate(self, dt: float = 0.1, steps: int = 100) -> List[np.ndarray]:
+    def propagate(self, dt: float = 0.1, steps: int = 100) -> list[np.ndarray]:
         """
         Propagate waves using wave equation.
 
@@ -1264,7 +1264,7 @@ class WavePropagator:
 
         return self.history
 
-    def measure_interference(self, position: Tuple[int, int]) -> Dict[str, float]:
+    def measure_interference(self, position: tuple[int, int]) -> dict[str, float]:
         """
         Measure interference pattern at a position.
 
@@ -1302,8 +1302,8 @@ class WavePropagator:
             }
 
     def wavelet_transform(
-        self, signal: np.ndarray, scales: Optional[List[int]] = None
-    ) -> Dict[int, np.ndarray]:
+        self, signal: np.ndarray, scales: Optional[list[int]] = None
+    ) -> dict[int, np.ndarray]:
         """
         Perform simple wavelet transform for multi-resolution analysis.
 
@@ -1311,10 +1311,10 @@ class WavePropagator:
 
         Args:
             signal: 1D signal to analyze
-            scales: List of scales to compute
+            scales: list of scales to compute
 
         Returns:
-            Dict mapping scale to wavelet coefficients
+            dict mapping scale to wavelet coefficients
         """
         if scales is None:
             scales = [1, 2, 4, 8, 16]
@@ -1331,7 +1331,7 @@ class WavePropagator:
 
         return coefficients
 
-    def detect_anomalies_wavelet(self, threshold: float = 2.0) -> List[Dict[str, Any]]:
+    def detect_anomalies_wavelet(self, threshold: float = 2.0) -> list[dict[str, Any]]:
         """
         Detect anomalies using wavelet multi-resolution analysis.
 
@@ -1392,9 +1392,9 @@ class RelativityScheduler:
 
     def __init__(self, speed_of_light: float = 100.0):
         self.c = speed_of_light  # Maximum communication speed
-        self.agents: Dict[str, Dict[str, Any]] = {}
+        self.agents: dict[str, dict[str, Any]] = {}
         self.reference_time: float = 0.0
-        self.scheduling_history: List[Dict[str, Any]] = []
+        self.scheduling_history: list[dict[str, Any]] = []
 
     def add_agent(
         self,
@@ -1476,7 +1476,7 @@ class RelativityScheduler:
 
         return delay
 
-    def synchronize_clocks(self) -> Dict[str, float]:
+    def synchronize_clocks(self) -> dict[str, float]:
         """
         Synchronize agent clocks using Einstein synchronization.
 
@@ -1513,7 +1513,7 @@ class RelativityScheduler:
 
     def schedule_task(
         self, task_id: str, agent_id: str, deadline: float, priority: float = 1.0
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Schedule a task with relativistic corrections.
 
@@ -1550,14 +1550,14 @@ class RelativityScheduler:
 
         return schedule_entry
 
-    def optimize_cross_boundary_delays(self, boundaries: List[Tuple[str, str]]) -> Dict[str, Any]:
+    def optimize_cross_boundary_delays(self, boundaries: list[tuple[str, str]]) -> dict[str, Any]:
         """
         Optimize delays for cross-boundary workflows.
 
         Accounts for communication latency and time synchronization.
 
         Args:
-            boundaries: List of (agent_a_id, agent_b_id) boundary pairs
+            boundaries: list of (agent_a_id, agent_b_id) boundary pairs
 
         Returns:
             Optimization results with delay analysis
@@ -1614,9 +1614,9 @@ class AdvancedPhysicsOrchestrator:
         self.wave = WavePropagator()
         self.relativity = RelativityScheduler()
 
-        self.orchestration_log: List[Dict[str, Any]] = []
+        self.orchestration_log: list[dict[str, Any]] = []
 
-    def full_analysis(self, decision_space: Dict[str, Any]) -> Dict[str, Any]:
+    def full_analysis(self, decision_space: dict[str, Any]) -> dict[str, Any]:
         """
         Run full physics analysis on decision space.
 
@@ -1668,7 +1668,7 @@ class AdvancedPhysicsOrchestrator:
         self.orchestration_log.append(results)
         return results
 
-    def get_status(self) -> Dict[str, str]:
+    def get_status(self) -> dict[str, str]:
         """Get status of all physics calculators."""
         return {
             "chaos": "active",

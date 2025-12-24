@@ -5,7 +5,7 @@ Computes ROUGE scores for summarization and text generation.
 Uses rouge-score library if available, otherwise provides basic implementation.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 import logging
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ try:
 
     HAS_ROUGE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     HAS_ROUGE = False
 
@@ -35,7 +35,7 @@ class RougeMetric(MetricAdapter):
 
     Args:
         name: Metric name (default: 'rouge')
-        rouge_types: List of ROUGE types to compute (default: ['rouge1', 'rougeL'])
+        rouge_types: list of ROUGE types to compute (default: ['rouge1', 'rougeL'])
         use_stemmer: Whether to use Porter stemmer
 
     Example:
@@ -48,7 +48,7 @@ class RougeMetric(MetricAdapter):
     """
 
     def __init__(
-        self, rouge_types: List[str] = None, name: str = "rouge", use_stemmer: bool = True
+        self, rouge_types: list[str] = None, name: str = "rouge", use_stemmer: bool = True
     ):
         super().__init__(name)
         self.rouge_types = rouge_types or ["rouge1", "rougeL"]
@@ -69,7 +69,7 @@ class RougeMetric(MetricAdapter):
 
         super().add_batch(predictions, references)
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute ROUGE scores."""
         if not self._predictions:
             return {rouge_type: 0.0 for rouge_type in self.rouge_types}
@@ -79,7 +79,7 @@ class RougeMetric(MetricAdapter):
         else:
             return self._compute_basic()
 
-    def _compute_rouge_score(self) -> Dict[str, float]:
+    def _compute_rouge_score(self) -> dict[str, float]:
         """Compute ROUGE using rouge-score library."""
         try:
             aggregated_scores = {rouge_type: [] for rouge_type in self.rouge_types}
@@ -99,11 +99,11 @@ class RougeMetric(MetricAdapter):
 
             return results
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}
 
-    def _compute_basic(self) -> Dict[str, float]:
+    def _compute_basic(self) -> dict[str, float]:
         """Basic ROUGE approximation without rouge-score."""
         # This is a simplified approximation
         # For production, install rouge-score

@@ -20,14 +20,14 @@ logger = logging.getLogger(__name__)
 import importlib
 import json
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Callable, Iterable, Optional, Sequence
 
 import typer
 
 app = typer.Typer(help="Evaluation loop commands (reference).")
 
 
-def _load_config(path: Path) -> Dict[str, Any]:
+def _load_config(path: Path) -> dict[str, Any]:
     if not path.exists():
         typer.echo(f"Config not found: {path}", err=True)
         raise typer.Exit(code=2)
@@ -39,7 +39,7 @@ def _load_config(path: Path) -> Dict[str, Any]:
         try:
             import tomllib
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             import tomli as tomllib  # type: ignore
         return tomllib.loads(text)
@@ -59,19 +59,19 @@ def _import_string(spec: str) -> Callable[..., Iterable[object]]:
     return target
 
 
-def _resolve_metrics(cfg: Dict[str, Any], names: Sequence[str] | None) -> Dict[str, Callable]:
+def _resolve_metrics(cfg: dict[str, Any], names: Sequence[str] | None) -> dict[str, Callable]:
     from codex_ml.metrics.registry import get as get_metric
 
     evaluation_cfg = cfg.get("evaluation", {})
     configured = evaluation_cfg.get("metrics")
 
-    candidates: Iterable[str] | Dict[str, Any]
+    candidates: Iterable[str] | dict[str, Any]
     if names:
         candidates = list(names)
     else:
         candidates = configured or []
 
-    resolved: Dict[str, Callable] = {}
+    resolved: dict[str, Callable] = {}
     if isinstance(candidates, dict):
         for alias, value in candidates.items():
             if callable(value):
@@ -87,7 +87,7 @@ def _resolve_metrics(cfg: Dict[str, Any], names: Sequence[str] | None) -> Dict[s
 
 
 def _resolve_transform(
-    cfg: Dict[str, Any], override: Optional[str], key: str
+    cfg: dict[str, Any], override: Optional[str], key: str
 ) -> Optional[Callable]:
     evaluation_cfg = cfg.get("evaluation", {})
     spec = override or evaluation_cfg.get(key)
@@ -114,7 +114,7 @@ def run_command(
     sys_metrics: bool = typer.Option(
         False, "--sys-metrics", help="Enable system metrics collection (future)"
     ),
-    metric: Optional[List[str]] = typer.Option(
+    metric: Optional[list[str]] = typer.Option(
         None,
         "--metric",
         help="Metric name (repeat for multiple). Defaults to config-defined metrics.",

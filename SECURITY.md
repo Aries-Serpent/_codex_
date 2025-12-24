@@ -1,5 +1,48 @@
 # Security Policy
 
+## Recent Security Updates (2025-12-23)
+
+### Fixed Vulnerabilities
+
+#### Critical
+- **filelock 3.20.1+**: TOCTOU race condition (CVE-2025-68146) - Upgraded from 3.16.1
+- **PyTorch 2.2.2+**: RCE via torch.load (GHSA-w853-jp5j-5j7f) - `weights_only=True` enforced
+
+#### High
+- **Starlette 0.37.2+**: Multipart DoS - Upgraded
+- **nbconvert 7.16.4+**: Windows RCE - Upgraded  
+- **Log Injection**: All user logs use `sanitize_log_input()`
+- **Sensitive Data**: Auto-redaction via `mask_sensitive()`
+- **PR Review Fixes**: Storage.py exception handling, PBKDF2 iterations (600,000)
+
+### Security Utilities Available
+
+```python
+# Safe PyTorch loading
+from utils.safe_torch_loader import safe_load
+model_state = safe_load("checkpoint.pt")
+
+# Log sanitization
+from codex.security.log_sanitizer import sanitize_log, mask_sensitive
+logger.info(f"User {sanitize_log(user_input)} acted")
+safe_msg = mask_sensitive(message)  # Redacts tokens/keys
+
+# Encrypted storage
+from codex.security.storage import SecureStorage
+storage = SecureStorage()
+storage.store_secret("key.enc", secret)
+```
+
+### Validation
+
+```bash
+python scripts/security/validate_security.py --verbose
+pytest tests/security/ -v
+pip list | grep -E "(filelock|torch|starlette|nbconvert)"
+```
+
+---
+
 ## Patched Vulnerabilities (2024-12-22)
 
 ### Critical (Remote Code Execution)

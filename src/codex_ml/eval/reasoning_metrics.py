@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +29,9 @@ class ReasoningMetrics:
     trace_coverage: float = 0.0
     explanation_depth: float = 0.0
     consistency: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         """Convert to dictionary"""
         return {
             "win_rate": self.win_rate,
@@ -45,9 +45,9 @@ class ReasoningMetrics:
 
 
 def calculate_win_rate(
-    predictions: List[str],
-    references: List[str],
-    baseline_predictions: Optional[List[str]] = None,
+    predictions: list[str],
+    references: list[str],
+    baseline_predictions: Optional[list[str]] = None,
 ) -> float:
     """
     Calculate win rate against baseline or references.
@@ -98,7 +98,7 @@ def calculate_win_rate(
 
 
 def calculate_critique_density(
-    responses: List[str],
+    responses: list[str],
 ) -> float:
     """
     Calculate critique density - measure of explanation quality.
@@ -110,7 +110,7 @@ def calculate_critique_density(
     - Depth of explanation
 
     Args:
-        responses: List of response strings
+        responses: list of response strings
 
     Returns:
         Critique density score (0.0-1.0)
@@ -176,8 +176,8 @@ def calculate_critique_density(
 
 
 def calculate_latency_delta(
-    latencies: List[float],
-    baseline_latencies: Optional[List[float]] = None,
+    latencies: list[float],
+    baseline_latencies: Optional[list[float]] = None,
     percentile: int = 95,
 ) -> float:
     """
@@ -208,7 +208,7 @@ def calculate_latency_delta(
 
         return float(p_latency)
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         # Fallback without numpy
         sorted_latencies = sorted(latencies)
@@ -227,7 +227,7 @@ def calculate_latency_delta(
 
 
 def calculate_judge_disagreement(
-    judge_ratings: List[List[float]],
+    judge_ratings: list[list[float]],
 ) -> float:
     """
     Calculate inter-rater disagreement among judges.
@@ -235,7 +235,7 @@ def calculate_judge_disagreement(
     Lower disagreement = more consensus = better reliability.
 
     Args:
-        judge_ratings: List of rating lists, where each inner list contains
+        judge_ratings: list of rating lists, where each inner list contains
                       ratings from different judges for one response
 
     Returns:
@@ -266,7 +266,7 @@ def calculate_judge_disagreement(
 
         return float(np.mean(disagreements)) if disagreements else 0.0
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         # Fallback without numpy
         disagreements = []
@@ -288,14 +288,14 @@ def calculate_judge_disagreement(
 
 
 def calculate_trace_coverage(
-    responses: List[str],
-    required_steps: Optional[List[List[str]]] = None,
+    responses: list[str],
+    required_steps: Optional[list[list[str]]] = None,
 ) -> float:
     """
     Calculate trace coverage - how many reasoning steps are present.
 
     Args:
-        responses: List of response strings
+        responses: list of response strings
         required_steps: Optional list of required reasoning steps per response
 
     Returns:
@@ -339,13 +339,13 @@ def calculate_trace_coverage(
 
 
 def calculate_explanation_depth(
-    responses: List[str],
+    responses: list[str],
 ) -> float:
     """
     Calculate explanation depth based on reasoning complexity.
 
     Args:
-        responses: List of response strings
+        responses: list of response strings
 
     Returns:
         Explanation depth score (0.0-1.0)
@@ -378,14 +378,14 @@ def calculate_explanation_depth(
 
 
 def calculate_consistency(
-    responses: List[str],
-    reference_facts: Optional[List[Dict[str, Any]]] = None,
+    responses: list[str],
+    reference_facts: Optional[list[dict[str, Any]]] = None,
 ) -> float:
     """
     Calculate logical consistency of responses.
 
     Args:
-        responses: List of response strings
+        responses: list of response strings
         reference_facts: Optional known facts to check against
 
     Returns:
@@ -446,11 +446,11 @@ def _score_response_quality(response: str) -> float:
 
 
 def evaluate_reasoning(
-    predictions: List[str],
-    references: List[str],
-    baseline_predictions: Optional[List[str]] = None,
-    latencies: Optional[List[float]] = None,
-    judge_ratings: Optional[List[List[float]]] = None,
+    predictions: list[str],
+    references: list[str],
+    baseline_predictions: Optional[list[str]] = None,
+    latencies: Optional[list[float]] = None,
+    judge_ratings: Optional[list[list[float]]] = None,
 ) -> ReasoningMetrics:
     """
     Comprehensive reasoning evaluation.

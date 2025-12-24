@@ -12,7 +12,7 @@ import logging
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .duplication import DuplicationRatio
 
@@ -133,7 +133,7 @@ class MetricStorage:
         ratio: DuplicationRatio,
         commit_sha: Optional[str] = None,
         timestamp: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Save duplication metrics to storage
 
@@ -275,7 +275,7 @@ class MetricStorage:
         finally:
             conn.close()
 
-    def load_latest(self) -> Optional[Dict[str, Any]]:
+    def load_latest(self) -> Optional[dict[str, Any]]:
         """Load most recent metrics from SQLite"""
         if not self.enable_sqlite or not self.sqlite_path.exists():
             return None
@@ -328,7 +328,7 @@ class MetricStorage:
         self,
         limit: int = 10,
         since: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Query historical metrics
 
@@ -337,7 +337,7 @@ class MetricStorage:
             since: Optional ISO timestamp to filter from
 
         Returns:
-            List of metric records
+            list of metric records
         """
         if not self.enable_sqlite or not self.sqlite_path.exists():
             return []

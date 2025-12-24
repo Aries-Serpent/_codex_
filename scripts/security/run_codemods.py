@@ -18,7 +18,7 @@ import csv
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class FixGroup:
     
     group_id: str
     rule_pattern: str
-    fix_function: Callable[[str], Tuple[str, List[str]]]
+    fix_function: Callable[[str], tuple[str, list[str]]]
     description: str
     priority: str
 
@@ -69,7 +69,7 @@ FIX_GROUPS = [
 ]
 
 
-def load_prioritized_alerts(alerts_file: Path) -> List[dict[str, Any]]:
+def load_prioritized_alerts(alerts_file: Path) -> list[dict[str, Any]]:
     """Load the prioritized alerts CSV."""
     alerts = []
     
@@ -83,15 +83,15 @@ def load_prioritized_alerts(alerts_file: Path) -> List[dict[str, Any]]:
             for row in reader:
                 alerts.append(row)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Error reading alerts file: {e}")
     
     return alerts
 
 
-def group_alerts_by_fix(alerts: List[dict[str, Any]]) -> dict[str, List[dict[str, Any]]]:
+def group_alerts_by_fix(alerts: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     """Group alerts by which fix group they belong to."""
-    grouped: dict[str, List[dict[str, Any]]] = {fg.group_id: [] for fg in FIX_GROUPS}
+    grouped: dict[str, list[dict[str, Any]]] = {fg.group_id: [] for fg in FIX_GROUPS}
     
     for alert in alerts:
         rule_id = alert.get("rule_id", "").lower()
@@ -106,7 +106,7 @@ def group_alerts_by_fix(alerts: List[dict[str, Any]]) -> dict[str, List[dict[str
 
 def apply_fix_group(
     fix_group: FixGroup, 
-    alerts: List[dict[str, Any]], 
+    alerts: list[dict[str, Any]], 
     dry_run: bool = True
 ) -> dict[str, Any]:
     """Apply fixes for a group of alerts."""
@@ -165,9 +165,9 @@ def main() -> None:
     
     parser = argparse.ArgumentParser(description="Run security codemods")
     parser.add_argument("--dry-run", action="store_true", default=True, 
-                       help="Don't make actual changes (default: True)")
+                        help="Don't make actual changes (default: True)")
     parser.add_argument("--apply", action="store_true", 
-                       help="Actually apply changes")
+                        help="Actually apply changes")
     parser.add_argument("--group", type=str, help="Only run specific fix group")
     args = parser.parse_args()
     

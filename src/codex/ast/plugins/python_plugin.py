@@ -2,7 +2,6 @@
 Reference Python plugin implementation.
 """
 from pathlib import Path
-from typing import List
 
 from codex.ast import parse_python
 from codex.ast.node import StandardizedASTNode
@@ -34,7 +33,7 @@ class PythonPlugin(ASTPlugin):
         return "python"
     
     @property
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """Return supported file extensions."""
         return [".py", ".pyw"]
     

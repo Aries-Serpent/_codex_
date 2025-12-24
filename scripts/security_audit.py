@@ -10,10 +10,9 @@ import subprocess
 import logging
 logger = logging.getLogger(__name__)
 import sys
-from typing import Dict, List, Tuple
 
 
-def check_package_version(package: str, min_version: str) -> Tuple[bool, str]:
+def check_package_version(package: str, min_version: str) -> tuple[bool, str]:
     """
     Check if installed package meets minimum version.
 
@@ -22,7 +21,7 @@ def check_package_version(package: str, min_version: str) -> Tuple[bool, str]:
         min_version: Minimum required version
 
     Returns:
-        Tuple of (meets_requirement, installed_version)
+        tuple of (meets_requirement, installed_version)
     """
     try:
         result = subprocess.run(
@@ -59,17 +58,17 @@ def check_package_version(package: str, min_version: str) -> Tuple[bool, str]:
                 return True, installed  # Equal versions
         return False, "unknown"
     except (subprocess.CalledProcessError, ValueError, IndexError) as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return False, f"error: {e}"
 
 
-def audit_dependencies() -> Dict[str, Tuple[bool, str, str, List[str]]]:
+def audit_dependencies() -> dict[str, tuple[bool, str, str, list[str]]]:
     """
     Audit all security-critical dependencies.
 
     Returns:
-        Dict mapping package names to (passed, installed_version, min_version, affected_files)
+        dict mapping package names to (passed, installed_version, min_version, affected_files)
     """
     checks = {
         "torch": (

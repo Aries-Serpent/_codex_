@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .backends import SQLiteMemoryBackend
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
@@ -51,8 +51,8 @@ class MemoryManager:
     
     def store(
         self,
-        content: str | Dict[str, Any],
-        metadata: Optional[Dict[str, Any]] = None,
+        content: str | dict[str, Any],
+        metadata: Optional[dict[str, Any]] = None,
         session_id: Optional[str] = None,
     ) -> MemoryEntry:
         """Store a new memory.
@@ -82,7 +82,7 @@ class MemoryManager:
         limit: int = 10,
         session_id: Optional[str] = None,
         agent_id: Optional[str] = None,
-    ) -> List[MemoryEntry]:
+    ) -> list[MemoryEntry]:
         """Retrieve memories matching the query.
         
         Args:
@@ -92,7 +92,7 @@ class MemoryManager:
             agent_id: Filter by agent ID (None = current agent)
             
         Returns:
-            List of matching memories, sorted by relevance
+            list of matching memories, sorted by relevance
         """
         query = MemoryQuery(
             text=query_text,
@@ -105,14 +105,14 @@ class MemoryManager:
         logger.debug(f"Recalled {len(results)} memories for query: {query_text}")
         return results
     
-    def recall_all(self, limit: int = 100) -> List[MemoryEntry]:
+    def recall_all(self, limit: int = 100) -> list[MemoryEntry]:
         """Retrieve all memories for current agent/session.
         
         Args:
             limit: Maximum number of results
             
         Returns:
-            List of all memories
+            list of all memories
         """
         return self.recall(query_text=None, limit=limit)
     
@@ -133,7 +133,7 @@ class MemoryManager:
         logger.info(f"Cleared {count} memories from session {sid}")
         return count
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get memory storage statistics.
         
         Returns:

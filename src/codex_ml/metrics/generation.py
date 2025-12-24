@@ -9,10 +9,10 @@ Generated: 2025-11-19 04:20:17
 from __future__ import annotations
 
 import math
-from typing import Callable, Iterable, List, Sequence
+from typing import Callable, Iterable, Sequence
 
 
-def _tokenize(s: str) -> List[str]:
+def _tokenize(s: str) -> list[str]:
     return [t for t in s.strip().split() if t]
 
 
@@ -77,7 +77,7 @@ def compute_corpus_bleu(
     return bp * precision
 
 
-def _ngram_counts(tokens: List[str], n: int) -> dict[tuple[str, ...], int]:
+def _ngram_counts(tokens: list[str], n: int) -> dict[tuple[str, ...], int]:
     counts: dict[tuple[str, ...], int] = {}
     if n <= 0 or len(tokens) < n:
         return counts
@@ -143,7 +143,7 @@ def bleu(
 def rouge_l(hypotheses: Sequence[str], references: Sequence[str]) -> float:
     """Simple ROUGE-L (LCS-based) averaged over pairs."""
 
-    def lcs(a: List[str], b: List[str]) -> int:
+    def lcs(a: list[str], b: list[str]) -> int:
         m, n = len(a), len(b)
         dp = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(m):

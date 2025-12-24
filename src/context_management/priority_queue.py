@@ -7,7 +7,7 @@ age-based degradation, and configurable priority levels.
 
 import heapq
 import math
-from typing import List, Dict, Optional, Any, Tuple
+from typing import Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import IntEnum
@@ -34,8 +34,8 @@ class PriorityItem:
     access_count: int = 0
     token_count: int = 0
     source: str = ""
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __lt__(self, other):
         """Compare for heap ordering (lower score = lower priority)."""
@@ -106,17 +106,17 @@ class ContextPriorityQueue:
         self.decay_enabled = decay_enabled
         self.auto_prune = auto_prune
 
-        self._items: List[PriorityItem] = []
+        self._items: list[PriorityItem] = []
         self._token_count = 0
-        self._item_index: Dict[str, int] = {}  # content_hash -> heap index
+        self._item_index: dict[str, int] = {}  # content_hash -> heap index
 
     def push(
         self,
         content: str,
         priority: Priority = Priority.MEDIUM,
         source: str = "",
-        tags: Optional[List[str]] = None,
-        metadata: Optional[Dict] = None,
+        tags: Optional[list[str]] = None,
+        metadata: Optional[dict] = None,
     ) -> bool:
         """
         Add item to queue.
@@ -218,7 +218,7 @@ class ContextPriorityQueue:
 
     def get_all_by_priority(
         self, min_priority: Priority = Priority.DISPOSABLE
-    ) -> List[PriorityItem]:
+    ) -> list[PriorityItem]:
         """
         Get all items at or above minimum priority.
 
@@ -226,17 +226,17 @@ class ContextPriorityQueue:
             min_priority: Minimum priority level
 
         Returns:
-            List of items sorted by effective priority (highest first)
+            list of items sorted by effective priority (highest first)
         """
         filtered = [item for item in self._items if item.priority >= min_priority]
         return sorted(filtered, key=lambda x: x.effective_priority, reverse=True)
 
-    def get_by_tags(self, tags: List[str]) -> List[PriorityItem]:
+    def get_by_tags(self, tags: list[str]) -> list[PriorityItem]:
         """Get items matching any of the given tags."""
         tag_set = set(tags)
         return [item for item in self._items if tag_set & set(item.tags)]
 
-    def prune_to_tokens(self, target_tokens: int) -> List[PriorityItem]:
+    def prune_to_tokens(self, target_tokens: int) -> list[PriorityItem]:
         """
         Prune queue until under target token count.
 
@@ -244,7 +244,7 @@ class ContextPriorityQueue:
             target_tokens: Target maximum tokens
 
         Returns:
-            List of pruned items
+            list of pruned items
         """
         pruned = []
         while self._token_count > target_tokens and self._items:
@@ -253,7 +253,7 @@ class ContextPriorityQueue:
                 pruned.append(item)
         return pruned
 
-    def prune_below_priority(self, min_priority: Priority) -> List[PriorityItem]:
+    def prune_below_priority(self, min_priority: Priority) -> list[PriorityItem]:
         """
         Remove all items below minimum priority.
 
@@ -261,7 +261,7 @@ class ContextPriorityQueue:
             min_priority: Minimum priority to keep
 
         Returns:
-            List of pruned items
+            list of pruned items
         """
         keep = []
         pruned = []
@@ -321,7 +321,7 @@ class ContextPriorityQueue:
         """Whether queue is empty."""
         return len(self._items) == 0
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get queue statistics."""
         if not self._items:
             return {

@@ -5,10 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 
-def compute_tool_checksum(tool_name: str, tool_data: Dict[str, Any]) -> str:
+def compute_tool_checksum(tool_name: str, tool_data: dict[str, Any]) -> str:
     """Compute SHA-256 checksum of tool definition for integrity verification.
 
     Args:
@@ -30,8 +30,8 @@ class ToolDefinition:
 
     name: str
     handler: Callable[..., Any]
-    schema: Optional[Dict[str, Any]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    schema: Optional[dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
     require_confirm: bool = False  # Whether tool requires confirmation before execution
 
 
@@ -44,14 +44,14 @@ class MCPToolRegistry:
     """
 
     def __init__(self) -> None:
-        self._tools: Dict[str, ToolDefinition] = {}
+        self._tools: dict[str, ToolDefinition] = {}
 
     def register_tool(
         self,
         name: str,
         handler: Callable[..., Any],
-        schema: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        schema: Optional[dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         require_confirm: bool = False,
     ) -> None:
         """Register a new tool with the registry.
@@ -71,11 +71,11 @@ class MCPToolRegistry:
             require_confirm=require_confirm,
         )
 
-    def list_tools(self) -> List[Dict[str, Any]]:
+    def list_tools(self) -> list[dict[str, Any]]:
         """Return list of all registered tools with their metadata.
 
         Returns:
-            List of tool dictionaries with name, metadata, and schema
+            list of tool dictionaries with name, metadata, and schema
         """
         return [
             {

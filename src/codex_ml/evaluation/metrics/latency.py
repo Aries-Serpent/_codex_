@@ -4,7 +4,7 @@ Latency Metric Adapter
 Measures inference latency (time per sample/batch).
 """
 
-from typing import Any, Dict
+from typing import Any
 import time
 
 import sys
@@ -70,7 +70,7 @@ class LatencyMetric(MetricAdapter):
 
         super().add_batch(predictions, references)
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute latency metrics."""
         if self._batch_count == 0 or self._total_time == 0:
             return {

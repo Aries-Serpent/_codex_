@@ -18,19 +18,19 @@ Schemas:
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Iterable, Optional
 
 _TRUTHY = {"1", "true", "TRUE", "True", "yes", "YES", "on", "ON", "y", "Y"}
 _FALSY = {"0", "false", "FALSE", "False", "no", "NO", "off", "OFF", "", "n", "N"}
 
-_WARNINGS: List[str] = []
+_WARNINGS: list[str] = []
 
 
 def _warn(msg: str) -> None:
     _WARNINGS.append(msg)
 
 
-def normalize_truthy(raw: Optional[str], default: bool = False) -> Tuple[bool, Optional[str]]:
+def normalize_truthy(raw: Optional[str], default: bool = False) -> tuple[bool, Optional[str]]:
     if raw is None:
         return default, None
     if raw in _TRUTHY:
@@ -52,7 +52,7 @@ def parse_truthy(raw: Optional[str], default: bool = False) -> bool:
 
 def normalize_enum(
     raw: Optional[str], allowed: Iterable[str], default: str
-) -> Tuple[str, Optional[str]]:
+) -> tuple[str, Optional[str]]:
     allowed_set = set(allowed)
     if raw is None:
         return default, None
@@ -73,7 +73,7 @@ def parse_enum(raw: Optional[str], allowed: Iterable[str], default: str, var_nam
 
 def normalize_int(
     raw: Optional[str], default: int, min_val: Optional[int] = None, max_val: Optional[int] = None
-) -> Tuple[int, Optional[str]]:
+) -> tuple[int, Optional[str]]:
     if raw is None:
         return default, None
     try:
@@ -109,7 +109,7 @@ def normalize_float(
     default: float,
     min_val: Optional[float] = None,
     max_val: Optional[float] = None,
-) -> Tuple[float, Optional[str]]:
+) -> tuple[float, Optional[str]]:
     if raw is None:
         return default, None
     try:
@@ -124,7 +124,7 @@ def normalize_float(
     return val, None
 
 
-def normalize_csv_list(raw: Optional[str]) -> Tuple[list[str], Optional[str]]:
+def normalize_csv_list(raw: Optional[str]) -> tuple[list[str], Optional[str]]:
     if not raw:
         return [], None
     parts = [p.strip() for p in raw.split(",") if p.strip()]
@@ -142,7 +142,7 @@ def parse_csv_list(raw: Optional[str]) -> list[str]:
 
 # --- Batch normalization ---
 
-DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
+DEFAULT_SCHEMA: dict[str, dict[str, Any]] = {
     # Content filtering
     "CONTENT_FILTER_MODE": {
         "type": "enum",
@@ -204,15 +204,15 @@ DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
 }
 
 
-def _get_env_map() -> Dict[str, str]:
+def _get_env_map() -> dict[str, str]:
     return dict(os.environ)  # shallow copy
 
 
 def normalize_from_env(
-    schema: Dict[str, Dict[str, Any]] = DEFAULT_SCHEMA,
-) -> Tuple[Dict[str, Any], list[str]]:
+    schema: dict[str, dict[str, Any]] = DEFAULT_SCHEMA,
+) -> tuple[dict[str, Any], list[str]]:
     env = _get_env_map()
-    normalized: Dict[str, Any] = {}
+    normalized: dict[str, Any] = {}
     warnings: list[str] = []
 
     for key, spec in schema.items():
@@ -248,12 +248,12 @@ def normalize_from_env(
     return normalized, warnings
 
 
-def summarize_effective(knobs: Dict[str, Any]) -> Dict[str, Any]:
+def summarize_effective(knobs: dict[str, Any]) -> dict[str, Any]:
     """
     Produce a compact summary for manifest or reproducibility sidecar.
     - Flattens lists by length; hides empty values.
     """
-    out: Dict[str, Any] = {}
+    out: dict[str, Any] = {}
     for k, v in knobs.items():
         if v in (None, "", [], {}):
             continue
@@ -261,7 +261,7 @@ def summarize_effective(knobs: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
-def get_warnings() -> List[str]:
+def get_warnings() -> list[str]:
     return list(_WARNINGS)
 
 
@@ -273,7 +273,7 @@ def _get_env(name: str) -> Optional[str]:
     return os.environ.get(name)
 
 
-def get_depth() -> Tuple[int, bool]:
+def get_depth() -> tuple[int, bool]:
     raw_depth = _get_env("AUDIT_DEPTH")
     raw_default = _get_env("AUDIT_DEPTH_DEFAULT")
 

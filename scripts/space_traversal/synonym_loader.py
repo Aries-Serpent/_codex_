@@ -32,7 +32,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Set
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"
@@ -41,7 +40,7 @@ OUT = ART_DIR / "capabilities_raw_expanded.json"
 DEFAULT_MAP_PATH = "configs/synonyms/synonyms.json"
 
 
-def load_synonym_map(path: Path) -> Dict[str, list[str]]:
+def load_synonym_map(path: Path) -> dict[str, list[str]]:
     """Load synonym map JSON."""
     if not path.exists():
         return {}
@@ -54,7 +53,7 @@ def load_synonym_map(path: Path) -> Dict[str, list[str]]:
         return {}
 
 
-def expand_patterns(found: list[str], synonym_map: Dict[str, list[str]]) -> Set[str]:
+def expand_patterns(found: list[str], synonym_map: dict[str, list[str]]) -> set[str]:
     """Expand found patterns using synonym map."""
     expanded = set(found)
 
@@ -71,7 +70,7 @@ def expand_patterns(found: list[str], synonym_map: Dict[str, list[str]]) -> Set[
     return expanded
 
 
-def compute_map_hash(synonym_map: Dict) -> str:
+def compute_map_hash(synonym_map: dict) -> str:
     """Compute stable hash of synonym map."""
     canonical = json.dumps(synonym_map, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode()).hexdigest()[:16]

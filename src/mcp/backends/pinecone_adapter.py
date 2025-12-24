@@ -5,7 +5,7 @@ import importlib.util
 import logging
 import os
 import sys
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, Optional
 
 from .interface import BackendAdapter, VectorItem, BackendResponse
 
@@ -70,12 +70,12 @@ class PineconeAdapter(BackendAdapter):
             self._connected = True
             logger.info("Connected to Pinecone index %s", self._index_name)
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.exception("Failed to initialize Pinecone: %s", exc)
             self._connected = False
 
     @retry_on_exception(tries=3)
-    def _index_upsert(self, vectors: List, namespace: Optional[str] = None) -> Any:
+    def _index_upsert(self, vectors: list, namespace: Optional[str] = None) -> Any:
         """Internal wrapper for index.upsert with retries."""
         if not self._index:
             raise RuntimeError("Index not initialized")
@@ -84,9 +84,9 @@ class PineconeAdapter(BackendAdapter):
     @retry_on_exception(tries=3)
     def _index_query(
         self,
-        vector: List[float],
+        vector: list[float],
         top_k: int = 5,
-        filter: Optional[Dict] = None,
+        filter: Optional[dict] = None,
         namespace: Optional[str] = None,
     ) -> Any:
         if not self._index:
@@ -94,7 +94,7 @@ class PineconeAdapter(BackendAdapter):
         return self._index.query(vector=vector, top_k=top_k, filter=filter, namespace=namespace)
 
     @retry_on_exception(tries=3)
-    def _index_delete(self, ids: List[str], namespace: Optional[str] = None) -> Any:
+    def _index_delete(self, ids: list[str], namespace: Optional[str] = None) -> Any:
         if not self._index:
             raise RuntimeError("Index not initialized")
         return self._index.delete(ids=ids, namespace=namespace)
@@ -133,10 +133,10 @@ class PineconeAdapter(BackendAdapter):
     def query_top_k(
         self,
         namespace: str,
-        query_embedding: List[float],
+        query_embedding: list[float],
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[BackendResponse]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[BackendResponse]:
         increment("pinecone_query_total")
         if not self._connected or self._index is None:
             self.connect()
@@ -165,7 +165,7 @@ class PineconeAdapter(BackendAdapter):
         else:
             matches = getattr(resp, "matches", []) or []
 
-        results: List[BackendResponse] = []
+        results: list[BackendResponse] = []
         for m in matches:
             results.append(
                 BackendResponse(
@@ -201,7 +201,7 @@ class PineconeAdapter(BackendAdapter):
             logger.exception("Pinecone delete failed")
             return False
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         status = "ok" if self._connected else "disconnected"
         info = {"status": status, "adapter": "pinecone", "index": self._index_name}
         # Optional: get index stats defensively

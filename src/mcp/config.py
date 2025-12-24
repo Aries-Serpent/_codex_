@@ -7,7 +7,7 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 def compute_checksum(data: str | bytes) -> str:
@@ -31,10 +31,10 @@ class ToolDefinition:
     name: str
     description: str = ""
     endpoint: str = ""
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ToolDefinition":
+    def from_dict(cls, data: dict[str, Any]) -> "ToolDefinition":
         """Create ToolDefinition from dictionary.
 
         Args:
@@ -50,9 +50,9 @@ class ToolDefinition:
             metadata=data.get("metadata"),
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "name": self.name,
             "description": self.description,
             "endpoint": self.endpoint,
@@ -67,11 +67,11 @@ class MCPConfig:
     """MCP configuration with tools and settings."""
 
     name: str
-    tools: List[ToolDefinition]
+    tools: list[ToolDefinition]
     ita_url: str
     config_checksum: str
     ita_api_key: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
     @classmethod
     def load(cls, config_path: Optional[Path] = None) -> "MCPConfig":
@@ -172,9 +172,9 @@ class MCPConfig:
         current_checksum = compute_checksum(current_content)
         return current_checksum == self.config_checksum
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "name": self.name,
             "tools": [t.to_dict() for t in self.tools],
             "ita_url": self.ita_url,

@@ -16,7 +16,7 @@ import hashlib
 import logging
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 
@@ -57,9 +57,9 @@ class FAISSStore(VectorStore):
         self.index_dir = Path(index_dir) if index_dir else Path(".codex/faiss")
         self.index_name = self._validate_index_name(index_name)
         self.index = None
-        self.documents: List[Dict[str, Any]] = []
-        self.vector_ids: List[str] = []  # Track vector IDs
-        self.id_to_index: Dict[str, int] = {}  # Map ID to index position
+        self.documents: list[dict[str, Any]] = []
+        self.vector_ids: list[str] = []  # Track vector IDs
+        self.id_to_index: dict[str, int] = {}  # Map ID to index position
         self.dimension: Optional[int] = None
         self.max_vectors = min(max_vectors, MAX_VECTORS)
         self.validate_checksums = validate_checksums
@@ -71,7 +71,7 @@ class FAISSStore(VectorStore):
             self.faiss = faiss
             logger.info(f"FAISS version: {faiss.__version__}")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
 
@@ -89,7 +89,7 @@ class FAISSStore(VectorStore):
             )
         return name
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Perform health check on the vector store
 
         Returns:
@@ -120,7 +120,7 @@ class FAISSStore(VectorStore):
 
         Args:
             embeddings: Embedding vectors (shape: [n_docs, dim])
-            documents: List of document dictionaries
+            documents: list of document dictionaries
 
         Raises:
             ValueError: If inputs are invalid
@@ -330,7 +330,7 @@ class FAISSStore(VectorStore):
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
     ) -> list[dict[str, Any]]:
         """Search for similar vectors with validation and optional filtering
 
@@ -340,7 +340,7 @@ class FAISSStore(VectorStore):
             filters: Optional metadata filters (MongoDB-style)
 
         Returns:
-            List of results with document, score, and index
+            list of results with document, score, and index
 
         Raises:
             RuntimeError: If index not loaded
@@ -436,9 +436,9 @@ class FAISSStore(VectorStore):
     def add(
         self,
         vectors: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None,
-        ids: Optional[List[str]] = None,
-    ) -> List[str]:
+        metadata: Optional[list[dict[str, Any]]] = None,
+        ids: Optional[list[str]] = None,
+    ) -> list[str]:
         """Add vectors to the store with optional metadata
 
         Args:
@@ -447,7 +447,7 @@ class FAISSStore(VectorStore):
             ids: Optional IDs for vectors (auto-generated if not provided)
 
         Returns:
-            List of vector IDs
+            list of vector IDs
         """
         if not isinstance(vectors, np.ndarray):
             raise TypeError("Vectors must be a numpy array")
@@ -525,7 +525,7 @@ class FAISSStore(VectorStore):
         logger.info(f"Added {n_vectors} vectors to index (total: {self.index.ntotal})")
         return ids
 
-    def delete(self, ids: Union[str, List[str]]) -> int:
+    def delete(self, ids: Union[str, list[str]]) -> int:
         """Delete vectors by ID
 
         Note: FAISS doesn't support efficient deletion, so we mark as deleted
@@ -583,14 +583,14 @@ class FAISSStore(VectorStore):
 
         return deleted_count
 
-    def get(self, ids: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
         """Retrieve vectors by ID
 
         Args:
             ids: Single ID or list of IDs to retrieve
 
         Returns:
-            List of results with id, vector, and metadata
+            list of results with id, vector, and metadata
 
         Raises:
             VectorNotFoundError: If vector ID not found

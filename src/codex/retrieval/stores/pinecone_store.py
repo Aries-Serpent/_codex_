@@ -4,7 +4,7 @@ Disabled by default in local mode
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 
@@ -41,7 +41,7 @@ class PineconeStore(VectorStore):
             "Use FAISSStore for local vector search."
         )
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Health check (stub)"""
         return {
             "healthy": False,
@@ -52,21 +52,21 @@ class PineconeStore(VectorStore):
     def add(
         self,
         vectors: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None,
-        ids: Optional[List[str]] = None,
-    ) -> List[str]:
+        metadata: Optional[list[dict[str, Any]]] = None,
+        ids: Optional[list[str]] = None,
+    ) -> list[str]:
         """Add vectors (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def delete(self, ids: Union[str, List[str]]) -> int:
+    def delete(self, ids: Union[str, list[str]]) -> int:
         """Delete vectors (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."
         )
 
-    def get(self, ids: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
         """Get vectors (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."
@@ -76,8 +76,8 @@ class PineconeStore(VectorStore):
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[Dict[str, Any]]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[dict[str, Any]]:
         """Search (stub)"""
         raise RuntimeError(
             "PineconeStore is not available in offline mode. Use FAISSStore instead."

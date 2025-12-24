@@ -116,13 +116,13 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             snap["numpy"] = np.random.get_state()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     if torch is not None:
         try:
             snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
@@ -133,7 +133,7 @@ def _rng_snapshot() -> dict[str, Any]:
                     {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return snap
 
@@ -143,14 +143,14 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
         if "python" in snap:
             random.setstate(snap["python"])
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     if np is not None:
         try:
             if "numpy" in snap:
                 np.random.set_state(snap["numpy"])
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     if torch is not None:
         try:
@@ -160,7 +160,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
                     torch.set_rng_state(torch_cpu_state)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
@@ -183,7 +183,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -454,7 +454,7 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
         try:
             (root / rel).unlink(missing_ok=True)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     idx["entries"] = keep
 
@@ -575,7 +575,7 @@ def save_checkpoint(
         try:
             shutil.copyfile(ckpt_path, state_alias)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if attach_integrity is not None:
@@ -588,7 +588,7 @@ def save_checkpoint(
                 relative_to=root,
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if keep_last:
@@ -600,7 +600,7 @@ def save_checkpoint(
             try:
                 shutil.rmtree(old)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
     # Update index for this checkpoint directory
@@ -652,12 +652,12 @@ def save_checkpoint(
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         write_run_manifest(root, manifest)
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     return ckpt_path, meta

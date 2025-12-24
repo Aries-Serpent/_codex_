@@ -8,7 +8,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 from uuid import UUID, uuid4
 
 
@@ -26,15 +26,15 @@ class MemoryEntry:
         embedding: Optional vector embedding for similarity search
     """
     
-    content: str | Dict[str, Any]
+    content: str | dict[str, Any]
     id: UUID = field(default_factory=uuid4)
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     agent_id: Optional[str] = None
     session_id: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    embedding: Optional[List[float]] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+    embedding: Optional[list[float]] = None
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert entry to dictionary for serialization."""
         return {
             "id": str(self.id),
@@ -47,7 +47,7 @@ class MemoryEntry:
         }
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> MemoryEntry:
+    def from_dict(cls, data: dict[str, Any]) -> MemoryEntry:
         """Create entry from dictionary."""
         return cls(
             id=UUID(data["id"]),
@@ -96,14 +96,14 @@ class MemoryProtocol(ABC):
         pass
     
     @abstractmethod
-    def retrieve(self, query: MemoryQuery) -> List[MemoryEntry]:
+    def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve memories matching the query.
         
         Args:
             query: Query specification
             
         Returns:
-            List of matching memory entries, sorted by relevance
+            list of matching memory entries, sorted by relevance
         """
         pass
     
@@ -132,7 +132,7 @@ class MemoryProtocol(ABC):
         pass
     
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get statistics about the memory store.
         
         Returns:

@@ -13,7 +13,7 @@ import signal
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, Dict, List, Optional, Any
+from typing import Callable, Optional, Any
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class ServerState(Enum):
 
 
 # Valid state transitions
-VALID_TRANSITIONS: Dict[ServerState, List[ServerState]] = {
+VALID_TRANSITIONS: dict[ServerState, list[ServerState]] = {
     ServerState.UNINITIALIZED: [ServerState.INITIALIZING],
     ServerState.INITIALIZING: [ServerState.READY, ServerState.ERROR],
     ServerState.READY: [ServerState.RUNNING, ServerState.STOPPING],
@@ -67,7 +67,7 @@ class HealthStatus:
     
     healthy: bool
     message: str = ""
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 
@@ -96,9 +96,9 @@ class LifecycleManager:
         self._shutdown_event = asyncio.Event()
         self._active_requests = 0
         self._requests_lock = asyncio.Lock()
-        self._health_checks: List[Callable[[], HealthStatus]] = []
-        self._startup_hooks: List[Callable[[], None]] = []
-        self._shutdown_hooks: List[Callable[[], None]] = []
+        self._health_checks: list[Callable[[], HealthStatus]] = []
+        self._startup_hooks: list[Callable[[], None]] = []
+        self._shutdown_hooks: list[Callable[[], None]] = []
         self._logger = logging.getLogger(__name__)
         
     @property
@@ -255,8 +255,8 @@ class LifecycleManager:
             )
         
         all_healthy = True
-        details: Dict[str, Any] = {"state": self._state.value}
-        messages: List[str] = []
+        details: dict[str, Any] = {"state": self._state.value}
+        messages: list[str] = []
         
         for i, check in enumerate(self._health_checks):
             try:
@@ -285,7 +285,7 @@ class LifecycleManager:
         await self._shutdown_event.wait()
     
     def setup_signal_handlers(self) -> None:
-        """Set up signal handlers for graceful shutdown."""
+        """set up signal handlers for graceful shutdown."""
         loop = asyncio.get_event_loop()
         
         for sig in (signal.SIGTERM, signal.SIGINT):

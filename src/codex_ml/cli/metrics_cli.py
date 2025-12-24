@@ -304,7 +304,7 @@ def _summarize(path: Path) -> dict[str, Any]:
             try:
                 epochs.add(int(record["epoch"]))
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         for key, value in record.items():
             if key == "epoch":

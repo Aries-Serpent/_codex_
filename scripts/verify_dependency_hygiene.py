@@ -17,16 +17,16 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 EVIDENCE = Path(".codex/evidence/dependency_ops.jsonl")
 
 
-def load_lines() -> List[Dict[str, Any]]:
+def load_lines() -> list[dict[str, Any]]:
     if not EVIDENCE.exists():
         print("[verify_hygiene] evidence file missing (skipping).")
         return []
-    data: List[Dict[str, Any]] = []
+    data: list[dict[str, Any]] = []
     for i, line in enumerate(EVIDENCE.read_text(encoding="utf-8").splitlines(), start=1):
         s = line.strip()
         if not s:
@@ -42,7 +42,7 @@ def load_lines() -> List[Dict[str, Any]]:
 
 def main() -> int:
     rows = load_lines()
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for r in rows:
         counts[r.get("action", "UNKNOWN")] = counts.get(r.get("action", "UNKNOWN"), 0) + 1
     print("[verify_hygiene] action counts:")
@@ -50,7 +50,7 @@ def main() -> int:
         print(f"  - {k}: {counts[k]}")
 
     # Residue check on purge events
-    residue: List[str] = []
+    residue: list[str] = []
     for r in rows:
         if r.get("action") == "DEPENDENCY_VENDOR_PURGE":
             after = (r.get("vendor_list_after") or "").strip()

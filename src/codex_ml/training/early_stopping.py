@@ -7,7 +7,7 @@ datasets are present, preventing overfitting and saving compute resources.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class EarlyStoppingConfig:
         self.metric = metric
         self.mode = mode
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert config to dict."""
         return {
             "patience": self.patience,
@@ -94,7 +94,7 @@ class CodexEarlyStoppingCallback:
             )
             self.is_hf_callback = True
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("transformers not available, using custom implementation")
             self.callback = self
@@ -110,12 +110,12 @@ class CodexEarlyStoppingCallback:
 
 
 def inject_early_stopping(
-    callbacks: List[Any], config: Optional[EarlyStoppingConfig] = None, force: bool = False
-) -> List[Any]:
+    callbacks: list[Any], config: Optional[EarlyStoppingConfig] = None, force: bool = False
+) -> list[Any]:
     """Inject EarlyStopping callback if not already present.
 
     Args:
-        callbacks: List of existing callbacks
+        callbacks: list of existing callbacks
         config: EarlyStoppingConfig (uses defaults if None)
         force: If True, adds even if one already exists
 
@@ -135,7 +135,7 @@ def inject_early_stopping(
             isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback)) for cb in callbacks
         )
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         has_early_stopping = any(isinstance(cb, CodexEarlyStoppingCallback) for cb in callbacks)
 
@@ -158,9 +158,9 @@ def inject_early_stopping(
 def auto_inject_early_stopping_for_trainer(
     trainer_class,
     eval_dataset,
-    callbacks: Optional[List] = None,
+    callbacks: Optional[list] = None,
     config: Optional[EarlyStoppingConfig] = None,
-) -> List[Any]:
+) -> list[Any]:
     """Auto-inject EarlyStopping when eval dataset is present.
 
     This is the main entry point for automatic early stopping integration.

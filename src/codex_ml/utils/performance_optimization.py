@@ -141,7 +141,7 @@ class MemoryOptimizer:
                 model = model.to(memory_format=torch.channels_last)
                 logger.info("Converted model to channels_last memory format")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.debug(f"Could not convert to channels_last: {e}")
 
         # Enable TF32 for faster matmul on Ampere GPUs
@@ -232,7 +232,7 @@ def optimize_model(
             model = model.to(memory_format=torch.channels_last)
             logger.info("Converted to channels_last memory format")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.debug(f"Could not convert to channels_last: {e}")
 
     # Compile with torch.compile (PyTorch 2.0+)
@@ -241,7 +241,7 @@ def optimize_model(
             model = torch.compile(model)
             logger.info("Model compiled with torch.compile")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Could not compile model: {e}")
 
     # Enable performance optimizations

@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ try:
 
     _HAS_MLFLOW = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     _HAS_MLFLOW = False
     mlflow = None  # type: ignore
@@ -47,14 +47,14 @@ class ModelVersion:
     version: str
     stage: DeploymentStage
     description: str = ""
-    tags: Dict[str, str] = field(default_factory=dict)
-    metrics: Dict[str, float] = field(default_factory=dict)
+    tags: dict[str, str] = field(default_factory=dict)
+    metrics: dict[str, float] = field(default_factory=dict)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     run_id: Optional[str] = None
     source: Optional[str] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             "name": self.name,
@@ -97,7 +97,7 @@ class ModelRegistry:
         model_uri: str,
         name: str,
         description: str = "",
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
     ) -> ModelVersion:
         """Register a new model or create a new version
 
@@ -132,7 +132,7 @@ class ModelRegistry:
             return self.get_model_version(name, result.version)
 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to register model {name}: {e}")
             raise
 
@@ -162,21 +162,21 @@ class ModelRegistry:
                 source=mv.source,
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to get model version {name}/{version}: {e}")
             raise
 
     def list_model_versions(
         self, name: str, stage: Optional[DeploymentStage] = None
-    ) -> List[ModelVersion]:
-        """List all versions of a model
+    ) -> list[ModelVersion]:
+        """list all versions of a model
 
         Args:
             name: Model name
             stage: Optional stage filter
 
         Returns:
-            List of ModelVersions
+            list of ModelVersions
         """
         try:
             filter_string = f"name='{name}'"
@@ -201,7 +201,7 @@ class ModelRegistry:
                 for mv in versions
             ]
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to list model versions for {name}: {e}")
             raise
 
@@ -231,7 +231,7 @@ class ModelRegistry:
 
             return self.get_model_version(name, version)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to promote model {name}/{version} to {stage.value}: {e}")
             raise
 
@@ -258,7 +258,7 @@ class ModelRegistry:
             self.client.delete_model_version(name=name, version=version)
             logger.info(f"Deleted model {name} version {version}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to delete model {name}/{version}: {e}")
             raise
 
@@ -282,7 +282,7 @@ class ModelRegistry:
         versions.sort(key=lambda v: int(v.version), reverse=True)
         return versions[0]
 
-    def compare_models(self, name: str, version1: str, version2: str) -> Dict[str, Any]:
+    def compare_models(self, name: str, version1: str, version2: str) -> dict[str, Any]:
         """Compare two model versions
 
         Args:
@@ -309,11 +309,11 @@ class ModelRegistry:
                 ),
             }
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to compare models {name}/{version1} vs {version2}: {e}")
             raise
 
-    def get_model_lineage(self, name: str, version: str) -> Dict[str, Any]:
+    def get_model_lineage(self, name: str, version: str) -> dict[str, Any]:
         """Get model lineage information
 
         Args:
@@ -347,21 +347,21 @@ class ModelRegistry:
 
             return {"model": mv.to_dict(), "lineage": lineage}
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to get model lineage for {name}/{version}: {e}")
             raise
 
-    def list_models(self) -> List[str]:
-        """List all registered model names
+    def list_models(self) -> list[str]:
+        """list all registered model names
 
         Returns:
-            List of model names
+            list of model names
         """
         try:
             models = self.client.search_registered_models()
             return [model.name for model in models]
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to list models: {e}")
             raise
 
@@ -392,7 +392,7 @@ class ModelRegistry:
             logger.info(f"Exported model {name}/{version} to {output_path}")
             return output_path
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to export model {name}/{version}: {e}")
             raise
 
@@ -414,7 +414,7 @@ if __name__ == "__main__":
     if _HAS_MLFLOW:
         registry = ModelRegistry()
 
-        # List models
+        # list models
         models = registry.list_models()
         print(f"Registered models: {models}")
 

@@ -710,7 +710,7 @@ def load_app_config(
                             if isinstance(current, float):
                                 return float(text)
                         except Exception as e:
-                           logger.debug(f"Exception: {e}")
+                            logger.debug(f"Exception: {e}")
                             logger.warning(f"Exception: {e}", exc_info=True)
                     return new_value
 
@@ -718,7 +718,7 @@ def load_app_config(
                 setattr(instance, key, coerced)
             return instance
         except ConfigError as e:
-           logger.debug(f"ConfigError: {e}")
+            logger.debug(f"ConfigError: {e}")
             logger.warning(f"ConfigError: {e}", exc_info=True)
             raise
         except ValueError as exc:

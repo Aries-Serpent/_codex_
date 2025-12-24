@@ -20,7 +20,7 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List
+from typing import Any, Iterable, Iterator
 
 ROOT = Path(".").resolve()
 STUB_PATTERNS = [
@@ -54,11 +54,11 @@ def find_files(root: Path) -> Iterator[Path]:
             yield Path(dirpath) / name
 
 
-def search_for_patterns() -> Dict[str, List[str]]:
-    found: Dict[str, List[str]] = {}
+def search_for_patterns() -> dict[str, list[str]]:
+    found: dict[str, list[str]] = {}
     files = list(find_files(ROOT))
     for key, patterns in SEARCH_PATTERNS:
-        matches: List[str] = []
+        matches: list[str] = []
         for pattern in patterns:
             for file_path in files:
                 rel = str(file_path.relative_to(ROOT))
@@ -68,8 +68,8 @@ def search_for_patterns() -> Dict[str, List[str]]:
     return found
 
 
-def find_stubs() -> List[Dict[str, object]]:
-    stubs: List[Dict[str, object]] = []
+def find_stubs() -> list[dict[str, object]]:
+    stubs: list[dict[str, object]] = []
     for file_path in find_files(ROOT):
         if file_path.suffix not in {".py", ".md", ".txt", ".ipynb"}:
             continue
@@ -92,9 +92,9 @@ def find_stubs() -> List[Dict[str, object]]:
     return stubs
 
 
-def detect_tokenizers() -> Dict[str, Iterable[str]]:
+def detect_tokenizers() -> dict[str, Iterable[str]]:
     files = list(find_files(ROOT))
-    tokenizer_modules: List[str] = []
+    tokenizer_modules: list[str] = []
     for file_path in files:
         if file_path.suffix != ".py":
             continue
@@ -126,7 +126,7 @@ def main() -> None:
 
     all_stubs = find_stubs()
     stub_sample = all_stubs[:1000]
-    report: Dict[str, Any]
+    report: dict[str, Any]
     report = {
         "root": str(ROOT),
         "files_count": sum(1 for _ in find_files(ROOT)),
@@ -144,7 +144,7 @@ def main() -> None:
         print(json.dumps(report, indent=2))
         return
 
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# Repo Audit Summary")
     lines.append("")
     lines.append(f"- Root: {report['root']}")

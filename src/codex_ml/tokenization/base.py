@@ -9,7 +9,7 @@ Provides:
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -76,7 +76,7 @@ class ByteLevelTokenizer:
         # Offset by 3 to reserve special token IDs
         self._special_token_offset = 3
 
-    def encode(self, text: str, add_special_tokens: bool = True) -> List[int]:
+    def encode(self, text: str, add_special_tokens: bool = True) -> list[int]:
         """
         Encode text to token IDs.
 
@@ -85,7 +85,7 @@ class ByteLevelTokenizer:
             add_special_tokens: Whether to add EOS token
 
         Returns:
-            List of token IDs
+            list of token IDs
         """
         # Convert to UTF-8 bytes, offset by special tokens
         ids = [b + self._special_token_offset for b in text.encode("utf-8")]
@@ -109,7 +109,7 @@ class ByteLevelTokenizer:
 
         return ids
 
-    def decode(self, ids: List[int], skip_special_tokens: bool = True) -> str:
+    def decode(self, ids: list[int], skip_special_tokens: bool = True) -> str:
         """Decode token IDs back to text.
 
         Token ID layout (offset arithmetic):
@@ -121,7 +121,7 @@ class ByteLevelTokenizer:
         The offset ensures special tokens (0-2) don't conflict with byte values.
 
         Args:
-            ids: List of token IDs
+            ids: list of token IDs
             skip_special_tokens: Whether to skip special tokens
 
         Returns:
@@ -145,17 +145,17 @@ class ByteLevelTokenizer:
 
     def batch_encode(
         self,
-        texts: List[str],
+        texts: list[str],
         add_special_tokens: bool = True,
-    ) -> List[List[int]]:
+    ) -> list[list[int]]:
         """Encode multiple texts."""
         return [self.encode(t, add_special_tokens) for t in texts]
 
     def batch_decode(
         self,
-        batch_ids: List[List[int]],
+        batch_ids: list[list[int]],
         skip_special_tokens: bool = True,
-    ) -> List[str]:
+    ) -> list[str]:
         """Decode multiple ID sequences."""
         return [self.decode(ids, skip_special_tokens) for ids in batch_ids]
 
@@ -164,7 +164,7 @@ class ByteLevelTokenizer:
         """Total vocabulary size."""
         return 256 + self._special_token_offset
 
-    def tokenize_example(self, text: str) -> List[int]:
+    def tokenize_example(self, text: str) -> list[int]:
         """Legacy compatibility method."""
         return self.encode(text)
 

@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import math
-from typing import Iterable, List, Optional, Sequence
+from typing import Iterable, Optional, Sequence
 
 try:  # Optional dependency for efficiency
     import numpy as _np
@@ -38,7 +38,7 @@ class MetricError(ValueError):
         self.metric = metric
 
 
-def _materialise(sequence: Iterable) -> List:
+def _materialise(sequence: Iterable) -> list:
     return list(sequence)
 
 

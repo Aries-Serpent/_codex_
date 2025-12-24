@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +34,11 @@ class ComplianceReport:
 
     policy: str
     is_compliant: bool
-    violations: List[ComplianceViolation]
+    violations: list[ComplianceViolation]
     checks_passed: int
     checks_total: int
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "policy": self.policy,

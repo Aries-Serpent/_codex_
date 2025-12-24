@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ try:
 
     HDF5_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     HDF5_AVAILABLE = False
     logger.warning("h5py not installed. Install: pip install h5py")
@@ -133,7 +133,7 @@ class HDF5Loader:
                 end_idx = min(start_idx + chunk_size, num_rows)
                 yield dataset[start_idx:end_idx]
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """
         Extract HDF5 metadata
 
@@ -158,12 +158,12 @@ class HDF5Loader:
                     "attributes": dict(obj.attrs),
                 }
 
-    def list_datasets(self) -> List[str]:
+    def list_datasets(self) -> list[str]:
         """
-        List all dataset paths in file
+        list all dataset paths in file
 
         Returns:
-            List of dataset paths
+            list of dataset paths
         """
         paths = []
 

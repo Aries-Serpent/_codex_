@@ -21,7 +21,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +54,8 @@ class IntentSpec:
         timestamp: When inference was performed
         goal: High-level purpose of the code
         actors: Who/what interacts with this code
-        inputs: List of input specifications
-        outputs: List of output specifications
+        inputs: list of input specifications
+        outputs: list of output specifications
         constraints: Behavioral constraints
         side_effects: Potential side effects
         confidence: Confidence score (0.0-1.0)
@@ -66,17 +66,17 @@ class IntentSpec:
     snapshot_id: str
     timestamp: datetime
     goal: str
-    actors: List[str] = field(default_factory=list)
-    inputs: List[InputSpec] = field(default_factory=list)
-    outputs: List[OutputSpec] = field(default_factory=list)
-    constraints: List[str] = field(default_factory=list)
-    side_effects: List[str] = field(default_factory=list)
+    actors: list[str] = field(default_factory=list)
+    inputs: list[InputSpec] = field(default_factory=list)
+    outputs: list[OutputSpec] = field(default_factory=list)
+    constraints: list[str] = field(default_factory=list)
+    side_effects: list[str] = field(default_factory=list)
     confidence: float = 0.5
     inference_method: Literal["heuristic", "llm", "hybrid"] = "heuristic"
     llm_provenance_ref: Optional[str] = None
-    assumptions: List[str] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "snapshot_id": self.snapshot_id,
@@ -106,45 +106,45 @@ class IntentSpec:
             with path.open("w", encoding="utf-8") as f:
                 yaml.dump(self.to_dict(), f, default_flow_style=False)
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             # Fallback to JSON
             with path.open("w", encoding="utf-8") as f:
                 json.dump(self.to_dict(), f, indent=2)
 
 
-def _detect_cli_tool(imports: List[str], exports: List[str]) -> bool:
+def _detect_cli_tool(imports: list[str], exports: list[str]) -> bool:
     """Detect if code is a CLI tool."""
     cli_indicators = {"argparse", "click", "typer", "fire", "docopt"}
     return bool(cli_indicators & set(imports))
 
 
-def _detect_gui_app(imports: List[str]) -> bool:
+def _detect_gui_app(imports: list[str]) -> bool:
     """Detect if code is a GUI application."""
     gui_indicators = {"tkinter", "PyQt5", "PyQt6", "PySide6", "wx", "kivy"}
     return bool(gui_indicators & set(imports))
 
 
-def _detect_web_service(imports: List[str]) -> bool:
+def _detect_web_service(imports: list[str]) -> bool:
     """Detect if code is a web service."""
     web_indicators = {"flask", "fastapi", "django", "bottle", "tornado", "aiohttp"}
     return bool(web_indicators & set(imports))
 
 
-def _detect_networked(imports: List[str]) -> bool:
+def _detect_networked(imports: list[str]) -> bool:
     """Detect if code makes network calls."""
     network_indicators = {"requests", "httpx", "urllib", "socket", "aiohttp"}
     return bool(network_indicators & set(imports))
 
 
-def _detect_data_processing(imports: List[str]) -> bool:
+def _detect_data_processing(imports: list[str]) -> bool:
     """Detect if code is for data processing."""
     data_indicators = {"pandas", "numpy", "polars", "dask", "csv", "json"}
     return bool(data_indicators & set(imports))
 
 
 def _infer_heuristic(
-    static_report: Dict[str, Any],
+    static_report: dict[str, Any],
     source_excerpt: str,
 ) -> IntentSpec:
     """Infer intent using deterministic heuristics.
@@ -160,7 +160,7 @@ def _infer_heuristic(
     snapshot_id = static_report.get("snapshot_id", "unknown")
     
     # Collect all imports across files
-    all_imports: List[str] = []
+    all_imports: list[str] = []
     for file_data in static_report.get("files", []):
         all_imports.extend(file_data.get("imports", []))
     all_imports = list(set(all_imports))
@@ -168,12 +168,12 @@ def _infer_heuristic(
     # Determine code type
     goal = "Unknown Python code"
     actors = ["user"]
-    inputs: List[InputSpec] = []
-    outputs: List[OutputSpec] = []
-    constraints: List[str] = []
-    side_effects: List[str] = []
+    inputs: list[InputSpec] = []
+    outputs: list[OutputSpec] = []
+    constraints: list[str] = []
+    side_effects: list[str] = []
     confidence = 0.5
-    assumptions: List[str] = []
+    assumptions: list[str] = []
     
     if _detect_cli_tool(all_imports, []):
         goal = "Command-line tool for processing input and producing output"
@@ -235,8 +235,8 @@ def _infer_heuristic(
 
 
 def infer_intent(
-    static_report: Dict[str, Any],
-    runtime_report: Optional[Dict[str, Any]] = None,
+    static_report: dict[str, Any],
+    runtime_report: Optional[dict[str, Any]] = None,
     source_excerpt: str = "",
     use_llm: bool = False,
     llm_client: Optional[Any] = None,
@@ -305,7 +305,7 @@ def infer_intent(
                 logger.info("Enhanced intent with LLM: confidence=%.2f", intent.confidence)
                 
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning("LLM enhancement failed, using heuristic only: %s", e)
             intent.assumptions.append(f"LLM enhancement failed: {e}")
     

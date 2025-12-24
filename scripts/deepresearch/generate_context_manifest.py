@@ -5,10 +5,9 @@ import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List
 
 
-def discover_api_files(root: Path) -> List[Path]:
+def discover_api_files(root: Path) -> list[Path]:
     if not root.exists():
         return []
     return sorted(
@@ -34,7 +33,7 @@ def build_manifest(apis_dir: Path) -> dict:
     }
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate the DeepResearch context manifest")
     parser.add_argument(
         "--apis-dir",

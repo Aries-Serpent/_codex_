@@ -6,7 +6,7 @@ a dependency graph. Supports caching and incremental updates.
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from .parser import WorkflowParser
 from .types import (
@@ -45,23 +45,23 @@ class WorkflowInventory:
     """
 
     def __init__(self, workflows_dir: Path | str):
-        """Initialize workflow inventory.
+        """Initialize workflow inventory. 
 
         Args:
             workflows_dir: Path to .github/workflows directory.
         """
         self.workflows_dir = Path(workflows_dir)
         self.parser = WorkflowParser()
-        self._workflows: Dict[str, WorkflowMetadata] = {}
-        self._dependencies: List[WorkflowDependency] = []
+        self._workflows: dict[str, WorkflowMetadata] = {}
+        self._dependencies: list[WorkflowDependency] = []
 
     @property
-    def workflows(self) -> Dict[str, WorkflowMetadata]:
+    def workflows(self) -> dict[str, WorkflowMetadata]:
         """Get all parsed workflows."""
         return self._workflows
 
     @property
-    def dependencies(self) -> List[WorkflowDependency]:
+    def dependencies(self) -> list[WorkflowDependency]:
         """Get all workflow dependencies."""
         return self._dependencies
 
@@ -69,12 +69,12 @@ class WorkflowInventory:
         """Scan workflows directory and parse all workflow files.
 
         Args:
-            force_refresh: If True, clear cache and reparse everything.
+            force_refresh:  If True, clear cache and reparse everything.
 
         Returns:
             Number of workflows successfully parsed.
         """
-        if force_refresh:
+        if force_refresh: 
             self._workflows.clear()
             self.parser.clear_cache()
 
@@ -91,8 +91,8 @@ class WorkflowInventory:
 
         for workflow_file in workflow_files:
             # Skip disabled workflows
-            if workflow_file.suffix == ".disabled" or ".disabled" in workflow_file.suffixes:
-                logger.debug(f"Skipping disabled workflow: {workflow_file.name}")
+            if workflow_file.suffix == ".disabled" or ". disabled" in workflow_file.suffixes:
+                logger.debug(f"Skipping disabled workflow:  {workflow_file.name}")
                 continue
 
             try:
@@ -100,11 +100,11 @@ class WorkflowInventory:
                 if metadata:
                     self._workflows[workflow_file.name] = metadata
                     parsed_count += 1
-                    logger.debug(f"Parsed workflow: {workflow_file.name}")
+                    logger.debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
-            except Exception as e:
-               logger.debug(f"Exception: {e}")
+            except Exception as e: 
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
 
         # Build dependency graph
@@ -126,52 +126,52 @@ class WorkflowInventory:
         """
         return self._workflows.get(filename)
 
-    def get_triggerable(self) -> List[WorkflowMetadata]:
+    def get_triggerable(self) -> list[WorkflowMetadata]:
         """Get all manually triggerable workflows (workflow_dispatch).
 
         Returns:
-            List of workflows with workflow_dispatch trigger.
+            list of workflows with workflow_dispatch trigger.
         """
         return [w for w in self._workflows.values() if w.is_triggerable]
 
-    def get_reusable(self) -> List[WorkflowMetadata]:
+    def get_reusable(self) -> list[WorkflowMetadata]: 
         """Get all reusable workflows (workflow_call).
 
         Returns:
-            List of workflows with workflow_call trigger.
+            list of workflows with workflow_call trigger.
         """
         return [w for w in self._workflows.values() if w.is_reusable]
 
-    def get_by_trigger_type(self, trigger_type: TriggerType) -> List[WorkflowMetadata]:
+    def get_by_trigger_type(self, trigger_type: TriggerType) -> list[WorkflowMetadata]:
         """Get workflows by trigger type.
 
         Args:
-            trigger_type: Trigger type to filter by.
+            trigger_type:  Trigger type to filter by. 
 
         Returns:
-            List of workflows with the specified trigger.
+            list of workflows with the specified trigger.
         """
         return [w for w in self._workflows.values() if trigger_type in w.trigger_types]
 
-    def get_workflow_dependencies(self, filename: str) -> List[str]:
-        """Get workflows that this workflow depends on.
+    def get_workflow_dependencies(self, filename: str) -> list[str]:
+        """Get workflows that this workflow depends on. 
 
         Args:
-            filename: Workflow filename.
+            filename:  Workflow filename.
 
         Returns:
-            List of dependency workflow filenames.
+            list of dependency workflow filenames.
         """
         return [dep.target for dep in self._dependencies if dep.source == filename]
 
-    def get_workflow_dependents(self, filename: str) -> List[str]:
-        """Get workflows that depend on this workflow.
+    def get_workflow_dependents(self, filename: str) -> list[str]:
+        """Get workflows that depend on this workflow. 
 
         Args:
-            filename: Workflow filename.
+            filename:  Workflow filename.
 
         Returns:
-            List of dependent workflow filenames.
+            list of dependent workflow filenames.
         """
         return [dep.source for dep in self._dependencies if dep.target == filename]
 
@@ -181,7 +181,7 @@ class WorkflowInventory:
         Returns:
             Statistics about the workflow inventory.
         """
-        trigger_counts: Dict[str, int] = {}
+        trigger_counts: dict[str, int] = {}
         total_jobs = 0
         total_triggers = 0
 
@@ -214,7 +214,7 @@ class WorkflowInventory:
                     for dep_workflow in trigger.workflows:
                         # Try to find the actual workflow file
                         dep_filename = self._find_workflow_by_name(dep_workflow)
-                        if dep_filename:
+                        if dep_filename: 
                             self._dependencies.append(
                                 WorkflowDependency(
                                     source=filename,
@@ -227,7 +227,7 @@ class WorkflowInventory:
             # Check for workflow_call usage in jobs
             for job in workflow.jobs.values():
                 if job.uses:
-                    # Extract workflow reference (e.g., "./.github/workflows/reusable.yml")
+                    # Extract workflow reference (e.g., ". /.github/workflows/reusable.yml")
                     if job.uses.startswith("./"):
                         # Local workflow reference
                         parts = job.uses.split("@")[0]  # Remove @ref if present
@@ -245,7 +245,7 @@ class WorkflowInventory:
                             )
 
     def _find_workflow_by_name(self, workflow_name: str) -> Optional[str]:
-        """Find workflow filename by workflow name.
+        """Find workflow filename by workflow name. 
 
         Args:
             workflow_name: Workflow name (from 'name' field).
@@ -258,8 +258,8 @@ class WorkflowInventory:
                 return filename
         return None
 
-    def list_workflows(self) -> List[str]:
-        """List all workflow filenames.
+    def list_workflows(self) -> list[str]:
+        """list all workflow filenames. 
 
         Returns:
             Sorted list of workflow filenames.
@@ -280,7 +280,7 @@ class WorkflowInventory:
             logger.error(f"Workflow file not found: {workflow_path}")
             return False
 
-        try:
+        try: 
             metadata = self.parser.parse_file(workflow_path, use_cache=False)
             if metadata:
                 self._workflows[filename] = metadata
@@ -288,7 +288,7 @@ class WorkflowInventory:
                 logger.info(f"Refreshed workflow: {filename}")
                 return True
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error refreshing {filename}: {e}")
 
         return False

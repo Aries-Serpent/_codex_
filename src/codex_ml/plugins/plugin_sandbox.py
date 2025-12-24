@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Optional, Type
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class PluginHealth:
         self.last_error = error
 
     def set_quarantined(self):
-        """Set plugin to quarantined status."""
+        """set plugin to quarantined status."""
         self.status = PluginStatus.QUARANTINED
         self.quarantined_at = datetime.utcnow().isoformat()
 
@@ -99,7 +99,7 @@ class PluginHealth:
             elapsed = (datetime.utcnow() - quarantined_time).total_seconds()
             return elapsed >= quarantine_duration
         except (ValueError, TypeError) as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to parse quarantine timestamp: {e}")
             return False
 
@@ -109,18 +109,18 @@ class PluginContract:
     """Contract specification for a plugin.
 
     Attributes:
-        required_methods: List of required method names
+        required_methods: list of required method names
         input_schema: Expected input schema (simplified)
         output_schema: Expected output schema (simplified)
         max_execution_time: Maximum execution time in seconds
         required_config_keys: Required configuration keys
     """
 
-    required_methods: List[str] = field(default_factory=list)
-    input_schema: Optional[Dict[str, Type]] = None
-    output_schema: Optional[Dict[str, Type]] = None
+    required_methods: list[str] = field(default_factory=list)
+    input_schema: Optional[dict[str, Type]] = None
+    output_schema: Optional[dict[str, Type]] = None
     max_execution_time: float = 30.0
-    required_config_keys: List[str] = field(default_factory=list)
+    required_config_keys: list[str] = field(default_factory=list)
 
 
 class Plugin(ABC):
@@ -129,7 +129,7 @@ class Plugin(ABC):
     All plugins must inherit from this class and implement required methods.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize plugin.
 
         Args:
@@ -205,7 +205,7 @@ class PluginSandbox:
         self.quarantine_duration = quarantine_duration
         self.enable_auto_disable = enable_auto_disable
         self.enable_quarantine = enable_quarantine
-        self.health: Dict[str, PluginHealth] = {}
+        self.health: dict[str, PluginHealth] = {}
 
     def validate_contract(self, plugin: Plugin, contract: PluginContract) -> bool:
         """Validate plugin against contract.
@@ -354,7 +354,7 @@ class PluginSandbox:
         """
         return self.health.get(plugin_name)
 
-    def get_all_health(self) -> Dict[str, PluginHealth]:
+    def get_all_health(self) -> dict[str, PluginHealth]:
         """Get health status for all plugins.
 
         Returns:
@@ -396,7 +396,7 @@ class PluginManager:
         """
         self.sandbox = sandbox or PluginSandbox()
         self.validate_contracts = validate_contracts
-        self.plugins: Dict[str, Plugin] = {}
+        self.plugins: dict[str, Plugin] = {}
 
     def register_plugin(self, plugin: Plugin) -> bool:
         """Register a plugin.
@@ -422,7 +422,7 @@ class PluginManager:
                 logger.error(f"Plugin {plugin_name} initialization failed")
                 return False
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Plugin {plugin_name} initialization raised exception: {e}")
             return False
 
@@ -449,7 +449,7 @@ class PluginManager:
         plugin = self.plugins[plugin_name]
         return self.sandbox.execute_sandboxed(plugin, "execute", *args, **kwargs)
 
-    def execute_all_plugins(self, *args, **kwargs) -> Dict[str, Any]:
+    def execute_all_plugins(self, *args, **kwargs) -> dict[str, Any]:
         """Execute all registered plugins.
 
         Args:
@@ -474,10 +474,10 @@ class PluginManager:
                 plugin.cleanup()
                 logger.info(f"Plugin {plugin_name} cleanup complete")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Plugin {plugin_name} cleanup failed: {e}")
 
-    def get_plugin_health_report(self) -> Dict[str, Any]:
+    def get_plugin_health_report(self) -> dict[str, Any]:
         """Get health report for all plugins.
 
         Returns:

@@ -4,7 +4,6 @@ HTML visualization generator for AST analysis.
 
 import json
 from pathlib import Path
-from typing import Dict, List
 
 from .graph import ASTGraph
 from .node import StandardizedASTNode
@@ -18,13 +17,13 @@ class HTMLVisualizer:
         self.template_dir = Path(__file__).parent / "templates"
 
     def render_html(
-        self, nodes: List[StandardizedASTNode], graph: ASTGraph, metrics: Dict, output_path: str
+        self, nodes: list[StandardizedASTNode], graph: ASTGraph, metrics: dict, output_path: str
     ):
         """
         Generate HTML report.
 
         Args:
-            nodes: List of AST nodes
+            nodes: list of AST nodes
             graph: AST graph
             metrics: Metrics dictionary
             output_path: Path to save HTML file
@@ -131,7 +130,7 @@ class HTMLVisualizer:
 
         Path(output_path).write_text(html)
 
-    def _node_to_dict(self, node: StandardizedASTNode) -> Dict:
+    def _node_to_dict(self, node: StandardizedASTNode) -> dict:
         """Convert node to dictionary for JSON serialization."""
         return {
             "id": node.id,

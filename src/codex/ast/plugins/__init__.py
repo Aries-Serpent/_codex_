@@ -5,7 +5,7 @@ Provides base interface for extending AST analysis to new languages
 and custom analysis tools.
 """
 from abc import ABC, abstractmethod
-from typing import List, Optional, Dict, Any
+from typing import Optional, Any
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -19,8 +19,8 @@ class PluginMetadata:
     version: str
     author: str
     description: str
-    languages: List[str]
-    file_extensions: List[str]
+    languages: list[str]
+    file_extensions: list[str]
 
 
 class ASTPlugin(ABC):
@@ -49,7 +49,7 @@ class ASTPlugin(ABC):
     
     @property
     @abstractmethod
-    def file_extensions(self) -> List[str]:
+    def file_extensions(self) -> list[str]:
         """
         Return list of file extensions this plugin handles.
         
@@ -87,7 +87,7 @@ class ASTPlugin(ABC):
         """
         pass
     
-    def analyze(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Perform custom analysis on AST node.
         
@@ -126,7 +126,7 @@ class AnalysisPlugin(ABC):
         pass
     
     @abstractmethod
-    def analyze(self, node: StandardizedASTNode) -> Dict[str, Any]:
+    def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Analyze an AST node.
         

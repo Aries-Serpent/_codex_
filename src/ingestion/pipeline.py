@@ -33,7 +33,7 @@ import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional, Union
+from typing import Any, Callable, Iterator, Optional, Union
 
 from . import detect_encoding, deterministic_shuffle, read_text
 
@@ -92,7 +92,7 @@ class PipelineResult:
         success: Whether the operation succeeded
         records_processed: Number of records processed
         records_skipped: Number of records skipped
-        errors: List of error messages
+        errors: list of error messages
         duration_seconds: Time taken for the operation
         output_path: Path to output file (if applicable)
         metadata: Additional metadata about the operation
@@ -100,10 +100,10 @@ class PipelineResult:
     success: bool
     records_processed: int = 0
     records_skipped: int = 0
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     duration_seconds: float = 0.0
     output_path: Optional[Path] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class IngestionPipeline:
@@ -217,7 +217,7 @@ class IngestionPipeline:
             return detect_encoding(path)
         return self.config.encoding
     
-    def _read_csv(self, path: Path, encoding: str) -> Iterator[Dict[str, Any]]:
+    def _read_csv(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read CSV file as records.
         
         Safeguard: Field length validation.
@@ -227,7 +227,7 @@ class IngestionPipeline:
             encoding: File encoding
             
         Yields:
-            Dict records
+            dict records
         """
         with path.open("r", encoding=encoding, errors="replace", newline="") as f:
             reader = csv.DictReader(f)
@@ -242,7 +242,7 @@ class IngestionPipeline:
                         row[key] = value[:MAX_FIELD_LENGTH]
                 yield row
     
-    def _read_json(self, path: Path, encoding: str) -> Iterator[Dict[str, Any]]:
+    def _read_json(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSON file as records.
         
         Args:
@@ -250,7 +250,7 @@ class IngestionPipeline:
             encoding: File encoding
             
         Yields:
-            Dict records (wraps single objects in list)
+            dict records (wraps single objects in list)
         """
         content = read_text(path, encoding=encoding)
         data = json.loads(content)
@@ -266,7 +266,7 @@ class IngestionPipeline:
         else:
             yield {"value": data}
     
-    def _read_jsonl(self, path: Path, encoding: str) -> Iterator[Dict[str, Any]]:
+    def _read_jsonl(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSONL/NDJSON file as records.
         
         Args:
@@ -274,7 +274,7 @@ class IngestionPipeline:
             encoding: File encoding
             
         Yields:
-            Dict records
+            dict records
         """
         with path.open("r", encoding=encoding, errors="replace") as f:
             for line_num, line in enumerate(f, 1):
@@ -290,7 +290,7 @@ class IngestionPipeline:
                 except json.JSONDecodeError as e:
                     logger.warning("Invalid JSON at line %d: %s", line_num, e)
     
-    def _read_text(self, path: Path, encoding: str) -> Iterator[Dict[str, Any]]:
+    def _read_text(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read text file as records (one per line).
         
         Args:
@@ -298,13 +298,13 @@ class IngestionPipeline:
             encoding: File encoding
             
         Yields:
-            Dict records with 'text' field
+            dict records with 'text' field
         """
         with path.open("r", encoding=encoding, errors="replace") as f:
             for line in f:
                 yield {"text": line.rstrip("\n\r")}
     
-    def _transform_record(self, record: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _transform_record(self, record: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Apply transformations to a record.
         
         Args:
@@ -362,7 +362,7 @@ class IngestionPipeline:
         """
         start_time = time.time()
         input_path = Path(input_path)
-        errors: List[str] = []
+        errors: list[str] = []
         records_processed = 0
         records_skipped = 0
         
@@ -392,7 +392,7 @@ class IngestionPipeline:
             reader = readers.get(file_format, self._read_text)
             
             # Process records
-            processed_records: List[Dict[str, Any]] = []
+            processed_records: list[dict[str, Any]] = []
             
             for record in reader(input_path, encoding):
                 transformed = self._transform_record(record)
@@ -447,7 +447,7 @@ class IngestionPipeline:
     
     def _write_output(
         self,
-        records: List[Dict[str, Any]],
+        records: list[dict[str, Any]],
         output_path: Path,
     ) -> None:
         """Write processed records to output file.
@@ -488,7 +488,7 @@ class IngestionPipeline:
         self,
         input_path: Union[str, Path],
         format_override: Optional[str] = None,
-    ) -> Iterator[Dict[str, Any]]:
+    ) -> Iterator[dict[str, Any]]:
         """Stream records from input file.
         
         Memory-efficient processing for large files.
@@ -524,7 +524,7 @@ class IngestionPipeline:
 def ingest_file(
     path: Union[str, Path],
     config: Optional[PipelineConfig] = None,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Convenience function to ingest a single file.
     
     Args:
@@ -532,7 +532,7 @@ def ingest_file(
         config: Pipeline configuration
         
     Returns:
-        List of processed records
+        list of processed records
     """
     pipeline = IngestionPipeline(config)
     return list(pipeline.stream(path))
@@ -543,7 +543,7 @@ def ingest_directory(
     pattern: str = "*",
     config: Optional[PipelineConfig] = None,
     recursive: bool = False,
-) -> Iterator[Dict[str, Any]]:
+) -> Iterator[dict[str, Any]]:
     """Ingest all matching files from a directory.
     
     Args:
@@ -571,19 +571,19 @@ def ingest_directory(
             try:
                 yield from pipeline.stream(file_path)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning("Error processing %s: %s", file_path, e)
 
 
 def transform_records(
-    records: Iterator[Dict[str, Any]],
-    transformers: List[Callable[[Dict[str, Any]], Optional[Dict[str, Any]]]],
-) -> Iterator[Dict[str, Any]]:
+    records: Iterator[dict[str, Any]],
+    transformers: list[Callable[[dict[str, Any]], Optional[dict[str, Any]]]],
+) -> Iterator[dict[str, Any]]:
     """Apply a chain of transformers to records.
     
     Args:
         records: Input records
-        transformers: List of transformer functions
+        transformers: list of transformer functions
         
     Yields:
         Transformed records (skips None results)

@@ -12,7 +12,6 @@ Codex-specific archival infrastructure for reproducibility.
 
 from __future__ import annotations
 
-from typing import Set
 
 
 def detect(file_index: dict) -> dict:
@@ -26,8 +25,8 @@ def detect(file_index: dict) -> dict:
         Detection result with id, evidence, patterns, and metadata
     """
     files = file_index.get("files", [])
-    evidence: Set[str] = set()
-    found: Set[str] = set()
+    evidence: set[str] = set()
+    found: set[str] = set()
     required = ["archive", "bundle", "manifest"]
 
     # Patterns to detect archival infrastructure

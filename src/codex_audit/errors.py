@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Optional
+from typing import Iterable, Mapping, Optional
 
 
 @dataclass
@@ -16,12 +16,12 @@ class ErrorRecord:
     description: str
     message: str
     brief_context: str
-    ra_references: List[str] = field(default_factory=lambda: ["RA-1", "RA-3"])
+    ra_references: list[str] = field(default_factory=lambda: ["RA-1", "RA-3"])
     timestamp: str = field(
         default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z"
     )
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "phase_id": self.phase_id,
             "step_label": self.step_label,
@@ -44,7 +44,7 @@ class ErrorRecord:
 
 def append_error_record(path: Path, record: ErrorRecord) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    existing: List[Mapping[str, object]] = []
+    existing: list[Mapping[str, object]] = []
     if path.exists():
         try:
             existing = json.loads(path.read_text(encoding="utf-8"))
