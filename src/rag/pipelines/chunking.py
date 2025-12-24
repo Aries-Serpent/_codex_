@@ -213,9 +213,9 @@ class ChunkingPipeline:
         metadata = metadata or {}
         metadata["language"] = language
 
-        # Use language-specific separators
-        # Note: separator variable removed as it was unused
-        # The actual separation logic uses self.config.separator
+        # Note: Previous implementation assigned language-specific separators
+        # but never used them. The actual separation logic uses self.config.separator
+        # which is temporarily overridden below for code chunking.
 
         original_separator = self.config.separator
         self.config.separator = "\n\n"  # Use simple separator for code

@@ -116,7 +116,7 @@ def calculate_usage_stats(entries: list[dict[str, Any]]) -> dict[str, Any]:
                 daily["cost"] += entry.get("estimated_cost", 0.0)
                 daily["tokens"] += entry.get("tokens_used", 0)
             except (ValueError, IndexError) as exc:
-                logger.debug(
+                logger.warning(
                     "Skipping entry with invalid timestamp %r: %s",
                     timestamp,
                     exc,
