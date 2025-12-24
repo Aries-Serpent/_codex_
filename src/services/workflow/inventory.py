@@ -100,9 +100,9 @@ class WorkflowInventory:
                 if metadata:
                     self._workflows[workflow_file.name] = metadata
                     parsed_count += 1
-                    logger. debug(f"Parsed workflow:  {workflow_file.name}")
+                    logger.debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
-                    logger. warning(f"Failed to parse workflow: {workflow_file.name}")
+                    logger.warning(f"Failed to parse workflow: {workflow_file.name}")
             except Exception as e: 
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
@@ -186,7 +186,7 @@ class WorkflowInventory:
         total_triggers = 0
 
         for workflow in self._workflows.values():
-            total_jobs += len(workflow. jobs)
+            total_jobs += len(workflow.jobs)
             total_triggers += len(workflow.triggers)
 
             for trigger in workflow.triggers:
@@ -225,21 +225,21 @@ class WorkflowInventory:
                             )
 
             # Check for workflow_call usage in jobs
-            for job in workflow. jobs.values():
+            for job in workflow.jobs.values():
                 if job.uses:
                     # Extract workflow reference (e.g., ". /.github/workflows/reusable.yml")
                     if job.uses.startswith("./"):
                         # Local workflow reference
-                        parts = job.uses. split("@")[0]  # Remove @ref if present
-                        workflow_path = Path(parts. lstrip("./"))
-                        dep_filename = workflow_path. name
+                        parts = job.uses.split("@")[0]  # Remove @ref if present
+                        workflow_path = Path(parts.lstrip("./"))
+                        dep_filename = workflow_path.name
 
                         if dep_filename in self._workflows:
                             self._dependencies.append(
                                 WorkflowDependency(
                                     source=filename,
                                     target=dep_filename,
-                                    trigger_type=TriggerType. WORKFLOW_CALL,
+                                    trigger_type=TriggerType.WORKFLOW_CALL,
                                     required=True,
                                 )
                             )
@@ -277,7 +277,7 @@ class WorkflowInventory:
         """
         workflow_path = self.workflows_dir / filename
         if not workflow_path.exists():
-            logger. error(f"Workflow file not found: {workflow_path}")
+            logger.error(f"Workflow file not found: {workflow_path}")
             return False
 
         try: 
