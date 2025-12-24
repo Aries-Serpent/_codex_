@@ -126,3 +126,7 @@ class DependencyGraph:
             stack.extend(self.edges.get(current, set()))
 
         return visited - {node_id}
+
+
+class ASTGraph(DependencyGraph):
+    """Alias of DependencyGraph for AST visualization tooling."""

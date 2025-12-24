@@ -1,7 +1,6 @@
-from __future__ import annotations
-logger = logging.getLogger(__name__)
 """Click-based CLI for the Codex tombstone archive (enhanced with config/batch/health)."""
 
+from __future__ import annotations
 
 import json
 import logging
@@ -18,6 +17,8 @@ from .config import ArchiveAppConfig
 from .logging_config import export_configuration, log_restore, setup_logging
 from .service import ArchiveService
 from .util import append_evidence, redact_text_credentials, redact_url_credentials
+
+logger = logging.getLogger(__name__)
 
 
 def _load_config(config_file: Path | None = None) -> ArchiveAppConfig:

@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SRC_ROOT = REPO_ROOT / "src"
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -41,9 +42,33 @@ def pytest_configure(config: pytest.Config) -> None:
 # site-packages modules when they are installed. We still keep the repository
 # root on sys.path for project imports but move it to the end of the search
 # order so optional dependency discovery prefers the genuine distributions.
+if (src_str := str(SRC_ROOT)) not in sys.path:
+    sys.path.insert(0, src_str)
 if (repo_str := str(REPO_ROOT)) in sys.path:
     sys.path.remove(repo_str)
     sys.path.append(repo_str)
+
+_ALIASES = {
+    "data": "src.data",
+    "security": "src.security",
+}
+for alias, target in _ALIASES.items():
+    try:
+        sys.modules[alias] = importlib.import_module(target)
+    except Exception:
+        continue
+
+try:
+    utils_pkg = importlib.import_module("utils")
+    if hasattr(utils_pkg, "__path__"):
+        utils_pkg.__path__.append(str(SRC_ROOT / "utils"))
+        utils_pkg.__path__.append(str(REPO_ROOT / "utils"))
+    sys.modules["utils"] = utils_pkg
+except Exception:
+    try:
+        sys.modules["utils"] = importlib.import_module("src.utils")
+    except Exception:
+        pass
 
 HEAVY_MODULES = [
     "numpy",
