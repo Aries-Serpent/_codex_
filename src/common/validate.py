@@ -96,7 +96,7 @@ def run_clean_checkpoint(
     try:
         success_flag = results.success
     except AttributeError as e:
-       logger.debug(f"AttributeError: {e}")
+        logger.debug(f"AttributeError: {e}")
         logger.warning(f"AttributeError: {e}", exc_info=True)
         try:
             success_flag = results["success"]  # type: ignore[index]

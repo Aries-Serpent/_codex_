@@ -163,7 +163,7 @@ class F1Score(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                   logger.debug(f"ValueError: {e}")
+                    logger.debug(f"ValueError: {e}")
                     logger.warning(f"ValueError: {e}", exc_info=True)
                     return {self.name: 0.0}
                 return {self.name: f1_scores[idx]}
@@ -208,7 +208,7 @@ class RecallScore(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                   logger.debug(f"ValueError: {e}")
+                    logger.debug(f"ValueError: {e}")
                     logger.warning(f"ValueError: {e}", exc_info=True)
                     return {self.name: 0.0}
                 return {self.name: recalls[idx]}

@@ -47,7 +47,7 @@ def ensure_split_seed(seed: int | None = None) -> int:
         try:
             return int(env)
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
     return 42
 

@@ -99,7 +99,7 @@ class PluginHealth:
             elapsed = (datetime.utcnow() - quarantined_time).total_seconds()
             return elapsed >= quarantine_duration
         except (ValueError, TypeError) as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to parse quarantine timestamp: {e}")
             return False
 
@@ -422,7 +422,7 @@ class PluginManager:
                 logger.error(f"Plugin {plugin_name} initialization failed")
                 return False
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Plugin {plugin_name} initialization raised exception: {e}")
             return False
 
@@ -474,7 +474,7 @@ class PluginManager:
                 plugin.cleanup()
                 logger.info(f"Plugin {plugin_name} cleanup complete")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Plugin {plugin_name} cleanup failed: {e}")
 
     def get_plugin_health_report(self) -> Dict[str, Any]:

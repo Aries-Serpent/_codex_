@@ -259,7 +259,7 @@ class JsonRpcHandler:
             ).to_dict()
             
         except JsonRpcError as e:
-           logger.debug(f"JsonRpcError: {e}")
+            logger.debug(f"JsonRpcError: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return JsonRpcResponse(
                 id=request.id,

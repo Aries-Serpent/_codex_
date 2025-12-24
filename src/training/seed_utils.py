@@ -44,12 +44,12 @@ def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
             try:
                 torch.use_deterministic_algorithms(True, warn_only=False)  # type: ignore[attr-defined]
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 # Older torch versions accept a single positional argument
                 torch.use_deterministic_algorithms(True)  # type: ignore[arg-type]
             except AttributeError as e:
-               logger.debug(f"AttributeError: {e}")
+                logger.debug(f"AttributeError: {e}")
                 logger.warning(f"AttributeError: {e}", exc_info=True)
                 deterministic_state = "unsupported"
 
@@ -65,7 +65,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
             except (ImportError, AttributeError):
                 torch_info["cudnn"] = "unavailable"
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         torch_info = {"available": False}
 

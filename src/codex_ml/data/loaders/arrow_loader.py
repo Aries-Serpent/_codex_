@@ -27,7 +27,7 @@ try:
 
     ARROW_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     ARROW_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")

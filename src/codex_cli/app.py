@@ -121,7 +121,7 @@ if _USE_TYPER:
                         elif stripped:
                             break
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
@@ -160,7 +160,7 @@ if _USE_TYPER:
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
@@ -284,7 +284,7 @@ else:  # pragma: no cover - click fallback
                         elif stripped:
                             break
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
@@ -359,7 +359,7 @@ else:  # pragma: no cover - click fallback
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-               logger.debug(f"ValueError: {e}")
+                logger.debug(f"ValueError: {e}")
                 logger.warning(f"ValueError: {e}", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")

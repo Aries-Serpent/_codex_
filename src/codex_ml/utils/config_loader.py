@@ -23,7 +23,7 @@ try:  # pragma: no cover - optional dependency
         from hydra import compose, initialize_config_dir
         from hydra.errors import MissingConfigException
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         from config_legacy import compose, initialize_config_dir
         from config_legacy.errors import MissingConfigException
@@ -123,7 +123,7 @@ finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 

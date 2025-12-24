@@ -68,7 +68,7 @@ def is_gpu_available() -> bool:
 
         return torch.cuda.is_available()
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         return False
 

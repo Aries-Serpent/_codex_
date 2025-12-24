@@ -26,7 +26,7 @@ try:
 
     RAY_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     RAY_AVAILABLE = False
     logger.debug("Ray not installed, Ray-based distributed training unavailable")

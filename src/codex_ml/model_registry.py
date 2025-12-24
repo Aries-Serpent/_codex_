@@ -137,7 +137,7 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                     set_active(adapter_name)
                     return
                 except Exception as e:
-                   logger.debug(f"Exception: {e}")
+                    logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
     try:
         setattr(model, "lora_adapter_path", adapter_path)
@@ -318,14 +318,14 @@ def get_model(
             try:
                 model = model.to(dtype=torch_dtype)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
     normalised_device = _normalise_device(device)
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     if lora_adapter:

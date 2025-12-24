@@ -84,7 +84,7 @@ def get_all_registered_metrics() -> List[str]:
 
         return list(METRIC_REGISTRY.keys())
     except ImportError as e:
-       logger.debug(f"ImportError: {e}")
+        logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         return []
 

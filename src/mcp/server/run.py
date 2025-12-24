@@ -98,7 +98,7 @@ def _check_bind(host: str, port: int) -> Tuple[bool, Optional[str]]:
         sock.close()
         return True, None
     except OSError as exc:
-       logger.debug(f"OSError: {exc}")
+        logger.debug(f"OSError: {exc}")
         logger.debug("Exception caught, returning", exc_info=True)
         return False, str(exc)
 

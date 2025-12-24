@@ -104,7 +104,7 @@ def main(argv=None) -> int:
         try:
             import hydra
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             import config_legacy as hydra
         from omegaconf import DictConfig, OmegaConf
