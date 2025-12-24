@@ -45,7 +45,7 @@ except Exception:
 
 try:
     # Some callers expect _detect_encoding from io_text
-    from .io_text import _detect_encoding as _io_text__detect_encoding  # type: ignore
+    from .io_text import _fallback_detect_encoding as _io_text__detect_encoding  # type: ignore
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
