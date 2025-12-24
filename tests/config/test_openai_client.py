@@ -36,7 +36,7 @@ class TestCodexOpenAIClient:
         """Create a client with a mock API key."""
         from src.config.openai_client import CodexOpenAIClient
 
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-test12345678901234567890123456789012"}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-test-fake-key-for-unit-testing-only"}):
             return CodexOpenAIClient()
 
     def test_client_initialization_dry_run(self, client):
@@ -280,7 +280,7 @@ class TestAPIKeyValidation:
         from src.config.openai_client import _validate_api_key
 
         # Valid format: sk- followed by 32+ alphanumeric chars
-        assert _validate_api_key("sk-12345678901234567890123456789012") is True
+        assert _validate_api_key("sk-test-fake-key-for-unit-testing-only") is True
         assert _validate_api_key("sk-abcdefghijklmnopqrstuvwxyzABCDEF") is True
 
     def test_validate_api_key_invalid(self):

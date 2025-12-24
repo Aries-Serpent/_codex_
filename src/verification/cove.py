@@ -138,7 +138,8 @@ class ClaimExtractor:
             # Check if sentence contains claim patterns
             for pattern in self.CLAIM_PATTERNS:
                 if re.search(pattern, sentence, re.IGNORECASE):
-                    claim_id = hashlib.sha256(sentence.encode()).hexdigest()[:8]
+                    # 12 chars for better uniqueness
+                    claim_id = hashlib.sha256(sentence.encode()).hexdigest()[:12]
 
                     # Determine claim type
                     claim_type = self._classify_claim(sentence)

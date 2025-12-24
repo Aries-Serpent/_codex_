@@ -211,13 +211,14 @@ class ToolRegistry:
             )
 
         try:
-            # Execute the handler
+            # Execute the handler - only use wait_for for async handlers
             if asyncio.iscoroutinefunction(tool.handler):
                 result = await asyncio.wait_for(
                     tool.handler(*args, **kwargs),
                     timeout=tool.timeout_seconds
                 )
             else:
+                # Sync handlers don't need timeout wrapper
                 result = tool.handler(*args, **kwargs)
 
             duration = (time.time() - start_time) * 1000

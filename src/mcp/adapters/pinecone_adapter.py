@@ -100,7 +100,7 @@ class PineconeAdapter(BaseAdapter):
             try:
                 from pinecone import Pinecone
             except ImportError:
-                logger.error("pinecone-client not installed. Install with: pip install pinecone-client")
+                logger.error("pinecone package not installed. Install with: pip install pinecone")
                 return False
 
             # Initialize client

@@ -106,8 +106,9 @@ class EmbeddingPipeline:
         text_hash = hashlib.sha256(text.encode()).hexdigest()
 
         embedding = []
+        # Convert hex pairs to float values between -1 and 1
+        # Each hex pair (0-255) is normalized: (value / 127.5) - 1.0 maps to [-1, 1]
         for i in range(0, min(len(text_hash), self.config.dimension * 2), 2):
-            # Convert hex pairs to float values between -1 and 1
             byte_val = int(text_hash[i:i+2], 16)
             embedding.append((byte_val / 127.5) - 1.0)
 
