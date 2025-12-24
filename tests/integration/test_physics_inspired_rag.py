@@ -69,7 +69,7 @@ class TestQuantumRetrievalWithAgentMemory:
         try:
             from agents.agent_memory import AgentMemory
 
-            memory = AgentMemory()
+            memory = AgentMemory()  # noqa: F841 - instantiated to verify import works
 
             # Create test retrieval
             scorer = QuantumRelevanceScorer(alpha=0.7, beta=0.2, gamma=0.1)
@@ -103,7 +103,7 @@ class TestQuantumRetrievalWithMCPMetrics:
         try:
             from src.mcp.metrics.mcp_metrics import MCPMetrics
 
-            metrics = MCPMetrics()
+            metrics = MCPMetrics()  # noqa: F841 - instantiated to verify import works
 
             # Perform quantum retrieval
             retriever = QuantumEnhancedRetrieval()
