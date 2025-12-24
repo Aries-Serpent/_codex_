@@ -8,6 +8,7 @@ from __future__ import annotations
 import importlib
 import importlib.machinery
 import importlib.util
+import logging
 import os
 import random
 import sys
@@ -15,6 +16,7 @@ from pathlib import Path
 
 import pytest
 
+logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_ROOT = REPO_ROOT / "src"
 
@@ -55,7 +57,8 @@ _ALIASES = {
 for alias, target in _ALIASES.items():
     try:
         sys.modules[alias] = importlib.import_module(target)
-    except Exception:
+    except (ImportError, ModuleNotFoundError) as exc:
+        logger.debug(f"Could not create alias {alias} -> {target}: {exc}")
         continue
 
 try:
@@ -64,10 +67,12 @@ try:
         utils_pkg.__path__.append(str(SRC_ROOT / "utils"))
         utils_pkg.__path__.append(str(REPO_ROOT / "utils"))
     sys.modules["utils"] = utils_pkg
-except Exception:
+except (ImportError, ModuleNotFoundError) as exc:
+    logger.debug(f"Could not set up utils package: {exc}")
     try:
         sys.modules["utils"] = importlib.import_module("src.utils")
-    except Exception:
+    except (ImportError, ModuleNotFoundError) as nested_exc:
+        logger.debug(f"Could not import src.utils: {nested_exc}")
         pass
 
 HEAVY_MODULES = [
