@@ -1,7 +1,19 @@
 # Semgrep configuration for Aries-Serpent/_codex_
-# Manages rule exclusions and suppressions
+# Manages rule exclusions, suppressions, and baseline mode
+#
+# Baseline Mode: Enabled after remediation completion
+# Only new alerts will fail CI; historical alerts are tracked.
 
 rules: []
+
+# Baseline configuration
+# After remediation is complete, uncomment the baseline section
+# to enable differential scanning (only new issues block CI)
+#
+# baseline:
+#   created_at: "2025-12-24T10:00:00Z"
+#   mode: comment  # Options: comment, block, ignore
+#   alert_count_at_baseline: 0
 
 # Path exclusions for all rules
 paths:
@@ -26,3 +38,22 @@ paths:
     - "build/**"
     - "dist/**"
     - "*.egg-info/**"
+    
+    # Archive and deprecated code
+    - "archive/**"
+    - "**/deprecated/**"
+    
+    # Temporary and cache files
+    - ".hypothesis/**"
+    - "__pycache__/**"
+    - ".pytest_cache/**"
+
+# Severity mapping for priority scoring
+# Used by scripts/security/score_alerts.py
+severity_weights:
+  critical: 4.0
+  high: 3.0
+  medium: 2.0
+  low: 1.0
+  warning: 0.5
+  note: 0.5
