@@ -229,7 +229,7 @@ class TestQuantumRetrievalWithQuantumGameTheory:
 
         # Could use quantum game theory to evaluate strategies
         try:
-            from agents.quantum_game_theory import QuantumGame
+            from agents.quantum_game_theory import QuantumGame  # noqa: F401
 
             # Game would use retrieval scores as inputs
             # game = QuantumGame(...)
@@ -361,9 +361,7 @@ class TestEndToEndQuantumRAG:
         assert len(results) == 3
 
         # Calculate total entropy of results
-        total_entropy = sum(
-            result.metadata.get("entropy_contribution", 0.0) for result in results
-        )
+        total_entropy = sum(result.metadata.get("entropy_contribution", 0.0) for result in results)
 
         # Entropy should be reasonable (not too high)
         assert total_entropy >= 0.0
