@@ -160,7 +160,10 @@ class EmbeddingPipeline:
             model_name = "fallback-hash"
         else:
             try:
-                raw_embedding = self._model.encode(text, normalize_embeddings=self.config.normalize)
+                normalize = self.config.normalize
+                raw_embedding = self._model.encode(
+                    text, normalize_embeddings=normalize
+                )
                 embedding = raw_embedding.tolist()
                 model_name = self.config.model_name
             except Exception as e:

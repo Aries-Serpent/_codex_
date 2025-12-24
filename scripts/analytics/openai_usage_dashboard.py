@@ -106,12 +106,21 @@ def calculate_usage_stats(entries: list[dict[str, Any]]) -> dict[str, Any]:
             try:
                 date_str = timestamp[:10]  # Extract YYYY-MM-DD
                 if date_str not in stats["daily_usage"]:
-                    stats["daily_usage"][date_str] = {"requests": 0, "cost": 0.0, "tokens": 0}
+                    stats["daily_usage"][date_str] = {
+                        "requests": 0,
+                        "cost": 0.0,
+                        "tokens": 0,
+                    }
                 stats["daily_usage"][date_str]["requests"] += 1
-                stats["daily_usage"][date_str]["cost"] += entry.get("estimated_cost", 0.0)
-                stats["daily_usage"][date_str]["tokens"] += entry.get("tokens_used", 0)
+                daily = stats["daily_usage"][date_str]
+                daily["cost"] += entry.get("estimated_cost", 0.0)
+                daily["tokens"] += entry.get("tokens_used", 0)
             except (ValueError, IndexError) as exc:
-                logger.debug("Skipping entry with invalid timestamp %r: %s", timestamp, exc)
+                logger.debug(
+                    "Skipping entry with invalid timestamp %r: %s",
+                    timestamp,
+                    exc,
+                )
 
     return stats
 
@@ -119,6 +128,10 @@ def calculate_usage_stats(entries: list[dict[str, Any]]) -> dict[str, Any]:
 def generate_markdown_dashboard(stats: dict[str, Any]) -> str:
     """Generate markdown dashboard from usage statistics."""
     timestamp = datetime.now(timezone.utc).isoformat()
+
+    total = stats["total_requests"]
+    success = stats["successful_requests"]
+    success_rate = (success / max(total, 1)) * 100
 
     dashboard = f"""# OpenAI Usage Dashboard
 
@@ -128,9 +141,9 @@ def generate_markdown_dashboard(stats: dict[str, Any]) -> str:
 
 | Metric | Value |
 |--------|-------|
-| **Total Requests** | {stats['total_requests']:,} |
-| **Successful Requests** | {stats['successful_requests']:,} |
-| **Success Rate** | {(stats['successful_requests'] / max(stats['total_requests'], 1)) * 100:.1f}% |
+| **Total Requests** | {total:,} |
+| **Successful Requests** | {success:,} |
+| **Success Rate** | {success_rate:.1f}% |
 | **Total Tokens** | {stats['total_tokens']:,} |
 | **Total Cost** | ${stats['total_cost']:.4f} |
 | **Avg Response Time** | {stats['avg_duration_ms']:,}ms |
@@ -145,7 +158,9 @@ def generate_markdown_dashboard(stats: dict[str, Any]) -> str:
         requests = stats["requests_by_model"].get(model, 0)
         cost = stats["cost_by_model"].get(model, 0.0)
         avg_cost = cost / max(requests, 1)
-        dashboard += f"| `{model}` | {requests:,} | ${cost:.4f} | ${avg_cost:.6f} |\n"
+        dashboard += (
+            f"| `{model}` | {requests:,} | ${cost:.4f} | ${avg_cost:.6f} |\n"
+        )
 
     dashboard += """
 ## Daily Trends
@@ -157,7 +172,10 @@ def generate_markdown_dashboard(stats: dict[str, Any]) -> str:
     # Sort by date descending, show last 14 days
     daily = sorted(stats.get("daily_usage", {}).items(), reverse=True)[:14]
     for date_str, usage in daily:
-        dashboard += f"| {date_str} | {usage['requests']:,} | {usage['tokens']:,} | ${usage['cost']:.4f} |\n"
+        req = usage["requests"]
+        tok = usage["tokens"]
+        cst = usage["cost"]
+        dashboard += f"| {date_str} | {req:,} | {tok:,} | ${cst:.4f} |\n"
 
     dashboard += """
 ## Cost Optimization Tips
@@ -221,7 +239,10 @@ def main() -> None:
     print(f"  Models Used: {', '.join(stats['models_used']) or 'None'}")
 
     if not stats["total_requests"]:
-        print("\n💡 No usage data yet. Run the autonomous agent to generate usage logs.")
+        print(
+            "\n💡 No usage data yet. "
+            "Run the autonomous agent to generate usage logs."
+        )
 
 
 if __name__ == "__main__":

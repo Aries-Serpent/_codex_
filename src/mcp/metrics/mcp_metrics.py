@@ -249,8 +249,13 @@ class MCPMetrics:
         labels = {"adapter": adapter, "success": str(success).lower()}
 
         self.collector.increment("mcp_queries_total", labels=labels)
-        self.collector.observe("mcp_query_duration_ms", duration_ms, labels={"adapter": adapter})
-        self.collector.observe("mcp_query_results", result_count, labels={"adapter": adapter})
+        adapter_labels = {"adapter": adapter}
+        self.collector.observe(
+            "mcp_query_duration_ms", duration_ms, labels=adapter_labels
+        )
+        self.collector.observe(
+            "mcp_query_results", result_count, labels=adapter_labels
+        )
 
     def record_upsert(
         self,
@@ -263,8 +268,13 @@ class MCPMetrics:
         labels = {"adapter": adapter, "success": str(success).lower()}
 
         self.collector.increment("mcp_upserts_total", labels=labels)
-        self.collector.observe("mcp_upsert_duration_ms", duration_ms, labels={"adapter": adapter})
-        self.collector.increment("mcp_vectors_upserted", vector_count, labels={"adapter": adapter})
+        adapter_labels = {"adapter": adapter}
+        self.collector.observe(
+            "mcp_upsert_duration_ms", duration_ms, labels=adapter_labels
+        )
+        self.collector.increment(
+            "mcp_vectors_upserted", vector_count, labels=adapter_labels
+        )
 
     def record_error(self, adapter: str, error_type: str) -> None:
         """Record an error."""
