@@ -69,7 +69,7 @@ class TestQuantumRetrievalWithAgentMemory:
         try:
             from agents.agent_memory import AgentMemory
 
-            memory = AgentMemory()
+            memory = AgentMemory()  # noqa: F841 - instantiated to verify import works
 
             # Create test retrieval
             scorer = QuantumRelevanceScorer(alpha=0.7, beta=0.2, gamma=0.1)
@@ -103,7 +103,7 @@ class TestQuantumRetrievalWithMCPMetrics:
         try:
             from src.mcp.metrics.mcp_metrics import MCPMetrics
 
-            metrics = MCPMetrics()
+            metrics = MCPMetrics()  # noqa: F841 - instantiated to verify import works
 
             # Perform quantum retrieval
             retriever = QuantumEnhancedRetrieval()
@@ -229,7 +229,8 @@ class TestQuantumRetrievalWithQuantumGameTheory:
 
         # Could use quantum game theory to evaluate strategies
         try:
-            from agents.quantum_game_theory import QuantumGame
+            # Import check: verify quantum_game_theory module is available for integration
+            from agents.quantum_game_theory import QuantumGame  # noqa: F401
 
             # Game would use retrieval scores as inputs
             # game = QuantumGame(...)
@@ -361,9 +362,7 @@ class TestEndToEndQuantumRAG:
         assert len(results) == 3
 
         # Calculate total entropy of results
-        total_entropy = sum(
-            result.metadata.get("entropy_contribution", 0.0) for result in results
-        )
+        total_entropy = sum(result.metadata.get("entropy_contribution", 0.0) for result in results)
 
         # Entropy should be reasonable (not too high)
         assert total_entropy >= 0.0

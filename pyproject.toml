@@ -278,6 +278,7 @@ include = [
   "security*",
   "tools*",
   "tools.*",
+  "quantum*",
 ]
 exclude = [
   "tests*",
