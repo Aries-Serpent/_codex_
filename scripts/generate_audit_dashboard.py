@@ -27,7 +27,7 @@ try:
 
     PLANNING_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     PLANNING_AVAILABLE = False
 
@@ -74,7 +74,7 @@ def scan_directory(base_path: Path) -> list[dict[str, Any]]:
                     }
                 )
             except OSError as e:
-               logger.debug(f"OSError: {e}")
+                logger.debug(f"OSError: {e}")
                 logger.warning(f"OSError: {e}", exc_info=True)
                 # Skip files that can't be accessed
                 pass
@@ -127,7 +127,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
                     phases.append(line.strip("# ").strip())
             plans_data["phases"] = phases
         except OSError as e:
-           logger.debug(f"OSError: {e}")
+            logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # The plan file is optional; skip if it cannot be read.
             pass
@@ -372,7 +372,7 @@ def generate_html_dashboard(
 
             html_content += generate_planning_css()
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             pass
 

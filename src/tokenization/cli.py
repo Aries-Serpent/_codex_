@@ -502,7 +502,7 @@ def decode(
     try:
         decoded = decode_fn(id_list, **kwargs)
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             decoded = decode_fn(id_list)

@@ -8,7 +8,7 @@ Implements: validation, timeout, cleanup, error-handling, offline, reproducible
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Related files for evidence collection - bounded list with validation
 RELATED_FILES = [
@@ -33,7 +33,7 @@ def _validate_path(path: str) -> bool:
     return True
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detects MCP tool registry usage with comprehensive safeguards.
 
@@ -57,8 +57,8 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
 
     # Safeguard: Bounded iteration with validation
     files = [f.get("path", "") for f in files_list if isinstance(f, dict)]
-    evidence: List[str] = []
-    found: List[str] = []
+    evidence: list[str] = []
+    found: list[str] = []
 
     # Bounded, deterministic file scanning with validation
     for path in sorted(files):
@@ -144,7 +144,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _empty_result() -> Dict[str, Any]:
+def _empty_result() -> dict[str, Any]:
     """Return empty result with safeguard handling for invalid input."""
     return {
         "id": "mcp-tooling-registry",

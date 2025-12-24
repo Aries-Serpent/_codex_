@@ -15,15 +15,14 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple
 
 
-def run(cmd: list[str]) -> Tuple[int, str, str]:
+def run(cmd: list[str]) -> tuple[int, str, str]:
     p = subprocess.run(cmd, capture_output=True, text=True)
     return p.returncode, p.stdout, p.stderr
 
 
-def bandit_check(threshold: str) -> Tuple[bool, str]:
+def bandit_check(threshold: str) -> tuple[bool, str]:
     # Run bandit with JSON output
     code, out, err = run(["bandit", "-q", "-r", "src", "-f", "json"])
     if code not in (0, 1):  # bandit returns 1 on findings
@@ -44,7 +43,7 @@ def bandit_check(threshold: str) -> Tuple[bool, str]:
     return ok, f"bandit_worst={worst} allowed<={max_allowed}"
 
 
-def pip_audit_check(max_critical: int, max_high: int) -> Tuple[bool, str]:
+def pip_audit_check(max_critical: int, max_high: int) -> tuple[bool, str]:
     code, out, err = run(["pip-audit", "-f", "json"])
     if code not in (0, 1):  # 1 means vulns found
         return False, f"pip-audit failed: {err}"

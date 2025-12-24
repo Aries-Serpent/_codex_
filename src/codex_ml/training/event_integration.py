@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from .base import Event, EventBus, EventPublisher, EventType
 
@@ -38,7 +38,7 @@ class TrainingEventEmitter:
                 logger.info("Using Azure Event Grid publisher")
                 return AzureEventPublisher()
             except ImportError as e:
-               logger.debug(f"ImportError: {e}")
+                logger.debug(f"ImportError: {e}")
                 logger.warning(f"ImportError: {e}", exc_info=True)
                 logger.warning("Azure Event Grid configured but package not installed")
 
@@ -50,7 +50,7 @@ class TrainingEventEmitter:
                 logger.info("Using AWS EventBridge publisher")
                 return AWSEventPublisher()
             except ImportError as e:
-               logger.debug(f"ImportError: {e}")
+                logger.debug(f"ImportError: {e}")
                 logger.warning(f"ImportError: {e}", exc_info=True)
                 logger.warning("AWS EventBridge configured but package not installed")
 
@@ -61,7 +61,7 @@ class TrainingEventEmitter:
     def emit_training_started(
         self,
         model_name: str,
-        config: Dict[str, Any],
+        config: dict[str, Any],
     ) -> bool:
         """Emit training started event.
 
@@ -85,7 +85,7 @@ class TrainingEventEmitter:
     def emit_training_completed(
         self,
         model_name: str,
-        metrics: Dict[str, Any],
+        metrics: dict[str, Any],
     ) -> bool:
         """Emit training completed event.
 

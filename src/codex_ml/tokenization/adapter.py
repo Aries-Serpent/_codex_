@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Tokenizer adapter interfaces and implementations."""
 
-from __future__ import annotations
 
 import abc
 import hashlib

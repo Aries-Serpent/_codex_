@@ -2,7 +2,7 @@ import importlib
 import importlib.util
 import logging
 import os
-from typing import Any, Dict, List
+from typing import Any
 
 from .interface import EmbedderInterface
 
@@ -29,7 +29,7 @@ class OpenAIEmbedder(EmbedderInterface):
         client.api_key = self._api_key
         self._client = client
 
-    def embed(self, texts: List[str]) -> List[List[float]]:
+    def embed(self, texts: list[str]) -> list[list[float]]:
         self._ensure_client()
         if not self._client:
             # Fallback: empty vectors to keep system safe
@@ -37,6 +37,6 @@ class OpenAIEmbedder(EmbedderInterface):
         resp = self._client.Embedding.create(model=self.model, input=texts)
         return [d["embedding"] for d in resp["data"]]
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         ok = bool(self._api_key and self._client is not None)
         return {"status": "ok" if ok else "disconnected", "adapter": "openai"}

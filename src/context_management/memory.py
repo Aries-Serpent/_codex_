@@ -12,7 +12,7 @@ import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Callable, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class MemoryChunk:
     last_accessed: datetime = field(default_factory=datetime.now)
     access_count: int = 0
     priority: int = 50
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     def access(self):
         """Record an access to this chunk."""
@@ -41,7 +41,7 @@ class MemoryChunk:
 class RetrievalResult:
     """Result of a memory retrieval operation."""
 
-    chunks: List[MemoryChunk]
+    chunks: list[MemoryChunk]
     total_tokens: int
     query_used: str
     retrieval_method: str
@@ -67,7 +67,7 @@ class ContextMemory:
         storage_path: Optional[Path] = None,
         summarizer: Optional[Callable[[str], str]] = None,
         token_counter: Optional[Callable[[str], int]] = None,
-        embedder: Optional[Callable[[str], List[float]]] = None,
+        embedder: Optional[Callable[[str], list[float]]] = None,
     ):
         """
         Initialize memory.
@@ -88,8 +88,8 @@ class ContextMemory:
         self._embedder = embedder
 
         # Chunk storage
-        self._chunks: Dict[str, MemoryChunk] = {}
-        self._embeddings: Dict[str, List[float]] = {}  # chunk_id -> embedding
+        self._chunks: dict[str, MemoryChunk] = {}
+        self._embeddings: dict[str, list[float]] = {}  # chunk_id -> embedding
 
         # Current token count
         self._total_tokens = 0
@@ -102,9 +102,9 @@ class ContextMemory:
         self,
         content: str,
         priority: int = 50,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
         generate_summary: bool = True,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Store content in memory, chunking if necessary.
 
@@ -115,7 +115,7 @@ class ContextMemory:
             generate_summary: Whether to generate summary
 
         Returns:
-            List of chunk IDs created
+            list of chunk IDs created
         """
         # Split into chunks
         chunks = self._split_into_chunks(content)
@@ -136,7 +136,7 @@ class ContextMemory:
                 try:
                     summary = self._summarizer(chunk_content)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Failed to summarize chunk; storing without summary", exc_info=exc)
 
             # Create chunk
@@ -158,7 +158,7 @@ class ContextMemory:
                 try:
                     self._embeddings[chunk_id] = self._embedder(chunk_content)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Failed to embed chunk %s; proceeding without embedding", chunk_id, exc_info=exc)
 
         # Persist if storage configured
@@ -223,7 +223,7 @@ class ContextMemory:
             retrieval_method=retrieval_method,
         )
 
-    def map_reduce_summarize(self, chunk_ids: Optional[List[str]] = None) -> str:
+    def map_reduce_summarize(self, chunk_ids: Optional[list[str]] = None) -> str:
         """
         Generate summary using map-reduce pattern.
 
@@ -254,7 +254,7 @@ class ContextMemory:
                     chunk.summary = summary
                     summaries.append(summary)
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning("Chunk summarization failed; using fallback content", exc_info=exc)
                     summaries.append(chunk.content[:200] + "...")
 
@@ -266,13 +266,13 @@ class ContextMemory:
         try:
             return self._summarizer(combined)
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.warning("Failed to summarize combined content; returning raw aggregation", exc_info=exc)
             return combined
 
     def stream_retrieve(
         self, query: Optional[str] = None, max_tokens_per_chunk: Optional[int] = None
-    ) -> Iterator[Tuple[str, MemoryChunk]]:
+    ) -> Iterator[tuple[str, MemoryChunk]]:
         """
         Stream content from memory chunk by chunk.
 
@@ -312,7 +312,7 @@ class ContextMemory:
             return True
         return False
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get memory statistics."""
         return {
             "chunk_count": len(self._chunks),
@@ -329,7 +329,7 @@ class ContextMemory:
         self._embeddings.clear()
         self._total_tokens = 0
 
-    def _split_into_chunks(self, content: str) -> List[str]:
+    def _split_into_chunks(self, content: str) -> list[str]:
         """Split content into chunks based on token limit."""
         tokens = self._token_counter(content)
 
@@ -364,7 +364,7 @@ class ContextMemory:
 
         return chunks
 
-    def _split_content(self, content: str, max_tokens: int) -> List[str]:
+    def _split_content(self, content: str, max_tokens: int) -> list[str]:
         """Split content into pieces of max_tokens."""
         pieces = []
         words = content.split()
@@ -405,7 +405,7 @@ class ContextMemory:
 
         return self.delete_chunk(candidate.chunk_id)
 
-    def _rank_by_similarity(self, query: str, chunks: List[MemoryChunk]) -> List[MemoryChunk]:
+    def _rank_by_similarity(self, query: str, chunks: list[MemoryChunk]) -> list[MemoryChunk]:
         """Rank chunks by embedding similarity to query."""
         if not self._embedder:
             return chunks
@@ -413,7 +413,7 @@ class ContextMemory:
         try:
             query_embedding = self._embedder(query)
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.warning("Query embedding failed; falling back to existing order", exc_info=exc)
             return chunks
 
@@ -432,7 +432,7 @@ class ContextMemory:
         scored.sort(key=lambda x: x[1], reverse=True)
         return [chunk for chunk, _ in scored]
 
-    def _cosine_similarity(self, a: List[float], b: List[float]) -> float:
+    def _cosine_similarity(self, a: list[float], b: list[float]) -> float:
         """Calculate cosine similarity between vectors."""
         if len(a) != len(b):
             return 0.0
@@ -494,5 +494,5 @@ class ContextMemory:
                 self._chunks[cid] = chunk
                 self._total_tokens += chunk.token_count
         except Exception as exc:
-           logger.debug(f"Exception: {exc}")
+            logger.debug(f"Exception: {exc}")
             logger.error("Failed to load memory from %s", path, exc_info=exc)

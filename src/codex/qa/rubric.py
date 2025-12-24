@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Offline QA rubric handling and score generation utilities."""
 
-from __future__ import annotations
 
 import csv
 import json
@@ -76,7 +76,7 @@ def generate_scores(input_path: Path, rubric: QARubric, output_path: Path) -> No
                 try:
                     value = float(raw_value) if raw_value not in (None, "") else None
                 except ValueError as e:
-                   logger.debug(f"ValueError: {e}")
+                    logger.debug(f"ValueError: {e}")
                     logger.warning(f"ValueError: {e}", exc_info=True)
                     value = None
                 scores[criterion.id] = value

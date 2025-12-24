@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from fastapi import Body, FastAPI
 from pydantic import ValidationError
@@ -15,7 +15,7 @@ from .schemas import CallToolParams, ListToolsParams, NegotiateParams  # type: i
 
 logger = logging.getLogger(__name__)
 
-_ADAPTER_CACHE: Optional[Tuple[object, str]] = None
+_ADAPTER_CACHE: Optional[tuple[object, str]] = None
 _ADAPTER_LOADER = load_adapter
 
 
@@ -46,7 +46,7 @@ def _get_adapter() -> BackendAdapter:
 # Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.
 async def handle_jsonrpc_request(
     payload: Any, adapter: BackendAdapter
-) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+) -> Union[dict[str, Any], list[dict[str, Any]]]:
     if isinstance(payload, list):
         tasks = [asyncio.create_task(_dispatch_method(p, adapter)) for p in payload]
         results = await asyncio.gather(*tasks)
@@ -54,7 +54,7 @@ async def handle_jsonrpc_request(
     return await _dispatch_method(payload, adapter)
 
 
-async def _dispatch_method(p: Dict[str, Any], adapter: BackendAdapter) -> Dict[str, Any]:
+async def _dispatch_method(p: dict[str, Any], adapter: BackendAdapter) -> dict[str, Any]:
     req_id = p.get("id")
     method = p.get("method")
     params = p.get("params", {})

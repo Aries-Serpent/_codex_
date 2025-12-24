@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import Iterable, List
+from typing import Iterable
 
 from .bridge import CodexBridgeClient
 from .config import ClientConfig
@@ -20,7 +20,7 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         "--run-tests", nargs="*", default=[], help="Test targets to send to /tests/run"
     )
     parser.add_argument(
-        "--confirm", action="store_true", help="Set confirm=true and dry_run=false for the PR call"
+        "--confirm", action="store_true", help="set confirm=true and dry_run=false for the PR call"
     )
     parser.add_argument("--repo", default="example/repo", help="Repository slug for PR simulation")
     parser.add_argument("--title", default="Codex Demo", help="PR title to use in the simulation")
@@ -36,7 +36,7 @@ def _format_section(title: str) -> str:
 def main(argv: Iterable[str] | None = None) -> int:
     args = parse_args(argv)
     config = ClientConfig.from_environment()
-    report: List[str] = []
+    report: list[str] = []
 
     with CodexBridgeClient(config) as client:
         report.append(_format_section("Knowledge Search"))

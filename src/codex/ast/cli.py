@@ -14,14 +14,14 @@ logger = logging.getLogger(__name__)
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import typer
 
 app = typer.Typer(help="AST tools: analyze, audit, diff.")
 
 
-def _collect_py_files(path: Path) -> List[Path]:
+def _collect_py_files(path: Path) -> list[Path]:
     if path.is_file() and path.suffix == ".py":
         return [path]
     if path.is_dir():
@@ -29,7 +29,7 @@ def _collect_py_files(path: Path) -> List[Path]:
     return []
 
 
-def _analyze_path(path: Path) -> Dict[str, Any]:
+def _analyze_path(path: Path) -> dict[str, Any]:
     files = _collect_py_files(path)
     total_lines = 0
     for f in files:
@@ -38,7 +38,7 @@ def _analyze_path(path: Path) -> Dict[str, Any]:
                 1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines()
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return {
         "path": str(path),

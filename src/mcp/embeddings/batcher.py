@@ -1,4 +1,4 @@
-from typing import Iterable, List, Any, Generator
+from typing import Iterable, Any, Generator
 import hashlib
 import json
 
@@ -14,7 +14,7 @@ def compute_checksum(item: dict) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
-def batch_iterable(iterable: Iterable[Any], batch_size: int) -> Generator[List[Any], None, None]:
+def batch_iterable(iterable: Iterable[Any], batch_size: int) -> Generator[list[Any], None, None]:
     batch = []
     for it in iterable:
         batch.append(it)

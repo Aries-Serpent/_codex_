@@ -11,10 +11,10 @@ from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Compute duplication ratio over file stems using the S1 context index.
 
@@ -67,14 +67,14 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _find_duplicate_groups(files: List[Dict[str, Any]], counts: Counter) -> Dict[str, List[str]]:
+def _find_duplicate_groups(files: list[dict[str, Any]], counts: Counter) -> dict[str, list[str]]:
     """
     Find groups of files with duplicate stems.
 
     Safeguard: Bounded operation, deterministic ordering
 
     Args:
-        files: List of file info dicts
+        files: list of file info dicts
         counts: Counter of stem occurrences
 
     Returns:
@@ -98,7 +98,7 @@ def _find_duplicate_groups(files: List[Dict[str, Any]], counts: Counter) -> Dict
     return duplicate_groups
 
 
-def _detect_patterns(dup_ratio: float, duplicate_groups: Dict[str, List[str]]) -> List[str]:
+def _detect_patterns(dup_ratio: float, duplicate_groups: dict[str, list[str]]) -> list[str]:
     """
     Detect which patterns are present based on analysis results.
 
@@ -107,7 +107,7 @@ def _detect_patterns(dup_ratio: float, duplicate_groups: Dict[str, List[str]]) -
         duplicate_groups: Dictionary of duplicate file groups
 
     Returns:
-        List of detected pattern names
+        list of detected pattern names
     """
     patterns = []
 

@@ -45,7 +45,7 @@ import time
 import importlib.util
 import inspect
 from pathlib import Path
-from typing import Dict, List, Any, Callable
+from typing import Any, Callable
 
 # Try to import optional modules for enhanced features
 try:
@@ -303,7 +303,7 @@ def _iter_repo_files():
 # ---------------------------------------------------------------------------
 # Detector loader & normalizer (safe-loading with logs)
 # ---------------------------------------------------------------------------
-def load_dynamic_detectors() -> List[Callable]:
+def load_dynamic_detectors() -> list[Callable]:
     detectors_dir = ROOT / "scripts" / "space_traversal" / "detectors"
     funcs = []
     if not detectors_dir.exists():
@@ -354,7 +354,7 @@ def _normalize_detector_output(det: dict) -> dict:
                 e.get("path") for e in evidence_raw if isinstance(e, dict) and e.get("path")
             ]
         elif isinstance(evidence_raw, dict):
-            # Dict format: keys are file paths
+            # dict format: keys are file paths
             evidence_files = list(evidence_raw.keys())
         meta["_evidence_v2"] = evidence_raw
 
@@ -474,7 +474,7 @@ def stage_s2_facets(cfg, context_idx):
 def stage_s3_capabilities(cfg, facets):
     out_dir = Path(_get_artifacts_dir(cfg))
     out_dir.mkdir(parents=True, exist_ok=True)
-    file_cache: Dict[str, str] = {}
+    file_cache: dict[str, str] = {}
     capabilities = []
     # Static rules
     for rule in BASE_CAPABILITY_RULES:
@@ -528,7 +528,7 @@ def stage_s3_capabilities(cfg, facets):
         by_id = {c["id"]: c for c in capabilities}
         merged = {}
         missing_refs = []
-        missing_by_canonical: Dict[str, List[str]] = {}
+        missing_by_canonical: dict[str, list[str]] = {}
         for canonical, aliases in overrides.items():
             base = by_id.get(
                 canonical,
@@ -604,7 +604,7 @@ def stage_s3_capabilities(cfg, facets):
 
 
 def duplication_ratio(
-    evidence_files: List[str], file_cache: Dict[str, str] = None, cfg: dict = None
+    evidence_files: list[str], file_cache: dict[str, str] = None, cfg: dict = None
 ) -> float:
     """
     Compute duplication ratio using configured heuristic.
@@ -614,7 +614,7 @@ def duplication_ratio(
     - token_similarity: Enhanced token-based similarity using dup_similarity module
 
     Args:
-        evidence_files: List of evidence file paths
+        evidence_files: list of evidence file paths
         file_cache: Optional file content cache (for token_similarity mode)
         cfg: Optional config dict (to determine heuristic mode)
 
@@ -691,7 +691,7 @@ def duplication_ratio(
     return min(1.0, dup / max(1, len(stems)))
 
 
-def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
+def estimate_test_depth(cap_id: str, evidence_files: list[str]) -> float:
     test_files = [f for f in evidence_files if f.startswith("tests/")]
     # Extract tokens by splitting on both - and _ to improve matching
     # e.g., "safeguards_keywords" -> ["safeguards", "keywords"]
@@ -725,10 +725,10 @@ def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
 
 
 def safeguard_score(
-    evidence_files: List[str],
-    file_cache: Dict[str, str],
-    detector_safeguards: List[str] = None,
-    meta_safeguards: List[str] = None,
+    evidence_files: list[str],
+    file_cache: dict[str, str],
+    detector_safeguards: list[str] = None,
+    meta_safeguards: list[str] = None,
 ) -> float:
     """
     Calculate safeguard score from evidence files and detector declarations.
@@ -827,7 +827,7 @@ DOCS_SYNONYMS_MAP = {
 }
 
 
-def _expand_doc_tokens(cap_id: str, docs_keywords: List[str]) -> set[str]:
+def _expand_doc_tokens(cap_id: str, docs_keywords: list[str]) -> set[str]:
     tokens = set()
     base = (cap_id or "").split("-")[0].lower()
     seeds = [base] if base else []
@@ -849,7 +849,7 @@ def _expand_doc_tokens(cap_id: str, docs_keywords: List[str]) -> set[str]:
     return tokens
 
 
-def _docs_score(cap_id: str, file_cache: Dict[str, str], docs_keywords: List[str]) -> float:
+def _docs_score(cap_id: str, file_cache: dict[str, str], docs_keywords: list[str]) -> float:
     tokens = _expand_doc_tokens(cap_id, docs_keywords)
 
     def _is_doc(path: str) -> bool:
@@ -873,7 +873,7 @@ def _docs_score(cap_id: str, file_cache: Dict[str, str], docs_keywords: List[str
 
 
 def docs_score(
-    cap_id: str, file_cache: Dict[str, str], docs_keywords: List[str] | None = None
+    cap_id: str, file_cache: dict[str, str], docs_keywords: list[str] | None = None
 ) -> float:
     return _docs_score(cap_id, file_cache, docs_keywords or [])
 
@@ -1285,7 +1285,7 @@ def stage_s7_manifest(cfg):
 
 
 # diff & explain functions
-def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
+def load_capabilities_from_any(path: Path) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     data = {}
     if path.suffix == ".json":

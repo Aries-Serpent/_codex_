@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """CSV mapping loaders with typed validation and evidence logging."""
 
-from __future__ import annotations
 
 import csv
 from dataclasses import dataclass

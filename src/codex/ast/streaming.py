@@ -5,7 +5,7 @@ Processes files in chunks to minimize memory usage.
 
 import logging
 from pathlib import Path
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, Optional
 
 from .node import StandardizedASTNode
 from .parser import parse_python
@@ -69,7 +69,7 @@ class StreamingParser:
 
     def parse_directory(
         self, directory: str, pattern: str = "**/*.py"
-    ) -> Iterator[Tuple[str, StandardizedASTNode]]:
+    ) -> Iterator[tuple[str, StandardizedASTNode]]:
         """
         Parse all files in directory, streaming results.
 

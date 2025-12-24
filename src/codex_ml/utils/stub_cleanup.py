@@ -10,7 +10,7 @@ import ast
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -47,23 +47,23 @@ class StubInfo:
 class StubAnalyzer:
     """Analyzer for finding and categorizing stubs in code."""
 
-    def __init__(self, source_dirs: Optional[List[Path]] = None):
+    def __init__(self, source_dirs: Optional[list[Path]] = None):
         """Initialize stub analyzer.
 
         Args:
-            source_dirs: List of source directories to analyze
+            source_dirs: list of source directories to analyze
         """
         if source_dirs is None:
             source_dirs = [Path("src"), Path("training")]
 
         self.source_dirs = [Path(d) for d in source_dirs]
-        self.stubs: List[StubInfo] = []
+        self.stubs: list[StubInfo] = []
 
-    def analyze(self) -> List[StubInfo]:
+    def analyze(self) -> list[StubInfo]:
         """Analyze source directories for stubs using AST-based detection.
 
         Returns:
-            List of StubInfo objects
+            list of StubInfo objects
         """
         self.stubs = []
 
@@ -257,25 +257,25 @@ class StubAnalyzer:
         else:
             return "P2"
 
-    def get_by_priority(self, priority: str) -> List[StubInfo]:
+    def get_by_priority(self, priority: str) -> list[StubInfo]:
         """Get stubs by priority level.
 
         Args:
             priority: Priority level (P0, P1, P2)
 
         Returns:
-            List of stubs with specified priority
+            list of stubs with specified priority
         """
         return [stub for stub in self.stubs if stub.priority == priority]
 
-    def get_by_type(self, stub_type: str) -> List[StubInfo]:
+    def get_by_type(self, stub_type: str) -> list[StubInfo]:
         """Get stubs by type.
 
         Args:
             stub_type: Type of stub (NotImplementedError, TODO, FIXME)
 
         Returns:
-            List of stubs with specified type
+            list of stubs with specified type
         """
         return [stub for stub in self.stubs if stub.stub_type == stub_type]
 
@@ -301,24 +301,24 @@ class StubAnalyzer:
         return summary
 
 
-def find_stubs(source_dirs: Optional[List[Path]] = None) -> List[StubInfo]:
+def find_stubs(source_dirs: Optional[list[Path]] = None) -> list[StubInfo]:
     """Find all stubs in source directories (convenience function).
 
     Args:
-        source_dirs: List of source directories to analyze
+        source_dirs: list of source directories to analyze
 
     Returns:
-        List of StubInfo objects
+        list of StubInfo objects
     """
     analyzer = StubAnalyzer(source_dirs=source_dirs)
     return analyzer.analyze()
 
 
-def prioritize_stubs(stubs: List[StubInfo]) -> List[StubInfo]:
+def prioritize_stubs(stubs: list[StubInfo]) -> list[StubInfo]:
     """Sort stubs by priority (P0 first, then P1, then P2).
 
     Args:
-        stubs: List of StubInfo objects
+        stubs: list of StubInfo objects
 
     Returns:
         Sorted list with P0 first
@@ -329,12 +329,12 @@ def prioritize_stubs(stubs: List[StubInfo]) -> List[StubInfo]:
     )
 
 
-def generate_stub_report(output_path: Path | str, source_dirs: Optional[List[Path]] = None):
+def generate_stub_report(output_path: Path | str, source_dirs: Optional[list[Path]] = None):
     """Generate stub analysis report.
 
     Args:
         output_path: Path where report will be saved
-        source_dirs: List of source directories to analyze
+        source_dirs: list of source directories to analyze
     """
     analyzer = StubAnalyzer(source_dirs=source_dirs)
     stubs = analyzer.analyze()
@@ -358,7 +358,7 @@ def generate_stub_report(output_path: Path | str, source_dirs: Optional[List[Pat
         for stub_type, count in summary["by_type"].items():
             f.write(f"- **{stub_type}**: {count}\n")
 
-        f.write("\n## Detailed List\n\n")
+        f.write("\n## Detailed list\n\n")
 
         for priority in ["P0", "P1", "P2"]:
             priority_stubs = [s for s in sorted_stubs if s.priority == priority]

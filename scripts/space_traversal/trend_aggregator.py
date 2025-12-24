@@ -24,12 +24,12 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
+def _load_manifest_or_scored(path: Path) -> Optional[dict[str, Any]]:
     """
     Load a manifest or capabilities_scored.json file.
 
@@ -62,13 +62,13 @@ def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
 
 
 def _filter_by_lookback(
-    runs: List[Dict[str, Any]], lookback_days: Optional[int]
-) -> List[Dict[str, Any]]:
+    runs: list[dict[str, Any]], lookback_days: Optional[int]
+) -> list[dict[str, Any]]:
     """
     Filter runs to only include those within lookback_days.
 
     Args:
-        runs: List of run data dictionaries
+        runs: list of run data dictionaries
         lookback_days: Number of days to look back (None = no filter)
 
     Returns:
@@ -85,8 +85,8 @@ def aggregate_trends(
     artifacts_dir: Path,
     reports_dir: Path,
     lookback_days: Optional[int] = None,
-    manifest_paths: Optional[List[Path]] = None,
-) -> Dict[str, Any]:
+    manifest_paths: Optional[list[Path]] = None,
+) -> dict[str, Any]:
     """
     Aggregate capability trends across multiple audit runs.
 
@@ -112,7 +112,7 @@ def aggregate_trends(
     runs = []
 
     # Collect all potential manifest/scored files
-    paths_to_check: List[Path] = []
+    paths_to_check: list[Path] = []
 
     # 1. Root manifest
     root_manifest = ROOT / "audit_run_manifest.json"
@@ -219,7 +219,7 @@ def aggregate_trends(
     return result
 
 
-def generate_trend_report(trend_data: Dict[str, Any], output_path: Path) -> None:
+def generate_trend_report(trend_data: dict[str, Any], output_path: Path) -> None:
     """
     Generate a formatted trend report file.
 

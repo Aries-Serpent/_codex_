@@ -1,15 +1,15 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal metrics logging utilities for `_codex_`."""
 
-from __future__ import annotations
 
 import json
 import os
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, Optional, TextIO
+from typing import Optional, TextIO
 
 try:  # optional psutil
     import psutil
@@ -21,8 +21,8 @@ except Exception:  # pragma: no cover
 class MetricRecord:
     step: int
     timestamp: float
-    metrics: Dict[str, float] = field(default_factory=dict)
-    system: Optional[Dict[str, float]] = None
+    metrics: dict[str, float] = field(default_factory=dict)
+    system: Optional[dict[str, float]] = None
 
 
 class MetricLogger:
@@ -37,7 +37,7 @@ class MetricLogger:
         if self._fh is None:
             self._fh = self.path.open("a", encoding="utf-8")
 
-    def _collect_system_metrics(self) -> Optional[Dict[str, float]]:
+    def _collect_system_metrics(self) -> Optional[dict[str, float]]:
         if psutil is None:
             return None
         try:

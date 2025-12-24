@@ -6,7 +6,7 @@ Provides utilities to integrate MLflow tracking into training loops.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from codex_ml.tracking.mlflow_wrapper import MLflowTracker, get_tracker, init_tracking
 
@@ -20,7 +20,7 @@ class TrainingTracker:
 
     def __init__(
         self,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         run_name: Optional[str] = None,
         auto_log: bool = True,
     ):
@@ -96,7 +96,7 @@ class TrainingTracker:
     def log_step(
         self,
         step: int,
-        metrics: Dict[str, float],
+        metrics: dict[str, float],
         prefix: str = "",
     ):
         """Log metrics for a training step.
@@ -118,8 +118,8 @@ class TrainingTracker:
     def log_epoch(
         self,
         epoch: int,
-        train_metrics: Dict[str, float],
-        val_metrics: Optional[Dict[str, float]] = None,
+        train_metrics: dict[str, float],
+        val_metrics: Optional[dict[str, float]] = None,
     ):
         """Log metrics for an epoch.
 
@@ -158,7 +158,7 @@ class TrainingTracker:
         self.tracker.log_artifact(checkpoint_path, artifact_path=f"checkpoints/epoch_{epoch}")
         self.tracker.set_tag("best_epoch", epoch)
 
-    def log_final_metrics(self, metrics: Dict[str, float]):
+    def log_final_metrics(self, metrics: dict[str, float]):
         """Log final metrics at end of training.
 
         Args:
@@ -181,7 +181,7 @@ class TrainingTracker:
 
 
 def init_training_tracking(
-    config: Dict[str, Any],
+    config: dict[str, Any],
     run_name: Optional[str] = None,
 ) -> TrainingTracker:
     """Initialize training tracker from config.
@@ -199,7 +199,7 @@ def init_training_tracking(
 def log_training_step(
     step: int,
     loss: float,
-    metrics: Optional[Dict[str, float]] = None,
+    metrics: Optional[dict[str, float]] = None,
     prefix: str = "train/",
 ):
     """Convenience function to log training step using global tracker.

@@ -9,7 +9,6 @@ import math
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 DEFAULT_PATTERNS = [
     # Basic secret-like patterns
@@ -24,7 +23,7 @@ SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"
 MAX_FILE_BYTES = 500_000
 
 
-def load_patterns(config_file: Path | None) -> List[re.Pattern]:
+def load_patterns(config_file: Path | None) -> list[re.Pattern]:
     pats = [re.compile(p) for p in DEFAULT_PATTERNS]
     if config_file and config_file.exists():
         data = json.loads(config_file.read_text()) if config_file.suffix == ".json" else None
@@ -66,9 +65,9 @@ def shannon_entropy(s: str) -> float:
 
 
 def scan_path(
-    root: Path, patterns: List[re.Pattern], entropy_thresh: float = 4.0
-) -> Tuple[List[Dict], int]:
-    findings: List[Dict] = []
+    root: Path, patterns: list[re.Pattern], entropy_thresh: float = 4.0
+) -> tuple[list[dict], int]:
+    findings: list[dict] = []
     files_scanned = 0
     for p in sorted(root.rglob("*")):
         if p.is_dir():

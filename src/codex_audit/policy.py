@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Mapping, MutableMapping, Sequence
+from typing import Mapping, MutableMapping, Sequence
 
 RA_RULES: Mapping[str, str] = {
     "RA-1": "No fabrication: every assertion must be grounded in repository evidence.",
@@ -14,7 +14,7 @@ RA_RULES: Mapping[str, str] = {
 }
 
 
-def _default_capabilities() -> List[str]:
+def _default_capabilities() -> list[str]:
     return [
         "Tokenization",
         "ChatGPT Codex Modeling",
@@ -43,7 +43,7 @@ class CapabilityPolicy:
     ra_rules: Sequence[str]
     rationale: str
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "name": self.name,
             "ra_rules": list(self.ra_rules),
@@ -57,7 +57,7 @@ class TrackPolicy:
     focus: str
     ra_rules: Sequence[str]
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "track": self.track,
             "focus": self.focus,
@@ -67,11 +67,11 @@ class TrackPolicy:
 
 def build_policy_mapping(
     capabilities: Sequence[str] | None = None, tracks: Mapping[str, str] | None = None
-) -> Dict[str, object]:
+) -> dict[str, object]:
     caps = capabilities or _default_capabilities()
     track_map = tracks or _default_tracks()
 
-    cap_policies: List[CapabilityPolicy] = []
+    cap_policies: list[CapabilityPolicy] = []
     for cap in caps:
         ra_links = ["RA-1", "RA-2", "RA-3"]
         if "token" in cap.lower():
@@ -86,9 +86,9 @@ def build_policy_mapping(
             )
         )
 
-    track_policies: List[TrackPolicy] = []
+    track_policies: list[TrackPolicy] = []
     for track, focus in track_map.items():
-        ra_links: List[str] = ["RA-1", "RA-3"]
+        ra_links: list[str] = ["RA-1", "RA-3"]
         if track in {"A", "B"}:
             ra_links.append("RA-2")
         if track in {"D", "E"}:
@@ -112,7 +112,7 @@ def build_policy_mapping(
 
 def write_policy_mapping(
     path: Path, mapping: MutableMapping[str, object] | None = None
-) -> Dict[str, object]:
+) -> dict[str, object]:
     path.parent.mkdir(parents=True, exist_ok=True)
     mapping_to_write = mapping or build_policy_mapping()
     with path.open("w", encoding="utf-8") as fp:

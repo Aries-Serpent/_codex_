@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Reference metric implementations used by Codex training loops."""
 
-from __future__ import annotations
 
 import json
 import math
@@ -11,7 +11,7 @@ from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 try:  # pragma: no cover - optional dependency
     import torch
@@ -19,13 +19,13 @@ except Exception:  # pragma: no cover - environments without torch
     torch = None  # type: ignore[assignment]
 
 
-def _to_flat_list(values: Any) -> List[Any]:
+def _to_flat_list(values: Any) -> list[Any]:
     """Convert tensors or iterables into a flat list for metric computation."""
 
     if torch is not None and isinstance(values, torch.Tensor):  # pragma: no branch
         return values.detach().cpu().flatten().tolist()
     if isinstance(values, Sequence) and not isinstance(values, (str, bytes)):
-        flattened: List[Any] = []
+        flattened: list[Any] = []
         for item in values:
             if isinstance(item, Sequence) and not isinstance(item, (str, bytes)):
                 flattened.extend(_to_flat_list(item))
@@ -53,7 +53,7 @@ class MetricBase(ABC):
         """Update internal state with a batch of predictions and targets."""
 
     @abstractmethod
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Return the computed metric values."""
 
     def reset(self) -> None:
@@ -90,7 +90,7 @@ class _ClassificationStats:
             return 0.0
         return self.tp[label] / denom
 
-    def labels(self) -> List[int]:
+    def labels(self) -> list[int]:
         observed = (
             set(self.support.keys())
             | set(self.tp.keys())
@@ -105,7 +105,7 @@ class _ClassificationStats:
         return sum(self.support.values())
 
 
-def _average(values: List[float], weights: List[int] | None) -> float:
+def _average(values: list[float], weights: list[int] | None) -> float:
     if not values:
         return 0.0
     if weights and sum(weights) > 0:
@@ -131,7 +131,7 @@ class F1Score(MetricBase):
         labels = [int(t) for t in _to_flat_list(targets)]
         self._stats.update(preds, labels)
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         labels = self._stats.labels()
         precisions = [self._stats.precision(label) for label in labels]
         recalls = [self._stats.recall(label) for label in labels]
@@ -188,7 +188,7 @@ class RecallScore(MetricBase):
         labels = [int(t) for t in _to_flat_list(targets)]
         self._stats.update(preds, labels)
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         labels = self._stats.labels()
         recalls = [self._stats.recall(label) for label in labels]
         supports = [self._stats.support[label] for label in labels]
@@ -236,7 +236,7 @@ class TokenAccuracy(MetricBase):
         self._correct += correct
         self._total += total
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         # If no samples have been processed, return 0.0 accuracy.
         # This behavior is tested in the empty input test case.
         if self._total == 0:
@@ -283,7 +283,7 @@ class BLEUScore(MetricBase):
                 self._matches[n - 1] += matches
                 self._totals[n - 1] += total
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         precisions = []
         for matches, total in zip(self._matches, self._totals):
             if total == 0:
@@ -305,7 +305,7 @@ class BLEUScore(MetricBase):
         return {self.name: bleu, "brevity_penalty": brevity_penalty}
 
 
-def _to_sequences(batch: Any) -> List[List[Any]]:
+def _to_sequences(batch: Any) -> list[list[Any]]:
     if torch is not None and isinstance(batch, torch.Tensor):  # pragma: no branch
         if batch.ndim == 1:
             return [batch.detach().cpu().tolist()]
@@ -327,14 +327,14 @@ class MetricSpec:
 
     name: str
     factory: type[MetricBase]
-    default_kwargs: Dict[str, Any] | None = None
+    default_kwargs: dict[str, Any] | None = None
 
 
 class MetricRegistry:
     """Simple factory/registry for metric implementations."""
 
     def __init__(self) -> None:
-        self._registry: Dict[str, MetricSpec] = {}
+        self._registry: dict[str, MetricSpec] = {}
 
     def register(self, name: str, metric_cls: type[MetricBase], **default_kwargs: Any) -> None:
         key = name.strip().lower()
@@ -352,7 +352,7 @@ class MetricRegistry:
         kwargs.update(overrides)
         return spec.factory(**kwargs)
 
-    def list(self) -> List[str]:
+    def list(self) -> list[str]:
         return sorted(self._registry.keys())
 
 
@@ -363,7 +363,7 @@ DEFAULT_METRICS.register("token_accuracy", TokenAccuracy)
 DEFAULT_METRICS.register("bleu", BLEUScore)
 
 
-def load_metrics_from_file(path: str | Path) -> Dict[str, Any]:
+def load_metrics_from_file(path: str | Path) -> dict[str, Any]:
     """Load metric instantiation parameters from a JSON file."""
 
     payload_path = Path(path)

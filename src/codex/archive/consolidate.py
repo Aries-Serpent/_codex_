@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Consolidation planning for near-duplicate files."""
 
-from __future__ import annotations
 
 import time
 from dataclasses import dataclass

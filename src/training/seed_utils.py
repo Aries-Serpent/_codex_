@@ -1,12 +1,12 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Utilities for establishing deterministic seeds across common libraries."""
 
-from __future__ import annotations
 
 import os
 import random
-from typing import Any, Dict
+from typing import Any
 
 try:
     import numpy as np  # type: ignore
@@ -24,8 +24,8 @@ def _set_numpy_seed(seed: int) -> None:
         pass
 
 
-def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
-    torch_info: Dict[str, Any] = {"available": False}
+def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
+    torch_info: dict[str, Any] = {"available": False}
     try:
         import torch  # type: ignore
 
@@ -72,7 +72,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
     return torch_info
 
 
-def set_all_seeds(seed: int = 1337, deterministic: bool = True) -> Dict[str, Any]:
+def set_all_seeds(seed: int = 1337, deterministic: bool = True) -> dict[str, Any]:
     """Seed Python, numpy, and torch RNGs consistently.
 
     Parameters
@@ -84,7 +84,7 @@ def set_all_seeds(seed: int = 1337, deterministic: bool = True) -> Dict[str, Any
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         A summary describing which backends were affected. This is useful for
         structured logging during smoke tests.
     """

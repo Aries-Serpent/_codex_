@@ -12,7 +12,7 @@ Patterns detected: peft, lora, adapter, hooks, fine-tuning
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # PEFT-related tokens and patterns
 PEFT_TOKENS = {
@@ -65,7 +65,7 @@ def _read_text(path_input) -> str:
         return ""
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Find evidence of PEFT/LoRA implementations using the S1 context index.
 
@@ -81,7 +81,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
 
     files = file_index.get("files", [])
-    evidence: Dict[str, List[str]] = {}
+    evidence: dict[str, list[str]] = {}
 
     for entry in files:
         rel_path = entry.get("path")

@@ -24,7 +24,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -57,15 +57,15 @@ class MemoryEntry:
     memory_id: str
     category: str
     content: str
-    context: Dict[str, Any]
+    context: dict[str, Any]
     confidence: float = 0.8
     access_count: int = 0
     last_accessed: Optional[str] = None
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
-    tags: List[str] = field(default_factory=list)
-    related_memories: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
+    related_memories: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "memory_id": self.memory_id,
             "category": self.category,
@@ -80,7 +80,7 @@ class MemoryEntry:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "MemoryEntry":
+    def from_dict(cls, data: dict[str, Any]) -> "MemoryEntry":
         return cls(**data)
 
 
@@ -98,21 +98,21 @@ class ContextFrame:
     status: str = "active"  # active, completed, failed, paused
 
     # Working memory
-    active_memories: List[str] = field(default_factory=list)
-    decisions_made: List[Dict[str, Any]] = field(default_factory=list)
-    lessons_learned: List[str] = field(default_factory=list)
+    active_memories: list[str] = field(default_factory=list)
+    decisions_made: list[dict[str, Any]] = field(default_factory=list)
+    lessons_learned: list[str] = field(default_factory=list)
 
     # Environment context
     repository: Optional[str] = None
     branch: Optional[str] = None
-    files_modified: List[str] = field(default_factory=list)
+    files_modified: list[str] = field(default_factory=list)
 
     # Performance metrics
     tokens_used: int = 0
     actions_taken: int = 0
     errors_encountered: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "frame_id": self.frame_id,
             "task_description": self.task_description,
@@ -139,19 +139,19 @@ class PatternLibrary:
     """
 
     def __init__(self):
-        self.patterns: Dict[str, Dict[str, Any]] = {}
-        self.pattern_index: Dict[str, List[str]] = {}  # tag -> pattern_ids
+        self.patterns: dict[str, dict[str, Any]] = {}
+        self.pattern_index: dict[str, list[str]] = {}  # tag -> pattern_ids
 
     def add_pattern(
         self,
         pattern_id: str,
         name: str,
         description: str,
-        triggers: List[str],
-        recommended_actions: List[str],
+        triggers: list[str],
+        recommended_actions: list[str],
         success_rate: float,
-        examples: List[Dict[str, Any]],
-        tags: List[str],
+        examples: list[dict[str, Any]],
+        tags: list[str],
     ) -> None:
         """Add a new pattern to the library."""
         self.patterns[pattern_id] = {
@@ -176,9 +176,9 @@ class PatternLibrary:
     def match_patterns(
         self,
         situation: str,
-        tags: List[str] = None,
+        tags: list[str] = None,
         min_success_rate: float = 0.5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Find patterns matching the current situation."""
         matches = []
 
@@ -233,14 +233,14 @@ class PatternLibrary:
             pattern["usage_count"] = new_count
             pattern["success_rate"] = new_rate
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "patterns": self.patterns,
             "pattern_index": self.pattern_index,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PatternLibrary":
+    def from_dict(cls, data: dict[str, Any]) -> "PatternLibrary":
         lib = cls()
         lib.patterns = data.get("patterns", {})
         lib.pattern_index = data.get("pattern_index", {})
@@ -547,10 +547,10 @@ class AgentMemory:
     def search_memories(
         self,
         category: str = None,
-        tags: List[str] = None,
+        tags: list[str] = None,
         min_confidence: float = 0.0,
         limit: int = 50,
-    ) -> List[MemoryEntry]:
+    ) -> list[MemoryEntry]:
         """Search memories by criteria."""
         query = "SELECT * FROM memories WHERE 1=1"
         params = []
@@ -613,7 +613,7 @@ class AgentMemory:
             )
             conn.commit()
 
-    def get_recent_context_frames(self, limit: int = 10) -> List[ContextFrame]:
+    def get_recent_context_frames(self, limit: int = 10) -> list[ContextFrame]:
         """Get recent context frames."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
@@ -677,7 +677,7 @@ class AgentMemory:
 
         return consolidated
 
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get statistics about stored memories."""
         with sqlite3.connect(self.db_path) as conn:
             total = conn.execute("SELECT COUNT(*) FROM memories").fetchone()[0]
@@ -702,11 +702,11 @@ class AgentMemory:
             "total_accesses": total_accesses,
         }
 
-    def statistics(self) -> Dict[str, Any]:
+    def statistics(self) -> dict[str, Any]:
         """Alias for get_memory_stats (backward compatibility)."""
         return self.get_memory_stats()
 
-    def search(self, query: str = None, **kwargs) -> List[MemoryEntry]:
+    def search(self, query: str = None, **kwargs) -> list[MemoryEntry]:
         """
         Search memories with text query (alias for search_memories).
 
@@ -715,7 +715,7 @@ class AgentMemory:
             **kwargs: Additional search parameters
 
         Returns:
-            List of matching MemoryEntry objects
+            list of matching MemoryEntry objects
         """
         # Simple text search in content
         if query:
@@ -724,7 +724,7 @@ class AgentMemory:
             return [m for m in memories if query_lower in m.content.lower()]
         return self.search_memories(**kwargs)
 
-    def filter(self, criteria: Dict[str, Any] = None, **kwargs) -> List[MemoryEntry]:
+    def filter(self, criteria: dict[str, Any] = None, **kwargs) -> list[MemoryEntry]:
         """
         Filter memories by criteria dictionary.
 
@@ -733,7 +733,7 @@ class AgentMemory:
             **kwargs: Additional filter parameters
 
         Returns:
-            List of matching MemoryEntry objects
+            list of matching MemoryEntry objects
         """
         if not criteria:
             return self.search_memories(**kwargs)
@@ -882,7 +882,7 @@ class AgentMemorySystem:
     def record_decision(
         self,
         decision: str,
-        alternatives: List[str],
+        alternatives: list[str],
         confidence: float,
         reasoning: str,
     ) -> MemoryEntry:
@@ -942,7 +942,7 @@ class AgentMemorySystem:
 
         return entry
 
-    def get_guidance(self, situation: str) -> Dict[str, Any]:
+    def get_guidance(self, situation: str) -> dict[str, Any]:
         """Get guidance for a situation based on patterns and memories."""
         # Find matching patterns
         pattern_matches = self.pattern_library.match_patterns(situation)
@@ -1018,7 +1018,7 @@ class AgentMemorySystem:
 
             self.current_frame = None
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get memory system statistics."""
         memory_stats = self.memory.get_memory_stats()
 
@@ -1038,7 +1038,7 @@ class AgentMemorySystem:
         task_id: str,
         decision: str,
         rationale: str,
-        context: Dict[str, Any] = None,
+        context: dict[str, Any] = None,
     ) -> str:
         """Store a decision with its rationale and context.
 
@@ -1080,7 +1080,7 @@ class AgentMemorySystem:
         self,
         task_description: str,
         limit: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Retrieve similar contexts based on task description.
 
         Uses keyword matching and confidence scoring to find
@@ -1091,7 +1091,7 @@ class AgentMemorySystem:
             limit: Maximum number of results to return
 
         Returns:
-            List of context dictionaries with relevance scores
+            list of context dictionaries with relevance scores
         """
         # Extract keywords from task description
         keywords = [
@@ -1158,11 +1158,11 @@ class AgentMemorySystem:
         scored_results.sort(key=lambda x: x["relevance_score"], reverse=True)
         return scored_results[:limit]
 
-    def get_pattern_library(self) -> List[Dict[str, Any]]:
+    def get_pattern_library(self) -> list[dict[str, Any]]:
         """Get all patterns from the pattern library.
 
         Returns:
-            List of pattern dictionaries with metadata
+            list of pattern dictionaries with metadata
         """
         return [
             {

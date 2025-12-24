@@ -18,7 +18,6 @@ import tarfile
 import time
 import zipfile
 from pathlib import Path
-from typing import List
 
 try:
     from scripts.config.parse_knobs import normalize_from_env
@@ -42,18 +41,18 @@ def sha256_file(p: Path) -> str:
     return h.hexdigest()
 
 
-def aggregate_sha(paths: List[Path]) -> str:
+def aggregate_sha(paths: list[Path]) -> str:
     h = hashlib.sha256()
     for p in sorted(paths):
         h.update(sha256_file(p).encode())
     return h.hexdigest()
 
 
-def collect_candidates(root: Path) -> List[Path]:
+def collect_candidates(root: Path) -> list[Path]:
     return [p for p in root.rglob("*") if p.is_file() and p.suffix.lower() not in SKIP_SUFFIXES]
 
 
-def compress(root: Path, out: Path, members: List[Path], fmt: str):
+def compress(root: Path, out: Path, members: list[Path], fmt: str):
     if fmt == "zip":
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
             for m in members:

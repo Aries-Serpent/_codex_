@@ -27,7 +27,6 @@ except Exception:
     pass
 import textwrap
 from pathlib import Path
-from typing import List, Tuple
 
 from codex.utils.subprocess import run
 
@@ -132,8 +131,8 @@ def write_file(path: Path, new_text: str, rationale: str) -> None:
     append_change(path, "write" if not old else "update", rationale, diff)
 
 
-def inventory(root: Path) -> List[Tuple[str, str, str]]:
-    items: List[Tuple[str, str, str]] = []
+def inventory(root: Path) -> list[tuple[str, str, str]]:
+    items: list[tuple[str, str, str]] = []
     for d in ("src", "codex", "tools", "scripts", "tests", "documentation"):
         base = root / d
         if not base.exists():

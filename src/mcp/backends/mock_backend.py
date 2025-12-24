@@ -1,11 +1,11 @@
 # Simple in-memory mock vector backend implementing BackendAdapter
 import math
 import threading
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, Optional
 from .interface import BackendAdapter, VectorItem, BackendResponse
 
 
-def cosine_similarity(a: List[float], b: List[float]) -> float:
+def cosine_similarity(a: list[float], b: list[float]) -> float:
     # deterministic and simple
     dot = sum(x * y for x, y in zip(a, b))
     lena = math.sqrt(sum(x * x for x in a)) or 1.0
@@ -16,7 +16,7 @@ def cosine_similarity(a: List[float], b: List[float]) -> float:
 class InMemoryMockBackend(BackendAdapter):
     def __init__(self) -> None:
         # storage: namespace -> id -> VectorItem
-        self._store: Dict[str, Dict[str, VectorItem]] = {}
+        self._store: dict[str, dict[str, VectorItem]] = {}
         self._lock = threading.RLock()
 
     def connect(self) -> None:
@@ -32,13 +32,13 @@ class InMemoryMockBackend(BackendAdapter):
     def query_top_k(
         self,
         namespace: str,
-        query_embedding: List[float],
+        query_embedding: list[float],
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[BackendResponse]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[BackendResponse]:
         with self._lock:
             ns = self._store.get(namespace, {})
-            results: List[BackendResponse] = []
+            results: list[BackendResponse] = []
             for item in ns.values():
                 # simple metadata filter support
                 if filters:
@@ -75,6 +75,6 @@ class InMemoryMockBackend(BackendAdapter):
                 return True
             return False
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         # simple health payload
         return {"status": "ok", "backend": "mock", "namespaces": list(self._store.keys())}

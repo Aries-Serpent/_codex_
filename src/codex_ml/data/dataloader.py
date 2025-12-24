@@ -3,8 +3,7 @@
 Provides a deterministic "shuffle" based on a simple seed for smoke tests.
 """
 
-from typing import List
 
 
-def deterministic_order(items: List[int], seed: int) -> List[int]:
+def deterministic_order(items: list[int], seed: int) -> list[int]:
     return sorted(items, key=lambda x: (x + seed) % 97)

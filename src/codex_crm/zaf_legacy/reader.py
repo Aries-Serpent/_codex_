@@ -156,7 +156,7 @@ def _write_payload(destination: Path, entry: ZipInfo, data: bytes) -> None:
         try:
             text = data.decode("utf-8")
         except UnicodeDecodeError as e:
-           logger.debug(f"UnicodeDecodeError: {e}")
+            logger.debug(f"UnicodeDecodeError: {e}")
             logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
             destination.write_bytes(data)
             return

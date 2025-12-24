@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -78,12 +78,12 @@ class ArrowLoader:
             logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid Arrow IPC file: {e}")
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         """
         Load entire Arrow file into memory
 
         Returns:
-            List of dict records
+            list of dict records
         """
         logger.info(f"Loading Arrow IPC: {self.file_path}")
 
@@ -100,7 +100,7 @@ class ArrowLoader:
         logger.info(f"Loaded {len(records)} records from Arrow")
         return records
 
-    def load_batched(self) -> Iterator[List[Dict[str, Any]]]:
+    def load_batched(self) -> Iterator[list[dict[str, Any]]]:
         """
         Stream Arrow file in record batches
 
@@ -125,7 +125,7 @@ class ArrowLoader:
         """
         return self.schema
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """
         Extract Arrow file metadata
 
@@ -152,7 +152,7 @@ def load_arrow(file_path: Path, batch_size: Optional[int] = None):
         batch_size: If set, return batched generator
 
     Returns:
-        List of dicts or generator of batches
+        list of dicts or generator of batches
 
     Examples:
         >>> # Load all

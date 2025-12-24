@@ -8,7 +8,7 @@ Generated: 2025-11-19 04:02:05
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +17,11 @@ class LoggerBackend(ABC):
     """Base class for logger backends"""
 
     @abstractmethod
-    def log_metrics(self, metrics: Dict[str, Any], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None):
         pass
 
     @abstractmethod
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         pass
 
     @abstractmethod
@@ -44,7 +44,7 @@ class MLflowBackend(LoggerBackend):
             if tracking_uri:
                 mlflow.set_tracking_uri(tracking_uri)
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("MLflow not installed. Install: pip install mlflow")
 
@@ -71,7 +71,7 @@ class TensorBoardBackend(LoggerBackend):
 
             self.writer = SummaryWriter(log_dir)
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("TensorBoard not installed. Install: pip install tensorboard")
 
@@ -101,7 +101,7 @@ class WandBBackend(LoggerBackend):
             self.project = project
             self.entity = entity
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("Weights & Biases not installed. Install: pip install wandb")
 
@@ -122,7 +122,7 @@ class LoggerRegistry:
     """Central logger registry"""
 
     def __init__(self):
-        self.backends: Dict[str, LoggerBackend] = {}
+        self.backends: dict[str, LoggerBackend] = {}
 
     def register(self, name: str, backend: LoggerBackend):
         self.backends[name] = backend
@@ -133,7 +133,7 @@ class LoggerRegistry:
             try:
                 backend.start_run(run_name)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed start on {name}: {e}")
 
     def end_run(self):
@@ -141,23 +141,23 @@ class LoggerRegistry:
             try:
                 backend.end_run()
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed end: {e}")
 
-    def log_metrics(self, metrics: Dict, step: Optional[int] = None):
+    def log_metrics(self, metrics: dict, step: Optional[int] = None):
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed log: {e}")
 
-    def log_params(self, params: Dict):
+    def log_params(self, params: dict):
         for backend in self.backends.values():
             try:
                 backend.log_params(params)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Failed params: {e}")
 
 

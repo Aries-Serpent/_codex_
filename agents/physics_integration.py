@@ -8,7 +8,7 @@ This module provides integration points between:
 - Existing physics calculators (PINN, energy landscape, etc.)
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 import logging
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ try:
 
     ADVANCED_PHYSICS_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     ADVANCED_PHYSICS_AVAILABLE = False
 
@@ -29,7 +29,7 @@ try:
 
     PHYSICS_ORCHESTRATOR_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     PHYSICS_ORCHESTRATOR_AVAILABLE = False
 
@@ -39,7 +39,7 @@ try:
 
     LOGGING_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     LOGGING_AVAILABLE = False
 
@@ -74,21 +74,21 @@ class HybridPhysicsOrchestrator:
         if ADVANCED_PHYSICS_AVAILABLE:
             self.advanced_orchestrator = AdvancedPhysicsOrchestrator()
 
-        self.decision_history: List[Dict[str, Any]] = []
+        self.decision_history: list[dict[str, Any]] = []
 
     def _log(self, role: str, message: str) -> None:
         """Log a message using session logger."""
         log_message(self.session_id, role, message)
 
     def orchestrate_with_all_paradigms(
-        self, decision_space: Dict[str, Any], action_paths: Optional[List] = None
-    ) -> Dict[str, Any]:
+        self, decision_space: dict[str, Any], action_paths: Optional[list] = None
+    ) -> dict[str, Any]:
         """
         Orchestrate decision using all available physics paradigms.
 
         Args:
             decision_space: Complete description of decision context
-            action_paths: List of ActionPath objects (if classical available)
+            action_paths: list of ActionPath objects (if classical available)
 
         Returns:
             Comprehensive orchestration results
@@ -139,7 +139,7 @@ class HybridPhysicsOrchestrator:
         self.decision_history.append(results)
         return results
 
-    def _synthesize_recommendations(self, results: Dict[str, Any]) -> List[str]:
+    def _synthesize_recommendations(self, results: dict[str, Any]) -> list[str]:
         """
         Synthesize recommendations from all physics analyses.
         """
@@ -184,7 +184,7 @@ class HybridPhysicsOrchestrator:
 
         return self.advanced_orchestrator.chaos.inject_chaos(base_value, strength)
 
-    def analyze_code_structure_fractal(self, code_tree: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_code_structure_fractal(self, code_tree: dict[str, Any]) -> dict[str, Any]:
         """
         Analyze code structure using fractal geometry.
         """
@@ -193,7 +193,7 @@ class HybridPhysicsOrchestrator:
 
         return self.advanced_orchestrator.fractal.analyze_code_tree(code_tree)
 
-    def optimize_workflow_flow(self, workflow_description: Dict[str, Any]) -> Dict[str, Any]:
+    def optimize_workflow_flow(self, workflow_description: dict[str, Any]) -> dict[str, Any]:
         """
         Optimize workflow using fluid dynamics.
         """
@@ -208,14 +208,14 @@ class HybridPhysicsOrchestrator:
         return self.advanced_orchestrator.fluid.optimize_flow()
 
     def route_agent_with_em_field(
-        self, start_position: Any, hotspots: List[tuple]  # np.ndarray when numpy available
-    ) -> List[Any]:  # List[np.ndarray] when numpy available
+        self, start_position: Any, hotspots: list[tuple]  # np.ndarray when numpy available
+    ) -> list[Any]:  # list[np.ndarray] when numpy available
         """
         Route agent using electromagnetic field.
 
         Args:
             start_position: Starting position [x, y]
-            hotspots: List of (position, charge) tuples
+            hotspots: list of (position, charge) tuples
         """
         if not ADVANCED_PHYSICS_AVAILABLE or not self.advanced_orchestrator:
             return [start_position]
@@ -227,12 +227,12 @@ class HybridPhysicsOrchestrator:
         # Route agent
         return self.advanced_orchestrator.em_field.route_agent(start_position)
 
-    def propagate_signal_with_waves(self, sources: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def propagate_signal_with_waves(self, sources: list[dict[str, Any]]) -> dict[str, Any]:
         """
         Propagate signals using wave mechanics.
 
         Args:
-            sources: List of signal sources with position, amplitude, frequency
+            sources: list of signal sources with position, amplitude, frequency
         """
         if not ADVANCED_PHYSICS_AVAILABLE or not self.advanced_orchestrator:
             return {"error": "Wave propagation not available"}
@@ -250,14 +250,14 @@ class HybridPhysicsOrchestrator:
         }
 
     def schedule_with_relativity(
-        self, agents: List[Dict[str, Any]], tasks: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        self, agents: list[dict[str, Any]], tasks: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """
         Schedule tasks with relativistic corrections.
 
         Args:
-            agents: List of agent descriptions
-            tasks: List of task descriptions
+            agents: list of agent descriptions
+            tasks: list of task descriptions
         """
         if not ADVANCED_PHYSICS_AVAILABLE or not self.advanced_orchestrator:
             return {"error": "Relativistic scheduling not available"}
@@ -281,7 +281,7 @@ class HybridPhysicsOrchestrator:
             "total_tasks": len(scheduled),
         }
 
-    def get_capabilities(self) -> Dict[str, bool]:
+    def get_capabilities(self) -> dict[str, bool]:
         """Get available physics paradigms."""
         capabilities = {
             "classical_physics": PHYSICS_ORCHESTRATOR_AVAILABLE,

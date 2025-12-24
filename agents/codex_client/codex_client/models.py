@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, HttpUrl
 
@@ -20,7 +20,7 @@ class KnowledgeSearchResult(_StrictModel):
 
 
 class KnowledgeSearchResponse(_StrictModel):
-    results: List[KnowledgeSearchResult]
+    results: list[KnowledgeSearchResult]
 
 
 class RepoHygieneIssue(_StrictModel):
@@ -31,7 +31,7 @@ class RepoHygieneIssue(_StrictModel):
 
 
 class RepoHygieneResponse(_StrictModel):
-    issues: List[RepoHygieneIssue]
+    issues: list[RepoHygieneIssue]
 
 
 class TestsRunSummary(_StrictModel):
@@ -48,7 +48,7 @@ class TestFailure(_StrictModel):
 
 class TestsRunResponse(_StrictModel):
     summary: TestsRunSummary
-    failures: List[TestFailure]
+    failures: list[TestFailure]
 
 
 class GitCreatePullRequestResponse(_StrictModel):

@@ -10,7 +10,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import torch
 
@@ -43,7 +43,7 @@ class BenchmarkResult:
     throughput: Optional[float] = None
     memory_mb: Optional[float] = None
     gpu_memory_mb: Optional[float] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
         """String representation."""
@@ -59,7 +59,7 @@ class BenchmarkResult:
             parts.append(f"  GPU Memory: {self.gpu_memory_mb:.2f}MB")
         return "\n".join(parts)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "name": self.name,
@@ -131,7 +131,7 @@ class PerformanceBenchmark:
 
 def benchmark_training_step(
     model: torch.nn.Module,
-    batch: Dict[str, torch.Tensor],
+    batch: dict[str, torch.Tensor],
     optimizer: torch.optim.Optimizer,
     num_iterations: int = 10,
     warmup_iters: int = 2,
@@ -200,7 +200,7 @@ def benchmark_training_step(
 
 def benchmark_inference(
     model: torch.nn.Module,
-    batch: Dict[str, torch.Tensor],
+    batch: dict[str, torch.Tensor],
     num_iterations: int = 100,
     warmup_iters: int = 10,
 ) -> BenchmarkResult:
@@ -313,7 +313,7 @@ class BenchmarkSuite:
             name: Suite name
         """
         self.name = name
-        self.results: List[BenchmarkResult] = []
+        self.results: list[BenchmarkResult] = []
 
     def add_result(self, result: BenchmarkResult):
         """Add a benchmark result.

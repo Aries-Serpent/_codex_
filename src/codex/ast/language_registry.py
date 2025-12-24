@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import importlib
 import logging
-from typing import Dict, List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class LanguageRegistry:
         "tree_sitter_typescript",
     })
 
-    LANGUAGES: Dict[str, str] = {
+    LANGUAGES: dict[str, str] = {
         "python": "tree_sitter_python",
         "yaml": "tree_sitter_yaml",
         "json": "tree_sitter_json",
@@ -32,7 +32,7 @@ class LanguageRegistry:
         "typescript": "tree_sitter_typescript",
     }
 
-    _cache: Dict[str, object] = {}
+    _cache: dict[str, object] = {}
 
     @classmethod
     def get_language(cls, name: str) -> Optional[object]:
@@ -87,7 +87,7 @@ class LanguageRegistry:
         return name in cls.LANGUAGES
 
     @classmethod
-    def list_languages(cls) -> List[str]:
+    def list_languages(cls) -> list[str]:
         """Get list of supported languages."""
         return list(cls.LANGUAGES.keys())
 

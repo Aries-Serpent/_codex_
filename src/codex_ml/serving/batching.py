@@ -7,7 +7,7 @@ import inspect
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Sequence
+from typing import Any, Awaitable, Callable, Optional, Sequence
 
 from codex_ml.batching.performance import PerformanceMetrics
 
@@ -26,14 +26,14 @@ class BatchingMiddleware:
 
     def __init__(
         self,
-        process_fn: Callable[[List[Any]], Sequence[Any] | Awaitable[Sequence[Any]]],
+        process_fn: Callable[[list[Any]], Sequence[Any] | Awaitable[Sequence[Any]]],
         max_batch_size: int = 32,
         max_wait_time: float = 0.1,
     ) -> None:
         self.process_fn = process_fn
         self.max_batch_size = max_batch_size
         self.max_wait_time = max_wait_time
-        self.batch_queue: List[BatchRequest] = []
+        self.batch_queue: list[BatchRequest] = []
         self.lock = asyncio.Lock()
         self.metrics = PerformanceMetrics()
         self.flush_task: Optional[asyncio.Task] = None
@@ -78,7 +78,7 @@ class BatchingMiddleware:
         task = asyncio.create_task(delayed_flush())
         self.flush_task = task
 
-    def _pop_batch_locked(self) -> List[BatchRequest]:
+    def _pop_batch_locked(self) -> list[BatchRequest]:
         batch = list(self.batch_queue)
         self.batch_queue.clear()
         return batch
@@ -90,7 +90,7 @@ class BatchingMiddleware:
             batch = self._pop_batch_locked()
         await self._execute_batch(batch)
 
-    async def _execute_batch(self, batch: List[BatchRequest]) -> None:
+    async def _execute_batch(self, batch: list[BatchRequest]) -> None:
         batch_size = len(batch)
         self.metrics.record_batch(batch_size)
         inputs = [r.data for r in batch]
@@ -115,7 +115,7 @@ class BatchingMiddleware:
             if not req.future.done():
                 req.future.set_result(output)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         return self.metrics.to_dict()
 
     async def shutdown(self) -> None:

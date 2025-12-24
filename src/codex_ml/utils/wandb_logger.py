@@ -10,7 +10,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class WandBLogger:
         self,
         project: Optional[str] = None,
         name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
+        config: Optional[dict[str, Any]] = None,
         log_dir: Optional[Path | str] = None,
     ):
         """Initialize W&B logger with offline-first defaults.
@@ -97,11 +97,11 @@ class WandBLogger:
 
         logger.info(f"✓ Fallback logging initialized: {self.fallback_log}")
 
-    def log(self, metrics: Dict[str, Any], step: Optional[int] = None):
+    def log(self, metrics: dict[str, Any], step: Optional[int] = None):
         """Log metrics to W&B or fallback.
 
         Args:
-            metrics: Dict of metric name -> value
+            metrics: dict of metric name -> value
             step: Optional step number
         """
         if self.wandb_available and self.wandb_run:
@@ -116,7 +116,7 @@ class WandBLogger:
         else:
             self._log_fallback(metrics, step)
 
-    def _log_fallback(self, metrics: Dict[str, Any], step: Optional[int] = None):
+    def _log_fallback(self, metrics: dict[str, Any], step: Optional[int] = None):
         """Write metrics to NDJSON fallback."""
         entry = {"metrics": metrics}
         if step is not None:
@@ -142,7 +142,7 @@ class WandBLogger:
 def init_wandb(
     project: Optional[str] = None,
     name: Optional[str] = None,
-    config: Optional[Dict[str, Any]] = None,
+    config: Optional[dict[str, Any]] = None,
     **kwargs,
 ) -> WandBLogger:
     """Initialize W&B logger with offline-first defaults (convenience function).
@@ -163,11 +163,11 @@ def init_wandb(
 _global_logger: Optional[WandBLogger] = None
 
 
-def log_metrics(metrics: Dict[str, Any], step: Optional[int] = None):
+def log_metrics(metrics: dict[str, Any], step: Optional[int] = None):
     """Log metrics using global logger (convenience function).
 
     Args:
-        metrics: Dict of metric name -> value
+        metrics: dict of metric name -> value
         step: Optional step number
     """
     global _global_logger

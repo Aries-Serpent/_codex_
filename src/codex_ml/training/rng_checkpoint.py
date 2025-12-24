@@ -8,7 +8,7 @@ import json
 import random
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 try:  # pragma: no cover - optional dependency
     import numpy as np
@@ -28,7 +28,7 @@ from codex_ml.utils.checkpoint_core import restore_rng_state as _restore_core
 class RNGState:
     """Container for RNG state across Python, NumPy and Torch backends."""
 
-    state: Dict[str, Any] = field(default_factory=dict)
+    state: dict[str, Any] = field(default_factory=dict)
 
     def capture(self) -> None:
         self.state = _capture_core()
@@ -56,7 +56,7 @@ class RNGState:
 
 
 def set_seed(seed: int) -> None:
-    """Set the RNG seed for Python, NumPy and Torch (if available)."""
+    """set the RNG seed for Python, NumPy and Torch (if available)."""
 
     random.seed(seed)
     if np is not None:

@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +26,15 @@ class ModelVariant:
         name: Variant name (e.g., "v1.0", "v2.0")
         model_path: Path to model checkpoint
         traffic_percentage: Percentage of traffic allocated (0-100)
-        results: List of result dictionaries
+        results: list of result dictionaries
     """
 
     name: str
     model_path: str
     traffic_percentage: float = 0.0
-    results: List[Dict[str, float]] = field(default_factory=list)
+    results: list[dict[str, float]] = field(default_factory=list)
 
-    def record_result(self, metrics: Dict[str, float]):
+    def record_result(self, metrics: dict[str, float]):
         """Record a result for this variant.
 
         Args:
@@ -69,7 +69,7 @@ class ABTestConfig:
     Attributes:
         experiment_name: Name of the experiment
         control_variant: Name of control variant (baseline)
-        treatment_variants: List of treatment variant names
+        treatment_variants: list of treatment variant names
         traffic_split: Dictionary mapping variant to traffic percentage
         primary_metric: Primary metric for winner selection
         min_samples: Minimum samples required per variant
@@ -78,8 +78,8 @@ class ABTestConfig:
 
     experiment_name: str
     control_variant: str
-    treatment_variants: List[str]
-    traffic_split: Dict[str, float]
+    treatment_variants: list[str]
+    traffic_split: dict[str, float]
     primary_metric: str = "accuracy"
     min_samples: int = 100
     confidence_level: float = 0.95
@@ -95,7 +95,7 @@ class ABTestManager:
             config: A/B test configuration
         """
         self.config = config
-        self.variants: Dict[str, ModelVariant] = {}
+        self.variants: dict[str, ModelVariant] = {}
 
         # Initialize control variant
         self.variants[config.control_variant] = ModelVariant(
@@ -115,7 +115,7 @@ class ABTestManager:
         self.start_time = datetime.utcnow().isoformat()
         logger.info(f"Started A/B test: {config.experiment_name}")
 
-    def record_result(self, variant_name: str, metrics: Dict[str, float]):
+    def record_result(self, variant_name: str, metrics: dict[str, float]):
         """Record a result for a variant.
 
         Args:
@@ -127,7 +127,7 @@ class ABTestManager:
 
         self.variants[variant_name].record_result(metrics)
 
-    def get_variant_metrics(self, variant_name: str) -> Dict[str, float]:
+    def get_variant_metrics(self, variant_name: str) -> dict[str, float]:
         """Get average metrics for a variant.
 
         Args:
@@ -209,7 +209,7 @@ class ABTestManager:
         logger.info(f"Winner: {best_variant} with {self.config.primary_metric}={best_metric:.3f}")
         return best_variant
 
-    def get_comparison_report(self) -> Dict[str, Any]:
+    def get_comparison_report(self) -> dict[str, Any]:
         """Generate comparison report across all variants.
 
         Returns:

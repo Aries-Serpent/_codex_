@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 
 class EmbedderInterface(ABC):
@@ -15,9 +15,9 @@ class EmbedderInterface(ABC):
     """
 
     @abstractmethod
-    def embed(self, texts: List[str]) -> List[List[float]]:
+    def embed(self, texts: list[str]) -> list[list[float]]:
         raise NotImplementedError
 
     @abstractmethod
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         raise NotImplementedError

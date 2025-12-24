@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Shared helpers for writing append-only evidence artifacts."""
 
-from __future__ import annotations
 
 import json
 import os

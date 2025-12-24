@@ -6,7 +6,7 @@ Implements path integral formulation for finding optimal task execution paths.
 
 import copy
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -21,10 +21,10 @@ from ..orchestrator import (
 class ExecutionPath:
     """A single execution path through orchestrator state space."""
 
-    states: List[OrchestratorState] = field(default_factory=list)
+    states: list[OrchestratorState] = field(default_factory=list)
     action: float = 0.0
     phase: complex = 1.0 + 0j
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def amplitude(self) -> complex:
@@ -49,7 +49,7 @@ class ExecutionPath:
             return 0.0
         return self.states[-1].timestamp - self.states[0].timestamp
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize path for logging/API."""
         return {
             "length": self.length,
@@ -138,7 +138,7 @@ class PathSampler:
         initial_state: OrchestratorState,
         n_steps: int,
         perturbation_scale: float = 0.1,
-    ) -> List[ExecutionPath]:
+    ) -> list[ExecutionPath]:
         """Sample multiple paths from initial state."""
         paths = []
 
@@ -204,8 +204,8 @@ class PathIntegralOptimizer:
 
         self.optimizations_run = 0
         self.total_paths_evaluated = 0
-        self.best_action_history: List[float] = []
-        self._on_path_found: List[Callable[[ExecutionPath], None]] = []
+        self.best_action_history: list[float] = []
+        self._on_path_found: list[Callable[[ExecutionPath], None]] = []
 
     def find_optimal_path(
         self,
@@ -252,7 +252,7 @@ class PathIntegralOptimizer:
         initial_state: OrchestratorState,
         n_steps: int = 50,
         dt: float = 0.1,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get distribution of path actions and probabilities."""
         paths = self.sampler.sample_paths(initial_state, n_steps)
 
@@ -275,7 +275,7 @@ class PathIntegralOptimizer:
         """Register callback for when optimal path is found."""
         self._on_path_found.append(callback)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get optimization metrics."""
         return {
             "optimizations_run": self.optimizations_run,
@@ -300,7 +300,7 @@ class QuantumAnnealingScheduler:
         self.final_temperature = 0.01
         self.cooling_rate = 0.95
 
-        self.annealing_history: List[Dict[str, Any]] = []
+        self.annealing_history: list[dict[str, Any]] = []
 
     def anneal_step(
         self,
@@ -335,7 +335,7 @@ class QuantumAnnealingScheduler:
         n_iterations: int = 100,
         initial_temperature: Optional[float] = None,
         final_temperature: Optional[float] = None,
-    ) -> Tuple[OrchestratorState, List[float]]:
+    ) -> tuple[OrchestratorState, list[float]]:
         """Optimize task schedule via quantum annealing."""
         T_initial = initial_temperature or self.initial_temperature
         T_final = final_temperature or self.final_temperature
@@ -362,7 +362,7 @@ class QuantumAnnealingScheduler:
 
         return state, action_history
 
-    def get_annealing_curve(self) -> List[Dict[str, Any]]:
+    def get_annealing_curve(self) -> list[dict[str, Any]]:
         """Get annealing progress curve."""
         return self.annealing_history
 
@@ -437,7 +437,7 @@ class AdaptivePathOptimizer:
         return best_path
 
 
-def compare_paths(path_a: ExecutionPath, path_b: ExecutionPath) -> Dict[str, Any]:
+def compare_paths(path_a: ExecutionPath, path_b: ExecutionPath) -> dict[str, Any]:
     """Compare two execution paths."""
     return {
         "action_diff": path_a.action - path_b.action,
@@ -452,7 +452,7 @@ def visualize_action_landscape(
     optimizer: PathIntegralOptimizer,
     initial_state: OrchestratorState,
     n_samples: int = 100,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Sample the action landscape for visualization."""
     paths = optimizer.sampler.sample_paths(initial_state, n_steps=20)
 

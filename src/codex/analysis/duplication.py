@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Lightweight duplication analysis utilities used across Codex tools."""
 
-from __future__ import annotations
 
 import hashlib
 from collections import defaultdict
@@ -25,7 +25,7 @@ def _hash_file(path: Path) -> str:
     try:
         return hashlib.sha256(path.read_bytes()).hexdigest()
     except OSError as e:
-       logger.debug(f"OSError: {e}")
+        logger.debug(f"OSError: {e}")
         logger.warning(f"OSError: {e}", exc_info=True)
         return ""
 

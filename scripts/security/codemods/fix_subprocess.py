@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Tuple
 
 # Import from the libcst-based implementation
 try:
@@ -36,7 +35,7 @@ logger = logging.getLogger(__name__)
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
 
-def transform_file(file_path: str) -> Tuple[str, List[str]]:
+def transform_file(file_path: str) -> tuple[str, list[str]]:
     """
     Transform a single file to fix unsafe subprocess usage.
 
@@ -44,7 +43,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
         file_path: Path to the file to transform
 
     Returns:
-        Tuple of (new_content, list_of_changes)
+        tuple of (new_content, list_of_changes)
     """
     # Use libcst-based implementation if available
     if HAS_LIBCST and _transform_file_libcst:

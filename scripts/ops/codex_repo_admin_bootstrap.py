@@ -14,7 +14,7 @@ import sys
 import types
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, MutableMapping, Optional, Sequence, Tuple
+from typing import Any, Mapping, MutableMapping, Optional, Sequence
 from urllib.parse import quote as _url_quote
 
 from src.integrations.github_app_auth import (
@@ -168,7 +168,7 @@ class GitHubSession:
         return self._request("PATCH", path, json_body=json, data=data, timeout=timeout)
 
 
-def _default_repo_settings(preset: str = "default") -> Dict[str, object]:
+def _default_repo_settings(preset: str = "default") -> dict[str, object]:
     squash_only = preset in {"default", "strict"}
     allow_auto_merge = True if preset == "default" else False
     return {
@@ -192,9 +192,9 @@ def _branch_protection_template(
     branch: str,
     required_approvals: int,
     status_checks: Sequence[str],
-) -> Dict[str, object]:
+) -> dict[str, object]:
     contexts = list(status_checks)
-    required_status_checks: Dict[str, object] | None
+    required_status_checks: dict[str, object] | None
     if contexts:
         required_status_checks = {
             "strict": True,
@@ -225,8 +225,8 @@ def _branch_protection_template(
 
 def plan_labels(
     owner: str, repo: str, labels: Sequence[Mapping[str, Any]]
-) -> List[Tuple[str, Dict[str, Any]]]:
-    ops: List[Tuple[str, Dict[str, Any]]] = []
+) -> list[tuple[str, dict[str, Any]]]:
+    ops: list[tuple[str, dict[str, Any]]] = []
     for label in labels:
         name = label["name"]
         payload = {
@@ -357,7 +357,7 @@ def _list_labels(
             return {}
         if resp.status_code // 100 == 2:
             return all_labels
-        raise SystemExit(f"List labels failed: {resp.status_code} {resp.text}")
+        raise SystemExit(f"list labels failed: {resp.status_code} {resp.text}")
     return all_labels
 
 
@@ -366,9 +366,9 @@ def ensure_labels(
     owner: str,
     repo: str,
     labels: Sequence[Mapping[str, Any]],
-) -> List[Mapping[str, object]]:
+) -> list[Mapping[str, object]]:
     existing = _list_labels(session, owner, repo)
-    results: List[Mapping[str, object]] = []
+    results: list[Mapping[str, object]] = []
     for label in labels:
         name = label["name"]
         payload = {
@@ -400,8 +400,8 @@ def ensure_files(
     *,
     branch: str,
     author: str,
-) -> List[Mapping[str, object]]:
-    results: List[Mapping[str, object]] = []
+) -> list[Mapping[str, object]]:
+    results: list[Mapping[str, object]] = []
     for file in files:
         path = file["path"]
         message = file.get("message", f"chore: ensure {path} present")
@@ -415,7 +415,7 @@ def ensure_files(
             sha = None
         else:
             raise SystemExit(f"Fetch contents {path} failed: {resp.status_code} {resp.text}")
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "message": message,
             "content": base64.b64encode(content.encode("utf-8")).decode("ascii"),
             "branch": branch,
@@ -430,13 +430,13 @@ def ensure_files(
     return results
 
 
-def _load_labels(path: Optional[Path]) -> List[Mapping[str, Any]]:
+def _load_labels(path: Optional[Path]) -> list[Mapping[str, Any]]:
     if path and path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return []
 
 
-def _load_codeowners(path: Optional[Path]) -> List[Mapping[str, Any]]:
+def _load_codeowners(path: Optional[Path]) -> list[Mapping[str, Any]]:
     if path and path.exists():
         return [
             {
@@ -448,11 +448,11 @@ def _load_codeowners(path: Optional[Path]) -> List[Mapping[str, Any]]:
     return []
 
 
-def _build_plan(args: argparse.Namespace) -> Dict[str, Any]:
+def _build_plan(args: argparse.Namespace) -> dict[str, Any]:
     branch = args.branch or "main"
     labels = _load_labels(args.labels_json)
     files = _load_codeowners(args.codeowners)
-    plan: Dict[str, Any] = {
+    plan: dict[str, Any] = {
         "target": {"owner": args.owner, "repo": args.repo, "branch": branch},
         "preset": args.preset,
         "repo_settings": _default_repo_settings(args.preset),

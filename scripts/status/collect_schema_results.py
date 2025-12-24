@@ -11,10 +11,9 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 
-def validate_pair(data: str, schema: str, tool: str) -> Dict:
+def validate_pair(data: str, schema: str, tool: str) -> dict:
     cmd = [sys.executable, "tools/schema_validate.py", "--data", data, "--schema", schema]
     code = subprocess.call(cmd)
     return {
@@ -29,7 +28,7 @@ def validate_pair(data: str, schema: str, tool: str) -> Dict:
 
 
 def main(argv=None) -> int:
-    results: List[Dict] = []
+    results: list[dict] = []
     pairs = [
         (
             "configs/training/base.yaml",

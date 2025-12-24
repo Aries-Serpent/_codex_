@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from codex.ast.baseline import BaselineManager
@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 class DeltaResult:
     """Result of delta analysis."""
 
-    added: List[str]
-    removed: List[str]
-    modified: List[str]
-    unchanged: List[str]
+    added: list[str]
+    removed: list[str]
+    modified: list[str]
+    unchanged: list[str]
 
     def summary(self) -> str:
         """Get summary string."""
@@ -49,11 +49,11 @@ class DeltaAnalyzer:
         """
         self.baseline_manager = baseline_manager
 
-    def analyze(self, current_files: Dict[str, Dict]) -> DeltaResult:
+    def analyze(self, current_files: dict[str, dict]) -> DeltaResult:
         """Analyze delta between baseline and current state.
 
         Args:
-            current_files: Dict mapping file paths to current AST data.
+            current_files: dict mapping file paths to current AST data.
                           Each value should have 'ast_hash' key.
 
         Returns:
@@ -96,7 +96,7 @@ class DeltaAnalyzer:
         logger.info(f"Delta analysis: {result.summary()}")
         return result
 
-    def analyze_file(self, file_path: str, current_data: Dict) -> str:
+    def analyze_file(self, file_path: str, current_data: dict) -> str:
         """Analyze single file change status.
 
         Args:

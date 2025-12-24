@@ -13,7 +13,7 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Optional, Union
 
 
 class SmellSeverity(Enum):
@@ -48,9 +48,9 @@ class CodeSmell:
     line_start: int
     line_end: int
     suggestion: Optional[str] = None
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Serialize to dictionary."""
         return {
             "rule_id": self.rule_id,
@@ -74,7 +74,7 @@ class SmellRule:
     description: str
     severity: SmellSeverity
     category: SmellCategory
-    detector: Callable[[ast.AST, Path], List[CodeSmell]]
+    detector: Callable[[ast.AST, Path], list[CodeSmell]]
     enabled: bool = True
 
 
@@ -98,7 +98,7 @@ class CodeSmellDetector:
 
     def __init__(self):
         """Initialize detector with default rules."""
-        self.rules: Dict[str, SmellRule] = {}
+        self.rules: dict[str, SmellRule] = {}
         self._register_default_rules()
 
     def _register_default_rules(self) -> None:
@@ -220,14 +220,14 @@ class CodeSmellDetector:
         if rule_id in self.rules:
             self.rules[rule_id].enabled = True
 
-    def detect_file(self, file_path: Union[str, Path]) -> List[CodeSmell]:
+    def detect_file(self, file_path: Union[str, Path]) -> list[CodeSmell]:
         """Detect code smells in a Python file.
 
         Args:
             file_path: Path to Python file
 
         Returns:
-            List of detected code smells
+            list of detected code smells
         """
         file_path = Path(file_path)
         if not file_path.exists():
@@ -243,7 +243,7 @@ class CodeSmellDetector:
 
     def detect_string(
         self, code: str, file_path: Optional[Path] = None
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect code smells in Python source code.
 
         Args:
@@ -251,10 +251,10 @@ class CodeSmellDetector:
             file_path: Optional file path for reporting
 
         Returns:
-            List of detected code smells
+            list of detected code smells
         """
         file_path = file_path or Path("<string>")
-        smells: List[CodeSmell] = []
+        smells: list[CodeSmell] = []
 
         try:
             tree = ast.parse(code)
@@ -272,8 +272,8 @@ class CodeSmellDetector:
     def detect_directory(
         self,
         directory: Union[str, Path],
-        exclude_patterns: Optional[List[str]] = None,
-    ) -> Dict[str, List[CodeSmell]]:
+        exclude_patterns: Optional[list[str]] = None,
+    ) -> dict[str, list[CodeSmell]]:
         """Detect code smells in all Python files in directory.
 
         Args:
@@ -285,7 +285,7 @@ class CodeSmellDetector:
         """
         directory = Path(directory)
         exclude_patterns = exclude_patterns or []
-        results: Dict[str, List[CodeSmell]] = {}
+        results: dict[str, list[CodeSmell]] = {}
 
         for py_file in directory.rglob("*.py"):
             # Check exclusions
@@ -305,7 +305,7 @@ class CodeSmellDetector:
 
     def _detect_long_functions(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect functions exceeding maximum length."""
         smells = []
         for node in ast.walk(tree):
@@ -332,7 +332,7 @@ class CodeSmellDetector:
 
     def _detect_many_args(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect functions with too many arguments."""
         smells = []
         for node in ast.walk(tree):
@@ -366,7 +366,7 @@ class CodeSmellDetector:
 
     def _detect_deep_nesting(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect deeply nested code blocks."""
         smells = []
 
@@ -405,7 +405,7 @@ class CodeSmellDetector:
 
     def _detect_short_names(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect identifiers with very short names."""
         smells = []
         # Allowed short names
@@ -444,7 +444,7 @@ class CodeSmellDetector:
 
     def _detect_non_pep8_names(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect names that don't follow PEP 8 conventions."""
         smells = []
         snake_case = re.compile(r"^[a-z_][a-z0-9_]*$")
@@ -485,7 +485,7 @@ class CodeSmellDetector:
 
     def _detect_god_class(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect classes with too many methods (God Class anti-pattern)."""
         smells = []
         max_methods = 20
@@ -516,7 +516,7 @@ class CodeSmellDetector:
 
     def _detect_empty_except(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect empty except clauses (bare except or pass-only)."""
         smells = []
 
@@ -558,7 +558,7 @@ class CodeSmellDetector:
 
     def _detect_missing_docstrings(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect public functions and classes without docstrings."""
         smells = []
 
@@ -603,7 +603,7 @@ class CodeSmellDetector:
 
     def _detect_magic_numbers(
         self, tree: ast.AST, file_path: Path
-    ) -> List[CodeSmell]:
+    ) -> list[CodeSmell]:
         """Detect unexplained numeric literals (magic numbers)."""
         smells = []
         # Common acceptable values
@@ -629,14 +629,14 @@ class CodeSmellDetector:
 
 
 # Convenience function
-def detect_smells(source: Union[str, Path]) -> List[CodeSmell]:
+def detect_smells(source: Union[str, Path]) -> list[CodeSmell]:
     """Detect code smells in Python source.
 
     Args:
         source: File path or source code string
 
     Returns:
-        List of detected code smells
+        list of detected code smells
     """
     detector = CodeSmellDetector()
 

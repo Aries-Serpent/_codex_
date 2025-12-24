@@ -9,7 +9,6 @@ import logging
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Set
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -53,7 +52,7 @@ DEFAULT_ARCHIVE_PATTERNS = [
 ]
 
 
-def should_archive(filename: str, preserve_files: Set[str], archive_patterns: List[str]) -> bool:
+def should_archive(filename: str, preserve_files: set[str], archive_patterns: list[str]) -> bool:
     """Determine if a file should be archived"""
     if filename in preserve_files:
         return False
@@ -67,7 +66,7 @@ def should_archive(filename: str, preserve_files: Set[str], archive_patterns: Li
     return False
 
 
-def analyze_file(filepath: Path) -> Dict:
+def analyze_file(filepath: Path) -> dict:
     """Analyze markdown file and extract metadata"""
     try:
         stat = filepath.stat()
@@ -90,12 +89,12 @@ def analyze_file(filepath: Path) -> Dict:
             "word_count": len(content.split()),
         }
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return {"filename": filepath.name, "path": str(filepath), "error": str(e)}
 
 
-def create_archive_index(archive_dir: Path, archived_files: List[Path]) -> None:
+def create_archive_index(archive_dir: Path, archived_files: list[Path]) -> None:
     """Create searchable index of archived files"""
     index = {
         "created_at": datetime.now().isoformat(),
@@ -140,7 +139,7 @@ def create_archive_index(archive_dir: Path, archived_files: List[Path]) -> None:
 
 
 def organize_repository(
-    dry_run: bool = False, preserve_files: Set[str] = None, archive_patterns: List[str] = None
+    dry_run: bool = False, preserve_files: set[str] = None, archive_patterns: list[str] = None
 ) -> None:
     """Organize repository by archiving old status/report files"""
     if preserve_files is None:
@@ -160,8 +159,8 @@ def organize_repository(
     logger.info(f"Found {len(md_files)} markdown files in root")
 
     # Categorize files
-    to_preserve: List[Path] = []
-    to_archive: List[Path] = []
+    to_preserve: list[Path] = []
+    to_archive: list[Path] = []
 
     for md_file in md_files:
         if should_archive(md_file.name, preserve_files, archive_patterns):
@@ -184,7 +183,7 @@ def organize_repository(
         return
 
     # Archive files
-    archived_files: List[Path] = []
+    archived_files: list[Path] = []
     for md_file in to_archive:
         try:
             dest = archive_dir / md_file.name
@@ -192,15 +191,15 @@ def organize_repository(
             archived_files.append(dest)
             logger.info(f"Archived: {md_file.name}")
         except FileNotFoundError as e:
-           logger.debug(f"FileNotFoundError: {e}")
+            logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             logger.error(f"File not found - {md_file.name}")
         except PermissionError as e:
-           logger.debug(f"PermissionError: {e}")
+            logger.debug(f"PermissionError: {e}")
             logger.warning(f"PermissionError: {e}", exc_info=True)
             logger.error(f"Permission denied - {md_file.name}")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Unexpected error archiving {md_file.name}: {e}")
 
     # Create archive index
@@ -242,7 +241,7 @@ def organize_repository(
         f.write(f"## Accessing Archived Files\n\n")
         f.write(f"To view archived files:\n")
         f.write(f"```bash\n")
-        f.write(f"# List archived files\n")
+        f.write(f"# list archived files\n")
         f.write(f"ls -la {archive_dir}/\n\n")
         f.write(f"# View specific archived file\n")
         f.write(f"cat {archive_dir}/FILENAME.md\n\n")

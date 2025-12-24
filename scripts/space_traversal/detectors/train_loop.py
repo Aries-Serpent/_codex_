@@ -9,7 +9,6 @@ Safeguards: Bounded search, deterministic ordering, validation
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List
 
 # Related files for evidence collection
 RELATED_FILES = [
@@ -19,7 +18,7 @@ RELATED_FILES = [
 ]
 
 
-def detect(file_index: Dict) -> Dict:
+def detect(file_index: dict) -> dict:
     """
     Detect train loop capability.
 
@@ -36,7 +35,7 @@ def detect(file_index: Dict) -> Dict:
         for f in file_index.get("files", [])
         if "train_loop" in f.get("path", "").lower()
     ]
-    evidence_files: List[str] = sorted({p for p in files if p})
+    evidence_files: list[str] = sorted({p for p in files if p})
 
     # Add related files for comprehensive evidence (deterministic)
     for rf in RELATED_FILES:

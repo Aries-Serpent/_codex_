@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import Union
 
 import libcst as cst
 from libcst import matchers as m
@@ -33,7 +33,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
 
     def __init__(self) -> None:
         super().__init__()
-        self.changes: List[str] = []
+        self.changes: list[str] = []
         self.needs_subprocess_import = False
 
     def leave_Call(self, original_node: cst.Call, updated_node: cst.Call) -> Union[cst.Call, cst.FlattenSentinel[cst.BaseSmallStatement]]:
@@ -231,7 +231,7 @@ class AddSubprocessImport(cst.CSTTransformer):
         return updated_node.with_changes(body=new_body)
 
 
-def transform_file(file_path: str) -> Tuple[str, List[str]]:
+def transform_file(file_path: str) -> tuple[str, list[str]]:
     """
     Transform a single file to fix unsafe subprocess usage using libcst.
 
@@ -239,7 +239,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
         file_path: Path to the file to transform
 
     Returns:
-        Tuple of (new_content, list_of_changes)
+        tuple of (new_content, list_of_changes)
     """
     # Input validation (safeguard)
     if not file_path or not isinstance(file_path, str):
@@ -273,8 +273,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str]]:
             modified_tree = modified_tree.visit(import_adder)
             
             if not import_adder.has_subprocess_import and transformer.needs_subprocess_import:
-                transformer.changes.append("Added 'import subprocess
-import shlex'")
+                transformer.changes.append("Added 'import subprocess; import shlex'")
         
         # Generate new source code
         new_source = modified_tree.code
@@ -285,7 +284,7 @@ import shlex'")
         logger.error(f"Syntax error in {file_path}: {e}")
         return "", [f"Syntax error: {e}"]
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Error transforming {file_path}: {e}")
         return "", [f"Transformation error: {e}"]
 

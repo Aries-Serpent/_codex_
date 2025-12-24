@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime as _dt
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
@@ -24,7 +24,7 @@ class RunContext:
     mode: str  # "train" or "eval"
 
 
-def load_yaml_config(path: Path) -> Dict[str, Any]:
+def load_yaml_config(path: Path) -> dict[str, Any]:
     """Load a YAML configuration file, returning an empty dict if missing."""
 
     if not path.exists():
@@ -54,7 +54,7 @@ def create_run_dir(base_dir: Path, mode: str, seed: int) -> RunContext:
     )
 
 
-def write_run_manifest(ctx: RunContext, config: Dict[str, Any]) -> None:
+def write_run_manifest(ctx: RunContext, config: dict[str, Any]) -> None:
     """Write a small run manifest file into the run directory."""
 
     run_dir = Path(ctx.run_dir)

@@ -12,7 +12,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable
 
 import yaml
 from fastapi.testclient import TestClient
@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 from mcp.server.http import ContextItem, ContextUpsertRequest, QueryRequest, app
-REQUIRED_FILES: List[Path] = [
+REQUIRED_FILES: list[Path] = [
     ROOT / ".copilot-space" / "mcp.example.json",
     ROOT / "codex_capability_map.yaml",
     ROOT / "docs" / "mcp" / "api_schema.md",
@@ -44,7 +44,7 @@ def _load_yaml(path: Path) -> dict:
         return yaml.safe_load(fp)
 
 
-def check_required_files(paths: Iterable[Path]) -> List[Path]:
+def check_required_files(paths: Iterable[Path]) -> list[Path]:
     missing = [p for p in paths if not p.exists()]
     if missing:
         raise SystemExit(f"Missing required files: {missing}")

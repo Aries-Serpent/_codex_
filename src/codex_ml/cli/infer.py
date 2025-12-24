@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal inference CLI for loading a model and generating text."""
 
-from __future__ import annotations
 
 import json
 import os

@@ -56,7 +56,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
                     # PyTorch 1.11+ supports warn_only parameter
                     torch.use_deterministic_algorithms(True, warn_only=False)
                 except TypeError as e:
-                   logger.debug(f"TypeError: {e}")
+                    logger.debug(f"TypeError: {e}")
                     logger.warning(f"TypeError: {e}", exc_info=True)
                     # Older PyTorch version without warn_only
                     torch.use_deterministic_algorithms(True)
@@ -80,7 +80,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
         return True
 
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.error(f"Failed to set deterministic mode: {e}")
         return False
 

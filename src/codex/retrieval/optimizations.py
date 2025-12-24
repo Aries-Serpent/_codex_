@@ -12,7 +12,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -35,9 +35,9 @@ class RetrievalMetrics:
 
     search_count: int = 0
     total_search_time: float = 0.0
-    search_latencies: List[float] = field(default_factory=list)
+    search_latencies: list[float] = field(default_factory=list)
     index_size_bytes: int = 0
-    query_batch_sizes: List[int] = field(default_factory=list)
+    query_batch_sizes: list[int] = field(default_factory=list)
 
     def record_search(self, latency: float, batch_size: int = 1) -> None:
         """Record a search operation"""
@@ -78,7 +78,7 @@ class RetrievalMetrics:
             return 0.0
         return sum(self.query_batch_sizes) / len(self.query_batch_sizes)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary"""
         return {
             "search_count": self.search_count,
@@ -154,9 +154,9 @@ class OptimizedVectorStore:
         self,
         query_vector: np.ndarray,
         k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
         use_cache: bool = True,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Search with caching and metrics
 
         Args:
@@ -166,7 +166,7 @@ class OptimizedVectorStore:
             use_cache: Whether to use cache for this query
 
         Returns:
-            List of search results
+            list of search results
         """
         self._ensure_loaded()
 
@@ -204,9 +204,9 @@ class OptimizedVectorStore:
         self,
         query_vectors: np.ndarray,
         k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
         use_cache: bool = True,
-    ) -> List[List[Dict[str, Any]]]:
+    ) -> list[list[dict[str, Any]]]:
         """Batch search with caching
 
         Args:
@@ -216,7 +216,7 @@ class OptimizedVectorStore:
             use_cache: Whether to use cache
 
         Returns:
-            List of result lists (one per query)
+            list of result lists (one per query)
         """
         self._ensure_loaded()
 
@@ -243,9 +243,9 @@ class OptimizedVectorStore:
     def add(
         self,
         vectors: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None,
-        ids: Optional[List[str]] = None,
-    ) -> List[str]:
+        metadata: Optional[list[dict[str, Any]]] = None,
+        ids: Optional[list[str]] = None,
+    ) -> list[str]:
         """Add vectors (invalidates cache)"""
         result = self.store.add(vectors, metadata=metadata, ids=ids)
 
@@ -256,7 +256,7 @@ class OptimizedVectorStore:
 
         return result
 
-    def delete(self, ids: List[str]) -> int:
+    def delete(self, ids: list[str]) -> int:
         """Delete vectors (invalidates cache)"""
         result = self.store.delete(ids)
 
@@ -267,7 +267,7 @@ class OptimizedVectorStore:
 
         return result
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get combined metrics from retrieval and cache"""
         retrieval_metrics = self.metrics.to_dict()
 

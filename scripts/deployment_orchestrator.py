@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 
 class PhaseStatus(Enum):
@@ -58,8 +58,8 @@ class PhaseResult:
     status: PhaseStatus
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
-    details: Dict = field(default_factory=dict)
-    errors: List[str] = field(default_factory=list)
+    details: dict = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
 
     @property
     def duration_seconds(self) -> Optional[float]:
@@ -79,12 +79,12 @@ class DeploymentManifest:
     started_at: datetime
     completed_at: Optional[datetime] = None
     status: PhaseStatus = PhaseStatus.PENDING
-    phase_results: List[PhaseResult] = field(default_factory=list)
+    phase_results: list[PhaseResult] = field(default_factory=list)
     merge_commit_sha: Optional[str] = None
     workflow_run_id: Optional[str] = None
     coverage_percentage: Optional[float] = None
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert manifest to dictionary."""
         return {
             "pr_number": self.pr_number,
@@ -128,7 +128,7 @@ class DeploymentOrchestrator:
         self.output_dir = output_dir or Path(".codex/deployments")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Set up logging
+        # set up logging
         self.logger = self._setup_logging()
 
         # Initialize manifest
@@ -140,7 +140,7 @@ class DeploymentOrchestrator:
         )
 
     def _setup_logging(self) -> logging.Logger:
-        """Set up logging configuration."""
+        """set up logging configuration."""
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.INFO)
 
@@ -163,7 +163,7 @@ class DeploymentOrchestrator:
 
         return logger
 
-    def run_command(self, cmd: List[str], check: bool = True) -> Tuple[int, str, str]:
+    def run_command(self, cmd: list[str], check: bool = True) -> tuple[int, str, str]:
         """
         Run shell command and return results.
 
@@ -172,7 +172,7 @@ class DeploymentOrchestrator:
             check: If True, raise exception on non-zero exit code
 
         Returns:
-            Tuple of (exit_code, stdout, stderr)
+            tuple of (exit_code, stdout, stderr)
         """
         self.logger.debug(f"Running command: {' '.join(cmd)}")
 
@@ -604,7 +604,7 @@ class DeploymentOrchestrator:
         initial_conclusion: Optional[str] = None,
         timeout_seconds: int = 1800,
         poll_interval_seconds: int = 30,
-    ) -> Dict[str, Optional[object]]:
+    ) -> dict[str, Optional[object]]:
         """Poll the GitHub workflow run until completion or timeout."""
 
         if initial_status == "completed" and initial_conclusion is not None:

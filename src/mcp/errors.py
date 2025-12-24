@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable
+from typing import Any, Iterable
 
 
 class MCPError(Exception):
@@ -12,13 +12,13 @@ class MCPError(Exception):
     http_status = 500
     jsonrpc_code = -32000  # JSON-RPC error code
 
-    def __init__(self, message: str, *, details: Dict[str, Any] | None = None):
+    def __init__(self, message: str, *, details: dict[str, Any] | None = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}
 
-    def to_dict(self) -> Dict[str, Any]:
-        payload: Dict[str, Any] = {"code": self.code, "message": self.message}
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {"code": self.code, "message": self.message}
         if self.details:
             payload["details"] = self.details
         return payload

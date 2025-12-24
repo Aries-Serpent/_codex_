@@ -97,7 +97,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     safe_encodings = {"utf-8", "utf-16", "utf-32", "cp1252", "windows-1252", "iso-8859-1"}
@@ -307,13 +307,13 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
         try:
             result = _io_read_text(p, encoding=encoding, errors=errors)  # type: ignore[misc]
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             # The helper may not accept encoding/errors kwargs — try positional and fewer args
             try:
                 result = _io_read_text(p, encoding)  # type: ignore[misc]
             except TypeError as e:
-               logger.debug(f"TypeError: {e}")
+                logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 try:
                     result = _io_read_text(p)  # type: ignore[misc]

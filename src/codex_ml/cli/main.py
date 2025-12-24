@@ -40,7 +40,7 @@ if typer is not None:
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
     from codex_ml.cli import _load_training_config
@@ -159,7 +159,7 @@ if typer is not None:
                     try:
                         root = cli_path.parents[depth]
                     except IndexError as e:
-                       logger.debug(f"IndexError: {e}")
+                        logger.debug(f"IndexError: {e}")
                         logger.warning(f"IndexError: {e}", exc_info=True)
                         continue
                     search_roots.append(root / "configs" / "training" / "continual")

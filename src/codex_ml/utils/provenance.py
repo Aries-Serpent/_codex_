@@ -156,7 +156,7 @@ def _gpu_metadata() -> MutableMapping[str, Any]:
                 torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
             ]
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
     query = _capture_command(
@@ -237,7 +237,7 @@ def environment_summary() -> dict[str, Any]:
 
         info["system_metrics"] = _codex_sample_system()
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return info
 

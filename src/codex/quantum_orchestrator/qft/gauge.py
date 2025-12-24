@@ -20,7 +20,7 @@ Mathematical Background:
 import copy
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -47,9 +47,9 @@ class TransformationResult:
     transformed_state: OrchestratorState
     is_invariant: bool
     deviation: float
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "is_invariant": self.is_invariant,
@@ -99,7 +99,7 @@ class U1GaugeTransform:
         return transformed_state
 
     def apply_local(
-        self, state: OrchestratorState, phase_map: Dict[str, float]
+        self, state: OrchestratorState, phase_map: dict[str, float]
     ) -> OrchestratorState:
         """
         Apply local U(1) transformation: ψ_i → e^{iθ_i}ψ_i.
@@ -428,7 +428,7 @@ class NoetherCurrent:
         state_after: OrchestratorState,
         dt: float,
         tolerance: float = 1e-6,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Verify continuity equation: ∂ρ/∂t + ∇·j = 0
 
@@ -500,7 +500,7 @@ class GaugeChecker:
         self.time_translation = TimeTranslationSymmetry(constants)
         self.noether = NoetherCurrent(constants)
 
-    def check_all(self, state: OrchestratorState, tolerance: float = 1e-6) -> Dict[str, Any]:
+    def check_all(self, state: OrchestratorState, tolerance: float = 1e-6) -> dict[str, Any]:
         """
         Run all symmetry checks on a state.
 
@@ -537,7 +537,7 @@ class GaugeChecker:
         state_after: OrchestratorState,
         dt: float,
         tolerance: float = 1e-6,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Verify all conservation laws between two states.
 
@@ -603,11 +603,11 @@ class ConservationEnforcer:
         self.constants = constants or PhysicsConstants()
         self.checker = GaugeChecker(constants)
         self.auto_repair = auto_repair
-        self.violations_log: List[Dict[str, Any]] = []
+        self.violations_log: list[dict[str, Any]] = []
 
     def enforce_probability_conservation(
         self, state: OrchestratorState, tolerance: float = 1e-10
-    ) -> Tuple[OrchestratorState, bool]:
+    ) -> tuple[OrchestratorState, bool]:
         """
         Enforce probability conservation: Σᵢ |ψᵢ|² = 1 for each task.
 
@@ -643,7 +643,7 @@ class ConservationEnforcer:
 
         return repaired_state, was_repaired
 
-    def get_violations(self) -> List[Dict[str, Any]]:
+    def get_violations(self) -> list[dict[str, Any]]:
         """Get log of all detected violations."""
         return self.violations_log
 

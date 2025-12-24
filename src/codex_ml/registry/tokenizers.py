@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Tokenizer registry and helpers."""
 
-from __future__ import annotations
 
 import os
 from collections.abc import Mapping, Sequence

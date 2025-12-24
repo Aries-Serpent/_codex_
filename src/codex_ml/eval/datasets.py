@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Helpers for constructing small evaluation datasets."""
 
-from __future__ import annotations
 
 import hashlib
 import json

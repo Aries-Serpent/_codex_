@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Top-level data package exports with lazy loader bindings."""
 
-from __future__ import annotations
 
 from importlib import import_module
 from typing import TYPE_CHECKING, Any

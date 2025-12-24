@@ -133,7 +133,7 @@ def _random_seed_with_snapshot(a: Any | None = None, version: int = 2) -> None:
     try:
         register_seed_snapshot(python_state=random.getstate())
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -162,7 +162,7 @@ if TORCH_AVAILABLE:
                 torch_cuda_state=cuda_state,
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return result
 
@@ -202,7 +202,7 @@ class ModuleStateDictProvider(StateDictProvider):
         try:
             return loader(state_dict, strict=strict)
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             return loader(state_dict)
 
@@ -365,8 +365,8 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
     try:
         with path.open("rb") as fh:
             # Use safe pickle loading to prevent code execution vulnerabilities
-        from utils.safe_pickle import safe_pickle_load
-        return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            from utils.safe_pickle import safe_pickle_load
+            return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
@@ -394,7 +394,7 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
     try:
         loader(state_dict, strict=strict)
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         loader(state_dict)
 
@@ -421,7 +421,7 @@ def load_checkpoint(
     try:
         return _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
     except CheckpointLoadError as e:
-       logger.debug(f"CheckpointLoadError: {e}")
+        logger.debug(f"CheckpointLoadError: {e}")
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
     except Exception as exc:  # pragma: no cover - fallback path
@@ -471,7 +471,7 @@ def _safe_git_commit() -> str | None:
         if callable(_prov_git_commit):
             return _prov_git_commit()
     except Exception as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.info(
             "checkpointing._safe_git_commit: provenance hook failed: %s", exc, exc_info=True
         )
@@ -527,7 +527,7 @@ def _compute_file_checksum(path: Path) -> str | None:
                 h.update(chunk)
         return h.hexdigest()
     except Exception as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.debug("Failed to compute checksum for %s: %s", path, exc)
         return None
 
@@ -568,7 +568,7 @@ def _safe_environment_summary() -> dict[str, Any]:
                     env.setdefault("git_commit", gc)
                 return env
     except Exception as exc:
-       logger.debug(f"Exception: {exc}")
+        logger.debug(f"Exception: {exc}")
         logger.info(
             "checkpointing._safe_environment_summary: provenance summary failed: %s",
             exc,
@@ -705,7 +705,7 @@ def load_training_checkpoint(
     try:
         raw = _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
     except CheckpointLoadError as e:
-       logger.debug(f"CheckpointLoadError: {e}")
+        logger.debug(f"CheckpointLoadError: {e}")
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
     except Exception as exc:  # pragma: no cover - fallback path
@@ -965,7 +965,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                 if setter is not None and tensor_ctor is not None and "cpu" in torch_payload:
                     setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             try:
                 if (
@@ -1216,7 +1216,7 @@ class CheckpointManager:
                 encoding="utf-8",
             )
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return ckpt_path
 
@@ -1344,7 +1344,7 @@ class CheckpointManager:
                 try:
                     marker_value = marker.read_text(encoding="utf-8").strip()
                 except IsADirectoryError as e:
-                   logger.debug(f"IsADirectoryError: {e}")
+                    logger.debug(f"IsADirectoryError: {e}")
                     logger.warning(f"IsADirectoryError: {e}", exc_info=True)
                     with contextlib.suppress(Exception):
                         marker_path = marker.resolve(strict=False)
@@ -1404,7 +1404,7 @@ class CheckpointManager:
             try:
                 self.storage.download_directory(remote, target)
             except FileNotFoundError as e:
-               logger.debug(f"FileNotFoundError: {e}")
+                logger.debug(f"FileNotFoundError: {e}")
                 logger.warning(f"FileNotFoundError: {e}", exc_info=True)
                 continue
             discovered.append(target)

@@ -5,7 +5,7 @@ Manages token windows for context management, implementing
 sliding window strategy with summarization triggers.
 """
 
-from typing import List, Dict, Optional, Tuple, Callable
+from typing import Optional, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -29,7 +29,7 @@ class WindowEntry:
     timestamp: datetime = field(default_factory=datetime.now)
     priority: int = 0
     entry_type: str = "content"
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     @property
     def age_seconds(self) -> float:
@@ -70,7 +70,7 @@ class SlidingWindowManager:
         self,
         max_tokens: int = SOFT_CAP,
         strategy: WindowStrategy = WindowStrategy.DROP_OLDEST,
-        summarizer: Optional[Callable[[List[str]], str]] = None,
+        summarizer: Optional[Callable[[list[str]], str]] = None,
         reserve_tokens: int = 8000,
     ):
         """
@@ -87,7 +87,7 @@ class SlidingWindowManager:
         self.summarizer = summarizer
         self.reserve_tokens = reserve_tokens
 
-        self._entries: List[WindowEntry] = []
+        self._entries: list[WindowEntry] = []
         self._total_tokens = 0
         self._summary: Optional[str] = None
         self._summary_tokens = 0
@@ -97,8 +97,8 @@ class SlidingWindowManager:
         content: str,
         priority: int = 0,
         entry_type: str = "content",
-        metadata: Optional[Dict] = None,
-    ) -> Tuple[bool, Optional[str]]:
+        metadata: Optional[dict] = None,
+    ) -> tuple[bool, Optional[str]]:
         """
         Add content to window.
 
@@ -109,7 +109,7 @@ class SlidingWindowManager:
             metadata: Optional metadata
 
         Returns:
-            Tuple of (success, warning_message)
+            tuple of (success, warning_message)
         """
         token_count = self._estimate_tokens(content)
 
@@ -139,7 +139,7 @@ class SlidingWindowManager:
 
         return True, warning
 
-    def get_window(self, max_tokens: Optional[int] = None) -> List[str]:
+    def get_window(self, max_tokens: Optional[int] = None) -> list[str]:
         """
         Get current window contents.
 
@@ -147,7 +147,7 @@ class SlidingWindowManager:
             max_tokens: Optional limit on returned tokens
 
         Returns:
-            List of content strings
+            list of content strings
         """
         if max_tokens is None:
             return [e.content for e in self._entries]
@@ -162,12 +162,12 @@ class SlidingWindowManager:
                 break
         return result
 
-    def get_window_with_summary(self) -> Tuple[Optional[str], List[str]]:
+    def get_window_with_summary(self) -> tuple[Optional[str], list[str]]:
         """
         Get window with summary of pruned content.
 
         Returns:
-            Tuple of (summary, current_entries)
+            tuple of (summary, current_entries)
         """
         return self._summary, [e.content for e in self._entries]
 
@@ -187,7 +187,7 @@ class SlidingWindowManager:
             summary_available=self._summary is not None,
         )
 
-    def prune_to_tokens(self, target_tokens: int) -> List[WindowEntry]:
+    def prune_to_tokens(self, target_tokens: int) -> list[WindowEntry]:
         """
         Prune window to target token count.
 
@@ -195,7 +195,7 @@ class SlidingWindowManager:
             target_tokens: Target maximum tokens
 
         Returns:
-            List of pruned entries
+            list of pruned entries
         """
         pruned = []
 
@@ -214,7 +214,7 @@ class SlidingWindowManager:
 
         return pruned
 
-    def slide(self, keep_tokens: int) -> List[WindowEntry]:
+    def slide(self, keep_tokens: int) -> list[WindowEntry]:
         """
         Slide window to keep only most recent tokens.
 
@@ -222,7 +222,7 @@ class SlidingWindowManager:
             keep_tokens: Number of tokens to keep
 
         Returns:
-            List of removed entries
+            list of removed entries
         """
         removed = []
 
@@ -248,11 +248,11 @@ class SlidingWindowManager:
         self._summary = None
         self._summary_tokens = 0
 
-    def get_entries_by_type(self, entry_type: str) -> List[WindowEntry]:
+    def get_entries_by_type(self, entry_type: str) -> list[WindowEntry]:
         """Get all entries of a specific type."""
         return [e for e in self._entries if e.entry_type == entry_type]
 
-    def get_entries_by_priority(self, min_priority: int) -> List[WindowEntry]:
+    def get_entries_by_priority(self, min_priority: int) -> list[WindowEntry]:
         """Get all entries at or above minimum priority."""
         return [e for e in self._entries if e.priority >= min_priority]
 

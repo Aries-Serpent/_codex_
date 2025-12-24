@@ -15,7 +15,7 @@ import json
 import pathlib
 import sqlite3
 import time
-from typing import Iterable, Tuple
+from typing import Iterable
 
 DEFAULT_DB = pathlib.Path(".codex/session_logs.db")
 
@@ -39,7 +39,7 @@ def ensure_parent(p: pathlib.Path) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
 
 
-def seed_rows(now: float) -> Iterable[Tuple[float, str, str, str, str]]:
+def seed_rows(now: float) -> Iterable[tuple[float, str, str, str, str]]:
     return [
         (now, "dev-session", "system", "init", json.dumps({"ok": True})),
         (

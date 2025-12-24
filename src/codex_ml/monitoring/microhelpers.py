@@ -107,7 +107,7 @@ def get_gpu_stats() -> list[dict[str, Any]]:
                 util = nvmlDeviceGetUtilizationRates(h)
                 util_pct = float(getattr(util, "gpu", 0.0))
             except NVMLError as e:
-               logger.debug(f"NVMLError: {e}")
+                logger.debug(f"NVMLError: {e}")
                 logger.warning(f"NVMLError: {e}", exc_info=True)
                 util_pct = 0.0
             try:
@@ -115,13 +115,13 @@ def get_gpu_stats() -> list[dict[str, Any]]:
                 mem_used_mb = float(mem.used) / (1024 * 1024)
                 mem_total_mb = float(mem.total) / (1024 * 1024)
             except NVMLError as e:
-               logger.debug(f"NVMLError: {e}")
+                logger.debug(f"NVMLError: {e}")
                 logger.warning(f"NVMLError: {e}", exc_info=True)
                 mem_used_mb = mem_total_mb = 0.0
             try:
                 temp_c = float(nvmlDeviceGetTemperature(h, NVML_TEMPERATURE_GPU))
             except NVMLError as e:
-               logger.debug(f"NVMLError: {e}")
+                logger.debug(f"NVMLError: {e}")
                 logger.warning(f"NVMLError: {e}", exc_info=True)
                 temp_c = 0.0
             out.append(

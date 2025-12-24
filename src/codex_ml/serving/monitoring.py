@@ -8,7 +8,7 @@ import logging
 import time
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Optional
 from threading import Lock
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,8 @@ class LatencyHistogram:
     Tracks latency distribution across buckets for P50, P95, P99 calculation.
     """
 
-    buckets: List[float]  # Bucket boundaries in milliseconds
-    counts: Dict[float, int]  # Count per bucket
+    buckets: list[float]  # Bucket boundaries in milliseconds
+    counts: dict[float, int]  # Count per bucket
     total_count: int = 0
     total_sum: float = 0.0
 
@@ -68,7 +68,7 @@ class LatencyHistogram:
 
         return self.buckets[-1] if self.buckets else 0.0
 
-    def get_stats(self) -> Dict[str, float]:
+    def get_stats(self) -> dict[str, float]:
         """Get summary statistics"""
         return {
             "count": self.total_count,
@@ -202,8 +202,8 @@ class PrometheusMetrics:
         self,
         cpu_percent: Optional[float] = None,
         memory_bytes: Optional[int] = None,
-        gpu_usage: Optional[Dict[int, float]] = None,
-        gpu_memory: Optional[Dict[int, int]] = None,
+        gpu_usage: Optional[dict[int, float]] = None,
+        gpu_memory: Optional[dict[int, int]] = None,
     ) -> None:
         """Update resource usage metrics
 
@@ -336,7 +336,7 @@ class PrometheusMetrics:
 
         return "\n".join(lines) + "\n"
 
-    def get_summary(self) -> Dict:
+    def get_summary(self) -> dict:
         """Get summary of all metrics
 
         Returns:

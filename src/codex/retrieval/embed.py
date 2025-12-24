@@ -37,14 +37,14 @@ class EmbeddingModel:
             )
             logger.info("Embedding model loaded successfully")
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.error(
                 "sentence-transformers not installed. Install with: pip install sentence-transformers"
             )
             raise
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Error loading embedding model: {e}")
             raise
 

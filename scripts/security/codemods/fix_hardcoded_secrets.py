@@ -19,7 +19,6 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -73,12 +72,12 @@ def is_safe_value(value: str) -> bool:
     return False
 
 
-def transform_file(file_path: str) -> Tuple[str, List[str], List[Tuple[str, str]]]:
+def transform_file(file_path: str) -> tuple[str, list[str], list[tuple[str, str]]]:
     """
     Transform a file to use environment variables for secrets.
 
     Returns:
-        Tuple of (new_content, changes, env_vars)
+        tuple of (new_content, changes, env_vars)
     """
     # Input validation (safeguard)
     if not file_path or not isinstance(file_path, str):
@@ -98,8 +97,8 @@ def transform_file(file_path: str) -> Tuple[str, List[str], List[Tuple[str, str]
         logger.debug(f"Exception: {e}")
         return "", [f"Error reading file: {e}"], []
 
-    changes: List[str] = []
-    env_vars: List[Tuple[str, str]] = []
+    changes: list[str] = []
+    env_vars: list[tuple[str, str]] = []
 
     # Check if os import exists
     has_os_import = bool(re.search(r'^import os\b', content, re.MULTILINE))
@@ -144,7 +143,7 @@ def transform_file(file_path: str) -> Tuple[str, List[str], List[Tuple[str, str]
     return content, changes, env_vars
 
 
-def generate_env_example(env_vars: List[Tuple[str, str]], output_path: Path) -> None:
+def generate_env_example(env_vars: list[tuple[str, str]], output_path: Path) -> None:
     """Generate or update .env.example file."""
     existing_vars = set()
 

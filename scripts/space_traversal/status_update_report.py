@@ -29,7 +29,7 @@ import json
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 try:
     from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
@@ -49,7 +49,7 @@ STATUS_TEMPLATE = ROOT / "templates" / "audit" / "status_update_report.md.j2"
 VERSION = "1.1.0"
 
 
-def load_yaml(p: Path) -> Dict[str, Any]:
+def load_yaml(p: Path) -> dict[str, Any]:
     return yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
@@ -57,18 +57,18 @@ def load_json(p: Path) -> Any:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
-def _build_id_score_map(scored_payload: Dict[str, Any]) -> Dict[str, float]:
-    mp: Dict[str, float] = {}
+def _build_id_score_map(scored_payload: dict[str, Any]) -> dict[str, float]:
+    mp: dict[str, float] = {}
     for c in scored_payload.get("capabilities", []):
         mp[c["id"]] = float(c.get("score", 0.0))
     return mp
 
 
 def compute_deltas(
-    curr: Dict[str, float], base: Dict[str, float]
-) -> Tuple[List[Tuple[str, float]], List[Tuple[str, float]]]:
+    curr: dict[str, float], base: dict[str, float]
+) -> tuple[list[tuple[str, float]], list[tuple[str, float]]]:
     """Return (top_improvements, top_regressions) sorted by magnitude."""
-    changes: List[Tuple[str, float]] = []
+    changes: list[tuple[str, float]] = []
     for cid, new in curr.items():
         old = base.get(cid)
         if old is None:
@@ -131,13 +131,13 @@ def main() -> None:
     thresholds = (cfg.get("scoring", {}) or {}).get("thresholds", {}) or {"low": 0.70}
     low_threshold = float(thresholds.get("low", 0.70))
 
-    caps: List[Dict[str, Any]] = scored.get("capabilities", [])  # type: ignore[assignment]
+    caps: list[dict[str, Any]] = scored.get("capabilities", [])  # type: ignore[assignment]
     total_caps = len(caps)
     avg_score = (
         round(sum(float(c.get("score", 0.0)) for c in caps) / total_caps, 4) if total_caps else 0.0
     )
 
-    low_list: List[Dict[str, Any]] = []
+    low_list: list[dict[str, Any]] = []
     if isinstance(gaps, dict) and "low_maturity" in gaps:
         low_list = list(gaps["low_maturity"])  # type: ignore[assignment]
     else:
@@ -148,8 +148,8 @@ def main() -> None:
     low_sorted = sorted(low_list, key=lambda c: float(c.get("score", 0.0)))
 
     # Deltas vs base
-    improvements: List[Tuple[str, float]] = []
-    regressions: List[Tuple[str, float]] = []
+    improvements: list[tuple[str, float]] = []
+    regressions: list[tuple[str, float]] = []
     if args.base:
         base_path = Path(args.base)
         if base_path.exists():

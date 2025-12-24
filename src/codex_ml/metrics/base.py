@@ -9,7 +9,7 @@ Generated: 2025-11-19 04:20:17
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 
 class BaseMetric(ABC):
@@ -30,6 +30,6 @@ class BaseMetric(ABC):
         """Reset internal state for a fresh accumulation. Subclasses must implement."""
         pass
 
-    def meta(self) -> Dict[str, Any]:
+    def meta(self) -> dict[str, Any]:
         """Optional: return metadata about the metric instance."""
         return {"name": self.__class__.__name__}

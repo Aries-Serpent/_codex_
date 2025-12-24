@@ -16,7 +16,7 @@ import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class FeatureMetadata:
     description: str
     created_at: str
     updated_at: str
-    tags: Dict[str, Any] = field(default_factory=dict)
+    tags: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -72,7 +72,7 @@ class FeatureVersion:
     timestamp: str
     feature_name: str
     storage_path: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -86,16 +86,16 @@ class Feature:
     Attributes:
         name: Feature name
         transform_fn: Transformation function
-        dependencies: List of dependent features
+        dependencies: list of dependent features
         metadata: Feature metadata
     """
 
     name: str
     transform_fn: Callable
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     metadata: Optional[FeatureMetadata] = None
 
-    def compute(self, inputs: Dict[str, Any]) -> Any:
+    def compute(self, inputs: dict[str, Any]) -> Any:
         """Compute feature value from inputs.
 
         Args:
@@ -113,13 +113,13 @@ class FeatureGroup:
 
     Attributes:
         name: Group name
-        features: List of features in group
+        features: list of features in group
         version: Group version
         description: Group description
     """
 
     name: str
-    features: List[Feature]
+    features: list[Feature]
     version: str
     description: str = ""
 
@@ -162,9 +162,9 @@ class FeatureStore:
         self.store_path.mkdir(parents=True, exist_ok=True)
         self.enable_versioning = enable_versioning
 
-        self.feature_groups: Dict[str, FeatureGroup] = {}
-        self.feature_cache: Dict[str, Any] = {}
-        self.feature_versions: Dict[str, List[FeatureVersion]] = {}
+        self.feature_groups: dict[str, FeatureGroup] = {}
+        self.feature_cache: dict[str, Any] = {}
+        self.feature_versions: dict[str, list[FeatureVersion]] = {}
 
         self._load_registry()
 
@@ -218,14 +218,14 @@ class FeatureStore:
 
     def materialize_features(
         self,
-        feature_names: List[str],
-        inputs: Dict[str, Any],
+        feature_names: list[str],
+        inputs: dict[str, Any],
         cache: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Materialize features from inputs.
 
         Args:
-            feature_names: List of feature names to compute
+            feature_names: list of feature names to compute
             inputs: Input data
             cache: Whether to cache results
 
@@ -269,7 +269,7 @@ class FeatureStore:
                 return feature
         return None
 
-    def _compute_cache_key(self, feature_name: str, inputs: Dict[str, Any]) -> str:
+    def _compute_cache_key(self, feature_name: str, inputs: dict[str, Any]) -> str:
         """Compute cache key for feature.
 
         Args:
@@ -296,11 +296,11 @@ class FeatureStore:
         feature = self._find_feature(name)
         return feature.metadata if feature else None
 
-    def list_features(self) -> List[str]:
-        """List all registered features.
+    def list_features(self) -> list[str]:
+        """list all registered features.
 
         Returns:
-            List of feature names
+            list of feature names
         """
         features = []
         for group in self.feature_groups.values():
@@ -312,30 +312,30 @@ class FeatureStore:
         self.feature_cache.clear()
         logger.info("Feature cache cleared")
 
-    def list_versions(self, feature_name: str) -> List[str]:
-        """List all versions of a feature.
+    def list_versions(self, feature_name: str) -> list[str]:
+        """list all versions of a feature.
 
         Args:
             feature_name: Feature name
 
         Returns:
-            List of version strings
+            list of version strings
         """
         versions = self.feature_versions.get(feature_name, [])
         return [v.version for v in versions]
 
     def get_features_at_time(
         self,
-        feature_names: List[str],
+        feature_names: list[str],
         timestamp: Union[str, datetime],
         lookback_days: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get point-in-time features.
 
         Retrieves feature values as they were at a specific timestamp.
 
         Args:
-            feature_names: List of feature names
+            feature_names: list of feature names
             timestamp: Target timestamp (ISO string or datetime)
             lookback_days: Maximum lookback window in days
 
@@ -382,7 +382,7 @@ class FeatureStore:
     def materialize_to_parquet(
         self,
         feature_group_name: str,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         version: Optional[str] = None,
         partition_by_date: bool = True,
     ) -> Path:
@@ -402,7 +402,7 @@ class FeatureStore:
             import pyarrow as pa
             import pyarrow.parquet as pq
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.error(
                 "pandas and pyarrow required for parquet materialization. "

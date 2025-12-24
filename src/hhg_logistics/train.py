@@ -7,7 +7,7 @@ from typing import Any
 try:
     from hydra.utils import to_absolute_path
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     from config_legacy.utils import to_absolute_path
 

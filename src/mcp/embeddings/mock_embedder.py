@@ -1,5 +1,5 @@
 import hashlib
-from typing import Any, Dict, List
+from typing import Any
 
 from .interface import EmbedderInterface
 
@@ -19,8 +19,8 @@ class MockEmbedder(EmbedderInterface):
         vec = [((b & 0xFF) / 255.0) for b in h[: self.dim]]
         return vec
 
-    def embed(self, texts: List[str]) -> List[List[float]]:
+    def embed(self, texts: list[str]) -> list[list[float]]:
         return [self._text_to_vector(t) for t in texts]
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         return {"status": "ok", "embedder": "mock", "dim": self.dim}

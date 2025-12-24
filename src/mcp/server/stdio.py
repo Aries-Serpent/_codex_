@@ -12,7 +12,7 @@ import json
 import logging
 import sys
 from dataclasses import dataclass
-from typing import Any, AsyncIterator, Callable, Dict, Optional
+from typing import Any, AsyncIterator, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +106,7 @@ class StdioTransport:
         self._writer = writer
         return writer
     
-    async def read_message(self) -> Optional[Dict[str, Any]]:
+    async def read_message(self) -> Optional[dict[str, Any]]:
         """Read a single JSON-RPC message from stdin.
         
         Returns:
@@ -158,7 +158,7 @@ class StdioTransport:
                 text[:100] if text else None
             )
     
-    async def write_message(self, message: Dict[str, Any]) -> None:
+    async def write_message(self, message: dict[str, Any]) -> None:
         """Write a JSON-RPC message to stdout.
         
         Args:
@@ -180,7 +180,7 @@ class StdioTransport:
         writer.write(data)
         await writer.drain()
     
-    async def message_stream(self) -> AsyncIterator[Dict[str, Any]]:
+    async def message_stream(self) -> AsyncIterator[dict[str, Any]]:
         """Iterate over incoming messages.
         
         Yields:
@@ -225,14 +225,14 @@ class MockStdioTransport(StdioTransport):
         """Initialize mock transport.
         
         Args:
-            messages: List of messages to return from read_message.
+            messages: list of messages to return from read_message.
         """
         super().__init__()
         self._mock_messages = messages or []
         self._written_messages: list = []
         self._message_index = 0
     
-    async def read_message(self) -> Optional[Dict[str, Any]]:
+    async def read_message(self) -> Optional[dict[str, Any]]:
         """Read from the mock message queue."""
         if self._message_index >= len(self._mock_messages):
             return None
@@ -241,7 +241,7 @@ class MockStdioTransport(StdioTransport):
         self._message_index += 1
         return message
     
-    async def write_message(self, message: Dict[str, Any]) -> None:
+    async def write_message(self, message: dict[str, Any]) -> None:
         """Write to the mock message buffer."""
         self._written_messages.append(message)
     
@@ -249,6 +249,6 @@ class MockStdioTransport(StdioTransport):
         """Get all messages written to this transport."""
         return self._written_messages
     
-    def add_mock_message(self, message: Dict[str, Any]) -> None:
+    def add_mock_message(self, message: dict[str, Any]) -> None:
         """Add a message to the mock queue."""
         self._mock_messages.append(message)

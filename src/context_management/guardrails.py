@@ -5,7 +5,7 @@ Implements loop detection, recovery, and guardrails for agent execution.
 Prevents infinite loops and repeated action patterns.
 """
 
-from typing import List, Dict, Optional, Callable, Any
+from typing import Optional, Callable, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from collections import deque
@@ -41,7 +41,7 @@ class GuardrailViolation:
     violation_type: str
     message: str
     timestamp: datetime = field(default_factory=datetime.now)
-    action_history: List[str] = field(default_factory=list)
+    action_history: list[str] = field(default_factory=list)
     recommended_action: str = ""
 
 
@@ -79,7 +79,7 @@ class LoopGuardrail:
 
         # Action history
         self._history: deque = deque(maxlen=history_size)
-        self._violations: List[GuardrailViolation] = []
+        self._violations: list[GuardrailViolation] = []
 
         # Counters
         self._consecutive_count = 0
@@ -89,7 +89,7 @@ class LoopGuardrail:
         self,
         action_type: str,
         tool_name: Optional[str] = None,
-        parameters: Optional[Dict] = None,
+        parameters: Optional[dict] = None,
         produced_artifacts: bool = False,
         result: Optional[Any] = None,
     ) -> Optional[GuardrailViolation]:
@@ -150,7 +150,7 @@ class LoopGuardrail:
         return None
 
     def check_before_action(
-        self, action_type: str, tool_name: Optional[str] = None, parameters: Optional[Dict] = None
+        self, action_type: str, tool_name: Optional[str] = None, parameters: Optional[dict] = None
     ) -> Optional[str]:
         """
         Pre-check if action would violate guardrails.
@@ -174,7 +174,7 @@ class LoopGuardrail:
             return self._recovery_callback(self._violations[-1])
         return self._default_recovery(None)
 
-    def get_metrics(self) -> Dict:
+    def get_metrics(self) -> dict:
         """Get guardrail metrics."""
         return {
             "actions_recorded": len(self._history),
@@ -191,7 +191,7 @@ class LoopGuardrail:
         self._last_action_hash = None
 
     def _hash_action(
-        self, action_type: str, tool_name: Optional[str], parameters: Optional[Dict]
+        self, action_type: str, tool_name: Optional[str], parameters: Optional[dict]
     ) -> str:
         """Generate hash for action identification."""
         content = f"{action_type}:{tool_name or ''}"
@@ -200,7 +200,7 @@ class LoopGuardrail:
             content += ":" + json.dumps(parameters, sort_keys=True, default=str)
         return hashlib.sha256(content.encode()).hexdigest()[:12]
 
-    def _hash_dict(self, d: Dict) -> str:
+    def _hash_dict(self, d: dict) -> str:
         """Hash a dictionary."""
         return hashlib.sha256(json.dumps(d, sort_keys=True, default=str).encode()).hexdigest()[:12]
 
@@ -237,7 +237,7 @@ class LoopGuardrail:
 
         return None
 
-    def _count_violation_types(self) -> Dict[str, int]:
+    def _count_violation_types(self) -> dict[str, int]:
         """Count violations by type."""
         counts = {}
         for v in self._violations:

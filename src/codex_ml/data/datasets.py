@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Sequence
+from typing import Callable, Iterable, Sequence
 
 
 @dataclass
@@ -37,11 +37,11 @@ class DatasetSpec:
     root: Path
     loader: Callable[[Path], Iterable[str]]
     description: str = ""
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 # Global registry: dataset_name -> spec
-_DATASET_REGISTRY: Dict[str, DatasetSpec] = {}
+_DATASET_REGISTRY: dict[str, DatasetSpec] = {}
 
 
 def register_dataset(spec: DatasetSpec, overwrite: bool = False) -> None:
@@ -58,7 +58,7 @@ def get_dataset_spec(name: str) -> DatasetSpec:
     try:
         return _DATASET_REGISTRY[name]
     except KeyError as e:
-       logger.debug(f"KeyError: {e}")
+        logger.debug(f"KeyError: {e}")
         logger.warning(f"KeyError: {e}", exc_info=True)
         raise KeyError(f"Dataset {name!r} is not registered") from None
 

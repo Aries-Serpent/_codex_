@@ -6,7 +6,7 @@ Supports equality, range, exists, and logical operators.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class FilterOperator:
     OR = "or"  # Logical OR
 
 
-def matches_filter(metadata: Dict[str, Any], filter_spec: Dict[str, Any]) -> bool:
+def matches_filter(metadata: dict[str, Any], filter_spec: dict[str, Any]) -> bool:
     """Check if metadata matches filter specification
 
     Supports MongoDB-style filter syntax:
@@ -118,14 +118,14 @@ def matches_filter(metadata: Dict[str, Any], filter_spec: Dict[str, Any]) -> boo
 
 
 def apply_filters(
-    results: List[Dict[str, Any]],
-    filters: Optional[Dict[str, Any]] = None,
+    results: list[dict[str, Any]],
+    filters: Optional[dict[str, Any]] = None,
     max_results: Optional[int] = None,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Apply filters to search results
 
     Args:
-        results: List of search results with metadata
+        results: list of search results with metadata
         filters: Filter specification (MongoDB-style)
         max_results: Maximum number of results to return after filtering
 
@@ -149,7 +149,7 @@ def apply_filters(
     return filtered
 
 
-def calculate_fetch_multiplier(filters: Optional[Dict[str, Any]] = None) -> int:
+def calculate_fetch_multiplier(filters: Optional[dict[str, Any]] = None) -> int:
     """Calculate how many results to fetch to account for filtering
 
     Args:

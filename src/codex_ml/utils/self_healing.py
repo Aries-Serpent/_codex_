@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
@@ -101,7 +101,7 @@ class SelfHealingContext:
         self.enable_checkpoint_rollback = enable_checkpoint_rollback
 
         self.oom_handler = OOMHandler(batch_size)
-        self.failures: list[Tuple[FailureType, Exception]] = []
+        self.failures: list[tuple[FailureType, Exception]] = []
 
     def __enter__(self):
         """Enter self-healing context."""

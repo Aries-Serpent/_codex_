@@ -5,7 +5,7 @@ import subprocess
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence
+from typing import Any, Iterable, Sequence
 
 _STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1"}
 _STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "false", "0", "red"}
@@ -29,7 +29,7 @@ def _normalize_status(value: Any) -> bool | None:
 @dataclass
 class ToolInvocation:
     tool: str
-    args: List[str]
+    args: list[str]
     exit_code: int
     started_at: str
     finished_at: str
@@ -37,9 +37,9 @@ class ToolInvocation:
     stderr: str
     ra_gate_expected: bool | None = None
     ra_gate_match: bool | None = None
-    metadata: Dict[str, Any] | None = None
+    metadata: dict[str, Any] | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
         if self.metadata is None:
             payload.pop("metadata", None)
@@ -52,14 +52,14 @@ class ToolTraceLogger:
     def __init__(self, output_path: Path | str = Path("artifacts/tool_trace.ndjson")) -> None:
         self.output_path = Path(output_path)
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
-        self.ra_gate_results: Dict[str, bool | None] = {}
+        self.ra_gate_results: dict[str, bool | None] = {}
 
-    def load_ra_gate_results(self, path: Path | str) -> Dict[str, bool | None]:
+    def load_ra_gate_results(self, path: Path | str) -> dict[str, bool | None]:
         p = Path(path)
         if not p.exists():
             return {}
         data = json.loads(p.read_text(encoding="utf-8"))
-        mapping: Dict[str, Any] = {}
+        mapping: dict[str, Any] = {}
         if isinstance(data, dict) and "gates" in data:
             for entry in data.get("gates", []):
                 if not isinstance(entry, dict) or "tool" not in entry:
@@ -83,11 +83,11 @@ class ToolTraceLogger:
         tool: str,
         args: Sequence[str] | None = None,
         *,
-        env: Dict[str, str] | None = None,
+        env: dict[str, str] | None = None,
         cwd: str | Path | None = None,
         check: bool = True,
     ) -> ToolInvocation:
-        argv: List[str] = [tool]
+        argv: list[str] = [tool]
         if args:
             argv.extend(str(a) for a in args)
         started_at = _utc_now()
@@ -123,7 +123,7 @@ class ToolTraceLogger:
         exit_code: int,
         stdout: str = "",
         stderr: str = "",
-        metadata: Dict[str, Any] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> ToolInvocation:
         started_at = _utc_now()
         finished_at = _utc_now()
@@ -146,8 +146,8 @@ class ToolTraceLogger:
         self.record_invocation(invocation)
         return invocation
 
-    def read_invocations(self) -> List[ToolInvocation]:
-        invocations: List[ToolInvocation] = []
+    def read_invocations(self) -> list[ToolInvocation]:
+        invocations: list[ToolInvocation] = []
         if not self.output_path.exists():
             return invocations
         for line in self.output_path.read_text(encoding="utf-8").splitlines():

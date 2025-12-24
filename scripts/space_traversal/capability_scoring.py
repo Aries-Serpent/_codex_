@@ -4,22 +4,21 @@ Placed under scripts.space_traversal package for canonical imports.
 """
 
 from __future__ import annotations
-from typing import Dict, List
 
 
-def normalize_weights(weights: Dict[str, float]) -> Dict[str, float]:
+def normalize_weights(weights: dict[str, float]) -> dict[str, float]:
     total = float(sum(weights.values()))
     if total <= 0:
         raise ValueError("Weights must sum > 0")
     return {k: v / total for k, v in weights.items()}
 
 
-def score_capability(components: Dict[str, float], weights: Dict[str, float]) -> float:
+def score_capability(components: dict[str, float], weights: dict[str, float]) -> float:
     w = normalize_weights(weights)
     return sum(max(0.0, min(1.0, components.get(k, 0.0))) * w[k] for k in w)
 
 
-def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
+def explain_score(capability: dict, weights: dict[str, float]) -> dict:
     components = capability.get("components", {})
     w_norm = normalize_weights(weights)
     partials = {}
@@ -38,7 +37,7 @@ def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
     }
 
 
-def aggregate_scores(capabilities: List[dict], weights: Dict[str, float]) -> List[dict]:
+def aggregate_scores(capabilities: list[dict], weights: dict[str, float]) -> list[dict]:
     # returns list of explanations for each capability
     enriched = []
     for cap in capabilities:

@@ -207,7 +207,7 @@ class ReasoningHarness:
                     tensor = self._pool_hidden_states(hidden_states, head_device, size)
                     return tensor, mode_used
                 except Exception as exc:
-                   logger.debug(f"Exception: {exc}")
+                    logger.debug(f"Exception: {exc}")
                     logger.warning(
                         "Activation vectorization failed; falling back to weights: %s",
                         exc,

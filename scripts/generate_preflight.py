@@ -14,10 +14,10 @@ import argparse
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 
-def get_git_context() -> Dict[str, str]:
+def get_git_context() -> dict[str, str]:
     """Retrieve current git context."""
     try:
         branch = subprocess.run(
@@ -40,7 +40,7 @@ def get_git_context() -> Dict[str, str]:
         return {"branch": "unknown", "commit": "unknown"}
 
 
-def identify_tools(files: List[str]) -> List[str]:
+def identify_tools(files: list[str]) -> list[str]:
     """Identify tools needed based on file types."""
     tools: set[str] = set()
 
@@ -57,7 +57,7 @@ def identify_tools(files: List[str]) -> List[str]:
     return sorted(tools)
 
 
-def generate_checklist(task: str, files: List[str], pr_number: Optional[str] = None) -> str:
+def generate_checklist(task: str, files: list[str], pr_number: Optional[str] = None) -> str:
     """Generate a pre-flight checklist."""
     git_context = get_git_context()
     tools = identify_tools(files)

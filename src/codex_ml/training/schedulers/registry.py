@@ -3,14 +3,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 try:
     import torch
 
     TORCH_AVAILABLE = True
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     TORCH_AVAILABLE = False
     from types import ModuleType
@@ -43,7 +43,7 @@ class SchedulerRegistry:
     """Lightweight LR scheduler registry with a few safe built-ins."""
 
     def __init__(self) -> None:
-        self._specs: Dict[str, SchedulerSpec] = {}
+        self._specs: dict[str, SchedulerSpec] = {}
         if TORCH_AVAILABLE:
             self._register_builtins()
 

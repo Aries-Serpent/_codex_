@@ -1,9 +1,8 @@
 # Minimal in-memory metrics facade. Replace with Prometheus/OTel exporter in later plans.
 import time
-from typing import Dict
 
-_counters: Dict[str, int] = {}
-_timers: Dict[str, float] = {}
+_counters: dict[str, int] = {}
+_timers: dict[str, float] = {}
 
 
 def increment(name: str, amount: int = 1):
@@ -33,5 +32,5 @@ class Timer:
         increment(f"{self.name}_count", 1)
 
 
-def snapshot() -> Dict:
+def snapshot() -> dict:
     return {"counters": dict(_counters), "timers": dict(_timers)}

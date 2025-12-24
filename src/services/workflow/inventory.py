@@ -6,7 +6,7 @@ a dependency graph. Supports caching and incremental updates.
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from .parser import WorkflowParser
 from .types import (
@@ -52,16 +52,16 @@ class WorkflowInventory:
         """
         self.workflows_dir = Path(workflows_dir)
         self.parser = WorkflowParser()
-        self._workflows: Dict[str, WorkflowMetadata] = {}
-        self._dependencies: List[WorkflowDependency] = []
+        self._workflows: dict[str, WorkflowMetadata] = {}
+        self._dependencies: list[WorkflowDependency] = []
 
     @property
-    def workflows(self) -> Dict[str, WorkflowMetadata]:
+    def workflows(self) -> dict[str, WorkflowMetadata]:
         """Get all parsed workflows."""
         return self._workflows
 
     @property
-    def dependencies(self) -> List[WorkflowDependency]:
+    def dependencies(self) -> list[WorkflowDependency]:
         """Get all workflow dependencies."""
         return self._dependencies
 
@@ -126,52 +126,52 @@ class WorkflowInventory:
         """
         return self._workflows.get(filename)
 
-    def get_triggerable(self) -> List[WorkflowMetadata]:
+    def get_triggerable(self) -> list[WorkflowMetadata]:
         """Get all manually triggerable workflows (workflow_dispatch).
 
         Returns:
-            List of workflows with workflow_dispatch trigger.
+            list of workflows with workflow_dispatch trigger.
         """
         return [w for w in self._workflows.values() if w.is_triggerable]
 
-    def get_reusable(self) -> List[WorkflowMetadata]: 
+    def get_reusable(self) -> list[WorkflowMetadata]: 
         """Get all reusable workflows (workflow_call).
 
         Returns:
-            List of workflows with workflow_call trigger.
+            list of workflows with workflow_call trigger.
         """
         return [w for w in self._workflows.values() if w.is_reusable]
 
-    def get_by_trigger_type(self, trigger_type: TriggerType) -> List[WorkflowMetadata]:
+    def get_by_trigger_type(self, trigger_type: TriggerType) -> list[WorkflowMetadata]:
         """Get workflows by trigger type.
 
         Args:
             trigger_type:  Trigger type to filter by. 
 
         Returns:
-            List of workflows with the specified trigger.
+            list of workflows with the specified trigger.
         """
         return [w for w in self._workflows.values() if trigger_type in w.trigger_types]
 
-    def get_workflow_dependencies(self, filename: str) -> List[str]:
+    def get_workflow_dependencies(self, filename: str) -> list[str]:
         """Get workflows that this workflow depends on. 
 
         Args:
             filename:  Workflow filename.
 
         Returns:
-            List of dependency workflow filenames.
+            list of dependency workflow filenames.
         """
         return [dep.target for dep in self._dependencies if dep.source == filename]
 
-    def get_workflow_dependents(self, filename: str) -> List[str]:
+    def get_workflow_dependents(self, filename: str) -> list[str]:
         """Get workflows that depend on this workflow. 
 
         Args:
             filename:  Workflow filename.
 
         Returns:
-            List of dependent workflow filenames.
+            list of dependent workflow filenames.
         """
         return [dep.source for dep in self._dependencies if dep.target == filename]
 
@@ -181,7 +181,7 @@ class WorkflowInventory:
         Returns:
             Statistics about the workflow inventory.
         """
-        trigger_counts: Dict[str, int] = {}
+        trigger_counts: dict[str, int] = {}
         total_jobs = 0
         total_triggers = 0
 
@@ -258,8 +258,8 @@ class WorkflowInventory:
                 return filename
         return None
 
-    def list_workflows(self) -> List[str]:
-        """List all workflow filenames. 
+    def list_workflows(self) -> list[str]:
+        """list all workflow filenames. 
 
         Returns:
             Sorted list of workflow filenames.

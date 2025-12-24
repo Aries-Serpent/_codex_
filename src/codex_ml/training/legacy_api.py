@@ -165,7 +165,7 @@ def _listify_texts(value: Any) -> list[str]:
     try:
         return [str(item) for item in list(value)]
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         return [str(value)]
 
@@ -481,7 +481,7 @@ def _stop_system_metrics_logger(logger: Any) -> None:
         try:
             stopper()
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
 
@@ -1535,7 +1535,7 @@ def _evaluate_model(
         try:
             result["val_perplexity"] = float(math.exp(result["val_loss"]))
         except OverflowError as e:
-           logger.debug(f"OverflowError: {e}")
+            logger.debug(f"OverflowError: {e}")
             logger.warning(f"OverflowError: {e}", exc_info=True)
             result["val_perplexity"] = float("inf")
     if "token_accuracy" in metrics:
@@ -1548,7 +1548,7 @@ def _evaluate_model(
     try:
         result.setdefault("num_batches", float(len(loader)))
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
 
     return result

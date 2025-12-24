@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Helpers to configure offline tracking providers locally."""
 
-from __future__ import annotations
 
 import os
 from pathlib import Path

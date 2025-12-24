@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 import sys
 import json
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any
 import argparse
 
 
@@ -62,7 +62,7 @@ class CoverageAnalyzer:
             print(f"Error running coverage: {e}")
             return False
 
-    def analyze_json_report(self) -> Dict[str, Any]:
+    def analyze_json_report(self) -> dict[str, Any]:
         """Analyze JSON coverage report."""
         json_path = self.output_dir / "coverage.json"
 
@@ -94,7 +94,7 @@ class CoverageAnalyzer:
 
         return analysis
 
-    def generate_summary_report(self, analysis: Dict[str, Any]) -> str:
+    def generate_summary_report(self, analysis: dict[str, Any]) -> str:
         """Generate human-readable summary."""
         report = []
         report.append("\n" + "=" * 80)
@@ -157,7 +157,7 @@ class CoverageAnalyzer:
 
         return f"![Coverage](https://img.shields.io/badge/coverage-{coverage:.0f}%25-{color})"
 
-    def save_summary(self, analysis: Dict[str, Any]):
+    def save_summary(self, analysis: dict[str, Any]):
         """Save analysis summary to file."""
         summary = self.generate_summary_report(analysis)
 

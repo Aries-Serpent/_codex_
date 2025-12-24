@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Deterministic JSONL loader with optional validation split."""
 
-from __future__ import annotations
 
 import json
 import random

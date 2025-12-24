@@ -5,7 +5,7 @@ Provides centralized management and creation of vector stores
 
 import logging
 from enum import Enum
-from typing import Any, Dict, Optional, Type
+from typing import Any, Optional, Type
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class VectorStoreRegistry:
     Allows registration and retrieval of vector store classes.
     """
 
-    _stores: Dict[str, Type] = {}
+    _stores: dict[str, Type] = {}
 
     @classmethod
     def register(cls, store_type: str, store_class: Type) -> None:
@@ -42,7 +42,7 @@ class VectorStoreRegistry:
 
     @classmethod
     def list_types(cls) -> list:
-        """List all registered store types"""
+        """list all registered store types"""
         return list(cls._stores.keys())
 
 
@@ -95,12 +95,12 @@ class VectorStoreFactory:
             logger.info(f"Successfully created {store_type} store")
             return instance
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Failed to create {store_type} store: {e}")
             raise
 
     @staticmethod
-    def create_from_config(config: Dict[str, Any]) -> Any:
+    def create_from_config(config: dict[str, Any]) -> Any:
         """
         Create vector store from configuration dictionary.
 
@@ -140,7 +140,7 @@ try:
 
     VectorStoreRegistry.register("faiss", FAISSStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("FAISS store not available for registration")
 
@@ -150,7 +150,7 @@ try:
 
     VectorStoreRegistry.register("pinecone", PineconeStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Pinecone store not available for registration")
 
@@ -160,7 +160,7 @@ try:
 
     VectorStoreRegistry.register("weaviate", WeaviateStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("Weaviate store not available for registration")
 
@@ -170,7 +170,7 @@ try:
 
     VectorStoreRegistry.register("pgvector", PGVectorStore)
 except ImportError as e:
-   logger.debug(f"ImportError: {e}")
+    logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     logger.warning("PGVector store not available for registration")
 

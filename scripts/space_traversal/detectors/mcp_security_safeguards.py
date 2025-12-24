@@ -5,12 +5,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 KEYWORDS = ["confirm", "dry_run", "sanitize", "validation", "bounds", "rollback"]
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     evidence = []
     found = []
     for meta in file_index.get("files", []):

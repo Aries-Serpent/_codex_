@@ -1,6 +1,6 @@
 """Serialization utilities for converting objects to dictionaries."""
 
-from typing import Any, Dict
+from typing import Any
 
 
 class DictSerializable:
@@ -19,7 +19,7 @@ class DictSerializable:
         data = model.to_dict()  # {"name": "test", "value": 42}
     """
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert object to dictionary representation.
 
         Returns:

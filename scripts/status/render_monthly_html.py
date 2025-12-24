@@ -11,10 +11,10 @@ import argparse
 import html
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
-def load_json(path: Path) -> Dict[str, Any]:
+def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -72,7 +72,7 @@ def default_template() -> str:
 """
 
 
-def render_reports_rows(data: Dict[str, Any]) -> str:
+def render_reports_rows(data: dict[str, Any]) -> str:
     """Render table rows for each report in the bundle."""
     rows = []
     for report in data.get("reports", []):

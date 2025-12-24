@@ -38,7 +38,7 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         with ERRORS_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     sys.stderr.write(
         (

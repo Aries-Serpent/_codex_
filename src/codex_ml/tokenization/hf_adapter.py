@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Canonical Hugging Face tokenizer adapter surface."""
 
-from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 

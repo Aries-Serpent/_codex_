@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 
@@ -11,9 +11,9 @@ from typing import Any, Dict, List, Optional
 class Tool:
     name: str
     description: str
-    schema: Optional[Dict[str, Any]] = None
+    schema: Optional[dict[str, Any]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         payload = {"name": self.name, "description": self.description}
         if self.schema is not None:
             payload["schema"] = self.schema
@@ -22,12 +22,12 @@ class Tool:
 
 @dataclass
 class ToolRegistry:
-    _tools: List[Tool] = field(default_factory=list)
+    _tools: list[Tool] = field(default_factory=list)
 
     def register(self, tool: Tool) -> None:
         self._tools.append(tool)
 
-    def list_tools(self) -> List[Dict[str, Any]]:
+    def list_tools(self) -> list[dict[str, Any]]:
         return [tool.to_dict() for tool in self._tools]
 
 
@@ -38,7 +38,7 @@ class MCPServer:
         self.tool_registry = tool_registry or ToolRegistry()
         self.supported_versions = ["1.0"]
 
-    async def handle_request(self, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def handle_request(self, request: dict[str, Any]) -> Optional[dict[str, Any]]:
         request_id = request.get("id")
         method = request.get("method")
         params = request.get("params", {})

@@ -9,7 +9,6 @@ Safeguards: Bounded processing, deterministic sorting, validation.
 """
 
 from __future__ import annotations
-from typing import Dict
 from pathlib import Path
 
 MAX_READ_BYTES = 200_000
@@ -40,7 +39,7 @@ def _read_text(path_input) -> str:
         return ""
 
 
-def detect(file_index: Dict) -> Dict:
+def detect(file_index: dict) -> dict:
     """Detect functional training capability.
 
     Args:

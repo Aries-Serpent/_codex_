@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import Dict, List, Sequence, Tuple
+from typing import Sequence
 
 
 @dataclass
@@ -27,7 +27,7 @@ class SplitConfig:
 def deterministic_split_ids(
     ids: Sequence[str],
     split_cfg: SplitConfig,
-) -> Tuple[List[str], List[str]]:
+) -> tuple[list[str], list[str]]:
     """Deterministically split IDs into train and eval sets.
 
     Steps:
@@ -50,11 +50,11 @@ def deterministic_split_ids(
 def assign_split_map(
     ids: Sequence[str],
     split_cfg: SplitConfig,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """Return a mapping id -> split_name ('train' or 'eval')."""
 
     train_ids, eval_ids = deterministic_split_ids(ids, split_cfg)
-    out: Dict[str, str] = {}
+    out: dict[str, str] = {}
     for _id in train_ids:
         out[_id] = "train"
     for _id in eval_ids:

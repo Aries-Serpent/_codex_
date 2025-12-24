@@ -554,7 +554,7 @@ def _collect_objects(client: object, attribute: str) -> list[Any]:
     try:
         return list(result)
     except TypeError as e:
-       logger.debug(f"TypeError: {e}")
+        logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         return []
 

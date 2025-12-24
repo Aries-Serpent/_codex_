@@ -3,10 +3,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 import os
-from typing import Dict
 
 # Simple in-memory mapping for dev usage. Production should consult a secret manager.
-DEV_KEYS: Dict[str, Dict] = {
+DEV_KEYS: dict[str, dict] = {
     os.environ.get("DEV_API_KEY", "dev-key-1"): {"tenant": "dev-tenant", "scopes": ["read", "write"]},
 }
 

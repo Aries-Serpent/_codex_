@@ -26,14 +26,14 @@ import os
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"
 OUT = ART_DIR / "ast_similarity.json"
 
 
-def extract_ast_signature(code: str) -> Optional[Dict]:
+def extract_ast_signature(code: str) -> Optional[dict]:
     """
     Extract AST signature from Python code.
 
@@ -42,7 +42,7 @@ def extract_ast_signature(code: str) -> Optional[Dict]:
     """
     try:
         tree = ast.parse(code)
-        counts: Dict[str, int] = defaultdict(int)
+        counts: dict[str, int] = defaultdict(int)
         for node in ast.walk(tree):
             counts[type(node).__name__] += 1
         # Create a normalized AST dump for structural hashing
@@ -54,7 +54,7 @@ def extract_ast_signature(code: str) -> Optional[Dict]:
         return None
 
 
-def signature_similarity(sig1: Dict, sig2: Dict) -> float:
+def signature_similarity(sig1: dict, sig2: dict) -> float:
     """
     Calculate similarity between two AST signatures.
 
@@ -81,14 +81,14 @@ def signature_similarity(sig1: Dict, sig2: Dict) -> float:
     return 0.7 * node_sim + 0.3 * hash_sim
 
 
-def compute_uniqueness(paths: List[Path], min_nodes: int = 10) -> float:
+def compute_uniqueness(paths: list[Path], min_nodes: int = 10) -> float:
     """
     Compute AST uniqueness score for a set of Python files.
 
     Returns 1.0 for single/no files, otherwise 1 - avg_pairwise_similarity.
 
     Args:
-        paths: List of Python file paths to analyze
+        paths: list of Python file paths to analyze
         min_nodes: Minimum AST nodes required to include a file
     """
     signatures = []

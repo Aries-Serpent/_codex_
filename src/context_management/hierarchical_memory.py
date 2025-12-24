@@ -11,7 +11,7 @@ Reference: Anthropic 2024 - Effective Context Engineering for AI Agents
 
 import hashlib
 import json
-from typing import List, Dict, Optional, Any, Tuple
+from typing import Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -37,8 +37,8 @@ class MemoryItem:
     access_count: int = 0
     importance: float = 1.0
     decay_rate: float = 0.1
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
     content_hash: str = ""
 
     def __post_init__(self):
@@ -142,23 +142,23 @@ class HierarchicalMemory:
         self.auto_demote = auto_demote
 
         # Storage by layer
-        self._memory: Dict[MemoryLayer, Dict[str, MemoryItem]] = {
+        self._memory: dict[MemoryLayer, dict[str, MemoryItem]] = {
             MemoryLayer.WORKING: {},
             MemoryLayer.EPISODIC: {},
             MemoryLayer.SEMANTIC: {},
         }
 
         # Cross-layer index for deduplication
-        self._hash_to_layer: Dict[str, MemoryLayer] = {}
+        self._hash_to_layer: dict[str, MemoryLayer] = {}
 
     def store(
         self,
         content: str,
         layer: MemoryLayer = MemoryLayer.WORKING,
         importance: float = 1.0,
-        tags: Optional[List[str]] = None,
-        metadata: Optional[Dict] = None,
-    ) -> Tuple[bool, Optional[str]]:
+        tags: Optional[list[str]] = None,
+        metadata: Optional[dict] = None,
+    ) -> tuple[bool, Optional[str]]:
         """
         Store item in memory.
 
@@ -170,7 +170,7 @@ class HierarchicalMemory:
             metadata: Optional metadata
 
         Returns:
-            Tuple of (success, warning/error message)
+            tuple of (success, warning/error message)
         """
         # Check for duplicates across all layers
         content_hash = hashlib.sha256(content.encode()).hexdigest()[:16]
@@ -206,11 +206,11 @@ class HierarchicalMemory:
         self,
         query: Optional[str] = None,
         layer: Optional[MemoryLayer] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
         min_importance: float = 0.0,
         max_items: int = 10,
         max_tokens: Optional[int] = None,
-    ) -> List[MemoryItem]:
+    ) -> list[MemoryItem]:
         """
         Retrieve items from memory.
 
@@ -223,7 +223,7 @@ class HierarchicalMemory:
             max_tokens: Maximum total tokens to return
 
         Returns:
-            List of matching items sorted by effective importance
+            list of matching items sorted by effective importance
         """
         results = []
 
@@ -272,7 +272,7 @@ class HierarchicalMemory:
 
         return results
 
-    def get_working_context(self, max_tokens: Optional[int] = None) -> List[str]:
+    def get_working_context(self, max_tokens: Optional[int] = None) -> list[str]:
         """
         Get current working memory as context strings.
 
@@ -280,7 +280,7 @@ class HierarchicalMemory:
             max_tokens: Optional token limit
 
         Returns:
-            List of content strings from working memory
+            list of content strings from working memory
         """
         items = self.retrieve(
             layer=MemoryLayer.WORKING,
@@ -367,7 +367,7 @@ class HierarchicalMemory:
         for layer in MemoryLayer:
             self.clear_layer(layer)
 
-    def get_stats(self, layer: Optional[MemoryLayer] = None) -> Dict[str, MemoryStats]:
+    def get_stats(self, layer: Optional[MemoryLayer] = None) -> dict[str, MemoryStats]:
         """
         Get statistics for memory layers.
 
@@ -375,7 +375,7 @@ class HierarchicalMemory:
             layer: Specific layer (None = all layers)
 
         Returns:
-            Dict mapping layer name to stats
+            dict mapping layer name to stats
         """
         stats = {}
         layers = [layer] if layer else list(MemoryLayer)

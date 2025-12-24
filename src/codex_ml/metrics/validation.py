@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
-from typing import List
 
 
 class MetricValidationError(Exception):
@@ -13,19 +12,19 @@ class MetricValidationError(Exception):
     pass
 
 
-def validate_metric_registry() -> List[str]:
+def validate_metric_registry() -> list[str]:
     """Validate all registered metrics have implementations.
 
     Checks that all metrics in the registry can be successfully
     retrieved and are callable.
 
     Returns:
-        List of validation warnings (empty if all valid)
+        list of validation warnings (empty if all valid)
 
     Raises:
         MetricValidationError: If a critical validation error occurs
     """
-    warnings: List[str] = []
+    warnings: list[str] = []
 
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY, get_metric
@@ -73,11 +72,11 @@ def validate_metric_exists(metric_name: str) -> bool:
         return False
 
 
-def get_all_registered_metrics() -> List[str]:
+def get_all_registered_metrics() -> list[str]:
     """Get list of all registered metric names.
 
     Returns:
-        List of metric names
+        list of metric names
     """
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY

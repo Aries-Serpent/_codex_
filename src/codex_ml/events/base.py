@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +53,10 @@ class Event:
 
     event_type: EventType
     source: str
-    data: Dict[str, Any]
+    data: dict[str, Any]
     event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -85,7 +85,7 @@ class EventPublisher(ABC):
         pass
 
     @abstractmethod
-    def publish_batch(self, events: List[Event]) -> bool:
+    def publish_batch(self, events: list[Event]) -> bool:
         """Publish multiple events.
 
         Args:
@@ -125,8 +125,8 @@ class EventBus(EventPublisher, EventSubscriber):
 
     def __init__(self):
         """Initialize event bus."""
-        self.subscribers: Dict[EventType, List[Callable]] = {}
-        self.event_history: List[Event] = []
+        self.subscribers: dict[EventType, list[Callable]] = {}
+        self.event_history: list[Event] = []
 
     def publish(self, event: Event) -> bool:
         """Publish event to local subscribers.
@@ -144,13 +144,13 @@ class EventBus(EventPublisher, EventSubscriber):
             try:
                 callback(event)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Error in event callback: {e}")
 
         logger.info(f"Published event: {event.event_type.value} (id={event.event_id})")
         return True
 
-    def publish_batch(self, events: List[Event]) -> bool:
+    def publish_batch(self, events: list[Event]) -> bool:
         """Publish multiple events.
 
         Args:
@@ -185,14 +185,14 @@ class EventBus(EventPublisher, EventSubscriber):
             del self.subscribers[event_type]
             logger.info(f"Unsubscribed from {event_type.value}")
 
-    def get_history(self, event_type: Optional[EventType] = None) -> List[Event]:
+    def get_history(self, event_type: Optional[EventType] = None) -> list[Event]:
         """Get event history.
 
         Args:
             event_type: Filter by event type (optional)
 
         Returns:
-            List of events
+            list of events
         """
         if event_type:
             return [e for e in self.event_history if e.event_type == event_type]

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Repository mapping helpers for the Codex CLI."""
 
-from __future__ import annotations
 
 import re
 from collections.abc import Mapping, Sequence
@@ -57,7 +57,7 @@ def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> dict[str, str
     try:
         content = path.read_text(encoding="utf-8")
     except OSError as e:
-       logger.debug(f"OSError: {e}")
+        logger.debug(f"OSError: {e}")
         logger.warning(f"OSError: {e}", exc_info=True)
         return {}
     results: dict[str, str] = {}

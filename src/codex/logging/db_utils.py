@@ -23,7 +23,7 @@ try:
 
     _codex_sqlite_auto()
 except Exception as e:
-   logger.debug(f"Exception: {e}")
+    logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
 from typing import Optional, Union
 
@@ -49,7 +49,7 @@ def open_db(
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return conn
     for k in env_keys:
@@ -59,7 +59,7 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             return conn
     # Probe a few common locations used within this repository
@@ -74,7 +74,7 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             return conn
     # Fallback to an in-memory database so callers can still operate
@@ -82,7 +82,7 @@ def open_db(
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return conn
 
@@ -140,7 +140,7 @@ def infer_probable_table(
         try:
             cols = get_columns(con, t)
         except ValueError as e:
-           logger.debug(f"ValueError: {e}")
+            logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             continue
         score = 0

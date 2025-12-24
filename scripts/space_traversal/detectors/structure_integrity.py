@@ -8,7 +8,6 @@ Integrates with: scripts/space_traversal/audit_runner.py
 """
 
 from pathlib import Path
-from typing import List, Set
 
 # Libraries that, if present as root directories, likely shadow PyPI packages
 KNOWN_SHADOW_RISKS = {"hydra", "torch", "numpy", "requests", "wandb", "mlflow", "pandas"}
@@ -33,9 +32,9 @@ def detect(file_index: dict, evidence_limit: int = 10) -> dict:
     - Reproducible results with seed-independent logic
     """
     files = [f["path"] for f in file_index.get("files", [])]
-    root_dirs: Set[str] = set()
-    src_dirs: Set[str] = set()
-    evidence_files: List[str] = []
+    root_dirs: set[str] = set()
+    src_dirs: set[str] = set()
+    evidence_files: list[str] = []
 
     # Harvest directory structure with validation
     for p in files:

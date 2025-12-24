@@ -14,7 +14,6 @@ Focuses on:
 
 import ast
 from pathlib import Path
-from typing import List, Tuple
 
 
 class RefactoringExecutor:
@@ -26,7 +25,7 @@ class RefactoringExecutor:
         self.changes = []
         self.errors = []
 
-    def find_to_dict_implementations(self) -> List[Tuple[Path, int]]:
+    def find_to_dict_implementations(self) -> list[tuple[Path, int]]:
         """Find all to_dict() method implementations."""
         results = []
 
@@ -51,7 +50,7 @@ class RefactoringExecutor:
         """Create base mixin for dict serialization."""
         mixin_code = '''"""Serialization utilities for converting objects to dictionaries."""
 
-from typing import Any, Dict
+from typing import Any, dict
 
 
 class DictSerializable:
@@ -70,7 +69,7 @@ class DictSerializable:
         data = model.to_dict()  # {"name": "test", "value": 42}
     """
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert object to dictionary representation.
         
         Returns:
@@ -106,7 +105,7 @@ class DictSerializable:
 
         return output_path
 
-    def find_context_managers(self) -> List[Tuple[Path, str, int]]:
+    def find_context_managers(self) -> list[tuple[Path, str, int]]:
         """Find context manager implementations (__enter__/__exit__)."""
         results = []
 

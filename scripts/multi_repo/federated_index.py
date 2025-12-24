@@ -37,7 +37,6 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict
 
 ART_DIR = Path("audit_artifacts")
 OUT = ART_DIR / "federated_index.json"
@@ -53,7 +52,7 @@ CAPABILITY_PATTERNS = {
 }
 
 
-def scan_repo(repo_path: Path) -> Dict:
+def scan_repo(repo_path: Path) -> dict:
     """Scan a repository for capability indicators."""
     if not repo_path.exists() or not repo_path.is_dir():
         return {"path": str(repo_path), "error": "not_found"}

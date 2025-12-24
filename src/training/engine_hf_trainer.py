@@ -7,7 +7,7 @@ for causal language modeling. It supports training either a pretrained
 
 Multi-GPU setups are enabled automatically when multiple CUDA devices are
 available and ``torch.distributed`` is installed. NCCL is required for the
-backend when GPUs are used. Set ``distributed=False`` to disable distributed
+backend when GPUs are used. set ``distributed=False`` to disable distributed
 initialisation.
 
 Features:
@@ -126,7 +126,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, cast
+from typing import Any, Iterable, Mapping, Optional, cast
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
@@ -414,7 +414,7 @@ def get_hf_revision(identifier: PathLike[str] | str) -> str:
             raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
         raise RuntimeError(
             "Remote Hugging Face identifiers require a pinned commit hash. "
-            "Set CODEX_HF_REVISION or add the identifier to KNOWN_MODEL_REVISIONS."
+            "set CODEX_HF_REVISION or add the identifier to KNOWN_MODEL_REVISIONS."
         ) from exc
 
     if revision is None:
@@ -563,7 +563,7 @@ def _compute_metrics(eval_pred):
     Parameters
     ----------
     eval_pred : tuple
-        Tuple of (predictions, labels) from evaluation
+        tuple of (predictions, labels) from evaluation
 
     Returns
     -------
@@ -590,7 +590,7 @@ def _compute_metrics(eval_pred):
 
 
 def _seed_everything(seed: int = 42):
-    """Set deterministic seeds across all libraries.
+    """set deterministic seeds across all libraries.
 
     Parameters
     ----------
@@ -776,7 +776,7 @@ def load_training_arguments(
     hydra_cfg: Optional[dict] = None,
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
-    cfg: Dict[str, object] = {}
+    cfg: dict[str, object] = {}
 
     # Always honor user-provided config files, then layer Hydra overrides when supplied.
     if path is not None:
@@ -924,18 +924,18 @@ def run_hf_trainer(
     split_cache: Optional[Path] = None,
     distributed: bool = True,
     tensorboard: bool = False,
-    accelerate_kwargs: Optional[Dict[str, object]] = None,
-    hydra_cfg: Optional[Dict[str, object]] = None,
+    accelerate_kwargs: Optional[dict[str, object]] = None,
+    hydra_cfg: Optional[dict[str, object]] = None,
     mlflow_tracking_uri: Optional[str] = None,
     log_args: Optional[argparse.Namespace] = None,
     metrics_writer: str = "ndjson",
     metrics_path: Optional[str] = None,
     sys_metrics: bool = False,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
     resolved_det = True if deterministic is None else bool(deterministic)
 
-    # Set deterministic seeds
+    # set deterministic seeds
     set_reproducible(seed, deterministic=resolved_det)
     set_seed(seed, output_dir, deterministic=resolved_det)
     if (
@@ -967,7 +967,7 @@ def run_hf_trainer(
     # Resolve tokenizer configuration
     config_snapshot = _sanitize_config_snapshot(hydra_cfg)
     copied_resume_config: Path | None = None
-    cfg: Dict[str, object] = {}
+    cfg: dict[str, object] = {}
     if config_path and config_path.exists():
         try:
             cfg = safe_load(config_path.read_text()) or {}
@@ -1065,11 +1065,11 @@ def run_hf_trainer(
     # Setup LoRA via adapter when requested, pulling defaults from Hydra config
     if hydra_cfg:
         # Support either flattened keys (lora_r) or a nested ``lora`` mapping
-        lora_section: Dict[str, Any] | None = None
+        lora_section: dict[str, Any] | None = None
         if isinstance(hydra_cfg.get("lora"), dict):
-            lora_section = cast(Dict[str, Any], hydra_cfg.get("lora"))
+            lora_section = cast(dict[str, Any], hydra_cfg.get("lora"))
         else:
-            lora_section = cast(Dict[str, Any], hydra_cfg)
+            lora_section = cast(dict[str, Any], hydra_cfg)
         if lora_section and lora_section.get("enabled", True):
             lora_r = lora_r or cast(
                 Optional[int], lora_section.get("r") or lora_section.get("lora_r")
@@ -1123,7 +1123,7 @@ def run_hf_trainer(
                     self.optimizer = None
                     self.lr_scheduler = None
                     self.scaler = None
-                    self._logs: Dict[str, float] | None = None
+                    self._logs: dict[str, float] | None = None
 
                 def on_train_begin(self, args, state, control, **kwargs):
                     self.model = kwargs.get("model")

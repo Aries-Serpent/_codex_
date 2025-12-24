@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Settings and schema definitions for Codex ML configuration."""
 
-from __future__ import annotations
 
 import warnings
 from functools import lru_cache

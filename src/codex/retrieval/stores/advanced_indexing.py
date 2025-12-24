@@ -14,7 +14,7 @@ Features:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class HNSWConfig:
 
     Attributes:
         M: Number of bi-directional links per node (default: 32)
-           Higher M = better recall, more memory, slower build
+            Higher M = better recall, more memory, slower build
         ef_construction: Size of dynamic candidate list during construction (default: 200)
                         Higher ef_construction = better quality, slower build
         ef_search: Size of dynamic candidate list during search (default: 100)
@@ -69,11 +69,11 @@ class IVFPQConfig:
 
     Attributes:
         nlist: Number of inverted lists/clusters (default: 1000)
-               Recommended: sqrt(N) to sqrt(N)/2 for N vectors
+                Recommended: sqrt(N) to sqrt(N)/2 for N vectors
         m: Number of sub-quantizers (default: 8)
-           Higher m = better accuracy, more memory
+            Higher m = better accuracy, more memory
         nbits: Number of bits per sub-quantizer (default: 8)
-               Options: 4, 8 (8 bits = 256 levels per subquantizer)
+                Options: 4, 8 (8 bits = 256 levels per subquantizer)
         nprobe: Number of lists to probe during search (default: 10)
                 Higher nprobe = better recall, slower search
         metric: Distance metric ('l2', 'ip')
@@ -146,7 +146,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for HNSW indexing. "
@@ -166,12 +166,12 @@ class HNSWIndex:
                 self.dimension, self.config.M, faiss.METRIC_INNER_PRODUCT
             )
 
-        # Set construction parameter
+        # set construction parameter
         self._index.hnsw.efConstruction = self.config.ef_construction
-        # Set search parameter (can be changed later)
+        # set search parameter (can be changed later)
         self._index.hnsw.efSearch = self.config.ef_search
 
-    def add(self, vectors: "np.ndarray", ids: Optional[List[int]] = None) -> None:
+    def add(self, vectors: "np.ndarray", ids: Optional[list[int]] = None) -> None:
         """Add vectors to the index.
 
         Args:
@@ -184,7 +184,7 @@ class HNSWIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -203,7 +203,7 @@ class HNSWIndex:
 
         logger.info(f"Added {len(vectors)} vectors to HNSW index (total: {self._size})")
 
-    def search(self, query: "np.ndarray", k: int = 10) -> Tuple["np.ndarray", "np.ndarray"]:
+    def search(self, query: "np.ndarray", k: int = 10) -> tuple["np.ndarray", "np.ndarray"]:
         """Search for k nearest neighbors.
 
         Args:
@@ -220,7 +220,7 @@ class HNSWIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -263,7 +263,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -279,7 +279,7 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -338,7 +338,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for IVF-PQ indexing. "
@@ -363,7 +363,7 @@ class IVFPQIndex:
             metric_type,
         )
 
-        # Set search parameters
+        # set search parameters
         self._index.nprobe = self.config.nprobe
 
     def train(self, training_vectors: "np.ndarray") -> None:
@@ -382,7 +382,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -403,7 +403,7 @@ class IVFPQIndex:
         self._trained = True
         logger.info("IVF-PQ index training complete")
 
-    def add(self, vectors: "np.ndarray", ids: Optional[List[int]] = None) -> None:
+    def add(self, vectors: "np.ndarray", ids: Optional[list[int]] = None) -> None:
         """Add vectors to the index.
 
         Args:
@@ -416,7 +416,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -430,7 +430,7 @@ class IVFPQIndex:
 
         logger.info(f"Added {len(vectors)} vectors to IVF-PQ index (total: {self._size})")
 
-    def search(self, query: "np.ndarray", k: int = 10) -> Tuple["np.ndarray", "np.ndarray"]:
+    def search(self, query: "np.ndarray", k: int = 10) -> tuple["np.ndarray", "np.ndarray"]:
         """Search for k nearest neighbors.
 
         Args:
@@ -449,7 +449,7 @@ class IVFPQIndex:
         try:
             import numpy as np
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy")
 
@@ -490,7 +490,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -506,7 +506,7 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-           logger.debug(f"ImportError: {e}")
+            logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise RuntimeError("FAISS is required")
 
@@ -527,7 +527,7 @@ def optimize_index_parameters(
     dimension: int,
     target_recall: float = 0.95,
     memory_budget_gb: Optional[float] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Recommend optimal index parameters based on dataset characteristics.
 
     Args:

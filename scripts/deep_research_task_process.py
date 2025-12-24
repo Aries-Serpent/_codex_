@@ -78,7 +78,7 @@ import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Iterable, Optional, Sequence
 
 from ingestion import ingest
 
@@ -110,7 +110,7 @@ def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
     try:
         return any((p / m).exists() for m in markers)
     except PermissionError as e:
-       logger.debug(f"PermissionError: {e}")
+        logger.debug(f"PermissionError: {e}")
         logger.warning(f"PermissionError: {e}", exc_info=True)
         return False
 
@@ -197,7 +197,7 @@ class Task:
     sort_index: Sequence[int] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
-        numeric_parts: List[int] = []
+        numeric_parts: list[int] = []
         for part in re.split(r"[^\d]+", self.step_code):
             if part.isdigit():
                 numeric_parts.append(int(part))
@@ -263,7 +263,7 @@ def _atomic_write_text(path: Path, content: str, encoding: str = "utf-8") -> Non
         try:
             os.unlink(tmp_path)
         except OSError as cleanup_err:
-           logger.debug(f"OSError: {cleanup_err}")
+            logger.debug(f"OSError: {cleanup_err}")
             logging.debug("temporary file cleanup failed: %s", cleanup_err)
         raise
 
@@ -309,8 +309,8 @@ def _read_text(path: Path) -> str:
 
 
 def _run_command(
-    cmd: List[str], check: bool = True, cwd: Optional[Path] = None
-) -> Tuple[int, str, str]:
+    cmd: list[str], check: bool = True, cwd: Optional[Path] = None
+) -> tuple[int, str, str]:
     """Run a command and return (returncode, stdout, stderr)."""
     try:
         exe = shutil.which(cmd[0])
@@ -329,7 +329,7 @@ def _run_command(
         logger.debug("Exception caught, returning", exc_info=True)
         return e.returncode, e.stdout or "", e.stderr or ""
     except Exception as e:
-       logger.debug(f"Exception: {e}")
+        logger.debug(f"Exception: {e}")
         logger.debug("Exception caught, returning", exc_info=True)
         return 1, "", str(e)
 
@@ -366,7 +366,7 @@ def phase1_preparation() -> None:
         )
 
     # Inventory snapshot
-    items: List[Dict[str, Any]] = []
+    items: list[dict[str, Any]] = []
     for p in REPO_ROOT.rglob("*"):
         if p.is_file() and not any(part in FILE_IGNORE_PARTS for part in p.parts):
             rel = str(p.relative_to(REPO_ROOT))
@@ -537,7 +537,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
+      - name: set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
@@ -605,11 +605,11 @@ Thank you for considering contributing to this project!
 1. Create a branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Run quality checks:
-   ```
-   pre-commit run --all-files
-   mypy .
-   pytest
-   ```
+    ```
+    pre-commit run --all-files
+    mypy .
+    pytest
+    ```
 4. Submit a pull request
 """
     original = text
@@ -661,14 +661,14 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import Dict, Callable
+from typing import dict, Callable
 
 import click
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 logger = logging.getLogger("codex.cli")
 
-ALLOWED_TASKS: Dict[str, Callable[[], None]] = {
+ALLOWED_TASKS: dict[str, Callable[[], None]] = {
     "ingest": lambda: logger.info("Ingestion scaffold created (placeholder)."),
     "ci": lambda: logger.info("CI workflow unified."),
     "pool-fix": lambda: logger.info("SQLite connection pool fix applied."),
@@ -687,7 +687,7 @@ def cli(debug: bool = False) -> None:
 
 @cli.command("tasks")
 def list_tasks() -> None:
-    \"\"\"List allowed maintenance tasks.\"\"\"
+    \"\"\"list allowed maintenance tasks.\"\"\"
     for task in sorted(ALLOWED_TASKS):
         click.echo(task)
 
@@ -988,7 +988,7 @@ detect-secrets scan --baseline .secrets.baseline
 # Task Registration & Execution
 # --------------------------------------------------------------------------------------
 
-REGISTERED_TASKS: List[Task] = []
+REGISTERED_TASKS: list[Task] = []
 
 
 def register_task(
@@ -1010,7 +1010,7 @@ def register_task(
     REGISTERED_TASKS.sort()
 
 
-def list_registered_tasks() -> List[Task]:
+def list_registered_tasks() -> list[Task]:
     """Return a copy of currently registered tasks."""
     return list(REGISTERED_TASKS)
 
@@ -1112,7 +1112,7 @@ def phase3_construction() -> None:
 def phase4_results() -> None:
     _v("Phase 4: Results Summary start")
     try:
-        lines: List[str] = []
+        lines: list[str] = []
         lines.append(f"# Results Summary ({now_iso()})")
         lines.append("\n- **Implemented:**")
         lines.append(

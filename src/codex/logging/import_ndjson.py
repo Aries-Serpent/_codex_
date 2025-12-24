@@ -127,7 +127,7 @@ def _open_locked(path: Path):
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         f.close()
 

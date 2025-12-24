@@ -11,7 +11,7 @@ import logging
 import os
 import sqlite3
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from uuid import UUID
 
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
@@ -54,7 +54,7 @@ class JSONLMemoryBackend(MemoryProtocol):
             finally:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
     
-    def retrieve(self, query: MemoryQuery) -> List[MemoryEntry]:
+    def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve entries by scanning the entire file.
         
         Note: This is O(n) and suitable for smaller datasets.
@@ -173,7 +173,7 @@ class JSONLMemoryBackend(MemoryProtocol):
         
         return deleted_count
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get storage statistics."""
         if not self.storage_path.exists():
             return {"entry_count": 0, "size_bytes": 0}
@@ -265,7 +265,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
             )
             conn.commit()
     
-    def retrieve(self, query: MemoryQuery) -> List[MemoryEntry]:
+    def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve entries using SQL queries."""
         sql = "SELECT * FROM memories WHERE 1=1"
         params = []
@@ -323,7 +323,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
             conn.commit()
             return cursor.rowcount
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get database statistics."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM memories")

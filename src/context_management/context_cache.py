@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 import json
 import os
-from typing import Dict, Optional, Any, List, Tuple
+from typing import Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -30,8 +30,8 @@ class CacheEntry:
     last_accessed: datetime = field(default_factory=datetime.now)
     access_count: int = 0
     ttl_seconds: Optional[int] = None
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def token_estimate(self) -> int:
@@ -100,7 +100,7 @@ class ContextCache:
         self.default_ttl = default_ttl
         self.persist_path = persist_path
 
-        self._cache: Dict[str, CacheEntry] = {}
+        self._cache: dict[str, CacheEntry] = {}
         self._total_tokens = 0
         self._hits = 0
         self._misses = 0
@@ -146,8 +146,8 @@ class ContextCache:
         key: str,
         content: str,
         ttl: Optional[int] = None,
-        tags: Optional[List[str]] = None,
-        metadata: Optional[Dict] = None,
+        tags: Optional[list[str]] = None,
+        metadata: Optional[dict] = None,
     ) -> bool:
         """
         Cache content with key.
@@ -210,7 +210,7 @@ class ContextCache:
         key: str,
         content_fn: callable,
         ttl: Optional[int] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> str:
         """
         Get cached content or compute and cache it.
@@ -310,12 +310,12 @@ class ContextCache:
                 tokens_saved=self._tokens_saved,
             )
 
-    def get_all_keys(self) -> List[str]:
+    def get_all_keys(self) -> list[str]:
         """Get all cache keys."""
         with self._lock:
             return list(self._cache.keys())
 
-    def get_by_tag(self, tag: str) -> List[CacheEntry]:
+    def get_by_tag(self, tag: str) -> list[CacheEntry]:
         """Get all entries with given tag."""
         with self._lock:
             return [entry for entry in self._cache.values() if tag in entry.tags]

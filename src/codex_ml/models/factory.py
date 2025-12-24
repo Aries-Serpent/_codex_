@@ -129,7 +129,7 @@ def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any])
         try:
             return builder(dict(params))
         except TypeError as e:
-           logger.debug(f"TypeError: {e}")
+            logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             raise exc
 
@@ -252,7 +252,7 @@ def create_model(
                 validate_lora_config(lora_payload) if lora_payload is not None else LoraBuildCfg()
             )
         except ValueError as exc:
-           logger.debug(f"ValueError: {exc}")
+            logger.debug(f"ValueError: {exc}")
             logger.warning("Invalid LoRA configuration: %s. Disabling PEFT.", exc)
             lora_config = None
         if lora_config is not None:

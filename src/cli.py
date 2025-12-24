@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 """Minimal command-line interface for running Codex training loops."""
 
-from __future__ import annotations
 
 import argparse
 import importlib

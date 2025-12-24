@@ -12,14 +12,14 @@ Safeguards:
 """
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 import logging
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detects observability features (logging, metrics, tracing) for MCP.
     Looks for logging setup, 'X-Request-Id', or Prometheus metrics usage.
@@ -168,7 +168,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _empty_result() -> Dict[str, Any]:
+def _empty_result() -> dict[str, Any]:
     """
     Returns empty detection result for error cases.
 

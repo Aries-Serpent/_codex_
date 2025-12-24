@@ -5,14 +5,13 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Dict, List
 
 SAFE_DATA_EXT = {".jsonl", ".json", ".csv", ".tsv", ".txt"}
 MAX_FILE_BYTES = 5_000_000
 
 
-def scan_data(root: Path, max_files: int = 500) -> List[Dict]:
-    findings: List[Dict] = []
+def scan_data(root: Path, max_files: int = 500) -> list[dict]:
+    findings: list[dict] = []
     count = 0
     for p in sorted(root.rglob("*")):
         if count >= max_files:

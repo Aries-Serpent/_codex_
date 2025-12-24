@@ -13,7 +13,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 __all__ = [
     "CheckpointEntry",
@@ -49,7 +49,7 @@ class CheckpointIndex:
         self.index_path = self.checkpoint_dir / "index.json"
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
-    def load(self) -> List[CheckpointEntry]:
+    def load(self) -> list[CheckpointEntry]:
         """Load index from disk, return empty list if not found."""
         if not self.index_path.exists():
             return []
@@ -63,12 +63,12 @@ class CheckpointIndex:
             LOGGER.warning(f"Failed to load index, using empty: {e}")
             return []
 
-    def save(self, entries: List[CheckpointEntry], atomic: bool = True) -> None:
+    def save(self, entries: list[CheckpointEntry], atomic: bool = True) -> None:
         """
         Save index to disk with optional atomic write.
 
         Args:
-            entries: List of checkpoint entries to save
+            entries: list of checkpoint entries to save
             atomic: If True, use temp file + rename for atomicity
         """
         data = [
@@ -107,7 +107,7 @@ def prune_checkpoints(
     metric_lower_better: bool = True,
     keep_last: bool = False,
     dry_run: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Prune checkpoints keeping only top-k by metric.
 
@@ -119,7 +119,7 @@ def prune_checkpoints(
         dry_run: If True, don't actually delete files
 
     Returns:
-        Dict with keys: kept, deleted, errors
+        dict with keys: kept, deleted, errors
     """
     index = CheckpointIndex(checkpoint_dir)
     entries = index.load()

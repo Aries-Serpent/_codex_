@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
-from typing import Dict, List, Sequence, Tuple
+from typing import Sequence
 
 ISO_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
@@ -17,9 +17,9 @@ ISO_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 @dataclass
 class RateLimitEntry:
     captured: datetime
-    resources: Dict[str, Dict[str, int]]
+    resources: dict[str, dict[str, int]]
 
-    def as_series_point(self, key: str) -> Tuple[str, int] | None:
+    def as_series_point(self, key: str) -> tuple[str, int] | None:
         resource = self.resources.get(key) or {}
         remaining = resource.get("remaining")
         if remaining is None:
@@ -44,8 +44,8 @@ def parse_timestamp(raw: str | None) -> datetime | None:
     return dt.astimezone(timezone.utc)
 
 
-def load_history(directory: Path) -> List[RateLimitEntry]:
-    entries: List[RateLimitEntry] = []
+def load_history(directory: Path) -> list[RateLimitEntry]:
+    entries: list[RateLimitEntry] = []
     if not directory.exists():
         return entries
     for path in sorted(directory.glob("ratelimit_*.json")):
@@ -62,8 +62,8 @@ def load_history(directory: Path) -> List[RateLimitEntry]:
     return entries
 
 
-def build_series(entries: Sequence[RateLimitEntry], key: str) -> List[Tuple[str, int]]:
-    points: List[Tuple[str, int]] = []
+def build_series(entries: Sequence[RateLimitEntry], key: str) -> list[tuple[str, int]]:
+    points: list[tuple[str, int]] = []
     for entry in entries:
         point = entry.as_series_point(key)
         if point is not None:
@@ -71,7 +71,7 @@ def build_series(entries: Sequence[RateLimitEntry], key: str) -> List[Tuple[str,
     return points
 
 
-def summarize(series: Sequence[Tuple[str, int]]) -> Dict[str, float]:
+def summarize(series: Sequence[tuple[str, int]]) -> dict[str, float]:
     if not series:
         return {"min": 0, "avg": 0, "max": 0}
     values = [value for _, value in series]
@@ -82,7 +82,7 @@ def summarize(series: Sequence[Tuple[str, int]]) -> Dict[str, float]:
     }
 
 
-def build_tile(entries: Sequence[RateLimitEntry]) -> Dict[str, object]:
+def build_tile(entries: Sequence[RateLimitEntry]) -> dict[str, object]:
     core = build_series(entries, "core")
     search = build_series(entries, "search")
     graphql = build_series(entries, "graphql")

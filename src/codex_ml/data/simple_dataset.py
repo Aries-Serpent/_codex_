@@ -11,7 +11,7 @@ as torch or numpy.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Sequence
+from typing import Sequence
 
 from codex_ml.data import dataloader
 from codex_ml.tokenization import base as token_base
@@ -25,7 +25,7 @@ class Sample:
 
 @dataclass
 class EncodedSample:
-    tokens: List[int]
+    tokens: list[int]
     label: int
 
 
@@ -39,11 +39,11 @@ class SimpleDataset:
     def __len__(self) -> int:
         return len(self._samples)
 
-    def encoded(self) -> List[EncodedSample]:
+    def encoded(self) -> list[EncodedSample]:
         """Return a deterministically ordered list of encoded samples."""
         indices = list(range(len(self._samples)))
         ordered_indices = dataloader.deterministic_order(indices, seed=self._seed)
-        result: List[EncodedSample] = []
+        result: list[EncodedSample] = []
         for idx in ordered_indices:
             s = self._samples[idx]
             tokens = token_base.tokenize_example(s.text)

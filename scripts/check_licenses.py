@@ -1,8 +1,8 @@
+from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
 """Simple license checker using pip-licenses."""
-from __future__ import annotations
 
 import json
 import subprocess
@@ -26,7 +26,7 @@ def main() -> int:
     try:
         pkgs = _run_pip_licenses()
     except FileNotFoundError as e:
-       logger.debug(f"FileNotFoundError: {e}")
+        logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         print("pip-licenses not installed; skipping", file=sys.stderr)
         return 0

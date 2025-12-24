@@ -8,12 +8,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger
 from codex_ml.utils.optional import optional_import
 
-_LOGGERS: Dict[str, Callable[[str], None]] = {}
+_LOGGERS: dict[str, Callable[[str], None]] = {}
 psutil, _HAS_PSUTIL = optional_import("psutil")
 
 
@@ -60,7 +60,7 @@ class _NDJSONMetricsLogger:
         self._logger.close()
 
 
-def build_loggers(opts: Mapping[str, Any]) -> List[_NDJSONMetricsLogger]:
+def build_loggers(opts: Mapping[str, Any]) -> list[_NDJSONMetricsLogger]:
     """Construct NDJSON loggers based on the provided options.
 
     Parameters

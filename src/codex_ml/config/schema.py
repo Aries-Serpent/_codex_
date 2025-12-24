@@ -18,7 +18,7 @@ The goal is not to freeze the entire config surface, but to provide:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -80,10 +80,10 @@ class CodexConfig:
     training: TrainingConfig = field(default_factory=TrainingConfig)
     data: DataConfig = field(default_factory=DataConfig)
     eval: EvalConfig = field(default_factory=EvalConfig)
-    raw: Dict[str, Any] = field(default_factory=dict)
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
-def _coerce_model(data: Dict[str, Any]) -> ModelConfig:
+def _coerce_model(data: dict[str, Any]) -> ModelConfig:
     return ModelConfig(
         model_name=str(data.get("model_name", "codex-minimal")),
         hidden_size=int(data.get("hidden_size", 256)),
@@ -93,7 +93,7 @@ def _coerce_model(data: Dict[str, Any]) -> ModelConfig:
     )
 
 
-def _coerce_training(data: Dict[str, Any]) -> TrainingConfig:
+def _coerce_training(data: dict[str, Any]) -> TrainingConfig:
     return TrainingConfig(
         learning_rate=float(data.get("learning_rate", 1e-3)),
         batch_size=int(data.get("batch_size", 8)),
@@ -104,7 +104,7 @@ def _coerce_training(data: Dict[str, Any]) -> TrainingConfig:
     )
 
 
-def _coerce_data(data: Dict[str, Any]) -> DataConfig:
+def _coerce_data(data: dict[str, Any]) -> DataConfig:
     return DataConfig(
         dataset_name=str(data.get("dataset_name", "dummy")),
         train_split=str(data.get("train_split", "train")),
@@ -114,7 +114,7 @@ def _coerce_data(data: Dict[str, Any]) -> DataConfig:
     )
 
 
-def _coerce_eval(data: Dict[str, Any]) -> EvalConfig:
+def _coerce_eval(data: dict[str, Any]) -> EvalConfig:
     return EvalConfig(
         batch_size=int(data.get("batch_size", 8)),
         split=str(data.get("split", "validation")),
@@ -126,7 +126,7 @@ class ConfigValidationError(ValueError):
     """Raised when config validation fails."""
 
 
-def from_dict(raw: Dict[str, Any]) -> CodexConfig:
+def from_dict(raw: dict[str, Any]) -> CodexConfig:
     """Construct CodexConfig from a raw dict (e.g. parsed YAML).
 
     Unknown keys are preserved in the `raw` field.

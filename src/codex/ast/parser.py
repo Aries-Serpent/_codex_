@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 import ast
 import hashlib
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from .node import NodeType, SourceLocation, StandardizedASTNode
 
@@ -176,7 +176,7 @@ class UniversalParser:
         node_type = None
         name = ""
         docstring = None
-        decorators: List[str] = []
+        decorators: list[str] = []
         type_hints: dict = {}
 
         if isinstance(node, ast.FunctionDef):
@@ -277,7 +277,7 @@ class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
     def __init__(self, file_path: Path, id_generator):
         self.file_path = file_path
         self.id_generator = id_generator
-        self.nodes: List[StandardizedASTNode] = []
+        self.nodes: list[StandardizedASTNode] = []
 
     if LIBCST_AVAILABLE:
         METADATA_DEPENDENCIES = (PositionProvider,)

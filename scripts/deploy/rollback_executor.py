@@ -21,7 +21,7 @@ import sys
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any
 import yaml
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -48,7 +48,7 @@ class RollbackExecutor:
         self.rollback_log.append(entry)
         logger.info(f"{action}: {status} - {details}")
 
-    def rollback_mlflow(self) -> Dict[str, Any]:
+    def rollback_mlflow(self) -> dict[str, Any]:
         """Rollback MLflow tracking feature.
 
         Returns:
@@ -79,7 +79,7 @@ class RollbackExecutor:
                     with open(config_path, "w") as f:
                         yaml.dump(config, f, default_flow_style=False)
 
-                    self._log_action("disable_mlflow", "success", "Set enabled=false")
+                    self._log_action("disable_mlflow", "success", "set enabled=false")
             else:
                 self._log_action("disable_mlflow", "dry_run", "Would set enabled=false")
 
@@ -95,7 +95,7 @@ class RollbackExecutor:
             self._log_action("rollback_mlflow", "error", str(e))
             return {"feature": "mlflow", "status": "error", "error": str(e)}
 
-    def rollback_feature_store(self) -> Dict[str, Any]:
+    def rollback_feature_store(self) -> dict[str, Any]:
         """Rollback feature store.
 
         Returns:
@@ -121,7 +121,7 @@ class RollbackExecutor:
                         with open(config_path, "w") as f:
                             yaml.dump(config, f, default_flow_style=False)
 
-                        self._log_action("disable_feature_store", "success", "Set enabled=false")
+                        self._log_action("disable_feature_store", "success", "set enabled=false")
                         actions.append("Disabled feature store in config")
                 else:
                     self._log_action("disable_feature_store", "dry_run", "Would set enabled=false")
@@ -149,7 +149,7 @@ class RollbackExecutor:
             self._log_action("rollback_feature_store", "error", str(e))
             return {"feature": "feature_store", "status": "error", "error": str(e)}
 
-    def rollback_validation(self) -> Dict[str, Any]:
+    def rollback_validation(self) -> dict[str, Any]:
         """Rollback data validation.
 
         Returns:
@@ -177,7 +177,7 @@ class RollbackExecutor:
                     with open(config_path, "w") as f:
                         yaml.dump(config, f, default_flow_style=False)
 
-                    self._log_action("disable_validation", "success", "Set enabled=false")
+                    self._log_action("disable_validation", "success", "set enabled=false")
             else:
                 self._log_action("disable_validation", "dry_run", "Would set enabled=false")
 
@@ -192,7 +192,7 @@ class RollbackExecutor:
             self._log_action("rollback_validation", "error", str(e))
             return {"feature": "data_validation", "status": "error", "error": str(e)}
 
-    def rollback_all(self) -> Dict[str, Any]:
+    def rollback_all(self) -> dict[str, Any]:
         """Rollback all Phase 6 features.
 
         Returns:
