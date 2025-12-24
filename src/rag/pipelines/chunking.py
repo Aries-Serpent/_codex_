@@ -214,12 +214,8 @@ class ChunkingPipeline:
         metadata["language"] = language
 
         # Use language-specific separators
-        if language == "python":
-            # Split on class/function definitions
-            separator = r"\n(?=(?:class |def |async def ))"
-        else:
-            # Default to paragraph splitting
-            separator = "\n\n"
+        # Note: separator variable removed as it was unused
+        # The actual separation logic uses self.config.separator
 
         original_separator = self.config.separator
         self.config.separator = "\n\n"  # Use simple separator for code

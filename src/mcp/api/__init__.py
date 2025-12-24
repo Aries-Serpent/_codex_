@@ -2,4 +2,27 @@
 
 from __future__ import annotations
 
-__all__ = ["create_app", "MCPSchemas"]
+from .schemas import (
+    ErrorCodes,
+    HealthResponse,
+    JSONRPCError,
+    JSONRPCRequest,
+    JSONRPCResponse,
+    QueryRequest,
+    QueryResponse,
+    UpsertRequest,
+    UpsertResponse,
+)
+
+# create_app not yet implemented - will be added when FastAPI integration is complete
+__all__ = [
+    "QueryRequest",
+    "QueryResponse",
+    "UpsertRequest",
+    "UpsertResponse",
+    "HealthResponse",
+    "JSONRPCRequest",
+    "JSONRPCResponse",
+    "JSONRPCError",
+    "ErrorCodes",
+]

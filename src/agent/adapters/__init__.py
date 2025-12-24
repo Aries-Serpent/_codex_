@@ -2,4 +2,8 @@
 
 from __future__ import annotations
 
-__all__ = ["BaseAdapter", "OpenAIAdapter", "MockAdapter"]
+from .base_adapter import BaseAdapter
+from .mock_adapter import MockAdapter
+
+# OpenAIAdapter not yet implemented
+__all__ = ["BaseAdapter", "MockAdapter"]
