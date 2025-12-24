@@ -2,4 +2,7 @@
 
 from __future__ import annotations
 
-__all__ = ["EmbeddingWorker", "checkpoint"]
+from .checkpoint import load_checkpoint, save_checkpoint
+from .embedder import EmbeddingWorker
+
+__all__ = ["EmbeddingWorker", "load_checkpoint", "save_checkpoint"]

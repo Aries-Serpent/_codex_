@@ -2,4 +2,6 @@
 
 from __future__ import annotations
 
+from .cove import ClaimExtractor, CoVeEngine, VerificationResult
+
 __all__ = ["CoVeEngine", "VerificationResult", "ClaimExtractor"]

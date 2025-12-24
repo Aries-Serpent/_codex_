@@ -2,4 +2,8 @@
 
 from __future__ import annotations
 
-__all__ = ["RAGPipeline", "EmbeddingService", "Chunker"]
+# Note: RAGPipeline, EmbeddingService, Chunker are not yet implemented as standalone classes
+# The actual implementations are in the pipelines subpackage
+from .pipelines import ChunkingPipeline, EmbeddingPipeline, RetrievalPipeline
+
+__all__ = ["ChunkingPipeline", "EmbeddingPipeline", "RetrievalPipeline"]
