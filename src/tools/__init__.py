@@ -1,3 +1,5 @@
 """Developer productivity tools bundled with the Codex repository."""
 
-__all__: list[str] = []
+from __future__ import annotations
+
+__all__ = ["ToolRegistry", "get_registry", "register_tool"]
