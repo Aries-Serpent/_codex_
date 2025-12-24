@@ -6,12 +6,16 @@ The `docs/templates/` directory curates reusable runbooks that combine execution
 
 | Template | Summary | Primary Focus |
 | --- | --- | --- |
+| [Iteration Plan Template](./ITERATION_PLAN_TEMPLATE.md) | Comprehensive iteration-based implementation plan with physics alignment and energy distribution. | Incremental development and flexible timelines |
 | [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) | Move Python files or packages while preserving import stability and release hygiene. | Codebase topology and backward compatibility |
 | [Migration — CLI Hardening](./Migration_CLIHardening.md) | Strengthen CLI ergonomics, validation, and coverage to meet the 85% testing baseline. | Developer experience and operational resilience |
 | [Planning — Intent Validation](./Planning_IntentValidation.md) | Facilitate structured discovery and approval gates before implementation begins. | Alignment, risk framing, and decision records |
 | [Status Update — Daily Report (v1.1)](./status/README.md) | Comprehensive daily status update with snapshot, delta tracking, and atomic patch diffs. | Repository audits, reproducibility, and automation |
 
 ## When to Use Each Template
+
+### Iteration Plan Template
+Use for feature implementations, bug fixes, refactoring, security remediation, or infrastructure improvements that span multiple iterations. The template emphasizes iteration-based workflow (not week-based), physics principle alignment (🛤️🔄👁️🔀⚖️), pre-commit checkpoints, and flexible timelines. See `docs/TERMINOLOGY_MIGRATION.md` for terminology guidance.
 
 ### Migration — Python File Relocation
 Use when reorganizing modules, extracting packages, or introducing aliases that must remain compatible across integrations. The template includes compatibility shims, release checklist items, and rollback guidance.
@@ -44,6 +48,7 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 
 | Template | Key References |
 | --- | --- |
+| Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`AGENTS.md`](../../AGENTS.md) |
 | Python File Relocation | [`sitecustomize.py`](../../sitecustomize.py), [`conftest.py`](../../conftest.py), [`tests/`](../../tests/) |
 | CLI Hardening | [`src/cli/`](../../src/cli/), [`tests/cli/`](../../tests/cli/), [`pyproject.toml`](../../pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](../../tests/conftest.py) |

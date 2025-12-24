@@ -61,8 +61,8 @@ def _seed_everything(seed: int) -> dict[str, bool]:
 
         numpy.random.seed(seed)
         status["numpy"] = True
-    except Exception:  # pragma: no cover - optional dependency missing
-        pass
+    except Exception as exc:  # pragma: no cover - optional dependency missing
+        logger.debug(f"Failed to seed numpy: {exc}")
 
     try:
         import torch
@@ -80,8 +80,8 @@ def _seed_everything(seed: int) -> dict[str, bool]:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
         status["torch"] = True
-    except Exception:  # pragma: no cover - optional dependency missing
-        pass
+    except Exception as exc:  # pragma: no cover - optional dependency missing
+        logger.debug(f"Failed to seed torch: {exc}")
 
     return status
 
