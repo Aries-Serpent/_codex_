@@ -8,7 +8,7 @@ Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 import re
 import logging
 logger = logging.getLogger(__name__)
-from typing import List, Dict, Optional, Tuple, Callable
+from typing import Optional, Callable
 from dataclasses import dataclass, field
 from enum import IntEnum
 from datetime import datetime
@@ -116,7 +116,7 @@ class TokenBudgetEnforcer:
         self._summarizer = summarizer
 
         # Content blocks in order
-        self._blocks: List[ContentBlock] = []
+        self._blocks: list[ContentBlock] = []
 
     def count_tokens(self, text: str) -> int:
         """Count tokens in text."""
@@ -212,7 +212,7 @@ class TokenBudgetEnforcer:
         target = int(self.budget.soft_limit * 0.75)  # Prune to 75% of soft cap
         return self._prune_to_fit(self.budget.current_usage - target)
 
-    def get_budget_status(self) -> Dict:
+    def get_budget_status(self) -> dict:
         """Get current budget status."""
         return {
             "current_usage": self.budget.current_usage,

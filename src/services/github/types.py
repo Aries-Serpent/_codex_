@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -145,7 +145,7 @@ class WorkflowDispatchInput(BaseModel):
     """Input for workflow_dispatch trigger."""
 
     ref: str = Field(..., description="Git reference (branch/tag) to run on")
-    inputs: Dict[str, Any] = Field(
+    inputs: dict[str, Any] = Field(
         default_factory=dict,
         description="Workflow input parameters",
     )
@@ -175,7 +175,7 @@ class ListWorkflowRunsResponse(BaseModel):
     """Response for list workflow runs."""
 
     total_count: int
-    workflow_runs: List[WorkflowRun]
+    workflow_runs: list[WorkflowRun]
 
     class Config:
         extra = "ignore"
@@ -185,7 +185,7 @@ class ListWorkflowJobsResponse(BaseModel):
     """Response for list workflow jobs."""
 
     total_count: int
-    jobs: List[WorkflowJob]
+    jobs: list[WorkflowJob]
 
     class Config:
         extra = "ignore"
@@ -195,7 +195,7 @@ class ListArtifactsResponse(BaseModel):
     """Response for list artifacts."""
 
     total_count: int
-    artifacts: List[ArtifactInfo]
+    artifacts: list[ArtifactInfo]
 
     class Config:
         extra = "ignore"

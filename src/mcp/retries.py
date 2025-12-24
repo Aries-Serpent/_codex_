@@ -4,12 +4,12 @@ import logging
 logger = logging.getLogger(__name__)
 import secrets
 import time
-from typing import Callable, Tuple
+from typing import Callable
 
 _secure_random = secrets.SystemRandom()
 
 def retry_on_exception(
-    exceptions: Tuple[type, ...] = (Exception,),
+    exceptions: tuple[type, ...] = (Exception,),
     tries: int = 3,
     base_delay: float = 0.5,
     max_delay: float = 10.0,

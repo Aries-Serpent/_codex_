@@ -1,7 +1,7 @@
 import importlib
 import importlib.util
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from .interface import EmbedderInterface
 
@@ -27,12 +27,12 @@ class HFEmbedder(EmbedderInterface):
         sentence_transformers = importlib.import_module("sentence_transformers")
         self._model = sentence_transformers.SentenceTransformer(self.model_name)
 
-    def embed(self, texts: List[str]) -> List[List[float]]:
+    def embed(self, texts: list[str]) -> list[list[float]]:
         self._ensure_model()
         if not self._model:
             # safe fallback
             return [[0.0] * 1 for _ in texts]
         return self._model.encode(texts).tolist()
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         return {"status": "ok" if self._model is not None else "disconnected", "adapter": "hf"}

@@ -5,27 +5,27 @@ from __future__ import annotations
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 class AssignmentMappingMigration:
     """Migrate legacy assignment mapping files to new format."""
 
     @staticmethod
-    def migrate_v1_to_v2(v1_path: Path) -> Dict[str, Any]:
+    def migrate_v1_to_v2(v1_path: Path) -> dict[str, Any]:
         """Migrate v1 assignment mappings to v2 format.
 
         Args:
             v1_path: Path to v1 assignment mapping file
 
         Returns:
-            Dict containing v2 format assignment mappings
+            dict containing v2 format assignment mappings
         """
         with open(v1_path, encoding="utf-8") as f:
             v1_data = json.load(f)
 
         # Transform v1 structure to v2
-        v2_data: Dict[str, Any] = {"version": "2.0", "mappings": []}
+        v2_data: dict[str, Any] = {"version": "2.0", "mappings": []}
 
         for item in v1_data.get("assignments", []):
             v2_data["mappings"].append(
@@ -42,20 +42,20 @@ class AssignmentMappingMigration:
         return v2_data
 
     @staticmethod
-    def migrate_v2_to_v3(v2_path: Path) -> Dict[str, Any]:
+    def migrate_v2_to_v3(v2_path: Path) -> dict[str, Any]:
         """Migrate v2 assignment mappings to v3 format.
 
         Args:
             v2_path: Path to v2 assignment mapping file
 
         Returns:
-            Dict containing v3 format assignment mappings
+            dict containing v3 format assignment mappings
         """
         with open(v2_path, encoding="utf-8") as f:
             v2_data = json.load(f)
 
         # Transform v2 structure to v3
-        v3_data: Dict[str, Any] = {"version": "3.0", "schema": "assignment_mapping_v3", "items": []}
+        v3_data: dict[str, Any] = {"version": "3.0", "schema": "assignment_mapping_v3", "items": []}
 
         for mapping in v2_data.get("mappings", []):
             v3_data["items"].append(
@@ -71,7 +71,7 @@ class AssignmentMappingMigration:
         return v3_data
 
 
-def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> Dict[str, Any]:
+def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> dict[str, Any]:
     """Load assignment mappings with automatic migration support.
 
     Args:

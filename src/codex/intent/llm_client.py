@@ -31,7 +31,7 @@ from pathlib import Path
 
 # Constants
 CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -52,11 +52,11 @@ class ProvenanceRecord:
     model_version: str
     timestamp: datetime
     temperature: float
-    token_count: Dict[str, int]
+    token_count: dict[str, int]
     latency_ms: float
     snapshot_ref: str
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "prompt_hash": self.prompt_hash,
@@ -160,7 +160,7 @@ class CodexLLMClient:
             time.sleep(delay - elapsed)
         self._last_call_time = time.time()
     
-    def _build_intent_prompt(self, context: Dict[str, Any]) -> str:
+    def _build_intent_prompt(self, context: dict[str, Any]) -> str:
         """Build intent inference prompt.
         
         Safeguard: Constrained prompt with safety instructions.
@@ -203,7 +203,7 @@ Return ONLY valid JSON, no explanation or markdown."""
         
         return prompt
     
-    def infer_intent(self, context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def infer_intent(self, context: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Infer intent using LLM.
         
         Args:

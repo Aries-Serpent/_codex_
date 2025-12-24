@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 from pathlib import Path
 import subprocess
 import sys
-from typing import List, Optional, Tuple
+from typing import Optional
 import ast
 import re
 
@@ -30,7 +30,7 @@ class CodeChangeReviewer:
         self.repo_path = repo_path.resolve()
         self.protocol: Optional[SelfReviewProtocol] = None
 
-    def get_changed_files(self) -> List[Path]:
+    def get_changed_files(self) -> list[Path]:
         """Get list of changed files in the repository."""
         try:
             result = subprocess.run(
@@ -53,7 +53,7 @@ class CodeChangeReviewer:
             logger.debug("Exception caught, returning", exc_info=True)
             return []
 
-    def analyze_python_file(self, filepath: Path) -> List[Tuple[IssueType, Priority, str]]:
+    def analyze_python_file(self, filepath: Path) -> list[tuple[IssueType, Priority, str]]:
         """Analyze a Python file for potential issues."""
         issues = []
         
@@ -111,7 +111,7 @@ class CodeChangeReviewer:
         
         return issues
 
-    def check_test_coverage(self, changed_files: List[Path]) -> List[Tuple[IssueType, Priority, str]]:
+    def check_test_coverage(self, changed_files: list[Path]) -> list[tuple[IssueType, Priority, str]]:
         """Check if changed source files have corresponding tests."""
         issues = []
         
@@ -144,7 +144,7 @@ class CodeChangeReviewer:
         
         return issues
 
-    def check_documentation(self, changed_files: List[Path]) -> List[Tuple[IssueType, Priority, str]]:
+    def check_documentation(self, changed_files: list[Path]) -> list[tuple[IssueType, Priority, str]]:
         """Check if documentation needs updating."""
         issues = []
         

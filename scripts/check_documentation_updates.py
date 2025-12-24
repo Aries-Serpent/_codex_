@@ -17,7 +17,6 @@ Usage:
 
 import sys
 from pathlib import Path
-from typing import List, Dict
 from datetime import datetime
 
 # Add src to path
@@ -32,7 +31,7 @@ class DocumentationChecker:
         self.issues = []
         self.fixed = []
         
-    def find_all_documentation(self) -> Dict[str, List[Path]]:
+    def find_all_documentation(self) -> dict[str, list[Path]]:
         """Find all documentation files in the repository."""
         docs = {
             'README': [],
@@ -58,7 +57,7 @@ class DocumentationChecker:
         
         return docs
     
-    def check_readme_freshness(self, readme_path: Path) -> List[str]:
+    def check_readme_freshness(self, readme_path: Path) -> list[str]:
         """Check if README is fresh based on related code changes."""
         issues = []
         
@@ -95,7 +94,7 @@ class DocumentationChecker:
         
         return issues
     
-    def check_agents_md_coverage(self, agents_path: Path) -> List[str]:
+    def check_agents_md_coverage(self, agents_path: Path) -> list[str]:
         """Check if AGENTS.md covers all important modules."""
         issues = []
         
@@ -136,7 +135,7 @@ class DocumentationChecker:
         
         return issues
     
-    def check_security_documentation(self) -> List[str]:
+    def check_security_documentation(self) -> list[str]:
         """Check security-specific documentation requirements."""
         issues = []
         
@@ -162,7 +161,7 @@ class DocumentationChecker:
         
         return issues
     
-    def check_module_examples(self) -> List[str]:
+    def check_module_examples(self) -> list[str]:
         """Check that new modules have usage examples in docs."""
         issues = []
         

@@ -15,7 +15,7 @@ import time
 from collections import OrderedDict
 from dataclasses import dataclass
 from threading import Lock
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class CacheMetrics:
             return 0.0
         return self.hits / total
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary"""
         return {
             "hits": self.hits,
@@ -238,7 +238,7 @@ class ResponseCache:
 
         return removed
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get current cache metrics"""
         with self.lock:
             self.metrics.total_size = len(self.cache)

@@ -2,7 +2,6 @@
 
 import statistics
 from dataclasses import dataclass
-from typing import Dict, List
 
 
 @dataclass
@@ -29,7 +28,7 @@ class CodeMetrics:
         else:
             return "F"
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Serialize to dictionary."""
         return {
             "cyclomatic_complexity": self.cyclomatic_complexity,
@@ -45,17 +44,17 @@ class MetricsAggregator:
     """Aggregate and correlate metrics from multiple sources."""
 
     def __init__(self):
-        self.metrics: Dict[str, CodeMetrics] = {}
+        self.metrics: dict[str, CodeMetrics] = {}
 
     def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
         """Store metrics for an entity."""
         self.metrics[entity_id] = metrics
 
-    def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
+    def aggregate(self, metrics_list: list[CodeMetrics]) -> CodeMetrics:
         """Aggregate multiple metrics into summary.
 
         Args:
-            metrics_list: List of CodeMetrics objects
+            metrics_list: list of CodeMetrics objects
 
         Returns:
             Aggregated CodeMetrics
@@ -73,14 +72,14 @@ class MetricsAggregator:
 
     def correlate_complexity_coverage(
         self,
-        complexity_metrics: List[float],
-        coverage_metrics: List[float],
+        complexity_metrics: list[float],
+        coverage_metrics: list[float],
     ) -> float:
         """Compute correlation between complexity and test coverage.
 
         Args:
-            complexity_metrics: List of complexity values
-            coverage_metrics: List of coverage values
+            complexity_metrics: list of complexity values
+            coverage_metrics: list of coverage values
 
         Returns:
             Pearson correlation coefficient (-1.0 to 1.0)
@@ -113,7 +112,7 @@ class MetricsAggregator:
 
         return numerator / (denom_cc * denom_cov)
 
-    def summary(self) -> Dict:
+    def summary(self) -> dict:
         """Get summary statistics of all metrics."""
         if not self.metrics:
             return {}

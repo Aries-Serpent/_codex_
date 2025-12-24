@@ -12,7 +12,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +39,10 @@ class DriftAlert:
     drift_type: str
     severity: str
     message: str
-    details: Dict[str, Any]
+    details: dict[str, Any]
     timestamp: Optional[str] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert alert to dict."""
         return {
             "drift_type": self.drift_type,
@@ -73,7 +73,7 @@ class DriftDetector:
             threshold: Threshold for drift detection (0.0 to 1.0)
         """
         self.threshold = threshold
-        self.alerts: List[DriftAlert] = []
+        self.alerts: list[DriftAlert] = []
 
     def detect(self, current: Any, baseline: Any) -> bool:
         """Detect drift between current and baseline.
@@ -98,7 +98,7 @@ class DriftDetector:
         self.alerts.append(alert)
         logger.warning(f"Drift detected: {alert.message}")
 
-    def get_alerts(self) -> List[DriftAlert]:
+    def get_alerts(self) -> list[DriftAlert]:
         """Get all alerts."""
         return self.alerts
 
@@ -110,7 +110,7 @@ class DriftDetector:
 class DataDriftDetector(DriftDetector):
     """Detect data distribution drift."""
 
-    def detect(self, current_stats: Dict[str, float], baseline_stats: Dict[str, float]) -> bool:
+    def detect(self, current_stats: dict[str, float], baseline_stats: dict[str, float]) -> bool:
         """Detect data drift using statistical comparison.
 
         Args:
@@ -162,7 +162,7 @@ class DataDriftDetector(DriftDetector):
 class ConfigDriftDetector(DriftDetector):
     """Detect configuration drift."""
 
-    def detect(self, current_config: Dict[str, Any], baseline_config: Dict[str, Any]) -> bool:
+    def detect(self, current_config: dict[str, Any], baseline_config: dict[str, Any]) -> bool:
         """Detect config drift by comparing configurations.
 
         Args:
@@ -219,7 +219,7 @@ class ConfigDriftDetector(DriftDetector):
 class ModelDriftDetector(DriftDetector):
     """Detect model performance drift."""
 
-    def detect(self, current_metrics: Dict[str, float], baseline_metrics: Dict[str, float]) -> bool:
+    def detect(self, current_metrics: dict[str, float], baseline_metrics: dict[str, float]) -> bool:
         """Detect model drift by comparing performance metrics.
 
         Args:
@@ -300,13 +300,13 @@ class ComprehensiveDriftMonitor:
 
     def monitor_all(
         self,
-        current_data_stats: Optional[Dict[str, float]] = None,
-        baseline_data_stats: Optional[Dict[str, float]] = None,
-        current_config: Optional[Dict[str, Any]] = None,
-        baseline_config: Optional[Dict[str, Any]] = None,
-        current_metrics: Optional[Dict[str, float]] = None,
-        baseline_metrics: Optional[Dict[str, float]] = None,
-    ) -> Dict[str, bool]:
+        current_data_stats: Optional[dict[str, float]] = None,
+        baseline_data_stats: Optional[dict[str, float]] = None,
+        current_config: Optional[dict[str, Any]] = None,
+        baseline_config: Optional[dict[str, Any]] = None,
+        current_metrics: Optional[dict[str, float]] = None,
+        baseline_metrics: Optional[dict[str, float]] = None,
+    ) -> dict[str, bool]:
         """Monitor all types of drift.
 
         Args:
@@ -318,7 +318,7 @@ class ComprehensiveDriftMonitor:
             baseline_metrics: Baseline model metrics
 
         Returns:
-            Dict mapping drift type to detected status
+            dict mapping drift type to detected status
         """
         if not self.monitoring_enabled:
             return {}
@@ -339,7 +339,7 @@ class ComprehensiveDriftMonitor:
 
         return results
 
-    def get_all_alerts(self) -> List[DriftAlert]:
+    def get_all_alerts(self) -> list[DriftAlert]:
         """Get all alerts from all detectors."""
         alerts = []
         alerts.extend(self.data_detector.get_alerts())
@@ -378,7 +378,7 @@ class ComprehensiveDriftMonitor:
         alerts = self.get_all_alerts()
         return any(alert.severity == "critical" for alert in alerts)
 
-    def get_drift_summary(self) -> Dict[str, Any]:
+    def get_drift_summary(self) -> dict[str, Any]:
         """Get summary of detected drift.
 
         Returns:

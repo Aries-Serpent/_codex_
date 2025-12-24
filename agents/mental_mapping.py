@@ -20,7 +20,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 
 # =============================================================================
@@ -42,7 +42,7 @@ _clock: Callable[[], str] = _default_clock
 
 def set_clock(clock_fn: Callable[[], str]) -> None:
     """
-    Set a custom clock function for timestamp generation.
+    set a custom clock function for timestamp generation.
 
     Useful for testing to provide deterministic timestamps.
 
@@ -119,10 +119,10 @@ class ReasoningStep:
     description: str = ""  # Alias for thought
     reasoning_type: str = "deductive"  # deductive, inductive, abductive, analogical
     confidence: float = 0.5  # 0-1
-    inputs: List[str] = field(default_factory=list)  # Alternative to alternatives_considered
-    outputs: List[str] = field(default_factory=list)  # Alternative to evidence_used
-    alternatives_considered: List[str] = field(default_factory=list)
-    evidence_used: List[str] = field(default_factory=list)
+    inputs: list[str] = field(default_factory=list)  # Alternative to alternatives_considered
+    outputs: list[str] = field(default_factory=list)  # Alternative to evidence_used
+    alternatives_considered: list[str] = field(default_factory=list)
+    evidence_used: list[str] = field(default_factory=list)
 
     def __post_init__(self):
         """Handle parameter aliases and defaults"""
@@ -133,7 +133,7 @@ class ReasoningStep:
         elif self.thought and not self.description:
             self.description = self.thought
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         return asdict(self)
 
 
@@ -147,7 +147,7 @@ class MentalNode:
     timestamp: str
 
     # Reasoning metadata
-    reasoning_chain: List[ReasoningStep] = field(default_factory=list)
+    reasoning_chain: list[ReasoningStep] = field(default_factory=list)
     confidence: float = 0.5
     importance: float = 0.5
 
@@ -159,22 +159,22 @@ class MentalNode:
 
     # Learning
     was_correct: Optional[bool] = None  # Outcome validation
-    lessons_learned: List[str] = field(default_factory=list)
+    lessons_learned: list[str] = field(default_factory=list)
 
     # Connections
-    connected_nodes: Set[str] = field(default_factory=set)
+    connected_nodes: set[str] = field(default_factory=set)
 
     # Metadata
-    tags: List[str] = field(default_factory=list)
-    context: Dict = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    context: dict = field(default_factory=dict)
 
     def add_reasoning_step(
         self,
         thought: str,
         reasoning_type: str,
         confidence: float,
-        alternatives: List[str] = None,
-        evidence: List[str] = None,
+        alternatives: list[str] = None,
+        evidence: list[str] = None,
     ) -> ReasoningStep:
         """Add a reasoning step to this node's chain"""
         step = ReasoningStep(
@@ -209,7 +209,7 @@ class MentalNode:
         """Record a lesson learned from this node"""
         self.lessons_learned.append({"timestamp": get_timestamp(), "lesson": lesson})
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert to dictionary for serialization"""
         d = asdict(self)
         d["node_type"] = self.node_type.value
@@ -239,13 +239,13 @@ class MentalEdge:
 
     # Reasoning for this connection
     justification: str = ""
-    evidence: List[str] = field(default_factory=list)
+    evidence: list[str] = field(default_factory=list)
 
     # Validation
     validated: bool = False
     validation_date: Optional[str] = None
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         d = asdict(self)
         d["edge_type"] = self.edge_type.value
         return d
@@ -269,16 +269,16 @@ class MentalMappingModel:
         self.created_at = get_timestamp()
 
         # Mental map structure
-        self.nodes: Dict[str, MentalNode] = {}
-        self.edges: Dict[str, MentalEdge] = {}
+        self.nodes: dict[str, MentalNode] = {}
+        self.edges: dict[str, MentalEdge] = {}
 
         # Indexes for fast lookup
-        self.nodes_by_type: Dict[NodeType, Set[str]] = {nt: set() for nt in NodeType}
-        self.nodes_needing_review: Set[str] = set()
+        self.nodes_by_type: dict[NodeType, set[str]] = {nt: set() for nt in NodeType}
+        self.nodes_needing_review: set[str] = set()
 
         # Learning history
-        self.learning_history: List[Dict] = []
-        self.pattern_library: Dict[str, Dict] = {}
+        self.learning_history: list[dict] = []
+        self.pattern_library: dict[str, dict] = {}
 
         # Self-appraisal metrics
         self.appraisal_metrics = {
@@ -293,11 +293,11 @@ class MentalMappingModel:
         self,
         node_type: NodeType,
         content: str = "",
-        properties: Optional[Dict] = None,
+        properties: Optional[dict] = None,
         confidence: float = 0.5,
         importance: float = 0.5,
-        tags: Optional[List[str]] = None,
-        context: Optional[Dict] = None,
+        tags: Optional[list[str]] = None,
+        context: Optional[dict] = None,
     ) -> MentalNode:
         """
         Create a new node in the mental map.
@@ -347,7 +347,7 @@ class MentalMappingModel:
         return node
 
     def create_node_id(
-        self, node_type: NodeType, properties: Optional[Dict] = None, **kwargs
+        self, node_type: NodeType, properties: Optional[dict] = None, **kwargs
     ) -> str:
         """
         Create a new node and return its ID (backward compatibility method).
@@ -385,10 +385,10 @@ class MentalMappingModel:
         source: str = None,  # Alias for source_id
         target: str = None,  # Alias for target_id
         edge_type: EdgeType = None,
-        properties: Dict = None,
+        properties: dict = None,
         weight: float = 1.0,
         justification: str = "",
-        evidence: List[str] = None,
+        evidence: list[str] = None,
     ) -> MentalEdge:
         """
         Create a connection between two nodes.
@@ -438,8 +438,8 @@ class MentalMappingModel:
         return edge
 
     def think_through_problem(
-        self, problem: str, context: Dict = None
-    ) -> Tuple[MentalNode, List[ReasoningStep]]:
+        self, problem: str, context: dict = None
+    ) -> tuple[MentalNode, list[ReasoningStep]]:
         """
         Think through a problem, storing the complete reasoning chain
 
@@ -545,7 +545,7 @@ class MentalMappingModel:
         decision_content: str,
         problem_node_id: str,
         confidence: float,
-        alternatives_considered: List[str],
+        alternatives_considered: list[str],
         reasoning: str,
     ) -> MentalNode:
         """
@@ -741,7 +741,7 @@ class MentalMappingModel:
         # Update appraisal metrics
         self._update_appraisal_metrics()
 
-    def iterative_review(self, review_threshold: float = 0.5) -> List[str]:
+    def iterative_review(self, review_threshold: float = 0.5) -> list[str]:
         """
         Perform iterative review of nodes needing attention
 
@@ -842,7 +842,7 @@ class MentalMappingModel:
             reviewed = sum(1 for n in self.nodes.values() if n.review_count > 0)
             self.appraisal_metrics["review_rate"] = reviewed / len(self.nodes)
 
-    def get_mental_map_summary(self) -> Dict:
+    def get_mental_map_summary(self) -> dict:
         """Get a summary of the mental map"""
         summary = {
             "map_id": self.map_id,
@@ -864,7 +864,7 @@ class MentalMappingModel:
 
         visited = set()
 
-        def traverse(node_id: str, depth: int = 0) -> List[str]:
+        def traverse(node_id: str, depth: int = 0) -> list[str]:
             if depth >= max_depth or node_id in visited:
                 return []
 
@@ -901,7 +901,7 @@ class MentalMappingModel:
 
         return "\n".join(traverse(start_node_id))
 
-    def cluster_nodes(self, similarity_threshold: float = 0.7) -> Dict[str, List[str]]:
+    def cluster_nodes(self, similarity_threshold: float = 0.7) -> dict[str, list[str]]:
         """
         Cluster nodes based on similarity of content and connections.
 
@@ -940,12 +940,12 @@ class MentalMappingModel:
 
         return clusters
 
-    def get_subgraph(self, node_ids: List[str] = None, nodes: List[str] = None) -> Dict[str, Any]:
+    def get_subgraph(self, node_ids: list[str] = None, nodes: list[str] = None) -> dict[str, Any]:
         """
         Extract a subgraph containing only specified nodes.
 
         Args:
-            node_ids: List of node IDs to include in subgraph
+            node_ids: list of node IDs to include in subgraph
             nodes: Alias for node_ids (backward compatibility)
 
         Returns:
@@ -979,7 +979,7 @@ class MentalMappingModel:
         end_id: str = None,
         source: Union[str, "MentalNode"] = None,  # Alias for start_id, can be node or ID
         target: Union[str, "MentalNode"] = None,  # Alias for end_id, can be node or ID
-    ) -> Optional[List[Union[str, "MentalNode"]]]:
+    ) -> Optional[list[Union[str, "MentalNode"]]]:
         """
         Find shortest path between two nodes using BFS.
 
@@ -990,7 +990,7 @@ class MentalMappingModel:
             target: Alias for end_id (can be MentalNode object or string ID)
 
         Returns:
-            List of node IDs or MentalNode objects forming the path, or None if no path exists
+            list of node IDs or MentalNode objects forming the path, or None if no path exists
         """
         # Handle parameter aliases and extract IDs from MentalNode objects
         return_nodes = False  # Track if we should return nodes or IDs
@@ -1044,7 +1044,7 @@ class MentalMappingModel:
 
         return None  # No path found
 
-    def bfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+    def bfs(self, start_node: str = None, start_id: str = None) -> list[str]:
         """
         Breadth-first search traversal from a starting node.
 
@@ -1053,7 +1053,7 @@ class MentalMappingModel:
             start_id: Alias for start_node
 
         Returns:
-            List of node IDs in BFS order
+            list of node IDs in BFS order
         """
         # Handle parameter alias
         if start_id and not start_node:
@@ -1080,7 +1080,7 @@ class MentalMappingModel:
 
         return result
 
-    def dfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+    def dfs(self, start_node: str = None, start_id: str = None) -> list[str]:
         """
         Depth-first search traversal from a starting node.
 
@@ -1089,7 +1089,7 @@ class MentalMappingModel:
             start_id: Alias for start_node
 
         Returns:
-            List of node IDs in DFS order
+            list of node IDs in DFS order
         """
         # Handle parameter alias
         if start_id and not start_node:
@@ -1168,7 +1168,7 @@ class MentalMappingModel:
         print(f"\n📂 Mental map loaded from: {input_path}")
         print(f"   Nodes: {len(self.nodes)}, Edges: {len(self.edges)}")
 
-    def calculate_metrics(self) -> Dict[str, Any]:
+    def calculate_metrics(self) -> dict[str, Any]:
         """
         Calculate graph metrics for the mental map.
 
@@ -1206,7 +1206,7 @@ class MentalMappingModel:
         # Degree centrality: connections / max possible connections
         return len(node.connected_nodes) / (num_nodes - 1)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Export mental mapping model to dictionary.
 

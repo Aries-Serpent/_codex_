@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 from pathlib import Path
 import hashlib
 import json
-from typing import Dict, List, Set, Optional
+from typing import Optional
 from dataclasses import dataclass, asdict
 from collections import defaultdict
 import sys
@@ -26,7 +26,7 @@ class DuplicateGroup:
     checksum: str
     file_count: int
     total_size: int
-    file_paths: List[str]
+    file_paths: list[str]
     can_deduplicate: bool = True
 
 
@@ -40,7 +40,7 @@ class DeduplicationReport:
     space_wasted: int
     space_after_dedup: int
     potential_savings: int
-    duplicate_sets: List[DuplicateGroup]
+    duplicate_sets: list[DuplicateGroup]
 
 
 class ContentDeduplicator:
@@ -48,9 +48,9 @@ class ContentDeduplicator:
     
     def __init__(self, root_path: Path):
         self.root_path = root_path.resolve()
-        self.file_checksums: Dict[str, str] = {}  # path -> checksum
-        self.checksum_files: Dict[str, List[str]] = defaultdict(list)  # checksum -> paths
-        self.file_sizes: Dict[str, int] = {}  # path -> size
+        self.file_checksums: dict[str, str] = {}  # path -> checksum
+        self.checksum_files: dict[str, list[str]] = defaultdict(list)  # checksum -> paths
+        self.file_sizes: dict[str, int] = {}  # path -> size
 
     def calculate_checksum(self, filepath: Path, chunk_size: int = 8192) -> str:
         """Calculate SHA256 checksum of file."""
@@ -65,7 +65,7 @@ class ContentDeduplicator:
             print(f"Warning: Could not read {filepath}: {e}", file=sys.stderr)
             return ""
 
-    def scan_directory(self, skip_patterns: Optional[Set[str]] = None) -> int:
+    def scan_directory(self, skip_patterns: Optional[set[str]] = None) -> int:
         """Scan directory and build checksum index."""
         if skip_patterns is None:
             skip_patterns = {'.git', '__pycache__', 'node_modules', '.venv'}
@@ -135,7 +135,7 @@ class ContentDeduplicator:
             duplicate_sets=sorted(duplicate_sets, key=lambda x: x.total_size, reverse=True)
         )
 
-    def create_dedup_strategy(self, report: DeduplicationReport, strategy: str = "keep_first") -> Dict[str, str]:
+    def create_dedup_strategy(self, report: DeduplicationReport, strategy: str = "keep_first") -> dict[str, str]:
         """Create deduplication strategy mapping.
         
         Returns: dict mapping source_path -> target_path (for symlinking/hardlinking)

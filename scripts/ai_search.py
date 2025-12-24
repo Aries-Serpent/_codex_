@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 from pathlib import Path
 import json
-from typing import Dict, List, Any, Optional
+from typing import Any, Optional
 from dataclasses import dataclass
 import sys
 
@@ -21,7 +21,7 @@ class SearchResult:
     path: str
     relevance_score: float
     match_type: str  # semantic, structural, entity, keyword
-    context: Dict[str, Any]
+    context: dict[str, Any]
     snippet: Optional[str] = None
 
 
@@ -30,11 +30,11 @@ class AIRepositorySearch:
 
     def __init__(self, index_dir: Path):
         self.index_dir = index_dir
-        self.content_index: Dict[str, Any] = {}
-        self.semantic_index: Dict[str, List[str]] = {}
-        self.structural_index: Dict[str, Any] = {}
-        self.entity_index: Dict[str, Any] = {}
-        self.metadata_index: Dict[str, Any] = {}
+        self.content_index: dict[str, Any] = {}
+        self.semantic_index: dict[str, list[str]] = {}
+        self.structural_index: dict[str, Any] = {}
+        self.entity_index: dict[str, Any] = {}
+        self.metadata_index: dict[str, Any] = {}
         
         self.load_indices()
 
@@ -80,7 +80,7 @@ class AIRepositorySearch:
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
             print(f"⚠ Warning: metadata_index.json not found", file=sys.stderr)
 
-    def search_by_keyword(self, keyword: str, max_results: int = 10) -> List[SearchResult]:
+    def search_by_keyword(self, keyword: str, max_results: int = 10) -> list[SearchResult]:
         """Search for files by keyword."""
         results = []
         keyword_lower = keyword.lower()
@@ -113,7 +113,7 @@ class AIRepositorySearch:
         
         return results[:max_results]
 
-    def search_by_entity(self, entity_name: str, entity_type: Optional[str] = None) -> List[SearchResult]:
+    def search_by_entity(self, entity_name: str, entity_type: Optional[str] = None) -> list[SearchResult]:
         """Search for entities (classes, functions, etc.)."""
         results = []
         
@@ -154,7 +154,7 @@ class AIRepositorySearch:
         
         return results
 
-    def search_by_path_pattern(self, pattern: str) -> List[SearchResult]:
+    def search_by_path_pattern(self, pattern: str) -> list[SearchResult]:
         """Search for files matching a path pattern."""
         results = []
         pattern_lower = pattern.lower()
@@ -176,7 +176,7 @@ class AIRepositorySearch:
         
         return sorted(results, key=lambda r: r.relevance_score, reverse=True)
 
-    def search_by_tag(self, tag: str) -> List[SearchResult]:
+    def search_by_tag(self, tag: str) -> list[SearchResult]:
         """Search for files by semantic tag."""
         results = []
         
@@ -194,7 +194,7 @@ class AIRepositorySearch:
         
         return results
 
-    def find_similar_files(self, reference_path: str, max_results: int = 5) -> List[SearchResult]:
+    def find_similar_files(self, reference_path: str, max_results: int = 5) -> list[SearchResult]:
         """Find files similar to the reference file."""
         results = []
         
@@ -248,18 +248,18 @@ class AIRepositorySearch:
         
         return results
 
-    def get_file_details(self, relative_path: str) -> Optional[Dict[str, Any]]:
+    def get_file_details(self, relative_path: str) -> Optional[dict[str, Any]]:
         """Get detailed information about a specific file."""
         for file_path, file_data in self.content_index.items():
             if file_data['relative_path'] == relative_path:
                 return file_data
         return None
 
-    def get_repository_summary(self) -> Dict[str, Any]:
+    def get_repository_summary(self) -> dict[str, Any]:
         """Get repository summary statistics."""
         return self.metadata_index
 
-    def multi_search(self, query: str, max_results: int = 10) -> List[SearchResult]:
+    def multi_search(self, query: str, max_results: int = 10) -> list[SearchResult]:
         """Perform multi-strategy search combining different search types."""
         all_results = []
         

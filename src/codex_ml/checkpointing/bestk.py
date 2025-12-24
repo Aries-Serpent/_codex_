@@ -3,7 +3,7 @@ Best‑K checkpoint retention (atomic index update).
 
 Public function:
     update_and_prune(checkpoint_path: Path, metric: float, k: int, index_path: Path,
-                     keep_last: bool=False, dry_run: bool=False) -> Dict[str, Any]
+                     keep_last: bool=False, dry_run: bool=False) -> dict[str, Any]
 
 Index schema:
 {
@@ -21,10 +21,10 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Iterable
 
 
-def _read_index(index_path: Path) -> Dict[str, Any]:
+def _read_index(index_path: Path) -> dict[str, Any]:
     if not index_path.exists():
         return {"entries": []}
     try:
@@ -35,7 +35,7 @@ def _read_index(index_path: Path) -> Dict[str, Any]:
         return {"entries": []}
 
 
-def _write_index_atomic(index_path: Path, data: Dict[str, Any]) -> None:
+def _write_index_atomic(index_path: Path, data: dict[str, Any]) -> None:
     tmp = index_path.with_suffix(index_path.suffix + ".tmp")
     tmp.write_text(json.dumps(data, indent=2))
     os.replace(tmp, index_path)
@@ -49,7 +49,7 @@ def update_and_prune(
     keep_best: str | None = None,
     keep_last: bool = False,
     dry_run: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     strategy = "max" if (keep_best or "") == "max" else "min"
 
     # Stage file existence check (caller already saved checkpoint)
@@ -64,7 +64,7 @@ def update_and_prune(
 
     # Remove prior entries for the same checkpoint when keep_last is requested so the
     # newest metadata wins and the older index rows count as pruned for reporting.
-    duplicate_entries: List[Dict[str, Any]] = []
+    duplicate_entries: list[dict[str, Any]] = []
     if keep_last:
         remaining_entries = []
         for entry in entries_before:
@@ -90,7 +90,7 @@ def update_and_prune(
         kept = _dedupe_keep_latest(kept, str(checkpoint_path))
 
     final_paths = {e["path"] for e in kept}
-    prune_candidates: List[Dict[str, Any]] = [
+    prune_candidates: list[dict[str, Any]] = [
         e for e in entries_before if e["path"] not in final_paths
     ]
     prune_candidates.extend(duplicate_entries)
@@ -135,18 +135,18 @@ def _infer_step_from_name(name: str) -> int:
     return -1
 
 
-def _select_top_k(entries: Iterable[Dict[str, Any]], k: int, strategy: str) -> List[Dict[str, Any]]:
+def _select_top_k(entries: Iterable[dict[str, Any]], k: int, strategy: str) -> list[dict[str, Any]]:
     reverse = strategy == "max"
     sorted_entries = sorted(entries, key=lambda e: (e["metric"], e["created_at"]), reverse=reverse)
     return list(sorted_entries[:k])
 
 
 def _select_top_k_with_protection(
-    entries: Iterable[Dict[str, Any]],
+    entries: Iterable[dict[str, Any]],
     k: int,
     strategy: str,
     protected_path: str,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     reverse = strategy == "max"
     protected_entries = [e for e in entries if e["path"] == protected_path]
     protected_entry = None
@@ -157,7 +157,7 @@ def _select_top_k_with_protection(
     others = [e for e in entries if e["path"] != protected_path]
     others_sorted = sorted(others, key=lambda e: (e["metric"], e["created_at"]), reverse=reverse)
 
-    kept: List[Dict[str, Any]] = []
+    kept: list[dict[str, Any]] = []
     if protected_entry is not None:
         kept.append(protected_entry)
 
@@ -170,11 +170,11 @@ def _select_top_k_with_protection(
 
 
 def _dedupe_keep_latest(
-    entries: Iterable[Dict[str, Any]], target_path: str
-) -> List[Dict[str, Any]]:
+    entries: Iterable[dict[str, Any]], target_path: str
+) -> list[dict[str, Any]]:
     """Ensure at most one entry per path; for target_path prefer the newest copy."""
 
-    latest: Dict[str, Dict[str, Any]] = {}
+    latest: dict[str, dict[str, Any]] = {}
     for entry in entries:
         path = entry["path"]
         if path not in latest or entry["created_at"] > latest[path]["created_at"]:

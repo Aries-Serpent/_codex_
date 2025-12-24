@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class MLflowTracker:
         experiment_name: str,
         tracking_uri: Optional[str] = None,
         run_name: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
+        tags: Optional[dict[str, str]] = None,
     ):
         """Initialize MLflow tracker.
 
@@ -75,10 +75,10 @@ class MLflowTracker:
     def _initialize(self):
         """Initialize MLflow with error handling."""
         try:
-            # Set tracking URI (local by default for offline)
+            # set tracking URI (local by default for offline)
             mlflow.set_tracking_uri(self.tracking_uri)
 
-            # Set or create experiment
+            # set or create experiment
             mlflow.set_experiment(self.experiment_name)
 
             self.active = True
@@ -93,7 +93,7 @@ class MLflowTracker:
             )
             self.active = False
 
-    def start_run(self, run_name: Optional[str] = None, tags: Optional[Dict[str, str]] = None):
+    def start_run(self, run_name: Optional[str] = None, tags: Optional[dict[str, str]] = None):
         """Start an MLflow run.
 
         Args:
@@ -128,11 +128,11 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to end MLflow run: {e}")
 
-    def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None):
         """Log metrics to MLflow.
 
         Args:
-            metrics: Dict of metric name -> value
+            metrics: dict of metric name -> value
             step: Optional step number
         """
         if not self.active:
@@ -144,11 +144,11 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log metrics to MLflow: {e}")
 
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         """Log parameters to MLflow.
 
         Args:
-            params: Dict of parameter name -> value
+            params: dict of parameter name -> value
         """
         if not self.active:
             return
@@ -201,11 +201,11 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to log artifacts to MLflow: {e}")
 
-    def set_tags(self, tags: Dict[str, str]):
-        """Set tags for the current run.
+    def set_tags(self, tags: dict[str, str]):
+        """set tags for the current run.
 
         Args:
-            tags: Dict of tag name -> value
+            tags: dict of tag name -> value
         """
         if not self.active:
             return
@@ -231,7 +231,7 @@ def init_mlflow(
     experiment_name: str,
     tracking_uri: Optional[str] = None,
     run_name: Optional[str] = None,
-    tags: Optional[Dict[str, str]] = None,
+    tags: Optional[dict[str, str]] = None,
     auto_start: bool = True,
 ) -> MLflowTracker:
     """Initialize MLflow tracking (convenience function).

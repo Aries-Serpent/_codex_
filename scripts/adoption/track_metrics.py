@@ -7,7 +7,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 try:
     import yaml
@@ -91,7 +91,7 @@ class AdoptionTracker:
             "monitoring": {},
         }
 
-    def _collect_mlflow_metrics(self) -> Dict[str, Any]:
+    def _collect_mlflow_metrics(self) -> dict[str, Any]:
         """Collect MLflow tracking adoption metrics."""
         mlflow_metrics = {
             "experiments_created": 0,
@@ -150,7 +150,7 @@ class AdoptionTracker:
 
         return mlflow_metrics
 
-    def _collect_feature_store_metrics(self) -> Dict[str, Any]:
+    def _collect_feature_store_metrics(self) -> dict[str, Any]:
         """Collect feature store adoption metrics."""
         fs_metrics = {
             "feature_groups_defined": 0,
@@ -191,7 +191,7 @@ class AdoptionTracker:
 
         return fs_metrics
 
-    def _collect_validation_metrics(self) -> Dict[str, Any]:
+    def _collect_validation_metrics(self) -> dict[str, Any]:
         """Collect data validation adoption metrics."""
         validation_metrics = {
             "enabled_in_configs": False,
@@ -206,7 +206,7 @@ class AdoptionTracker:
 
         return validation_metrics
 
-    def _collect_evaluation_metrics(self) -> Dict[str, Any]:
+    def _collect_evaluation_metrics(self) -> dict[str, Any]:
         """Collect evaluation standardization metrics."""
         eval_metrics = {
             "enabled_in_configs": False,
@@ -220,7 +220,7 @@ class AdoptionTracker:
 
         return eval_metrics
 
-    def _collect_monitoring_metrics(self) -> Dict[str, Any]:
+    def _collect_monitoring_metrics(self) -> dict[str, Any]:
         """Collect monitoring and training enhancement metrics."""
         monitoring_metrics = {
             "enabled_in_configs": False,
@@ -281,7 +281,7 @@ class AdoptionTracker:
 
         return round(score, 2)
 
-    def collect_all_metrics(self) -> Dict[str, Any]:
+    def collect_all_metrics(self) -> dict[str, Any]:
         """Collect all Phase 6 adoption metrics."""
         logger.info("Collecting Phase 6 adoption metrics...")
 

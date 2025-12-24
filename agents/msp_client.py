@@ -5,7 +5,7 @@ Thin HTTP client for interacting with the MSP Gateway
 
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -38,7 +38,7 @@ class MSPClient:
             headers=self._get_headers(),
         )
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get request headers"""
         headers = {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ class MSPClient:
 
         return headers
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Check gateway health
 
         Returns:
@@ -66,8 +66,8 @@ class MSPClient:
         max_tokens: int = 512,
         temperature: float = 0.7,
         top_p: float = 0.9,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        options: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Generate inference
 
         Args:
@@ -99,9 +99,9 @@ class MSPClient:
         tenant_id: str,
         query: str,
         top_k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
         include_metadata: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Query knowledge base
 
         Args:
@@ -131,10 +131,10 @@ class MSPClient:
         tenant_id: str,
         name: str,
         api_key: str,
-        quota: Optional[Dict[str, int]] = None,
-        policies: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        quota: Optional[dict[str, int]] = None,
+        policies: Optional[list[str]] = None,
+        metadata: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Create a new tenant
 
         Args:
@@ -165,7 +165,7 @@ class MSPClient:
         response.raise_for_status()
         return response.json()
 
-    def get_tenant(self, tenant_id: str) -> Dict[str, Any]:
+    def get_tenant(self, tenant_id: str) -> dict[str, Any]:
         """Get tenant information
 
         Args:
@@ -178,11 +178,11 @@ class MSPClient:
         response.raise_for_status()
         return response.json()
 
-    def list_tenants(self) -> List[Dict[str, Any]]:
-        """List all tenants
+    def list_tenants(self) -> list[dict[str, Any]]:
+        """list all tenants
 
         Returns:
-            List of tenant responses
+            list of tenant responses
         """
         response = self.client.get("/admin/tenants")
         response.raise_for_status()
@@ -192,11 +192,11 @@ class MSPClient:
         self,
         tenant_id: str,
         name: Optional[str] = None,
-        quota: Optional[Dict[str, int]] = None,
-        policies: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        quota: Optional[dict[str, int]] = None,
+        policies: Optional[list[str]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         active: Optional[bool] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Update tenant information
 
         Args:
@@ -282,7 +282,7 @@ class EnhancedMSPClient(MSPClient):
         max_retries: int = 3,
         backoff_factor: float = 1.0,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Make HTTP request with retry logic.
 
         Args:
@@ -327,22 +327,22 @@ class EnhancedMSPClient(MSPClient):
     def batch_infer(
         self,
         tenant_id: str,
-        prompts: List[str],
+        prompts: list[str],
         max_tokens: int = 512,
         temperature: float = 0.7,
         top_p: float = 0.9,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Generate inferences for multiple prompts.
 
         Args:
             tenant_id: Tenant identifier
-            prompts: List of input prompts
+            prompts: list of input prompts
             max_tokens: Maximum tokens to generate
             temperature: Sampling temperature
             top_p: Nucleus sampling parameter
 
         Returns:
-            List of inference responses
+            list of inference responses
         """
         results = []
         for prompt in prompts:
@@ -393,7 +393,7 @@ class EnhancedMSPClient(MSPClient):
 
     def get_usage_stats(
         self, tenant_id: str, start_time: Optional[str] = None, end_time: Optional[str] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get usage statistics for a tenant.
 
         Args:
@@ -416,8 +416,8 @@ class EnhancedMSPClient(MSPClient):
 
     def set_rate_limit(
         self, tenant_id: str, requests_per_minute: int, tokens_per_minute: int
-    ) -> Dict[str, Any]:
-        """Set rate limits for a tenant.
+    ) -> dict[str, Any]:
+        """set rate limits for a tenant.
 
         Args:
             tenant_id: Tenant identifier
@@ -438,7 +438,7 @@ class EnhancedMSPClient(MSPClient):
         response.raise_for_status()
         return response.json()
 
-    def get_model_info(self, model_id: Optional[str] = None) -> Dict[str, Any]:
+    def get_model_info(self, model_id: Optional[str] = None) -> dict[str, Any]:
         """Get information about available models.
 
         Args:
@@ -472,7 +472,7 @@ class EnhancedMSPClient(MSPClient):
             logger.debug("Exception caught, returning", exc_info=True)
             return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get system metrics.
 
         Returns:

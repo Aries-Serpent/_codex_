@@ -5,7 +5,7 @@ CPU-safe, deterministic-ready reference implementation.
 Public API:
     evaluate_epoch(model, dataloader, criterion, device="cpu",
                     metrics=None, logger=None, max_batches=None, seed=None,
-                    deterministic=False) -> Dict[str, Any]
+                    deterministic=False) -> dict[str, Any]
 
 Notes:
 - Lazy torch import to avoid heavy import cost if only metadata is inspected.
@@ -24,7 +24,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Sequence
+from typing import Any, Callable, Iterable, Optional, Protocol, Sequence
 from uuid import uuid4
 
 from codex_ml.metrics.api import get_metric
@@ -45,7 +45,7 @@ class Criterion(Protocol):
 
 
 class Logger(Protocol):
-    def log(self, record: Dict[str, Any]) -> None: ...
+    def log(self, record: dict[str, Any]) -> None: ...
     def close(self) -> None: ...
 
 
@@ -53,11 +53,11 @@ class Logger(Protocol):
 class EvalResult:
     loss: float
     count: int
-    metrics: Dict[str, float]
+    metrics: dict[str, float]
     batches: int
     duration_sec: float
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "loss": self.loss,
             "count": self.count,
@@ -97,7 +97,7 @@ def _check_needs_predictions(func: Callable) -> bool:
         return True
 
 
-def _coerce_batch(batch: Any) -> List[Any]:
+def _coerce_batch(batch: Any) -> list[Any]:
     if batch is None:
         return []
     if torch is not None and hasattr(batch, "detach"):
@@ -106,7 +106,7 @@ def _coerce_batch(batch: Any) -> List[Any]:
             return [data.item()]
         return data.reshape(-1).tolist()
     if isinstance(batch, (list, tuple)):
-        result: List[Any] = []
+        result: list[Any] = []
         for item in batch:
             result.extend(_coerce_batch(item))
         return result
@@ -130,7 +130,7 @@ def evaluate_epoch(
     dataloader: Iterable,
     criterion: Criterion,
     device: str = "cpu",
-    metrics: Optional[Dict[str, Callable]] = None,
+    metrics: Optional[dict[str, Callable]] = None,
     logger: Optional[Iterable[Logger]] = None,
     max_batches: Optional[int] = None,
     seed: Optional[int] = None,
@@ -138,7 +138,7 @@ def evaluate_epoch(
     *,
     prediction_transform: Optional[Callable[[Any], Sequence[object]]] = None,
     target_transform: Optional[Callable[[Any], Sequence[object]]] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     if torch is None:
         raise RuntimeError("Torch not available for evaluation.")
 
@@ -161,8 +161,8 @@ def evaluate_epoch(
         _check_needs_predictions(func) for func in metrics.values()
     )
     text_mode = collect_preds and (prediction_transform is not None or target_transform is not None)
-    all_preds: List[Any] = []
-    all_targets: List[Any] = []
+    all_preds: list[Any] = []
+    all_targets: list[Any] = []
 
     with torch.no_grad():
         for batch_idx, batch in enumerate(dataloader):
@@ -251,7 +251,7 @@ def evaluate_epoch(
 
     avg_loss = running_loss / max(total, 1)
 
-    metric_results: Dict[str, float] = {}
+    metric_results: dict[str, float] = {}
     if metrics:
         if text_mode:
             preds_payload: Sequence[object] = list(all_preds)
@@ -302,11 +302,11 @@ def evaluate_epoch(
 
 
 def _resolve_metric_functions(
-    metric_specs: Dict[str, Callable] | Iterable[str | Callable],
-) -> Dict[str, Callable]:
+    metric_specs: dict[str, Callable] | Iterable[str | Callable],
+) -> dict[str, Callable]:
     """Coerce metric specifications into callable form using the registry."""
 
-    resolved: Dict[str, Callable] = {}
+    resolved: dict[str, Callable] = {}
     if isinstance(metric_specs, dict):
         items = metric_specs.items()
     else:
@@ -319,7 +319,7 @@ def _resolve_metric_functions(
     return resolved
 
 
-def _collect_system_metrics() -> Dict[str, float]:
+def _collect_system_metrics() -> dict[str, float]:
     """Best-effort system metrics (CPU/memory) without network calls."""
 
     cpu_percent = None
@@ -333,7 +333,7 @@ def _collect_system_metrics() -> Dict[str, float]:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
-    metrics: Dict[str, float] = {}
+    metrics: dict[str, float] = {}
     if cpu_percent is not None:
         metrics["system.cpu_percent"] = cpu_percent
     if memory_percent is not None:
@@ -343,14 +343,14 @@ def _collect_system_metrics() -> Dict[str, float]:
 
 def run_metrics_evaluation(
     data: Iterable[tuple[Any, Any]],
-    metric_specs: Dict[str, Callable] | Iterable[str | Callable],
+    metric_specs: dict[str, Callable] | Iterable[str | Callable],
     *,
     metric_writers: Iterable[BaseMetricsWriter] | None = None,
     run_id: str | None = None,
     log_system_metrics: bool = True,
     enable_mlflow: bool = True,
     mlruns_dir: str | Path = "mlruns",
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """Evaluate predictions against targets using registry-backed metrics.
 
     Parameters
@@ -410,7 +410,7 @@ def run_metrics_evaluation(
             for writer in writers:
                 writer.write(record)
 
-    final_metrics: Dict[str, float] = {}
+    final_metrics: dict[str, float] = {}
     for name, fn in resolved_metrics.items():
         try:
             final_metrics[name] = float(fn(preds, targets))
@@ -437,7 +437,7 @@ def run_metrics_evaluation(
         writer.write(summary_record)
         writer.close()
 
-    mlflow_info: Dict[str, str] = {}
+    mlflow_info: dict[str, str] = {}
     if enable_mlflow:
         decision = decide_offline(prefer_offline=True, allow_remote=False, mlruns_dir=mlruns_dir)
         os.environ["MLFLOW_TRACKING_URI"] = decision.mlflow_tracking_uri

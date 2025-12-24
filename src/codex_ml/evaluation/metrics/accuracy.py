@@ -5,7 +5,7 @@ Computes classification accuracy from predictions and references.
 Supports both token-level and sequence-level accuracy.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 import logging
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class AccuracyMetric(MetricAdapter):
                 if pred == ref:
                     self._correct += 1
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute final accuracy."""
         if self._total == 0:
             return {self.name: 0.0}
@@ -80,7 +80,7 @@ class AccuracyMetric(MetricAdapter):
         self._total = 0
 
     @staticmethod
-    def _flatten(nested: Any) -> List:
+    def _flatten(nested: Any) -> list:
         """Flatten nested lists/tensors."""
         if isinstance(nested, (int, float)):
             return [nested]

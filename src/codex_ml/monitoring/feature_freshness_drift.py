@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, List
 
 from codex_ml.features.monitoring import FeatureHealthMonitor, FeatureHealthStatus
 
@@ -31,8 +30,8 @@ class FeatureFreshnessDriftDetector:
 
     def check_features_before_drift_detection(
         self,
-        feature_names: List[str],
-    ) -> Dict[str, FeatureHealthStatus]:
+        feature_names: list[str],
+    ) -> dict[str, FeatureHealthStatus]:
         """Check feature freshness before drift detection.
 
         Args:
@@ -53,9 +52,9 @@ class FeatureFreshnessDriftDetector:
 
     def get_drift_report_with_freshness(
         self,
-        feature_names: List[str],
-        drift_scores: Dict[str, float],
-    ) -> Dict[str, dict]:
+        feature_names: list[str],
+        drift_scores: dict[str, float],
+    ) -> dict[str, dict]:
         """Generate drift report including freshness information.
 
         Args:

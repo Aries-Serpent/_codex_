@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any
 
 # Expanded safeguard keyword list covering security, validation, and defensive programming.
 # Sorted deterministically for reproducibility.
@@ -107,7 +107,7 @@ def _read_text(path: Path) -> str:
         return ""
 
 
-def _detect_context_aware_patterns(text: str) -> Set[str]:
+def _detect_context_aware_patterns(text: str) -> set[str]:
     """
     Detect defensive programming patterns beyond simple keyword matching.
 
@@ -115,7 +115,7 @@ def _detect_context_aware_patterns(text: str) -> Set[str]:
         text: Source code text
 
     Returns:
-        Set of detected pattern names
+        set of detected pattern names
     """
     detected = set()
 
@@ -126,7 +126,7 @@ def _detect_context_aware_patterns(text: str) -> Set[str]:
     return detected
 
 
-def _calculate_safeguard_density(evidence: Dict[str, int], total_files: int) -> float:
+def _calculate_safeguard_density(evidence: dict[str, int], total_files: int) -> float:
     """
     Calculate safeguard density as ratio of files with safeguards.
 
@@ -137,7 +137,7 @@ def _calculate_safeguard_density(evidence: Dict[str, int], total_files: int) -> 
     - Robust calculation with edge case handling
 
     Args:
-        evidence: Dict of file paths to hit counts
+        evidence: dict of file paths to hit counts
         total_files: Total number of analyzed files
 
     Returns:
@@ -150,7 +150,7 @@ def _calculate_safeguard_density(evidence: Dict[str, int], total_files: int) -> 
     return min(1.0, len(evidence) / max(total_files, 1))
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Scan files for safeguard keywords and defensive programming patterns.
 
@@ -175,9 +175,9 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
 
     files = file_index.get("files", [])
-    evidence: Dict[str, int] = {}
-    text_cache: Dict[str, str] = {}
-    pattern_detections: Dict[str, List[str]] = {}
+    evidence: dict[str, int] = {}
+    text_cache: dict[str, str] = {}
+    pattern_detections: dict[str, list[str]] = {}
 
     # Validation: Allowed file types for safeguard scanning (security filtering)
     allowed_suffixes = {".py", ".md", ".sh", ".txt", ".yml", ".yaml", ".json"}

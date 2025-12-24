@@ -20,7 +20,6 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 try:
     from scripts.config.parse_knobs import normalize_from_env
@@ -61,7 +60,7 @@ PII_PACKS = {
 TEXT_EXTENSIONS = {".md", ".json", ".py", ".yaml", ".yml", ".toml", ".rst", ".txt", ".cfg", ".ini"}
 
 
-def build_extension_set(profile: str, custom_exts: list[str]) -> List[str]:
+def build_extension_set(profile: str, custom_exts: list[str]) -> list[str]:
     exts = set()
     for seg in profile.split("+"):
         if seg in PROFILE_MAP:
@@ -74,8 +73,8 @@ def build_extension_set(profile: str, custom_exts: list[str]) -> List[str]:
 
 def compile_patterns(
     base_set: str, custom_list: list[str], merge_mode: str
-) -> Tuple[List[re.Pattern], List[str], List[str]]:
-    invalid: List[str] = []
+) -> tuple[list[re.Pattern], list[str], list[str]]:
+    invalid: list[str] = []
     base_patterns = PII_PACKS.get(base_set, PII_PACKS["minimal"])
 
     if merge_mode == "replace":
@@ -85,7 +84,7 @@ def compile_patterns(
     else:  # union-minimal
         merged = list(dict.fromkeys(base_patterns + custom_list))
 
-    compiled: List[re.Pattern] = []
+    compiled: list[re.Pattern] = []
     for pat in sorted(merged):
         try:
             compiled.append(re.compile(pat))
@@ -100,8 +99,8 @@ def is_text_file(path: Path) -> bool:
 
 
 def redact_text_lines(
-    lines: List[str], compiled_patterns: List[re.Pattern]
-) -> Tuple[List[str], int]:
+    lines: list[str], compiled_patterns: list[re.Pattern]
+) -> tuple[list[str], int]:
     redactions = 0
     mask_counter = 0
     out = []
@@ -120,7 +119,7 @@ def redact_text_lines(
     return out, redactions
 
 
-def process_allowlist(exts: List[str]) -> Tuple[List[str], List[str]]:
+def process_allowlist(exts: list[str]) -> tuple[list[str], list[str]]:
     kept, skipped = [], []
     for path in sorted(ARTIFACTS_DIR.rglob("*")):
         if path.is_dir():

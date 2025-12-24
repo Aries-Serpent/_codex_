@@ -21,12 +21,11 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 OUT = Path("audit_artifacts/trend_scores.json")
 
 
-def sparkline(series: List[float]) -> str:
+def sparkline(series: list[float]) -> str:
     if not series:
         return ""
     chars = "▁▂▃▄▅▆▇█"
@@ -35,14 +34,14 @@ def sparkline(series: List[float]) -> str:
     return "".join(chars[int((v - mn) / rng * (len(chars) - 1))] for v in series)
 
 
-def find_score_files(limit: int) -> List[Path]:
+def find_score_files(limit: int) -> list[Path]:
     pattern = "audit_artifacts/capabilities_scored*.json"
     files = [Path(p) for p in glob.glob(pattern)]
     files.sort(key=lambda p: p.stat().st_mtime)
     return files[-limit:]
 
 
-def load_scores(p: Path) -> Dict[str, float]:
+def load_scores(p: Path) -> dict[str, float]:
     try:
         data = json.loads(p.read_text())
     except Exception:
@@ -62,7 +61,7 @@ def main():
         print("[INFO] No historical scored files found.")
         return 0
 
-    history: Dict[str, List[float]] = {}
+    history: dict[str, list[float]] = {}
     timestamps = []
 
     for f in files:

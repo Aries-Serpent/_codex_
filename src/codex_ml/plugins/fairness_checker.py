@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 
@@ -29,7 +29,7 @@ class FairnessMetrics:
     demographic_parity: float  # 1.0 = perfect parity
     equal_opportunity: float  # 1.0 = perfect equality
     calibration_error: float  # 0.0 = perfect calibration
-    bias_alerts: List[str]
+    bias_alerts: list[str]
 
 
 @dataclass
@@ -40,7 +40,7 @@ class BiasAlert:
     severity: str  # low, medium, high, critical
     threshold: float
     actual: float
-    affected_groups: List[str]
+    affected_groups: list[str]
 
 
 @register_plugin
@@ -66,8 +66,8 @@ class FairnessCheckerPlugin(Plugin):
         logger.info("FairnessCheckerPlugin initialized")
 
     def execute(
-        self, predictions: Any, labels: Any, sensitive_attributes: Dict[str, Any], **kwargs
-    ) -> Dict[str, Any]:
+        self, predictions: Any, labels: Any, sensitive_attributes: dict[str, Any], **kwargs
+    ) -> dict[str, Any]:
         """Compute fairness metrics.
 
         Args:

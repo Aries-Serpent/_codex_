@@ -9,7 +9,7 @@ import os
 from dataclasses import asdict, dataclass
 from os import PathLike
 from pathlib import Path
-from typing import Any, Callable, Dict, Mapping, Optional, Sequence
+from typing import Any, Callable, Mapping, Optional, Sequence
 
 import numpy as np
 
@@ -53,7 +53,7 @@ except Exception:  # pragma: no cover - monitoring module missing
     def _codex_log_all(*args: Any, **kwargs: Any) -> None:  # type: ignore
         """Fallback no-op logger when monitoring is unavailable."""
 
-    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> Dict[str, Any]:  # type: ignore
+    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> dict[str, Any]:  # type: ignore
         return {}
 
 
@@ -110,12 +110,12 @@ except Exception:  # pragma: no cover - hf trainer not available
     def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
         raise RuntimeError("HuggingFace trainer is unavailable")
 
-    def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
+    def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
         return {}
 
     def get_hf_revision(identifier: PathLike[str] | str) -> str:
         norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
-        overrides: Dict[str, Any] = {}
+        overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")
         if env_revision:
             overrides["revision"] = env_revision
@@ -189,7 +189,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     # Flatten training.* into top-level dict for hydra_cfg propagation
-    training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    training_cfg: dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
     nested = training_cfg.pop("training", {})
     if isinstance(nested, dict):
         training_cfg.update(nested)
@@ -236,7 +236,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
-        kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
+        kw: dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
         for key in ("gradient_accumulation_steps", "precision"):
             if key in training_cfg:
                 kw[key] = training_cfg[key]
@@ -271,7 +271,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
         tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
-        tokenizer_kwargs: Dict[str, Any] = {}
+        tokenizer_kwargs: dict[str, Any] = {}
         if not _looks_like_local_source(tok_name):
             tokenizer_kwargs["revision"] = get_hf_revision(tok_name)
         tokenizer = load_from_pretrained(
@@ -442,7 +442,7 @@ def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) 
     return metrics
 
 
-def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
+def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dict[str, Any]:
     """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
@@ -530,7 +530,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         )
 
     def _append_metric(
-        record: Dict[str, object], system_metrics: Optional[dict[str, float]] = None
+        record: dict[str, object], system_metrics: Optional[dict[str, float]] = None
     ) -> None:
         payload = dict(record)
         metrics = system_metrics

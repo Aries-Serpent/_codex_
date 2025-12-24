@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import List, Optional
+from typing import Optional
 
 from .base import Event, EventPublisher
 
@@ -92,7 +92,7 @@ class AWSEventPublisher(EventPublisher):
             logger.error(f"Failed to publish to AWS EventBridge: {e}")
             return False
 
-    def publish_batch(self, events: List[Event]) -> bool:
+    def publish_batch(self, events: list[Event]) -> bool:
         """Publish batch of events to AWS EventBridge.
 
         Args:

@@ -5,15 +5,14 @@ Reference: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_component
 """
 
 from collections import defaultdict
-from typing import Dict, List, Set
 
 
 class DependencyGraph:
     """Directed graph for dependency analysis and cycle detection."""
 
     def __init__(self):
-        self.nodes: Set[str] = set()
-        self.edges: Dict[str, Set[str]] = defaultdict(set)
+        self.nodes: set[str] = set()
+        self.edges: dict[str, set[str]] = defaultdict(set)
 
     def add_node(self, node_id: str) -> None:
         """Add node to graph."""
@@ -25,11 +24,11 @@ class DependencyGraph:
         self.nodes.add(target)
         self.edges[source].add(target)
 
-    def detect_cycles(self) -> List[List[str]]:
+    def detect_cycles(self) -> list[list[str]]:
         """Detect all cycles using Tarjan's algorithm.
 
         Returns:
-            List of cycles, where each cycle is a list of node IDs
+            list of cycles, where each cycle is a list of node IDs
             forming a strongly connected component (cycle) in the graph.
 
         Time Complexity: O(V + E) where V = nodes, E = edges
@@ -84,11 +83,11 @@ class DependencyGraph:
 
         return sccs
 
-    def topological_sort(self) -> List[str]:
+    def topological_sort(self) -> list[str]:
         """Topological sort of DAG (fails if cycles exist).
 
         Returns:
-            List of nodes in topological order
+            list of nodes in topological order
 
         Raises:
             ValueError: If graph contains cycles
@@ -113,7 +112,7 @@ class DependencyGraph:
 
         return stack[::-1]
 
-    def get_transitive_deps(self, node_id: str) -> Set[str]:
+    def get_transitive_deps(self, node_id: str) -> set[str]:
         """Get all transitive dependencies of a node."""
         visited = set()
         stack = [node_id]

@@ -8,7 +8,7 @@ Safeguards: Bounded search, deterministic ordering, validation
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # Related files for evidence collection
 RELATED_FILES = [
@@ -17,7 +17,7 @@ RELATED_FILES = [
 ]
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detects multi-tenant support in MCP.
 
@@ -29,8 +29,8 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     - Reproducible results with checksum-stable logic
     """
     files = [f.get("path", "") for f in file_index.get("files", [])]
-    evidence: List[str] = []
-    found: List[str] = []
+    evidence: list[str] = []
+    found: list[str] = []
 
     # Bounded, deterministic file scanning
     for path in sorted(files):

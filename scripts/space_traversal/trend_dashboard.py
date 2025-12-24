@@ -31,10 +31,9 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
-def calculate_trend(scores: List[float]) -> Tuple[str, str, str]:
+def calculate_trend(scores: list[float]) -> tuple[str, str, str]:
     """
     Calculate trend direction and classification
 
@@ -62,7 +61,7 @@ def calculate_trend(scores: List[float]) -> Tuple[str, str, str]:
         return (f"-{pct:.1f}%", "trend-down", "↓")
 
 
-def load_audit_runs(history_dir: Path) -> List[Dict]:
+def load_audit_runs(history_dir: Path) -> list[dict]:
     """Load all audit run JSON files from history directory"""
     runs = []
 
@@ -79,7 +78,7 @@ def load_audit_runs(history_dir: Path) -> List[Dict]:
     return runs
 
 
-def extract_trends(runs: List[Dict]) -> Dict:
+def extract_trends(runs: list[dict]) -> dict:
     """Extract capability trends across runs"""
     capability_scores = defaultdict(list)
     timestamps = []
@@ -100,7 +99,7 @@ def extract_trends(runs: List[Dict]) -> Dict:
     }
 
 
-def generate_capability_row(cap_id: str, scores: List[float]) -> str:
+def generate_capability_row(cap_id: str, scores: list[float]) -> str:
     """Generate HTML table row for capability"""
     current_score = scores[-1]
     trend_text, trend_class, trend_symbol = calculate_trend(scores)
@@ -139,7 +138,7 @@ def generate_capability_row(cap_id: str, scores: List[float]) -> str:
     """
 
 
-def generate_component_card(component: str, scores_by_cap: Dict[str, List[float]]) -> str:
+def generate_component_card(component: str, scores_by_cap: dict[str, list[float]]) -> str:
     """Generate component analysis card"""
     # Calculate average across all capabilities for this component
     all_values = []
@@ -163,7 +162,7 @@ def generate_component_card(component: str, scores_by_cap: Dict[str, List[float]
     """
 
 
-def generate_regression_section(runs: List[Dict], threshold: float = 0.02) -> str:
+def generate_regression_section(runs: list[dict], threshold: float = 0.02) -> str:
     """Generate regression alerts section"""
     if len(runs) < 2:
         return "<p>Need at least 2 runs to detect regressions.</p>"
@@ -213,7 +212,7 @@ def generate_regression_section(runs: List[Dict], threshold: float = 0.02) -> st
     """
 
 
-def generate_dashboard(runs: List[Dict], output_path: Path):
+def generate_dashboard(runs: list[dict], output_path: Path):
     """Generate complete HTML dashboard"""
     if not runs:
         print("No audit runs found.", file=sys.stderr)

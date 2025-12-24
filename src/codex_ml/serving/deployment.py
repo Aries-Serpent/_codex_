@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 import random
 
 
@@ -62,7 +62,7 @@ class TrafficSplitter:
 
     def set_weights(self, blue: int, green: int):
         """
-        Set traffic weights for blue and green.
+        set traffic weights for blue and green.
 
         Args:
             blue: Percentage of traffic to blue (0-100)
@@ -182,7 +182,7 @@ class BlueGreenDeployment:
 
         print(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
 
-    def update_rollout(self) -> Dict[str, Any]:
+    def update_rollout(self) -> dict[str, Any]:
         """
         Update rollout progress and health checks.
 
@@ -276,7 +276,7 @@ class BlueGreenDeployment:
                 return False
         return True
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get current deployment status."""
         return {
             "blue_version": self.current_blue_version,

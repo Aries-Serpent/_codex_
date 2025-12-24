@@ -29,7 +29,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -80,10 +80,10 @@ class FileAnalysis:
     loc: int
     sloc: int
     complexity: ComplexityMetrics
-    imports: List[str]
-    exports: List[str]
-    lint_issues: List[LintIssue]
-    security_issues: List[SecurityIssue]
+    imports: list[str]
+    exports: list[str]
+    lint_issues: list[LintIssue]
+    security_issues: list[SecurityIssue]
 
 
 @dataclass
@@ -95,10 +95,10 @@ class StaticReport:
     """
     snapshot_id: str
     timestamp: datetime
-    files: List[FileAnalysis]
-    summary: Dict[str, Any]
+    files: list[FileAnalysis]
+    summary: dict[str, Any]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert report to dictionary for JSON serialization."""
         return {
             "snapshot_id": self.snapshot_id,
@@ -150,7 +150,7 @@ def _count_lines(content: str) -> tuple[int, int]:
     """Count total and source lines of code.
 
     Returns:
-        Tuple of (total_loc, source_loc)
+        tuple of (total_loc, source_loc)
     """
     lines = content.split("\n")
     loc = len(lines)
@@ -178,7 +178,7 @@ def _count_lines(content: str) -> tuple[int, int]:
     return loc, sloc
 
 
-def _extract_imports(tree: ast.AST) -> List[str]:
+def _extract_imports(tree: ast.AST) -> list[str]:
     """Extract import names from AST."""
     imports = []
 
@@ -193,7 +193,7 @@ def _extract_imports(tree: ast.AST) -> List[str]:
     return sorted(set(imports))
 
 
-def _extract_exports(tree: ast.AST) -> List[str]:
+def _extract_exports(tree: ast.AST) -> list[str]:
     """Extract exported names from AST (functions, classes, __all__)."""
     exports = []
 
@@ -207,7 +207,7 @@ def _extract_exports(tree: ast.AST) -> List[str]:
         elif isinstance(node, ast.Assign):
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id == "__all__":
-                    if isinstance(node.value, (ast.List, ast.Tuple)):
+                    if isinstance(node.value, (ast.list, ast.tuple)):
                         for elt in node.value.elts:
                             if isinstance(elt, ast.Constant):
                                 exports.append(str(elt.value))
@@ -275,7 +275,7 @@ def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[st
     return str(resolved_path)
 
 
-def _run_ruff(source_dir: Path) -> List[LintIssue]:
+def _run_ruff(source_dir: Path) -> list[LintIssue]:
     """Run ruff linter and collect issues."""
     issues = []
 
@@ -319,7 +319,7 @@ def _run_ruff(source_dir: Path) -> List[LintIssue]:
     return issues
 
 
-def _run_bandit(source_dir: Path) -> List[SecurityIssue]:
+def _run_bandit(source_dir: Path) -> list[SecurityIssue]:
     """Run bandit security scanner and collect issues."""
     issues = []
 
@@ -446,7 +446,7 @@ def analyze(
         >>> print(f"Analyzed {len(report.files)} files")
     """
     now = datetime.now(timezone.utc)
-    files: List[FileAnalysis] = []
+    files: list[FileAnalysis] = []
 
     # Find all Python files
     python_files = sorted(source_dir.rglob("*.py"))[:MAX_FILES_TO_ANALYZE]
@@ -460,7 +460,7 @@ def analyze(
             files.append(analysis)
 
     # Run batch lint check
-    lint_issues: List[LintIssue] = []
+    lint_issues: list[LintIssue] = []
     if run_lint:
         lint_issues = _run_ruff(source_dir)
 
@@ -471,7 +471,7 @@ def analyze(
                     f.lint_issues.append(issue)
 
     # Run security scan
-    security_issues: List[SecurityIssue] = []
+    security_issues: list[SecurityIssue] = []
     if run_security:
         security_issues = _run_bandit(source_dir)
 

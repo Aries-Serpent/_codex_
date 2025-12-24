@@ -27,7 +27,7 @@ import logging
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 # Optional numpy import with graceful fallback
 try:
@@ -43,7 +43,7 @@ except ImportError as e:
     class _NumpyStub:
         """Minimal numpy stub for when numpy is not available."""
 
-        ndarray = List  # Type hint fallback
+        ndarray = list  # Type hint fallback
 
         @staticmethod
         def ones(n, dtype=None):
@@ -124,13 +124,13 @@ class StrategyState:
 
     Attributes:
         team: Team identifier (string or TeamType)
-        strategies: List of strategy names or np.array of probabilities
+        strategies: list of strategy names or np.array of probabilities
         probabilities: Classical probability distribution (optional)
         wavefunction: Quantum amplitude vector (optional)
     """
 
     team: Union[TeamType, str]
-    strategies: Union[List[str], Any]  # Can be list of names or np.array
+    strategies: Union[list[str], Any]  # Can be list of names or np.array
     probabilities: Optional[Any] = None  # np.ndarray when numpy available
     wavefunction: Optional[Any] = None  # np.ndarray when numpy available
 
@@ -239,8 +239,8 @@ class PayoffOperator:
     """
 
     payoff_matrix: np.ndarray
-    team: Union[TeamType, List[str]] = TeamType.BLUE
-    players: List[str] = field(default_factory=list)  # Alias for team
+    team: Union[TeamType, list[str]] = TeamType.BLUE
+    players: list[str] = field(default_factory=list)  # Alias for team
 
     def __post_init__(self):
         """Handle backwards compatibility"""
@@ -254,7 +254,7 @@ class PayoffOperator:
         return self.payoff_matrix
 
     @property
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         return self.payoff_matrix.shape
 
     def to_hamiltonian(self) -> np.ndarray:
@@ -333,7 +333,7 @@ class QuantumGameState:
             # Trace over Blue (indices 0 and 2)
             return np.trace(rho, axis1=0, axis2=2)
 
-    def measure(self, rng: Optional[np.random.Generator] = None) -> Tuple[int, int]:
+    def measure(self, rng: Optional[np.random.Generator] = None) -> tuple[int, int]:
         """Measure joint state, returning (blue_strategy_idx, red_strategy_idx)"""
         if rng is None:
             rng = np.random.default_rng()
@@ -437,8 +437,8 @@ class ClassicalGameEngine:
 
     def __init__(
         self,
-        blue_strategies: List[str],
-        red_strategies: List[str],
+        blue_strategies: list[str],
+        red_strategies: list[str],
         payoff_blue: np.ndarray,
         payoff_red: np.ndarray,
         beta: float = 1.0,
@@ -447,8 +447,8 @@ class ClassicalGameEngine:
         """Initialize classical game engine.
 
         Args:
-            blue_strategies: List of Blue team strategy names
-            red_strategies: List of Red team strategy names
+            blue_strategies: list of Blue team strategy names
+            red_strategies: list of Red team strategy names
             payoff_blue: Payoff matrix P_A[i,j] for Blue
             payoff_red: Payoff matrix P_B[i,j] for Red
             beta: Inverse temperature (higher = more deterministic)
@@ -523,7 +523,7 @@ class ClassicalGameEngine:
 
     def simulate_to_equilibrium(
         self, max_iterations: int = 1000, convergence_threshold: float = 1e-6
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run replicator dynamics until convergence.
 
         Returns:
@@ -567,7 +567,7 @@ class ClassicalGameEngine:
 
     def gibbs_sample(
         self, num_samples: int = 1000, rng: Optional[np.random.Generator] = None
-    ) -> List[Tuple[int, int]]:
+    ) -> list[tuple[int, int]]:
         """Sample joint strategies from Gibbs distribution."""
         if rng is None:
             rng = np.random.default_rng()
@@ -586,7 +586,7 @@ class ClassicalGameEngine:
 
         return samples
 
-    def compute_nash_equilibrium(self) -> Dict[str, Any]:
+    def compute_nash_equilibrium(self) -> dict[str, Any]:
         """
         Compute Nash equilibrium using replicator dynamics.
 
@@ -599,7 +599,7 @@ class ClassicalGameEngine:
         """
         return self.simulate_to_equilibrium()
 
-    def calculate(self) -> Dict[str, Any]:
+    def calculate(self) -> dict[str, Any]:
         """
         Calculate equilibrium (alias for compute_nash_equilibrium).
 
@@ -626,8 +626,8 @@ class QuantumInspiredGameEngine:
 
     def __init__(
         self,
-        blue_strategies: List[str],
-        red_strategies: List[str],
+        blue_strategies: list[str],
+        red_strategies: list[str],
         payoff_blue: np.ndarray,
         payoff_red: np.ndarray,
         entanglement: float = 0.0,
@@ -635,8 +635,8 @@ class QuantumInspiredGameEngine:
         """Initialize quantum game engine.
 
         Args:
-            blue_strategies: List of Blue team strategy names
-            red_strategies: List of Red team strategy names
+            blue_strategies: list of Blue team strategy names
+            red_strategies: list of Red team strategy names
             payoff_blue: Payoff matrix P_A[i,j] for Blue
             payoff_red: Payoff matrix P_B[i,j] for Red
             entanglement: Initial entanglement strength (0-1)
@@ -827,7 +827,7 @@ class QuantumInspiredGameEngine:
 
     def quantum_policy_gradient_step(
         self, learning_rate: float = 0.1, theta_blue: float = 0.0, theta_red: float = 0.0
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Perform one step of quantum policy gradient for both teams.
 
         Returns updated (theta_blue, theta_red).
@@ -846,7 +846,7 @@ class QuantumInspiredGameEngine:
         theta_red: float = 0.1,
         apply_noise: bool = False,
         decoherence_gamma: float = 0.0,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Play a single round of the quantum game.
 
         Args:
@@ -875,11 +875,11 @@ class QuantumInspiredGameEngine:
             "entanglement": self.game_state.entanglement_strength,
         }
 
-    def get_payoffs(self) -> Tuple[float, float]:
+    def get_payoffs(self) -> tuple[float, float]:
         """Get current expected payoffs for both teams.
 
         Returns:
-            Tuple of (blue_payoff, red_payoff)
+            tuple of (blue_payoff, red_payoff)
         """
         blue_payoff = self.expected_payoff(TeamType.BLUE)
         red_payoff = self.expected_payoff(TeamType.RED)
@@ -898,8 +898,8 @@ class BlueRedTeamSimulator:
 
     def __init__(
         self,
-        blue_strategies: List[str],
-        red_strategies: List[str],
+        blue_strategies: list[str],
+        red_strategies: list[str],
         payoff_blue: np.ndarray,
         payoff_red: np.ndarray,
         mode: str = "quantum",
@@ -931,14 +931,14 @@ class BlueRedTeamSimulator:
             blue_strategies, red_strategies, payoff_blue, payoff_red, entanglement=entanglement
         )
 
-        self.history: List[Dict[str, Any]] = []
+        self.history: list[dict[str, Any]] = []
 
     def evaluate_hypothesis(
         self,
         hypothesis: str,
         blue_strategy_weights: Optional[np.ndarray] = None,
         red_strategy_weights: Optional[np.ndarray] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Evaluate a hypothesis about optimal strategies.
 
         Uses physics-inspired calculations to assess:
@@ -1029,9 +1029,9 @@ class BlueRedTeamSimulator:
 
     def compare_strategies(
         self,
-        blue_options: List[np.ndarray],
-        red_options: List[np.ndarray],
-    ) -> Dict[str, Any]:
+        blue_options: list[np.ndarray],
+        red_options: list[np.ndarray],
+    ) -> dict[str, Any]:
         """Compare multiple strategy configurations.
 
         Useful for hypothesis testing across different configurations.
@@ -1068,7 +1068,7 @@ class BlueRedTeamSimulator:
         self,
         num_rounds: int = 10,
         learning_rate: float = 0.1,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run multi-round simulation with learning.
 
         Both teams update their strategies based on outcomes.
@@ -1121,7 +1121,7 @@ class BlueRedTeamSimulator:
 # Utility functions for creating common game scenarios
 
 
-def create_prisoners_dilemma() -> Tuple[List[str], List[str], np.ndarray, np.ndarray]:
+def create_prisoners_dilemma() -> tuple[list[str], list[str], np.ndarray, np.ndarray]:
     """Create Prisoner's Dilemma payoff matrices."""
     strategies = ["Cooperate", "Defect"]
     # (row, col) = (Blue, Red)
@@ -1143,7 +1143,7 @@ def create_prisoners_dilemma() -> Tuple[List[str], List[str], np.ndarray, np.nda
 
 def create_zero_sum_game(
     size: int = 3, seed: Optional[int] = None
-) -> Tuple[List[str], List[str], np.ndarray, np.ndarray]:
+) -> tuple[list[str], list[str], np.ndarray, np.ndarray]:
     """Create a random zero-sum game.
 
     Args:
@@ -1152,7 +1152,7 @@ def create_zero_sum_game(
               for the random generator which varies between runs.
 
     Returns:
-        Tuple of (blue_strategies, red_strategies, payoff_blue, payoff_red)
+        tuple of (blue_strategies, red_strategies, payoff_blue, payoff_red)
     """
     rng = np.random.default_rng(seed)
     strategies = [f"S{i}" for i in range(size)]
@@ -1161,7 +1161,7 @@ def create_zero_sum_game(
     return strategies, strategies, payoff_blue, payoff_red
 
 
-def create_security_game() -> Tuple[List[str], List[str], np.ndarray, np.ndarray]:
+def create_security_game() -> tuple[list[str], list[str], np.ndarray, np.ndarray]:
     """Create a cybersecurity-inspired game.
 
     Blue (Defense): Firewall, IDS, Patch, Monitor

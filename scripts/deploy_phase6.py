@@ -22,7 +22,6 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 import yaml
 
 logging.basicConfig(
@@ -132,7 +131,7 @@ class Phase6Deployer:
 
         return all_valid
 
-    def _validate_config_structure(self, filename: str, config: dict) -> Dict:
+    def _validate_config_structure(self, filename: str, config: dict) -> dict:
         """Validate configuration structure."""
         # Define required keys for each config
         required_keys = {
@@ -205,7 +204,7 @@ class Phase6Deployer:
             return False
 
     def setup_monitoring(self) -> bool:
-        """Set up monitoring dashboards and alerting."""
+        """set up monitoring dashboards and alerting."""
         logger.info("")
         logger.info("=" * 60)
         logger.info("Step 3: Setting Up Monitoring")

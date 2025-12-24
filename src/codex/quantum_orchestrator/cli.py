@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 import click
 import numpy as np
@@ -66,7 +66,7 @@ except ImportError as e:
 
 def create_test_tasks(
     count: int, constants: Optional[PhysicsConstants] = None
-) -> Dict[str, TaskState]:
+) -> dict[str, TaskState]:
     """
     Create a set of test tasks for demonstration.
 

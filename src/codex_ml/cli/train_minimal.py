@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from codex_ml.cli import utils as cli_utils
 from codex_ml.logging.experiment import ExperimentTracker
@@ -56,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     config_path = Path(args.config)
-    config: Dict[str, Any] = cli_utils.load_yaml_config(config_path)
+    config: dict[str, Any] = cli_utils.load_yaml_config(config_path)
 
     base_runs = Path(args.runs_dir)
     ctx = cli_utils.create_run_dir(base_runs, mode="train", seed=args.seed)

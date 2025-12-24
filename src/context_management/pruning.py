@@ -5,7 +5,7 @@ Implements priority-based context pruning with configurable strategies
 for different content types.
 """
 
-from typing import List, Dict, Optional, Callable, Tuple
+from typing import Optional, Callable
 import logging
 logger = logging.getLogger(__name__)
 from dataclasses import dataclass, field
@@ -111,7 +111,7 @@ class PriorityPruner:
 
     def __init__(
         self,
-        rules: Optional[List[PruneRule]] = None,
+        rules: Optional[list[PruneRule]] = None,
         summarizer: Optional[Callable[[str], str]] = None,
         token_counter: Optional[Callable[[str], int]] = None,
     ):
@@ -202,17 +202,17 @@ class PriorityPruner:
         )
 
     def prune_batch(
-        self, texts: List[str], target_tokens: Optional[int] = None
-    ) -> Tuple[List[str], int]:
+        self, texts: list[str], target_tokens: Optional[int] = None
+    ) -> tuple[list[str], int]:
         """
         Prune a batch of texts to fit target token count.
 
         Args:
-            texts: List of texts to prune
+            texts: list of texts to prune
             target_tokens: Target total token count
 
         Returns:
-            Tuple of (pruned texts, total tokens saved)
+            tuple of (pruned texts, total tokens saved)
         """
         if not target_tokens:
             # Just apply rules without target
@@ -254,7 +254,7 @@ class PriorityPruner:
 
         return results, tokens_saved
 
-    def get_metrics(self) -> Dict:
+    def get_metrics(self) -> dict:
         """Get pruning metrics."""
         return {
             "total_tokens_pruned": self._total_pruned,

@@ -12,7 +12,7 @@ Safeguards:
 """
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 import logging
 import re
 
@@ -20,7 +20,7 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detects authentication/authorization in MCP (API key checks, auth classes).
     Looks for 'verify_api_key', 'authenticate' functions, or auth-related classes.
@@ -171,7 +171,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _empty_result() -> Dict[str, Any]:
+def _empty_result() -> dict[str, Any]:
     """
     Returns empty detection result for error cases.
 

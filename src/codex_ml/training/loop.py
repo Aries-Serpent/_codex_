@@ -7,7 +7,7 @@ with real optimizers, schedulers, and gradient accumulation.
 from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
-from typing import Any, Dict, Iterable
+from typing import Any, Iterable
 
 from codex_ml.interfaces.contracts import TrainingContractError
 from codex_ml.logging.metrics import MetricLogger
@@ -19,8 +19,8 @@ def train_one_step(loss_value: float) -> float:
 
 
 def train_epoch(
-    model: Any, dataloader: Iterable[Dict[str, Any]], state: Dict[str, Any]
-) -> Dict[str, float]:
+    model: Any, dataloader: Iterable[dict[str, Any]], state: dict[str, Any]
+) -> dict[str, float]:
     if not dataloader:
         raise TrainingContractError("Dataloader must not be empty")
     losses = []
@@ -41,7 +41,7 @@ def train_epoch(
     }
 
 
-def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -> Dict[str, float]:
+def run_minimal_training(config: dict[str, Any], max_steps: int, run_dir: str) -> dict[str, float]:
     """
     Very small training routine used by the minimal CLI.
 
@@ -50,7 +50,7 @@ def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict[str, Any]
         Configuration dictionary. Expected keys:
         - 'training.base_loss' (float, optional): Initial loss value (default: 10.0)
         - 'training.decay' (float, optional): Loss decay factor per step (default: 0.9)
@@ -61,7 +61,7 @@ def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -
 
     Returns
     -------
-    Dict[str, float]
+    dict[str, float]
         Dictionary containing:
         - 'loss_final': The final loss value after training.
     """
@@ -80,8 +80,8 @@ def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -
 
 
 def run_minimal_evaluation(
-    config: Dict[str, Any], checkpoint: str, run_dir: str
-) -> Dict[str, float]:
+    config: dict[str, Any], checkpoint: str, run_dir: str
+) -> dict[str, float]:
     """Tiny evaluation stub that logs a deterministic score."""
 
     run_path = Path(run_dir)

@@ -18,7 +18,7 @@ import json
 import gzip
 import tarfile
 import zipfile
-from typing import Dict, List, Any, Optional, Set, Tuple
+from typing import Any, Optional
 from dataclasses import dataclass, asdict, field
 from datetime import datetime
 import ast
@@ -37,7 +37,7 @@ class ProcessedFile:
     checksum: str
     last_modified: str
     quality_score: float
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     extracted_content: Optional[str] = None
     compression_ratio: float = 0.0
 
@@ -51,9 +51,9 @@ class DatasetManifest:
     total_size_original: int
     total_size_compressed: int
     compression_ratio: float
-    file_categories: Dict[str, int]
-    files: List[ProcessedFile]
-    quality_metrics: Dict[str, float]
+    file_categories: dict[str, int]
+    files: list[ProcessedFile]
+    quality_metrics: dict[str, float]
     
 
 class FileProcessor:
@@ -112,7 +112,7 @@ class FileProcessor:
             return ""
 
     @classmethod
-    def process_documentation(cls, filepath: Path) -> Tuple[Optional[str], float]:
+    def process_documentation(cls, filepath: Path) -> tuple[Optional[str], float]:
         """Process documentation files with structure extraction."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -139,7 +139,7 @@ class FileProcessor:
             return None, 0.5
 
     @classmethod
-    def process_source_code(cls, filepath: Path) -> Tuple[Optional[str], float]:
+    def process_source_code(cls, filepath: Path) -> tuple[Optional[str], float]:
         """Process source code with AST analysis."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -197,7 +197,7 @@ class FileProcessor:
             return None, 0.5
 
     @classmethod
-    def process_config(cls, filepath: Path) -> Tuple[Optional[str], float]:
+    def process_config(cls, filepath: Path) -> tuple[Optional[str], float]:
         """Process configuration files with schema extraction."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -282,10 +282,10 @@ class DatasetManager:
         self.output_dir = output_dir or (repo_path / ".codex" / "datasets")
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        self.processed_files: List[ProcessedFile] = []
-        self.dedup_checksums: Set[str] = set()
+        self.processed_files: list[ProcessedFile] = []
+        self.dedup_checksums: set[str] = set()
 
-    def scan_repository(self, include_patterns: Optional[List[str]] = None) -> int:
+    def scan_repository(self, include_patterns: Optional[list[str]] = None) -> int:
         """Scan repository and process files."""
         print(f"Scanning repository: {self.repo_path}")
         

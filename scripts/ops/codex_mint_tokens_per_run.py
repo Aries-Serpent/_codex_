@@ -39,7 +39,7 @@ import os
 import sys
 import time
 from dataclasses import dataclass
-from typing import Iterable, Mapping, Tuple
+from typing import Iterable, Mapping
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency installed via [ops]
@@ -326,7 +326,7 @@ def _exchange_installation_token(
     installation_id: str | int,
     *,
     body: Mapping[str, object] | None = None,
-) -> Tuple[str, str | None]:
+) -> tuple[str, str | None]:
     scope = TokenScope(tuple(), {})
     with GitHubSession(f"Bearer {app_jwt}") as session:
         data = create_installation_access_token(session, installation_id, scope, extra=body)

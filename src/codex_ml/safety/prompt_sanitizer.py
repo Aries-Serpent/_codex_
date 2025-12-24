@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ class PromptSanitizer:
     """Sanitizer for detecting and preventing prompt injection attacks.
 
     Attributes:
-        INJECTION_PATTERNS: List of regex patterns for common injection attempts.
+        INJECTION_PATTERNS: list of regex patterns for common injection attempts.
         strict: Whether to raise errors (True) or redact patterns (False).
     """
 
@@ -68,7 +67,7 @@ class PromptSanitizer:
             return prompt
 
         original = prompt
-        found_patterns: List[str] = []
+        found_patterns: list[str] = []
 
         for pattern in self.patterns:
             if pattern.search(prompt):
@@ -117,14 +116,14 @@ class PromptSanitizer:
             logger.warning(f"ValueError: {e}", exc_info=True)
             return False
 
-    def get_violations(self, prompt: str) -> List[str]:
+    def get_violations(self, prompt: str) -> list[str]:
         """Get list of violated patterns in the prompt.
 
         Args:
             prompt: The prompt to check.
 
         Returns:
-            List of pattern strings that matched the prompt.
+            list of pattern strings that matched the prompt.
         """
         if not prompt:
             return []

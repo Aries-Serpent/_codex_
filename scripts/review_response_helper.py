@@ -21,7 +21,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -46,12 +46,12 @@ class FixChecklist:
     """Tracks fixes needed for review comments."""
 
     created_at: str
-    comments: List[ReviewComment]
+    comments: list[ReviewComment]
     total_comments: int
     resolved_count: int
 
 
-def parse_review_comments(comments_file: Path) -> List[ReviewComment]:
+def parse_review_comments(comments_file: Path) -> list[ReviewComment]:
     """
     Parse review comments from JSON file.
 
@@ -88,7 +88,7 @@ def parse_review_comments(comments_file: Path) -> List[ReviewComment]:
     return comments
 
 
-def generate_fix_checklist(comments: List[ReviewComment], output_path: Path) -> None:
+def generate_fix_checklist(comments: list[ReviewComment], output_path: Path) -> None:
     """Generate markdown checklist of fixes needed."""
     checklist = FixChecklist(
         created_at=datetime.now().isoformat(),
@@ -175,7 +175,7 @@ def generate_reply_text(comment_id: str, commit_sha: str, description: str) -> s
     return f"Fixed in commit `{commit_sha}`. {description}"
 
 
-def get_recent_commits(count: int = 10) -> List[Dict[str, str]]:
+def get_recent_commits(count: int = 10) -> list[dict[str, str]]:
     """Get recent git commits with SHA and message."""
     try:
         result = subprocess.run(
@@ -199,8 +199,8 @@ def get_recent_commits(count: int = 10) -> List[Dict[str, str]]:
 
 
 def auto_match_commits_to_comments(
-    comments: List[ReviewComment], commits: List[Dict[str, str]]
-) -> List[Tuple[ReviewComment, str]]:
+    comments: list[ReviewComment], commits: list[dict[str, str]]
+) -> list[tuple[ReviewComment, str]]:
     """
     Automatically match commits to comments based on file paths and keywords.
 

@@ -20,7 +20,6 @@ import ast
 import logging
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -32,7 +31,7 @@ class RedundantCodeDetector(ast.NodeVisitor):
 
     def __init__(self, filename: str):
         self.filename = filename
-        self.issues: List[Tuple[int, str, str]] = []  # (line, type, message)
+        self.issues: list[tuple[int, str, str]] = []  # (line, type, message)
 
     def visit_Try(self, node: ast.Try) -> None:
         """Detect redundant pass in exception handlers."""
@@ -108,7 +107,7 @@ class RedundantCodeDetector(ast.NodeVisitor):
 
         self.generic_visit(node)
 
-    def _all_paths_exit(self, stmts: List[ast.stmt]) -> bool:
+    def _all_paths_exit(self, stmts: list[ast.stmt]) -> bool:
         """Check if all paths in statement list end with return/raise."""
         if not stmts:
             return False
@@ -127,12 +126,12 @@ class RedundantCodeDetector(ast.NodeVisitor):
         return False
 
 
-def analyze_file(file_path: Path) -> List[Tuple[int, str, str]]:
+def analyze_file(file_path: Path) -> list[tuple[int, str, str]]:
     """
     Analyze a Python file for redundant code.
 
     Returns:
-        List of (line_number, issue_type, message) tuples
+        list of (line_number, issue_type, message) tuples
     """
     if not file_path.exists() or file_path.suffix != ".py":
         return []
@@ -154,7 +153,7 @@ def analyze_file(file_path: Path) -> List[Tuple[int, str, str]]:
 
 
 def fix_redundant_pass(
-    file_path: Path, issues: List[Tuple[int, str, str]], dry_run: bool = True
+    file_path: Path, issues: list[tuple[int, str, str]], dry_run: bool = True
 ) -> bool:
     """
     Fix redundant pass statements.

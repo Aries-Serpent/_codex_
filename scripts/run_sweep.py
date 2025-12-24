@@ -17,12 +17,11 @@ import json
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
 
 from codex_ml.safety.filters import _minimal_yaml_load
 
 
-def _safe_yaml_load(text: str) -> Dict[str, object]:
+def _safe_yaml_load(text: str) -> dict[str, object]:
     """Parse ``text`` into a mapping using PyYAML when available.
 
     ``scripts`` is not on ``PYTHONPATH`` during the tests, so importing ``yaml``
@@ -61,7 +60,7 @@ def _safe_yaml_load(text: str) -> Dict[str, object]:
 CODEX_HY_OUT = Path(".codex") / "hydra_last"
 
 
-def _expand(grid: Dict[str, List[object]]) -> List[Dict[str, object]]:
+def _expand(grid: dict[str, list[object]]) -> list[dict[str, object]]:
     keys = list(grid.keys())
     values = [v if isinstance(v, list) else [v] for v in grid.values()]
     combos = [dict(zip(keys, combo)) for combo in itertools.product(*values)]

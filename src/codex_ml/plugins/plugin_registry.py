@@ -14,7 +14,7 @@ import logging
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Optional, Type
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class PluginMetadata:
     version: str
     author: str = "Unknown"
     description: str = ""
-    dependencies: List[str] = None
+    dependencies: list[str] = None
     min_codex_version: str = "0.1.0"
 
     def __post_init__(self):
@@ -120,8 +120,8 @@ class PluginRegistry:
         if self._initialized:
             return
 
-        self._plugins: Dict[str, Type[Plugin]] = {}
-        self._instances: Dict[str, Plugin] = {}
+        self._plugins: dict[str, Type[Plugin]] = {}
+        self._instances: dict[str, Plugin] = {}
         self._initialized = True
 
     def register(self, plugin_class: Type[Plugin], override: bool = False):
@@ -177,11 +177,11 @@ class PluginRegistry:
 
         return self._instances.get(name)
 
-    def list_plugins(self) -> List[PluginMetadata]:
-        """List all registered plugins.
+    def list_plugins(self) -> list[PluginMetadata]:
+        """list all registered plugins.
 
         Returns:
-            List of plugin metadata
+            list of plugin metadata
         """
         return [plugin_class.get_metadata() for plugin_class in self._plugins.values()]
 
@@ -305,7 +305,7 @@ class CustomMetricsPlugin(Plugin):
         self.metrics = {}
         logger.info("CustomMetricsPlugin initialized")
 
-    def execute(self, predictions: Any, labels: Any) -> Dict[str, float]:
+    def execute(self, predictions: Any, labels: Any) -> dict[str, float]:
         """Compute custom metrics.
 
         Args:

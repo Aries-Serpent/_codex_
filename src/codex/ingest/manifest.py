@@ -18,7 +18,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ class Constraints:
     max_memory_mb: int = 512
     allowed_network: bool = False
     allowed_file_write: bool = False
-    forbidden_patterns: List[str] = field(default_factory=list)
+    forbidden_patterns: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -71,7 +71,7 @@ class Metadata:
     owner: Optional[str] = None
     privacy: Literal["public", "private"] = "private"
     allow_external_llm: bool = False
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -85,20 +85,20 @@ class IngestManifest:
         version: Manifest schema version
         source: Source configuration
         entry_point: Optional entry point specification
-        sample_inputs: List of sample input files
-        golden_outputs: List of expected outputs for verification
+        sample_inputs: list of sample input files
+        golden_outputs: list of expected outputs for verification
         constraints: Execution constraints
         metadata: Additional metadata
     """
     version: str
     source: SourceConfig
     entry_point: Optional[str] = None
-    sample_inputs: List[SampleInput] = field(default_factory=list)
-    golden_outputs: List[GoldenOutput] = field(default_factory=list)
+    sample_inputs: list[SampleInput] = field(default_factory=list)
+    golden_outputs: list[GoldenOutput] = field(default_factory=list)
     constraints: Constraints = field(default_factory=Constraints)
     metadata: Metadata = field(default_factory=Metadata)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert manifest to dictionary."""
         return {
             "version": self.version,
@@ -146,7 +146,7 @@ def _validate_version(version: str) -> None:
         raise ValueError(f"Invalid version format: {version}")
 
 
-def _validate_constraints(constraints: Dict[str, Any]) -> Constraints:
+def _validate_constraints(constraints: dict[str, Any]) -> Constraints:
     """Validate and parse constraints.
     
     Safeguard: Bounds checking on constraint values.

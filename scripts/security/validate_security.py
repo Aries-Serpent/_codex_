@@ -6,10 +6,9 @@ import subprocess
 import logging
 logger = logging.getLogger(__name__)
 from pathlib import Path
-from typing import Dict, List, Tuple
 import sys
 
-def run_check(name: str, pattern: str, should_find: bool = False) -> Tuple[bool, int]:
+def run_check(name: str, pattern: str, should_find: bool = False) -> tuple[bool, int]:
     """Run a grep check and return results."""
     result = subprocess.run(
         ['grep', '-r', pattern, 'src/', 'agents/', '--include=*.py'],
@@ -27,7 +26,7 @@ def run_check(name: str, pattern: str, should_find: bool = False) -> Tuple[bool,
     
     return passed, count
 
-def validate_security() -> Dict[str, Tuple[bool, str]]:
+def validate_security() -> dict[str, tuple[bool, str]]:
     """Run all security validation checks."""
     checks = {}
     

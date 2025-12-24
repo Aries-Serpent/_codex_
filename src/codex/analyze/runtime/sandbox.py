@@ -27,7 +27,7 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ class SandboxConfig:
     memory_limit_mb: int = DEFAULT_MEMORY_MB
     network_enabled: bool = False
     allowed_file_write: bool = False
-    env_overrides: Dict[str, str] = field(default_factory=dict)
+    env_overrides: dict[str, str] = field(default_factory=dict)
     working_dir: Optional[Path] = None
 
 
@@ -68,8 +68,8 @@ class ExecutionResult:
         duration_ms: Execution duration in milliseconds
         memory_peak_mb: Peak memory usage (if available)
         timed_out: Whether execution timed out
-        file_operations: List of file operations detected
-        network_attempts: List of network access attempts
+        file_operations: list of file operations detected
+        network_attempts: list of network access attempts
     """
     exit_code: int
     stdout: str
@@ -77,10 +77,10 @@ class ExecutionResult:
     duration_ms: float
     memory_peak_mb: Optional[float] = None
     timed_out: bool = False
-    file_operations: List[Dict[str, Any]] = field(default_factory=list)
-    network_attempts: List[Dict[str, Any]] = field(default_factory=list)
+    file_operations: list[dict[str, Any]] = field(default_factory=list)
+    network_attempts: list[dict[str, Any]] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "exit_code": self.exit_code,
@@ -137,7 +137,7 @@ class SandboxManager:
         if self.config.memory_limit_mb <= 0:
             raise ValueError("memory_limit_mb must be positive")
 
-    def _build_environment(self) -> Dict[str, str]:
+    def _build_environment(self) -> dict[str, str]:
         """Build deterministic execution environment.
 
         Safeguard: Deterministic execution environment.
@@ -147,7 +147,7 @@ class SandboxManager:
         """
         env = os.environ.copy()
 
-        # Set deterministic values
+        # set deterministic values
         env["PYTHONHASHSEED"] = "42"
         env["PYTHONDONTWRITEBYTECODE"] = "1"
         env["PYTHONUNBUFFERED"] = "1"
@@ -180,7 +180,7 @@ class SandboxManager:
     def execute(
         self,
         script: Path,
-        args: Optional[List[str]] = None,
+        args: Optional[list[str]] = None,
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute a Python script in sandboxed environment.
@@ -269,7 +269,7 @@ class SandboxManager:
     def execute_with_tracing(
         self,
         script: Path,
-        args: Optional[List[str]] = None,
+        args: Optional[list[str]] = None,
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute script with call tracing enabled.
@@ -353,7 +353,7 @@ except SystemExit:
         self,
         source_dir: Path,
         entry_point: str = "main.py",
-        args: Optional[List[str]] = None,
+        args: Optional[list[str]] = None,
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute in isolated temporary directory.

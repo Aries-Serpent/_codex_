@@ -18,7 +18,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +42,8 @@ class LRUCache:
     def __init__(self, max_size: int = 1000, ttl_seconds: float = 300):
         self.max_size = max_size
         self.ttl_seconds = ttl_seconds
-        self._cache: Dict[str, tuple] = {}  # key -> (value, timestamp)
-        self._access_order: List[str] = []
+        self._cache: dict[str, tuple] = {}  # key -> (value, timestamp)
+        self._access_order: list[str] = []
         self._lock = threading.RLock()
         self._hits = 0
         self._misses = 0
@@ -67,7 +67,7 @@ class LRUCache:
             return None
 
     def set(self, key: str, value: Any) -> None:
-        """Set value in cache."""
+        """set value in cache."""
         with self._lock:
             if key in self._cache:
                 self._access_order.remove(key)
@@ -92,7 +92,7 @@ class LRUCache:
         return self._hits / total if total > 0 else 0.0
 
     @property
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         with self._lock:
             return {
@@ -276,7 +276,7 @@ class LoadBalancer:
 
     def __init__(
         self,
-        endpoints: List[Endpoint],
+        endpoints: list[Endpoint],
         strategy: str = "round_robin",
     ):
         self.endpoints = endpoints
@@ -299,16 +299,16 @@ class LoadBalancer:
         else:
             return healthy[0]
 
-    def _round_robin(self, endpoints: List[Endpoint]) -> Endpoint:
+    def _round_robin(self, endpoints: list[Endpoint]) -> Endpoint:
         with self._lock:
             endpoint = endpoints[self._current_index % len(endpoints)]
             self._current_index += 1
             return endpoint
 
-    def _least_connections(self, endpoints: List[Endpoint]) -> Endpoint:
+    def _least_connections(self, endpoints: list[Endpoint]) -> Endpoint:
         return min(endpoints, key=lambda e: e.current_connections)
 
-    def _weighted(self, endpoints: List[Endpoint]) -> Endpoint:
+    def _weighted(self, endpoints: list[Endpoint]) -> Endpoint:
         from secrets import SystemRandom
 
         total_weight = sum(e.weight for e in endpoints)
@@ -343,7 +343,7 @@ class ResourcePool:
         self.max_size = max_size
         self.min_size = min_size
 
-        self._pool: List[T] = []
+        self._pool: list[T] = []
         self._in_use: int = 0
         self._lock = threading.Lock()
         self._condition = threading.Condition(self._lock)
@@ -384,7 +384,7 @@ class ResourcePool:
             self._condition.notify()
 
     @property
-    def stats(self) -> Dict[str, int]:
+    def stats(self) -> dict[str, int]:
         """Get pool statistics."""
         with self._lock:
             return {
@@ -401,17 +401,17 @@ class MetricPoint:
     name: str
     value: float
     timestamp: float = field(default_factory=time.time)
-    tags: Dict[str, str] = field(default_factory=dict)
+    tags: dict[str, str] = field(default_factory=dict)
 
 
 class PerformanceMonitor:
     """Performance monitoring and metrics collection."""
 
     def __init__(self):
-        self._metrics: Dict[str, List[MetricPoint]] = defaultdict(list)
+        self._metrics: dict[str, list[MetricPoint]] = defaultdict(list)
         self._lock = threading.Lock()
 
-    def record(self, name: str, value: float, tags: Dict[str, str] = None) -> None:
+    def record(self, name: str, value: float, tags: dict[str, str] = None) -> None:
         """Record a metric value."""
         with self._lock:
             point = MetricPoint(name=name, value=value, tags=tags or {})
@@ -442,7 +442,7 @@ class PerformanceMonitor:
             idx = int(len(recent) * percentile / 100)
             return recent[min(idx, len(recent) - 1)]
 
-    def get_summary(self) -> Dict[str, Dict[str, Any]]:
+    def get_summary(self) -> dict[str, dict[str, Any]]:
         """Get summary of all metrics."""
         with self._lock:
             summary = {}

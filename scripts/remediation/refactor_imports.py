@@ -21,7 +21,6 @@ import argparse
 import ast
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple
 import shutil
 import subprocess
 import sys
@@ -31,7 +30,7 @@ SRC_DIRS = [ROOT / "src", ROOT]
 PY_FILES = list(ROOT.rglob("*.py"))
 
 
-def load_mappings(mapping_arg: str) -> Dict[str, str]:
+def load_mappings(mapping_arg: str) -> dict[str, str]:
     # mapping_arg can be a JSON string or path to a JSON file
     p = Path(mapping_arg)
     if p.exists():
@@ -43,7 +42,7 @@ def load_mappings(mapping_arg: str) -> Dict[str, str]:
         raise RuntimeError(f"Invalid mapping: {e}")
 
 
-def find_candidate_files() -> List[Path]:
+def find_candidate_files() -> list[Path]:
     files = []
     for p in ROOT.rglob("*.py"):
         # skip virtualenvs, audit_artifacts, .git, etc.
@@ -53,7 +52,7 @@ def find_candidate_files() -> List[Path]:
     return files
 
 
-def process_file(path: Path, mappings: Dict[str, str]) -> Tuple[bool, str]:
+def process_file(path: Path, mappings: dict[str, str]) -> tuple[bool, str]:
     """
     Returns (changed, new_source)
     """
@@ -101,7 +100,7 @@ def process_file(path: Path, mappings: Dict[str, str]) -> Tuple[bool, str]:
     return True, new_src
 
 
-def run_dry_run(mappings: Dict[str, str], limit: int = 100) -> List[Tuple[Path, str]]:
+def run_dry_run(mappings: dict[str, str], limit: int = 100) -> list[tuple[Path, str]]:
     candidates = find_candidate_files()
     changes = []
     for p in candidates:
@@ -117,7 +116,7 @@ def run_dry_run(mappings: Dict[str, str], limit: int = 100) -> List[Tuple[Path, 
     return changes
 
 
-def apply_changes(changes: List[Tuple[Path, str]], commit_per_batch: int = 20):
+def apply_changes(changes: list[tuple[Path, str]], commit_per_batch: int = 20):
     idx = 0
     total = len(changes)
     while idx < total:

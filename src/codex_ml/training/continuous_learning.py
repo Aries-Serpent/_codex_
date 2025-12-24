@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class ModelVersion:
 
     version: str
     model_path: Path
-    metrics: Dict[str, float]
+    metrics: dict[str, float]
     trained_at: str
     dataset_hash: Optional[str] = None
     drift_score: Optional[float] = None
@@ -72,7 +72,7 @@ class ModelRegistry:
             registry_path: Path to registry JSON file
         """
         self.registry_path = Path(registry_path)
-        self.versions: List[ModelVersion] = []
+        self.versions: list[ModelVersion] = []
         self.load()
 
     def load(self):
@@ -150,7 +150,7 @@ class ContinuousLearningPipeline:
         self,
         drift_score: float,
         samples_count: int,
-        current_performance: Optional[Dict[str, float]] = None,
+        current_performance: Optional[dict[str, float]] = None,
     ) -> bool:
         """Determine if retraining should be triggered.
 
@@ -243,7 +243,7 @@ class ContinuousLearningPipeline:
         new_version: ModelVersion,
         baseline_version: Optional[ModelVersion] = None,
         primary_metric: str = "accuracy",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Compare two model versions.
 
         Args:

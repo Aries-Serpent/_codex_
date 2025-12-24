@@ -8,7 +8,7 @@ Generated: 2025-11-19 04:02:05
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +17,11 @@ class LoggerBackend(ABC):
     """Base class for logger backends"""
 
     @abstractmethod
-    def log_metrics(self, metrics: Dict[str, Any], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None):
         pass
 
     @abstractmethod
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         pass
 
     @abstractmethod
@@ -122,7 +122,7 @@ class LoggerRegistry:
     """Central logger registry"""
 
     def __init__(self):
-        self.backends: Dict[str, LoggerBackend] = {}
+        self.backends: dict[str, LoggerBackend] = {}
 
     def register(self, name: str, backend: LoggerBackend):
         self.backends[name] = backend
@@ -144,7 +144,7 @@ class LoggerRegistry:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed end: {e}")
 
-    def log_metrics(self, metrics: Dict, step: Optional[int] = None):
+    def log_metrics(self, metrics: dict, step: Optional[int] = None):
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
@@ -152,7 +152,7 @@ class LoggerRegistry:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed log: {e}")
 
-    def log_params(self, params: Dict):
+    def log_params(self, params: dict):
         for backend in self.backends.values():
             try:
                 backend.log_params(params)

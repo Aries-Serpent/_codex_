@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Optional, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
@@ -82,9 +82,9 @@ class CodebaseHealth:
     """Overall codebase health assessment."""
     timestamp: str
     overall_status: HealthStatus
-    metrics: List[HealthMetric]
-    proposed_actions: List[ProposedAction]
-    alerts: List[str]
+    metrics: list[HealthMetric]
+    proposed_actions: list[ProposedAction]
+    alerts: list[str]
 
 
 class CodeHealthSensor:
@@ -93,7 +93,7 @@ class CodeHealthSensor:
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path.resolve()
     
-    def analyze_complexity(self) -> List[HealthMetric]:
+    def analyze_complexity(self) -> list[HealthMetric]:
         """Analyze code complexity across the codebase."""
         metrics = []
         high_complexity_files = []
@@ -143,12 +143,12 @@ class CodeHealthSensor:
                 complexity += len(child.values) - 1
         return complexity
     
-    def detect_duplicate_code(self) -> List[HealthMetric]:
+    def detect_duplicate_code(self) -> list[HealthMetric]:
         """Detect duplicate code blocks."""
         metrics = []
         
         # Simple hash-based duplicate detection
-        code_hashes: Dict[str, List[str]] = {}
+        code_hashes: dict[str, list[str]] = {}
         
         for py_file in self.repo_path.rglob("*.py"):
             if any(skip in py_file.parts for skip in ['.venv', '__pycache__']):
@@ -185,7 +185,7 @@ class CodeHealthSensor:
         
         return metrics
     
-    def check_test_coverage(self) -> List[HealthMetric]:
+    def check_test_coverage(self) -> list[HealthMetric]:
         """Estimate test coverage by checking test file presence."""
         metrics = []
         
@@ -207,7 +207,7 @@ class CodeHealthSensor:
         
         return metrics
     
-    def scan_security_issues(self) -> List[HealthMetric]:
+    def scan_security_issues(self) -> list[HealthMetric]:
         """Scan for common security issues."""
         metrics = []
         security_issues = []
@@ -252,7 +252,7 @@ class ActionProposer:
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path.resolve()
     
-    def propose_actions(self, health: CodebaseHealth) -> List[ProposedAction]:
+    def propose_actions(self, health: CodebaseHealth) -> list[ProposedAction]:
         """Propose actions based on health metrics."""
         actions = []
         
@@ -346,7 +346,7 @@ class AutonomousAgent:
         self.state_path = repo_path / ".codex" / "agent_state"
         self.state_path.mkdir(parents=True, exist_ok=True)
     
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> dict[str, Any]:
         """Load agent configuration."""
         if self.config_path.exists():
             with open(self.config_path) as f:
@@ -397,7 +397,7 @@ class AutonomousAgent:
             alerts=alerts
         )
     
-    def propose_improvements(self, health: CodebaseHealth) -> List[ProposedAction]:
+    def propose_improvements(self, health: CodebaseHealth) -> list[ProposedAction]:
         """Propose improvement actions based on health assessment."""
         print("Proposing improvement actions...")
         
@@ -414,7 +414,7 @@ class AutonomousAgent:
         
         return actions[:max_actions]
     
-    def execute_autonomous_actions(self, actions: List[ProposedAction]) -> List[ProposedAction]:
+    def execute_autonomous_actions(self, actions: list[ProposedAction]) -> list[ProposedAction]:
         """Execute actions that don't require approval."""
         if not self.config.get("autonomous_actions_enabled", True):
             print("Autonomous actions are disabled")
@@ -466,7 +466,7 @@ class AutonomousAgent:
         with open(execution_log, 'a') as f:
             f.write(json.dumps(log_entry) + '\n')
     
-    def save_state(self, health: CodebaseHealth, actions: List[ProposedAction]):
+    def save_state(self, health: CodebaseHealth, actions: list[ProposedAction]):
         """Save current agent state."""
         state = {
             "timestamp": datetime.now().isoformat(),
@@ -481,7 +481,7 @@ class AutonomousAgent:
         
         print(f"State saved: {state_file}")
     
-    def run_cycle(self) -> Tuple[CodebaseHealth, List[ProposedAction]]:
+    def run_cycle(self) -> tuple[CodebaseHealth, list[ProposedAction]]:
         """Run a complete monitoring and action cycle."""
         print("="*70)
         print("Starting Autonomous Agent Cycle")
@@ -505,7 +505,7 @@ class AutonomousAgent:
         
         return health, actions
     
-    def print_summary(self, health: CodebaseHealth, actions: List[ProposedAction], executed: List[ProposedAction]):
+    def print_summary(self, health: CodebaseHealth, actions: list[ProposedAction], executed: list[ProposedAction]):
         """Print cycle summary."""
         print("\n" + "="*70)
         print("Autonomous Agent Cycle Summary")

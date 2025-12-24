@@ -7,7 +7,6 @@ to ensure all markers are registered, preventing test collection failures.
 from pathlib import Path
 import re
 import sys
-from typing import Set, Dict
 import configparser
 
 # Patterns for marker discovery
@@ -49,7 +48,7 @@ KNOWN_MARKERS = {
 }
 
 
-def find_markers_in_file(filepath: Path) -> Set[str]:
+def find_markers_in_file(filepath: Path) -> set[str]:
     """Find all pytest markers used in a Python file."""
     markers = set()
     try:
@@ -70,7 +69,7 @@ def find_markers_in_file(filepath: Path) -> Set[str]:
     return markers
 
 
-def scan_repository(root: Path) -> Set[str]:
+def scan_repository(root: Path) -> set[str]:
     """Scan repository for markers."""
     markers = set()
 
@@ -91,7 +90,7 @@ def scan_repository(root: Path) -> Set[str]:
     return markers
 
 
-def read_existing_markers(pytest_ini_path: Path) -> Dict[str, str]:
+def read_existing_markers(pytest_ini_path: Path) -> dict[str, str]:
     """Read existing markers from pytest.ini."""
     if not pytest_ini_path.exists():
         return {}
@@ -111,7 +110,7 @@ def read_existing_markers(pytest_ini_path: Path) -> Dict[str, str]:
     return existing
 
 
-def update_pytest_ini(pytest_ini_path: Path, discovered_markers: Set[str]) -> bool:
+def update_pytest_ini(pytest_ini_path: Path, discovered_markers: set[str]) -> bool:
     """Update pytest.ini with discovered markers, preserving existing content."""
     if not pytest_ini_path.exists():
         print(f"⚠ Error: {pytest_ini_path} does not exist")

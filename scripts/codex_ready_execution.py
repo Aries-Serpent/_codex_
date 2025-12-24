@@ -17,7 +17,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from typing import Iterable, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_DIR = REPO_ROOT / "artifacts" / "codex_ready"
@@ -154,7 +154,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_error("STEP_2:SCAN_REPOSITORY", "Pattern scan failed", exc)
         raise
 
-    change_entries: List[dict] = [
+    change_entries: list[dict] = [
         {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "description": args.change_description,

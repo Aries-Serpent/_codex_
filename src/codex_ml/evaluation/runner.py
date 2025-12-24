@@ -35,7 +35,7 @@ import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 try:
     import torch
@@ -65,7 +65,7 @@ class MetricAdapter:
     Base class for metric adapters.
 
     Subclasses should implement:
-    - compute(predictions, references) -> Dict[str, float]
+    - compute(predictions, references) -> dict[str, float]
     """
 
     def __init__(self, name: str):
@@ -78,7 +78,7 @@ class MetricAdapter:
         self._predictions.extend(predictions if isinstance(predictions, list) else [predictions])
         self._references.extend(references if isinstance(references, list) else [references])
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute final metrics from accumulated results."""
         raise NotImplementedError("Subclasses must implement compute()")
 
@@ -102,7 +102,7 @@ class EvaluationRunner:
     Args:
         model: Model to evaluate (should have forward() or predict() method)
         dataset: Evaluation dataset or DataLoader
-        metrics: List of MetricAdapter instances or callables
+        metrics: list of MetricAdapter instances or callables
         config: EvaluationConfig instance
         tracking_writer: Optional tracking writer (MLflowWriter/NdjsonWriter)
         output_dir: Directory for artifacts (default: artifacts/evaluation)
@@ -112,7 +112,7 @@ class EvaluationRunner:
         self,
         model: Any,
         dataset: Union[Any, "DataLoader"],
-        metrics: List[Union[MetricAdapter, Callable]],
+        metrics: list[Union[MetricAdapter, Callable]],
         config: Optional[EvaluationConfig] = None,
         tracking_writer: Optional[Any] = None,
         output_dir: Optional[str] = None,
@@ -131,8 +131,8 @@ class EvaluationRunner:
         self.output_path.mkdir(parents=True, exist_ok=True)
 
         # Results storage
-        self.results: Dict[str, Any] = {}
-        self.predictions: List[Any] = []
+        self.results: dict[str, Any] = {}
+        self.predictions: list[Any] = []
 
     def _wrap_metric(self, metric: Union[MetricAdapter, Callable]) -> MetricAdapter:
         """Wrap callable metrics in MetricAdapter interface."""
@@ -145,7 +145,7 @@ class EvaluationRunner:
                 super().__init__(name)
                 self.fn = fn
 
-            def compute(self) -> Dict[str, float]:
+            def compute(self) -> dict[str, float]:
                 try:
                     result = self.fn(self._predictions, self._references)
                     if isinstance(result, dict):
@@ -159,7 +159,7 @@ class EvaluationRunner:
         name = getattr(metric, "__name__", "custom_metric")
         return CallableMetricAdapter(metric, name)
 
-    def run(self) -> Dict[str, Any]:
+    def run(self) -> dict[str, Any]:
         """
         Execute evaluation run.
 

@@ -19,12 +19,12 @@ import logging
 import sys
 from importlib import util
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
 # Lazy imports to avoid hard dependencies
-_LOADERS: Dict[str, Callable] = {}
+_LOADERS: dict[str, Callable] = {}
 _CORE_MODULE_NAME = "codex_ml.data._core_loaders"
 _CORE_MODULE_PATH = Path(__file__).resolve().parent.parent / "loaders.py"
 
@@ -77,7 +77,7 @@ def register_loader(extensions: list, loader_fn: Callable):
     Register a loader function for file extensions
 
     Args:
-        extensions: List of file extensions (e.g., ['.jsonl', '.json'])
+        extensions: list of file extensions (e.g., ['.jsonl', '.json'])
         loader_fn: Function that takes (path, **kwargs) and returns data
     """
     for ext in extensions:

@@ -14,7 +14,7 @@ mathematical accuracy to the underlying physics.
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -176,7 +176,7 @@ class DiracMatrices:
         return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, -1]], dtype=complex)
 
     @classmethod
-    def alpha_vector(cls) -> List[np.ndarray]:
+    def alpha_vector(cls) -> list[np.ndarray]:
         """Vector of α matrices [α₁, α₂, α₃]."""
         return [cls.alpha_x(), cls.alpha_y(), cls.alpha_z()]
 
@@ -194,8 +194,8 @@ class TaskState:
     velocity: np.ndarray = field(default_factory=lambda: np.zeros(5))
     rest_mass: float = 1.0
     deadline: Optional[float] = None
-    dependencies: List[str] = field(default_factory=list)
-    required_resources: Dict[str, float] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    required_resources: dict[str, float] = field(default_factory=dict)
 
     _constants: PhysicsConstants = field(default_factory=PhysicsConstants, repr=False)
 
@@ -206,7 +206,7 @@ class TaskState:
 
     @amplitude.setter
     def amplitude(self, value: complex) -> None:
-        """Set amplitude (modifies first spinor component)."""
+        """set amplitude (modifies first spinor component)."""
         self.spinor.components[0] = value
         self.spinor.normalize()
 
@@ -301,7 +301,7 @@ class MomentumOperator:
 
     def _get_neighbors(
         self, state: "OrchestratorState", task_id: str, radius: float = 2.0
-    ) -> Dict[str, TaskState]:
+    ) -> dict[str, TaskState]:
         """Get neighboring tasks within radius."""
         task = state.tasks[task_id]
         task_pos = task.position.to_array()
@@ -535,7 +535,7 @@ class FlowAnalyzer:
         previous_state: "OrchestratorState",
         dt: float,
         threshold: float = 0.01,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Identify tasks where probability accumulates but doesn't flow."""
         bottlenecks = []
 
@@ -574,8 +574,8 @@ class FlowAnalyzer:
 class OrchestratorState:
     """Complete state of the orchestrator system."""
 
-    tasks: Dict[str, TaskState] = field(default_factory=dict)
-    resources: Dict[str, float] = field(default_factory=dict)
+    tasks: dict[str, TaskState] = field(default_factory=dict)
+    resources: dict[str, float] = field(default_factory=dict)
     timestamp: float = 0.0
     coherence: float = 1.0
     constants: PhysicsConstants = field(default_factory=PhysicsConstants, repr=False)
@@ -639,7 +639,7 @@ class QuantumRelativisticDiracOrchestrator:
 
         # State
         self.state = OrchestratorState(constants=self.constants)
-        self.history: List[OrchestratorState] = []
+        self.history: list[OrchestratorState] = []
 
     def add_task(self, task_id: str, name: str, **kwargs) -> None:
         """
@@ -656,8 +656,8 @@ class QuantumRelativisticDiracOrchestrator:
                 dependency_depth: int
                 rest_mass: float
                 deadline: Optional[float]
-                dependencies: List[str]
-                required_resources: Dict[str, float]
+                dependencies: list[str]
+                required_resources: dict[str, float]
         """
         # Extract position-related kwargs for TaskVector
         position_kwargs = {
@@ -707,7 +707,7 @@ class QuantumRelativisticDiracOrchestrator:
         # Update timestamp
         self.state.timestamp += self.dt
 
-    def check_stability(self) -> List[str]:
+    def check_stability(self) -> list[str]:
         """Check for unstable tasks (high zitterbewegung)."""
         unstable = []
         for task_id, task in self.state.tasks.items():
@@ -757,7 +757,7 @@ class QuantumRelativisticDiracOrchestrator:
         # Renormalize
         self.state.normalize()
 
-    def measure(self, task_id: str) -> Dict[str, Any]:
+    def measure(self, task_id: str) -> dict[str, Any]:
         """Collapse wave function (execute task)."""
         task = self.state.tasks[task_id]
         probability = task.probability
@@ -768,7 +768,7 @@ class QuantumRelativisticDiracOrchestrator:
             return {"status": "completed", "task_id": task_id}
         return {"status": "pending", "task_id": task_id}
 
-    def run(self, max_iterations: int = 1000) -> Dict[str, Any]:
+    def run(self, max_iterations: int = 1000) -> dict[str, Any]:
         """
         Main orchestration loop.
 
@@ -808,7 +808,7 @@ class QuantumRelativisticDiracOrchestrator:
             ),
         }
 
-    def get_task_status(self) -> Dict[str, Dict[str, Any]]:
+    def get_task_status(self) -> dict[str, dict[str, Any]]:
         """Get status of all tasks."""
         status = {}
         for task_id, task in self.state.tasks.items():
@@ -828,7 +828,7 @@ class QuantumRelativisticDiracOrchestrator:
             }
         return status
 
-    def verify_conservation(self) -> Dict[str, Any]:
+    def verify_conservation(self) -> dict[str, Any]:
         """
         Verify continuity equation: ∂ρ/∂t + ∇·j = 0.
 

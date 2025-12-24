@@ -10,7 +10,7 @@ Safeguards: Bounded file reading, error handling, deterministic output
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 MAX_READ_BYTES = 200_000  # Bounded read for safety
 
@@ -22,7 +22,7 @@ RELATED_FILES = [
 ]
 
 
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+def detect(file_index: dict[str, Any]) -> dict[str, Any]:
     """
     Detect presence of MCP server protocol surface.
 
@@ -34,8 +34,8 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     - Reproducible pattern matching
     """
     files = [f.get("path", "") for f in file_index.get("files", [])]
-    evidence: List[str] = []
-    found: List[str] = []
+    evidence: list[str] = []
+    found: list[str] = []
 
     # Keywords indicating an MCP server surface
     keywords = ["FastAPI", "@app.get", "@app.post", "uvicorn", "jsonrpc"]

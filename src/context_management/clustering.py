@@ -7,7 +7,7 @@ using cosine similarity with configurable thresholds.
 
 import hashlib
 import math
-from typing import List, Dict, Optional, Tuple, Set
+from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -17,7 +17,7 @@ class ClusterMember:
     """A member of a semantic cluster."""
 
     text: str
-    embedding: Optional[List[float]] = None
+    embedding: Optional[list[float]] = None
     similarity_to_centroid: float = 1.0
     timestamp: datetime = field(default_factory=datetime.now)
     source: str = ""
@@ -29,8 +29,8 @@ class SemanticCluster:
 
     cluster_id: str
     centroid_text: str
-    centroid_embedding: Optional[List[float]] = None
-    members: List[ClusterMember] = field(default_factory=list)
+    centroid_embedding: Optional[list[float]] = None
+    members: list[ClusterMember] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
     confidence_score: float = 1.0
 
@@ -78,12 +78,12 @@ class SemanticClusterer:
         self.max_clusters = max_clusters
         self.use_embeddings = use_embeddings
 
-        self._clusters: Dict[str, SemanticCluster] = {}
-        self._text_to_cluster: Dict[str, str] = {}  # text_hash -> cluster_id
+        self._clusters: dict[str, SemanticCluster] = {}
+        self._text_to_cluster: dict[str, str] = {}  # text_hash -> cluster_id
 
     def add_statement(
-        self, text: str, embedding: Optional[List[float]] = None, source: str = ""
-    ) -> Tuple[str, bool]:
+        self, text: str, embedding: Optional[list[float]] = None, source: str = ""
+    ) -> tuple[str, bool]:
         """
         Add statement to appropriate cluster or create new cluster.
 
@@ -93,7 +93,7 @@ class SemanticClusterer:
             source: Source identifier
 
         Returns:
-            Tuple of (cluster_id, is_new_cluster)
+            tuple of (cluster_id, is_new_cluster)
         """
         text_hash = self._hash_text(text)
 
@@ -157,7 +157,7 @@ class SemanticClusterer:
             return self._clusters.get(cluster_id)
         return None
 
-    def get_representative_statements(self, max_per_cluster: int = 1) -> List[str]:
+    def get_representative_statements(self, max_per_cluster: int = 1) -> list[str]:
         """
         Get representative statements from each cluster.
 
@@ -165,7 +165,7 @@ class SemanticClusterer:
             max_per_cluster: Maximum representatives per cluster
 
         Returns:
-            List of representative statement texts
+            list of representative statement texts
         """
         representatives = []
         for cluster in self._clusters.values():
@@ -179,15 +179,15 @@ class SemanticClusterer:
                 representatives.append(member.text)
         return representatives
 
-    def cluster_statements(self, statements: List[str]) -> Dict[str, List[str]]:
+    def cluster_statements(self, statements: list[str]) -> dict[str, list[str]]:
         """
         Cluster a list of statements.
 
         Args:
-            statements: List of statement texts
+            statements: list of statement texts
 
         Returns:
-            Dict mapping cluster_id to list of statement texts
+            dict mapping cluster_id to list of statement texts
         """
         for stmt in statements:
             self.add_statement(stmt)
@@ -197,7 +197,7 @@ class SemanticClusterer:
             result[cluster_id] = [m.text for m in cluster.members]
         return result
 
-    def get_cluster_summary(self) -> Dict:
+    def get_cluster_summary(self) -> dict:
         """Get summary statistics of all clusters."""
         return {
             "total_clusters": len(self._clusters),
@@ -232,8 +232,8 @@ class SemanticClusterer:
         self,
         text1: str,
         text2: str,
-        embedding1: Optional[List[float]] = None,
-        embedding2: Optional[List[float]] = None,
+        embedding1: Optional[list[float]] = None,
+        embedding2: Optional[list[float]] = None,
     ) -> float:
         """
         Compute similarity between two texts.
@@ -245,7 +245,7 @@ class SemanticClusterer:
         else:
             return self._token_similarity(text1, text2)
 
-    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+    def _cosine_similarity(self, vec1: list[float], vec2: list[float]) -> float:
         """Compute cosine similarity between two vectors."""
         if len(vec1) != len(vec2):
             return 0.0

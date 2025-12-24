@@ -33,7 +33,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 ART_DIR = Path("audit_artifacts")
 IN_REPORT = ART_DIR / "secret_entropy_report.json"
@@ -91,7 +91,7 @@ def main():
         "medium": float(os.getenv("SEVERITY_MEDIUM_WEIGHT", "0.02")),
         "low": float(os.getenv("SEVERITY_LOW_WEIGHT", "0.01")),
     }
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "counts": counts | {"total": total},
         "weights": weights,
         "findings": classified,

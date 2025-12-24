@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class Patch:
     tier: Tier
     description: str
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "file_path": self.file_path,
@@ -87,13 +87,13 @@ class TransformResult:
     """
     snapshot_id: str
     timestamp: datetime
-    tier_a_patches: List[Patch] = field(default_factory=list)
-    tier_b_patches: List[Patch] = field(default_factory=list)
-    tier_c_suggestions: List[Dict[str, Any]] = field(default_factory=list)
+    tier_a_patches: list[Patch] = field(default_factory=list)
+    tier_b_patches: list[Patch] = field(default_factory=list)
+    tier_c_suggestions: list[dict[str, Any]] = field(default_factory=list)
     applied: bool = False
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "snapshot_id": self.snapshot_id,

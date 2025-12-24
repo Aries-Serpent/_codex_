@@ -31,7 +31,7 @@ import os
 import sys
 from bisect import bisect_right
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 
 ART_DIR = Path(os.getenv("SECRET_CONTEXT_ARTIFACT_DIR", "audit_artifacts"))
 ENTROPY_REPORT = ART_DIR / "secret_entropy_report.json"
@@ -47,12 +47,12 @@ def is_context_path(file_path: str) -> bool:
     return any(ctx in lower for ctx in CONTEXT_PATHS)
 
 
-FileContent = Tuple[List[str], str, List[int]]
+FileContent = tuple[list[str], str, list[int]]
 
 
 def has_nearby_keywords(
-    lines: Optional[List[str]], line_hint: int, keywords: Set[str], window: int
-) -> List[str]:
+    lines: Optional[list[str]], line_hint: int, keywords: set[str], window: int
+) -> list[str]:
     """Check for keywords within window lines of the finding."""
     if not lines:
         return []
@@ -89,13 +89,13 @@ def load_file_content(file_path: Path) -> Optional[FileContent]:
 
 
 def compute_line_hints(
-    span: str, text: str, newline_positions: List[int], total_lines: int
-) -> List[int]:
+    span: str, text: str, newline_positions: list[int], total_lines: int
+) -> list[int]:
     """Return all candidate line indices where the span appears."""
     if not span:
         return []
 
-    hints: List[int] = []
+    hints: list[int] = []
     step = max(1, len(span))
     start = 0
     while True:
@@ -110,15 +110,15 @@ def compute_line_hints(
 
 
 def correlate_findings(
-    findings: List[Dict],
-    keywords: Set[str],
+    findings: list[dict],
+    keywords: set[str],
     window: int,
     workspace_root: Path,
-) -> List[Dict]:
+) -> list[dict]:
     """Correlate findings with context indicators."""
     elevated = []
 
-    file_cache: Dict[Path, Optional[FileContent]] = {}
+    file_cache: dict[Path, Optional[FileContent]] = {}
 
     for finding in findings:
         file_path_str = finding.get("file", "")
@@ -136,7 +136,7 @@ def correlate_findings(
             file_cache[file_path] = load_file_content(file_path)
 
         cached = file_cache[file_path]
-        nearby: List[str] = []
+        nearby: list[str] = []
         if cached:
             lines, text, newline_positions = cached
             total_lines = len(lines)
@@ -148,7 +148,7 @@ def correlate_findings(
                 fallback = total_lines // 2 if total_lines else 0
                 hints = [fallback]
 
-            found: Set[str] = set()
+            found: set[str] = set()
             for hint in hints:
                 for kw in has_nearby_keywords(lines, hint, keywords, window):
                     found.add(kw)

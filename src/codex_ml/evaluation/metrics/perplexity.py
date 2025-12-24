@@ -5,7 +5,7 @@ Computes perplexity for language models.
 Perplexity = exp(average negative log-likelihood)
 """
 
-from typing import Any, Dict
+from typing import Any
 import logging
 logger = logging.getLogger(__name__)
 import math
@@ -88,7 +88,7 @@ class PerplexityMetric(MetricAdapter):
         self._total_loss += loss.item()
         self._total_tokens += valid_tokens
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute final perplexity."""
         if self._total_tokens == 0:
             return {self.name: float("inf"), "loss": float("inf")}

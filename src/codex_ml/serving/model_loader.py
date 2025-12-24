@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from threading import Lock
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -85,11 +85,11 @@ class ModelConfig:
                 f"Invalid torch_dtype: {self.torch_dtype}. Must be one of {valid_dtypes}"
             )
 
-        # Set default cache dir
+        # set default cache dir
         if self.cache_dir is None:
             self.cache_dir = os.getenv("HF_HOME", str(Path.home() / ".cache" / "huggingface"))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary"""
         return {
             "model_name_or_path": self.model_name_or_path,
@@ -139,14 +139,14 @@ class ModelLoader:
             cache_size: Maximum number of models to keep in memory
         """
         self.cache_size = cache_size
-        self.cache: Dict[str, Dict[str, Any]] = {}
+        self.cache: dict[str, dict[str, Any]] = {}
         self.cache_order: list[str] = []  # LRU order
         self.lock = Lock()
-        self.load_times: Dict[str, float] = {}
+        self.load_times: dict[str, float] = {}
 
         logger.info(f"ModelLoader initialized with cache_size={cache_size}")
 
-    def load_model(self, config: Union[ModelConfig, Dict[str, Any]]) -> Dict[str, Any]:
+    def load_model(self, config: Union[ModelConfig, dict[str, Any]]) -> dict[str, Any]:
         """Load model with caching
 
         Args:
@@ -204,7 +204,7 @@ class ModelLoader:
             logger.error(f"Failed to load model: {e}")
             raise RuntimeError(f"Model loading failed: {e}") from e
 
-    def _load_from_source(self, config: ModelConfig) -> Dict[str, Any]:
+    def _load_from_source(self, config: ModelConfig) -> dict[str, Any]:
         """Load model from HuggingFace or local path
 
         Args:
@@ -223,7 +223,7 @@ class ModelLoader:
         else:
             return self._load_huggingface(config)
 
-    def _load_local(self, config: ModelConfig) -> Dict[str, Any]:
+    def _load_local(self, config: ModelConfig) -> dict[str, Any]:
         """Load model from local checkpoint
 
         Args:
@@ -253,7 +253,7 @@ class ModelLoader:
             "load_time": time.time(),
         }
 
-    def _load_huggingface(self, config: ModelConfig) -> Dict[str, Any]:
+    def _load_huggingface(self, config: ModelConfig) -> dict[str, Any]:
         """Load model from HuggingFace Hub
 
         Args:
@@ -373,7 +373,7 @@ class ModelLoader:
             self.load_times.clear()
             logger.info("Model cache cleared")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics"""
         with self.lock:
             return {

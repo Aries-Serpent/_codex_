@@ -3,7 +3,7 @@
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -50,7 +50,7 @@ class WorkflowInput(BaseModel):
     required: bool = Field(False, description="Whether input is required")
     type: InputType = Field(InputType.STRING, description="Input type")
     default: Optional[Union[str, bool, int]] = Field(None, description="Default value")
-    options: Optional[List[str]] = Field(None, description="Choice options")
+    options: Optional[list[str]] = Field(None, description="Choice options")
 
     class Config:
         frozen = True
@@ -60,11 +60,11 @@ class WorkflowTrigger(BaseModel):
     """Workflow trigger configuration."""
 
     type: TriggerType = Field(..., description="Trigger type")
-    branches: Optional[List[str]] = Field(None, description="Branch filters")
-    paths: Optional[List[str]] = Field(None, description="Path filters")
-    types: Optional[List[str]] = Field(None, description="Activity types")
-    schedule_cron: Optional[List[str]] = Field(None, description="Cron schedules")
-    workflows: Optional[List[str]] = Field(None, description="Workflow dependencies")
+    branches: Optional[list[str]] = Field(None, description="Branch filters")
+    paths: Optional[list[str]] = Field(None, description="Path filters")
+    types: Optional[list[str]] = Field(None, description="Activity types")
+    schedule_cron: Optional[list[str]] = Field(None, description="Cron schedules")
+    workflows: Optional[list[str]] = Field(None, description="Workflow dependencies")
 
     class Config:
         frozen = True
@@ -75,8 +75,8 @@ class WorkflowJob(BaseModel):
 
     id: str = Field(..., description="Job ID")
     name: Optional[str] = Field(None, description="Job display name")
-    runs_on: Union[str, List[str]] = Field(..., description="Runner labels")
-    needs: Optional[List[str]] = Field(None, description="Job dependencies")
+    runs_on: Union[str, list[str]] = Field(..., description="Runner labels")
+    needs: Optional[list[str]] = Field(None, description="Job dependencies")
     if_condition: Optional[str] = Field(None, alias="if", description="Conditional expression")
     steps: int = Field(0, description="Number of steps")
     timeout_minutes: Optional[int] = Field(None, description="Job timeout")
@@ -104,19 +104,19 @@ class WorkflowMetadata(BaseModel):
 
     name: str = Field(..., description="Workflow name")
     file_path: Path = Field(..., description="Path to workflow file")
-    triggers: List[WorkflowTrigger] = Field(
+    triggers: list[WorkflowTrigger] = Field(
         default_factory=list, description="Trigger configurations"
     )
-    inputs: Dict[str, WorkflowInput] = Field(default_factory=dict, description="Workflow inputs")
-    jobs: Dict[str, WorkflowJob] = Field(default_factory=dict, description="Job definitions")
-    dependencies: List[WorkflowDependency] = Field(
+    inputs: dict[str, WorkflowInput] = Field(default_factory=dict, description="Workflow inputs")
+    jobs: dict[str, WorkflowJob] = Field(default_factory=dict, description="Job definitions")
+    dependencies: list[WorkflowDependency] = Field(
         default_factory=list, description="Workflow dependencies"
     )
-    permissions: Dict[str, str] = Field(default_factory=dict, description="Permission settings")
-    env: Dict[str, Union[str, int, bool]] = Field(
+    permissions: dict[str, str] = Field(default_factory=dict, description="Permission settings")
+    env: dict[str, Union[str, int, bool]] = Field(
         default_factory=dict, description="Environment variables"
     )
-    concurrency: Optional[Dict[str, Any]] = Field(None, description="Concurrency settings")
+    concurrency: Optional[dict[str, Any]] = Field(None, description="Concurrency settings")
     is_reusable: bool = Field(False, description="Whether workflow is reusable")
     is_triggerable: bool = Field(False, description="Whether workflow can be manually triggered")
     last_modified: Optional[datetime] = Field(None, description="Last modification time")
@@ -140,12 +140,12 @@ class WorkflowMetadata(BaseModel):
         return any(t.type == TriggerType.WORKFLOW_DISPATCH for t in self.triggers)
 
     @property
-    def trigger_types(self) -> Set[TriggerType]:
+    def trigger_types(self) -> set[TriggerType]:
         """Get all trigger types."""
         return {t.type for t in self.triggers}
 
     @property
-    def job_ids(self) -> List[str]:
+    def job_ids(self) -> list[str]:
         """Get all job IDs."""
         return list(self.jobs.keys())
 
@@ -162,7 +162,7 @@ class InventoryStats(BaseModel):
     reusable_workflows: int = Field(0, description="Reusable workflows")
     total_jobs: int = Field(0, description="Total number of jobs")
     total_triggers: int = Field(0, description="Total number of triggers")
-    trigger_type_counts: Dict[str, int] = Field(
+    trigger_type_counts: dict[str, int] = Field(
         default_factory=dict, description="Count by trigger type"
     )
     dependency_count: int = Field(0, description="Number of workflow dependencies")

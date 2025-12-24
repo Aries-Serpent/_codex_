@@ -5,11 +5,10 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List
 
 
-def parse_requirements(paths: List[Path]) -> List[str]:
-    pkgs: List[str] = []
+def parse_requirements(paths: list[Path]) -> list[str]:
+    pkgs: list[str] = []
     for p in paths:
         if not p.exists():
             continue
@@ -24,7 +23,7 @@ def parse_requirements(paths: List[Path]) -> List[str]:
     return sorted(set(pkgs))
 
 
-def load_allowlist(p: Path) -> Dict[str, str]:
+def load_allowlist(p: Path) -> dict[str, str]:
     if not p.exists():
         return {}
     try:

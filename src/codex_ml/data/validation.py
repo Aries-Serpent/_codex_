@@ -14,7 +14,7 @@ import json
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,17 +39,17 @@ class ValidationResult:
         rule_name: Name of the validation rule
         is_valid: Whether validation passed
         message: Validation message
-        errors: List of specific error messages
-        warnings: List of warning messages
+        errors: list of specific error messages
+        warnings: list of warning messages
         metadata: Additional metadata
     """
 
     rule_name: str
     is_valid: bool
     message: str
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -90,11 +90,11 @@ class ValidationRule(ABC):
 class RequiredColumnsRule(ValidationRule):
     """Validate required columns are present."""
 
-    def __init__(self, required_columns: List[str]):
+    def __init__(self, required_columns: list[str]):
         """Initialize rule.
 
         Args:
-            required_columns: List of required column names
+            required_columns: list of required column names
         """
         super().__init__("required_columns")
         self.required_columns = set(required_columns)
@@ -149,7 +149,7 @@ class RequiredColumnsRule(ValidationRule):
 class NullCheckRule(ValidationRule):
     """Check for null values in specified columns."""
 
-    def __init__(self, columns: Optional[List[str]] = None, allow_nulls: bool = False):
+    def __init__(self, columns: Optional[list[str]] = None, allow_nulls: bool = False):
         """Initialize rule.
 
         Args:
@@ -203,7 +203,7 @@ class NullCheckRule(ValidationRule):
 class DataTypeRule(ValidationRule):
     """Validate column data types."""
 
-    def __init__(self, type_mapping: Dict[str, str]):
+    def __init__(self, type_mapping: dict[str, str]):
         """Initialize rule.
 
         Args:
@@ -263,7 +263,7 @@ class DataTypeRule(ValidationRule):
 class RangeCheckRule(ValidationRule):
     """Validate numeric values are within specified ranges."""
 
-    def __init__(self, range_specs: Dict[str, Dict[str, float]]):
+    def __init__(self, range_specs: dict[str, dict[str, float]]):
         """Initialize rule.
 
         Args:
@@ -338,7 +338,7 @@ class RangeCheckRule(ValidationRule):
 class UniqueCheckRule(ValidationRule):
     """Check for duplicate values in specified columns."""
 
-    def __init__(self, columns: List[str]):
+    def __init__(self, columns: list[str]):
         """Initialize rule.
 
         Args:
@@ -395,7 +395,7 @@ class UniqueCheckRule(ValidationRule):
 class SchemaValidationRule(ValidationRule):
     """Validate data against a JSON schema."""
 
-    def __init__(self, schema: Dict[str, Any]):
+    def __init__(self, schema: dict[str, Any]):
         """Initialize rule.
 
         Args:
@@ -452,7 +452,7 @@ class DataValidator:
 
     def __init__(self):
         """Initialize validator."""
-        self.rules: List[ValidationRule] = []
+        self.rules: list[ValidationRule] = []
 
     def add_rule(self, rule: ValidationRule) -> None:
         """Add a validation rule.

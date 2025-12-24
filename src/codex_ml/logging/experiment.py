@@ -30,7 +30,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -38,7 +38,7 @@ class ExperimentMeta:
     experiment_name: str
     mode: str
     run_id: str
-    labels: Dict[str, Any]
+    labels: dict[str, Any]
 
 
 class ExperimentTracker:
@@ -52,7 +52,7 @@ class ExperimentTracker:
     def log_experiment(
         self,
         experiment_name: Optional[str],
-        labels: Optional[Dict[str, Any]] = None,
+        labels: Optional[dict[str, Any]] = None,
     ) -> None:
         """Write experiment_meta.json if an experiment name is provided.
 

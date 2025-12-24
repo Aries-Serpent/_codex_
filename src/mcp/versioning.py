@@ -16,14 +16,13 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import List
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)
 
 # Supported MCP protocol versions in preference order (highest to lowest)
 # Deterministic ordering ensures reproducible version negotiation
-MCP_VERSIONS: List[str] = ["1.0"]
+MCP_VERSIONS: list[str] = ["1.0"]
 
 # Maximum bounds for version validation (safeguard)
 MAX_VERSION_LENGTH = 20
@@ -56,14 +55,14 @@ def _validate_version_string(version: str) -> bool:
     return bool(re.match(VERSION_PATTERN, version))
 
 
-def _sanitize_version_list(versions: List[str]) -> List[str]:
+def _sanitize_version_list(versions: list[str]) -> list[str]:
     """Sanitize and validate a list of version strings.
 
     Safeguard: Filters out invalid versions and bounds the list size
     to prevent resource exhaustion attacks.
 
     Args:
-        versions: List of version strings
+        versions: list of version strings
 
     Returns:
         Sanitized list of valid versions
@@ -86,7 +85,7 @@ def _sanitize_version_list(versions: List[str]) -> List[str]:
     return valid_versions
 
 
-def negotiate_version(client_versions: List[str]) -> str:
+def negotiate_version(client_versions: list[str]) -> str:
     """Negotiate MCP protocol version between client and server.
 
     Safeguards implemented:
@@ -97,7 +96,7 @@ def negotiate_version(client_versions: List[str]) -> str:
     - Deterministic version preference ordering
 
     Args:
-        client_versions: List of versions supported by the client
+        client_versions: list of versions supported by the client
 
     Returns:
         The negotiated version string (highest version supported by both)

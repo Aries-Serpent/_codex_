@@ -25,7 +25,6 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"
@@ -34,18 +33,18 @@ OUT = ART_DIR / "token_similarity.json"
 WORD_RE = re.compile(r"[A-Za-z0-9_]+")
 
 
-def tokenize(text: str, min_len: int) -> List[str]:
+def tokenize(text: str, min_len: int) -> list[str]:
     return [w.lower() for w in WORD_RE.findall(text) if len(w) >= min_len]
 
 
-def build_tf(tokens: List[str]) -> Dict[str, int]:
-    tf: Dict[str, int] = {}
+def build_tf(tokens: list[str]) -> dict[str, int]:
+    tf: dict[str, int] = {}
     for t in tokens:
         tf[t] = tf.get(t, 0) + 1
     return tf
 
 
-def cosine(a: Dict[str, int], b: Dict[str, int]) -> float:
+def cosine(a: dict[str, int], b: dict[str, int]) -> float:
     if not a or not b:
         return 0.0
     keys = set(a) | set(b)
@@ -57,7 +56,7 @@ def cosine(a: Dict[str, int], b: Dict[str, int]) -> float:
     return dot / (mag_a * mag_b)
 
 
-def similarity_for_files(paths: List[Path], min_len: int) -> float:
+def similarity_for_files(paths: list[Path], min_len: int) -> float:
     if len(paths) < 2:
         return 1.0  # single file uniqueness trivially high
     tfs = []

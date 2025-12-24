@@ -12,16 +12,16 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 __all__ = ["generate_sbom", "main"]
 
 
-def get_installed_packages() -> List[Dict[str, str]]:
+def get_installed_packages() -> list[dict[str, str]]:
     """Get list of installed packages using pip freeze.
 
     Returns:
-        List of dicts with package name and version
+        list of dicts with package name and version
     """
     try:
         result = subprocess.run(
@@ -40,12 +40,12 @@ def get_installed_packages() -> List[Dict[str, str]]:
         return []
 
 
-def generate_sbom_cyclonedx(output_path: Path, packages: List[Dict[str, str]]) -> None:
+def generate_sbom_cyclonedx(output_path: Path, packages: list[dict[str, str]]) -> None:
     """Generate SBOM in CycloneDX JSON format.
 
     Args:
         output_path: Path where SBOM will be saved
-        packages: List of package dicts with name and version
+        packages: list of package dicts with name and version
     """
     # Try using cyclonedx-bom if available
     try:
@@ -68,7 +68,7 @@ def generate_sbom_cyclonedx(output_path: Path, packages: List[Dict[str, str]]) -
         print("cyclonedx-bom not available, generating manual SBOM")
 
     # Fallback: manual SBOM generation
-    sbom: Dict[str, Any] = {
+    sbom: dict[str, Any] = {
         "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
         "bomFormat": "CycloneDX",
         "specVersion": "1.4",
@@ -131,7 +131,7 @@ def generate_sbom(output_path: str | Path = "sbom.json") -> Path:
     return output_path
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     """Main entry point for SBOM generation.
 
     Args:

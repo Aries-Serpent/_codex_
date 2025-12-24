@@ -9,7 +9,6 @@ import logging
 logger = logging.getLogger(__name__)
 import ast
 import sys
-from typing import List
 
 CODEX_PACKAGES = [
     "src/codex",
@@ -21,7 +20,7 @@ CODEX_PACKAGES = [
 ]
 
 
-def extract_public_symbols(filepath: Path) -> List[str]:
+def extract_public_symbols(filepath: Path) -> list[str]:
     """Extract public classes, functions, and constants from a Python file."""
     try:
         tree = ast.parse(filepath.read_text(), filename=str(filepath))
@@ -40,7 +39,7 @@ def extract_public_symbols(filepath: Path) -> List[str]:
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id == "__all__":
                     # Parse the __all__ list if it exists
-                    if isinstance(node.value, (ast.List, ast.Tuple)):
+                    if isinstance(node.value, (ast.list, ast.tuple)):
                         for elt in node.value.elts:
                             if isinstance(elt, ast.Constant):
                                 symbols.append(elt.value)

@@ -3,10 +3,10 @@ extract_validate_gaps.py
 Canonical extraction implementation for gaps from decoded artifacts.
 """
 
-from typing import Any, List
+from typing import Any
 
 
-def extract_gaps(decoded_json: dict[str, Any]) -> List[Any]:
+def extract_gaps(decoded_json: dict[str, Any]) -> list[Any]:
     """
     Extracts the 'gaps' from the decoded validator artifact.
 
@@ -14,7 +14,7 @@ def extract_gaps(decoded_json: dict[str, Any]) -> List[Any]:
         decoded_json (dict): The decoded artifact JSON object
 
     Returns:
-        List[Any]: List of gaps, or empty list if not present
+        list[Any]: list of gaps, or empty list if not present
     """
     gaps = decoded_json.get("gaps")
     if isinstance(gaps, list):

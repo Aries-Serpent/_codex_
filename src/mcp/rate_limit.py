@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Callable, Dict, Tuple
+from typing import Callable
 
 
 @dataclass
@@ -33,12 +33,12 @@ class MCPRateLimiter:
         self.capacity = float(capacity)
         self.seed = seed
         self._clock = time_func or time.monotonic
-        self._buckets: Dict[Tuple[str, str], _Bucket] = {}
+        self._buckets: dict[tuple[str, str], _Bucket] = {}
 
-    def _key(self, principal_id: str | None, tool_name: str | None) -> Tuple[str, str]:
+    def _key(self, principal_id: str | None, tool_name: str | None) -> tuple[str, str]:
         return (principal_id or "*", tool_name or "*")
 
-    def _refill(self, key: Tuple[str, str], now: float) -> _Bucket:
+    def _refill(self, key: tuple[str, str], now: float) -> _Bucket:
         bucket = self._buckets.get(key)
         if bucket is None:
             bucket = _Bucket(tokens=self.capacity, updated_at=now)

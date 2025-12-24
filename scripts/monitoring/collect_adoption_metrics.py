@@ -22,7 +22,7 @@ import logging
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -39,11 +39,11 @@ class AdoptionMetricsCollector:
         self.base_path = base_path or Path.cwd()
         self.cutoff_time = datetime.now() - timedelta(days=days)
 
-    def collect_mlflow_metrics(self) -> Dict[str, Any]:
+    def collect_mlflow_metrics(self) -> dict[str, Any]:
         """Collect MLflow adoption metrics.
 
         Returns:
-            Dict with structured metrics for agent analysis
+            dict with structured metrics for agent analysis
         """
         metrics = {
             "feature": "mlflow_tracking",
@@ -106,11 +106,11 @@ class AdoptionMetricsCollector:
 
         return metrics
 
-    def collect_feature_store_metrics(self) -> Dict[str, Any]:
+    def collect_feature_store_metrics(self) -> dict[str, Any]:
         """Collect feature store metrics.
 
         Returns:
-            Dict with feature store health and usage metrics
+            dict with feature store health and usage metrics
         """
         metrics = {
             "feature": "feature_store",
@@ -171,11 +171,11 @@ class AdoptionMetricsCollector:
 
         return metrics
 
-    def collect_validation_metrics(self) -> Dict[str, Any]:
+    def collect_validation_metrics(self) -> dict[str, Any]:
         """Collect data validation metrics.
 
         Returns:
-            Dict with validation coverage and pass rates
+            dict with validation coverage and pass rates
         """
         metrics = {
             "feature": "data_validation",
@@ -231,11 +231,11 @@ class AdoptionMetricsCollector:
 
         return metrics
 
-    def collect_evaluation_metrics(self) -> Dict[str, Any]:
+    def collect_evaluation_metrics(self) -> dict[str, Any]:
         """Collect evaluation runner metrics.
 
         Returns:
-            Dict with evaluation coverage metrics
+            dict with evaluation coverage metrics
         """
         metrics = {
             "feature": "evaluation",
@@ -289,11 +289,11 @@ class AdoptionMetricsCollector:
 
         return metrics
 
-    def collect_training_enhancements_metrics(self) -> Dict[str, Any]:
+    def collect_training_enhancements_metrics(self) -> dict[str, Any]:
         """Collect training enhancements usage metrics.
 
         Returns:
-            Dict with early stopping and scheduler usage
+            dict with early stopping and scheduler usage
         """
         metrics = {
             "feature": "training_enhancements",
@@ -339,7 +339,7 @@ class AdoptionMetricsCollector:
 
         return metrics
 
-    def collect_all(self) -> Dict[str, Any]:
+    def collect_all(self) -> dict[str, Any]:
         """Collect all adoption metrics.
 
         Returns:
@@ -377,14 +377,14 @@ class AdoptionMetricsCollector:
 
         return report
 
-    def _generate_recommendations(self, report: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(self, report: dict[str, Any]) -> list[str]:
         """Generate actionable recommendations for agents.
 
         Args:
             report: Complete metrics report
 
         Returns:
-            List of actionable recommendations
+            list of actionable recommendations
         """
         recommendations = []
 

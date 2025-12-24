@@ -23,7 +23,7 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Optional
 
 import numpy as np
 import torch
@@ -36,8 +36,8 @@ MAX_INPUT_LENGTH = 512
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
 
 # Caches
-MODEL_CACHE: Dict[str, Tuple[torch.nn.Module, Any, str]] = {}
-TOKEN_CACHE: Dict[str, Dict[str, torch.Tensor]] = {}
+MODEL_CACHE: dict[str, tuple[torch.nn.Module, Any, str]] = {}
+TOKEN_CACHE: dict[str, dict[str, torch.Tensor]] = {}
 
 
 @dataclass
@@ -107,7 +107,7 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
         torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
 
 
-def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.Tensor]]:
+def _load_callable(path_str: str) -> Callable[[str, Any, int], dict[str, torch.Tensor]]:
     """
     Load a callable given a module.path:callable_name string.
     Raises informative errors on failure.
@@ -165,14 +165,14 @@ def load_inference_config(config_path: Path) -> InferenceConfig:
 
 
 # ---- Load model ----
-def _load_model_from_directory(model_dir: Path) -> Tuple[torch.nn.Module, Any]:
+def _load_model_from_directory(model_dir: Path) -> tuple[torch.nn.Module, Any]:
     tokenizer = AutoTokenizer.from_pretrained(str(model_dir), local_files_only=True)
     model = AutoModelForCausalLM.from_pretrained(str(model_dir), local_files_only=True)
     model.eval()
     return model, tokenizer
 
 
-def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
+def _load_model_from_file(model_path: Path) -> tuple[torch.nn.Module, Any]:
     loaded = torch.load(model_path, map_location="cpu")
     if isinstance(loaded, torch.nn.Module):
         model = loaded
@@ -183,7 +183,7 @@ def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
     return model, tokenizer
 
 
-def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
+def stage_i1_load_model(cfg: InferenceConfig) -> dict[str, Any]:
     model_path = cfg.model_path
     if not model_path.exists():
         raise ValueError(f"Model path not found: {model_path}")
@@ -220,11 +220,11 @@ def _tokenizer_identity(tokenizer: Any) -> str:
 
 
 def stage_i2_preprocess(
-    inputs: Dict[str, Any],
-    context: Dict[str, Any],
+    inputs: dict[str, Any],
+    context: dict[str, Any],
     cfg: InferenceConfig,
-    override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None,
-) -> Dict[str, Any]:
+    override: Optional[Callable[[str, Any, int], dict[str, torch.Tensor]]] = None,
+) -> dict[str, Any]:
     tokenizer = context["tokenizer"]
     text = inputs.get("text")
     if not isinstance(text, str) or not text.strip():
@@ -263,8 +263,8 @@ def stage_i2_preprocess(
 
 # ---- Inference ----
 def stage_i3_run_inference(
-    processed: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig
-) -> Dict[str, Any]:
+    processed: dict[str, Any], context: dict[str, Any], cfg: InferenceConfig
+) -> dict[str, Any]:
     model = context["model"]
     tokenizer = context["tokenizer"]
     tokens = processed["tokens"]
@@ -293,12 +293,12 @@ def stage_i3_run_inference(
 
 # ---- Postprocess ----
 def stage_i4_postprocess(
-    results: Dict[str, Any],
-    processed: Dict[str, Any],
-    context: Dict[str, Any],
+    results: dict[str, Any],
+    processed: dict[str, Any],
+    context: dict[str, Any],
     cfg: InferenceConfig,
-    timings: Dict[str, float],
-) -> Dict[str, Any]:
+    timings: dict[str, float],
+) -> dict[str, Any]:
     payload = {
         "predictions": results["predictions"],
         "input_hash": processed["input_hash"],
@@ -325,12 +325,12 @@ def run_pipeline(
     manifest_path: Optional[Path] = None,
     explain: bool = False,
     allow_online: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     enforce_offline_mode(allow_online=allow_online)
     cfg = load_inference_config(config_path)
     override = _load_callable(cfg.preprocessor_override) if cfg.preprocessor_override else None
     inputs = json.loads(input_path.read_text())
-    timings: Dict[str, float] = {}
+    timings: dict[str, float] = {}
     start = time.perf_counter()
     context = stage_i1_load_model(cfg)
     timings["I1_load_model_s"] = time.perf_counter() - start

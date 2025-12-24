@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -75,8 +75,8 @@ class DetectedIssue:
     file_path: Optional[Path] = None
     line_number: Optional[int] = None
     stack_trace: Optional[str] = None
-    context: Dict[str, Any] = field(default_factory=dict)
-    details: Dict[str, Any] = field(default_factory=dict)  # Alias for context
+    context: dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)  # Alias for context
     detected_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
     def __post_init__(self):
@@ -89,7 +89,7 @@ class DetectedIssue:
         if self.details:
             self.context.update(self.details)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "issue_id": self.issue_id,
             "issue_type": self.issue_type.value,
@@ -113,9 +113,9 @@ class RemediationAction:
     description: str
     action_id: str = ""
     issue_id: str = ""
-    commands: List[str] = field(default_factory=list)
+    commands: list[str] = field(default_factory=list)
     command: str = ""  # Alias for single command
-    file_changes: Dict[str, str] = field(default_factory=dict)
+    file_changes: dict[str, str] = field(default_factory=dict)
     confidence: float = 0.8
     risk_level: float = 0.2
     requires_approval: bool = False
@@ -136,7 +136,7 @@ class RemediationAction:
         if not self.auto_apply:
             self.requires_approval = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "action_id": self.action_id,
             "issue_id": self.issue_id,
@@ -156,11 +156,11 @@ class RemediationAction:
 class DiagnosticResult:
     """Result of running diagnostics."""
 
-    issues: List[DetectedIssue] = field(default_factory=list)
-    suggested_actions: List[RemediationAction] = field(default_factory=list)
-    remediation_actions: List[RemediationAction] = field(default_factory=list)  # Alias
+    issues: list[DetectedIssue] = field(default_factory=list)
+    suggested_actions: list[RemediationAction] = field(default_factory=list)
+    remediation_actions: list[RemediationAction] = field(default_factory=list)  # Alias
     health_score: float = 1.0
-    diagnostics_run: List[str] = field(default_factory=list)
+    diagnostics_run: list[str] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
 
     def __post_init__(self):
@@ -171,7 +171,7 @@ class DiagnosticResult:
         elif self.suggested_actions and not self.remediation_actions:
             self.remediation_actions = self.suggested_actions
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "issues": [i.to_dict() for i in self.issues],
             "suggested_actions": [a.to_dict() for a in self.suggested_actions],
@@ -193,8 +193,8 @@ class SelfHealingEngine:
 
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path.cwd()
-        self.issue_patterns: Dict[IssueType, List[Tuple[str, str]]] = {}
-        self.remediation_handlers: Dict[IssueType, Callable] = {}
+        self.issue_patterns: dict[IssueType, list[tuple[str, str]]] = {}
+        self.remediation_handlers: dict[IssueType, Callable] = {}
         # Initialize detection and diagnostic components
         self.issue_detector = self  # Self-reference for detection capability
         self.diagnostic_engine = self  # Self-reference for diagnostic capability
@@ -288,7 +288,7 @@ class SelfHealingEngine:
 
         return result
 
-    def _analyze_log(self, log_output: str) -> List[DetectedIssue]:
+    def _analyze_log(self, log_output: str) -> list[DetectedIssue]:
         """Analyze log output for issues."""
         issues = []
         issue_counter = 0
@@ -315,7 +315,7 @@ class SelfHealingEngine:
 
         return issues
 
-    def _check_syntax(self) -> List[DetectedIssue]:
+    def _check_syntax(self) -> list[DetectedIssue]:
         """Check Python files for syntax errors."""
         issues = []
 
@@ -342,7 +342,7 @@ class SelfHealingEngine:
 
         return issues
 
-    def _check_imports(self) -> List[DetectedIssue]:
+    def _check_imports(self) -> list[DetectedIssue]:
         """Check for import issues in key modules."""
         issues = []
         key_modules = [
@@ -387,14 +387,14 @@ class SelfHealingEngine:
         }
         return severity_map.get(issue_type, IssueSeverity.MEDIUM)
 
-    def _suggest_remediation(self, issue: DetectedIssue) -> List[RemediationAction]:
+    def _suggest_remediation(self, issue: DetectedIssue) -> list[RemediationAction]:
         """Suggest remediation actions for an issue."""
         handler = self.remediation_handlers.get(issue.issue_type)
         if handler:
             return handler(issue)
         return []
 
-    def _remediate_import_error(self, issue: DetectedIssue) -> List[RemediationAction]:
+    def _remediate_import_error(self, issue: DetectedIssue) -> list[RemediationAction]:
         """Generate remediation for import errors."""
         actions = []
 
@@ -416,7 +416,7 @@ class SelfHealingEngine:
 
         return actions
 
-    def _remediate_lint_error(self, issue: DetectedIssue) -> List[RemediationAction]:
+    def _remediate_lint_error(self, issue: DetectedIssue) -> list[RemediationAction]:
         """Generate remediation for lint errors."""
         return [
             RemediationAction(
@@ -430,7 +430,7 @@ class SelfHealingEngine:
             )
         ]
 
-    def _remediate_dependency_conflict(self, issue: DetectedIssue) -> List[RemediationAction]:
+    def _remediate_dependency_conflict(self, issue: DetectedIssue) -> list[RemediationAction]:
         """Generate remediation for dependency conflicts."""
         return [
             RemediationAction(
@@ -448,7 +448,7 @@ class SelfHealingEngine:
             )
         ]
 
-    def _remediate_test_failure(self, issue: DetectedIssue) -> List[RemediationAction]:
+    def _remediate_test_failure(self, issue: DetectedIssue) -> list[RemediationAction]:
         """Generate remediation suggestions for test failures."""
         return [
             RemediationAction(
@@ -462,7 +462,7 @@ class SelfHealingEngine:
             )
         ]
 
-    def _calculate_health_score(self, issues: List[DetectedIssue]) -> float:
+    def _calculate_health_score(self, issues: list[DetectedIssue]) -> float:
         """Calculate overall health score based on issues."""
         if not issues:
             return 1.0
@@ -479,7 +479,7 @@ class SelfHealingEngine:
 
         return max(0.0, 1.0 - min(total_penalty, 1.0))
 
-    def detect_issues(self, log_output: str = None, run_checks: bool = True) -> List[DetectedIssue]:
+    def detect_issues(self, log_output: str = None, run_checks: bool = True) -> list[DetectedIssue]:
         """
         Detect issues in the codebase.
 
@@ -490,12 +490,12 @@ class SelfHealingEngine:
             run_checks: Whether to run active checks
 
         Returns:
-            List of detected issues
+            list of detected issues
         """
         result = self.diagnose(log_output=log_output, run_checks=run_checks)
         return result.issues
 
-    def detect(self, log_output: str = None) -> List[DetectedIssue]:
+    def detect(self, log_output: str = None) -> list[DetectedIssue]:
         """
         Detect issues (short alias for detect_issues).
 
@@ -503,7 +503,7 @@ class SelfHealingEngine:
             log_output: Optional log output to analyze
 
         Returns:
-            List of detected issues
+            list of detected issues
         """
         return self.detect_issues(log_output=log_output, run_checks=False)
 
@@ -524,7 +524,7 @@ class SelfHealingEngine:
         self,
         action: RemediationAction,
         dry_run: bool = True,
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
         """
         Apply a remediation action.
 
@@ -533,7 +533,7 @@ class SelfHealingEngine:
             dry_run: If True, only show what would be done
 
         Returns:
-            Tuple of (success, output_message)
+            tuple of (success, output_message)
         """
         if action.requires_approval and not dry_run:
             return False, "Action requires approval before execution"

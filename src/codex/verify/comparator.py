@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -70,11 +70,11 @@ class ComparisonResult:
     result: Literal["pass", "fail", "warn"]
     baseline_hash: str
     patched_hash: str
-    comparisons: List[ComparisonDetail] = field(default_factory=list)
-    flakiness_check: Dict[str, Any] = field(default_factory=dict)
+    comparisons: list[ComparisonDetail] = field(default_factory=list)
+    flakiness_check: dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "result": self.result,
@@ -132,12 +132,12 @@ def _run_script(
     script_path: Path,
     input_file: Optional[Path] = None,
     timeout: int = DEFAULT_TIMEOUT,
-    env_overrides: Optional[Dict[str, str]] = None,
+    env_overrides: Optional[dict[str, str]] = None,
 ) -> tuple[str, str, int]:
     """Run a Python script and capture output.
     
     Returns:
-        Tuple of (stdout, stderr, exit_code)
+        tuple of (stdout, stderr, exit_code)
     """
     # Deterministic environment
     env = os.environ.copy()
@@ -191,7 +191,7 @@ def _compare_outputs(
     """Compare two outputs based on mode.
     
     Returns:
-        Tuple of (match, diff_or_None)
+        tuple of (match, diff_or_None)
     """
     norm_baseline = _normalize_output(baseline, mode)
     norm_patched = _normalize_output(patched, mode)
@@ -214,7 +214,7 @@ def _compare_outputs(
 def compare(
     baseline_dir: Path,
     patched_dir: Path,
-    sample_inputs: Optional[List[Path]] = None,
+    sample_inputs: Optional[list[Path]] = None,
     mode: ComparisonMode = ComparisonMode.STRICT,
     timeout: int = DEFAULT_TIMEOUT,
     flakiness_runs: int = DEFAULT_FLAKINESS_RUNS,
@@ -238,7 +238,7 @@ def compare(
         >>> result = compare(Path("baseline/"), Path("patched/"))
         >>> print(f"Result: {result.result}")
     """
-    comparisons: List[ComparisonDetail] = []
+    comparisons: list[ComparisonDetail] = []
     all_baseline_output = ""
     all_patched_output = ""
     
@@ -347,23 +347,23 @@ def compare(
 
 def generate_tests(
     source_dir: Path,
-    sample_inputs: List[Path],
-    golden_outputs: List[Path],
+    sample_inputs: list[Path],
+    golden_outputs: list[Path],
     output_dir: Path,
-) -> List[Path]:
+) -> list[Path]:
     """Generate snapshot tests from sample I/O.
     
     Args:
         source_dir: Directory with source code
-        sample_inputs: List of input files
-        golden_outputs: List of expected output files
+        sample_inputs: list of input files
+        golden_outputs: list of expected output files
         output_dir: Directory for generated tests
         
     Returns:
-        List of generated test file paths
+        list of generated test file paths
     """
     output_dir.mkdir(parents=True, exist_ok=True)
-    generated_files: List[Path] = []
+    generated_files: list[Path] = []
     
     # Generate test file
     test_content = '''"""

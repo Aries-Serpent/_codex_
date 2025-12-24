@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,7 @@ class MLflowTracker:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Failed to end MLflow run: {e}")
 
-    def log_params(self, params: Dict[str, Any]):
+    def log_params(self, params: dict[str, Any]):
         """Log parameters to current run.
 
         Args:
@@ -128,7 +128,7 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to log param {key}: {e}")
 
-    def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None):
         """Log metrics to current run.
 
         Args:
@@ -202,7 +202,7 @@ class MLflowTracker:
             logger.debug(f"Failed to log artifacts: {e}")
 
     def set_tag(self, key: str, value: Any):
-        """Set tag on current run.
+        """set tag on current run.
 
         Args:
             key: Tag name
@@ -217,8 +217,8 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to set tag {key}: {e}")
 
-    def set_tags(self, tags: Dict[str, Any]):
-        """Set multiple tags on current run.
+    def set_tags(self, tags: dict[str, Any]):
+        """set multiple tags on current run.
 
         Args:
             tags: Dictionary of tags

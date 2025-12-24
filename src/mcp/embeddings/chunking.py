@@ -1,8 +1,8 @@
 # Simple heuristic chunker (character-based) with overlap to approximate token chunking.
-from typing import Iterable, List
+from typing import Iterable
 
 
-def chunk_text(text: str, max_chars: int = 1000, overlap: int = 200) -> List[str]:
+def chunk_text(text: str, max_chars: int = 1000, overlap: int = 200) -> list[str]:
     if len(text) <= max_chars:
         return [text]
     chunks = []

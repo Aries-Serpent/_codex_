@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 import httpx
 from tenacity import (
@@ -33,7 +33,7 @@ class CodexBridgeClient:
         self._client = httpx.Client(timeout=config.request_timeout)
 
     @property
-    def base_headers(self) -> Dict[str, str]:
+    def base_headers(self) -> dict[str, str]:
         return {
             "X-API-Key": self._config.api_key,
         }
@@ -43,8 +43,8 @@ class CodexBridgeClient:
         method: str,
         path: str,
         *,
-        json_body: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        json_body: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ) -> httpx.Response:
         url = f"{self._config.ita_url}{path}"
         headers = {**self.base_headers, "X-Request-Id": uuid.uuid4().hex}
@@ -73,7 +73,7 @@ class CodexBridgeClient:
     def repo_hygiene(
         self, diff: str, checks: Optional[Iterable[str]] = None
     ) -> RepoHygieneResponse:
-        payload: Dict[str, Any] = {"diff": diff}
+        payload: dict[str, Any] = {"diff": diff}
         if checks:
             payload["checks"] = list(checks)
         response = self._request("POST", "/repo/hygiene", json_body=payload)
@@ -108,7 +108,7 @@ class CodexBridgeClient:
         confirm: bool = False,
         labels: Optional[Iterable[str]] = None,
     ) -> GitCreatePullRequestResponse:
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "repo": repo,
             "title": title,
             "body": body,

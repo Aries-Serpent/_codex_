@@ -16,7 +16,7 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 import functools
-from typing import Optional, Dict, Any, Callable, Union, List
+from typing import Optional, Any, Callable, Union
 from pathlib import Path
 from enum import Enum
 
@@ -110,7 +110,7 @@ class FSDPConfig:
         self.limit_all_gathers = limit_all_gathers
         self.use_orig_params = use_orig_params
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert config to dictionary."""
         return {
             "sharding_strategy": self.sharding_strategy,
@@ -203,13 +203,13 @@ class FSDPTrainer:
 
     def _get_auto_wrap_policy(
         self,
-        transformer_layer_cls: Optional[List[type]] = None,
+        transformer_layer_cls: Optional[list[type]] = None,
     ) -> Optional[Callable]:
         """
         Get auto-wrap policy for FSDP.
 
         Args:
-            transformer_layer_cls: List of transformer layer classes to wrap
+            transformer_layer_cls: list of transformer layer classes to wrap
 
         Returns:
             Auto-wrap policy function
@@ -230,14 +230,14 @@ class FSDPTrainer:
     def wrap_model(
         self,
         model: Optional["nn.Module"] = None,
-        transformer_layer_cls: Optional[List[type]] = None,
+        transformer_layer_cls: Optional[list[type]] = None,
     ) -> "FSDP":
         """
         Wrap model with FSDP.
 
         Args:
             model: Model to wrap (uses self.model if not provided)
-            transformer_layer_cls: List of transformer layer classes for auto-wrapping
+            transformer_layer_cls: list of transformer layer classes for auto-wrapping
 
         Returns:
             FSDP-wrapped model
@@ -273,14 +273,14 @@ class FSDPTrainer:
     def _apply_activation_checkpointing(
         self,
         model: "nn.Module",
-        transformer_layer_cls: Optional[List[type]] = None,
+        transformer_layer_cls: Optional[list[type]] = None,
     ):
         """
         Apply activation checkpointing to model.
 
         Args:
             model: Model to apply checkpointing to
-            transformer_layer_cls: List of transformer layer classes to checkpoint
+            transformer_layer_cls: list of transformer layer classes to checkpoint
         """
         if not transformer_layer_cls:
             return
@@ -331,7 +331,7 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"] = None,
         checkpoint_path: Union[str, Path] = "checkpoint.pt",
         epoch: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         rank: int = 0,
     ):
         """
@@ -362,7 +362,7 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"],
         checkpoint_path: Path,
         epoch: Optional[int],
-        metadata: Optional[Dict[str, Any]],
+        metadata: Optional[dict[str, Any]],
     ):
         """Save full consolidated checkpoint."""
         with FSDP.state_dict_type(
@@ -394,7 +394,7 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"],
         checkpoint_path: Path,
         epoch: Optional[int],
-        metadata: Optional[Dict[str, Any]],
+        metadata: Optional[dict[str, Any]],
     ):
         """Save sharded checkpoint (each rank saves its shard)."""
         with FSDP.state_dict_type(
@@ -437,7 +437,7 @@ class FSDPCheckpointManager:
             rank: Process rank
 
         Returns:
-            Tuple of (fsdp_model, optimizer, epoch, metadata)
+            tuple of (fsdp_model, optimizer, epoch, metadata)
         """
         checkpoint_path = Path(checkpoint_path)
 
@@ -514,7 +514,7 @@ def wrap_model_with_fsdp(
     mixed_precision: str = "fp16",
     use_cpu_offload: bool = False,
     activation_checkpointing: bool = False,
-    transformer_layer_cls: Optional[List[type]] = None,
+    transformer_layer_cls: Optional[list[type]] = None,
 ) -> "FSDP":
     """
     Convenience function to wrap model with FSDP.

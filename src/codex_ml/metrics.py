@@ -7,7 +7,7 @@ Exposed callables can be referenced via entrypoint strings like:
 
 from __future__ import annotations
 
-from typing import List, Union
+from typing import Union
 
 import torch
 
@@ -23,7 +23,7 @@ def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
     return (preds == targets).float().mean()
 
 
-def precision(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
+def precision(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
     """
     Compute binary classification precision.
     """
@@ -40,7 +40,7 @@ def precision(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Te
     return true_positives / predicted_positives
 
 
-def recall(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
+def recall(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
     """
     Compute binary classification recall.
     """
@@ -57,7 +57,7 @@ def recall(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tenso
     return true_positives / actual_positives
 
 
-def f1_score(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
+def f1_score(preds: Union[list, "torch.Tensor"], targets: Union[list, "torch.Tensor"]) -> float:
     """
     Compute binary classification F1 score.
     """

@@ -9,7 +9,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     from fastapi import FastAPI, HTTPException, Request, Security
@@ -55,21 +55,21 @@ class AuthManager:
     """API key authentication manager with JWT support
 
     Attributes:
-        api_keys: Set of valid API keys
+        api_keys: set of valid API keys
         jwt_secret: Secret key for JWT validation (optional)
         jwt_algorithm: Algorithm for JWT validation
     """
 
     def __init__(
         self,
-        api_keys: Optional[List[str]] = None,
+        api_keys: Optional[list[str]] = None,
         jwt_secret: Optional[str] = None,
         jwt_algorithm: str = "HS256",
     ):
         """Initialize authentication manager
 
         Args:
-            api_keys: List of valid API keys (None = allow all)
+            api_keys: list of valid API keys (None = allow all)
             jwt_secret: Secret for JWT validation (None = JWT disabled)
             jwt_algorithm: JWT algorithm (default: HS256)
         """
@@ -100,7 +100,7 @@ class AuthManager:
 
         return api_key in self.api_keys
 
-    def verify_jwt(self, token: str) -> Dict[str, Any]:
+    def verify_jwt(self, token: str) -> dict[str, Any]:
         """Verify JWT token
 
         Args:
@@ -146,7 +146,7 @@ class ModelConfig:
     device: str = "cpu"
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ModelConfig":
+    def from_dict(cls, data: dict[str, Any]) -> "ModelConfig":
         return cls(
             model_name=data.get("model_name"),
             model_type=data.get("model_type", "stub"),
@@ -171,7 +171,7 @@ class ModelConfig:
         if self.device not in {"cpu", "cuda"}:
             raise ValueError("Unsupported device")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "model_name": self.model_name,
             "model_type": self.model_type,
@@ -184,7 +184,7 @@ class RateLimiter:
     def __init__(self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
-        self.state: Dict[str, List[float]] = defaultdict(list)
+        self.state: dict[str, list[float]] = defaultdict(list)
 
     def is_allowed(self, key: str) -> bool:
         now = time.time()
@@ -202,7 +202,7 @@ class ModelServer:
         if not self.config.model_name:
             self.config.model_name = "codex-default"
         self.model_name = self.config.model_name
-        self.model: Optional[Dict[str, Any]] = None
+        self.model: Optional[dict[str, Any]] = None
         self.total_requests = 0
         self.prediction_count = 0
         self.rate_limiter: RateLimiter = RateLimiter()
@@ -222,7 +222,7 @@ class ModelServer:
             self.circuit_breaker = None
             logger.warning("Circuit breaker not available (resilience module not found)")
 
-    def load_model(self) -> Dict[str, Any]:
+    def load_model(self) -> dict[str, Any]:
         try:
             if self.config.model_type not in {"stub", "huggingface", "onnx"}:
                 raise ModelLoadError("Unsupported model type")
@@ -243,7 +243,7 @@ class ModelServer:
             self.load_errors.append(str(exc))
             raise
 
-    def predict(self, inputs: List[str]) -> List[Dict[str, Any]]:
+    def predict(self, inputs: list[str]) -> list[dict[str, Any]]:
         if self.model is None:
             raise RuntimeError("Model not loaded")
         self.total_requests += 1
@@ -254,7 +254,7 @@ class ModelServer:
             for idx, text in enumerate(inputs)
         ]
 
-    def predict_with_circuit_breaker(self, inputs: List[str]) -> List[Dict[str, Any]]:
+    def predict_with_circuit_breaker(self, inputs: list[str]) -> list[dict[str, Any]]:
         """Predict with circuit breaker protection
 
         Args:
@@ -271,7 +271,7 @@ class ModelServer:
         else:
             return self.predict(inputs)
 
-    def embed(self, texts: List[str]):
+    def embed(self, texts: list[str]):
         if self.model is None:
             raise RuntimeError("Model not loaded")
         import numpy as np
@@ -290,7 +290,7 @@ class ModelServer:
             embeddings.append(vec)
         return np.vstack(embeddings)
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         loaded = self.model is not None
         health = {
             "status": "healthy" if loaded else "unhealthy",
@@ -316,16 +316,16 @@ class ModelServer:
 if FASTAPI_AVAILABLE:
 
     class PredictionRequest(BaseModel):
-        inputs: List[str] = Field(...)
+        inputs: list[str] = Field(...)
         model_name: Optional[str] = Field(default=None)
 
     class PredictionResponse(BaseModel):
-        predictions: List[Any]
+        predictions: list[Any]
         model_name: str
         inference_time_ms: float
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[dict[str, Any]] = None
 
-    def _validate_payload(inputs: List[str]) -> None:
+    def _validate_payload(inputs: list[str]) -> None:
         if not inputs:
             raise HTTPException(status_code=400, detail="Inputs cannot be empty")
         if len(inputs) > MAX_BATCH_SIZE:

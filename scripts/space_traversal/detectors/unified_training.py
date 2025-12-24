@@ -19,7 +19,6 @@ Safeguards implemented:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 
 REQUIRED = ["UnifiedTrainingConfig", "run_unified_training"]
 MAX_READ_BYTES = 200_000  # Bounded read for safety - prevents memory exhaustion
@@ -51,8 +50,8 @@ def detect(file_index: dict) -> dict:
     """
     files = file_index.get("files", [])
     paths = [f["path"] for f in files]
-    evidence: List[str] = [p for p in paths if p.endswith("unified_training.py")]
-    found_patterns: List[str] = []
+    evidence: list[str] = [p for p in paths if p.endswith("unified_training.py")]
+    found_patterns: list[str] = []
 
     if evidence:
         # Bounded, validated file scanning

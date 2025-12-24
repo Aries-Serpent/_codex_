@@ -10,7 +10,7 @@ This module provides the JSON-RPC handling layer for MCP:
 import asyncio
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Union
+from typing import Any, Awaitable, Callable, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class JsonRpcRequest:
     """Parsed JSON-RPC request."""
     
     method: str
-    params: Optional[Dict[str, Any]] = None
+    params: Optional[dict[str, Any]] = None
     id: Optional[Union[str, int]] = None
     jsonrpc: str = "2.0"
     
@@ -44,12 +44,12 @@ class JsonRpcResponse:
     
     id: Optional[Union[str, int]]
     result: Optional[Any] = None
-    error: Optional[Dict[str, Any]] = None
+    error: Optional[dict[str, Any]] = None
     jsonrpc: str = "2.0"
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
-        response: Dict[str, Any] = {"jsonrpc": self.jsonrpc, "id": self.id}
+        response: dict[str, Any] = {"jsonrpc": self.jsonrpc, "id": self.id}
         if self.error is not None:
             response["error"] = self.error
         else:
@@ -65,16 +65,16 @@ class JsonRpcError:
     message: str
     data: Optional[Any] = None
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
-        error: Dict[str, Any] = {"code": self.code, "message": self.message}
+        error: dict[str, Any] = {"code": self.code, "message": self.message}
         if self.data is not None:
             error["data"] = self.data
         return error
 
 
 # Type alias for method handlers
-MethodHandler = Callable[[Optional[Dict[str, Any]]], Awaitable[Any]]
+MethodHandler = Callable[[Optional[dict[str, Any]]], Awaitable[Any]]
 
 
 class JsonRpcHandler:
@@ -89,7 +89,7 @@ class JsonRpcHandler:
     
     def __init__(self) -> None:
         """Initialize the JSON-RPC handler."""
-        self._methods: Dict[str, MethodHandler] = {}
+        self._methods: dict[str, MethodHandler] = {}
         self._logger = logging.getLogger(__name__)
         
     def register_method(
@@ -136,7 +136,7 @@ class JsonRpcHandler:
     
     def _parse_request(
         self,
-        data: Dict[str, Any]
+        data: dict[str, Any]
     ) -> Union[JsonRpcRequest, JsonRpcError]:
         """Parse and validate a JSON-RPC request.
         
@@ -173,7 +173,7 @@ class JsonRpcHandler:
         request_id = data.get("id")
         
         # Handle params - convert dict params, log array params for tracking
-        parsed_params: Optional[Dict[str, Any]] = None
+        parsed_params: Optional[dict[str, Any]] = None
         if isinstance(params, dict):
             parsed_params = params
         elif isinstance(params, list):
@@ -213,8 +213,8 @@ class JsonRpcHandler:
     
     async def handle_request(
         self,
-        data: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+        data: dict[str, Any]
+    ) -> Optional[dict[str, Any]]:
         """Handle a single JSON-RPC request.
         
         Args:
@@ -283,15 +283,15 @@ class JsonRpcHandler:
     
     async def handle_batch(
         self,
-        requests: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        requests: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """Handle a batch of JSON-RPC requests.
         
         Args:
-            requests: List of request dictionaries.
+            requests: list of request dictionaries.
             
         Returns:
-            List of response dictionaries.
+            list of response dictionaries.
         """
         if not requests:
             return [JsonRpcResponse(
@@ -324,8 +324,8 @@ class JsonRpcHandler:
     
     async def handle(
         self,
-        data: Union[Dict[str, Any], List[Dict[str, Any]]]
-    ) -> Optional[Union[Dict[str, Any], List[Dict[str, Any]]]]:
+        data: Union[dict[str, Any], list[dict[str, Any]]]
+    ) -> Optional[Union[dict[str, Any], list[dict[str, Any]]]]:
         """Handle a JSON-RPC request or batch.
         
         Args:
@@ -340,10 +340,10 @@ class JsonRpcHandler:
         else:
             return await self.handle_request(data)
     
-    def get_registered_methods(self) -> List[str]:
+    def get_registered_methods(self) -> list[str]:
         """Get list of registered method names.
         
         Returns:
-            List of method names.
+            list of method names.
         """
         return list(self._methods.keys())

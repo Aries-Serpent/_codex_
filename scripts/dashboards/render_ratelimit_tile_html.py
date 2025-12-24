@@ -5,7 +5,6 @@ import argparse
 import html
 import json
 from pathlib import Path
-from typing import List, Tuple
 
 
 def load_tile(path: Path) -> dict:
@@ -13,8 +12,8 @@ def load_tile(path: Path) -> dict:
 
 
 def scale_points(
-    series: List[Tuple[str, int]], width: int, height: int, pad: int = 20
-) -> List[Tuple[float, float]]:
+    series: list[tuple[str, int]], width: int, height: int, pad: int = 20
+) -> list[tuple[float, float]]:
     if not series:
         return []
     xs = list(range(len(series)))
@@ -30,14 +29,14 @@ def scale_points(
     return [(pad + index * sx, norm_y(value)) for index, value in enumerate(ys)]
 
 
-def to_polyline(points: List[Tuple[float, float]], color: str) -> str:
+def to_polyline(points: list[tuple[float, float]], color: str) -> str:
     if not points:
         return ""
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
     return f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{pts}"/>'
 
 
-def to_circles(points: List[Tuple[float, float]], color: str) -> str:
+def to_circles(points: list[tuple[float, float]], color: str) -> str:
     return "\n".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2" fill="{color}"/>' for x, y in points)
 
 
@@ -114,7 +113,7 @@ def render_html(tile: dict, width: int = 800, height: int = 240) -> str:
 """
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Render an HTML chart for a rate-limit tile JSON document"
     )

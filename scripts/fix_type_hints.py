@@ -21,7 +21,7 @@ import ast
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Set
+from typing import Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -30,10 +30,10 @@ logger = logging.getLogger(__name__)
 # Common typing imports
 TYPING_NAMES = {
     "Any",
-    "Dict",
-    "List",
-    "Set",
-    "Tuple",
+    "dict",
+    "list",
+    "set",
+    "tuple",
     "Optional",
     "Union",
     "Callable",
@@ -58,8 +58,8 @@ class TypeHintVisitor(ast.NodeVisitor):
     """AST visitor to detect type hint usage."""
 
     def __init__(self):
-        self.used_types: Set[str] = set()
-        self.imported_from_typing: Set[str] = set()
+        self.used_types: set[str] = set()
+        self.imported_from_typing: set[str] = set()
         self.has_typing_import = False
         self.typing_import_line = None
 
@@ -82,7 +82,7 @@ class TypeHintVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Subscript(self, node: ast.Subscript) -> None:
-        """Track subscripted types like List[int]."""
+        """Track subscripted types like list[int]."""
         if isinstance(node.value, ast.Name) and node.value.id in TYPING_NAMES:
             self.used_types.add(node.value.id)
         self.generic_visit(node)
@@ -113,14 +113,14 @@ class TypeHintVisitor(ast.NodeVisitor):
             if isinstance(annotation.value, ast.Name) and annotation.value.id in TYPING_NAMES:
                 self.used_types.add(annotation.value.id)
             # Recursively extract from subscript elements
-            if isinstance(annotation.slice, ast.Tuple):
+            if isinstance(annotation.slice, ast.tuple):
                 for elt in annotation.slice.elts:
                     self._extract_types_from_annotation(elt)
             else:
                 self._extract_types_from_annotation(annotation.slice)
 
 
-def analyze_file(file_path: Path) -> Dict[str, Any]:
+def analyze_file(file_path: Path) -> dict[str, Any]:
     """
     Analyze a Python file for typing import issues.
 
@@ -156,7 +156,7 @@ def analyze_file(file_path: Path) -> Dict[str, Any]:
         return {"error": str(e)}
 
 
-def fix_imports(file_path: Path, analysis: Dict, dry_run: bool = True) -> bool:
+def fix_imports(file_path: Path, analysis: dict, dry_run: bool = True) -> bool:
     """
     Fix missing typing imports in a file.
 
@@ -251,7 +251,7 @@ def fix_imports(file_path: Path, analysis: Dict, dry_run: bool = True) -> bool:
         return False
 
 
-def process_directory(directory: Path, dry_run: bool = True, fix: bool = False) -> Dict[str, int]:
+def process_directory(directory: Path, dry_run: bool = True, fix: bool = False) -> dict[str, int]:
     """Process all Python files in a directory."""
     stats = {"total": 0, "needs_fix": 0, "fixed": 0, "errors": 0}
 

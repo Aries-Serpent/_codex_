@@ -94,7 +94,7 @@ import sys
 import time
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Optional
 from urllib.request import urlopen, Request
 
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024
@@ -150,7 +150,7 @@ def load_from_url(url: str, max_bytes: int) -> Any:
     return json.loads(decoded_bytes)
 
 
-def _path_str(p: Tuple[str, ...]) -> str:
+def _path_str(p: tuple[str, ...]) -> str:
     return "/" + "/".join(p) if p else "/"
 
 
@@ -173,8 +173,8 @@ def summarize_gap_value(key: str, value: Any) -> str:
     return (repr(value)[:200] + "...") if not isinstance(value, (str, int, float)) else repr(value)
 
 
-def walk_for_gaps(obj: Any, path: Tuple[str, ...] = ()) -> List[Dict[str, Any]]:
-    findings: List[Dict[str, Any]] = []
+def walk_for_gaps(obj: Any, path: tuple[str, ...] = ()) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
     if isinstance(obj, dict):
         for k, v in obj.items():
             p = path + (str(k),)
@@ -215,13 +215,13 @@ def walk_for_gaps(obj: Any, path: Tuple[str, ...] = ()) -> List[Dict[str, Any]]:
                             "locator": _path_str(p),
                             "key": "list-item",
                             "value": item,
-                            "summary": f"List item: {item}",
+                            "summary": f"list item: {item}",
                         }
                     )
     return findings
 
 
-def normalize_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def normalize_findings(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out = []
     for f in findings:
         value = f.get("value")
@@ -246,7 +246,7 @@ def normalize_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return out
 
 
-def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]]) -> None:
+def write_outputs(out_dir: str, decoded_json: Any, findings: list[dict[str, Any]]) -> None:
     os.makedirs(out_dir, exist_ok=True)
     full_path = os.path.join(out_dir, "validate_decoded.json")
     gaps_json_path = os.path.join(out_dir, "gaps_extracted.json")
@@ -279,7 +279,7 @@ def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]
         fh.write("```\n")
 
 
-def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Decode artifact and validate schema")
     parser.add_argument(
         "--input", type=str, default=str(DEFAULT_INPUT), help="Base64+gzip input file"
@@ -317,7 +317,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv) if argv is not None else parser.parse_args()
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     args = parse_args(argv)
 
     if not args.input and not args.url:

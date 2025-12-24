@@ -27,7 +27,7 @@ import zipfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from .manifest import IngestManifest, parse_manifest
 
@@ -59,7 +59,7 @@ class Snapshot:
     content_hash: str
     created_at: datetime
     manifest: Optional[IngestManifest] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     
     def get_source_dir(self) -> Path:
         """Get path to source directory within snapshot."""
@@ -69,7 +69,7 @@ class Snapshot:
         """Get path to a named artifact within snapshot."""
         return self.snapshot_dir / name
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert snapshot to dictionary for serialization."""
         return {
             "snapshot_id": self.snapshot_id,

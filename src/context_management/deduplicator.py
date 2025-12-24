@@ -5,7 +5,7 @@ Removes semantically redundant statements from context using
 fingerprint-based matching and configurable similarity thresholds.
 """
 
-from typing import List, Dict, Tuple, Optional, Set
+from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from .fingerprint import StatementFingerprinter, Fingerprint
@@ -19,8 +19,8 @@ class DeduplicationResult:
     original_count: int
     deduplicated_count: int
     removed_count: int
-    unique_statements: List[str]
-    duplicates_found: List[Tuple[str, str]]  # (duplicate, original)
+    unique_statements: list[str]
+    duplicates_found: list[tuple[str, str]]  # (duplicate, original)
     compression_ratio: float
 
     @property
@@ -40,7 +40,7 @@ class StatementEntry:
     timestamp: datetime = field(default_factory=datetime.now)
     priority: int = 0
     source: str = ""
-    preserved_signals: Dict = field(default_factory=dict)
+    preserved_signals: dict = field(default_factory=dict)
 
 
 class SemanticDeduplicator:
@@ -73,17 +73,17 @@ class SemanticDeduplicator:
         self.normalizer = ContextNormalizer()
 
         # Index of seen statements
-        self._index: Dict[str, StatementEntry] = {}  # exact_hash -> entry
-        self._semantic_index: Dict[str, List[str]] = {}  # semantic_hash -> [exact_hashes]
+        self._index: dict[str, StatementEntry] = {}  # exact_hash -> entry
+        self._semantic_index: dict[str, list[str]] = {}  # semantic_hash -> [exact_hashes]
 
     def deduplicate(
-        self, statements: List[str], preserve_signals: bool = True
+        self, statements: list[str], preserve_signals: bool = True
     ) -> DeduplicationResult:
         """
         Deduplicate a list of statements.
 
         Args:
-            statements: List of text statements
+            statements: list of text statements
             preserve_signals: Extract and preserve key signals from removed duplicates
 
         Returns:
@@ -122,7 +122,7 @@ class SemanticDeduplicator:
             compression_ratio=dedup_count / original_count if original_count > 0 else 1.0,
         )
 
-    def is_duplicate(self, statement: str) -> Tuple[bool, Optional[str]]:
+    def is_duplicate(self, statement: str) -> tuple[bool, Optional[str]]:
         """
         Check if statement is a duplicate of existing entry.
 
@@ -130,7 +130,7 @@ class SemanticDeduplicator:
             statement: Text to check
 
         Returns:
-            Tuple of (is_duplicate, original_text_if_duplicate)
+            tuple of (is_duplicate, original_text_if_duplicate)
         """
         fp = self.fingerprinter.fingerprint(statement)
         return self._check_duplicate(fp)
@@ -175,7 +175,7 @@ class SemanticDeduplicator:
         self._index.clear()
         self._semantic_index.clear()
 
-    def _check_duplicate(self, fp: Fingerprint) -> Tuple[bool, Optional[str]]:
+    def _check_duplicate(self, fp: Fingerprint) -> tuple[bool, Optional[str]]:
         """Check if fingerprint matches any existing entry."""
         # Exact match
         if fp.exact_hash in self._index:

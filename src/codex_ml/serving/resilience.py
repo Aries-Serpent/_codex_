@@ -14,7 +14,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from threading import Lock
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -415,7 +415,7 @@ def retry_with_backoff(
         initial_delay: Initial delay between retries (seconds)
         max_delay: Maximum delay between retries (seconds)
         backoff_factor: Multiplier for delay on each retry
-        exceptions: Tuple of exceptions to catch and retry
+        exceptions: tuple of exceptions to catch and retry
         *args: Positional arguments for function
         **kwargs: Keyword arguments for function
 
@@ -538,7 +538,7 @@ class PerModelCircuitBreaker:
             default_config: Default config for new breakers
         """
         self.default_config = default_config or CircuitBreakerConfig()
-        self.breakers: Dict[str, CircuitBreaker] = {}
+        self.breakers: dict[str, CircuitBreaker] = {}
         self.lock = Lock()
 
         logger.info("PerModelCircuitBreaker manager initialized")
@@ -585,7 +585,7 @@ class PerModelCircuitBreaker:
         breaker = self.get_breaker(model_name)
         return breaker.call(func, *args, **kwargs)
 
-    def get_all_states(self) -> Dict[str, dict]:
+    def get_all_states(self) -> dict[str, dict]:
         """Get states of all circuit breakers
 
         Returns:
@@ -594,7 +594,7 @@ class PerModelCircuitBreaker:
         with self.lock:
             return {name: breaker.get_state() for name, breaker in self.breakers.items()}
 
-    def get_all_metrics(self) -> Dict[str, dict]:
+    def get_all_metrics(self) -> dict[str, dict]:
         """Get metrics from all circuit breakers
 
         Returns:

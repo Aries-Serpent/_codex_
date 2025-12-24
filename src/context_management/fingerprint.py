@@ -7,7 +7,7 @@ Uses multiple hashing strategies for different similarity thresholds.
 
 import hashlib
 import re
-from typing import List, Optional, Tuple
+from typing import Optional
 from dataclasses import dataclass
 
 
@@ -18,7 +18,7 @@ class Fingerprint:
     exact_hash: str  # SHA-256 of exact normalized text
     semantic_hash: str  # Hash of semantic tokens only
     structure_hash: str  # Hash of structural pattern
-    ngram_hashes: List[str]  # Hashes of n-gram shingles
+    ngram_hashes: list[str]  # Hashes of n-gram shingles
     token_count: int
 
     def matches(self, other: "Fingerprint", threshold: float = 0.8) -> bool:
@@ -178,7 +178,7 @@ class StatementFingerprinter:
         text = re.sub(r"\s+", " ", text)
         return text
 
-    def _tokenize(self, text: str) -> List[str]:
+    def _tokenize(self, text: str) -> list[str]:
         """Tokenize text into words."""
         tokens = re.findall(r"\b\w+\b", text)
         return [t for t in tokens if len(t) >= self.min_token_length]
@@ -187,7 +187,7 @@ class StatementFingerprinter:
         """Generate exact hash of normalized text."""
         return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
-    def _hash_semantic(self, tokens: List[str]) -> str:
+    def _hash_semantic(self, tokens: list[str]) -> str:
         """Generate hash of semantic tokens (stop words removed)."""
         semantic_tokens = [t for t in tokens if t not in self.STOP_WORDS]
         if self.use_stemming:
@@ -220,7 +220,7 @@ class StatementFingerprinter:
         collapsed = re.sub(r"(.)\1+", r"\1", "".join(pattern))
         return hashlib.sha256(collapsed.encode("utf-8")).hexdigest()[:16]
 
-    def _hash_ngrams(self, tokens: List[str]) -> List[str]:
+    def _hash_ngrams(self, tokens: list[str]) -> list[str]:
         """Generate hashes for n-gram shingles."""
         if len(tokens) < self.ngram_size:
             return [self._hash_exact(" ".join(tokens))]

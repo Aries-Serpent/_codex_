@@ -20,7 +20,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 
 
 @dataclass
@@ -34,11 +34,11 @@ class MarkdownFile:
     is_root_level: bool
     category: str  # active, historical, superseded, report, unknown
     references: int  # How many other files reference this
-    referenced_by: List[str] = field(default_factory=list)
+    referenced_by: list[str] = field(default_factory=list)
     recommendation: str = ""  # keep, archive, review
     confidence: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "path": str(self.path),
             "size_bytes": self.size_bytes,
@@ -105,10 +105,10 @@ class MarkdownAnalyzer:
 
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
-        self.files: List[MarkdownFile] = []
-        self.reference_map: Dict[str, Set[str]] = {}
+        self.files: list[MarkdownFile] = []
+        self.reference_map: dict[str, set[str]] = {}
 
-    def analyze(self) -> List[MarkdownFile]:
+    def analyze(self) -> list[MarkdownFile]:
         """Analyze all markdown files in the repository."""
         # Find all markdown files
         md_files = list(self.repo_path.glob("*.md"))
@@ -243,7 +243,7 @@ class MarkdownAnalyzer:
         age_days: int,
         references: int,
         category: str,
-    ) -> Tuple[str, float]:
+    ) -> tuple[str, float]:
         """Make archival recommendation."""
 
         # Protected files
@@ -281,7 +281,7 @@ class MarkdownAnalyzer:
         return "keep", 0.7
 
 
-def generate_report(files: List[MarkdownFile], format: str = "markdown") -> str:
+def generate_report(files: list[MarkdownFile], format: str = "markdown") -> str:
     """Generate analysis report."""
 
     if format == "json":

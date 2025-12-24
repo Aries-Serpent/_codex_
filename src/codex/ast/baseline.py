@@ -5,12 +5,12 @@ import json
 import logging
 import sqlite3
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
-def _safe_json_loads(data: str) -> Dict:
+def _safe_json_loads(data: str) -> dict:
     """Safely parse JSON, returning empty dict on failure."""
     try:
         return json.loads(data) if data else {}
@@ -72,7 +72,7 @@ class BaselineManager:
         ast_hash: str,
         node_count: int,
         complexity: int,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
     ) -> None:
         """Save or update baseline for a file.
 
@@ -123,7 +123,7 @@ class BaselineManager:
             conn.commit()
             logger.debug(f"Saved baseline for {file_path} (version {version})")
 
-    def get_baseline(self, file_path: str) -> Optional[Dict]:
+    def get_baseline(self, file_path: str) -> Optional[dict]:
         """Retrieve baseline for a file.
 
         Args:
@@ -149,11 +149,11 @@ class BaselineManager:
                 }
         return None
 
-    def list_baselines(self) -> List[Dict]:
+    def list_baselines(self) -> list[dict]:
         """Get all baselines.
 
         Returns:
-            List of baseline records
+            list of baseline records
         """
         with sqlite3.connect(self.db_path) as conn:
             rows = conn.execute(

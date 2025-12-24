@@ -10,7 +10,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -33,7 +33,7 @@ class Metric:
     name: str
     value: float
     metric_type: MetricType
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
     def to_prometheus(self) -> str:
@@ -57,10 +57,10 @@ class MetricsCollector:
 
     def __init__(self, orchestrator: QuantumRelativisticDiracOrchestrator):
         self.orchestrator = orchestrator
-        self.metrics: List[Metric] = []
+        self.metrics: list[Metric] = []
         self.start_time = time.time()
 
-    def collect_orchestrator_metrics(self) -> List[Metric]:
+    def collect_orchestrator_metrics(self) -> list[Metric]:
         """Collect current orchestrator metrics."""
         metrics = []
         state = self.orchestrator.state
@@ -271,8 +271,8 @@ class DistributedCoordinator:
 
     def __init__(self, node_id: str):
         self.node_id = node_id
-        self.peer_nodes: List[str] = []
-        self.task_assignments: Dict[str, str] = {}  # task_id -> node_id
+        self.peer_nodes: list[str] = []
+        self.task_assignments: dict[str, str] = {}  # task_id -> node_id
 
     def register_peer(self, peer_id: str) -> None:
         """Register a peer orchestrator node."""
@@ -283,7 +283,7 @@ class DistributedCoordinator:
         """Assign a task to a specific node."""
         self.task_assignments[task_id] = node_id
 
-    def get_local_tasks(self, all_task_ids: List[str]) -> List[str]:
+    def get_local_tasks(self, all_task_ids: list[str]) -> list[str]:
         """Get tasks assigned to this node."""
         return [
             task_id
@@ -293,9 +293,9 @@ class DistributedCoordinator:
 
     def partition_tasks(
         self,
-        task_ids: List[str],
+        task_ids: list[str],
         strategy: str = "round_robin",
-    ) -> Dict[str, List[str]]:
+    ) -> dict[str, list[str]]:
         """
         Partition tasks across nodes.
 
@@ -313,7 +313,7 @@ class DistributedCoordinator:
         else:
             raise ValueError(f"Unknown strategy: {strategy}")
 
-    def _partition_round_robin(self, task_ids: List[str]) -> Dict[str, List[str]]:
+    def _partition_round_robin(self, task_ids: list[str]) -> dict[str, list[str]]:
         """Round-robin task distribution."""
         all_nodes = [self.node_id] + self.peer_nodes
         partitions = {node: [] for node in all_nodes}
@@ -324,7 +324,7 @@ class DistributedCoordinator:
 
         return partitions
 
-    def _partition_hash(self, task_ids: List[str]) -> Dict[str, List[str]]:
+    def _partition_hash(self, task_ids: list[str]) -> dict[str, list[str]]:
         """Hash-based task distribution."""
         all_nodes = [self.node_id] + self.peer_nodes
         partitions = {node: [] for node in all_nodes}
@@ -359,9 +359,9 @@ class ObservableOrchestrator:
         self.coordinator = DistributedCoordinator(node_id) if node_id else None
 
         # Hooks
-        self._pre_evolve_hooks: List[Callable] = []
-        self._post_evolve_hooks: List[Callable] = []
-        self._task_completion_hooks: List[Callable] = []
+        self._pre_evolve_hooks: list[Callable] = []
+        self._post_evolve_hooks: list[Callable] = []
+        self._task_completion_hooks: list[Callable] = []
 
     def add_pre_evolve_hook(self, hook: Callable) -> None:
         """Add hook to run before each evolution step."""
@@ -419,7 +419,7 @@ class ObservableOrchestrator:
         for hook in self._post_evolve_hooks:
             hook()
 
-    def run(self, max_iterations: int = 1000) -> Dict[str, Any]:
+    def run(self, max_iterations: int = 1000) -> dict[str, Any]:
         """Run with observability."""
         start_time = time.time()
 
@@ -469,7 +469,7 @@ class ObservableOrchestrator:
             return "# Metrics disabled"
         return self.metrics.export_prometheus()
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """Get health status of orchestrator."""
         state = self.orchestrator.state
 

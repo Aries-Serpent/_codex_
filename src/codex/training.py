@@ -62,7 +62,7 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
-    from typing import Any, Dict, Optional
+    from typing import Any, Optional
 
     @dataclass
     class TrainCfg:  # type: ignore[no-redef]
@@ -83,7 +83,7 @@ except ImportError as e:
         train_ds: Any,
         val_ds: Any,
         cfg: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Stub for run_custom_trainer when training module is not available."""
         raise NotImplementedError(
             "run_custom_trainer requires the training.functional_training module, "
@@ -279,7 +279,7 @@ def run_functional_training(
     When use_deeplearning is False, this routes to the symbolic pipeline.
 
     Args:
-        corpus: List of raw training texts.
+        corpus: list of raw training texts.
         demos: SFT demonstrations (symbolic pipeline).
         prefs: Preference data (symbolic pipeline).
         tokenizer_name: Optional tokenizer name to load.
@@ -306,7 +306,7 @@ def run_functional_training(
             provenance manifests.
 
     Returns:
-        Dict with training artifacts/metrics.
+        dict with training artifacts/metrics.
     """
 
     if corpus:

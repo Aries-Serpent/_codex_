@@ -20,7 +20,7 @@ import logging
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class StubInfo:
     docstring: Optional[str] = None
     confidence: float = 1.0  # Confidence this is actually a stub needing fix
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "file_path": self.file_path,
             "line_number": self.line_number,
@@ -59,11 +59,11 @@ class StubAnalysisResult:
 
     total_functions: int = 0
     total_stubs: int = 0
-    stubs: List[StubInfo] = field(default_factory=list)
-    excluded_stubs: List[StubInfo] = field(default_factory=list)  # Valid abstracts
-    errors: List[str] = field(default_factory=list)
+    stubs: list[StubInfo] = field(default_factory=list)
+    excluded_stubs: list[StubInfo] = field(default_factory=list)  # Valid abstracts
+    errors: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "total_functions": self.total_functions,
             "total_stubs": self.total_stubs,
@@ -94,12 +94,12 @@ class StubDetector(ast.NodeVisitor):
     def __init__(self, file_path: str, exclude_abstract: bool = True):
         self.file_path = file_path
         self.exclude_abstract = exclude_abstract
-        self.stubs: List[StubInfo] = []
-        self.excluded: List[StubInfo] = []
+        self.stubs: list[StubInfo] = []
+        self.excluded: list[StubInfo] = []
         self.total_functions = 0
         self.current_class: Optional[str] = None
         self.current_class_is_abstract = False
-        self._class_bases: Set[str] = set()
+        self._class_bases: set[str] = set()
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Track class context for method analysis."""
@@ -315,8 +315,8 @@ def analyze_file(file_path: Path, exclude_abstract: bool = True) -> StubAnalysis
 def analyze_directory(
     directory: Path,
     exclude_abstract: bool = True,
-    include_patterns: List[str] = None,
-    exclude_patterns: List[str] = None,
+    include_patterns: list[str] = None,
+    exclude_patterns: list[str] = None,
 ) -> StubAnalysisResult:
     """Analyze all Python files in a directory.
 

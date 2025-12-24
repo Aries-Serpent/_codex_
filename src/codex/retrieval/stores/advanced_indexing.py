@@ -14,7 +14,7 @@ Features:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
@@ -166,12 +166,12 @@ class HNSWIndex:
                 self.dimension, self.config.M, faiss.METRIC_INNER_PRODUCT
             )
 
-        # Set construction parameter
+        # set construction parameter
         self._index.hnsw.efConstruction = self.config.ef_construction
-        # Set search parameter (can be changed later)
+        # set search parameter (can be changed later)
         self._index.hnsw.efSearch = self.config.ef_search
 
-    def add(self, vectors: "np.ndarray", ids: Optional[List[int]] = None) -> None:
+    def add(self, vectors: "np.ndarray", ids: Optional[list[int]] = None) -> None:
         """Add vectors to the index.
 
         Args:
@@ -203,7 +203,7 @@ class HNSWIndex:
 
         logger.info(f"Added {len(vectors)} vectors to HNSW index (total: {self._size})")
 
-    def search(self, query: "np.ndarray", k: int = 10) -> Tuple["np.ndarray", "np.ndarray"]:
+    def search(self, query: "np.ndarray", k: int = 10) -> tuple["np.ndarray", "np.ndarray"]:
         """Search for k nearest neighbors.
 
         Args:
@@ -363,7 +363,7 @@ class IVFPQIndex:
             metric_type,
         )
 
-        # Set search parameters
+        # set search parameters
         self._index.nprobe = self.config.nprobe
 
     def train(self, training_vectors: "np.ndarray") -> None:
@@ -403,7 +403,7 @@ class IVFPQIndex:
         self._trained = True
         logger.info("IVF-PQ index training complete")
 
-    def add(self, vectors: "np.ndarray", ids: Optional[List[int]] = None) -> None:
+    def add(self, vectors: "np.ndarray", ids: Optional[list[int]] = None) -> None:
         """Add vectors to the index.
 
         Args:
@@ -430,7 +430,7 @@ class IVFPQIndex:
 
         logger.info(f"Added {len(vectors)} vectors to IVF-PQ index (total: {self._size})")
 
-    def search(self, query: "np.ndarray", k: int = 10) -> Tuple["np.ndarray", "np.ndarray"]:
+    def search(self, query: "np.ndarray", k: int = 10) -> tuple["np.ndarray", "np.ndarray"]:
         """Search for k nearest neighbors.
 
         Args:
@@ -527,7 +527,7 @@ def optimize_index_parameters(
     dimension: int,
     target_recall: float = 0.95,
     memory_budget_gb: Optional[float] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Recommend optimal index parameters based on dataset characteristics.
 
     Args:

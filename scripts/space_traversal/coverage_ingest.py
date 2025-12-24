@@ -14,7 +14,7 @@ import json
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -25,7 +25,7 @@ MAX_READ_BYTES = 200_000
 
 def parse_coverage_xml_to_map(
     xml_path: Path, root: Optional[Path] = None
-) -> Dict[str, Dict[str, Any]]:
+) -> dict[str, dict[str, Any]]:
     """
     Parse coverage XML file to map format.
 
@@ -115,8 +115,8 @@ def parse_coverage_xml_to_map(
 
 
 def discover_and_parse_coverage(
-    cfg: Dict[str, Any], artifacts_dir: Path
-) -> Optional[Dict[str, Dict[str, Any]]]:
+    cfg: dict[str, Any], artifacts_dir: Path
+) -> Optional[dict[str, dict[str, Any]]]:
     """
     Discover and parse coverage XML files based on configuration.
 
@@ -143,7 +143,7 @@ def discover_and_parse_coverage(
     )
 
     # Find coverage XML files
-    xml_files: List[Path] = []
+    xml_files: list[Path] = []
     for pattern in xml_patterns:
         pattern_path = Path(pattern)
         if pattern_path.is_absolute():

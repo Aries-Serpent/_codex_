@@ -5,7 +5,7 @@ Computes BLEU score for machine translation and text generation.
 Uses sacrebleu library if available, otherwise provides basic implementation.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 import logging
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ class BleuMetric(MetricAdapter):
 
         super().add_batch(predictions, references)
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         """Compute BLEU score."""
         if not self._predictions:
             return {self.name: 0.0}
@@ -70,7 +70,7 @@ class BleuMetric(MetricAdapter):
         else:
             return self._compute_basic()
 
-    def _compute_sacrebleu(self) -> Dict[str, float]:
+    def _compute_sacrebleu(self) -> dict[str, float]:
         """Compute BLEU using sacrebleu library."""
         try:
             # sacrebleu expects predictions and list of references
@@ -91,7 +91,7 @@ class BleuMetric(MetricAdapter):
             logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}
 
-    def _compute_basic(self) -> Dict[str, float]:
+    def _compute_basic(self) -> dict[str, float]:
         """Basic BLEU approximation without sacrebleu."""
         # This is a simplified approximation
         # For production, install sacrebleu

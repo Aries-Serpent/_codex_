@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 import hashlib
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, Sequence
+from typing import Iterable, Iterator, Sequence
 
 import numpy as np
 
@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover - optional dep missing
     Dataset = None  # type: ignore[assignment]
 
 
-def _encode_text(tokenizer, text: str, max_length: int) -> Dict[str, np.ndarray]:
+def _encode_text(tokenizer, text: str, max_length: int) -> dict[str, np.ndarray]:
     enc = tokenizer(
         text,
         max_length=max_length,
@@ -60,7 +60,7 @@ class TextDataset(torch.utils.data.Dataset):
     def __len__(self) -> int:  # pragma: no cover - trivial
         return len(self.data)
 
-    def __getitem__(self, idx: int) -> Dict[str, np.ndarray]:  # pragma: no cover - trivial
+    def __getitem__(self, idx: int) -> dict[str, np.ndarray]:  # pragma: no cover - trivial
         return self.data[idx]
 
 
@@ -80,12 +80,12 @@ class IterableTextDataset(torch.utils.data.IterableDataset):
         self.max_length = max_length
         self.prefetch_k = int(prefetch_k)
 
-    def __iter__(self) -> Iterator[Dict[str, np.ndarray]]:
+    def __iter__(self) -> Iterator[dict[str, np.ndarray]]:
         if self.prefetch_k <= 0:
             for text in self.stream:
                 yield _encode_text(self.tokenizer, text, self.max_length)
         else:
-            buf: list[Dict[str, np.ndarray]] = []
+            buf: list[dict[str, np.ndarray]] = []
             for text in self.stream:
                 buf.append(_encode_text(self.tokenizer, text, self.max_length))
                 if len(buf) >= self.prefetch_k:

@@ -24,7 +24,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .sandbox import ExecutionResult, SandboxConfig, SandboxManager
 
@@ -43,7 +43,7 @@ class TraceEntry:
     function_name: str
     filename: str
     lineno: int
-    args: Optional[Dict[str, Any]] = None
+    args: Optional[dict[str, Any]] = None
     return_value: Optional[Any] = None
 
 
@@ -62,11 +62,11 @@ class RuntimeReport:
     """
     snapshot_id: str
     timestamp: datetime
-    sandbox_config: Dict[str, Any]
-    execution_results: List[Dict[str, Any]] = field(default_factory=list)
-    call_traces: List[str] = field(default_factory=list)
+    sandbox_config: dict[str, Any]
+    execution_results: list[dict[str, Any]] = field(default_factory=list)
+    call_traces: list[str] = field(default_factory=list)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "snapshot_id": self.snapshot_id,
@@ -175,7 +175,7 @@ class RuntimeTracer:
     def analyze(
         self,
         source_dir: Path,
-        sample_inputs: Optional[List[Path]] = None,
+        sample_inputs: Optional[list[Path]] = None,
         enable_tracing: bool = False,
     ) -> RuntimeReport:
         """Analyze runtime behavior of source code.
@@ -214,7 +214,7 @@ class RuntimeTracer:
         
         logger.info("Found entry point: %s", entry_point)
         
-        execution_results: List[Dict[str, Any]] = []
+        execution_results: list[dict[str, Any]] = []
         
         # Try to get help output first
         help_output = self._detect_argparse_help(source_dir, entry_point)
@@ -278,7 +278,7 @@ class RuntimeTracer:
             execution_results=execution_results,
         )
     
-    def probe_script(self, source_dir: Path) -> Dict[str, Any]:
+    def probe_script(self, source_dir: Path) -> dict[str, Any]:
         """Probe a script to understand its interface.
         
         Attempts to discover:

@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 COVERAGE_PATTERN = r"--cov-fail-under=3\.5"
 
@@ -53,7 +52,7 @@ def _read_text(path: Path) -> str | None:
         return f"<error: {exc}>"
 
 
-def check_file(filepath: Path, pattern: str = COVERAGE_PATTERN) -> Tuple[bool, str]:
+def check_file(filepath: Path, pattern: str = COVERAGE_PATTERN) -> tuple[bool, str]:
     """Check if ``filepath`` contains the coverage gate pattern.
 
     Returns a tuple ``(found, snippet_or_error)``.  When the pattern is missing
@@ -78,10 +77,10 @@ def check_file(filepath: Path, pattern: str = COVERAGE_PATTERN) -> Tuple[bool, s
     return True, snippet
 
 
-def _gather_workflow_files(workflow_dir: Path) -> List[Path]:
+def _gather_workflow_files(workflow_dir: Path) -> list[Path]:
     if not workflow_dir.exists():
         return []
-    files: List[Path] = []
+    files: list[Path] = []
     for pattern in ("*.yml", "*.yaml"):
         files.extend(sorted(workflow_dir.glob(pattern)))
     return files
@@ -94,7 +93,7 @@ def validate_coverage_gates() -> int:
         0 if all checks pass, 1 if any fail
     """
 
-    files_to_check: List[Path] = [
+    files_to_check: list[Path] = [
         Path("README.md"),
         Path("docs/governance/CONTRIBUTING.md"),
         Path("configs/development/pytest.ini"),
@@ -105,8 +104,8 @@ def validate_coverage_gates() -> int:
     workflow_dir = Path(".github/workflows")
     files_to_check.extend(_gather_workflow_files(workflow_dir))
 
-    results: List[Dict[str, object]] = []
-    failures: List[Path] = []
+    results: list[dict[str, object]] = []
+    failures: list[Path] = []
 
     for filepath in files_to_check:
         found, snippet = check_file(filepath)

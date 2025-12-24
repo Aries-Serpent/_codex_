@@ -23,7 +23,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -50,7 +50,7 @@ class FockState:
     For fermions: nᵢ ∈ {0, 1} (Pauli exclusion)
     """
 
-    occupation_numbers: Dict[str, int] = field(default_factory=dict)
+    occupation_numbers: dict[str, int] = field(default_factory=dict)
     statistics: ParticleStatistics = ParticleStatistics.BOSON
 
     def total_particles(self) -> int:
@@ -63,7 +63,7 @@ class FockState:
 
     def set_occupation(self, mode: str, n: int) -> bool:
         """
-        Set occupation number for a mode.
+        set occupation number for a mode.
 
         Returns False if violates statistics (e.g., fermion with n>1).
         """
@@ -80,7 +80,7 @@ class FockState:
 
         return True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
             "occupation_numbers": self.occupation_numbers.copy(),
@@ -248,10 +248,10 @@ class SpawnMetrics:
     total_spawned: int = 0
     total_annihilated: int = 0
     net_created: int = 0
-    spawn_events: List[Dict[str, Any]] = field(default_factory=list)
-    annihilation_events: List[Dict[str, Any]] = field(default_factory=list)
+    spawn_events: list[dict[str, Any]] = field(default_factory=list)
+    annihilation_events: list[dict[str, Any]] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "total_spawned": self.total_spawned,
             "total_annihilated": self.total_annihilated,
@@ -290,8 +290,8 @@ class TaskSpawner:
         self.metrics = SpawnMetrics()
 
         # Callbacks
-        self._on_spawn: List[Callable[[str, str], None]] = []
-        self._on_annihilate: List[Callable[[str], None]] = []
+        self._on_spawn: list[Callable[[str, str], None]] = []
+        self._on_annihilate: list[Callable[[str], None]] = []
 
     def _update_fock_from_state(self) -> None:
         """Sync Fock state with orchestrator state."""
@@ -302,7 +302,7 @@ class TaskSpawner:
             n = self.fock_state.get_occupation(mode)
             self.fock_state.set_occupation(mode, n + 1)
 
-    def spawn(self, template_id: str, count: int = 1, **task_kwargs) -> List[str]:
+    def spawn(self, template_id: str, count: int = 1, **task_kwargs) -> list[str]:
         """
         Spawn new tasks from template using creation operator.
 
@@ -312,7 +312,7 @@ class TaskSpawner:
             **task_kwargs: Additional kwargs for task creation
 
         Returns:
-            List of new task IDs
+            list of new task IDs
         """
         if template_id not in self.state.tasks:
             return []
@@ -385,7 +385,7 @@ class TaskSpawner:
 
         return new_ids
 
-    def cleanup_completed(self, probability_threshold: float = 0.01) -> List[str]:
+    def cleanup_completed(self, probability_threshold: float = 0.01) -> list[str]:
         """
         Remove completed tasks using annihilation operator.
 
@@ -393,7 +393,7 @@ class TaskSpawner:
             probability_threshold: Tasks below this probability are removed
 
         Returns:
-            List of removed task IDs
+            list of removed task IDs
         """
         removed = []
 
@@ -455,11 +455,11 @@ class TaskSpawner:
         """Register callback for annihilation events."""
         self._on_annihilate.append(callback)
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get spawning metrics."""
         return self.metrics.to_dict()
 
-    def get_fock_state(self) -> Dict[str, Any]:
+    def get_fock_state(self) -> dict[str, Any]:
         """Get current Fock state."""
         return self.fock_state.to_dict()
 
@@ -476,7 +476,7 @@ class BatchCreationOperator:
         state: OrchestratorState,
         template: TaskState,
         count: int,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Spawn multiple tasks efficiently.
 

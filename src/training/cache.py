@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Iterator
+from typing import Iterator
 
 import numpy as np
 
@@ -16,7 +16,7 @@ class TokenCache:
         self.out_dir = Path(out_dir)
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.rows_per_shard = int(rows_per_shard)
-        self._buffer: list[Dict[str, np.ndarray]] = []
+        self._buffer: list[dict[str, np.ndarray]] = []
         self._buffer_rows = 0
         self._shard_idx = 0
         self.manifest: dict[str, object] = {
@@ -25,7 +25,7 @@ class TokenCache:
         }
         self._write_manifest()
 
-    def add_batch(self, batch: Dict[str, np.ndarray]) -> None:
+    def add_batch(self, batch: dict[str, np.ndarray]) -> None:
         """Append a batch to the cache, flushing when reaching ``rows_per_shard``."""
         self._buffer.append(batch)
         rows = next(iter(batch.values())).shape[0]
@@ -37,7 +37,7 @@ class TokenCache:
         if not self._buffer:
             return
         shard_path = self.out_dir / f"shard_{self._shard_idx:05d}.npz"
-        data: Dict[str, np.ndarray] = {}
+        data: dict[str, np.ndarray] = {}
         for key in self._buffer[0].keys():
             data[key] = np.concatenate([b[key] for b in self._buffer], axis=0)
         np.savez(shard_path, **data)  # type: ignore[arg-type]
@@ -57,7 +57,7 @@ class TokenCache:
         (self.out_dir / "manifest.json").write_text(json.dumps(self.manifest))
 
     @staticmethod
-    def iter_batches(out_dir: str | Path) -> Iterator[Dict[str, np.ndarray]]:
+    def iter_batches(out_dir: str | Path) -> Iterator[dict[str, np.ndarray]]:
         """Yield cached batches from ``out_dir`` using ``numpy.memmap``."""
         out = Path(out_dir)
         manifest = json.loads((out / "manifest.json").read_text())

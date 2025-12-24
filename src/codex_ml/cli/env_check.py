@@ -14,7 +14,6 @@ import argparse
 import shlex
 import subprocess
 from pathlib import Path
-from typing import Dict, List
 
 
 def _run(cmd: str, cwd: Path) -> int:
@@ -22,19 +21,19 @@ def _run(cmd: str, cwd: Path) -> int:
     return proc.returncode
 
 
-def run_health_check(repo_root: Path) -> Dict[str, int]:
+def run_health_check(repo_root: Path) -> dict[str, int]:
     cmds = {
         "env_snapshot_rc": "python tools/codex_env_snapshot.py --out codex_env_snapshot.json",
         "dependency_audit_rc": "python tools/codex_dependency_audit.py --repo-root . --json-out codex_dependency_report.json --md-out codex_dependency_report.md",
         "secret_scan_rc": "python tools/codex_secret_scan_stub.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md",
     }
-    results: Dict[str, int] = {}
+    results: dict[str, int] = {}
     for key, cmd in cmds.items():
         results[key] = _run(cmd, repo_root)
     return results
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run env & security health checks for _codex_.")
     parser.add_argument(
         "--repo-root",

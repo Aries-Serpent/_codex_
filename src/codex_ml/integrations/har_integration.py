@@ -19,7 +19,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class HARTimings:
     receive: float = 0
     ssl: float = -1
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         return {
             "blocked": self.blocked,
             "dns": self.dns,
@@ -81,14 +81,14 @@ class HARRequest:
     method: str
     url: str
     http_version: str = "HTTP/1.1"
-    headers: List[Dict[str, str]] = field(default_factory=list)
-    query_string: List[Dict[str, str]] = field(default_factory=list)
-    cookies: List[Dict[str, str]] = field(default_factory=list)
-    post_data: Optional[Dict[str, Any]] = None
+    headers: list[dict[str, str]] = field(default_factory=list)
+    query_string: list[dict[str, str]] = field(default_factory=list)
+    cookies: list[dict[str, str]] = field(default_factory=list)
+    post_data: Optional[dict[str, Any]] = None
     headers_size: int = -1
     body_size: int = -1
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         result = {
             "method": self.method,
             "url": self.url,
@@ -104,7 +104,7 @@ class HARRequest:
         return result
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HARRequest":
+    def from_dict(cls, data: dict[str, Any]) -> "HARRequest":
         return cls(
             method=data["method"],
             url=data["url"],
@@ -125,14 +125,14 @@ class HARResponse:
     status: int
     status_text: str
     http_version: str = "HTTP/1.1"
-    headers: List[Dict[str, str]] = field(default_factory=list)
-    cookies: List[Dict[str, str]] = field(default_factory=list)
-    content: Dict[str, Any] = field(default_factory=dict)
+    headers: list[dict[str, str]] = field(default_factory=list)
+    cookies: list[dict[str, str]] = field(default_factory=list)
+    content: dict[str, Any] = field(default_factory=dict)
     redirect_url: str = ""
     headers_size: int = -1
     body_size: int = -1
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "status": self.status,
             "statusText": self.status_text,
@@ -146,7 +146,7 @@ class HARResponse:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HARResponse":
+    def from_dict(cls, data: dict[str, Any]) -> "HARResponse":
         return cls(
             status=data["status"],
             status_text=data["statusText"],
@@ -169,12 +169,12 @@ class HAREntry:
     started_datetime: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     time: float = 0
     timings: HARTimings = field(default_factory=HARTimings)
-    cache: Dict[str, Any] = field(default_factory=dict)
+    cache: dict[str, Any] = field(default_factory=dict)
     server_ip_address: str = ""
     connection: str = ""
     comment: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "startedDateTime": self.started_datetime,
             "time": self.time,
@@ -188,7 +188,7 @@ class HAREntry:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HAREntry":
+    def from_dict(cls, data: dict[str, Any]) -> "HAREntry":
         return cls(
             started_datetime=data["startedDateTime"],
             time=data.get("time", 0),
@@ -213,18 +213,18 @@ class HARLog:
     """Complete HAR log containing all entries."""
 
     version: str = "1.2"
-    creator: Dict[str, str] = field(
+    creator: dict[str, str] = field(
         default_factory=lambda: {
             "name": "Codex HAR Recorder",
             "version": "1.0.0",
         }
     )
-    browser: Optional[Dict[str, str]] = None
-    pages: List[Dict[str, Any]] = field(default_factory=list)
-    entries: List[HAREntry] = field(default_factory=list)
+    browser: Optional[dict[str, str]] = None
+    pages: list[dict[str, Any]] = field(default_factory=list)
+    entries: list[HAREntry] = field(default_factory=list)
     comment: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         result = {
             "log": {
                 "version": self.version,
@@ -241,7 +241,7 @@ class HARLog:
         return result
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HARLog":
+    def from_dict(cls, data: dict[str, Any]) -> "HARLog":
         log_data = data.get("log", data)
         return cls(
             version=log_data.get("version", "1.2"),
@@ -313,11 +313,11 @@ class HARRecorder:
         self,
         method: str,
         url: str,
-        request_headers: Optional[Dict[str, str]] = None,
+        request_headers: Optional[dict[str, str]] = None,
         request_body: Optional[str] = None,
         status: int = 200,
         status_text: str = "OK",
-        response_headers: Optional[Dict[str, str]] = None,
+        response_headers: Optional[dict[str, str]] = None,
         response_body: Optional[str] = None,
         elapsed_ms: float = 0,
     ) -> HAREntry:
@@ -353,7 +353,7 @@ class HARRecorder:
     def save(self, path: Path, compress: bool = False) -> None:
         self.har_log.save(path, compress)
 
-    def get_entries(self) -> List[HAREntry]:
+    def get_entries(self) -> list[HAREntry]:
         return self.har_log.entries
 
 
@@ -363,7 +363,7 @@ class HARCache:
     def __init__(self, cache_dir: Path):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self._index: Dict[str, Path] = {}
+        self._index: dict[str, Path] = {}
         self._load_index()
 
     def _load_index(self) -> None:
@@ -418,7 +418,7 @@ class HARReplayer:
 
     def __init__(self, har_log: HARLog):
         self.har_log = har_log
-        self._index: Dict[str, HAREntry] = {}
+        self._index: dict[str, HAREntry] = {}
         self._build_index()
 
     def _build_index(self) -> None:
@@ -466,7 +466,7 @@ def record_api_call(
     )
 
 
-def create_audit_snapshot(audit_id: str, entries: List[HAREntry], output_dir: Path) -> Path:
+def create_audit_snapshot(audit_id: str, entries: list[HAREntry], output_dir: Path) -> Path:
     har_log = HARLog(
         creator={"name": "Codex Audit Snapshot", "version": "1.0.0"},
         comment=f"Audit snapshot: {audit_id}",

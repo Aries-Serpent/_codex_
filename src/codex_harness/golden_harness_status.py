@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 _STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1", "yes"}
 _STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "red", "false", "0", "no"}
@@ -16,7 +16,7 @@ class HarnessSignal:
     status: str
     detail: str
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> dict[str, str]:
         return {"name": self.name, "status": self.status, "detail": self.detail}
 
 
@@ -51,7 +51,7 @@ def _evaluate_ra_policy(policy: Any) -> HarnessSignal:
             status="yellow",
             detail="Responsible AI policy outcomes missing; defaulting to caution.",
         )
-    statuses: List[bool] = []
+    statuses: list[bool] = []
     if isinstance(policy, dict):
         if "policies" in policy:
             statuses.extend(
@@ -83,8 +83,8 @@ def _evaluate_ra_policy(policy: Any) -> HarnessSignal:
     )
 
 
-def _extract_gate_mapping(payload: Any) -> Dict[str, bool | None]:
-    mapping: Dict[str, bool | None] = {}
+def _extract_gate_mapping(payload: Any) -> dict[str, bool | None]:
+    mapping: dict[str, bool | None] = {}
     if isinstance(payload, dict) and "gates" in payload:
         for entry in payload.get("gates", []):
             if not isinstance(entry, dict) or "tool" not in entry:
@@ -133,7 +133,7 @@ def _evaluate_tool_trace(trace_path: Path, gate_path: Path | None) -> HarnessSig
             status="yellow",
             detail="Tool trace not found; cannot confirm local tool coverage.",
         )
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
     for line in trace_path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -142,13 +142,13 @@ def _evaluate_tool_trace(trace_path: Path, gate_path: Path | None) -> HarnessSig
     if not entries:
         return HarnessSignal(name="tool_trace", status="yellow", detail="Tool trace is empty.")
 
-    gate_mapping: Dict[str, bool | None] = {}
+    gate_mapping: dict[str, bool | None] = {}
     if gate_path and gate_path.exists():
         gate_payload = _load_json_if_exists(gate_path)
         gate_mapping = _extract_gate_mapping(gate_payload)
 
     gate_mismatches = [e for e in entries if e.get("ra_gate_match") is False]
-    missing_expected: List[str] = []
+    missing_expected: list[str] = []
     if gate_mapping:
         observed = {e.get("tool") for e in entries}
         missing_expected = sorted({tool for tool in gate_mapping if tool not in observed})
@@ -175,7 +175,7 @@ def compute_golden_harness_status(
     tool_trace_path: Path = Path("artifacts/tool_trace.ndjson"),
     ra_gate_path: Path | None = Path("artifacts/gates/ra_gate_results.json"),
     output_path: Path = Path("golden_harness_status.json"),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     ra_policy = _load_json_if_exists(ra_policy_path) if ra_policy_path else None
     signals = [
         _evaluate_ra_policy(ra_policy),

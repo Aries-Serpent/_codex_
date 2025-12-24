@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping, Pattern
+from typing import Any, Iterable, Mapping, Pattern
 
 import yaml
 
@@ -14,10 +14,10 @@ class DenylistViolation(RuntimeError):
 
 @dataclass
 class DenylistRules:
-    sensitive_terms: List[str]
-    redaction_patterns: List[tuple[Pattern[str], str]]
-    blocked_actions: List[str]
-    blocked_prompt_patterns: List[str]
+    sensitive_terms: list[str]
+    redaction_patterns: list[tuple[Pattern[str], str]]
+    blocked_actions: list[str]
+    blocked_prompt_patterns: list[str]
 
 
 def load_denylist(path: str | Path) -> DenylistRules:

@@ -12,14 +12,13 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS_DIR = REPO_ROOT / "audit_artifacts"
 OUTPUT_FILE = REPO_ROOT / "reports" / "capability_summary.md"
 
 
-def load_capabilities() -> Dict:
+def load_capabilities() -> dict:
     """Load scored capabilities from audit artifacts."""
     scored_file = ARTIFACTS_DIR / "capabilities_scored.json"
     if not scored_file.exists():
@@ -28,7 +27,7 @@ def load_capabilities() -> Dict:
     return json.loads(scored_file.read_text(encoding="utf-8"))
 
 
-def categorize_capabilities(capabilities: List[Dict]) -> Dict[str, List[Dict]]:
+def categorize_capabilities(capabilities: list[dict]) -> dict[str, list[dict]]:
     """Categorize capabilities by maturity level."""
     categories = {"high": [], "medium": [], "low": []}
 
@@ -44,7 +43,7 @@ def categorize_capabilities(capabilities: List[Dict]) -> Dict[str, List[Dict]]:
     return categories
 
 
-def generate_recommendations(cap: Dict) -> List[str]:
+def generate_recommendations(cap: dict) -> list[str]:
     """Generate actionable recommendations for a capability."""
     recommendations = []
     components = cap["components"]
@@ -74,7 +73,7 @@ def generate_recommendations(cap: Dict) -> List[str]:
     return recommendations
 
 
-def generate_report(data: Dict) -> str:
+def generate_report(data: dict) -> str:
     """Generate markdown report."""
     capabilities = data["capabilities"]
     categories = categorize_capabilities(capabilities)

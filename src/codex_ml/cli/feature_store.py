@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 import json
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 try:
     import typer
@@ -87,7 +87,7 @@ def list(
     ),
     show_health: bool = typer.Option(False, "--health/--no-health", help="Show health status"),
 ):
-    """List all registered features.
+    """list all registered features.
 
     Example:
         python -m codex_ml.cli.feature_store list --health
@@ -210,7 +210,7 @@ def health(
 
 @app.command()
 def materialize(
-    feature_names: List[str] = typer.Argument(..., help="Feature names to materialize"),
+    feature_names: list[str] = typer.Argument(..., help="Feature names to materialize"),
     output_path: str = typer.Option(
         ..., "--output", "-o", help="Output path for materialized features"
     ),
@@ -261,7 +261,7 @@ def versions(
         help="Path to feature store",
     ),
 ):
-    """List all versions of a feature.
+    """list all versions of a feature.
 
     Example:
         python -m codex_ml.cli.feature_store versions user_age

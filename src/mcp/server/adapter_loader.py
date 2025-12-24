@@ -6,7 +6,7 @@ import asyncio
 import importlib
 import importlib.util
 import os
-from typing import Optional, Tuple
+from typing import Optional
 
 from src.mcp.server.adapters.mock_adapter import MockAdapter
 
@@ -25,7 +25,7 @@ def _import_class(path: str):
     return getattr(mod, class_name, None)
 
 
-def load_adapter(adapter_path: Optional[str] = None) -> Tuple[object, str]:
+def load_adapter(adapter_path: Optional[str] = None) -> tuple[object, str]:
     """
     Load adapter based on ADAPTER_CLASS environment variable or explicit param.
     Returns (adapter_instance, adapter_class_path).

@@ -23,7 +23,7 @@ import shutil
 from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -138,8 +138,8 @@ def verify_safe_to_archive(file_path: Path) -> ArchiveVerificationResult:
 
 
 def archive_file(
-    file_path: Path, archive_info: Dict[str, Any], base_archive_dir: Path, dry_run: bool = False
-) -> Optional[Dict[str, Any]]:
+    file_path: Path, archive_info: dict[str, Any], base_archive_dir: Path, dry_run: bool = False
+) -> Optional[dict[str, Any]]:
     """
     Archive a single file to misc/repo-owner-review.
 
@@ -209,7 +209,7 @@ def archive_file(
     return metadata
 
 
-def update_metadata(base_archive_dir: Path, new_files: List[Dict[str, Any]]) -> None:
+def update_metadata(base_archive_dir: Path, new_files: list[dict[str, Any]]) -> None:
     """Update the metadata.json file with newly archived files."""
     metadata_path = base_archive_dir / "metadata.json"
 

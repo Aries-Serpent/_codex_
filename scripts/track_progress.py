@@ -6,10 +6,9 @@ Monitors capability scores and provides actionable next steps.
 """
 import json
 from pathlib import Path
-from typing import Dict, List
 
 
-def load_capabilities() -> List[Dict]:
+def load_capabilities() -> list[dict]:
     """Load capability scores from audit artifacts."""
     # Check multiple possible locations for capabilities_scored.json
     possible_paths = [
@@ -33,7 +32,7 @@ def load_capabilities() -> List[Dict]:
     return data.get("capabilities", [])
 
 
-def categorize_capabilities(caps: List[Dict]) -> Dict:
+def categorize_capabilities(caps: list[dict]) -> dict:
     """Categorize capabilities by maturity level."""
     return {
         "critical": [c for c in caps if c["score"] < 0.40],
@@ -43,7 +42,7 @@ def categorize_capabilities(caps: List[Dict]) -> Dict:
     }
 
 
-def print_progress_report(caps: List[Dict]):
+def print_progress_report(caps: list[dict]):
     """Print comprehensive progress report."""
     if not caps:
         return
@@ -134,7 +133,7 @@ def print_progress_report(caps: List[Dict]):
     print("\n" + "=" * 70)
 
 
-def generate_next_command(caps: List[Dict]):
+def generate_next_command(caps: list[dict]):
     """Generate next command to execute."""
     categories = categorize_capabilities(caps)
     low_maturity = categories["critical"] + categories["low"]

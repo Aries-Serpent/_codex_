@@ -6,18 +6,18 @@ import logging
 import os
 import time
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 __all__ = ["health_check", "readiness_check", "get_health_router"]
 
 
-def health_check() -> Dict[str, Any]:
+def health_check() -> dict[str, Any]:
     """Basic health check - service is running and responsive.
 
     Returns:
-        Dict with status and timestamp.
+        dict with status and timestamp.
     """
     return {
         "status": "healthy",
@@ -26,7 +26,7 @@ def health_check() -> Dict[str, Any]:
     }
 
 
-def readiness_check() -> Dict[str, Any]:
+def readiness_check() -> dict[str, Any]:
     """Readiness check - service is ready to handle requests.
 
     Checks:
@@ -35,7 +35,7 @@ def readiness_check() -> Dict[str, Any]:
     - Environment variables set
 
     Returns:
-        Dict with ready status and check results.
+        dict with ready status and check results.
     """
     checks = {}
     all_ready = True

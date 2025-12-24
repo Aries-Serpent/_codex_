@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 try:
     import torch
@@ -43,7 +43,7 @@ class SchedulerRegistry:
     """Lightweight LR scheduler registry with a few safe built-ins."""
 
     def __init__(self) -> None:
-        self._specs: Dict[str, SchedulerSpec] = {}
+        self._specs: dict[str, SchedulerSpec] = {}
         if TORCH_AVAILABLE:
             self._register_builtins()
 

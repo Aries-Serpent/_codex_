@@ -7,7 +7,7 @@ Defines the abstract interface that all vector store implementations must follow
 from abc import ABC, abstractmethod
 import logging
 logger = logging.getLogger(__name__)
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 
@@ -23,9 +23,9 @@ class VectorStore(ABC):
     def add(
         self,
         vectors: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None,
-        ids: Optional[List[str]] = None,
-    ) -> List[str]:
+        metadata: Optional[list[dict[str, Any]]] = None,
+        ids: Optional[list[str]] = None,
+    ) -> list[str]:
         """Add vectors to the store with optional metadata
 
         Args:
@@ -34,7 +34,7 @@ class VectorStore(ABC):
             ids: Optional IDs for vectors (auto-generated if not provided)
 
         Returns:
-            List of vector IDs (either provided or generated)
+            list of vector IDs (either provided or generated)
 
         Raises:
             ValueError: If inputs are invalid
@@ -47,8 +47,8 @@ class VectorStore(ABC):
         self,
         query_vector: np.ndarray,
         k: int = 5,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[Dict[str, Any]]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[dict[str, Any]]:
         """Search for similar vectors
 
         Args:
@@ -57,7 +57,7 @@ class VectorStore(ABC):
             filters: Optional metadata filters (e.g., {"category": "tech"})
 
         Returns:
-            List of results, each containing:
+            list of results, each containing:
                 - id: Vector ID
                 - score: Similarity score (0-1, higher is more similar)
                 - metadata: Associated metadata
@@ -70,7 +70,7 @@ class VectorStore(ABC):
         pass
 
     @abstractmethod
-    def delete(self, ids: Union[str, List[str]]) -> int:
+    def delete(self, ids: Union[str, list[str]]) -> int:
         """Delete vectors by ID
 
         Args:
@@ -85,14 +85,14 @@ class VectorStore(ABC):
         pass
 
     @abstractmethod
-    def get(self, ids: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
         """Retrieve vectors by ID
 
         Args:
             ids: Single ID or list of IDs to retrieve
 
         Returns:
-            List of results, each containing:
+            list of results, each containing:
                 - id: Vector ID
                 - vector: Embedding vector
                 - metadata: Associated metadata
@@ -147,7 +147,7 @@ class VectorStore(ABC):
         pass
 
     @abstractmethod
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Perform health check on the vector store
 
         Returns:
