@@ -23,7 +23,7 @@ class WorkflowInventory:
     """Manages inventory of GitHub Actions workflows.
 
     Features:
-    - Scans . github/workflows directory
+    - Scans .github/workflows directory
     - Parses workflow YAML files
     - Builds dependency graph between workflows
     - Caches parsed results
@@ -50,7 +50,7 @@ class WorkflowInventory:
         Args:
             workflows_dir: Path to .github/workflows directory.
         """
-        self. workflows_dir = Path(workflows_dir)
+        self.workflows_dir = Path(workflows_dir)
         self.parser = WorkflowParser()
         self._workflows: Dict[str, WorkflowMetadata] = {}
         self._dependencies: List[WorkflowDependency] = []
@@ -78,7 +78,7 @@ class WorkflowInventory:
             self._workflows.clear()
             self.parser.clear_cache()
 
-        if not self. workflows_dir.exists():
+        if not self.workflows_dir.exists():
             logger.error(f"Workflows directory not found: {self.workflows_dir}")
             return 0
 

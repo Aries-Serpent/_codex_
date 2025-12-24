@@ -65,7 +65,7 @@ class LifecycleManager:
             self._is_healthy = True
             logger.info(f"Initialized ({len(executed)} hooks)")
         except Exception as e:
-           logger.debug(f"Exception: {e}")
+            logger.debug(f"Exception: {e}")
             logger.error(f"Startup failed: {e}")
             await self._rollback_startup(executed)
             raise RuntimeError(f"Startup failed: {e}") from e
@@ -76,7 +76,7 @@ class LifecycleManager:
             try:
                 logger.debug(f"Rolling back: {hook.__name__}")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Rollback error: {e}")
 
     async def shutdown(self) -> None:
@@ -90,7 +90,7 @@ class LifecycleManager:
                 else:
                     hook()
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.error(f"Shutdown hook failed: {e}")
         await self._cleanup_resources()
         self._is_healthy = False
@@ -118,7 +118,7 @@ class LifecycleManager:
                         close()
                 logger.debug(f"Cleaned: {name}")
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Cleanup failed for {name}: {e}")
         self._resources.clear()
 
@@ -143,7 +143,7 @@ class LifecycleManager:
                         loop = asyncio.get_event_loop()
                         running = loop.is_running()
                     except RuntimeError as e:
-                       logger.debug(f"RuntimeError: {e}")
+                        logger.debug(f"RuntimeError: {e}")
                         logger.warning(f"RuntimeError: {e}", exc_info=True)
                         running = False
 
@@ -158,7 +158,7 @@ class LifecycleManager:
                 if not bool(result):
                     checks_ok = False
             except Exception as e:
-               logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception: {e}")
                 logger.warning(f"Health check failed: {e}")
                 checks_ok = False
 
