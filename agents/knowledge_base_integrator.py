@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from codex.zendesk.rag import ZendeskRAGBridge
+from src.codex.zendesk.rag import ZendeskRAGBridge
 
 
 def build_context(query: str, tickets, top_k: int = 5):

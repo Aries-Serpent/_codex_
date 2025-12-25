@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Iterable
 
-from codex.zendesk.model.trigger import _ZendeskBaseModel
+from src.codex.zendesk.model.trigger import _ZendeskBaseModel
 from src.quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTask
 
 logger = logging.getLogger(__name__)

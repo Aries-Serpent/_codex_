@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from codex.zendesk.quantum import ZendeskTicket
-from codex.zendesk.rag import ZendeskRAGBridge as CoreZendeskRAGBridge
+from src.codex.zendesk.quantum import ZendeskTicket
+from src.codex.zendesk.rag import ZendeskRAGBridge as CoreZendeskRAGBridge
 
 
 class ZendeskRAGBridge:

@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from codex.monitoring import metrics
-from codex.zendesk.monitoring import register_zendesk_metrics
-from codex.zendesk.monitoring.mcp_bridge import export_zendesk_metrics
+from src.codex.monitoring import metrics
+from src.codex.zendesk.monitoring import register_zendesk_metrics
+from src.codex.zendesk.monitoring.mcp_bridge import export_zendesk_metrics
 from src.mcp.adapters.base_adapter import AdapterConfig, BaseAdapter, QueryResult
 from src.mcp.metrics.mcp_metrics import MetricCollector
 
