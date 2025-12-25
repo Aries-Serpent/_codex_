@@ -19,8 +19,8 @@ from ray import serve
 try:
     import hydra
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    logger.debug("ImportError: %s", e)
+    logger.warning("ImportError: %s", e, exc_info=True)
     import config_legacy as hydra
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from hhg_logistics.model.adapters import load_adapters_into
