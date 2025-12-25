@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zendesk API - Interactive Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #03363D 0%, #186e70 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-actions button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .header-actions button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .container {
+            display: flex;
+            min-height: calc(100vh - 64px);
+        }
+        
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #03363D;
+        }
+        
+        .template-selector {
+            margin-bottom: 20px;
+        }
+        
+        .template-selector select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .form-group label .required {
+            color: #d93025;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #03363D;
+        }
+        
+        .form-group .hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #03363D;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #024d54;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        
+        .output-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .output-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .output-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+        }
+        
+        .output-actions button:hover {
+            background: #f5f5f5;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            color: #d4d4d4;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            color: #333;
+        }
+        
+        .tab.active {
+            color: #03363D;
+            border-bottom-color: #03363D;
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .swagger-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        #swagger-ui .topbar {
+            display: none;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background: #1e8e3e;
+        }
+        
+        .notification.error {
+            background: #d93025;
+        }
+        
+        .export-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .export-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .export-option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .export-option:hover {
+            border-color: #03363D;
+            background: #f9fafb;
+        }
+        
+        .export-option h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        
+        .export-option p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .close-modal {
+            margin-top: 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Zendesk Quantum API Documentation</h1>
+        <div class="header-actions">
+            <button onclick="showExportModal()">📤 Export Package</button>
+            <button onclick="downloadOpenAPI()">📄 Download OpenAPI</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="section-title">📋 JSON Generator</div>
+            
+            <div class="template-selector">
+                <label for="template-select">Select Template:</label>
+                <select id="template-select" onchange="loadTemplate()">
+                    <option value="">-- Choose a template --</option>
+                    <optgroup label="Tickets">
+                        <option value="create_ticket">Create Ticket</option>
+                        <option value="update_ticket">Update Ticket</option>
+                        <option value="close_ticket">Close Ticket</option>
+                        <option value="bulk_update">Bulk Update Tickets</option>
+                    </optgroup>
+                    <optgroup label="Users">
+                        <option value="create_user">Create User</option>
+                    </optgroup>
+                    <optgroup label="SLA Policies">
+                        <option value="create_sla_policy">Create SLA Policy</option>
+                    </optgroup>
+                    <optgroup label="Search">
+                        <option value="search_tickets">Search Tickets</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div id="template-form">
+                <p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="generateScript()">Generate Script</button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('generator')">JSON Generator</div>
+                <div class="tab" onclick="switchTab('swagger')">API Documentation</div>
+            </div>
+            
+            <div id="generator-tab" class="tab-content active">
+                <div class="output-section">
+                    <div class="output-header">
+                        <span class="output-title">Generated JSON Script</span>
+                        <div class="output-actions">
+                            <button onclick="copyToClipboard()">📋 Copy</button>
+                            <button onclick="downloadJSON()">⬇️ Download</button>
+                            <button onclick="formatForChatGPT()">🤖 Format for ChatGPT</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre id="json-output">{
+  "message": "Select a template and fill in the form to generate a JSON script."
+}</pre>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="output-header">
+                        <span class="output-title">ChatGPT / AI Assistant Format</span>
+                        <div class="output-actions">
+                            <button onclick="copyChatGPT()">📋 Copy</button>
+                            <button onclick="downloadChatGPT()">⬇️ Download</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre id="chatgpt-output">{
+  "instructions": "Generate a script first to see the ChatGPT-formatted output."
+}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="swagger-tab" class="tab-content">
+                <div class="swagger-container">
+                    <div id="swagger-ui"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="export-modal" class="export-modal">
+        <div class="modal-content">
+            <div class="modal-title">Export Package</div>
+            <div class="export-options">
+                <div class="export-option" onclick="exportPackage('chatgpt')">
+                    <h4>🤖 ChatGPT Custom GPT</h4>
+                    <p>Export as a package for OpenAI ChatGPT Custom GPT</p>
+                </div>
+                <div class="export-option" onclick="exportPackage('zendesk')">
+                    <h4>🎯 Zendesk AI Assistant</h4>
+                    <p>Export as a package for Zendesk AI Assistant integration</p>
+                </div>
+                <div class="export-option" onclick="exportPackage('openapi')">
+                    <h4>📄 OpenAPI Specification</h4>
+                    <p>Download the complete OpenAPI 3.0 specification</p>
+                </div>
+            </div>
+            <button class="btn btn-secondary close-modal" onclick="hideExportModal()">Cancel</button>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+        // Template definitions (mirrors json_generator.py)
+        const templates = {
+            create_ticket: {
+                name: 'Create Ticket',
+                description: 'Create a new support ticket',
+                category: 'tickets',
+                method: 'POST',
+                endpoint: '/api/v2/tickets.json',
+                fields: [
+                    { name: 'SUBJECT', label: 'Subject', type: 'text', required: true, example: 'Help with billing' },
+                    { name: 'DESCRIPTION', label: 'Description', type: 'textarea', required: true, example: 'I have a question about my invoice' },
+                    { name: 'PRIORITY', label: 'Priority', type: 'select', options: ['low', 'normal', 'high', 'urgent'], required: false, default: 'normal' },
+                    { name: 'TICKET_TYPE', label: 'Type', type: 'select', options: ['question', 'incident', 'problem', 'task'], required: false, default: 'question' },
+                    { name: 'REQUESTER_EMAIL', label: 'Requester Email', type: 'email', required: true, example: 'customer@example.com' },
+                    { name: 'TAG1', label: 'Tag 1', type: 'text', required: false, example: 'billing' },
+                    { name: 'TAG2', label: 'Tag 2', type: 'text', required: false, example: 'priority' }
+                ],
+                template: {
+                    ticket: {
+                        subject: '{{SUBJECT}}',
+                        description: '{{DESCRIPTION}}',
+                        priority: '{{PRIORITY}}',
+                        type: '{{TICKET_TYPE}}',
+                        requester: { email: '{{REQUESTER_EMAIL}}' },
+                        tags: ['{{TAG1}}', '{{TAG2}}']
+                    }
+                }
+            },
+            update_ticket: {
+                name: 'Update Ticket',
+                description: 'Update an existing ticket',
+                category: 'tickets',
+                method: 'PUT',
+                endpoint: '/api/v2/tickets/{ticket_id}.json',
+                fields: [
+                    { name: 'STATUS', label: 'Status', type: 'select', options: ['new', 'open', 'pending', 'hold', 'solved', 'closed'], required: false },
+                    { name: 'PRIORITY', label: 'Priority', type: 'select', options: ['low', 'normal', 'high', 'urgent'], required: false },
+                    { name: 'ASSIGNEE_ID', label: 'Assignee ID', type: 'number', required: false, example: '12345' },
+                    { name: 'COMMENT', label: 'Comment', type: 'textarea', required: false, example: 'Working on this issue' },
+                    { name: 'IS_PUBLIC', label: 'Public Comment', type: 'select', options: ['true', 'false'], required: false, default: 'true' }
+                ],
+                template: {
+                    ticket: {
+                        status: '{{STATUS}}',
+                        priority: '{{PRIORITY}}',
+                        assignee_id: '{{ASSIGNEE_ID}}',
+                        comment: {
+                            body: '{{COMMENT}}',
+                            public: '{{IS_PUBLIC}}'
+                        }
+                    }
+                }
+            },
+            close_ticket: {
+                name: 'Close Ticket',
+                description: 'Close a ticket with resolution comment',
+                category: 'tickets',
+                method: 'PUT',
+                endpoint: '/api/v2/tickets/{ticket_id}.json',
+                fields: [
+                    { name: 'RESOLUTION_COMMENT', label: 'Resolution Comment', type: 'textarea', required: true, example: 'Issue resolved. The account has been credited.' }
+                ],
+                template: {
+                    ticket: {
+                        status: 'solved',
+                        comment: {
+                            body: '{{RESOLUTION_COMMENT}}',
+                            public: true
+                        }
+                    }
+                }
+            },
+            bulk_update: {
+                name: 'Bulk Update Tickets',
+                description: 'Bulk update multiple tickets',
+                category: 'tickets',
+                method: 'PUT',
+                endpoint: '/api/v2/tickets/update_many.json',
+                fields: [
+                    { name: 'TICKET_IDS', label: 'Ticket IDs (comma-separated)', type: 'text', required: true, example: '123,456,789' },
+                    { name: 'STATUS', label: 'Status', type: 'select', options: ['new', 'open', 'pending', 'hold', 'solved', 'closed'], required: false },
+                    { name: 'PRIORITY', label: 'Priority', type: 'select', options: ['low', 'normal', 'high', 'urgent'], required: false },
+                    { name: 'ASSIGNEE_ID', label: 'Assignee ID', type: 'number', required: false },
+                    { name: 'COMMENT', label: 'Comment', type: 'textarea', required: false, example: 'Bulk update: Assigned to support team' }
+                ],
+                template: {
+                    ticket: {
+                        status: '{{STATUS}}',
+                        priority: '{{PRIORITY}}',
+                        assignee_id: '{{ASSIGNEE_ID}}',
+                        comment: {
+                            body: '{{COMMENT}}',
+                            public: false
+                        }
+                    }
+                }
+            },
+            create_user: {
+                name: 'Create User',
+                description: 'Create a new user',
+                category: 'users',
+                method: 'POST',
+                endpoint: '/api/v2/users.json',
+                fields: [
+                    { name: 'NAME', label: 'Full Name', type: 'text', required: true, example: 'John Doe' },
+                    { name: 'EMAIL', label: 'Email', type: 'email', required: true, example: 'john.doe@example.com' },
+                    { name: 'ROLE', label: 'Role', type: 'select', options: ['end-user', 'agent', 'admin'], required: false, default: 'end-user' },
+                    { name: 'VERIFIED', label: 'Verified', type: 'select', options: ['true', 'false'], required: false, default: 'true' }
+                ],
+                template: {
+                    user: {
+                        name: '{{NAME}}',
+                        email: '{{EMAIL}}',
+                        role: '{{ROLE}}',
+                        verified: '{{VERIFIED}}'
+                    }
+                }
+            },
+            create_sla_policy: {
+                name: 'Create SLA Policy',
+                description: 'Create a new SLA policy',
+                category: 'sla_policies',
+                method: 'POST',
+                endpoint: '/api/v2/slas/policies.json',
+                fields: [
+                    { name: 'TITLE', label: 'Policy Title', type: 'text', required: true, example: 'Premium Support SLA' },
+                    { name: 'DESCRIPTION', label: 'Description', type: 'textarea', required: false, example: 'SLA for premium support customers' },
+                    { name: 'POSITION', label: 'Position', type: 'number', required: false, default: '1' },
+                    { name: 'PRIORITY_FILTER', label: 'Priority Filter', type: 'select', options: ['low', 'normal', 'high', 'urgent'], required: true },
+                    { name: 'METRIC_PRIORITY', label: 'Metric Priority', type: 'select', options: ['low', 'normal', 'high', 'urgent'], required: true },
+                    { name: 'FIRST_REPLY_TARGET', label: 'First Reply Target (minutes)', type: 'number', required: true, example: '60' },
+                    { name: 'USE_BUSINESS_HOURS', label: 'Use Business Hours', type: 'select', options: ['true', 'false'], required: false, default: 'true' }
+                ],
+                template: {
+                    sla_policy: {
+                        title: '{{TITLE}}',
+                        description: '{{DESCRIPTION}}',
+                        position: '{{POSITION}}',
+                        filter: {
+                            all: [
+                                { field: 'priority', operator: 'is', value: '{{PRIORITY_FILTER}}' }
+                            ]
+                        },
+                        policy_metrics: [
+                            {
+                                priority: '{{METRIC_PRIORITY}}',
+                                metric: 'first_reply_time',
+                                target: '{{FIRST_REPLY_TARGET}}',
+                                business_hours: '{{USE_BUSINESS_HOURS}}'
+                            }
+                        ]
+                    }
+                }
+            },
+            search_tickets: {
+                name: 'Search Tickets',
+                description: 'Search for tickets with specific criteria',
+                category: 'search',
+                method: 'GET',
+                endpoint: '/api/v2/search.json',
+                fields: [
+                    { name: 'QUERY', label: 'Search Query', type: 'text', required: true, example: 'status:open priority:urgent' },
+                    { name: 'PER_PAGE', label: 'Results Per Page', type: 'number', required: false, default: '100', example: '50' }
+                ],
+                template: {
+                    query: 'type:ticket {{QUERY}}',
+                    per_page: '{{PER_PAGE}}'
+                }
+            }
+        };
+        
+        let currentTemplate = null;
+        let generatedJSON = null;
+        
+        function loadTemplate() {
+            const select = document.getElementById('template-select');
+            const templateName = select.value;
+            
+            if (!templateName) {
+                document.getElementById('template-form').innerHTML = '<p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>';
+                currentTemplate = null;
+                return;
+            }
+            
+            currentTemplate = templates[templateName];
+            renderForm(currentTemplate);
+        }
+        
+        function renderForm(template) {
+            let html = '';
+            
+            for (const field of template.fields) {
+                html += `<div class="form-group">`;
+                html += `<label for="${field.name}">${field.label}`;
+                if (field.required) {
+                    html += ` <span class="required">*</span>`;
+                }
+                html += `</label>`;
+                
+                if (field.type === 'textarea') {
+                    html += `<textarea id="${field.name}" rows="3" placeholder="${field.example || ''}">${field.default || ''}</textarea>`;
+                } else if (field.type === 'select') {
+                    html += `<select id="${field.name}">`;
+                    for (const option of field.options) {
+                        const selected = option === field.default ? 'selected' : '';
+                        html += `<option value="${option}" ${selected}>${option}</option>`;
+                    }
+                    html += `</select>`;
+                } else {
+                    html += `<input type="${field.type}" id="${field.name}" placeholder="${field.example || ''}" value="${field.default || ''}">`;
+                }
+                
+                if (field.example) {
+                    html += `<div class="hint">Example: ${field.example}</div>`;
+                }
+                
+                html += `</div>`;
+            }
+            
+            document.getElementById('template-form').innerHTML = html;
+        }
+        
+        function generateScript() {
+            if (!currentTemplate) {
+                showNotification('Please select a template first', 'error');
+                return;
+            }
+            
+            // Collect form values
+            const values = {};
+            for (const field of currentTemplate.fields) {
+                const element = document.getElementById(field.name);
+                if (element) {
+                    values[field.name] = element.value || field.default || '';
+                }
+            }
+            
+            // Generate JSON by replacing placeholders
+            generatedJSON = JSON.parse(JSON.stringify(currentTemplate.template));
+            replacePlaceholders(generatedJSON, values);
+            
+            // Display result
+            document.getElementById('json-output').textContent = JSON.stringify(generatedJSON, null, 2);
+            
+            // Generate ChatGPT format
+            const chatgptFormat = {
+                name: currentTemplate.name,
+                description: currentTemplate.description,
+                api_request: {
+                    method: currentTemplate.method,
+                    endpoint: currentTemplate.endpoint,
+                    body: generatedJSON
+                },
+                instructions: `Use this template to ${currentTemplate.description.toLowerCase()}.`
+            };
+            
+            document.getElementById('chatgpt-output').textContent = JSON.stringify(chatgptFormat, null, 2);
+            
+            showNotification('Script generated successfully!', 'success');
+        }
+        
+        function replacePlaceholders(obj, values) {
+            for (const key in obj) {
+                if (typeof obj[key] === 'string') {
+                    for (const varName in values) {
+                        obj[key] = obj[key].replace(new RegExp(`\\{\\{${varName}\\}\\}`, 'g'), values[varName]);
+                    }
+                } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    replacePlaceholders(obj[key], values);
+                }
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('template-select').value = '';
+            document.getElementById('template-form').innerHTML = '<p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>';
+            document.getElementById('json-output').textContent = JSON.stringify({ message: 'Select a template and fill in the form to generate a JSON script.' }, null, 2);
+            document.getElementById('chatgpt-output').textContent = JSON.stringify({ instructions: 'Generate a script first to see the ChatGPT-formatted output.' }, null, 2);
+            currentTemplate = null;
+            generatedJSON = null;
+        }
+        
+        function copyToClipboard() {
+            const content = document.getElementById('json-output').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            });
+        }
+        
+        function copyChatGPT() {
+            const content = document.getElementById('chatgpt-output').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('ChatGPT format copied!', 'success');
+            });
+        }
+        
+        function downloadJSON() {
+            if (!generatedJSON) {
+                showNotification('Generate a script first', 'error');
+                return;
+            }
+            
+            const blob = new Blob([JSON.stringify(generatedJSON, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'zendesk-script.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('JSON downloaded!', 'success');
+        }
+        
+        function downloadChatGPT() {
+            const content = document.getElementById('chatgpt-output').textContent;
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'zendesk-chatgpt-package.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('ChatGPT package downloaded!', 'success');
+        }
+        
+        function formatForChatGPT() {
+            switchTab('generator');
+            if (generatedJSON) {
+                showNotification('ChatGPT format shown below!', 'success');
+            }
+        }
+        
+        function downloadOpenAPI() {
+            window.open('openapi.yaml', '_blank');
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'generator') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('generator-tab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('swagger-tab').classList.add('active');
+            }
+        }
+        
+        function showExportModal() {
+            document.getElementById('export-modal').classList.add('show');
+        }
+        
+        function hideExportModal() {
+            document.getElementById('export-modal').classList.remove('show');
+        }
+        
+        function exportPackage(type) {
+            hideExportModal();
+            
+            switch (type) {
+                case 'chatgpt':
+                    const chatgptPackage = {
+                        name: 'Zendesk Support Integration',
+                        description: 'AI-powered Zendesk Support API integration for ticket management, user operations, and SLA policies.',
+                        templates: Object.values(templates).map(t => ({
+                            name: t.name,
+                            description: t.description,
+                            category: t.category,
+                            method: t.method,
+                            endpoint: t.endpoint
+                        })),
+                        version: '1.0.0',
+                        generated_at: new Date().toISOString()
+                    };
+                    downloadFile(JSON.stringify(chatgptPackage, null, 2), 'zendesk-chatgpt-package.json', 'application/json');
+                    showNotification('ChatGPT package exported!', 'success');
+                    break;
+                    
+                case 'zendesk':
+                    const zendeskPackage = {
+                        integration: 'zendesk_ai_assistant',
+                        version: '1.0.0',
+                        actions: Object.entries(templates).map(([key, t]) => ({
+                            action_id: key,
+                            name: t.name,
+                            description: t.description,
+                            category: t.category,
+                            api: {
+                                method: t.method,
+                                endpoint: t.endpoint
+                            },
+                            variables: t.fields.map(f => ({
+                                name: f.name,
+                                type: f.type,
+                                required: f.required,
+                                default: f.default
+                            }))
+                        })),
+                        generated_at: new Date().toISOString()
+                    };
+                    downloadFile(JSON.stringify(zendeskPackage, null, 2), 'zendesk-ai-assistant-package.json', 'application/json');
+                    showNotification('Zendesk AI package exported!', 'success');
+                    break;
+                    
+                case 'openapi':
+                    window.open('openapi.yaml', '_blank');
+                    showNotification('OpenAPI spec opened in new tab', 'success');
+                    break;
+            }
+        }
+        
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize Swagger UI
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Swagger UI with inline spec for demo
+            // In production, this would load from openapi.yaml
+            const spec = {
+                openapi: '3.0.3',
+                info: {
+                    title: 'Zendesk Quantum API',
+                    version: '1.0.0',
+                    description: 'Complete Zendesk API integration with Quantum extensions for AI assistants.'
+                },
+                servers: [
+                    { url: 'https://{subdomain}.zendesk.com/api/v2', variables: { subdomain: { default: 'example' } } }
+                ],
+                paths: {
+                    '/tickets.json': {
+                        get: { summary: 'List all tickets', tags: ['Tickets'] },
+                        post: { summary: 'Create a ticket', tags: ['Tickets'] }
+                    },
+                    '/tickets/{ticket_id}.json': {
+                        get: { summary: 'Get a ticket', tags: ['Tickets'] },
+                        put: { summary: 'Update a ticket', tags: ['Tickets'] }
+                    },
+                    '/users.json': {
+                        get: { summary: 'List all users', tags: ['Users'] },
+                        post: { summary: 'Create a user', tags: ['Users'] }
+                    },
+                    '/slas/policies.json': {
+                        get: { summary: 'List SLA policies', tags: ['SLA Policies'] },
+                        post: { summary: 'Create an SLA policy', tags: ['SLA Policies'] }
+                    },
+                    '/search.json': {
+                        get: { summary: 'Search', tags: ['Search'] }
+                    }
+                }
+            };
+            
+            try {
+                SwaggerUIBundle({
+                    spec: spec,
+                    dom_id: '#swagger-ui',
+                    presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+                    layout: 'BaseLayout',
+                    docExpansion: 'list'
+                });
+            } catch (e) {
+                console.log('Swagger UI initialization skipped:', e);
+                document.getElementById('swagger-ui').innerHTML = '<p style="color: #666; padding: 20px;">Swagger UI requires an internet connection to load. Please ensure you are online.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
