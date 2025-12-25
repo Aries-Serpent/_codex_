@@ -116,14 +116,14 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             snap["numpy"] = np.random.get_state()
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
     if torch is not None:
         try:
             snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
                 # Convert CUDA RNG state tensors to lists for JSON serialization
@@ -133,8 +133,8 @@ def _rng_snapshot() -> dict[str, Any]:
                     {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
     return snap
 
 
@@ -143,15 +143,15 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
         if "python" in snap:
             random.setstate(snap["python"])
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.debug("Exception: %s", e)
+        logger.warning("Exception: %s", e, exc_info=True)
     if np is not None:
         try:
             if "numpy" in snap:
                 np.random.set_state(snap["numpy"])
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
     if torch is not None:
         try:
             if "torch_cpu" in snap:
@@ -160,8 +160,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
                     torch.set_rng_state(torch_cpu_state)
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
                 # Convert lists back to tensors for CUDA RNG state restoration
@@ -183,8 +183,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
 
 
 def capture_rng_state() -> dict[str, Any]:
@@ -211,22 +211,22 @@ def capture_environment_summary() -> dict[str, Any]:
     try:
         summary["timestamp_utc"] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     except Exception as exc:  # pragma: no cover
-        logger.debug(f"Failed to get timestamp: {exc}")
+        logger.debug("Failed to get timestamp: %s", exc)
 
     if np is not None:
         try:
             summary["numpy_version"] = str(np.__version__)
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to get numpy version: {exc}")
+            logger.debug("Failed to get numpy version: %s", exc)
     if torch is not None:
         try:
             summary["torch_version"] = str(torch.__version__)
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to get torch version: {exc}")
+            logger.debug("Failed to get torch version: %s", exc)
         try:
             summary["torch_cuda_available"] = bool(torch.cuda.is_available())
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to check CUDA availability: {exc}")
+            logger.debug("Failed to check CUDA availability: %s", exc)
 
     return summary
 
@@ -362,7 +362,7 @@ def _deserialize_payload(
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
-            logger.debug(f"TypeError: {exc}")
+            logger.debug("TypeError: %s", exc)
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
                 fallback_kwargs = dict(kwargs)
@@ -454,8 +454,8 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
         try:
             (root / rel).unlink(missing_ok=True)
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
     idx["entries"] = keep
 
 
@@ -575,8 +575,8 @@ def save_checkpoint(
         try:
             shutil.copyfile(ckpt_path, state_alias)
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
 
     if attach_integrity is not None:
         try:
@@ -588,8 +588,8 @@ def save_checkpoint(
                 relative_to=root,
             )
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("Exception: %s", e)
+            logger.warning("Exception: %s", e, exc_info=True)
 
     if keep_last:
         parent = root.parent
@@ -600,8 +600,8 @@ def save_checkpoint(
             try:
                 shutil.rmtree(old)
             except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                logger.debug("Exception: %s", e)
+                logger.warning("Exception: %s", e, exc_info=True)
 
     # Update index for this checkpoint directory
     idx = _load_index(root)
@@ -652,13 +652,13 @@ def save_checkpoint(
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.debug("Exception: %s", e)
+        logger.warning("Exception: %s", e, exc_info=True)
     try:
         write_run_manifest(root, manifest)
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.debug("Exception: %s", e)
+        logger.warning("Exception: %s", e, exc_info=True)
 
     return ckpt_path, meta
 

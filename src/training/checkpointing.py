@@ -44,7 +44,7 @@ def _extract_lora_state(model: Any) -> dict[str, Any] | None:
             if hasattr(tensor, "detach") and hasattr(tensor, "cpu"):
                 tensor = tensor.detach().cpu()
         except Exception as exc:  # pragma: no cover - optional conversion failures
-            LOGGER.debug(f"Failed to detach/move tensor to CPU for key {key}: {exc}")
+            LOGGER.debug("Failed to detach/move tensor to CPU for key %s: %s", key, exc)
         cpu_state[str(key)] = tensor
     return cpu_state if cpu_state else None
 
@@ -128,7 +128,7 @@ def _torch_load(path: str, *, map_location: str | torch.device | None) -> Any:
     try:
         return load_fn(path, **kwargs)
     except TypeError as exc:
-        logger.debug(f"TypeError: {exc}")
+        logger.debug("TypeError: %s", exc)
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(path, **kwargs)

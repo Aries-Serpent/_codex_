@@ -19,8 +19,8 @@ from ray import serve
 try:
     import hydra
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    logger.debug("ImportError: %s", e)
+    logger.warning("ImportError: %s", e, exc_info=True)
     import config_legacy as hydra
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from hhg_logistics.model.adapters import load_adapters_into
@@ -62,7 +62,7 @@ def _seed_everything(seed: int) -> dict[str, bool]:
         numpy.random.seed(seed)
         status["numpy"] = True
     except Exception as exc:  # pragma: no cover - optional dependency missing
-        logger.debug(f"Failed to seed numpy: {exc}")
+        logger.debug("Failed to seed numpy: %s", exc)
 
     try:
         import torch
@@ -81,7 +81,7 @@ def _seed_everything(seed: int) -> dict[str, bool]:
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
         status["torch"] = True
     except Exception as exc:  # pragma: no cover - optional dependency missing
-        logger.debug(f"Failed to seed torch: {exc}")
+        logger.debug("Failed to seed torch: %s", exc)
 
     return status
 
