@@ -33,7 +33,7 @@ DEFAULT_BATCH_SIZE = 200
 def load_scored_alerts(csv_path: Path) -> list[dict[str, Any]]:
     """Load scored alerts from CSV file."""
     if not csv_path.exists():
-        logger.error(f"Scored alerts file not found: {csv_path}")
+        logger.error("Scored alerts file not found: %s", csv_path)
         return []
 
     alerts = []
@@ -43,10 +43,10 @@ def load_scored_alerts(csv_path: Path) -> list[dict[str, Any]]:
             for row in reader:
                 alerts.append(row)
     except Exception as e:
-        logger.error(f"Error loading alerts: {e}")
+        logger.error("Error loading alerts: %s", e)
         return []
 
-    logger.info(f"Loaded {len(alerts)} scored alerts")
+    logger.info("Loaded %d scored alerts", len(alerts))
     return alerts
 
 
@@ -127,9 +127,7 @@ def generate_markdown_plan(
 
 """
 
-    for pattern, group_alerts in sorted(
-        groups.items(), key=lambda x: len(x[1]), reverse=True
-    ):
+    for pattern, group_alerts in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):
         batches = generate_batches(group_alerts)
         p0_count = sum(1 for a in group_alerts if a.get("priority_bucket") == "P0")
         p1_count = sum(1 for a in group_alerts if a.get("priority_bucket") == "P1")
@@ -234,14 +232,12 @@ def main() -> None:
     plan_file = output_dir / "remediation-plan.md"
     plan_file.write_text(plan)
 
-    logger.info(f"✅ Remediation plan saved to {plan_file}")
+    logger.info("✅ Remediation plan saved to %s", plan_file)
 
     # Print summary
     logger.info("\n📊 Pattern Distribution:")
-    for pattern, group_alerts in sorted(
-        groups.items(), key=lambda x: len(x[1]), reverse=True
-    ):
-        logger.info(f"  {pattern}: {len(group_alerts)} alerts")
+    for pattern, group_alerts in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):
+        logger.info("  %s: %d alerts", pattern, len(group_alerts))
 
 
 if __name__ == "__main__":

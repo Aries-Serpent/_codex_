@@ -31,7 +31,7 @@ MAX_REPORT_DAYS = 365
 def load_audit_logs(log_path: Path) -> list[dict[str, Any]]:
     """Load audit logs from JSONL file."""
     if not log_path.exists():
-        logger.warning(f"Audit log not found: {log_path}")
+        logger.warning("Audit log not found: %s", log_path)
         return []
 
     entries: list[dict[str, Any]] = []
@@ -40,17 +40,17 @@ def load_audit_logs(log_path: Path) -> list[dict[str, Any]]:
         with open(log_path) as f:
             for i, line in enumerate(f):
                 if i >= MAX_LOG_ENTRIES:
-                    logger.warning(f"Truncated at {MAX_LOG_ENTRIES} entries")
+                    logger.warning("Truncated at %d entries", MAX_LOG_ENTRIES)
                     break
                 try:
                     entries.append(json.loads(line.strip()))
                 except json.JSONDecodeError:
                     continue
     except Exception as e:
-        logger.error(f"Error loading audit logs: {e}")
+        logger.error("Error loading audit logs: %s", e)
         return []
 
-    logger.info(f"Loaded {len(entries)} audit log entries")
+    logger.info("Loaded %d audit log entries", len(entries))
     return entries
 
 
@@ -158,9 +158,7 @@ def generate_markdown_dashboard(stats: dict[str, Any]) -> str:
         requests = stats["requests_by_model"].get(model, 0)
         cost = stats["cost_by_model"].get(model, 0.0)
         avg_cost = cost / max(requests, 1)
-        dashboard += (
-            f"| `{model}` | {requests:,} | ${cost:.4f} | ${avg_cost:.6f} |\n"
-        )
+        dashboard += f"| `{model}` | {requests:,} | ${cost:.4f} | ${avg_cost:.6f} |\n"
 
     dashboard += """
 ## Daily Trends
@@ -221,7 +219,7 @@ def generate_dashboard(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(dashboard)
 
-    logger.info(f"✅ Dashboard saved to {output_path}")
+    logger.info("✅ Dashboard saved to %s", output_path)
 
     return stats
 
@@ -239,10 +237,7 @@ def main() -> None:
     print(f"  Models Used: {', '.join(stats['models_used']) or 'None'}")
 
     if not stats["total_requests"]:
-        print(
-            "\n💡 No usage data yet. "
-            "Run the autonomous agent to generate usage logs."
-        )
+        print("\n💡 No usage data yet. " "Run the autonomous agent to generate usage logs.")
 
 
 if __name__ == "__main__":
