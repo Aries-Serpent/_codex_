@@ -1,0 +1,1173 @@
+openapi: 3.0.3
+info:
+  title: Zendesk Quantum API
+  version: 1.0.0
+  description: |
+    Complete Zendesk API integration with Quantum extensions for AI assistants.
+    
+    This specification documents all endpoints implemented by the Zendesk API client
+    and supports ChatGPT, CustomGPT, and Zendesk AI Assistant integrations.
+    
+    ## Authentication
+    
+    The API supports two authentication methods:
+    - **API Token**: Use `{email}/token` as username and your API token as password
+    - **OAuth 2.0**: Use Bearer token authentication
+    
+    ## Rate Limits
+    
+    Zendesk enforces rate limits. See the `Retry-After` header for rate limit information.
+  contact:
+    name: Zendesk API Support
+    url: https://developer.zendesk.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://{subdomain}.zendesk.com/api/v2
+    description: Zendesk API Server
+    variables:
+      subdomain:
+        default: example
+        description: Your Zendesk subdomain
+
+security:
+  - apiToken: []
+  - oauth2: []
+
+tags:
+  - name: Tickets
+    description: Ticket management operations
+  - name: Users
+    description: User management operations
+  - name: Organizations
+    description: Organization management operations
+  - name: SLA Policies
+    description: SLA policy management
+  - name: Search
+    description: Search operations
+  - name: Views
+    description: Ticket views
+  - name: Macros
+    description: Ticket macros
+  - name: Triggers
+    description: Ticket triggers
+  - name: Automations
+    description: Ticket automations
+  - name: Audit Logs
+    description: Audit log operations
+
+paths:
+  /tickets.json:
+    get:
+      operationId: listTickets
+      summary: List all tickets
+      description: Returns a paginated list of all tickets.
+      tags:
+        - Tickets
+      parameters:
+        - $ref: '#/components/parameters/perPage'
+        - name: sort_by
+          in: query
+          description: Field to sort by
+          schema:
+            type: string
+            enum: [created_at, updated_at, priority, status]
+            default: created_at
+        - name: sort_order
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketListResponse'
+              example:
+                tickets:
+                  - id: 12345
+                    subject: "Help with billing"
+                    status: open
+                    priority: normal
+                  - id: 12346
+                    subject: "Cannot login"
+                    status: pending
+                    priority: high
+                count: 2
+                next_page: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    
+    post:
+      operationId: createTicket
+      summary: Create a ticket
+      description: Creates a new ticket.
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+            example:
+              ticket:
+                subject: "Help with my order"
+                description: "I need help with order #12345"
+                priority: high
+                type: question
+                requester:
+                  email: customer@example.com
+                tags:
+                  - billing
+                  - urgent
+      responses:
+        '201':
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+              example:
+                ticket:
+                  id: 12347
+                  subject: "Help with my order"
+                  status: new
+                  priority: high
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tickets/{ticket_id}.json:
+    parameters:
+      - $ref: '#/components/parameters/ticketId'
+    
+    get:
+      operationId: getTicket
+      summary: Get a ticket
+      description: Returns a single ticket by ID.
+      tags:
+        - Tickets
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+              example:
+                ticket:
+                  id: 12345
+                  subject: "Help with billing"
+                  description: "I have a billing question"
+                  status: open
+                  priority: normal
+                  requester_id: 1001
+                  assignee_id: 2001
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      operationId: updateTicket
+      summary: Update a ticket
+      description: Updates a ticket's properties.
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketRequest'
+            example:
+              ticket:
+                status: pending
+                priority: high
+                comment:
+                  body: "Working on this issue"
+                  public: true
+      responses:
+        '200':
+          description: Ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tickets/update_many.json:
+    put:
+      operationId: bulkUpdateTickets
+      summary: Bulk update tickets
+      description: Updates multiple tickets at once.
+      tags:
+        - Tickets
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: Comma-separated list of ticket IDs
+          schema:
+            type: string
+          example: "1,2,3,4,5"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketRequest'
+            example:
+              ticket:
+                status: pending
+                assignee_id: 2001
+      responses:
+        '200':
+          description: Bulk update queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatusResponse'
+              example:
+                job_status:
+                  id: "job123"
+                  status: queued
+                  total: 5
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tickets/{target_ticket_id}/merge.json:
+    post:
+      operationId: mergeTickets
+      summary: Merge tickets
+      description: Merges one ticket into another.
+      tags:
+        - Tickets
+      parameters:
+        - name: target_ticket_id
+          in: path
+          required: true
+          description: Target ticket ID (the ticket that remains open)
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket:
+                  type: object
+                  properties:
+                    source_ticket_id:
+                      type: integer
+                      description: Ticket to merge (will be closed)
+                    source_comment:
+                      type: string
+                      description: Comment to add to source ticket
+                    target_comment:
+                      type: string
+                      description: Comment to add to target ticket
+            example:
+              ticket:
+                source_ticket_id: 200
+                source_comment: "Merged into ticket #100"
+                target_comment: "Merged from ticket #200"
+      responses:
+        '200':
+          description: Tickets merged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+
+  /users.json:
+    get:
+      operationId: listUsers
+      summary: List all users
+      description: Returns a paginated list of all users.
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/perPage'
+        - name: role
+          in: query
+          description: Filter by user role
+          schema:
+            type: string
+            enum: [end-user, agent, admin]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+              example:
+                users:
+                  - id: 1001
+                    name: "John Doe"
+                    email: "john@example.com"
+                    role: agent
+                count: 1
+    
+    post:
+      operationId: createUser
+      summary: Create a user
+      description: Creates a new user.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            example:
+              user:
+                name: "Jane Smith"
+                email: "jane@example.com"
+                role: end-user
+                verified: true
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /users/{user_id}.json:
+    parameters:
+      - $ref: '#/components/parameters/userId'
+    
+    get:
+      operationId: getUser
+      summary: Get a user
+      description: Returns a single user by ID.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              example:
+                user:
+                  id: 1001
+                  name: "John Doe"
+                  email: "john@example.com"
+                  role: agent
+                  verified: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizations.json:
+    get:
+      operationId: listOrganizations
+      summary: List all organizations
+      description: Returns a paginated list of all organizations.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+              example:
+                organizations:
+                  - id: 500
+                    name: "Acme Corp"
+                    domain_names:
+                      - acme.com
+                count: 1
+
+  /organizations/{organization_id}.json:
+    parameters:
+      - $ref: '#/components/parameters/organizationId'
+    
+    get:
+      operationId: getOrganization
+      summary: Get an organization
+      description: Returns a single organization by ID.
+      tags:
+        - Organizations
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /slas/policies.json:
+    get:
+      operationId: listSLAPolicies
+      summary: List all SLA policies
+      description: Returns all SLA policies.
+      tags:
+        - SLA Policies
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SLAPolicyListResponse'
+              example:
+                sla_policies:
+                  - id: 10
+                    title: "Premium Support"
+                    description: "SLA for premium customers"
+                    position: 1
+
+  /slas/policies/{policy_id}.json:
+    parameters:
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    
+    get:
+      operationId: getSLAPolicy
+      summary: Get an SLA policy
+      description: Returns a single SLA policy by ID.
+      tags:
+        - SLA Policies
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SLAPolicyResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /search.json:
+    get:
+      operationId: search
+      summary: Search Zendesk
+      description: |
+        Searches across Zendesk objects using query syntax.
+        
+        ## Query Syntax Examples
+        - `type:ticket status:open` - Open tickets
+        - `type:user email:*@example.com` - Users with specific email domain
+        - `priority:urgent created>2024-01-01` - Urgent tickets created after date
+      tags:
+        - Search
+      parameters:
+        - name: query
+          in: query
+          required: true
+          description: Search query using Zendesk search syntax
+          schema:
+            type: string
+          example: "type:ticket status:open priority:high"
+        - name: type
+          in: query
+          description: Filter by result type
+          schema:
+            type: string
+            enum: [ticket, user, organization, group]
+        - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+              example:
+                results:
+                  - id: 12345
+                    result_type: ticket
+                    subject: "Urgent: Server down"
+                count: 1
+                facets: null
+
+  /views.json:
+    get:
+      operationId: listViews
+      summary: List all views
+      description: Returns all ticket views.
+      tags:
+        - Views
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewListResponse'
+
+  /views/{view_id}/execute.json:
+    get:
+      operationId: executeView
+      summary: Execute a view
+      description: Returns tickets matching a view's criteria.
+      tags:
+        - Views
+      parameters:
+        - name: view_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ticket:
+                          $ref: '#/components/schemas/Ticket'
+
+  /macros.json:
+    get:
+      operationId: listMacros
+      summary: List all macros
+      description: Returns all ticket macros.
+      tags:
+        - Macros
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MacroListResponse'
+
+  /tickets/{ticket_id}/macros/{macro_id}/apply.json:
+    post:
+      operationId: applyMacro
+      summary: Apply a macro
+      description: Applies a macro to a ticket.
+      tags:
+        - Macros
+      parameters:
+        - $ref: '#/components/parameters/ticketId'
+        - name: macro_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Macro applied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      ticket:
+                        $ref: '#/components/schemas/Ticket'
+
+  /triggers.json:
+    get:
+      operationId: listTriggers
+      summary: List all triggers
+      description: Returns all ticket triggers.
+      tags:
+        - Triggers
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerListResponse'
+
+  /automations.json:
+    get:
+      operationId: listAutomations
+      summary: List all automations
+      description: Returns all ticket automations.
+      tags:
+        - Automations
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationListResponse'
+
+  /audit_logs.json:
+    get:
+      operationId: listAuditLogs
+      summary: List audit logs
+      description: Returns audit logs for the account.
+      tags:
+        - Audit Logs
+      parameters:
+        - $ref: '#/components/parameters/perPage'
+        - name: filter[action]
+          in: query
+          description: Filter by action type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogListResponse'
+              example:
+                audit_logs:
+                  - id: 1
+                    action: create
+                    source_type: ticket
+                    source_id: 12345
+                    created_at: "2024-01-15T10:30:00Z"
+
+components:
+  securitySchemes:
+    apiToken:
+      type: http
+      scheme: basic
+      description: Use `{email}/token` as username and API token as password
+    
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Bearer Token
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.zendesk.com/oauth/authorizations/new
+          tokenUrl: https://example.zendesk.com/oauth/tokens
+          scopes:
+            read: Read access
+            write: Write access
+
+  parameters:
+    ticketId:
+      name: ticket_id
+      in: path
+      required: true
+      description: The ticket ID
+      schema:
+        type: integer
+    
+    userId:
+      name: user_id
+      in: path
+      required: true
+      description: The user ID
+      schema:
+        type: integer
+    
+    organizationId:
+      name: organization_id
+      in: path
+      required: true
+      description: The organization ID
+      schema:
+        type: integer
+    
+    perPage:
+      name: per_page
+      in: query
+      description: Number of results per page (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 100
+
+  responses:
+    Unauthorized:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Could not authenticate you"
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "RecordNotFound"
+            description: "Not found"
+    
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            error: "RecordInvalid"
+            details:
+              subject:
+                - description: "is required"
+    
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Rate limit exceeded"
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        description:
+          type: string
+    
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties:
+                description:
+                  type: string
+    
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Ticket ID
+        subject:
+          type: string
+          description: Ticket subject
+        description:
+          type: string
+          description: Ticket description
+        status:
+          type: string
+          enum: [new, open, pending, hold, solved, closed]
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+        type:
+          type: string
+          enum: [problem, incident, question, task]
+        requester_id:
+          type: integer
+        assignee_id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              value:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    
+    TicketResponse:
+      type: object
+      properties:
+        ticket:
+          $ref: '#/components/schemas/Ticket'
+    
+    TicketListResponse:
+      type: object
+      properties:
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+        count:
+          type: integer
+        next_page:
+          type: string
+          nullable: true
+    
+    CreateTicketRequest:
+      type: object
+      required:
+        - ticket
+      properties:
+        ticket:
+          type: object
+          required:
+            - subject
+            - description
+          properties:
+            subject:
+              type: string
+              description: Ticket subject
+            description:
+              type: string
+              description: Ticket description
+            priority:
+              type: string
+              enum: [low, normal, high, urgent]
+              default: normal
+            type:
+              type: string
+              enum: [problem, incident, question, task]
+              default: question
+            requester:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+            tags:
+              type: array
+              items:
+                type: string
+            custom_fields:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  value:
+                    type: string
+    
+    UpdateTicketRequest:
+      type: object
+      properties:
+        ticket:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [new, open, pending, hold, solved, closed]
+            priority:
+              type: string
+              enum: [low, normal, high, urgent]
+            assignee_id:
+              type: integer
+            comment:
+              type: object
+              properties:
+                body:
+                  type: string
+                public:
+                  type: boolean
+                  default: true
+    
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [end-user, agent, admin]
+        verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    
+    UserResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+    
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        count:
+          type: integer
+    
+    CreateUserRequest:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          type: object
+          required:
+            - name
+            - email
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            role:
+              type: string
+              enum: [end-user, agent, admin]
+              default: end-user
+            verified:
+              type: boolean
+              default: true
+    
+    Organization:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        domain_names:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+    
+    OrganizationResponse:
+      type: object
+      properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
+    
+    OrganizationListResponse:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+        count:
+          type: integer
+    
+    SLAPolicy:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        position:
+          type: integer
+        filter:
+          type: object
+        policy_metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              priority:
+                type: string
+              metric:
+                type: string
+              target:
+                type: integer
+              business_hours:
+                type: boolean
+    
+    SLAPolicyResponse:
+      type: object
+      properties:
+        sla_policy:
+          $ref: '#/components/schemas/SLAPolicy'
+    
+    SLAPolicyListResponse:
+      type: object
+      properties:
+        sla_policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/SLAPolicy'
+    
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              result_type:
+                type: string
+        count:
+          type: integer
+        facets:
+          type: object
+          nullable: true
+    
+    View:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        active:
+          type: boolean
+    
+    ViewListResponse:
+      type: object
+      properties:
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/View'
+    
+    Macro:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        active:
+          type: boolean
+    
+    MacroListResponse:
+      type: object
+      properties:
+        macros:
+          type: array
+          items:
+            $ref: '#/components/schemas/Macro'
+    
+    Trigger:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        active:
+          type: boolean
+    
+    TriggerListResponse:
+      type: object
+      properties:
+        triggers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trigger'
+    
+    Automation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        active:
+          type: boolean
+    
+    AutomationListResponse:
+      type: object
+      properties:
+        automations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Automation'
+    
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        action:
+          type: string
+        source_type:
+          type: string
+        source_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    
+    AuditLogListResponse:
+      type: object
+      properties:
+        audit_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+    
+    JobStatusResponse:
+      type: object
+      properties:
+        job_status:
+          type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum: [queued, working, completed, failed]
+            total:
+              type: integer
+            progress:
+              type: integer
