@@ -193,7 +193,7 @@ class TestQuantumTestingIntegration:
             )
         )
 
-        suite.add_test(QuantumTest(name="test_math", test_func=lambda: 2 + 2 == 4, amplitude=0.95))
+        suite.add_test(QuantumTest(name="test_math", test_func=lambda: True, amplitude=0.95))
 
         suite.add_test(
             QuantumTest(

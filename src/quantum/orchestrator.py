@@ -44,6 +44,7 @@ class ThermodynamicTask:
         temperature: Execution urgency
         entropy: Uncertainty in outcome
         dependencies: List of task names this depends on
+        attention_weight: Attention weight for priority modulation (default 1.0)
 
     Example:
         >>> task = ThermodynamicTask(
@@ -61,21 +62,41 @@ class ThermodynamicTask:
     temperature: float = 1.0
     entropy: float = 0.0
     dependencies: list[str] = field(default_factory=list)
+    attention_weight: float = 1.0
 
     def calculate_free_energy(self) -> float:
         """
         Calculate Gibbs free energy: G = E - TS.
+
+        With attention modulation: G' = (E / w) - TS
+        where w is the attention weight (higher w = lower effective energy).
 
         Lower free energy = higher execution priority.
 
         Returns:
             Free energy value
         """
-        return self.energy - self.temperature * self.entropy
+        # Attention modulation: higher weight reduces effective energy
+        weight = max(self.attention_weight, 0.01)  # Prevent division by zero
+        effective_energy = self.energy / weight
+
+        return effective_energy - self.temperature * self.entropy
 
     def __lt__(self, other: ThermodynamicTask) -> bool:
         """Compare tasks by free energy for priority queue."""
         return self.calculate_free_energy() < other.calculate_free_energy()
+
+    def __le__(self, other: ThermodynamicTask) -> bool:
+        """Less than or equal comparison for tasks."""
+        return self.calculate_free_energy() <= other.calculate_free_energy()
+
+    def __ge__(self, other: ThermodynamicTask) -> bool:
+        """Greater than or equal comparison for tasks."""
+        return self.calculate_free_energy() >= other.calculate_free_energy()
+
+    def __gt__(self, other: ThermodynamicTask) -> bool:
+        """Greater than comparison for tasks."""
+        return self.calculate_free_energy() > other.calculate_free_energy()
 
 
 @dataclass

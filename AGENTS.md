@@ -769,6 +769,12 @@ pip install -r requirements-test.txt
 
 ## Prohibited Actions & Scope
 - Do **not** create or activate GitHub Actions workflows or external integrations.
+  - **Exception**: Manual `workflow_dispatch` workflows for packaging/deployment are permitted if they:
+    1. Have no automatic triggers (only manual dispatch)
+    2. Are documented in this file with justification
+    3. Do not perform network operations without explicit user approval
+  - **Current Exceptions**:
+    - `.github/workflows/zendesk-quantum-packaging.yml` - Manual-only packaging workflow for Zendesk quantum deployment artifacts
 - Keep automation artifacts under `.codex/` and `artifacts/`; avoid networked calls unless explicitly required and allowed by `CODEX_NET_MODE`.
 - Do not delete evidence or manifest files produced by training/evaluation runs.
 

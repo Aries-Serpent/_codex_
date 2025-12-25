@@ -1,0 +1,164 @@
+version: "1.0.0"
+output_dir: "build/zendesk_quantum_packages"
+
+packages:
+  - name: "zendesk-quantum-core"
+    description: "Core quantum orchestration for Zendesk ticket management."
+    entry_point: "agents.zendesk_quantum_orchestrator.ZendeskQuantumOrchestrator"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    physics_paradigms:
+      - "thermodynamic_orchestration"
+      - "quantum_superposition"
+      - "boltzmann_distribution"
+    dependencies:
+      python: ">=3.9"
+      numpy: ">=1.21.0"
+      zendesk: ">=1.1.1"
+    capabilities:
+      - "ticket_prioritization"
+      - "sla_optimization"
+      - "agent_load_balancing"
+      - "quantum_routing"
+    skeleton_dirs:
+      - "agents"
+      - "configs"
+      - "src"
+      - "tests"
+    includes:
+      - "agents/zendesk_quantum_orchestrator.py"
+      - "src/quantum/orchestrator.py"
+      - "src/quantum/plugin_registry.py"
+      - "src/codex/zendesk"
+      - "src/codex/zendesk/quantum"
+
+  - name: "zendesk-rag-bridge"
+    description: "RAG-to-agent bridge for contextual Zendesk support."
+    entry_point: "agents.rag_ticket_context.ZendeskRAGBridge"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    physics_paradigms:
+      - "quantum_relevance_scoring"
+      - "vector_space_superposition"
+    capabilities:
+      - "context_retrieval"
+      - "semantic_search"
+      - "knowledge_base_integration"
+      - "ticket_similarity"
+    integration:
+      requires:
+        - "zendesk-quantum-core"
+      bridges:
+        - "rag_to_agent"
+        - "agent_to_testing"
+    skeleton_dirs:
+      - "agents"
+      - "configs"
+      - "src"
+    includes:
+      - "agents/rag_ticket_context.py"
+      - "agents/knowledge_base_integrator.py"
+      - "agents/semantic_ticket_search.py"
+      - "src/rag/pipelines/quantum_retrieval.py"
+      - "src/codex/zendesk/model"
+      - "src/codex/zendesk/rag"
+
+  - name: "zendesk-mcp-metrics"
+    description: "MCP metrics integration for Zendesk operations."
+    entry_point: "mcp.adapters.zendesk_adapter.ZendeskAdapter"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    capabilities:
+      - "metric_collection"
+      - "quantum_state_tracking"
+      - "performance_monitoring"
+      - "sla_tracking"
+    integration:
+      requires:
+        - "zendesk-quantum-core"
+      bridges:
+        - "mcp_to_quantum_metrics"
+    skeleton_dirs:
+      - "configs"
+      - "src"
+    includes:
+      - "src/mcp/metrics"
+      - "src/mcp/adapters"
+      - "src/codex/zendesk/monitoring"
+
+  - name: "zendesk-agent-core"
+    description: "Autonomous agent core for Zendesk automation."
+    entry_point: "codex.zendesk.agent.ZendeskAgentCore"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    capabilities:
+      - "autonomous_ticket_handling"
+      - "task_decomposition"
+      - "tool_orchestration"
+      - "interpretability"
+    integration:
+      requires:
+        - "zendesk-quantum-core"
+        - "zendesk-rag-bridge"
+      bridges:
+        - "rag_to_agent"
+        - "agent_to_tools"
+    skeleton_dirs:
+      - "agents"
+      - "configs"
+      - "src"
+    includes:
+      - "agents/interpretability"
+      - "agents/quantum_game_theory.py"
+      - "src/agent/core.py"
+      - "src/tools"
+      - "src/codex/zendesk/agent.py"
+
+  - name: "zendesk-quantum-testing"
+    description: "Quantum-inspired testing framework for Zendesk workflows."
+    entry_point: "src.quantum.testing.QuantumTestSuite"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    capabilities:
+      - "quantum_test_prioritization"
+      - "adaptive_test_loading"
+      - "physics_to_testing_pipeline"
+      - "intelligent_test_distribution"
+    integration:
+      requires:
+        - "zendesk-quantum-core"
+      bridges:
+        - "physics_to_testing"
+    skeleton_dirs:
+      - "configs"
+      - "src"
+      - "tests"
+    includes:
+      - "src/quantum/testing.py"
+      - "tests/quantum/test_zendesk_quantum_bridge.py"
+
+  - name: "zendesk-complete-bundle"
+    description: "All-in-one bundle of Zendesk quantum packages."
+    entry_point: "integration/deployment_orchestrator.py"
+    target_platform:
+      - "openai-chatgpt-project"
+      - "customgpt"
+    capabilities:
+      - "full_stack_deployment"
+      - "integrated_validation"
+    skeleton_dirs:
+      - "docs"
+      - "integration"
+      - "packages"
+    bundle:
+      packages:
+        - "zendesk-quantum-core"
+        - "zendesk-rag-bridge"
+        - "zendesk-mcp-metrics"
+        - "zendesk-agent-core"
+        - "zendesk-quantum-testing"
