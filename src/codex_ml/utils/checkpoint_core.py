@@ -211,22 +211,22 @@ def capture_environment_summary() -> dict[str, Any]:
     try:
         summary["timestamp_utc"] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     except Exception as exc:  # pragma: no cover
-        logger.debug(f"Failed to get timestamp: {exc}")
+        logger.debug("Failed to get timestamp: %s", exc)
 
     if np is not None:
         try:
             summary["numpy_version"] = str(np.__version__)
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to get numpy version: {exc}")
+            logger.debug("Failed to get numpy version: %s", exc)
     if torch is not None:
         try:
             summary["torch_version"] = str(torch.__version__)
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to get torch version: {exc}")
+            logger.debug("Failed to get torch version: %s", exc)
         try:
             summary["torch_cuda_available"] = bool(torch.cuda.is_available())
         except Exception as exc:  # pragma: no cover
-            logger.debug(f"Failed to check CUDA availability: {exc}")
+            logger.debug("Failed to check CUDA availability: %s", exc)
 
     return summary
 
