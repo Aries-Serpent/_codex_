@@ -225,6 +225,62 @@ class StrategyState:
         idx = self.collapse_to_strategy_index(rng)
         return self.strategies[idx]
 
+    def interpret_state(
+        self,
+        *,
+        wavefunction: Optional[Any] = None,
+        probabilities: Optional[Any] = None,
+        probe: Optional[Any] = None,
+        unembedding: Optional[Any] = None,
+        top_k: int = 3,
+    ) -> dict[str, Any]:
+        """Interpret the current strategy state into concepts and labels.
+
+        Args:
+            wavefunction: Optional wavefunction override (uses self.wavefunction if None)
+            probabilities: Optional probabilities override (uses self.probabilities if None)
+            probe: Optional SparseLinearProbe for concept extraction
+            unembedding: Optional UnembeddingHead for label projection
+            top_k: Number of top concepts/labels to return
+
+        Returns:
+            Dictionary with:
+                - concepts: List of (concept_name, score) tuples
+                - labels: List of (label_name, logit) tuples
+                - confidence: Overall confidence score
+                - probabilities: Measurement probabilities
+        """
+        from agents.interpretability.sparse_probes import interpret_state_vector
+
+        # Use provided or default wavefunction/probabilities
+        wf = wavefunction if wavefunction is not None else self.wavefunction
+        # Note: probabilities parameter kept for future use but not currently utilized
+        # in the interpretation logic
+
+        # Convert wavefunction to real vector for interpretation
+        if not NUMPY_AVAILABLE:
+            # Pure Python fallback
+            state_vector = [abs(x) for x in wf]
+        else:
+            # Numpy path: use amplitudes (magnitudes)
+            state_vector = np.abs(wf)
+
+        # Interpret the state vector
+        result = interpret_state_vector(
+            state_vector,
+            probe=probe,
+            unembedding=unembedding,
+            top_k=top_k,
+        )
+
+        # Add probability distribution
+        if not NUMPY_AVAILABLE:
+            result["probabilities"] = [abs(x) ** 2 for x in wf]
+        else:
+            result["probabilities"] = (np.abs(wf) ** 2).tolist()
+
+        return result
+
 
 @dataclass
 class PayoffOperator:
@@ -873,6 +929,7 @@ class QuantumInspiredGameEngine:
             "blue_payoff": blue_payoff,
             "red_payoff": red_payoff,
             "entanglement": self.game_state.entanglement_strength,
+            "interpretability": self.interpret_states(),
         }
 
     def get_payoffs(self) -> tuple[float, float]:
@@ -884,6 +941,42 @@ class QuantumInspiredGameEngine:
         blue_payoff = self.expected_payoff(TeamType.BLUE)
         red_payoff = self.expected_payoff(TeamType.RED)
         return (blue_payoff, red_payoff)
+
+    def interpret_states(
+        self,
+        *,
+        probe: Optional[Any] = None,
+        unembedding: Optional[Any] = None,
+        top_k: int = 3,
+    ) -> dict[str, Any]:
+        """Return interpretability artifacts for both teams.
+
+        Args:
+            probe: Optional SparseLinearProbe for concept extraction
+            unembedding: Optional UnembeddingHead for label projection
+            top_k: Number of top concepts/labels to return
+
+        Returns:
+            Dictionary with:
+                - blue: Interpretation of blue team state
+                - red: Interpretation of red team state
+        """
+        blue_interp = self.blue_state.interpret_state(
+            probe=probe,
+            unembedding=unembedding,
+            top_k=top_k,
+        )
+
+        red_interp = self.red_state.interpret_state(
+            probe=probe,
+            unembedding=unembedding,
+            top_k=top_k,
+        )
+
+        return {
+            "blue": blue_interp,
+            "red": red_interp,
+        }
 
 
 class BlueRedTeamSimulator:

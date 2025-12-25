@@ -269,3 +269,6 @@ artifacts/security/detect-secrets.txt
 .codex/agent_metrics/*.json
 !.codex/agent_state/.gitkeep
 !.codex/agent_metrics/.gitkeep
+# Test artifacts
+/index.json
+/index.md

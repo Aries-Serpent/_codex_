@@ -18,7 +18,19 @@
 **Latest Update:** 4-Stream Infrastructure, LLM Integration, 101 New Tests  
 📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [v1.5.x Changelog](docs/audit/v1.5.x_CHANGELOG.md)
 
-## 🆕 Recent Additions (2025-12-17)
+## 🆕 Recent Additions (2025-12-24)
+
+| Component | Description | Location |
+|-----------|-------------|----------|
+| **Agent Core** | Autonomous agent orchestration with RAG and verification | `src/agent/` |
+| **RAG Pipelines** | Chunking, embedding, and retrieval pipelines | `src/rag/pipelines/` |
+| **Verification Engine** | Chain-of-Verification (CoVe) for fact-checking | `src/verification/` |
+| **MCP Adapters** | Model Context Protocol integrations (Pinecone, Mock) | `src/mcp/adapters/` |
+| **MCP Metrics** | Telemetry and monitoring for MCP operations | `src/mcp/metrics/` |
+| **MCP Workers** | Background embedding and checkpoint workers | `src/mcp/workers/` |
+| **Tool Registry** | Centralized tool registration and discovery | `src/tools/` |
+
+## 🆕 Previous Additions (2025-12-17)
 
 | Component | Description | Location |
 |-----------|-------------|----------|

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-from codex.monitoring import Counter, Histogram, metrics
+from src.codex.monitoring import Counter, Histogram, metrics
 
 _api_calls = Counter(
     name="zendesk_api_calls_total",

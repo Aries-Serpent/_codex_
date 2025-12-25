@@ -77,8 +77,8 @@ if "CheckpointManager" not in globals():
             if _np is not None:  # pragma: no branch - optional dependency
                 try:
                     state["numpy"] = _numpy_state_payload(_np.random.get_state())  # type: ignore[attr-defined]
-                except Exception:  # pragma: no cover - defensive
-                    pass
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.debug("Failed to capture numpy random state: %s", exc)
 
             if _torch is not None:
                 torch_state: dict[str, Any] = {}
@@ -91,8 +91,8 @@ if "CheckpointManager" not in globals():
                         )
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
-                except Exception:  # pragma: no cover - torch optional
-                    pass
+                except Exception as exc:  # pragma: no cover - torch optional
+                    logger.debug("Failed to capture torch CPU random state: %s", exc)
                 try:
                     if (
                         hasattr(_torch, "cuda")
@@ -104,8 +104,8 @@ if "CheckpointManager" not in globals():
                             tensor.tolist()
                             for tensor in _torch.cuda.get_rng_state_all()  # type: ignore[call-arg]
                         ]
-                except Exception:  # pragma: no cover - cuda optional
-                    pass
+                except Exception as exc:  # pragma: no cover - cuda optional
+                    logger.debug("Failed to capture CUDA random state: %s", exc)
                 if torch_state:
                     state["torch"] = torch_state
             return state
@@ -197,8 +197,8 @@ class CheckpointManager:
                         try:
                             path = os.readlink(self._best_file)
                         except OSError as e:
-                            logger.debug(f"OSError: {e}")
-                            logger.warning(f"OSError: {e}", exc_info=True)
+                            logger.debug("OSError: %s", e)
+                            logger.warning("OSError: %s", e, exc_info=True)
                             try:
                                 path = self._best_file.read_text(encoding="utf-8").strip()
                             except Exception:
@@ -359,8 +359,8 @@ class CheckpointManager:
             try:
                 p.unlink()
             except FileNotFoundError as e:
-                logger.debug(f"FileNotFoundError: {e}")
-                logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # File already deleted; no action needed
+                logger.debug("FileNotFoundError: %s", e)
+                logger.warning("FileNotFoundError: %s", e, exc_info=True)  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
@@ -410,14 +410,14 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError as e:
-                logger.debug(f"FileNotFoundError: {e}")
-                logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Symlink/file already removed; continue
+                logger.debug("FileNotFoundError: %s", e)
+                logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                logger.debug("OSError: %s", e)
+                logger.warning("OSError: %s", e, exc_info=True)
                 link.write_text(str(target), encoding="utf-8")
         for child in list(self._best_dir.iterdir()):
             if child.name not in desired:
@@ -425,21 +425,21 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError as e:
-                    logger.debug(f"FileNotFoundError: {e}")
-                    logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Child already deleted; continue cleanup
+                    logger.debug("FileNotFoundError: %s", e)
+                    logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)  # Best file symlink doesn't exist; continue
+            logger.debug("FileNotFoundError: %s", e)
+            logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:
                 os.symlink(best_target, self._best_file)
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                logger.debug("OSError: %s", e)
+                logger.warning("OSError: %s", e, exc_info=True)
                 self._best_file.write_text(best_target, encoding="utf-8")
 
     @staticmethod
