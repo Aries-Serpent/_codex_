@@ -122,13 +122,20 @@ class ActionPath:
         )
         return self.total_energy
 
-    def calculate_optimization_score(self) -> float:
+    def calculate_optimization_score(self, mlp_scorer: Optional[Any] = None) -> float:
         """
-        Calculate optimization score using physics-inspired formula
+        Calculate optimization score using physics-inspired formula.
 
-        Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Friction))
+        Base Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Friction))
 
-        Higher score = better path
+        If MLP scorer provided, adds learned adjustment:
+        Final Score = Base Score + MLP(features)
+
+        Args:
+            mlp_scorer: Optional MLPScorer for learned adjustments
+
+        Returns:
+            Optimization score (higher = better path)
         """
         # Avoid division by zero
         denominator = max(self.total_energy * (1 + self.risk) * (1 + self.friction), 0.01)
@@ -140,8 +147,38 @@ class ActionPath:
             * (1 + self.urgency * 0.5)  # Urgency multiplier
         )
 
-        self.optimization_score = numerator / denominator
+        base_score = numerator / denominator
+
+        # Apply MLP adjustment if provided
+        if mlp_scorer is not None:
+            features = self._extract_mlp_features()
+            mlp_adjustment = mlp_scorer.score(features)
+            self.optimization_score = base_score + mlp_adjustment
+        else:
+            self.optimization_score = base_score
+
         return self.optimization_score
+
+    def _extract_mlp_features(self) -> list[float]:
+        """
+        Extract features for MLP scoring.
+
+        Features: [potential_energy, kinetic_energy, friction, momentum,
+                   confidence, risk, impact, urgency]
+
+        Returns:
+            Feature vector (8 dimensions)
+        """
+        return [
+            self.potential_energy / 100.0,  # Normalize to [0, 1]
+            self.kinetic_energy / 100.0,
+            self.friction / 10.0,
+            self.momentum / 10.0,
+            self.confidence,
+            self.risk,
+            self.impact,
+            self.urgency,
+        ]
 
 
 @dataclass
@@ -180,6 +217,16 @@ class PhysicsInspiredOrchestrator:
         self.config = self._load_config(config_path)
         self.decision_history: list[dict] = []
         self.force_vectors: list[ForceVector] = []
+        self._mlp_scorer: Optional[Any] = None
+
+        # Initialize MLP scorer if enabled
+        if self.config.get("mlp_scoring_enabled", False):
+            from agents.mlp_scoring import MLPScorer
+
+            self._mlp_scorer = MLPScorer(
+                input_dim=8,
+                hidden_dim=int(self.config.get("mlp_hidden_dim", 4)),
+            )
 
     def _load_config(self, config_path: Optional[Path]) -> dict:
         """Load orchestrator configuration (internal)"""
@@ -190,6 +237,8 @@ class PhysicsInspiredOrchestrator:
             "risk_tolerance": 0.5,  # 0 = risk-averse, 1 = risk-tolerant
             "momentum_weight": 0.3,  # importance of momentum
             "friction_weight": 0.2,  # importance of friction
+            "mlp_scoring_enabled": False,  # Enable MLP scoring
+            "mlp_hidden_dim": 4,  # MLP hidden layer size
         }
 
         if config_path and config_path.exists():
@@ -280,7 +329,8 @@ class PhysicsInspiredOrchestrator:
             print(f"  Total Energy: {total_energy:.2f}")
 
             # Calculate optimization score
-            opt_score = path.calculate_optimization_score()
+            # Calculate optimization score (with optional MLP)
+            opt_score = path.calculate_optimization_score(self._mlp_scorer)
             print(f"  Impact: {path.impact:.2f}")
             print(f"  Confidence: {path.confidence:.2f}")
             print(f"  Risk: {path.risk:.2f}")
@@ -409,7 +459,7 @@ class PhysicsInspiredOrchestrator:
         # Ensure all paths have calculated scores
         for path in paths:
             if not hasattr(path, "optimization_score") or path.optimization_score == 0.0:
-                path.calculate_optimization_score()
+                path.calculate_optimization_score(self._mlp_scorer)
             if not hasattr(path, "total_energy") or path.total_energy == 0.0:
                 path.calculate_total_energy()
 
@@ -2320,7 +2370,7 @@ class SuperpositionExplorer:
         # Calculate optimization scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score()
+            path.calculate_optimization_score(self._mlp_scorer)
 
         # Apply amplitude based on score
         new_amplitudes = {}
@@ -2410,7 +2460,7 @@ class SuperpositionExplorer:
         # Calculate scores for all paths
         for path in self.paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score()
+            path.calculate_optimization_score(self._mlp_scorer)
 
         # Optimal iterations ≈ π/4 * √N
         if grover_iterations == 0:
@@ -2518,7 +2568,7 @@ class PINNValidator:
         """
         # Ensure path properties are calculated
         path.calculate_total_energy()
-        path.calculate_optimization_score()
+        path.calculate_optimization_score(self._mlp_scorer)
 
         residuals = {}
         weighted_sum = 0.0
@@ -2646,7 +2696,7 @@ class QuantumPhysicsOrchestrator:
 
         for path in paths:
             path.calculate_total_energy()
-            path.calculate_optimization_score()
+            path.calculate_optimization_score(self._mlp_scorer)
 
             state = EnergyState(
                 configuration={"action": path.action_type.value, "description": path.description},
