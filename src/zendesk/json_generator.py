@@ -19,6 +19,10 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+# Module-level constant for placeholder pattern: {{VARIABLE_NAME}}
+# Matches uppercase variable names with underscores and digits
+PLACEHOLDER_PATTERN = re.compile(r"\{\{([A-Z_][A-Z0-9_]*)\}\}")
+
 
 @dataclass
 class TemplateVariable:
@@ -62,9 +66,6 @@ class ZendeskJSONGenerator:
         ... })
         >>> print(json.dumps(script, indent=2))
     """
-
-    # Placeholder pattern: {{VARIABLE_NAME}}
-    PLACEHOLDER_PATTERN = re.compile(r"\{\{([A-Z_][A-Z0-9_]*)\}\}")
 
     def __init__(self) -> None:
         """Initialize the generator with built-in templates."""
@@ -513,7 +514,7 @@ class ZendeskJSONGenerator:
         """
         if isinstance(obj, str):
             # Check for complete replacement (entire string is a placeholder)
-            match = self.PLACEHOLDER_PATTERN.fullmatch(obj)
+            match = PLACEHOLDER_PATTERN.fullmatch(obj)
             if match:
                 var_name = match.group(1)
                 if var_name in variables:
@@ -531,7 +532,7 @@ class ZendeskJSONGenerator:
                     raise ValueError(f"Missing required variable: {var_name}")
                 return m.group(0)
 
-            return self.PLACEHOLDER_PATTERN.sub(replace_match, obj)
+            return PLACEHOLDER_PATTERN.sub(replace_match, obj)
 
         elif isinstance(obj, dict):
             return {k: self._replace_placeholders(v, variables, strict) for k, v in obj.items()}
@@ -747,4 +748,5 @@ __all__ = [
     "ZendeskJSONGenerator",
     "ScriptTemplate",
     "TemplateVariable",
+    "PLACEHOLDER_PATTERN",
 ]

@@ -343,10 +343,15 @@ print('All imports successful')
     # Run pytest for zendesk tests if available
     if command -v pytest &> /dev/null; then
         log_info "Running pytest for zendesk tests..."
-        if pytest "$PROJECT_ROOT/tests/zendesk/" -v --tb=short 2>/dev/null; then
-            log_success "All tests passed"
+        local test_output
+        test_output=$(pytest "$PROJECT_ROOT/tests/zendesk/" -v --tb=short 2>&1) || true
+        if echo "$test_output" | grep -q "passed"; then
+            local passed_count
+            passed_count=$(echo "$test_output" | grep -oE '[0-9]+ passed' | head -1)
+            log_success "Tests completed: $passed_count"
         else
-            log_warning "Some tests failed"
+            log_warning "Tests failed. Run 'pytest tests/zendesk/ -v' for details"
+            echo "$test_output" | tail -20
         fi
     fi
 }

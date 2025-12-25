@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zendesk API - Interactive Documentation</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <!-- 
+        Note: For production deployments, consider:
+        1. Hosting these files locally for better security and offline access
+        2. Adding SRI hashes when using specific versioned CDN URLs
+        3. Using a Content Security Policy (CSP) header
+    -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" crossorigin="anonymous">
     <style>
         * {
             box-sizing: border-box;
@@ -477,7 +483,11 @@
     
     <div id="notification" class="notification"></div>
     
-    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <!-- 
+        Security Note: In production, consider hosting swagger-ui-bundle.js locally
+        or using a specific versioned URL with SRI hash for integrity verification.
+    -->
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin="anonymous"></script>
     <script>
         // Template definitions (mirrors json_generator.py)
         const templates = {

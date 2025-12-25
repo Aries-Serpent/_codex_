@@ -698,11 +698,23 @@ class ZendeskPackageCurator:
         """
         Match user input to intents based on token overlap.
 
+        Uses Jaccard-like similarity scoring:
+        - Score = (tokens in common) / max(user tokens, pattern tokens)
+        - Score range: 0.0 (no match) to 1.0 (perfect match)
+        - Scores >= 0.5 indicate strong matches
+        - Scores 0.2-0.5 indicate moderate matches
+        - Scores < 0.2 indicate weak matches
+
         Args:
             user_input: User's natural language input
 
         Returns:
-            List of (intent, score) tuples, sorted by score
+            List of (intent, score) tuples, sorted by score descending.
+            Higher scores indicate better matches.
+
+        Example:
+            >>> curator.match_intent("create a new ticket")
+            [('create_support_ticket', 0.6), ('create_user', 0.3)]
         """
         user_tokens = set(user_input.lower().split())
         matches = []
