@@ -609,11 +609,43 @@ class DeploymentOrchestrator:
             elif self.target == "customgpt":
                 self._deploy_to_customgpt(zf, manifest)
     
+    def _safe_extract(self, zf: zipfile.ZipFile, extract_dir: Path) -> None:
+        """Safely extract zip file with path traversal protection.
+        
+        Args:
+            zf: ZipFile to extract
+            extract_dir: Target extraction directory
+            
+        Raises:
+            ValueError: If zip contains unsafe paths (absolute or with ..)
+        """
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        
+        for member in zf.namelist():
+            # Normalize and validate the member path
+            member_path = Path(member)
+            
+            # Check for absolute paths
+            if member_path.is_absolute():
+                raise ValueError(f"Unsafe zip member (absolute path): {member}")
+            
+            # Check for path traversal attempts
+            if ".." in member_path.parts:
+                raise ValueError(f"Unsafe zip member (path traversal): {member}")
+            
+            # Construct the full extraction path and verify it's within extract_dir
+            full_path = (extract_dir / member_path).resolve()
+            if not str(full_path).startswith(str(extract_dir.resolve())):
+                raise ValueError(f"Unsafe zip member (escapes extraction dir): {member}")
+            
+            # Extract the member safely
+            zf.extract(member, extract_dir)
+    
     def _deploy_to_chatgpt(self, zf: zipfile.ZipFile, manifest: dict) -> None:
         """Deploy to ChatGPT Project."""
         # Extract key files for ChatGPT knowledge base
         extract_dir = Path(f"/tmp/chatgpt_deploy/{manifest['package_name']}")
-        zf.extractall(extract_dir)
+        self._safe_extract(zf, extract_dir)
         
         logger.info(f"Extracted to {extract_dir} for ChatGPT upload")
         print(f"✅ Package ready for ChatGPT: {extract_dir}")
@@ -625,7 +657,7 @@ class DeploymentOrchestrator:
     def _deploy_to_customgpt(self, zf: zipfile.ZipFile, manifest: dict) -> None:
         """Deploy to CustomGPT."""
         extract_dir = Path(f"/tmp/customgpt_deploy/{manifest['package_name']}")
-        zf.extractall(extract_dir)
+        self._safe_extract(zf, extract_dir)
         
         logger.info(f"Extracted to {extract_dir} for CustomGPT upload")
         print(f"✅ Package ready for CustomGPT: {extract_dir}")

@@ -254,7 +254,8 @@ class StrategyState:
 
         # Use provided or default wavefunction/probabilities
         wf = wavefunction if wavefunction is not None else self.wavefunction
-        probs = probabilities if probabilities is not None else self.probabilities
+        # Note: probabilities parameter kept for future use but not currently utilized
+        # in the interpretation logic
 
         # Convert wavefunction to real vector for interpretation
         if not NUMPY_AVAILABLE:
