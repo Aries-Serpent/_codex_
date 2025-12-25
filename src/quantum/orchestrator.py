@@ -77,6 +77,18 @@ class ThermodynamicTask:
         """Compare tasks by free energy for priority queue."""
         return self.calculate_free_energy() < other.calculate_free_energy()
 
+    def __le__(self, other: ThermodynamicTask) -> bool:
+        """Less than or equal comparison for tasks."""
+        return self.calculate_free_energy() <= other.calculate_free_energy()
+
+    def __ge__(self, other: ThermodynamicTask) -> bool:
+        """Greater than or equal comparison for tasks."""
+        return self.calculate_free_energy() >= other.calculate_free_energy()
+
+    def __gt__(self, other: ThermodynamicTask) -> bool:
+        """Greater than comparison for tasks."""
+        return self.calculate_free_energy() > other.calculate_free_energy()
+
 
 @dataclass
 class ThermodynamicOrchestrator:

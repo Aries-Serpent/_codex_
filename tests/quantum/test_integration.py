@@ -326,10 +326,10 @@ class TestCrossReferenceCapabilities:
         ]
 
         # AI agent pathway: Adapt to cold system (load critical only)
-        cold_priorities = calculate_thermodynamic_load_priority(plugins, temperature=0.5)
+        cold_priorities = calculate_thermodynamic_load_priority(plugins, current_temperature=0.5)
 
         # AI agent pathway: Adapt to hot system (load more eagerly)
-        hot_priorities = calculate_thermodynamic_load_priority(plugins, temperature=2.0)
+        hot_priorities = calculate_thermodynamic_load_priority(plugins, current_temperature=2.0)
 
         # Cold system: More selective (bigger priority differences)
         cold_range = cold_priorities[0][1] - cold_priorities[-1][1]
