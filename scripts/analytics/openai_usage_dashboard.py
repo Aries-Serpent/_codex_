@@ -40,7 +40,7 @@ def load_audit_logs(log_path: Path) -> list[dict[str, Any]]:
         with open(log_path) as f:
             for i, line in enumerate(f):
                 if i >= MAX_LOG_ENTRIES:
-                    logger.warning(f"Truncated at {MAX_LOG_ENTRIES} entries")
+                    logger.warning("Truncated at %d entries", MAX_LOG_ENTRIES)
                     break
                 try:
                     entries.append(json.loads(line.strip()))
@@ -50,7 +50,7 @@ def load_audit_logs(log_path: Path) -> list[dict[str, Any]]:
         logger.error("Error loading audit logs: %s", e)
         return []
 
-    logger.info(f"Loaded {len(entries)} audit log entries")
+    logger.info("Loaded %d audit log entries", len(entries))
     return entries
 
 
@@ -219,7 +219,7 @@ def generate_dashboard(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(dashboard)
 
-    logger.info(f"✅ Dashboard saved to {output_path}")
+    logger.info("✅ Dashboard saved to %s", output_path)
 
     return stats
 
