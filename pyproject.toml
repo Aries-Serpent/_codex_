@@ -26,8 +26,8 @@ dependencies = [
   "pyyaml>=6.0",
   "pandas>=2.1",
   "great_expectations==0.18.7",
-  "mlflow>=2.4,<4",
-  "transformers>=4.41,<5",
+  "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 40+ vulnerabilities (RCE, auth bypass, path traversal)
+  "transformers>=4.48.0,<5",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
   "peft>=0.11,<1",
   "accelerate>=0.31,<2",
   "datasets>=2.19,<5",
@@ -41,7 +41,7 @@ dependencies = [
   "scikit-learn>=1.4,<2",
   "duckdb>=0.10",
   "sentencepiece>=0.1.99",
-  "torch>=2.2.2",
+  "torch>=2.6.0,<3.0.0",  # Security: Updated from 2.2.2 to fix RCE in torch.load with weights_only=True
   "typer>=0.12",
   # AST Analysis Core Dependencies
   "libcst>=1.0.0",
