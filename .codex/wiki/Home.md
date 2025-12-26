@@ -20,7 +20,7 @@
 
 2. **Set up environment:**
    ```bash
-   # Python 3.11+ required (3.12 recommended)
+   # Python 3.11+ required, 3.12 recommended
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -e .
