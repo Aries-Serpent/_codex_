@@ -208,5 +208,26 @@
       "serialization",
       "dataclass"
     ]
+  },
+  {
+    "title": "API CLI access verification and limitations",
+    "category": "api-access",
+    "description": "GitHub CLI (gh) requires explicit authentication token (GITHUB_TOKEN or GH_TOKEN) in environment. In Copilot Agent environment: gh CLI available but not authenticated, GitHub API calls blocked by DNS proxy, git operations work via credential helper.",
+    "solution": "Use git commands instead of gh CLI. Request human admin for operations requiring GitHub API (posting comments, creating secrets, wiki deployment). Document all API operations that cannot be automated. Workarounds: GitHub Actions context variables, manual human operations.",
+    "tags": [
+      "github-cli",
+      "api-access",
+      "authentication",
+      "workaround",
+      "dns-proxy",
+      "copilot-agent"
+    ],
+    "added_date": "2025-12-26",
+    "verification_commands": [
+      "env | grep -E \"(GITHUB_TOKEN|GH_TOKEN)\"",
+      "gh auth status",
+      "git config --get credential.helper",
+      "curl -s https://api.github.com/rate_limit"
+    ]
   }
 ]
