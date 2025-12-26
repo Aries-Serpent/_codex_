@@ -304,6 +304,102 @@ To migrate existing workflows to use standardized variables:
 
 ---
 
+## API and CLI Access Limitations
+
+### GitHub API Token Requirements
+
+**Current Status:** ⚠️ Limited API access in automated environments
+
+**Environment Analysis:**
+- ✅ Git credentials: Configured and functional via credential helper
+- ✅ Repository access: Confirmed (read/write via git operations)
+- ✅ GitHub Actions context: Available when running in CI/CD
+- ❌ Explicit GitHub API tokens: Not available in all environments
+  - `GITHUB_TOKEN`: May not be set in all execution contexts
+  - `GH_TOKEN`: Not configured by default
+  - `CODEX_MASTER_KEY`: Requires human admin setup
+
+**Impact:**
+- GitHub CLI (`gh`) commands may fail without explicit token
+- Some GitHub API operations require workarounds
+- Direct API calls via `curl` require authentication headers
+
+### Workarounds
+
+**For AI Agents:**
+
+1. **Use git commands instead of gh CLI:**
+   ```bash
+   # ✅ Works: git operations
+   git ls-remote --heads origin
+   git fetch origin
+   git push origin branch-name
+   
+   # ❌ May fail: gh CLI operations
+   gh pr view 123
+   gh issue create --title "..."
+   ```
+
+2. **Use available GitHub Actions context:**
+   ```yaml
+   # In workflows, use context variables
+   - name: Get repo info
+     run: |
+       echo "Repo: ${{ github.repository }}"
+       echo "Actor: ${{ github.actor }}"
+       echo "Ref: ${{ github.ref }}"
+   ```
+
+3. **Document operations requiring API access:**
+   - PR comment creation/updates
+   - Issue creation/updates
+   - Release management
+   - Repository settings changes
+
+**For Human Admins:**
+
+To enable full API access:
+
+1. **Create Personal Access Token:**
+   - Navigate to: https://github.com/settings/tokens
+   - Generate new token (classic or fine-grained)
+   - Required scopes: repo, workflow, read:org
+
+2. **Configure GITHUB_TOKEN:**
+   ```bash
+   # Local environment
+   export GITHUB_TOKEN="your_token_here"
+   
+   # Verify
+   gh auth status
+   ```
+
+3. **Add to CI/CD secrets:**
+   - Go to repository Settings → Secrets and variables → Actions
+   - Add secret: `GITHUB_TOKEN` or `CODEX_MASTER_KEY`
+   - Reference in workflows: `${{ secrets.GITHUB_TOKEN }}`
+
+### Verification Commands
+
+```bash
+# Check current authentication
+gh auth status
+
+# Test API access
+gh api /repos/Aries-Serpent/_codex_
+
+# Check available credentials
+git config credential.helper
+```
+
+### Related Issues
+
+- See `.codex/phase2_dependency_testing_status.md` for current limitations
+- See `.github/workflows/README.md` for workflow authentication
+- See `docs/admin/GENESIS_SETUP_GUIDE.md` for token setup
+
+---
+
 ## Related Documentation
 
 - **Configuration Management:** `configs/README.md`
@@ -311,6 +407,7 @@ To migrate existing workflows to use standardized variables:
 - **Guardrails:** `.codex/guardrails.md`
 - **CI/CD Workflows:** `.github/workflows/README.md`
 - **Environment Setup:** `docs/getting-started.md`
+- **Phase 2 Status:** `.codex/phase2_dependency_testing_status.md`
 
 ---
 
