@@ -272,3 +272,4 @@ artifacts/security/detect-secrets.txt
 # Test artifacts
 /index.json
 /index.md
+*.backup

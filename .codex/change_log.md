@@ -1,3 +1,49 @@
+# Change Log
+
+Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
+
+## v0.0.0-template - genesis/pre-token-setup
+
+### Initial Genesis Pre-token Setup
+- Initial template files added by Copilot Agent pre-token setup.
+- Human: review templates, inject secrets, enable workflows.
+- PR: Will be updated with actual PR URL after creation
+
+### Files Created/Updated
+- `.github/workflows/genesis-bootstrap.yml` - Genesis validation workflow (disabled by default)
+- `.github/workflows/workflow-lint.yml` - YAML and workflow linting
+- `.codex/autonomous_agent.yaml` - Agent configuration with safe defaults
+- `.codex/guardrails.md` - Operational guardrails and policies
+- `.codex/change_log.md` - This change log with Genesis entry
+- `scripts/autonomous_agent.py` - Agent orchestrator skeleton
+- `scripts/AUTONOMOUS_AGENT_README.md` - Setup and usage instructions
+- `.github/PULL_REQUEST_TEMPLATE.md` - PR template with checklist
+- `docs/admin/GENESIS_SETUP_GUIDE.md` - Comprehensive admin documentation
+- `docs/agent/OPERATIONAL_GUIDELINES.md` - Agent operational guidelines
+
+### Security Notes
+- All workflows disabled by default (if: false guard)
+- Placeholder tokens require human injection
+- No secrets committed to repository
+- Autonomous actions disabled until Genesis complete
+
+### Next Steps for Human Admin (@mbaetiong)
+1. Review all template files in this PR
+2. Create required secrets in GitHub repository settings:
+   - CODEX_MASTER_KEY (Fine-grained PAT with required permissions)
+   - CODEX_WEBHOOK_SECRET (generated with `openssl rand -hex 32`)
+   - CODEX_BACKUP_KEY (optional fallback PAT)
+3. Configure repository variables as documented
+4. Remove `if: false` guard in genesis-bootstrap.yml
+5. Execute genesis-bootstrap workflow manually
+6. Validate artifacts and audit trail
+7. Enable autonomous_actions_enabled in autonomous_agent.yaml
+8. Merge this PR after validation complete
+
+---
+
+## Previous Change Log Entries
+
 # .codex/change_log.md
 This log captures file-level changes performed by Codex workflow.
 

@@ -1,82 +1,66 @@
-# Configuration for AI-Driven Autonomous Agent
+# Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
+# Agent configuration skeleton (pre-token)
 #
-# This file defines the behavior and permissions for the autonomous
-# codebase management agent.
+# IMPORTANT: This configuration has autonomous actions DISABLED by default.
+# Human admin must review and enable after Genesis Protocol completion.
 
-# Core Settings
-autonomous_actions_enabled: true
-learning_enabled: true
-rollback_enabled: true
-
-# Monitoring Configuration
-monitoring:
-  interval_minutes: 30
-  health_checks:
-    - code_complexity
-    - code_duplication
-    - test_coverage
-    - security_scan
-    - dependency_status
+agent:
+  name: ai_org_repo_admin
+  version: "0.0.0-template"
+  repository_id: "1040037790"
+  organization: "Aries-Serpent"
   
-  thresholds:
-    complexity_max: 15
-    duplication_max: 0.10
-    test_coverage_min: 0.80
-    security_issues_max: 0
-
-# Action Authorization
-authorization:
-  # Maximum autonomous actions per cycle
-  max_actions_per_cycle: 3
+  # HUMAN: Set to true only AFTER Genesis and secrets are verified
+  autonomous_actions_enabled: false
   
-  # Decision levels for different action types
-  action_levels:
-    maintenance: autonomous
-    testing: autonomous
-    documentation: autonomous
-    optimization: approval_required
-    refactoring: approval_required
+  allowed_operations:
+    - maintenance
+    - testing
+    - documentation
+  
+  escalation_policy:
     security: escalate
-    dependency: approval_required
+    config_changes: escalate
+    dependency_updates: approval_required
+    refactoring: approval_required
+
+runtime:
+  network_mode: isolated
+  isolated_path: "/codex/network/isolated"
+  log_level: "INFO"
+  audit_retention_days: 90
+
+security:
+  # HUMAN: These placeholders must be replaced with actual secrets in GitHub repository settings
+  master_key_placeholder: "<<HUMAN: inject CODEX_MASTER_KEY as repo secret>>"
+  webhook_secret_placeholder: "<<HUMAN: inject CODEX_WEBHOOK_SECRET as repo secret>>"
+  backup_key_placeholder: "<<HUMAN: inject CODEX_BACKUP_KEY as repo secret (optional)>>"
   
-  # Risk thresholds
-  risk_thresholds:
-    low: autonomous
-    medium: approval_required
-    high: escalate
+  # Token rotation schedule
+  token_rotation_days: 90
+  rotation_reminder_days: 14
 
-# Learning Configuration
-learning:
-  enabled: true
-  feedback_required: false
-  pattern_recognition: true
-  success_threshold: 0.85
-
-# Rollback Configuration
-rollback:
-  enabled: true
-  automatic_on_failure: true
-  retention_days: 30
-  branch_prefix: "agent-rollback-"
-
-# Notification Configuration
-notifications:
-  enabled: true
-  channels:
-    - type: log
-      level: info
-    - type: state_file
-      path: ".codex/agent_state/notifications.json"
+guardrails:
+  max_pr_per_day: 5
+  require_human_approval:
+    - security_changes
+    - configuration_changes
+    - secret_operations
   
-  triggers:
-    - health_status_change
-    - action_executed
-    - action_failed
-    - approval_required
+  forbidden_operations:
+    - rotate_secrets
+    - expose_secrets
+    - delete_branches
+    - force_push
 
-# Continuous Improvement
-continuous_improvement:
-  enabled: true
-  metrics_tracking: true
-  benchmark_comparison: true
-  optimization_suggestions: true
+monitoring:
+  enable_telemetry: true
+  report_interval_hours: 24
+  alert_on_escalation: true
+
+# Human admin instructions:
+# 1. Create CODEX_MASTER_KEY in repository Secrets (Settings → Secrets and variables → Actions)
+# 2. Review .codex/guardrails.md for policy details
+# 3. Remove 'if: false' guard in .github/workflows/genesis-bootstrap.yml
+# 4. Execute genesis-bootstrap workflow with genesis_validation=true
+# 5. After successful validation, set autonomous_actions_enabled: true (above)
