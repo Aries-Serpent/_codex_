@@ -124,5 +124,89 @@
       "serialization",
       "dataclass"
     ]
+  },
+  {
+    "id": 10,
+    "timestamp": "2025-12-26T22:00:37.283521",
+    "category": "dependency-testing",
+    "title": "pip install hangs with large ML packages",
+    "description": "When attempting to install packages like torch (2.6.0), transformers (4.48.0), or mlflow (2.22.4) in virtual environment, pip install -e . hangs without output for 180+ seconds",
+    "solution": "Use incremental installation: Install packages one at a time with progress indicators. Alternative: Use existing environment or defer to CI/CD pipeline. For future: Add --progress-bar on and --verbose flags to pip commands.",
+    "tags": [
+      "pip",
+      "installation",
+      "timeout",
+      "ml-packages"
+    ]
+  },
+  {
+    "id": 11,
+    "timestamp": "2025-12-26T22:00:37.283776",
+    "category": "api-access",
+    "title": "GitHub CLI requires explicit token in some environments",
+    "description": "In automated environments, gh CLI commands may fail even when git operations work. Git uses credential helper but gh requires explicit GITHUB_TOKEN or GH_TOKEN environment variable.",
+    "solution": "Workaround 1: Use git commands instead of gh CLI. Workaround 2: Document operations requiring API access. Workaround 3: Request human admin to configure GITHUB_TOKEN. For workflows: Use GitHub Actions context variables.",
+    "tags": [
+      "github-cli",
+      "authentication",
+      "api-access",
+      "workaround"
+    ]
+  },
+  {
+    "id": 12,
+    "timestamp": "2025-12-26T22:00:37.284319",
+    "category": "testing",
+    "title": "JSON serialization fails with Enum objects in dataclasses",
+    "description": "When using asdict() from dataclasses with Enum fields, json.dump() raises TypeError: Object of type HealthStatus is not JSON serializable",
+    "solution": "Create recursive enum_to_value helper function that converts Enum objects to their .value property before serialization. Apply to all dict/list structures before json.dump().",
+    "tags": [
+      "json",
+      "enum",
+      "serialization",
+      "dataclass"
+    ]
+  },
+  {
+    "id": 13,
+    "timestamp": "2025-12-26T22:00:51.382482",
+    "category": "dependency-testing",
+    "title": "pip install hangs with large ML packages",
+    "description": "When attempting to install packages like torch (2.6.0), transformers (4.48.0), or mlflow (2.22.4) in virtual environment, pip install -e . hangs without output for 180+ seconds",
+    "solution": "Use incremental installation: Install packages one at a time with progress indicators. Alternative: Use existing environment or defer to CI/CD pipeline. For future: Add --progress-bar on and --verbose flags to pip commands.",
+    "tags": [
+      "pip",
+      "installation",
+      "timeout",
+      "ml-packages"
+    ]
+  },
+  {
+    "id": 14,
+    "timestamp": "2025-12-26T22:00:51.382759",
+    "category": "api-access",
+    "title": "GitHub CLI requires explicit token in some environments",
+    "description": "In automated environments, gh CLI commands may fail even when git operations work. Git uses credential helper but gh requires explicit GITHUB_TOKEN or GH_TOKEN environment variable.",
+    "solution": "Workaround 1: Use git commands instead of gh CLI. Workaround 2: Document operations requiring API access. Workaround 3: Request human admin to configure GITHUB_TOKEN. For workflows: Use GitHub Actions context variables.",
+    "tags": [
+      "github-cli",
+      "authentication",
+      "api-access",
+      "workaround"
+    ]
+  },
+  {
+    "id": 15,
+    "timestamp": "2025-12-26T22:00:51.383363",
+    "category": "testing",
+    "title": "JSON serialization fails with Enum objects in dataclasses",
+    "description": "When using asdict() from dataclasses with Enum fields, json.dump() raises TypeError: Object of type HealthStatus is not JSON serializable",
+    "solution": "Create recursive enum_to_value helper function that converts Enum objects to their .value property before serialization. Apply to all dict/list structures before json.dump().",
+    "tags": [
+      "json",
+      "enum",
+      "serialization",
+      "dataclass"
+    ]
   }
 ]
