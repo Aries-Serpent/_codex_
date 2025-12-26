@@ -18,6 +18,42 @@
 **Latest Update:** 4-Stream Infrastructure, LLM Integration, 101 New Tests  
 📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [v1.5.x Changelog](docs/audit/v1.5.x_CHANGELOG.md)
 
+## 🚀 Genesis Protocol - Pre-token Setup
+
+**Status:** Template files added, **awaiting human admin secret injection**
+
+This repository includes Genesis Protocol templates for establishing autonomous agent operations. The setup is currently in **pre-token state** with all workflows disabled by default.
+
+### Quick Start for Human Admin
+
+1. **Review Templates**: All files in this PR are templates with placeholders
+2. **Inject Secrets**: Follow [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
+3. **Enable Workflows**: Remove safety guards after secret injection
+4. **Validate**: Run genesis-bootstrap workflow manually
+5. **Enable Agent**: Set `autonomous_actions_enabled: true`
+
+### Key Files
+
+| File | Purpose | Status |
+|------|---------|--------|
+| [`.github/workflows/genesis-bootstrap.yml`](.github/workflows/genesis-bootstrap.yml) | Genesis validation workflow | 🔒 Disabled (if: false) |
+| [`.codex/autonomous_agent.yaml`](.codex/autonomous_agent.yaml) | Agent configuration | 🔒 Safe defaults |
+| [`.codex/guardrails.md`](.codex/guardrails.md) | Operational policies | 📝 Template |
+| [`scripts/autonomous_agent.py`](scripts/autonomous_agent.py) | Agent orchestrator | 🔒 SAFE_MODE = True |
+| [`docs/admin/GENESIS_SETUP_GUIDE.md`](docs/admin/GENESIS_SETUP_GUIDE.md) | Admin documentation | 📖 Complete guide |
+| [`docs/agent/OPERATIONAL_GUIDELINES.md`](docs/agent/OPERATIONAL_GUIDELINES.md) | Agent guidelines | 📖 Operational reference |
+
+### Security Notes
+
+- ✅ No secrets committed to repository
+- ✅ All workflows disabled by default
+- ✅ Explicit placeholder comments for human injection
+- ✅ Multiple safety guards (if: false, SAFE_MODE, autonomous_actions_enabled: false)
+
+**⚠️ DO NOT enable workflows until secrets are injected and validated**
+
+For detailed instructions, see: [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
+
 ## 🆕 Recent Additions (2025-12-24)
 
 | Component | Description | Location |

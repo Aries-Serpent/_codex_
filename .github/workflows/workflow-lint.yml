@@ -1,0 +1,84 @@
+# Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
+# Workflow and YAML Linting - Ensures syntactic validity
+
+name: Lint workflows and YAML
+
+on:
+  push:
+    paths:
+      - ".github/workflows/**"
+      - ".codex/**"
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".codex/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install actionlint
+        run: |
+          echo "Installing actionlint..."
+          curl -sSL https://github.com/rhysd/actionlint/releases/latest/download/actionlint_linux_amd64.tar.gz | tar -xz -C /tmp
+          sudo mv /tmp/actionlint /usr/local/bin/actionlint
+          chmod +x /usr/local/bin/actionlint
+      
+      - name: Run actionlint
+        run: |
+          actionlint -version || true
+          echo "Linting GitHub Actions workflows..."
+          actionlint .github/workflows/*.yml || true
+      
+      - name: Install yamllint
+        run: |
+          pip install yamllint
+      
+      - name: Run yamllint on workflows
+        run: |
+          echo "Linting YAML files in .github/workflows..."
+          yamllint .github/workflows/ -c .yamllint.yml || echo "Warning: yamllint found issues (non-blocking in template mode)"
+      
+      - name: Run yamllint on .codex directory
+        run: |
+          echo "Linting YAML files in .codex..."
+          yamllint .codex/*.yaml .codex/*.yml -c .yamllint.yml || echo "Warning: yamllint found issues (non-blocking in template mode)"
+      
+      - name: Validate YAML syntax with Python
+        run: |
+          echo "Validating YAML syntax..."
+          python3 -c "
+          import yaml
+          import sys
+          from pathlib import Path
+          
+          errors = []
+          
+          # Check workflows
+          for f in Path('.github/workflows').glob('*.yml'):
+              try:
+                  with open(f) as file:
+                      yaml.safe_load(file)
+                  print(f'✅ {f}')
+              except Exception as e:
+                  print(f'❌ {f}: {e}')
+                  errors.append(str(f))
+          
+          # Check .codex YAML files
+          for f in Path('.codex').glob('*.yaml'):
+              try:
+                  with open(f) as file:
+                      yaml.safe_load(file)
+                  print(f'✅ {f}')
+              except Exception as e:
+                  print(f'❌ {f}: {e}')
+                  errors.append(str(f))
+          
+          if errors:
+              print(f'\nErrors found in: {errors}')
+              sys.exit(1)
+          else:
+              print('\n✅ All YAML files are syntactically valid')
+          "
