@@ -9,7 +9,6 @@ import pytest
 import yaml
 import json
 from pathlib import Path
-import subprocess
 import os
 
 
