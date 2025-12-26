@@ -77,7 +77,7 @@ jobs:
         with:
           name: genesis-validation-report
           path: .codex/genesis_validation.json
-          retention-days: 90
+          retention-days: 60
 
       - name: Append to change log
         run: |
