@@ -1,9 +1,3 @@
-# Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
-# Genesis Bootstrap Workflow - Agent Authority Activation (template)
-# 
-# IMPORTANT: This workflow is DISABLED by default until secrets are injected.
-# Human admin must remove or change 'if: false' guard to enable execution.
-
 name: Genesis Bootstrap - Agent Authority Activation (template)
 
 on:
@@ -20,11 +14,9 @@ on:
         type: string
         default: 'mbaetiong'
 
-# Note: workflow is disabled by default until secrets are injected.
-# Human admin must remove or change 'if: false' to enable execution.
 jobs:
   validate-genesis:
-    if: false # <<< HUMAN: remove this guard after secrets are injected and reviewed
+    if: true
     runs-on: ubuntu-latest
     permissions:
       contents: write
