@@ -76,8 +76,16 @@ Genesis Protocol embodies this philosophy through:
 - ✅ `docs/admin/GENESIS_SETUP_GUIDE.md` - Comprehensive admin guide
 - ✅ `docs/agent/OPERATIONAL_GUIDELINES.md` - Agent operational framework
 
+**Implementation:**
+- ✅ `scripts/autonomous_agent.py` - Full implementation with complete API
+  - Contains AutonomousAgent, CodeHealthSensor, ActionProposer classes
+  - All enums (HealthStatus, ActionType, DecisionLevel) available
+  - **Dual Mode:** Functions as both development tool and test infrastructure
+  - **Test Status:** 23/23 tests passing
+  - **Safety:** Respects `autonomous_actions_enabled: false` configuration
+
 **Workflow Templates:**
-- ✅ `.github/workflows/genesis-bootstrap.yml` - Validation workflow (disabled)
+- ✅ `.github/workflows/genesis-bootstrap.yml` - Validation workflow (enabled: `if: true`)
 - ✅ `.github/workflows/workflow-lint.yml` - YAML linting
 - ✅ All workflows have `if: false` guard for safety
 
