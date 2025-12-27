@@ -3,6 +3,9 @@
 > **Status:** ✅ UP-TO-DATE (2025-12-26)  
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
+> 
+> **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  
+> security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)
 
 ---
 

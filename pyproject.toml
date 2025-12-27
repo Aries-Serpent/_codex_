@@ -136,6 +136,7 @@ test = [
   "pytest-cov>=4.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
+  "packaging>=21.0",  # Required for packaging.version.parse() in integration tests
   "transformers>=4.48.0,<5",  # Security: updated from 4.41 to fix deserialization
   "torch>=2.6.0,<3.0.0; platform_system != 'Windows'",  # Security: updated from 2.2.2 to fix RCE
   "datasets>=2.19,<5",
