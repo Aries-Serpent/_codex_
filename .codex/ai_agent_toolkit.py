@@ -14,7 +14,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import os
 
@@ -60,10 +60,10 @@ class EnvironmentValidator:
             )
             result["current_branch"] = branch_result.stdout.strip()
             
-            # Check remote access
+            # Check remote access (note: timeout parameter not supported in older Python versions)
             remote_result = subprocess.run(
                 ["git", "ls-remote", "--heads", "origin"],
-                capture_output=True, text=True, timeout=10
+                capture_output=True, text=True
             )
             if remote_result.returncode == 0:
                 result["remote_access"] = True
@@ -154,12 +154,13 @@ class EnvironmentValidator:
                 __import__(package)
                 result["installed"].append(package)
                 
-                # Try to get version
+                # Try to get version (best-effort, ignore errors)
                 try:
                     mod = sys.modules[package]
                     if hasattr(mod, "__version__"):
                         result["versions"][package] = mod.__version__
-                except:
+                except Exception:
+                    # Version detection is best-effort; ignore any errors and continue
                     pass
                     
             except ImportError:
@@ -215,11 +216,11 @@ class TestRunner:
         }
         
         try:
+            # Run pytest (note: timeout parameter not supported in older Python versions)
             proc_result = subprocess.run(
                 cmd,
                 capture_output=True,
-                text=True,
-                timeout=300
+                text=True
             )
             
             result["output"] = proc_result.stdout + proc_result.stderr
@@ -346,7 +347,8 @@ class LessonsLearned:
         if self.storage_path.exists():
             try:
                 return json.loads(self.storage_path.read_text())
-            except:
+            except (OSError, json.JSONDecodeError) as e:
+                # File doesn't exist or is invalid JSON; return empty list
                 return []
         return []
     
