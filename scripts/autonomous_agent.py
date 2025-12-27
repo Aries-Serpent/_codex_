@@ -468,10 +468,20 @@ class AutonomousAgent:
     
     def save_state(self, health: CodebaseHealth, actions: list[ProposedAction]):
         """Save current agent state."""
+        # Helper function to convert enums to their values
+        def enum_to_value(obj):
+            if isinstance(obj, Enum):
+                return obj.value
+            elif isinstance(obj, dict):
+                return {k: enum_to_value(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [enum_to_value(item) for item in obj]
+            return obj
+        
         state = {
             "timestamp": datetime.now().isoformat(),
-            "health": asdict(health),
-            "actions": [asdict(a) for a in actions]
+            "health": enum_to_value(asdict(health)),
+            "actions": [enum_to_value(asdict(a)) for a in actions]
         }
         
         state_file = self.state_path / f"state_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"

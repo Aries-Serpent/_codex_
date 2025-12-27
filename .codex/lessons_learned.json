@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "timestamp": "2025-12-26T20:46:26.336803",
+    "category": "dependency-testing",
+    "title": "pip install hangs with large ML packages",
+    "description": "When attempting to install packages like torch (2.6.0), transformers (4.48.0), or mlflow (2.22.4) in virtual environment, pip install -e . hangs without output for 180+ seconds",
+    "solution": "Use incremental installation: Install packages one at a time with progress indicators. Alternative: Use existing environment or defer to CI/CD pipeline. For future: Add --progress-bar on and --verbose flags to pip commands.",
+    "tags": [
+      "pip",
+      "installation",
+      "timeout",
+      "ml-packages"
+    ]
+  },
+  {
+    "id": 2,
+    "timestamp": "2025-12-26T20:46:26.336961",
+    "category": "api-access",
+    "title": "GitHub CLI requires explicit token in some environments",
+    "description": "In automated environments, gh CLI commands may fail even when git operations work. Git uses credential helper but gh requires explicit GITHUB_TOKEN or GH_TOKEN environment variable.",
+    "solution": "Workaround 1: Use git commands instead of gh CLI. Workaround 2: Document operations requiring API access. Workaround 3: Request human admin to configure GITHUB_TOKEN. For workflows: Use GitHub Actions context variables.",
+    "tags": [
+      "github-cli",
+      "authentication",
+      "api-access",
+      "workaround"
+    ]
+  },
+  {
+    "id": 3,
+    "timestamp": "2025-12-26T20:46:26.337136",
+    "category": "testing",
+    "title": "JSON serialization fails with Enum objects in dataclasses",
+    "description": "When using asdict() from dataclasses with Enum fields, json.dump() raises TypeError: Object of type HealthStatus is not JSON serializable",
+    "solution": "Create recursive enum_to_value helper function that converts Enum objects to their .value property before serialization. Apply to all dict/list structures before json.dump().",
+    "tags": [
+      "json",
+      "enum",
+      "serialization",
+      "dataclass"
+    ]
+  },
+  {
+    "title": "API CLI access verification and limitations",
+    "category": "api-access",
+    "description": "GitHub CLI (gh) requires explicit authentication token (GITHUB_TOKEN or GH_TOKEN) in environment. In Copilot Agent environment: gh CLI available but not authenticated, GitHub API calls blocked by DNS proxy, git operations work via credential helper.",
+    "solution": "Use git commands instead of gh CLI. Request human admin for operations requiring GitHub API (posting comments, creating secrets, wiki deployment). Document all API operations that cannot be automated. Workarounds: GitHub Actions context variables, manual human operations.",
+    "tags": [
+      "github-cli",
+      "api-access",
+      "authentication",
+      "workaround",
+      "dns-proxy",
+      "copilot-agent"
+    ],
+    "added_date": "2025-12-26",
+    "verification_commands": [
+      "env | grep -E \"(GITHUB_TOKEN|GH_TOKEN)\"",
+      "gh auth status",
+      "git config --get credential.helper",
+      "curl -s https://api.github.com/rate_limit"
+    ]
+  }
+]
