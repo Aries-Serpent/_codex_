@@ -80,7 +80,12 @@ import torch
 import torch.nn as nn
 from peft import LoraConfig, get_peft_model, TaskType
 
-def apply_lora_to_model(base_model, rank=8, alpha=32, dropout=0.1):
+def apply_lora_to_model(
+    base_model: torch.nn.Module,
+    rank: int = 8,
+    alpha: int = 32,
+    dropout: float = 0.1,
+) -> torch.nn.Module:
     """Apply LoRA to a transformer model."""
     lora_config = LoraConfig(
         r=rank,  # Rank of the low-rank matrices
@@ -130,7 +135,10 @@ class AdapterLayer(nn.Module):
         return self.layer_norm(x + residual)
 
 
-def add_adapters_to_transformer(model, bottleneck_dim=64):
+def add_adapters_to_transformer(
+    model: torch.nn.Module,
+    bottleneck_dim: int = 64,
+) -> torch.nn.Module:
     """Insert adapter layers into a transformer model."""
     for layer in model.transformer.layers:
         # Freeze original parameters

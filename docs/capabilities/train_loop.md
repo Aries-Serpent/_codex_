@@ -206,12 +206,12 @@ def distributed_train_loop(
 import torch
 
 def train_with_gradient_accumulation(
-    model,
-    train_loader,
-    optimizer,
-    accumulation_steps=4,
-    device="cuda",
-):
+    model: torch.nn.Module,
+    train_loader: torch.utils.data.DataLoader,
+    optimizer: torch.optim.Optimizer,
+    accumulation_steps: int = 4,
+    device: str = "cuda",
+) -> None:
     """Training loop with gradient accumulation for large batch sizes."""
     model.train()
     optimizer.zero_grad()

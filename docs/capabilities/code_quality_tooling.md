@@ -52,8 +52,10 @@ ignore = [
 ]
 
 [tool.ruff.per-file-ignores]
-"tests/**/*.py" = ["S101", "S105", "S106"]  # Allow asserts and hardcoded secrets in tests
-"scripts/**/*.py" = ["T201"]  # Allow print statements in scripts
+# Allow asserts and hardcoded secrets in tests
+"tests/**/*.py" = ["S101", "S105", "S106"]
+# Allow print statements in scripts
+"scripts/**/*.py" = ["T201"]
 
 [tool.black]
 line-length = 100
