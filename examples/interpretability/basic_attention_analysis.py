@@ -16,8 +16,8 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / 'src'))
 
-import torch
 from transformers import AutoModel, AutoTokenizer
+
 from codex.interpretability import AttentionScorer
 
 
@@ -25,7 +25,7 @@ def main():
     """Run basic attention analysis."""
     print("Loading model and tokenizer...")
     model_name = "distilbert-base-uncased"
-    
+
     try:
         model = AutoModel.from_pretrained(model_name)
         tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -34,20 +34,20 @@ def main():
         print("This example requires the transformers library.")
         print("Install with: pip install transformers")
         return
-    
+
     # Create scorer
     print("\nCreating AttentionScorer...")
     scorer = AttentionScorer(model, device='cpu')
-    
+
     # Analyze sample text
     text = "The quick brown fox jumps over the lazy dog"
     print(f"\nAnalyzing text: '{text}'")
-    
+
     inputs = tokenizer(text, return_tensors="pt")
     tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
-    
+
     print(f"Tokens: {tokens}")
-    
+
     # Perform analysis
     print("\nPerforming attention analysis...")
     analysis = scorer.analyze_attention(
@@ -55,15 +55,15 @@ def main():
         attention_mask=inputs["attention_mask"],
         tokens=tokens
     )
-    
+
     # Display results
-    print(f"\nAttention Analysis Results:")
+    print("\nAttention Analysis Results:")
     print(f"  Number of layers: {len(analysis.layer_names)}")
-    print(f"  Top 5 Most Important Tokens:")
+    print("  Top 5 Most Important Tokens:")
     top_tokens = scorer.get_top_attended_tokens(analysis, top_k=5)
     for idx, score, token in top_tokens:
         print(f"    {token:15s} (index {idx:2d}): {score:.4f}")
-    
+
     print("\nAnalysis complete!")
 
 
