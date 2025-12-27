@@ -36,6 +36,43 @@ PEFT patterns are integrated throughout _codex_ for efficient model adaptation:
 - **HuggingFace PEFT integration** - Seamless use of the PEFT library
 - **Custom hooks** - PyTorch forward/backward hooks for fine-grained control
 
+### Helper Functions
+
+The examples below use these helper functions (see [train_loop.md](train_loop.md) for full implementation):
+
+```python
+import torch
+
+def train_epoch(model, train_loader, optimizer, device="cuda"):
+    """Basic training epoch - single pass through dataset.
+    
+    Args:
+        model: PyTorch model to train
+        train_loader: DataLoader with training data
+        optimizer: PyTorch optimizer
+        device: Device to train on
+    
+    Returns:
+        Average loss for the epoch
+    """
+    model.train()
+    total_loss = 0.0
+    
+    for batch in train_loader:
+        inputs, targets = batch
+        inputs, targets = inputs.to(device), targets.to(device)
+        
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = torch.nn.functional.cross_entropy(outputs, targets)
+        loss.backward()
+        optimizer.step()
+        
+        total_loss += loss.item()
+    
+    return total_loss / len(train_loader)
+```
+
 ### LoRA Implementation
 
 ```python

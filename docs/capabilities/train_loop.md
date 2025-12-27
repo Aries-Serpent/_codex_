@@ -25,6 +25,30 @@ Training loop patterns in _codex_ follow PyTorch best practices and are implemen
 - **Distributed support** - Multi-GPU training with DDP and FSDP
 - **Mixed precision** - Automatic Mixed Precision (AMP) for faster training
 
+### Helper Functions
+
+The examples below use these common helper functions:
+
+```python
+import torch
+import torch.nn as nn
+
+def compute_loss(outputs, targets, loss_fn=None):
+    """Compute loss between model outputs and targets.
+    
+    Args:
+        outputs: Model predictions
+        targets: Ground truth labels
+        loss_fn: Optional custom loss function (defaults to CrossEntropyLoss)
+    
+    Returns:
+        Loss tensor
+    """
+    if loss_fn is None:
+        loss_fn = nn.CrossEntropyLoss()
+    return loss_fn(outputs, targets)
+```
+
 ### Complete Training Loop Pattern
 
 ```python
