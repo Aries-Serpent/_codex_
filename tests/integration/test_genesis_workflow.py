@@ -245,27 +245,61 @@ class TestGenesisWorkflowArtifacts:
         Uses minimum version checks to allow for future security updates.
         """
         import re
+        import sys
         from packaging import version as pkg_version
         
         pyproject_path = repo_root / "pyproject.toml"
         assert pyproject_path.exists()
-        content = pyproject_path.read_text()
         
-        # Check for minimum secure versions
-        torch_match = re.search(r'torch[>=<,\s"\']*([0-9.]+)', content)
-        if torch_match:
-            torch_ver = torch_match.group(1)
-            assert pkg_version.parse(torch_ver) >= pkg_version.parse("2.6.0")
-        
-        transformers_match = re.search(r'transformers[>=<,\s"\']*([0-9.]+)', content)
-        if transformers_match:
-            transformers_ver = transformers_match.group(1)
-            assert pkg_version.parse(transformers_ver) >= pkg_version.parse("4.48.0")
-        
-        mlflow_match = re.search(r'mlflow[>=<,\s"\']*([0-9.]+)', content)
-        if mlflow_match:
-            mlflow_ver = mlflow_match.group(1)
-            assert pkg_version.parse(mlflow_ver) >= pkg_version.parse("2.22.4")
+        # Use tomllib (Python 3.11+) or tomli (Python 3.10) to parse TOML properly
+        # This avoids regex issues with matching version numbers in comments or URLs
+        if sys.version_info >= (3, 11):
+            import tomllib
+            with open(pyproject_path, 'rb') as f:
+                data = tomllib.load(f)
+            
+            # Parse dependencies from TOML
+            dependencies = data.get('project', {}).get('dependencies', [])
+            
+            for dep in dependencies:
+                if dep.startswith('torch>='):
+                    # Extract version from dependency string like "torch>=2.6.0,<3.0.0"
+                    version_match = re.search(r'>=([0-9.]+)', dep)
+                    if version_match:
+                        torch_ver = version_match.group(1)
+                        assert pkg_version.parse(torch_ver) >= pkg_version.parse("2.6.0")
+                
+                elif dep.startswith('transformers>='):
+                    version_match = re.search(r'>=([0-9.]+)', dep)
+                    if version_match:
+                        transformers_ver = version_match.group(1)
+                        assert pkg_version.parse(transformers_ver) >= pkg_version.parse("4.48.0")
+                
+                elif dep.startswith('mlflow>='):
+                    version_match = re.search(r'>=([0-9.]+)', dep)
+                    if version_match:
+                        mlflow_ver = version_match.group(1)
+                        assert pkg_version.parse(mlflow_ver) >= pkg_version.parse("2.22.4")
+        else:
+            # Fallback for Python 3.10 - use more specific regex that matches TOML format
+            content = pyproject_path.read_text()
+            
+            # More specific regex that matches TOML dependency specifications starting at line beginning
+            # Pattern: "packagename>=version" in dependencies array
+            torch_match = re.search(r'^\s*"torch>=([0-9.]+)', content, re.MULTILINE)
+            if torch_match:
+                torch_ver = torch_match.group(1)
+                assert pkg_version.parse(torch_ver) >= pkg_version.parse("2.6.0")
+            
+            transformers_match = re.search(r'^\s*"transformers>=([0-9.]+)', content, re.MULTILINE)
+            if transformers_match:
+                transformers_ver = transformers_match.group(1)
+                assert pkg_version.parse(transformers_ver) >= pkg_version.parse("4.48.0")
+            
+            mlflow_match = re.search(r'^\s*"mlflow>=([0-9.]+)', content, re.MULTILINE)
+            if mlflow_match:
+                mlflow_ver = mlflow_match.group(1)
+                assert pkg_version.parse(mlflow_ver) >= pkg_version.parse("2.22.4")
     def test_requirements_security_updates(self, repo_root):
         """Test that requirements.txt has security updates"""
         requirements_path = repo_root / "requirements.txt"
