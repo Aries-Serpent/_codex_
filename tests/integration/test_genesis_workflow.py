@@ -10,6 +10,16 @@ import yaml
 import json
 from pathlib import Path
 import os
+import sys
+
+# Import tomllib with fallback for Python 3.10
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    try:
+        import tomli as tomllib  # type: ignore
+    except ImportError:
+        tomllib = None  # type: ignore
 
 
 class TestGenesisWorkflowIntegration:
@@ -249,23 +259,50 @@ class TestGenesisWorkflowArtifacts:
         
         pyproject_path = repo_root / "pyproject.toml"
         assert pyproject_path.exists()
-        content = pyproject_path.read_text()
         
-        # Check for minimum secure versions
-        torch_match = re.search(r'torch[>=<,\s"\']*([0-9.]+)', content)
-        if torch_match:
-            torch_ver = torch_match.group(1)
-            assert pkg_version.parse(torch_ver) >= pkg_version.parse("2.6.0")
+        # Helper function to check package version
+        def check_package_version(dependencies, package_name, min_version):
+            """Check if a package meets minimum version requirement."""
+            for dep in dependencies:
+                if dep.startswith(f'{package_name}>='):
+                    version_match = re.search(r'>=([0-9.]+)', dep)
+                    if version_match:
+                        pkg_ver = version_match.group(1)
+                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), \
+                            f"{package_name} version {pkg_ver} is below minimum {min_version}"
+                        return True
+            return False
         
-        transformers_match = re.search(r'transformers[>=<,\s"\']*([0-9.]+)', content)
-        if transformers_match:
-            transformers_ver = transformers_match.group(1)
-            assert pkg_version.parse(transformers_ver) >= pkg_version.parse("4.48.0")
-        
-        mlflow_match = re.search(r'mlflow[>=<,\s"\']*([0-9.]+)', content)
-        if mlflow_match:
-            mlflow_ver = mlflow_match.group(1)
-            assert pkg_version.parse(mlflow_ver) >= pkg_version.parse("2.22.4")
+        # Use tomllib (Python 3.11+) or tomli (Python 3.10) to parse TOML properly
+        # This avoids regex issues with matching version numbers in comments or URLs
+        if tomllib is not None:
+            with open(pyproject_path, 'rb') as f:
+                data = tomllib.load(f)
+            
+            # Parse dependencies from TOML
+            dependencies = data.get('project', {}).get('dependencies', [])
+            
+            # Check each required package
+            check_package_version(dependencies, 'torch', '2.6.0')
+            check_package_version(dependencies, 'transformers', '4.48.0')
+            check_package_version(dependencies, 'mlflow', '2.22.4')
+        else:
+            # Fallback for environments without tomllib/tomli
+            # Use more specific regex that matches TOML dependency specifications
+            content = pyproject_path.read_text()
+            
+            # Helper for regex-based checking
+            def check_version_regex(pattern, min_version, package_name):
+                match = re.search(pattern, content, re.MULTILINE)
+                if match:
+                    pkg_ver = match.group(1)
+                    assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), \
+                        f"{package_name} version {pkg_ver} is below minimum {min_version}"
+            
+            # Check each package with specific regex patterns
+            check_version_regex(r'^\s*"torch>=([0-9.]+)', '2.6.0', 'torch')
+            check_version_regex(r'^\s*"transformers>=([0-9.]+)', '4.48.0', 'transformers')
+            check_version_regex(r'^\s*"mlflow>=([0-9.]+)', '2.22.4', 'mlflow')
     def test_requirements_security_updates(self, repo_root):
         """Test that requirements.txt has security updates"""
         requirements_path = repo_root / "requirements.txt"

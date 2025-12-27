@@ -20,6 +20,7 @@ import sys
 import ast
 import re
 import uuid
+import hashlib
 
 
 class ActionType(Enum):
@@ -147,9 +148,8 @@ class CodeHealthSensor:
         metrics = []
         
         # Simple hash-based duplicate detection (in-memory, single-run analysis)
-        # Note: Using built-in hash() for speed. Output varies between Python runs
-        # due to hash randomization, so this is only for real-time analysis.
-        code_hashes: dict[int, list[str]] = {}
+        # Using SHA-256 for deterministic hashing across Python runs
+        code_hashes: dict[str, list[str]] = {}
         
         for py_file in self.repo_path.rglob("*.py"):
             if any(skip in py_file.parts for skip in ['.venv', '__pycache__']):
@@ -161,7 +161,7 @@ class CodeHealthSensor:
                 lines = content.split('\n')
                 for i in range(0, len(lines) - 10, 5):
                     chunk = '\n'.join(lines[i:i+10])
-                    chunk_hash = hash(chunk)
+                    chunk_hash = hashlib.sha256(chunk.encode('utf-8')).hexdigest()
                     if chunk_hash not in code_hashes:
                         code_hashes[chunk_hash] = []
                     code_hashes[chunk_hash].append(str(py_file))
