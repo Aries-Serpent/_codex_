@@ -116,6 +116,9 @@ for epoch in range(num_epochs):
 ### Adapter Layers
 
 ```python
+import torch
+import torch.nn as nn
+
 class AdapterLayer(nn.Module):
     """Lightweight adapter module inserted between frozen layers."""
     
