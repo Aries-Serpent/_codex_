@@ -37,8 +37,9 @@ PEFT patterns are integrated throughout _codex_ for efficient model adaptation:
 ### LoRA Implementation
 
 ```python
-from peft import LoraConfig, get_peft_model, TaskType
+import torch
 import torch.nn as nn
+from peft import LoraConfig, get_peft_model, TaskType
 
 def apply_lora_to_model(base_model, rank=8, alpha=32, dropout=0.1):
     """Apply LoRA to a transformer model."""
@@ -109,7 +110,8 @@ def add_adapters_to_transformer(model, bottleneck_dim=64):
 ### Prefix Tuning
 
 ```python
-from peft import PrefixTuningConfig, get_peft_model
+import torch
+from peft import PrefixTuningConfig, get_peft_model, TaskType
 
 def apply_prefix_tuning(base_model, num_virtual_tokens=20):
     """Apply prefix tuning to a model."""
@@ -166,6 +168,9 @@ def register_peft_hooks(model):
 ### Multi-Task PEFT
 
 ```python
+import torch
+from peft import LoraConfig, get_peft_model, PeftModel
+
 def create_multi_task_peft_model(base_model, tasks):
     """Create a model with task-specific LoRA adapters."""
     from peft import PeftModel
@@ -271,7 +276,8 @@ model = get_peft_model(base_model, lora_config)
 
 ### QLoRA - Quantized LoRA
 ```python
-from transformers import BitsAndBytesConfig
+import torch
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
@@ -290,7 +296,8 @@ model = apply_lora_to_model(base_model)
 
 ### IA3 - Infused Adapter by Inhibiting and Amplifying Inner Activations
 ```python
-from peft import IA3Config
+import torch
+from peft import IA3Config, get_peft_model, TaskType
 
 ia3_config = IA3Config(
     task_type=TaskType.CAUSAL_LM,

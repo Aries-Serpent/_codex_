@@ -26,6 +26,7 @@ Training loop patterns in _codex_ follow PyTorch best practices and are implemen
 ### Complete Training Loop Pattern
 
 ```python
+import torch
 from torch.cuda.amp import autocast, GradScaler
 from tqdm import tqdm
 
@@ -110,6 +111,7 @@ def validate(model, val_loader, device):
 ### Distributed Training Loop
 
 ```python
+import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
@@ -151,6 +153,8 @@ def distributed_train_loop(
 ### Gradient Accumulation Pattern
 
 ```python
+import torch
+
 def train_with_gradient_accumulation(
     model,
     train_loader,
@@ -226,6 +230,8 @@ def train_epoch(model, dataloader, optimizer, device):
 
 3. **Gradient Clipping**: Prevent exploding gradients
    ```python
+   import torch
+   
    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
    ```
 
@@ -238,6 +244,8 @@ def train_epoch(model, dataloader, optimizer, device):
 
 5. **Deterministic Training**: Set seeds for reproducibility
    ```python
+   import torch
+   
    torch.manual_seed(42)
    torch.cuda.manual_seed_all(42)
    ```
@@ -253,6 +261,7 @@ def train_epoch(model, dataloader, optimizer, device):
 
 ### Mixed Precision Training
 ```python
+import torch
 from torch.cuda.amp import autocast, GradScaler
 
 scaler = GradScaler()
@@ -266,6 +275,9 @@ scaler.update()
 
 ### DataLoader Optimization
 ```python
+import torch
+from torch.utils.data import DataLoader
+
 train_loader = DataLoader(
     dataset,
     batch_size=32,
@@ -277,6 +289,8 @@ train_loader = DataLoader(
 
 ### Compilation (PyTorch 2.0+)
 ```python
+import torch
+
 model = torch.compile(model)  # JIT compilation for speed
 ```
 
