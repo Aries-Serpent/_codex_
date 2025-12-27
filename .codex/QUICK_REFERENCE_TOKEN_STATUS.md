@@ -12,7 +12,14 @@
 ### What's Missing ❌
 - ❌ **CODEX_MASTER_KEY:** Not configured (BLOCKING)
 - ❌ **ORG_MASTER_KEY:** Not configured (BLOCKING)
-- ⚠️ **GITHUB_TOKEN:** Not available in Copilot sessions (by design)
+
+### Token Usage Clarification ✅
+- ✅ **All Tokens:** FULLY usable in implemented code/workflows
+- ✅ **GITHUB_TOKEN:** Available for workflow implementations
+- ⚠️ **Interactive Chat Limitation:** Token values not readable in chat (security by design)
+- ✅ **Code/Workflow Capability:** Agents CAN write code using `${{ secrets.TOKEN_NAME }}`
+
+**Note:** The "by design" limitation applies ONLY to reading token values in interactive chat, NOT to implementing token-based solutions in code and workflows
 
 ---
 

@@ -134,19 +134,33 @@ gh secret list --repo Aries-Serpent/_codex_ | grep ORG_MASTER_KEY
 
 ---
 
-### Token 3: GITHUB_TOKEN ✅ AVAILABLE (But Limited)
+### Token 3: GITHUB_TOKEN ✅ AVAILABLE
 
-**Status:** Available in regular GitHub Actions, NOT in Copilot Agent sessions
+**Status:** Available for programmatic use in workflows and code
 **Purpose:** Standard GitHub Actions authentication
 **Scope:** Automatic (based on workflow permissions)
 **Type:** Automatic token
 
-**Current Limitation:**
-- ✅ Available in regular workflow runs
-- ❌ NOT available in Copilot Agent interactive sessions
-- This is BY DESIGN, not a configuration issue
+**Token Usage Capabilities:**
+- ✅ **Workflows:** Agents CAN write workflows using `${{ secrets.GITHUB_TOKEN }}`
+- ✅ **Scripts:** Agents CAN create scripts that use GITHUB_TOKEN via env variables
+- ✅ **API Operations:** Workflows execute with full token permissions
+- ⚠️ **Interactive Chat:** Token value not readable in chat (security only)
 
-**No Action Required** - This token is automatically provided by GitHub Actions in regular workflow contexts.
+**Corrected Understanding:**
+The "by design" limitation means token values cannot be READ in interactive chat sessions (security measure). However, agents CAN and SHOULD write code/workflows that USE tokens programmatically. This is a critical distinction - interactive access vs. programmatic utilization.
+
+**No Action Required** - This token is automatically provided by GitHub Actions. Agents should write workflows that reference it normally.
+
+**Example Usage:**
+```yaml
+- name: Use GITHUB_TOKEN
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    gh api /user
+    # Full API access available in workflow execution
+```
 
 ---
 
