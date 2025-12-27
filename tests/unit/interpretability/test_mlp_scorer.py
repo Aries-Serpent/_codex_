@@ -7,7 +7,6 @@ Tests MLP activation extraction, neuron importance scoring, and activation analy
 import pytest
 import torch
 import numpy as np
-from unittest.mock import Mock
 
 from src.codex.interpretability.mlp_scorer import MLPScorer, MLPAnalysis
 

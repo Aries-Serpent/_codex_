@@ -12,7 +12,7 @@ It supports:
 from __future__ import annotations
 
 import logging
-from typing import Optional, Union, Dict, List, Tuple
+from typing import Optional, Union, List, Tuple
 import torch
 import numpy as np
 from dataclasses import dataclass
