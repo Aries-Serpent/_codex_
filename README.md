@@ -187,6 +187,16 @@ All primary documentation now lives in the [`docs/`](docs/) directory.
 - **[Admin Quick Start](docs/ADMIN_QUICKSTART.md)** - 5-minute critical setup
 - **[Admin FAQ](docs/ADMIN_FAQ.md)** - Common questions and troubleshooting
 
+### 📚 Capabilities Documentation
+
+**Deep-dive implementation guides for ML/AI workflows:**
+
+- **[Model Checkpointing](docs/capabilities/checkpointing.md)** - Complete checkpoint management with SafeTensors, distributed training, and cloud storage
+- **[Training Loops](docs/capabilities/train_loop.md)** - Production training patterns with AMP, distributed training, and gradient accumulation
+- **[PEFT Techniques](docs/capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning with LoRA, adapters, prefix tuning, and QLoRA
+- **[Code Quality Tooling](docs/capabilities/code_quality_tooling.md)** - Complete code quality stack with Ruff, Black, mypy, pytest, and nox
+- **[GitHub CLI Troubleshooting](.github/docs/GH_CLI_Resolution_Copilot.md)** - Comprehensive guide for gh CLI issues and REST API alternatives
+
 ### 🆕 Latest Updates (December 2025)
 
 #### Audit Pipeline v1.5.5 (2025-12-10)
