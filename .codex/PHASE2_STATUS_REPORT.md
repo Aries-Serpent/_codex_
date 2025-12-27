@@ -281,7 +281,7 @@ def check_safety_guards():
         
         # Check for safety flag
         autonomous_enabled = config.get('agent', {}).get('autonomous_actions_enabled', True)
-        passed = autonomous_enabled == False
+        passed = not autonomous_enabled
         
         return {
             'passed': passed,

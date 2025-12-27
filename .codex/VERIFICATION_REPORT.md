@@ -140,8 +140,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyyaml requests
-          # Pin versions: pip install pyyaml==6.0.1 requests==2.31.0
+          # Pin versions for security and reproducibility
+          pip install "pyyaml==6.0.1" "requests==2.31.0"
       
       - name: Run Genesis Validation
         # SECURITY: Only expose secrets to trusted, reviewed code
@@ -239,7 +239,9 @@ else:
 
 ### Immediate Action: Create Automation Workflow
 
-**File**: `.github/workflows/copilot-automation.yml`
+**⚠️ SECURITY WARNING**: This is a TEMPLATE ONLY that requires careful human review before use.
+
+**File**: `.github/workflows/copilot-automation.yml` (TEMPLATE - DO NOT USE AS-IS)
 
 ```yaml
 name: Copilot Automation Suite
@@ -264,11 +266,6 @@ jobs:
       pull-requests: write
       actions: write
     
-    env:
-      GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-      CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-    
     steps:
       - uses: actions/checkout@v4
       
@@ -277,7 +274,12 @@ jobs:
         with:
           python-version: '3.12'
       
+      # SECURITY: Only expose tokens to specific trusted steps
       - name: Verify tokens
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "Verifying token configuration..."
           gh auth status || echo "Primary token check"
@@ -287,22 +289,39 @@ jobs:
           fi
       
       - name: Run Genesis Validation
+        # No secrets needed for validation
         if: ${{ inputs.operation == 'validate-genesis' || inputs.operation == 'full-automation' }}
         run: |
           python3 scripts/validate_genesis_readiness.py
       
       - name: Deploy Wiki
+        # Only expose secrets to this specific step
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         if: ${{ inputs.operation == 'deploy-wiki' || inputs.operation == 'full-automation' }}
         run: |
           echo "Wiki deployment logic here"
           # Add actual wiki deployment commands
       
+      # SECURITY: Tests run WITHOUT access to PAT tokens
       - name: Run Tests
+        # Use built-in token only, NOT custom PAT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ inputs.operation == 'run-tests' || inputs.operation == 'full-automation' }}
         run: |
-          pip install pytest
+          # Pin all dependencies for security
+          pip install "pytest==7.4.0" "pytest-cov==4.1.0"
           pytest tests/ -v || echo "Tests completed"
 ```
+
+**SECURITY MITIGATION STRATEGIES**:
+1. Never expose PATs at job-level `env` - use step-level `env` only
+2. Use built-in `GITHUB_TOKEN` for test execution (not custom PAT)
+3. Pin all dependency versions before installing with secrets available
+4. Separate jobs: untrusted code runs without PAT access
+5. Review all third-party dependencies before use with secrets
 
 ### Next Steps
 

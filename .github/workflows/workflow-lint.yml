@@ -19,18 +19,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install actionlint
-        run: |
-          echo "Installing actionlint..."
-          curl -sSL https://github.com/rhysd/actionlint/releases/latest/download/actionlint_linux_amd64.tar.gz | tar -xz -C /tmp
-          sudo mv /tmp/actionlint /usr/local/bin/actionlint
-          chmod +x /usr/local/bin/actionlint
-      
       - name: Run actionlint
-        run: |
-          actionlint -version || true
-          echo "Linting GitHub Actions workflows..."
-          actionlint .github/workflows/*.yml || true
+        uses: rhysd/actionlint@v1
+        with:
+          fail-on-error: true
       
       - name: Install yamllint
         run: |
