@@ -36,37 +36,15 @@ jobs:
       - name: Install markdown-link-check
         run: npm install -g markdown-link-check
 
-      - name: Create link check config
+      - name: Verify link check config
         run: |
-          cat > .markdown-link-check.json << 'EOFCONFIG'
-          {
-            "ignorePatterns": [
-              {
-                "pattern": "^https://github.com/settings"
-              },
-              {
-                "pattern": "^http://localhost"
-              },
-              {
-                "pattern": "<<.*>>"
-              }
-            ],
-            "replacementPatterns": [],
-            "httpHeaders": [
-              {
-                "urls": ["https://github.com"],
-                "headers": {
-                  "Accept": "text/html"
-                }
-              }
-            ],
-            "timeout": "10s",
-            "retryOn429": true,
-            "retryCount": 3,
-            "fallbackRetryDelay": "5s",
-            "aliveStatusCodes": [200, 206, 301, 302, 307, 308]
-          }
-          EOFCONFIG
+          # The .markdown-link-check.json config file should already exist in the repo
+          if [ ! -f .markdown-link-check.json ]; then
+            echo "❌ ERROR: .markdown-link-check.json not found!"
+            exit 1
+          fi
+          echo "✅ Using existing .markdown-link-check.json configuration"
+          cat .markdown-link-check.json
 
       - name: Check links in documentation
         run: |
