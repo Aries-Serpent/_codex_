@@ -37,7 +37,6 @@ def _to_serializable(obj: Any) -> Any:
         return obj
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return str(obj)
 
 
