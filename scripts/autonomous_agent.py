@@ -16,7 +16,6 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 import json
-import hashlib
 import sys
 import ast
 import re
@@ -148,7 +147,8 @@ class CodeHealthSensor:
         metrics = []
         
         # Simple hash-based duplicate detection (in-memory, single-run analysis)
-        # Note: Using built-in hash() for speed. Not for persistence across runs.
+        # Note: Using built-in hash() for speed. Output varies between Python runs
+        # due to hash randomization, so this is only for real-time analysis.
         code_hashes: dict[int, list[str]] = {}
         
         for py_file in self.repo_path.rglob("*.py"):
