@@ -4,6 +4,8 @@
 
 **Status**: ✅ Complete - Comprehensive PEFT techniques and integration patterns documented
 
+> **Note**: Code examples throughout this document include imports at the beginning of each snippet for clarity and standalone usage. This is intentional to make each example self-contained and easy to copy.
+
 This capability covers Parameter-Efficient Fine-Tuning (PEFT) techniques and hooks for adapting large models with minimal trainable parameters.
 
 ## Planned Content
@@ -169,12 +171,10 @@ def register_peft_hooks(model):
 
 ```python
 import torch
-from peft import LoraConfig, get_peft_model, PeftModel
+from peft import LoraConfig, get_peft_model
 
 def create_multi_task_peft_model(base_model, tasks):
     """Create a model with task-specific LoRA adapters."""
-    from peft import PeftModel
-    
     task_models = {}
     
     for task_name in tasks:

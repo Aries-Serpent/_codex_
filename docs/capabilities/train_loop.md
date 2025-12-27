@@ -4,6 +4,8 @@
 
 **Status**: ✅ Complete - Full training loop patterns and best practices documented
 
+> **Note**: Code examples throughout this document include imports at the beginning of each snippet for clarity and standalone usage. This is intentional to make each example self-contained and easy to copy.
+
 This capability covers complete training loop implementations for ML models, including batch processing, gradient updates, and epoch management.
 
 ## Planned Content
