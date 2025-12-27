@@ -97,38 +97,69 @@ Result: ✅ Remote access working (via credential helper)
 ## How to Use Configured Tokens
 
 ### Option 1: GitHub Actions Workflow (Recommended)
-Create or update a workflow file to use the tokens:
+**Security Notice**: Per repository guidelines in `.github/copilot-instructions.md`, AI agents should NOT create or activate GitHub Actions workflow files. Workflows must be created by human administrators after review.
+
+The following is a TEMPLATE ONLY for human admin review. Do not create this file without explicit approval:
+
+**Template Location**: Document as `.codex/templates/copilot-automation-workflow-TEMPLATE.yml`
 
 ```yaml
-name: Automated Operations
+name: Copilot Automation (TEMPLATE - REQUIRES HUMAN REVIEW)
+# SECURITY WARNING: This template exposes PAT to job environment
+# See mitigation strategies below before implementing
+
 on:
   workflow_dispatch:
-  push:
-    branches: [copilot/sub-pr-2623]
+  
+# SECURITY MITIGATION STRATEGIES:
+# 1. Use built-in GITHUB_TOKEN with scoped permissions instead of PAT where possible
+# 2. Split workflow: run dependency installation WITHOUT secrets
+# 3. Pin all Python dependencies before exposing to secrets
+# 4. Use separate jobs with minimal permissions for untrusted code
+# 5. Validate all third-party code before execution with secrets
 
 jobs:
   automation:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+    permissions:
+      contents: read  # Minimal permissions
+      pull-requests: write  # Only if needed
+    
+    # SECURITY: Do NOT expose PAT to entire job
+    # Move env to specific steps that need it
     
     steps:
       - uses: actions/checkout@v4
       
-      - name: Verify token
-        run: |
-          gh auth status
-          echo "✅ Token configured"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       
-      - name: Run Genesis validation
-        run: python3 scripts/validate_genesis_readiness.py
-      
-      - name: Deploy wiki (example)
+      # SECURITY: Install dependencies WITHOUT secret exposure
+      - name: Install dependencies
         run: |
-          # Wiki deployment logic here
-          echo "Wiki deployment would run here"
+          python -m pip install --upgrade pip
+          pip install pyyaml requests
+          # Pin versions: pip install pyyaml==6.0.1 requests==2.31.0
+      
+      - name: Run Genesis Validation
+        # SECURITY: Only expose secrets to trusted, reviewed code
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use built-in token when possible
+        run: |
+          python3 scripts/validate_genesis_readiness.py
+      
+      # Additional steps here...
 ```
+
+**Implementation Requirements**:
+1. Human admin must review and approve this template
+2. Pin all Python dependencies to specific versions
+3. Audit all executed code for security risks
+4. Use built-in `GITHUB_TOKEN` with minimal `permissions:` instead of PAT
+5. Never expose PAT to steps installing or executing third-party code
+6. Consider using separate jobs for untrusted code execution
 
 ### Option 2: Manual Operations with gh CLI
 If you have local access:

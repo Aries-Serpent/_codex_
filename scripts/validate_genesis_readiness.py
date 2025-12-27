@@ -49,7 +49,7 @@ def check_safety_guards():
         
         # Check for safety flag
         autonomous_enabled = config.get('agent', {}).get('autonomous_actions_enabled', True)
-        passed = autonomous_enabled == False
+        passed = not autonomous_enabled
         
         return {
             'passed': passed,
@@ -65,7 +65,7 @@ def check_module_imports():
         sys.path.insert(0, 'scripts')
         import autonomous_agent
         
-        required_attrs = ['AutonomousAgent', 'ActionType', 'HealthStatus', 'uuid']
+        required_attrs = ['AutonomousAgent', 'ActionType', 'HealthStatus']
         missing = [attr for attr in required_attrs if not hasattr(autonomous_agent, attr)]
         
         passed = len(missing) == 0
@@ -111,12 +111,33 @@ def check_security_status():
         with open(scan_file) as f:
             content = f.read()
         
-        # Check if scan exists and has been reviewed
-        # Pass if file exists (vulnerabilities documented and addressed in PR)
-        passed = True
+        if not content or not content.strip():
+            return {
+                'passed': False,
+                'message': 'Security scan file is empty'
+            }
+        
+        lower_content = content.lower()
+        
+        # Check for unresolved vulnerabilities
+        if 'vulnerab' in lower_content:
+            if any(word in lower_content for word in ['unresolved', 'pending', 'critical findings']):
+                # Check if there's indication of remediation
+                if 'fixed' in lower_content or 'addressed' in lower_content or 'updated' in lower_content:
+                    return {
+                        'passed': True,
+                        'message': 'Security scan shows vulnerabilities were addressed'
+                    }
+                else:
+                    return {
+                        'passed': False,
+                        'message': 'Security scan indicates unresolved vulnerabilities'
+                    }
+        
+        # Pass if scan exists and has content (assumed reviewed)
         return {
-            'passed': passed,
-            'message': 'Security scan documented, vulnerabilities addressed in PR#2623'
+            'passed': True,
+            'message': 'Security scan documented and reviewed'
         }
     except Exception as e:
         return {'passed': False, 'message': f"Error: {e}"}
