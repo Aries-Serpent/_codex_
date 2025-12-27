@@ -32,6 +32,7 @@ The examples below use these common helper functions:
 ```python
 import torch
 import torch.nn as nn
+from pathlib import Path
 
 def compute_loss(outputs, targets, loss_fn=None):
     """Compute loss between model outputs and targets.
@@ -47,6 +48,27 @@ def compute_loss(outputs, targets, loss_fn=None):
     if loss_fn is None:
         loss_fn = nn.CrossEntropyLoss()
     return loss_fn(outputs, targets)
+
+
+def save_checkpoint(model, optimizer, epoch, path):
+    """Save a basic training checkpoint.
+    
+    Args:
+        model: PyTorch model
+        optimizer: PyTorch optimizer
+        epoch: Current epoch number
+        path: Path to save checkpoint
+    
+    Note:
+        For advanced checkpointing with scheduler state, metadata,
+        and cloud storage, see CheckpointManager in checkpointing.md
+    """
+    checkpoint = {
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+    }
+    torch.save(checkpoint, path)
 ```
 
 ### Complete Training Loop Pattern
@@ -112,7 +134,9 @@ def train_loop(
         if checkpoint_dir and val_loss < best_val_loss:
             best_val_loss = val_loss
             checkpoint_path = checkpoint_dir / f"best_model_epoch{epoch}.pt"
-            save_checkpoint(model, optimizer, scheduler, epoch, checkpoint_path)
+            # Note: For production use, see CheckpointManager in checkpointing.md
+            # which handles scheduler state, metadata, and advanced features
+            save_checkpoint(model, optimizer, epoch, checkpoint_path)
         
         print(f"Epoch {epoch+1}: train_loss={avg_train_loss:.4f}, val_loss={val_loss:.4f}")
     
