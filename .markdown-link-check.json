@@ -26,6 +26,9 @@
     },
     {
       "pattern": "^https://github\\.com/Aries-Serpent/_codex_/actions/workflows"
+    },
+    {
+      "pattern": "^https://img\\.shields\\.io"
     }
   ],
   "replacementPatterns": [],
