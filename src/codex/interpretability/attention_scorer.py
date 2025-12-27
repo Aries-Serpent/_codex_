@@ -188,8 +188,10 @@ class AttentionScorer:
             # Max attention received by each token
             importance = stacked.max(dim=2)[0].mean(dim=(0, 1)).numpy()
         elif method == "norm":
-            # L2 norm of attention received by each token (aggregate across sequence dimension)
-            importance = torch.norm(stacked.mean(dim=(0, 1, 2)), dim=0).numpy()
+            # L2 norm of attention received by each token across layers and heads
+            # Shape: (num_layers, num_heads, seq_len) -> mean across (layers, heads) -> norm of seq_len
+            aggregated = stacked.mean(dim=(0, 1))  # (seq_len, seq_len)
+            importance = aggregated.mean(dim=0).numpy()  # Average incoming attention per token
         else:
             raise ValueError(f"Unknown method: {method}")
         

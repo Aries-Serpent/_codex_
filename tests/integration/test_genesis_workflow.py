@@ -263,9 +263,6 @@ class TestGenesisWorkflowArtifacts:
         # Helper function to check package version
         def check_package_version(dependencies, package_name, min_version):
             """Check if a package meets minimum version requirement."""
-            import re
-            from packaging import version as pkg_version
-            
             for dep in dependencies:
                 if dep.startswith(f'{package_name}>='):
                     version_match = re.search(r'>=([0-9.]+)', dep)
@@ -292,8 +289,6 @@ class TestGenesisWorkflowArtifacts:
         else:
             # Fallback for environments without tomllib/tomli
             # Use more specific regex that matches TOML dependency specifications
-            import re
-            from packaging import version as pkg_version
             content = pyproject_path.read_text()
             
             # Helper for regex-based checking
