@@ -42,6 +42,7 @@
     ]
   },
   {
+    "id": 4,
     "title": "API CLI access verification and limitations",
     "category": "api-access",
     "description": "GitHub CLI (gh) requires explicit authentication token (GITHUB_TOKEN or GH_TOKEN) in environment. In Copilot Agent environment: gh CLI available but not authenticated, GitHub API calls blocked by DNS proxy, git operations work via credential helper.",

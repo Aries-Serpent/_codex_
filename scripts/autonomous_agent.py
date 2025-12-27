@@ -16,10 +16,10 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 import json
-import hashlib
 import sys
 import ast
 import re
+import uuid
 
 
 class ActionType(Enum):
@@ -115,7 +115,6 @@ class CodeHealthSensor:
             
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 continue
         
         if high_complexity_files:
@@ -147,8 +146,10 @@ class CodeHealthSensor:
         """Detect duplicate code blocks."""
         metrics = []
         
-        # Simple hash-based duplicate detection
-        code_hashes: dict[str, list[str]] = {}
+        # Simple hash-based duplicate detection (in-memory, single-run analysis)
+        # Note: Using built-in hash() for speed. Output varies between Python runs
+        # due to hash randomization, so this is only for real-time analysis.
+        code_hashes: dict[int, list[str]] = {}
         
         for py_file in self.repo_path.rglob("*.py"):
             if any(skip in py_file.parts for skip in ['.venv', '__pycache__']):
@@ -160,12 +161,11 @@ class CodeHealthSensor:
                 lines = content.split('\n')
                 for i in range(0, len(lines) - 10, 5):
                     chunk = '\n'.join(lines[i:i+10])
-                    chunk_hash = hashlib.md5(chunk.encode(), usedforsecurity=False).hexdigest()
+                    chunk_hash = hash(chunk)
                     if chunk_hash not in code_hashes:
                         code_hashes[chunk_hash] = []
                     code_hashes[chunk_hash].append(str(py_file))
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         
@@ -228,7 +228,6 @@ class CodeHealthSensor:
                     security_issues.append((str(py_file), "pickle usage"))
                 
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         
@@ -326,10 +325,8 @@ class ActionProposer:
         return None
     
     def _generate_id(self, prefix: str) -> str:
-        """Generate unique action ID."""
-        timestamp = datetime.now().isoformat()
-        content = f"{prefix}:{timestamp}"
-        return hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()[:12]
+        """Generate unique action ID using UUID."""
+        return f"{prefix}_{uuid.uuid4().hex[:12]}"
 
 
 class AutonomousAgent:
