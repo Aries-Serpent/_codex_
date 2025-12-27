@@ -71,7 +71,8 @@ class MLPScorer:
         self,
         model: torch.nn.Module,
         normalize: bool = True,
-        device: Optional[Union[str, torch.device]] = None
+        device: Optional[Union[str, torch.device]] = None,
+        epsilon: float = 1e-10
     ):
         """
         Initialize the MLP scorer.
@@ -80,9 +81,11 @@ class MLPScorer:
             model: Transformer model with MLP layers
             normalize: Whether to normalize activation scores
             device: Device to run analysis on (cuda/cpu)
+            epsilon: Small value for numerical stability in normalization
         """
         self.model = model
         self.normalize = normalize
+        self.epsilon = epsilon
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.model.eval()
@@ -124,8 +127,8 @@ class MLPScorer:
         for name, module in self.model.named_modules():
             # Common MLP module names in transformers
             if any(key in name.lower() for key in ['mlp', 'ffn', 'intermediate', 'dense']):
-                # Skip output projection layers
-                if 'output' not in name.lower() or 'intermediate' in name.lower():
+                # Skip output projection layers unless they're intermediate layers
+                if 'output' not in name.lower() or ('intermediate' in name.lower() and 'output' not in name.lower()):
                     hook = module.register_forward_hook(mlp_hook)
                     hooks.append(hook)
                     layer_names.append(name)
@@ -194,7 +197,7 @@ class MLPScorer:
             else:
                 raise ValueError(f"Unknown method: {method}")
             
-            if self.normalize and importance.sum() > 1e-10:
+            if self.normalize and importance.sum() > self.epsilon:
                 importance = importance / importance.sum()
             
             importance_per_layer.append(importance)

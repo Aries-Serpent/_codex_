@@ -3,10 +3,18 @@ Basic Attention Analysis Example
 
 This example demonstrates how to use the AttentionScorer to analyze
 attention patterns in a transformer model.
+
+Note: This example uses sys.path.insert() for demonstration purposes.
+In production code, install the package properly with: pip install -e .
 """
 
 import sys
-sys.path.insert(0, 'src')
+from pathlib import Path
+
+# Add src to path for development/demo purposes only
+# In production, install the package with: pip install -e .
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / 'src'))
 
 import torch
 from transformers import AutoModel, AutoTokenizer

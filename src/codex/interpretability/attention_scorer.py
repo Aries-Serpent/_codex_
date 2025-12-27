@@ -73,7 +73,8 @@ class AttentionScorer:
         self,
         model: torch.nn.Module,
         normalize: bool = True,
-        device: Optional[Union[str, torch.device]] = None
+        device: Optional[Union[str, torch.device]] = None,
+        epsilon: float = 1e-10
     ):
         """
         Initialize the attention scorer.
@@ -82,9 +83,11 @@ class AttentionScorer:
             model: Transformer model with attention mechanisms
             normalize: Whether to normalize attention scores
             device: Device to run analysis on (cuda/cpu)
+            epsilon: Small value for numerical stability in normalization
         """
         self.model = model
         self.normalize = normalize
+        self.epsilon = epsilon
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.model.eval()
@@ -191,7 +194,7 @@ class AttentionScorer:
             raise ValueError(f"Unknown method: {method}")
         
         if self.normalize:
-            importance = importance / (importance.sum() + 1e-10)
+            importance = importance / (importance.sum() + self.epsilon)
         
         return importance
     

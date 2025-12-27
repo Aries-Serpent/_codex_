@@ -10,6 +10,16 @@ import yaml
 import json
 from pathlib import Path
 import os
+import sys
+
+# Import tomllib with fallback for Python 3.10
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    try:
+        import tomli as tomllib  # type: ignore
+    except ImportError:
+        tomllib = None  # type: ignore
 
 
 class TestGenesisWorkflowIntegration:
@@ -245,7 +255,6 @@ class TestGenesisWorkflowArtifacts:
         Uses minimum version checks to allow for future security updates.
         """
         import re
-        import sys
         from packaging import version as pkg_version
         
         pyproject_path = repo_root / "pyproject.toml"
@@ -253,8 +262,7 @@ class TestGenesisWorkflowArtifacts:
         
         # Use tomllib (Python 3.11+) or tomli (Python 3.10) to parse TOML properly
         # This avoids regex issues with matching version numbers in comments or URLs
-        if sys.version_info >= (3, 11):
-            import tomllib
+        if tomllib is not None:
             with open(pyproject_path, 'rb') as f:
                 data = tomllib.load(f)
             
@@ -281,10 +289,11 @@ class TestGenesisWorkflowArtifacts:
                         mlflow_ver = version_match.group(1)
                         assert pkg_version.parse(mlflow_ver) >= pkg_version.parse("2.22.4")
         else:
-            # Fallback for Python 3.10 - use more specific regex that matches TOML format
+            # Fallback for environments without tomllib/tomli
+            # Use more specific regex that matches TOML dependency specifications
             content = pyproject_path.read_text()
             
-            # More specific regex that matches TOML dependency specifications starting at line beginning
+            # More specific regex that matches TOML format starting at line beginning
             # Pattern: "packagename>=version" in dependencies array
             torch_match = re.search(r'^\s*"torch>=([0-9.]+)', content, re.MULTILINE)
             if torch_match:
