@@ -89,6 +89,28 @@ class MLPScorer:
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.model.eval()
+    
+    def _is_mlp_layer(self, layer_name: str) -> bool:
+        """
+        Determine if a layer is an MLP/FFN layer based on its name.
+        
+        Args:
+            layer_name: Name of the layer
+            
+        Returns:
+            True if the layer is an MLP layer to analyze
+        """
+        name_lower = layer_name.lower()
+        
+        # Check if it contains MLP-related keywords
+        is_mlp_related = any(key in name_lower for key in ['mlp', 'ffn', 'intermediate', 'dense'])
+        
+        # Skip output projection layers (unless they're intermediate layers)
+        is_output_layer = 'output' in name_lower
+        is_intermediate_layer = 'intermediate' in name_lower
+        
+        # Include if it's MLP-related and either not an output layer or is an intermediate layer
+        return is_mlp_related and (not is_output_layer or is_intermediate_layer)
         
     def extract_mlp_activations(
         self,
@@ -125,13 +147,10 @@ class MLPScorer:
         # Register hooks on MLP/FFN modules
         hooks = []
         for name, module in self.model.named_modules():
-            # Common MLP module names in transformers
-            if any(key in name.lower() for key in ['mlp', 'ffn', 'intermediate', 'dense']):
-                # Skip output projection layers unless they're intermediate layers
-                if 'output' not in name.lower() or ('intermediate' in name.lower() and 'output' not in name.lower()):
-                    hook = module.register_forward_hook(mlp_hook)
-                    hooks.append(hook)
-                    layer_names.append(name)
+            if self._is_mlp_layer(name):
+                hook = module.register_forward_hook(mlp_hook)
+                hooks.append(hook)
+                layer_names.append(name)
         
         # Forward pass
         with torch.no_grad():
@@ -383,10 +402,16 @@ class MLPScorer:
         # Compute correlation per layer
         correlations = []
         for layer_idx in range(analysis_1.activations.shape[0]):
-            corr = np.corrcoef(
-                analysis_1.activations[layer_idx],
-                analysis_2.activations[layer_idx]
-            )[0, 1]
+            act1 = analysis_1.activations[layer_idx]
+            act2 = analysis_2.activations[layer_idx]
+            
+            # Check for constant arrays (zero variance) to avoid correlation errors
+            if np.std(act1) < 1e-10 or np.std(act2) < 1e-10:
+                # If either array is constant, correlation is undefined; use 0 or 1 based on equality
+                corr = 1.0 if np.allclose(act1, act2) else 0.0
+            else:
+                corr = np.corrcoef(act1, act2)[0, 1]
+            
             correlations.append(corr)
         
         # Compute L2 distance per layer
