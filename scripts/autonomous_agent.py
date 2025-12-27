@@ -147,8 +147,9 @@ class CodeHealthSensor:
         """Detect duplicate code blocks."""
         metrics = []
         
-        # Simple hash-based duplicate detection
-        code_hashes: dict[str, list[str]] = {}
+        # Simple hash-based duplicate detection (in-memory, single-run analysis)
+        # Note: Using built-in hash() for speed. Not for persistence across runs.
+        code_hashes: dict[int, list[str]] = {}
         
         for py_file in self.repo_path.rglob("*.py"):
             if any(skip in py_file.parts for skip in ['.venv', '__pycache__']):
