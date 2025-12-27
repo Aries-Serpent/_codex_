@@ -1,5 +1,7 @@
 # Training Loop Implementation
 
+> **Navigation**: [📖 Main README](../../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔍 Code Quality](code_quality_tooling.md)
+
 ## Overview
 
 **Status**: ✅ Complete - Full training loop patterns and best practices documented

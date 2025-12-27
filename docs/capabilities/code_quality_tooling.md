@@ -1,5 +1,7 @@
 # Code Quality Tooling
 
+> **Navigation**: [📖 Main README](../../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](../../.github/docs/GH_CLI_Resolution_Copilot.md)
+
 ## Overview
 
 **Status**: ✅ Complete - Comprehensive code quality tooling guide with configurations and examples
