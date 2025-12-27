@@ -1,0 +1,174 @@
+# ⚠️ TEMPLATE ONLY - REQUIRES HUMAN ADMIN APPROVAL
+# This file must be reviewed and approved before moving to .github/workflows/
+#
+# Per repository guidelines (.github/copilot-instructions.md):
+# "Do NOT create or activate any GitHub Actions workflow files"
+#
+# HUMAN ADMIN: To activate this workflow:
+# 1. Review this template thoroughly
+# 2. Adjust configurations as needed
+# 3. Copy to: .github/workflows/tests.yml
+# 4. Commit and push
+
+name: Run Tests
+
+on:
+  push:
+    branches: [ main, 0D_base_ ]
+  pull_request:
+    branches: [ main, 0D_base_ ]
+  workflow_dispatch:  # Manual trigger capability
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # Continue testing other versions even if one fails
+      matrix:
+        python-version: ['3.11', '3.12']  # Current supported versions
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better git operations
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'  # Cache pip dependencies
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-py${{ matrix.python-version }}-${{ hashFiles('requirements/lock.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-py${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          echo "✅ System dependencies installed"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          
+          # Install test dependencies
+          pip install pytest pytest-cov pytest-randomly pytest-xdist hypothesis
+          
+          # Install project in editable mode with test extras
+          pip install -e '.[test]'
+          
+          echo "✅ Python dependencies installed"
+
+      - name: Display environment info
+        run: |
+          echo "Python version: $(python --version)"
+          echo "Pip version: $(pip --version)"
+          echo "Pytest version: $(pytest --version)"
+          pip list
+
+      - name: Run pytest with coverage
+        run: |
+          pytest tests/ \
+            -v \
+            --tb=short \
+            --cov=agents \
+            --cov=scripts \
+            --cov-report=term-missing \
+            --cov-report=xml \
+            --cov-report=html \
+            -n auto \
+            --dist=loadscope
+        continue-on-error: false  # Fail workflow if tests fail
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports-py${{ matrix.python-version }}
+          path: |
+            htmlcov/
+            coverage.xml
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-py${{ matrix.python-version }}
+          path: |
+            .pytest_cache/
+          retention-days: 7
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+          MINIMUM_GREEN: 70
+          MINIMUM_ORANGE: 60
+
+  # Optional: Integration tests for AI/ML features
+  integration-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install -e '.[test,ml]'
+      
+      - name: Run integration tests
+        run: |
+          pytest tests/integration/ \
+            -v \
+            --tb=short \
+            -m "integration"
+        continue-on-error: true  # Integration tests can be flaky
+
+  # Optional: Advanced features testing
+  advanced-features:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'  # Manual trigger only
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install full dependencies
+        run: |
+          pip install -e '.[test,ml,interpretability]'
+      
+      - name: Test interpretability utilities
+        run: |
+          pytest tests/ -v -k "interpretability or attention or mlp"
+        continue-on-error: true
+      
+      - name: Test attention scoring
+        run: |
+          pytest tests/ -v -k "attention_scoring"
+        continue-on-error: true
+      
+      - name: Test MLP scoring
+        run: |
+          pytest tests/ -v -k "mlp_scoring"
+        continue-on-error: true
