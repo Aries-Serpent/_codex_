@@ -1,0 +1,49 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://github.com/settings"
+    },
+    {
+      "pattern": "^http://localhost"
+    },
+    {
+      "pattern": "^#"
+    },
+    {
+      "pattern": "<<.*>>"
+    },
+    {
+      "pattern": "^mailto:"
+    },
+    {
+      "pattern": "\\$\\{.*\\}"
+    },
+    {
+      "pattern": "ghp_\\*+"
+    },
+    {
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/settings"
+    },
+    {
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/actions/workflows"
+    },
+    {
+      "pattern": "^https://img\\.shields\\.io"
+    }
+  ],
+  "replacementPatterns": [],
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com"],
+      "headers": {
+        "Accept": "text/html",
+        "User-Agent": "Mozilla/5.0"
+      }
+    }
+  ],
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "10s",
+  "aliveStatusCodes": [200, 206, 301, 302, 307, 308, 403, 429]
+}

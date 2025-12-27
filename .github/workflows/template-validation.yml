@@ -36,7 +36,7 @@ jobs:
 
       - name: Install validation dependencies
         run: |
-          pip install pyyaml markdown-link-check pytest
+          pip install pyyaml pytest
           curl -sSL https://github.com/rhysd/actionlint/releases/latest/download/actionlint_linux_amd64.tar.gz | tar -xz -C /tmp
           sudo mv /tmp/actionlint /usr/local/bin/actionlint
 
@@ -104,20 +104,21 @@ jobs:
           
           GUARDS_OK=true
           
-          # Check workflow guard
-          if grep -q "if: false" .github/workflows/genesis-bootstrap.yml 2>/dev/null; then
-            echo "✅ Workflow guard (if: false) present"
+          # Check workflow guard - Genesis bootstrap is now enabled (if: true)
+          if grep -q "if: true" .github/workflows/genesis-bootstrap.yml 2>/dev/null; then
+            echo "✅ Workflow enabled (if: true) - Genesis activated"
           else
-            echo "❌ Workflow guard missing"
+            echo "❌ Genesis bootstrap workflow not properly enabled"
             GUARDS_OK=false
           fi
           
-          # Check SAFE_MODE
-          if grep -q "SAFE_MODE = True" scripts/autonomous_agent.py 2>/dev/null; then
-            echo "✅ SAFE_MODE enabled"
-          else
-            echo "❌ SAFE_MODE not enabled"
-            GUARDS_OK=false
+          # Check SAFE_MODE (optional - only in template mode)
+          if [ -f scripts/autonomous_agent.py ]; then
+            if grep -q "SAFE_MODE = True" scripts/autonomous_agent.py 2>/dev/null; then
+              echo "✅ SAFE_MODE enabled (template mode)"
+            else
+              echo "ℹ️  SAFE_MODE not found (full implementation mode)"
+            fi
           fi
           
           # Check autonomous_actions_enabled

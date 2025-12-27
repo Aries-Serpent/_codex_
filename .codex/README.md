@@ -2,6 +2,22 @@
 
 This folder contains versioned scripts and config used by ChatGPT Codex.
 
+## ⚠️ CRITICAL: Token Usage Understanding for AI Agents
+
+**REQUIRED READING:** `.codex/TOKEN_USAGE_CORRECTED_UNDERSTANDING.md`
+
+**Prime Directive:** AI Agents CAN and SHOULD write code/workflows that use tokens programmatically via `${{ secrets.TOKEN_NAME }}`. The "by design" limitation applies ONLY to reading token values in interactive chat (security), NOT to implementing token-based solutions.
+
+**Key Points:**
+- ✅ Agents CAN write workflows using `${{ secrets.CODEX_MASTER_KEY }}`
+- ✅ Agents CAN create scripts that use tokens via environment variables  
+- ✅ Agents CAN implement comprehensive token-based automation
+- ❌ Agents CANNOT read token values in interactive chat (security only)
+
+**See:** `.codex/TOKEN_USAGE_CORRECTED_UNDERSTANDING.md` for complete details.
+
+---
+
 ## Files
 - `scripts/setup.sh` — Manual setup script; deterministic, cache-friendly, graceful on errors.
 - `scripts/maintenance.sh` — Runs after container resume; lock-aware dependency sync, budgets, token check.

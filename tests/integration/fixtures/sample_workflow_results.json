@@ -1,0 +1,30 @@
+{
+  "workflow_id": "test-genesis-001",
+  "status": "completed",
+  "timestamp": "2025-12-26T22:00:00Z",
+  "artifacts": [
+    {
+      "name": "runtime_variables.md",
+      "path": ".codex/runtime_variables.md",
+      "size_bytes": 12288,
+      "checksum": "abc123def456"
+    },
+    {
+      "name": "security_scan_report.md",
+      "path": ".codex/security_vulnerability_scan_2025-12-26.md",
+      "size_bytes": 10240,
+      "checksum": "789xyz012abc"
+    }
+  ],
+  "metrics": {
+    "duration_seconds": 45,
+    "tests_passed": 23,
+    "tests_failed": 0,
+    "vulnerabilities_fixed": 48
+  },
+  "validation": {
+    "passed": true,
+    "checks_completed": 15,
+    "checks_failed": 0
+  }
+}
