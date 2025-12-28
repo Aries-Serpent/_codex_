@@ -292,8 +292,7 @@ Generated {len(trajectory)} points in the strange attractor.
         fluid = FluidChannel(length=1.0, width=0.1, height=0.1)
         reynolds = fluid.reynolds_number(
             velocity=1.0,
-            characteristic_length=0.1,
-            kinematic_viscosity=1e-6
+            viscosity=1e-6
         )
         
         # Generate fluid dynamics statement
@@ -354,28 +353,6 @@ def example_5_advanced_physics_nlp_synthesis():
     print("=" * 80)
     
     print("\n1. Generating multi-concept physics statement...")
-    
-    # Template-based physics generation (no external model needed)
-    physics_concepts = {
-        "quantum_mechanics": [
-            "wave function collapse",
-            "superposition principle",
-            "Heisenberg uncertainty",
-            "quantum entanglement"
-        ],
-        "thermodynamics": [
-            "entropy increase",
-            "energy conservation",
-            "heat flow directionality",
-            "statistical mechanics"
-        ],
-        "relativity": [
-            "spacetime curvature",
-            "time dilation",
-            "mass-energy equivalence",
-            "light speed constancy"
-        ]
-    }
     
     # Generate logical physics statement
     statements = []
