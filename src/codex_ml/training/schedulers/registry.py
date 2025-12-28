@@ -1,15 +1,17 @@
 from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Callable
 
+logger = logging.getLogger(__name__)
+
 try:
     import torch
-
+    # Verify torch is functional
+    _ = torch.optim.Optimizer if hasattr(torch, 'optim') else None
     TORCH_AVAILABLE = True
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     TORCH_AVAILABLE = False

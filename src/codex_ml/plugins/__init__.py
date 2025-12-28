@@ -1,7 +1,6 @@
 from __future__ import annotations
-logger = logging.getLogger(__name__)
-"""Plugin registry utilities for codex_ml."""
 
+"""Plugin registry utilities for codex_ml."""
 
 import logging
 from collections.abc import Mapping, Sequence

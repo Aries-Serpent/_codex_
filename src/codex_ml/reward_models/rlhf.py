@@ -9,7 +9,6 @@ pulling in heavyweight dependencies.
 """
 
 from __future__ import annotations
-logger = logging.getLogger(__name__)
 
 import logging
 from collections import defaultdict
@@ -19,6 +18,7 @@ from typing import Any, Iterable, Mapping, MutableMapping, Optional, Sequence
 from codex_ml.interfaces.reward_model import RewardModel as RewardModelBase
 from codex_ml.interfaces.rl import RLAgent
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 

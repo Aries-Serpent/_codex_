@@ -1,5 +1,4 @@
 from __future__ import annotations
-logger = logging.getLogger(__name__)
 
 import logging
 import os
@@ -9,6 +8,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Optional
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 

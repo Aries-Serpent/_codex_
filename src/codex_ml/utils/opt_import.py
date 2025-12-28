@@ -1,12 +1,12 @@
 from __future__ import annotations
-logger = logging.getLogger(__name__)
-"""Helper for optional imports with explicit logging."""
 
+"""Helper for optional imports with explicit logging."""
 
 import logging
 from importlib import import_module
 from types import ModuleType
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 

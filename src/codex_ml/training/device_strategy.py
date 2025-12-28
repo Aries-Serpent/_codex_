@@ -3,15 +3,16 @@
 from __future__ import annotations
 
 import logging
-logger = logging.getLogger(__name__)
 from dataclasses import dataclass
 from typing import Any, Optional
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
-
+    # Verify torch is actually functional (not just a stub)
+    _ = torch.float32  # Test access to a common attribute
     _HAS_TORCH = True
 except Exception:  # pragma: no cover - defensive import guard
     torch = None  # type: ignore[assignment]

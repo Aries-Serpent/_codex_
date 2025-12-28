@@ -12,13 +12,14 @@ Author: Codex ML Team
 Version: 1.0.0
 """
 
-import os
-import logging
-logger = logging.getLogger(__name__)
 import functools
-from typing import Optional, Any, Callable, Union
-from pathlib import Path
+import logging
+import os
 from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Optional, Union
+
+logger = logging.getLogger(__name__)
 
 try:
     import torch
@@ -42,9 +43,10 @@ try:
         CheckpointImpl,
         apply_activation_checkpointing,
     )
-
+    # Verify torch is functional
+    _ = torch.Tensor
     TORCH_AVAILABLE = True
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     TORCH_AVAILABLE = False

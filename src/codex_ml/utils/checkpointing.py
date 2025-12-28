@@ -80,7 +80,8 @@ except Exception:  # pragma: no cover - fallback no-op
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-
+    # Verify torch is actually functional (not just a stub)
+    _ = torch.manual_seed
     TORCH_AVAILABLE = True
 except Exception:  # pragma: no cover - torch missing
     TORCH_AVAILABLE = False
