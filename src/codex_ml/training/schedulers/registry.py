@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 try:
     import torch
     # Verify torch is functional
-    _ = torch.optim.Optimizer if hasattr(torch, 'optim') else None
+    _ = torch.Tensor
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
     logger.debug(f"ImportError: {e}")

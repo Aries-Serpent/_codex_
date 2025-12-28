@@ -6,7 +6,6 @@ import logging
 from importlib import import_module
 from types import ModuleType
 
-logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 
