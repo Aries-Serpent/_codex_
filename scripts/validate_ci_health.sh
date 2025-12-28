@@ -13,6 +13,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Check workflow count
+# Note: wc -l counts the number of lines output by find, which equals the number of files found
 echo "📊 Workflow Statistics"
 echo "----------------------------------------"
 ACTIVE_COUNT=$(find .github/workflows -type f -name "*.yml" | wc -l)

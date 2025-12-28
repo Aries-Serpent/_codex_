@@ -590,19 +590,23 @@ def main():
             logger.error(f"Agent cycle failed: {e}", exc_info=True)
             
             # Create minimal state file to ensure artifact exists
-            emergency_state = {
-                "timestamp": datetime.now().isoformat(),
-                "status": "error",
-                "error": str(e),
-                "health": {"overall_status": "unknown", "metrics": [], "alerts": []},
-                "actions": []
-            }
+            # Wrap in try-except to ensure original exception is always re-raised
+            try:
+                emergency_state = {
+                    "timestamp": datetime.now().isoformat(),
+                    "status": "error",
+                    "error": str(e),
+                    "health": {"overall_status": "unknown", "metrics": [], "alerts": []},
+                    "actions": []
+                }
+                
+                agent.state_path.mkdir(parents=True, exist_ok=True)
+                with open(agent.state_path / f"state_emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", 'w') as f:
+                    json.dump(emergency_state, f, indent=2)
+            except Exception as state_error:
+                logger.error(f"Failed to create emergency state: {state_error}", exc_info=True)
             
-            agent.state_path.mkdir(parents=True, exist_ok=True)
-            with open(agent.state_path / f"state_emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", 'w') as f:
-                json.dump(emergency_state, f, indent=2)
-            
-            raise  # Re-raise after creating emergency state
+            raise  # Re-raise original exception
     
     return 0
 
