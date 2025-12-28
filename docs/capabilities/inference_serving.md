@@ -607,7 +607,7 @@ model.gradient_checkpointing_enable()
 ## Related Capabilities
 
 - [Deployment Infrastructure](deployment_infrastructure.md) - Container deployment
-- [MCP Protocol Surface](mcp_protocol_surface.md) - API design patterns
+- [MCP Configuration](mcp_configuration.md) - Configuration patterns
 - [Status Reporting](status_reporting.md) - Monitoring metrics
 
 ## References

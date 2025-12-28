@@ -84,7 +84,7 @@ jobs:
             echo "All Python files in this PR have unique content." >> $REPORT_FILE
           fi
           
-          cat $REPORT_FILE
+          cat "$REPORT_FILE"
       
       - name: Upload duplicate report
         if: always()
