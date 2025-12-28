@@ -94,7 +94,7 @@
 6. `.github/workflow-archive/COMPLETION_SUMMARY.md` (this file)
 
 ### Documentation Updated
-1. `.codex/AGENTS.md` (added workflow management section)
+1. `AGENTS.md` (added workflow management section)
 2. `README.md` (added CI health section)
 
 ---

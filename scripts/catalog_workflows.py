@@ -123,7 +123,6 @@ def extract_secrets(workflow_data: dict) -> list[dict[str, str]]:
     Returns list of tokenized secret representations (not plain-text names).
     Each entry contains: token (hash), encoded (base64), hint (redacted preview).
     """
-    secrets = set()
     workflow_str = json.dumps(workflow_data)
     
     # Find ${{ secrets.SECRET_NAME }} patterns

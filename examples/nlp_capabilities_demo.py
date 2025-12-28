@@ -292,8 +292,7 @@ Generated {len(trajectory)} points in the strange attractor.
         fluid = FluidChannel(length=1.0, width=0.1, height=0.1)
         reynolds = fluid.reynolds_number(
             velocity=1.0,
-            characteristic_length=0.1,
-            kinematic_viscosity=1e-6
+            viscosity=1e-6
         )
         
         # Generate fluid dynamics statement
@@ -377,6 +376,14 @@ def example_5_advanced_physics_nlp_synthesis():
         ]
     }
     
+    # Display concept inventory
+    print("\nPhysics Concept Inventory:")
+    for domain, concepts in physics_concepts.items():
+        print(f"\n  {domain.replace('_', ' ').title()}:")
+        for concept in concepts:
+            print(f"    • {concept}")
+    print()
+    
     # Generate logical physics statement
     statements = []
     
@@ -456,12 +463,28 @@ constraint on causality and information flow in the universe.
 """
     statements.append(statement3)
     
-    # Print all statements
-    for statement in statements:
+    # Print all statements with concept mapping
+    print("\n" + "="*70)
+    for idx, statement in enumerate(statements, 1):
         print(statement)
         print("\n" + "="*70 + "\n")
     
-    print("✅ Advanced physics-NLP synthesis complete!")
+    # Map concepts used in statements
+    print("\n📋 Concept Mapping Summary:")
+    print("\nStatement #1 uses concepts from:")
+    print(f"  • {physics_concepts['quantum_mechanics'][1]} (quantum_mechanics)")
+    print(f"  • Decoherence mechanism")
+    
+    print("\nStatement #2 uses concepts from:")
+    print(f"  • {physics_concepts['thermodynamics'][0]} (thermodynamics)")
+    print(f"  • {physics_concepts['thermodynamics'][3]} (thermodynamics)")
+    
+    print("\nStatement #3 uses concepts from:")
+    print(f"  • {physics_concepts['relativity'][3]} (relativity)")
+    print(f"  • {physics_concepts['relativity'][0]} (relativity)")
+    print(f"  • {physics_concepts['quantum_mechanics'][3]} (quantum_mechanics)")
+    
+    print("\n✅ Advanced physics-NLP synthesis complete!")
     
     # Generate cross-domain statement
     print("\n2. Cross-domain physics statement...")

@@ -804,7 +804,7 @@ python3 scripts/catalog_workflows.py
 ### Documentation
 - [Final Consolidation Report](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
 - [Workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
-- [AGENTS.md](.codex/AGENTS.md) - Detailed agent documentation
+- [AGENTS.md](AGENTS.md) - Detailed agent documentation
 
 ### Monitoring
 - **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.yml)
