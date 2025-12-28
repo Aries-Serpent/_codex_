@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/workflow-lint.yml
+backup_sha256: c1f3f7ff331124714354b6c9223b4e5a6cb19f54c8eb30eb5bf9d79af55c0aa5
+disabled_at: '2025-12-28T08:16:27.380868Z'
+reason: Merged into workflow-validation.yml

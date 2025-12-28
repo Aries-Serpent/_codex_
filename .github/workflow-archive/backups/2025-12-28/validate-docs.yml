@@ -1,0 +1,68 @@
+name: Validate Documentation
+
+on:
+  pull_request:
+    branches: [main, 0D_base_]
+    paths:
+      - "**.md"
+      - "docs/**"
+      - ".github/workflows/validate-docs.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**.md"
+      - "docs/**"
+
+jobs:
+  docs-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      
+      - name: Install dependencies
+        run: |
+          pip install codespell
+      
+      - name: Run fence fixer (dry-run)
+        run: |
+          python tools/fence_fixer.py . --dry-run --verbose
+      
+      - name: Check for fence issues
+        id: fence-check
+        run: |
+          python tools/fence_fixer.py . --dry-run > fence_report.txt 2>&1
+          if grep -q "Files changed: 0" fence_report.txt; then
+            echo "✓ No fence issues found"
+            exit 0
+          else
+            echo "⚠ Fence issues detected (non-blocking):"
+            cat fence_report.txt
+            # Non-blocking - just report
+            exit 0
+          fi
+      
+      - name: Run codespell
+        run: |
+          codespell --quiet-level=2 --skip="*.pyc,*.git,*.svg,*.lock,*.json" || true
+        continue-on-error: true
+      
+      - name: Validate fence script
+        run: |
+          python tools/validate_fences.py || echo "Fence validation completed with warnings"
+        continue-on-error: true
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [docs-lint]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "Documentation validation complete"
+          echo "Note: Some checks are informational and do not block merge"

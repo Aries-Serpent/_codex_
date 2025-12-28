@@ -1,0 +1,18 @@
+name: Rate-Limit History Prune
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 1 * *" # Monthly at 05:00 UTC
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Prune history (keep 90 days)
+        run: |
+          python scripts/connectors/prune_rate_limit_history.py --days 90
+      - name: Upload post-prune listing
+        run: |
+          ls -la connectors/history || true

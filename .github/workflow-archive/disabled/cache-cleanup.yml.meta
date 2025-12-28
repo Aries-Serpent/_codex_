@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/cache-cleanup.yml
+backup_sha256: 2737f61b0148d1934dc578af339bbe1a4192eb114f2b59f9a9192bdf6d348487
+disabled_at: '2025-12-28T08:16:27.386432Z'
+reason: Merged into cache-management.yml

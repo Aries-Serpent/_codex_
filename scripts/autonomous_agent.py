@@ -18,6 +18,7 @@ from enum import Enum
 import json
 import sys
 import ast
+import yaml
 import re
 import uuid
 import hashlib
@@ -347,9 +348,21 @@ class AutonomousAgent:
         """Load agent configuration."""
         if self.config_path.exists():
             with open(self.config_path) as f:
-                return json.load(f)
+                # Support both JSON and YAML configurations
+                if self.config_path.suffix in ('.yaml', '.yml'):
+                    try:
+                        return yaml.safe_load(f)
+                    except yaml.YAMLError as e:
+                        logger.error(f"Failed to parse YAML config: {e}")
+                        return self._default_config()
+                else:
+                    return json.load(f)
         
         # Default configuration
+        return self._default_config()
+    
+    def _default_config(self) -> dict[str, Any]:
+        """Return default configuration."""
         return {
             "autonomous_actions_enabled": True,
             "approval_threshold": "medium",
@@ -571,7 +584,29 @@ def main():
             print("\nStopping autonomous agent...")
     else:
         # Single cycle
-        agent.run_cycle()
+        try:
+            agent.run_cycle()
+        except Exception as e:
+            logger.error(f"Agent cycle failed: {e}", exc_info=True)
+            
+            # Create minimal state file to ensure artifact exists
+            # Wrap in try-except to ensure original exception is always re-raised
+            try:
+                emergency_state = {
+                    "timestamp": datetime.now().isoformat(),
+                    "status": "error",
+                    "error": str(e),
+                    "health": {"overall_status": "unknown", "metrics": [], "alerts": []},
+                    "actions": []
+                }
+                
+                agent.state_path.mkdir(parents=True, exist_ok=True)
+                with open(agent.state_path / f"state_emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", 'w') as f:
+                    json.dump(emergency_state, f, indent=2)
+            except Exception as state_error:
+                logger.error(f"Failed to create emergency state: {state_error}", exc_info=True)
+            
+            raise  # Re-raise original exception
     
     return 0
 

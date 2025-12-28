@@ -1,0 +1,35 @@
+name: Daily Status Enrich (v1.2)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 9 * * *" # 09:30 UTC, after skeleton generation
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema pyyaml pytest coverage
+      - name: Enrich today's status
+        run: |
+          bash scripts/status/refresh_artifacts_and_update_report.sh
+      - name: Render full markdown
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          python scripts/status/render_full_markdown_report.py --json "reports/daily/${DATE}.json" --out "reports/daily/${DATE}.md" || true
+      - name: Upload enriched status
+        uses: actions/upload-artifact@v6
+        with:
+          name: daily-status-enriched
+          path: |
+            reports/daily/*.json
+            reports/daily/*.md
+            audit_run_manifest.json
+            audit_artifacts/**

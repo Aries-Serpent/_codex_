@@ -1,0 +1,59 @@
+name: Zendesk Quantum Packaging
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version override"
+        required: false
+        default: "1.0.0"
+      package:
+        description: "Package to build"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - core
+          - rag
+          - metrics
+          - agent
+          - testing
+          - bundle
+      include_bundle:
+        description: "Include zendesk-complete-bundle"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install packaging dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml
+
+      - name: Build Zendesk quantum packages
+        run: |
+          python scripts/packaging/build_zendesk_quantum_packages.py \
+            --config configs/packaging/zendesk_quantum_packages.yaml \
+            --version "${{ inputs.version }}" \
+            --package "${{ inputs.package }}" \
+            ${{ inputs.include_bundle && '--include-bundle' || '' }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zendesk-quantum-packages
+          path: build/zendesk_quantum_packages/*.zip

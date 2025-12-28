@@ -1,0 +1,128 @@
+name: Auto-update Package Configs
+
+on:
+  push:
+    branches: [main, develop, 'copilot/**']
+    paths:
+      - 'src/**/*.py'
+      - 'tests/**/*.py'
+      - 'scripts/generate_*.py'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**/*.py'
+      - 'tests/**/*.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-configs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest || true
+
+      - name: Run pytest config generator
+        id: pytest_gen
+        run: |
+          echo "Running pytest.ini generator..."
+          python scripts/generate_pytest_config.py || echo "changed=true" >> $GITHUB_OUTPUT
+          
+          if git diff --quiet pytest.ini; then
+            echo "pytest_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "pytest_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run __init__.py generator
+        id: init_gen
+        run: |
+          echo "Running __init__.py generator..."
+          python scripts/generate_codex_init.py || echo "changed=true" >> $GITHUB_OUTPUT
+          
+          if git diff --quiet 'src/codex/**/__init__.py'; then
+            echo "init_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "init_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No configuration changes needed"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Configuration files were updated:"
+            git diff --name-only
+          fi
+
+      - name: Comment on PR (if changes needed)
+        if: |
+          steps.check_changes.outputs.changed == 'true' && 
+          github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const changes = [];
+            if ('${{ steps.pytest_gen.outputs.pytest_changed }}' === 'true') {
+              changes.push('- ✅ `pytest.ini` updated with new markers');
+            }
+            if ('${{ steps.init_gen.outputs.init_changed }}' === 'true') {
+              changes.push('- ✅ Package `__init__.py` files updated');
+            }
+            
+            if (changes.length > 0) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.name,
+                body: `## 🤖 Configuration Update Available\n\n${changes.join('\n')}\n\n` +
+                      `Please run the following commands locally and commit the changes:\n\n` +
+                      `\`\`\`bash\n` +
+                      `python scripts/generate_pytest_config.py\n` +
+                      `python scripts/generate_codex_init.py\n` +
+                      `git add pytest.ini src/codex/**/__init__.py\n` +
+                      `git commit -m "chore: update auto-generated configs"\n` +
+                      `\`\`\`\n\n` +
+                      `Or run: \`pre-commit run generate-pytest-config generate-codex-init --all-files\``
+              });
+            }
+
+      - name: Create auto-update commit (on push to main/develop)
+        if: |
+          steps.check_changes.outputs.changed == 'true' && 
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add pytest.ini src/codex/**/__init__.py
+          git commit -m "chore: auto-update configs [skip ci]"
+          git push
+
+      - name: Validation check (fail if configs out of sync on PR)
+        if: |
+          steps.check_changes.outputs.changed == 'true' && 
+          github.event_name == 'pull_request'
+        run: |
+          echo "::error::Configuration files need updating. Please run the generators locally."
+          exit 1

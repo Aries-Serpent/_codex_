@@ -1,0 +1,17 @@
+name: GitHub Connector Readiness
+
+on:
+  pull_request:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  connector-check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run connector readiness check
+        run: |
+          python tools/connectors/github_connector_check.py

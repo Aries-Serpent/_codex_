@@ -1,0 +1,174 @@
+name: Wiki Assembly & Documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      include_api_docs:
+        description: 'Include API documentation'
+        required: false
+        default: 'true'
+        type: boolean
+      include_mermaid:
+        description: 'Include Mermaid diagrams'
+        required: false
+        default: 'true'
+        type: boolean
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'AGENTS.md'
+      - 'README.md'
+      - 'scripts/space_traversal/wiki_generator.py'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  assemble-wiki:
+    name: Generate Wiki Bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Extract version from pyproject.toml
+        id: get_version
+        run: |
+          VERSION=$(python -c "
+          try:
+              import tomllib
+          except ImportError:
+              import tomli as tomllib
+          with open('pyproject.toml', 'rb') as f:
+              data = tomllib.load(f)
+              print(data['project']['version'])
+          ")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2 pyyaml toml tomli || true
+
+      - name: Generate Wiki Pages
+        continue-on-error: true  # Wiki is non-critical; step failure is visible but won't block workflow
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: |
+          mkdir -p wiki_output
+          python -c "
+          import sys, os
+          sys.path.insert(0, '.')
+          try:
+              from scripts.space_traversal.wiki_generator import generate_wiki, create_wiki_bundle
+              from pathlib import Path
+              
+              output_dir = Path('wiki_output')
+              repo = os.environ['REPO_NAME']
+              version = os.environ['VERSION']
+              generate_wiki(output_dir, repo, version)
+              create_wiki_bundle(output_dir, Path('wiki.zip'))
+              print('✅ Wiki generated successfully')
+          except Exception as e:
+              import traceback
+              from pathlib import Path
+              print('=' * 60)
+              print('❌ WIKI GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              print()
+              print('Full traceback:')
+              traceback.print_exc()
+              print('=' * 60)
+              # Create minimal wiki output to prevent downstream failures
+              Path('wiki_output/Home.md').write_text('# Wiki\\n\\nGeneration failed. Check workflow logs for details.')
+              # Exit 1 to mark step as failed (visible in UI); continue-on-error allows workflow to proceed
+              sys.exit(1)
+          "
+
+      - name: Generate Documentation Hub
+        continue-on-error: true  # Non-critical; step failure visible but won't block workflow
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: |
+          python -c "
+          import sys, os
+          sys.path.insert(0, '.')
+          try:
+              from scripts.space_traversal.viz_docs_hub import generate_docs_hub
+              from pathlib import Path
+              
+              repo = os.environ['REPO_NAME']
+              version = os.environ['VERSION']
+              generate_docs_hub(Path('wiki_output/docs_hub.html'), repo, version)
+              print('✅ Documentation hub generated')
+          except Exception as e:
+              import traceback
+              print('=' * 60)
+              print('❌ DOCUMENTATION HUB GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              traceback.print_exc()
+              print('=' * 60)
+              sys.exit(1)
+          "
+
+      - name: Generate Agent Interface
+        continue-on-error: true  # Non-critical; step failure visible but won't block workflow
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: |
+          python -c "
+          import sys, os
+          sys.path.insert(0, '.')
+          try:
+              from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+              from pathlib import Path
+              
+              repo = os.environ['REPO_NAME']
+              version = os.environ['VERSION']
+              generate_agent_interface(Path('wiki_output/agent_interface.html'), repo, version)
+              print('✅ Agent interface generated')
+          except Exception as e:
+              import traceback
+              print('=' * 60)
+              print('❌ AGENT INTERFACE GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              traceback.print_exc()
+              print('=' * 60)
+              sys.exit(1)
+          "
+
+      - name: Upload Wiki Bundle
+        uses: actions/upload-artifact@v6
+        with:
+          name: wiki-bundle
+          path: |
+            wiki.zip
+            wiki_output/
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Create Release Asset (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wiki.zip
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

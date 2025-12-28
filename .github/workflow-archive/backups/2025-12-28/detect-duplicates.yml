@@ -1,0 +1,127 @@
+name: Duplicate Detection on PR
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '**.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  detect-duplicates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Detect Python file duplicates
+        id: detect
+        run: |
+          mkdir -p .codex/duplicate_analysis_pr
+          
+          # Find all Python files and compute MD5 hashes
+          echo "Scanning Python files for duplicates..."
+          
+          # Create hash file
+          find . -name "*.py" -type f \
+            ! -path "./.git/*" \
+            ! -path "./venv/*" \
+            ! -path "./.venv/*" \
+            ! -path "./node_modules/*" \
+            -exec md5sum {} \; | sort > /tmp/hashes.txt
+          
+          # Find duplicates (same hash = same content)
+          awk '{print $1}' /tmp/hashes.txt | sort | uniq -d > /tmp/dup_hashes.txt
+          
+          # Count duplicates
+          DUP_COUNT=$(wc -l < /tmp/dup_hashes.txt | tr -d ' ')
+          echo "duplicate_count=$DUP_COUNT" >> $GITHUB_OUTPUT
+          
+          # Build duplicate report
+          REPORT_FILE=".codex/duplicate_analysis_pr/duplicates_report.md"
+          echo "# Duplicate Python Files Report" > $REPORT_FILE
+          echo "" >> $REPORT_FILE
+          echo "**Date**: $(date -u +"%Y-%m-%d %H:%M UTC")" >> $REPORT_FILE
+          echo "**PR**: #${{ github.event.pull_request.number || 'N/A (Manual Run)' }}" >> $REPORT_FILE
+          echo "" >> $REPORT_FILE
+          
+          if [ "$DUP_COUNT" -gt 0 ]; then
+            echo "## ⚠️ Duplicates Found: $DUP_COUNT groups" >> $REPORT_FILE
+            echo "" >> $REPORT_FILE
+            
+            # List duplicate groups
+            while read -r hash; do
+              if [ -n "$hash" ]; then
+                echo "### Hash: \`${hash:0:8}...\`" >> $REPORT_FILE
+                echo "" >> $REPORT_FILE
+                echo "| File |" >> $REPORT_FILE
+                echo "|------|" >> $REPORT_FILE
+                grep "^$hash" /tmp/hashes.txt | awk '{print "| `" $2 "` |"}' >> $REPORT_FILE
+                echo "" >> $REPORT_FILE
+              fi
+            done < /tmp/dup_hashes.txt
+            
+            echo "## Recommendations" >> $REPORT_FILE
+            echo "" >> $REPORT_FILE
+            echo "1. Review duplicates to determine if they are intentional" >> $REPORT_FILE
+            echo "2. Add intentional duplicates to \`.github/SHIM_INVENTORY.yaml\`" >> $REPORT_FILE
+            echo "3. Consolidate unintentional duplicates" >> $REPORT_FILE
+          else
+            echo "## ✅ No Duplicate Python Files Found" >> $REPORT_FILE
+            echo "" >> $REPORT_FILE
+            echo "All Python files in this PR have unique content." >> $REPORT_FILE
+          fi
+          
+          cat "$REPORT_FILE"
+      
+      - name: Upload duplicate report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: duplicate-detection-report
+          path: .codex/duplicate_analysis_pr/
+          retention-days: 7
+      
+      - name: Add PR comment
+        if: steps.detect.outputs.duplicate_count > 0 && github.event.pull_request.number
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('.codex/duplicate_analysis_pr/duplicates_report.md', 'utf8');
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `## 🔍 Duplicate Detection Results\n\n${report}\n\n---\n*This is an automated check. Duplicates do not block the merge.*`
+            });
+      
+      - name: Generate summary
+        run: |
+          echo "# Duplicate Detection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Duplicate Groups Found**: ${{ steps.detect.outputs.duplicate_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.detect.outputs.duplicate_count }}" -gt 0 ]; then
+            echo "⚠️ **Warning**: Duplicate Python files detected." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "This is a warning only and does not block the merge." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Please review the duplicate report in the artifacts or PR comment." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No duplicate Python files found." >> $GITHUB_STEP_SUMMARY
+          fi

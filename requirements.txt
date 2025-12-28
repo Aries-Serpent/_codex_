@@ -14,3 +14,4 @@ torch>=2.6.0,<3.0.0
 transformers>=4.48.0  # Security: Updated from 4.41 to fix deserialization vulnerabilities
 # Security: XML parsing protection against XXE attacks
 defusedxml>=0.7.1,<1.0.0
+pyyaml>=6.0

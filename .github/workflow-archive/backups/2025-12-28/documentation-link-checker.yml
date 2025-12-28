@@ -1,0 +1,117 @@
+# Generated: 2025-12-26T08:25:00Z | Author: mbaetiong
+# Link Checker for Documentation
+# Validates all internal and external links in documentation files
+
+name: Documentation Link Checker
+
+on:
+  push:
+    paths:
+      - 'docs/**/*.md'
+      - 'README.md'
+      - '.codex/*.md'
+      - 'scripts/*.md'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - 'README.md'
+      - '.codex/*.md'
+      - 'scripts/*.md'
+  schedule:
+    # Run weekly to catch broken external links
+    - cron: '0 0 * * 0'
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Verify link check config
+        run: |
+          # The .markdown-link-check.json config file should already exist in the repo
+          if [ ! -f .markdown-link-check.json ]; then
+            echo "❌ ERROR: .markdown-link-check.json not found!"
+            exit 1
+          fi
+          echo "✅ Using existing .markdown-link-check.json configuration"
+          cat .markdown-link-check.json
+
+      - name: Check links in documentation
+        run: |
+          echo "🔍 Checking links in documentation files..."
+          
+          # Find all markdown files
+          find . -name "*.md" \
+            -not -path "./node_modules/*" \
+            -not -path "./.git/*" \
+            -not -path "./temp/*" \
+            -not -path "./archive/*" \
+            -print0 | while IFS= read -r -d '' file; do
+            echo "Checking: $file"
+            markdown-link-check "$file" --config .markdown-link-check.json || true
+          done
+
+      - name: Check critical documentation files
+        run: |
+          echo "🔍 Checking critical Genesis documentation..."
+          
+          CRITICAL_FILES=(
+            "docs/admin/GENESIS_SETUP_GUIDE.md"
+            "docs/agent/OPERATIONAL_GUIDELINES.md"
+            "scripts/AUTONOMOUS_AGENT_README.md"
+            "README.md"
+            ".codex/guardrails.md"
+          )
+          
+          FAILED=0
+          for file in "${CRITICAL_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "Checking critical file: $file"
+              if markdown-link-check "$file" --config .markdown-link-check.json; then
+                echo "✅ $file links valid"
+              else
+                echo "❌ $file has broken links"
+                FAILED=$((FAILED + 1))
+              fi
+            else
+              echo "⚠️  $file not found"
+            fi
+          done
+          
+          if [ $FAILED -gt 0 ]; then
+            echo "❌ $FAILED critical file(s) have broken links"
+            exit 1
+          else
+            echo "✅ All critical documentation links valid"
+          fi
+
+      - name: Generate link check report
+        if: always()
+        run: |
+          echo "📋 Generating link check report..."
+          cat > link-check-report.json << 'EOFREPORT'
+          {
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "workflow": "documentation-link-checker",
+            "branch": "${{ github.ref_name }}",
+            "status": "completed"
+          }
+          EOFREPORT
+
+      - name: Upload link check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-check-report
+          path: link-check-report.json
+          retention-days: 30
