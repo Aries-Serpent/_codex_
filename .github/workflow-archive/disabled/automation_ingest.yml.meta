@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/automation_ingest.yml
+backup_sha256: c116aa9065dc7e54e9121d59701e73be3e77c8a766e88324021bcdb9be561e71
+disabled_at: '2025-12-28T08:16:27.384391Z'
+reason: Merged into daily-status-pipeline.yml

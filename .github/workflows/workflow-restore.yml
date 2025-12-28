@@ -136,15 +136,12 @@ jobs:
           # If not enabling immediately, add disabled comment header
           if [ "${{ github.event.inputs.enable_immediately }}" = "false" ]; then
             echo "Adding disabled notice header..."
-            cat > /tmp/header.txt << 'HEADER'
-# ⚠️ WORKFLOW DISABLED - Restored but not enabled
-# Remove this comment block when ready to activate
-# Restored: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-# Source: $SOURCE_FILE
-# 
-# To enable: Remove this comment block and the 'if: false' line below
-
-HEADER
+            echo "# ⚠️ WORKFLOW DISABLED - Restored but not enabled" > /tmp/header.txt
+            echo "# Remove this comment block when ready to activate" >> /tmp/header.txt
+            echo "# Restored: \$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")" >> /tmp/header.txt
+            echo "# " >> /tmp/header.txt
+            echo "# To enable: Remove this comment block" >> /tmp/header.txt
+            echo "" >> /tmp/header.txt
             cat /tmp/header.txt "$DEST_FILE" > /tmp/workflow_with_header.yml
             mv /tmp/workflow_with_header.yml "$DEST_FILE"
           fi

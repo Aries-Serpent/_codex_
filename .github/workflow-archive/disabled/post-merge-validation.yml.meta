@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/post-merge-validation.yml
+backup_sha256: 3128cf8c52b458f23497e9f5a303a039c40fdebd83707c651f84fb7646730108
+disabled_at: '2025-12-28T08:16:27.388558Z'
+reason: Replaced by post-merge-validation-optimized.yml

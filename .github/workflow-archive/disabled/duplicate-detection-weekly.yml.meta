@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/duplicate-detection-weekly.yml
+backup_sha256: 5d361ccf90c0190e15955e8596c3374aaf5cedf610ca88f104471058756e0e4a
+disabled_at: '2025-12-28T08:16:27.387866Z'
+reason: Merged into detect-duplicates.yml with schedule trigger

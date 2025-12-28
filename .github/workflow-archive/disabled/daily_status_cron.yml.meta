@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/daily_status_cron.yml
+backup_sha256: 100e9f666b7113097db1cfd96ebd688fe51e9b3121b8c82b4bcbcf1502d46fb0
+disabled_at: '2025-12-28T08:16:27.383015Z'
+reason: Merged into daily-status-pipeline.yml

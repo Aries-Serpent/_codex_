@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/docs.yml
+backup_sha256: ec2aa1c16776bd6922750bb3e3a8d7f3534a3fc2259b7c2eec94024602642afe
+disabled_at: '2025-12-28T08:16:18.117422Z'
+reason: Redundant with pages-mkdocs.yml

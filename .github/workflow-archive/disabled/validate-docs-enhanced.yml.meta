@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/validate-docs-enhanced.yml
+backup_sha256: d7ef502de1edeb1b4821084724124a1ae8c1cdce5dc4950fff9321161f5fa4f4
+disabled_at: '2025-12-28T08:16:18.120879Z'
+reason: Merged into pages-mkdocs.yml as pre-build step
