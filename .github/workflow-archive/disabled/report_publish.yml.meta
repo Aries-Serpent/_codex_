@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/report_publish.yml
+backup_sha256: 0d196e7ee03f68f2af1bd1910c0f7a59915980317b01b5b05272cb757ef60d8a
+disabled_at: '2025-12-28T08:16:27.385797Z'
+reason: Merged into daily-status-pipeline.yml

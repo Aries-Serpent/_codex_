@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/mcp-ci.yml
+backup_sha256: dd7d35e7d87ecb830f702366c5d53b25e01c5a344e8e6cc268f38eab839fb0db
+disabled_at: '2025-12-28T08:19:53.897530Z'
+reason: Consolidated into optimized-ci.yml - MCP tests integrated as additional job

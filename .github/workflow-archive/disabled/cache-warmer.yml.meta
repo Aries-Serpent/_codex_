@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/cache-warmer.yml
+backup_sha256: c0cd2c1b161090e985fd16dc4db9d74fc8abf1080a718e8610cbf7a5bb0c7616
+disabled_at: '2025-12-28T08:16:27.387131Z'
+reason: Merged into cache-management.yml

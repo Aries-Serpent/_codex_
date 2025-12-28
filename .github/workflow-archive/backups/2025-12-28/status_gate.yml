@@ -1,0 +1,26 @@
+name: Status Gate (.statusrc)
+
+on:
+  pull_request:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  status-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest coverage
+      - name: Run coverage
+        run: |
+          coverage run -m pytest -q || true
+          coverage json -o .coverage.json
+      - name: Enforce .statusrc.json thresholds
+        run: |
+          python tools/status_gate_from_statusrc.py

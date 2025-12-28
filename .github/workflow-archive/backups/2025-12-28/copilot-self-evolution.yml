@@ -1,0 +1,318 @@
+name: Copilot Self-Evolution Pipeline
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:
+    inputs:
+      evolution_mode:
+        description: 'Evolution mode'
+        required: true
+        default: 'adaptive'
+        type: choice
+        options:
+          - adaptive
+          - aggressive
+          - conservative
+          - quantum_leap
+      test_only:
+        description: 'Run tests only (no evolution)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  test-integrated-system:
+    name: Test Integrated System
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          cd .github/copilot-evolution
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+          
+      - name: Run integration tests
+        id: tests
+        run: |
+          cd .github/copilot-evolution
+          python test_integrated_system.py
+          
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results
+          path: .github/copilot-evolution/data/test_results.json
+          retention-days: 30
+          if-no-files-found: warn
+  
+  extract-codex-patterns:
+    name: Extract _codex_ Patterns
+    runs-on: ubuntu-latest
+    needs: test-integrated-system
+    if: ${{ !inputs.test_only }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          cd .github/copilot-evolution
+          pip install -r requirements.txt
+          
+      - name: Extract patterns
+        id: extract
+        run: |
+          cd .github/copilot-evolution
+          python -c "
+          import asyncio
+          import json
+          from quantum_correlator import QuantumPatternCorrelator
+          
+          async def extract():
+              correlator = QuantumPatternCorrelator(repo_path='../..')
+              
+              target_files = [
+                  'agents/quantum*.py',
+                  'scripts/security/**/*.py',
+                  '.github/copilot-security/*.py',
+                  '.github/copilot-evolution/*.py'
+              ]
+              
+              patterns = await correlator.extract_codex_patterns(target_files)
+              correlations = await correlator.correlate_patterns(patterns)
+              report = correlator.generate_report()
+              
+              # Save report
+              with open('data/pattern_report.json', 'w') as f:
+                  json.dump(report, f, indent=2)
+              
+              print(f'patterns_extracted={sum(len(p) for p in patterns.values())}')
+              print(f'correlations_found={len(correlations)}')
+              
+              return report
+          
+          asyncio.run(extract())
+          "
+          
+      - name: Upload pattern report
+        uses: actions/upload-artifact@v6
+        with:
+          name: pattern-report
+          path: .github/copilot-evolution/data/pattern_report.json
+          retention-days: 30
+          if-no-files-found: warn
+  
+  evolve-system:
+    name: Evolution Cycle
+    runs-on: ubuntu-latest
+    needs: extract-codex-patterns
+    if: ${{ !inputs.test_only }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          cd .github/copilot-evolution
+          pip install -r requirements.txt
+          
+      - name: Load evolution state
+        id: load_state
+        run: |
+          cd .github/copilot-evolution
+          
+          if [ -f data/evolution_state.json ]; then
+            echo "state_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "state_exists=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Run evolution cycle
+        id: evolve
+        run: |
+          cd .github/copilot-evolution
+          python -c "
+          import asyncio
+          import json
+          from integrated_system import IntegratedEvolutionSystem
+          
+          async def evolve():
+              system = IntegratedEvolutionSystem()
+              
+              # Evolution tasks based on mode
+              mode = '${{ inputs.evolution_mode }}'
+              
+              tasks = {
+                  'adaptive': [
+                      {'description': 'Improve security validation', 'domain': 'security'},
+                      {'description': 'Enhance pattern correlation', 'domain': 'quantum_physics'}
+                  ],
+                  'aggressive': [
+                      {'description': 'Quantum security fusion', 'domain': 'security', 
+                       'undefined_concepts': ['quantum_resistant_crypto']},
+                      {'description': 'Advanced compression', 'domain': 'compression',
+                       'undefined_concepts': ['quantum_compression']}
+                  ],
+                  'conservative': [
+                      {'description': 'Refine existing capabilities', 'domain': 'general'}
+                  ],
+                  'quantum_leap': [
+                      {'description': 'Breakthrough innovation', 'domain': 'quantum_physics',
+                       'undefined_concepts': ['quantum_tunneling', 'superposition_computing']}
+                  ]
+              }
+              
+              task_list = tasks.get(mode, tasks['adaptive'])
+              
+              for task in task_list:
+                  result = await system.process_task_with_learning(task)
+                  print(f'Processed: {task[\"description\"]}')
+              
+              # Save state
+              state_dict = {
+                  'generation': system.evolution_state.generation,
+                  'fitness': system.evolution_state.fitness,
+                  'capabilities': list(system.evolution_state.capabilities),
+                  'knowledge_domains': list(system.evolution_state.knowledge_domains),
+                  'patterns_learned': system.evolution_state.patterns_learned
+              }
+              
+              with open('data/evolution_state.json', 'w') as f:
+                  json.dump(state_dict, f, indent=2)
+              
+              print(f'generation={system.evolution_state.generation}')
+              print(f'fitness={system.evolution_state.fitness:.4f}')
+              print(f'capabilities={len(system.evolution_state.capabilities)}')
+              
+              return state_dict
+          
+          asyncio.run(evolve())
+          "
+          
+      - name: Generate continuation prompt
+        id: continuation
+        run: |
+          cd .github/copilot-evolution
+          python -c "
+          import asyncio
+          import json
+          from integrated_system import IntegratedEvolutionSystem
+          
+          async def generate():
+              system = IntegratedEvolutionSystem()
+              
+              # Load state if exists
+              try:
+                  with open('data/evolution_state.json', 'r') as f:
+                      state = json.load(f)
+                      system.evolution_state.generation = state['generation']
+                      system.evolution_state.fitness = state['fitness']
+                      system.evolution_state.capabilities = set(state['capabilities'])
+              except:
+                  pass
+              
+              prompt = system._generate_continuation_prompt({
+                  'incomplete_tasks': [],
+                  'enhancement_opportunities': True
+              })
+              
+              with open('data/continuation_prompt.md', 'w') as f:
+                  f.write(prompt)
+              
+              print('Continuation prompt generated')
+          
+          asyncio.run(generate())
+          "
+          
+      - name: Upload evolution artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: evolution-state
+          path: |
+            .github/copilot-evolution/data/evolution_state.json
+            .github/copilot-evolution/data/continuation_prompt.md
+          retention-days: 90
+          if-no-files-found: warn
+  
+  post-evolution-summary:
+    name: Post Evolution Summary
+    runs-on: ubuntu-latest
+    needs: evolve-system
+    if: ${{ !inputs.test_only && github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: evolution-state
+          path: ./evolution-state
+          
+      - name: Create summary comment
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Load evolution state
+            const stateData = fs.readFileSync('./evolution-state/evolution_state.json', 'utf8');
+            const state = JSON.parse(stateData);
+            
+            // Load continuation prompt
+            const prompt = fs.readFileSync('./evolution-state/continuation_prompt.md', 'utf8');
+            
+            // Create comment body
+            const body = `## 🧬 Evolution Cycle Complete
+            
+            **Evolution State:**
+            - Generation: ${state.generation}
+            - Fitness: ${state.fitness.toFixed(4)}
+            - Capabilities: ${state.capabilities.length}
+            - Knowledge Domains: ${state.knowledge_domains.join(', ')}
+            - Patterns Learned: ${state.patterns_learned}
+            
+            ---
+            
+            ${prompt}
+            
+            ---
+            
+            *Automated by Copilot Self-Evolution Pipeline*
+            `;
+            
+            // Post to PR or issue (if triggered from one)
+            if (context.issue.number) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

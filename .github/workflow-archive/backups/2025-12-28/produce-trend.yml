@@ -1,0 +1,41 @@
+name: Produce Capability Trends (Scheduled)
+on:
+  schedule:
+    - cron: "0 3 * * *"  # daily at 03:00 UTC
+  workflow_dispatch:  # Allow manual triggering
+jobs:
+  produce-trend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'pyyaml>=5.4,<7.0' 'jinja2>=3.0,<4.0'
+      - name: Generate trend entry
+        run: |
+          python scripts/space_traversal/audit_runner.py stage S1
+          python scripts/space_traversal/audit_runner.py stage S4
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          ROOT_SHA=$(python -c "import json; print(json.load(open('audit_run_manifest.json')).get('repo_root_sha', ''))" 2>/dev/null || echo "")
+          TOP10=$(python -c "import json; caps=json.load(open('audit_artifacts/capabilities_scored.json'))['capabilities']; top=sorted(caps, key=lambda x: x.get('score', 0), reverse=True)[:10]; print(json.dumps([{'id': c['id'], 'score': c['score']} for c in top]))")
+          LOWCOUNT=$(python -c "import json; print(len(json.load(open('audit_artifacts/gaps.json')).get('low_maturity', [])))" 2>/dev/null || echo "0")
+          mkdir -p reports
+          echo "{\"timestamp\":\"$TS\",\"repo_root_sha\":\"$ROOT_SHA\",\"top10\":$TOP10,\"low_count\":$LOWCOUNT}" >> reports/capability_trends.jsonl
+      - name: Commit trend file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config advice.addIgnoredFile false
+          git add reports/capability_trends.jsonl
+          git commit -m "chore: Append capability trend entry [skip ci]" || echo "No changes to commit"
+          git push || echo "Push skipped (permissions/branch protection)"

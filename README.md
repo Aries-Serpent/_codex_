@@ -746,3 +746,76 @@ All security functions are highly optimized for production use:
 ## MCP Packager
 
 Generate MCP package scaffolds using the built-in packager. See [docs/mcp_packager.md](docs/mcp_packager.md) and the sample config at [docs/mcp_packager_template.yaml](docs/mcp_packager_template.yaml).
+
+---
+
+## 🔧 Workflow Management & CI Health
+
+**Status**: ✅ Production Ready (as of 2025-12-28)
+
+### Quick Stats
+- **Active Workflows**: 48 (target achieved)
+- **Consolidation**: 19 workflows consolidated (-28.4%)
+- **CI Health**: EXCELLENT
+- **Backup Coverage**: 100%
+- **YAML Validity**: 100%
+
+### Key Features
+
+#### 1. Automated Workflow Consolidation
+Intelligent workflow lifecycle management with phased consolidation:
+- **7-phase system**: testing, documentation, container, validation, monitoring, maintenance, other
+- **Safety-first**: Backup before every change
+- **Metadata tracking**: Complete audit trail
+- **Rollback capability**: Multiple restore options
+
+#### 2. CI Health Monitoring
+Automated health checks every 6 hours:
+- YAML syntax validation
+- Workflow count tracking
+- Automatic issue creation
+- Trend analysis
+- Performance metrics
+
+#### 3. Self-Service Restoration
+Easy workflow restoration via UI or CLI:
+- 3 restore sources (backup-latest, backup-date, archive-disabled)
+- Enable immediately or restore as disabled
+- SHA256 verification
+- Automatic inventory updates
+
+### Quick Start
+
+#### Validate CI Health
+```bash
+bash scripts/validate_ci_health.sh
+```
+
+#### Catalog Workflows
+```bash
+python3 scripts/catalog_workflows.py
+```
+
+#### Restore a Workflow
+1. Go to Actions → Workflow Restore Tool
+2. Select workflow and source
+3. Click "Run workflow"
+
+### Documentation
+- [Final Consolidation Report](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
+- [Workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
+- [AGENTS.md](AGENTS.md) - Detailed agent documentation
+
+### Monitoring
+- **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.yml)
+- **Manual**: Run `bash scripts/validate_ci_health.sh`
+- **Trends**: Check workflow-trends artifacts in Actions
+
+### Support
+For issues or questions about workflow management:
+1. Check [FINAL_CONSOLIDATION_REPORT.md](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
+2. Review [CONSOLIDATION_STATUS.md](.github/workflow-archive/CONSOLIDATION_STATUS.md)
+3. Use [Workflow Restore Tool](.github/workflows/workflow-restore.yml)
+4. Contact maintainers via issues
+
+---

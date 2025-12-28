@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/workflow-validator.yml
+backup_sha256: 06f34b6403d776e5877bc029e377fd403ec28ebd42796245308a89c891375e35
+disabled_at: '2025-12-28T08:16:27.381579Z'
+reason: Merged into workflow-validation.yml

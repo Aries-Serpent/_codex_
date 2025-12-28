@@ -1,0 +1,36 @@
+name: Automation Ingest for Status
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema pyyaml
+      - name: Collect schema validation results
+        run: |
+          python scripts/status/collect_schema_results.py
+      - name: Merge results into today's status (if present)
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          REPORT="reports/daily/${DATE}.json"
+          if [ -f "$REPORT" ]; then
+            python tools/schema_results_to_status.py --report "$REPORT" --results schema_validation_results.json
+          else
+            echo "No daily report found; skipping merge"
+          fi
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: schema-validation-results
+          path: schema_validation_results.json

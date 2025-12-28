@@ -1,7 +1,6 @@
-from __future__ import annotations
-logger = logging.getLogger(__name__)
 """Utilities for deterministic dataset splitting."""
 
+from __future__ import annotations
 
 import logging
 import os
@@ -47,8 +46,8 @@ def ensure_split_seed(seed: int | None = None) -> int:
         try:
             return int(env)
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            LOGGER.debug(f"ValueError: {e}")
+            LOGGER.warning(f"ValueError: {e}", exc_info=True)
     return 42
 
 

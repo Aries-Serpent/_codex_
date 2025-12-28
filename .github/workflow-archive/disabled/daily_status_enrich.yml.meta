@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/daily_status_enrich.yml
+backup_sha256: 430046759f4d79ba023611a038460e7db741270fcdc6024d8ce3146c63510295
+disabled_at: '2025-12-28T08:16:27.383696Z'
+reason: Merged into daily-status-pipeline.yml
