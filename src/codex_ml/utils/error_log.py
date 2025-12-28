@@ -1,5 +1,4 @@
 from __future__ import annotations
-logger = logging.getLogger(__name__)
 
 import json
 import logging
@@ -9,6 +8,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover - import for typing only
     pass
+
+logger = logging.getLogger(__name__)
 
 ERROR_PATH = Path(".codex/errors.ndjson")
 ROTATE_AFTER = 60 * 60 * 24  # 1 day
