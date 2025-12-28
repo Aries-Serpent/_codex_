@@ -1,0 +1,4 @@
+backed_up_to: .github/workflow-archive/backups/2025-12-28/test-suite.yml
+backup_sha256: 7f7547d2f6fc5afa86815c8e750443a2b768d7da520fd5c8d4f9aa2792e6b254
+disabled_at: '2025-12-28T08:14:51.192936Z'
+reason: Redundant with optimized-ci.yml which has caching and sharding
