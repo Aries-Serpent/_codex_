@@ -4,6 +4,10 @@ Workflow Catalog Generator
 
 Creates comprehensive inventory of all GitHub Actions workflows with metadata.
 Stores data in .github/workflow-archive/WORKFLOW_INVENTORY.yaml
+
+SECURITY NOTE: This script extracts secret names (not values) from workflow files.
+Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling use only
+and should NOT be exposed in logs, markdown reports, or other public outputs.
 """
 
 from __future__ import annotations
@@ -201,6 +205,9 @@ def generate_inventory():
     print(f"   Active: {inventory['metadata']['active_count']}")
     print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")
     
+    # Security note: Secret names are stored in inventory file but NOT logged to console
+    # to prevent information disclosure in CI logs
+    
     # Generate summary report
     generate_summary_report(inventory)
 
@@ -237,17 +244,12 @@ def generate_summary_report(inventory: dict):
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
                 f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")
         
-        # Secrets usage
+        # Secrets usage - SECURITY NOTE: Removed to prevent information disclosure
+        # Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling only
+        # but should not be exposed in human-readable markdown reports
         f.write("## Secrets Usage\n\n")
-        secrets_usage = defaultdict(list)
-        for workflow in inventory["workflows"]:
-            for secret in workflow.get("secrets_used", []):
-                secrets_usage[secret].append(workflow["filename"])
-        
-        if secrets_usage:
-            for secret, workflows in sorted(secrets_usage.items()):
-                f.write(f"### `{secret}`\n")
-                f.write(f"Used in {len(workflows)} workflows: {', '.join(workflows)}\n\n")
+        f.write("_Secret usage information has been omitted from this report for security reasons._\n\n")
+        f.write("_Secret names are available in `WORKFLOW_INVENTORY.yaml` for authorized tooling use only._\n\n")
     
     print(f"✅ Summary report saved to: {report_path}")
 
