@@ -155,34 +155,54 @@ jobs:
       
       - name: Create restoration report
         run: |
+          # Build the restoration report using shell logic to avoid embedding complex GitHub expressions
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs.restore_source }}"
           SOURCE_FILE="${{ steps.locate.outputs.source_file }}"
-          
-          cat > /tmp/restoration-report.md << REPORT
+          ENABLED="${{ github.event.inputs.enable_immediately }}"
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          STATUS="⚠️ DISABLED (requires manual enablement)"
+          if [ "$ENABLED" = "true" ] || [ "$ENABLED" = "True" ]; then
+            STATUS="✅ ENABLED"
+          fi
+
+          cat > /tmp/restoration-report.md <<REPORT
           ## 🔄 Workflow Restoration Report
-          
-          **Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          **Date**: $NOW
           **Workflow**: \`$WORKFLOW\`
           **Restored from**: $SOURCE (\`$SOURCE_FILE\`)
-          **Status**: ${{ github.event.inputs.enable_immediately == 'true' && '✅ ENABLED' || '⚠️ DISABLED (requires manual enablement)' }}
-          
+          **Status**: $STATUS
+
           ### Actions Taken
           - ✅ Source file located and validated
           - ✅ Workflow file restored to \`.github/workflows/$WORKFLOW\`
           - ✅ Workflow inventory updated
-          ${{ github.event.inputs.enable_immediately == 'false' && '- ⚠️ Workflow is DISABLED (comment header added)' || '' }}
-          
+          REPORT
+
+          if [ "$ENABLED" != "true" ]; then
+            cat >> /tmp/restoration-report.md <<REPORT_DISABLED
+
+          - ⚠️ Workflow is DISABLED (comment header added)
+
           ### Next Steps
-          ${{ github.event.inputs.enable_immediately == 'false' && '1. Review restored workflow in `.github/workflows/'$WORKFLOW'`\n2. Remove disabled comment header when ready\n3. Test workflow execution with `workflow_dispatch` or relevant trigger' || '1. Monitor workflow execution in Actions tab\n2. Verify expected behavior\n3. Check for any failures or deprecation warnings' }}
-          
+          1. Review restored workflow in \`.github/workflows/$WORKFLOW\`
+          2. Remove disabled comment header when ready to activate
+          3. Test workflow execution in a safe environment
+
+            REPORT_DISABLED
+          fi
+
+          cat >> /tmp/restoration-report.md <<REPORT_FINAL
+
           ### Restoration Details
           - **Triggered by**: @${{ github.actor }}
           - **Run ID**: ${{ github.run_id }}
           - **Commit**: ${{ github.sha }}
           - **Source SHA256**: $(sha256sum "$SOURCE_FILE" | awk '{print $1}')
-          REPORT
-          
+          REPORT_FINAL
+
           cat /tmp/restoration-report.md
       
       - name: Commit changes
