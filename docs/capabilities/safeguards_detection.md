@@ -540,4 +540,4 @@ For audit detection, these keywords indicate safeguard practices:
 
 - [Detector Implementation](../../scripts/space_traversal/detectors/detector_safeguards.py)
 - [Test Suite](../../tests/safeguards/test_keyword_detection.py)
-- [Audit Pipeline Guide](../../docs/SPACE_TRAVERSAL_GUIDE.md)
+- [Audit Pipeline Guide](../SPACE_TRAVERSAL_GUIDE.md)
