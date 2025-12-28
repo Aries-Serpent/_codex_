@@ -1,320 +1,260 @@
 metadata:
-  generated_at: '2025-12-28T08:09:06.587779Z'
-  total_workflows: 66
+  generated_at: '2025-12-28T22:24:56.135553Z'
+  total_workflows: 49
   active_count: 0
   disabled_count: 0
   archived_count: 0
   consolidation_target: 48
 workflows:
 - filename: agent-runtime.yml
-  error: '''.github/workflows/agent-runtime.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/agent-runtime.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: api-documentation.yml
-  error: '''.github/workflows/api-documentation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/api-documentation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: audit-improvement-pipeline.yml
   error: '''.github/workflows/audit-improvement-pipeline.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: auto-update-configs.yml
-  error: '''.github/workflows/auto-update-configs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/auto-update-configs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: automation_ingest.yml
-  error: '''.github/workflows/automation_ingest.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into single pipeline with job dependencies
-  consolidation_keep: &id003
-  - daily-status-pipeline.yml
-  - publish_dashboard_release.yml
 - filename: autonomous-agent.yml
-  error: '''.github/workflows/autonomous-agent.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/autonomous-agent.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: build-container-cache.yml
-  error: '''.github/workflows/build-container-cache.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+- filename: ci-health-monitor.yml
+  error: '''.github/workflows/ci-health-monitor.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-  consolidation_candidate: true
-  consolidation_plan: Unified container build with matrix strategy for CPU/GPU variants
-  consolidation_keep: &id002
-  - docker-build-push.yml
-- filename: cache-cleanup.yml
-  error: '''.github/workflows/cache-cleanup.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Unified cache operations with scheduled jobs
-  consolidation_keep: &id001
-  - cache-management.yml
-- filename: cache-warmer.yml
-  error: '''.github/workflows/cache-warmer.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Unified cache operations with scheduled jobs
-  consolidation_keep: *id001
 - filename: code-quality.yml
-  error: '''.github/workflows/code-quality.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/code-quality.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: codeql-analysis.yml
-  error: '''.github/workflows/codeql-analysis.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/codeql-analysis.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: container-build.yml
-  error: '''.github/workflows/container-build.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Unified container build with matrix strategy for CPU/GPU variants
-  consolidation_keep: *id002
 - filename: copilot-cascade-review.yml
   error: '''.github/workflows/copilot-cascade-review.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: copilot-self-evolution.yml
   error: '''.github/workflows/copilot-self-evolution.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: coverage_report.yml
-  error: '''.github/workflows/coverage_report.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/coverage_report.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: daily_status_cron.yml
-  error: '''.github/workflows/daily_status_cron.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into single pipeline with job dependencies
-  consolidation_keep: *id003
-- filename: daily_status_enrich.yml
-  error: '''.github/workflows/daily_status_enrich.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into single pipeline with job dependencies
-  consolidation_keep: *id003
 - filename: data_validation.yml
-  error: '''.github/workflows/data_validation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/data_validation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: decode-validate-artifact.yml
   error: '''.github/workflows/decode-validate-artifact.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: dependency-scan.yml
-  error: '''.github/workflows/dependency-scan.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/dependency-scan.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: detect-duplicates.yml
-  error: '''.github/workflows/detect-duplicates.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/detect-duplicates.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: determinism.yml
-  error: '''.github/workflows/determinism.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/determinism.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: docker-build-push.yml
-  error: '''.github/workflows/docker-build-push.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/docker-build-push.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: docs.yml
-  error: '''.github/workflows/docs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: pages-mkdocs.yml handles all doc building and deployment
-  consolidation_keep: &id005
-  - pages-mkdocs.yml
-  - documentation-link-checker.yml
 - filename: documentation-link-checker.yml
   error: '''.github/workflows/documentation-link-checker.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: draft-audit-pr.yml
-  error: '''.github/workflows/draft-audit-pr.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-- filename: duplicate-detection-weekly.yml
-  error: '''.github/workflows/duplicate-detection-weekly.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/draft-audit-pr.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: genesis-bootstrap.yml
-  error: '''.github/workflows/genesis-bootstrap.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/genesis-bootstrap.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: github_connector_check.yml
   error: '''.github/workflows/github_connector_check.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: html_visual_baseline.yml
   error: '''.github/workflows/html_visual_baseline.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: html_visual_regression.yml
   error: '''.github/workflows/html_visual_regression.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: integration-gated.yml
-  error: '''.github/workflows/integration-gated.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/integration-gated.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: labeler.yml
-  error: '''.github/workflows/labeler.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/labeler.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: mcp-ci.yml
-  error: '''.github/workflows/mcp-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into optimized-ci.yml with MCP tests as additional
-    job
-  consolidation_keep: &id004
-  - optimized-ci.yml
-  - integration-gated.yml
 - filename: nox_gates.yml
-  error: '''.github/workflows/nox_gates.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/nox_gates.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: optimized-ci.yml
-  error: '''.github/workflows/optimized-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/optimized-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: pages-mkdocs.yml
-  error: '''.github/workflows/pages-mkdocs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/pages-mkdocs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: post-merge-validation-optimized.yml
   error: '''.github/workflows/post-merge-validation-optimized.yml'' is not in the
-    subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-- filename: post-merge-validation.yml
-  error: '''.github/workflows/post-merge-validation.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    subpath of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the
+    other is absolute.'
   status: error
 - filename: pr-checks.yml
-  error: '''.github/workflows/pr-checks.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/pr-checks.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: pre-release-deployment.yml
   error: '''.github/workflows/pre-release-deployment.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
-- filename: produce-trend.yml
-  error: '''.github/workflows/produce-trend.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into single pipeline with job dependencies
-  consolidation_keep: *id003
 - filename: publish_dashboard_release.yml
   error: '''.github/workflows/publish_dashboard_release.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: ratelimit_history_prune.yml
   error: '''.github/workflows/ratelimit_history_prune.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: repo-organization.yml
-  error: '''.github/workflows/repo-organization.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/repo-organization.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: report_publish.yml
-  error: '''.github/workflows/report_publish.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into single pipeline with job dependencies
-  consolidation_keep: *id003
 - filename: runner-diagnostics.yml
-  error: '''.github/workflows/runner-diagnostics.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/runner-diagnostics.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: sbom.yml
-  error: '''.github/workflows/sbom.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/sbom.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: scheduled-archival.yml
-  error: '''.github/workflows/scheduled-archival.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/scheduled-archival.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: scheduled-dependency-audit.yml
   error: '''.github/workflows/scheduled-dependency-audit.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: security-scan.yml
-  error: '''.github/workflows/security-scan.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/security-scan.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: security-suite.yml
-  error: '''.github/workflows/security-suite.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/security-suite.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: self-healing-ci.yml
-  error: '''.github/workflows/self-healing-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/self-healing-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: self-healing-feedback-loop.yml
   error: '''.github/workflows/self-healing-feedback-loop.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: semgrep_sarif.yml
-  error: '''.github/workflows/semgrep_sarif.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/semgrep_sarif.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: status_gate.yml
-  error: '''.github/workflows/status_gate.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/status_gate.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: template-validation.yml
-  error: '''.github/workflows/template-validation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Single validation pipeline with sequential jobs
-  consolidation_keep: &id006
-  - workflow-validation.yml
 - filename: template_lint.yml
-  error: '''.github/workflows/template_lint.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/template_lint.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-- filename: test-suite.yml
-  error: '''.github/workflows/test-suite.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Consolidated into optimized-ci.yml with MCP tests as additional
-    job
-  consolidation_keep: *id004
-- filename: validate-docs-enhanced.yml
-  error: '''.github/workflows/validate-docs-enhanced.yml'' is not in the subpath of
-    ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: pages-mkdocs.yml handles all doc building and deployment
-  consolidation_keep: *id005
-- filename: validate-docs.yml
-  error: '''.github/workflows/validate-docs.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: pages-mkdocs.yml handles all doc building and deployment
-  consolidation_keep: *id005
 - filename: wiki-assemble.yml
-  error: '''.github/workflows/wiki-assemble.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+  error: '''.github/workflows/wiki-assemble.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
 - filename: workflow-expiry-enforcer.yml
   error: '''.github/workflows/workflow-expiry-enforcer.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
-- filename: workflow-lint.yml
-  error: '''.github/workflows/workflow-lint.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
+- filename: workflow-restore.yml
+  error: '''.github/workflows/workflow-restore.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
   status: error
-  consolidation_candidate: true
-  consolidation_plan: Single validation pipeline with sequential jobs
-  consolidation_keep: *id006
-- filename: workflow-validator.yml
-  error: '''.github/workflows/workflow-validator.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_'''
-  status: error
-  consolidation_candidate: true
-  consolidation_plan: Single validation pipeline with sequential jobs
-  consolidation_keep: *id006
 - filename: zendesk-quantum-packaging.yml
   error: '''.github/workflows/zendesk-quantum-packaging.yml'' is not in the subpath
-    of ''/home/runner/work/_codex_/_codex_'''
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 consolidation_plan:
   testing:
-    keep: *id004
+    keep:
+    - optimized-ci.yml
+    - integration-gated.yml
     remove:
     - test-suite.yml
     - mcp-ci.yml
     reason: Consolidated into optimized-ci.yml with MCP tests as additional job
   documentation:
-    keep: *id005
+    keep:
+    - pages-mkdocs.yml
+    - documentation-link-checker.yml
     remove:
     - docs.yml
     - validate-docs.yml
     - validate-docs-enhanced.yml
     reason: pages-mkdocs.yml handles all doc building and deployment
   deployment:
-    keep: *id002
+    keep:
+    - docker-build-push.yml
     remove:
     - container-build.yml
     - build-container-cache.yml
     reason: Unified container build with matrix strategy for CPU/GPU variants
   validation:
-    keep: *id006
+    keep:
+    - workflow-validation.yml
     remove:
     - workflow-lint.yml
     - workflow-validator.yml
     - template-validation.yml
     reason: Single validation pipeline with sequential jobs
   monitoring:
-    keep: *id003
+    keep:
+    - daily-status-pipeline.yml
+    - publish_dashboard_release.yml
     remove:
     - daily_status_cron.yml
     - daily_status_enrich.yml
@@ -323,7 +263,8 @@ consolidation_plan:
     - report_publish.yml
     reason: Consolidated into single pipeline with job dependencies
   maintenance:
-    keep: *id001
+    keep:
+    - cache-management.yml
     remove:
     - cache-cleanup.yml
     - cache-warmer.yml
