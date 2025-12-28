@@ -1,0 +1,158 @@
+name: Weekly Duplicate Detection
+
+on:
+  schedule:
+    # Run every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      modes:
+        description: 'Detection modes (comma-separated)'
+        required: false
+        default: 'exact,normalized'
+      create_issue:
+        description: 'Create issue if new duplicates found'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  detect-duplicates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Full history for git metadata
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+      
+      - name: Run duplicate detection
+        id: scan
+        run: |
+          mkdir -p .codex/duplicate_analysis_weekly
+          
+          MODES="${{ github.event.inputs.modes || 'exact,normalized' }}"
+          
+          python tools/duplicate_inventory.py . \
+            --modes "$MODES" \
+            --output-dir .codex/duplicate_analysis_weekly \
+            --formats yaml,json,markdown \
+            2>&1 | tee scan.log
+          
+          # Extract stats
+          GROUPS=$(grep -oP 'Found \K\d+' scan.log || echo "0")
+          FILES=$(grep -oP 'Scanned \K\d+' scan.log || echo "0")
+          
+          echo "duplicate_groups=$GROUPS" >> $GITHUB_OUTPUT
+          echo "files_scanned=$FILES" >> $GITHUB_OUTPUT
+      
+      - name: Parse results for SHIM status
+        id: shim_check
+        run: |
+          if [ -f .codex/duplicate_analysis_weekly/supplemental_duplicates.json ]; then
+            NOT_IN_SHIM=$(python3 -c "import json; data=json.load(open('.codex/duplicate_analysis_weekly/supplemental_duplicates.json')); print(sum(1 for g in data['duplicate_groups'] if not g['in_shim_inventory']))" || echo "0")
+            echo "not_in_shim=$NOT_IN_SHIM" >> $GITHUB_OUTPUT
+          else
+            echo "not_in_shim=0" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: duplicate-detection-report
+          path: |
+            .codex/duplicate_analysis_weekly/
+            scan.log
+          retention-days: 30
+      
+      - name: Generate summary
+        run: |
+          echo "# Duplicate Detection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Date**: $(date -u +"%Y-%m-%d %H:%M UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "**Detection Modes**: ${{ github.event.inputs.modes || 'exact,normalized' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Files Scanned**: ${{ steps.scan.outputs.files_scanned }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Duplicate Groups Found**: ${{ steps.scan.outputs.duplicate_groups }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **NOT in SHIM Inventory**: ${{ steps.shim_check.outputs.not_in_shim }} ⚠️" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f .codex/duplicate_analysis_weekly/supplemental_duplicates.md ]; then
+            echo "## Top Duplicates" >> $GITHUB_STEP_SUMMARY
+            head -50 .codex/duplicate_analysis_weekly/supplemental_duplicates.md >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Create issue for new duplicates
+        if: |
+          github.event.inputs.create_issue == 'true' && 
+          steps.shim_check.outputs.not_in_shim > 0
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const notInShim = ${{ steps.shim_check.outputs.not_in_shim }};
+            const totalGroups = ${{ steps.scan.outputs.duplicate_groups }};
+            
+            const issueBody = `## 🔍 Weekly Duplicate Detection Report
+            
+            **Date**: ${new Date().toISOString().split('T')[0]}
+            **Run**: [${context.runNumber}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            
+            ### Summary
+            
+            - **Total Duplicate Groups**: ${totalGroups}
+            - **NOT in SHIM Inventory**: ${notInShim} ⚠️
+            
+            ### Action Required
+            
+            Review the duplicates NOT tracked in SHIM inventory:
+            
+            1. Download the [duplicate detection report](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            2. Review \`supplemental_duplicates.md\` for details
+            3. For each high-priority duplicate:
+               - Add to \`.github/SHIM_INVENTORY.yaml\` if intentional
+               - Create refactoring ticket if should be consolidated
+               - Mark as "vendorize" if third-party code
+            
+            ### Quick Actions
+            
+            \`\`\`bash
+            # Download and review report
+            gh run download ${context.runId} -n duplicate-detection-report
+            
+            # View markdown report
+            cat .codex/duplicate_analysis_weekly/supplemental_duplicates.md
+            
+            # Check specific duplicate
+            python -c "
+            import json
+            with open('.codex/duplicate_analysis_weekly/supplemental_duplicates.json') as f:
+                data = json.load(f)
+            not_in_shim = [g for g in data['duplicate_groups'] if not g['in_shim_inventory']]
+            for g in not_in_shim[:5]:
+                print(f'{g[\\"representative_path\\"]} ({g[\\"type\\"]}, {len(g[\\"member_files\\"])} files)')
+            "
+            \`\`\`
+            
+            See: [Duplicate Detection Documentation](../docs/DUPLICATE_DETECTION.md)
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Duplicate Detection] ${notInShim} duplicates NOT in SHIM inventory`,
+              body: issueBody,
+              labels: ['duplicate-detection', 'technical-debt', 'automated']
+            });

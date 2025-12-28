@@ -1,0 +1,23 @@
+name: Daily Status Skeleton (v1.2)
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # 09:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  daily-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Generate skeleton
+        run: |
+          bash scripts/status/generate_daily_report.sh
+      - name: Upload skeleton
+        uses: actions/upload-artifact@v6
+        with:
+          name: daily-status
+          path: reports/daily/*.json

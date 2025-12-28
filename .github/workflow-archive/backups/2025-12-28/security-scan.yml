@@ -1,0 +1,56 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main, copilot/**]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sundays at midnight UTC
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install safety bandit pip-audit
+      
+      - name: Run security audit script
+        run: |
+          python scripts/security_audit.py
+        continue-on-error: true
+      
+      - name: Check for known vulnerabilities (safety)
+        run: |
+          safety check --json || true
+        continue-on-error: true
+      
+      - name: Check for known vulnerabilities (pip-audit)
+        run: |
+          pip-audit --format=json || true
+        continue-on-error: true
+      
+      - name: Static security analysis (bandit)
+        run: |
+          bandit -r . -f json -o bandit-report.json || true
+        continue-on-error: true
+      
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+          retention-days: 30

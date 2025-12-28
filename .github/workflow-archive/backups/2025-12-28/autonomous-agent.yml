@@ -1,0 +1,201 @@
+name: Autonomous Codebase Management
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Execution mode'
+        required: true
+        default: 'monitor'
+        type: choice
+        options:
+          - monitor
+          - execute
+          - report
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  autonomous-agent:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || pip install pyyaml
+      
+      - name: Run Autonomous Agent
+        id: agent
+        run: |
+          python scripts/autonomous_agent.py \
+            --repo . \
+            --config .codex/autonomous_agent.yaml
+        continue-on-error: true
+      
+      - name: Verify state directory
+        if: always()
+        run: |
+          echo "=== Agent State Directory Contents ==="
+          ls -lah .codex/agent_state/ || echo "⚠️ Directory does not exist"
+        continue-on-error: true
+      
+      - name: Upload Agent State
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-state-${{ github.run_number }}
+          path: .codex/agent_state/
+          retention-days: 30
+          if-no-files-found: error
+      
+      - name: Create Issue for Critical Alerts
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const stateFiles = fs.readdirSync('.codex/agent_state/')
+              .filter(f => f.startsWith('state_'))
+              .sort()
+              .reverse();
+            
+            if (stateFiles.length > 0) {
+              const latestState = JSON.parse(
+                fs.readFileSync(`.codex/agent_state/${stateFiles[0]}`, 'utf8')
+              );
+              
+              if (latestState.health.overall_status === 'critical') {
+                github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '🚨 Critical Codebase Health Alert',
+                  body: `## Autonomous Agent Report\n\n` +
+                    `**Status:** ${latestState.health.overall_status}\n` +
+                    `**Timestamp:** ${latestState.timestamp}\n\n` +
+                    `### Alerts\n` +
+                    latestState.health.alerts.map(a => `- ${a}`).join('\n') +
+                    `\n\n### Proposed Actions\n` +
+                    latestState.actions.map(a => 
+                      `- ${a.description} (${a.decision_level})`
+                    ).join('\n'),
+                  labels: ['autonomous-agent', 'critical', 'health-alert']
+                });
+              }
+            }
+      
+      - name: Comment on PR if Actions Needed
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const stateFiles = fs.readdirSync('.codex/agent_state/')
+              .filter(f => f.startsWith('state_'))
+              .sort()
+              .reverse();
+            
+            if (stateFiles.length > 0) {
+              const latestState = JSON.parse(
+                fs.readFileSync(`.codex/agent_state/${stateFiles[0]}`, 'utf8')
+              );
+              
+              const approvalActions = latestState.actions.filter(
+                a => a.decision_level === 'approval_required'
+              );
+              
+              if (approvalActions.length > 0) {
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `## 🤖 Autonomous Agent Report\n\n` +
+                    `The autonomous agent has identified improvements for this PR:\n\n` +
+                    approvalActions.map((a, i) => 
+                      `### ${i+1}. ${a.description}\n` +
+                      `- **Rationale:** ${a.rationale}\n` +
+                      `- **Impact:** ${a.estimated_impact}\n` +
+                      `- **Risk:** ${a.risk_level}\n` +
+                      `- **Reversible:** ${a.reversibility ? 'Yes' : 'No'}\n`
+                    ).join('\n')
+                });
+              }
+            }
+  
+  health-report:
+    runs-on: ubuntu-latest
+    needs: autonomous-agent
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Download Agent State
+        uses: actions/download-artifact@v4
+        with:
+          name: agent-state-${{ github.run_number }}
+          path: .codex/agent_state/
+      
+      - name: Generate Health Report
+        run: |
+          python - <<'EOF'
+          import json
+          import glob
+          from pathlib import Path
+          
+          # Find latest state
+          state_files = sorted(glob.glob('.codex/agent_state/state_*.json'), reverse=True)
+          
+          if state_files:
+              with open(state_files[0]) as f:
+                  state = json.load(f)
+              
+              print("# Codebase Health Report")
+              print(f"\n**Status:** {state['health']['overall_status']}")
+              print(f"**Timestamp:** {state['timestamp']}")
+              print(f"\n## Metrics")
+              
+              for metric in state['health']['metrics']:
+                  status_emoji = {
+                      'healthy': '✅',
+                      'warning': '⚠️',
+                      'critical': '🚨'
+                  }.get(metric['status'], '❓')
+                  
+                  print(f"- {status_emoji} **{metric['name']}:** {metric['value']:.2f} (threshold: {metric['threshold']})")
+                  if metric.get('recommendation'):
+                      print(f"  - {metric['recommendation']}")
+              
+              if state['health']['alerts']:
+                  print("\n## Alerts")
+                  for alert in state['health']['alerts']:
+                      print(f"- {alert}")
+              
+              if state['actions']:
+                  print("\n## Proposed Actions")
+                  for action in state['actions']:
+                      print(f"### {action['description']}")
+                      print(f"- **Type:** {action['type']}")
+                      print(f"- **Decision Level:** {action['decision_level']}")
+                      print(f"- **Risk:** {action['risk_level']}")
+                      print(f"- **Executed:** {'Yes' if action['executed'] else 'No'}")
+          EOF

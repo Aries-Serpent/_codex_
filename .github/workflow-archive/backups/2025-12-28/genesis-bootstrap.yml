@@ -1,0 +1,89 @@
+name: Genesis Bootstrap - Agent Authority Activation (template)
+
+on:
+  workflow_dispatch:
+    inputs:
+      genesis_validation:
+        description: 'Confirm Genesis Protocol completion'
+        required: true
+        type: boolean
+        default: false
+      human_admin:
+        description: 'Human Admin username for audit'
+        required: true
+        type: string
+        default: 'mbaetiong'
+
+jobs:
+  validate-genesis:
+    if: true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
+      issues: write
+    env:
+      CODEX_REPO_ID: ${{ vars.CODEX_REPO_ID || '1040037790' }}
+      CODEX_ORG_NAME: ${{ vars.CODEX_ORG_NAME || 'Aries-Serpent' }}
+      CODEX_AGENT_NAME: ${{ vars.CODEX_AGENT_NAME || 'ai_org_repo_admin' }}
+      CODEX_API_VERSION: ${{ vars.CODEX_API_VERSION || '2022-11-28' }}
+      CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+      GENESIS_TIMESTAMP: ${{ vars.GENESIS_TIMESTAMP || '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate required files
+        run: |
+          echo "📁 Checking required files..."
+          REQUIRED=(
+            ".codex/autonomous_agent.yaml"
+            ".codex/guardrails.md"
+            ".codex/change_log.md"
+            "scripts/autonomous_agent.py"
+          )
+          MISSING=""
+          for f in "${REQUIRED[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              MISSING="$MISSING $f"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "Missing files:$MISSING"
+            exit 1
+          fi
+          echo "All template required files present."
+
+      - name: Generate genesis validation JSON
+        run: |
+          cat > .codex/genesis_validation.json <<EOF
+          {
+            "genesis_protocol":"v1.0.0",
+            "repository":"${{ env.CODEX_ORG_NAME }}/_codex_",
+            "repo_id":"${{ env.CODEX_REPO_ID }}",
+            "agent_identity":"${{ env.CODEX_AGENT_NAME }}",
+            "human_admin":"${{ github.event.inputs.human_admin }}",
+            "validation_timestamp":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "note":"TEMPLATE - fill secrets and enable workflow in UI before use"
+          }
+          EOF
+
+      - name: Upload validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-validation-report
+          path: .codex/genesis_validation.json
+          retention-days: 60
+
+      - name: Append to change log
+        run: |
+          echo "" >> .codex/change_log.md
+          echo "## Genesis Protocol Validation - $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> .codex/change_log.md
+          echo "- Workflow executed by: ${{ github.event.inputs.human_admin }}" >> .codex/change_log.md
+          echo "- Agent identity: ${{ env.CODEX_AGENT_NAME }}" >> .codex/change_log.md
+          echo "- Repository ID: ${{ env.CODEX_REPO_ID }}" >> .codex/change_log.md
+          echo "- Status: Template validation complete" >> .codex/change_log.md

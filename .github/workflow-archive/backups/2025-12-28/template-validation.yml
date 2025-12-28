@@ -1,0 +1,205 @@
+# Generated: 2025-12-26T08:25:00Z | Author: mbaetiong
+# Template Validation Workflow
+# Validates Genesis templates on every push to genesis/* branches
+
+name: Template Validation
+
+on:
+  push:
+    branches:
+      - 'genesis/**'
+    paths:
+      - '.codex/**'
+      - '.github/workflows/**'
+      - 'scripts/**'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.codex/**'
+      - '.github/workflows/**'
+      - 'scripts/**'
+      - 'docs/**'
+
+jobs:
+  validate-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation dependencies
+        run: |
+          pip install pyyaml pytest
+          curl -sSL https://github.com/rhysd/actionlint/releases/latest/download/actionlint_linux_amd64.tar.gz | tar -xz -C /tmp
+          sudo mv /tmp/actionlint /usr/local/bin/actionlint
+
+      - name: Validate YAML syntax
+        run: |
+          echo "🔍 Validating YAML files..."
+          python3 << 'EOFPYTHON'
+          import yaml
+          import sys
+          from pathlib import Path
+          
+          files = [
+              ".github/workflows/genesis-bootstrap.yml",
+              ".github/workflows/workflow-lint.yml",
+              ".codex/autonomous_agent.yaml"
+          ]
+          
+          errors = []
+          for f in files:
+              if Path(f).exists():
+                  try:
+                      with open(f) as file:
+                          yaml.safe_load(file)
+                      print(f"✅ {f}")
+                  except Exception as e:
+                      print(f"❌ {f}: {e}")
+                      errors.append(f)
+              else:
+                  print(f"⚠️  {f} not found (may be expected)")
+          
+          if errors:
+              print(f"\n❌ YAML validation failed for: {errors}")
+              sys.exit(1)
+          else:
+              print("\n✅ All YAML files are valid")
+          EOFPYTHON
+
+      - name: Validate Python syntax
+        run: |
+          echo "🔍 Validating Python files..."
+          if [ -f "scripts/autonomous_agent.py" ]; then
+            python3 -m py_compile scripts/autonomous_agent.py
+            echo "✅ autonomous_agent.py syntax valid"
+          else
+            echo "⚠️  autonomous_agent.py not found"
+          fi
+
+      - name: Check for security issues
+        run: |
+          echo "🔍 Checking for exposed secrets..."
+          # Check for real secrets (not test fixtures)
+          if grep -rE "(ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9]{82})" \
+            .github/workflows/ .codex/ scripts/ --exclude-dir=.git 2>/dev/null | \
+            grep -v "test\|example\|placeholder\|<<HUMAN" > /tmp/secrets.txt; then
+            echo "❌ Potential secrets found:"
+            cat /tmp/secrets.txt
+            exit 1
+          else
+            echo "✅ No secrets detected in template files"
+          fi
+
+      - name: Verify safety guards
+        run: |
+          echo "🔍 Verifying safety guards..."
+          
+          GUARDS_OK=true
+          
+          # Check workflow guard - Genesis bootstrap is now enabled (if: true)
+          if grep -q "if: true" .github/workflows/genesis-bootstrap.yml 2>/dev/null; then
+            echo "✅ Workflow enabled (if: true) - Genesis activated"
+          else
+            echo "❌ Genesis bootstrap workflow not properly enabled"
+            GUARDS_OK=false
+          fi
+          
+          # Check SAFE_MODE (optional - only in template mode)
+          if [ -f scripts/autonomous_agent.py ]; then
+            if grep -q "SAFE_MODE = True" scripts/autonomous_agent.py 2>/dev/null; then
+              echo "✅ SAFE_MODE enabled (template mode)"
+            else
+              echo "ℹ️  SAFE_MODE not found (full implementation mode)"
+            fi
+          fi
+          
+          # Check autonomous_actions_enabled
+          if grep -q "autonomous_actions_enabled: false" .codex/autonomous_agent.yaml 2>/dev/null; then
+            echo "✅ Autonomous actions disabled"
+          else
+            echo "❌ Autonomous actions not disabled"
+            GUARDS_OK=false
+          fi
+          
+          if [ "$GUARDS_OK" = "false" ]; then
+            echo "❌ Safety guard validation failed"
+            exit 1
+          else
+            echo "✅ All safety guards present"
+          fi
+
+      - name: Check documentation completeness
+        run: |
+          echo "🔍 Checking documentation..."
+          
+          DOCS_OK=true
+          
+          # Check admin guide
+          if [ -f "docs/admin/GENESIS_SETUP_GUIDE.md" ]; then
+            lines=$(wc -l < docs/admin/GENESIS_SETUP_GUIDE.md)
+            if [ "$lines" -ge 300 ]; then
+              echo "✅ Admin guide complete ($lines lines)"
+            else
+              echo "⚠️  Admin guide too short ($lines lines)"
+              DOCS_OK=false
+            fi
+          else
+            echo "❌ Admin guide missing"
+            DOCS_OK=false
+          fi
+          
+          # Check agent guide
+          if [ -f "docs/agent/OPERATIONAL_GUIDELINES.md" ]; then
+            lines=$(wc -l < docs/agent/OPERATIONAL_GUIDELINES.md)
+            if [ $lines -ge 400 ]; then
+              echo "✅ Agent guide complete ($lines lines)"
+            else
+              echo "⚠️  Agent guide too short ($lines lines)"
+              DOCS_OK=false
+            fi
+          else
+            echo "❌ Agent guide missing"
+            DOCS_OK=false
+          fi
+          
+          if [ "$DOCS_OK" = "false" ]; then
+            echo "⚠️  Documentation validation warnings (non-blocking)"
+          else
+            echo "✅ Documentation complete"
+          fi
+
+      - name: Run actionlint
+        run: |
+          echo "🔍 Running actionlint..."
+          actionlint .github/workflows/*.yml || echo "⚠️  Actionlint warnings (non-blocking)"
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          echo "📋 Generating validation report..."
+          cat > validation-report.json << 'EOFREPORT'
+          {
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "workflow": "template-validation",
+            "branch": "${{ github.ref_name }}",
+            "commit": "${{ github.sha }}",
+            "status": "completed"
+          }
+          EOFREPORT
+          cat validation-report.json
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: template-validation-report
+          path: validation-report.json
+          retention-days: 30

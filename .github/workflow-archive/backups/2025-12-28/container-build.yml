@@ -1,0 +1,191 @@
+name: Container Build (CPU/GPU)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'Dockerfile.gpu'
+      - 'docker-compose.yml'
+      - 'deploy/kubernetes/**'
+      - 'pyproject.toml'
+      - 'src/**'
+  pull_request:
+    branches: [main]
+
+env:
+  # Set this to 'true' to enable building arm64 images (off by default to avoid wheel issues)
+  ALLOW_MULTIARCH: 'false'
+
+jobs:
+  build-wheels:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      matrix:
+        platform: ['linux/amd64', 'linux/arm64']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
+        uses: docker/build-push-action@v6
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        with:
+          context: .
+          file: Dockerfile
+          target: builder
+          platforms: ${{ matrix.platform }}
+          outputs: type=local,dest=./wheelhouse
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Set up Python
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Generate wheel manifest
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        run: |
+          python scripts/ci/generate_wheel_manifest.py \
+            --wheelhouse ./wheelhouse/tmp/wheels \
+            --output ./wheelhouse/manifest.json \
+            --platform ${{ matrix.platform }} \
+            --python-version "3.11"
+      - name: Upload wheelhouse artifact (${{ matrix.platform }})
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: wheelhouse-${{ replace(matrix.platform, '/', '-') }}
+          path: ./wheelhouse
+  build-cpu:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        platform: ['linux/amd64', 'linux/arm64']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Set build target & push flag
+        id: set_target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "target=production" > $GITHUB_OUTPUT
+            echo "should_push=true" > $GITHUB_OUTPUT
+          else
+            echo "target=runtime" > $GITHUB_OUTPUT
+            echo "should_push=false" > $GITHUB_OUTPUT
+          fi
+      - name: Build CPU image
+        uses: docker/build-push-action@v6
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        with:
+          context: .
+          file: Dockerfile
+          platforms: ${{ matrix.platform }}
+          target: ${{ steps.set_target.outputs.target }}
+          push: ${{ steps.set_target.outputs.should_push == 'true' }}
+          tags: codex-ml:cpu-${{ matrix.platform }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+  build-gpu:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        platform: ['linux/amd64']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Set build target & push flag
+        id: set_target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "target=production" > $GITHUB_OUTPUT
+            echo "should_push=true" > $GITHUB_OUTPUT
+          else
+            echo "target=runtime" > $GITHUB_OUTPUT
+            echo "should_push=false" > $GITHUB_OUTPUT
+          fi
+      - name: Build GPU image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.gpu
+          platforms: ${{ matrix.platform }}
+          target: ${{ steps.set_target.outputs.target }}
+          push: ${{ steps.set_target.outputs.should_push == 'true' }}
+          tags: codex-ml:gpu-${{ matrix.platform }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  sbom-scan:
+    name: Generate SBOM & Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [build-cpu, build-gpu]
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        variant: ['cpu', 'gpu']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Determine Dockerfile
+        id: dockerfile
+        run: |
+          if [ "${{ matrix.variant }}" = "gpu" ]; then
+            echo "file=Dockerfile.gpu" >> $GITHUB_OUTPUT
+          else
+            echo "file=Dockerfile" >> $GITHUB_OUTPUT
+          fi
+      - name: Build image for SBOM
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ steps.dockerfile.outputs.file }}
+          platforms: linux/amd64
+          target: runtime
+          load: true
+          tags: codex-ml:sbom-${{ matrix.variant }}
+          cache-from: type=gha
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
+      - name: Generate SBOM with Syft
+        run: |
+          syft codex-ml:sbom-${{ matrix.variant }} \
+            -o spdx-json=sbom-${{ matrix.variant }}.spdx.json \
+            -o cyclonedx-json=sbom-${{ matrix.variant }}.cyclonedx.json
+      - name: Install Grype
+        uses: anchore/scan-action/download-grype@v7
+      - name: Scan with Grype
+        run: |
+          grype codex-ml:sbom-${{ matrix.variant }} \
+            --output sarif \
+            --file grype-${{ matrix.variant }}.sarif
+        continue-on-error: true
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: sbom-${{ matrix.variant }}
+          path: |
+            sbom-${{ matrix.variant }}.*.json
+            grype-${{ matrix.variant }}.sarif
+      - name: Upload Grype SARIF to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: grype-${{ matrix.variant }}.sarif
+          category: grype-${{ matrix.variant }}

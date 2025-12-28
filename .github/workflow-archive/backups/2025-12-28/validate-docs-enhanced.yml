@@ -1,0 +1,110 @@
+name: Validate Documentation (Enhanced)
+
+on:
+  pull_request:
+    branches: [main, 0D_base_]
+    paths:
+      - "**.md"
+      - "docs/**"
+      - ".github/workflows/validate-docs-enhanced.yml"
+      - "tools/fence_fixer_v2.py"
+      - ".fencefixer.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**.md"
+      - "docs/**"
+
+jobs:
+  fence-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+      
+      - name: Cache Python dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-docs-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-docs-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          pip install markdown-it-py Pygments PyYAML codespell
+      
+      - name: Run fence fixer (dry-run with reports)
+        id: fence-check
+        run: |
+          python tools/fence_fixer_v2.py docs/ --dry-run --verbose --report --config .fencefixer.yml
+          echo "review_count=$(jq '.review_queue // 0' .reports/fencefix_run.json 2>/dev/null || echo 0)" >> $GITHUB_OUTPUT
+        continue-on-error: true
+      
+      - name: Check review queue threshold
+        run: |
+          review_count=${{ steps.fence-check.outputs.review_count }}
+          max_allowed=100
+          echo "Review queue: $review_count blocks"
+          if [ "$review_count" -gt "$max_allowed" ]; then
+            echo "❌ Review queue ($review_count) exceeds threshold ($max_allowed)"
+            exit 1
+          else
+            echo "✅ Review queue within acceptable limits"
+          fi
+      
+      - name: Upload fence fix report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: fence-fix-report
+          path: |
+            .reports/fencefix_run.json
+            .reports/fencefix_summary.md
+          retention-days: 30
+      
+      - name: Comment PR with fence report
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = '.reports/fencefix_summary.md';
+            
+            if (fs.existsSync(summaryPath)) {
+              const summary = fs.readFileSync(summaryPath, 'utf8');
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## 📝 Fence Fixer Report\n\n${summary}`
+              });
+            }
+      
+      - name: Run codespell
+        run: |
+          codespell --quiet-level=2 --skip="*.pyc,*.git,*.svg,*.lock,*.json" || true
+        continue-on-error: true
+      
+      - name: Validate fence script (legacy)
+        run: |
+          python tools/validate_fences.py || echo "Fence validation completed with warnings"
+        continue-on-error: true
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [fence-validation]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "Documentation validation complete"
+          echo "Fence validation: ${{ needs.fence-validation.result }}"
