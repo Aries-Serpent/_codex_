@@ -145,7 +145,7 @@ jobs:
           # Check admin guide
           if [ -f "docs/admin/GENESIS_SETUP_GUIDE.md" ]; then
             lines=$(wc -l < docs/admin/GENESIS_SETUP_GUIDE.md)
-            if [ $lines -ge 300 ]; then
+            if [ "$lines" -ge 300 ]; then
               echo "✅ Admin guide complete ($lines lines)"
             else
               echo "⚠️  Admin guide too short ($lines lines)"

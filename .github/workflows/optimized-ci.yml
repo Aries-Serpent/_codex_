@@ -94,6 +94,15 @@ jobs:
       
       - name: Run parallel tests (shard ${{ matrix.shard }})
         run: |
+          # CRITICAL: Ensure src/ is in Python path for editable installs
+          export PYTHONPATH="${GITHUB_WORKSPACE}/src:${PYTHONPATH}"
+          
+          # Verify module can be imported before running tests
+          python -c "
+          from codex_ml.cli.audit_pipeline import audit_file
+          print('✓ Module import verified successfully')
+          "
+          
           # Use pytest-split for test sharding
           pytest tests/ \
             --splits 4 \

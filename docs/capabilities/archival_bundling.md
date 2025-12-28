@@ -505,6 +505,7 @@ archival, bundling, packaging, versioning, artifacts, reproducibility, compressi
 
 ## References
 
-- [Artifact Storage Best Practices](../patterns/artifact_storage.md)
+- [Artifact Management Reference](../reference/artifacts.md)
+- [Artifact Bundle Specification](../ops/artifacts_bundle_spec.md)
 - [Reproducibility Guide](reproducibility.md)
 - [Experiment Management](experiment_management.md)

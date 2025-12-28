@@ -261,7 +261,6 @@ python -m scripts.space_traversal.wiki_generator
   - ✅ Deprecation tests (complete coverage including permission errors)
 - **Audit Pipeline v1.4.0**: 39 capabilities tracked, 18/18 critical at maturity
 - **Quality Gates**: All passing (security, linting, type checking, tests)
-- **Documentation**: Complete status update in [status_update_2025-12-09.md](status_update_2025-12-09.md)
 
 #### Duplicate Detection & Technical Debt Management
 - **Comprehensive Duplicate Detection System**: 4 detection modes (exact, normalized, AST, semantic) operational

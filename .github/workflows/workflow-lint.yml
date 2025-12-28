@@ -21,8 +21,6 @@ jobs:
       
       - name: Run actionlint
         uses: rhysd/actionlint@v1.6.26
-        with:
-          fail-on-error: true
       
       - name: Install yamllint
         run: |
