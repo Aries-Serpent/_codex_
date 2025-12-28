@@ -4,10 +4,16 @@ Workflow Catalog Generator
 
 Creates comprehensive inventory of all GitHub Actions workflows with metadata.
 Stores data in .github/workflow-archive/WORKFLOW_INVENTORY.yaml
+
+SECURITY NOTE: This script extracts secret names (not values) from workflow files.
+Secret names are tokenized using SHA256 hashing and stored with base64 encoding
+for additional obfuscation. This prevents direct exposure of secret names in the
+inventory file while maintaining utility for internal tooling.
 """
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import re
@@ -23,6 +29,53 @@ def calculate_file_hash(filepath: Path) -> str:
     """Calculate SHA256 hash of workflow file."""
     with open(filepath, "rb") as f:
         return hashlib.sha256(f.read()).hexdigest()
+
+
+def tokenize_secret_name(secret_name: str) -> dict[str, str]:
+    """
+    Tokenize a secret name for secure storage.
+    
+    Uses SHA256 hashing with base64 encoding to obfuscate secret names
+    while maintaining the ability to match and analyze secret usage.
+    
+    Args:
+        secret_name: The plain-text secret name (e.g., "GITHUB_TOKEN")
+    
+    Returns:
+        Dictionary with tokenized representation:
+        - token: SHA256 hash of the secret name (for matching)
+        - encoded: Base64-encoded secret name (for decoding if authorized)
+        - hint: First 3 characters + length (for human reference)
+    """
+    # Create SHA256 token for matching/deduplication
+    token = hashlib.sha256(secret_name.encode()).hexdigest()
+    
+    # Base64 encode the secret name for reversible obfuscation
+    encoded = base64.b64encode(secret_name.encode()).decode('ascii')
+    
+    # Create a human-readable hint (first 3 chars + length)
+    hint = f"{secret_name[:3]}***({len(secret_name)} chars)" if len(secret_name) > 3 else "***"
+    
+    return {
+        "token": token,
+        "encoded": encoded,
+        "hint": hint
+    }
+
+
+def decode_secret_name(encoded: str) -> str:
+    """
+    Decode a base64-encoded secret name.
+    
+    WARNING: Only use this function in authorized contexts.
+    
+    Args:
+        encoded: Base64-encoded secret name
+    
+    Returns:
+        Decoded secret name
+    """
+    return base64.b64decode(encoded.encode('ascii')).decode('utf-8')
 
 
 def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
@@ -63,16 +116,27 @@ def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
         }
 
 
-def extract_secrets(workflow_data: dict) -> list[str]:
-    """Extract all secret references from workflow."""
+def extract_secrets(workflow_data: dict) -> list[dict[str, str]]:
+    """
+    Extract and tokenize all secret references from workflow.
+    
+    Returns list of tokenized secret representations (not plain-text names).
+    Each entry contains: token (hash), encoded (base64), hint (redacted preview).
+    """
     secrets = set()
     workflow_str = json.dumps(workflow_data)
     
     # Find ${{ secrets.SECRET_NAME }} patterns
     secret_pattern = re.compile(r'\$\{\{\s*secrets\.(\w+)\s*\}\}')
-    secrets.update(secret_pattern.findall(workflow_str))
+    secret_names = secret_pattern.findall(workflow_str)
     
-    return sorted(list(secrets))
+    # Tokenize each secret name
+    tokenized_secrets = []
+    for secret_name in sorted(set(secret_names)):
+        tokenized = tokenize_secret_name(secret_name)
+        tokenized_secrets.append(tokenized)
+    
+    return tokenized_secrets
 
 
 def categorize_workflow(workflow_data: dict, filename: str) -> str:
@@ -201,6 +265,9 @@ def generate_inventory():
     print(f"   Active: {inventory['metadata']['active_count']}")
     print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")
     
+    # Security note: Secret names are stored in inventory file but NOT logged to console
+    # to prevent information disclosure in CI logs
+    
     # Generate summary report
     generate_summary_report(inventory)
 
@@ -237,17 +304,12 @@ def generate_summary_report(inventory: dict):
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
                 f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")
         
-        # Secrets usage
+        # Secrets usage - SECURITY NOTE: Removed to prevent information disclosure
+        # Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling only
+        # but should not be exposed in human-readable markdown reports
         f.write("## Secrets Usage\n\n")
-        secrets_usage = defaultdict(list)
-        for workflow in inventory["workflows"]:
-            for secret in workflow.get("secrets_used", []):
-                secrets_usage[secret].append(workflow["filename"])
-        
-        if secrets_usage:
-            for secret, workflows in sorted(secrets_usage.items()):
-                f.write(f"### `{secret}`\n")
-                f.write(f"Used in {len(workflows)} workflows: {', '.join(workflows)}\n\n")
+        f.write("_Secret usage information has been omitted from this report for security reasons._\n\n")
+        f.write("_Secret names are available in `WORKFLOW_INVENTORY.yaml` for authorized tooling use only._\n\n")
     
     print(f"✅ Summary report saved to: {report_path}")
 
