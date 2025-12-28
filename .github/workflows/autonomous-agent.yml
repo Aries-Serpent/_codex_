@@ -51,14 +51,21 @@ jobs:
             --config .codex/autonomous_agent.yaml
         continue-on-error: true
       
+      - name: Verify state directory
+        if: always()
+        run: |
+          echo "=== Agent State Directory Contents ==="
+          ls -lah .codex/agent_state/ || echo "⚠️ Directory does not exist"
+        continue-on-error: true
+      
       - name: Upload Agent State
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: agent-state-${{ github.run_number }}
           path: .codex/agent_state/
           retention-days: 30
-          if-no-files-found: warn
+          if-no-files-found: error
       
       - name: Create Issue for Critical Alerts
         if: failure()
