@@ -10,7 +10,10 @@ _warnings.warn(
 
 # Re-export canonical API for backward compatibility
 try:
-    from codex_ml.tokenization.api import load_tokenizer  # noqa: F401
+    from codex_ml.tokenization.api import load_tokenizer
 except Exception:  # pragma: no cover
     # Provide a clearer import-time hint if optional deps are missing
     raise
+
+# Explicitly declare exports for backward compatibility
+__all__ = ["load_tokenizer"]
