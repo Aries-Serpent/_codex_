@@ -149,14 +149,15 @@ export GITHUB_ACTOR=test-user
 export GITHUB_SHA=abc123def456
 export PR_TITLE="Test PR"
 
+mkdir -p .codex/test-outputs
 if python3 scripts/generate_pr_followup.py 9999 \
     --immediate "Task 1" "Task 2" \
     --validation "Test 1" \
     --future "Enhancement 1" \
-    --output /tmp/test-prompt-$$.md > /dev/null 2>&1; then
+    --output .codex/test-outputs/test-prompt-$$.md > /dev/null 2>&1; then
     test_pass
     # Clean up
-    rm -f /tmp/test-prompt-$$.md
+    rm -f .codex/test-outputs/test-prompt-$$.md
 else
     test_fail "Prompt generation failed"
 fi

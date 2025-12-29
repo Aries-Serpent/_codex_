@@ -12,7 +12,9 @@
 
 **📋 Follow-Up Prompt**: [View Active Prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
 
-<!-- Note: {pr_number} will be automatically replaced by the workflow when this PR is created -->
+<!-- Note: The {pr_number} placeholder is NOT automatically replaced in this template.
+     After PR creation, the workflow will post a comment with the correct link.
+     Alternatively, manually replace {pr_number} with your actual PR number. -->
 
 ### Quick Phase Summary
 
@@ -35,7 +37,7 @@
 5. Repeat until all phases complete
 
 **For Manual Execution**:
-- Review the [complete follow-up prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
+- Review the complete follow-up prompt (link will be provided in workflow comment)
 - Follow step-by-step implementation guide
 - Run all validation commands
 - Complete 5-pass self-review before concluding

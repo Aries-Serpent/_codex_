@@ -273,3 +273,4 @@ artifacts/security/detect-secrets.txt
 /index.json
 /index.md
 *.backup
+.codex/test-outputs/

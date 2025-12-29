@@ -69,12 +69,31 @@ class GitMetadataExtractor:
     
     @staticmethod
     def get_modified_files() -> list[str]:
+        """Get list of modified files, handling different git configurations."""
         try:
+            # Try to get upstream tracking branch
+            try:
+                upstream = subprocess.check_output(
+                    ['git', 'rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'],
+                    text=True, stderr=subprocess.PIPE
+                ).strip()
+            except subprocess.CalledProcessError:
+                # Fallback to origin/main or GITHUB_BASE_REF if in CI
+                base_ref = os.environ.get('GITHUB_BASE_REF', 'main')
+                try:
+                    remote = subprocess.check_output(
+                        ['git', 'remote'], text=True, stderr=subprocess.PIPE
+                    ).strip().split('\n')[0] or 'origin'
+                except subprocess.CalledProcessError:
+                    remote = 'origin'
+                upstream = f"{remote}/{base_ref}"
+            
             output = subprocess.check_output(
-                ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+                ['git', 'diff', '--name-only', f'{upstream}...HEAD'],
                 text=True, stderr=subprocess.PIPE
             ).strip()
             files = [f for f in output.split('\n') if f]
+            
             if not files:
                 output = subprocess.check_output(
                     ['git', 'diff', '--name-only', 'HEAD'],
@@ -88,9 +107,27 @@ class GitMetadataExtractor:
     
     @staticmethod
     def get_commit_count() -> int:
+        """Get commit count, handling different git configurations."""
         try:
+            # Try to get upstream tracking branch
+            try:
+                upstream = subprocess.check_output(
+                    ['git', 'rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'],
+                    text=True, stderr=subprocess.PIPE
+                ).strip()
+            except subprocess.CalledProcessError:
+                # Fallback to origin/main or GITHUB_BASE_REF if in CI
+                base_ref = os.environ.get('GITHUB_BASE_REF', 'main')
+                try:
+                    remote = subprocess.check_output(
+                        ['git', 'remote'], text=True, stderr=subprocess.PIPE
+                    ).strip().split('\n')[0] or 'origin'
+                except subprocess.CalledProcessError:
+                    remote = 'origin'
+                upstream = f"{remote}/{base_ref}"
+            
             output = subprocess.check_output(
-                ['git', 'rev-list', '--count', 'origin/main..HEAD'],
+                ['git', 'rev-list', '--count', f'{upstream}..HEAD'],
                 text=True, stderr=subprocess.PIPE
             ).strip()
             return int(output) if output else 0
