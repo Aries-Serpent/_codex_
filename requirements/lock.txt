@@ -187,7 +187,7 @@ deprecation==2.1.0
     # via evidently
 dictdiffer==0.9.0
     # via dvc-data
-dill==0.3.8
+dill==0.4.0
     # via
     #   datasets
     #   evaluate
