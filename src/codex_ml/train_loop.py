@@ -94,7 +94,7 @@ try:
     from torch.utils.data import DataLoader, Dataset
 
     import torch
-    from torch import nn, optim
+    from torch import optim
     # Verify torch is functional
     _ = torch.Tensor
     _HAS_TORCH = True
