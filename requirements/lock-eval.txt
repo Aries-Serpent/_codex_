@@ -1,6 +1,6 @@
 # Pinned evaluation dependencies — generated for reproducibility
 # Source: requirements-eval.txt
-lm-eval==0.4.9.1
+lm-eval==0.4.9.2
 nltk==3.9.2
 pandas==2.3.3
 rouge-score==0.1.2
