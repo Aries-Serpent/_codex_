@@ -103,6 +103,16 @@ inventory:
     whitelist_duplicates: ["tokenization/sentencepiece_adapter.py"]
     notes: "Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
 
+  - module: tokenization.loader
+    legacy_path: "tokenization/loader.py"
+    canonical_path: src/tokenization/loader.py
+    owner: nlp-team
+    status: shim
+    rationale: "Temporary compatibility shim - re-exports from codex_ml.tokenization.loader with deprecation warning."
+    deprecation_date: null
+    whitelist_duplicates: ["tokenization/loader.py"]
+    notes: "Converted from exact duplicate to shim (2025-12-29). Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
+
   # === Configuration Migration (Added 2025-12-08) ===
 
   - module: config.training_minimal
@@ -206,8 +216,8 @@ policy:
     requires_investigation:
       - path: "src/tokenization/loader.py"
         duplicate_of: "tokenization/loader.py"
-        status: "pending_review"
-        notes: "Determine canonical location and remove duplicate"
+        status: "resolved"
+        notes: "Converted to shim on 2025-12-29. Legacy file now re-exports from canonical with deprecation warning."
     
     # Reference documentation
     policy_document: ".github/DUPLICATE_FILES_POLICY.md"
