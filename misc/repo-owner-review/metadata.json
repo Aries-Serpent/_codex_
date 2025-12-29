@@ -133,8 +133,21 @@
     "Files can be restored by moving back from misc/ folder",
     "Tests passing after archival confirms no broken dependencies",
     "Repository owner may delete this entire folder when comfortable",
-    "21 auto-generated follow-up prompt files restored and archived on 2025-12-29 (~2.4MB)"
+    "21 auto-generated follow-up prompt files restored and archived on 2025-12-29 (~2.4MB)",
+    "Archive created with 97.2% compression (2.4MB \u2192 67KB) on 2025-12-29"
   ],
-  "last_updated": "2025-12-29T18:28:27.711745Z",
-  "total_space_archived": "~2.44MB"
+  "last_updated": "2025-12-29T18:52:12.356871+00:00",
+  "total_space_archived": "~2.44MB",
+  "compression": {
+    "archive_file": "repo-owner-review-archive.tar.gz",
+    "archive_location": "../repo-owner-review-archive.tar.gz",
+    "created_date": "2025-12-29T18:52:12.356854+00:00",
+    "original_size": "~2.4MB",
+    "compressed_size": "67KB",
+    "compression_ratio": "97.2% (35:1)",
+    "sha256": "10e3627e69303f9956f46dc49370e4f1aa134768f0bb2d6a2faea89201ae5166",
+    "extraction_guide": "../ARCHIVE_README.md",
+    "purpose": "Enable efficient offloading and repository space management",
+    "verification_command": "sha256sum -c repo-owner-review-archive.tar.gz.sha256"
+  }
 }
