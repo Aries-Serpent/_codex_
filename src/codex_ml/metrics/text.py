@@ -4,8 +4,6 @@ import logging
 import math
 from typing import TYPE_CHECKING
 
-logger = logging.getLogger(__name__)
-
 if TYPE_CHECKING:
     import torch
 
