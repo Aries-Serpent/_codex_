@@ -211,7 +211,7 @@ duckdb==1.4.3
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-dulwich==0.24.6
+dulwich==0.25.0
     # via
     #   dvc-studio-client
     #   scmrepo
