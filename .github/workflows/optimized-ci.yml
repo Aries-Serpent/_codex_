@@ -90,7 +90,7 @@ jobs:
         run: |
           pip install uv
           uv pip install --system nox pytest pytest-xdist pytest-split
-          uv pip install --system -e ".[dev,test]" || pip install -e ".[dev,test]"
+          uv pip install --system -e ".[dev,test,monitoring]" || pip install -e ".[dev,test,monitoring]"
       
       - name: Run parallel tests (shard ${{ matrix.shard }})
         run: |
@@ -101,6 +101,14 @@ jobs:
           python -c "
           from codex_ml.cli.audit_pipeline import audit_file
           print('✓ Module import verified successfully')
+          
+          # Verify monitoring module imports
+          try:
+              from codex_ml.monitoring import system_metrics
+              print('✓ Monitoring module import verified')
+          except ImportError as e:
+              print(f'✗ Monitoring import failed: {e}')
+              raise
           "
           
           # Use pytest-split for test sharding

@@ -250,7 +250,7 @@ class AgentOrchestrator:
                 self.rate_limiter.current_requests >= self.rate_limiter.requests_per_minute
                 or self.rate_limiter.current_tokens + estimated_tokens > self.rate_limiter.tokens_per_minute
             )
-            
+
             if needs_wait:
                 # Calculate wait time while still holding lock
                 wait_time = 60 - (current_time - self.rate_limiter.window_start)
@@ -266,7 +266,7 @@ class AgentOrchestrator:
         if wait_time > 0:
             logger.info(f"⏳ Rate limit approaching, waiting {wait_time:.1f}s...")
             await asyncio.sleep(wait_time)
-            
+
             # After wait, atomically reset and increment counters for this request
             async with self._lock:
                 current_time = time.time()

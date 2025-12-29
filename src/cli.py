@@ -1,16 +1,23 @@
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 """Minimal command-line interface for running Codex training loops."""
 
+from __future__ import annotations
 
 import argparse
 import importlib
 import importlib.machinery
+import logging
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
+
+from data.registry import build as build_registered_dataset
+from logging_utils import LoggingConfig
+from metrics import accuracy as metrics_accuracy
+from omegaconf import OmegaConf
+from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
+
+logger = logging.getLogger(__name__)
 
 try:
     from hydra import compose, initialize_config_dir
@@ -18,11 +25,6 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     from config_legacy import compose, initialize_config_dir
-from data.registry import build as build_registered_dataset
-from logging_utils import LoggingConfig
-from metrics import accuracy as metrics_accuracy
-from omegaconf import OmegaConf
-from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
 PROJECT_ROOT = CLI_PACKAGE_PATH.parent

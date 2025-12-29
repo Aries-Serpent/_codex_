@@ -267,6 +267,38 @@ All operations must be logged to:
 
 ---
 
+## 🤖 Specialized Agents
+
+The repository includes specialized GitHub Copilot agents designed for specific tasks:
+
+### Available Agents
+
+| Agent | Purpose | Location | Status |
+|-------|---------|----------|--------|
+| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
+| **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
+| **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
+
+### Using Specialized Agents
+
+Activate specialized agents using the `@copilot` command:
+
+```markdown
+@copilot Use the CI Testing Agent to debug the test failure in tests/monitoring/
+```
+
+### Creating New Agents
+
+To create a new specialized agent:
+
+1. Create agent file in `.github/agents/[agent-name].md`
+2. Follow the template in [.github/agents/README.md](.github/agents/README.md)
+3. Document agent capabilities, responsibilities, and activation commands
+4. Add agent to the table above
+5. Test agent activation and behavior
+
+---
+
 ## 📞 Support
 
 **For Agents:**
