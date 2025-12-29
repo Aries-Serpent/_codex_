@@ -29,7 +29,7 @@ The code reviewer noted that these 21 files:
 
 The following 21 follow-up prompt files were restored from commit `2e0369c~1` and moved here:
 
-1. PR-2635-followup.md
+1. PR-2635-followup.md - Contains actual completion status (may have been actively used)
 2. PR-2636-followup.md
 3. PR-2637-followup.md
 4. PR-2638-followup.md
@@ -49,7 +49,10 @@ The following 21 follow-up prompt files were restored from commit `2e0369c~1` an
 18. PR-2654-followup.md
 19. PR-2655-followup.md
 20. PR-2656-followup.md
-21. PR-9999-followup.md
+21. PR-9999-followup.md - Template instantiation with placeholder PR number (test/development file)
+
+### Note on PR-9999
+This file was generated from the pr-continuation.md template but used 9999 as a placeholder PR number. It contains real commit data (5e2b236, dd00da3) from an actual PR, suggesting it was a test instantiation or the PR number was incorrectly set during generation. The actual template remains in `.github/copilot-prompts/templates/pr-continuation.md`.
 
 ## Can This Content Be Repurposed?
 
@@ -82,4 +85,4 @@ The repository owner should review these files and decide:
 - Original commit removing files: `2e0369c`
 - Commit before deletion: `2e0369c~1`
 - PR that removed files: #2639
-- Code review thread: #3616439065
+- Code review thread: https://github.com/Aries-Serpent/_codex_/pull/2639#pullrequestreview-3616439065
