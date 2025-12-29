@@ -110,7 +110,8 @@
     {
       "original_path": ".github/copilot-prompts/active/PR-*-followup.md (21 files)",
       "archived_path": "misc/repo-owner-review/auto-generated-prompts/",
-      "size": "~2.4MB (2,364 lines total)",
+      "size": "~2.4MB",
+      "size_bytes": 2516992,
       "date_moved": "2025-12-29",
       "date_restored": "2025-12-29",
       "reason": "Auto-generated bloat identified in code review (PR #2639, thread #3616439065). Files were deleted in commit 2e0369c but should have been archived per repository policy.",

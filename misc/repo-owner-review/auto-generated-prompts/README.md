@@ -29,7 +29,11 @@ The code reviewer noted that these 21 files:
 
 The following 21 follow-up prompt files were restored from commit `2e0369c~1` and moved here:
 
-1. PR-2635-followup.md - Contains actual completion status (may have been actively used)
+1. **PR-2635-followup.md** - Shows evidence of active use:
+   - Status changed to "✅ IMPLEMENTATION COMPLETE - Awaiting CI Validation"
+   - Multiple checked completion items (Priority 1 tasks marked with ✅)
+   - Contains specific completed work with commit SHAs
+   - May be valuable as example of properly utilized follow-up prompt
 2. PR-2636-followup.md
 3. PR-2637-followup.md
 4. PR-2638-followup.md
@@ -49,10 +53,19 @@ The following 21 follow-up prompt files were restored from commit `2e0369c~1` an
 18. PR-2654-followup.md
 19. PR-2655-followup.md
 20. PR-2656-followup.md
-21. PR-9999-followup.md - Template instantiation with placeholder PR number (test/development file)
+21. **PR-9999-followup.md** - Template instantiation with placeholder PR number (test/development file)
+   - Contains real commit data (5e2b236, dd00da3) from branch `copilot/fix-import-order-issue`
+   - Used 9999 as placeholder PR number, suggesting test instantiation
+   - Not a core template (actual template is in `.github/copilot-prompts/templates/pr-continuation.md`)
 
-### Note on PR-9999
-This file was generated from the pr-continuation.md template but used 9999 as a placeholder PR number. It contains real commit data (5e2b236, dd00da3) from an actual PR, suggesting it was a test instantiation or the PR number was incorrectly set during generation. The actual template remains in `.github/copilot-prompts/templates/pr-continuation.md`.
+### Note on PR-2635
+This file shows clear signs of active use during development, unlike the other generic auto-generated files. It contains:
+- Modified status line indicating implementation completion
+- Four checked Priority 1 tasks with completion indicators (✅)
+- Specific commit history with meaningful work descriptions
+- "No files modified" section suggesting it was tracking work-in-progress
+
+This file may serve as a useful example of how the follow-up prompt system should work when properly utilized, compared to the mostly-empty template instantiations.
 
 ## Can This Content Be Repurposed?
 
