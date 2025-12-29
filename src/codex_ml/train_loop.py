@@ -91,8 +91,8 @@ _TELEMETRY_JSON_ENABLED = True
 
 try:
     import torch
-    from torch import optim
     StepLR = torch.optim.lr_scheduler.StepLR
+    optim = torch.optim
     DataLoader = torch.utils.data.DataLoader
     Dataset = torch.utils.data.Dataset
     # Verify torch is functional

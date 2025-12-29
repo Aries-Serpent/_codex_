@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import types
 
-from monitoring import system_metrics as sm
+from codex_ml.monitoring import system_metrics as sm
 
 
 class _Writer:
