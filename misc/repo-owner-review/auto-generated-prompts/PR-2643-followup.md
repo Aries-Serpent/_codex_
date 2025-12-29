@@ -1,3 +1,19 @@
+---
+**⚠️ ARCHIVED FILE NOTICE**
+
+This file has been moved to `misc/repo-owner-review/auto-generated-prompts/` and is no longer active.
+It was part of 21 auto-generated follow-up prompt files identified as repository bloat in code review.
+
+- **Original Location**: `.github/copilot-prompts/active/`
+- **Date Archived**: 2025-12-29
+- **Reason**: Auto-generated template with minimal customization (see README.md in this directory)
+- **Status**: Pending repository owner review for permanent deletion
+
+The instructions below reference the old active location and should not be followed.
+This file is preserved for historical reference only.
+
+---
+
 # 🎯 PR Follow-Up Tasks - #2643
 
 **PR**: [#2643 - deps(deps): bump dulwich from 0.24.6 to 0.25.0](https://github.com/Aries-Serpent/_codex_/pull/2643)  

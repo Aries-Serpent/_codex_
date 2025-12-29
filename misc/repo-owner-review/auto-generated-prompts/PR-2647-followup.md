@@ -1,3 +1,19 @@
+---
+**⚠️ ARCHIVED FILE NOTICE**
+
+This file has been moved to `misc/repo-owner-review/auto-generated-prompts/` and is no longer active.
+It was part of 21 auto-generated follow-up prompt files identified as repository bloat in code review.
+
+- **Original Location**: `.github/copilot-prompts/active/`
+- **Date Archived**: 2025-12-29
+- **Reason**: Auto-generated template with minimal customization (see README.md in this directory)
+- **Status**: Pending repository owner review for permanent deletion
+
+The instructions below reference the old active location and should not be followed.
+This file is preserved for historical reference only.
+
+---
+
 # 🎯 PR Follow-Up Tasks - #2647
 
 **PR**: [#2647 - ci(deps): bump actions/download-artifact from 4 to 7](https://github.com/Aries-Serpent/_codex_/pull/2647)  
