@@ -586,7 +586,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.3.3
+numpy==2.4.0
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -1005,7 +1005,7 @@ safetensors==0.6.2
     #   accelerate
     #   peft
     #   transformers
-scikit-learn==1.7.2
+scikit-learn==1.8.0
     # via
     #   codex-ml (pyproject.toml)
     #   evidently
