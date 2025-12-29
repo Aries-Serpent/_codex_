@@ -53,7 +53,7 @@ jobs:
             ${{ inputs.include_bundle && '--include-bundle' || '' }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: zendesk-quantum-packages
           path: build/zendesk_quantum_packages/*.zip
