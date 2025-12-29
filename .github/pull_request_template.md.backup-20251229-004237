@@ -1,47 +1,8 @@
 # Pull Request Template
 
-> **Version:** 1.4.0  
-> **Generated:** 2025-12-29  
-> **Purpose:** Standardized PR workflow with Copilot continuation support, safety checks, and optional capability controls
-
----
-
-## 🤖 COPILOT CONTINUATION (Auto-Generated)
-
-@copilot continue with next phase tasks for this PR
-
-**📋 Follow-Up Prompt**: [View Active Prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
-
-### Quick Phase Summary
-
-**🔴 Priority 1 - Immediate** (must complete in next session):
-- Tasks will be auto-populated when PR is opened
-
-**🟡 Priority 2 - Validation** (complete after P1):
-- Validation tasks will be auto-populated
-
-**🟢 Priority 3 - Enhancement** (future scope):
-- Future enhancements will be listed here
-
-### Execution Instructions
-
-**To Continue This Work**:
-1. Comment `@copilot continue` on this PR
-2. Copilot will load the full follow-up prompt with detailed steps
-3. Execute tasks in priority order with mandatory self-review
-4. Update continuation prompt with progress
-5. Repeat until all phases complete
-
-**For Manual Execution**:
-- Review the [complete follow-up prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
-- Follow step-by-step implementation guide
-- Run all validation commands
-- Complete 5-pass self-review before concluding
-
-### Session Metrics
-
-**Progress**: Auto-tracked across sessions  
-**Latest Session**: Will be updated automatically
+> **Version:** 1.2.0  
+> **Generated:** 2025-11-06  
+> **Purpose:** Standardized PR workflow with required safety checks and optional capability controls
 
 ---
 
