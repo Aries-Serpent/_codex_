@@ -10,7 +10,7 @@ except ImportError as e:
 
     print(
         f"ERROR: Cannot import codex_ml.monitoring.system_metrics\n"
-        f"Ensure 'monitoring' extras are installed: pip install -e '.[dev,test,monitoring]'\n"
+        f"Ensure 'monitoring' extras are installed: pip install -e '.[monitoring]'\n"
         f"Original error: {e}",
         file=sys.stderr,
     )
