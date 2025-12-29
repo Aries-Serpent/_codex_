@@ -76,7 +76,7 @@ The ONLY acceptable use of `/tmp/` is for:
 Before concluding ANY work session:
 
 - [ ] **Search for /tmp/ references**: `grep -r "/tmp/" .`
-- [ ] **Verify no important files in /tmp/**: `ls -la /tmp/ | grep -v "^d"`
+- [ ] **Verify no important files in /tmp/**: `ls -la /tmp/ | grep -E "\.(md|txt|json|yaml|py)$"`
 - [ ] **Confirm all work products in repository**: Check git status
 - [ ] **No temp file references in docs**: Review documentation
 - [ ] **Clean up any /tmp/ files created**: Remove scratch files

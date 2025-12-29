@@ -136,12 +136,12 @@
     "21 auto-generated follow-up prompt files restored and archived on 2025-12-29 (~2.4MB)",
     "Archive created with 97.2% compression (2.4MB \u2192 67KB) on 2025-12-29"
   ],
-  "last_updated": "2025-12-29T18:52:12.356871+00:00",
+  "last_updated": "2025-12-29T18:52:12.356871Z",
   "total_space_archived": "~2.44MB",
   "compression": {
     "archive_file": "repo-owner-review-archive.tar.gz",
     "archive_location": "../repo-owner-review-archive.tar.gz",
-    "created_date": "2025-12-29T18:52:12.356854+00:00",
+    "created_date": "2025-12-29T18:52:12.356854Z",
     "original_size": "~2.4MB",
     "compressed_size": "67KB",
     "compression_ratio": "97.2% (35:1)",
