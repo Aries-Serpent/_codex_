@@ -1,7 +1,6 @@
 from __future__ import annotations
-logger = logging.getLogger(__name__)
-"""Unified Codex executor for local orchestration."""
 
+"""Unified Codex executor for local orchestration."""
 
 import argparse
 import logging

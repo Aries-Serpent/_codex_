@@ -1,15 +1,18 @@
 from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
+import logging
 import math
 from typing import TYPE_CHECKING
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     import torch
 
 try:  # pragma: no cover - optional dependency
     import torch as _torch
+    # Verify torch is functional
+    _ = _torch.Tensor
 except Exception:  # pragma: no cover - torch may be unavailable in minimal envs
     _torch = None  # type: ignore[assignment]
     _HAS_TORCH = False

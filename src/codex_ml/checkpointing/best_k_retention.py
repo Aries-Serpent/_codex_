@@ -5,7 +5,6 @@ Follows specification from reports/specs/_codex__Checkpoint_BestK_Retention_Spec
 """
 
 from __future__ import annotations
-logger = logging.getLogger(__name__)
 
 import json
 import logging
@@ -14,6 +13,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "CheckpointEntry",

@@ -1,6 +1,6 @@
 metadata:
-  generated_at: '2025-12-29T01:45:34.104811Z'
-  total_workflows: 49
+  generated_at: '2025-12-29T02:37:59.861461Z'
+  total_workflows: 50
   active_count: 0
   disabled_count: 0
   archived_count: 0
@@ -134,6 +134,11 @@ workflows:
 - filename: pr-checks.yml
   error: '''.github/workflows/pr-checks.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
+  status: error
+- filename: pr-followup-generator.yml
+  error: '''.github/workflows/pr-followup-generator.yml'' is not in the subpath of
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: pre-release-deployment.yml
   error: '''.github/workflows/pre-release-deployment.yml'' is not in the subpath of

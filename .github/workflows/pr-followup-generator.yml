@@ -1,0 +1,64 @@
+name: Generate PR Follow-Up Prompt
+
+on:
+  pull_request:
+    types: [opened, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number'
+        required: true
+        type: number
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          fetch-depth: 0
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Get PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Generate prompt
+        env:
+          PR_TITLE: "${{ github.event.pull_request.title || 'Manual trigger' }}"
+          GITHUB_ACTOR: "${{ github.actor }}"
+        run: |
+          python3 scripts/generate_pr_followup.py ${{ steps.pr.outputs.number }} \
+            --immediate "Complete implementation" \
+            --validation "Run tests" \
+            --future "Add enhancements"
+      
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/copilot-prompts/active/ || true
+          
+          # Check if there are changes to commit
+          if ! git diff --cached --quiet; then
+            # Pull latest changes to avoid conflicts
+            git pull --rebase origin ${{ github.head_ref }} || true
+            git commit -m "chore: auto-generate prompt for PR #${{ steps.pr.outputs.number }}"
+            git push || echo "Push failed - may need manual resolution"
+          else
+            echo "No changes to commit (prompt already exists or unchanged)"
+          fi
