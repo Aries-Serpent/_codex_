@@ -106,6 +106,24 @@
       "reason": "Historical fix documentation - fix has been applied",
       "safe_to_delete": true,
       "verification": "Documentation file - safe to archive"
+    },
+    {
+      "original_path": ".github/copilot-prompts/active/PR-*-followup.md (21 files)",
+      "archived_path": "misc/repo-owner-review/auto-generated-prompts/",
+      "size": "~2.4MB (2,364 lines total)",
+      "date_moved": "2025-12-29",
+      "date_restored": "2025-12-29",
+      "reason": "Auto-generated bloat identified in code review (PR #2639, thread #3616439065). Files were deleted in commit 2e0369c but should have been archived per repository policy.",
+      "safe_to_delete": true,
+      "verification": "Template files with no active code dependencies. Nearly identical auto-generated content.",
+      "files_count": 21,
+      "restoration_note": "Files were incorrectly deleted without following proper archival process. Restored from commit 2e0369c~1 and properly archived.",
+      "improvement_recommendations": [
+        "Extract 5-pass self-review protocol into single template",
+        "Use GitHub Issues for follow-up tracking instead",
+        "Only generate files when specific action items exist",
+        "Consider CI/CD integration for validation checks"
+      ]
     }
   ],
   "total_space_freed": "~9.1MB",
@@ -115,6 +133,6 @@
     "Tests passing after archival confirms no broken dependencies",
     "Repository owner may delete this entire folder when comfortable"
   ],
-  "last_updated": "2025-12-11T00:27:29.197351Z",
+  "last_updated": "2025-12-29T18:28:27.711745Z",
   "total_space_archived": "0.04MB"
 }
