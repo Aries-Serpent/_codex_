@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       
@@ -135,7 +135,7 @@ jobs:
       
       - name: Create issue on critical errors
         if: steps.health.outputs.has_errors == 'true' && github.ref == 'refs/heads/main'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -168,7 +168,7 @@ jobs:
       
       - name: Post status to PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -187,7 +187,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 100
       
@@ -210,7 +210,7 @@ jobs:
           cat /tmp/workflow_trend.csv
       
       - name: Upload trend data
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: workflow-trends-${{ github.run_number }}
           path: /tmp/workflow_trend.csv
