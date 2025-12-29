@@ -1,12 +1,12 @@
 # Workflow Inventory Summary
 
-**Generated**: 2025-12-28T22:30:14.734231Z
+**Generated**: 2025-12-29T02:37:59.861461Z
 
-**Total Workflows**: 49
+**Total Workflows**: 50
 
 ## Workflows by Category
 
-### Other (49 workflows)
+### Other (50 workflows)
 
 - 🔴  `agent-runtime.yml` - N/A
 - 🔴  `api-documentation.yml` - N/A
@@ -38,6 +38,7 @@
 - 🔴  `pages-mkdocs.yml` - N/A
 - 🔴  `post-merge-validation-optimized.yml` - N/A
 - 🔴  `pr-checks.yml` - N/A
+- 🔴  `pr-followup-generator.yml` - N/A
 - 🔴  `pre-release-deployment.yml` - N/A
 - 🔴  `publish_dashboard_release.yml` - N/A
 - 🔴  `ratelimit_history_prune.yml` - N/A
