@@ -65,9 +65,10 @@ are available for testing and development purposes.
 ### Must-Read Documents
 
 1. **[.codex/guardrails.md](.codex/guardrails.md)** - Operational constraints (5 min)
-2. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
-3. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
-4. **[README.md](README.md)** - Repository overview (5 min)
+2. **[.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)** - 🚨 CRITICAL: Never use /tmp/ for important files (2 min)
+3. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
+4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
+5. **[README.md](README.md)** - Repository overview (5 min)
 
 ### Reference Documents
 
