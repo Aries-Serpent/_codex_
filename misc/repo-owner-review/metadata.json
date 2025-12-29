@@ -131,8 +131,9 @@
     "All files are backed up in git history",
     "Files can be restored by moving back from misc/ folder",
     "Tests passing after archival confirms no broken dependencies",
-    "Repository owner may delete this entire folder when comfortable"
+    "Repository owner may delete this entire folder when comfortable",
+    "21 auto-generated follow-up prompt files restored and archived on 2025-12-29 (~2.4MB)"
   ],
   "last_updated": "2025-12-29T18:28:27.711745Z",
-  "total_space_archived": "0.04MB"
+  "total_space_archived": "~2.44MB"
 }
