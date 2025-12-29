@@ -46,13 +46,13 @@ def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
     guard_decision = last_decision()
     if guard_decision is not None:
         if guard_decision.fallback_reason:
-            LOG.warning(
+            LOGGER.warning(
                 "Blocking remote MLflow tracking URI '%s'; using %s",
                 guard_decision.requested_uri,
                 guard_decision.effective_uri,
             )
         elif guard_decision.allow_remote and guard_decision.requested_uri:
-            LOG.info(
+            LOGGER.info(
                 "Allowing remote MLflow tracking URI via %s=%s: %s",
                 guard_decision.allow_remote_env,
                 guard_decision.allow_remote_flag or "<empty>",
@@ -63,9 +63,9 @@ def ensure_local_tracking(default_uri: str = DEFAULT_LOCAL_URI) -> str:
 
     if mlflow is not None:
         mlflow.set_tracking_uri(effective)
-        LOG.info("Using MLflow tracking URI: %s", effective)
+        LOGGER.info("Using MLflow tracking URI: %s", effective)
     else:
-        LOG.warning("MLflow not installed; tracking URI set to %s", effective)
+        LOGGER.warning("MLflow not installed; tracking URI set to %s", effective)
     return effective
 
 
@@ -129,8 +129,8 @@ def maybe_mlflow(
         with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
             yield mlflow
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        LOGGER.warning("Exception occurred", exc_info=True)
+        LOGGER.warning("Exception occurred", exc_info=True)
         # Degrade gracefully to a no-op logger when MLflow is unavailable.
         yield _NoOpLogger()
 
