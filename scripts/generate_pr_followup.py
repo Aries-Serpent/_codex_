@@ -180,7 +180,9 @@ class PromptGenerator:
         
         return prompt
     
-    def save(self, prompt: str, pr_number: str, output_dir: Path = Path('.github/copilot-prompts/active')) -> Path:
+    def save(self, prompt: str, pr_number: str, output_dir: Path | None = None) -> Path:
+        if output_dir is None:
+            output_dir = Path('.github/copilot-prompts/active')
         output_dir.mkdir(parents=True, exist_ok=True)
         output_file = output_dir / f'PR-{pr_number}-followup.md'
         output_file.write_text(prompt)
