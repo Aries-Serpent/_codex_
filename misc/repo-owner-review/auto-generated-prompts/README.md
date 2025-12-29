@@ -10,7 +10,9 @@ This directory contains auto-generated follow-up prompt files that were previous
 **Moved By**: Copilot Agent (PR #2639)  
 **Reason**: Code review identified these as "auto-generated bloat"
 
-### Review Feedback (PR #2639, Review Thread https://github.com/Aries-Serpent/_codex_/pull/2639#pullrequestreview-3616439065)
+### Review Feedback
+
+**Review Location**: [PR #2639 Review Thread](https://github.com/Aries-Serpent/_codex_/pull/2639#pullrequestreview-3616439065)
 The code reviewer noted that these 21 files:
 1. Were nearly-identical auto-generated templates with minimal customization
 2. Each file said "No files modified" in the Files Modified section
