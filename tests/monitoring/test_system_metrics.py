@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import types
 
+from codex_ml.monitoring.system_metrics import SystemMetricsLogger
 from codex_ml.monitoring import system_metrics as sm
 
 
