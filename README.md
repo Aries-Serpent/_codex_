@@ -819,3 +819,32 @@ For issues or questions about workflow management:
 4. Contact maintainers via issues
 
 ---
+
+---
+
+## 🔐 Security & Token Management
+
+The `_codex_` repository uses **encrypted token storage** for Copilot Agent operations.
+
+### For Administrators
+
+Setup secure token storage:
+
+```bash
+python3 scripts/security/token_encryption_tool.py
+```
+
+See: [Admin Token Setup Guide](docs/admin/security/ADMIN_TOKEN_SETUP.md)
+
+### For Copilot Agent
+
+Token retrieval is automatic:
+
+```python
+from scripts.security.copilot_token_decoder import copilot_get_github_token
+
+token = copilot_get_github_token()
+# Use for GitHub API operations
+```
+
+**Security Level**: 🔐🔐🔐🔐🔐 (AES-256-GCM encryption available)
