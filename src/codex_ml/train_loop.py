@@ -90,11 +90,11 @@ ART_DIR = Path("artifacts")
 _TELEMETRY_JSON_ENABLED = True
 
 try:
-    from torch.optim.lr_scheduler import StepLR
-    from torch.utils.data import DataLoader, Dataset
-
     import torch
     from torch import optim
+    StepLR = torch.optim.lr_scheduler.StepLR
+    DataLoader = torch.utils.data.DataLoader
+    Dataset = torch.utils.data.Dataset
     # Verify torch is functional
     _ = torch.Tensor
     _HAS_TORCH = True
