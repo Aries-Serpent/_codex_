@@ -481,7 +481,7 @@ litestar==2.18.0
     # via evidently
 litestar-htmx==0.5.0
     # via litestar
-lm-eval==0.4.9.1
+lm-eval==0.4.9.2
     # via codex-ml (pyproject.toml)
 lxml==6.0.2
     # via sacrebleu

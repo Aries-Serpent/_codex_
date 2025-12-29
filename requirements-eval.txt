@@ -3,7 +3,7 @@ scikit-learn==1.7.2
 scipy==1.16.2
 statsmodels==0.14.6
 pandas==2.3.3
-lm-eval==0.4.9.1
+lm-eval==0.4.9.2
 rouge-score==0.1.2
 sacrebleu==2.5.1
 nltk==3.9.2
