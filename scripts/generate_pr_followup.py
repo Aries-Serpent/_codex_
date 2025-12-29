@@ -5,11 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+
+# Set up logging
+logging.basicConfig(level=logging.WARNING, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
 
 
 class GitMetadataExtractor:
@@ -20,9 +25,10 @@ class GitMetadataExtractor:
         try:
             return subprocess.check_output(
                 ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-                text=True, stderr=subprocess.DEVNULL
+                text=True, stderr=subprocess.PIPE
             ).strip()
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            logger.debug(f"Failed to get branch name: {e.stderr if e.stderr else str(e)}")
             return os.environ.get('GITHUB_HEAD_REF', 'unknown-branch')
     
     @staticmethod
@@ -30,9 +36,10 @@ class GitMetadataExtractor:
         try:
             return subprocess.check_output(
                 ['git', 'rev-parse', 'HEAD'],
-                text=True, stderr=subprocess.DEVNULL
+                text=True, stderr=subprocess.PIPE
             ).strip()
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            logger.debug(f"Failed to get commit SHA: {e.stderr if e.stderr else str(e)}")
             return os.environ.get('GITHUB_SHA', 'unknown')
     
     @staticmethod
@@ -41,7 +48,7 @@ class GitMetadataExtractor:
             log_format = '%H|%s|%an|%ad'
             output = subprocess.check_output(
                 ['git', 'log', f'-{count}', f'--format={log_format}', '--date=short'],
-                text=True, stderr=subprocess.DEVNULL
+                text=True, stderr=subprocess.PIPE
             ).strip()
             
             commits = []
@@ -56,7 +63,8 @@ class GitMetadataExtractor:
                             'date': parts[3],
                         })
             return commits
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            logger.debug(f"Failed to get recent commits: {e.stderr if e.stderr else str(e)}")
             return []
     
     @staticmethod
@@ -64,17 +72,18 @@ class GitMetadataExtractor:
         try:
             output = subprocess.check_output(
                 ['git', 'diff', '--name-only', 'origin/main...HEAD'],
-                text=True, stderr=subprocess.DEVNULL
+                text=True, stderr=subprocess.PIPE
             ).strip()
             files = [f for f in output.split('\n') if f]
             if not files:
                 output = subprocess.check_output(
                     ['git', 'diff', '--name-only', 'HEAD'],
-                    text=True, stderr=subprocess.DEVNULL
+                    text=True, stderr=subprocess.PIPE
                 ).strip()
                 files = [f for f in output.split('\n') if f]
             return files
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            logger.debug(f"Failed to get modified files: {e.stderr if e.stderr else str(e)}")
             return []
     
     @staticmethod
@@ -82,10 +91,11 @@ class GitMetadataExtractor:
         try:
             output = subprocess.check_output(
                 ['git', 'rev-list', '--count', 'origin/main..HEAD'],
-                text=True, stderr=subprocess.DEVNULL
+                text=True, stderr=subprocess.PIPE
             ).strip()
             return int(output) if output else 0
-        except (subprocess.CalledProcessError, ValueError):
+        except (subprocess.CalledProcessError, ValueError) as e:
+            logger.debug(f"Failed to get commit count: {e}")
             return 0
 
 

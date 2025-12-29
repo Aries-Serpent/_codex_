@@ -27,7 +27,6 @@ import logging
 import math
 from typing import Any, Literal
 
-logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 # Type alias for scheduler types

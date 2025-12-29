@@ -12,6 +12,8 @@
 
 **📋 Follow-Up Prompt**: [View Active Prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
 
+<!-- Note: {pr_number} will be automatically replaced by the workflow when this PR is created -->
+
 ### Quick Phase Summary
 
 **🔴 Priority 1 - Immediate** (must complete in next session):

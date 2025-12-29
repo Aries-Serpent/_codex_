@@ -15,8 +15,7 @@ if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic im
 else:  # pragma: no cover - exercised when MLflow is absent
     mlflow = None
 
-logger = logging.getLogger(__name__)
-LOG = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 # Default to a local, file-backed store under the repo's artifacts/ path.
 # Safe for offline runs and avoids accidental remote logging.

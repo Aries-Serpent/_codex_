@@ -247,19 +247,24 @@ else
     test_fail "README not found"
 fi
 
-# Test 19: Check for Python import errors
+# Test 20: Check for Python import errors
 test_start "No Python import errors"
 if python3 -c "
 import sys
+import importlib.util
 sys.path.insert(0, 'scripts')
 try:
-    spec = __import__('importlib.util').util.spec_from_file_location('gen', 'scripts/generate_pr_followup.py')
-    module = __import__('importlib.util').util.module_from_spec(spec)
-    # Don't execute, just check imports
+    spec = importlib.util.spec_from_file_location('gen', 'scripts/generate_pr_followup.py')
+    if spec is not None and spec.loader is not None:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
 except SystemExit:
     pass  # Expected from argparse
 except SyntaxError as e:
     print(f'Syntax error: {e}')
+    exit(1)
+except ImportError as e:
+    print(f'Import error: {e}')
     exit(1)
 " 2>/dev/null; then
     test_pass

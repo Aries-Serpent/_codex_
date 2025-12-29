@@ -6,7 +6,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency

@@ -12,8 +12,8 @@ try:
     _ = torch.Tensor
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    logger.debug(f"Failed to import or verify torch: {e}")
+    logger.warning(f"Failed to import or verify torch: {e}", exc_info=True)
     TORCH_AVAILABLE = False
     from types import ModuleType
 
