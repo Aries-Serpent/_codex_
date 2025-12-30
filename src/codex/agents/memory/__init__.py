@@ -10,19 +10,19 @@ The system uses a pluggable backend design with file-based storage by default.
 
 Examples:
     Basic usage with default SQLite backend:
-    
+
     >>> from codex.agents.memory import MemoryManager
-    >>> 
+    >>>
     >>> manager = MemoryManager(agent_id="assistant-1", session_id="session-123")
     >>> manager.store("User prefers Python over JavaScript", metadata={"importance": "high"})
     >>> memories = manager.recall("programming preferences")
     >>> print(memories[0].content)
-    
+
     Using JSONL backend for simple file-based storage:
-    
+
     >>> from codex.agents.memory import JSONLMemoryBackend, MemoryManager
     >>> from pathlib import Path
-    >>> 
+    >>>
     >>> backend = JSONLMemoryBackend(Path(".codex/memories.jsonl"))
     >>> manager = MemoryManager(backend=backend, agent_id="assistant-1")
     >>> manager.store({"user_id": "alice", "preference": "dark_mode"})

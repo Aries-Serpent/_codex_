@@ -21,18 +21,18 @@ logger = logging.getLogger(__name__)
 
 class JSONLMemoryBackend(MemoryProtocol):
     """File-based memory storage using JSONL format.
-    
+
     Simple, human-readable storage suitable for small to medium memory sets.
     Each line is a JSON object representing one memory entry.
-    
+
     Args:
         storage_path: Path to the JSONL file
     """
-    
+
     def __init__(self, storage_path: Path | str):
         self.storage_path = Path(storage_path)
         self.storage_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Ensure file exists with secure permissions
         if not self.storage_path.exists():
             # Create with owner-only permissions (0o600) for security
@@ -42,7 +42,7 @@ class JSONLMemoryBackend(MemoryProtocol):
                 0o600
             )
             os.close(fd)
-    
+
     def store(self, entry: MemoryEntry) -> None:
         """Append entry to JSONL file with file locking."""
         with open(self.storage_path, "a", encoding="utf-8") as f:
