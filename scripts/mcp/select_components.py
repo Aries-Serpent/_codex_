@@ -30,22 +30,16 @@ def expand_globs(patterns: List[str], base_dir: Path) -> Set[Path]:
             if parts[0] == '.':
                 parts = parts[1:]
             
-            # Find the first ** position
-            try:
-                star_idx = parts.index('**')
-                # Path before **
-                prefix = '/'.join(parts[:star_idx]) if star_idx > 0 else '.'
-                # Pattern after **
-                suffix_pattern = '/'.join(parts[star_idx+1:]) if star_idx < len(parts) - 1 else '*'
-                
-                prefix_path = base_dir / prefix
-                if prefix_path.exists():
-                    for path in prefix_path.rglob(suffix_pattern):
-                        if path.is_file():
-                            matched_files.add(path.relative_to(base_dir))
-            except ValueError:
-                # No ** in pattern, use simple glob
-                for path in base_dir.glob(pattern):
+            # Find the first ** position (guaranteed to exist due to if condition)
+            star_idx = parts.index('**')
+            # Path before **
+            prefix = '/'.join(parts[:star_idx]) if star_idx > 0 else '.'
+            # Pattern after **
+            suffix_pattern = '/'.join(parts[star_idx+1:]) if star_idx < len(parts) - 1 else '*'
+            
+            prefix_path = base_dir / prefix
+            if prefix_path.exists():
+                for path in prefix_path.rglob(suffix_pattern):
                     if path.is_file():
                         matched_files.add(path.relative_to(base_dir))
         else:

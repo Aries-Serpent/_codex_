@@ -21,6 +21,8 @@ class MCPPackager:
         self.scripts_dir = repo_root / "scripts" / "mcp"
         self.topics_file = self.scripts_dir / "topics.json"
         # Use .github/tmp for temp files (anti-/tmp/ protection system)
+        # This ensures continuity across sessions and avoids ephemeral storage
+        # See: docs/ANTI_TMP_PROTECTION_SYSTEM.md
         self.temp_dir = repo_root / ".github" / "tmp"
         self.temp_dir.mkdir(parents=True, exist_ok=True)
         

@@ -65,8 +65,9 @@ if [ ! -d "$SOURCE_DIR" ]; then
     exit 1
 fi
 
-# Create temp working directory
-WORK_DIR=$(mktemp -d)
+# Create temp working directory (using .github/tmp for anti-/tmp/ protection)
+WORK_DIR="$REPO_ROOT/.github/tmp/package_work_$$"
+mkdir -p "$WORK_DIR"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
 echo "=========================================="
