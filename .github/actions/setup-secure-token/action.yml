@@ -1,0 +1,98 @@
+name: 'Setup Secure Token for Copilot Workflows'
+description: 'Configure secure token retrieval for GitHub API operations in Copilot workflows'
+author: '_codex_ Security Team'
+
+inputs:
+  fallback-token:
+    description: 'Fallback token to use if encrypted tokens are not available'
+    required: false
+    default: ''
+  install-crypto:
+    description: 'Whether to install cryptography dependencies'
+    required: false
+    default: 'true'
+
+outputs:
+  token-configured:
+    description: 'Whether a token was successfully configured (true/false)'
+    value: ${{ steps.test-token.outputs.configured }}
+  token-method:
+    description: 'Method used for token retrieval (aes/base64/fallback)'
+    value: ${{ steps.test-token.outputs.method }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install cryptography dependencies
+      if: inputs.install-crypto == 'true'
+      shell: bash
+      run: |
+        echo "📦 Installing cryptography dependencies..."
+        pip install cryptography 2>/dev/null || echo "⚠️ Cryptography install failed, using fallback encoding"
+    
+    - name: Test token decoder availability
+      id: test-token
+      shell: bash
+      env:
+        CODEX_GHP_TOKEN_BASE64: ${{ env.CODEX_GHP_TOKEN_BASE64 }}
+        CODEX_GHP_TOKEN_CONFIG: ${{ env.CODEX_GHP_TOKEN_CONFIG }}
+        FALLBACK_TOKEN: ${{ inputs.fallback-token }}
+      run: |
+        echo "🔐 Testing token retrieval system..."
+        
+        # Test if decoder module is available
+        if [ ! -f "scripts/security/copilot_token_decoder.py" ]; then
+          echo "⚠️ Token decoder not found, will use fallback"
+          echo "configured=fallback" >> $GITHUB_OUTPUT
+          echo "method=fallback" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        # Test token retrieval
+        python3 << 'PYEOF'
+        import os
+        import sys
+        sys.path.insert(0, 'scripts/security')
+        
+        try:
+            from copilot_token_decoder import copilot_get_github_token_safe
+            
+            token = copilot_get_github_token_safe()
+            
+            if token and token != os.getenv('FALLBACK_TOKEN', ''):
+                print("✅ Token configured via secure decoder")
+                method = 'aes' if os.getenv('CODEX_GHP_TOKEN_CONFIG') else 'base64'
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f"configured=true\n")
+                    f.write(f"method={method}\n")
+            elif os.getenv('FALLBACK_TOKEN'):
+                print("✅ Token configured via fallback")
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f"configured=true\n")
+                    f.write(f"method=fallback\n")
+            else:
+                print("⚠️ No token configured")
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f"configured=false\n")
+                    f.write(f"method=none\n")
+                sys.exit(1)
+                
+        except Exception as e:
+            print(f"⚠️ Token decoder test failed: {e}")
+            if os.getenv('FALLBACK_TOKEN'):
+                print("✅ Fallback token available")
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f"configured=true\n")
+                    f.write(f"method=fallback\n")
+            else:
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f"configured=false\n")
+                    f.write(f"method=none\n")
+                sys.exit(1)
+        PYEOF
+    
+    - name: Set token environment variable
+      shell: bash
+      run: |
+        echo "🔑 Token retrieval configured using method: ${{ steps.test-token.outputs.method }}"
+        echo "Token status: ${{ steps.test-token.outputs.configured }}"

@@ -65,9 +65,10 @@ are available for testing and development purposes.
 ### Must-Read Documents
 
 1. **[.codex/guardrails.md](.codex/guardrails.md)** - Operational constraints (5 min)
-2. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
-3. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
-4. **[README.md](README.md)** - Repository overview (5 min)
+2. **[.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)** - 🚨 CRITICAL: Never use /tmp/ for important files (2 min)
+3. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
+4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
+5. **[README.md](README.md)** - Repository overview (5 min)
 
 ### Reference Documents
 
@@ -264,6 +265,38 @@ All operations must be logged to:
 - ❌ Make assumptions
 - ❌ Skip documentation
 - ❌ Ignore warnings
+
+---
+
+## 🤖 Specialized Agents
+
+The repository includes specialized GitHub Copilot agents designed for specific tasks:
+
+### Available Agents
+
+| Agent | Purpose | Location | Status |
+|-------|---------|----------|--------|
+| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
+| **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
+| **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
+
+### Using Specialized Agents
+
+Activate specialized agents using the `@copilot` command:
+
+```markdown
+@copilot Use the CI Testing Agent to debug the test failure in tests/monitoring/
+```
+
+### Creating New Agents
+
+To create a new specialized agent:
+
+1. Create agent file in `.github/agents/[agent-name].md`
+2. Follow the template in [.github/agents/README.md](.github/agents/README.md)
+3. Document agent capabilities, responsibilities, and activation commands
+4. Add agent to the table above
+5. Test agent activation and behavior
 
 ---
 

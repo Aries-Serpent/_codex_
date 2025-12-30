@@ -5,9 +5,9 @@
    - src/codex/ - Core CLI and utilities
    - src/codex_ml/ - ML training and evaluation framework
    - src/services/ - Service integrations (GitHub, MCP, workflows)
-   
+
    For imports, use: from src.services.workflow import WorkflowInventory
-   
+
     For a complete navigation guide, see the AGENTS document in the repo root
     and, if present, .codex/ai_agent_manifest.json.
 """

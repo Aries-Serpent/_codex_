@@ -49,6 +49,13 @@ All pull requests are automatically tested via GitHub Actions (`.github/workflow
 3. Ensure no test failures
 4. Add tests for new functionality
 5. Update documentation if needed
+6. **🚨 CRITICAL: Verify no /tmp/ violations** - See [.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)
+   ```bash
+   # Check for /tmp/ references
+   git diff --cached | grep -i "/tmp/"
+   # Verify no important files in /tmp/
+   ls -la /tmp/ | grep -E "\.(md|txt|json|yaml|py)$"
+   ```
 
 ## Using Operational Templates
 

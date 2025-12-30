@@ -1,10 +1,26 @@
-# 🎯 PR Follow-Up Tasks - #2636
+---
+**⚠️ ARCHIVED FILE NOTICE**
 
-**PR**: [#2636 - Potential fix for code scanning alert no. 2273: Unused global variable](https://github.com/Aries-Serpent/_codex_/pull/2636)  
-**Branch**: `alert-autofix-2271`  
-**Author**: @mbaetiong  
+This file has been moved to `misc/repo-owner-review/auto-generated-prompts/` and is no longer active.
+It was part of 21 auto-generated follow-up prompt files identified as repository bloat in code review.
+
+- **Original Location**: `.github/copilot-prompts/active/`
+- **Date Archived**: 2025-12-29
+- **Reason**: Auto-generated template with minimal customization (see README.md in this directory)
+- **Status**: Pending repository owner review for permanent deletion
+
+The instructions below reference the old active location and should not be followed.
+This file is preserved for historical reference only.
+
+---
+
+# 🎯 PR Follow-Up Tasks - #2652
+
+**PR**: [#2652 - ci(deps): bump actions/github-script from 7 to 8](https://github.com/Aries-Serpent/_codex_/pull/2652)  
+**Branch**: `dependabot/github_actions/actions/github-script-8`  
+**Author**: @dependabot[bot]  
 **Date**: 2025-12-29  
-**Commit**: [`8f27fb6c3919ca398146937e42ad0fc204e80339`](https://github.com/Aries-Serpent/_codex_/commit/8f27fb6c3919ca398146937e42ad0fc204e80339)  
+**Commit**: [`189ad1394f2189b801f9fd85587d8efb3651fed4`](https://github.com/Aries-Serpent/_codex_/commit/189ad1394f2189b801f9fd85587d8efb3651fed4)  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -12,9 +28,9 @@
 ## 📋 PREVIOUS SESSION SUMMARY
 
 ### Completed Work
-- [`8f27fb6c`] Potential fix for code scanning alert no. 2273: Unused global variable (Statix, 2025-12-28)
-- [`85f97d99`] Potential fix for code scanning alert no. 2271: Unused global variable (Statix, 2025-12-28)
-- [`4bd747ca`] chore(ci): update workflow inventory [skip ci] (github-actions[bot], 2025-12-29)
+- [`189ad139`] ci(deps): bump actions/github-script from 7 to 8 (dependabot[bot], 2025-12-29)
+- [`db6fb8d7`] chore(ci): update workflow inventory [skip ci] (github-actions[bot], 2025-12-29)
+- [`6238b1fc`] Merge pull request #2637 from Aries-Serpent/alert-autofix-2277 (Statix, 2025-12-28)
 
 ### Files Modified
 No files modified
@@ -92,9 +108,9 @@ echo "Add validation commands"
 
 ## 🤖 COPILOT AGENT INSTRUCTIONS
 
-**When you see `@copilot continue` in PR #2636:**
+**When you see `@copilot continue` in PR #2652:**
 
-1. Load this prompt from `.github/copilot-prompts/active/PR-2636-followup.md`
+1. Load this prompt from `.github/copilot-prompts/active/PR-2652-followup.md`
 2. Execute Priority 1 tasks in order, validating each
 3. Then execute Priority 2 tasks
 4. Review Priority 3 tasks
@@ -109,4 +125,4 @@ echo "Add validation commands"
 
 **Generated**: 2025-12-29  
 **Template Version**: 2.0.0  
-**Last Updated**: 2025-12-29 03:44:29
+**Last Updated**: 2025-12-29 09:36:21

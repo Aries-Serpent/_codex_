@@ -78,3 +78,4 @@ Comment `@copilot continue` on any PR to trigger continuation.
 - **Main Template**: `.github/pull_request_template.md`
 - **Generator Script**: `scripts/generate_pr_followup.py`
 - **Auto-Generation Workflow**: `.github/workflows/pr-followup-generator.yml`
+- **🚨 CRITICAL Policy**: `.github/TEMPORARY_FILES_POLICY.md` - Never store important files in /tmp/

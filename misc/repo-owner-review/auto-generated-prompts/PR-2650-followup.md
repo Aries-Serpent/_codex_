@@ -1,10 +1,26 @@
-# 🎯 PR Follow-Up Tasks - #9999
+---
+**⚠️ ARCHIVED FILE NOTICE**
 
-**PR**: [#9999 - PR #9999](https://github.com/Aries-Serpent/_codex_/pull/9999)  
-**Branch**: `copilot/fix-import-order-issue`  
-**Author**: @copilot-swe-agent[bot]  
+This file has been moved to `misc/repo-owner-review/auto-generated-prompts/` and is no longer active.
+It was part of 21 auto-generated follow-up prompt files identified as repository bloat in code review.
+
+- **Original Location**: `.github/copilot-prompts/active/`
+- **Date Archived**: 2025-12-29
+- **Reason**: Auto-generated template with minimal customization (see README.md in this directory)
+- **Status**: Pending repository owner review for permanent deletion
+
+The instructions below reference the old active location and should not be followed.
+This file is preserved for historical reference only.
+
+---
+
+# 🎯 PR Follow-Up Tasks - #2650
+
+**PR**: [#2650 - deps(deps): bump mypy from 1.17.1 to 1.19.1](https://github.com/Aries-Serpent/_codex_/pull/2650)  
+**Branch**: `dependabot/pip/mypy-1.19.1`  
+**Author**: @dependabot[bot]  
 **Date**: 2025-12-29  
-**Commit**: [`5e2b236d30729d191a929d16a8745cdb3dca1d3a`](https://github.com/Aries-Serpent/_codex_/commit/5e2b236d30729d191a929d16a8745cdb3dca1d3a)  
+**Commit**: [`3f7085173c2e4a0aee3d87848a453e5f3167ded2`](https://github.com/Aries-Serpent/_codex_/commit/3f7085173c2e4a0aee3d87848a453e5f3167ded2)  
 **Status**: 🔄 ACTIVE
 
 ---
@@ -12,9 +28,9 @@
 ## 📋 PREVIOUS SESSION SUMMARY
 
 ### Completed Work
-- [`5e2b236d`] fix: address second round of code review feedback (copilot-swe-agent[bot], 2025-12-29)
-- [`dd00da3a`] Merge branch 'main' into copilot/fix-import-order-issue (Statix, 2025-12-28)
-- [`bec45c9a`] chore(ci): update workflow inventory [skip ci] (github-actions[bot], 2025-12-29)
+- [`3f708517`] deps(deps): bump mypy from 1.17.1 to 1.19.1 (dependabot[bot], 2025-12-29)
+- [`db6fb8d7`] chore(ci): update workflow inventory [skip ci] (github-actions[bot], 2025-12-29)
+- [`6238b1fc`] Merge pull request #2637 from Aries-Serpent/alert-autofix-2277 (Statix, 2025-12-28)
 
 ### Files Modified
 No files modified
@@ -24,7 +40,7 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Test
+- [ ] Complete implementation
 
 **Validation**: 
 ```bash
@@ -32,10 +48,10 @@ echo "Add validation commands"
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Run tests
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Add enhancements
 
 ---
 
@@ -92,9 +108,9 @@ echo "Add validation commands"
 
 ## 🤖 COPILOT AGENT INSTRUCTIONS
 
-**When you see `@copilot continue` in PR #9999:**
+**When you see `@copilot continue` in PR #2650:**
 
-1. Load this prompt from `.github/copilot-prompts/active/PR-9999-followup.md`
+1. Load this prompt from `.github/copilot-prompts/active/PR-2650-followup.md`
 2. Execute Priority 1 tasks in order, validating each
 3. Then execute Priority 2 tasks
 4. Review Priority 3 tasks
@@ -109,4 +125,4 @@ echo "Add validation commands"
 
 **Generated**: 2025-12-29  
 **Template Version**: 2.0.0  
-**Last Updated**: 2025-12-29 03:05:55
+**Last Updated**: 2025-12-29 09:35:31

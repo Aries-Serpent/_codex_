@@ -1,0 +1,8 @@
+# _codex_ Token Security System Requirements
+# Install with: pip install -r scripts/security/requirements.txt
+
+# Core encryption library
+cryptography>=41.0.0
+
+# Alternative (lighter weight, optional)
+# pycryptodome>=3.19.0

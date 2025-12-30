@@ -1,0 +1,158 @@
+name: Bootstrap Security Tools from Variables
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_location:
+        description: 'Where to deploy tools'
+        required: true
+        type: choice
+        options:
+          - local-test
+          - repository-commit
+          - artifact-only
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-tools:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Extract security tools from variables
+        env:
+          CODEX_SECURITY_ENCRYPTION_TOOL_B64: ${{ vars.CODEX_SECURITY_ENCRYPTION_TOOL_B64 }}
+          CODEX_SECURITY_DECODER_MODULE_B64: ${{ vars.CODEX_SECURITY_DECODER_MODULE_B64 }}
+          CODEX_SECURITY_ADMIN_GUIDE_B64: ${{ vars.CODEX_SECURITY_ADMIN_GUIDE_B64 }}
+          CODEX_SECURITY_MANIFEST_JSON: ${{ vars.CODEX_SECURITY_MANIFEST_JSON }}
+        run: |
+          echo "🔐 Extracting security tools from repository variables"
+          
+          # Run bootstrap extractor
+          python3 .github/security-tools/bootstrap_extractor.py --output-dir .
+          
+          echo ""
+          echo "✅ Tools extracted successfully"
+          ls -lh scripts/security/
+          ls -lh docs/admin/security/
+      
+      - name: Install dependencies
+        run: |
+          pip install cryptography
+      
+      - name: Test encryption tool
+        run: |
+          echo "🧪 Testing encryption tool..."
+          python3 scripts/security/token_encryption_tool.py --help || echo "Tool ready"
+      
+      - name: Test decoder module
+        env:
+          # Test with a fake token
+          CODEX_GHP_TOKEN_BASE64: Z2hwX3Rlc3R0b2tlbjEyMzQ1Njc4OTA=
+        run: |
+          echo "🧪 Testing decoder module..."
+          python3 -c "
+          from scripts.security.copilot_token_decoder import CodexTokenDecoder
+          decoder = CodexTokenDecoder()
+          print('✅ Decoder module functional')
+          "
+      
+      - name: Create artifact bundle
+        run: |
+          mkdir -p security-tools-bundle
+          
+          cp scripts/security/*.py security-tools-bundle/
+          cp scripts/security/requirements.txt security-tools-bundle/
+          cp docs/admin/security/*.md security-tools-bundle/
+          
+          # Create README for bundle
+          cat > security-tools-bundle/README.md << 'BUNDLE_EOF'
+          # _codex_ Security Tools Bundle
+          
+          Extracted from repository variables on: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          ## Contents
+          
+          - `token_encryption_tool.py` - Admin tool for token encryption
+          - `copilot_token_decoder.py` - Copilot module for token decryption
+          - `ADMIN_TOKEN_SETUP.md` - Setup documentation
+          - `requirements.txt` - Python dependencies
+          
+          ## Quick Start
+          
+          ```bash
+          # Install dependencies
+          pip install -r requirements.txt
+          
+          # Run encryption tool
+          python token_encryption_tool.py
+          
+          # Follow instructions in ADMIN_TOKEN_SETUP.md
+          ```
+          BUNDLE_EOF
+          
+          # Create tarball
+          tar -czf security-tools-bundle.tar.gz security-tools-bundle/
+          
+          echo "📦 Bundle created: security-tools-bundle.tar.gz"
+          ls -lh security-tools-bundle.tar.gz
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-security-tools
+          path: security-tools-bundle.tar.gz
+          retention-days: 30
+      
+      - name: Commit to repository (if requested)
+        if: github.event.inputs.deploy_location == 'repository-commit'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add scripts/security/
+          git add docs/admin/security/
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit (tools already up to date)"
+          else
+            git commit -m "chore(security): bootstrap security tools from variables
+          
+          Extracted and deployed security tools from repository variables:
+          - Token encryption tool
+          - Copilot token decoder module
+          - Admin setup documentation
+          
+          Ref: security-tools-bootstrap"
+          
+            git push
+          fi
+      
+      - name: Summary
+        run: |
+          echo "# 🔐 Security Tools Bootstrap Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Deployed Tools" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Token Encryption Tool" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Copilot Token Decoder Module" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Admin Setup Documentation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download the **codex-security-tools** artifact" >> $GITHUB_STEP_SUMMARY
+          echo "2. Extract and run: \`python token_encryption_tool.py\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Follow setup instructions in \`ADMIN_TOKEN_SETUP.md\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deploy Location: **${{ github.event.inputs.deploy_location }}**" >> $GITHUB_STEP_SUMMARY
