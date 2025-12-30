@@ -100,7 +100,7 @@ echo ""
 echo "🗑️  Step 4: Deleting caches older than 7 days..."
 echo ""
 
-SEVEN_DAYS_AGO=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-7d +%Y-%m-%dT%H:%M:%SZ)
+SEVEN_DAYS_AGO=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v -7d +%Y-%m-%dT%H:%M:%SZ)
 
 jq -r --arg cutoff "$SEVEN_DAYS_AGO" '.[] | select(.createdAt < $cutoff) | .id' "$TEMP_DIR/cache_list.json" > "$TEMP_DIR/old_cache_ids.txt"
 

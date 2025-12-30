@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 """
 Component Selection Tool for ChatGPT Project Packaging
 Filters repository files by topic or custom glob patterns
@@ -9,7 +9,6 @@ import json
 import sys
 from pathlib import Path
 from typing import List, Set
-import fnmatch
 
 
 def load_topics(topics_file: Path) -> dict:
@@ -30,8 +29,15 @@ def expand_globs(patterns: List[str], base_dir: Path) -> Set[Path]:
             if parts[0] == '.':
                 parts = parts[1:]
             
-            # Find the first ** position (guaranteed to exist due to if condition)
-            star_idx = parts.index('**')
+            # Find the first ** position in the path parts
+            try:
+                star_idx = parts.index('**')
+            except ValueError:
+                # Pattern contains '**' but not as a separate path segment; use rglob
+                for path in base_dir.rglob(pattern):
+                    if path.is_file():
+                        matched_files.add(path.relative_to(base_dir))
+                continue
             # Path before **
             prefix = '/'.join(parts[:star_idx]) if star_idx > 0 else '.'
             # Pattern after **
@@ -134,9 +140,12 @@ def main():
         print(f"File list written to: {args.output}")
         return 0
         
-    except Exception as e:
+    except (ValueError, OSError, IOError) as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
+    except KeyboardInterrupt:
+        print("\nInterrupted by user", file=sys.stderr)
+        return 130
 
 
 if __name__ == '__main__':

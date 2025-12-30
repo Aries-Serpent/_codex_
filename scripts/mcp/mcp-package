@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 """
 MCP Package CLI - User-friendly interface for ChatGPT Project packaging
 Allows Human Admin to easily request any part of the codebase to be packaged
