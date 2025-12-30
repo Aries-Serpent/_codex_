@@ -20,6 +20,9 @@ class MCPPackager:
         self.repo_root = repo_root
         self.scripts_dir = repo_root / "scripts" / "mcp"
         self.topics_file = self.scripts_dir / "topics.json"
+        # Use .github/tmp for temp files (anti-/tmp/ protection system)
+        self.temp_dir = repo_root / ".github" / "tmp"
+        self.temp_dir.mkdir(parents=True, exist_ok=True)
         
     def list_topics(self):
         """List all available predefined topics"""
@@ -79,7 +82,7 @@ class MCPPackager:
         
         # Step 1: Select files
         print("Step 1/4: Selecting files...")
-        temp_filelist = Path("/tmp/mcp_filelist.txt")
+        temp_filelist = self.temp_dir / "mcp_filelist.txt"
         
         select_cmd = [
             "python", str(self.scripts_dir / "select_components.py"),
@@ -123,7 +126,7 @@ class MCPPackager:
         
         # Step 2: Stage files
         print("Step 2/4: Staging files...")
-        stage_dir = Path("/tmp/mcp_stage")
+        stage_dir = self.temp_dir / "mcp_stage"
         if stage_dir.exists():
             shutil.rmtree(stage_dir)
         stage_dir.mkdir(parents=True)
