@@ -152,6 +152,41 @@ This creates an HTML interface specifically designed for ChatGPT 5.1 Agent mode 
 - Machine-readable command outputs
 - Tokenized workflow execution
 
+### 📦 Packaging for ChatGPT Projects
+
+Package any part of the codebase for ChatGPT Project uploads with the MCP Package System:
+
+```bash
+# List available topics
+./scripts/mcp/mcp-package --list
+
+# Package a topic (agents, docs, mcp, workflows, testing, security, etc.)
+./scripts/mcp/mcp-package --topic agents
+
+# Custom package with specific files
+./scripts/mcp/mcp-package --custom "agents/**/*.py,tests/agents/**/*.py"
+
+# Preview before creating
+./scripts/mcp/mcp-package --topic mcp --dry-run
+```
+
+**Features**:
+- **9 predefined topics** covering all major capabilities
+- **Flat-structure packages** optimized for ChatGPT
+- **Automatic manifest generation** with SHA256 hashes and metadata
+- **GitHub Actions workflow** with dropdown menu selection
+- **Size validation** and duplicate detection
+
+**Output**: Packages include `manifest.json`, `README_dataset.md`, `index.md`, and flattened files (`src__agents__file.py`)
+
+**Documentation**:
+- [Quick Start Guide](docs/mcp/QUICK_START.md) - Get started in 5 minutes
+- [Packaging Guide](docs/mcp/PACKAGING_GUIDE.md) - Complete packaging workflows
+- [Packageable Capabilities](docs/mcp/PACKAGEABLE_CAPABILITIES.md) - Methodology transfer framework
+- [Advanced Features Planset](docs/mcp/ADVANCED_FEATURES_PLANSET.md) - Future enhancements roadmap
+
+**Automated Workflow**: Actions → Build ChatGPT Project Package → Select topic from dropdown
+
 ---
 
 ## Status & CI Badges
