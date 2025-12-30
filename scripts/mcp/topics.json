@@ -28,5 +28,30 @@
     ".github/workflows/**",
     ".github/scripts/**",
     ".github/copilot-prompts/**"
+  ],
+  "python_dev": [
+    "agents/workflow_navigator.py",
+    "agents/mental_mapping.py",
+    "agents/developer_orchestrator.py",
+    "tests/agents/test_workflow*.py",
+    "tests/agents/test_mental*.py",
+    "docs/agents/*workflow*.md",
+    "docs/agents/*development*.md"
+  ],
+  "testing": [
+    "tests/**",
+    "pytest.ini",
+    "pyproject.toml",
+    "noxfile.py",
+    "tests/conftest.py",
+    "docs/*test*.md",
+    ".github/workflows/*test*.yml"
+  ],
+  "security": [
+    "agents/exceptions.py",
+    ".github/workflows/*security*.yml",
+    ".github/workflows/*scan*.yml",
+    "docs/*security*.md",
+    "docs/mcp/MCP_SECURITY_GUIDE.md"
   ]
 }

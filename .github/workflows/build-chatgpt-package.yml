@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: 'Topic subset to package (zendesk, agents, quantum, docs, mcp, workflows)'
+        description: 'Topic subset to package (or select "custom" to use glob_filters)'
         required: true
         type: choice
         options:
@@ -14,6 +14,10 @@ on:
           - docs
           - mcp
           - workflows
+          - python_dev
+          - testing
+          - security
+          - custom
       glob_filters:
         description: 'Optional comma-separated globs to override topic (e.g., "src/**/*.py,docs/*.md")'
         required: false
@@ -63,6 +67,10 @@ jobs:
             python scripts/mcp/select_components.py \
               --overrides "${{ inputs.glob_filters }}" \
               --output /tmp/filelist.txt
+          elif [ "${{ inputs.topic }}" = "custom" ]; then
+            echo "Error: 'custom' topic selected but no glob_filters provided"
+            echo "Please provide glob_filters when using custom topic"
+            exit 1
           else
             echo "Using topic: ${{ inputs.topic }}"
             python scripts/mcp/select_components.py \
@@ -158,6 +166,19 @@ jobs:
           - **Files**: ${{ steps.select.outputs.file_count }}
           - **Size**: ${{ steps.size_check.outputs.size_mb }} MB
           
+          ### Available Topics
+          The workflow supports packaging the following capability topics:
+          - **zendesk** - Zendesk API integration patterns
+          - **agents** - Agent-based system architecture
+          - **quantum** - Quantum game theory application
+          - **docs** - All documentation
+          - **mcp** - MCP packaging system itself
+          - **workflows** - CI/CD workflow optimization
+          - **python_dev** - Python development methodologies (NEW)
+          - **testing** - TDD methodology and test patterns (NEW)
+          - **security** - Security patterns and scanning (NEW)
+          - **custom** - Use with glob_filters for ad-hoc selection
+          
           ### Validation
           - ✅ Manifest valid
           - ✅ No duplicate flat names
@@ -189,6 +210,7 @@ jobs:
           
           ### Resources
           - [Packaging Guide](docs/mcp/PACKAGING_GUIDE.md)
+          - [Packageable Capabilities](docs/mcp/PACKAGEABLE_CAPABILITIES.md)
           - [System Prompt Template](docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md)
           EOF
       
