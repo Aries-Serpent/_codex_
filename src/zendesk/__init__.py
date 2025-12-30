@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from src.zendesk.api_client import ZendeskAPIClient, ZendeskConfig
-from src.zendesk.json_generator import (
+from .api_client import ZendeskAPIClient, ZendeskConfig
+from .json_generator import (
     PLACEHOLDER_PATTERN,
     ScriptTemplate,
     TemplateVariable,
