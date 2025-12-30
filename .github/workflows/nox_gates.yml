@@ -22,8 +22,9 @@ jobs:
           path: |
             ~/.cache/pip
             ~/.cache/nox
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          key: ${{ runner.os }}-${{ github.workflow }}-pip-nox-${{ hashFiles('**/requirements*.txt', 'pyproject.toml', 'noxfile.py') }}
           restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-pip-nox-
             ${{ runner.os }}-pip-
       
       - name: Install nox and deps

@@ -54,8 +54,9 @@ jobs:
         with:
           path: |
             ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          key: ${{ runner.os }}-${{ github.workflow }}-dependency-scan-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
           restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-dependency-scan-pip-
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
@@ -218,8 +219,9 @@ jobs:
         with:
           path: |
             ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          key: ${{ runner.os }}-${{ github.workflow }}-policy-check-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
           restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-policy-check-pip-
             ${{ runner.os }}-pip-
 
       - name: Install project dependencies
