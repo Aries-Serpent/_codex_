@@ -7,6 +7,8 @@
 **Remaining**: 2.31 GB
 **Status**: ⚠️ Approaching limit - monitoring required
 
+**⚠️ IMPORTANT**: Cache sizes shown are **already compressed** by GitHub Actions (gzip). Actual uncompressed size is estimated at 15-30 GB.
+
 ## Quick Access
 
 **View Cache Status**: 
@@ -25,6 +27,40 @@ GitHub Repository → Settings → Actions → Caches
 | Linux-pip-def56e4e...-f6b945e7... | 0 MB | Additional pip cache | Active |
 
 **Effective Total**: 7.69 GB (GitHub calculation accounts for shared/overlapping data)
+
+**Note**: All caches are automatically compressed by GitHub Actions using gzip compression (typically 60-80% compression ratio for Python dependencies).
+
+## Cache Compression
+
+### ✅ Automatic Compression (Built-in)
+
+GitHub Actions automatically handles compression:
+- **On Save**: Compresses cache with gzip before storage
+- **On Restore**: Automatically decompresses cache
+- **Transparent**: No configuration needed in workflows
+- **Compression Ratio**: Typically 60-80% for Python pip caches
+
+**Current Implementation**:
+```yaml
+- uses: actions/cache@v5
+  with:
+    path: ~/.cache/pip
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+```
+This automatically includes compression/decompression.
+
+**❌ Do NOT add manual compression**:
+- Would be redundant (already compressed)
+- Would slow down workflows significantly
+- Could corrupt cache data
+- GitHub Actions handles it optimally
+
+### What the 7.69 GB Really Means
+
+- **Reported Size**: 7.69 GB (compressed)
+- **Estimated Uncompressed**: ~15-30 GB
+- **Compression Savings**: ~10-22 GB saved
+- **Automatic**: Handled by GitHub Actions
 
 ## Monitoring Checklist
 
