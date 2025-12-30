@@ -1,0 +1,172 @@
+# MCP Cache Warming Workflow (Example Template)
+# 
+# This workflow warms the dependency cache for faster CI/CD runs
+# by pre-downloading and caching Python wheels, npm packages, and Playwright browsers.
+#
+# Schedule: Daily at 3:15 AM UTC (off-peak hours)
+# Manual trigger: Available via workflow_dispatch
+#
+# NOTE: This is an EXAMPLE template. Copy to .github/workflows/ and customize as needed.
+
+name: MCP Cache Warming
+
+on:
+  schedule:
+    # Run daily at 3:15 AM UTC (off-peak)
+    - cron: '15 3 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Cache targets to warm (comma-separated: python,node,playwright)'
+        required: false
+        default: 'python,playwright'
+      force:
+        description: 'Force rebuild even if cache exists'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  CACHE_VERSION: v1
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+
+jobs:
+  warm-python-cache:
+    name: Warm Python Wheels Cache
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'python') || github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Cache Python wheels
+        id: cache-wheels
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/pip-tools
+          key: wheels-${{ runner.os }}-py${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            wheels-${{ runner.os }}-py${{ env.PYTHON_VERSION }}-
+      
+      - name: Install dependencies and warm cache
+        if: steps.cache-wheels.outputs.cache-hit != 'true' || github.event.inputs.force == 'true'
+        run: |
+          echo "📦 Installing dependencies to warm cache..."
+          pip install --upgrade pip wheel setuptools
+          
+          # Install all requirement files
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
+          
+          if [ -f requirements-test.txt ]; then
+            pip install -r requirements-test.txt
+          fi
+          
+          echo "✅ Python cache warmed successfully"
+      
+      - name: Generate cache report
+        run: |
+          echo "## Python Cache Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Hit**: ${{ steps.cache-wheels.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Python Version**: ${{ env.PYTHON_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Size**: $(du -sh ~/.cache/pip | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package Count**: $(pip list | wc -l)" >> $GITHUB_STEP_SUMMARY
+
+  warm-playwright-cache:
+    name: Warm Playwright Browsers Cache
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'playwright') || github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+      
+      - name: Install Playwright and browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true' || github.event.inputs.force == 'true'
+        run: |
+          echo "🎭 Installing Playwright browsers..."
+          pip install playwright pytest-playwright
+          
+          # Install only Chromium to save space
+          playwright install chromium
+          playwright install-deps chromium
+          
+          echo "✅ Playwright cache warmed successfully"
+      
+      - name: Generate cache report
+        run: |
+          echo "## Playwright Cache Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Hit**: ${{ steps.cache-playwright.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Size**: $(du -sh ~/.cache/ms-playwright | cut -f1)" >> $GITHUB_STEP_SUMMARY
+
+  cleanup-old-caches:
+    name: Cleanup Old Caches
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    
+    steps:
+      - name: Cleanup caches older than 14 days
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const cutoff = Date.now() - (14 * 24 * 60 * 60 * 1000);
+            let deletedCount = 0;
+            
+            for (const cache of caches.data.actions_caches) {
+              const createdAt = new Date(cache.created_at).getTime();
+              
+              if (createdAt < cutoff) {
+                try {
+                  await github.rest.actions.deleteActionsCacheById({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    cache_id: cache.id
+                  });
+                  console.log(`Deleted cache: ${cache.key}`);
+                  deletedCount++;
+                } catch (error) {
+                  console.log(`Failed to delete cache: ${error.message}`);
+                }
+              }
+            }
+            
+            console.log(`Total caches deleted: ${deletedCount}`);
