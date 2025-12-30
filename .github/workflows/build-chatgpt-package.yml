@@ -1,0 +1,206 @@
+name: Build ChatGPT Project Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Topic subset to package (zendesk, agents, quantum, docs, mcp, workflows)'
+        required: true
+        type: choice
+        options:
+          - zendesk
+          - agents
+          - quantum
+          - docs
+          - mcp
+          - workflows
+      glob_filters:
+        description: 'Optional comma-separated globs to override topic (e.g., "src/**/*.py,docs/*.md")'
+        required: false
+        type: string
+      output_name:
+        description: 'Output zip filename (default: package_<topic>.zip)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package Repository Subset
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install jq for manifest validation
+        run: sudo apt-get update && sudo apt-get install -y jq
+      
+      - name: Determine output filename
+        id: output
+        run: |
+          if [ -n "${{ inputs.output_name }}" ]; then
+            OUTPUT="${{ inputs.output_name }}"
+          else
+            OUTPUT="package_${{ inputs.topic }}.zip"
+          fi
+          echo "filename=$OUTPUT" >> $GITHUB_OUTPUT
+          echo "Output will be: $OUTPUT"
+      
+      - name: Resolve file list
+        id: select
+        run: |
+          if [ -n "${{ inputs.glob_filters }}" ]; then
+            echo "Using custom glob filters: ${{ inputs.glob_filters }}"
+            python scripts/mcp/select_components.py \
+              --overrides "${{ inputs.glob_filters }}" \
+              --output /tmp/filelist.txt
+          else
+            echo "Using topic: ${{ inputs.topic }}"
+            python scripts/mcp/select_components.py \
+              --topic "${{ inputs.topic }}" \
+              --output /tmp/filelist.txt
+          fi
+          
+          FILE_COUNT=$(wc -l < /tmp/filelist.txt)
+          echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+          echo "Selected $FILE_COUNT files"
+      
+      - name: Stage files to temporary directory
+        run: |
+          mkdir -p /tmp/stage
+          echo "Staging ${{ steps.select.outputs.file_count }} files..."
+          
+          while IFS= read -r rel; do
+            if [ -f "$rel" ]; then
+              mkdir -p "/tmp/stage/$(dirname "$rel")"
+              cp "$rel" "/tmp/stage/$rel"
+            fi
+          done < /tmp/filelist.txt
+          
+          echo "Staged files:"
+          find /tmp/stage -type f | wc -l
+      
+      - name: Package and flatten
+        id: package
+        run: |
+          chmod +x scripts/mcp/package_flatten.sh
+          ./scripts/mcp/package_flatten.sh /tmp/stage "${{ steps.output.outputs.filename }}"
+      
+      - name: Validate manifest
+        run: |
+          echo "Validating manifest.json..."
+          
+          # Extract and validate JSON
+          unzip -p "${{ steps.output.outputs.filename }}" manifest.json | jq . > /dev/null
+          echo "✅ Valid JSON"
+          
+          # Check file count
+          MANIFEST_COUNT=$(unzip -p "${{ steps.output.outputs.filename }}" manifest.json | jq '.files | length')
+          echo "Files in manifest: $MANIFEST_COUNT"
+          
+          if [ "$MANIFEST_COUNT" -eq 0 ]; then
+            echo "❌ Error: Manifest contains no files"
+            exit 1
+          fi
+          
+          # Check for duplicate flat names
+          DUPES=$(unzip -p "${{ steps.output.outputs.filename }}" manifest.json | jq -r '.files[].flat_name' | sort | uniq -d)
+          if [ -n "$DUPES" ]; then
+            echo "❌ Error: Duplicate flat names found:"
+            echo "$DUPES"
+            exit 1
+          fi
+          echo "✅ No duplicate flat names"
+          
+          # Verify required files
+          for REQUIRED in "manifest.json" "README_dataset.md" "index.md"; do
+            unzip -l "${{ steps.output.outputs.filename }}" | grep -q "$REQUIRED" || {
+              echo "❌ Error: Missing required file: $REQUIRED"
+              exit 1
+            }
+          done
+          echo "✅ All required files present"
+      
+      - name: Size check
+        id: size_check
+        run: |
+          SIZE_BYTES=$(stat -c%s "${{ steps.output.outputs.filename }}")
+          SIZE_MB=$((SIZE_BYTES / 1024 / 1024))
+          
+          echo "size_mb=$SIZE_MB" >> $GITHUB_OUTPUT
+          echo "Package size: ${SIZE_MB} MB"
+          
+          if [ "$SIZE_MB" -gt 50 ]; then
+            echo "⚠️  WARNING: Package exceeds 50 MB (ChatGPT Project recommended limit)"
+            echo "warning=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Package size is within recommended limit"
+            echo "warning=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Generate summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ## 📦 ChatGPT Project Package Created
+          
+          ### Package Details
+          - **Topic**: ${{ inputs.topic }}
+          - **Output**: \`${{ steps.output.outputs.filename }}\`
+          - **Files**: ${{ steps.select.outputs.file_count }}
+          - **Size**: ${{ steps.size_check.outputs.size_mb }} MB
+          
+          ### Validation
+          - ✅ Manifest valid
+          - ✅ No duplicate flat names
+          - ✅ All required files present
+          
+          EOF
+          
+          if [ "${{ steps.size_check.outputs.warning }}" = "true" ]; then
+            cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ### ⚠️ Size Warning
+          Package exceeds 50 MB recommended limit for ChatGPT Projects. Consider:
+          - Filtering to a smaller subset
+          - Using custom glob filters
+          - Splitting into multiple packages
+          
+          EOF
+          fi
+          
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ### Next Steps
+          1. Download artifact from this workflow run
+          2. Extract and validate locally:
+             \`\`\`bash
+             unzip -l ${{ steps.output.outputs.filename }}
+             unzip -p ${{ steps.output.outputs.filename }} manifest.json | jq .
+             \`\`\`
+          3. Upload to ChatGPT Project
+          4. Use system prompt from \`docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md\`
+          
+          ### Resources
+          - [Packaging Guide](docs/mcp/PACKAGING_GUIDE.md)
+          - [System Prompt Template](docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md)
+          EOF
+      
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.output.outputs.filename }}
+          path: ${{ steps.output.outputs.filename }}
+          retention-days: 30
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf /tmp/stage /tmp/filelist.txt
+          echo "Temporary files cleaned up"

@@ -1,0 +1,32 @@
+{
+  "zendesk": [
+    "src/zendesk/**",
+    "tests/zendesk/**",
+    "docs/**/*zendesk*"
+  ],
+  "agents": [
+    "src/agent/**",
+    "agents/**",
+    "docs/agents/**"
+  ],
+  "quantum": [
+    "src/quantum/**",
+    "agents/quantum_game_theory.py",
+    "tests/quantum/**",
+    "docs/**/*quantum*"
+  ],
+  "docs": [
+    "docs/**"
+  ],
+  "mcp": [
+    "scripts/mcp/**",
+    "docs/mcp/**",
+    ".github/workflows/*mcp*",
+    ".github/workflows/*chatgpt*"
+  ],
+  "workflows": [
+    ".github/workflows/**",
+    ".github/scripts/**",
+    ".github/copilot-prompts/**"
+  ]
+}

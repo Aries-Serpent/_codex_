@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+"""
+MCP Package CLI - User-friendly interface for ChatGPT Project packaging
+Allows Human Admin to easily request any part of the codebase to be packaged
+"""
+
+import argparse
+import subprocess
+import sys
+import json
+import shutil
+from pathlib import Path
+from datetime import datetime
+
+
+class MCPPackager:
+    """Main packager class with user-friendly interface"""
+    
+    def __init__(self, repo_root: Path):
+        self.repo_root = repo_root
+        self.scripts_dir = repo_root / "scripts" / "mcp"
+        self.topics_file = self.scripts_dir / "topics.json"
+        
+    def list_topics(self):
+        """List all available predefined topics"""
+        if not self.topics_file.exists():
+            print("❌ Topics file not found. Run from repository root.", file=sys.stderr)
+            return 1
+            
+        with open(self.topics_file) as f:
+            topics = json.load(f)
+        
+        print("\n📦 Available Topics for Packaging\n")
+        print("=" * 70)
+        
+        for topic_name, patterns in topics.items():
+            print(f"\n🏷️  {topic_name.upper()}")
+            print("-" * 70)
+            print("Includes:")
+            for pattern in patterns:
+                print(f"  • {pattern}")
+        
+        print("\n" + "=" * 70)
+        print("\nUsage: mcp-package --topic <topic_name>")
+        print("   or: mcp-package --custom 'pattern1,pattern2,...'")
+        return 0
+    
+    def validate_output_name(self, output_name: str) -> str:
+        """Ensure output name has .zip extension"""
+        if not output_name.endswith('.zip'):
+            output_name += '.zip'
+        return output_name
+    
+    def package(self, topic: str = None, custom: str = None, output: str = None, 
+                dry_run: bool = False, verbose: bool = False):
+        """Package repository subset"""
+        
+        # Determine output filename
+        if output:
+            output_zip = self.validate_output_name(output)
+        elif topic:
+            timestamp = datetime.now().strftime("%Y%m%d")
+            output_zip = f"package_{topic}_{timestamp}.zip"
+        else:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_zip = f"package_custom_{timestamp}.zip"
+        
+        print("\n" + "=" * 70)
+        print("📦 MCP Package Builder")
+        print("=" * 70)
+        
+        if topic:
+            print(f"📂 Topic: {topic}")
+        if custom:
+            print(f"🔍 Custom filters: {custom}")
+        print(f"📝 Output: {output_zip}")
+        print(f"🔧 Mode: {'DRY RUN' if dry_run else 'LIVE'}")
+        print("=" * 70 + "\n")
+        
+        # Step 1: Select files
+        print("Step 1/4: Selecting files...")
+        temp_filelist = Path("/tmp/mcp_filelist.txt")
+        
+        select_cmd = [
+            "python", str(self.scripts_dir / "select_components.py"),
+            "--output", str(temp_filelist)
+        ]
+        
+        if custom:
+            select_cmd.extend(["--overrides", custom])
+        elif topic:
+            select_cmd.extend(["--topic", topic])
+        else:
+            print("❌ Error: Must specify either --topic or --custom", file=sys.stderr)
+            return 1
+        
+        try:
+            result = subprocess.run(select_cmd, capture_output=True, text=True, check=True)
+            if verbose:
+                print(result.stdout)
+            
+            # Count selected files
+            with open(temp_filelist) as f:
+                file_count = sum(1 for _ in f)
+            print(f"✅ Selected {file_count} files\n")
+            
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Error selecting files: {e.stderr}", file=sys.stderr)
+            return 1
+        
+        if dry_run:
+            print("\n🔍 DRY RUN - Files that would be packaged:")
+            with open(temp_filelist) as f:
+                for i, line in enumerate(f, 1):
+                    print(f"  {i:4d}. {line.strip()}")
+                    if i >= 50:
+                        remaining = file_count - 50
+                        if remaining > 0:
+                            print(f"  ... and {remaining} more files")
+                        break
+            print("\nTo create package, run without --dry-run")
+            return 0
+        
+        # Step 2: Stage files
+        print("Step 2/4: Staging files...")
+        stage_dir = Path("/tmp/mcp_stage")
+        if stage_dir.exists():
+            shutil.rmtree(stage_dir)
+        stage_dir.mkdir(parents=True)
+        
+        with open(temp_filelist) as f:
+            for line in f:
+                rel_path = line.strip()
+                src_file = self.repo_root / rel_path
+                if src_file.is_file():
+                    dest_file = stage_dir / rel_path
+                    dest_file.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(src_file, dest_file)
+        
+        staged_count = sum(1 for _ in stage_dir.rglob('*') if _.is_file())
+        print(f"✅ Staged {staged_count} files\n")
+        
+        # Step 3: Package with flattening
+        print("Step 3/4: Packaging and flattening...")
+        package_script = self.scripts_dir / "package_flatten.sh"
+        
+        package_cmd = [
+            "bash", str(package_script),
+            str(stage_dir),
+            output_zip
+        ]
+        
+        try:
+            result = subprocess.run(package_cmd, capture_output=True, text=True, check=True, cwd=self.repo_root)
+            if verbose:
+                print(result.stdout)
+            print("✅ Package created\n")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Error packaging: {e.stderr}", file=sys.stderr)
+            return 1
+        
+        # Step 4: Validate
+        print("Step 4/4: Validating package...")
+        
+        # Check manifest
+        manifest_cmd = ["unzip", "-p", output_zip, "manifest.json"]
+        try:
+            result = subprocess.run(manifest_cmd, capture_output=True, text=True, check=True, cwd=self.repo_root)
+            manifest = json.loads(result.stdout)
+            
+            print(f"✅ Manifest valid")
+            print(f"   - Files: {manifest['total_files']}")
+            print(f"   - Size: {manifest['total_size_bytes'] / 1024 / 1024:.2f} MB")
+            
+            # Check for duplicates
+            flat_names = [f['flat_name'] for f in manifest['files']]
+            duplicates = [name for name in set(flat_names) if flat_names.count(name) > 1]
+            if duplicates:
+                print(f"⚠️  Warning: {len(duplicates)} duplicate flat names found")
+                if verbose:
+                    for dup in duplicates[:5]:
+                        print(f"      - {dup}")
+            else:
+                print("✅ No duplicate flat names")
+            
+        except (subprocess.CalledProcessError, json.JSONDecodeError) as e:
+            print(f"❌ Validation failed: {e}", file=sys.stderr)
+            return 1
+        
+        # Cleanup
+        temp_filelist.unlink(missing_ok=True)
+        shutil.rmtree(stage_dir, ignore_errors=True)
+        
+        # Final summary
+        output_path = self.repo_root / output_zip
+        if output_path.exists():
+            size_mb = output_path.stat().st_size / 1024 / 1024
+            
+            print("\n" + "=" * 70)
+            print("✅ SUCCESS - Package Ready")
+            print("=" * 70)
+            print(f"📦 Output: {output_path}")
+            print(f"📊 Size: {size_mb:.2f} MB")
+            
+            if size_mb > 50:
+                print("\n⚠️  WARNING: Package exceeds 50 MB recommended limit")
+                print("   Consider using a smaller subset or custom filters")
+            
+            print("\n📋 Next Steps:")
+            print("   1. Validate locally:")
+            print(f"      unzip -l {output_zip}")
+            print(f"      unzip -p {output_zip} manifest.json | jq .")
+            print("   2. Upload to ChatGPT Project")
+            print("   3. Use system prompt from docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md")
+            print("\n📚 Documentation:")
+            print("   - Packaging Guide: docs/mcp/PACKAGING_GUIDE.md")
+            print("   - System Prompt: docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md")
+            print("=" * 70 + "\n")
+        
+        return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='MCP Package CLI - Package repository subsets for ChatGPT Projects',
+        epilog='Examples:\n'
+               '  %(prog)s --list\n'
+               '  %(prog)s --topic zendesk\n'
+               '  %(prog)s --topic agents --output agents_package.zip\n'
+               '  %(prog)s --custom "src/agents/**/*.py,tests/agents/**/*.py"\n'
+               '  %(prog)s --topic zendesk --dry-run\n',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    
+    parser.add_argument(
+        '--list', '-l',
+        action='store_true',
+        help='List all available topics'
+    )
+    
+    parser.add_argument(
+        '--topic', '-t',
+        help='Topic to package (zendesk, agents, quantum, docs, mcp, workflows)'
+    )
+    
+    parser.add_argument(
+        '--custom', '-c',
+        help='Custom comma-separated glob patterns (e.g., "src/**/*.py,docs/*.md")'
+    )
+    
+    parser.add_argument(
+        '--output', '-o',
+        help='Output zip filename (default: package_<topic>_<date>.zip)'
+    )
+    
+    parser.add_argument(
+        '--dry-run', '-n',
+        action='store_true',
+        help='Show what would be packaged without creating the archive'
+    )
+    
+    parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Show detailed output'
+    )
+    
+    args = parser.parse_args()
+    
+    # Find repository root
+    repo_root = Path.cwd()
+    while repo_root != repo_root.parent:
+        if (repo_root / ".git").exists():
+            break
+        repo_root = repo_root.parent
+    else:
+        print("❌ Error: Not in a git repository", file=sys.stderr)
+        return 1
+    
+    packager = MCPPackager(repo_root)
+    
+    # Handle list command
+    if args.list:
+        return packager.list_topics()
+    
+    # Validate arguments
+    if not args.topic and not args.custom:
+        parser.error('Must specify either --topic or --custom (use --list to see available topics)')
+    
+    if args.topic and args.custom:
+        parser.error('Cannot specify both --topic and --custom')
+    
+    # Package
+    return packager.package(
+        topic=args.topic,
+        custom=args.custom,
+        output=args.output,
+        dry_run=args.dry_run,
+        verbose=args.verbose
+    )
+
+
+if __name__ == '__main__':
+    sys.exit(main())
