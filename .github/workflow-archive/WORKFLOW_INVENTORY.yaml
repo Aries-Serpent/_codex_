@@ -1,6 +1,6 @@
 metadata:
-  generated_at: '2025-12-29T18:29:01.476703Z'
-  total_workflows: 50
+  generated_at: '2025-12-30T01:06:44.937382Z'
+  total_workflows: 52
   active_count: 0
   disabled_count: 0
   archived_count: 0
@@ -184,6 +184,11 @@ workflows:
   error: '''.github/workflows/security-suite.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
+- filename: security-tools-bootstrap.yml
+  error: '''.github/workflows/security-tools-bootstrap.yml'' is not in the subpath
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
+  status: error
 - filename: self-healing-ci.yml
   error: '''.github/workflows/self-healing-ci.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
@@ -203,6 +208,10 @@ workflows:
   status: error
 - filename: template_lint.yml
   error: '''.github/workflows/template_lint.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+- filename: token-rotation.yml
+  error: '''.github/workflows/token-rotation.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
 - filename: wiki-assemble.yml

@@ -1,12 +1,12 @@
 # Workflow Inventory Summary
 
-**Generated**: 2025-12-29T18:29:01.476703Z
+**Generated**: 2025-12-30T01:06:44.937382Z
 
-**Total Workflows**: 50
+**Total Workflows**: 52
 
 ## Workflows by Category
 
-### Other (50 workflows)
+### Other (52 workflows)
 
 - 🔴  `agent-runtime.yml` - N/A
 - 🔴  `api-documentation.yml` - N/A
@@ -49,11 +49,13 @@
 - 🔴  `scheduled-dependency-audit.yml` - N/A
 - 🔴  `security-scan.yml` - N/A
 - 🔴  `security-suite.yml` - N/A
+- 🔴  `security-tools-bootstrap.yml` - N/A
 - 🔴  `self-healing-ci.yml` - N/A
 - 🔴  `self-healing-feedback-loop.yml` - N/A
 - 🔴  `semgrep_sarif.yml` - N/A
 - 🔴  `status_gate.yml` - N/A
 - 🔴  `template_lint.yml` - N/A
+- 🔴  `token-rotation.yml` - N/A
 - 🔴  `wiki-assemble.yml` - N/A
 - 🔴  `workflow-expiry-enforcer.yml` - N/A
 - 🔴  `workflow-restore.yml` - N/A
