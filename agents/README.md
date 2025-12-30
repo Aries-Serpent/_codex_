@@ -2,6 +2,19 @@
 
 **Purpose**: Autonomous AI agents with physics-inspired optimization, workflow navigation, and quantum-inspired decision making.
 
+**Last Updated**: 2025-12-30  
+**Version**: 2.0.0  
+**Status**: 🟢 Production Ready
+
+---
+
+## 📚 Quick Navigation
+
+- **New to agents?** → Start with [Key Components](#-key-components)
+- **Building an agent?** → See [Development Standards](#-development-standards)
+- **Contributing?** → Check [Normalization Checklist](NORMALIZATION_CHECKLIST.md)
+- **Integration?** → View [Usage Examples](#-usage-examples)
+
 ---
 
 ## 📁 Structure
@@ -155,6 +168,143 @@ Quick access tokens for common operations:
 | `heal` | SELF_HEAL | Self-healing operations |
 
 **Full Catalog**: [TOKENIZED_WORKFLOWS.md](TOKENIZED_WORKFLOWS.md)
+
+---
+
+## 🔧 Development Standards
+
+### Naming Conventions
+
+**Files**: Use `snake_case.py`
+```python
+workflow_navigator.py  # ✅ Correct
+WorkflowNavigator.py   # ❌ Wrong
+```
+
+**Classes**: Use `PascalCase`
+```python
+class WorkflowNavigator:  # ✅ Correct
+class workflow_navigator:  # ❌ Wrong
+```
+
+**Functions/Methods**: Use `snake_case`
+```python
+def execute_workflow():  # ✅ Correct
+def ExecuteWorkflow():   # ❌ Wrong
+```
+
+### Entry Points
+
+**Standard entry points** for executable agents:
+- `.execute()` - For workflow-style agents
+- `.run()` - For service-style agents  
+- `.optimize()` - For optimization agents
+- `.decide()` - For decision-making agents
+
+### Type Hints
+
+**Required** for all public APIs:
+```python
+from typing import Optional, List, Dict, Union
+
+def execute_workflow(
+    workflow_id: str,
+    context: Optional[Dict[str, Any]] = None
+) -> WorkflowResult:
+    """Execute workflow with context."""
+    ...
+```
+
+**Current coverage**: 85% (target: 100%)
+
+### Error Handling
+
+**Use specific exceptions** from `agents.exceptions`:
+```python
+from agents.exceptions import WorkflowError, AgentError
+
+try:
+    result = agent.execute(task)
+except WorkflowError as e:
+    logger.error(f"Workflow failed: {e}")
+    raise
+except Exception as e:
+    logger.exception("Unexpected error")
+    raise AgentError(f"Agent failure: {e}") from e
+```
+
+**Avoid bare except** - Use specific exception types or log context.
+
+### Documentation
+
+**Required docstrings**:
+```python
+def execute_workflow(workflow_id: str, context: Optional[Dict] = None) -> WorkflowResult:
+    """
+    Execute a registered workflow with optional context.
+    
+    Args:
+        workflow_id: Unique workflow identifier
+        context: Optional execution context with parameters
+        
+    Returns:
+        WorkflowResult with status and outputs
+        
+    Raises:
+        WorkflowError: If workflow execution fails
+        ValueError: If workflow_id is invalid
+        
+    Example:
+        >>> navigator = WorkflowNavigator()
+        >>> result = navigator.execute_workflow('AUDIT_EXEC')
+        >>> print(result.status)
+        'success'
+    """
+    ...
+```
+
+**Docstring format**: Google style (preferred)
+
+### Testing Requirements
+
+**All agents must have**:
+- Unit tests (>80% coverage)
+- Integration tests where applicable
+- Property-based tests for complex logic
+- Deterministic test timestamps (use `mental_mapping`)
+
+**Example**:
+```python
+from agents.mental_mapping import set_clock, reset_clock
+
+def test_agent_with_timestamp():
+    set_clock("2025-01-01T00:00:00Z")
+    try:
+        result = agent.execute_with_timestamp()
+        assert result.timestamp == "2025-01-01T00:00:00Z"
+    finally:
+        reset_clock()
+```
+
+### Code Quality
+
+**Required checks before commit**:
+```bash
+# Lint
+ruff check agents/
+
+# Type check
+mypy agents/
+
+# Format
+black agents/
+isort agents/
+
+# Test
+pytest tests/agents/ -v
+```
+
+**See also**: [Normalization Checklist](NORMALIZATION_CHECKLIST.md)
 
 ---
 
