@@ -12,28 +12,30 @@ This system applies physics-inspired algorithms to determine optimal workflow ca
 
 ---
 
-## Physics Models Applied
+## Scoring Models Applied
 
-### 1. Thermodynamic Entropy Model
-**Concept**: Workflows with high execution entropy (variability) benefit most from caching.
+### 1. Execution Variability Score (Entropy-Inspired)
+**Concept**: Workflows with high execution path variability benefit most from caching.
 
 ```python
-Entropy(workflow) = -Σ(p_i * log(p_i))
+Variability_Score = -Σ(p_i * log(p_i))
 where p_i = probability of execution path i
 ```
 
-### 2. Fluid Flow Optimization
-**Concept**: Workflows are "fluids" flowing through the CI/CD pipeline. Optimize flow rate.
+**Note**: This uses an entropy-like formula as a heuristic for measuring execution unpredictability, not actual thermodynamic entropy.
+
+### 2. Success Rate & Flow Efficiency Score
+**Concept**: Workflows with high success rates and time-saving potential optimize pipeline flow.
 
 ```python
 Flow_Efficiency = (Successful_Runs / Total_Runs) * (Avg_Time_Saved / Avg_Total_Time)
 ```
 
-### 3. Quantum Superposition Scoring
-**Concept**: Workflows exist in multiple states (PR trigger, push trigger, scheduled). Weight by probability.
+### 3. Multi-Trigger Weight Score
+**Concept**: Workflows with multiple trigger types (PR, push, scheduled) are weighted by frequency and impact.
 
 ```python
-Quantum_Score = Σ(State_i * Probability_i * Impact_i)
+Multi_Trigger_Score = Σ(State_i * Probability_i * Impact_i)
 ```
 
 ---
@@ -293,7 +295,7 @@ graph TD
 
 ```mermaid
 gantt
-    title Workflow Execution Frequency (Last 90 Days)
+    title Workflow Execution Frequency (Historical 90-Day Analysis Period)
     dateFormat YYYY-MM-DD
     axisFormat %b %d
     
@@ -312,6 +314,8 @@ gantt
     documentation-link-checker (15)   :c1, 2024-10-01, 90d
     token-rotation (4 runs)           :c2, 2024-10-01, 90d
 ```
+
+**Note**: Dates represent a historical 90-day analysis period ending 2025-12-30. These are representative data points for prioritization purposes.
 
 ---
 

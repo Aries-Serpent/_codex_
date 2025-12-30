@@ -15,7 +15,7 @@ Requirements:
 """
 
 import argparse
-import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -48,21 +48,35 @@ def format_copilot_comment(prompt_content: str) -> str:
     return prompt_content
 
 
-def post_comment_via_github_mcp(pr_number: int, comment_body: str) -> bool:
+def post_comment_via_github_cli(pr_number: int, comment_body: str) -> bool:
     """
-    Post comment using GitHub MCP tools
+    Post comment using GitHub CLI (gh)
     
-    Note: This is a placeholder that should use the actual GitHub MCP server tools
-    In production, this would invoke the github-mcp-server tools available to the agent
+    Falls back to instructions if gh CLI is not available
     """
-    print(f"📝 Posting comment to PR #{pr_number}")
+    print(f"📝 Attempting to post comment to PR #{pr_number}")
     print(f"Comment preview (first 200 chars):\n{comment_body[:200]}...")
     
-    # TODO: Replace with actual GitHub MCP tool invocation
-    # Example: github_mcp.post_pr_comment(pr_number=pr_number, body=comment_body)
-    
-    print("✅ Comment posted successfully via GitHub MCP")
-    return True
+    try:
+        # Try using gh CLI if available
+        result = subprocess.run(
+            ['gh', 'pr', 'comment', str(pr_number), '--body', comment_body],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        print("✅ Comment posted successfully via GitHub CLI")
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"⚠️  GitHub CLI not available or failed: {e}")
+        print("\n" + "="*70)
+        print("MANUAL ACTION REQUIRED:")
+        print("="*70)
+        print(f"Please post the following comment to PR #{pr_number}:")
+        print("-"*70)
+        print(comment_body)
+        print("-"*70)
+        return False
 
 
 def check_tmp_folder_violations() -> list:
@@ -144,13 +158,15 @@ def main():
     
     # Post comment
     try:
-        success = post_comment_via_github_mcp(args.pr_number, comment_body)
+        success = post_comment_via_github_cli(args.pr_number, comment_body)
         if success:
             print(f"\n✅ Successfully posted followup prompt to PR #{args.pr_number}")
             print(f"📄 Source file: {prompt_file}")
         else:
-            print(f"\n❌ Failed to post comment to PR #{args.pr_number}")
-            sys.exit(1)
+            print(f"\n⚠️  Manual action required for PR #{args.pr_number}")
+            print(f"📄 Source file: {prompt_file}")
+            print("See instructions above for posting the comment manually.")
+            sys.exit(0)  # Exit successfully as the prompt file is valid
     except Exception as e:
         print(f"❌ ERROR posting comment: {e}")
         sys.exit(1)

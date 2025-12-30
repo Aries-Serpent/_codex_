@@ -241,7 +241,7 @@ from integrated_system import IntegratedEvolutionSystem
 
 ### Immediate Actions Required
 1. **Post Follow-Up Comment on PR #2668**:
-   - Comment text prepared in `/tmp/pr_comment_copilot_phase3.md`
+   - Comment text prepared in `.github/copilot-prompts/active/PHASE3_FOLLOWUP_PROMPT.md`
    - Must start with `@copilot` (no backticks, no spaces)
    - Triggers Copilot Agent for Phase 3 continuation
 
@@ -280,7 +280,7 @@ from integrated_system import IntegratedEvolutionSystem
 - `.github/PHASE3_FOLLOWUP_PROMPT.md` - Next phase plan
 
 ### Supporting Files
-- `/tmp/pr_comment_copilot_phase3.md` - Comment to post on PR
+- `.github/copilot-prompts/active/PHASE3_FOLLOWUP_PROMPT.md` - Follow-up prompt reference
 
 ---
 

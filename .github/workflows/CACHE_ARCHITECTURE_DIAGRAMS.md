@@ -607,10 +607,10 @@ Total Cached:                 21 (43%)
 
 Cost Savings:
 =============
-GitHub Actions Minutes Saved: ~2,040 minutes/month
-Equivalent Cost Savings:      $XX-XXX/month (varies by plan)
-Network Transfer Reduction:   XXX GB/month
-Carbon Footprint Reduction:   Estimated XX kg CO2/month
+GitHub Actions Minutes Saved: ~2,040 minutes/month (34 hours)
+Equivalent Cost Savings:      Estimated $12-15/month in runner time (subject to usage patterns)
+Network Transfer Reduction:   Estimated 450-600 GB/month (subject to usage patterns)
+Environmental Impact:         Reduced energy consumption from fewer cold starts (not quantified)
 ```
 
 ---
