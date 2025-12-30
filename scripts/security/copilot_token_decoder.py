@@ -18,7 +18,7 @@ import os
 import base64
 import json
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional
 
 # Try to import cryptography, but don't fail if not available
 try:

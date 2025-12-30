@@ -98,9 +98,9 @@ class BootstrapExtractor:
             output_file = full_output_dir / filename
             output_file.write_text(content)
             
-            # Make executable if needed
+            # Make executable if needed (owner-only for security)
             if executable:
-                os.chmod(output_file, 0o755)
+                os.chmod(output_file, 0o700)
             
             print(f"✅ Extracted: {output_file}")
             return True
