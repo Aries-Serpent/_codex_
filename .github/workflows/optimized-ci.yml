@@ -86,6 +86,16 @@ jobs:
             ${{ env.PIP_CACHE_DIR }}
           key: deps-${{ runner.os }}-py3.12-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
       
+      # Phase 3C-Lite: Add Pytest cache for faster test discovery
+      - name: Cache Pytest
+        uses: actions/cache@v4
+        with:
+          path: .pytest_cache
+          key: ${{ runner.os }}-pytest-shard-${{ matrix.shard }}-${{ hashFiles('tests/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-shard-${{ matrix.shard }}-
+            ${{ runner.os }}-pytest-
+      
       - name: Install dependencies
         run: |
           pip install uv
@@ -143,6 +153,24 @@ jobs:
             ${{ env.PIP_CACHE_DIR }}
             ~/.cache/pre-commit
           key: deps-${{ runner.os }}-py3.12-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
+      
+      # Phase 3C-Lite: Add Ruff cache for faster linting
+      - name: Cache Ruff
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ruff
+          key: ${{ runner.os }}-ruff-${{ hashFiles('.ruff.toml', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
+      
+      # Phase 3C-Lite: Add MyPy cache for incremental type checking
+      - name: Cache MyPy
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-${{ hashFiles('**/*.py', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-
       
       - name: Install tools
         run: pip install ruff black mypy

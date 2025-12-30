@@ -1,0 +1,71 @@
+name: Emergency Cache Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (list caches without deleting)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  actions: write  # Required to delete caches
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Emergency Cache Cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY RUN MODE - Listing caches only"
+            echo ""
+            gh cache list --json key,sizeInBytes,ref --limit 50 | \
+              jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB\t\(.key[:60])\t\(.ref)"' | \
+              sort -rn
+          else
+            echo "🚨 EXECUTING EMERGENCY CACHE CLEANUP"
+            chmod +x .github/scripts/emergency_cache_cleanup.sh
+            .github/scripts/emergency_cache_cleanup.sh
+          fi
+      
+      - name: Generate Cache Report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "# Cache Cleanup Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Current cache status
+          gh cache list --json key,sizeInBytes --limit 50 > cache_list.json
+          TOTAL_SIZE=$(jq '[.[].sizeInBytes] | add // 0' cache_list.json)
+          TOTAL_SIZE_MB=$((TOTAL_SIZE / 1024 / 1024))
+          TOTAL_SIZE_GB=$(echo "scale=2; $TOTAL_SIZE_MB / 1024" | bc)
+          
+          echo "## Current Cache Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total Size**: ${TOTAL_SIZE_GB} GB (${TOTAL_SIZE_MB} MB)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Capacity Usage**: $(echo "scale=1; $TOTAL_SIZE_MB / 100" | bc)%" >> $GITHUB_STEP_SUMMARY
+          echo "- **Number of Caches**: $(jq length cache_list.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Top caches by size
+          echo "## Largest Caches" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Size | Key | Ref |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|-----|" >> $GITHUB_STEP_SUMMARY
+          jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB|\(.key[:40])...|\(.ref)"' cache_list.json | \
+            sort -rn | head -10 | \
+            awk -F'|' '{print "| " $1 " | `" $2 "` | " $3 " |"}' >> $GITHUB_STEP_SUMMARY
+          
+          rm cache_list.json

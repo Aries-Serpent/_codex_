@@ -1,6 +1,6 @@
 metadata:
-  generated_at: '2025-12-30T01:28:43.778131Z'
-  total_workflows: 52
+  generated_at: '2025-12-30T07:41:46.770341Z'
+  total_workflows: 53
   active_count: 0
   disabled_count: 0
   archived_count: 0
@@ -166,6 +166,11 @@ workflows:
 - filename: sbom.yml
   error: '''.github/workflows/sbom.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
+  status: error
+- filename: scan-secrets-variables.yml
+  error: '''.github/workflows/scan-secrets-variables.yml'' is not in the subpath of
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: scheduled-archival.yml
   error: '''.github/workflows/scheduled-archival.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
