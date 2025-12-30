@@ -224,7 +224,7 @@ jobs:
           python -c "
           import asyncio
           import json
-          from integrated_system import IntegratedEvolutionSystem, KnowledgeGap
+          from integrated_system import IntegratedEvolutionSystem
           
           async def generate():
               system = IntegratedEvolutionSystem()
