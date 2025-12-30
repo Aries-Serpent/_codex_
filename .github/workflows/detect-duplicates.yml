@@ -21,19 +21,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Cache Dependencies
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cache/pip
-          key: ${{ runner.os }}-${{ github.workflow }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-pip-
-      
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+          cache: 'pip'
       
       - name: Detect Python file duplicates
         id: detect
