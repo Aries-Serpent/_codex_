@@ -480,7 +480,7 @@ See `.github/copilot-instructions.md` for complete list.
 ### For Contributors
 
 1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
-2. Review [docs/templates/](docs/templates/) for workflow templates
+2. Review [docs/templates/README.md](templates/README.md) for workflow templates
 3. Study [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)
 4. Check [docs/How_We_Release.md](docs/How_We_Release.md)
 5. Explore [noxfile.py](noxfile.py) for automation tasks

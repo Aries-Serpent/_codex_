@@ -670,7 +670,7 @@ Current implementation detects Type-1 clones via pylint.
 
 ## Related Documentation
 
-- [Acceptance Criteria Verification](../ACCEPTANCE_CRITERIA_VERIFICATION.md) - Implementation research
+<!-- TODO: Create ACCEPTANCE_CRITERIA_VERIFICATION.md for implementation research -->
 - [CLI Documentation](cli.md) - General CLI usage (if exists)
 - [Metrics API](api/metrics.md) - API reference (if exists)
 
