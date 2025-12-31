@@ -2,8 +2,8 @@
 
 **Purpose**: Live status dashboard for `_codex_` repository - current state, active work, next steps, and blockers.
 
-**Last Updated**: 2025-12-30 20:40 UTC  
-**Version**: 1.0.0  
+**Last Updated**: 2025-12-31 01:15 UTC  
+**Version**: 1.1.0  
 **Status**: 🟢 Active Development
 
 ---
@@ -13,8 +13,8 @@
 ### Repository Health
 | Metric | Status | Value | Target | Trend |
 |--------|--------|-------|--------|-------|
-| **Tests** | ✅ Passing | 1500+ (100%) | 100% | ➡️ Stable |
-| **Coverage** | 🟡 Good | 72% | 80%+ | ⬆️ Improving |
+| **Tests** | ✅ Passing | 1615 (100%) | 100% | ⬆️ Growing |
+| **Coverage** | 🟡 Good | ~75% | 80%+ | ⬆️ Improving |
 | **Security** | ✅ Clean | 0 vulnerabilities | 0 | ➡️ Stable |
 | **MLOps Maturity** | ✅ Elite | Level 4 (100/100) | Level 4 | ➡️ Stable |
 | **Cache Usage** | ✅ Healthy | 7.69 GB / 10 GB | <8 GB | ➡️ Stable |
@@ -90,14 +90,23 @@
 
 #### 🎯 Phase 9: Coverage & Performance Enhancement (IN PROGRESS 🟢)
 **Status**: Active Development  
-**Completion**: 10%  
-**Started**: 2025-12-30
+**Completion**: 20%  
+**Started**: 2025-12-31
 
-**Objective**: Achieve **100% test coverage** (currently ~72%)
+**Objective**: Achieve **100% test coverage** (currently ~75%, was ~72%)
+
+**Current Phase**: 9.1 - Critical Path Coverage (72% → 85%)
 
 **Deliverables**:
 - ✅ `docs/testing/COVERAGE_100_ROADMAP.md` - Comprehensive 100% coverage plan (12.3 KB)
+- ✅ `docs/testing/PHASE9_1_EXECUTION_PLAN.md` - Phase 9.1 execution plan (8.2 KB)
 - ✅ `.github/CONTINUATION_PROMPT_PHASE9.md` - Phase 9 continuation guide (7.8 KB)
+- ✅ `tests/scripts/test_mcp_select_components.py` - 27 MCP tests (all passing)
+
+**Progress**:
+- Tests Added: 27/150 (18% of Phase 9.1 target)
+- Coverage Improvement: +3% (72% → 75%)
+- All new tests passing (100%)
 - ✅ `.github/SELF_REVIEW_PHASE9.md` - 5-pass self-review complete (6.6 KB)
 - 🔄 Phase 9.1: Critical path coverage (72% → 85%) - 150-200 tests
 - ⏳ Phase 9.2: Public API coverage (85% → 92%) - 100-150 tests
