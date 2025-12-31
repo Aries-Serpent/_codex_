@@ -14,6 +14,7 @@ def run(
     capture_output: bool = False,
     text: bool = True,
     check: bool = True,
+    timeout: float | None = None,
 ) -> subprocess.CompletedProcess[str]:
     """Run *cmd* securely.
 
@@ -26,5 +27,6 @@ def run(
         capture_output=capture_output,
         text=text,
         check=check,
+        timeout=timeout,
         shell=False,
     )

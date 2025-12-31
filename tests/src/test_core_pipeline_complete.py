@@ -667,7 +667,8 @@ class TestErrorPaths:
     def test_error_file_not_found(self):
         """Test FileNotFoundError"""
         with pytest.raises(FileNotFoundError):
-            open("/nonexistent")
+            with open("/nonexistent"):
+                pass
     
     def test_error_permission_error(self):
         """Test PermissionError simulation"""
@@ -711,7 +712,7 @@ class TestErrorPaths:
         result = None
         try:
             pass
-        except:
+        except Exception:
             result = "except"
         else:
             result = "else"
