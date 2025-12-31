@@ -6168,7 +6168,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6225,7 +6225,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6286,7 +6286,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
@@ -6343,7 +6343,7 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
