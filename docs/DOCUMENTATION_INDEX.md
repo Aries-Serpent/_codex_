@@ -176,7 +176,7 @@
 |------|--------|----------|
 | HAR Integration | Planned | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) |
 | MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](../MCP_100_PERCENT_ROADMAP.md) |
-| Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) |
+| Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) |
 
 ---
 
@@ -272,7 +272,7 @@
 
 - **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](../CONTRIBUTING.md)
 - **AI Agent**: [AGENTS.md](../AGENTS.md), [agents/prompts/](../agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md)
-- **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md)
+- **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md)
 - **DevOps Engineer**: [deploy/](../deploy/), [.github/workflows/](../.github/workflows/), [docker-compose.yml](../docker-compose.yml)
 - **Security Researcher**: [SECURITY.md](../SECURITY.md), [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md)
 - **ML Engineer**: [training/](../training/), [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)
