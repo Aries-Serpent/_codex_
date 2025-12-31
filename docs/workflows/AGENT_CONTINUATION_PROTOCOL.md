@@ -190,10 +190,10 @@ When posting continuation prompts to PR comments:
 
 ## 📚 Context References
 
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Related Doc](path/to/doc.md)
+- [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
+- [Dashboard](../system/CODEBASE_DASHBOARD.md)
+- [Roadmap](../ROADMAP.md)
+- Related Doc <!-- TODO: Add actual related documentation link -->
 
 **Branch**: [branch-name]
 **PR**: #[number]
