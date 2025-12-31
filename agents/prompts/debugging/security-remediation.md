@@ -338,5 +338,5 @@ Security scanning is integrated into CI/CD:
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Python Security Best Practices](https://python.readthedocs.io/en/stable/library/security_warnings.html)
-- [Codex Security Policy](../../SECURITY.md)
+- [Codex Security Policy](../../../SECURITY.md)
 - [CodeQL Documentation](https://codeql.github.com/docs/)

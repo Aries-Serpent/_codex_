@@ -34,8 +34,8 @@
 
 | Document | Size | Purpose |
 |----------|------|---------|
-| [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) | 15.3KB | Gap analysis with priority matrix |
-| [PR_FINAL_SUMMARY.md](../PR_FINAL_SUMMARY.md) | 10.6KB | PR summary with metrics |
+| [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | 15.3KB | Gap analysis with priority matrix |
+| [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | 10.6KB | PR summary with metrics |
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | 12.3KB | Onboarding guide |
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | 32KB | Comprehensive architecture reference |
 
@@ -72,7 +72,7 @@
 | Gap Analyses | 5+ | GAP_REMEDIATION_STATUS.md, MLOPS_GAP_ANALYSIS_AND_ROADMAP.md |
 | Achievement Reports | 5+ | ACHIEVEMENT_99_PERCENT.md, FINAL_STATUS_100_PERCENT.md |
 
-**Full Index**: See [archive/historical_docs_20251210/INDEX.md](../archive/historical_docs_20251210/INDEX.md)
+**Full Index**: See [workbench/INDEX.md](../workbench/INDEX.md)
 
 ### Removed Documents (archive/removed/)
 
@@ -119,7 +119,7 @@
 | Guide | Audience | Updated |
 |-------|----------|---------|
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | New contributors | 2025-12-11 |
-| [MCP_DEVELOPER_GUIDE.md](../MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
+| [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
 | [USAGE_GUIDE.md](../USAGE_GUIDE.md) | End users | Current |
 
 ### Agent Guides
@@ -146,8 +146,8 @@
 
 | Report | Purpose | Date |
 |--------|---------|------|
-| [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
-| [PR_FINAL_SUMMARY.md](../PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
+| [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
+| [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
 | [codex_gap_registry.yaml](../codex_gap_registry.yaml) | Gap tracking (YAML) | 2025-12-11 |
 
 ### Audit Reports
@@ -176,7 +176,7 @@
 |------|--------|----------|
 | HAR Integration | Planned | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) |
 | MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](../MCP_100_PERCENT_ROADMAP.md) |
-| Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) |
+| Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) |
 
 ---
 
@@ -272,7 +272,7 @@
 
 - **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](../CONTRIBUTING.md)
 - **AI Agent**: [AGENTS.md](../AGENTS.md), [agents/prompts/](../agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md)
-- **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md)
+- **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md)
 - **DevOps Engineer**: [deploy/](../deploy/), [.github/workflows/](../.github/workflows/), [docker-compose.yml](../docker-compose.yml)
 - **Security Researcher**: [SECURITY.md](../SECURITY.md), [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md)
 - **ML Engineer**: [training/](../training/), [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)

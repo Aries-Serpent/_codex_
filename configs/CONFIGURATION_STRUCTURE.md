@@ -210,9 +210,9 @@ with initialize(config_path="../configs", version_base=None):
 ## Related Documentation
 
 - [Hydra Documentation](https://hydra.cc/)
-- [Configuration Best Practices](../docs/configuration.md)
-- [Training Configuration Guide](../docs/training/configuration.md)
-- [Deployment Configuration](../docs/deployment/configuration.md)
+- [Configuration Best Practices](../docs/capabilities/configuration.md)
+- [Training Configuration Guide](../docs/capabilities/configuration.md)
+- [Deployment Configuration](../docs/capabilities/configuration.md)
 
 ## Changelog
 

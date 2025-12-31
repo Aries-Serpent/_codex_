@@ -59,7 +59,7 @@ def post_comment_via_github_cli(pr_number: int, comment_body: str) -> bool:
     
     try:
         # Try using gh CLI if available
-        result = subprocess.run(
+        subprocess.run(
             ['gh', 'pr', 'comment', str(pr_number), '--body', comment_body],
             capture_output=True,
             text=True,

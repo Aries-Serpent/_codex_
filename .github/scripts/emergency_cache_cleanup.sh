@@ -1,7 +1,7 @@
 #!/bin/bash
 # Emergency Cache Cleanup Script
-# Purpose: Reduce cache usage from 12.38 GB to under 7 GB (70% capacity)
-# Priority: P0 CRITICAL - Repository over cache limit
+# Purpose: Reduce cache usage to under 7 GB (70% capacity)
+# Priority: P0 CRITICAL - Repository cache management
 
 set -euo pipefail
 
@@ -9,9 +9,8 @@ echo "=========================================="
 echo "🚨 EMERGENCY CACHE CLEANUP - PHASE 1"
 echo "=========================================="
 echo ""
-echo "Current Status: 12.38 GB / 10 GB (123.8%)"
-echo "Target: < 7 GB (70%)"
-echo "Required Reduction: ~5.5 GB"
+echo "Target: < 7 GB (70% of 10 GB limit)"
+echo "Strategy: Remove old, duplicate, and PR-specific caches"
 echo ""
 
 # Check if gh CLI is available
@@ -35,16 +34,20 @@ echo ""
 echo "📊 Step 1: Analyzing current caches..."
 echo ""
 
-gh cache list --json key,id,sizeInBytes,createdAt,ref,lastAccessedAt --limit 50 > /tmp/cache_list.json
+# Create temp directory following anti-/tmp/ protection system
+TEMP_DIR=".github/tmp"
+mkdir -p "$TEMP_DIR"
+
+gh cache list --json key,id,sizeInBytes,createdAt,ref,lastAccessedAt --limit 50 > "$TEMP_DIR/cache_list.json"
 
 echo "Cache Summary:"
 echo "=============="
-jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB\t\(.key[:60])\t\(.ref)"' /tmp/cache_list.json | \
+jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB\t\(.key[:60])\t\(.ref)"' "$TEMP_DIR/cache_list.json" | \
     sort -rn | head -20
 
 echo ""
-echo "Total caches:" $(jq length /tmp/cache_list.json)
-TOTAL_SIZE=$(jq '[.[].sizeInBytes] | add' /tmp/cache_list.json)
+echo "Total caches:" $(jq length "$TEMP_DIR/cache_list.json")
+TOTAL_SIZE=$(jq '[.[].sizeInBytes] | add' "$TEMP_DIR/cache_list.json")
 TOTAL_SIZE_MB=$((TOTAL_SIZE / 1024 / 1024))
 echo "Total size: ${TOTAL_SIZE_MB} MB"
 echo ""
@@ -53,7 +56,7 @@ echo ""
 echo "🗑️  Step 2: Deleting PR #2668 cache (4.4 GB)..."
 echo ""
 
-PR_CACHE_IDS=$(jq -r '.[] | select(.ref == "refs/pull/2668/merge") | select(.key | contains("Unified Security Suite")) | .id' /tmp/cache_list.json)
+PR_CACHE_IDS=$(jq -r '.[] | select(.ref == "refs/pull/2668/merge") | select(.key | contains("Unified Security Suite")) | .id' "$TEMP_DIR/cache_list.json")
 
 if [ -n "$PR_CACHE_IDS" ]; then
     for CACHE_ID in $PR_CACHE_IDS; do
@@ -72,20 +75,20 @@ echo "🗑️  Step 3: Cleaning duplicate pip caches..."
 echo ""
 
 # Group pip caches by branch and keep only the most recent
-jq -r '.[] | select(.key | startswith("Linux-pip")) | "\(.ref)\t\(.createdAt)\t\(.id)"' /tmp/cache_list.json | \
+jq -r '.[] | select(.key | startswith("Linux-pip")) | "\(.ref)\t\(.createdAt)\t\(.id)"' "$TEMP_DIR/cache_list.json" | \
     sort -k1,1 -k2,2r | \
     awk '{
         if (seen[$1]++ > 0) {
             print $3
         }
-    }' > /tmp/duplicate_cache_ids.txt
+    }' > "$TEMP_DIR/duplicate_cache_ids.txt"
 
-if [ -s /tmp/duplicate_cache_ids.txt ]; then
-    echo "Found $(wc -l < /tmp/duplicate_cache_ids.txt) duplicate pip caches to delete"
+if [ -s "$TEMP_DIR/duplicate_cache_ids.txt" ]; then
+    echo "Found $(wc -l < "$TEMP_DIR/duplicate_cache_ids.txt") duplicate pip caches to delete"
     while IFS= read -r CACHE_ID; do
         echo "Deleting duplicate cache ID: $CACHE_ID"
         gh cache delete "$CACHE_ID" --confirm || echo "  ⚠️  Already deleted or not found"
-    done < /tmp/duplicate_cache_ids.txt
+    done < "$TEMP_DIR/duplicate_cache_ids.txt"
     echo "✅ Duplicate pip caches cleaned"
 else
     echo "✅ No duplicate pip caches found"
@@ -97,16 +100,16 @@ echo ""
 echo "🗑️  Step 4: Deleting caches older than 7 days..."
 echo ""
 
-SEVEN_DAYS_AGO=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-7d +%Y-%m-%dT%H:%M:%SZ)
+SEVEN_DAYS_AGO=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v -7d +%Y-%m-%dT%H:%M:%SZ)
 
-jq -r --arg cutoff "$SEVEN_DAYS_AGO" '.[] | select(.createdAt < $cutoff) | .id' /tmp/cache_list.json > /tmp/old_cache_ids.txt
+jq -r --arg cutoff "$SEVEN_DAYS_AGO" '.[] | select(.createdAt < $cutoff) | .id' "$TEMP_DIR/cache_list.json" > "$TEMP_DIR/old_cache_ids.txt"
 
-if [ -s /tmp/old_cache_ids.txt ]; then
-    echo "Found $(wc -l < /tmp/old_cache_ids.txt) caches older than 7 days"
+if [ -s "$TEMP_DIR/old_cache_ids.txt" ]; then
+    echo "Found $(wc -l < "$TEMP_DIR/old_cache_ids.txt") caches older than 7 days"
     while IFS= read -r CACHE_ID; do
         echo "Deleting old cache ID: $CACHE_ID"
         gh cache delete "$CACHE_ID" --confirm || echo "  ⚠️  Already deleted or not found"
-    done < /tmp/old_cache_ids.txt
+    done < "$TEMP_DIR/old_cache_ids.txt"
     echo "✅ Old caches deleted"
 else
     echo "✅ No caches older than 7 days"
@@ -120,9 +123,9 @@ echo ""
 
 sleep 3  # Wait for GitHub to update cache list
 
-gh cache list --json key,sizeInBytes --limit 50 > /tmp/cache_list_after.json
+gh cache list --json key,sizeInBytes --limit 50 > "$TEMP_DIR/cache_list_after.json"
 
-TOTAL_SIZE_AFTER=$(jq '[.[].sizeInBytes] | add // 0' /tmp/cache_list_after.json)
+TOTAL_SIZE_AFTER=$(jq '[.[].sizeInBytes] | add // 0' "$TEMP_DIR/cache_list_after.json")
 TOTAL_SIZE_AFTER_MB=$((TOTAL_SIZE_AFTER / 1024 / 1024))
 TOTAL_SIZE_AFTER_GB=$(echo "scale=2; $TOTAL_SIZE_AFTER_MB / 1024" | bc)
 
@@ -145,11 +148,12 @@ fi
 
 echo ""
 echo "Remaining caches:"
-jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB\t\(.key[:60])"' /tmp/cache_list_after.json | \
+jq -r '.[] | "\(.sizeInBytes / 1024 / 1024 | floor) MB\t\(.key[:60])"' "$TEMP_DIR/cache_list_after.json" | \
     sort -rn | head -10
 
-# Cleanup temp files
-rm -f /tmp/cache_list.json /tmp/cache_list_after.json /tmp/duplicate_cache_ids.txt /tmp/old_cache_ids.txt
+# Cleanup temp files (keep in .github/tmp for audit trail)
+echo ""
+echo "Temp files retained in $TEMP_DIR for audit trail"
 
 echo ""
 echo "=========================================="

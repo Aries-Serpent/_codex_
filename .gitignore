@@ -52,6 +52,9 @@ audit_artifacts/
 # Disabled workflows (consolidation in progress)
 .github/workflows/*.disabled
 
+# Temporary files (anti-/tmp/ protection system)
+.github/tmp/
+
 # Reports (optional commit)
 reports/
 

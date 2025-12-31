@@ -704,14 +704,14 @@ print(f"Server supports: {MCP_VERSIONS}")
 
 1. Read [MCP Capabilities Reference](MCP_CAPABILITIES_REFERENCE.md)
 2. Review [MCP Security Guide](MCP_SECURITY_GUIDE.md)
-3. Explore [MCP Implementation Summary](MCP_IMPLEMENTATION_SUMMARY.md)
-4. Check [API Documentation](docs/API.md)
+3. Explore MCP Implementation Summary <!-- TODO: MCP_IMPLEMENTATION_SUMMARY.md to be created -->
+4. Check API Documentation <!-- TODO: docs/API.md to be created -->
 5. Run the audit: `python scripts/space_traversal/audit_runner.py run`
 
 ## Additional Resources
 
-- [Usage Guide](docs/Usage_Guide.md)
-- [Traversal Workflow](docs/Traversal_Workflow.md)
-- [Test Examples](tests/mcp/)
+- Usage Guide <!-- TODO: docs/Usage_Guide.md to be created -->
+- Traversal Workflow <!-- TODO: docs/Traversal_Workflow.md to be created -->
+- Test Examples <!-- TODO: tests/mcp/ directory to be created with examples -->
 - [MCP Server Implementation](mcp/server/server.py)
 - [Tool Registry](mcp/registry.py)

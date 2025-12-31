@@ -276,4 +276,4 @@ navigator.execute('RESOLVE_CONFLICT')  # Future feature
 
 - [Git merge documentation](https://git-scm.com/docs/git-merge)
 - [Git conflict resolution](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#_basic_merge_conflicts)
-- [Codex contribution guidelines](../../CONTRIBUTING.md)
+- [Codex contribution guidelines](../../../CONTRIBUTING.md)
