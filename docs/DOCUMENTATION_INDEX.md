@@ -34,8 +34,8 @@
 
 | Document | Size | Purpose |
 |----------|------|---------|
-| [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) | 15.3KB | Gap analysis with priority matrix |
-| [PR_FINAL_SUMMARY.md](../PR_FINAL_SUMMARY.md) | 10.6KB | PR summary with metrics |
+| [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | 15.3KB | Gap analysis with priority matrix |
+| [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | 10.6KB | PR summary with metrics |
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | 12.3KB | Onboarding guide |
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | 32KB | Comprehensive architecture reference |
 
@@ -72,7 +72,7 @@
 | Gap Analyses | 5+ | GAP_REMEDIATION_STATUS.md, MLOPS_GAP_ANALYSIS_AND_ROADMAP.md |
 | Achievement Reports | 5+ | ACHIEVEMENT_99_PERCENT.md, FINAL_STATUS_100_PERCENT.md |
 
-**Full Index**: See [archive/historical_docs_20251210/INDEX.md](../archive/historical_docs_20251210/INDEX.md)
+**Full Index**: See [workbench/INDEX.md](../workbench/INDEX.md)
 
 ### Removed Documents (archive/removed/)
 
@@ -119,7 +119,7 @@
 | Guide | Audience | Updated |
 |-------|----------|---------|
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | New contributors | 2025-12-11 |
-| [MCP_DEVELOPER_GUIDE.md](../MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
+| [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
 | [USAGE_GUIDE.md](../USAGE_GUIDE.md) | End users | Current |
 
 ### Agent Guides
@@ -146,8 +146,8 @@
 
 | Report | Purpose | Date |
 |--------|---------|------|
-| [COMPREHENSIVE_GAP_ANALYSIS.md](../COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
-| [PR_FINAL_SUMMARY.md](../PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
+| [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
+| [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
 | [codex_gap_registry.yaml](../codex_gap_registry.yaml) | Gap tracking (YAML) | 2025-12-11 |
 
 ### Audit Reports
