@@ -160,7 +160,7 @@ exits with a non-zero status if disallowed licenses are detected.
 
 ## Manual Validation
 
-When changes affect the snapshot database or related tooling, perform manual validation. Follow the [Manual Verification Template](documentation/manual_verification_template.md) and record the steps you completed (A1–A4, B1–B2, or C1) in your pull request description or issue.
+When changes affect the snapshot database or related tooling, perform manual validation. Follow the [Manual Verification Template](../templates/ITERATION_PLAN_TEMPLATE.md) and record the steps you completed (A1–A4, B1–B2, or C1) in your pull request description or issue.
 
 ## Experiment Documentation
 
