@@ -33,6 +33,7 @@ At the end of every active session (PR or workflow), write a structured "afterma
 5. **Quality**: Tests, coverage, review status
 6. **Blockers**: Issues encountered and resolutions
 7. **Next Steps**: Continuation tasks and status
+8. **Future Research**: Research topics identified during session
 
 ## Required Annotation Schema
 
@@ -132,6 +133,35 @@ next_steps:
     status: "pending"
     estimated_effort: "1 session"
 
+future_research:
+  - topic: "ML-powered pattern detection in lessons learned"
+    rationale: "Automatically identify recurring patterns across sessions for proactive optimization"
+    potential_approach: "Train classifier on lesson root_cause → fix pairs; suggest preemptive solutions"
+    estimated_complexity: "medium"
+    dependencies: ["Sufficient lessons corpus (50+ sessions)", "ML infrastructure"]
+    expected_impact: "Reduce recurring issues by 30-40%"
+    
+  - topic: "Automated test generation from coverage gaps"
+    rationale: "AI generates tests for uncovered code paths based on code analysis"
+    potential_approach: "AST analysis + GPT-4 to generate pytest fixtures and test cases"
+    estimated_complexity: "high"
+    dependencies: ["Coverage data", "Code understanding model", "Test execution sandbox"]
+    expected_impact: "Accelerate coverage improvement 2-3x"
+    
+  - topic: "Session checkpoint resume with context injection"
+    rationale: "Resume interrupted sessions with full context from checkpoint data"
+    potential_approach: "Load checkpoint YAML, inject into system prompt with phase status"
+    estimated_complexity: "low"
+    dependencies: ["Checkpoint storage", "Prompt engineering"]
+    expected_impact: "Enable seamless multi-session workflows"
+    
+  - topic: "Cognitive brain predictive analytics"
+    rationale: "Predict blockers and estimate effort based on historical patterns"
+    potential_approach: "Time series analysis on metrics + blocker history"
+    estimated_complexity: "medium"
+    dependencies: ["Historical aftermath data", "Analytics framework"]
+    expected_impact: "Improve planning accuracy 20-30%"
+
 status: "complete"
 phases_complete: ["6", "7", "8"]
 phases_active: ["9"]
@@ -153,6 +183,11 @@ If fenced blocks are not feasible, emit fallback inline tags:
 <!--AFTERMATH:METRICS:COMMITS=24-->
 <!--AFTERMATH:QUALITY:TESTS_PASSING=true-->
 <!--AFTERMATH:QUALITY:COVERAGE=72%-->
+<!--AFTERMATH:FUTURE_RESEARCH_COUNT=4-->
+<!--AFTERMATH:FUTURE_RESEARCH_1="ML-powered pattern detection (medium complexity)"-->
+<!--AFTERMATH:FUTURE_RESEARCH_2="Automated test generation (high complexity)"-->
+<!--AFTERMATH:FUTURE_RESEARCH_3="Session checkpoint resume (low complexity)"-->
+<!--AFTERMATH:FUTURE_RESEARCH_4="Cognitive brain predictive analytics (medium complexity)"-->
 <!--AFTERMATH:STATUS=complete-->
 <!--AFTERMATH:END-->
 ```

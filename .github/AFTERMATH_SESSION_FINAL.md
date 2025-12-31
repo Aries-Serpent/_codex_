@@ -147,6 +147,47 @@ next_steps:
     estimated_effort: "1 session"
     dependencies: ["MCP system stabilization"]
 
+future_research:
+  - topic: "ML-powered pattern detection in lessons learned"
+    rationale: "Automatically identify recurring patterns across sessions for proactive optimization"
+    potential_approach: "Train classifier on lesson root_cause → fix pairs; suggest preemptive solutions"
+    estimated_complexity: "medium"
+    dependencies: ["Sufficient lessons corpus (50+ sessions)", "ML infrastructure"]
+    expected_impact: "Reduce recurring issues by 30-40%"
+    timeline: "Q2 2026"
+    
+  - topic: "Automated test generation from coverage gaps"
+    rationale: "AI generates tests for uncovered code paths based on code analysis"
+    potential_approach: "AST analysis + GPT-4 to generate pytest fixtures and test cases"
+    estimated_complexity: "high"
+    dependencies: ["Coverage data", "Code understanding model", "Test execution sandbox"]
+    expected_impact: "Accelerate coverage improvement 2-3x"
+    timeline: "Q3 2026"
+    
+  - topic: "Session checkpoint resume with context injection"
+    rationale: "Resume interrupted sessions with full context from checkpoint data"
+    potential_approach: "Load checkpoint YAML, inject into system prompt with phase status and history"
+    estimated_complexity: "low"
+    dependencies: ["Checkpoint storage", "Prompt engineering"]
+    expected_impact: "Enable seamless multi-session workflows; reduce context loss"
+    timeline: "Q1 2026"
+    
+  - topic: "Cognitive brain predictive analytics"
+    rationale: "Predict blockers and estimate effort based on historical patterns"
+    potential_approach: "Time series analysis on metrics + blocker history; pattern matching"
+    estimated_complexity: "medium"
+    dependencies: ["Historical aftermath data (30+ sessions)", "Analytics framework"]
+    expected_impact: "Improve planning accuracy 20-30%; early blocker detection"
+    timeline: "Q2 2026"
+    
+  - topic: "AfterMath visualization dashboard"
+    rationale: "Interactive dashboard for exploring lessons learned trends and patterns"
+    potential_approach: "Web dashboard with charts for metrics over time, word clouds for patterns"
+    estimated_complexity: "medium"
+    dependencies: ["Web framework", "Charting library", "AfterMath data store"]
+    expected_impact: "Improved insight discovery; team learning acceleration"
+    timeline: "Q2 2026"
+
 status: "complete"
 phases_complete: ["6", "7", "8"]
 phases_active: ["9"]

@@ -57,7 +57,8 @@ class AftermathParser:
             'metrics': {},
             'quality': {},
             'blockers': [],
-            'next_steps': []
+            'next_steps': [],
+            'future_research': []
         }
         
         for match in matches:
@@ -72,6 +73,8 @@ class AftermathParser:
                     data['lessons'].append({'title': value})
                 elif key.startswith('DECISION_'):
                     data['decisions'].append({'what': value})
+                elif key.startswith('FUTURE_RESEARCH_') and not key.endswith('_COUNT'):
+                    data['future_research'].append({'topic': value})
                 elif key.startswith('METRICS:'):
                     metric_name = key.split(':', 1)[1].lower()
                     data['metrics'][metric_name] = value
@@ -109,7 +112,7 @@ class AftermathParser:
         """Validate aftermath data schema."""
         errors = []
         
-        # Required top-level keys
+        # Required top-level keys (future_research is optional)
         required_keys = ['meta', 'lessons', 'decisions', 'metrics', 'quality', 'next_steps']
         for key in required_keys:
             if key not in data:
@@ -156,6 +159,13 @@ class AftermathParser:
                 for decision in data['decisions']:
                     f.write(f"- **{decision.get('what', 'Unknown')}**: ")
                     f.write(f"{decision.get('why', 'N/A')}\n")
+            
+            if data.get('future_research'):
+                f.write("\n### Future Research Topics\n\n")
+                for research in data['future_research']:
+                    f.write(f"- **{research.get('topic', 'Unknown')}** ")
+                    f.write(f"({research.get('estimated_complexity', 'unknown')} complexity): ")
+                    f.write(f"{research.get('rationale', 'N/A')}\n")
             
             f.write("\n---\n")
         
