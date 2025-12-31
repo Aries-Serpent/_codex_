@@ -1,0 +1,1392 @@
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/atomic_diffs/test_track_a.py ______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/atomic_diffs/test_track_a.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/atomic_diffs/test_track_a.py:14: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+_ ERROR collecting tests/capability_specialization/test_capability_contracts.py _
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/capability_specialization/test_capability_contracts.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/capability_specialization/test_capability_contracts.py:7: in <module>
+    from codex_ml.deployment.package import build_service_package
+src/codex_ml/deployment/__init__.py:5: in <module>
+    from .cloud import provision_stack
+src/codex_ml/deployment/cloud.py:10: in <module>
+    from codex_ml.monitoring.health import record_health_event
+src/codex_ml/monitoring/health.py:13: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+_____________ ERROR collecting tests/d365/test_mapping_loaders.py ______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/d365/test_mapping_loaders.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/d365/test_mapping_loaders.py:8: in <module>
+    from codex.mapping.load import load_all_mappings, load_sla
+src/codex/mapping/__init__.py:5: in <module>
+    from .load import load_all_mappings, load_routing, load_sla
+src/codex/mapping/load.py:12: in <module>
+    from pydantic import BaseModel, ValidationError
+E   ModuleNotFoundError: No module named 'pydantic'
+_______________ ERROR collecting tests/d365/test_solution_xml.py _______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/d365/test_solution_xml.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/d365/test_solution_xml.py:7: in <module>
+    from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifest
+src/codex/dynamics/solution_xml.py:21: in <module>
+    from pydantic import AliasChoices, BaseModel, Field
+E   ModuleNotFoundError: No module named 'pydantic'
+_________ ERROR collecting tests/data/test_dataset_loaders_extended.py _________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/data/test_dataset_loaders_extended.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/data/test_dataset_loaders_extended.py:14: in <module>
+    from codex_ml.data import load_dataset
+src/codex_ml/data/__init__.py:38: in __getattr__
+    module = import_module(module_name, __name__)
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/codex_ml/data/loaders/__init__.py:39: in <module>
+    spec.loader.exec_module(_core)
+src/codex_ml/data/loaders.py:30: in <module>
+    from codex_ml.connectors.base import ConnectorError
+src/codex_ml/connectors/__init__.py:6: in <module>
+    from .remote import RemoteConnector
+src/codex_ml/connectors/remote.py:12: in <module>
+    from codex_ml.monitoring.health import record_health_event
+src/codex_ml/monitoring/health.py:13: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+_________________ ERROR collecting tests/data/test_loaders.py __________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/data/test_loaders.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/data/test_loaders.py:7: in <module>
+    from codex_ml.connectors.registry import register_connector
+src/codex_ml/connectors/__init__.py:6: in <module>
+    from .remote import RemoteConnector
+src/codex_ml/connectors/remote.py:12: in <module>
+    from codex_ml.monitoring.health import record_health_event
+src/codex_ml/monitoring/health.py:13: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+__________ ERROR collecting tests/deployment/test_api_integration.py ___________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/deployment/test_api_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/deployment/test_api_integration.py:5: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+_______________ ERROR collecting tests/deployment/test_cloud.py ________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/deployment/test_cloud.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/deployment/test_cloud.py:6: in <module>
+    from codex_ml.deployment.cloud import provision_stack
+src/codex_ml/deployment/__init__.py:5: in <module>
+    from .cloud import provision_stack
+src/codex_ml/deployment/cloud.py:10: in <module>
+    from codex_ml.monitoring.health import record_health_event
+src/codex_ml/monitoring/health.py:13: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+__________ ERROR collecting tests/e2e_offline/test_diff_and_apply.py ___________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/e2e_offline/test_diff_and_apply.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/e2e_offline/test_diff_and_apply.py:3: in <module>
+    from codex.zendesk.model import Action, Condition, Trigger
+src/codex/zendesk/__init__.py:5: in <module>
+    from .model import (
+src/codex/zendesk/model/__init__.py:3: in <module>
+    from .app import App
+src/codex/zendesk/model/app.py:11: in <module>
+    from pydantic import Field
+E   ModuleNotFoundError: No module named 'pydantic'
+__________________ ERROR collecting tests/mcp/test_facade.py ___________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/mcp/test_facade.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/mcp/test_facade.py:3: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+________________ ERROR collecting tests/mcp/test_http_server.py ________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/mcp/test_http_server.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/mcp/test_http_server.py:3: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+___________ ERROR collecting tests/mcp/test_lifecycle_management.py ____________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/mcp/test_lifecycle_management.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/mcp/test_lifecycle_management.py:11: in <module>
+    from src.services.mcp.lifecycle import LifecycleManager
+src/services/__init__.py:12: in <module>
+    from .workflow import WorkflowInventory, WorkflowParser
+src/services/workflow/__init__.py:6: in <module>
+    from .inventory import WorkflowInventory
+src/services/workflow/inventory.py:11: in <module>
+    from .parser import WorkflowParser
+src/services/workflow/parser.py:14: in <module>
+    from .types import (
+src/services/workflow/types.py:8: in <module>
+    from pydantic import BaseModel, Field, field_validator
+E   ModuleNotFoundError: No module named 'pydantic'
+_____________ ERROR collecting tests/mcp/test_schema_validation.py _____________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/mcp/test_schema_validation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/mcp/test_schema_validation.py:11: in <module>
+    from pydantic import BaseModel
+E   ModuleNotFoundError: No module named 'pydantic'
+________ ERROR collecting tests/quantum/test_zendesk_quantum_bridge.py _________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/quantum/test_zendesk_quantum_bridge.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/quantum/test_zendesk_quantum_bridge.py:6: in <module>
+    from src.codex.zendesk.monitoring.mcp_bridge import export_zendesk_metrics
+src/codex/zendesk/__init__.py:5: in <module>
+    from .model import (
+src/codex/zendesk/model/__init__.py:3: in <module>
+    from .app import App
+src/codex/zendesk/model/app.py:11: in <module>
+    from pydantic import Field
+E   ModuleNotFoundError: No module named 'pydantic'
+_______ ERROR collecting tests/safety/test_safety_filter_integration.py ________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/safety/test_safety_filter_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/safety/test_safety_filter_integration.py:4: in <module>
+    from codex_ml.data import stream_paths
+E   ImportError: cannot import name 'stream_paths' from 'codex_ml.data' (/home/runner/work/_codex_/_codex_/src/codex_ml/data/__init__.py)
+____________ ERROR collecting tests/services/github/test_client.py _____________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/services/github/test_client.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/services/github/test_client.py:7: in <module>
+    from src.services.github.client import GitHubClient
+src/services/__init__.py:12: in <module>
+    from .workflow import WorkflowInventory, WorkflowParser
+src/services/workflow/__init__.py:6: in <module>
+    from .inventory import WorkflowInventory
+src/services/workflow/inventory.py:11: in <module>
+    from .parser import WorkflowParser
+src/services/workflow/parser.py:14: in <module>
+    from .types import (
+src/services/workflow/types.py:8: in <module>
+    from pydantic import BaseModel, Field, field_validator
+E   ModuleNotFoundError: No module named 'pydantic'
+__________ ERROR collecting tests/services/workflow/test_inventory.py __________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/services/workflow/test_inventory.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/services/workflow/test_inventory.py:5: in <module>
+    from src.services.workflow.inventory import WorkflowInventory
+src/services/__init__.py:12: in <module>
+    from .workflow import WorkflowInventory, WorkflowParser
+src/services/workflow/__init__.py:6: in <module>
+    from .inventory import WorkflowInventory
+src/services/workflow/inventory.py:11: in <module>
+    from .parser import WorkflowParser
+src/services/workflow/parser.py:14: in <module>
+    from .types import (
+src/services/workflow/types.py:8: in <module>
+    from pydantic import BaseModel, Field, field_validator
+E   ModuleNotFoundError: No module named 'pydantic'
+____________ ERROR collecting tests/serving/test_inference_chaos.py ____________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/serving/test_inference_chaos.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/serving/test_inference_chaos.py:12: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+_________ ERROR collecting tests/serving/test_inference_performance.py _________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/serving/test_inference_performance.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/serving/test_inference_performance.py:12: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+__________ ERROR collecting tests/serving/test_inference_security.py ___________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/serving/test_inference_security.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/serving/test_inference_security.py:11: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+___________________ ERROR collecting tests/test_api_infer.py ___________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/test_api_infer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_api_infer.py:4: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+_________________ ERROR collecting tests/test_data_loaders.py __________________
+tests/test_data_loaders.py:5: in <module>
+    from codex_ml.data import loaders
+src/codex_ml/data/loaders/__init__.py:43: in <module>
+    stream_paths = _core.stream_paths
+E   AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'
+_____________ ERROR collecting tests/test_data_loaders_extended.py _____________
+tests/test_data_loaders_extended.py:3: in <module>
+    from codex_ml.data import loaders
+src/codex_ml/data/loaders/__init__.py:43: in <module>
+    stream_paths = _core.stream_paths
+E   AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'
+____________________ ERROR collecting tests/test_loaders.py ____________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/test_loaders.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_loaders.py:8: in <module>
+    from codex_ml.data import collect_stats, iter_jsonl, iter_txt, stream_paths
+E   ImportError: cannot import name 'collect_stats' from 'codex_ml.data' (/home/runner/work/_codex_/_codex_/src/codex_ml/data/__init__.py)
+_________________ ERROR collecting tests/test_msp_infer_api.py _________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/test_msp_infer_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_msp_infer_api.py:13: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi.testclient'; 'fastapi' is not a package
+_________________ ERROR collecting tests/test_split_indices.py _________________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/test_split_indices.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_split_indices.py:1: in <module>
+    from codex_ml.data import split_indices
+E   ImportError: cannot import name 'split_indices' from 'codex_ml.data' (/home/runner/work/_codex_/_codex_/src/codex_ml/data/__init__.py)
+______________ ERROR collecting tests/test_zendesk_validators.py _______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/test_zendesk_validators.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_zendesk_validators.py:2: in <module>
+    from pydantic import ValidationError
+E   ImportError: cannot import name 'ValidationError' from 'pydantic' (unknown location)
+_________ ERROR collecting tests/unit/test_apply_ops_normalization.py __________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/unit/test_apply_ops_normalization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/unit/test_apply_ops_normalization.py:5: in <module>
+    from codex.zendesk import apply as zapply
+src/codex/zendesk/__init__.py:5: in <module>
+    from .model import (
+src/codex/zendesk/model/__init__.py:3: in <module>
+    from .app import App
+src/codex/zendesk/model/app.py:13: in <module>
+    from .trigger import _ZendeskBaseModel
+src/codex/zendesk/model/trigger.py:8: in <module>
+    from pydantic import BaseModel, ConfigDict, Field
+E   ImportError: cannot import name 'ConfigDict' from 'pydantic' (unknown location)
+______________ ERROR collecting tests/unit/test_zendesk_models.py ______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/unit/test_zendesk_models.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/unit/test_zendesk_models.py:3: in <module>
+    from codex.zendesk.model import (
+src/codex/zendesk/__init__.py:5: in <module>
+    from .model import (
+src/codex/zendesk/model/__init__.py:3: in <module>
+    from .app import App
+src/codex/zendesk/model/app.py:13: in <module>
+    from .trigger import _ZendeskBaseModel
+src/codex/zendesk/model/trigger.py:8: in <module>
+    from pydantic import BaseModel, ConfigDict, Field
+E   ImportError: cannot import name 'ConfigDict' from 'pydantic' (unknown location)
+______________ ERROR collecting tests/zendesk/test_api_client.py _______________
+ImportError while importing test module '/home/runner/work/_codex_/_codex_/tests/zendesk/test_api_client.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/zendesk/test_api_client.py:16: in <module>
+    import responses
+E   ModuleNotFoundError: No module named 'responses'
+=============================== warnings summary ===============================
+src/tokenization/train_tokenizer.py:23
+  /home/runner/work/_codex_/_codex_/src/tokenization/train_tokenizer.py:23: RuntimeWarning: Hydra extras plugin (`hydra.extra`) is unavailable. Install the Codex test extras (e.g. `pip install -e '.[test]'`) or `hydra-core==1.3.2` before running Hydra-backed commands. Set CODEX_ALLOW_MISSING_HYDRA_EXTRA=1 to bypass this guard when stubbing Hydra for tests.
+    import config_legacy as hydra
+
+tests/mcp/test_utilities.py:122
+  /home/runner/work/_codex_/_codex_/tests/mcp/test_utilities.py:122: PytestCollectionWarning: cannot collect test class 'TestRequest' because it has a __init__ constructor (from: tests/mcp/test_utilities.py)
+    class TestRequest:
+
+tests/mcp/test_utilities.py:132
+  /home/runner/work/_codex_/_codex_/tests/mcp/test_utilities.py:132: PytestCollectionWarning: cannot collect test class 'TestToolHandler' because it has a __init__ constructor (from: tests/mcp/test_utilities.py)
+    class TestToolHandler:
+
+src/quantum/testing.py:22
+  /home/runner/work/_codex_/_codex_/src/quantum/testing.py:22: PytestCollectionWarning: cannot collect test class 'TestState' because it has a __init__ constructor (from: tests/quantum/test_quantum_testing.py)
+    class TestState(Enum):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform linux, python 3.12.3-final-0 -----------
+Name                                                             Stmts   Miss Branch BrPart   Cover   Missing
+-------------------------------------------------------------------------------------------------------------
+agents/advanced_physics_calculators.py                             605    502    218      0  12.52%   27-36, 42, 86-124, 132-142, 150-152, 160-171, 179-183, 196-202, 215-224, 240-255, 282-298, 307-315, 328-329, 342-354, 362-370, 387-408, 422-427, 453-454, 473-517, 532-570, 580-589, 598-608, 626-654, 694-700, 719-734, 738, 753-759, 780-788, 815-822, 826, 834-844, 858-896, 915-923, 931-947, 963-973, 1004-1012, 1022-1023, 1033-1053, 1062-1074, 1093-1108, 1116-1167, 1193-1202, 1220, 1234-1265, 1273-1298, 1319-1332, 1340-1368, 1394-1397, 1415-1418, 1431-1440, 1450-1458, 1468-1477, 1488-1512, 1522-1551, 1565-1583, 1610-1617, 1625-1669, 1673
+agents/agent_memory.py                                             366    280     80      1  19.51%   69, 84, 116, 142-143, 157-174, 183-219, 223-234, 237, 244-247, 268-296, 300-347, 360-425, 452, 472-504, 516-539, 543-545, 555-579, 583, 598-614, 618-638, 645-678, 682-698, 707, 721-725, 738-743, 756-765, 783-792, 796, 801-837, 856-880, 890-918, 922-943, 948-987, 991-1019, 1023-1025, 1058-1077, 1097-1159, 1167, 1193-1235, 1240-1293
+agents/codex_client/codex_client/bridge.py                          55     55      4      0   0.00%   3-134
+agents/codex_client/codex_client/config.py                          18     18      2      0   0.00%   3-27
+agents/codex_client/codex_client/demo_plan_and_call.py              42     42      4      0   0.00%   3-76
+agents/codex_client/codex_client/models.py                          34     34      0      0   0.00%   3-60
+agents/codex_client/tests/test_config.py                            20     20      2      0   0.00%   3-31
+agents/developer_orchestrator.py                                   370    292    120      0  15.92%   31-34, 43-46, 53-60, 101, 105-120, 139, 166-178, 182, 194-262, 267-361, 387-426, 430-501, 519-524, 529-549, 553, 571-603, 607-624, 628, 638-658, 672-717, 721-748, 770, 791-796, 826-876, 889-913, 926-958, 971-1051, 1056
+agents/exceptions.py                                                40     40      2      0   0.00%   8-125
+agents/interpretability/sparse_probes.py                           123     93     28      0  19.87%   32-34, 78-97, 117-151, 164-172, 181-190, 228-247, 265-283, 302-310, 338-373
+agents/knowledge_base_integrator.py                                  6      6      0      0   0.00%   3-14
+agents/mental_mapping.py                                           523    404    164      1  17.47%   33, 56, 67, 72, 130-134, 137, 180-190, 194-195, 199-206, 210, 214-217, 221, 225-227, 249-251, 267-284, 318-347, 363-364, 373-379, 408-438, 448-541, 556-595, 603-642, 648-742, 750-813, 817-843, 847-858, 862-902, 914-941, 955-974, 996-1045, 1059-1081, 1095-1115, 1119-1132, 1136-1169, 1178, 1197-1207, 1216, 1232-1293
+agents/mlp_scoring.py                                               52     36     10      0  25.81%   16-18, 44-70, 86-128, 140
+agents/msp_client.py                                               141    137     32      0   2.31%   12-483
+agents/physics_integration.py                                      124     97     50      0  15.52%   19-22, 31-34, 41-48, 67-77, 81, 96-140, 146-174, 182-185, 191-194, 200-208, 220-228, 237-247, 262-278, 286-295, 308-320
+agents/physics_orchestrator.py                                    1346   1061    358      1  16.78%   59-63, 71-76, 108-110, 117-123, 141-160, 172, 217-226, 233-249, 258, 266-297, 307-353, 363-399, 407-441, 456-470, 478-501, 515-521, 534, 539-544, 549, 554, 558-560, 566-638, 668-710, 725-728, 742-802, 808-825, 833-852, 860-933, 947-972, 1012-1018, 1022, 1048-1054, 1067, 1071-1072, 1076-1077, 1085-1103, 1111-1127, 1131-1139, 1149-1170, 1180-1183, 1212-1213, 1221, 1229-1230, 1254-1257, 1261-1263, 1271-1272, 1280-1284, 1293-1301, 1309-1328, 1337-1340, 1348-1357, 1368-1377, 1399-1400, 1434-1443, 1449-1458, 1468-1472, 1484-1554, 1573-1600, 1617-1639, 1644, 1648, 1694-1697, 1710-1765, 1773-1797, 1805-1832, 1838-1851, 1866-1875, 1910-1922, 1930-1957, 1969-1989, 1995-2004, 2010-2015, 2033, 2041-2042, 2067-2070, 2074-2077, 2081-2083, 2087, 2095-2101, 2105-2106, 2133-2139, 2147-2152, 2178-2186, 2190-2194, 2202-2219, 2228-2239, 2243-2245, 2249-2253, 2261-2276, 2292-2307, 2334-2336, 2340-2341, 2345-2358, 2367-2390, 2398-2412, 2416-2420, 2430-2443, 2456-2475, 2513-2517, 2521-2527, 2533, 2541-2543, 2551-2553, 2561, 2570-2596, 2600-2609, 2615-2623, 2656-2664, 2668, 2678-2679, 2685, 2689, 2695-2711, 2726-2761, 2774-2778, 2784, 2836-2838, 2842-2857, 2866-2870, 2879-2883, 2891-2897, 2906-2916, 2928-2933, 2953-2954, 2964-2978, 2988-3008, 3014-3026, 3036-3058, 3068-3079, 3109-3110, 3122-3131, 3137-3138, 3151-3161, 3167-3168, 3179-3182, 3197-3236, 3244-3265, 3294-3296, 3308-3310, 3322-3324, 3334-3362, 3375-3410, 3422-3432, 3463-3471, 3479-3525, 3529
+agents/quantum_game_theory.py                                      446    353    106      0  16.85%   37-97, 139-171, 175, 179-188, 192-194, 205-214, 225-226, 253-282, 304-305, 310, 314, 318, 325-326, 330-331, 355-361, 366, 370-372, 376-377, 381-390, 394-403, 408, 417-421, 439-463, 474-476, 513-527, 537-539, 543-546, 550-551, 555-556, 565-578, 588-614, 628-643, 656, 665, 700-718, 728-745, 758-773, 782-793, 797-800, 807-817, 828-830, 839-852, 862-882, 891-897, 918-928, 941-943, 964-976, 1015-1027, 1050-1121, 1132-1153, 1169-1204, 1219-1234, 1250-1254, 1263-1278
+agents/rag_ticket_context.py                                         9      9      0      0   0.00%   3-19
+agents/self_healing.py                                             249    157     60      0  29.77%   84-90, 93, 128-137, 140, 169-172, 175, 195-202, 206-238, 246-251, 261-289, 293-316, 320-343, 347-372, 376-388, 392-395, 399-417, 421, 435, 453, 467-480, 495-496, 508, 521, 538-590, 596-597
+agents/semantic_ticket_search.py                                     6      6      0      0   0.00%   3-14
+agents/workflow_navigator.py                                       316    251    122      1  15.07%   55-87, 106, 137-147, 162-242, 248-379, 383-387, 399, 413-425, 429-439, 443-455, 459-471, 484-504, 516-524, 544-558, 562-575, 586-660, 666-694, 701-713, 717-745, 753-781, 786-811
+agents/zendesk_quantum_orchestrator.py                               2      2      0      0   0.00%   3-5
+scripts/adoption/track_metrics.py                                  169    169     54      0   0.00%   3-322
+scripts/agent/activate_brain.py                                     42     42      8      0   0.00%   6-79
+scripts/agent/probe_env.py                                          43     43      4      0   0.00%   2-76
+scripts/ai_search.py                                               182    154     74      1  11.33%   32-39, 43-81, 85-114, 118-155, 159-177, 181-195, 199-249, 253-256, 260, 264-284, 289-331, 335
+scripts/ai_self_review_protocol.py                                 227    140     44      1  32.47%   67-69, 112-128, 132-139, 150-169, 173-187, 191-203, 207-213, 217-229, 234-255, 259-267, 271-288, 292-303, 307-317, 321-349, 354-416, 420
+scripts/analysis/ast_signature_similarity.py                        86     67     30      1  17.24%   43-54, 64-81, 94-118, 122-158, 162
+scripts/analytics/openai_usage_dashboard.py                        100    100     32      0   0.00%   15-244
+scripts/analyze_experiments.py                                      69     56     24      1  15.05%   14-17, 21-32, 41-45, 49-63, 69-89, 98-103, 107
+scripts/analyze_stubs.py                                            74     74     24      0   0.00%   1-117
+scripts/apply_session_logging_workflow.py                          155    155     32      0   0.00%   10-556
+scripts/archival/check_archival_compliance.py                      140    140     72      0   0.00%   26-230
+scripts/archive/select_and_compress.py                              89     89     26      0   0.00%   12-154
+scripts/archive/trend_aggregate.py                                  56     56     16      0   0.00%   17-95
+scripts/archive/validate_prefixes.py                                40     40     18      0   0.00%   22-85
+scripts/archive_files.py                                           123    123     42      0   0.00%   17-295
+scripts/audit/build_integrity_chain.py                              38     38     10      0   0.00%   16-99
+scripts/automation/sync_issues_to_report.py                         31     31     10      0   0.00%   9-49
+scripts/autonomous_agent.py                                        323    235     96      1  21.24%   96, 100-135, 139-145, 149-187, 191-209, 213-246, 253, 257-265, 269-326, 330, 337-345, 349-362, 366, 377-402, 412-425, 429-450, 457-462, 466-477, 482-502, 506-526, 530-551, 556-611, 615
+scripts/baseline/rotate_baselines.py                                33     33     10      0   0.00%   2-42
+scripts/benchmark_logging.py                                        62     62     14      0   0.00%   1-77
+scripts/benchmarks/performance_optimizer.py                        161    161     40      0   0.00%   17-358
+scripts/canonicalize_artifacts.py                                   46     46     12      0   0.00%   2-63
+scripts/catalog_workflows.py                                       115    115     36      0   0.00%   14-317
+scripts/check_dependency_evidence.py                                37     37     12      0   0.00%   13-57
+scripts/check_documentation_updates.py                             151    151     52      0   0.00%   18-285
+scripts/check_licenses.py                                           31     19      4      1  37.14%   16-22, 26-41, 45
+scripts/ci/generate_wheel_manifest.py                               39     39      8      0   0.00%   15-88
+scripts/cli/viewer.py                                               17     17      0      0   0.00%   3-28
+scripts/code_change_reviewer.py                                    120    101     52      1  11.63%   30-31, 35-54, 58-112, 116-145, 149-165, 170-237, 242-271, 275
+scripts/codex_end_to_end.py                                         27     27      4      0   0.00%   9-58
+scripts/codex_offline_audit.py                                     336    336     76      0   0.00%   25-778
+scripts/codex_orchestrate.py                                        96     96     32      0   0.00%   17-188
+scripts/codex_ready_execution.py                                    86     86     18      0   0.00%   9-187
+scripts/codex_ready_task_runner.py                                 177    177     40      0   0.00%   1-383
+scripts/config/parse_knobs.py                                      199    199     82      0   0.00%   18-378
+scripts/config/schema_validate.py                                   59     59     20      0   0.00%   18-104
+scripts/connectors/prune_rate_limit_history.py                      34     34      6      0   0.00%   2-46
+scripts/connectors/ratelimit_to_status.py                           33     33      6      0   0.00%   2-54
+scripts/consolidate_workflows.py                                   140    140     16      0   0.00%   9-295
+scripts/content_filter/apply_filter.py                             126    126     40      0   0.00%   17-239
+scripts/convert_print_to_logger.py                                 209    209     90      0   0.00%   19-369
+scripts/dashboards/build_ratelimit_tile.py                          83     83     20      0   0.00%   2-129
+scripts/dashboards/build_tiles_index.py                             20     20      4      0   0.00%   2-45
+scripts/dashboards/render_ratelimit_tile_html.py                    57     57      6      0   0.00%   2-132
+scripts/data/hash_dataset_files.py                                  28     28      8      0   0.00%   2-37
+scripts/dataset_dedup.py                                           138    101     38      1  21.59%   50-53, 57-66, 70-97, 101-127, 143-155, 159-164, 168-191, 196-226, 230
+scripts/dataset_pipeline.py                                        260    195     58      1  20.75%   84-88, 93-98, 103-112, 117-139, 144-197, 202-224, 229-263, 281-286, 290-313, 317-342, 346-365, 379-388, 392-406, 411-450, 454
+scripts/decode_workflow_secrets.py                                 111    111     42      0   0.00%   22-222
+scripts/deep_research_task_process.py                              451    451    166      0   0.00%   66-1210
+scripts/deepresearch/generate_context_manifest.py                   25     25      2      0   0.00%   2-57
+scripts/dependency_analyzer.py                                     190    190     88      0   0.00%   18-400
+scripts/deploy/rollback_executor.py                                133    133     32      0   0.00%   17-301
+scripts/deploy_phase6.py                                           300    300     64      0   0.00%   18-573
+scripts/deployment_orchestrator.py                                 498    436    108      1  10.40%   67-69, 89, 126-135, 144-164, 177-193, 206-358, 370-423, 436-598, 610-661, 676-747, 759-809, 813-814, 818-832, 836-874, 883-975, 980-1005, 1009
+scripts/env/export_env_json.py                                      41     41      4      0   0.00%   4-68
+scripts/env/export_env_snapshot.py                                  15     15      2      0   0.00%   3-23
+scripts/env/print_env_info.py                                       23     23      2      0   0.00%   4-44
+scripts/environment_snapshot.py                                    133    133     32      0   0.00%   16-284
+scripts/export_env.py                                               31     31      2      0   0.00%   1-66
+scripts/export_env_info.py                                          19     19      0      0   0.00%   1-26
+scripts/fix_markdown_fences.py                                      37     37     14      0   0.00%   2-53
+scripts/fix_md_fences.py                                            60     60     26      0   0.00%   12-86
+scripts/fix_type_hints.py                                          181    181     84      0   0.00%   19-341
+scripts/generate_ai_index.py                                       248    189     86      1  17.96%   39-41, 76-85, 89-90, 97-158, 162-165, 169-179, 183-200, 204-219, 223-278, 282-301, 305-322, 326-352, 358-391, 395-441, 446-455, 459
+scripts/generate_audit_dashboard.py                                182    161     44      1   9.73%   29-32, 40-44, 49-53, 58-82, 87-95, 100-135, 148-628, 633-665, 669
+scripts/generate_capability_report.py                               74     74     36      0   0.00%   10-177
+scripts/generate_codex_init.py                                      85     85     54      0   0.00%   7-145
+scripts/generate_desired_state.py                                   39     39      8      0   0.00%   4-57
+scripts/generate_docs_manifest.py                                   23     23      8      0   0.00%   5-37
+scripts/generate_pr_followup.py                                    175    175     34      0   0.00%   4-306
+scripts/generate_preflight.py                                       46     46     14      0   0.00%   9-150
+scripts/generate_pytest_config.py                                  102    102     44      0   0.00%   7-205
+scripts/generate_sbom.py                                            59     59      8      0   0.00%   7-178
+scripts/generate_tests.py                                           43     43     12      0   0.00%   11-88
+scripts/inference_pipeline.py                                      236    185     58      1  17.69%   58, 62-66, 70-82, 86-89, 93-107, 115-143, 147-158, 169-172, 176-183, 187-201, 207-219, 228-261, 268-291, 302-317, 329-358, 363-370, 374-375, 386
+scripts/init_sample_db.py                                           49     49      8      0   0.00%   9-111
+scripts/initialize_feature_store.py                                114    114     24      0   0.00%   13-229
+scripts/launch_distributed.py                                       41     41      2      0   0.00%   16-76
+scripts/linters/redundant_code.py                                  148    148     78      0   0.00%   18-287
+scripts/list_checkpoints.py                                         80     70     36      1   9.48%   26-54, 64-82, 87-183, 187
+scripts/make_quickstart_notebook.py                                 21     21      2      0   0.00%   1-147
+scripts/manage_plugins.py                                          133    133     50      0   0.00%   13-219
+scripts/maturity/update_from_ast.py                                 43     43     10      0   0.00%   6-101
+scripts/mcp/select_components.py                                    77     66     32      1  11.01%   16-17, 22-57, 62-66, 71-72, 76-148, 152
+scripts/metrics/token_similarity.py                                 69     69     24      0   0.00%   20-110
+scripts/migrate_configs.py                                          98     98     40      0   0.00%   9-191
+scripts/monitoring/collect_adoption_metrics.py                     214    214     62      0   0.00%   19-489
+scripts/multi_repo/federated_index.py                               49     49     18      0   0.00%   33-116
+scripts/ops/bootstrap_self_hosted_runner.py                         71     71     22      0   0.00%   2-122
+scripts/ops/codex_mint_tokens_per_run.py                           209    209     82      0   0.00%   34-475
+scripts/ops/codex_repo_admin_bootstrap.py                          276    224    104      0  13.68%   28-33, 52-57, 68-73, 82-83, 97-109, 120-130, 133-135, 138, 148, 158, 168, 172-174, 196-205, 229-238, 244-262, 266-271, 277-283, 289-297, 307-311, 315-335, 341-361, 370-392, 404-430, 434-436, 440-448, 452-465, 469, 473-532, 536-590
+scripts/organize_repository.py                                     168    168     56      0   0.00%   6-304
+scripts/planning_components.py                                      39     34     14      0   9.43%   15, 245, 513-665
+scripts/prepare_repo_status_prompt.py                               17     17      2      0   0.00%   2-30
+scripts/refresh_requirements_lock.py                               166    166     52      0   0.00%   19-328
+scripts/remediation/analyze_legacy_usage.py                         88     88     30      0   0.00%   25-158
+scripts/remediation/cleanup_root.py                                 57     57     24      0   0.00%   16-95
+scripts/remediation/consolidate_configs.py                         150    150     52      0   0.00%   10-252
+scripts/remediation/consolidate_modules.py                         136    136     34      0   0.00%   13-212
+scripts/remediation/execute_p1_refactoring.py                      168    168     48      0   0.00%   15-316
+scripts/remediation/list_shims.py                                   42     42     14      0   0.00%   11-106
+scripts/remediation/refactor_imports.py                            126    126     44      0   0.00%   19-190
+scripts/remediation/validate_inventory_paths.py                     28     28     16      0   0.00%   9-45
+scripts/remediation/verify_conflicts.py                            161    161     60      0   0.00%   18-306
+scripts/repo_audit.py                                               98     98     40      0   0.00%   13-174
+scripts/review_response_helper.py                                  156    156     54      0   0.00%   16-309
+scripts/review_root_markdown.py                                    159    159     64      0   0.00%   13-417
+scripts/run_capability_audit.py                                     79     79     16      0   0.00%   13-171
+scripts/run_codex_tasks.py                                          82     82     20      0   0.00%   21-140
+scripts/run_codex_workflow.py                                       49     49     20      0   0.00%   1-105
+scripts/run_coverage_analysis.py                                   128    128     32      0   0.00%   14-226
+scripts/run_sweep.py                                                92     92     30      0   0.00%   9-135
+scripts/sbom_cyclonedx.py                                          158    158     60      0   0.00%   1-257
+scripts/security/check_dependencies.py                              52     52     18      0   0.00%   2-72
+scripts/security/classify_severity.py                               52     52     16      0   0.00%   28-106
+scripts/security/codemods/fix_hardcoded_secrets.py                  88     88     40      0   0.00%   17-195
+scripts/security/codemods/fix_sql_injection.py                      83     83     20      0   0.00%   17-169
+scripts/security/codemods/fix_subprocess.py                         38     38     12      0   0.00%   17-90
+scripts/security/codemods/fix_subprocess_libcst.py                 128    128     56      0   0.00%   15-319
+scripts/security/copilot_token_decoder.py                          172    172     64      0   0.00%   17-325
+scripts/security/enforce_policy.py                                  70     70     18      0   0.00%   10-115
+scripts/security/export_semgrep_alerts.py                          126    126     30      0   0.00%   14-346
+scripts/security/fix_exception_logging_phase2.py                   115    115     46      0   0.00%   6-164
+scripts/security/fix_exception_logging_phase3.py                   101    101     48      0   0.00%   6-142
+scripts/security/fix_md5_usage.py                                   37     37     16      0   0.00%   6-70
+scripts/security/fix_shell_true.py                                  38     38     18      0   0.00%   6-79
+scripts/security/fix_try_except_pass.py                             80     80     36      0   0.00%   6-111
+scripts/security/generate_remediation_plan.py                       82     82     24      0   0.00%   15-244
+scripts/security/generate_sbom.py                                   42     42      6      0   0.00%   2-72
+scripts/security/run_codemods.py                                   109    109     42      0   0.00%   15-227
+scripts/security/scan_datasets.py                                   42     42     16      0   0.00%   2-59
+scripts/security/scan_secrets_runtime.py                            98     98     38      0   0.00%   2-151
+scripts/security/score_alerts.py                                   107    107     32      0   0.00%   15-248
+scripts/security/secret_context_correlate.py                       113    113     40      0   0.00%   25-211
+scripts/security/secret_entropy_scan.py                             60     60     22      0   0.00%   12-93
+scripts/security/token_encryption_tool.py                          152    152     30      0   0.00%   17-353
+scripts/security/validate_security.py                              101    101     18      0   0.00%   5-185
+scripts/security_audit.py                                           73     73     24      0   0.00%   9-174
+scripts/space_traversal/actions_usage_tracker.py                   102    102     20      0   0.00%   10-388
+scripts/space_traversal/audit_runner.py                           1113    994    416      1   7.85%   55-57, 63-65, 71-73, 80-82, 88-90, 96-98, 104-106, 112-114, 120-122, 128-130, 158-160, 206, 210-214, 218-227, 231-236, 240, 244, 257-266, 276-277, 281-282, 289-300, 307-335, 339-361, 443-459, 463-471, 475-603, 625-691, 695-724, 743-800, 831-849, 853-872, 878, 882-1014, 1025-1093, 1098-1129, 1140-1183, 1187-1198, 1202-1284, 1289-1318, 1322-1347, 1351-1376, 1392-1459, 1467-1510, 1515-1554, 1559-1593, 1598-1640, 1645-1703, 1708-1722, 1727-1741, 1746-1760, 1765-1830, 1834-1892, 1896-1986, 1990
+scripts/space_traversal/capability_scoring.py                       24     24      6      0   0.00%   6-46
+scripts/space_traversal/ci_integration.py                          120    120     38      0   0.00%   23-396
+scripts/space_traversal/coverage_ingest.py                         108     95     52      1   8.75%   49-114, 134-178, 183, 187-188, 192-202, 206
+scripts/space_traversal/coverage_ingest_stub.py                     60     46     14      1  20.27%   22-33, 40-48, 55-58, 66-92, 96
+scripts/space_traversal/decode_validate_and_extract.py             280    245    102      1   9.42%   33-77, 109, 113-122, 126-129, 133-139, 143-150, 154, 158-173, 177-221, 225-246, 250-279, 283-317, 321-463, 467
+scripts/space_traversal/detectors/archival_bundling.py              28     26     12      0   5.00%   27-66
+scripts/space_traversal/detectors/ci_cd_pipeline.py                 31     31     20      0   0.00%   7-82
+scripts/space_traversal/detectors/code_quality_tooling.py           34     34     22      0   0.00%   7-90
+scripts/space_traversal/detectors/deployment_infrastructure.py      40     38     26      0   3.03%   21-94
+scripts/space_traversal/detectors/detector_duplication.py           33     33     10      0   0.00%   10-124
+scripts/space_traversal/detectors/detector_peft.py                  34     34     14      0   0.00%   12-107
+scripts/space_traversal/detectors/detector_safeguards.py            62     50     26      0  13.64%   95-107, 120-126, 147-150, 177-235
+scripts/space_traversal/detectors/documentation_system.py           29     27     16      0   4.44%   21-76
+scripts/space_traversal/detectors/example_v2.py                      7      7      4      0   0.00%   1-19
+scripts/space_traversal/detectors/experiment_management.py          33     33     20      0   0.00%   9-73
+scripts/space_traversal/detectors/functional_training.py            40     40     20      0   0.00%   11-93
+scripts/space_traversal/detectors/inference_serving.py              39     33     20      0  10.17%   28-42, 46-84
+scripts/space_traversal/detectors/mcp_authz_authn.py                54     54     22      0   0.00%   14-180
+scripts/space_traversal/detectors/mcp_configuration.py              26     25     16      0   2.38%   27-79
+scripts/space_traversal/detectors/mcp_error_handling.py             53     53     24      0   0.00%   14-172
+scripts/space_traversal/detectors/mcp_lifecycle_management.py       40     40     20      0   0.00%   10-110
+scripts/space_traversal/detectors/mcp_multi_tenant.py               17     17      8      0   0.00%   10-51
+scripts/space_traversal/detectors/mcp_observability.py              54     54     24      0   0.00%   14-177
+scripts/space_traversal/detectors/mcp_protocol_surface.py           26     26     12      0   0.00%   12-69
+scripts/space_traversal/detectors/mcp_rate_limiting.py              53     53     24      0   0.00%   14-171
+scripts/space_traversal/detectors/mcp_schema_validation.py          23     18     10      0  15.15%   12-30
+scripts/space_traversal/detectors/mcp_security_safeguards.py        23     16      8      0  22.58%   14-29
+scripts/space_traversal/detectors/mcp_tooling_registry.py           38     32     26      0   9.38%   25-33, 51-88, 149
+scripts/space_traversal/detectors/mcp_tools_integration.py          20     20     10      0   0.00%   1-49
+scripts/space_traversal/detectors/mcp_versioning_compat.py          67     67     30      0   0.00%   1-195
+scripts/space_traversal/detectors/ml_serving.py                     26     24     10      0   5.56%   26-61
+scripts/space_traversal/detectors/reproducibility.py                34     34     18      0   0.00%   9-83
+scripts/space_traversal/detectors/status_reporting.py               24     22     10      0   5.88%   26-59
+scripts/space_traversal/detectors/structure_integrity.py            34     30     18      0   7.69%   34-90
+scripts/space_traversal/detectors/testing_infrastructure.py         26     26     16      0   0.00%   9-59
+scripts/space_traversal/detectors/train_loop.py                     10     10      4      0   0.00%   9-45
+scripts/space_traversal/detectors/unified_training.py               23     23     12      0   0.00%   19-74
+scripts/space_traversal/detectors/vector_store_detector.py          47     47     22      0   0.00%   12-127
+scripts/space_traversal/dup_similarity.py                           79     70     34      0   7.96%   39-43, 47-53, 68-72, 88-117, 146-178, 200-217
+scripts/space_traversal/extract_validate_gaps.py                     8      8      4      0   0.00%   6-25
+scripts/space_traversal/generate_baseline.py                        88     65     16      1  23.08%   28-30, 45-46, 50-59, 64-67, 71-74, 81-90, 97-106, 110-121, 125-151, 155
+scripts/space_traversal/migrations/migrate_trends.py                60     60      8      0   0.00%   21-295
+scripts/space_traversal/performance.py                             136    136     24      0   0.00%   25-372
+scripts/space_traversal/stable_manifest.py                          68     50     22      1  21.11%   35, 42-48, 52-64, 68-77, 84-88, 95-96, 103-106, 113-122, 126
+scripts/space_traversal/status_update_report.py                     96     96     20      0   0.00%   25-216
+scripts/space_traversal/synonym_loader.py                           60     60     18      0   0.00%   28-117
+scripts/space_traversal/trend_aggregator.py                        137    121     54      1   8.90%   38-61, 77-81, 112-219, 230-281, 286-345, 349
+scripts/space_traversal/trend_compare.py                           113     91     44      0  14.01%   61-119, 137-248, 267-281, 294-322
+scripts/space_traversal/trend_dashboard.py                         149    149     54      0   0.00%   26-543
+scripts/space_traversal/trend_db.py                                136    100     20      0  23.08%   75-77, 81-82, 145-191, 210-230, 239-254, 271-298, 302-304, 308-312, 316-319, 329-375, 388-428, 448-474
+scripts/space_traversal/validate_snapshot_schema.py                 60     43     14      1  24.32%   31, 35-38, 42-61, 73-78, 90-108, 112
+scripts/space_traversal/validate_template_hash.py                   23     23      8      0   0.00%   7-37
+scripts/space_traversal/validators.py                               38     38      8      0   0.00%   1-62
+scripts/space_traversal/verify_determinism.py                       90     90     54      0   0.00%   7-136
+scripts/space_traversal/viz_agent_interface.py                      14     14      2      0   0.00%   16-1317
+scripts/space_traversal/viz_api_collection.py                       10      3      0      0  70.00%   1772-1778
+scripts/space_traversal/viz_ascii.py                               124    112     48      0   6.98%   48-68, 89-106, 121-127, 140-147, 161-163, 186-192, 213-252, 271-300, 313-335
+scripts/space_traversal/viz_cli_builder.py                           9      3      0      0  66.67%   977-982
+scripts/space_traversal/viz_docs_hub.py                             15     15      2      0   0.00%   8-810
+scripts/space_traversal/viz_html.py                                 59     51     18      0  10.39%   326-406, 422-539
+scripts/space_traversal/viz_swagger.py                               9      3      0      0  66.67%   1196-1201
+scripts/space_traversal/webhooks.py                                 91     91     16      0   0.00%   27-341
+scripts/space_traversal/wiki_generator.py                           36     36      6      0   0.00%   8-1275
+scripts/status/collect_schema_results.py                            21     21      6      0   0.00%   8-65
+scripts/status/generate_capability_matrix_md.py                     31     31     10      0   0.00%   2-45
+scripts/status/render_full_markdown_report.py                       82     82     10      0   0.00%   8-120
+scripts/status/render_html_report.py                                57     57     14      0   0.00%   8-218
+scripts/status/render_markdown_report.py                            24     24      2      0   0.00%   8-38
+scripts/status/render_monthly_html.py                               40     40      4      0   0.00%   8-128
+scripts/status/screenshot_html.py                                   24     24      2      0   0.00%   2-37
+scripts/status/validate_and_publish.py                              28     28      6      0   0.00%   11-70
+scripts/stub_cleanup.py                                            235    235    106      0   0.00%   14-505
+scripts/sync_zendesk_docs.py                                        25     25     10      0   0.00%   3-34
+scripts/torch_policy_check.py                                       49     49      8      0   0.00%   10-87
+scripts/track_progress.py                                           89     89     34      0   0.00%   7-166
+scripts/train.py                                                    92     71     34      1  17.46%   22-32, 36-48, 52-58, 62-68, 74-84, 88-140, 144
+scripts/validate_coverage_gates.py                                  81     81     28      0   0.00%   18-176
+scripts/validate_dataset.py                                         15     15      4      0   0.00%   4-29
+scripts/validate_documentation_links.py                             62     62     24      0   0.00%   8-124
+scripts/validate_genesis_readiness.py                              121    121     22      0   0.00%   7-222
+scripts/validate_mcp.py                                             60     60     16      0   0.00%   8-119
+scripts/vendor_guard.py                                             28     28     10      0   0.00%   15-58
+scripts/verify_dependency_hygiene.py                                47     47     22      0   0.00%   12-69
+scripts/zendesk_docs_catalog.py                                     23     23      8      0   0.00%   3-31
+scripts/zendesk_docs_fetch.py                                       58     58     16      0   0.00%   8-93
+src/agent/adapters/base_adapter.py                                  31     31      0      0   0.00%   10-84
+src/agent/adapters/mock_adapter.py                                  28     28      0      0   0.00%   10-91
+src/agent/core.py                                                  133    133     26      0   0.00%   20-307
+src/agents/autonomous_runner.py                                     74     74     18      0   0.00%   15-223
+src/agents/orchestrator.py                                         114    114     26      0   0.00%   15-299
+src/cli.py                                                         185    132     70      4  22.35%   35->42, 48, 54, 58, 65-76, 80-87, 93-95, 101, 107-130, 134-139, 143-148, 152-163, 167-179, 183-197, 201-265
+src/codex/agents/memory/backends.py                                184    158     60      0  10.66%   33-44, 48-55, 63-98, 102-136, 140-174, 178-187, 205-214, 218-234, 238-266, 270-310, 314-317, 321-324, 328-332
+src/codex/agents/memory/manager.py                                  40     25      4      0  34.09%   42-50, 68-77, 97-106, 117, 128-134, 142, 150-151
+src/codex/agents/memory/protocol.py                                 43      7      0      0  83.72%   39, 52, 96, 108, 120, 132, 141
+src/codex/analysis/cli.py                                           14     14      2      0   0.00%   3-28
+src/codex/analysis/duplication.py                                   78     58     30      0  18.52%   25-30, 34-40, 51-131
+src/codex/analyze/runtime/sandbox.py                               120    120     24      0   0.00%   20-393
+src/codex/analyze/runtime/tracer.py                                107    107     32      0   0.00%   20-331
+src/codex/analyze/static/analyzer.py                               227    227     96      0   0.00%   21-512
+src/codex/api/app.py                                                92     92     14      0   0.00%   1-173
+src/codex/archive/api.py                                            56     35      2      0  36.21%   29-31, 45-87, 98-124, 130-137, 151, 161-166, 172-173, 179-180
+src/codex/archive/backend.py                                       254    209     90      0  13.08%   41-45, 54, 58-65, 72-90, 98-101, 123-241, 250-258, 263-282, 293-305, 329-391, 402-429, 434-458, 464-471, 475-511, 521-528, 533-540, 543, 548-553, 558, 566-573
+src/codex/archive/batch.py                                         130     86     36      0  26.51%   36-46, 60, 73-74, 83-100, 104-113, 117-120, 135-139, 142-157, 166-169, 172-195, 200-204
+src/codex/archive/cli.py                                           380    290     74      0  19.82%   25, 33-34, 38, 45-64, 70-76, 82-90, 107-110, 118-123, 131-135, 175-200, 210-214, 222-226, 241-335, 374-397, 407-411, 423-439, 447-486, 500-522, 547-645, 654-712
+src/codex/archive/config.py                                        230    143     78      0  28.90%   32-44, 48-59, 63-72, 76-82, 88-89, 108-110, 114-125, 128-130, 142-145, 149, 157-164, 181, 197-212, 215-217, 238, 248-255, 267, 276-281, 296, 306, 316-317, 326-337, 346, 349, 359-372, 376-379, 383-386
+src/codex/archive/consolidate.py                                   126     92     40      0  20.48%   18-23, 27-28, 32-41, 45-53, 57, 61-66, 70-71, 75-83, 101-104, 121-127, 137-207
+src/codex/archive/dal.py                                           460    347     92      0  20.47%   45-55, 59-76, 80-86, 94-102, 109, 114, 119, 123-126, 131, 136, 151, 169, 181, 186, 200, 214, 219, 236-238, 242-250, 253-262, 265-273, 325-328, 331-358, 364-373, 379-404, 407-417, 433-463, 488-511, 521-524, 536-572, 584-595, 607-618, 621-634, 650-657, 660-663, 667, 670, 673-688, 721-763, 766-775, 798-815, 827-847, 850-862, 867-874, 878, 881-909, 912-921, 924-939, 960-1002, 1005-1013, 1036-1049, 1061-1077, 1080-1092
+src/codex/archive/detect.py                                         44     26      6      0  36.00%   49-63, 67-68, 72-80
+src/codex/archive/evidence_schema.py                                57     41     24      0  19.75%   21-24, 31-37, 41-50, 67-76, 80-84, 92-109, 128-137
+src/codex/archive/logging_config.py                                 85     57     24      0  25.69%   52-59, 62-69, 72-75, 82-84, 87-104, 115-123, 139-181, 187-190
+src/codex/archive/perf.py                                           40     21      0      0  47.50%   24-25, 28, 31, 41-45, 53-68
+src/codex/archive/plan.py                                           56     25      8      0  48.44%   39-45, 49-50, 61-96
+src/codex/archive/retry.py                                          56     32      6      0  38.71%   36, 44-50, 56-85
+src/codex/archive/schema.py                                         19      6      2      0  61.90%   252-255, 261-262
+src/codex/archive/score.py                                          15      6      0      0  60.00%   23-28
+src/codex/archive/service.py                                       137     94     22      0  27.04%   62-71, 96-152, 170-268, 273, 276, 279-280, 298-316, 319, 325-331, 343-363, 380-387
+src/codex/archive/shims.py                                          15      8      0      0  46.67%   15-16, 25-26, 33-34, 41-42
+src/codex/archive/sigstore_client.py                                41     26      6      0  31.91%   28-31, 39-47, 73-89, 114-125, 129-130, 134
+src/codex/archive/similarity.py                                     76     55     28      0  20.19%   16-27, 31-33, 37-43, 47-54, 58-71, 75, 86-97
+src/codex/archive/standardization.py                                72     45      8      0  33.75%   40, 49-56, 76-117, 126-165, 169
+src/codex/archive/stub.py                                            5      2      0      0  60.00%   15-31
+src/codex/archive/util.py                                           99     67     28      0  28.35%   30, 36, 42-44, 50, 56-58, 64-68, 74, 80-83, 89-96, 102, 108, 114, 120-122, 128-132, 138-161, 170-173, 179-186
+src/codex/ast/baseline.py                                           54     37      4      0  29.31%   15-18, 34-36, 40-67, 86-124, 135-150, 158-162, 181-184, 188-192
+src/codex/ast/cli.py                                                61     45     12      0  21.92%   25-29, 33-43, 55-64, 72-82, 91-109
+src/codex/ast/delta.py                                              52     33     12      0  29.69%   25, 34, 38, 50, 62-97, 109-117
+src/codex/ast/export.py                                            238    194    118      0  12.36%   54, 74-77, 81, 85, 89, 93, 97, 113-162, 172-179, 183-185, 189-197, 205-208, 217-257, 261-312, 317-458, 462-540, 545, 574-582
+src/codex/ast/graph.py                                              73     64     32      0   8.57%   14-15, 19, 23-25, 37-84, 95-113, 117-128
+src/codex/ast/language_registry.py                                  45     27      6      0  35.29%   47-82, 87, 92, 97
+src/codex/ast/metrics.py                                            51     33     18      0  26.09%   20-29, 33, 47, 51, 62-65, 90-113, 117-124
+src/codex/ast/node.py                                               51     10      4      0  74.55%   44, 78-79, 83, 103-105, 109-111
+src/codex/ast/parallel.py                                           46     32      6      0  26.92%   30-32, 36-38, 55-82, 86-90, 109-113
+src/codex/ast/parser.py                                            196    164     82      1  11.87%   23-25, 38-40, 58-60, 64-65, 76-89, 103-107, 113-140, 146-170, 176-244, 248-254, 260-271, 278-280, 283-376, 392-396
+src/codex/ast/plugins/loader.py                                     86     64     30      0  18.97%   34-44, 51-59, 64-81, 85-105, 117-124, 128-131, 135-138, 142-145, 157
+src/codex/ast/plugins/python_plugin.py                              25     11      0      0  56.00%   21, 33, 38, 42-43, 48, 52-56
+src/codex/ast/smells.py                                            208    141     92      0  22.33%   55, 101-102, 107-198, 211, 215-216, 220-221, 232-242, 256-270, 286-302, 310-331, 337-365, 371-404, 410-443, 449-484, 490-515, 521-557, 563-602, 608-628, 641-645
+src/codex/ast/streaming.py                                          34     24     14      0  20.83%   30, 42-68, 83-92
+src/codex/ast/visualize.py                                          13      5      0      0  61.54%   17, 32-131, 135
+src/codex/audit/cli.py                                              16     16      6      0   0.00%   3-32
+src/codex/chat.py                                                   39     25      2      0  34.15%   42-45, 48-53, 57-60, 64-67, 80-89
+src/codex/cli.py                                                   758    580    176      4  19.91%   53-59, 64-70, 106-123, 155, 164, 178, 192, 208-233, 246-251, 272-277, 284-291, 301-313, 321-329, 346-463, 470-472, 479, 486-495, 510-561, 577-579, 587-591, 599-602, 609-612, 628-630, 643-646, 659-667, 683-687, 807-823, 843-856, 869-892, 904-923, 940-961, 986-1021, 1046-1099, 1128-1187, 1193, 1224-1295, 1331-1421, 1444-1498, 1540-1583, 1592
+src/codex/cli/main.py                                              153    125     40      3  16.06%   36-42, 60-70, 79-97, 107-131, 140-160, 167-181, 189-208, 212-261, 265
+src/codex/cli/pr_operator.py                                       114    114     20      0   0.00%   17-413
+src/codex/cli_archive.py                                           167    100     32      0  33.67%   55-65, 72-87, 119-134, 151-201, 208-226, 264-279, 296-373, 378-381, 386-389, 395-419
+src/codex/cli_knowledge.py                                          37      7      0      0  81.08%   40-47, 57-58, 67-69
+src/codex/cli_maps.py                                               12      7      0      0  41.67%   11-24
+src/codex/cli_qa.py                                                 18      5      0      0  72.22%   29-40
+src/codex/cli_release.py                                            26      8      0      0  69.23%   21-45, 54-55, 70-71, 80-81
+src/codex/cli_roles.py                                              25     25      2      0   0.00%   3-42
+src/codex/cli_zendesk.py                                           391    379    156      0   2.19%   18-808
+src/codex/config/env_vars.py                                        66     66     16      0   0.00%   10-250
+src/codex/db/sqlite_patch.py                                        60     38      8      1  33.82%   40-41, 111-114, 120-129, 134-149, 153, 157, 162, 169-176
+src/codex/diagram/flows.py                                          41     34     16      0  12.28%   16-39, 45, 49, 53-63
+src/codex/dynamics/apply_logging.py                                 58     47     26      0  13.10%   14-19, 23-33, 37, 49-82, 88-121, 125-130
+src/codex/dynamics/cli_d365.py                                      68     61     14      0   8.54%   13-138
+src/codex/dynamics/model/choice.py                                  16     16      2      0   0.00%   1-33
+src/codex/dynamics/model/role.py                                    17     17      2      0   0.00%   3-36
+src/codex/dynamics/role_matrix.py                                   15     15      8      0   0.00%   1-35
+src/codex/dynamics/solution_xml.py                                 106     96     30      0   7.35%   15-17, 23-202
+src/codex/evidence.py                                               35     15      0      0  57.14%   28-30, 37, 47, 53-56, 60-69
+src/codex/evidence/core.py                                          16      8      4      0  40.00%   16-34
+src/codex/file_utils.py                                             50     50      8      0   0.00%   10-168
+src/codex/ingest/adapter.py                                        182    182     68      0   0.00%   18-399
+src/codex/ingest/manifest.py                                        98     98     30      0   0.00%   16-259
+src/codex/intent/inferer.py                                        140    140     28      0   0.00%   17-312
+src/codex/intent/llm_client.py                                     121    121     18      0   0.00%   21-325
+src/codex/interpretability/attention_scorer.py                      96     74     38      0  16.42%   90-95, 114-162, 179-203, 220-239, 263-286, 310-321
+src/codex/interpretability/mlp_scorer.py                           132    108     50      0  13.19%   86-91, 103-113, 132-170, 187-225, 240-265, 285-311, 334-345, 362-370, 392-420
+src/codex/knowledge/build.py                                        75     57     32      0  16.82%   20-24, 28-35, 39-46, 57-94, 109-150
+src/codex/knowledge/chunk.py                                        39     31     14      0  15.09%   11, 15-24, 30-64
+src/codex/knowledge/dedup.py                                        31     22     14      0  20.00%   10, 16-28, 34, 44-51
+src/codex/knowledge/normalize.py                                    44     31     10      0  24.07%   15-27, 31, 35-44, 48-60
+src/codex/knowledge/pii.py                                          21     15      4      0  24.00%   11-28
+src/codex/knowledge/schema.py                                       20     11     12      0  28.12%   15-25
+src/codex/logging/conversation_logger.py                            54     37      8      1  29.03%   24-31, 36-40, 45-46, 56-57, 62-63, 67-81, 85-94
+src/codex/logging/db_manager.py                                    107    107     30      0   0.00%   7-282
+src/codex/logging/db_utils.py                                      100     79     30      0  16.15%   25-27, 47-87, 103-105, 109-110, 114-115, 119-123, 129-151, 155-159, 167-170
+src/codex/logging/error_handler.py                                  43     43      6      0   0.00%   11-150
+src/codex/logging/export.py                                         74     54     22      1  21.88%   36-38, 53-62, 66-87, 92-104, 108-114, 118-126
+src/codex/logging/fetch_messages.py                                 70     50     10      0  25.00%   46-49, 55-69, 84-113, 122, 133-146
+src/codex/logging/import_ndjson.py                                 112     86     26      1  19.57%   59, 63-66, 70-96, 107-114, 120-132, 145-233, 239-244, 248-262, 266-274
+src/codex/logging/query_logs.py                                    184    160     68      0   9.52%   42-44, 74-108, 113-119, 128-134, 148-188, 192-218, 223-246, 250-311
+src/codex/logging/session_hooks.py                                 103     74     16      0  24.37%   70-84, 89, 94-98, 103-117, 122-137, 142-144, 163-166, 171-187, 191-193, 198-214
+src/codex/logging/session_logger.py                                237    186     46      1  18.37%   56-57, 85-99, 103-108, 112, 117, 122-187, 197-240, 251-296, 310-315, 319-320, 343-349, 367-368, 371-392, 395, 401-453
+src/codex/logging/session_query.py                                 115    115     42      0   0.00%   24-201
+src/codex/logging/viewer.py                                        166    136     58      1  13.84%   39-42, 75-101, 105-110, 114-137, 148-165, 169-171, 177-195, 201-208, 219-252, 256-291, 295
+src/codex/mapping/load.py                                           54     45     10      0  14.06%   14-91
+src/codex/mapping/models.py                                         14     14      0      0   0.00%   3-28
+src/codex/metrics/duplication.py                                   119     81     30      0  25.50%   43, 65, 92-94, 109-144, 157-165, 184-239, 243-248, 252-260, 279-284, 302-320
+src/codex/metrics/storage.py                                        95     76     22      0  16.24%   45-55, 59-129, 148-160, 170-199, 208-276, 280-325, 342-391
+src/codex/monkeypatch/log_adapters.py                               32     23      6      0  23.68%   18-20, 24-40, 49-61, 70-72
+src/codex/paths.py                                                  43     43     10      0   0.00%   10-177
+src/codex/qa/rubric.py                                              50     50     14      0   0.00%   1-86
+src/codex/quality/cli.py                                            34     34      2      0   0.00%   1-50
+src/codex/quantum_orchestrator/cli.py                              225    168     52      1  20.94%   51-59, 80-107, 112, 132-160, 177, 202-274, 291-326, 344-398, 416-427, 443-446, 463-498, 521-552, 570-600, 608
+src/codex/quantum_orchestrator/constants.py                         29     10      2      0  61.29%   30, 52, 57, 69-70, 84-87, 101
+src/codex/quantum_orchestrator/mlops_bridge.py                     191    139     54      0  21.22%   41-44, 59-61, 65-146, 150-151, 155-165, 181-183, 187-198, 202-211, 215-230, 234-242, 246-261, 273-275, 279-280, 284, 288, 309-314, 318-325, 329-337, 354-364, 368, 372, 376, 381-420, 424-455, 460-464, 468-470, 474-500, 532-540
+src/codex/quantum_orchestrator/optimized.py                        147    116     36      0  16.94%   27, 42-49, 70-102, 115-120, 137-153, 166-180, 205-226, 241-249, 260-261, 265, 274-280, 300-316, 320-332, 341-342, 361-398, 411-426, 443-446
+src/codex/quantum_orchestrator/orchestrator.py                     406    274     86      0  26.83%   40, 44, 63, 75, 79-81, 85, 89, 108, 112, 116, 120, 125, 130, 135, 139-141, 145, 159, 164, 171, 176, 181, 205, 210-211, 216, 221, 226-230, 235, 240, 245, 249-257, 261-262, 274-275, 279-295, 299-300, 306-315, 327-331, 346-364, 376-384, 398-400, 414-423, 435-438, 442-463, 467-481, 493-495, 505-522, 529-530, 540-565, 586-588, 592-593, 597-599, 603, 629-642, 663-676, 681-708, 712-717, 721-735, 740-758, 762-769, 778-801, 813-829, 845-873, 902
+src/codex/quantum_orchestrator/qft/entanglement.py                 204    148     64      0  20.90%   57-59, 63, 88, 116-127, 131, 142-173, 183-209, 213, 217-223, 227-229, 237-285, 297-303, 307-325, 341-361, 367, 371, 375, 381, 385, 404-406, 416-450, 458-469, 477-488, 492-503
+src/codex/quantum_orchestrator/qft/gauge.py                        169    124     28      0  22.84%   54, 79, 92-99, 116-124, 142-160, 191, 206-212, 226-232, 251-257, 288, 302-316, 335-341, 372, 389-405, 420-423, 444-472, 497-501, 514-532, 553-580, 603-606, 621-644, 648, 652
+src/codex/quantum_orchestrator/qft/path_integral.py                218    173     56      0  16.42%   32-33, 38, 43, 48-50, 54, 68-72, 81-109, 113-121, 132-134, 143-155, 165-187, 198-208, 217-232, 241-248, 257-266, 276, 280, 295-303, 312-330, 340-363, 367, 378-386, 395-437, 442, 457-467
+src/codex/quantum_orchestrator/qft/second_quantization.py          179    126     38      0  24.42%   58, 62, 70-81, 85, 103, 112-127, 141, 150-165, 177, 181, 197-216, 223-241, 255, 279-294, 298-303, 317-386, 398-433, 445-448, 452, 456, 460, 464, 485-516
+src/codex/quantum_orchestrator/state/task_vector.py                 38     38      8      0   0.00%   12-130
+src/codex/rag/postprocess.py                                        63     63     34      0   0.00%   6-173
+src/codex/rag/prompt.py                                            130    130     42      0   0.00%   15-352
+src/codex/release/api.py                                           183    156     52      0  11.49%   21-22, 26-36, 40-46, 50-57, 61-62, 66-68, 74-98, 102-103, 109-130, 139-234, 238-265, 269-281
+src/codex/release/manifest.py                                       57     24      6      0  52.38%   41-42, 47, 51-83, 97-98
+src/codex/reporting/cli.py                                          24     24      2      0   0.00%   3-47
+src/codex/retrieval/embed.py                                        67     52     12      0  18.99%   23-26, 30-49, 64-74, 90-105, 118-127, 150-165
+src/codex/retrieval/filtering.py                                    81     63     66      0  12.24%   61-117, 135-149, 161-175
+src/codex/retrieval/optimizations.py                               129     96     36      0  20.00%   44-52, 56-58, 62-67, 71-73, 77-79, 83, 128-136, 143-151, 171-201, 221-241, 250-257, 261-268, 272-281, 285-287, 291, 307-323, 336-348
+src/codex/retrieval/search.py                                       56     44      8      0  18.75%   25-29, 41-59, 82-108, 125-147, 169-170
+src/codex/retrieval/stores/advanced_indexing.py                    262    262     78      0   0.00%   15-601
+src/codex/retrieval/stores/base.py                                  41      9      0      0  78.05%   43, 70, 85, 104, 113, 122, 134, 147, 161
+src/codex/retrieval/stores/factory.py                              119     78     28      2  29.25%   34, 41, 46, 72-100, 117-132, 142-145, 152-155, 162-165, 172-175, 189, 205-240, 259-260, 267-276
+src/codex/retrieval/stores/faiss_store.py                          286    258    116      0   6.97%   57-76, 81-90, 98-116, 130-193, 198, 206-239, 247-327, 349-432, 452-526, 540-584, 599-626, 630, 634-640
+src/codex/retrieval/stores/pgvector_store.py                        16      6      0      0  62.50%   18-19, 26, 32, 38, 44
+src/codex/retrieval/stores/pinecone_store.py                        30     14      0      0  53.33%   34-39, 46, 59, 65, 71, 82, 88, 92, 98, 104
+src/codex/retrieval/stores/weaviate_store.py                        18      8      0      0  55.56%   24-27, 34, 40, 46, 52
+src/codex/search/providers.py                                       69     46     14      0  27.71%   45-70, 82-101, 108-110, 115-126
+src/codex/security/log_sanitizer.py                                 39     39     18      0   0.00%   24-209
+src/codex/security/storage.py                                       98     98     36      0   0.00%   33-341
+src/codex/training.py                                              546    490    148      1   8.21%   25-28, 60-80, 111-141, 154-169, 181-182, 187-195, 199-207, 211-221, 312-439, 480-793, 808-897, 941, 947, 951-959, 963-978, 982-991, 995-998, 1002-1045, 1049-1067, 1075-1077, 1090-1143
+src/codex/transform/transformer.py                                 165    165     58      0   0.00%   19-390
+src/codex/utils/context_discovery.py                                63     50     16      1  17.72%   39-53, 67-106, 111, 134-150, 155-158
+src/codex/utils/session_cache.py                                    87     67     14      0  19.80%   40-43, 47-68, 72-80, 84-99, 103, 107-110, 114-117, 121, 144-145, 150-162, 166-167
+src/codex/utils/subprocess.py                                        6      6      0      0   0.00%   3-24
+src/codex/utils/validators.py                                      115    103     36      0   7.95%   43-115, 131-155, 167-190, 203-236
+src/codex/verify/comparator.py                                     156    156     44      0   0.00%   17-427
+src/codex/versioning.py                                             51     38     12      0  20.63%   16-19, 22, 25-33, 39-46, 57-75
+src/codex/zendesk/agent.py                                          21     21      2      0   0.00%   3-42
+src/codex/zendesk/apply.py                                         275    275    128      0   0.00%   3-468
+src/codex/zendesk/model/app.py                                      17     14      6      0  13.04%   16-30
+src/codex/zendesk/model/field.py                                    32     32     12      0   0.00%   3-58
+src/codex/zendesk/model/group.py                                    23     23      4      0   0.00%   3-59
+src/codex/zendesk/model/guide.py                                    22     22      6      0   0.00%   8-36
+src/codex/zendesk/model/macro.py                                    16     16      4      0   0.00%   9-47
+src/codex/zendesk/model/role.py                                     15     15      2      0   0.00%   3-35
+src/codex/zendesk/model/routing.py                                  39     39     10      0   0.00%   3-71
+src/codex/zendesk/model/sla.py                                      15     15      4      0   0.00%   1-38
+src/codex/zendesk/model/talk.py                                     45     45     16      0   0.00%   9-66
+src/codex/zendesk/model/trigger.py                                  36     32      8      0   9.09%   11-104
+src/codex/zendesk/model/view.py                                     20     20      8      0   0.00%   9-35
+src/codex/zendesk/model/webhook.py                                  23     23     10      0   0.00%   9-41
+src/codex/zendesk/model/widget.py                                   17     17      6      0   0.00%   8-32
+src/codex/zendesk/monitoring/mcp_bridge.py                          21     21      8      0   0.00%   3-40
+src/codex/zendesk/monitoring/registry.py                             5      5      0      0   0.00%   3-14
+src/codex/zendesk/monitoring/zendesk_metrics.py                     15     15      2      0   0.00%   3-56
+src/codex/zendesk/plan/diff_engine.py                               76     76     20      0   0.00%   3-218
+src/codex/zendesk/plan/validators.py                                47     47     12      0   0.00%   3-83
+src/codex/zendesk/quantum/orchestrator.py                           38     38      4      0   0.00%   3-81
+src/codex/zendesk/rag/bridge.py                                     37     37      4      0   0.00%   3-86
+src/codex_audit/errors.py                                           47     24      8      0  41.82%   25, 36-37, 46-54, 58-62, 76-78, 86-89
+src/codex_audit/gates.py                                            53     21      2      0  58.18%   31, 44-47, 54-57, 63, 113-142
+src/codex_audit/policy.py                                           52     30     14      0  33.33%   18, 30, 47, 61, 71-106, 116-120
+src/codex_audit/prompting.py                                        40     29      6      0  23.91%   13-15, 19-21, 25-34, 44-71
+src/codex_audit/scorecard.py                                        34     26     12      0  17.39%   11-13, 25-26, 34-64
+src/codex_bridge/github_client.py                                   86     61     20      0  23.58%   23-26, 31, 37-44, 48-50, 54-56, 60-66, 70-77, 81-85, 93-119
+src/codex_cli/app.py                                               156    120     42      0  18.18%   36-48, 52-73, 77-96, 107-128, 131-146, 155-166, 170-215, 230-233, 237-241, 247, 251, 257
+src/codex_crm/cdm/loader.py                                         43     21      6      0  44.90%   28-30, 36-40, 53-68, 74-79, 85-86
+src/codex_crm/cli.py                                                63     46     12      1  24.00%   23-77, 81-107, 114
+src/codex_crm/convert/rules.py                                      34     18      4      0  42.11%   24, 35, 46-50, 56, 67, 86-96
+src/codex_crm/d365_admin/generate.py                                33     23      2      0  28.57%   14-20, 24-27, 31-36, 49-52, 56, 60-65
+src/codex_crm/diagram/flows.py                                      31     24     18      0  14.29%   21-33, 37-48
+src/codex_crm/evidence/emit.py                                      28     19     10      0  23.68%   21-25, 31-59
+src/codex_crm/pa_legacy/reader.py                                   30     18      8      0  31.58%   24-34, 40-53
+src/codex_crm/zaf_legacy/reader.py                                 100     77     28      0  17.97%   48-68, 78-88, 94-102, 108-119, 124-133, 137-150, 154-166, 170-175
+src/codex_crm/zd_admin/generate.py                                  20     13      0      0  35.00%   14-42, 46, 60
+src/codex_harness/golden_harness_status.py                         111     88     60      0  13.45%   20, 24, 28-37, 41-44, 48-81, 87-95, 99-124, 130-168, 179-203
+src/codex_harness/honesty.py                                        63     34     12      0  38.67%   13, 26-29, 38-43, 58-60, 64, 69-82, 85-94, 97-102
+src/codex_harness/tool_trace.py                                    100     68     32      0  24.24%   15, 19-26, 43-46, 53-55, 58-73, 76-79, 90-116, 128-147, 150-171
+src/codex_ml/__main__.py                                             5      5      2      0   0.00%   3-10
+src/codex_ml/_package_main.py                                       21     21      4      0   0.00%   8-39
+src/codex_ml/analysis/extractors.py                                 47     25      6      0  41.51%   26, 47, 65, 83-103, 128-137
+src/codex_ml/analysis/metrics.py                                    11      4      0      0  63.64%   12-13, 18-19
+src/codex_ml/analysis/parsers.py                                    35     18      4      0  43.59%   36-56
+src/codex_ml/analysis/providers.py                                 211    187     78      0   8.30%   27, 30-52, 56-67, 71-77, 98-113, 116-144, 147-183, 186-239, 242-276, 279-304
+src/codex_ml/analysis/registry.py                                   18     18      0      0   0.00%   2-41
+src/codex_ml/batching/performance.py                                60     60     14      0   0.00%   1-88
+src/codex_ml/callbacks/base.py                                      54     36     16      0  25.71%   22, 43-47, 66-67, 70-77, 84, 87, 90-94, 100-114
+src/codex_ml/callbacks/ndjson_logger.py                             15      7      0      0  53.33%   16-18, 23-26
+src/codex_ml/callbacks/system_metrics.py                            45     45     10      0   0.00%   1-81
+src/codex_ml/checkpointing/atomic_io.py                             48     35      4      0  25.00%   16-20, 25-35, 40-49, 54-64
+src/codex_ml/checkpointing/best_k_retention.py                     116    116     26      0   0.00%   7-257
+src/codex_ml/checkpointing/bestk.py                                 94     79     32      0  11.90%   28-35, 39-41, 53-115, 126-135, 139-141, 150-169, 177-182
+src/codex_ml/checkpointing/checkpoint_core.py                       77     59     22      0  18.18%   29, 35-70, 82-125, 129-138
+src/codex_ml/checkpointing/compat.py                                23     10      4      1  51.85%   25-33, 43, 48-55
+src/codex_ml/checkpointing/schema_v2.py                             90     59     26      0  26.72%   19-20, 27-39, 43, 56-58, 62, 66-69, 75-101, 107-112, 118-120, 126-127, 141-150, 156-157
+src/codex_ml/checkpointing/utils.py                                  7      7      0      0   0.00%   7-17
+src/codex_ml/cli/__main__.py                                         1      1      0      0   0.00%   1
+src/codex_ml/cli/audit_pipeline.py                                 113     93     44      0  12.74%   35-40, 44-73, 77-92, 102-183, 187-253
+src/codex_ml/cli/checkpoint_validate.py                             73     73     26      0   0.00%   1-182
+src/codex_ml/cli/codex_cli.py                                      376    256     96      0  25.42%   43-53, 57, 61-80, 89-91, 126-139, 152-157, 171-180, 194-202, 206-210, 266-335, 406-467, 497-532, 540-543, 549-553, 568-576, 601-621, 638-639, 697-747, 766-783, 804, 808-825
+src/codex_ml/cli/codex_env.py                                       62     62      8      0   0.00%   3-114
+src/codex_ml/cli/config.py                                         172     93     48      0  35.91%   102-117, 129-137, 141-159, 163-178, 182-228, 232-241, 245-254, 258-260
+src/codex_ml/cli/deploy.py                                          50     50     32      0   0.00%   3-90
+src/codex_ml/cli/detectors.py                                       21     21      4      0   0.00%   1-32
+src/codex_ml/cli/entrypoints.py                                    141    141     36      0   0.00%   1-285
+src/codex_ml/cli/env_check.py                                       22     22      2      0   0.00%   11-49
+src/codex_ml/cli/eval_minimal.py                                    32     32      0      0   0.00%   3-84
+src/codex_ml/cli/evaluate.py                                       182    182     80      0   0.00%   3-319
+src/codex_ml/cli/feature_store.py                                  165    165     36      0   0.00%   10-372
+src/codex_ml/cli/features.py                                        85     85     14      0   0.00%   1-143
+src/codex_ml/cli/generate.py                                        76     76      6      0   0.00%   1-157
+src/codex_ml/cli/hydra_audit.py                                    260    260    106      0   0.00%   26-425
+src/codex_ml/cli/hydra_entry.py                                     98     98     22      0   0.00%   1-153
+src/codex_ml/cli/hydra_main.py                                     150    115     38      0  18.62%   85-87, 99-111, 115-130, 134-163, 167-176, 180-221, 283-298, 302-395
+src/codex_ml/cli/infer.py                                          104    104     14      0   0.00%   1-224
+src/codex_ml/cli/list_plugins.py                                   173    152     54      0   9.25%   33-44, 48-59, 63-74, 78-120, 124-132, 136-143, 147-153, 157, 166-272
+src/codex_ml/cli/main.py                                           313    313    124      0   0.00%   3-676
+src/codex_ml/cli/manifest.py                                        51     51     16      0   0.00%   1-76
+src/codex_ml/cli/metrics_cli.py                                    321    290    104      0   7.29%   29-31, 35-40, 46-55, 66-81, 85-93, 97-106, 110-122, 136-173, 186-220, 224-293, 297-317, 326-333, 337-378, 382-404, 410-457, 461-549, 553-555
+src/codex_ml/cli/migrate_data.py                                    49     49     12      0   0.00%   1-98
+src/codex_ml/cli/minimal_train.py                                   40     40      2      0   0.00%   15-76
+src/codex_ml/cli/ndjson_summary.py                                 246    215     94      0   9.12%   38-53, 57-79, 83-87, 91-93, 97-209, 216-226, 230-238, 247-248, 251, 254-255, 258-269, 275-276, 280-300, 304-321, 325-361, 365-370
+src/codex_ml/cli/offline_bootstrap.py                               68     68     18      0   0.00%   15-146
+src/codex_ml/cli/plugins_cli.py                                     77     59     14      0  19.78%   42-45, 49-51, 55-61, 65-136, 146-169
+src/codex_ml/cli/registry.py                                       148    148     26      0   0.00%   7-257
+src/codex_ml/cli/repo_map.py                                       191    191    110      0   0.00%   1-316
+src/codex_ml/cli/simple_cli.py                                      72     33     12      0  46.43%   30-40, 46-61, 86-88, 110-115, 130-140, 144-145
+src/codex_ml/cli/status_report.py                                   19     13      2      0  28.57%   25-28, 37-55
+src/codex_ml/cli/tokenizer.py                                       60     60     18      0   2.56%   10-130
+src/codex_ml/cli/tracking_cli.py                                    56     56      8      0   0.00%   11-109
+src/codex_ml/cli/tracking_decide.py                                 68     68     22      0   0.00%   1-167
+src/codex_ml/cli/train.py                                          312    312    124      0   0.00%   3-447
+src/codex_ml/cli/train_minimal.py                                   32     32      0      0   0.00%   3-83
+src/codex_ml/cli/utils.py                                           39     39      4      0   0.00%   3-72
+src/codex_ml/cli/validate.py                                        86     67     26      0  16.96%   44-74, 79-103, 108-163
+src/codex_ml/codex_data.py                                          89     59     16      0  28.57%   34-37, 41-47, 51-57, 63-71, 75-77, 81-82, 92-130
+src/codex_ml/codex_model.py                                         77     56     28      0  20.00%   17-21, 25-29, 33-46, 66-69, 73-98, 104-130
+src/codex_ml/codex_script.py                                        38     38      4      0   0.00%   8-85
+src/codex_ml/codex_structured_logging.py                           201    149     46      1  21.46%   46-52, 56-65, 69-78, 82-95, 99-105, 109-112, 121-122, 127-179, 189-200, 204-216, 225-229, 244-285, 300-301, 304-312, 328-334, 338, 345-346, 349, 352-376, 379, 395-417, 421-422
+src/codex_ml/config/deprecation.py                                  37     37     16      0   0.00%   3-75
+src/codex_ml/config/load.py                                         36     36     14      0   0.00%   16-76
+src/codex_ml/config/schema.py                                       66     23     10      0  56.58%   87, 97, 108, 118, 135-157
+src/codex_ml/config/settings.py                                     23     15      0      0  34.78%   44-81
+src/codex_ml/config_schema.py                                      120    113     16      0   5.15%   23-245
+src/codex_ml/connectors/base.py                                     61     35     16      0  33.77%   90-92, 96-104, 107-122, 125-132, 135-141
+src/codex_ml/connectors/local.py                                    11     11      0      0   0.00%   1-17
+src/codex_ml/connectors/registry.py                                 14     14      2      0   0.00%   1-27
+src/codex_ml/connectors/remote.py                                   58     49      4      0  14.52%   14-117
+src/codex_ml/data/cache.py                                          64     45     18      0  23.17%   28-35, 39-46, 52-62, 81, 112-114, 145-154, 179-192
+src/codex_ml/data/checksums.py                                      26     19      6      0  21.88%   11-19, 38-55
+src/codex_ml/data/cli.py                                            24     24      2      0   0.00%   4-41
+src/codex_ml/data/dataloader.py                                      2      2      0      0   0.00%   8-9
+src/codex_ml/data/datamodule.py                                    119     82     46      0  22.42%   28, 31-34, 37-39, 46-53, 69, 72, 75, 78-83, 86-97, 102-115, 118-122, 125-136, 143-155, 162-169
+src/codex_ml/data/dataset_wrapper.py                                40     29     14      0  20.37%   21-22, 29-37, 48-70
+src/codex_ml/data/datasets.py                                       44     44     10      0   0.00%   16-115
+src/codex_ml/data/hf_datasets.py                                    32     32     10      0   0.00%   1-58
+src/codex_ml/data/integrity.py                                      14      9      2      0  31.25%   23-34
+src/codex_ml/data/jsonl_loader.py                                   48     36     20      0  17.65%   16-22, 26-38, 56-75
+src/codex_ml/data/jsonl_stream.py                                   27     18     10      0  24.32%   27-52
+src/codex_ml/data/loader.py                                        286    234    112      0  13.07%   66, 80-81, 85-93, 111-118, 128-137, 153-197, 203-212, 218-222, 226-229, 233-243, 250-255, 259-265, 269-283, 288-318, 324-329, 335, 354-424, 434-436, 442-543
+src/codex_ml/data/loaders.py                                       381    366    170      0   2.72%   31-653
+src/codex_ml/data/loaders/arrow_loader.py                           59     59     10      0   0.00%   16-170
+src/codex_ml/data/loaders/csv.py                                    58     58     18      0   0.00%   3-108
+src/codex_ml/data/loaders/hdf5_loader.py                            75     75     24      0   0.00%   16-205
+src/codex_ml/data/loaders/jsonl.py                                  86     86     26      0   0.00%   1-136
+src/codex_ml/data/loaders/parquet_loader.py                         57     57     12      0   0.00%   16-198
+src/codex_ml/data/local_files.py                                    45     34     12      0  19.30%   35-43, 65-66, 96-103, 121-126, 146-150, 178-190
+src/codex_ml/data/make_splits.py                                    37     28     10      0  19.15%   13-16, 29-69
+src/codex_ml/data/migration.py                                      56     45     16      0  15.28%   24-42, 54-71, 88-148
+src/codex_ml/data/reasoning_manifest.py                            134     76     46      0  34.44%   29-33, 37-40, 44-46, 58-61, 78, 81-93, 96, 129-148, 159, 239, 245-248, 259-280, 292-294
+src/codex_ml/data/registry.py                                      184    122     64      4  27.42%   21-35, 58, 63, 67-78, 81-82, 87-88, 91-111, 131-132, 136, 142, 153-163, 179-180, 194, 209-243, 260-297, 311-317, 338-339, 364-365, 381-387
+src/codex_ml/data/sharding.py                                        8      6      2      0  20.00%   6-11
+src/codex_ml/data/simple_dataset.py                                 28     28      2      0   0.00%   11-51
+src/codex_ml/data/split.py                                          80     55     22      0  24.51%   27, 33-41, 47-48, 60, 81-98, 102-103, 107-108, 151-214
+src/codex_ml/data/split_utils.py                                    90     70     26      0  17.24%   28-36, 42-51, 62-103, 122-147
+src/codex_ml/data/splits.py                                         41     25     14      0  29.09%   24-28, 34-39, 46-51, 55-59, 62, 65-66, 78
+src/codex_ml/data/splitting.py                                      33     26      6      0  17.95%   16-20, 58-95
+src/codex_ml/data/streaming.py                                      34     34     14      0   0.00%   1-54
+src/codex_ml/data/utils.py                                          26     26      6      0   0.00%   8-62
+src/codex_ml/data/validation.py                                    176    132     68      0  18.03%   56, 75, 87, 99-100, 104-142, 159-161, 165-195, 212-213, 217-256, 272-273, 277-331, 347-348, 352-388, 404-405, 409-442, 455, 463-464, 476-510, 531-536
+src/codex_ml/data/validator.py                                      59     42     20      0  21.52%   38-39, 43-59, 66-92
+src/codex_ml/data_utils.py                                          78     63     26      0  14.42%   59-107, 129-135, 139-145, 160-192
+src/codex_ml/deployment/cloud.py                                    38     32     10      0  12.50%   12-94
+src/codex_ml/deployment/package.py                                  50     50     12      0   0.00%   3-98
+src/codex_ml/detectors/aggregate.py                                 17     13      2      0  21.05%   11-23
+src/codex_ml/detectors/capability_detectors.py                     614    614    320      0   0.00%   24-1520
+src/codex_ml/detectors/core.py                                      11      1      0      0  90.91%   18
+src/codex_ml/detectors/experiment_summary.py                        21     14      2      0  30.43%   14-37
+src/codex_ml/detectors/unified_training.py                           4      1      0      0  75.00%   10
+src/codex_ml/distributed/minimal.py                                 89     68     36      0  16.80%   22-25, 29-34, 38-49, 53, 65, 77, 88, 93, 101-141, 145-147, 151-153, 157-158, 162-163
+src/codex_ml/docs/doc_sync.py                                       43     43     10      0   0.00%   6-72
+src/codex_ml/eval/datasets.py                                      110     82     46      0  17.95%   80, 86, 105-112, 126-266
+src/codex_ml/eval/eval_runner.py                                    68     50     18      0  20.93%   45-65, 78-149
+src/codex_ml/eval/evaluator.py                                     109     84     36      0  17.24%   39-40, 44, 54-61, 81-96, 114-129, 134-137, 151-217
+src/codex_ml/eval/fallback.py                                       78     60     28      0  16.98%   28, 43-61, 65-82, 86-109
+src/codex_ml/eval/metrics.py                                       237    211     90      0   7.95%   37-38, 42, 46-47, 60-119, 125-131, 142-155, 168, 172-176, 180-184, 188-203, 209-212, 216-226, 239-278, 282, 286, 297-324, 335-352
+src/codex_ml/eval/reasoning_metrics.py                             197    197     74      0   0.00%   11-507
+src/codex_ml/eval/run_eval.py                                       63     63     22      0   0.00%   7-89
+src/codex_ml/eval/runner.py                                        440    402    166      0   6.27%   45-82, 93-94, 102-119, 130-163, 169-192, 196-204, 210-259, 271-302, 308-441, 448-454, 466-489, 512-888
+src/codex_ml/evaluation/cli.py                                     116     99     46      0  10.49%   31-47, 51-59, 63-86, 92-100, 136-185, 201-255
+src/codex_ml/evaluation/loop.py                                    233    199     90      0  10.53%   61, 71-78, 86-97, 101-115, 119-125, 142-301, 309-319, 325-341, 380-452
+src/codex_ml/evaluation/metrics/accuracy.py                         52     36     20      0  22.22%   21-24, 44-47, 52-66, 70-74, 78-80, 85-97
+src/codex_ml/evaluation/metrics/bleu.py                             51     32     12      0  30.16%   22, 50-51, 56-61, 65-71, 75-92, 98-114
+src/codex_ml/evaluation/metrics/latency.py                          34     22      4      0  31.58%   40-44, 53, 67-71, 75-91, 100-103
+src/codex_ml/evaluation/metrics/perplexity.py                       50     34     14      0  25.00%   23-27, 48-51, 61-89, 93-99, 106-108
+src/codex_ml/evaluation/metrics/rouge.py                            66     47     22      0  21.59%   22, 53-60, 65-70, 74-80, 84-104, 110-132
+src/codex_ml/evaluation/runner.py                                  168    131     56      0  16.52%   43-47, 72-74, 78-79, 87-88, 120-135, 139-160, 176-284, 288-301, 305-307, 311-314, 318-324, 328-348, 355, 358
+src/codex_ml/events/aws_events.py                                   64     64     12      0   0.00%   3-141
+src/codex_ml/events/azure_events.py                                 55     55      8      0   0.00%   3-135
+src/codex_ml/events/base.py                                         85     85     10      0   0.00%   3-203
+src/codex_ml/exec/codex_exec.py                                     74     74     20      0   0.00%   1-109
+src/codex_ml/features/feature_store.py                             169    112     40      0  27.27%   56, 79, 107, 135-138, 161-169, 173-177, 181-192, 200-202, 214-217, 235-255, 266-270, 283-285, 296-297, 305-308, 312-313, 324-325, 345-380, 400-457
+src/codex_ml/features/monitoring.py                                223    176     80      0  15.51%   43, 95-98, 106-107, 115-116, 127-134, 145-178, 197, 205-211, 222-230, 234-235, 247-254, 262-268, 279, 295-342, 360-365, 373-398, 406-453, 460-493, 501-544, 567-596, 607
+src/codex_ml/governance/compliance_gates.py                        106    106     30      0   0.00%   9-360
+src/codex_ml/hf_loader.py                                          132    104     52      0  15.22%   75-79, 85, 91, 95-112, 116-129, 138-145, 154-157, 173-203, 216-300
+src/codex_ml/ingest.py                                             185    185     66      0   0.00%   10-314
+src/codex_ml/integrations/har_integration.py                       230    230     32      0   0.00%   13-477
+src/codex_ml/interfaces/contracts.py                                76     53     22      0  23.47%   72-112, 122-141, 147-165
+src/codex_ml/interfaces/peft_hooks.py                               26     26      2      0   0.00%   3-79
+src/codex_ml/interfaces/registry.py                                 70     48     20      1  25.56%   29-43, 55-61, 65-70, 76-80, 86-91, 106-143
+src/codex_ml/interfaces/reward_model.py                             85     59     36      0  21.49%   48-54, 92-95, 98, 107-140, 152-178
+src/codex_ml/interfaces/rl.py                                      101     67     36      0  24.82%   68-73, 76-78, 81-105, 108-133, 136-139, 142-151
+src/codex_ml/interfaces/tokenizer.py                               342    245     78      0  23.10%   48-57, 105, 114, 125-126, 131-132, 138, 143, 149, 152, 159-162, 165, 174-175, 178-188, 191-197, 200, 203, 207, 211, 215, 224-234, 283, 295, 304, 307, 310, 314, 318, 326, 331, 346, 384-441, 446, 458-498, 513-561, 572-574, 578-598, 604-617, 621-623, 627-630, 636-643, 648-655, 660-667, 672-673, 677-678, 684, 689, 707-716
+src/codex_ml/interfaces/tokenizer_hf.py                             18      7      4      0  50.00%   40-46
+src/codex_ml/io/atomic.py                                           50     36      6      0  25.00%   19, 31-45, 51-74, 80-81
+src/codex_ml/logging/experiment.py                                  22     22      2      0   0.00%   28-71
+src/codex_ml/logging/file_logger.py                                 67     46     30      0  21.65%   17-26, 30-31, 54-63, 67-71, 74-77, 80-94, 99
+src/codex_ml/logging/metrics.py                                     49     49      8      0   0.00%   1-77
+src/codex_ml/logging/mlflow_guard.py                                49     36     22      0  18.31%   21-24, 30-49, 58-62, 70-74, 82-86
+src/codex_ml/logging/ndjson_logger.py                              155    116     44      1  21.11%   34, 63-73, 78-93, 98-115, 118-145, 148-168, 173, 184-194, 198-204, 208-214, 219-227, 231-232, 238-242
+src/codex_ml/logging/permissions.py                                 13      8      2      0  33.33%   51-58
+src/codex_ml/logging/registry.py                                    34     16      0      0  52.94%   21, 25, 32-33, 51-53, 56-57, 60, 72-77
+src/codex_ml/logging/run_logger.py                                 112     81     42      0  20.13%   31-39, 43-45, 49-70, 74-90, 119-134, 152-167, 180-205, 209-210, 221, 225
+src/codex_ml/logging/run_metadata.py                                76     63     36      0  11.61%   16-26, 30-37, 55-104, 123-139
+src/codex_ml/logging/session_logger.py                              84     64     28      0  17.86%   20, 35-42, 51-61, 72-77, 82-120, 125-136
+src/codex_ml/logging/structured.py                                  25     15      4      0  34.48%   18-29, 38-41
+src/codex_ml/logging/unified_logger.py                             112     71     14      0  32.54%   21, 25, 29, 33, 40-49, 52, 55, 58-59, 62, 69-76, 79, 82, 85-86, 89-90, 97-106, 109, 112, 115, 118, 128-129, 132-137, 140-145, 148-153, 156-161, 169
+src/codex_ml/main.py                                                52     52     12      0   0.00%   9-95
+src/codex_ml/metrics.py                                             42     42     16      0   0.00%   8-90
+src/codex_ml/metrics/_optional_bleu_rouge.py                        43     43     14      0   0.00%   15-117
+src/codex_ml/metrics/api.py                                        124    104     38      0  12.35%   57-59, 74-76, 85-87, 99-101, 116-118, 132-134, 148-150, 164-166, 179-196, 214-256, 275-299, 321-371
+src/codex_ml/metrics/base.py                                        15      4      0      0  73.33%   21, 26, 31, 35
+src/codex_ml/metrics/classification.py                              60     45     10      0  21.43%   21-23, 27-36, 40-45, 49-54, 58-61, 66-68, 71-79, 82-84, 87-88
+src/codex_ml/metrics/core.py                                        59     59     16      0   0.00%   14-120
+src/codex_ml/metrics/curves.py                                      16     11      4      0  25.00%   9-12, 16-23
+src/codex_ml/metrics/evaluator.py                                  117    103     48      0   8.48%   17-24, 28-35, 39-50, 54-57, 61-65, 69-84, 88-104, 110-152
+src/codex_ml/metrics/generation.py                                 102     93     48      0   6.00%   16, 26-49, 59-77, 81-87, 103-140, 146-169
+src/codex_ml/metrics/generative.py                                  90     73     42      0  12.88%   13-17, 21-22, 26-30, 37-40, 53-97, 101-110, 117-134
+src/codex_ml/metrics/metric_implementations.py                     277    204     84      1  21.61%   25-37, 46, 65-68, 71-79, 82-85, 88-91, 94-102, 105, 109-114, 121-124, 127, 130-132, 135-171, 178-181, 184, 187-189, 192-216, 223-225, 228-229, 232-237, 242-244, 251-255, 258-261, 264-266, 269-284, 287-305, 309-321, 342, 347-353, 356, 369-375
+src/codex_ml/metrics/perplexity.py                                  11     11      0      0   0.00%   9-23
+src/codex_ml/metrics/registry.py                                   290    217     94      1  19.27%   48-50, 56-73, 78-84, 89, 94-110, 123-129, 142-188, 206-227, 246-263, 269-283, 297-305, 317, 335-336, 342, 346-347, 369-370, 382-417, 435-442, 455-463, 479-494, 504-508, 514-528, 532-538, 543, 548, 558-564, 576-583, 595-614, 626-628
+src/codex_ml/metrics/reward.py                                      29     16      6      0  37.14%   17-23, 31-34, 47-51
+src/codex_ml/metrics/sinks.py                                       59     37     18      0  28.57%   35-36, 39-43, 46, 54-55, 58, 64-75, 80-94
+src/codex_ml/metrics/streaming.py                                   27     16      6      0  33.33%   21-23, 30-31, 35-41, 44-46, 49-50
+src/codex_ml/metrics/text.py                                        15      8      2      0  41.18%   25-30, 35-36
+src/codex_ml/metrics/validation.py                                  42     33      4      0  19.57%   27-52, 64-72, 81-88
+src/codex_ml/metrics/writers.py                                     90     54     14      0  34.62%   20, 37-49, 62-65, 68-97, 104, 114-116, 125-126, 129-137
+src/codex_ml/metrics_base.py                                        35     26      6      0  21.95%   12-16, 22, 28-36, 42-50, 56-61
+src/codex_ml/model_registry.py                                     221    180     86      0  13.36%   37-47, 66-88, 92-102, 106-119, 125-148, 152-167, 171-176, 180-185, 189-197, 201-250, 260-272, 309-364, 370, 376, 382-384
+src/codex_ml/modeling/codex_model.py                                97     65     32      0  24.81%   55-67, 71-77, 81-86, 97-133, 138-152, 157-164, 171-196, 199-203
+src/codex_ml/modeling/codex_model_loader.py                         91     75     24      0  13.91%   22-29, 33-36, 42-49, 67-174
+src/codex_ml/modeling/factory.py                                    51     23     12      0  44.44%   44-45, 51-61, 71-104
+src/codex_ml/modeling/model_factory.py                               8      8      0      0   0.00%   9-19
+src/codex_ml/models/activations.py                                  34     12      2      0  61.11%   11-14, 28, 33, 38, 43, 47-50
+src/codex_ml/models/decoder_only.py                                155    117     20      0  21.71%   37-41, 45-48, 53-59, 71-92, 97-102, 105-110, 115-119, 131-140, 147-169, 180, 183-187, 198-231
+src/codex_ml/models/factory.py                                     173    147     88      0   9.96%   33-52, 56-65, 69-74, 78-86, 94-107, 111-119, 123-134, 159-209, 224-268, 275-276, 297-305
+src/codex_ml/models/generate.py                                     39     33     14      0  11.32%   11-26, 43-60
+src/codex_ml/models/loader_registry.py                              29     29      2      0   0.00%   1-60
+src/codex_ml/models/minilm.py                                       69     42      4      0  36.99%   29-33, 40-44, 51-59, 62-72, 76-80, 84-90
+src/codex_ml/models/offline_tiny.py                                 35     35      8      0   0.00%   3-53
+src/codex_ml/models/peft_hooks.py                                   24      5      2      0  73.08%   30-41
+src/codex_ml/models/reasoning.py                                   188    156     66      0  12.60%   21-29, 32-34, 37-47, 59-71, 76-88, 95-100, 122-129, 132-145, 148, 151, 156-181, 191-231, 242-276, 283-292
+src/codex_ml/models/registry.py                                    189    149     82      1  15.13%   21, 44-46, 50-56, 60-70, 83-140, 146-165, 175, 180-190, 195-205, 211, 215-227, 248-262, 266-287, 300-327, 333
+src/codex_ml/models/utils/peft.py                                   21     13      4      0  32.00%   37-60
+src/codex_ml/monitoring/async_writer.py                             76     53      8      0  27.38%   52-61, 68, 74-84, 90-91, 95, 103-133
+src/codex_ml/monitoring/cli.py                                      44     33      4      0  22.92%   21-23, 27-97
+src/codex_ml/monitoring/codex_logging.py                           400    340    146      2  11.36%   75, 87-100, 106-123, 131-139, 155-180, 213-218, 226, 240->244, 247-288, 295-302, 309-316, 322-336, 342-382, 401-471, 481-503, 513-663, 673, 679-773, 781-789, 795-817, 823-831
+src/codex_ml/monitoring/drift_detection.py                         139    139     44      0   0.00%   9-411
+src/codex_ml/monitoring/feature_freshness_drift.py                  29     29      6      0   0.00%   3-103
+src/codex_ml/monitoring/health.py                                   80     71     20      0   9.00%   15-138
+src/codex_ml/monitoring/metrics.py                                  88     69     12      0  19.00%   29-66, 73, 83-90, 100-107, 116-123, 127-128, 132-133, 139-141, 146-147, 152-153, 165-197
+src/codex_ml/monitoring/metrics_export.py                           19     10      2      0  42.86%   10, 21-26, 34-39
+src/codex_ml/monitoring/microhelpers.py                             92     75     14      0  16.04%   44-55, 60-64, 69-79, 84-93, 98-143, 148-149
+src/codex_ml/monitoring/mlflow_utils.py                             27     27      6      0   0.00%   8-76
+src/codex_ml/monitoring/prometheus.py                               55     32      2      0  40.35%   19-24, 27-30, 35-38, 41-42, 55-58, 61-62, 77-103, 109
+src/codex_ml/monitoring/prometheus_metrics.py                       57     35      4      0  36.07%   15, 26, 54-102, 111-112, 117, 122-124, 131, 137-141, 147-150
+src/codex_ml/monitoring/schema.py                                   28      9      6      0  55.88%   28-36, 51
+src/codex_ml/monitoring/system_metrics.py                          363    281    126      1  16.97%   26-29, 113-134, 140, 157, 165-192, 196-214, 218-257, 263-268, 352-362, 368-386, 392-432, 444-465, 469-471, 482-513, 527-541, 552-563, 568-571, 584-591, 606, 626, 630, 636, 647-674, 687-731, 742-745, 751-779, 797-813
+src/codex_ml/monitoring/tb_writer.py                                24     15      6      0  30.00%   17-21, 26-29, 34-41
+src/codex_ml/monitoring/tracking.py                                 68     68     30      0   0.00%   3-105
+src/codex_ml/peft/peft_adapter.py                                   31     23      8      0  20.51%   101-142
+src/codex_ml/perf/bench.py                                         113    113     32      0   0.00%   2-168
+src/codex_ml/perf/profiler.py                                       31     18      6      0  35.14%   16, 20-26, 29-40, 43-47
+src/codex_ml/pipeline.py                                           368    321    140      0   9.25%   45-53, 63-76, 83-86, 93-96, 103-113, 117-135, 141-153, 159-174, 191-202, 225-255, 275-288, 306-324, 328-339, 343-352, 356-386, 390-399, 403-409, 413-416, 422-430, 434-440, 444-451, 455-461, 465-473, 477-498, 507-534, 559-640, 670-706
+src/codex_ml/plugins/base.py                                        14      1      0      0  92.86%   20
+src/codex_ml/plugins/entry_points.py                               146     97     40      0  26.34%   74-93, 97-104, 141-181, 189-215, 240-281, 297-298, 312-317, 333-335, 355, 367-368
+src/codex_ml/plugins/fairness_checker.py                            95     95     32      0   0.00%   10-199
+src/codex_ml/plugins/loader.py                                      88     76     16      0  11.54%   23-41, 47-73, 79-99, 119-135
+src/codex_ml/plugins/plugin_registry.py                            130    130     28      0   0.00%   10-353
+src/codex_ml/plugins/plugin_sandbox.py                             211    211     58      0   0.00%   7-512
+src/codex_ml/plugins/programmatic.py                                54     34     10      0  31.25%   19-22, 25, 28, 33-51, 59-62, 67-103, 107-108
+src/codex_ml/plugins/registries.py                                 361    284    124      0  15.88%   17-19, 37-39, 43-52, 56-59, 63-65, 69-82, 86-90, 101-162, 172-211, 224-258, 271-305, 320-361, 374, 386-394, 406-414, 426-434, 441, 452, 464-476, 488-500, 512-530, 537, 549-557, 562, 567, 572, 577, 582, 587, 599-607, 619-653, 665-667, 679-704, 716-734, 741, 745, 749, 753, 757, 761, 765
+src/codex_ml/plugins/registry.py                                   111     76     34      0  24.14%   34-61, 67-93, 127, 132, 141-147, 161-192, 202-212, 218
+src/codex_ml/registry.py                                             9      9      0      0   0.00%   1-15
+src/codex_ml/registry/base.py                                       88     46     22      1  40.91%   118, 130-146, 153-154, 160-188, 196-215
+src/codex_ml/registry/data_loaders.py                                6      6      0      0   0.00%   3-10
+src/codex_ml/registry/metrics.py                                     3      3      0      0   0.00%   3-12
+src/codex_ml/registry/mlflow_registry.py                           155    155     22      0   0.00%   8-429
+src/codex_ml/registry/models.py                                      3      3      0      0   0.00%   3-12
+src/codex_ml/registry/token_cache.py                                31     15      8      0  41.03%   20-23, 26-30, 33, 46, 53-56
+src/codex_ml/registry/tokenizers.py                                187    151     74      0  13.79%   25, 38-55, 59-60, 64-70, 81-115, 123-126, 131-135, 140-151, 156-165, 170-181, 192, 198-204, 208-209, 213-222, 226-232, 236-242, 254-286, 301-327
+src/codex_ml/registry/trainers.py                                   31     31      6      0   0.00%   1-48
+src/codex_ml/reproducibility/seed_manager.py                       108    108     26      0   0.00%   12-232
+src/codex_ml/reward_models/rlhf.py                                 138    115     48      0  12.37%   27-61, 80-83, 94-97, 108, 113-163, 176-178, 181-207, 215-258
+src/codex_ml/reward_models/simple.py                                11      4      0      0  63.64%   24-25, 35, 39
+src/codex_ml/rl/scripted_agent.py                                   45     26      8      0  35.85%   23-26, 30-41, 44-48, 51, 54-56, 59-61
+src/codex_ml/rl/simple_agent.py                                     15      6      0      0  60.00%   14, 17, 20-21, 24-25
+src/codex_ml/safety/filters.py                                     565    445    246      0  14.80%   71-77, 94-109, 114-118, 122-124, 128-129, 145-181, 186-190, 194-201, 205-207, 213-234, 240-288, 292-299, 303-327, 349, 353, 357-370, 392, 395-407, 410-416, 427-434, 451-480, 484-529, 551, 560-565, 575-599, 603-616, 620-638, 648-652, 658, 662, 674-751, 754-759, 762, 765-766, 769-770, 774-802, 807-821, 825-836, 839-849, 855-860, 865-910, 921-922, 926-927, 932
+src/codex_ml/safety/moderation.py                                  133     85     30      0  29.45%   42, 63-67, 79-83, 92, 96, 99-139, 142-145, 151-166, 169-172, 175-196, 207-208, 211-241, 251-278, 284-287
+src/codex_ml/safety/prompt_sanitizer.py                             44     33     18      0  17.74%   51-52, 66-95, 106-117, 128-136
+src/codex_ml/safety/redaction.py                                    42     30     18      0  20.00%   31-34, 39-43, 48-51, 54-67, 70-74
+src/codex_ml/safety/risk_score.py                                   30     18      8      0  31.58%   36-43, 47-49, 54-62
+src/codex_ml/safety/sandbox.py                                      50     35      8      0  25.86%   16, 24-25, 36-88, 92, 96
+src/codex_ml/safety/sanitizers.py                                   70     48     14      0  26.19%   51, 55-59, 63-71, 75-84, 92-111, 117-125
+src/codex_ml/security/cve_monitor.py                                98     98     34      0   0.00%   6-209
+src/codex_ml/security/denylist.py                                   60     60     20      0   0.00%   1-106
+src/codex_ml/security/runtime.py                                    28     28     12      0   0.00%   3-70
+src/codex_ml/serving/batching.py                                    79     79     16      0   0.00%   3-124
+src/codex_ml/serving/caching.py                                    108     69     16      0  31.45%   43, 47, 51, 55-58, 62, 91-93, 97-98, 126-132, 146-149, 160-182, 192-212, 216-219, 227-239, 243-245, 249, 253
+src/codex_ml/serving/deployment.py                                 133    133     30      0   0.00%   8-281
+src/codex_ml/serving/health.py                                      62     51      8      0  15.71%   22, 40-80, 96-129
+src/codex_ml/serving/inference_server.py                           233    184     58      0  16.84%   16-20, 76-81, 95-101, 115-129, 138, 150, 159, 167-172, 175, 185-187, 190-196, 201-223, 226-244, 247-252, 269-272, 275-291, 294-313, 318-448
+src/codex_ml/serving/model_loader.py                               162    119     38      0  21.50%   70-90, 94, 107-115, 141-147, 163-205, 216-224, 235-245, 265-311, 333-349, 365-366, 370-374, 378-379, 395-426
+src/codex_ml/serving/monitoring.py                                 170    170     58      0   0.00%   7-377
+src/codex_ml/serving/optimizations.py                              135    135     32      0   0.00%   8-334
+src/codex_ml/serving/resilience.py                                 262    262     66      0   0.00%   12-621
+src/codex_ml/symbolic_pipeline.py                                  252    176     86      5  23.96%   67-70, 74-77, 82, 87, 112, 124, 135, 150, 184-215, 228-267, 280-327, 336-394, 408-414, 419-425, 430-434, 441, 462-479, 498-520
+src/codex_ml/telemetry/metrics.py                                   23     11      0      0  52.17%   12, 29-41
+src/codex_ml/telemetry/server.py                                    14      7      2      0  43.75%   9, 30-38
+src/codex_ml/tokenization/adapter.py                               309    234    116      0  17.65%   27-37, 72-90, 125, 128, 131, 134, 156, 163-164, 167-175, 186-191, 216, 220, 237-275, 283-286, 290-295, 301-314, 318-326, 331-354, 358-384, 392-411, 415, 419-430, 436-446, 456-471, 474-484, 487-490, 500, 511-542, 549, 553
+src/codex_ml/tokenization/api.py                                    86     47     16      0  40.20%   55-66, 77-87, 93, 97-107, 154-182, 213-222
+src/codex_ml/tokenization/base.py                                   56     35     18      0  28.38%   62-77, 91-110, 131-144, 152, 160, 165, 169, 178-179
+src/codex_ml/tokenization/cache.py                                  53     34     14      0  28.36%   30-31, 46-48, 60-68, 78-79, 87, 95-105, 113, 121-128, 149-151, 160
+src/codex_ml/tokenization/cli.py                                    83     63     14      1  21.65%   16-21, 25-28, 35-37, 41-43, 47-49, 53-65, 79-86, 92-93, 97-127, 131
+src/codex_ml/tokenization/compat.py                                 13      4      2      1  66.67%   17-23, 28
+src/codex_ml/tokenization/hf_adapter.py                             54     30      6      0  40.00%   29-43, 49-58, 61-62, 65, 69-74, 78, 82, 87, 91
+src/codex_ml/tokenization/hf_tokenizer.py                          164    118     58      0  20.72%   48-59, 63-68, 72-76, 79-82, 87-91, 104-111, 116-125, 128-143, 146-149, 162-189, 213-227, 251, 260, 264-265, 268-273, 277, 281, 285, 289, 308-329
+src/codex_ml/tokenization/offline_vocab.py                          34     20      6      0  35.00%   16-21, 25-34, 37, 40, 43, 46-48
+src/codex_ml/tokenization/pipeline.py                              132    107     46      0  14.04%   26-44, 50-58, 62-71, 83-91, 99-115, 140-164, 168-174, 178-193, 201-206, 214-218
+src/codex_ml/tokenization/sentencepiece_adapter.py                 194    172     76      0   8.15%   31-110, 117-118, 123, 128, 138-153, 156-169, 172-174, 177-179, 184-314, 317-326
+src/codex_ml/tokenization/sp_trainer.py                             76     76     22      0   0.00%   10-181
+src/codex_ml/tokenization/train_tokenizer.py                        11      2      0      0  81.82%   28, 34
+src/codex_ml/tracking/cli.py                                        10     10      0      0   0.00%   2-30
+src/codex_ml/tracking/experiments.py                                60     34      6      0  39.39%   27-29, 33, 37-38, 42-56, 66-68, 83-93, 97-111, 122
+src/codex_ml/tracking/git_tag.py                                    25     18      4      0  24.14%   19-29, 34-40
+src/codex_ml/tracking/guards.py                                    117     89     50      0  16.77%   46-49, 53-55, 59-68, 72, 88-107, 127-208, 227-243
+src/codex_ml/tracking/init_experiment.py                           195    151     64      0  16.99%   54, 58, 87-96, 101-102, 105-116, 119-122, 125-128, 132-143, 147-148, 152-155, 159-173, 194-376
+src/codex_ml/tracking/init_offline.py                               19     19      0      0   0.00%   1-31
+src/codex_ml/tracking/mlflow_guard.py                              135     50     52      9  54.55%   43, 49, 53-58, 63->65, 71, 78-80, 89-101, 106, 132-143, 200, 214->225, 219-224, 238-252
+src/codex_ml/tracking/mlflow_utils.py                              171    127     50      0  19.91%   64-70, 114-127, 133, 151-182, 205-235, 249-255, 272-276, 298-311, 330-351, 367-376, 402-410, 416-424, 434-462
+src/codex_ml/tracking/mlflow_wrapper.py                            148    121     30      0  15.17%   36-45, 49-64, 77-98, 106-113, 122-129, 138-145, 155-162, 171-182, 191-202, 211-218, 226-233, 237-243, 253-255, 274-277, 289, 299, 309
+src/codex_ml/tracking/offline.py                                    99     75     32      0  18.32%   16-17, 41-96, 107-110, 124-128, 133-136, 139-150, 153-166
+src/codex_ml/tracking/writers.py                                   618    502    194      0  14.29%   61-69, 73-78, 82-83, 89-95, 99-103, 107-113, 117-137, 149-154, 157-168, 171-196, 199-218, 222-228, 232-238, 242-254, 258-259, 263-276, 280-282, 286-294, 308-325, 355-382, 390-444, 449-473, 477-481, 484-500, 503-509, 516-522, 547-552, 555-558, 563, 576-617, 643-647, 650-652, 657, 670-682, 713-718, 721-723, 728, 735-755, 758-760, 765-767, 773, 780, 806-812, 816-831, 844-859, 863, 878-882, 889, 893-910, 914-915, 930-931, 940-948, 955, 963-978, 986-1001, 1021-1083, 1096-1101, 1105, 1109-1121, 1125-1133, 1138-1143, 1147, 1151, 1155, 1173
+src/codex_ml/train_loop.py                                        1277   1147    456      1   7.56%   48-50, 58-61, 66-69, 74-77, 83, 101-108, 112-113, 132-161, 165-168, 173-176, 190-210, 230-231, 236, 239-243, 255-289, 293-309, 321-355, 362-368, 372-377, 383-387, 391-399, 403-405, 409-411, 415-429, 433, 445-449, 455, 471-523, 527-539, 543-552, 558-568, 583-613, 619-676, 680-682, 686-697, 702-710, 715-724, 739-751, 760-773, 777-782, 786-791, 796-826, 830-838, 842-846, 850-855, 860-867, 871-880, 885-895, 912-966, 975-987, 991-1042, 1046-1051, 1055-1067, 1071-1077, 1088, 1140-2117, 2123-2135
+src/codex_ml/training.py                                            41     14     12      2  58.49%   21-24, 34-48, 67, 71
+src/codex_ml/training/ab_testing.py                                104    104     30      0   0.00%   7-284
+src/codex_ml/training/callbacks.py                                  21     17      6      0  14.81%   20-23, 27-40
+src/codex_ml/training/continuous_learning.py                       112    112     30      0   0.00%   7-317
+src/codex_ml/training/curriculum.py                                184    122     42      1  27.88%   46, 74, 98, 109-123, 155-163, 169-179, 183-190, 198-206, 219-251, 262-279, 297-319, 331-341, 353-366, 377, 385-388, 402-404, 416-441, 446-467
+src/codex_ml/training/dataloader_utils.py                           13      5      2      0  53.33%   37-41
+src/codex_ml/training/determinism.py                                47     38     18      0  13.85%   17-19, 42-85, 95-115
+src/codex_ml/training/device_strategy.py                           115     70     44      6  35.85%   28-49, 55, 63, 102, 105-120, 123-130, 146-170, 181-194, 212, 228-233, 242, 263-274
+src/codex_ml/training/distributed.py                               116     72     24      0  31.43%   62-71, 83, 98-100, 105, 110, 115-120, 128-164, 168-171, 182-186, 210-220, 228-229, 245-249, 261-265, 277-282, 301-317
+src/codex_ml/training/distributed_setup.py                          86     65     32      0  17.80%   60-102, 107-109, 114, 123-125, 134-136, 145, 150-151, 174-184, 212-215, 239-248, 267-278, 288-289, 300-301
+src/codex_ml/training/dp_config.py                                  35     15      6      0  48.78%   24-25, 28-36, 39, 57-71
+src/codex_ml/training/early_stopping.py                             64     64     16      0   0.00%   7-188
+src/codex_ml/training/engine.py                                    142    105     64      0  17.96%   13-24, 48-55, 59-68, 78-95, 99-104, 108-112, 116-120, 130-143, 147-154, 160-168, 173, 177-189, 193-208
+src/codex_ml/training/eval.py                                       69     58     24      0  11.83%   20-27, 31-43, 57-107
+src/codex_ml/training/event_integration.py                          46     46      4      0   0.00%   3-185
+src/codex_ml/training/fsdp_wrapper.py                              134    134     34      0   0.00%   15-552
+src/codex_ml/training/functional_training.py                       378    321    104      0  11.83%   104-579
+src/codex_ml/training/legacy_api.py                                904    790    362      0   9.00%   148-157, 161-170, 174-202, 206, 219-234, 245-263, 272-279, 283-291, 297-300, 304-328, 332-351, 355-361, 365-372, 376-386, 392-419, 423-424, 428-439, 443-449, 453-473, 477-485, 489-685, 728-1408, 1418-1434, 1454-1554
+src/codex_ml/training/loop.py                                       43     43     10      0   0.00%   7-95
+src/codex_ml/training/mlflow_integration.py                        117     89     22      0  20.14%   20, 65-73, 77-94, 103-116, 120-129, 138-145, 153-162, 171-182, 191-202, 210-217, 221-222, 226-227, 256-261
+src/codex_ml/training/multi_node_orchestration.py                  130    130     34      0   0.00%   11-367
+src/codex_ml/training/ray_distributed.py                            48     48     10      0   0.00%   7-124
+src/codex_ml/training/rng_checkpoint.py                             42     20      8      0  44.00%   34, 37-38, 41-44, 48-51, 55, 61-70
+src/codex_ml/training/scheduler_factory.py                          87     87     40      0   0.00%   24-336
+src/codex_ml/training/schedulers/registry.py                        55     24     10      3  52.31%   14-33, 49->exit, 54, 74, 78, 81-83, 86-88, 96
+src/codex_ml/training/strategies.py                                257    218    104      0  10.80%   84, 101-208, 228-260, 278-284, 289-335, 338-367, 375-473, 493-499
+src/codex_ml/training/toy_trainer.py                                33     33      6      0   0.00%   12-59
+src/codex_ml/training/tracking_integration.py                       77     77     32      0   0.00%   6-220
+src/codex_ml/training/unified_training.py                          320    239    122      0  18.33%   67-71, 75-79, 91-100, 115-138, 169-189, 196, 200-202, 208-225, 232-238, 249-302, 314-337, 351-546, 560, 573-579, 585-593
+src/codex_ml/utils/artifacts.py                                     32     16      2      0  47.06%   17-22, 31-35, 51-60
+src/codex_ml/utils/atomic_io.py                                     27     17      0      0  37.04%   14-19, 30-40, 44
+src/codex_ml/utils/checkpoint.py                                   337    292    144      2   9.77%   33, 36, 48-57, 61-72, 76-95, 107-114, 118-129, 133-138, 142-152, 156-194, 198-236, 245-261, 265-268, 272-282, 286, 290, 300-330, 334-351, 355-381, 398-457, 463-482, 496-549
+src/codex_ml/utils/checkpoint_core.py                              458    382    124      0  13.06%   77-81, 89, 93, 98-110, 114-138, 142-187, 193, 199, 205-231, 251-258, 265-277, 282-332, 336-347, 353-387, 394-396, 400, 404, 408-421, 431, 435-438, 442-459, 484-663, 670-694, 706-729, 736-751
+src/codex_ml/utils/checkpoint_event.py                              41     26      8      0  30.61%   19-22, 26-30, 43-66
+src/codex_ml/utils/checkpoint_integrity.py                         127    113     54      0   7.73%   32-57, 67-75, 93-147, 159-226
+src/codex_ml/utils/checkpoint_integrity_validation.py               65     65     20      0   0.00%   7-175
+src/codex_ml/utils/checkpoint_manager.py                            44     34     10      0  18.52%   25-46, 52-80
+src/codex_ml/utils/checkpoint_retention.py                          98     79     38      0  13.97%   25-32, 38-50, 54-72, 78-125
+src/codex_ml/utils/checkpointing.py                                772    660    322      5  10.88%   117->119, 120, 122, 124, 136-138, 145->175, 149-168, 186-195, 198-208, 216-225, 228-233, 241-250, 253-262, 270-279, 282-287, 301-304, 308-309, 313-322, 326-345, 351-374, 378-388, 392-400, 404-413, 421-427, 434-440, 445-454, 459-466, 471-479, 484-510, 522-533, 547-557, 562-579, 606-668, 689-759, 764-773, 787-802, 813-837, 841, 845, 849, 853, 863-917, 921-971, 990, 995, 1005-1018, 1023-1028, 1043-1048, 1064-1153, 1166-1222, 1234-1276, 1310-1392, 1395-1416, 1422-1432
+src/codex_ml/utils/checksum.py                                      14      9      2      0  31.25%   29-37
+src/codex_ml/utils/checksums.py                                     14     14      4      0   0.00%   2-20
+src/codex_ml/utils/config_drift.py                                  79     79     16      0   0.00%   7-216
+src/codex_ml/utils/config_loader.py                                168    129     74      1  17.36%   15-17, 59, 68-119, 137-140, 144-150, 153-158, 161-164, 167, 172-175, 180-191, 198-224, 236, 263-293, 303-336
+src/codex_ml/utils/determinism.py                                   59     48     18      0  14.29%   33, 39-64, 70-81, 96-125
+src/codex_ml/utils/deterministic.py                                114    114     26      0   0.00%   7-222
+src/codex_ml/utils/env.py                                           42     42     10      0   0.00%   1-73
+src/codex_ml/utils/error_log.py                                     38     26      4      0  28.57%   22-42, 47-60
+src/codex_ml/utils/errors.py                                        11     11      0      0   0.00%   1-31
+src/codex_ml/utils/experiment_tracking_mlflow.py                    49     20     14      5  53.97%   14, 47->61, 49, 55, 61->64, 65-66, 75-82, 97-135
+src/codex_ml/utils/hf_pinning.py                                    56     40     26      0  19.51%   27-31, 37-45, 49-55, 64-80, 89-93
+src/codex_ml/utils/hf_revision.py                                   11      4      2      0  53.85%   13-20
+src/codex_ml/utils/hydra_cs.py                                      24     24      6      0   0.00%   9-56
+src/codex_ml/utils/jsonio.py                                        17      8      4      0  42.86%   12, 18, 29-34
+src/codex_ml/utils/jsonl.py                                         10      4      0      0  60.00%   9-12
+src/codex_ml/utils/logging_mlflow.py                                26     26      6      0   0.00%   3-72
+src/codex_ml/utils/logging_wandb.py                                 23      9      2      0  56.00%   19, 26-63
+src/codex_ml/utils/mlflow_entrypoints.py                            10      5      2      0  41.67%   15-20
+src/codex_ml/utils/modeling.py                                     220    164     80      0  18.67%   57-64, 75-92, 105-110, 114-117, 121-128, 136-145, 172-218, 236-248, 254-266, 270-288, 299-354, 358-365, 375-392, 405-448
+src/codex_ml/utils/opt_import.py                                    10     10      0      0   0.00%   1-22
+src/codex_ml/utils/optional.py                                      18      3      0      0  83.33%   33-39
+src/codex_ml/utils/optional_dependencies.py                          8      3      0      0  62.50%   15, 25, 31
+src/codex_ml/utils/performance_benchmark.py                        135    104     36      0  18.13%   50-60, 64, 92-97, 102-108, 113-129, 151-188, 218-249, 275-287, 315-316, 324-325, 329-338, 346-357
+src/codex_ml/utils/performance_optimization.py                     136    136     50      0   0.00%   11-353
+src/codex_ml/utils/provenance.py                                   237    203     96      0  10.21%   32-45, 49-58, 64-68, 76-80, 84-99, 103-143, 147-189, 195-242, 248, 254-270, 280-298, 314-334, 342-357, 367-387
+src/codex_ml/utils/repro.py                                        142    106     38      0  20.00%   34-37, 43, 49, 55, 61-66, 74-90, 103-111, 127-151, 158-159, 172-191, 195-201, 206-218, 222-245, 249-250, 254-259, 278-294
+src/codex_ml/utils/reproducibility.py                               32     32      2      0   0.00%   11-119
+src/codex_ml/utils/reproducibility_hardening.py                    247    225     28      0   8.00%   54-185, 211-368, 400-448, 473-475, 487-489, 498-500, 519-525, 529
+src/codex_ml/utils/retention.py                                     89     76     46      0   9.63%   42-57, 61-70, 101-174
+src/codex_ml/utils/run_metadata.py                                  46     31      8      0  27.78%   15-24, 28-31, 35-39, 43-55, 59-67
+src/codex_ml/utils/runmeta.py                                       71     53     16      0  20.69%   16, 20-30, 34-54, 58-59, 63-72, 79-86, 90-97
+src/codex_ml/utils/scalability.py                                  292    292     64      0   0.00%   12-476
+src/codex_ml/utils/seed.py                                          16      6      0      0  62.50%   27-30, 36-37
+src/codex_ml/utils/seeding.py                                       58     49      6      0  14.06%   20-62, 70-82
+src/codex_ml/utils/self_healing.py                                  92     92     22      0   0.00%   7-249
+src/codex_ml/utils/serialization.py                                 14     14     10      0   0.00%   3-43
+src/codex_ml/utils/storage.py                                       79     57     30      0  20.18%   33-40, 50-58, 61-63, 69-75, 78-90, 93-114
+src/codex_ml/utils/stub_cleanup.py                                 156    156     80      0   0.00%   7-383
+src/codex_ml/utils/subproc.py                                       68     68     30      0   0.00%   3-114
+src/codex_ml/utils/system_metrics.py                                24     19      6      0  16.67%   35-64
+src/codex_ml/utils/tensorboard_logger.py                            57     57      8      0   0.00%   7-123
+src/codex_ml/utils/toml_compat.py                                   16      7      6      0  40.91%   29-33, 37-39
+src/codex_ml/utils/torch_checks.py                                  58     58     16      0   0.00%   10-129
+src/codex_ml/utils/torch_det.py                                     14     14      0      0   0.00%   1-18
+src/codex_ml/utils/tracking_bootstrap.py                            47     40      2      0  14.29%   15-31, 39-67
+src/codex_ml/utils/train_helpers.py                                 44     29      8      0  28.85%   19-57, 63-76, 85, 88, 91, 94, 100-101
+src/codex_ml/utils/wandb_logger.py                                  80     80     10      0   0.00%   7-178
+src/codex_ml/utils/yaml_support.py                                  26     10      2      0  57.14%   24-25, 48-50, 56-57, 63-64, 70
+src/codex_ml/workflow/track_c_workflow.py                          151     80     34      1  41.08%   42, 68, 71-79, 92-94, 100->exit, 110-113, 124-135, 147-152, 156-164, 168-174, 178-186, 190-207, 211-214, 220-230, 274-275, 278-296, 302-303
+src/codex_utils/regex_patterns.py                                    3      3      0      0   0.00%   3-7
+src/codex_utils/tracking/guards.py                                   3      3      0      0   0.00%   3-12
+src/common/error_handling.py                                        23     17      0      0  26.09%   28-40, 72-77
+src/common/hooks.py                                                 75     52     24      0  23.23%   31, 34, 37-39, 48-49, 52-57, 60-68, 71-77, 86-88, 96-110, 117-118, 121-129
+src/common/mlflow_guard.py                                          84     67     38      0  13.93%   24-25, 31-39, 47-67, 74-117, 122-128, 134-144
+src/common/ndjson_tools.py                                          59     46     26      0  15.29%   12-19, 23-25, 29-34, 39-60, 64-73, 77-78
+src/common/provenance.py                                            85     57     30      0  24.35%   19, 37, 41-43, 47-50, 54-58, 62-94, 100, 104-108, 117-136
+src/common/randomness.py                                            45     35     16      0  16.39%   27-74
+src/common/registry.py                                              35     12      8      1  60.47%   29-36, 40, 44-46, 49
+src/common/validate.py                                              80     63     24      0  20.19%   24-26, 30-47, 57-113
+src/config/openai_client.py                                         92     92     20      0   0.00%   9-285
+src/context_management/budget.py                                   139    139     34      0   0.00%   8-296
+src/context_management/clustering.py                               129    129     38      0   0.00%   8-303
+src/context_management/context_cache.py                            175    175     48      0   0.00%   10-399
+src/context_management/deduplicator.py                             110    110     40      0   0.00%   8-238
+src/context_management/fingerprint.py                               93     93     34      0   0.00%   8-256
+src/context_management/guardrails.py                               109    109     30      0   0.00%   8-272
+src/context_management/hierarchical_memory.py                      183    183     62      0   0.00%   12-454
+src/context_management/memory.py                                   243    243     82      0   0.00%   8-498
+src/context_management/normalizer.py                                56     56     14      0   0.00%   11-166
+src/context_management/observability.py                            144    144     20      0   0.00%   8-370
+src/context_management/priority_queue.py                           150    150     38      0   0.00%   8-352
+src/context_management/pruning.py                                  121    121     44      0   0.00%   8-279
+src/context_management/sliding_window.py                           160    160     48      0   0.00%   8-340
+src/data/datasets.py                                               147    104     40      0  22.99%   65, 96-99, 115-139, 156-172, 176-182, 191-247, 255, 261, 267-283, 294-299, 309-313
+src/data/loaders.py                                                 20     20      8      0   0.00%   3-34
+src/data/manifest.py                                                67     34     12      0  41.77%   21-25, 31-38, 59-71, 76, 90-91, 97-99, 109-116
+src/data/registry.py                                                66     43     18      2  29.76%   32, 36, 46-48, 54-56, 66, 72-73, 89-132
+src/evaluation/metrics.py                                           46     46     14      0   0.00%   1-92
+src/evaluation/writers.py                                           38     31     18      0  12.50%   17-37, 42-53
+src/experiments/manager.py                                          21     21      4      0   0.00%   1-32
+src/hhg_logistics/data/prepare.py                                   95     81     34      1  11.63%   13, 17, 23-42, 46-57, 61-85, 89-146, 150
+src/hhg_logistics/eval/harness.py                                   47     47     10      0   0.00%   1-86
+src/hhg_logistics/main.py                                           22     22      2      0   0.00%   1-36
+src/hhg_logistics/model/adapters.py                                 12      7      4      0  31.25%   17-25
+src/hhg_logistics/model/peft_utils.py                               80     65     32      0  13.39%   36-43, 56-92, 100-118, 132-164, 176-194, 202-210
+src/hhg_logistics/monitor/data_gate.py                              15     15      2      0   0.00%   1-41
+src/hhg_logistics/monitor/data_report.py                            47     47      8      0   0.00%   1-93
+src/hhg_logistics/monitor/serve_report.py                           48     48      6      0   0.00%   1-100
+src/hhg_logistics/monitor/snapshot.py                               23     23      4      0   0.00%   1-41
+src/hhg_logistics/pipeline.py                                       73     56     14      0  19.54%   30-51, 57, 62-129
+src/hhg_logistics/pipeline_nodes/clean.py                           47     38     18      0  13.85%   11-24, 33-52, 56-60
+src/hhg_logistics/pipeline_nodes/features.py                        19     13      4      0  26.09%   13-19, 23-28
+src/hhg_logistics/pipeline_nodes/ingest.py                          15     11      4      0  21.05%   12-23
+src/hhg_logistics/plugins/example_plugin.py                         17     17      4      0   0.00%   1-24
+src/hhg_logistics/serve/app.py                                     260    201     76      0  17.56%   21-24, 43-48, 54-86, 92-106, 112-115, 119, 123-140, 144-146, 168-235, 239, 243, 247-295, 298-302, 307-326, 330-378, 383-392, 395-399, 402-406, 410-437, 446-452
+src/hhg_logistics/serve/smoke.py                                    35     35      2      0   0.00%   1-52
+src/hhg_logistics/train.py                                         173    173     60      0   0.86%   1-315
+src/ingestion/csv_ingestor.py                                       12      6      2      0  42.86%   23-28
+src/ingestion/encoding_detect.py                                    88     72     22      0  14.55%   55-62, 79-163, 171
+src/ingestion/file_ingestor.py                                       9      4      2      0  45.45%   20-23
+src/ingestion/io_text.py                                            99     88     20      1  10.08%   23-26, 40-94, 99, 124-174
+src/ingestion/json_ingestor.py                                      11      5      2      0  46.15%   21-25
+src/ingestion/pipeline.py                                          216    216     92      0   0.00%   27-598
+src/ingestion/split.py                                              32     18      8      3  42.50%   20, 22, 24, 32-51
+src/ingestion/utils.py                                             195    167     34      0  12.23%   43-46, 53-56, 84-131, 140-149, 157-160, 166, 187-209, 221-242, 252-287, 302-357, 366, 372
+src/integrations/github_app_auth.py                                 88     67     32      0  17.50%   29-35, 43-48, 52-62, 70-90, 94-102, 106-107, 115-128, 138-158
+src/logging_config.py                                               11     11      2      0   0.00%   1-18
+src/logging_utils.py                                               166    115     54      0  23.18%   74-75, 78-85, 89-105, 116, 120-143, 147-152, 170-185, 194-213, 223-226, 234-237, 250-253, 261-275, 281-289, 303-318, 326-366
+src/mcp/adapters/base_adapter.py                                    42     42      2      0   0.00%   15-126
+src/mcp/adapters/mock_backend.py                                    62     62     10      0   0.00%   14-161
+src/mcp/adapters/pinecone_adapter.py                               106    106     24      0   0.00%   16-307
+src/mcp/adapters/zendesk_adapter.py                                 47     47      4      0   0.00%   3-85
+src/mcp/api/schemas.py                                              54     54      0      0   0.00%   8-101
+src/mcp/auth.py                                                     41     20      6      0  44.68%   14-18, 31-32, 40, 45-47, 52-53, 67-68, 79-82, 87-88
+src/mcp/backends/mock_backend.py                                    49     37     16      0  18.46%   10-13, 19-20, 24, 27-30, 39-68, 71-76, 80
+src/mcp/backends/pinecone_adapter.py                               144    118     42      0  13.98%   31-38, 45-49, 53-75, 80-82, 92-94, 98-100, 107-131, 140-180, 183-202, 205-216
+src/mcp/config.py                                                   68     37     20      0  35.23%   22-24, 46, 55-62, 99-136, 154-157, 168-173, 177-184
+src/mcp/embeddings/batcher.py                                       15     10      6      0  23.81%   10-14, 18-25
+src/mcp/embeddings/chunking.py                                      26     22     10      0  11.11%   6-17, 25-33, 37
+src/mcp/embeddings/dedupe.py                                        15      8      2      0  41.18%   7-11, 16, 19-23
+src/mcp/embeddings/hf_embedder.py                                   25     25      6      0   0.00%   1-38
+src/mcp/embeddings/interface.py                                     10     10      0      0   0.00%   2-22
+src/mcp/embeddings/mock_embedder.py                                 14     14      0      0   0.00%   1-26
+src/mcp/embeddings/openai_embedder.py                               30     30      6      0   0.00%   1-42
+src/mcp/errors.py                                                   37     10      4      0  65.85%   16-18, 21-24, 63-65
+src/mcp/lifecycle.py                                               149    149     28      0   0.00%   10-320
+src/mcp/metrics/mcp_metrics.py                                     110    110      8      0   0.00%   15-296
+src/mcp/middleware/rate_limit_middleware.py                         34     34      6      0   0.00%   1-49
+src/mcp/observability.py                                           181    181     34      0   0.00%   10-478
+src/mcp/observability/metrics.py                                    22     11      0      0  50.00%   9, 13, 17, 22-23, 26-27, 30-32, 36
+src/mcp/packager/cli.py                                             13     13      2      0   0.00%   1-20
+src/mcp/packager/generator.py                                       74     54     16      0  22.22%   18-24, 28-45, 49-59, 63-76, 80-85, 89-93, 97-102, 106-108, 112-118, 122-128, 132-140
+src/mcp/rate_limit.py                                               47     32     12      0  25.42%   27-36, 39, 42-52, 57-63, 68-73
+src/mcp/registry.py                                                 27      8      0      0  70.37%   22-24, 47, 66, 80, 102-103
+src/mcp/retries.py                                                  24     11      2      0  50.00%   21-31
+src/mcp/server/adapter_loader.py                                    43     29     12      0  25.45%   21-25, 34-44, 52-66
+src/mcp/server/adapters/mock_adapter.py                             19     10      0      0  47.37%   12-14, 17, 20-28, 31, 34-35, 38
+src/mcp/server/facade_fastapi.py                                    30     30      2      0   0.00%   1-41
+src/mcp/server/http.py                                             103    103     24      0   0.00%   8-194
+src/mcp/server/json_rpc.py                                         123    123     32      0   0.00%   10-349
+src/mcp/server/jsonrpc_adapter.py                                   76     76     20      0   0.00%   1-124
+src/mcp/server/middleware/auth.py                                   19     19      6      0   0.00%   1-36
+src/mcp/server/routes_health.py                                     28     28      0      0   0.00%   1-38
+src/mcp/server/run.py                                               70     70     20      0   0.00%   1-107
+src/mcp/server/safety_checks.py                                      4      1      0      0  75.00%   10
+src/mcp/server/schemas.py                                           12     12      0      0   0.00%   1-19
+src/mcp/server/stdio.py                                            119     86     20      0  23.74%   38-40, 49-51, 75-79, 83-92, 96-107, 119-156, 167-181, 189-201, 205, 209-218, 230-233, 237-242, 246, 250, 254
+src/mcp/server/tracing.py                                           31     31     10      0   0.00%   1-45
+src/mcp/versioning.py                                               47     33     22      0  20.29%   51-55, 70-85, 114-131, 153-168, 183-185
+src/mcp/workers/checkpoint.py                                       17     11      2      0  31.58%   9-17, 21-22
+src/mcp/workers/embedder.py                                        101     69     20      0  26.45%   74-82, 90-97, 101-107, 119-128, 132-163, 167-186, 194-207, 211, 215
+src/metrics.py                                                      27     19      6      0  24.24%   13-20, 26-31, 37-41
+src/modeling.py                                                    177    131     52      0  20.09%   55-62, 73-90, 105-110, 114-117, 121-128, 134-138, 169-214, 231-244, 250-256, 266-302, 306-318, 326-374, 382-385
+src/models/chat_model.py                                           110     79     36      0  21.23%   13-19, 23, 31-36, 55-61, 64, 71-92, 95-117, 121, 125, 128-153
+src/models/peft_utils.py                                            18     11      0      0  38.89%   18-30
+src/quantum/orchestrator.py                                        113     74     26      0  28.06%   80-83, 87, 91, 95, 99, 133-134, 148-210, 221-258, 270-287, 303-312
+src/quantum/plugin_registry.py                                      94     62     24      0  27.12%   78-120, 131-138, 162-164, 173-180, 194, 211-234, 258-270
+src/quantum/testing.py                                              79     47     16      0  33.68%   74, 85-102, 113-118, 147, 158-214, 229-238
+src/rag/pipelines/chunking.py                                      100     68     30      1  25.38%   44, 73-85, 107-157, 161-175, 179-194, 213-227, 232-258, 262
+src/rag/pipelines/embedding.py                                     111     83     34      1  20.00%   67-71, 79-100, 105-127, 140-174, 191-229, 233, 238-252, 256
+src/rag/pipelines/quantum_retrieval.py                             174    138     48      1  16.67%   36-39, 116-131, 157-201, 229-269, 285-316, 344-347, 374-424, 435-439, 459-493, 499-554, 558
+src/rag/pipelines/retrieval.py                                     101     65     28      1  28.68%   84-90, 113-139, 158-228, 237-247, 251-252, 256, 261-286, 290
+src/security/audit_logger.py                                        50     36     16      0  21.21%   19, 27-34, 37-49, 52-71
+src/security/content_filters.py                                     34     23     16      0  22.00%   23-26, 30-31, 35-40, 44-48, 52-57
+src/security/core.py                                               149    122     82      0  11.69%   51-57, 61-65, 73-87, 98-133, 139-158, 170-216, 222-225, 235-249, 255-258, 264-269
+src/security/encryption.py                                          45     25     12      0  35.09%   43-45, 49-51, 59-69, 76-84
+src/security/secrets.py                                             75     52     36      0  20.72%   16-30, 42-67, 88-90, 101-121, 125-126
+src/services/github/client.py                                      188    188     40      0   0.00%   7-690
+src/services/github/exceptions.py                                   36     36      2      0   0.00%   1-83
+src/services/github/types.py                                       124    124      2      0   0.00%   3-201
+src/services/mcp/lifecycle.py                                      120    120     36      0   0.00%   7-166
+src/services/workflow/inventory.py                                 108    104     40      0   2.70%   12-294
+src/services/workflow/parser.py                                    174    168     68      0   2.48%   23-405
+src/services/workflow/types.py                                     112    107      2      0   4.39%   11-171
+src/tokenization/api.py                                             23      6      8      3  64.52%   55->58, 59-69, 79, 87
+src/tokenization/cli.py                                            221    187     52      0  12.45%   24, 123-132, 143-168, 179-181, 187-199, 210, 220-273, 280-341, 354-464, 477-533, 540-584
+src/tokenization/loader.py                                          36     26     12      0  20.83%   13-19, 23-26, 32-37, 61-77
+src/tokenization/sentencepiece_adapter.py                           12      2      0      0  83.33%   44-45
+src/tokenization/train_tokenizer.py                                152    114     38      1  20.53%   36, 75-79, 83-89, 93-108, 112-115, 119-136, 140-247
+src/tokenizer/fast_tokenizer.py                                     64     49     30      0  15.96%   23-27, 32-41, 44, 56-63, 69, 74-76, 86-92, 104-133
+src/tools/archive_pr_checklist.py                                  110     81     38      0  19.59%   65-75, 84-98, 104-106, 110-111, 121-142, 154, 158-215
+src/tools/attention.py                                              46     33      8      0  24.07%   16-18, 50-96, 113-122
+src/tools/codeowners_validate.py                                    73     47     28      0  25.74%   30-42, 46-51, 55-58, 62-63, 73-90, 105-112
+src/tools/registry.py                                              142    102     40      1  22.53%   71-72, 98-134, 138-153, 157-161, 165, 169-172, 176, 195-241, 249-253, 257-261, 265-278, 288-290, 299-308, 313-340, 344
+src/training/accelerate_init_guard.py                               98     62     18      1  31.90%   50-55, 60-61, 70-73, 102-197, 207-222, 235-258
+src/training/cache.py                                               51     37      8      0  23.73%   16-26, 30-34, 37-50, 54, 57, 62-69
+src/training/checkpoint_manager.py                                 234    209     66      1   8.67%   28-32, 36-43, 157-225, 231-236, 250-277, 289-291, 295-346, 351-363, 366-399, 402-443, 447-452
+src/training/checkpointing.py                                      188    152     74      2  14.50%   25-49, 53-66, 73, 76, 88-97, 101-112, 116-135, 149-155, 161-165, 173-184, 190-201, 207-219, 236-266, 280-294
+src/training/config.py                                             152    109     76      0  18.86%   29-34, 38-71, 75-102, 140-160, 165, 170-174, 180-193, 199-211
+src/training/data_utils.py                                         181    148     48      0  14.41%   26, 48-49, 70, 101-180, 210-255, 267-292, 301, 304-306, 312-320, 332-369, 378-391
+src/training/datasets.py                                            67     45     18      0  25.88%   23-36, 54-58, 77-81, 84-96, 103-104, 110-114, 126-133
+src/training/engine_hf_trainer.py                                  594    507    226      0  10.61%   42-107, 300-302, 309-313, 317-319, 330-371, 377-387, 401-424, 440-497, 549, 573-589, 600-607, 618-621, 632-635, 640-653, 656-657, 671-673, 676-707, 779-858, 863-865, 871-891, 936-1310, 1315-1357
+src/training/evaluate.py                                           110     91     46      0  12.18%   17, 21-34, 38-43, 47-55, 59-69, 73-84, 98-145
+src/training/functional_training.py                                520    447    194      0  10.22%   89-103, 137-141, 145-155, 171-308, 313-314, 360-370, 383-424, 430-442, 447-870
+src/training/offline_wandb.py                                        5      1      0      0  80.00%   11
+src/training/seed.py                                                 9      3      0      0  66.67%   32-34
+src/training/seed_utils.py                                          60     47      6      0  19.70%   18-24, 28-72, 92-97
+src/training/simple_trainer.py                                      42     35     14      0  12.50%   24-35, 38-49, 54-74
+src/training/streaming.py                                           20     14     10      0  20.00%   26-40
+src/training/trainer.py                                            431    357    154      1  12.82%   58-59, 63-81, 113-133, 136-141, 144, 188-261, 265, 270-291, 294-296, 299-307, 310-320, 328-329, 338-347, 350-359, 362-365, 368-396, 399-432, 435-463, 471-480, 485-525, 530-551, 554-636, 639
+src/utils/checkpoint.py                                            224    185     90      2  13.06%   93, 97, 108-117, 121-132, 136-151, 155-204, 211-213, 217-225, 229-248, 265-309, 321-358, 369-397
+src/utils/error_logging.py                                          19     11      0      0  42.11%   36-60
+src/utils/log_sanitizer.py                                          14      9      4      0  27.78%   50-68, 89
+src/utils/logging_factory.py                                        25     20      8      0  15.15%   25-48
+src/utils/sanitize.py                                                8      5      2      0  30.00%   25-31
+src/utils/sensitive_data.py                                         34     34     18      0   0.00%   21-172
+src/utils/trackers.py                                               27     20      2      0  24.14%   12-21, 26-36
+src/utils/training_callbacks.py                                     24     18      6      0  20.00%   15-19, 23-36
+src/verification/cove.py                                           171    171     54      0   0.00%   18-412
+src/workers/embedding_worker.py                                     84     63     24      1  20.37%   32, 39-45, 50, 67-135, 139-147, 151
+src/zendesk/api_client.py                                          127     90     12      0  26.62%   34, 57-60, 82-84, 109-112, 150-168, 195-200, 219-227, 248-258, 270-272, 289-295, 316-326, 338-340, 348-352, 364-366, 374-376, 403-409, 421-423, 431-436, 448-450, 458-462, 474-476, 488-490, 511-517
+src/zendesk/json_generator.py                                      137     91     46      0  25.14%   72-73, 78-86, 90-212, 240, 288, 368, 427, 463-464, 476, 491-499, 515-543, 576-605, 625-650, 670-689, 693-699, 703-712, 716-731, 744
+-------------------------------------------------------------------------------------------------------------
+TOTAL                                                            94651  80444  28434    135  11.70%
+
+7 files skipped due to complete coverage.
+
+FAIL Required test coverage of 70.0% not reached. Total coverage: 11.70%
+=========================== short test summary info ============================
+ERROR tests/atomic_diffs/test_track_a.py
+ERROR tests/capability_specialization/test_capability_contracts.py
+ERROR tests/d365/test_mapping_loaders.py
+ERROR tests/d365/test_solution_xml.py
+ERROR tests/data/test_dataset_loaders_extended.py
+ERROR tests/data/test_loaders.py
+ERROR tests/deployment/test_api_integration.py
+ERROR tests/deployment/test_cloud.py
+ERROR tests/e2e_offline/test_diff_and_apply.py
+ERROR tests/mcp/test_facade.py
+ERROR tests/mcp/test_http_server.py
+ERROR tests/mcp/test_lifecycle_management.py
+ERROR tests/mcp/test_schema_validation.py
+ERROR tests/quantum/test_zendesk_quantum_bridge.py
+ERROR tests/safety/test_safety_filter_integration.py
+ERROR tests/services/github/test_client.py
+ERROR tests/services/workflow/test_inventory.py
+ERROR tests/serving/test_inference_chaos.py
+ERROR tests/serving/test_inference_performance.py
+ERROR tests/serving/test_inference_security.py
+ERROR tests/test_api_infer.py
+ERROR tests/test_data_loaders.py - AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'
+ERROR tests/test_data_loaders_extended.py - AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'
+ERROR tests/test_loaders.py
+ERROR tests/test_msp_infer_api.py
+ERROR tests/test_split_indices.py
+ERROR tests/test_zendesk_validators.py
+ERROR tests/unit/test_apply_ops_normalization.py
+ERROR tests/unit/test_zendesk_models.py
+ERROR tests/zendesk/test_api_client.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 30 errors during collection !!!!!!!!!!!!!!!!!!!
