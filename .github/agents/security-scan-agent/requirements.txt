@@ -1,0 +1,9 @@
+bandit[toml]>=1.7.0
+semgrep>=1.50.0
+safety>=3.0.0
+sarif-om>=1.0.4
+jschema-to-python>=1.2.3
+PyYAML>=6.0
+requests>=2.31.0
+pytest>=8.0.0
+pytest-cov>=4.1.0

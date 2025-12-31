@@ -460,7 +460,7 @@ See `.github/copilot-instructions.md` for complete list.
 ### For Support/DevOps Engineers
 
 1. Start with [./zendesk/ZENDESK_NEWCOMER_GUIDE.md](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)
-2. Run examples/zendesk/quickstart.sh <!-- TODO: Verify script exists --> for interactive setup
+2. If available in your checkout, run `examples/zendesk/quickstart.sh` for interactive setup
 3. Review [./zendesk/WORKFLOW_DIAGRAMS.md](./zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
 4. Study [docs/runbooks/zendesk_admin_workflow.md](docs/runbooks/zendesk_admin_workflow.md)
 5. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
