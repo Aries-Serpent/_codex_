@@ -1,0 +1,40 @@
+name: CI Testing Agent
+version: 1.0.0
+description: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
+created: 2025-12-29
+updated: 2025-12-31
+
+capabilities:
+  - ci_pipeline_debugging
+  - test_failure_analysis
+  - import_path_resolution
+  - dependency_management
+  - lint_format_fixes
+  - test_scaffolding_generation
+  - coverage_validation
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - pytest>=8.0.0
+    - pytest-cov>=4.1.0
+    - hypothesis>=6.100
+    - GitPython>=3.1.0
+    - PyYAML>=6.0
+
+entry_point: cli.py
+
+tools:
+  - bash
+  - git
+  - pytest
+  - coverage
+  - ruff
+  - black
+
+task_types:
+  - generate_tests
+  - validate_coverage
+  - execute_tests
+  - debug_ci_failure
