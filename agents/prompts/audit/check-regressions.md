@@ -133,5 +133,5 @@ webhooks:
 
 ## Related Prompts
 - [run-full-audit.md](run-full-audit.md) - Full audit execution
-- [show-trend.md](show-trend.md) - View capability trends
-- [store-trend.md](store-trend.md) - Store trend data
+<!-- TODO: Create show-trend.md for viewing capability trends -->
+<!-- TODO: Create store-trend.md for storing trend data -->

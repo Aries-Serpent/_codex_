@@ -581,9 +581,9 @@ config.override("inference.timeout_seconds", 60)
 
 ## See Also
 
-- [Environment Setup](../setup/environment.md)
-- [Secrets Management](../security/secrets.md)
-- [Deployment Guide](../deployment/README.md)
+- [Environment Setup](../docs/ops/environment.md)
+- [Secrets Management](../docs/security/secret_handling.md)
+- [Deployment Guide](../docs/zendesk/README.md)
 
 EOF
 

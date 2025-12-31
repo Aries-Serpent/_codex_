@@ -96,5 +96,5 @@ This prompt can be used in GitHub Actions:
 
 ## Related Prompts
 - [check-regressions.md](check-regressions.md) - Detailed regression checking
-- [generate-dashboard.md](generate-dashboard.md) - Dashboard customization
-- [show-trend.md](show-trend.md) - View individual capability trends
+<!-- TODO: Create generate-dashboard.md for dashboard customization -->
+<!-- TODO: Create show-trend.md for viewing capability trends -->
