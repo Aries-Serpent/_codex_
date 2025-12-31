@@ -133,7 +133,7 @@ class TestWorkflowStep:
             optional=True,
         )
 
-        result = step.execute({})
+        _ = step.execute({})
 
         # Optional steps can fail without causing workflow failure
         assert step.status == StepStatus.COMPLETED

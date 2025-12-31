@@ -14,8 +14,6 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 # Test security core if available
 try:
     from src.security.core import (

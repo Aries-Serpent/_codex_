@@ -14,13 +14,9 @@ Tests cover:
 from __future__ import annotations
 
 import json
-import shutil
-import tempfile
 import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from src.codex.ingest.adapter import (
     MAX_FILE_SIZE_MB,
@@ -29,7 +25,6 @@ from src.codex.ingest.adapter import (
     Snapshot,
     _check_size_bounds,
     _compute_content_hash,
-    _extract_tar,
     _extract_zip,
     _validate_path,
     ingest,

@@ -55,13 +55,15 @@ class SandboxExecutor:
         env.update(env_vars)
 
         try:
+            # Pass environment variables to subprocess
+            # Note: env parameter requires a complete environment dict
             result = subprocess.run(
                 full_command,
                 cwd=self.workspace,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                env=env,
+                env=env if env else None,
             )
 
             return {

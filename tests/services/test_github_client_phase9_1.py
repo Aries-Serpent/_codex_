@@ -14,8 +14,6 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 # Test GitHub client if available
 try:
     from src.services.github.client import GitHubClient, GitHubException

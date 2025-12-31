@@ -17,8 +17,6 @@ import json
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 from src.codex.analyze.static.analyzer import (
     MAX_FILE_SIZE_KB,
     MAX_FILES_TO_ANALYZE,

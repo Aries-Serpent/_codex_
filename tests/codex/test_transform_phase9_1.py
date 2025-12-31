@@ -14,11 +14,8 @@ Tests cover:
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from unittest.mock import Mock, patch
-
-import pytest
 
 from src.codex.transform.transformer import (
     Patch,
@@ -443,7 +440,8 @@ class TestTransformTierA:
         # File should be modified
         modified_content = test_file.read_text()
         assert modified_content != original
-        assert "Path(" in modified_content or modified_content == original  # Depending on Black/isort
+        # Check transformation applied (always True when auto_apply=True and dry_run=False)
+        assert "Path(" in modified_content
         assert result.applied
 
 
