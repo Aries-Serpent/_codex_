@@ -170,7 +170,7 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Scope
 
-See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for full guidelines.
+See [docs/guides/AGENTS.md](../guides/AGENTS.md) for full guidelines.
 
 ## Extending Codex ML components
 

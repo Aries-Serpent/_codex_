@@ -402,8 +402,8 @@ mutmut run --paths-to-mutate src/
 
 ### Testing Guides
 - [Testing Guide](../guides/TESTING_GUIDE.md) - Comprehensive testing guide
-- [Property-Based Testing](../guides/PROPERTY_BASED_TESTING.md) - Hypothesis guide
-- [Mocking Patterns](../guides/MOCKING_PATTERNS.md) - Mock best practices
+- Property-Based Testing - Hypothesis guide (TODO: Create guide)
+- Mocking Patterns - Mock best practices (TODO: Create guide)
 
 ### Coverage Tools
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/)
