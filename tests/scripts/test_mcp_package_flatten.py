@@ -6,7 +6,7 @@ Tests bash script logic for flattening and packaging
 
 import json
 import pytest
-import subprocess
+import subprocess  # Using stdlib subprocess.run which supports timeout parameter
 import tempfile
 from pathlib import Path
 
@@ -91,7 +91,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -112,7 +113,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -140,7 +142,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -164,7 +167,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -190,7 +194,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -216,7 +221,8 @@ class TestPackageFlattenScript:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(temp_source_dir), str(output_zip)],
                 capture_output=True,
                 text=True,
@@ -237,7 +243,8 @@ class TestPackageFlattenScript:
             custom_root = Path(tmpdir) / "custom_root"
             custom_root.mkdir()
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [
                     str(package_flatten_script),
                     str(temp_source_dir),
@@ -264,7 +271,8 @@ class TestPackageFlattenScript:
             
             output_zip = Path(tmpdir) / "test_package.zip"
             
-            result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
                 [str(package_flatten_script), str(source), str(output_zip)],
                 capture_output=True,
                 text=True,

@@ -6,7 +6,7 @@ Tests command-line interface and integration
 
 import json
 import pytest
-import subprocess
+import subprocess  # Using stdlib subprocess.run which supports timeout parameter
 import sys
 import tempfile
 from pathlib import Path
@@ -105,7 +105,8 @@ class TestMCPPackageCLI:
     
     def test_cli_topic_flag_validation(self, mcp_package_cli, mock_repo):
         """Test --topic flag with valid topic"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", "--dry-run"],
             capture_output=True,
             text=True,
@@ -119,7 +120,8 @@ class TestMCPPackageCLI:
     
     def test_cli_custom_flag_validation(self, mcp_package_cli, mock_repo):
         """Test --custom flag with glob patterns"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--custom", "**/*.py", "--dry-run"],
             capture_output=True,
             text=True,
@@ -132,7 +134,8 @@ class TestMCPPackageCLI:
     
     def test_cli_output_flag_adds_zip_extension(self, mcp_package_cli, mock_repo):
         """Test that --output flag automatically adds .zip extension"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", 
              "--output", "mypackage", "--dry-run"],
             capture_output=True,
@@ -147,7 +150,8 @@ class TestMCPPackageCLI:
     
     def test_cli_dry_run_flag(self, mcp_package_cli, mock_repo):
         """Test --dry-run flag prevents actual packaging"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", "--dry-run"],
             capture_output=True,
             text=True,
@@ -161,7 +165,8 @@ class TestMCPPackageCLI:
     
     def test_cli_verbose_flag(self, mcp_package_cli, mock_repo):
         """Test --verbose flag increases output detail"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", 
              "--verbose", "--dry-run"],
             capture_output=True,
@@ -176,7 +181,8 @@ class TestMCPPackageCLI:
     
     def test_cli_generates_timestamped_output_name(self, mcp_package_cli, mock_repo):
         """Test automatic timestamp-based output naming"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", "--dry-run"],
             capture_output=True,
             text=True,
@@ -211,7 +217,8 @@ class TestCLIEdgeCases:
     
     def test_cli_handles_invalid_topic_name(self, mcp_package_cli, mock_repo):
         """Test error handling for unknown topic"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "nonexistent_topic", 
              "--dry-run"],
             capture_output=True,
@@ -226,7 +233,8 @@ class TestCLIEdgeCases:
     
     def test_cli_handles_empty_custom_pattern(self, mcp_package_cli, mock_repo):
         """Test error handling for empty custom pattern"""
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--custom", "", "--dry-run"],
             capture_output=True,
             text=True,
@@ -263,7 +271,8 @@ class TestCLIIntegration:
         
         # Step 2: Package a topic (dry run)
         if list_result.returncode == 0:
-            package_result = subprocess.run(
+            # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+            package_result: subprocess.CompletedProcess[str] = subprocess.run(
                 [sys.executable, str(mcp_package_cli), "--topic", "test_topic", "--dry-run"],
                 capture_output=True,
                 text=True,
@@ -282,7 +291,8 @@ class TestCLIIntegration:
         assert github_tmp.exists(), ".github/tmp should exist in mock repo"
         
         # Run CLI
-        result = subprocess.run(
+        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
+        result: subprocess.CompletedProcess[str] = subprocess.run(
             [sys.executable, str(mcp_package_cli), "--topic", "test_topic", "--dry-run"],
             capture_output=True,
             text=True,

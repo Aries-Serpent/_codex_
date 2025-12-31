@@ -363,24 +363,6 @@ def main():
     repo_root = Path(__file__).resolve().parents[2]
     updater = DiagramUpdater(repo_root)
     
-    if args.scan or not any([args.update, args.validate]):
-        # Default action: scan
-        report = updater.scan_diagrams()
-        
-        # Generate report
-        report_content = updater.generate_diagram_update_report()
-        output_path = repo_root / args.output
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(report_content)
-        
-        print(f"\n📄 Report saved to: {output_path}")
-        print(f"\n💡 Next steps:")
-        print(f"   1. Review {output_path}")
-        print(f"   2. Update diagrams manually or run with --update")
-        print(f"   3. Validate with --validate")
-        
-        return 0 if len(report.diagrams_needing_update) == 0 else 1
-    
     if args.validate:
         print("✅ Validation feature coming soon")
         return 0
@@ -389,6 +371,23 @@ def main():
         print("🔄 Automatic update feature coming soon")
         print("   For now, use the generated report to update manually")
         return 0
+    
+    # Default action: scan (when --scan is passed or no other flags)
+    report = updater.scan_diagrams()
+    
+    # Generate report
+    report_content = updater.generate_diagram_update_report()
+    output_path = repo_root / args.output
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(report_content)
+    
+    print(f"\n📄 Report saved to: {output_path}")
+    print(f"\n💡 Next steps:")
+    print(f"   1. Review {output_path}")
+    print(f"   2. Update diagrams manually or run with --update")
+    print(f"   3. Validate with --validate")
+    
+    return 0 if len(report.diagrams_needing_update) == 0 else 1
 
 
 if __name__ == '__main__':

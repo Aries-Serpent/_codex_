@@ -6,7 +6,6 @@ Comprehensive tests for workflow orchestration and state management
 
 import pytest
 import tempfile
-from pathlib import Path
 from agents.workflow_navigator import (
     Workflow,
     WorkflowStep,

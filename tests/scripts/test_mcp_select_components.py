@@ -9,7 +9,6 @@ import pytest
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, mock_open
 
 # Add scripts/mcp to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "mcp"))

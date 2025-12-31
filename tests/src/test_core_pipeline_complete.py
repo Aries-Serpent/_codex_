@@ -441,18 +441,24 @@ class TestConfiguration:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump({"key": "value"}, f)
             f.flush()
-            config = json.load(open(f.name))
+            filepath = Path(f.name)
+        
+        with open(filepath) as config_file:
+            config = json.load(config_file)
             assert config["key"] == "value"
-            Path(f.name).unlink()
+        filepath.unlink()
     
     def test_config_invalid_json(self):
         """Test invalid JSON"""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write("{invalid}")
             f.flush()
-            with pytest.raises(json.JSONDecodeError):
-                json.load(open(f.name))
-            Path(f.name).unlink()
+            filepath = Path(f.name)
+        
+        with pytest.raises(json.JSONDecodeError):
+            with open(filepath) as config_file:
+                json.load(config_file)
+        filepath.unlink()
     
     def test_config_missing_file(self):
         """Test missing config file"""
@@ -464,9 +470,12 @@ class TestConfiguration:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write("")
             f.flush()
-            with pytest.raises(json.JSONDecodeError):
-                json.load(open(f.name))
-            Path(f.name).unlink()
+            filepath = Path(f.name)
+        
+        with pytest.raises(json.JSONDecodeError):
+            with open(filepath) as config_file:
+                json.load(config_file)
+        filepath.unlink()
     
     def test_config_nested_values(self):
         """Test nested config"""
