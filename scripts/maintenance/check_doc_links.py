@@ -111,6 +111,9 @@ class LinkChecker:
                         rel_path = file.relative_to(common)
                         candidates.append(f"../../{rel_path}")
                     except (ValueError, IndexError):
+                        # If we cannot compute a reasonable relative path from this
+                        # heuristic common root, just skip this candidate and continue.
+                        # Suggestion generation is best-effort and should not fail hard.
                         pass
         
         if candidates:

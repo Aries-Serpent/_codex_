@@ -14,12 +14,10 @@ Usage:
 """
 
 import argparse
-import json
 import re
-import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 
