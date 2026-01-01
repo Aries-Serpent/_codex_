@@ -175,7 +175,9 @@ class SecurityAnalyzer:
         #AFTERMATH_PATTERN_IDENTIFIED: cvss_scoring
         """
         # Simplified CVSS calculation based on severity
-        # Default to medium severity if not specified
+        # Initialize with default for unknown severity levels
+        base_score = 1.0
+        
         if finding.severity == "critical":
             base_score = 9.5
         elif finding.severity == "high":
@@ -184,9 +186,6 @@ class SecurityAnalyzer:
             base_score = 5.0
         elif finding.severity == "low":
             base_score = 3.0
-        else:
-            # Default for unknown severity levels
-            base_score = 1.0
         
         # Adjust based on confidence
         base_score *= finding.confidence
