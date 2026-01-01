@@ -6,9 +6,8 @@ Implements automated fix generation and remediation for security vulnerabilities
 """
 
 import json
-import re
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass
 from enum import Enum
 
@@ -164,8 +163,6 @@ class SecurityRemediator:
         # Parse requirements.txt
         req_file = self.repo_path / "requirements.txt"
         if req_file.exists():
-            content = req_file.read_text()
-            
             # Find vulnerable package line
             # In real implementation, would parse and update version
             change = {

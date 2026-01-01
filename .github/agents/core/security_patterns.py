@@ -17,7 +17,7 @@ Integrates with cognitive brain for learning and pattern evolution.
 import re
 import ast
 from pathlib import Path
-from typing import List, Dict, Any, Set
+from typing import List, Dict
 from dataclasses import dataclass
 
 from .pattern_recognizer import PatternMatcher, Pattern

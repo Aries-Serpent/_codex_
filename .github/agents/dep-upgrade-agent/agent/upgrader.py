@@ -7,8 +7,9 @@ Implements automated dependency upgrade execution and PR creation.
 
 import subprocess
 import json
+import re
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass
 from enum import Enum
 
@@ -68,8 +69,6 @@ class DependencyUpgrader:
         Returns:
             Result with upgrade outcomes
         """
-        evaluations = decision.get("evaluations", [])
-        auto_upgrades = decision.get("auto_upgrades", [])
         
         # Apply auto-upgrades first
         for evaluation in auto_upgrades:
@@ -155,6 +154,8 @@ class DependencyUpgrader:
                     evaluation.current_version
                 )
             except Exception:
+                # Best-effort rollback: if secondary rollback also fails,
+                # continue processing other upgrades. Manual intervention may be needed.
                 pass
         
         duration = time.time() - start_time

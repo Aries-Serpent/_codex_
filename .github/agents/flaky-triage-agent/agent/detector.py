@@ -13,11 +13,9 @@ PDA Loop: PERCEIVE Phase
 - Query cognitive brain for historical patterns
 """
 
-import json
-import re
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from dataclasses import dataclass
 
 # Import pattern matchers
