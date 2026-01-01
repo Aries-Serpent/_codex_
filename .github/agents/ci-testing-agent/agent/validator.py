@@ -176,7 +176,13 @@ class CoverageValidator:
         except subprocess.TimeoutExpired:
             # Return default if coverage command times out
             pass
-        except (FileNotFoundError, IOError, json.JSONDecodeError, subprocess.CalledProcessError, ValueError):
+        except (
+            FileNotFoundError,
+            IOError,
+            json.JSONDecodeError,
+            subprocess.CalledProcessError,
+            ValueError
+        ):
             # Return default if coverage report or runner is unavailable/malformed
             pass
 
