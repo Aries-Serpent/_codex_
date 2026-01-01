@@ -116,7 +116,8 @@ class TestReleaseValidator:
     
     def test_check_ci_pipelines_timeout(self, validator):
         """Test CI pipeline check handles timeout gracefully."""
-        with patch('subprocess.run', side_effect=TimeoutError("Timeout")):
+        import subprocess
+        with patch('subprocess.run', side_effect=subprocess.TimeoutExpired("gh", 30)):
             result = validator._check_ci_pipelines()
             
             assert result.check_name == "CI/CD Status"

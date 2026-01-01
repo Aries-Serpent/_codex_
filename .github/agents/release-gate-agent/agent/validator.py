@@ -52,10 +52,14 @@ class ReleaseValidator:
     - Documentation completeness
     """
     
-    def __init__(self, repo_path: Path, branch: str = "main"):
+    def __init__(self, repo_path: Path, branch: str = "main", brain_db_path: Path = None):
         self.repo_path = repo_path
         self.branch = branch
-        self.brain = CognitiveBrain(Path(".codex/brain.db"))
+        # Use environment variable or parameter for brain database path
+        if brain_db_path is None:
+            import os
+            brain_db_path = Path(os.getenv("CODEX_DB_PATH", ".codex/brain.db"))
+        self.brain = CognitiveBrain(brain_db_path)
         self.validations: List[ValidationResult] = []
     
     def perceive(self, release_info: Dict[str, Any]) -> Dict[str, Any]:

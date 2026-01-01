@@ -60,8 +60,10 @@ class ReleaseExecutor:
     - Monitors initial health
     """
     
-    def __init__(self, repo_path: Path):
+    def __init__(self, repo_path: Path, repo_owner: str = "Aries-Serpent", repo_name: str = "_codex_"):
         self.repo_path = repo_path
+        self.repo_owner = repo_owner
+        self.repo_name = repo_name
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
     
     def act(self, decision_result: Dict[str, Any], release_info: Dict[str, Any]) -> Dict[str, Any]:
@@ -191,11 +193,11 @@ class ReleaseExecutor:
                 release_url = result.stdout.decode().strip()
                 return release_url
             
-            return f"https://github.com/Aries-Serpent/_codex_/releases/tag/{git_tag}"
+            return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
         
         except subprocess.SubprocessError as e:
             # Best-effort: return constructed URL if gh CLI fails
-            return f"https://github.com/Aries-Serpent/_codex_/releases/tag/{git_tag}"
+            return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
     
     def _trigger_deployment(self, release_info: Dict[str, Any]) -> str:
         """Trigger deployment pipeline."""
@@ -207,5 +209,5 @@ class ReleaseExecutor:
         """Monitor release health for specified duration."""
         # Placeholder: would check health endpoints, error rates, etc.
         # In real implementation, would query monitoring systems
-        time.sleep(min(duration, 5))  # Simulate monitoring (max 5s for testing)
+        # Sleep removed to avoid delays in production - monitoring would be async
         return "healthy"
