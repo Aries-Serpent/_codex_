@@ -464,7 +464,8 @@ class TestConfiguration:
         """Test missing config file"""
         with pytest.raises(FileNotFoundError):
             # The FileNotFoundError is raised when attempting to open the file
-            open("/nonexistent.json")
+            f = open("/nonexistent.json")
+            f.close()  # Never reached
     
     def test_config_empty_file(self):
         """Test empty config file"""
@@ -713,7 +714,7 @@ class TestErrorPaths:
         result = None
         try:
             # Test that else clause executes when no exception is raised
-            pass
+            result = None  # Successful execution (no exception)
         except Exception:
             result = "except"
         else:
