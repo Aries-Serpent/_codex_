@@ -69,6 +69,7 @@ class DependencyUpgrader:
         Returns:
             Result with upgrade outcomes
         """
+        auto_upgrades = decision.get("auto_upgrades", [])
         
         # Apply auto-upgrades first
         for evaluation in auto_upgrades:
