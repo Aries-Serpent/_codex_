@@ -116,7 +116,7 @@ class CoverageValidator:
                             except ValueError:
                                 pass
 
-        except Exception:
+        except (FileNotFoundError, IOError, json.JSONDecodeError, ValueError):
             # Return default if baseline parsing fails
             pass
 
@@ -176,8 +176,8 @@ class CoverageValidator:
         except subprocess.TimeoutExpired:
             # Return default if coverage command times out
             pass
-        except Exception:
-            # Return default if coverage run fails
+        except (FileNotFoundError, IOError, json.JSONDecodeError, subprocess.CalledProcessError):
+            # Return default if coverage report or runner is unavailable/malformed
             pass
 
         return {"total": 0.0, "modules": {}}
