@@ -91,9 +91,15 @@ class DependencyMonitor:
         """
         dependencies = {}
         
-        # Read requirements.txt
+        # Validate base path
+        try:
+            repo_resolved = self.repo_path.resolve()
+        except (OSError, ValueError):
+            return dependencies
+        
+        # Read requirements.txt with path validation
         req_file = self.repo_path / "requirements.txt"
-        if req_file.exists():
+        if self._is_safe_path(req_file):
             content = req_file.read_text()
             for line in content.splitlines():
                 line = line.strip()
@@ -105,9 +111,9 @@ class DependencyMonitor:
                         if operator == '==':
                             dependencies[package] = version
         
-        # Read Pipfile.lock (if exists)
+        # Read Pipfile.lock (if exists) with path validation
         pipfile_lock = self.repo_path / "Pipfile.lock"
-        if pipfile_lock.exists():
+        if self._is_safe_path(pipfile_lock):
             try:
                 data = json.loads(pipfile_lock.read_text())
                 for section in ['default', 'develop']:
@@ -119,9 +125,9 @@ class DependencyMonitor:
             except json.JSONDecodeError:
                 pass
         
-        # Read package-lock.json (for Node.js)
+        # Read package-lock.json (for Node.js) with path validation
         package_lock = self.repo_path / "package-lock.json"
-        if package_lock.exists():
+        if self._is_safe_path(package_lock):
             try:
                 data = json.loads(package_lock.read_text())
                 if 'dependencies' in data:
@@ -132,6 +138,16 @@ class DependencyMonitor:
                 pass
         
         return dependencies
+    
+    def _is_safe_path(self, file_path: Path) -> bool:
+        """Validate path is within repo and exists."""
+        try:
+            file_resolved = file_path.resolve()
+            repo_resolved = self.repo_path.resolve()
+            return (str(file_resolved).startswith(str(repo_resolved)) 
+                   and file_path.exists())
+        except (OSError, ValueError):
+            return False
     
     def _check_for_updates(self) -> List[DependencyUpdate]:
         """
@@ -248,10 +264,19 @@ class DependencyMonitor:
         
         # Use Safety for Python
         req_file = self.repo_path / "requirements.txt"
+        # Validate path is within repo to prevent path traversal
+        try:
+            req_file_resolved = req_file.resolve()
+            repo_resolved = self.repo_path.resolve()
+            if not str(req_file_resolved).startswith(str(repo_resolved)):
+                return vulnerabilities
+        except (OSError, ValueError):
+            return vulnerabilities
+        
         if req_file.exists():
             try:
                 result = subprocess.run(
-                    ["safety", "check", "--json", "-r", str(req_file)],
+                    ["safety", "check", "--json", "-r", str(req_file_resolved)],
                     capture_output=True,
                     timeout=60
                 )
@@ -321,7 +346,9 @@ class DependencyMonitor:
         """Query cognitive brain for historical update patterns."""
         try:
             import sys
-            sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
+            _core_path = str(Path(__file__).parent.parent.parent / "core")
+            if _core_path not in sys.path:
+                sys.path.insert(0, _core_path)
             from cognitive_brain import CognitiveBrain
             
             brain = CognitiveBrain(Path(".codex/brain.db"))

@@ -289,33 +289,67 @@ class DependencyUpgrader:
     
     def _create_branch(self, branch_name: str) -> None:
         """Create git branch for upgrade."""
+        # Sanitize branch name to prevent command injection
+        safe_branch_name = re.sub(r'[^a-zA-Z0-9_\-\.]', '-', branch_name)
+        
+        # Validate working directory
+        if not self._is_safe_repo_path():
+            print(f"Warning: Invalid repository path for branch creation")
+            return
+        
         try:
-            subprocess.run(
-                ["git", "checkout", "-b", branch_name],
+            result = subprocess.run(
+                ["git", "checkout", "-b", safe_branch_name],
                 cwd=self.repo_path,
                 capture_output=True,
                 timeout=30
             )
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            pass
+            if result.returncode != 0:
+                print(f"Warning: Failed to create branch {safe_branch_name}: {result.stderr.decode()}")
+        except subprocess.TimeoutExpired:
+            print(f"Warning: Git branch creation timed out for {safe_branch_name}")
+        except FileNotFoundError:
+            print("Warning: Git command not found")
     
     def _commit_changes(self, message: str) -> None:
         """Commit changes to git."""
+        # Validate working directory
+        if not self._is_safe_repo_path():
+            print(f"Warning: Invalid repository path for commit")
+            return
+        
         try:
-            subprocess.run(
+            result = subprocess.run(
                 ["git", "add", "."],
                 cwd=self.repo_path,
                 capture_output=True,
                 timeout=30
             )
-            subprocess.run(
+            if result.returncode != 0:
+                print(f"Warning: Git add failed: {result.stderr.decode()}")
+                return
+            
+            result = subprocess.run(
                 ["git", "commit", "-m", message],
                 cwd=self.repo_path,
                 capture_output=True,
                 timeout=30
             )
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            pass
+            if result.returncode != 0:
+                print(f"Warning: Git commit failed: {result.stderr.decode()}")
+        except subprocess.TimeoutExpired:
+            print("Warning: Git commit timed out")
+        except FileNotFoundError:
+            print("Warning: Git command not found")
+    
+    def _is_safe_repo_path(self) -> bool:
+        """Validate repository path is safe for git operations."""
+        try:
+            repo_resolved = self.repo_path.resolve()
+            # Ensure path exists and is a directory
+            return repo_resolved.exists() and repo_resolved.is_dir()
+        except (OSError, ValueError):
+            return False
     
     def _generate_upgrade_report(self, decision: Dict[str, Any]) -> Path:
         """

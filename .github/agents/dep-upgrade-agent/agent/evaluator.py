@@ -11,8 +11,11 @@ from dataclasses import dataclass
 from enum import Enum
 import sys
 
-# Add core to path for CognitiveBrain access
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
+# Add core to path for CognitiveBrain access (acceptable for agent isolation)
+# Alternative: Use proper packaging with __init__.py exports
+_core_path = str(Path(__file__).parent.parent.parent / "core")
+if _core_path not in sys.path:
+    sys.path.insert(0, _core_path)
 from cognitive_brain import CognitiveBrain
 
 

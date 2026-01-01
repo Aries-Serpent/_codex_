@@ -9,11 +9,14 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 import sys
 
-# Add core to path for CognitiveBrain access
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
+# Add core to path for CognitiveBrain access (acceptable for agent isolation)
+# Alternative: Use proper packaging with __init__.py exports
+_core_path = str(Path(__file__).parent.parent.parent / "core")
+if _core_path not in sys.path:
+    sys.path.insert(0, _core_path)
 from cognitive_brain import CognitiveBrain
 
 
@@ -134,7 +137,7 @@ class DependencyTracker:
         lessons = self._generate_lessons(result, context, decision)
         
         return UpgradeMetrics(
-            scan_date=datetime.now().isoformat(),
+            scan_date=datetime.now(timezone.utc).isoformat(),
             total_dependencies=context.get("total_dependencies", 0),
             outdated_count=context.get("total_outdated", 0),
             upgraded_count=len(results),
