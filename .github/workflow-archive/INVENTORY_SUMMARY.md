@@ -1,18 +1,21 @@
 # Workflow Inventory Summary
 
-**Generated**: 2025-12-31T18:28:09.511057Z
+**Generated**: 2026-01-01T01:48:05.335795Z
 
-**Total Workflows**: 53
+**Total Workflows**: 56
 
 ## Workflows by Category
 
-### Other (53 workflows)
+### Other (56 workflows)
 
+- 🔴  `aftermath.yml` - N/A
 - 🔴  `agent-runtime.yml` - N/A
 - 🔴  `api-documentation.yml` - N/A
 - 🔴  `audit-improvement-pipeline.yml` - N/A
 - 🔴  `auto-update-configs.yml` - N/A
 - 🔴  `autonomous-agent.yml` - N/A
+- 🔴  `build-chatgpt-package.yml` - N/A
+- 🔴 ⚠️ `cache-cleanup.yml` - N/A
 - 🔴  `ci-health-monitor.yml` - N/A
 - 🔴  `code-quality.yml` - N/A
 - 🔴  `codeql-analysis.yml` - N/A
@@ -61,6 +64,14 @@
 - 🔴  `workflow-expiry-enforcer.yml` - N/A
 - 🔴  `workflow-restore.yml` - N/A
 - 🔴  `zendesk-quantum-packaging.yml` - N/A
+
+## Consolidation Candidates (1 workflows)
+
+### `cache-cleanup.yml`
+
+**Reason**: Unified cache operations with scheduled jobs
+
+**Will be replaced by**: cache-management.yml
 
 ## Secrets Usage
 

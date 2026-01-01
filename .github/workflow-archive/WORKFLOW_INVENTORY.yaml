@@ -1,11 +1,15 @@
 metadata:
-  generated_at: '2025-12-31T18:28:09.511057Z'
-  total_workflows: 52
+  generated_at: '2026-01-01T01:48:05.335795Z'
+  total_workflows: 56
   active_count: 0
   disabled_count: 0
   archived_count: 0
   consolidation_target: 48
 workflows:
+- filename: aftermath.yml
+  error: '''.github/workflows/aftermath.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
 - filename: agent-runtime.yml
   error: '''.github/workflows/agent-runtime.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
@@ -27,6 +31,19 @@ workflows:
   error: '''.github/workflows/autonomous-agent.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
+- filename: build-chatgpt-package.yml
+  error: '''.github/workflows/build-chatgpt-package.yml'' is not in the subpath of
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
+  status: error
+- filename: cache-cleanup.yml
+  error: '''.github/workflows/cache-cleanup.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+  consolidation_candidate: true
+  consolidation_plan: Unified cache operations with scheduled jobs
+  consolidation_keep: &id001
+  - cache-management.yml
 - filename: ci-health-monitor.yml
   error: '''.github/workflows/ci-health-monitor.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
@@ -282,8 +299,7 @@ consolidation_plan:
     - report_publish.yml
     reason: Consolidated into single pipeline with job dependencies
   maintenance:
-    keep:
-    - cache-management.yml
+    keep: *id001
     remove:
     - cache-cleanup.yml
     - cache-warmer.yml

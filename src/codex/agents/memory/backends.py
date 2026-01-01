@@ -53,16 +53,16 @@ class JSONLMemoryBackend(MemoryProtocol):
                 f.flush()
             finally:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-    
+
     def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve entries by scanning the entire file.
-        
+
         Note: This is O(n) and suitable for smaller datasets.
         For large-scale use, consider SQLite or vector DB backend.
         """
         if not self.storage_path.exists():
             return []
-        
+
         matches = []
         with open(self.storage_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -71,7 +71,7 @@ class JSONLMemoryBackend(MemoryProtocol):
                 try:
                     data = json.loads(line)
                     entry = MemoryEntry.from_dict(data)
-                    
+
                     # Apply filters
                     if query.agent_id and entry.agent_id != query.agent_id:
                         continue
@@ -79,29 +79,29 @@ class JSONLMemoryBackend(MemoryProtocol):
                         continue
                     if query.since and entry.timestamp < query.since:
                         continue
-                    
+
                     # Basic text search (case-insensitive substring match)
                     if query.text:
                         content_str = str(entry.content).lower()
                         if query.text.lower() not in content_str:
                             continue
-                    
+
                     matches.append(entry)
-                    
+
                 except (json.JSONDecodeError, KeyError, ValueError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Skipping invalid memory entry: {e}")
                     continue
-        
+
         # Sort by timestamp descending and limit
         matches.sort(key=lambda x: x.timestamp, reverse=True)
         return matches[:query.limit]
-    
+
     def delete(self, entry_id: UUID) -> bool:
         """Delete entry by rewriting file without it (with file locking)."""
         if not self.storage_path.exists():
             return False
-        
+
         entries = []
         found = False
         
