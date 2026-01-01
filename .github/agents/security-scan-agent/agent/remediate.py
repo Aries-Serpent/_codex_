@@ -7,7 +7,7 @@ Implements automated fix generation and remediation for security vulnerabilities
 
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 

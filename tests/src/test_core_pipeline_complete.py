@@ -710,10 +710,11 @@ class TestErrorPaths:
     
     def test_error_else_clause(self):
         """Test else clause in try-except"""
+        result = None  # Initialize to ensure it's always defined
         try:
             # Test that else clause executes when no exception is raised
             # The try block succeeds without raising an exception
-            success = True
+            result = "try"
         except Exception:
             result = "except"
         else:
