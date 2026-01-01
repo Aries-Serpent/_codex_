@@ -116,8 +116,8 @@ class CoverageValidator:
                             except ValueError:
                                 pass
 
-        except (FileNotFoundError, IOError, json.JSONDecodeError):
-            # Return default if baseline parsing fails
+        except (FileNotFoundError, IOError):
+            # Return default if baseline file unavailable
             pass
 
         return {"total": 0.0, "modules": {}}
