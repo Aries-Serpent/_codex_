@@ -5,7 +5,7 @@ Validates coverage improvements and identifies gaps.
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 
 class CoverageValidator:
