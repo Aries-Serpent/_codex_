@@ -712,7 +712,8 @@ class TestErrorPaths:
         """Test else clause in try-except"""
         try:
             # Test that else clause executes when no exception is raised
-            pass
+            # The try block succeeds without raising an exception
+            success = True
         except Exception:
             result = "except"
         else:

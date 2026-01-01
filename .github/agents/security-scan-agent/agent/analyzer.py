@@ -174,8 +174,7 @@ class SecurityAnalyzer:
         
         #AFTERMATH_PATTERN_IDENTIFIED: cvss_scoring
         """
-        # Simplified CVSS calculation
-        # Adjust based on severity
+        # Simplified CVSS calculation based on severity
         if finding.severity == "critical":
             base_score = 9.5
         elif finding.severity == "high":
