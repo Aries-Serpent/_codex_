@@ -12,13 +12,12 @@ in the cognitive brain for continuous improvement of IaC scanning policies.
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, Any, List, Optional
 from collections import Counter
 
 # Cognitive brain integration
 try:
-    from ..core.cognitive_brain import CognitiveBrain
+    from ...core.cognitive_brain import CognitiveBrain
 except ImportError:
     # Fallback if cognitive brain not available
     class CognitiveBrain:
@@ -83,6 +82,23 @@ class IaCReporter:
         # #AFTERMATH_METRIC: outcomes_tracked
         self.outcomes_tracked = 0
     
+    def _calculate_total_issues(self, validation_results: Dict[str, Any]) -> int:
+        """
+        Helper method to calculate total issues count
+        
+        Args:
+            validation_results: Output from validator.py
+        
+        Returns:
+            Total count of all issues across all severity levels
+        """
+        return (
+            validation_results.get("critical_issues", 0) +
+            validation_results.get("high_issues", 0) +
+            validation_results.get("medium_issues", 0) +
+            validation_results.get("low_issues", 0)
+        )
+    
     def generate_aftermath_report(
         self,
         scan_results: Dict[str, Any],
@@ -123,6 +139,9 @@ class IaCReporter:
         medium_count = validation_results.get("medium_issues", 0)
         low_count = validation_results.get("low_issues", 0)
         
+        # Use helper method for total issues
+        total_issues = self._calculate_total_issues(validation_results)
+        
         # Count blocking vs warning issues
         blocking_issues = len(validation_results.get("blockers", []))
         warning_issues = len(validation_results.get("warnings", []))
@@ -134,7 +153,7 @@ class IaCReporter:
         report = AftermathReport(
             outcome=outcome,
             files_scanned=scan_results.get("files_scanned", 0),
-            issues_found=critical_count + high_count + medium_count + low_count,
+            issues_found=total_issues,
             critical_count=critical_count,
             high_count=high_count,
             medium_count=medium_count,
@@ -209,17 +228,18 @@ class IaCReporter:
             lessons["recurring_patterns"] = "No recurring issues detected"
         
         # Policy effectiveness measurement
-        total_issues = validation_results.get("critical_issues", 0) + \
-                      validation_results.get("high_issues", 0) + \
-                      validation_results.get("medium_issues", 0) + \
-                      validation_results.get("low_issues", 0)
+        total_issues = self._calculate_total_issues(validation_results)
+        high_severity_issues = validation_results.get("critical_issues", 0) + validation_results.get("high_issues", 0)
         
         blockers = validation_results.get("blockers", [])
-        if total_issues > 0:
-            blocked_pct = (len(blockers) / total_issues) * 100
+        if high_severity_issues > 0:
+            # Calculate percentage of high-severity issues that were blocked
+            blocked_pct = (len(blockers) / high_severity_issues) * 100
             lessons["policy_effectiveness"] = (
                 f"{blocked_pct:.0f}% of high-severity issues caught before merge"
             )
+        elif total_issues > 0:
+            lessons["policy_effectiveness"] = "Only low/medium severity issues found - all allowed"
         else:
             lessons["policy_effectiveness"] = "No issues found - policies working well"
         
@@ -272,17 +292,14 @@ class IaCReporter:
         """
         try:
             # Prepare context for cognitive brain
+            total_issues = self._calculate_total_issues(validation_results)
+            
             context = {
                 "tools_used": scan_results.get("tools_detected", []),
                 "files_scanned": scan_results.get("files_scanned", 0),
                 "security_score": validation_results.get("security_score", 0),
                 "risk_level": validation_results.get("risk_level", "unknown"),
-                "issues_count": (
-                    validation_results.get("critical_issues", 0) +
-                    validation_results.get("high_issues", 0) +
-                    validation_results.get("medium_issues", 0) +
-                    validation_results.get("low_issues", 0)
-                ),
+                "issues_count": total_issues,
                 "critical_issues": validation_results.get("critical_issues", 0),
                 "high_issues": validation_results.get("high_issues", 0),
                 "ci_blocked": enforcement_results.get("ci_blocked", False),
