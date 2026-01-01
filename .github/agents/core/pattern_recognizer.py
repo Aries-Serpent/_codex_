@@ -287,8 +287,17 @@ class DocstringPatternMatcher(PatternMatcher):
                                 "file": str(file_path)
                             }
                         ))
-        except SyntaxError:
-            pass
+        except SyntaxError as exc:
+            # Ignore files with syntax errors; docstring analysis only applies to
+            # successfully parsed Python code. Record as pattern for diagnostics.
+            detected.append(Pattern(
+                name="syntax_error",
+                pattern_type="documentation",
+                description=f"Could not parse file {file_path.name} due to syntax error",
+                locations=[str(file_path)],
+                confidence=0.3,
+                metadata={"file": str(file_path), "error": str(exc)}
+            ))
         
         return detected
     
