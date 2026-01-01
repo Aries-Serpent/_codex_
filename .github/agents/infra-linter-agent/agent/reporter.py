@@ -18,15 +18,22 @@ from collections import Counter
 
 # Cognitive brain integration
 try:
-    from .....agents.cognitive_brain import CognitiveBrain
+    from ..core.cognitive_brain import CognitiveBrain
 except ImportError:
     # Fallback if cognitive brain not available
     class CognitiveBrain:
         def __init__(self, db_path: Optional[str] = None):
             self.db_path = db_path
         
-        def record_pattern(self, pattern_type: str, success: bool, metadata: Dict[str, Any]):
-            pass
+        def record_pattern(
+            self, 
+            session_id: str,
+            pattern_name: str, 
+            pattern_type: str,
+            description: Optional[str] = None,
+            context: Optional[Dict[str, Any]] = None
+        ) -> int:
+            return 0
 
 
 @dataclass
@@ -264,8 +271,8 @@ class IaCReporter:
             True if pattern was recorded successfully
         """
         try:
-            # Prepare metadata for cognitive brain
-            metadata = {
+            # Prepare context for cognitive brain
+            context = {
                 "tools_used": scan_results.get("tools_detected", []),
                 "files_scanned": scan_results.get("files_scanned", 0),
                 "security_score": validation_results.get("security_score", 0),
@@ -283,14 +290,16 @@ class IaCReporter:
                 "scan_duration": scan_results.get("duration_seconds", 0)
             }
             
-            # Record pattern in cognitive brain
-            # Success = approved, Failure = blocked
-            success = (outcome == "approved")
+            # Generate unique session ID for this scan
+            session_id = f"iac_scan_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
             
+            # Record pattern in cognitive brain with correct API
             self.brain.record_pattern(
-                pattern_type="iac_scan_outcome",
-                success=success,
-                metadata=metadata
+                session_id=session_id,
+                pattern_name="iac_scan_outcome",
+                pattern_type="outcome",
+                description=f"IaC scan {outcome} with security score {validation_results.get('security_score', 0)}",
+                context=context
             )
             
             return True
