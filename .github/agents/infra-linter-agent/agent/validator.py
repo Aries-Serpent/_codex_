@@ -20,7 +20,7 @@ import logging
 
 # Cognitive brain integration
 try:
-    from ...core.cognitive_brain import CognitiveBrain
+    from ..core.cognitive_brain import CognitiveBrain
 except ImportError:
     # Fallback for standalone usage
     class CognitiveBrain:

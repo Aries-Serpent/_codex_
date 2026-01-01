@@ -17,7 +17,7 @@ from collections import Counter
 
 # Cognitive brain integration
 try:
-    from ...core.cognitive_brain import CognitiveBrain
+    from ..core.cognitive_brain import CognitiveBrain
 except ImportError:
     # Fallback if cognitive brain not available
     class CognitiveBrain:
@@ -232,12 +232,15 @@ class IaCReporter:
         high_severity_issues = validation_results.get("critical_issues", 0) + validation_results.get("high_issues", 0)
         
         blockers = validation_results.get("blockers", [])
-        if high_severity_issues > 0:
+        # Double-check division safety even though we check high_severity_issues > 0
+        if high_severity_issues > 0 and len(blockers) > 0:
             # Calculate percentage of high-severity issues that were blocked
-            blocked_pct = (len(blockers) / high_severity_issues) * 100
+            blocked_pct = min((len(blockers) / high_severity_issues) * 100, 100.0)
             lessons["policy_effectiveness"] = (
                 f"{blocked_pct:.0f}% of high-severity issues caught before merge"
             )
+        elif high_severity_issues > 0:
+            lessons["policy_effectiveness"] = "High-severity issues found but not blocked - check policies"
         elif total_issues > 0:
             lessons["policy_effectiveness"] = "Only low/medium severity issues found - all allowed"
         else:
@@ -307,8 +310,9 @@ class IaCReporter:
                 "scan_duration": scan_results.get("duration_seconds", 0)
             }
             
-            # Generate unique session ID for this scan
-            session_id = f"iac_scan_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+            # Generate unique session ID with microseconds to prevent collisions
+            timestamp = datetime.utcnow()
+            session_id = f"iac_scan_{timestamp.strftime('%Y%m%d_%H%M%S')}_{timestamp.microsecond:06d}"
             
             # Record pattern in cognitive brain with correct API
             self.brain.record_pattern(
