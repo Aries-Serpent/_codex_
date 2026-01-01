@@ -2,6 +2,19 @@
 
 Thank you for improving `_codex_`. This document highlights the workflow for using the operational templates and the expectations for role-gated execution.
 
+## 📚 Documentation Hub
+
+**New to the project?** Start here:
+- **[Newcomer Guide](docs/NEWCOMER_GUIDE.md)** - Get started quickly
+- **[Documentation Index](docs/MASTER_INDEX.md)** - Find all documentation
+- **[Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md)** - Understand architecture
+- **[Code Style Guide](docs/dev/CODE_STYLE_GUIDE.md)** - Coding standards
+
+**For AI Agents**:
+- **[Agent Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)** - Session handoff
+- **[Cognitive Brain](docs/system/)** - Context & navigation
+- **[Roadmap](docs/ROADMAP.md)** - Current and planned work
+
 ## Testing Requirements
 
 All contributions must include appropriate tests and maintain code coverage standards.

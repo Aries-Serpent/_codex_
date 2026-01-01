@@ -231,8 +231,8 @@ done
 Link related PR prompts:
 
 ```markdown
-**Depends On**: [PR #2649 Phase 3](../PR-2649-followup.md)  
-**Blocks**: [PR #2651 Phase 1](../PR-2651-followup.md)
+**Depends On**: [PR #2649 Phase 3](../misc/repo-owner-review/auto-generated-prompts/PR-2649-followup.md)  
+**Blocks**: [PR #2651 Phase 1](../misc/repo-owner-review/auto-generated-prompts/PR-2651-followup.md)
 ```
 
 ### Conditional Execution

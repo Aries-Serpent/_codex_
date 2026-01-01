@@ -239,10 +239,18 @@ jobs:
               except:
                   pass
               
-              prompt = system._generate_continuation_prompt({
-                  'incomplete_tasks': [],
-                  'enhancement_opportunities': True
-              })
+              # Create a task dict for continuation generation
+              task = {
+                  'description': 'Continue evolution and enhancement',
+                  'incomplete': False,
+                  'progress': 100
+              }
+              
+              # Generate a simple continuation with no gaps
+              gaps = []
+              formatted_questions = '✅ No immediate questions. Ready for next evolution cycle.'
+              
+              prompt = system._generate_continuation(task, gaps, formatted_questions)
               
               with open('data/continuation_prompt.md', 'w') as f:
                   f.write(prompt)

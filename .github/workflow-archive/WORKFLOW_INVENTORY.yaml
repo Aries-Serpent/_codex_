@@ -167,6 +167,11 @@ workflows:
   error: '''.github/workflows/sbom.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
+- filename: scan-secrets-variables.yml
+  error: '''.github/workflows/scan-secrets-variables.yml'' is not in the subpath of
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
+  status: error
 - filename: scheduled-archival.yml
   error: '''.github/workflows/scheduled-archival.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'

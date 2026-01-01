@@ -1,0 +1,44 @@
+name: Security Scan Agent
+version: 1.0.0
+description: Specialized agent for automated security scanning, SAST analysis, and vulnerability detection
+created: 2025-12-31
+updated: 2025-12-31
+
+capabilities:
+  - sast_scanning
+  - dependency_vulnerability_check
+  - sarif_parsing
+  - false_positive_filtering
+  - pr_annotation
+  - security_reporting
+  - bandit_integration
+  - semgrep_integration
+  - safety_integration
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - bandit[toml]>=1.7.0
+    - semgrep>=1.50.0
+    - safety>=3.0.0
+    - sarif-om>=1.0.4
+    - jschema-to-python>=1.2.3
+    - PyYAML>=6.0
+    - requests>=2.31.0
+
+entry_point: cli.py
+
+tools:
+  - bash
+  - git
+  - bandit
+  - semgrep
+  - safety
+
+task_types:
+  - run_security_scan
+  - parse_sarif_results
+  - filter_false_positives
+  - annotate_pr
+  - generate_security_report

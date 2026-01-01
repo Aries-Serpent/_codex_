@@ -2096,7 +2096,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 - **File:** README.md
 - **Action:** document local CI commands and logging paths; remove duplicate sections.
 - **Before snippet:** `## Continuous Integration\n\nThis repository uses GitHub Actions to run \`pre-commit run --all-files\` and \`pytest\` on every push and pull request.`
-- **After snippet:** `## Continuous Integration (local parity)\nRun locally before pushing:\n\n\`\`\`bash\npre-commit run --all-files\npytest -q\n\`\`\`\n\nThese same commands run in CI; see the workflow definition in \`.github/workflows/ci.yml\` (read-only).`
+- **After snippet:** `## Continuous Integration (local parity)\nRun locally before pushing:\n\n\`\`\`bash\npre-commit run --all-files\npytest -q\n\`\`\`\n\nThese same commands run in CI; see the workflow definition in \`.github/workflows/optimized-ci.yml\` (read-only).`
 - **Pruning:** removed duplicate "Continuous Integration (local parity)" and "Logging Locations" sections from end of README.md.
 
 * **write** `/workspace/_codex_/.codex/search_hits.json` — Record candidate symbols & files
@@ -6168,11 +6168,11 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
-This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/optimized-ci.yml`](.github/workflows/optimized-ci.yml).
 
 ## Usage
 
@@ -6225,11 +6225,11 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
-This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/optimized-ci.yml`](.github/workflows/optimized-ci.yml).
 
 ## Usage
 
@@ -6286,11 +6286,11 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
-This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/optimized-ci.yml`](.github/workflows/optimized-ci.yml).
 
 ## Usage
 
@@ -6343,11 +6343,11 @@ This repository is intended to help developers cutomize environments in Codex, b
 
 For more details on environment setup, see [OpenAI Codex](http://platform.openai.com/docs/codex).
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../docs/guides/AGENTS.md).
 
 ## Continuous Integration
 
-This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+This repository uses GitHub Actions to run `pre-commit run --all-files` and `pytest` on every push and pull request. The workflow is defined in [`.github/workflows/optimized-ci.yml`](.github/workflows/optimized-ci.yml).
 
 ## Usage
 
@@ -7416,7 +7416,7 @@ index 9096982..904b416 100644
 +++ b/README.md
 @@ -21,6 +21,23 @@ pytest -q
 
- These same commands run in CI; see the workflow definition in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (read-only).
+ These same commands run in CI; see the workflow definition in [`.github/workflows/optimized-ci.yml`](.github/workflows/optimized-ci.yml) (read-only).
 
 +## Testing
 +
@@ -8963,12 +8963,12 @@ index 8542c8e..18c0ec8 100644
 -    "mtime": 1755665817.0334997
 -  },
 -  {
--    "path": ".github/workflows/ci.yml",
+-    "path": ".github/workflows/optimized-ci.yml",
 -    "size": 554,
 -    "mtime": 1755665817.0334997
 -  },
 -  {
--    "path": ".github/workflows/ci.yml.disable",
+-    "path": ".github/workflows/optimized-ci.yml.disable",
 -    "size": 393,
 -    "mtime": 1755665817.0334997
 -  },
@@ -9365,7 +9365,7 @@ index 8542c8e..18c0ec8 100644
 -    "path": ".mypy_cache/3.12/argparse.data.json",
 -    "size": 220947,
 -    "mtime": 1755666261.7194688
-+    "path": ".github/workflows/ci.yml",
++    "path": ".github/workflows/optimized-ci.yml",
 +    "ext": ".yml",
 +    "role": "config"
    },
@@ -10438,7 +10438,7 @@ index 8542c8e..18c0ec8 100644
 -    "path": "scripts/__pycache__/apply_session_logging_workflow.cpython-312.pyc",
 -    "size": 21246,
 -    "mtime": 1755666298.903555
-+    "path": ".github/workflows/ci.yml.disable",
++    "path": ".github/workflows/optimized-ci.yml.disable",
 +    "ext": ".disable",
 +    "role": "asset"
    }
@@ -13633,7 +13633,7 @@ repos:
 
 ```text
 
-## 2025-08-25T16:06:33Z — .github/workflows/ci.yml
+## 2025-08-25T16:06:33Z — .github/workflows/optimized-ci.yml
 - **Action:** edit
 - **Rationale:** append guarded by # BEGIN: CODEX_CI_MANUAL
 ```text

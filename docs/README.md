@@ -1,3 +1,54 @@
+# Documentation Hub
+
+**Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
+
+**Last Updated**: 2025-12-30
+
+---
+
+## 🧠 Cognitive Brain (Start Here for AI Agents)
+
+### **Unified Navigation System** - NEW!
+- 🗺️ **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
+- 📊 **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
+- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope (Q1-Q3 2026)
+
+### **Why This Matters**
+The cognitive brain enables:
+- **Context Continuity**: AI agents maintain understanding across sessions
+- **Efficient Navigation**: Quick discovery of components, entry points, relationships
+- **Duration-Aware Planning**: Maximize work within token/time budgets
+- **Best Path Forward**: Always know the next most valuable task
+- **Autonomous Operation**: Self-directed agents without constant human guidance
+
+---
+
+## 📁 Quick Links
+
+### Core Documentation
+- 📖 **[Architecture](ARCHITECTURE.md)** - Detailed technical architecture
+- 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
+- 🔐 **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
+- 📚 **[API Reference](API_REFERENCE.md)** - Complete API documentation
+
+### MCP Package System (93+ KB Documentation)
+- 📦 **[Quick Start](mcp/QUICK_START.md)** - 5-minute onboarding guide
+- 📘 **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** - Complete packaging workflows
+- 🎯 **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
+- 🤖 **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
+- 🧭 **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
+- 🚀 **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap (Q1-Q3 2026)
+
+### Capability Guides
+- 📝 **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
+- 🏋️ **[Training Loops](capabilities/train_loop.md)** - Production training patterns
+- 🔧 **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
+- ✅ **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
+
+---
+
+## Original Documentation Index
+
 # Documentation index
 
 Welcome to the `_codex_` knowledge base. Start here to navigate the reasoning roadmap, architectural references, and

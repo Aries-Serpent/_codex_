@@ -421,4 +421,5 @@ jobs:
 ## Related Prompts
 - [run-full-audit.md](../audit/run-full-audit.md) - Pre-release audit
 - [generate-wiki.md](../documentation/generate-wiki.md) - Documentation bundle
-- [validate-release.md](validate-release.md) - Post-release validation
+<!-- TODO: Create validate-release.md for post-release validation -->
+<!-- [validate-release.md](validate-release.md) - Post-release validation (TODO: Create this file) -->

@@ -1,0 +1,57 @@
+{
+  "zendesk": [
+    "src/zendesk/**",
+    "tests/zendesk/**",
+    "docs/**/*zendesk*"
+  ],
+  "agents": [
+    "src/agent/**",
+    "agents/**",
+    "docs/agents/**"
+  ],
+  "quantum": [
+    "src/quantum/**",
+    "agents/quantum_game_theory.py",
+    "tests/quantum/**",
+    "docs/**/*quantum*"
+  ],
+  "docs": [
+    "docs/**"
+  ],
+  "mcp": [
+    "scripts/mcp/**",
+    "docs/mcp/**",
+    ".github/workflows/*mcp*",
+    ".github/workflows/*chatgpt*"
+  ],
+  "workflows": [
+    ".github/workflows/**",
+    ".github/scripts/**",
+    ".github/copilot-prompts/**"
+  ],
+  "python_dev": [
+    "agents/workflow_navigator.py",
+    "agents/mental_mapping.py",
+    "agents/developer_orchestrator.py",
+    "tests/agents/test_workflow*.py",
+    "tests/agents/test_mental*.py",
+    "docs/agents/*workflow*.md",
+    "docs/agents/*development*.md"
+  ],
+  "testing": [
+    "tests/**",
+    "pytest.ini",
+    "pyproject.toml",
+    "noxfile.py",
+    "tests/conftest.py",
+    "docs/*test*.md",
+    ".github/workflows/*test*.yml"
+  ],
+  "security": [
+    "agents/exceptions.py",
+    ".github/workflows/*security*.yml",
+    ".github/workflows/*scan*.yml",
+    "docs/*security*.md",
+    "docs/mcp/MCP_SECURITY_GUIDE.md"
+  ]
+}

@@ -293,13 +293,13 @@ mypy src/
 
 ## Zendesk Support Administration
 
-_codex_ provides comprehensive tools for managing Zendesk Support as code. See the dedicated [Zendesk Newcomer Guide](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md) for details.
+_codex_ provides comprehensive tools for managing Zendesk Support as code. See the dedicated [Zendesk Newcomer Guide](./zendesk/ZENDESK_NEWCOMER_GUIDE.md) for details.
 
 ### Zendesk Resources
 
-- **[Zendesk Configuration-as-Code Guide](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
-- **[AI Agent App Builder Mathematical Model](docs/zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
-- **[Workflow Diagrams](docs/zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
+- **[Zendesk Configuration-as-Code Guide](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
+- **[AI Agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
+- **[Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
 - **[Quick Start Script](examples/zendesk/quickstart.sh)** - Interactive setup automation
 - **[Examples & Templates](examples/zendesk/README.md)** - Configuration examples and templates
 
@@ -374,7 +374,7 @@ All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results
 
-See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
+See [`tests/README.md`](../tests/README.md) for comprehensive testing instructions.
 
 ### Code Quality Tools
 
@@ -408,10 +408,10 @@ Before committing:
 ### Documentation Resources
 
 1. **Start here**: [docs/README_ROOT.md](docs/README_ROOT.md)
-2. **Architecture**: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+2. **Architecture**: [./ARCHITECTURE.md](./ARCHITECTURE.md)
 3. **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
 4. **Changelog**: [docs/CHANGELOG.md](docs/CHANGELOG.md)
-5. **CLI Reference**: [docs/CLI.md](docs/CLI.md)
+5. **CLI Reference**: [./CLI.md](./CLI.md)
 
 ### Troubleshooting
 
@@ -459,9 +459,9 @@ See `.github/copilot-instructions.md` for complete list.
 
 ### For Support/DevOps Engineers
 
-1. Start with [docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
-2. Run [examples/zendesk/quickstart.sh](examples/zendesk/quickstart.sh) for interactive setup
-3. Review [docs/zendesk/WORKFLOW_DIAGRAMS.md](docs/zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
+1. Start with [./zendesk/ZENDESK_NEWCOMER_GUIDE.md](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)
+2. If available in your checkout, run `examples/zendesk/quickstart.sh` for interactive setup
+3. Review [./zendesk/WORKFLOW_DIAGRAMS.md](./zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
 4. Study [docs/runbooks/zendesk_admin_workflow.md](docs/runbooks/zendesk_admin_workflow.md)
 5. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
 6. Practice with examples in `examples/zendesk/`
@@ -480,7 +480,7 @@ See `.github/copilot-instructions.md` for complete list.
 ### For Contributors
 
 1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
-2. Review [docs/templates/](docs/templates/) for workflow templates
+2. Review [docs/templates/README.md](templates/README.md) for workflow templates
 3. Study [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)
 4. Check [docs/How_We_Release.md](docs/How_We_Release.md)
 5. Explore [noxfile.py](noxfile.py) for automation tasks

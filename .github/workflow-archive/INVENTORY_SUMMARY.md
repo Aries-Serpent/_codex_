@@ -2,11 +2,11 @@
 
 **Generated**: 2025-12-31T18:28:09.511057Z
 
-**Total Workflows**: 52
+**Total Workflows**: 53
 
 ## Workflows by Category
 
-### Other (52 workflows)
+### Other (53 workflows)
 
 - 🔴  `agent-runtime.yml` - N/A
 - 🔴  `api-documentation.yml` - N/A
@@ -45,6 +45,7 @@
 - 🔴  `repo-organization.yml` - N/A
 - 🔴  `runner-diagnostics.yml` - N/A
 - 🔴  `sbom.yml` - N/A
+- 🔴  `scan-secrets-variables.yml` - N/A
 - 🔴  `scheduled-archival.yml` - N/A
 - 🔴  `scheduled-dependency-audit.yml` - N/A
 - 🔴  `security-scan.yml` - N/A
