@@ -22,8 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from github.agents.core import (
     CognitiveAgent,
     CognitiveBrain,
-    PatternRecognizer,
-    AgentOrchestrator
+    PatternRecognizer
 )
 
 

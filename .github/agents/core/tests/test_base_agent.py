@@ -1,7 +1,6 @@
 """
 Tests for CognitiveAgent base class.
 """
-import pytest
 from pathlib import Path
 from typing import Any, Dict
 from ..base_agent import CognitiveAgent

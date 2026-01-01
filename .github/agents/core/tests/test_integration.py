@@ -349,7 +349,6 @@ def test_cross_agent_learning(temp_brain):
     assert result2["status"] == "success"
     
     # Check that agent2's perception included history from agent1
-    perception_context = agent2.perception_calls[0]
     # Note: In real implementation, perception would query brain for relevant history
     
     temp_brain.end_session("learn-002", "success")

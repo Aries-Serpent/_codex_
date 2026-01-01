@@ -8,6 +8,7 @@ Supports:
 - Per-agent configuration
 """
 import os
+import logging
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass, field
@@ -65,21 +66,33 @@ class FrameworkConfig:
             try:
                 self.max_parallel_agents = int(env_max)
             except ValueError:
-                pass
+                # Invalid integer provided, using default
+                logging.getLogger(__name__).warning(
+                    "Invalid integer for CODEX_MAX_PARALLEL_AGENTS=%r; using default %d",
+                    env_max, self.max_parallel_agents
+                )
         
         # Pattern confidence threshold
         if env_threshold := os.getenv("CODEX_PATTERN_CONFIDENCE_THRESHOLD"):
             try:
                 self.pattern_confidence_threshold = float(env_threshold)
             except ValueError:
-                pass
+                # Invalid float provided, using default
+                logging.getLogger(__name__).warning(
+                    "Invalid float for CODEX_PATTERN_CONFIDENCE_THRESHOLD=%r; using default %f",
+                    env_threshold, self.pattern_confidence_threshold
+                )
         
         # Session timeout
         if env_timeout := os.getenv("CODEX_SESSION_TIMEOUT"):
             try:
                 self.session_timeout = int(env_timeout)
             except ValueError:
-                pass
+                # Invalid integer provided, using default
+                logging.getLogger(__name__).warning(
+                    "Invalid integer for CODEX_SESSION_TIMEOUT=%r; using default %d",
+                    env_timeout, self.session_timeout
+                )
         
         # Log level
         if env_log := os.getenv("CODEX_LOG_LEVEL"):

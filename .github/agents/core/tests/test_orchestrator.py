@@ -2,9 +2,8 @@
 Tests for AgentOrchestrator.
 """
 import pytest
-import asyncio
 from typing import Any, Dict
-from ..orchestrator import AgentOrchestrator, AgentTask, TaskStatus
+from ..orchestrator import AgentOrchestrator, TaskStatus
 from ..base_agent import CognitiveAgent
 
 

@@ -5,11 +5,10 @@ Manages dependencies, parallel execution, and result aggregation across agents.
 #AFTERMATH_PATTERN_IDENTIFIED: orchestration_pattern
 Enables complex multi-agent workflows with dependency management.
 """
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 import asyncio
-from pathlib import Path
 
 
 class TaskStatus(Enum):

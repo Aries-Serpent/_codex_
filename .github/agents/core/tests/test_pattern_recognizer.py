@@ -1,7 +1,6 @@
 """
 Tests for PatternRecognizer.
 """
-import pytest
 import tempfile
 from pathlib import Path
 from ..pattern_recognizer import (
