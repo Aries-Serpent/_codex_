@@ -118,7 +118,7 @@ class CoverageValidator:
 
         except Exception:
             # Return default if baseline parsing fails
-            return {"total": 0.0, "modules": {}}
+            pass
 
         return {"total": 0.0, "modules": {}}
 
@@ -175,10 +175,10 @@ class CoverageValidator:
 
         except subprocess.TimeoutExpired:
             # Return default if coverage command times out
-            return {"total": 0.0, "modules": {}}
+            pass
         except Exception:
             # Return default if coverage run fails
-            return {"total": 0.0, "modules": {}}
+            pass
 
         return {"total": 0.0, "modules": {}}
 
