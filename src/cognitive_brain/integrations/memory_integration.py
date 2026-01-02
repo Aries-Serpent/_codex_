@@ -41,7 +41,10 @@ logger = logging.getLogger(__name__)
 
 
 # Constants
-BASELINE_FULL_ASSESSMENT_TIME_MS = 12.5  # Average time for full quantum assessment (from Phase 8.0 experiments)
+# Quantum baseline: average time for a full quantum compliance assessment from Phase 8.0 experiments.
+# NOTE: This is distinct from the CLASSICAL_BASELINE_MS = 28.5 used in exp5_validation.py for k₁ calculations.
+# The quantum baseline is used for memory-augmented/quantum performance comparisons, not classical rule-based baselines.
+QUANTUM_FULL_ASSESSMENT_TIME_MS = 12.5
 
 
 @dataclass
@@ -152,8 +155,8 @@ class MemoryAugmentedComplianceAssessor:
                 self.cache_hit_count += 1
                 
                 # Estimate time saved (compared to full assessment)
-                # Use baseline constant from Phase 8.0 measurements
-                time_saved = BASELINE_FULL_ASSESSMENT_TIME_MS - elapsed_ms
+                # Use quantum baseline constant from Phase 8.0 measurements
+                time_saved = QUANTUM_FULL_ASSESSMENT_TIME_MS - elapsed_ms
                 self.time_saved_ms += max(0, time_saved)
                 
                 # Retrieve similar patterns for metadata
@@ -253,8 +256,8 @@ class MemoryAugmentedComplianceAssessor:
         # Calculate average time saved per assessment
         avg_time_saved = self.time_saved_ms / self.total_assessments
         
-        # Use baseline constant from Phase 8.0
-        return avg_time_saved / BASELINE_FULL_ASSESSMENT_TIME_MS
+        # Use quantum baseline constant from Phase 8.0
+        return avg_time_saved / QUANTUM_FULL_ASSESSMENT_TIME_MS
     
     def get_statistics(self) -> Dict:
         """

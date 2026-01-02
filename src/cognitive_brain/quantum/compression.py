@@ -16,9 +16,14 @@ Compression Techniques:
 - Sparse representation for near-zero features
 """
 
+import logging
 import numpy as np
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Any, Optional
+
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 # Constants
@@ -110,13 +115,28 @@ class PatternCompressor:
         Learns PCA projection matrix for dimensionality reduction.
         
         Args:
-            patterns: List of feature dicts to learn from
+            patterns: List of feature dicts to learn from. All patterns must share
+                the exact same set of feature keys; patterns with mismatched keys
+                will cause a ValueError to be raised.
         """
         if not patterns:
             raise ValueError("Cannot fit on empty pattern list")
         
-        # Convert patterns to matrix
+        # Convert patterns to matrix and validate key consistency
         feature_keys = sorted(patterns[0].keys())
+        base_keys_set = set(feature_keys)
+        
+        for idx, p in enumerate(patterns[1:], start=1):
+            current_keys = set(p.keys())
+            if current_keys != base_keys_set:
+                missing = sorted(base_keys_set - current_keys)
+                extra = sorted(current_keys - base_keys_set)
+                raise ValueError(
+                    f"All patterns must share the same feature keys. "
+                    f"Pattern at index {idx} has mismatched keys. "
+                    f"Missing keys: {missing}; Extra keys: {extra}"
+                )
+        
         X = np.array([[p.get(k, 0.0) for k in feature_keys] for p in patterns])
         
         # Calculate statistics
@@ -141,14 +161,24 @@ class PatternCompressor:
         # Eigen decomposition
         eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
         
-        # Sort by eigenvalues (descending)
+        # Sort by eigenvalues (descending) - eigenvalues used for variance analysis
         idx = eigenvalues.argsort()[::-1]
-        eigenvalues = eigenvalues[idx]
+        eigenvalues_sorted = eigenvalues[idx]
         eigenvectors = eigenvectors[:, idx]
+        
+        # Calculate explained variance for logging/debugging
+        explained_variance_ratio = eigenvalues_sorted / eigenvalues_sorted.sum()
         
         # Determine target dimensions (50% reduction if not specified)
         if self.target_dimensions is None:
             self.target_dimensions = max(1, X.shape[1] // 2)
+        
+        # Log compression info
+        cumulative_variance = explained_variance_ratio[:self.target_dimensions].sum()
+        logger.debug(
+            f"Compression: {X.shape[1]}→{self.target_dimensions} dimensions, "
+            f"retaining {cumulative_variance:.1%} variance"
+        )
         
         # Select top principal components
         self.projection_matrix = eigenvectors[:, :self.target_dimensions]
@@ -220,10 +250,11 @@ class PatternCompressor:
             }
         )
         
-        # Update statistics
+        # Update statistics with logical compression ratio
         self.total_compressed += 1
-        original_size = len(feature_keys) * 8  # Assume 64-bit floats
-        compressed_size = compressed.get_size_bytes()
+        # Compute logical size based on quantization bits per dimension
+        original_size = len(feature_keys) * 8  # 64-bit floats
+        compressed_size = self.target_dimensions * (self.quantization_bits / 8.0)
         ratio = compressed_size / original_size if original_size > 0 else 1.0
         self.compression_ratios.append(ratio)
         

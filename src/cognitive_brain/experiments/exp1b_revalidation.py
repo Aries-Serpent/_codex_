@@ -18,13 +18,12 @@ Success Criteria:
 """
 
 import time
-from typing import Dict, List, Tuple
+from typing import Dict
 from dataclasses import dataclass
 
 from cognitive_brain.experiments.complex_scenarios import (
     generate_complex_scenarios,
-    get_scenario_statistics,
-    ScenarioComplexity
+    get_scenario_statistics
 )
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,

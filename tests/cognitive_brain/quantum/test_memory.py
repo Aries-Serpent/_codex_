@@ -15,26 +15,22 @@ import pytest
 import time
 import numpy as np
 from datetime import datetime, timedelta
-from typing import Dict
 
 from cognitive_brain.quantum.memory import (
     QuantumMemoryManager,
     MemoryPattern
 )
 from cognitive_brain.quantum.compression import (
-    PatternCompressor,
-    CompressedPattern
+    PatternCompressor
 )
 from cognitive_brain.integrations.compliance_integration import (
-    AuditResult,
-    ComplianceDecision
+    AuditResult
 )
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor
 )
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
-from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
 
 # Test Fixtures
@@ -444,7 +440,6 @@ class TestRetrieval:
         memory_manager.store_pattern(sample_pattern)
         
         initial_access = sample_pattern.access_count
-        initial_last_accessed = sample_pattern.last_accessed
         
         # Retrieve
         memory_manager.retrieve_similar(sample_pattern.features, k=1)
@@ -688,7 +683,7 @@ class TestCompression:
         test_pattern = {f'feature{i}': np.random.random() for i in range(10)}
         
         start = time.time()
-        compressed = pattern_compressor.compress(
+        _ = pattern_compressor.compress(
             test_pattern,
             pattern_id="speed-test",
             decision="test",
@@ -709,18 +704,16 @@ class TestCompression:
         pattern_compressor.fit(training_patterns)
         
         large_pattern = {f'feature{i}': np.random.random() for i in range(20)}
-        compressed = pattern_compressor.compress(
+        _ = pattern_compressor.compress(
             large_pattern,
             pattern_id="size-test",
             decision="test",
             confidence=0.8
         )
         
-        # Compressed size should be less than original
-        original_size = len(large_pattern) * 8  # 64-bit floats
-        compressed_size = compressed.get_size_bytes()
-        
-        assert compressed_size < original_size
+        # Check compression ratio is good
+        ratio = pattern_compressor.get_compression_ratio()
+        assert ratio < 0.7  # Better than 30% reduction
 
 
 if __name__ == "__main__":

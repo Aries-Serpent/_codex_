@@ -21,7 +21,7 @@ Memory-guided decisions reduce computation time by 15% while maintaining
 import time
 import numpy as np
 import logging
-from typing import Dict, List, Tuple
+from typing import Dict
 from dataclasses import dataclass
 
 from cognitive_brain.experiments.complex_scenarios import (
@@ -29,16 +29,13 @@ from cognitive_brain.experiments.complex_scenarios import (
     get_scenario_statistics
 )
 from cognitive_brain.integrations.memory_integration import (
-    MemoryAugmentedComplianceAssessor,
-    AuditResult,
-    ComplianceDecision
+    MemoryAugmentedComplianceAssessor
 )
 from cognitive_brain.integrations.compliance_integration import (
     QuantumComplianceAssessor
 )
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
-from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
 
 # Configure logging

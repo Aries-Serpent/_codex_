@@ -18,9 +18,7 @@ Architecture inspired by biological memory systems:
 - Retrieval: Similarity-based search with temporal decay
 """
 
-import time
-import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from collections import deque
@@ -176,7 +174,7 @@ class QuantumMemoryManager:
         return consolidated_count
     
     def retrieve_similar(self, query: Dict[str, float], k: int = 5, 
-                        search_ltm: bool = True) -> List[MemoryPattern]:
+                        search_ltm: bool = True, count_retrieval: bool = True) -> List[MemoryPattern]:
         """
         Retrieve k most similar patterns.
         
@@ -186,11 +184,13 @@ class QuantumMemoryManager:
             query: Query features (normalized dict)
             k: Number of similar patterns to retrieve
             search_ltm: Whether to search long-term memory (default: True)
+            count_retrieval: Whether to count this as a retrieval (default: True)
             
         Returns:
             List of k most similar patterns, sorted by similarity (highest first)
         """
-        self.total_retrievals += 1
+        if count_retrieval:
+            self.total_retrievals += 1
         
         # Combine STM and LTM for search
         search_space = list(self.stm)
@@ -247,9 +247,10 @@ class QuantumMemoryManager:
         Returns:
             Cached decision if confident, None if novel case (run full assessment)
         """
-        self.total_retrievals += 1  # Track all guided decision attempts
+        # Track retrieval attempt (don't double-count with retrieve_similar call)
+        self.total_retrievals += 1
         
-        similar_patterns = self.retrieve_similar(query, k=5, search_ltm=True)
+        similar_patterns = self.retrieve_similar(query, k=5, search_ltm=True, count_retrieval=False)
         
         if not similar_patterns:
             return None  # No patterns found - novel case
