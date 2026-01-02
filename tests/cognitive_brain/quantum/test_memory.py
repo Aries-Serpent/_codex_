@@ -713,7 +713,8 @@ class TestCompression:
         
         # Check compression ratio is good
         ratio = pattern_compressor.get_compression_ratio()
-        assert ratio < 0.7  # Better than 30% reduction
+        # Ratio < 0.7 means better than 30% reduction (compressed is 70% of original)
+        assert ratio < 0.7
 
 
 if __name__ == "__main__":

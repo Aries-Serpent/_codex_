@@ -165,8 +165,9 @@ class PatternCompressor:
         eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
         
         # Sort by eigenvalues (descending)
+        # Reorder eigenvalues to match sorted eigenvectors
         idx = eigenvalues.argsort()[::-1]
-        eigenvalues = eigenvalues[idx]  # Reassign for consistency
+        eigenvalues = eigenvalues[idx]
         eigenvectors = eigenvectors[:, idx]
         
         # Calculate explained variance for logging/debugging
@@ -253,10 +254,12 @@ class PatternCompressor:
         )
         
         # Update statistics with logical compression ratio
+        # Note: We use logical size (based on quantization_bits) rather than actual
+        # numpy storage size to measure compression effectiveness independent of implementation.
+        # This gives a consistent metric across different storage backends.
         self.total_compressed += 1
-        # Compute logical size based on quantization bits per dimension
-        original_size = len(self.feature_keys) * 8  # 64-bit floats
-        compressed_size = self.target_dimensions * (self.quantization_bits / 8.0)
+        original_size = len(self.feature_keys) * 8  # 64-bit floats (logical)
+        compressed_size = self.target_dimensions * (self.quantization_bits / 8.0)  # Logical compressed size
         ratio = compressed_size / original_size if original_size > 0 else 1.0
         self.compression_ratios.append(ratio)
         
