@@ -1,12 +1,12 @@
 # Workflow Inventory Summary
 
-**Generated**: 2026-01-02T18:28:06.359558Z
+**Generated**: 2026-01-02T21:33:31.416933Z
 
-**Total Workflows**: 56
+**Total Workflows**: 57
 
 ## Workflows by Category
 
-### Other (56 workflows)
+### Other (57 workflows)
 
 - 🔴  `aftermath.yml` - N/A
 - 🔴  `agent-runtime.yml` - N/A
@@ -58,6 +58,7 @@
 - 🔴  `self-healing-feedback-loop.yml` - N/A
 - 🔴  `semgrep_sarif.yml` - N/A
 - 🔴  `status_gate.yml` - N/A
+- 🔴  `sync-env-vars.yml` - N/A
 - 🔴  `template_lint.yml` - N/A
 - 🔴  `token-rotation.yml` - N/A
 - 🔴  `wiki-assemble.yml` - N/A

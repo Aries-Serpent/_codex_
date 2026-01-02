@@ -1,6 +1,6 @@
 metadata:
-  generated_at: '2026-01-02T18:28:06.359558Z'
-  total_workflows: 56
+  generated_at: '2026-01-02T21:33:31.416933Z'
+  total_workflows: 57
   active_count: 0
   disabled_count: 0
   archived_count: 0
@@ -226,6 +226,10 @@ workflows:
   status: error
 - filename: status_gate.yml
   error: '''.github/workflows/status_gate.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+- filename: sync-env-vars.yml
+  error: '''.github/workflows/sync-env-vars.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
 - filename: template_lint.yml
