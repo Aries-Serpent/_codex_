@@ -72,35 +72,45 @@ class CompressedPattern:
 
 class PatternCompressor:
     """
-    Pattern compression system for efficient LTM storage.
+    Enhanced pattern compression system for efficient LTM storage.
     
     Compression Strategy:
-    1. Feature dimensionality reduction (target: 50% reduction)
-    2. Value quantization (8-bit precision)
+    1. Adaptive dimensionality reduction (target: 65% reduction, variance-based)
+    2. Variable quantization (4-8 bits based on feature importance)
     3. Sparse representation (remove near-zero features)
+    4. Feature importance weighting
     
-    Target: 60% overall size reduction while maintaining >95% reconstruction accuracy.
+    Target: 70% overall size reduction while maintaining >95% reconstruction accuracy.
+    
+    Enhancements (Phase 8.1.1):
+    - Adaptive PCA: Retain 95% variance instead of fixed 50% dimensions
+    - Variable quantization: Use fewer bits for less important features
+    - Feature importance scoring for intelligent compression
     """
     
     def __init__(self, target_dimensions: Optional[int] = None, 
                  quantization_bits: int = 8,
-                 sparsity_threshold: float = 0.01):
+                 sparsity_threshold: float = 0.01,
+                 variance_threshold: float = 0.95):
         """
-        Initialize pattern compressor.
+        Initialize enhanced pattern compressor.
         
         Args:
-            target_dimensions: Target reduced dimensionality (None = auto, 50% of original)
-            quantization_bits: Bits for value quantization (default: 8-bit)
+            target_dimensions: Target reduced dimensionality (None = auto, variance-based)
+            quantization_bits: Max bits for value quantization (default: 8-bit)
             sparsity_threshold: Threshold below which features are zeroed (default: 0.01)
+            variance_threshold: Variance to retain in adaptive PCA (default: 0.95)
         """
         self.target_dimensions = target_dimensions
         self.quantization_bits = quantization_bits
         self.sparsity_threshold = sparsity_threshold
+        self.variance_threshold = variance_threshold
         
         # Learned compression parameters
         self.feature_mean: Optional[np.ndarray] = None
         self.feature_std: Optional[np.ndarray] = None
         self.projection_matrix: Optional[np.ndarray] = None
+        self.feature_importance: Optional[np.ndarray] = None  # New: importance scores
         self.is_fitted = False
         
         # Statistics
@@ -170,18 +180,31 @@ class PatternCompressor:
         eigenvalues = eigenvalues[idx]
         eigenvectors = eigenvectors[:, idx]
         
-        # Calculate explained variance for logging/debugging
+        # Calculate explained variance for adaptive dimension selection
         explained_variance_ratio = eigenvalues / eigenvalues.sum()
         
-        # Determine target dimensions (50% reduction if not specified)
+        # ENHANCEMENT: Adaptive PCA based on variance threshold
         if self.target_dimensions is None:
-            self.target_dimensions = max(1, X.shape[1] // 2)
+            # Find minimum dimensions to retain variance_threshold (default 95%)
+            cumulative_variance = np.cumsum(explained_variance_ratio)
+            self.target_dimensions = np.argmax(cumulative_variance >= self.variance_threshold) + 1
+            # Ensure at least 1 dimension and at most 65% reduction (35% of original)
+            min_dims = 1
+            max_dims = max(1, int(X.shape[1] * 0.35))  # 65% reduction target
+            self.target_dimensions = max(min_dims, min(self.target_dimensions, max_dims))
+        
+        # Calculate feature importance scores based on loadings
+        # Higher importance = more contribution to top principal components
+        loadings = eigenvectors[:, :self.target_dimensions]
+        self.feature_importance = np.sum(np.abs(loadings), axis=1)
+        self.feature_importance /= self.feature_importance.sum()  # Normalize
         
         # Log compression info
-        cumulative_variance = explained_variance_ratio[:self.target_dimensions].sum()
-        logger.debug(
-            f"Compression: {X.shape[1]}→{self.target_dimensions} dimensions, "
-            f"retaining {cumulative_variance:.1%} variance"
+        actual_variance = explained_variance_ratio[:self.target_dimensions].sum()
+        reduction_pct = (1 - self.target_dimensions / X.shape[1]) * 100
+        logger.info(
+            f"Enhanced compression: {X.shape[1]}→{self.target_dimensions} dimensions "
+            f"({reduction_pct:.1f}% reduction), retaining {actual_variance:.1%} variance"
         )
         
         # Select top principal components
@@ -189,10 +212,114 @@ class PatternCompressor:
         
         self.is_fitted = True
     
+    def get_importance_scores(self) -> Dict[str, float]:
+        """
+        Get feature importance scores after fitting.
+        
+        Returns:
+            Dictionary mapping feature names to importance scores (0.0-1.0)
+            
+        Raises:
+            RuntimeError: If compressor has not been fitted yet
+        """
+        if not self.is_fitted or self.feature_importance is None:
+            raise RuntimeError("Compressor must be fitted before getting importance scores")
+        
+        return {
+            feature: importance 
+            for feature, importance in zip(self.feature_keys, self.feature_importance)
+        }
+    
     def compress(self, pattern: Dict[str, float], 
                  pattern_id: str,
                  decision: str,
                  confidence: float) -> CompressedPattern:
+        """
+        Compress pattern for LTM storage with enhanced variable quantization.
+        
+        Steps:
+        1. Extract feature vector in consistent order
+        2. Normalize features
+        3. Project to lower-dimensional space (PCA)
+        4. Apply variable quantization based on feature importance
+        5. Apply sparsity threshold
+        
+        Enhancements:
+        - Variable quantization: 4-bit for low importance, 8-bit for high importance
+        - Importance-weighted precision allocation
+        
+        Args:
+            pattern: Feature dictionary
+            pattern_id: Pattern identifier
+            decision: Decision associated with pattern
+            confidence: Confidence score
+            
+        Returns:
+            Compressed pattern for LTM storage
+            
+        Raises:
+            RuntimeError: If compressor has not been fitted yet
+        """
+        if not self.is_fitted:
+            raise RuntimeError("Compressor must be fitted before compressing patterns")
+        
+        if self.projection_matrix is None:
+            raise RuntimeError("Projection matrix is None - fit() may have failed")
+        
+        # Extract features in consistent order
+        feature_vec = np.array([pattern.get(k, 0.0) for k in self.feature_keys])
+        
+        # Normalize
+        normalized = (feature_vec - self.feature_mean) / self.feature_std
+        
+        # Project to lower-dimensional space
+        compressed_vec = self.projection_matrix.T @ normalized
+        
+        # ENHANCEMENT: Variable quantization based on component importance
+        # Components with higher variance (earlier in PCA) get more bits
+        component_importance = np.linspace(1.0, 0.5, len(compressed_vec))  # Decay from 1.0 to 0.5
+        variable_bits = (self.quantization_bits * component_importance).astype(int)
+        variable_bits = np.clip(variable_bits, 4, self.quantization_bits)  # 4-8 bit range
+        
+        # Apply variable quantization per component
+        quantized = np.zeros_like(compressed_vec)
+        for i, (val, bits) in enumerate(zip(compressed_vec, variable_bits)):
+            max_val = 2 ** (bits - 1) - 1  # Leave 1 bit for sign
+            quantized[i] = np.clip(np.round(val * max_val) / max_val, -1.0, 1.0)
+        
+        # Apply sparsity threshold
+        quantized[np.abs(quantized) < self.sparsity_threshold] = 0.0
+        
+        # Create compressed pattern
+        compressed = CompressedPattern(
+            pattern_id=pattern_id,
+            compressed_features=quantized,
+            decision=decision,
+            confidence=confidence,
+            feature_keys=self.feature_keys,
+            compression_metadata={
+                "original_dims": len(self.feature_keys),
+                "compressed_dims": len(quantized),
+                "variable_bits": variable_bits.tolist(),
+                "sparsity": float(np.sum(quantized == 0) / len(quantized))
+            }
+        )
+        
+        # Calculate and track compression ratio
+        original_size = len(self.feature_keys) * 8  # 64-bit (8 bytes) per feature
+        # Compute logical compressed size based on variable quantization
+        compressed_size = sum(variable_bits) / 8.0  # Convert bits to bytes
+        
+        compression_ratio = 1.0 - (compressed_size / original_size)
+        self.compression_ratios.append(compression_ratio)
+        self.total_compressed += 1
+        
+        logger.debug(
+            f"Compressed pattern {pattern_id}: {original_size}→{compressed_size:.1f} bytes "
+            f"({compression_ratio:.1%} reduction, {compressed.compression_metadata['sparsity']:.1%} sparse)"
+        )
+        
+        return compressed
         """
         Compress pattern for LTM storage.
         

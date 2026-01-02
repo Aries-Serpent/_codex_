@@ -16,15 +16,24 @@ Architecture inspired by biological memory systems:
 - Long-term Memory (LTM): Cortex-like compressed storage (10,000 capacity)
 - Consolidation: Promotion based on access frequency and success rate
 - Retrieval: Similarity-based search with temporal decay
+
+Phase 8.1.1 Enhancements:
+- Cache pruning by age, access frequency, and confidence
+- Auto-pruning with configurable thresholds
+- Cache health monitoring
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from collections import deque
 import numpy as np
+import logging
 
 from cognitive_brain.quantum.config import QuantumConfig
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -395,3 +404,197 @@ class QuantumMemoryManager:
             return 0.0
         
         return dot_product / (magnitude1 * magnitude2)
+    
+    #####################################################
+    # PHASE 8.1.1 ENHANCEMENTS: CACHE PRUNING & MANAGEMENT
+    #####################################################
+    
+    def prune_by_age(self, max_age_hours: float = 720) -> int:
+        """
+        Remove patterns older than specified age from LTM.
+        
+        Implements time-based cache cleanup to prevent stale patterns
+        from consuming memory indefinitely.
+        
+        Args:
+            max_age_hours: Maximum age in hours (default: 30 days = 720 hours)
+            
+        Returns:
+            Number of patterns pruned
+        """
+        now = datetime.now()
+        max_age_delta = timedelta(hours=max_age_hours)
+        
+        pruned_count = 0
+        patterns_to_remove = []
+        
+        for pattern_id, pattern in self.ltm.items():
+            age = now - pattern.timestamp
+            if age > max_age_delta:
+                patterns_to_remove.append(pattern_id)
+        
+        for pattern_id in patterns_to_remove:
+            del self.ltm[pattern_id]
+            pruned_count += 1
+        
+        if pruned_count > 0:
+            logger.info(f"Pruned {pruned_count} patterns older than {max_age_hours}h from LTM")
+        
+        return pruned_count
+    
+    def prune_by_access(self, keep_top_n: int = 5000) -> int:
+        """
+        Keep only the most frequently accessed patterns (LRU policy).
+        
+        Implements access-based cache cleanup to prioritize frequently
+        used patterns and remove rarely accessed ones.
+        
+        Args:
+            keep_top_n: Number of top patterns to keep (default: 5000 = 50% of LTM capacity)
+            
+        Returns:
+            Number of patterns pruned
+        """
+        if len(self.ltm) <= keep_top_n:
+            return 0
+        
+        # Sort by access count (descending), then by last_accessed (recent first)
+        sorted_patterns = sorted(
+            self.ltm.items(),
+            key=lambda x: (
+                x[1].access_count,
+                x[1].last_accessed or x[1].timestamp
+            ),
+            reverse=True
+        )
+        
+        # Keep top N, remove rest
+        patterns_to_remove = [pid for pid, _ in sorted_patterns[keep_top_n:]]
+        
+        for pattern_id in patterns_to_remove:
+            del self.ltm[pattern_id]
+        
+        pruned_count = len(patterns_to_remove)
+        if pruned_count > 0:
+            logger.info(f"Pruned {pruned_count} least accessed patterns from LTM (kept top {keep_top_n})")
+        
+        return pruned_count
+    
+    def prune_low_confidence(self, min_confidence: float = 0.5) -> int:
+        """
+        Remove patterns with low confidence scores from LTM.
+        
+        Implements quality-based cache cleanup to remove unreliable patterns.
+        
+        Args:
+            min_confidence: Minimum confidence threshold (default: 0.5)
+            
+        Returns:
+            Number of patterns pruned
+        """
+        patterns_to_remove = [
+            pattern_id
+            for pattern_id, pattern in self.ltm.items()
+            if pattern.confidence < min_confidence
+        ]
+        
+        for pattern_id in patterns_to_remove:
+            del self.ltm[pattern_id]
+        
+        pruned_count = len(patterns_to_remove)
+        if pruned_count > 0:
+            logger.info(f"Pruned {pruned_count} low-confidence patterns (<{min_confidence}) from LTM")
+        
+        return pruned_count
+    
+    def get_cache_health(self) -> Dict[str, Any]:
+        """
+        Get comprehensive cache health metrics for monitoring.
+        
+        Returns:
+            Dictionary with health metrics:
+            - stm_size: Current STM size
+            - ltm_size: Current LTM size
+            - stm_utilization: STM utilization percentage
+            - ltm_utilization: LTM utilization percentage
+            - cache_hit_rate: Overall cache hit rate
+            - avg_age_hours: Average pattern age in hours
+            - avg_access_count: Average pattern access count
+            - staleness_score: Percentage of patterns >30 days old
+        """
+        stm_size = len(self.stm)
+        ltm_size = len(self.ltm)
+        
+        # Calculate average age
+        now = datetime.now()
+        if ltm_size > 0:
+            ages = [(now - p.timestamp).total_seconds() / 3600 for p in self.ltm.values()]
+            avg_age_hours = sum(ages) / len(ages)
+            staleness_score = sum(1 for age in ages if age > 720) / len(ages) * 100  # >30 days
+        else:
+            avg_age_hours = 0.0
+            staleness_score = 0.0
+        
+        # Calculate average access count
+        if ltm_size > 0:
+            avg_access_count = sum(p.access_count for p in self.ltm.values()) / ltm_size
+        else:
+            avg_access_count = 0.0
+        
+        return {
+            "stm_size": stm_size,
+            "ltm_size": ltm_size,
+            "stm_utilization": (stm_size / self.stm_capacity * 100) if self.stm_capacity > 0 else 0.0,
+            "ltm_utilization": (ltm_size / self.ltm_capacity * 100) if self.ltm_capacity > 0 else 0.0,
+            "cache_hit_rate": self.get_cache_hit_rate(),
+            "avg_age_hours": avg_age_hours,
+            "avg_access_count": avg_access_count,
+            "staleness_score": staleness_score
+        }
+    
+    def auto_prune(self, ltm_threshold_pct: float = 0.8) -> Dict[str, int]:
+        """
+        Automatically prune cache based on configurable thresholds.
+        
+        Triggered when LTM utilization exceeds threshold. Applies multiple
+        pruning strategies to maintain optimal cache health.
+        
+        Args:
+            ltm_threshold_pct: LTM utilization threshold to trigger pruning (default: 0.8 = 80%)
+            
+        Returns:
+            Dictionary with pruning results:
+            - aged_pruned: Count pruned by age
+            - access_pruned: Count pruned by access frequency
+            - confidence_pruned: Count pruned by confidence
+            - total_pruned: Total count pruned
+        """
+        health = self.get_cache_health()
+        
+        if health["ltm_utilization"] < ltm_threshold_pct * 100:
+            return {"aged_pruned": 0, "access_pruned": 0, "confidence_pruned": 0, "total_pruned": 0}
+        
+        logger.info(f"Auto-pruning triggered: LTM at {health['ltm_utilization']:.1f}% capacity")
+        
+        # Strategy 1: Remove patterns older than 30 days
+        aged_pruned = self.prune_by_age(max_age_hours=720)
+        
+        # Strategy 2: If still above threshold, keep only top 50% by access
+        health = self.get_cache_health()
+        if health["ltm_utilization"] > ltm_threshold_pct * 100:
+            access_pruned = self.prune_by_access(keep_top_n=self.ltm_capacity // 2)
+        else:
+            access_pruned = 0
+        
+        # Strategy 3: Remove low confidence patterns (< 0.5)
+        confidence_pruned = self.prune_low_confidence(min_confidence=0.5)
+        
+        total_pruned = aged_pruned + access_pruned + confidence_pruned
+        logger.info(f"Auto-pruning complete: {total_pruned} patterns removed")
+        
+        return {
+            "aged_pruned": aged_pruned,
+            "access_pruned": access_pruned,
+            "confidence_pruned": confidence_pruned,
+            "total_pruned": total_pruned
+        }
