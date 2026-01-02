@@ -25,10 +25,12 @@ from cognitive_brain.quantum.compression import (
     PatternCompressor,
     CompressedPattern
 )
-from cognitive_brain.integrations.memory_integration import (
-    MemoryAugmentedComplianceAssessor,
+from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
     ComplianceDecision
+)
+from cognitive_brain.integrations.memory_integration import (
+    MemoryAugmentedComplianceAssessor
 )
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor

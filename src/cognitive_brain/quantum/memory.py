@@ -116,14 +116,14 @@ class QuantumMemoryManager:
         Store new pattern in short-term memory.
         
         Args:
-            pattern: Memory pattern to store
+            pattern: Memory pattern to store (pattern_id must be set)
             
         Returns:
             Pattern ID
         """
-        # Generate ID if not provided
+        # Validate pattern_id is provided
         if not pattern.pattern_id:
-            pattern.pattern_id = str(uuid.uuid4())
+            raise ValueError("Pattern must have pattern_id set before storing")
         
         # Add to STM
         self.stm.append(pattern)
@@ -235,6 +235,9 @@ class QuantumMemoryManager:
         2. All similar patterns agree on decision
         3. Average confidence > threshold
         
+        Note: This method tracks cache hits for memory-guided decisions specifically.
+        For general retrieval statistics, use retrieve_similar().
+        
         Args:
             query: Query features
             confidence_threshold: Minimum confidence for cache hit (default: 0.85)
@@ -242,7 +245,9 @@ class QuantumMemoryManager:
         Returns:
             Cached decision if confident, None if novel case (run full assessment)
         """
-        similar_patterns = self.retrieve_similar(query, k=5)
+        self.total_retrievals += 1  # Track all guided decision attempts
+        
+        similar_patterns = self.retrieve_similar(query, k=5, search_ltm=True)
         
         if not similar_patterns:
             return None  # No patterns found - novel case

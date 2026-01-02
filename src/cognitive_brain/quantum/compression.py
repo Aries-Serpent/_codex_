@@ -21,6 +21,12 @@ from dataclasses import dataclass
 from typing import Dict, List, Tuple, Any, Optional
 
 
+# Constants
+DEFAULT_QUANTIZATION_BITS = 8
+DEFAULT_SPARSITY_THRESHOLD = 0.01
+EPSILON_STABILITY = 1e-8  # For numerical stability in calculations
+
+
 @dataclass
 class CompressedPattern:
     """
@@ -115,7 +121,7 @@ class PatternCompressor:
         
         # Calculate statistics
         self.feature_mean = np.mean(X, axis=0)
-        self.feature_std = np.std(X, axis=0) + 1e-8  # Add epsilon for stability
+        self.feature_std = np.std(X, axis=0) + EPSILON_STABILITY  # Add epsilon for stability
         
         # Normalize
         X_norm = (X - self.feature_mean) / self.feature_std

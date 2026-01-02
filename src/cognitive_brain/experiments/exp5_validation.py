@@ -40,6 +40,11 @@ from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
 
+# Constants from previous phases
+CLASSICAL_BASELINE_MS = 28.5  # Classical assessment baseline from EXP-1B (Phase 8.0)
+PHASE_8_0_ERROR_RATE = 0.136  # Phase 8.0 error rate (1 - 0.864 accuracy)
+
+
 @dataclass
 class EXP5Results:
     """Results from EXP-5 validation experiment"""
@@ -172,15 +177,12 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     
     # k₁ calculation (using Phase 8.0 formula)
     # k₁ = (avg_time * (1 + error_rate)) / classical_baseline
-    # Classical baseline: ~28.5ms (from EXP-1B)
-    # Error rate: 1 - accuracy
-    classical_baseline_ms = 28.5
+    # Constants defined at module level
     
     error_rate_memory = 1.0 - accuracy
-    error_rate_baseline = 0.136  # From Phase 8.0 (86.4% accuracy)
     
-    k1_memory = (avg_time_memory * (1.0 + error_rate_memory)) / classical_baseline_ms
-    k1_baseline = (avg_time_baseline * (1.0 + error_rate_baseline)) / classical_baseline_ms
+    k1_memory = (avg_time_memory * (1.0 + error_rate_memory)) / CLASSICAL_BASELINE_MS
+    k1_baseline = (avg_time_baseline * (1.0 + PHASE_8_0_ERROR_RATE)) / CLASSICAL_BASELINE_MS
     k1_improvement_pct = ((k1_baseline - k1_memory) / k1_baseline) * 100
     
     print("✓ Metrics calculated")

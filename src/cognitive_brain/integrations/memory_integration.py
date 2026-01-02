@@ -35,6 +35,10 @@ from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
 
+# Constants
+BASELINE_FULL_ASSESSMENT_TIME_MS = 12.5  # Average time for full quantum assessment (from Phase 8.0 experiments)
+
+
 @dataclass
 class MemoryAugmentedAssessment(ComplianceAssessment):
     """
@@ -143,9 +147,8 @@ class MemoryAugmentedComplianceAssessor:
                 self.cache_hit_count += 1
                 
                 # Estimate time saved (compared to full assessment)
-                # Typical full assessment: ~10-15ms
-                # Memory lookup: ~1-2ms
-                time_saved = 12.5 - elapsed_ms  # Use average full assessment time
+                # Use baseline constant from Phase 8.0 measurements
+                time_saved = BASELINE_FULL_ASSESSMENT_TIME_MS - elapsed_ms
                 self.time_saved_ms += max(0, time_saved)
                 
                 # Retrieve similar patterns for metadata
@@ -224,10 +227,8 @@ class MemoryAugmentedComplianceAssessor:
         # Calculate average time saved per assessment
         avg_time_saved = self.time_saved_ms / self.total_assessments
         
-        # Typical full assessment time: ~12.5ms
-        baseline_time = 12.5
-        
-        return avg_time_saved / baseline_time
+        # Use baseline constant from Phase 8.0
+        return avg_time_saved / BASELINE_FULL_ASSESSMENT_TIME_MS
     
     def get_statistics(self) -> Dict:
         """
