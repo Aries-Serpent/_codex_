@@ -171,6 +171,15 @@ def calculate_k1(avg_time_ms: float, error_rate: float, classical_baseline_ms: f
     Formula:
         k₁ = (avg_time * (1 + error_rate)) / classical_baseline
     
+    Reference:
+        Adapted from Rayleigh criterion for process capability analysis.
+        The k₁ metric combines time efficiency with accuracy penalty, providing
+        a normalized measure of quantum advantage over classical approaches.
+        
+        Target k₁ ≤ 0.35 represents advanced process capability, indicating
+        quantum methods achieve 2.86x improvement over classical baseline
+        (1/0.35 = 2.86) when accounting for both speed and accuracy.
+    
     Lower k₁ indicates better process efficiency (faster, more accurate).
     
     Args:

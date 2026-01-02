@@ -236,19 +236,21 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 8: Temporal complexity (evolving violations over time) (10%)
     for i in range(int(count * 0.10)):
-        score = random.uniform(0.50, 0.85)
+        base_score = random.uniform(0.50, 0.85)
         # Violations that change severity over time
         temporal_factor = random.uniform(0.5, 1.5)
+        # Cap adjusted score at 1.0 to ensure valid range
+        adjusted_score = min(1.0, base_score * temporal_factor)
+        
         audit = AuditResult(
             audit_id=f"COMPLEX-H-{i}",
-            score=min(1.0, score * temporal_factor),  # Score affected by time, capped at 1.0
+            score=adjusted_score,  # Score affected by time, capped at 1.0
             risk_level=random.choice(["low", "medium", "high"]),
             remediation_cost=random.uniform(2000, 12000),
             business_impact=random.uniform(0.50, 0.85),
             violations=[f"EvolvingViolation-{j}" for j in range(random.randint(1, 4))]
         )
-        # Ground truth: adjusted score considering temporal evolution
-        adjusted_score = min(1.0, score * temporal_factor)
+        # Ground truth: use adjusted score for consistency
         if adjusted_score >= 0.85:
             ground_truth = ComplianceDecision.APPROVE_WITH_MONITORING
         elif adjusted_score >= 0.65:
