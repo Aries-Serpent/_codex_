@@ -463,6 +463,7 @@ class TestConfiguration:
     def test_config_missing_file(self):
         """Test missing config file"""
         with pytest.raises(FileNotFoundError):
+            # The FileNotFoundError is raised when attempting to open the file
             open("/nonexistent.json")
     
     def test_config_empty_file(self):
@@ -709,9 +710,10 @@ class TestErrorPaths:
     
     def test_error_else_clause(self):
         """Test else clause in try-except"""
-        result = None
         try:
-            pass
+            # Test that else clause executes when no exception is raised
+            # The try block succeeds without raising an exception
+            result = "try"
         except Exception:
             result = "except"
         else:

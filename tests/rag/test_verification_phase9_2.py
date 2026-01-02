@@ -18,8 +18,6 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from verification.cove import (
     MAX_CLAIMS_PER_RESPONSE,
     MAX_RESPONSE_LENGTH,

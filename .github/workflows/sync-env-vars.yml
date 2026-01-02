@@ -1,0 +1,152 @@
+name: Sync Environment Variables
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/cognitive_brain/quantum/ghz_states.py'
+      - 'src/cognitive_brain/quantum/multi_agent_coordinator.py'
+      - 'src/cognitive_brain/quantum/topology_manager.py'
+      - 'src/codex_ml/data/validation.py'
+      - '.github/scripts/env_var_converter.py'
+  
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+      dry_run:
+        description: 'Dry run (no actual sync)'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  sync-env-vars:
+    name: Sync Environment Variables
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      id-token: write  # For GitHub API access
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git describe
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+            sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+            https://cli.github.com/packages stable main" | \
+            sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh -y
+      
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GH_TOKEN" | gh auth login --with-token
+          gh auth status
+      
+      - name: Determine environment
+        id: determine-env
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "dry_run=${{ inputs.dry_run }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "dry_run=false" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "dry_run=false" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+            echo "dry_run=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: List candidates (before sync)
+        run: |
+          python3 .github/scripts/env_var_converter.py --mode list-candidates
+      
+      - name: Verify current state
+        run: |
+          python3 .github/scripts/env_var_converter.py --mode verify --all || true
+      
+      - name: Sync environment variables
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ steps.determine-env.outputs.dry_run }}" = "true" ]; then
+            echo "🔍 Running in DRY RUN mode"
+            python3 .github/scripts/env_var_converter.py \
+              --mode sync \
+              --environment ${{ steps.determine-env.outputs.environment }} \
+              --dry-run
+          else
+            echo "🚀 Running in ACTUAL SYNC mode"
+            python3 .github/scripts/env_var_converter.py \
+              --mode sync \
+              --environment ${{ steps.determine-env.outputs.environment }} \
+              --no-dry-run
+          fi
+      
+      - name: Verify sync (after)
+        if: steps.determine-env.outputs.dry_run == 'false'
+        run: |
+          echo "Waiting 10 seconds for GitHub API propagation..."
+          sleep 10
+          python3 .github/scripts/env_var_converter.py --mode verify --all
+      
+      - name: Upload metadata artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-var-metadata-${{ github.sha }}
+          path: .github/scripts/env_var_metadata.json
+          retention-days: 90
+      
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## Environment Variable Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ steps.determine-env.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run:** ${{ steps.determine-env.outputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f .github/scripts/env_var_metadata.json ]; then
+            echo "### Synced Variables" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            python3 << 'EOF' >> $GITHUB_STEP_SUMMARY
+          import json
+          with open('.github/scripts/env_var_metadata.json') as f:
+              data = json.load(f)
+          print("| Variable | File | Size | Updated |")
+          print("|----------|------|------|---------|")
+          for var, meta in data.items():
+              size = f"{meta['encoded_size']:,} bytes"
+              updated = meta['last_updated'][:10]
+              print(f"| `{var}` | `{meta['file_path']}` | {size} | {updated} |")
+          EOF
+          fi
