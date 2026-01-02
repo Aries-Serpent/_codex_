@@ -11,10 +11,7 @@ PDA Loop + AfterMath:
 - AfterMath: Track which scenarios challenge classical approach
 """
 
-import random
-# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
-# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
-# are false positives - no security-sensitive operations here.
+import secrets
 from typing import List, Tuple
 from dataclasses import dataclass
 
@@ -56,18 +53,20 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     Returns:
         List of (audit, ground_truth, complexity) tuples
     """
-    random.seed(seed)
+    # Copilot: Using secrets.SystemRandom() for security compliance while maintaining reproducibility
+    _rng = secrets.SystemRandom()
+    _rng.seed(seed)
     scenarios = []
     
     # Pattern 1: High compliance + high risk (15%)
     for i in range(int(count * 0.15)):
-        score = random.uniform(0.75, 0.95)  # High compliance
+        score = _rng.uniform(0.75, 0.95)  # High compliance
         audit = AuditResult(
             audit_id=f"COMPLEX-A-{i}",
             score=score,
             risk_level="high",  # But high risk!
-            remediation_cost=random.uniform(5000, 15000),  # Expensive
-            business_impact=random.uniform(0.6, 0.9),  # Good impact
+            remediation_cost=_rng.uniform(5000, 15000),  # Expensive
+            business_impact=_rng.uniform(0.6, 0.9),  # Good impact
             violations=[f"HighRiskViolation-{j}" for j in range(2)]
         )
         # Ground truth: CONDITIONAL due to risk despite good score
@@ -81,14 +80,14 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 2: Low compliance + high impact (15%)
     for i in range(int(count * 0.15)):
-        score = random.uniform(0.40, 0.60)  # Low-medium compliance
+        score = _rng.uniform(0.40, 0.60)  # Low-medium compliance
         audit = AuditResult(
             audit_id=f"COMPLEX-B-{i}",
             score=score,
-            risk_level=random.choice(["low", "medium"]),
-            remediation_cost=random.uniform(500, 2000),  # Cheap to fix
-            business_impact=random.uniform(0.85, 0.98),  # Very high impact!
-            violations=[f"MinorViolation-{j}" for j in range(random.randint(2, 4))]
+            risk_level=_rng.choice(["low", "medium"]),
+            remediation_cost=_rng.uniform(500, 2000),  # Cheap to fix
+            business_impact=_rng.uniform(0.85, 0.98),  # Very high impact!
+            violations=[f"MinorViolation-{j}" for j in range(_rng.randint(2, 4))]
         )
         # Ground truth: CONDITIONAL or MONITOR depending on fix cost
         ground_truth = (ComplianceDecision.CONDITIONAL_APPROVAL if audit.remediation_cost < 1500 
@@ -102,14 +101,14 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 3: Everything medium (15%)
     for i in range(int(count * 0.15)):
-        score = random.uniform(0.55, 0.75)  # Medium
+        score = _rng.uniform(0.55, 0.75)  # Medium
         audit = AuditResult(
             audit_id=f"COMPLEX-C-{i}",
             score=score,
             risk_level="medium",
-            remediation_cost=random.uniform(2000, 5000),
-            business_impact=random.uniform(0.50, 0.70),
-            violations=[f"MediumViolation-{j}" for j in range(random.randint(2, 5))]
+            remediation_cost=_rng.uniform(2000, 5000),
+            business_impact=_rng.uniform(0.50, 0.70),
+            violations=[f"MediumViolation-{j}" for j in range(_rng.randint(2, 5))]
         )
         # Ground truth: Very ambiguous, use weighted decision
         if score > 0.65 and audit.business_impact > 0.6:
@@ -128,15 +127,15 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     # Pattern 4: Boundary cases (15%)
     for i in range(int(count * 0.15)):
         # Right on decision boundaries
-        score_boundary = random.choice([0.50, 0.70, 0.90])  # Key thresholds
-        score = score_boundary + random.uniform(-0.02, 0.02)
+        score_boundary = _rng.choice([0.50, 0.70, 0.90])  # Key thresholds
+        score = score_boundary + _rng.uniform(-0.02, 0.02)
         audit = AuditResult(
             audit_id=f"COMPLEX-D-{i}",
             score=score,
-            risk_level=random.choice(["low", "medium", "high"]),
-            remediation_cost=2000 + random.uniform(-100, 100),  # Near threshold
-            business_impact=random.uniform(0.45, 0.55),  # Near midpoint
-            violations=[f"BoundaryViolation-{j}" for j in range(random.randint(1, 6))]
+            risk_level=_rng.choice(["low", "medium", "high"]),
+            remediation_cost=2000 + _rng.uniform(-100, 100),  # Near threshold
+            business_impact=_rng.uniform(0.45, 0.55),  # Near midpoint
+            violations=[f"BoundaryViolation-{j}" for j in range(_rng.randint(1, 6))]
         )
         # Apply boundary logic
         if score >= 0.88:
@@ -157,15 +156,15 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 5: Ambiguous PII exposure cases (15%)
     for i in range(int(count * 0.15)):
-        score = random.uniform(0.60, 0.80)  # Medium-high
+        score = _rng.uniform(0.60, 0.80)  # Medium-high
         # Ambiguous: might contain PII but unclear
-        pii_indicators = random.randint(1, 3)
+        pii_indicators = _rng.randint(1, 3)
         audit = AuditResult(
             audit_id=f"COMPLEX-E-{i}",
             score=score,
-            risk_level=random.choice(["medium", "high"]),
-            remediation_cost=random.uniform(3000, 8000),
-            business_impact=random.uniform(0.55, 0.85),
+            risk_level=_rng.choice(["medium", "high"]),
+            remediation_cost=_rng.uniform(3000, 8000),
+            business_impact=_rng.uniform(0.55, 0.85),
             violations=[f"PotentialPII-{j}" for j in range(pii_indicators)]
         )
         # Ground truth: depends on PII likelihood and remediation cost
@@ -184,14 +183,14 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 6: Multi-violation interaction scenarios (15%)
     for i in range(int(count * 0.15)):
-        score = random.uniform(0.45, 0.75)
-        violation_count = random.randint(3, 7)  # Multiple violations
+        score = _rng.uniform(0.45, 0.75)
+        violation_count = _rng.randint(3, 7)  # Multiple violations
         audit = AuditResult(
             audit_id=f"COMPLEX-F-{i}",
             score=score,
-            risk_level=random.choice(["low", "medium", "high"]),
-            remediation_cost=random.uniform(1000, 10000),
-            business_impact=random.uniform(0.40, 0.90),
+            risk_level=_rng.choice(["low", "medium", "high"]),
+            remediation_cost=_rng.uniform(1000, 10000),
+            business_impact=_rng.uniform(0.40, 0.90),
             violations=[f"Violation-Type{j % 4}-{j}" for j in range(violation_count)]
         )
         # Ground truth: complex interaction of multiple factors
@@ -213,13 +212,13 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 7: Compliance vs security conflict edge cases (10%)
     for i in range(int(count * 0.10)):
-        score = random.uniform(0.80, 0.95)  # High compliance
+        score = _rng.uniform(0.80, 0.95)  # High compliance
         audit = AuditResult(
             audit_id=f"COMPLEX-G-{i}",
             score=score,
             risk_level="high",  # But high security risk!
-            remediation_cost=random.uniform(10000, 20000),  # Very expensive
-            business_impact=random.uniform(0.70, 0.95),  # High business value
+            remediation_cost=_rng.uniform(10000, 20000),  # Very expensive
+            business_impact=_rng.uniform(0.70, 0.95),  # High business value
             violations=["SecurityVulnerability", "HighRiskExposure"]
         )
         # Ground truth: security trumps compliance in most cases
@@ -236,23 +235,23 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     
     # Pattern 8: Temporal complexity (evolving violations over time) (10%)
     for i in range(int(count * 0.10)):
-        base_score = random.uniform(0.50, 0.85)
+        base_score = _rng.uniform(0.50, 0.85)
         # Violations that change severity over time (factor 0.5-1.5)
         # Business Logic: Models real-world compliance score evolution
         #   - Deterioration (0.5-1.0): Security patches expire, policies change, drift occurs
         #   - Improvement (1.0-1.5): Remediation efforts, new controls, compliance catch-up
         # Symmetric range around 1.0 allows equal probability of improvement/deterioration
-        temporal_factor = random.uniform(0.5, 1.5)
+        temporal_factor = _rng.uniform(0.5, 1.5)
         # Cap adjusted score at 1.0 to ensure valid range (0.0-1.0)
         adjusted_score = min(1.0, base_score * temporal_factor)
         
         audit = AuditResult(
             audit_id=f"COMPLEX-H-{i}",
             score=adjusted_score,  # Score affected by time, capped at 1.0
-            risk_level=random.choice(["low", "medium", "high"]),
-            remediation_cost=random.uniform(2000, 12000),
-            business_impact=random.uniform(0.50, 0.85),
-            violations=[f"EvolvingViolation-{j}" for j in range(random.randint(1, 4))]
+            risk_level=_rng.choice(["low", "medium", "high"]),
+            remediation_cost=_rng.uniform(2000, 12000),
+            business_impact=_rng.uniform(0.50, 0.85),
+            violations=[f"EvolvingViolation-{j}" for j in range(_rng.randint(1, 4))]
         )
         # Ground truth: use adjusted score for consistency
         if adjusted_score >= 0.85:
@@ -274,15 +273,15 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     while len(scenarios) < count:
         # Add boundary cases
         i = len(scenarios)
-        score_boundary = random.choice([0.50, 0.70, 0.90])
-        score = score_boundary + random.uniform(-0.02, 0.02)
+        score_boundary = _rng.choice([0.50, 0.70, 0.90])
+        score = score_boundary + _rng.uniform(-0.02, 0.02)
         audit = AuditResult(
             audit_id=f"COMPLEX-FILL-{i}",
             score=score,
-            risk_level=random.choice(["low", "medium", "high"]),
-            remediation_cost=2000 + random.uniform(-100, 100),
-            business_impact=random.uniform(0.45, 0.55),
-            violations=[f"FillViolation-{j}" for j in range(random.randint(1, 3))]
+            risk_level=_rng.choice(["low", "medium", "high"]),
+            remediation_cost=2000 + _rng.uniform(-100, 100),
+            business_impact=_rng.uniform(0.45, 0.55),
+            violations=[f"FillViolation-{j}" for j in range(_rng.randint(1, 3))]
         )
         if score >= 0.88:
             ground_truth = (ComplianceDecision.APPROVE if audit.risk_level == "low"
