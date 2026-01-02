@@ -7,8 +7,7 @@ Tests CRUD operations, data validation, and query functionality.
 import pytest
 import sqlite3
 import tempfile
-from datetime import datetime
-from pathlib import Path
+from datetime from pathlib import Path
 
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,

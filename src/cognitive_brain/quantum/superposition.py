@@ -14,7 +14,6 @@ from typing import List, Dict, Any, Callable, Optional
 from functools import wraps
 
 from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.base import QuantumFeature, QuantumState
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 
 

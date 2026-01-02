@@ -12,6 +12,9 @@ PDA Loop + AfterMath:
 """
 
 import random
+# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
+# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
+# are false positives - no security-sensitive operations here.
 from typing import List, Tuple
 from dataclasses import dataclass
 

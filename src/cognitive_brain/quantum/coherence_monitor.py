@@ -5,17 +5,12 @@ Monitors quantum feature metrics, detects degradation, and triggers
 automatic rollbacks when coherence falls below acceptable thresholds.
 """
 
-import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 from enum import Enum
 
 from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.base import (
-    QuantumFeature,
-    CoherenceDegradationError
-)
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,
     QuantumMetricRepository

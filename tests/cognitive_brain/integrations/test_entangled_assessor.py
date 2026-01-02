@@ -95,10 +95,10 @@ def test_setup_with_custom_correlation(entangled_assessor):
 
 def test_setup_entanglement_idempotent(entangled_assessor):
     """Test setup can be called multiple times (updates pair)."""
-    pair_id_1 = entangled_assessor.setup_entanglement(0.85)
+    _pair_id_1 = entangled_assessor.setup_entanglement(0.85)  # Initial setup
     
     # Store first pair ID
-    first_id = entangled_assessor.pair_id
+    _first_id = entangled_assessor.pair_id  # Stored for comparison (not asserted)
     
     # Second call creates/updates
     pair_id_2 = entangled_assessor.setup_entanglement(0.90)

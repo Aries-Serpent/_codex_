@@ -15,15 +15,17 @@ PDA Loop + AfterMath:
 
 import json
 import random
+# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
+# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
+# are false positives - no security-sensitive operations here.
 import tempfile
 import os
 from datetime import datetime
 from typing import List, Dict, Tuple
-from dataclasses import asdict
 
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
-from cognitive_brain.quantum.ab_testing import ABTestFramework, ExperimentConfig
+from cognitive_brain.quantum.ab_testing import ABTestFramework
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.integrations.compliance_integration import (
     QuantumComplianceAssessor,
@@ -141,7 +143,7 @@ def run_exp1_validation() -> Dict:
         
         repository = QuantumMetricRepository(db_path)
         monitor = CoherenceMonitor(config, repository)
-        framework = ABTestFramework(repository)
+        _framework = ABTestFramework(repository)  # Created for setup, not used directly
         
         # Create assessors
         quantum_assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
@@ -255,9 +257,9 @@ def run_exp1_validation() -> Dict:
             }
         }
         
-        # Save results
-        results_file = "/tmp/exp1_results.json"
-        with open(results_file, 'w') as f:
+        # Save results using secure temp file
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json', prefix='exp1_results_') as f:
+            results_file = f.name
             json.dump(results, f, indent=2)
         
         print(f"[COMPLETE] Results saved to {results_file}")

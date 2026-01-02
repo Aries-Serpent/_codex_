@@ -13,17 +13,11 @@ Total: 25 tests
 """
 
 import pytest
-import time
 import sqlite3
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock
 
-from cognitive_brain.quantum.entanglement import (
-    EntanglementManager,
-    EntangledPair,
-    CorrelationMeasurement
-)
+from cognitive_brain.quantum.entanglement import EntanglementManager
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository

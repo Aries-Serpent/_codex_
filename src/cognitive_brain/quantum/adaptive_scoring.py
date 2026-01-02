@@ -16,9 +16,8 @@ PDA Loop + AfterMath Pattern:
 - AfterMath: Track k₁ reduction, coherence trends
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Callable
-import math
+from dataclasses import dataclass
+from typing import Dict, List, Callable
 
 
 @dataclass

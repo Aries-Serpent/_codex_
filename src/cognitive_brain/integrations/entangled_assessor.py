@@ -10,10 +10,10 @@ Use Cases:
 - Joint decision-making for PII + secret exposure
 """
 
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
-from cognitive_brain.quantum.entanglement import EntanglementManager, EntangledPair
+from cognitive_brain.quantum.entanglement import EntanglementManager
 from cognitive_brain.integrations.compliance_integration import (
     QuantumComplianceAssessor,
     ComplianceAssessment,

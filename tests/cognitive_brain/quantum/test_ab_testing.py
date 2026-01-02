@@ -13,7 +13,6 @@ from pathlib import Path
 from cognitive_brain.quantum.ab_testing import (
     ABTestFramework,
     ExperimentConfig,
-    ExperimentResult,
     Variant,
     EXP_1_CONFIG,
     EXP_2_CONFIG,
@@ -370,7 +369,7 @@ class TestStatisticalAnalysis:
         # Create minimal dataset
         for i in range(10):
             user_id = f'user-{i}'
-            variant = framework.assign_variant('EXP-TEST', user_id)
+            _variant = framework.assign_variant('EXP-TEST', user_id)  # Assignment needed for test setup
             framework.record_metric('EXP-TEST', user_id, 0.85 + i * 0.01)
         
         result = framework.analyze_experiment('EXP-TEST')

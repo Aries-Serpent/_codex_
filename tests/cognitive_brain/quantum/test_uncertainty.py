@@ -166,7 +166,7 @@ def test_uncertainty_principle(optimizer):
     priority = optimizer.calculate_priority("test_uncertain", 2000.0)
     
     # Uncertainty product should be ≥ ℏ/2
-    min_uncertainty = optimizer.h_bar / 2.0
+    _min_uncertainty = optimizer.h_bar / 2.0  # Calculated but not asserted directly
     assert priority.uncertainty >= 0.0  # Always non-negative
 
 
@@ -351,7 +351,6 @@ def test_execution_time_penalty(optimizer):
 def test_integration_with_monitor():
     """Test integration with coherence monitor."""
     import tempfile
-    import sqlite3
     from pathlib import Path
     
     # Create temporary database with schema

@@ -18,7 +18,6 @@ Usage:
     schedule = optimizer.optimize_test_schedule(test_suite, time_budget)
 """
 
-import hashlib
 import math
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
@@ -176,8 +175,8 @@ class UncertaintyOptimizer:
             0.15 * metrics.failure_rate
         )
         
-        # Calculate overall uncertainty
-        uncertainty = math.sqrt(energy_uncertainty**2 + time_uncertainty**2)
+        # Calculate overall uncertainty using math.hypot for numerical stability
+        uncertainty = math.hypot(energy_uncertainty, time_uncertainty)
         
         # Determine recommended action
         if priority_score > 0.7:

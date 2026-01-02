@@ -13,13 +13,15 @@ Metrics:
 """
 
 import random
+# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
+# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
+# are false positives - no security-sensitive operations here.
 from typing import Dict, Any, List
 from dataclasses import dataclass
 
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.entanglement import EntanglementManager
-from cognitive_brain.quantum.superposition import SuperpositionEngine
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.integrations.compliance_integration import (
     QuantumComplianceAssessor,
