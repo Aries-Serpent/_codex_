@@ -326,7 +326,8 @@ class PatternCompressor:
         # Add 10% padding overhead for realistic bit packing/alignment
         compressed_size = (bits_used * 1.1) / 8.0  # Convert bits to bytes with overhead
         
-        compression_ratio = 1.0 - (compressed_size / original_size)
+        # Store actual compression ratio (compressed/original, e.g., 0.3 = 30% of original size)
+        compression_ratio = compressed_size / original_size
         self.compression_ratios.append(compression_ratio)
         self.total_compressed += 1
         
@@ -358,14 +359,8 @@ class PatternCompressor:
         
         if variable_bits is not None:
             # Enhanced decompression with variable quantization
-            # Dequantize with variable bit depths
-            dequantized = np.zeros_like(compressed.compressed_features)
-            for i, (val, bits) in enumerate(zip(compressed.compressed_features, variable_bits)):
-                if val == 0.0:
-                    dequantized[i] = 0.0
-                else:
-                    max_val = 2 ** (bits - 1) - 1
-                    dequantized[i] = val * max_val / max_val  # Already normalized in compress
+            # Values are already normalized in compress(), just copy them
+            dequantized = compressed.compressed_features.copy()
         else:
             # Fallback to uniform dequantization for old compressed patterns
             dequantized = self._dequantize(compressed.compressed_features)
