@@ -16,10 +16,10 @@ class TestQuantumMemoryManagerErrors:
 
     def test_invalid_pattern_none_id(self):
         """Test error when storing pattern with None ID."""
-        manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)
+        _manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)  # Copilot: Context setup
         
         with pytest.raises(ValueError, match="pattern_id cannot be None"):
-            pattern = MemoryPattern(
+            _pattern = MemoryPattern(  # Copilot: Exception expected before use
                 pattern_id=None,
                 features={"f1": 0.5},
                 decision="approve",
@@ -28,10 +28,10 @@ class TestQuantumMemoryManagerErrors:
 
     def test_invalid_pattern_empty_id(self):
         """Test error when storing pattern with empty string ID."""
-        manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)
+        _manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)  # Copilot: Context setup
         
         with pytest.raises(ValueError, match="pattern_id cannot be empty"):
-            pattern = MemoryPattern(
+            _pattern = MemoryPattern(  # Copilot: Exception expected before use
                 pattern_id="",
                 features={"f1": 0.5},
                 decision="approve",

@@ -1,5 +1,4 @@
 """Unit tests for TestGenerator with mocked dependencies."""
-import ast
 import sys
 from pathlib import Path
 

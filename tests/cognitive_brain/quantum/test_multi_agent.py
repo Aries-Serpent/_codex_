@@ -280,7 +280,7 @@ class TestTopologyManagement:
         manager.configure_topology(NetworkTopology.MESH, 4)
         
         # Simulate low correlation between some agents
-        correlation_matrix = np.array([
+        _correlation_matrix = np.array([  # Copilot: Data setup, used internally by manager
             [1.0, 0.9, 0.5, 0.3],  # Agent 0 has low correlation with 2, 3
             [0.9, 1.0, 0.4, 0.2],
             [0.5, 0.4, 1.0, 0.85],
@@ -352,10 +352,10 @@ class TestCorrelationMeasurement:
         agent_ids = ["agent_1", "agent_2", "agent_3"]
         
         state = manager.create_ghz_state(agent_ids)
-        initial_fidelity = state.fidelity
+        _initial_fidelity = state.fidelity  # Copilot: Captured for potential future comparison
         
         # Measure an agent
-        measurement = manager.measure_agent(state.state_id, "agent_1")
+        _measurement = manager.measure_agent(state.state_id, "agent_1")  # Copilot: Side effect is state update
         
         # Update correlations
         manager.update_correlations(state.state_id)

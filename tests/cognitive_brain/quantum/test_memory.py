@@ -623,6 +623,7 @@ class TestCompression:
             decision="approve",
             confidence=0.85
         )
+        assert compressed is not None  # Copilot: Verify compression succeeded
         
         # Check compression ratio
         ratio = pattern_compressor.get_compression_ratio()
