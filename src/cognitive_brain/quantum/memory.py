@@ -574,16 +574,12 @@ class QuantumMemoryManager:
             ltm_threshold_pct: LTM utilization threshold to trigger pruning (default: 0.8 = 80%)
             
         Returns:
-            Dictionary with pruning results:
-            - aged_pruned: Count pruned by age
-            - access_pruned: Count pruned by access frequency
-            - confidence_pruned: Count pruned by confidence
-            - total_pruned: Total count pruned
+            PruningResult with counts for each pruning strategy
         """
         health = self.get_cache_health()
         
         if health["ltm_utilization"] < ltm_threshold_pct * 100:
-            return {"aged_pruned": 0, "access_pruned": 0, "confidence_pruned": 0, "total_pruned": 0}
+            return PruningResult()
         
         logger.info(f"Auto-pruning triggered: LTM at {health['ltm_utilization']:.1f}% capacity")
         
@@ -603,9 +599,9 @@ class QuantumMemoryManager:
         total_pruned = aged_pruned + access_pruned + confidence_pruned
         logger.info(f"Auto-pruning complete: {total_pruned} patterns removed")
         
-        return {
-            "aged_pruned": aged_pruned,
-            "access_pruned": access_pruned,
-            "confidence_pruned": confidence_pruned,
-            "total_pruned": total_pruned
-        }
+        return PruningResult(
+            aged_pruned=aged_pruned,
+            access_pruned=access_pruned,
+            confidence_pruned=confidence_pruned,
+            total_pruned=total_pruned
+        )

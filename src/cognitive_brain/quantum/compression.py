@@ -342,6 +342,7 @@ class PatternCompressor:
         Reconstruct pattern from compressed form.
         
         Note: This is a lossy reconstruction. Some information is lost in compression.
+        Enhanced to handle variable quantization from compress() method.
         
         Args:
             compressed: Compressed pattern to reconstruct
@@ -352,17 +353,37 @@ class PatternCompressor:
         if not self.is_fitted:
             raise RuntimeError("Compressor not fitted. Call fit() first.")
         
-        # Dequantize
-        compressed_vector = self._dequantize(compressed.compressed_features)
+        # Extract variable_bits from metadata if available
+        variable_bits = compressed.compression_metadata.get("variable_bits")
+        
+        if variable_bits is not None:
+            # Enhanced decompression with variable quantization
+            # Dequantize with variable bit depths
+            dequantized = np.zeros_like(compressed.compressed_features)
+            for i, (val, bits) in enumerate(zip(compressed.compressed_features, variable_bits)):
+                if val == 0.0:
+                    dequantized[i] = 0.0
+                else:
+                    max_val = 2 ** (bits - 1) - 1
+                    dequantized[i] = val * max_val / max_val  # Already normalized in compress
+        else:
+            # Fallback to uniform dequantization for old compressed patterns
+            dequantized = self._dequantize(compressed.compressed_features)
         
         # Project back to original space
-        reconstructed_norm = self.projection_matrix @ compressed_vector
+        reconstructed_norm = self.projection_matrix @ dequantized
         
         # Denormalize
         reconstructed = reconstructed_norm * self.feature_std + self.feature_mean
         
         # Convert back to dict
         reconstructed_dict = {
+            k: float(v) for k, v in zip(compressed.feature_keys, reconstructed)
+        }
+        
+        self.total_decompressed += 1
+        
+        return reconstructed_dict
             k: float(reconstructed[i])
             for i, k in enumerate(compressed.feature_keys)
         }
