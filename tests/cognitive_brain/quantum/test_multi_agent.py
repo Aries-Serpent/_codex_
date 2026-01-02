@@ -10,12 +10,10 @@ correlation measurement, and performance validation.
 
 import pytest
 import numpy as np
-from datetime import datetime, timedelta
-from typing import List, Dict
+from datetime import datetime
 
 from cognitive_brain.quantum.ghz_states import (
     GHZStateManager,
-    GHZState,
 )
 from cognitive_brain.quantum.multi_agent_coordinator import (
     MultiAgentCoordinator,

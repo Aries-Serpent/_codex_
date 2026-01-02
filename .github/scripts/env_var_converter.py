@@ -19,13 +19,12 @@ import argparse
 import base64
 import hashlib
 import json
-import os
 import subprocess
 import sys
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 # Configuration
 MAX_ENV_SIZE = 48 * 1024  # 48KB GitHub limit

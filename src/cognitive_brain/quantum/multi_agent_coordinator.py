@@ -13,8 +13,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional, Any
-import numpy as np
+from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 

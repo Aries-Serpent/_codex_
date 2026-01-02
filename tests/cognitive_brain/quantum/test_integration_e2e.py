@@ -5,7 +5,6 @@ Tests complete workflows from pattern storage through consolidation, retrieval,
 compression, and memory-guided decisions.
 """
 
-import pytest
 import time
 from cognitive_brain.quantum.memory import QuantumMemoryManager, MemoryPattern
 from cognitive_brain.quantum.compression import PatternCompressor

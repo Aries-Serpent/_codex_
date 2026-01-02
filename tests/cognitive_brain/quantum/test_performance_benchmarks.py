@@ -5,7 +5,6 @@ Tests performance targets: compression speed, retrieval speed, cache hit rate,
 memory efficiency, and consolidation throughput.
 """
 
-import pytest
 import time
 import psutil
 import os
