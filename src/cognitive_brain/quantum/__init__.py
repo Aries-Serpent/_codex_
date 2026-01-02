@@ -27,6 +27,12 @@ from cognitive_brain.quantum.ab_testing import (
     EXP_2_CONFIG,
     EXP_3_CONFIG
 )
+from cognitive_brain.quantum.superposition import (
+    SuperpositionEngine,
+    SuperpositionState,
+    Decision,
+    quantum_superposition
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -44,4 +50,8 @@ __all__ = [
     "EXP_1_CONFIG",
     "EXP_2_CONFIG",
     "EXP_3_CONFIG",
+    "SuperpositionEngine",
+    "SuperpositionState",
+    "Decision",
+    "quantum_superposition",
 ]
