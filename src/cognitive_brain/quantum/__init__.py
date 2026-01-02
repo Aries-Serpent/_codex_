@@ -12,10 +12,20 @@ All features are gated by environment variable flags for gradual rollout.
 
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.base import QuantumFeature, QuantumState
+from cognitive_brain.quantum.coherence_monitor import (
+    CoherenceMonitor,
+    Alert,
+    AlertLevel,
+    AlertThreshold
+)
 
 __version__ = "0.1.0"
 __all__ = [
     "QuantumConfig",
     "QuantumFeature",
     "QuantumState",
+    "CoherenceMonitor",
+    "Alert",
+    "AlertLevel",
+    "AlertThreshold",
 ]
