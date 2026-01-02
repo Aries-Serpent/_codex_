@@ -38,6 +38,11 @@ from cognitive_brain.quantum.entanglement import (
     EntangledPair,
     CorrelationMeasurement
 )
+from cognitive_brain.quantum.uncertainty import (
+    UncertaintyOptimizer,
+    TestMetrics,
+    TestPriority
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -62,4 +67,7 @@ __all__ = [
     "EntanglementManager",
     "EntangledPair",
     "CorrelationMeasurement",
+    "UncertaintyOptimizer",
+    "TestMetrics",
+    "TestPriority",
 ]
