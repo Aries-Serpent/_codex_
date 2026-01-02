@@ -120,10 +120,13 @@ class QuantumMemoryManager:
             
         Returns:
             Pattern ID
+            
+        Raises:
+            ValueError: If pattern_id is None or empty string
         """
-        # Validate pattern_id is provided
-        if not pattern.pattern_id:
-            raise ValueError("Pattern must have pattern_id set before storing")
+        # Validate pattern_id is provided and non-empty
+        if pattern.pattern_id is None or pattern.pattern_id == '':
+            raise ValueError("Pattern must have non-empty pattern_id before storing")
         
         # Add to STM
         self.stm.append(pattern)

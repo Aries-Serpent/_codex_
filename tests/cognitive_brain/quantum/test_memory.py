@@ -130,10 +130,14 @@ class TestStorage:
     
     def test_duplicate_pattern_storage(self, memory_manager, sample_pattern):
         """Test 1.3: Store duplicate patterns (same ID handled correctly)."""
+        # Note: Current implementation allows duplicates in STM (FIFO queue)
+        # This is intentional for simplicity - STM acts as a buffer
+        # LTM uses dict which prevents duplicates by key
+        
         # Store same pattern twice
         id1 = memory_manager.store_pattern(sample_pattern)
         
-        # Create duplicate with same ID
+        # Create duplicate with same ID but different data
         duplicate = MemoryPattern(
             pattern_id=sample_pattern.pattern_id,
             features=sample_pattern.features,
@@ -144,7 +148,9 @@ class TestStorage:
         id2 = memory_manager.store_pattern(duplicate)
         
         assert id1 == id2  # Same ID
-        assert len(memory_manager.stm) == 2  # Both stored (FIFO queue allows duplicates)
+        # STM allows duplicates as a FIFO buffer (both entries present)
+        # LTM will deduplicate on consolidation
+        assert len(memory_manager.stm) == 2
     
     def test_timestamp_tracking(self, memory_manager):
         """Test 1.4: Timestamps are correctly tracked."""

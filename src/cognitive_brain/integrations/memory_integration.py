@@ -268,10 +268,20 @@ class MemoryAugmentedComplianceAssessor:
             'high': 1.0
         }
         
+        # Get risk value with validation
+        risk_level_normalized = audit.risk_level.lower()
+        if risk_level_normalized not in risk_encoding:
+            # Log warning and use default
+            # In production, this should use proper logging
+            print(f"Warning: Unknown risk level '{audit.risk_level}', defaulting to 'medium'")
+            risk_value = 0.5
+        else:
+            risk_value = risk_encoding[risk_level_normalized]
+        
         # Normalize features to 0-1 range
         features = {
             'score': audit.score,  # Already 0-1
-            'risk': risk_encoding.get(audit.risk_level.lower(), 0.5),
+            'risk': risk_value,
             'cost_normalized': min(audit.remediation_cost / 20000, 1.0),  # Cap at $20k
             'impact': audit.business_impact,  # Already 0-1
             'violation_count': min(len(audit.violations) / 10.0, 1.0)  # Cap at 10

@@ -176,6 +176,14 @@ class PatternCompressor:
         feature_keys = sorted(pattern.keys())
         feature_vector = np.array([pattern.get(k, 0.0) for k in feature_keys])
         
+        # Validate dimensions match training data
+        expected_length = len(self.feature_mean)
+        if len(feature_vector) != expected_length:
+            raise ValueError(
+                f"Pattern dimension mismatch: got {len(feature_vector)} features, "
+                f"expected {expected_length} (from training data)"
+            )
+        
         # Normalize
         feature_vector_norm = (feature_vector - self.feature_mean) / self.feature_std
         

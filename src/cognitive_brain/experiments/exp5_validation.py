@@ -168,8 +168,19 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     time_reduction_pct = (avg_time_baseline - avg_time_memory) / avg_time_baseline
     
     # Accuracy (memory vs baseline)
+    # Note: This measures consistency between memory and baseline decisions,
+    # not absolute accuracy against ground truth. Both could be wrong together.
+    # For true accuracy, compare against ground_truth from scenarios.
     agreements = sum(1 for m, b in zip(memory_decisions, baseline_decisions) if m == b)
     accuracy = agreements / len(memory_decisions)
+    
+    # For k₁ calculation, we need error rate against ground truth
+    # Calculate actual errors against ground truth
+    memory_errors = sum(
+        1 for (_, ground_truth, _), decision in zip(scenario_data, memory_decisions)
+        if decision != ground_truth
+    )
+    actual_error_rate = memory_errors / len(scenario_data)
     
     # Cache hit rate
     memory_stats = memory_assessor.get_statistics()
@@ -179,9 +190,7 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     # k₁ = (avg_time * (1 + error_rate)) / classical_baseline
     # Constants defined at module level
     
-    error_rate_memory = 1.0 - accuracy
-    
-    k1_memory = (avg_time_memory * (1.0 + error_rate_memory)) / CLASSICAL_BASELINE_MS
+    k1_memory = (avg_time_memory * (1.0 + actual_error_rate)) / CLASSICAL_BASELINE_MS
     k1_baseline = (avg_time_baseline * (1.0 + PHASE_8_0_ERROR_RATE)) / CLASSICAL_BASELINE_MS
     k1_improvement_pct = ((k1_baseline - k1_memory) / k1_baseline) * 100
     
