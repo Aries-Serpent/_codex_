@@ -18,6 +18,15 @@ from cognitive_brain.quantum.coherence_monitor import (
     AlertLevel,
     AlertThreshold
 )
+from cognitive_brain.quantum.ab_testing import (
+    ABTestFramework,
+    ExperimentConfig,
+    ExperimentResult,
+    Variant,
+    EXP_1_CONFIG,
+    EXP_2_CONFIG,
+    EXP_3_CONFIG
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -28,4 +37,11 @@ __all__ = [
     "Alert",
     "AlertLevel",
     "AlertThreshold",
+    "ABTestFramework",
+    "ExperimentConfig",
+    "ExperimentResult",
+    "Variant",
+    "EXP_1_CONFIG",
+    "EXP_2_CONFIG",
+    "EXP_3_CONFIG",
 ]
