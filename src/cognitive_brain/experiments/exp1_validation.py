@@ -143,7 +143,7 @@ def run_exp1_validation() -> Dict:
         
         repository = QuantumMetricRepository(db_path)
         monitor = CoherenceMonitor(config, repository)
-        _framework = ABTestFramework(repository)  # Created for setup, not used directly
+        ABTestFramework(repository)  # Created for setup, not used directly
         
         # Create assessors
         quantum_assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)

@@ -7,7 +7,6 @@ import pytest
 import tempfile
 import sqlite3
 from pathlib import Path
-from typing import Dict, Any
 
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
@@ -268,7 +267,7 @@ def test_performance_within_limits(integrated_system):
     
     # Measure latency
     start = time.time()
-    result = engine.evaluate_superposition(decisions, context={"test": True})
+    _result = engine.evaluate_superposition(decisions, context={"test": True})
     latency_ms = (time.time() - start) * 1000
     
     # Should complete within 50ms
@@ -278,7 +277,7 @@ def test_performance_within_limits(integrated_system):
 def test_error_handling_and_rollback(integrated_system):
     """Test error handling and automatic rollback."""
     monitor = integrated_system['monitor']
-    config = integrated_system['config']
+    _config = integrated_system['config']  # Available for future assertions
     
     # Simulate critical coherence degradation
     from cognitive_brain.quantum.base import QuantumFeature
