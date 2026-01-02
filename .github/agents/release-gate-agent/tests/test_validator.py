@@ -5,8 +5,7 @@ Tests for Release Gate Agent - Validator Module (PERCEIVE Phase)
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from agent.validator import ReleaseValidator, ValidationResult
 
 

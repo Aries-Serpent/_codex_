@@ -5,8 +5,7 @@ Tests for Release Gate Agent - Releaser Module (ACT Phase)
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from agent.releaser import ReleaseExecutor, ReleaseStatus, ReleaseResult
 
 
@@ -108,7 +107,7 @@ class TestReleaseExecutor:
         
         assert result["status"] == "success"
         assert result["released"] is True
-        assert "https://github.com" in result["release_url"]
+        assert result["release_url"].startswith("https://github.com")
         assert result["git_tag"] == "v1.0.0"
         assert result["health_status"] == "healthy"
     
@@ -194,7 +193,7 @@ class TestReleaseExecutor:
         with patch('subprocess.run', return_value=mock_result):
             url = executor._create_github_release(release_info, "v1.0.0")
         
-        assert "https://github.com" in url
+        assert url.startswith("https://github.com")
         assert "v1.0.0" in url
     
     def test_create_github_release_uses_repo_params(self, executor):

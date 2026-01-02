@@ -338,6 +338,7 @@ class IaCScanner:
                                     line=0
                                 ))
                 except json.JSONDecodeError:
+                    # kube-score produced non-JSON output; ignore and proceed with empty findings
                     pass
         
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -382,6 +383,8 @@ class IaCScanner:
                             line=issue.get("Location", {}).get("Start", {}).get("LineNumber", 0)
                         ))
                 except json.JSONDecodeError:
+                    # cfn-lint produced non-JSON or malformed JSON output; ignore and
+                    # continue best-effort scanning with an empty/partial findings list.
                     pass
         
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -426,6 +429,7 @@ class IaCScanner:
                             line=issue.get("line", 0)
                         ))
                 except json.JSONDecodeError:
+                    # Hadolint produced invalid or non-JSON output; treat as no findings for robustness.
                     pass
         
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -469,6 +473,7 @@ class IaCScanner:
                             line=issue.get("linenumber", 0)
                         ))
                 except json.JSONDecodeError:
+                    # ansible-lint produced non-JSON or malformed output; ignore and treat as no findings
                     pass
         
         except (subprocess.TimeoutExpired, FileNotFoundError):

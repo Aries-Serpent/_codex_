@@ -13,7 +13,6 @@ Part of the Cognitive Brain Phase 6 agent ecosystem.
 """
 
 import json
-import os
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
