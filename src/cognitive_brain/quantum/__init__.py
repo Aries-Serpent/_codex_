@@ -33,6 +33,11 @@ from cognitive_brain.quantum.superposition import (
     Decision,
     quantum_superposition
 )
+from cognitive_brain.quantum.entanglement import (
+    EntanglementManager,
+    EntangledPair,
+    CorrelationMeasurement
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -54,4 +59,7 @@ __all__ = [
     "SuperpositionState",
     "Decision",
     "quantum_superposition",
+    "EntanglementManager",
+    "EntangledPair",
+    "CorrelationMeasurement",
 ]
