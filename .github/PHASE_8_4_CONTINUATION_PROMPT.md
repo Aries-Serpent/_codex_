@@ -23,14 +23,14 @@
 
 Implement cross-domain transfer learning to enable rapid adaptation to new compliance domains and scenarios with minimal training data.
 
-**Target:** k₁ ≤ 0.32 (further 3.0% improvement through knowledge transfer)
+**Target:** k₁ ≤ 0.285 (further 5.0% improvement through knowledge transfer - optimized from 0.32)
 
 ### Key Goals
 1. **Cross-Domain Transfer:** 50% faster adaptation to new domains
 2. **Few-Shot Learning:** Effective decisions with < 10 examples
 3. **Knowledge Distillation:** 70% model compression without accuracy loss
 4. **Domain Adaptation:** Automatic feature alignment across domains
-5. **k₁ Reduction:** 0.33 → 0.32 (3.0% improvement)
+5. **k₁ Reduction:** 0.30 → 0.285 (5.0% improvement - optimized target)
 
 ---
 
@@ -335,7 +335,7 @@ for target_domain in domains:
 ## Success Criteria
 
 - [ ] All 7 deliverables complete
-- [ ] k₁ ≤ 0.32 achieved
+- [ ] k₁ ≤ 0.285 achieved (optimized target)
 - [ ] Transfer learning 50% faster than scratch
 - [ ] Few-shot accuracy > 80% with 10 examples
 - [ ] Distilled model < 2% accuracy loss, 70% smaller
