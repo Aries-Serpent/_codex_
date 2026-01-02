@@ -237,9 +237,13 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     # Pattern 8: Temporal complexity (evolving violations over time) (10%)
     for i in range(int(count * 0.10)):
         base_score = random.uniform(0.50, 0.85)
-        # Violations that change severity over time
+        # Violations that change severity over time (factor 0.5-1.5)
+        # Business Logic: Models real-world compliance score evolution
+        #   - Deterioration (0.5-1.0): Security patches expire, policies change, drift occurs
+        #   - Improvement (1.0-1.5): Remediation efforts, new controls, compliance catch-up
+        # Symmetric range around 1.0 allows equal probability of improvement/deterioration
         temporal_factor = random.uniform(0.5, 1.5)
-        # Cap adjusted score at 1.0 to ensure valid range
+        # Cap adjusted score at 1.0 to ensure valid range (0.0-1.0)
         adjusted_score = min(1.0, base_score * temporal_factor)
         
         audit = AuditResult(

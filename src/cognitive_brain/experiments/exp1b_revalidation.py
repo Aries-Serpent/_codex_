@@ -104,7 +104,8 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     classical_start = time.time()
     for audit, _, _ in scenario_data:
         # Simple rule-based decision (classical approach)
-        _classical_decision = _classical_assessment(audit)
+        # Result intentionally unused - we only need timing for baseline measurement
+        _ = _classical_assessment(audit)
     classical_time_ms = (time.time() - classical_start) * 1000
     classical_baseline_ms = classical_time_ms / len(scenario_data)
     

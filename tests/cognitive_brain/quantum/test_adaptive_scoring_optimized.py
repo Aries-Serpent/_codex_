@@ -174,16 +174,22 @@ class TestAdaptiveScoringOptimized:
         results1 = run_exp1b_revalidation(scenarios=20, seed=42)
         results2 = run_exp1b_revalidation(scenarios=20, seed=42)
         
-        # Results should be identical
-        assert results1.k1 == pytest.approx(results2.k1, abs=0.001)
-        assert results1.accuracy == pytest.approx(results2.accuracy, abs=0.001)
-        assert results1.coherence == pytest.approx(results2.coherence, abs=0.001)
-        assert results1.total_scenarios == results2.total_scenarios
+        # Results should be identical (deterministic)
+        assert results1.k1 == pytest.approx(results2.k1, abs=0.001), \
+            "k₁ values differ between runs with same seed"
+        assert results1.accuracy == pytest.approx(results2.accuracy, abs=0.001), \
+            "Accuracy differs between runs with same seed"
+        assert results1.coherence == pytest.approx(results2.coherence, abs=0.001), \
+            "Coherence differs between runs with same seed"
+        assert results1.total_scenarios == results2.total_scenarios, \
+            "Total scenarios differ between runs with same seed"
         
-        # Different seed should produce different results
+        # Different seed should produce different results (non-deterministic across seeds)
         results3 = run_exp1b_revalidation(scenarios=20, seed=123)
-        assert results1.k1 != pytest.approx(results3.k1, abs=0.001) or \
-               results1.accuracy != pytest.approx(results3.accuracy, abs=0.001)
+        k1_differs = results1.k1 != pytest.approx(results3.k1, abs=0.001)
+        accuracy_differs = results1.accuracy != pytest.approx(results3.accuracy, abs=0.001)
+        assert k1_differs or accuracy_differs, \
+            "Results with different seeds should differ"
 
 
 class TestK1Calculation:
