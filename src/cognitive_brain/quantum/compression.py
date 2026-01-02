@@ -121,7 +121,16 @@ class PatternCompressor:
         
         # Calculate statistics
         self.feature_mean = np.mean(X, axis=0)
-        self.feature_std = np.std(X, axis=0) + EPSILON_STABILITY  # Add epsilon for stability
+        feature_std_raw = np.std(X, axis=0)
+        
+        # Handle zero-variance features
+        # Features with zero variance get std=1.0 to avoid division issues
+        # (they won't contribute to compression anyway)
+        self.feature_std = np.where(
+            feature_std_raw < EPSILON_STABILITY,
+            1.0,  # Set to 1.0 for zero-variance features
+            feature_std_raw + EPSILON_STABILITY  # Add epsilon for numerical stability
+        )
         
         # Normalize
         X_norm = (X - self.feature_mean) / self.feature_std

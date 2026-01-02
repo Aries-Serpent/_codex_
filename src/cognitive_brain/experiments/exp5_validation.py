@@ -20,6 +20,7 @@ Memory-guided decisions reduce computation time by 15% while maintaining
 
 import time
 import numpy as np
+import logging
 from typing import Dict, List, Tuple
 from dataclasses import dataclass
 
@@ -40,9 +41,15 @@ from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
+
 # Constants from previous phases
 CLASSICAL_BASELINE_MS = 28.5  # Classical assessment baseline from EXP-1B (Phase 8.0)
 PHASE_8_0_ERROR_RATE = 0.136  # Phase 8.0 error rate (1 - 0.864 accuracy)
+DEFAULT_SCENARIOS = 200  # Default number of scenarios for validation
+DEFAULT_SEED = 42  # Default random seed for reproducibility
 
 
 @dataclass
@@ -272,8 +279,26 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
 
 
 if __name__ == "__main__":
-    # Run EXP-5 validation
-    results = run_exp5_validation(scenarios=200, seed=42)
+    import argparse
+    
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Run EXP-5 validation experiment")
+    parser.add_argument(
+        "--scenarios",
+        type=int,
+        default=DEFAULT_SCENARIOS,
+        help=f"Number of scenarios to generate (default: {DEFAULT_SCENARIOS})"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=DEFAULT_SEED,
+        help=f"Random seed for reproducibility (default: {DEFAULT_SEED})"
+    )
+    args = parser.parse_args()
+    
+    # Run EXP-5 validation with configurable parameters
+    results = run_exp5_validation(scenarios=args.scenarios, seed=args.seed)
     
     # Summary
     print()

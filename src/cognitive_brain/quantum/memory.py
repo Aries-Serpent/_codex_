@@ -56,7 +56,12 @@ class MemoryPattern:
     in_ltm: bool = False
     
     def __post_init__(self):
-        """Validate pattern data."""
+        """Validate pattern data after initialization."""
+        # Validate pattern_id
+        if self.pattern_id is None or self.pattern_id == '':
+            raise ValueError("pattern_id must be non-empty string")
+        
+        # Validate confidence and success_rate ranges
         if not 0.0 <= self.confidence <= 1.0:
             raise ValueError(f"Confidence must be between 0 and 1, got {self.confidence}")
         if not 0.0 <= self.success_rate <= 1.0:
@@ -116,18 +121,12 @@ class QuantumMemoryManager:
         Store new pattern in short-term memory.
         
         Args:
-            pattern: Memory pattern to store (pattern_id must be set)
+            pattern: Memory pattern to store (validated in __post_init__)
             
         Returns:
             Pattern ID
-            
-        Raises:
-            ValueError: If pattern_id is None or empty string
         """
-        # Validate pattern_id is provided and non-empty
-        if pattern.pattern_id is None or pattern.pattern_id == '':
-            raise ValueError("Pattern must have non-empty pattern_id before storing")
-        
+        # Pattern validation handled in __post_init__
         # Add to STM
         self.stm.append(pattern)
         self.total_patterns_stored += 1

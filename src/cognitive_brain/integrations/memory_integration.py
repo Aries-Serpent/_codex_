@@ -33,6 +33,11 @@ from cognitive_brain.integrations.compliance_integration import (
 )
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
+import logging
+
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 # Constants
@@ -158,8 +163,29 @@ class MemoryAugmentedComplianceAssessor:
                     if similar_patterns else 0.0
                 )
                 
+                # Convert cached decision string to enum
+                try:
+                    decision_enum = ComplianceDecision(cached_decision)
+                except (ValueError, KeyError):
+                    # If conversion fails, run full assessment
+                    self.cache_miss_count += 1
+                    assessment = self.base_assessor.assess_compliance(audit)
+                    elapsed_ms = (time.time() - start_time) * 1000
+                    
+                    return MemoryAugmentedAssessment(
+                        decision=assessment.decision,
+                        confidence=assessment.confidence,
+                        reasoning=f"Cache hit with invalid decision format, ran full assessment",
+                        coherence=assessment.coherence,
+                        used_superposition=assessment.used_superposition,
+                        evaluation_time_ms=elapsed_ms,
+                        cache_hit=False,
+                        cache_confidence=None,
+                        similar_pattern_count=0
+                    )
+                
                 return MemoryAugmentedAssessment(
-                    decision=ComplianceDecision(cached_decision),
+                    decision=decision_enum,
                     confidence=avg_confidence,
                     reasoning=f"Cached decision from {len(similar_patterns)} similar patterns",
                     coherence=0.0,  # No superposition used
@@ -271,9 +297,11 @@ class MemoryAugmentedComplianceAssessor:
         # Get risk value with validation
         risk_level_normalized = audit.risk_level.lower()
         if risk_level_normalized not in risk_encoding:
-            # Log warning and use default
-            # In production, this should use proper logging
-            print(f"Warning: Unknown risk level '{audit.risk_level}', defaulting to 'medium'")
+            # Use proper logging instead of print
+            logger.warning(
+                f"Unknown risk level '{audit.risk_level}' for audit {audit.audit_id}, "
+                "defaulting to 'medium' (0.5)"
+            )
             risk_value = 0.5
         else:
             risk_value = risk_encoding[risk_level_normalized]
