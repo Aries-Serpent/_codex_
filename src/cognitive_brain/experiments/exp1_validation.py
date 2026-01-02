@@ -14,7 +14,7 @@ PDA Loop + AfterMath:
 """
 
 import json
-import secrets
+import random
 import tempfile
 import os
 from datetime import datetime
@@ -64,9 +64,10 @@ def generate_audit_scenarios(count: int) -> List[Tuple[AuditResult, ComplianceDe
     Returns:
         List of (audit_result, ground_truth) tuples
     """
-    # Copilot: Using secrets.SystemRandom() for security compliance while maintaining reproducibility
-    _rng = secrets.SystemRandom()
-    _rng.seed(42)  # Deterministic for reproducibility
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing compliance decision algorithms.
+    _rng = random.Random(42)  # nosec B311 - Deterministic for reproducibility
     scenarios = []
     
     for i in range(count):

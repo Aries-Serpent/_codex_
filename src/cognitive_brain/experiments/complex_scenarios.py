@@ -11,7 +11,7 @@ PDA Loop + AfterMath:
 - AfterMath: Track which scenarios challenge classical approach
 """
 
-import secrets
+import random
 from typing import List, Tuple
 from dataclasses import dataclass
 
@@ -53,9 +53,10 @@ def generate_complex_scenarios(count: int, seed: int = 42) -> List[Tuple[AuditRe
     Returns:
         List of (audit, ground_truth, complexity) tuples
     """
-    # Copilot: Using secrets.SystemRandom() for security compliance while maintaining reproducibility
-    _rng = secrets.SystemRandom()
-    _rng.seed(seed)
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing compliance decision algorithms.
+    _rng = random.Random(seed)  # nosec B311
     scenarios = []
     
     # Pattern 1: High compliance + high risk (15%)

@@ -12,7 +12,7 @@ Methodology:
 - Compare execution time and failure detection rate
 """
 
-import secrets
+import random
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -44,9 +44,10 @@ def generate_test_suite(num_tests: int = 100, seed: int = 42) -> List[TestCase]:
     Returns:
         List of test cases
     """
-    # Copilot: Using secrets.SystemRandom() for security compliance while maintaining reproducibility
-    _rng = secrets.SystemRandom()
-    _rng.seed(seed)
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing test prioritization algorithms.
+    _rng = random.Random(seed)  # nosec B311
     tests = []
     current_time = 2000.0
     

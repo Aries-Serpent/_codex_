@@ -12,7 +12,7 @@ Metrics:
 - Latency overhead
 """
 
-import secrets
+import random
 from typing import Dict, Any, List
 from dataclasses import dataclass
 
@@ -65,9 +65,10 @@ def generate_test_audits(count: int, seed: int = 42) -> List[AuditResult]:
     Returns:
         List of AuditResult objects
     """
-    # Copilot: Using secrets.SystemRandom() for security compliance while maintaining reproducibility
-    _rng = secrets.SystemRandom()
-    _rng.seed(seed)
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing compliance decision algorithms.
+    _rng = random.Random(seed)  # nosec B311
     
     violation_types = [
         ("PII exposure in user profile", 0.3, "high", 500.0),
