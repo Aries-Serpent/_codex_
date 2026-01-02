@@ -139,6 +139,9 @@ class PatternCompressor:
         
         X = np.array([[p.get(k, 0.0) for k in feature_keys] for p in patterns])
         
+        # Store feature keys for later use
+        self.feature_keys = feature_keys
+        
         # Calculate statistics
         self.feature_mean = np.mean(X, axis=0)
         feature_std_raw = np.std(X, axis=0)
@@ -161,13 +164,13 @@ class PatternCompressor:
         # Eigen decomposition
         eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
         
-        # Sort by eigenvalues (descending) - eigenvalues used for variance analysis
+        # Sort by eigenvalues (descending)
         idx = eigenvalues.argsort()[::-1]
-        eigenvalues_sorted = eigenvalues[idx]
+        eigenvalues = eigenvalues[idx]  # Reassign for consistency
         eigenvectors = eigenvectors[:, idx]
         
         # Calculate explained variance for logging/debugging
-        explained_variance_ratio = eigenvalues_sorted / eigenvalues_sorted.sum()
+        explained_variance_ratio = eigenvalues / eigenvalues.sum()
         
         # Determine target dimensions (50% reduction if not specified)
         if self.target_dimensions is None:
@@ -211,9 +214,8 @@ class PatternCompressor:
         if not self.is_fitted:
             raise RuntimeError("Compressor not fitted. Call fit() first.")
         
-        # Extract features in consistent order
-        feature_keys = sorted(pattern.keys())
-        feature_vector = np.array([pattern.get(k, 0.0) for k in feature_keys])
+        # Extract features in consistent order (use stored feature keys)
+        feature_vector = np.array([pattern.get(k, 0.0) for k in self.feature_keys])
         
         # Validate dimensions match training data
         expected_length = len(self.feature_mean)
@@ -235,15 +237,15 @@ class PatternCompressor:
         # Quantize
         compressed_vector_quantized = self._quantize(compressed_vector)
         
-        # Create compressed pattern
+        # Create compressed pattern (use stored feature keys)
         compressed = CompressedPattern(
             pattern_id=pattern_id,
             compressed_features=compressed_vector_quantized,
             decision=decision,
             confidence=confidence,
-            feature_keys=feature_keys,
+            feature_keys=self.feature_keys,
             compression_metadata={
-                'original_dimensions': len(feature_keys),
+                'original_dimensions': len(self.feature_keys),
                 'compressed_dimensions': self.target_dimensions,
                 'quantization_bits': self.quantization_bits,
                 'sparsity_threshold': self.sparsity_threshold
@@ -253,7 +255,7 @@ class PatternCompressor:
         # Update statistics with logical compression ratio
         self.total_compressed += 1
         # Compute logical size based on quantization bits per dimension
-        original_size = len(feature_keys) * 8  # 64-bit floats
+        original_size = len(self.feature_keys) * 8  # 64-bit floats
         compressed_size = self.target_dimensions * (self.quantization_bits / 8.0)
         ratio = compressed_size / original_size if original_size > 0 else 1.0
         self.compression_ratios.append(ratio)
