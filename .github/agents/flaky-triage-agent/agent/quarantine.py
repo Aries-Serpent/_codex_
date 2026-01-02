@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 
 # Import from classifier
 import sys
@@ -343,7 +343,9 @@ This list contains tests that have been quarantined due to flakiness. These test
                 with open(self.flake_index_path) as f:
                     index = json.load(f)
                     summary["total_in_index"] = index.get("total_flaky_tests", 0)
-            except:
+            except (OSError, json.JSONDecodeError):
+                # Best-effort: if flake index is missing or malformed,
+                # continue with empty index. Will be regenerated on next run.
                 pass
         
         #AFTERMATH_LESSON_LEARNED: quarantine_patterns_identified

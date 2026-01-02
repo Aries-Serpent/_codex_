@@ -93,7 +93,7 @@ class DependencyMonitor:
         
         # Validate base path
         try:
-            repo_resolved = self.repo_path.resolve()
+            self.repo_path.resolve()
         except (OSError, ValueError):
             return dependencies
         
@@ -123,6 +123,8 @@ class DependencyMonitor:
                                 version = info['version'].lstrip('=')
                                 dependencies[package] = version
             except json.JSONDecodeError:
+                # Best-effort: if Pipfile.lock is malformed, skip Python dependency
+                # parsing but continue with other dependency files.
                 pass
         
         # Read package-lock.json (for Node.js) with path validation
@@ -135,6 +137,8 @@ class DependencyMonitor:
                         if 'version' in info:
                             dependencies[package] = info['version']
             except json.JSONDecodeError:
+                # Best-effort: if package-lock.json is malformed, skip Node.js dependency
+                # parsing but continue with other dependency files.
                 pass
         
         return dependencies
@@ -180,6 +184,8 @@ class DependencyMonitor:
                         updates.append(update)
                         self.updates.append(update)
         except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
+            # Best-effort: if pip is unavailable, times out, or returns invalid JSON,
+            # skip Python dependency updates but continue monitoring other ecosystems.
             pass
         
         # Check npm packages
@@ -204,6 +210,8 @@ class DependencyMonitor:
                     updates.append(update)
                     self.updates.append(update)
         except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
+            # Best-effort: if npm is unavailable, times out, or returns invalid JSON,
+            # skip Node.js dependency updates but continue monitoring other ecosystems.
             pass
         
         return updates
@@ -294,6 +302,9 @@ class DependencyMonitor:
                         
                         vulnerabilities.append(vuln)
             except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
+                # Best-effort: if security scanning tool (pip-audit, npm audit, etc.)
+                # is unavailable, times out, or returns invalid JSON, continue without
+                # vulnerability data. Security checks can be performed manually.
                 pass
         
         return vulnerabilities

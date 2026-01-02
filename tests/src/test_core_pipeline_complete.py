@@ -712,7 +712,8 @@ class TestErrorPaths:
         """Test else clause in try-except"""
         try:
             # Test that else clause executes when no exception is raised
-            result = "try_executed"  # Demonstrates successful try execution
+            # The try block succeeds without raising an exception
+            result = "try"
         except Exception:
             result = "except"
         else:

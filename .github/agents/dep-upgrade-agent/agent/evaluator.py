@@ -6,7 +6,7 @@ Implements compatibility analysis and breaking change risk assessment.
 """
 
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass
 from enum import Enum
 import sys
@@ -331,7 +331,7 @@ class DependencyEvaluator:
     def _query_historical_success(self, package: str) -> float:
         """Query historical upgrade success rate."""
         try:
-            patterns = self.brain.query_patterns(
+            self.brain.query_patterns(
                 pattern_type="dependency_update",
                 confidence_threshold=0.5
             )

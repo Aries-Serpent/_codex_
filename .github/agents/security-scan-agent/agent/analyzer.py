@@ -6,7 +6,7 @@ Implements CVSS-based severity classification and risk assessment.
 """
 
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass
 from enum import Enum
 import sys
@@ -174,10 +174,10 @@ class SecurityAnalyzer:
         
         #AFTERMATH_PATTERN_IDENTIFIED: cvss_scoring
         """
-        # Simplified CVSS calculation
-        base_score = 5.0
+        # Simplified CVSS calculation based on severity
+        # Initialize with default for unknown severity levels
+        base_score = 1.0
         
-        # Adjust based on severity
         if finding.severity == "critical":
             base_score = 9.5
         elif finding.severity == "high":
@@ -186,8 +186,6 @@ class SecurityAnalyzer:
             base_score = 5.0
         elif finding.severity == "low":
             base_score = 3.0
-        else:
-            base_score = 1.0
         
         # Adjust based on confidence
         base_score *= finding.confidence
