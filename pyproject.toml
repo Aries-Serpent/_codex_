@@ -268,6 +268,7 @@ include = [
   "config*",
   "cli*",
   "common*",
+  "cognitive_brain*",
   # NOTE: services* intentionally excluded - see AGENTS.md "Project Structure" section for services/ layout and import patterns.
   # Root services/ contains application entry points (not library code), src/services/ is imported as src.services.*
   "tokenization*",
