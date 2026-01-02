@@ -22,11 +22,11 @@ from typing import Dict, List, Callable
 
 @dataclass
 class ScoringWeights:
-    """Weights for compliance scoring factors"""
-    compliance_score_weight: float = 0.40  # Weight for compliance score
-    risk_weight: float = 0.30  # Weight for risk level
-    cost_weight: float = 0.15  # Weight for remediation cost
-    impact_weight: float = 0.15  # Weight for business impact
+    """Weights for compliance scoring factors (Phase 8.0 optimized)"""
+    compliance_score_weight: float = 0.38  # Reduced from 0.40 (-5%)
+    risk_weight: float = 0.32              # Increased from 0.30 (+6.7%)
+    cost_weight: float = 0.15              # Unchanged
+    impact_weight: float = 0.15            # Unchanged
     
     def normalize(self) -> 'ScoringWeights':
         """Normalize weights to sum to 1.0"""
@@ -80,12 +80,12 @@ class AdaptiveScoringOptimizer:
     - Measures DOF (process window)
     """
     
-    def __init__(self, learning_rate: float = 0.1, momentum: float = 0.9):
+    def __init__(self, learning_rate: float = 0.12, momentum: float = 0.9):
         """
-        Initialize adaptive scorer.
+        Initialize adaptive scorer with Phase 8.0 optimized learning rate.
         
         Args:
-            learning_rate: Step size for weight updates (default: 0.1)
+            learning_rate: Step size for weight updates (default: 0.12, +20% from 0.1)
             momentum: Momentum factor for smoothing (default: 0.9)
         """
         self.learning_rate = learning_rate
