@@ -384,13 +384,6 @@ class PatternCompressor:
         self.total_decompressed += 1
         
         return reconstructed_dict
-            k: float(reconstructed[i])
-            for i, k in enumerate(compressed.feature_keys)
-        }
-        
-        self.total_decompressed += 1
-        
-        return reconstructed_dict
     
     def get_compression_ratio(self) -> float:
         """
