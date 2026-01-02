@@ -5,7 +5,7 @@ Tests for Release Gate Agent - Reporter Module (AFTERMATH Phase)
 """
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from datetime import datetime
 from agent.reporter import ReleaseReporter, ReleaseReport
 

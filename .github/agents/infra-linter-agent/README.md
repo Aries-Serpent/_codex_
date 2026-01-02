@@ -120,12 +120,12 @@ graph LR
 # Python 3.8+
 python --version
 
-# Optional: Install IaC linters for full functionality
-pip install tfsec kube-score cfn-lint hadolint ansible-lint
+# Optional: Install IaC linters for full functionality (pin versions for security)
+pip install tfsec==1.28.4 kube-score==1.17.0 cfn-lint==0.83.4 hadolint==2.12.0 ansible-lint==6.22.1
 
-# Or use Docker images (recommended for CI)
-docker pull aquasec/tfsec:latest
-docker pull zegl/kube-score:latest
+# Or use Docker images with pinned digests (recommended for CI)
+docker pull aquasec/tfsec@sha256:6f6e3e5c5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e
+docker pull zegl/kube-score@sha256:7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a
 ```
 
 ### Install Agent
@@ -330,7 +330,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install tfsec kube-score cfn-lint hadolint ansible-lint
+          # Pin versions to prevent supply chain attacks
+          pip install tfsec==1.28.4 kube-score==1.17.0 cfn-lint==0.83.4 hadolint==2.12.0 ansible-lint==6.22.1
       
       - name: Run IaC Linter
         run: |

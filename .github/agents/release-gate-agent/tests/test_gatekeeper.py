@@ -5,7 +5,7 @@ Tests for Release Gate Agent - Gatekeeper Module (DECIDE Phase)
 """
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from agent.gatekeeper import ReleaseGatekeeper, ReleaseDecision, ReleaseAssessment
 
 
