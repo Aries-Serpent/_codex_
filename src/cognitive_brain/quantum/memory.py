@@ -37,6 +37,15 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class PruningResult:
+    """Result of cache pruning operations."""
+    aged_pruned: int = 0
+    access_pruned: int = 0
+    confidence_pruned: int = 0
+    total_pruned: int = 0
+
+
+@dataclass
 class MemoryPattern:
     """
     Stored decision pattern with metadata for consolidation and retrieval.
@@ -520,8 +529,10 @@ class QuantumMemoryManager:
             - cache_hit_rate: Overall cache hit rate
             - avg_age_hours: Average pattern age in hours
             - avg_access_count: Average pattern access count
-            - staleness_score: Percentage of patterns >30 days old
+            - staleness_score: Percentage of patterns >30 days old (configurable threshold)
         """
+        STALENESS_THRESHOLD_HOURS = 720  # 30 days, matches default in prune_by_age()
+        
         stm_size = len(self.stm)
         ltm_size = len(self.ltm)
         
@@ -530,7 +541,7 @@ class QuantumMemoryManager:
         if ltm_size > 0:
             ages = [(now - p.timestamp).total_seconds() / 3600 for p in self.ltm.values()]
             avg_age_hours = sum(ages) / len(ages)
-            staleness_score = sum(1 for age in ages if age > 720) / len(ages) * 100  # >30 days
+            staleness_score = sum(1 for age in ages if age > STALENESS_THRESHOLD_HOURS) / len(ages) * 100
         else:
             avg_age_hours = 0.0
             staleness_score = 0.0
@@ -552,7 +563,7 @@ class QuantumMemoryManager:
             "staleness_score": staleness_score
         }
     
-    def auto_prune(self, ltm_threshold_pct: float = 0.8) -> Dict[str, int]:
+    def auto_prune(self, ltm_threshold_pct: float = 0.8) -> PruningResult:
         """
         Automatically prune cache based on configurable thresholds.
         

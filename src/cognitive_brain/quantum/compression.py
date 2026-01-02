@@ -111,6 +111,7 @@ class PatternCompressor:
         self.feature_std: Optional[np.ndarray] = None
         self.projection_matrix: Optional[np.ndarray] = None
         self.feature_importance: Optional[np.ndarray] = None  # New: importance scores
+        self.explained_variance_ratio: Optional[np.ndarray] = None  # For variable quantization
         self.is_fitted = False
         
         # Statistics
@@ -199,8 +200,11 @@ class PatternCompressor:
         self.feature_importance = np.sum(np.abs(loadings), axis=1)
         self.feature_importance /= self.feature_importance.sum()  # Normalize
         
+        # Store explained variance for variable quantization
+        self.explained_variance_ratio = explained_variance_ratio[:self.target_dimensions]
+        
         # Log compression info
-        actual_variance = explained_variance_ratio[:self.target_dimensions].sum()
+        actual_variance = self.explained_variance_ratio.sum()
         reduction_pct = (1 - self.target_dimensions / X.shape[1]) * 100
         logger.info(
             f"Enhanced compression: {X.shape[1]}→{self.target_dimensions} dimensions "
@@ -275,17 +279,27 @@ class PatternCompressor:
         # Project to lower-dimensional space
         compressed_vec = self.projection_matrix.T @ normalized
         
-        # ENHANCEMENT: Variable quantization based on component importance
-        # Components with higher variance (earlier in PCA) get more bits
-        component_importance = np.linspace(1.0, 0.5, len(compressed_vec))  # Decay from 1.0 to 0.5
+        # ENHANCEMENT: Variable quantization based on eigenvalue importance
+        # Components with higher explained variance get more bits for precision
+        if self.explained_variance_ratio is not None:
+            # Use actual eigenvalue importance instead of arbitrary decay
+            component_importance = self.explained_variance_ratio / self.explained_variance_ratio.max()
+        else:
+            # Fallback to linear decay if not available
+            component_importance = np.linspace(1.0, 0.5, len(compressed_vec))
+        
         variable_bits = (self.quantization_bits * component_importance).astype(int)
         variable_bits = np.clip(variable_bits, 4, self.quantization_bits)  # 4-8 bit range
         
-        # Apply variable quantization per component
+        # Apply variable quantization per component with correct signed integer range
         quantized = np.zeros_like(compressed_vec)
         for i, (val, bits) in enumerate(zip(compressed_vec, variable_bits)):
-            max_val = 2 ** (bits - 1) - 1  # Leave 1 bit for sign
-            quantized[i] = np.clip(np.round(val * max_val) / max_val, -1.0, 1.0)
+            # Correct signed integer range: -(2^(bits-1)) to (2^(bits-1) - 1)
+            max_val = 2 ** (bits - 1) - 1
+            min_val = -(2 ** (bits - 1))
+            # Quantize and clip to valid range
+            quantized_val = np.round(val * max_val)
+            quantized[i] = np.clip(quantized_val, min_val, max_val) / max_val
         
         # Apply sparsity threshold
         quantized[np.abs(quantized) < self.sparsity_threshold] = 0.0
@@ -307,8 +321,10 @@ class PatternCompressor:
         
         # Calculate and track compression ratio
         original_size = len(self.feature_keys) * 8  # 64-bit (8 bytes) per feature
-        # Compute logical compressed size based on variable quantization
-        compressed_size = sum(variable_bits) / 8.0  # Convert bits to bytes
+        # Compute logical compressed size based on variable quantization + padding overhead
+        bits_used = sum(variable_bits)
+        # Add 10% padding overhead for realistic bit packing/alignment
+        compressed_size = (bits_used * 1.1) / 8.0  # Convert bits to bytes with overhead
         
         compression_ratio = 1.0 - (compressed_size / original_size)
         self.compression_ratios.append(compression_ratio)
@@ -318,77 +334,6 @@ class PatternCompressor:
             f"Compressed pattern {pattern_id}: {original_size}→{compressed_size:.1f} bytes "
             f"({compression_ratio:.1%} reduction, {compressed.compression_metadata['sparsity']:.1%} sparse)"
         )
-        
-        return compressed
-        """
-        Compress pattern for LTM storage.
-        
-        Steps:
-        1. Extract feature vector in consistent order
-        2. Normalize using learned statistics
-        3. Project to reduced dimensions (PCA)
-        4. Apply quantization
-        5. Apply sparsity threshold
-        
-        Args:
-            pattern: Feature dict to compress
-            pattern_id: Pattern identifier
-            decision: Decision to preserve
-            confidence: Confidence to preserve
-            
-        Returns:
-            Compressed pattern
-        """
-        if not self.is_fitted:
-            raise RuntimeError("Compressor not fitted. Call fit() first.")
-        
-        # Extract features in consistent order (use stored feature keys)
-        feature_vector = np.array([pattern.get(k, 0.0) for k in self.feature_keys])
-        
-        # Validate dimensions match training data
-        expected_length = len(self.feature_mean)
-        if len(feature_vector) != expected_length:
-            raise ValueError(
-                f"Pattern dimension mismatch: got {len(feature_vector)} features, "
-                f"expected {expected_length} (from training data)"
-            )
-        
-        # Normalize
-        feature_vector_norm = (feature_vector - self.feature_mean) / self.feature_std
-        
-        # Project to reduced dimensions
-        compressed_vector = self.projection_matrix.T @ feature_vector_norm
-        
-        # Apply sparsity threshold
-        compressed_vector[np.abs(compressed_vector) < self.sparsity_threshold] = 0.0
-        
-        # Quantize
-        compressed_vector_quantized = self._quantize(compressed_vector)
-        
-        # Create compressed pattern (use stored feature keys)
-        compressed = CompressedPattern(
-            pattern_id=pattern_id,
-            compressed_features=compressed_vector_quantized,
-            decision=decision,
-            confidence=confidence,
-            feature_keys=self.feature_keys,
-            compression_metadata={
-                'original_dimensions': len(self.feature_keys),
-                'compressed_dimensions': self.target_dimensions,
-                'quantization_bits': self.quantization_bits,
-                'sparsity_threshold': self.sparsity_threshold
-            }
-        )
-        
-        # Update statistics with logical compression ratio
-        # Note: We use logical size (based on quantization_bits) rather than actual
-        # numpy storage size to measure compression effectiveness independent of implementation.
-        # This gives a consistent metric across different storage backends.
-        self.total_compressed += 1
-        original_size = len(self.feature_keys) * 8  # 64-bit floats (logical)
-        compressed_size = self.target_dimensions * (self.quantization_bits / 8.0)  # Logical compressed size
-        ratio = compressed_size / original_size if original_size > 0 else 1.0
-        self.compression_ratios.append(ratio)
         
         return compressed
     
