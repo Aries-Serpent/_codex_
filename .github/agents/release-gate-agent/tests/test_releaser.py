@@ -6,6 +6,7 @@ Tests for Release Gate Agent - Releaser Module (ACT Phase)
 
 import pytest
 from unittest.mock import Mock, patch
+from urllib.parse import urlparse
 from agent.releaser import ReleaseExecutor, ReleaseStatus, ReleaseResult
 
 
@@ -107,7 +108,10 @@ class TestReleaseExecutor:
         
         assert result["status"] == "success"
         assert result["released"] is True
-        assert result["release_url"].startswith("https://github.com")
+        # Proper URL validation: check scheme and netloc separately
+        parsed_url = urlparse(result["release_url"])
+        assert parsed_url.scheme == "https"
+        assert parsed_url.netloc == "github.com" or parsed_url.netloc.endswith(".github.com")
         assert result["git_tag"] == "v1.0.0"
         assert result["health_status"] == "healthy"
     
@@ -193,7 +197,10 @@ class TestReleaseExecutor:
         with patch('subprocess.run', return_value=mock_result):
             url = executor._create_github_release(release_info, "v1.0.0")
         
-        assert url.startswith("https://github.com")
+        # Proper URL validation: check scheme and netloc separately
+        parsed_url = urlparse(url)
+        assert parsed_url.scheme == "https"
+        assert parsed_url.netloc == "github.com" or parsed_url.netloc.endswith(".github.com")
         assert "v1.0.0" in url
     
     def test_create_github_release_uses_repo_params(self, executor):
