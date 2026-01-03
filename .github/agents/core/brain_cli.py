@@ -18,10 +18,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-# Add parent to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-
-from cognitive_brain import CognitiveBrain
+# Import cognitive_brain from same directory (sibling module)
+try:
+    from cognitive_brain import CognitiveBrain
+except ImportError:
+    # Fallback: Add parent directory to path if running as script
+    _script_dir = Path(__file__).resolve().parent
+    if str(_script_dir) not in sys.path:
+        sys.path.insert(0, str(_script_dir))
+    from cognitive_brain import CognitiveBrain
 
 
 def get_brain(db_path: Optional[str] = None) -> CognitiveBrain:

@@ -21,13 +21,21 @@ from pathlib import Path
 from typing import Any, Dict, List
 import uuid
 
-# Add parent to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from base_agent import CognitiveAgent
-from cognitive_brain import CognitiveBrain
-from pattern_recognizer import PatternRecognizer
-from orchestrator import AgentOrchestrator
+# Import from parent package (core/)
+try:
+    from base_agent import CognitiveAgent
+    from cognitive_brain import CognitiveBrain
+    from pattern_recognizer import PatternRecognizer
+    from orchestrator import AgentOrchestrator
+except ImportError:
+    # Fallback: Add parent directory to path if running as script
+    _core_path = Path(__file__).resolve().parents[1]
+    if str(_core_path) not in sys.path:
+        sys.path.insert(0, str(_core_path))
+    from base_agent import CognitiveAgent
+    from cognitive_brain import CognitiveBrain
+    from pattern_recognizer import PatternRecognizer
+    from orchestrator import AgentOrchestrator
 
 
 class CodeAnalysisAgent(CognitiveAgent):
@@ -527,7 +535,6 @@ def main():
     if args.db:
         db_path = Path(args.db)
     else:
-        import tempfile
         temp_dir = tempfile.mkdtemp()
         db_path = Path(temp_dir) / "demo_brain.db"
     
