@@ -1,0 +1,5 @@
+name: reasoning-advisor-agent
+version: 1.0.0
+description: Causal analysis and explainable AI recommendations
+seed: 50
+capabilities: [causal_inference, counterfactuals, explainable_ai]
