@@ -16,9 +16,7 @@ All tests use fixed seeds for 100% deterministic execution.
 """
 
 import pytest
-import json
 import time
-from datetime import datetime
 
 # Import Phase 8.8 modules
 import sys
@@ -30,7 +28,6 @@ from phase8_8_meta_learning import (
     Architecture, ArchitectureSpace, NASController,
     FastWeightsState, FastWeights,
     AgentMessage, AgentMessageBus,
-    integrate_with_meta_policy_router,
     K1_PHASE_8_8_TARGET, QUANTUM_ADVANTAGE_8_8_TARGET,
 )
 
@@ -997,11 +994,11 @@ class TestIntegration:
     def test_fast_weights_with_l2o(self):
         """Test Fast Weights with L2O."""
         fw = FastWeights(seed=12345)
-        opt = LearnedOptimizer(seed=12345)
+        _opt = LearnedOptimizer(seed=12345)
         
         # Both use similar patterns
         fw_state = fw.adapt_to_task("task1", [(1.0, 2.0)])
-        opt_state = OptimizerState(parameters={"w1": 1.0}, gradients={"w1": 0.5})
+        _opt_state = OptimizerState(parameters={"w1": 1.0}, gradients={"w1": 0.5})
         
         assert fw_state is not None
         assert opt_state is not None

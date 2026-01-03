@@ -14,13 +14,10 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 - Agents can evolve via Hamiltonian dynamics
 """
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
-import json
-import hashlib
+from dataclasses import dataclass
+from typing import Any, Dict, List
 import random
 import re
-from pathlib import Path
 from collections import defaultdict
 
 

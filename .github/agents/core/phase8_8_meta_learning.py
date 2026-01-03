@@ -20,13 +20,12 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Callable, Set
+from typing import Any, Dict, List, Optional, Tuple, Set
 from datetime import datetime
 import json
 import math
 import hashlib
 import random
-from enum import Enum
 from collections import defaultdict
 
 

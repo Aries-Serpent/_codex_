@@ -1636,7 +1636,6 @@ class TestGoldenSnapshots:
         assert snapshot_path.exists()
         
         # Verify JSON structure
-        import json
         with open(snapshot_path) as f:
             data = json.load(f)
         
@@ -2057,11 +2056,11 @@ class TestStorageMetrics:
         store.store_pattern(pattern)
         
         # First retrieval (cache miss)
-        patterns1, scores1 = store.retrieve_patterns_cached("test", top_k=5)
+        _patterns1, _scores1 = store.retrieve_patterns_cached("test", top_k=5)
         assert store.cache_misses == 1
         
         # Second retrieval (cache hit)
-        patterns2, scores2 = store.retrieve_patterns_cached("test", top_k=5)
+        _patterns2, _scores2 = store.retrieve_patterns_cached("test", top_k=5)
         assert store.cache_hits == 1
 
 
@@ -2426,7 +2425,6 @@ class TestMetricsArtifacts:
     def test_jsonl_format(self, tmp_path):
         """Test JSONL file format."""
         from ..universal_intelligence import EXP10BenchmarkHarness
-        import json
         
         metrics_dir = tmp_path / "metrics"
         
