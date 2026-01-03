@@ -902,10 +902,20 @@ class NeuralPolicyNetwork:
                 if i < len(self.weights['w2']) and j < len(self.weights['w2'][i]):
                     output[j] += h * self.weights['w2'][i][j]
         
-        # Softmax approximation with clamping to prevent numerical overflow
-        exp_output = [math.exp(min(o, self.SOFTMAX_CLAMP_MAX)) for o in output]
-        total = sum(exp_output)
-        return [e / total for e in exp_output] if total > 0 else [1.0 / len(output)] * len(output)
+        # Softmax approximation using numerically stable formulation:
+        # subtract max(logit) before exponentiating to prevent overflow.
+        if output:
+            max_output = max(output)
+            # Shift logits and clamp to a symmetric range for extra numerical safety.
+            shifted = [
+                max(min(o - max_output, self.SOFTMAX_CLAMP_MAX), -self.SOFTMAX_CLAMP_MAX)
+                for o in output
+            ]
+            exp_output = [math.exp(s) for s in shifted]
+            total = sum(exp_output)
+            return [e / total for e in exp_output] if total > 0 else [1.0 / len(output)] * len(output)
+        # Fallback for empty output (should not normally occur)
+        return []
     
     def select_action(self, state: List[float]) -> int:
         """Select action from policy.

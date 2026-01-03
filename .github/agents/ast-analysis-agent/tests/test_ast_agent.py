@@ -6,7 +6,6 @@ Comprehensive test suite covering:
 - PatternDetector accuracy
 - ReportGenerator output formats
 """
-import pytest
 import os
 import sys
 import tempfile
@@ -16,7 +15,7 @@ agent_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 sys.path.insert(0, agent_dir)
 
 from analyzer import ASTAnalysisAgent, CodeFinding, AnalysisContext
-from pattern_detector import PatternDetector, Pattern
+from pattern_detector import PatternDetector
 from report_generator import ReportGenerator, ReportConfig
 
 
@@ -180,7 +179,7 @@ class Singleton:
             cls._instance = cls()
         return cls._instance
 '''
-        patterns = detector.detect_patterns(singleton_code)
+        detector.detect_patterns(singleton_code)
         
         singleton_patterns = [p for p in patterns if p.name == 'singleton']
         assert len(singleton_patterns) > 0

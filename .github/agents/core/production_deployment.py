@@ -87,16 +87,18 @@ class MemoryHealthCheck(HealthCheck):
         
         try:
             import sys
-            # NOTE: This is a placeholder implementation for demonstration.
-            # In production, use psutil.Process().memory_info().rss / (1024 * 1024)
-            # The current implementation uses sys.getsizeof as a minimal footprint check.
-            memory_mb = sys.getsizeof({}) / (1024 * 1024)  # Minimal object memory only
+            # NOTE: This is a placeholder implementation for demonstration only.
+            # In production, integrate with psutil (e.g. Process().memory_info().rss)
+            # or the deployment platform's metrics to obtain actual memory usage in MB.
+            # Here we report a fixed near-zero value to make it explicit that this is
+            # not performing real memory monitoring.
+            memory_mb = 0.0
             
             latency = (time.time() - start) * 1000
             
             # For placeholder, always report healthy since we're not measuring real usage
             status = HealthStatus.HEALTHY
-            message = f"Memory check completed (placeholder): {memory_mb:.4f}MB"
+            message = f"Memory check completed (placeholder, not real usage): {memory_mb:.4f}MB"
             
             return HealthCheckResult(
                 component=self.name,
@@ -1023,14 +1025,13 @@ class ProcessHealthCheck(HealthCheck):
             # Get process info
             pid = os.getpid()
             
-            # Memory usage approximation
-            # NOTE: This is a PLACEHOLDER for demonstration purposes.
-            # sys.getsizeof(globals()) only measures the global namespace dict size,
-            # NOT actual process memory. In production, replace with:
+            # Memory usage placeholder
+            # NOTE: This is intentionally a non-functional placeholder. It does NOT
+            # represent actual process memory usage. In production, replace with:
             #   import psutil
             #   memory_mb = psutil.Process(pid).memory_info().rss / (1024 * 1024)
             # psutil is not included as a dependency to keep the module lightweight.
-            memory_mb = sys.getsizeof(globals()) / (1024 * 1024)
+            memory_mb = 0.0
             
             # CPU time (using os.times if available)
             try:

@@ -395,7 +395,8 @@ class RefactoringAgent:
             
             # Check for magic numbers
             number_pattern = r'\b\d{2,}\b'
-            if re.search(number_pattern, line) and "=" not in line[:line.find(re.search(number_pattern, line).group()) if re.search(number_pattern, line) else 0]:
+            number_match = re.search(number_pattern, line)
+            if number_match and "=" not in line[: line.find(number_match.group())]:
                 smells.append(CodeSmell(
                     file_path=file_path,
                     line_number=i,

@@ -1,5 +1,5 @@
 """
-Tests for Adaptive Learning Engine (Phase 8.3).
+Tests for Adaptive Learning Engine (Phase 8.7 Universal Intelligence / Phase 8.8, evolved from earlier Phase 8.3 work).
 
 Comprehensive test suite covering:
 - Q-learning functionality
