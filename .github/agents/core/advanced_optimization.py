@@ -21,6 +21,14 @@ from datetime import datetime
 
 
 # =============================================================================
+# CONSTANTS
+# =============================================================================
+
+# Validation seed for deterministic testing
+VALIDATION_SEED = 42  # Project-wide seed for reproducible validation results
+
+
+# =============================================================================
 # EXPERIMENT VALIDATION FRAMEWORK
 # =============================================================================
 
@@ -136,7 +144,7 @@ class EXP7Validator(ValidationExperiment):
         # Fixed seed for deterministic, reproducible validation results.
         # NOTE: This is ONLY acceptable for validation/testing scenarios.
         # Production code should use secrets module for cryptographic purposes.
-        self._rng = random.Random(42)  # nosec B311 - Deterministic for validation
+        self._rng = random.Random(VALIDATION_SEED)  # nosec B311 - Deterministic for validation
     
     def run(self, config: ExperimentConfig) -> ExperimentResult:
         """Run EXP-7 validation.

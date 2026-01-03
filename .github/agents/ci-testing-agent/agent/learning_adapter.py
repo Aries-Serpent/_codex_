@@ -15,6 +15,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import json
 from pathlib import Path
 
+# Duration normalization baseline (ms) - configurable for different test suites
+DEFAULT_DURATION_NORMALIZATION_MS = 1000
+
 # Try imports from cognitive brain
 try:
     from ...core.adaptive_learning import AdaptiveLearningEngine, RewardShaper
@@ -91,6 +94,7 @@ class LearningAdapter:
         db_path: Optional[Path] = None,
         policy_path: Optional[Path] = None,
         learning_enabled: bool = True,
+        duration_normalization_ms: float = DEFAULT_DURATION_NORMALIZATION_MS,
     ):
         """Initialize learning adapter.
         
@@ -98,10 +102,12 @@ class LearningAdapter:
             db_path: Path to learning database
             policy_path: Path to save/load policy
             learning_enabled: Whether to enable learning
+            duration_normalization_ms: Baseline for duration normalization (default: 1000ms)
         """
         self.db_path = db_path
         self.policy_path = policy_path
         self.learning_enabled = learning_enabled
+        self.duration_normalization_ms = duration_normalization_ms
         
         self.engine: Optional[Any] = None
         self.reward_shaper: Optional[Any] = None
@@ -201,7 +207,8 @@ class LearningAdapter:
         # Factor 2: Test duration (prefer faster tests early)
         if test.duration_ms > 0:
             # Normalize: faster tests get higher priority
-            duration_factor = 1.0 / (1.0 + test.duration_ms / 1000)
+            # Using configurable normalization baseline
+            duration_factor = 1.0 / (1.0 + test.duration_ms / self.duration_normalization_ms)
             priority += duration_factor * 0.1
         
         # Factor 3: Changed files relevance
