@@ -118,10 +118,6 @@ class TestAdaptiveScoringOptimized:
         optimizer_fast.update_weights()
         optimizer_slow.update_weights()
         
-        # Fast optimizer should have larger weight changes (due to higher learning rate)
-        _fast_weights = optimizer_fast.weights.to_dict()  # Copilot: Computed for potential comparison
-        _slow_weights = optimizer_slow.weights.to_dict()  # Copilot: Computed for potential comparison
-        
         # At least one weight should differ more in the fast optimizer
         # (indicating faster convergence)
         assert optimizer_fast.learning_rate > optimizer_slow.learning_rate
