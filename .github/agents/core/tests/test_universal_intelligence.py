@@ -74,6 +74,12 @@ from ..universal_intelligence import (
     BanditAdapter,
     ClassificationAdapter,
     ENVIRONMENT_ADAPTERS,
+    # PRE-COMMIT 2 additions
+    MAMLState,
+    ReptileState,
+    StrategyPerformance,
+    DynamicHyperparamTuner,
+    StrategyBenchmark,
 )
 
 
@@ -1110,6 +1116,290 @@ class TestUTIEnhancements:
         
         with pytest.raises(ValueError):
             uti.execute_task(spec)
+
+
+# =============================================================================
+# TEST PRE-COMMIT 2: MPR ENHANCEMENTS
+# =============================================================================
+
+
+class TestMAMLState:
+    """Test MAML algorithm state."""
+    
+    def test_maml_initialization(self):
+        """Test MAML state initialization."""
+        from ..universal_intelligence import MAMLState
+        maml = MAMLState(
+            meta_params={"w0": 1.0, "w1": 0.5},
+            meta_lr=0.001,
+            inner_lr=0.01,
+            inner_steps=5,
+        )
+        assert maml.meta_lr == 0.001
+        assert maml.inner_steps == 5
+        assert "w0" in maml.meta_params
+    
+    def test_maml_adapt_to_task(self):
+        """Test MAML task adaptation."""
+        from ..universal_intelligence import MAMLState
+        maml = MAMLState(meta_params={"w0": 1.0, "w1": 0.5})
+        
+        task_data = [(i, i**2) for i in range(10)]
+        adapted = maml.adapt_to_task("task1", task_data)
+        
+        assert "w0" in adapted
+        assert "w1" in adapted
+        # Params should be different after adaptation
+        assert adapted["w0"] != maml.meta_params["w0"]
+    
+    def test_maml_meta_update(self):
+        """Test MAML meta-parameter update."""
+        from ..universal_intelligence import MAMLState
+        maml = MAMLState(meta_params={"w0": 1.0})
+        
+        original_w0 = maml.meta_params["w0"]
+        maml.meta_update({"task1": 0.8, "task2": 0.7})
+        
+        # Meta params should change
+        assert maml.meta_params["w0"] != original_w0
+
+
+class TestReptileState:
+    """Test Reptile algorithm state."""
+    
+    def test_reptile_initialization(self):
+        """Test Reptile state initialization."""
+        from ..universal_intelligence import ReptileState
+        reptile = ReptileState(
+            init_params={"theta0": 0.5, "theta1": 0.3},
+            step_size=0.01,
+            inner_steps=10,
+        )
+        assert reptile.step_size == 0.01
+        assert reptile.inner_steps == 10
+        assert "theta0" in reptile.init_params
+    
+    def test_reptile_adapt_to_task(self):
+        """Test Reptile task adaptation."""
+        from ..universal_intelligence import ReptileState
+        reptile = ReptileState(init_params={"theta0": 0.5})
+        
+        task_data = [(i, i**2) for i in range(5)]
+        adapted = reptile.adapt_to_task("task1", task_data)
+        
+        assert "theta0" in adapted
+        # Should differ from init params
+        assert adapted["theta0"] != reptile.init_params["theta0"]
+    
+    def test_reptile_meta_update(self):
+        """Test Reptile meta-update."""
+        from ..universal_intelligence import ReptileState
+        reptile = ReptileState(init_params={"theta0": 0.5})
+        
+        adapted = {"theta0": 0.7}
+        original = reptile.init_params["theta0"]
+        
+        reptile.meta_update(adapted)
+        
+        # Init params should move toward adapted params
+        assert reptile.init_params["theta0"] != original
+        # Should be between original and adapted
+        assert original < reptile.init_params["theta0"] < adapted["theta0"]
+
+
+class TestStrategyPerformance:
+    """Test strategy performance tracking."""
+    
+    def test_performance_initialization(self):
+        """Test performance tracker initialization."""
+        from ..universal_intelligence import StrategyPerformance
+        perf = StrategyPerformance(strategy_name="maml")
+        assert perf.strategy_name == "maml"
+        assert perf.avg_score == 0.0
+        assert perf.success_count == 0
+    
+    def test_performance_update(self):
+        """Test updating performance."""
+        from ..universal_intelligence import StrategyPerformance
+        perf = StrategyPerformance(strategy_name="maml")
+        
+        perf.update(0.8, success=True)
+        assert perf.success_count == 1
+        assert perf.avg_score == 0.8
+        
+        perf.update(0.6, success=True)
+        assert perf.success_count == 2
+        assert perf.avg_score == 0.7  # (0.8 + 0.6) / 2
+    
+    def test_success_rate(self):
+        """Test success rate calculation."""
+        from ..universal_intelligence import StrategyPerformance
+        perf = StrategyPerformance(strategy_name="maml")
+        
+        perf.update(0.9, success=True)
+        perf.update(0.4, success=False)
+        perf.update(0.8, success=True)
+        
+        assert perf.success_count == 2
+        assert perf.failure_count == 1
+        assert perf.get_success_rate() == pytest.approx(2/3, abs=0.01)
+
+
+class TestDynamicHyperparamTuner:
+    """Test dynamic hyperparameter tuning."""
+    
+    def test_tuner_initialization(self):
+        """Test tuner initialization."""
+        from ..universal_intelligence import DynamicHyperparamTuner
+        tuner = DynamicHyperparamTuner(seed=12345)
+        assert tuner.seed == 12345
+        assert len(tuner.param_history) == 0
+    
+    def test_tune_poor_performance(self):
+        """Test tuning with poor performance."""
+        from ..universal_intelligence import DynamicHyperparamTuner
+        tuner = DynamicHyperparamTuner(seed=12345)
+        
+        current = {"meta_lr": 0.001, "inner_lr": 0.01}
+        tuned = tuner.tune_hyperparams("maml", current, performance=0.3)
+        
+        # Should increase learning rates for poor performance
+        assert tuned["meta_lr"] > current["meta_lr"]
+        assert tuned["inner_lr"] > current["inner_lr"]
+    
+    def test_tune_good_performance(self):
+        """Test tuning with good performance."""
+        from ..universal_intelligence import DynamicHyperparamTuner
+        tuner = DynamicHyperparamTuner(seed=12345)
+        
+        current = {"meta_lr": 0.001, "inner_lr": 0.01}
+        tuned = tuner.tune_hyperparams("maml", current, performance=0.9)
+        
+        # Should decrease learning rates for good performance
+        assert tuned["meta_lr"] < current["meta_lr"]
+        assert tuned["inner_lr"] < current["inner_lr"]
+    
+    def test_get_best_params(self):
+        """Test getting best parameters."""
+        from ..universal_intelligence import DynamicHyperparamTuner
+        tuner = DynamicHyperparamTuner(seed=12345)
+        
+        # No history yet
+        assert tuner.get_best_params("maml") is None
+        
+        # Add history
+        params1 = {"meta_lr": 0.001}
+        tuner.tune_hyperparams("maml", params1, 0.5)
+        
+        best = tuner.get_best_params("maml")
+        assert best is not None
+        assert "meta_lr" in best
+
+
+class TestStrategyBenchmark:
+    """Test strategy benchmark suite."""
+    
+    def test_benchmark_initialization(self):
+        """Test benchmark initialization."""
+        from ..universal_intelligence import StrategyBenchmark
+        benchmark = StrategyBenchmark(seed=12345)
+        assert benchmark.seed == 12345
+        assert len(benchmark.results) == 0
+    
+    def test_create_benchmark_task(self):
+        """Test creating benchmark tasks."""
+        from ..universal_intelligence import StrategyBenchmark
+        benchmark = StrategyBenchmark(seed=12345)
+        
+        task_data = benchmark.create_benchmark_task("task1", difficulty=0.5)
+        assert len(task_data) > 0
+        assert all(isinstance(x, tuple) and len(x) == 2 for x in task_data)
+    
+    def test_run_benchmark(self):
+        """Test running benchmark."""
+        from ..universal_intelligence import StrategyBenchmark
+        benchmark = StrategyBenchmark(seed=12345)
+        
+        strategies = ["maml", "reptile", "adapter_transfer"]
+        results = benchmark.run_benchmark(strategies, num_tasks=5)
+        
+        assert len(results) == 3
+        for strategy in strategies:
+            assert strategy in results
+            assert results[strategy].avg_score >= 0
+            assert results[strategy].avg_score <= 1.0
+    
+    def test_get_rankings(self):
+        """Test getting strategy rankings."""
+        from ..universal_intelligence import StrategyBenchmark
+        benchmark = StrategyBenchmark(seed=12345)
+        
+        strategies = ["maml", "reptile"]
+        benchmark.run_benchmark(strategies, num_tasks=5)
+        
+        rankings = benchmark.get_rankings()
+        assert len(rankings) == 2
+        # Rankings should be sorted by score descending
+        assert rankings[0][1] >= rankings[1][1]
+
+
+class TestMPREnhancements:
+    """Test MPR with MAML/Reptile integration."""
+    
+    def test_mpr_maml_integration(self):
+        """Test MPR with MAML integration."""
+        router = MetaPolicyRouter(seed=12345)
+        
+        task_data = [(i, i**2) for i in range(10)]
+        adapted = router.adapt_with_maml("task1", task_data)
+        
+        assert isinstance(adapted, dict)
+        assert len(adapted) > 0
+    
+    def test_mpr_reptile_integration(self):
+        """Test MPR with Reptile integration."""
+        router = MetaPolicyRouter(seed=12345)
+        
+        task_data = [(i, i**2) for i in range(10)]
+        adapted = router.adapt_with_reptile("task1", task_data)
+        
+        assert isinstance(adapted, dict)
+        assert len(adapted) > 0
+    
+    def test_mpr_performance_tracking(self):
+        """Test MPR strategy performance tracking."""
+        router = MetaPolicyRouter(seed=12345)
+        
+        router.update_strategy_performance("maml", 0.8, success=True)
+        router.update_strategy_performance("maml", 0.7, success=True)
+        
+        stats = router.get_performance_stats()
+        assert "maml" in stats
+        assert stats["maml"]["avg_score"] > 0
+    
+    def test_mpr_get_best_strategy(self):
+        """Test getting best performing strategy."""
+        router = MetaPolicyRouter(seed=12345)
+        
+        # Add some performance data
+        router.update_strategy_performance("maml", 0.9, success=True)
+        router.update_strategy_performance("reptile", 0.6, success=True)
+        
+        best = router.get_best_strategy()
+        assert best == "maml"  # Higher score
+    
+    def test_mpr_dynamic_hyperparams(self):
+        """Test MPR dynamic hyperparameter tuning."""
+        router = MetaPolicyRouter(seed=12345)
+        
+        # Add performance to trigger tuning
+        router.update_strategy_performance("maml", 0.8, success=True)
+        
+        # Get hyperparams (should be tuned)
+        params = router.get_hyperparams("maml")
+        assert "meta_lr" in params
+        assert "inner_lr" in params
+        assert "inner_steps" in params
 
 
 # =============================================================================
