@@ -994,11 +994,10 @@ class TestIntegration:
     def test_fast_weights_with_l2o(self):
         """Test Fast Weights with L2O."""
         fw = FastWeights(seed=12345)
-        _opt = LearnedOptimizer(seed=12345)
         
         # Both use similar patterns
         fw_state = fw.adapt_to_task("task1", [(1.0, 2.0)])
-        _opt_state = OptimizerState(parameters={"w1": 1.0}, gradients={"w1": 0.5})
+        opt_state = OptimizerState(parameters={"w1": 1.0}, gradients={"w1": 0.5})
         
         assert fw_state is not None
         assert opt_state is not None

@@ -2056,11 +2056,11 @@ class TestStorageMetrics:
         store.store_pattern(pattern)
         
         # First retrieval (cache miss)
-        _patterns1, _scores1 = store.retrieve_patterns_cached("test", top_k=5)
+        store.retrieve_patterns_cached("test", top_k=5)
         assert store.cache_misses == 1
         
         # Second retrieval (cache hit)
-        _patterns2, _scores2 = store.retrieve_patterns_cached("test", top_k=5)
+        store.retrieve_patterns_cached("test", top_k=5)
         assert store.cache_hits == 1
 
 

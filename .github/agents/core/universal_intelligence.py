@@ -1181,7 +1181,7 @@ class StrategyBenchmark:
         for task_idx in range(num_tasks):
             task_id = f"benchmark_task_{task_idx}"
             difficulty = task_idx / num_tasks  # Increasing difficulty
-            _task_data = self.create_benchmark_task(task_id, difficulty)
+            self.create_benchmark_task(task_id, difficulty)
             
             for strategy in strategies:
                 # Simulate strategy performance
