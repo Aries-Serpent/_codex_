@@ -468,5 +468,11 @@ class LearningAdapter:
             
             if 'test_history' in data:
                 self.test_history = data['test_history']
-        except Exception:
-            pass
+        except Exception as e:
+            # If loading fails, continue with a fresh policy but log the error for debugging.
+            import logging
+            logging.getLogger(__name__).warning(
+                "Failed to load learning policy from %s: %s",
+                self.policy_path,
+                e,
+            )

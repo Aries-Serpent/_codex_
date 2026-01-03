@@ -4,7 +4,6 @@ Tests for Cognitive Brain Agent.
 Comprehensive test suite for the brain processor, PDA engine,
 aftermath handler, and learning integrator.
 """
-import pytest
 import sys
 import os
 
@@ -13,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from agent.pda_engine import (
     PDAEngine,
-    PDAPhase,
     PerceptionResult,
     DecisionResult,
     ActionResult,

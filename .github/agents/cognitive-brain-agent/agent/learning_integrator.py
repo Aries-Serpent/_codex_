@@ -3,7 +3,7 @@ Learning Integrator - Integration layer between Cognitive Brain and Learning Eng
 
 Provides seamless integration of Q-learning with the Cognitive Brain system.
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 from pathlib import Path
 import json
