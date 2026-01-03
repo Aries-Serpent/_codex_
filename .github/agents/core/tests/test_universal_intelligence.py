@@ -65,6 +65,15 @@ from ..universal_intelligence import (
     DecoherenceModel,
     # Helper functions
     calculate_safe_quantum_advantage,
+    # PRE-COMMIT 1 additions
+    TaskComplexity,
+    estimate_task_complexity,
+    validate_task_spec_schema,
+    EnvironmentAdapter,
+    GridWorldAdapter,
+    BanditAdapter,
+    ClassificationAdapter,
+    ENVIRONMENT_ADAPTERS,
 )
 
 
@@ -829,6 +838,278 @@ class TestIntegration:
         # Should be parseable
         parsed = json.loads(json_str)
         assert parsed["k1"] == output["k1"]
+
+
+# =============================================================================
+# TEST PRE-COMMIT 1: UTI ENHANCEMENTS
+# =============================================================================
+
+
+class TestTaskComplexity:
+    """Test task complexity estimation."""
+    
+    def test_complexity_enum(self):
+        """Test TaskComplexity enum values."""
+        from ..universal_intelligence import TaskComplexity
+        assert TaskComplexity.LOW.value == "low"
+        assert TaskComplexity.MEDIUM.value == "medium"
+        assert TaskComplexity.HIGH.value == "high"
+        assert TaskComplexity.VERY_HIGH.value == "very_high"
+    
+    def test_estimate_complexity_low(self):
+        """Test estimating low complexity task."""
+        from ..universal_intelligence import estimate_task_complexity, TaskComplexity
+        spec = TaskSpec(
+            environment="simple",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 10},
+        )
+        score, level = estimate_task_complexity(spec)
+        assert score < 100
+        assert level == TaskComplexity.LOW
+    
+    def test_estimate_complexity_medium(self):
+        """Test estimating medium complexity task."""
+        from ..universal_intelligence import estimate_task_complexity, TaskComplexity
+        spec = TaskSpec(
+            environment="medium",
+            initial_state={f"var_{i}": 0 for i in range(10)},
+            reward_spec={"id": "reward:v1", "params": {"a": 1, "b": 2}},
+            termination={"max_steps": 500},
+        )
+        score, level = estimate_task_complexity(spec)
+        assert level in [TaskComplexity.MEDIUM, TaskComplexity.HIGH]
+    
+    def test_estimate_complexity_high(self):
+        """Test estimating high complexity task."""
+        from ..universal_intelligence import estimate_task_complexity, TaskComplexity
+        spec = TaskSpec(
+            environment="complex",
+            initial_state={f"var_{i}": 0 for i in range(50)},
+            reward_spec={"id": "reward:v1", "params": {f"p_{i}": i for i in range(10)}},
+            termination={"max_steps": 10000},
+        )
+        score, level = estimate_task_complexity(spec)
+        assert level in [TaskComplexity.HIGH, TaskComplexity.VERY_HIGH]
+
+
+class TestSchemaValidation:
+    """Test JSON schema validation."""
+    
+    def test_validate_valid_spec(self):
+        """Test validating a valid task spec."""
+        from ..universal_intelligence import validate_task_spec_schema
+        spec = TaskSpec(
+            environment="test",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 100},
+        )
+        is_valid, errors = validate_task_spec_schema(spec)
+        assert is_valid
+        assert len(errors) == 0
+    
+    def test_validate_missing_environment(self):
+        """Test validation catches missing environment."""
+        from ..universal_intelligence import validate_task_spec_schema
+        spec = TaskSpec(
+            environment="",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 100},
+        )
+        is_valid, errors = validate_task_spec_schema(spec)
+        assert not is_valid
+        assert any("environment" in e for e in errors)
+    
+    def test_validate_missing_reward_id(self):
+        """Test validation catches missing reward_spec.id."""
+        from ..universal_intelligence import validate_task_spec_schema
+        spec = TaskSpec(
+            environment="test",
+            initial_state={"x": 0},
+            reward_spec={"params": {}},  # Missing "id"
+            termination={"max_steps": 100},
+        )
+        is_valid, errors = validate_task_spec_schema(spec)
+        assert not is_valid
+        assert any("reward_spec.id" in e for e in errors)
+    
+    def test_validate_invalid_max_steps(self):
+        """Test validation catches invalid max_steps."""
+        from ..universal_intelligence import validate_task_spec_schema
+        spec = TaskSpec(
+            environment="test",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": -10},  # Invalid negative
+        )
+        is_valid, errors = validate_task_spec_schema(spec)
+        assert not is_valid
+        assert any("max_steps" in e for e in errors)
+
+
+class TestEnvironmentAdapters:
+    """Test environment-specific adapters."""
+    
+    def test_gridworld_adapter(self):
+        """Test gridworld adapter."""
+        from ..universal_intelligence import GridWorldAdapter
+        adapter = GridWorldAdapter(seed=12345)
+        state = {"x": 0, "y": 0, "goal": {"x": 5, "y": 5}}
+        
+        # Test movement
+        next_state, reward, done = adapter.execute_step(state, "right", 0)
+        assert next_state["x"] == 1
+        assert next_state["y"] == 0
+        assert not done
+        assert reward < 0  # Still far from goal
+    
+    def test_gridworld_adapter_goal(self):
+        """Test gridworld adapter reaching goal."""
+        from ..universal_intelligence import GridWorldAdapter
+        adapter = GridWorldAdapter(seed=12345)
+        state = {"x": 5, "y": 5, "goal": {"x": 5, "y": 5}}
+        
+        # Already at goal
+        next_state, reward, done = adapter.execute_step(state, "stay", 0)
+        assert done
+        assert reward > 0  # Goal bonus
+    
+    def test_bandit_adapter(self):
+        """Test bandit adapter."""
+        from ..universal_intelligence import BanditAdapter
+        adapter = BanditAdapter(seed=12345)
+        state = {"arm_means": [0.5, 0.3, 0.7, 0.4], "pulls": 0}
+        
+        # Pull an arm
+        next_state, reward, done = adapter.execute_step(state, "arm_2", 0)
+        assert next_state["pulls"] == 1
+        assert next_state["last_arm"] == 2
+        assert not done  # Bandit never "finishes"
+        assert isinstance(reward, float)
+    
+    def test_classification_adapter(self):
+        """Test classification adapter."""
+        from ..universal_intelligence import ClassificationAdapter
+        adapter = ClassificationAdapter(seed=12345)
+        state = {
+            "features": [0.5] * 10,
+            "true_label": 2,
+            "num_classes": 5,
+        }
+        
+        # Make correct prediction
+        next_state, reward, done = adapter.execute_step(state, "class_2", 0)
+        assert reward == 1.0
+        assert "examples_seen" in next_state
+        assert next_state["examples_seen"] == 1
+    
+    def test_classification_adapter_wrong(self):
+        """Test classification adapter with wrong prediction."""
+        from ..universal_intelligence import ClassificationAdapter
+        adapter = ClassificationAdapter(seed=12345)
+        state = {
+            "features": [0.5] * 10,
+            "true_label": 2,
+            "num_classes": 5,
+        }
+        
+        # Make incorrect prediction
+        next_state, reward, done = adapter.execute_step(state, "class_0", 0)
+        assert reward == 0.0
+
+
+class TestUTIEnhancements:
+    """Test UTI with environment adapters and complexity estimation."""
+    
+    def test_uti_with_gridworld(self):
+        """Test UTI executing gridworld task."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="gridworld",
+            initial_state={"x": 0, "y": 0, "goal": {"x": 2, "y": 2}},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 50},
+        )
+        
+        result = uti.execute_task(spec, use_adapter=True)
+        assert len(result.action_sequence) > 0
+        assert "complexity_score" in result.metrics
+        assert "complexity_level" in result.metrics
+    
+    def test_uti_with_bandit(self):
+        """Test UTI executing bandit task."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="bandit",
+            initial_state={"arm_means": [0.5, 0.3, 0.7], "pulls": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 20},
+        )
+        
+        result = uti.execute_task(spec, use_adapter=True)
+        assert len(result.action_sequence) > 0
+        assert result.cumulative_reward >= 0
+    
+    def test_uti_with_classification(self):
+        """Test UTI executing classification task."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="classification",
+            initial_state={
+                "features": [0.5] * 10,
+                "true_label": 2,
+                "num_classes": 5,
+            },
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 30},
+        )
+        
+        result = uti.execute_task(spec, use_adapter=True)
+        assert len(result.action_sequence) > 0
+    
+    def test_uti_estimate_complexity(self):
+        """Test UTI complexity estimation."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="test",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 100},
+        )
+        
+        score, level = uti.estimate_complexity(spec)
+        assert score >= 0
+        assert level.value in ["low", "medium", "high", "very_high"]
+    
+    def test_uti_validation_integration(self):
+        """Test UTI validation integration."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="test",
+            initial_state={"x": 0},
+            reward_spec={"id": "reward:v1"},
+            termination={"max_steps": 100},
+        )
+        
+        is_valid, errors = uti.validate_task_spec(spec)
+        assert is_valid
+        assert len(errors) == 0
+    
+    def test_uti_invalid_spec_raises(self):
+        """Test UTI raises on invalid spec."""
+        uti = UniversalTaskInterface(seed=12345)
+        spec = TaskSpec(
+            environment="",  # Invalid
+            initial_state={"x": 0},
+            reward_spec={},  # Missing "id"
+            termination={},  # Missing "max_steps"
+        )
+        
+        with pytest.raises(ValueError):
+            uti.execute_task(spec)
 
 
 # =============================================================================

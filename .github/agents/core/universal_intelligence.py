@@ -24,12 +24,13 @@ Constraints:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Callable
 from datetime import datetime
 import json
 import math
 import hashlib
 import random
+from enum import Enum
 
 
 # =============================================================================
@@ -64,6 +65,11 @@ EARLY_TERMINATION_PROBABILITY = 0.01  # 1% termination chance per step
 MAX_QUANTUM_ADVANTAGE = 10.0 * QUANTUM_ADVANTAGE_TARGET  # = 35.7
 K1_EPSILON = 1e-10  # Minimum k1 for division safety
 
+# Task complexity thresholds
+COMPLEXITY_LOW_THRESHOLD = 10.0
+COMPLEXITY_MEDIUM_THRESHOLD = 100.0
+COMPLEXITY_HIGH_THRESHOLD = 1000.0
+
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -84,6 +90,272 @@ def calculate_safe_quantum_advantage(k1: float) -> float:
     """
     safe_k1 = max(k1, K1_EPSILON)
     return min(1.0 / safe_k1, MAX_QUANTUM_ADVANTAGE)
+
+
+class TaskComplexity(Enum):
+    """Task complexity levels."""
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    VERY_HIGH = "very_high"
+
+
+def estimate_task_complexity(spec: "TaskSpec") -> Tuple[float, TaskComplexity]:
+    """Estimate computational complexity of a task.
+    
+    Complexity is estimated based on:
+    - State space dimensionality
+    - Action space size
+    - Time horizon
+    - Reward specification complexity
+    
+    Args:
+        spec: Task specification
+        
+    Returns:
+        Tuple of (complexity_score, complexity_level)
+    """
+    complexity_score = 0.0
+    
+    # State space complexity
+    state = spec.initial_state
+    if isinstance(state, dict):
+        state_dim = len(state)
+        complexity_score += state_dim * 10
+    
+    # Time horizon
+    max_steps = spec.termination.get("max_steps", 1000)
+    complexity_score += max_steps / 10
+    
+    # Reward spec complexity
+    if "params" in spec.reward_spec:
+        params_count = len(spec.reward_spec["params"])
+        complexity_score += params_count * 5
+    
+    # Categorize complexity
+    if complexity_score < COMPLEXITY_LOW_THRESHOLD:
+        level = TaskComplexity.LOW
+    elif complexity_score < COMPLEXITY_MEDIUM_THRESHOLD:
+        level = TaskComplexity.MEDIUM
+    elif complexity_score < COMPLEXITY_HIGH_THRESHOLD:
+        level = TaskComplexity.HIGH
+    else:
+        level = TaskComplexity.VERY_HIGH
+    
+    return complexity_score, level
+
+
+def validate_task_spec_schema(spec: "TaskSpec") -> Tuple[bool, List[str]]:
+    """Validate task specification against JSON schema.
+    
+    Performs structural validation beyond basic field presence checks.
+    
+    Args:
+        spec: Task specification to validate
+        
+    Returns:
+        Tuple of (is_valid, list of errors)
+    """
+    errors = []
+    
+    # Environment validation
+    if not spec.environment or not isinstance(spec.environment, str):
+        errors.append("environment must be a non-empty string")
+    
+    # Initial state validation
+    if not isinstance(spec.initial_state, dict):
+        errors.append("initial_state must be a dictionary")
+    
+    # Reward spec validation
+    if not isinstance(spec.reward_spec, dict):
+        errors.append("reward_spec must be a dictionary")
+    elif "id" not in spec.reward_spec:
+        errors.append("reward_spec.id is required")
+    elif not isinstance(spec.reward_spec["id"], str):
+        errors.append("reward_spec.id must be a string")
+    
+    # Termination validation
+    if not isinstance(spec.termination, dict):
+        errors.append("termination must be a dictionary")
+    elif "max_steps" not in spec.termination:
+        errors.append("termination.max_steps is required")
+    elif not isinstance(spec.termination["max_steps"], int) or spec.termination["max_steps"] <= 0:
+        errors.append("termination.max_steps must be a positive integer")
+    
+    # Seed validation
+    if not isinstance(spec.seed, int):
+        errors.append("seed must be an integer")
+    
+    return len(errors) == 0, errors
+
+
+# =============================================================================
+# ENVIRONMENT ADAPTERS
+# =============================================================================
+
+
+class EnvironmentAdapter:
+    """Base class for environment-specific adapters."""
+    
+    def __init__(self, seed: int = 12345):
+        """Initialize adapter with seed."""
+        self.seed = seed
+        self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
+    
+    def execute_step(
+        self, 
+        state: Dict[str, Any], 
+        action: str,
+        step: int,
+    ) -> Tuple[Dict[str, Any], float, bool]:
+        """Execute one step in the environment.
+        
+        Args:
+            state: Current state
+            action: Action to take
+            step: Current step number
+            
+        Returns:
+            Tuple of (next_state, reward, done)
+        """
+        raise NotImplementedError
+
+
+class GridWorldAdapter(EnvironmentAdapter):
+    """Adapter for gridworld-style navigation tasks."""
+    
+    def execute_step(
+        self, 
+        state: Dict[str, Any], 
+        action: str,
+        step: int,
+    ) -> Tuple[Dict[str, Any], float, bool]:
+        """Execute gridworld step.
+        
+        State format: {"x": int, "y": int, "goal": {"x": int, "y": int}}
+        Actions: "up", "down", "left", "right", "stay"
+        """
+        x = state.get("x", 0)
+        y = state.get("y", 0)
+        goal = state.get("goal", {"x": 5, "y": 5})
+        
+        # Apply action
+        if action == "up":
+            y += 1
+        elif action == "down":
+            y -= 1
+        elif action == "left":
+            x -= 1
+        elif action == "right":
+            x += 1
+        # "stay" or unknown action: no movement
+        
+        next_state = {"x": x, "y": y, "goal": goal}
+        
+        # Calculate reward (negative distance to goal)
+        distance = abs(x - goal["x"]) + abs(y - goal["y"])
+        reward = -distance / 10.0
+        
+        # Check if reached goal
+        done = (x == goal["x"] and y == goal["y"])
+        if done:
+            reward += 10.0  # Goal bonus
+        
+        return next_state, reward, done
+
+
+class BanditAdapter(EnvironmentAdapter):
+    """Adapter for multi-armed bandit tasks."""
+    
+    def execute_step(
+        self, 
+        state: Dict[str, Any], 
+        action: str,
+        step: int,
+    ) -> Tuple[Dict[str, Any], float, bool]:
+        """Execute bandit step.
+        
+        State format: {"arm_means": [float, ...], "pulls": int}
+        Actions: "arm_0", "arm_1", ... "arm_N"
+        """
+        arm_means = state.get("arm_means", [0.5, 0.3, 0.7, 0.4])
+        pulls = state.get("pulls", 0)
+        
+        # Parse action
+        try:
+            arm_idx = int(action.split("_")[1]) if "_" in action else 0
+            arm_idx = max(0, min(arm_idx, len(arm_means) - 1))
+        except (ValueError, IndexError):
+            arm_idx = 0
+        
+        # Sample reward from arm
+        mean_reward = arm_means[arm_idx]
+        reward = self._rng.gauss(mean_reward, 0.1)
+        
+        # Update state
+        next_state = {
+            "arm_means": arm_means,
+            "pulls": pulls + 1,
+            "last_arm": arm_idx,
+            "last_reward": reward,
+        }
+        
+        # Bandit tasks don't naturally "terminate"
+        done = False
+        
+        return next_state, reward, done
+
+
+class ClassificationAdapter(EnvironmentAdapter):
+    """Adapter for classification tasks."""
+    
+    def execute_step(
+        self, 
+        state: Dict[str, Any], 
+        action: str,
+        step: int,
+    ) -> Tuple[Dict[str, Any], float, bool]:
+        """Execute classification step.
+        
+        State format: {"features": [float, ...], "true_label": int, "num_classes": int}
+        Actions: "class_0", "class_1", ... "class_N"
+        """
+        features = state.get("features", [0.0] * 10)
+        true_label = state.get("true_label", 0)
+        num_classes = state.get("num_classes", 5)
+        
+        # Parse action
+        try:
+            predicted_label = int(action.split("_")[1]) if "_" in action else 0
+            predicted_label = max(0, min(predicted_label, num_classes - 1))
+        except (ValueError, IndexError):
+            predicted_label = 0
+        
+        # Calculate reward (1.0 for correct, 0.0 for incorrect)
+        reward = 1.0 if predicted_label == true_label else 0.0
+        
+        # Generate next sample (simulate dataset iteration)
+        next_features = [self._rng.gauss(0, 1) for _ in range(len(features))]
+        next_label = self._rng.randint(0, num_classes - 1)
+        
+        next_state = {
+            "features": next_features,
+            "true_label": next_label,
+            "num_classes": num_classes,
+            "examples_seen": state.get("examples_seen", 0) + 1,
+        }
+        
+        # Classification continues until max steps
+        done = False
+        
+        return next_state, reward, done
+
+
+ENVIRONMENT_ADAPTERS = {
+    "gridworld": GridWorldAdapter,
+    "bandit": BanditAdapter,
+    "classification": ClassificationAdapter,
+}
 
 
 # =============================================================================
@@ -173,6 +445,7 @@ class UniversalTaskInterface:
     
     Provides standard interface for any computable environment μ.
     Supports deterministic execution with fixed seeds.
+    Includes environment adapters, complexity estimation, and JSON schema validation.
     """
     
     def __init__(self, seed: int = 12345):
@@ -184,9 +457,16 @@ class UniversalTaskInterface:
         self.seed = seed
         self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
         self.task_history: List[Tuple[TaskSpec, TaskResult]] = []
+        self.adapters: Dict[str, EnvironmentAdapter] = {}
+        self._initialize_adapters()
+    
+    def _initialize_adapters(self) -> None:
+        """Initialize environment adapters."""
+        for env_name, adapter_class in ENVIRONMENT_ADAPTERS.items():
+            self.adapters[env_name] = adapter_class(seed=self.seed)
     
     def validate_task_spec(self, spec: TaskSpec) -> Tuple[bool, List[str]]:
-        """Validate task specification.
+        """Validate task specification using JSON schema validation.
         
         Args:
             spec: TaskSpec to validate
@@ -194,57 +474,95 @@ class UniversalTaskInterface:
         Returns:
             Tuple of (is_valid, list of errors)
         """
-        errors = []
+        # Use enhanced schema validation
+        return validate_task_spec_schema(spec)
+    
+    def estimate_complexity(self, spec: TaskSpec) -> Tuple[float, TaskComplexity]:
+        """Estimate task computational complexity.
         
-        if not spec.environment:
-            errors.append("environment is required")
-        
-        if "id" not in spec.reward_spec:
-            errors.append("reward_spec.id is required")
-        
-        if "max_steps" not in spec.termination:
-            errors.append("termination.max_steps is required")
-        
-        return len(errors) == 0, errors
+        Args:
+            spec: TaskSpec to analyze
+            
+        Returns:
+            Tuple of (complexity_score, complexity_level)
+        """
+        return estimate_task_complexity(spec)
     
     def execute_task(
         self,
         spec: TaskSpec,
         policy: Optional["MetaPolicyRouter"] = None,
+        use_adapter: bool = True,
     ) -> TaskResult:
         """Execute a task with the given specification.
         
         Args:
             spec: Task specification
             policy: Optional policy router for action selection
+            use_adapter: If True, use environment-specific adapter when available
             
         Returns:
             TaskResult with execution outcomes
         """
+        # Validate spec first
+        is_valid, errors = self.validate_task_spec(spec)
+        if not is_valid:
+            raise ValueError(f"Invalid task spec: {errors}")
+        
+        # Get complexity estimate
+        complexity_score, complexity_level = self.estimate_complexity(spec)
+        
         # Seed for this specific task
         task_rng = random.Random(spec.seed)  # nosec B311 - deterministic simulation
         
-        # Simulate task execution
+        # Check if we have a specific adapter for this environment
+        adapter = None
+        if use_adapter and spec.environment in self.adapters:
+            adapter = self.adapters[spec.environment]
+        
+        # Execute task
         max_steps = spec.termination.get("max_steps", 1000)
         actions = []
         total_reward = 0.0
+        current_state = spec.initial_state.copy()
+        done = False
         
         for step in range(min(max_steps, DEFAULT_MAX_DEMO_STEPS)):
+            if done:
+                break
+            
             # Select action (use policy if available)
             if policy:
                 action = policy.select_action(spec, step)
+            elif adapter:
+                # Adapter-specific action selection
+                if spec.environment == "gridworld":
+                    action = task_rng.choice(["up", "down", "left", "right", "stay"])
+                elif spec.environment == "bandit":
+                    num_arms = len(current_state.get("arm_means", [4]))
+                    action = f"arm_{task_rng.randint(0, num_arms - 1)}"
+                elif spec.environment == "classification":
+                    num_classes = current_state.get("num_classes", 5)
+                    action = f"class_{task_rng.randint(0, num_classes - 1)}"
+                else:
+                    action = f"action_{task_rng.randint(0, 9)}"
             else:
                 action = f"action_{task_rng.randint(0, 9)}"
             
             actions.append(action)
             
-            # Simulate reward
-            step_reward = task_rng.uniform(0, 1)
-            total_reward += step_reward
+            # Execute step
+            if adapter:
+                current_state, step_reward, done = adapter.execute_step(
+                    current_state, action, step
+                )
+            else:
+                # Generic simulation
+                step_reward = task_rng.uniform(0, 1)
+                if task_rng.random() < EARLY_TERMINATION_PROBABILITY:
+                    done = True
             
-            # Check termination
-            if task_rng.random() < EARLY_TERMINATION_PROBABILITY:
-                break
+            total_reward += step_reward
         
         # Calculate metrics
         accuracy = min(1.0, total_reward / max(len(actions), 1))
@@ -258,6 +576,8 @@ class UniversalTaskInterface:
                 "accuracy": accuracy,
                 "steps": len(actions),
                 "coherence": coherence,
+                "complexity_score": complexity_score,
+                "complexity_level": complexity_level.value,
             },
         )
         
