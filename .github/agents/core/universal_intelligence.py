@@ -31,6 +31,7 @@ import math
 import hashlib
 import random
 import time
+import os
 from enum import Enum
 
 
@@ -565,8 +566,11 @@ class UniversalTaskInterface:
             
             total_reward += step_reward
         
-        # Calculate metrics
-        accuracy = min(1.0, total_reward / max(len(actions), 1))
+        # Calculate metrics with safe accuracy (handle negative rewards)
+        # Normalize reward to [0, 1] range accounting for potential negative values
+        reward_per_step = total_reward / max(len(actions), 1)
+        # GridWorld can give negative rewards, normalize to positive range
+        accuracy = max(0.0, min(1.0, (reward_per_step + 1.0) / 2.0)) if reward_per_step < 0 else min(1.0, reward_per_step)
         coherence = 1.0 - (1.0 / max(len(actions), 1))
         
         result = TaskResult(
@@ -1139,8 +1143,8 @@ class StrategyBenchmark:
         Returns:
             List of (input, output) training pairs
         """
-        # Seed task generation
-        task_rng = random.Random(hash(task_id) % (2**31))  # nosec B311 - deterministic
+        # Seed task generation with safe hash
+        task_rng = random.Random(abs(hash(task_id)) % (2**31 - 1))  # nosec B311 - deterministic
         
         num_examples = int(10 / (difficulty + 0.1))  # Harder tasks have fewer examples
         
@@ -2401,8 +2405,8 @@ class Pattern:
         content = f"{self.id}:{json.dumps(self.payload, sort_keys=True)}"
         content_hash = hashlib.sha256(content.encode()).digest()
         
-        # Convert hash to float vector
-        rng = random.Random(seed + int.from_bytes(content_hash[:4], 'big'))
+        # Convert hash to float vector with safe seed
+        rng = random.Random((seed + int.from_bytes(content_hash[:4], 'big')) % (2**31 - 1))
         embedding = [rng.gauss(0, 1) for _ in range(32)]  # 32-dim embedding
         
         # Normalize
@@ -3543,7 +3547,6 @@ class EXP10BenchmarkHarness:
             results: Benchmark results
             output_dir: Output directory path
         """
-        import os
         os.makedirs(output_dir, exist_ok=True)
         
         output_file = os.path.join(output_dir, "exp10_benchmark.jsonl")
