@@ -71,7 +71,7 @@ class TestWorkflowStep:
     def test_step_execute_optional_failure(self):
         """Test optional step doesn't fail workflow"""
         step = WorkflowStep(id="step1", action="maybe fail", command="false", optional=True)
-        result = step.execute({})
+        step.execute({})  # Return value not needed; only side effects are tested
         
         # Optional steps succeed even if command fails
         assert step.status == StepStatus.COMPLETED

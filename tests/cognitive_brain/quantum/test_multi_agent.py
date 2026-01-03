@@ -279,13 +279,8 @@ class TestTopologyManagement:
         manager = TopologyManager()
         manager.configure_topology(NetworkTopology.MESH, 4)
         
-        # Simulate low correlation between some agents
-        correlation_matrix = np.array([
-            [1.0, 0.9, 0.5, 0.3],  # Agent 0 has low correlation with 2, 3
-            [0.9, 1.0, 0.4, 0.2],
-            [0.5, 0.4, 1.0, 0.85],
-            [0.3, 0.2, 0.85, 1.0],
-        ])
+        # Note: Correlation matrix example shows expected low correlations between agents 0-2, 0-3
+        # [1.0, 0.9, 0.5, 0.3], [0.9, 1.0, 0.4, 0.2], [0.5, 0.4, 1.0, 0.85], [0.3, 0.2, 0.85, 1.0]
         
         optimized = manager.optimize_topology(correlation_threshold=0.75)
         
@@ -352,10 +347,9 @@ class TestCorrelationMeasurement:
         agent_ids = ["agent_1", "agent_2", "agent_3"]
         
         state = manager.create_ghz_state(agent_ids)
-        initial_fidelity = state.fidelity
         
-        # Measure an agent
-        measurement = manager.measure_agent(state.state_id, "agent_1")
+        # Measure an agent (side effect is state update)
+        manager.measure_agent(state.state_id, "agent_1")
         
         # Update correlations
         manager.update_correlations(state.state_id)

@@ -643,17 +643,17 @@ class TestErrorPaths:
     def test_error_type_error(self):
         """Test TypeError"""
         with pytest.raises(TypeError):
-            "str" + 123
+            _ = "str" + 123  # Copilot: Assigned to _ to indicate intentional evaluation
     
     def test_error_key_error(self):
         """Test KeyError"""
         with pytest.raises(KeyError):
-            {}["missing"]
+            _ = {}["missing"]  # Copilot: Assigned to _ to indicate intentional evaluation
     
     def test_error_index_error(self):
         """Test IndexError"""
         with pytest.raises(IndexError):
-            [][0]
+            _ = [][0]  # Copilot: Assigned to _ to indicate intentional evaluation
     
     def test_error_attribute_error(self):
         """Test AttributeError"""
@@ -663,7 +663,7 @@ class TestErrorPaths:
     def test_error_zero_division(self):
         """Test ZeroDivisionError"""
         with pytest.raises(ZeroDivisionError):
-            1 / 0
+            _ = 1 / 0  # Copilot: Assigned to _ to indicate intentional evaluation
     
     def test_error_file_not_found(self):
         """Test FileNotFoundError"""
@@ -710,10 +710,11 @@ class TestErrorPaths:
     
     def test_error_else_clause(self):
         """Test else clause in try-except"""
+        result = None  # Initialize outside try block
         try:
             # Test that else clause executes when no exception is raised
             # The try block succeeds without raising an exception
-            result = "try"
+            pass  # No exception raised
         except Exception:
             result = "except"
         else:
