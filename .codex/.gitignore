@@ -6,6 +6,9 @@ cache/
 !reports/pr_*_status*.md
 !reports/pr_*_status*.json
 !reports/pr_*_status*.txt
+# Allow plan files
+!plans/
+!plans/**
 !README.md
 !.gitignore
 config/*.yaml
