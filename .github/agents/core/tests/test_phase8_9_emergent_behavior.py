@@ -16,9 +16,6 @@ All tests use fixed seeds for 100% deterministic execution.
 """
 
 import pytest
-import time
-from datetime import datetime
-from typing import Dict, Any
 
 # Import Phase 8.9 modules
 import sys
@@ -93,7 +90,7 @@ class TestEmergentPatternDetector:
         for i in range(12):
             state = {"component_a": i}
             metrics = {"accuracy": 0.5 + i * 0.01}
-            patterns = detector.observe(state, metrics)
+            detector.observe(state, metrics)
         
         # Should detect monotonic increase pattern
         behavioral_patterns = [p for p in detector.detected_patterns.values() 
@@ -464,9 +461,9 @@ class TestSelfImprovementEngine:
         engine = SelfImprovementEngine(seed=RANDOM_SEED_8_9)
         
         # Apply multiple actions
-        action1 = engine.apply_improvement("type1", "Action 1")
+        _ = engine.apply_improvement("type1", "Action 1")
         action2 = engine.apply_improvement("type2", "Action 2")
-        action3 = engine.apply_improvement("type3", "Action 3")
+        engine.apply_improvement("type3", "Action 3")
         
         assert len(engine.active_actions) == 3
         
@@ -553,7 +550,7 @@ class TestSelfImprovementEngine:
         # Apply some actions and rollbacks
         engine.establish_baseline("metric1", [1.0])
         action1 = engine.apply_improvement("type1", "Action 1")
-        action2 = engine.apply_improvement("type2", "Action 2")
+        _ = engine.apply_improvement("type2", "Action 2")
         engine.rollback(action1.action_id)
         
         metrics = engine.get_metrics()
@@ -715,7 +712,7 @@ class TestCapabilityDiscoverer:
         
         # Try to combine with itself (should be handled)
         discoverer.combinations_attempted = 0
-        combined = discoverer.combine_capabilities(cap1, cap1)
+        discoverer.combine_capabilities(cap1, cap1)
         assert discoverer.combinations_attempted == 1
     
     def test_redundant_capabilities(self):
@@ -725,10 +722,10 @@ class TestCapabilityDiscoverer:
         context = {"reasoning": {"type": "A"}}
         
         # Discover twice
-        caps1 = discoverer.discover_capabilities(context)
+        discoverer.discover_capabilities(context)
         initial_count = discoverer.discoveries_made
         
-        caps2 = discoverer.discover_capabilities(context)
+        _ = discoverer.discover_capabilities(context)
         
         # Should not re-discover same capabilities
         assert discoverer.discoveries_made == initial_count
@@ -1321,7 +1318,7 @@ class TestSwarmCoordinator:
             for i in range(5)
         ]
         
-        task = {"type": "collaborative", "complexity": 0.7}
+        _ = {"type": "collaborative", "complexity": 0.7}
         result = coordinator.coordinate_swarm(agents)
         
         assert result is not None
@@ -1329,6 +1326,7 @@ class TestSwarmCoordinator:
     def test_achieve_consensus(self):
         """Test consensus achievement."""
         coordinator = SwarmCoordinator(seed=RANDOM_SEED_8_9)
+        assert isinstance(coordinator, SwarmCoordinator)
         
         # Initialize swarm state first
         agents = [
@@ -1368,6 +1366,7 @@ class TestSwarmCoordinator:
     def test_coherence_calculation(self):
         """Test swarm coherence calculation."""
         coordinator = SwarmCoordinator(seed=RANDOM_SEED_8_9)
+        assert coordinator is not None
         
         agents_list = [
             Agent(agent_id=f"agent_{i}", state={"active": True})
@@ -1400,7 +1399,7 @@ class TestSwarmCoordinator:
             for i in range(8)
         ]
         
-        task = {"type": "emergent", "requires_collaboration": True}
+        _ = {"type": "emergent", "requires_collaboration": True}
         result = coordinator.coordinate_swarm(agents)
         
         # Result should reflect swarm coordination
@@ -1409,13 +1408,14 @@ class TestSwarmCoordinator:
     def test_agent_communication(self):
         """Test agent communication in swarm."""
         coordinator = SwarmCoordinator(seed=RANDOM_SEED_8_9)
+        assert coordinator is not None
         
         agents = [
             Agent(agent_id=f"comm_agent_{i}", capabilities=["reasoning"])
             for i in range(6)
         ]
         
-        task = {"type": "communication"}
+        _ = {"type": "communication"}
         result = coordinator.coordinate_swarm(agents)
         
         assert result is not None
@@ -1448,6 +1448,7 @@ class TestSwarmCoordinator:
     def test_swarm_state_tracking(self):
         """Test swarm state tracking."""
         coordinator = SwarmCoordinator(seed=RANDOM_SEED_8_9)
+        assert coordinator is not None
         
         agent1 = Agent(agent_id="agent1", state={"status": "active"})
         
@@ -1479,7 +1480,7 @@ class TestSwarmCoordinator:
             for i in range(7)
         ]
         
-        task = {"type": "synchronization", "requires_sync": True}
+        _ = {"type": "synchronization", "requires_sync": True}
         result = coordinator.coordinate_swarm(agents)
         
         assert result is not None
@@ -1487,6 +1488,7 @@ class TestSwarmCoordinator:
     def test_distributed_decision(self):
         """Test distributed decision making."""
         coordinator = SwarmCoordinator(seed=RANDOM_SEED_8_9)
+        assert coordinator is not None
         
         # Initialize swarm state first
         agents = [
@@ -1568,7 +1570,7 @@ class TestProductionHardeningManager:
         ]
         
         for severity in severities:
-            error_ctx = ErrorContext(
+            _ = ErrorContext(
                 error_type="TestError",
                 severity=severity,
                 message=f"Test {severity.value}",

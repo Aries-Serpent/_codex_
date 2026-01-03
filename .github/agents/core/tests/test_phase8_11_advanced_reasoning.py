@@ -17,8 +17,6 @@ Phase: 8.11 Advanced Reasoning & Planning
 """
 
 import pytest
-import random
-from typing import Dict, List, Any
 import sys
 import os
 
@@ -26,13 +24,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 try:
     from phase8_11_advanced_reasoning import (
-        SymbolicReasoningEngine,
-        CausalInferenceSystem,
-        CounterfactualPlanner,
-        MultiObjectiveOptimizer,
-        ExplainableAI,
-        InteractivePlanner,
-        LongHorizonPlanner,
         RANDOM_SEED_8_11
     )
 except ImportError:

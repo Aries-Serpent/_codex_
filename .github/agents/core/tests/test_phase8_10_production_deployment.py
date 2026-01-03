@@ -16,8 +16,6 @@ Total accumulated target: 217+ tests (112 from 8.9 + 105 from 8.10)
 
 import random
 import time
-from dataclasses import dataclass
-from typing import Dict, List, Any
 
 import pytest
 
@@ -921,6 +919,7 @@ class TestPhase810Integration:
         monitoring = MonitoringObservability()
         
         agent_id = marketplace.register_agent("test-agent", "1.0.0", [])
+        assert agent_id is not None
         monitoring.collect_metric("agent_registrations", 1)
         
         metrics = monitoring.get_metrics()
@@ -982,6 +981,7 @@ class TestPhase810Integration:
         
         # Register agent
         agent_id = marketplace.register_agent("prod-agent", "1.0.0", [])
+        assert agent_id is not None
         
         # Security check
         security.log_security_event("deployment", "system", "starting")
@@ -1049,12 +1049,16 @@ class TestPhase810Integration:
         
         # 1. Register agent
         agent_id = marketplace.register_agent("production-agent", "1.0.0", ["production"])
+        assert agent_id is not None
         
         # 2. Run tests
         workload = infra.generate_workload(size=50)
+        assert workload is not None
         
         # 3. Benchmark performance
         latency = suite.measure_latency(lambda: None)
+        assert isinstance(latency, (int, float))
+        assert latency >= 0
         
         # 4. Security validation
         security.log_security_event("validation", "system", "passed")

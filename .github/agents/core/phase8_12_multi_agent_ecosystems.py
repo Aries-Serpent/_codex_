@@ -30,13 +30,13 @@ Deterministic Execution:
 All components use RANDOM_SEED_8_12=45 for reproducibility.
 """
 
-import random
-import time
-import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Any, Optional, Tuple, Set
 from enum import Enum
 from collections import deque, defaultdict
+import random
+import time
+import math
 
 # Deterministic random seed for Phase 8.12
 RANDOM_SEED_8_12 = 45

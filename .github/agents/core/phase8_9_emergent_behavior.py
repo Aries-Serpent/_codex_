@@ -26,10 +26,6 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Set, Callable
-from datetime import datetime
-import json
-import math
-import hashlib
 import random
 from collections import defaultdict, deque
 from enum import Enum
@@ -1750,7 +1746,7 @@ class SwarmCoordinator:
             raise ValueError("Swarm state not initialized. Call coordinate_swarm first.")
         
         # Voting phase
-        for agent in self.swarm_state.agents:
+        for _ in self.swarm_state.agents:
             # Each agent votes on each proposal (simplified)
             for proposal in proposals:
                 if random.random() < 0.6:  # 60% support rate
