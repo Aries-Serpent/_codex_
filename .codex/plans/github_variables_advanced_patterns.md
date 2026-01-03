@@ -290,18 +290,32 @@ jobs:
           python scripts/space_traversal/audit_runner.py stage S6
           python scripts/space_traversal/audit_runner.py stage S7
       
-      - name: Manual approval gate
+      # SECURITY: Manual approval gate (use with caution)
+      # WARNING: Third-party action creates supply chain risk. Prefer native GitHub solutions.
+      # 
+      # RECOMMENDED APPROACH: Use GitHub Environment Protection Rules instead
+      # 1. Create a "production" environment in repo settings
+      # 2. Configure required reviewers (Settings > Environments > production > Required reviewers)
+      # 3. Update job to target environment:
+      #    jobs:
+      #      deploy:
+      #        environment: production
+      #        steps: [...]
+      # This provides native approval gates without third-party dependencies or supply chain risks.
+      #
+      # IF YOU MUST USE THIRD-PARTY ACTION:
+      # Pin to specific commit SHA (not mutable tag) to prevent supply chain attacks:
+      # Example with commit SHA pinning:
+      # uses: trstringer/manual-approval@842780cd9e1c69cc5ec2fca64054f553f9b979f4  # v1.9.0
+      #
+      # CURRENT EXAMPLE (INSECURE - FOR DOCUMENTATION ONLY):
+      - name: Manual approval gate (INSECURE EXAMPLE - DO NOT USE AS-IS)
         if: ${{ vars.DEPLOY_GATE_APPROVAL == 'manual' }}
-        uses: trstringer/manual-approval@v1
+        uses: trstringer/manual-approval@v1  # ⚠️ SECURITY RISK: Mutable tag
         with:
           approvers: mbaetiong
           minimum-approvals: 1
           issue-title: "Deploy approval required"
-        # SECURITY NOTE: This third-party action is pinned to mutable tag v1.
-        # Consider pinning to a specific commit SHA for supply chain security:
-        # uses: trstringer/manual-approval@<commit-sha>
-        # Alternative: Use GitHub Environment protection rules with required reviewers
-        # which provides native approval gates without third-party dependencies.
 ```
 
 ### 2.3 V10 Agent Deployment with Variable Seeds
