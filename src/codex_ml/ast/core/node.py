@@ -6,8 +6,9 @@ and analysis findings.
 """
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 import uuid
+import weakref
 
 
 @dataclass
@@ -95,24 +96,44 @@ class StandardizedASTNode:
         node_id: Unique identifier for this node
         type: Node type (e.g., 'function', 'class', 'import')
         name: Node name (e.g., function name, class name)
-        parent: Reference to parent node (None for root)
         children: List of child nodes
         location: Source code location
         metadata: Extensible metadata dictionary
+        
+    Note:
+        Parent reference uses weakref to prevent circular reference memory leaks.
+        Access parent via the `parent` property.
     """
 
     node_id: str
     type: str
     name: str
-    parent: Optional["StandardizedASTNode"] = None
     children: List["StandardizedASTNode"] = field(default_factory=list)
     location: Optional[SourceLocation] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+    # Private weakref to parent node - prevents circular reference memory leaks
+    # and allows garbage collection when node is removed from tree
+    _parent_ref: Optional[weakref.ref] = field(default=None, repr=False, compare=False)
 
     def __post_init__(self):
         """Validate node after initialization."""
         if not self.node_id:
             self.node_id = str(uuid.uuid4())
+
+    @property
+    def parent(self) -> Optional["StandardizedASTNode"]:
+        """Get parent node (uses weakref to prevent circular references)."""
+        if self._parent_ref is None:
+            return None
+        return self._parent_ref()
+
+    @parent.setter
+    def parent(self, value: Optional["StandardizedASTNode"]) -> None:
+        """Set parent node using weakref."""
+        if value is None:
+            self._parent_ref = None
+        else:
+            self._parent_ref = weakref.ref(value)
 
     @property
     def depth(self) -> int:

@@ -283,7 +283,9 @@ class ASTStorage:
                 query += " AND severity = ?"
                 params.append(severity)
 
-            query += f" LIMIT {limit}"
+            # Use parameterized query for limit to prevent SQL injection
+            query += " LIMIT ?"
+            params.append(min(max(1, limit), 10000))  # Sanitize limit value
 
             cursor.execute(query, params)
             rows = cursor.fetchall()

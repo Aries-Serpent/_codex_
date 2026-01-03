@@ -342,5 +342,14 @@ class DependencyGraph:
         """Check if a node exists in the graph."""
         return node_id in self.nodes
 
+    def edge_count(self) -> int:
+        """Return number of edges in the graph.
+        
+        Note: This is O(n) where n is number of nodes. For frequent access,
+        consider caching if the graph is large and mostly static.
+        """
+        return sum(len(deps) for deps in self.nodes.values())
+
     def __repr__(self) -> str:
-        return f"DependencyGraph(nodes={len(self.nodes)}, edges={sum(len(d) for d in self.nodes.values())})"
+        # Use node count only for efficiency; edge_count() is available if needed
+        return f"DependencyGraph(nodes={len(self.nodes)})"

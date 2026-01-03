@@ -163,42 +163,56 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
     """Analyzer for unused code detection.
 
     Identifies unused imports, variables, and functions.
+    
+    Note:
+        This analyzer is stateless and thread-safe. It collects all definitions
+        and usages during a single analyze() call on the module node.
     """
 
     def __init__(self):
         """Initialize unused code analyzer."""
-        self.defined_names: set = set()
-        self.used_names: set = set()
+        pass  # Stateless - no instance variables needed
 
     def analyze(self, node: StandardizedASTNode) -> List[Finding]:
-        """Analyze for unused code."""
+        """Analyze for unused code.
+        
+        This method is thread-safe as it uses local variables only.
+        """
         findings = []
 
-        # Track definitions
-        if node.type in ("import", "function", "class", "variable"):
-            self.defined_names.add(node.name)
+        # Only process at module level for complete picture
+        if node.type != "module":
+            return findings
 
-        # Track usages
-        if node.type == "name_reference":
-            self.used_names.add(node.name)
+        # Collect definitions and usages in a single pass (thread-safe)
+        defined_names: set = set()
+        used_names: set = set()
 
-        # Report unused (only at module level for complete picture)
-        if node.type == "module":
-            unused = self.defined_names - self.used_names
-            for name in unused:
-                # Find the node for this name
-                matching = node.find_by_name(name)
-                if matching:
-                    findings.append(
-                        Finding(
-                            type="unused_code",
-                            severity="info",
-                            message=f"'{name}' is defined but never used",
-                            location=matching[0].location,
-                            analyzer=self.get_analyzer_type(),
-                            metadata={"name": name},
-                        )
+        for child in node.walk():
+            # Track definitions
+            if child.type in ("import", "function", "class", "variable"):
+                defined_names.add(child.name)
+
+            # Track usages
+            if child.type == "name_reference":
+                used_names.add(child.name)
+
+        # Report unused
+        unused = defined_names - used_names
+        for name in unused:
+            # Find the node for this name
+            matching = node.find_by_name(name)
+            if matching:
+                findings.append(
+                    Finding(
+                        type="unused_code",
+                        severity="info",
+                        message=f"'{name}' is defined but never used",
+                        location=matching[0].location,
+                        analyzer=self.get_analyzer_type(),
+                        metadata={"name": name},
                     )
+                )
 
         return findings
 
@@ -206,7 +220,8 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
         return "unused_code"
 
     def supports_node_type(self, node_type: str) -> bool:
-        return node_type in ("module", "import", "function", "class", "variable", "name_reference")
+        # Only analyze at module level (will walk children internally)
+        return node_type == "module"
 
 
 class LongFunctionAnalyzer(ASTAnalyzer):

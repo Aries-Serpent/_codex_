@@ -176,14 +176,20 @@ def cmd_export(args: argparse.Namespace) -> int:
             output = json.dumps(data, indent=2, default=str)
 
         elif args.format == "csv":
-            lines = ["finding_id,type,severity,message,file,line,analyzer"]
+            import csv
+            import io
+            
+            # Use csv module for proper CSV formatting
+            string_buffer = io.StringIO()
+            writer = csv.writer(string_buffer, quoting=csv.QUOTE_ALL)
+            writer.writerow(["finding_id", "type", "severity", "message", "file", "line", "analyzer"])
+            
             for f in findings:
-                file_path = f.location.file_path if f.location else ""
+                file_path = str(f.location.file_path) if f.location else ""
                 line = f.location.line_start if f.location else ""
-                # Escape quotes in message
-                message = f.message.replace('"', '""')
-                lines.append(f'"{f.finding_id}","{f.type}","{f.severity}","{message}","{file_path}","{line}","{f.analyzer}"')
-            output = "\n".join(lines)
+                writer.writerow([f.finding_id, f.type, f.severity, f.message, file_path, line, f.analyzer])
+            
+            output = string_buffer.getvalue()
 
         else:
             print(f"Error: Unknown format '{args.format}'", file=sys.stderr)
