@@ -464,8 +464,7 @@ class TestConfiguration:
         """Test missing config file"""
         with pytest.raises(FileNotFoundError):
             # The FileNotFoundError is raised when attempting to open the file
-            with open("/nonexistent.json"):
-                pass
+            open("/nonexistent.json")
     
     def test_config_empty_file(self):
         """Test empty config file"""
