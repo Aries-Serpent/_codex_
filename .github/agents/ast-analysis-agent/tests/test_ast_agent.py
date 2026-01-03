@@ -203,9 +203,10 @@ def make_product(id):
     
     def test_detect_god_class(self):
         """Test god class anti-pattern detection."""
-        detector = PatternDetector()
+        # Use default threshold of 20 methods
+        detector = PatternDetector(god_class_method_threshold=20)
         
-        # Create a class with many methods
+        # Create a class with more methods than threshold
         methods = "\n    ".join([f"def method_{i}(self): pass" for i in range(25)])
         god_class_code = f'''
 class GodClass:

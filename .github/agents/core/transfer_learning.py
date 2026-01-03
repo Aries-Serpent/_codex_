@@ -200,7 +200,11 @@ class KnowledgeDistiller:
     Attributes:
         min_confidence: Minimum confidence for transferable patterns
         max_patterns: Maximum patterns to retain per domain
+        state_signature_length: Length of state signature for generalization
     """
+    
+    # Class constant for state signature truncation
+    STATE_SIGNATURE_LENGTH = 8
     
     def __init__(
         self,
@@ -241,17 +245,18 @@ class KnowledgeDistiller:
             best_action = max(actions, key=actions.get)
             best_q = actions[best_action]
             
-            # Calculate confidence (normalized Q-value)
+            # Calculate confidence (normalized Q-value, clamped to [0, 1])
             all_q = list(actions.values())
             q_range = max(all_q) - min(all_q) if len(all_q) > 1 else 1.0
-            confidence = best_q / (q_range + 1e-6) if q_range > 0 else 0.5
+            raw_confidence = best_q / (q_range + 1e-6) if q_range > 0 else 0.5
+            confidence = max(0.0, min(1.0, raw_confidence))  # Clamp to [0, 1]
             
             if confidence >= self.min_confidence:
                 patterns.append({
-                    'state_signature': state[:8],  # Truncated for generalization
+                    'state_signature': state[:self.STATE_SIGNATURE_LENGTH],
                     'best_action': best_action,
                     'q_value': best_q,
-                    'confidence': min(1.0, confidence),
+                    'confidence': confidence,
                     'domain': domain.name,
                 })
         
@@ -280,8 +285,9 @@ class KnowledgeDistiller:
             return []
         
         applicable = []
+        sig_length = self.STATE_SIGNATURE_LENGTH
         for pattern in self.distilled_knowledge[domain_name]:
-            if pattern['state_signature'] == state_signature[:8]:
+            if pattern['state_signature'] == state_signature[:sig_length]:
                 applicable.append(pattern)
         
         return applicable

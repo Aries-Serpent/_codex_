@@ -51,12 +51,29 @@ class PatternDetector:
     Attributes:
         patterns: Registered pattern detectors
         detected: List of detected patterns
+        long_param_threshold: Threshold for long parameter list detection
+        god_class_method_threshold: Threshold for god class method count
+        god_class_attr_threshold: Threshold for god class attribute count
     """
     
-    def __init__(self):
-        """Initialize pattern detector."""
+    def __init__(
+        self,
+        long_param_threshold: int = 5,
+        god_class_method_threshold: int = 20,
+        god_class_attr_threshold: int = 15,
+    ):
+        """Initialize pattern detector.
+        
+        Args:
+            long_param_threshold: Max parameters before flagging
+            god_class_method_threshold: Max methods before flagging as god class
+            god_class_attr_threshold: Max attributes before flagging as god class
+        """
         self.patterns: Dict[str, callable] = {}
         self.detected: List[Pattern] = []
+        self.long_param_threshold = long_param_threshold
+        self.god_class_method_threshold = god_class_method_threshold
+        self.god_class_attr_threshold = god_class_attr_threshold
         self._register_default_patterns()
     
     def _register_default_patterns(self) -> None:
@@ -170,8 +187,8 @@ class PatternDetector:
                 method_count = sum(1 for item in node.body if isinstance(item, ast.FunctionDef))
                 attr_count = sum(1 for item in node.body if isinstance(item, ast.Assign))
                 
-                # Check for god class indicators
-                if method_count > 20 or attr_count > 15:
+                # Check for god class indicators using configurable thresholds
+                if method_count > self.god_class_method_threshold or attr_count > self.god_class_attr_threshold:
                     patterns.append(Pattern(
                         name='god_class',
                         category='antipattern',
@@ -193,7 +210,7 @@ class PatternDetector:
     def _detect_long_params(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect long parameter list anti-pattern."""
         patterns = []
-        threshold = 5
+        threshold = self.long_param_threshold
         
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):

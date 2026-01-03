@@ -6,9 +6,14 @@ with Cognitive Brain integration.
 """
 import ast
 import os
+import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
+
+# Compiled regex patterns for snake_case conversion (performance optimization)
+_SNAKE_CASE_PATTERN1 = re.compile('(.)([A-Z][a-z]+)')
+_SNAKE_CASE_PATTERN2 = re.compile('([a-z0-9])([A-Z])')
 
 
 @dataclass
@@ -390,9 +395,8 @@ class ASTAnalysisAgent:
     
     def _to_snake_case(self, name: str) -> str:
         """Convert name to snake_case."""
-        import re
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+        s1 = _SNAKE_CASE_PATTERN1.sub(r'\1_\2', name)
+        return _SNAKE_CASE_PATTERN2.sub(r'\1_\2', s1).lower()
     
     # === Statistics ===
     
