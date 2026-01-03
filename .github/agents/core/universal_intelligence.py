@@ -24,12 +24,13 @@ Constraints:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Dict, List, Optional, Tuple, Callable, Set
 from datetime import datetime
 import json
 import math
 import hashlib
 import random
+import time
 from enum import Enum
 
 
@@ -1219,18 +1220,38 @@ class StrategyBenchmark:
 # =============================================================================
 
 
+class ConceptLevel(Enum):
+    """Hierarchical concept levels (PRE-COMMIT 3)."""
+    LEAF = "leaf"  # Lowest level, concrete observations
+    INTERMEDIATE = "intermediate"  # Mid-level abstractions
+    ROOT = "root"  # Highest level, domain-independent concepts
+
+
+class RelationType(Enum):
+    """Relation types for semantic connections (PRE-COMMIT 3)."""
+    CAUSAL = "causal"  # A causes B
+    TEMPORAL = "temporal"  # A happens before/after B
+    SPATIAL = "spatial"  # A is located near/far from B
+    STRUCTURAL = "structural"  # A is composed of / similar to B
+    COOCCURS = "co-occurs"  # A and B appear together
+
+
 @dataclass
 class Concept:
     """Abstract concept extracted from experience.
+    
+    PRE-COMMIT 3: Added hierarchical level support.
     
     Attributes:
         id: Unique concept identifier
         props: Properties of the concept
         support: Number of observations supporting this concept
+        level: Hierarchical level (leaf, intermediate, root)
     """
     id: str
     props: Dict[str, Any]
     support: int = 0
+    level: ConceptLevel = ConceptLevel.LEAF
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -1238,6 +1259,7 @@ class Concept:
             "id": self.id,
             "props": self.props,
             "support": self.support,
+            "level": self.level.value,
         }
 
 
@@ -1245,34 +1267,51 @@ class Concept:
 class Relation:
     """Relation between concepts.
     
+    PRE-COMMIT 3: Added typed relation support.
+    
     Attributes:
         source: Source concept ID
-        relation_type: Type of relation
+        relation_type: Type of relation (enum)
         target: Target concept ID
+        confidence: Confidence score for the relation
     """
     source: str
-    relation_type: str
+    relation_type: RelationType
     target: str
+    confidence: float = 1.0
     
     def to_tuple(self) -> Tuple[str, str, str]:
         """Convert to tuple format."""
-        return (self.source, self.relation_type, self.target)
+        return (self.source, self.relation_type.value, self.target)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "source": self.source,
+            "relation_type": self.relation_type.value,
+            "target": self.target,
+            "confidence": self.confidence,
+        }
 
 
 @dataclass
 class Analogy:
     """Analogy mapping between domains.
     
+    PRE-COMMIT 3: Added quality scoring.
+    
     Attributes:
         source_domain: Source domain name
         target_domain: Target domain name
         mapping: Concept mapping dictionary
         confidence: Confidence score
+        quality_score: Structural similarity quality score (0-1)
     """
     source_domain: str
     target_domain: str
     mapping: Dict[str, str]
     confidence: float = 0.0
+    quality_score: float = 0.0
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -1280,6 +1319,8 @@ class Analogy:
             "src": self.source_domain,
             "tgt": self.target_domain,
             "mapping": self.mapping,
+            "confidence": self.confidence,
+            "quality_score": self.quality_score,
         }
 
 
@@ -1355,7 +1396,7 @@ class AbstractionEngine:
                 if cooccur > 0:
                     rel = Relation(
                         source=c1,
-                        relation_type="co-occurs",
+                        relation_type=RelationType.COOCCURS,
                         target=c2,
                     )
                     self.relations.append(rel)
@@ -1438,6 +1479,291 @@ class AbstractionEngine:
             return 0.0
         
         return min(1.0, total_support / 100.0)
+    
+    # =========================================================================
+    # PRE-COMMIT 3: Enhanced Abstraction Methods
+    # =========================================================================
+    
+    def hierarchical_concept_extraction(
+        self,
+        observations: List[Dict[str, Any]],
+        max_depth: int = 3,
+    ) -> Dict[ConceptLevel, List[Concept]]:
+        """Extract concepts hierarchically with level detection.
+        
+        PRE-COMMIT 3: Implements hierarchical abstraction with leaf,
+        intermediate, and root concepts.
+        
+        Args:
+            observations: Raw observations
+            max_depth: Maximum depth of hierarchy
+            
+        Returns:
+            Dictionary mapping ConceptLevel to list of concepts
+        """
+        hierarchy: Dict[ConceptLevel, List[Concept]] = {
+            ConceptLevel.LEAF: [],
+            ConceptLevel.INTERMEDIATE: [],
+            ConceptLevel.ROOT: [],
+        }
+        
+        # Level 1: Leaf concepts (direct observations)
+        for obs in observations:
+            for key, value in obs.items():
+                concept_id = f"leaf:{key}"
+                if concept_id not in self.concepts:
+                    concept = Concept(
+                        id=concept_id,
+                        props={"key": key, "type": type(value).__name__},
+                        support=1,
+                        level=ConceptLevel.LEAF,
+                    )
+                    self.concepts[concept_id] = concept
+                    hierarchy[ConceptLevel.LEAF].append(concept)
+                else:
+                    self.concepts[concept_id].support += 1
+        
+        # Level 2: Intermediate concepts (patterns across leaves)
+        leaf_concepts = hierarchy[ConceptLevel.LEAF]
+        if len(leaf_concepts) >= 2:
+            # Group by property type
+            type_groups: Dict[str, List[Concept]] = {}
+            for concept in leaf_concepts:
+                prop_type = concept.props.get("type", "unknown")
+                if prop_type not in type_groups:
+                    type_groups[prop_type] = []
+                type_groups[prop_type].append(concept)
+            
+            for prop_type, concepts in type_groups.items():
+                if len(concepts) >= 2:
+                    concept_id = f"intermediate:{prop_type}"
+                    intermediate = Concept(
+                        id=concept_id,
+                        props={"abstraction": "type_group", "type": prop_type, "count": len(concepts)},
+                        support=len(concepts),
+                        level=ConceptLevel.INTERMEDIATE,
+                    )
+                    self.concepts[concept_id] = intermediate
+                    hierarchy[ConceptLevel.INTERMEDIATE].append(intermediate)
+        
+        # Level 3: Root concepts (domain-independent abstractions)
+        if len(hierarchy[ConceptLevel.INTERMEDIATE]) >= 2:
+            concept_id = "root:universal"
+            root = Concept(
+                id=concept_id,
+                props={"abstraction": "universal", "domain_count": len(observations)},
+                support=len(observations),
+                level=ConceptLevel.ROOT,
+            )
+            self.concepts[concept_id] = root
+            hierarchy[ConceptLevel.ROOT].append(root)
+        
+        return hierarchy
+    
+    def detect_relation_type(
+        self,
+        source: Concept,
+        target: Concept,
+        observations: List[Dict[str, Any]],
+    ) -> RelationType:
+        """Detect semantic relation type between concepts.
+        
+        PRE-COMMIT 3: Implements relation type detection using heuristics.
+        
+        Args:
+            source: Source concept
+            target: Target concept
+            observations: Context observations
+            
+        Returns:
+            Detected RelationType
+        """
+        # Extract keys from concept IDs
+        src_key = source.id.split(":")[-1]
+        tgt_key = target.id.split(":")[-1]
+        
+        # Heuristic: Check for temporal keywords
+        temporal_keywords = ["time", "timestamp", "before", "after", "when", "duration"]
+        if any(kw in src_key.lower() or kw in tgt_key.lower() for kw in temporal_keywords):
+            return RelationType.TEMPORAL
+        
+        # Heuristic: Check for spatial keywords
+        spatial_keywords = ["position", "location", "x", "y", "z", "coordinate", "distance"]
+        if any(kw in src_key.lower() or kw in tgt_key.lower() for kw in spatial_keywords):
+            return RelationType.SPATIAL
+        
+        # Heuristic: Check for causal keywords
+        causal_keywords = ["cause", "effect", "result", "trigger", "outcome"]
+        if any(kw in src_key.lower() or kw in tgt_key.lower() for kw in causal_keywords):
+            return RelationType.CAUSAL
+        
+        # Heuristic: Check for structural keywords
+        structural_keywords = ["part", "component", "structure", "child", "parent", "contains"]
+        if any(kw in src_key.lower() or kw in tgt_key.lower() for kw in structural_keywords):
+            return RelationType.STRUCTURAL
+        
+        # Default: co-occurrence
+        return RelationType.COOCCURS
+    
+    def map_relations_typed(
+        self,
+        concepts: List[Concept],
+        observations: List[Dict[str, Any]],
+    ) -> List[Relation]:
+        """Map typed relations between concepts.
+        
+        PRE-COMMIT 3: Enhanced version with relation type detection.
+        
+        Args:
+            concepts: List of concepts
+            observations: Context observations
+            
+        Returns:
+            List of typed relations
+        """
+        new_relations = []
+        
+        for i, c1 in enumerate(concepts):
+            for c2 in concepts[i+1:]:
+                # Check co-occurrence
+                c1_key = c1.id.split(":")[-1]
+                c2_key = c2.id.split(":")[-1]
+                
+                cooccur = sum(
+                    1 for obs in observations
+                    if c1_key in obs and c2_key in obs
+                )
+                
+                if cooccur > 0:
+                    # Detect relation type
+                    rel_type = self.detect_relation_type(c1, c2, observations)
+                    
+                    rel = Relation(
+                        source=c1.id,
+                        relation_type=rel_type,
+                        target=c2.id,
+                        confidence=cooccur / len(observations),
+                    )
+                    self.relations.append(rel)
+                    new_relations.append(rel)
+        
+        return new_relations
+    
+    def analogy_quality_score(
+        self,
+        analogy: Analogy,
+        source_relations: List[Relation],
+        target_relations: List[Relation],
+    ) -> float:
+        """Calculate structural similarity quality score for analogy.
+        
+        PRE-COMMIT 3: Implements quality scoring based on preserved
+        structural relationships.
+        
+        Args:
+            analogy: Analogy to score
+            source_relations: Relations in source domain
+            target_relations: Relations in target domain
+            
+        Returns:
+            Quality score (0-1)
+        """
+        if not analogy.mapping:
+            return 0.0
+        
+        # Count preserved relations
+        preserved_count = 0
+        total_count = 0
+        
+        for src_rel in source_relations:
+            # Check if both concepts in relation are mapped
+            if src_rel.source in analogy.mapping and src_rel.target in analogy.mapping:
+                total_count += 1
+                
+                # Check if corresponding relation exists in target
+                mapped_source = analogy.mapping[src_rel.source]
+                mapped_target = analogy.mapping[src_rel.target]
+                
+                for tgt_rel in target_relations:
+                    if (tgt_rel.source == mapped_source and 
+                        tgt_rel.target == mapped_target and
+                        tgt_rel.relation_type == src_rel.relation_type):
+                        preserved_count += 1
+                        break
+        
+        # Calculate quality score
+        if total_count == 0:
+            # No relations to preserve - use mapping coverage
+            return len(analogy.mapping) / 10.0  # Normalize by typical mapping size
+        
+        return preserved_count / total_count
+    
+    def save_snapshot(self, filepath: str) -> None:
+        """Save concept graph snapshot to JSON file.
+        
+        PRE-COMMIT 3: Golden snapshot support for regression testing.
+        
+        Args:
+            filepath: Path to save snapshot
+        """
+        snapshot = {
+            "concepts": [c.to_dict() for c in self.concepts.values()],
+            "relations": [r.to_dict() for r in self.relations],
+            "analogies": [a.to_dict() for a in self.analogies],
+            "metadata": {
+                "concept_count": len(self.concepts),
+                "relation_count": len(self.relations),
+                "analogy_count": len(self.analogies),
+            },
+        }
+        
+        with open(filepath, 'w') as f:
+            json.dump(snapshot, f, indent=2, sort_keys=True)
+    
+    def load_snapshot(self, filepath: str) -> None:
+        """Load concept graph snapshot from JSON file.
+        
+        PRE-COMMIT 3: Golden snapshot support for regression testing.
+        
+        Args:
+            filepath: Path to load snapshot from
+        """
+        with open(filepath, 'r') as f:
+            snapshot = json.load(f)
+        
+        # Restore concepts
+        self.concepts = {}
+        for c_dict in snapshot["concepts"]:
+            concept = Concept(
+                id=c_dict["id"],
+                props=c_dict["props"],
+                support=c_dict["support"],
+                level=ConceptLevel(c_dict["level"]),
+            )
+            self.concepts[concept.id] = concept
+        
+        # Restore relations
+        self.relations = []
+        for r_dict in snapshot["relations"]:
+            relation = Relation(
+                source=r_dict["source"],
+                relation_type=RelationType(r_dict["relation_type"]),
+                target=r_dict["target"],
+                confidence=r_dict["confidence"],
+            )
+            self.relations.append(relation)
+        
+        # Restore analogies
+        self.analogies = []
+        for a_dict in snapshot["analogies"]:
+            analogy = Analogy(
+                source_domain=a_dict["src"],
+                target_domain=a_dict["tgt"],
+                mapping=a_dict["mapping"],
+                confidence=a_dict["confidence"],
+                quality_score=a_dict.get("quality_score", 0.0),
+            )
+            self.analogies.append(analogy)
 
 
 # =============================================================================
@@ -1632,6 +1958,249 @@ class GroundingLayer:
             "feasibility_score": feasibility,
             "execution_trace": [t.to_dict() for t in traces],
         }
+    
+    # =========================================================================
+    # PRE-COMMIT 4: Enhanced Grounding Methods
+    # =========================================================================
+    
+    def replay_trace(self, trace_id: int = -1) -> Optional[ExecutionTrace]:
+        """Replay an execution trace for debugging.
+        
+        PRE-COMMIT 4: Execution trace replay capability.
+        
+        Args:
+            trace_id: Index of trace to replay (-1 for last)
+            
+        Returns:
+            Execution trace if found, None otherwise
+        """
+        if not self.execution_traces:
+            return None
+        
+        if trace_id < 0:
+            trace_id = len(self.execution_traces) + trace_id
+        
+        if 0 <= trace_id < len(self.execution_traces):
+            return self.execution_traces[trace_id]
+        
+        return None
+    
+    def classify_feasibility(self, score: float) -> str:
+        """Classify feasibility score into categories.
+        
+        PRE-COMMIT 4: Feasibility thresholds.
+        - 0.0-0.3: infeasible
+        - 0.3-0.7: risky
+        - 0.7-1.0: feasible
+        
+        Args:
+            score: Feasibility score (0-1)
+            
+        Returns:
+            Category string
+        """
+        if score < 0.3:
+            return "infeasible"
+        elif score < 0.7:
+            return "risky"
+        else:
+            return "feasible"
+
+
+class GitHubAPIAdapter:
+    """GitHub API adapter for grounding layer.
+    
+    PRE-COMMIT 4: Mocked GitHub API operations for testing.
+    """
+    
+    def __init__(self, mock: bool = True):
+        """Initialize GitHub API adapter.
+        
+        Args:
+            mock: If True, use mocked operations
+        """
+        self.mock = mock
+        self.operation_log: List[Dict[str, Any]] = []
+    
+    def create_issue(self, repo: str, title: str, body: str) -> Dict[str, Any]:
+        """Create a GitHub issue.
+        
+        Args:
+            repo: Repository name
+            title: Issue title
+            body: Issue body
+            
+        Returns:
+            Issue creation result
+        """
+        result = {
+            "operation": "create_issue",
+            "repo": repo,
+            "title": title,
+            "body": body,
+            "status": "success" if self.mock else "would_execute",
+            "issue_number": len(self.operation_log) + 1,
+        }
+        self.operation_log.append(result)
+        return result
+    
+    def close_issue(self, repo: str, issue_number: int, comment: str = "") -> Dict[str, Any]:
+        """Close a GitHub issue.
+        
+        Args:
+            repo: Repository name
+            issue_number: Issue number to close
+            comment: Optional closing comment
+            
+        Returns:
+            Issue closure result
+        """
+        result = {
+            "operation": "close_issue",
+            "repo": repo,
+            "issue_number": issue_number,
+            "comment": comment,
+            "status": "success" if self.mock else "would_execute",
+        }
+        self.operation_log.append(result)
+        return result
+    
+    def merge_pr(self, repo: str, pr_number: int, merge_method: str = "merge") -> Dict[str, Any]:
+        """Merge a pull request.
+        
+        Args:
+            repo: Repository name
+            pr_number: PR number to merge
+            merge_method: Merge method (merge, squash, rebase)
+            
+        Returns:
+            PR merge result
+        """
+        result = {
+            "operation": "merge_pr",
+            "repo": repo,
+            "pr_number": pr_number,
+            "merge_method": merge_method,
+            "status": "success" if self.mock else "would_execute",
+        }
+        self.operation_log.append(result)
+        return result
+    
+    def get_operation_log(self) -> List[Dict[str, Any]]:
+        """Get log of all operations.
+        
+        Returns:
+            List of operation records
+        """
+        return self.operation_log.copy()
+
+
+class ActionValidator:
+    """Validator for grounded actions.
+    
+    PRE-COMMIT 4: Action validation with preconditions and postconditions.
+    """
+    
+    def __init__(self):
+        """Initialize action validator."""
+        self.validation_rules: Dict[str, Dict[str, Callable]] = {
+            "create_issue": {
+                "precondition": lambda args: "title" in args and len(args["title"]) > 0,
+                "postcondition": lambda result: result.get("status") == "success",
+            },
+            "close_issue": {
+                "precondition": lambda args: "issue_number" in args and args["issue_number"] > 0,
+                "postcondition": lambda result: result.get("status") == "success",
+            },
+            "merge_pr": {
+                "precondition": lambda args: "pr_number" in args and args["pr_number"] > 0,
+                "postcondition": lambda result: result.get("status") == "success",
+            },
+        }
+    
+    def validate_precondition(self, action: GroundedAction) -> Tuple[bool, str]:
+        """Validate action preconditions.
+        
+        Args:
+            action: Grounded action to validate
+            
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        if action.op not in self.validation_rules:
+            return True, ""  # No rules = valid by default
+        
+        precondition = self.validation_rules[action.op].get("precondition")
+        if not precondition:
+            return True, ""
+        
+        try:
+            if precondition(action.args):
+                return True, ""
+            else:
+                return False, f"Precondition failed for {action.op}"
+        except Exception as e:
+            return False, f"Precondition check error: {str(e)}"
+    
+    def validate_postcondition(
+        self,
+        action: GroundedAction,
+        result: Dict[str, Any],
+    ) -> Tuple[bool, str]:
+        """Validate action postconditions.
+        
+        Args:
+            action: Grounded action that was executed
+            result: Execution result
+            
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        if action.op not in self.validation_rules:
+            return True, ""
+        
+        postcondition = self.validation_rules[action.op].get("postcondition")
+        if not postcondition:
+            return True, ""
+        
+        try:
+            if postcondition(result):
+                return True, ""
+            else:
+                return False, f"Postcondition failed for {action.op}"
+        except Exception as e:
+            return False, f"Postcondition check error: {str(e)}"
+    
+    def validate_pipeline(
+        self,
+        actions: List[GroundedAction],
+        results: Optional[List[Dict[str, Any]]] = None,
+    ) -> Tuple[bool, List[str]]:
+        """Validate complete action pipeline.
+        
+        Args:
+            actions: List of grounded actions
+            results: Optional execution results
+            
+        Returns:
+            Tuple of (all_valid, list of errors)
+        """
+        errors = []
+        
+        # Validate preconditions
+        for action in actions:
+            is_valid, error = self.validate_precondition(action)
+            if not is_valid:
+                errors.append(error)
+        
+        # Validate postconditions if results provided
+        if results:
+            for action, result in zip(actions, results):
+                is_valid, error = self.validate_postcondition(action, result)
+                if not is_valid:
+                    errors.append(error)
+        
+        return len(errors) == 0, errors
 
 
 # =============================================================================
@@ -1786,16 +2355,24 @@ class MetaCognition:
 class Pattern:
     """Stored pattern for cross-domain transfer.
     
+    PRE-COMMIT 5: Added versioning, deprecation, and domain tags.
+    
     Attributes:
         id: Unique pattern identifier
         payload: Pattern data
         domain: Source domain
         version: Pattern version
+        deprecated: Whether pattern is deprecated
+        domain_tags: Set of domain tags for cross-domain matching
+        embedding: Pattern embedding for similarity-based retrieval
     """
     id: str
     payload: Dict[str, Any]
     domain: str = "unknown"
     version: int = 1
+    deprecated: bool = False
+    domain_tags: Set[str] = field(default_factory=set)
+    embedding: Optional[List[float]] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -1804,20 +2381,62 @@ class Pattern:
             "payload": self.payload,
             "domain": self.domain,
             "version": self.version,
+            "deprecated": self.deprecated,
+            "domain_tags": list(self.domain_tags),
+            "embedding": self.embedding,
         }
+    
+    def compute_embedding(self, seed: int = 12345) -> List[float]:
+        """Compute pattern embedding.
+        
+        PRE-COMMIT 5: Simple deterministic embedding based on pattern content.
+        
+        Args:
+            seed: Random seed for determinism
+            
+        Returns:
+            Embedding vector
+        """
+        # Create deterministic embedding from pattern content
+        content = f"{self.id}:{json.dumps(self.payload, sort_keys=True)}"
+        content_hash = hashlib.sha256(content.encode()).digest()
+        
+        # Convert hash to float vector
+        rng = random.Random(seed + int.from_bytes(content_hash[:4], 'big'))
+        embedding = [rng.gauss(0, 1) for _ in range(32)]  # 32-dim embedding
+        
+        # Normalize
+        norm = math.sqrt(sum(x*x for x in embedding))
+        if norm > 0:
+            embedding = [x / norm for x in embedding]
+        
+        self.embedding = embedding
+        return embedding
 
 
 class UniversalPatternStore:
     """Universal Pattern Store for cross-domain patterns.
     
+    PRE-COMMIT 5: Enhanced with similarity retrieval, versioning,
+    cross-domain matching, and storage metrics.
+    
     Repository for accumulating and retrieving patterns
     that enable zero-shot transfer.
     """
     
-    def __init__(self):
-        """Initialize pattern store."""
+    def __init__(self, seed: int = 12345):
+        """Initialize pattern store.
+        
+        Args:
+            seed: Random seed for deterministic embeddings
+        """
+        self.seed = seed
         self.patterns: Dict[str, Pattern] = {}
         self.retrieval_history: List[Dict[str, Any]] = []
+        self.retrieval_times: List[float] = []
+        self.cache_hits: int = 0
+        self.cache_misses: int = 0
+        self._query_cache: Dict[str, Tuple[List[Pattern], List[float]]] = {}
     
     def store_pattern(self, pattern: Pattern) -> str:
         """Store a pattern.
@@ -1896,6 +2515,211 @@ class UniversalPatternStore:
             return True
         return False
     
+    # =========================================================================
+    # PRE-COMMIT 5: Enhanced Pattern Store Methods
+    # =========================================================================
+    
+    def similarity_retrieval(
+        self,
+        query_pattern: Pattern,
+        top_k: int = 5,
+        exclude_deprecated: bool = True,
+    ) -> Tuple[List[Pattern], List[float]]:
+        """Retrieve patterns using cosine similarity on embeddings.
+        
+        PRE-COMMIT 5: Similarity-based retrieval.
+        
+        Args:
+            query_pattern: Query pattern with embedding
+            top_k: Number of results to return
+            exclude_deprecated: Whether to exclude deprecated patterns
+            
+        Returns:
+            Tuple of (patterns, similarity scores)
+        """
+        start_time = time.time()
+        
+        # Ensure query pattern has embedding
+        if query_pattern.embedding is None:
+            query_pattern.compute_embedding(self.seed)
+        
+        results = []
+        
+        for pattern in self.patterns.values():
+            # Skip deprecated if requested
+            if exclude_deprecated and pattern.deprecated:
+                continue
+            
+            # Ensure pattern has embedding
+            if pattern.embedding is None:
+                pattern.compute_embedding(self.seed)
+            
+            # Compute cosine similarity
+            similarity = self._cosine_similarity(
+                query_pattern.embedding,
+                pattern.embedding,
+            )
+            results.append((pattern, similarity))
+        
+        # Sort by similarity and take top_k
+        results.sort(key=lambda x: x[1], reverse=True)
+        results = results[:top_k]
+        
+        patterns = [r[0] for r in results]
+        scores = [r[1] for r in results]
+        
+        # Record timing
+        elapsed = time.time() - start_time
+        self.retrieval_times.append(elapsed)
+        
+        # Record retrieval
+        self.retrieval_history.append({
+            "query": query_pattern.id,
+            "method": "similarity",
+            "num_results": len(patterns),
+            "top_score": scores[0] if scores else 0.0,
+            "elapsed_ms": elapsed * 1000,
+        })
+        
+        return patterns, scores
+    
+    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+        """Compute cosine similarity between two vectors.
+        
+        Args:
+            vec1: First vector
+            vec2: Second vector
+            
+        Returns:
+            Cosine similarity score
+        """
+        if len(vec1) != len(vec2):
+            return 0.0
+        
+        dot_product = sum(a * b for a, b in zip(vec1, vec2))
+        norm1 = math.sqrt(sum(a * a for a in vec1))
+        norm2 = math.sqrt(sum(b * b for b in vec2))
+        
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        
+        return dot_product / (norm1 * norm2)
+    
+    def deprecate_pattern(self, pattern_id: str, reason: str = "") -> bool:
+        """Deprecate a pattern.
+        
+        PRE-COMMIT 5: Pattern deprecation support.
+        
+        Args:
+            pattern_id: ID of pattern to deprecate
+            reason: Reason for deprecation
+            
+        Returns:
+            True if deprecated, False if not found
+        """
+        if pattern_id in self.patterns:
+            self.patterns[pattern_id].deprecated = True
+            self.patterns[pattern_id].payload["deprecation_reason"] = reason
+            return True
+        return False
+    
+    def cross_domain_matching(
+        self,
+        source_domain: str,
+        target_domain: str,
+        min_overlap: float = 0.3,
+    ) -> List[Tuple[Pattern, Pattern, float]]:
+        """Match patterns across domains using domain tags.
+        
+        PRE-COMMIT 5: Cross-domain pattern matching.
+        
+        Args:
+            source_domain: Source domain
+            target_domain: Target domain
+            min_overlap: Minimum tag overlap threshold
+            
+        Returns:
+            List of (source_pattern, target_pattern, overlap_score) tuples
+        """
+        source_patterns = [p for p in self.patterns.values() if p.domain == source_domain]
+        target_patterns = [p for p in self.patterns.values() if p.domain == target_domain]
+        
+        matches = []
+        
+        for src in source_patterns:
+            for tgt in target_patterns:
+                # Compute tag overlap
+                if src.domain_tags and tgt.domain_tags:
+                    intersection = len(src.domain_tags & tgt.domain_tags)
+                    union = len(src.domain_tags | tgt.domain_tags)
+                    overlap = intersection / union if union > 0 else 0.0
+                    
+                    if overlap >= min_overlap:
+                        matches.append((src, tgt, overlap))
+        
+        # Sort by overlap
+        matches.sort(key=lambda x: x[2], reverse=True)
+        
+        return matches
+    
+    def get_storage_metrics(self) -> Dict[str, Any]:
+        """Get storage efficiency metrics.
+        
+        PRE-COMMIT 5: Storage metrics tracking.
+        
+        Returns:
+            Dictionary of storage metrics
+        """
+        total_retrievals = self.cache_hits + self.cache_misses
+        cache_hit_rate = (
+            self.cache_hits / total_retrievals if total_retrievals > 0 else 0.0
+        )
+        
+        avg_retrieval_time = (
+            sum(self.retrieval_times) / len(self.retrieval_times)
+            if self.retrieval_times else 0.0
+        )
+        
+        deprecated_count = sum(1 for p in self.patterns.values() if p.deprecated)
+        
+        return {
+            "pattern_count": len(self.patterns),
+            "deprecated_count": deprecated_count,
+            "avg_retrieval_time_ms": avg_retrieval_time * 1000,
+            "cache_hit_rate": cache_hit_rate,
+            "total_retrievals": len(self.retrieval_history),
+            "cache_hits": self.cache_hits,
+            "cache_misses": self.cache_misses,
+        }
+    
+    def retrieve_patterns_cached(
+        self,
+        query: str,
+        top_k: int = 5,
+    ) -> Tuple[List[Pattern], List[float]]:
+        """Retrieve patterns with caching.
+        
+        PRE-COMMIT 5: Cached retrieval for efficiency.
+        
+        Args:
+            query: Search query
+            top_k: Number of results to return
+            
+        Returns:
+            Tuple of (patterns, relevance scores)
+        """
+        cache_key = f"{query}:{top_k}"
+        
+        if cache_key in self._query_cache:
+            self.cache_hits += 1
+            return self._query_cache[cache_key]
+        
+        self.cache_misses += 1
+        result = self.retrieve_patterns(query, top_k)
+        self._query_cache[cache_key] = result
+        
+        return result
+    
     def get_store_output(self, query: str) -> Dict[str, Any]:
         """Get retrieval output as JSON-serializable dict."""
         patterns, scores = self.retrieve_patterns(query)
@@ -1905,6 +2729,330 @@ class UniversalPatternStore:
             "retrieved_patterns": [p.to_dict() for p in patterns],
             "relevance_scores": scores,
         }
+
+
+# =============================================================================
+# SAFETY & NEGATIVE TRANSFER (PRE-COMMIT 6)
+# =============================================================================
+
+
+class DomainIsolation:
+    """Domain isolation mechanism for quarantining failing domains.
+    
+    PRE-COMMIT 6: Prevents negative transfer by isolating domains
+    that show persistent failure or negative transfer.
+    """
+    
+    def __init__(self, failure_threshold: float = 0.3, quarantine_duration: int = 10):
+        """Initialize domain isolation.
+        
+        Args:
+            failure_threshold: Performance threshold below which to quarantine
+            quarantine_duration: Number of steps to keep domain quarantined
+        """
+        self.failure_threshold = failure_threshold
+        self.quarantine_duration = quarantine_duration
+        self.quarantined_domains: Dict[str, int] = {}  # domain -> remaining steps
+        self.domain_performance: Dict[str, List[float]] = {}
+    
+    def update_performance(self, domain: str, score: float) -> None:
+        """Update performance tracking for a domain.
+        
+        Args:
+            domain: Domain identifier
+            score: Performance score (0-1)
+        """
+        if domain not in self.domain_performance:
+            self.domain_performance[domain] = []
+        
+        self.domain_performance[domain].append(score)
+        
+        # Check if domain should be quarantined
+        if len(self.domain_performance[domain]) >= 3:
+            recent_avg = sum(self.domain_performance[domain][-3:]) / 3
+            if recent_avg < self.failure_threshold:
+                self.quarantine_domain(domain)
+    
+    def quarantine_domain(self, domain: str) -> None:
+        """Quarantine a failing domain.
+        
+        Args:
+            domain: Domain to quarantine
+        """
+        self.quarantined_domains[domain] = self.quarantine_duration
+    
+    def is_quarantined(self, domain: str) -> bool:
+        """Check if domain is quarantined.
+        
+        Args:
+            domain: Domain to check
+            
+        Returns:
+            True if quarantined
+        """
+        return domain in self.quarantined_domains and self.quarantined_domains[domain] > 0
+    
+    def step(self) -> None:
+        """Advance time step, decreasing quarantine counters."""
+        domains_to_remove = []
+        for domain in self.quarantined_domains:
+            self.quarantined_domains[domain] -= 1
+            if self.quarantined_domains[domain] <= 0:
+                domains_to_remove.append(domain)
+        
+        for domain in domains_to_remove:
+            del self.quarantined_domains[domain]
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get isolation status.
+        
+        Returns:
+            Dictionary with quarantine status
+        """
+        return {
+            "quarantined_count": len(self.quarantined_domains),
+            "quarantined_domains": list(self.quarantined_domains.keys()),
+            "total_domains_tracked": len(self.domain_performance),
+        }
+
+
+class RollbackTrigger:
+    """Rollback trigger with baseline restore.
+    
+    PRE-COMMIT 6: Triggers rollback when negative transfer exceeds threshold.
+    """
+    
+    def __init__(self, neg_transfer_threshold: float = NEGATIVE_TRANSFER_THRESHOLD):
+        """Initialize rollback trigger.
+        
+        Args:
+            neg_transfer_threshold: Threshold for triggering rollback
+        """
+        self.neg_transfer_threshold = neg_transfer_threshold
+        self.baseline_params: Dict[str, Any] = {}
+        self.current_params: Dict[str, Any] = {}
+        self.rollback_history: List[Dict[str, Any]] = []
+    
+    def save_baseline(self, params: Dict[str, Any]) -> None:
+        """Save baseline parameters.
+        
+        Args:
+            params: Parameters to save as baseline
+        """
+        self.baseline_params = params.copy()
+    
+    def update_current(self, params: Dict[str, Any]) -> None:
+        """Update current parameters.
+        
+        Args:
+            params: Current parameters
+        """
+        self.current_params = params.copy()
+    
+    def check_rollback(self, neg_transfer_score: float) -> bool:
+        """Check if rollback should be triggered.
+        
+        Args:
+            neg_transfer_score: Negative transfer score (0-1)
+            
+        Returns:
+            True if rollback should be triggered
+        """
+        return neg_transfer_score > self.neg_transfer_threshold
+    
+    def trigger_rollback(self, reason: str = "") -> Dict[str, Any]:
+        """Trigger rollback to baseline.
+        
+        Args:
+            reason: Reason for rollback
+            
+        Returns:
+            Restored baseline parameters
+        """
+        rollback_record = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "reason": reason,
+            "previous_params": self.current_params.copy(),
+            "restored_params": self.baseline_params.copy(),
+        }
+        self.rollback_history.append(rollback_record)
+        
+        self.current_params = self.baseline_params.copy()
+        return self.baseline_params.copy()
+    
+    def get_rollback_count(self) -> int:
+        """Get total number of rollbacks triggered.
+        
+        Returns:
+            Rollback count
+        """
+        return len(self.rollback_history)
+
+
+class ForgettingDetector:
+    """Forgetting detector comparing current vs baseline performance.
+    
+    PRE-COMMIT 6: Detects catastrophic forgetting by comparing
+    performance on baseline tasks.
+    """
+    
+    def __init__(self, forgetting_threshold: float = FORGETTING_THRESHOLD):
+        """Initialize forgetting detector.
+        
+        Args:
+            forgetting_threshold: Threshold for detecting forgetting
+        """
+        self.forgetting_threshold = forgetting_threshold
+        self.baseline_performance: Dict[str, float] = {}
+        self.current_performance: Dict[str, float] = {}
+        self.forgetting_events: List[Dict[str, Any]] = []
+    
+    def set_baseline(self, task_id: str, score: float) -> None:
+        """Set baseline performance for a task.
+        
+        Args:
+            task_id: Task identifier
+            score: Baseline performance score
+        """
+        self.baseline_performance[task_id] = score
+    
+    def update_current(self, task_id: str, score: float) -> None:
+        """Update current performance for a task.
+        
+        Args:
+            task_id: Task identifier
+            score: Current performance score
+        """
+        self.current_performance[task_id] = score
+    
+    def detect_forgetting(self, task_id: str) -> Tuple[bool, float]:
+        """Detect if forgetting has occurred for a task.
+        
+        Args:
+            task_id: Task identifier
+            
+        Returns:
+            Tuple of (is_forgetting, degradation_amount)
+        """
+        if task_id not in self.baseline_performance or task_id not in self.current_performance:
+            return False, 0.0
+        
+        baseline = self.baseline_performance[task_id]
+        current = self.current_performance[task_id]
+        degradation = baseline - current
+        
+        is_forgetting = degradation > self.forgetting_threshold
+        
+        if is_forgetting:
+            event = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "task_id": task_id,
+                "baseline": baseline,
+                "current": current,
+                "degradation": degradation,
+            }
+            self.forgetting_events.append(event)
+        
+        return is_forgetting, degradation
+    
+    def get_forgetting_report(self) -> Dict[str, Any]:
+        """Get forgetting detection report.
+        
+        Returns:
+            Dictionary with forgetting statistics
+        """
+        total_tasks = len(self.baseline_performance)
+        tasks_forgotten = len(self.forgetting_events)
+        
+        avg_degradation = 0.0
+        if self.forgetting_events:
+            avg_degradation = sum(e["degradation"] for e in self.forgetting_events) / len(self.forgetting_events)
+        
+        return {
+            "total_tasks": total_tasks,
+            "tasks_forgotten": tasks_forgotten,
+            "forgetting_rate": tasks_forgotten / total_tasks if total_tasks > 0 else 0.0,
+            "avg_degradation": avg_degradation,
+            "events": self.forgetting_events,
+        }
+
+
+class SafetyConstraintEnforcer:
+    """Safety constraint enforcement for preventing catastrophic failures.
+    
+    PRE-COMMIT 6: Coordinates isolation, rollback, and forgetting detection.
+    """
+    
+    def __init__(self, seed: int = 12345):
+        """Initialize safety constraint enforcer.
+        
+        Args:
+            seed: Random seed for determinism
+        """
+        self.seed = seed
+        self.isolation = DomainIsolation()
+        self.rollback = RollbackTrigger()
+        self.forgetting = ForgettingDetector()
+        self.safety_violations: List[Dict[str, Any]] = []
+    
+    def check_safety(
+        self,
+        domain: str,
+        task_id: str,
+        score: float,
+        neg_transfer_score: float = 0.0,
+    ) -> Dict[str, Any]:
+        """Check all safety constraints.
+        
+        Args:
+            domain: Domain identifier
+            task_id: Task identifier
+            score: Performance score
+            neg_transfer_score: Negative transfer score
+            
+        Returns:
+            Dictionary with safety check results and actions taken
+        """
+        actions_taken = []
+        
+        # Update performance tracking
+        self.isolation.update_performance(domain, score)
+        self.forgetting.update_current(task_id, score)
+        
+        # Check isolation
+        if self.isolation.is_quarantined(domain):
+            actions_taken.append(f"domain_{domain}_quarantined")
+        
+        # Check rollback
+        if self.rollback.check_rollback(neg_transfer_score):
+            self.rollback.trigger_rollback(f"negative_transfer={neg_transfer_score:.3f}")
+            actions_taken.append("rollback_triggered")
+        
+        # Check forgetting
+        is_forgetting, degradation = self.forgetting.detect_forgetting(task_id)
+        if is_forgetting:
+            actions_taken.append(f"forgetting_detected_degradation={degradation:.3f}")
+            
+            # Record safety violation
+            violation = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "type": "catastrophic_forgetting",
+                "task_id": task_id,
+                "degradation": degradation,
+            }
+            self.safety_violations.append(violation)
+        
+        return {
+            "safe": len(actions_taken) == 0,
+            "actions_taken": actions_taken,
+            "isolation_status": self.isolation.get_status(),
+            "rollback_count": self.rollback.get_rollback_count(),
+            "forgetting_report": self.forgetting.get_forgetting_report(),
+        }
+    
+    def step(self) -> None:
+        """Advance time step for all safety components."""
+        self.isolation.step()
 
 
 # =============================================================================
@@ -1938,7 +3086,7 @@ class UniversalController:
         self.abstraction = AbstractionEngine()
         self.grounding = GroundingLayer()
         self.metacog = MetaCognition()
-        self.store = UniversalPatternStore()
+        self.store = UniversalPatternStore(seed=seed)
         
         # Metrics tracking
         self.metrics_history: List[Dict[str, Any]] = []
@@ -2210,4 +3358,406 @@ class DecoherenceModel:
             "threshold": self.threshold,
             "total_events": len(self.decoherence_events),
             "recent_events": self.decoherence_events[-10:],
+        }
+
+
+# =============================================================================
+# EXP-10 VALIDATION FRAMEWORK (PRE-COMMIT 7)
+# =============================================================================
+
+
+class EXP10BenchmarkHarness:
+    """Benchmark harness with 10 diverse tasks for EXP-10 validation.
+    
+    PRE-COMMIT 7: Validates k₁ ≤ 0.28 across diverse task distribution.
+    """
+    
+    def __init__(self, seed: int = 12345):
+        """Initialize benchmark harness.
+        
+        Args:
+            seed: Random seed for deterministic task generation
+        """
+        self.seed = seed
+        self.tasks = self._create_benchmark_tasks()
+        self.results: List[Dict[str, Any]] = []
+    
+    def _create_benchmark_tasks(self) -> List[TaskSpec]:
+        """Create 10 diverse benchmark tasks.
+        
+        Returns:
+            List of 10 task specifications
+        """
+        tasks = []
+        
+        # Task 1: Simple gridworld navigation
+        tasks.append(TaskSpec(
+            environment="gridworld",
+            initial_state={"x": 0, "y": 0, "goal": {"x": 3, "y": 3}},
+            reward_spec={"id": "distance_reward", "params": {}},
+            termination={"max_steps": 20},
+            seed=self.seed + 1,
+        ))
+        
+        # Task 2: Bandit with 4 arms
+        tasks.append(TaskSpec(
+            environment="bandit",
+            initial_state={"arm_means": [0.2, 0.8, 0.5, 0.3], "pulls": 0},
+            reward_spec={"id": "bandit_reward", "params": {}},
+            termination={"max_steps": 50},
+            seed=self.seed + 2,
+        ))
+        
+        # Task 3: Classification with 3 classes
+        tasks.append(TaskSpec(
+            environment="classification",
+            initial_state={"features": [0.0] * 5, "true_label": 0, "num_classes": 3},
+            reward_spec={"id": "accuracy", "params": {}},
+            termination={"max_steps": 30},
+            seed=self.seed + 3,
+        ))
+        
+        # Task 4: Gridworld with distant goal
+        tasks.append(TaskSpec(
+            environment="gridworld",
+            initial_state={"x": 0, "y": 0, "goal": {"x": 10, "y": 10}},
+            reward_spec={"id": "distance_reward", "params": {}},
+            termination={"max_steps": 50},
+            seed=self.seed + 4,
+        ))
+        
+        # Task 5: Bandit with 8 arms
+        tasks.append(TaskSpec(
+            environment="bandit",
+            initial_state={"arm_means": [0.1, 0.3, 0.5, 0.7, 0.2, 0.4, 0.6, 0.8], "pulls": 0},
+            reward_spec={"id": "bandit_reward", "params": {}},
+            termination={"max_steps": 100},
+            seed=self.seed + 5,
+        ))
+        
+        # Task 6: Classification with 5 classes
+        tasks.append(TaskSpec(
+            environment="classification",
+            initial_state={"features": [0.0] * 10, "true_label": 0, "num_classes": 5},
+            reward_spec={"id": "accuracy", "params": {}},
+            termination={"max_steps": 50},
+            seed=self.seed + 6,
+        ))
+        
+        # Task 7: Small gridworld
+        tasks.append(TaskSpec(
+            environment="gridworld",
+            initial_state={"x": 0, "y": 0, "goal": {"x": 2, "y": 2}},
+            reward_spec={"id": "distance_reward", "params": {}},
+            termination={"max_steps": 10},
+            seed=self.seed + 7,
+        ))
+        
+        # Task 8: Bandit with 2 arms
+        tasks.append(TaskSpec(
+            environment="bandit",
+            initial_state={"arm_means": [0.4, 0.6], "pulls": 0},
+            reward_spec={"id": "bandit_reward", "params": {}},
+            termination={"max_steps": 20},
+            seed=self.seed + 8,
+        ))
+        
+        # Task 9: Classification with 10 classes
+        tasks.append(TaskSpec(
+            environment="classification",
+            initial_state={"features": [0.0] * 20, "true_label": 0, "num_classes": 10},
+            reward_spec={"id": "accuracy", "params": {}},
+            termination={"max_steps": 100},
+            seed=self.seed + 9,
+        ))
+        
+        # Task 10: Medium gridworld
+        tasks.append(TaskSpec(
+            environment="gridworld",
+            initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
+            reward_spec={"id": "distance_reward", "params": {}},
+            termination={"max_steps": 30},
+            seed=self.seed + 10,
+        ))
+        
+        return tasks
+    
+    def run_benchmark(
+        self,
+        controller: UniversalController,
+        metrics_output_dir: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Run complete benchmark suite.
+        
+        Args:
+            controller: Universal controller to evaluate
+            metrics_output_dir: Optional directory for JSONL metrics
+            
+        Returns:
+            Dictionary with benchmark results
+        """
+        self.results = []
+        k1_values = []
+        
+        for i, task in enumerate(self.tasks):
+            result_dict = controller.process_task(task)
+            
+            k1 = result_dict.get("k1", 1.0)
+            k1_values.append(k1)
+            
+            self.results.append({
+                "task_id": f"exp10_task_{i+1}",
+                "environment": task.environment,
+                "k1": k1,
+                "decision_score": 1.0 - k1,
+                "quantum_advantage": result_dict.get("quantum_advantage", 0.0),
+            })
+        
+        # Calculate aggregate metrics
+        avg_k1 = sum(k1_values) / len(k1_values)
+        max_k1 = max(k1_values)
+        min_k1 = min(k1_values)
+        
+        benchmark_result = {
+            "benchmark": "EXP-10",
+            "total_tasks": len(self.tasks),
+            "avg_k1": avg_k1,
+            "max_k1": max_k1,
+            "min_k1": min_k1,
+            "target_k1": K1_TARGET,
+            "passes_target": avg_k1 <= K1_TARGET,
+            "passes_stretch": avg_k1 <= K1_STRETCH_TARGET,
+            "results": self.results,
+        }
+        
+        # Save metrics to JSONL if directory provided
+        if metrics_output_dir:
+            self._save_metrics_jsonl(benchmark_result, metrics_output_dir)
+        
+        return benchmark_result
+    
+    def _save_metrics_jsonl(self, results: Dict[str, Any], output_dir: str) -> None:
+        """Save metrics to JSONL file.
+        
+        Args:
+            results: Benchmark results
+            output_dir: Output directory path
+        """
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+        
+        output_file = os.path.join(output_dir, "exp10_benchmark.jsonl")
+        
+        with open(output_file, 'w') as f:
+            # Write summary line
+            f.write(json.dumps({
+                "type": "summary",
+                "avg_k1": results["avg_k1"],
+                "passes_target": results["passes_target"],
+                "timestamp": datetime.utcnow().isoformat(),
+            }) + '\n')
+            
+            # Write individual task results
+            for task_result in results["results"]:
+                f.write(json.dumps({
+                    "type": "task_result",
+                    **task_result,
+                    "timestamp": datetime.utcnow().isoformat(),
+                }) + '\n')
+
+
+class K1ValidationFramework:
+    """Framework for validating k₁ ≤ 0.28 constraint.
+    
+    PRE-COMMIT 7: Statistical validation of k₁ target.
+    """
+    
+    def __init__(self, target_k1: float = K1_TARGET, stretch_k1: float = K1_STRETCH_TARGET):
+        """Initialize validation framework.
+        
+        Args:
+            target_k1: Target k₁ threshold
+            stretch_k1: Stretch goal k₁ threshold
+        """
+        self.target_k1 = target_k1
+        self.stretch_k1 = stretch_k1
+        self.validation_results: List[Dict[str, Any]] = []
+    
+    def validate_k1(self, k1_value: float, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate a k₁ measurement.
+        
+        Args:
+            k1_value: Measured k₁ value
+            context: Context information (task, seed, etc.)
+            
+        Returns:
+            Validation result dictionary
+        """
+        result = {
+            "k1": k1_value,
+            "passes_target": k1_value <= self.target_k1,
+            "passes_stretch": k1_value <= self.stretch_k1,
+            "target_k1": self.target_k1,
+            "stretch_k1": self.stretch_k1,
+            "margin_to_target": self.target_k1 - k1_value,
+            "context": context,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+        
+        self.validation_results.append(result)
+        return result
+    
+    def validate_batch(self, k1_values: List[float]) -> Dict[str, Any]:
+        """Validate a batch of k₁ measurements.
+        
+        Args:
+            k1_values: List of k₁ measurements
+            
+        Returns:
+            Batch validation result
+        """
+        passing_target = sum(1 for k1 in k1_values if k1 <= self.target_k1)
+        passing_stretch = sum(1 for k1 in k1_values if k1 <= self.stretch_k1)
+        
+        avg_k1 = sum(k1_values) / len(k1_values) if k1_values else 1.0
+        
+        return {
+            "total": len(k1_values),
+            "passing_target": passing_target,
+            "passing_stretch": passing_stretch,
+            "pass_rate_target": passing_target / len(k1_values) if k1_values else 0.0,
+            "pass_rate_stretch": passing_stretch / len(k1_values) if k1_values else 0.0,
+            "avg_k1": avg_k1,
+            "passes_avg_target": avg_k1 <= self.target_k1,
+            "passes_avg_stretch": avg_k1 <= self.stretch_k1,
+        }
+    
+    def get_validation_report(self) -> Dict[str, Any]:
+        """Get comprehensive validation report.
+        
+        Returns:
+            Validation report dictionary
+        """
+        if not self.validation_results:
+            return {"error": "No validation results"}
+        
+        k1_values = [r["k1"] for r in self.validation_results]
+        batch_stats = self.validate_batch(k1_values)
+        
+        return {
+            "total_validations": len(self.validation_results),
+            "batch_statistics": batch_stats,
+            "recent_results": self.validation_results[-10:],
+        }
+
+
+class TransferTestSuite:
+    """Test suite for zero-shot and few-shot transfer validation.
+    
+    PRE-COMMIT 7: Validates transfer learning capabilities.
+    """
+    
+    def __init__(self, seed: int = 12345):
+        """Initialize transfer test suite.
+        
+        Args:
+            seed: Random seed
+        """
+        self.seed = seed
+        self.test_results: List[Dict[str, Any]] = []
+    
+    def test_zero_shot(
+        self,
+        controller: UniversalController,
+        source_task: TaskSpec,
+        target_task: TaskSpec,
+    ) -> Dict[str, Any]:
+        """Test zero-shot transfer.
+        
+        Args:
+            controller: Universal controller
+            source_task: Source task for pattern extraction
+            target_task: Target task for transfer
+            
+        Returns:
+            Zero-shot transfer result
+        """
+        # Execute source task to extract patterns
+        source_result = controller.process_task(source_task)
+        
+        # Execute target task without adaptation
+        target_result = controller.process_task(target_task)
+        
+        result = {
+            "test_type": "zero_shot",
+            "source_k1": source_result.get("k1", 1.0),
+            "target_k1": target_result.get("k1", 1.0),
+            "transfer_improvement": source_result.get("k1", 1.0) - target_result.get("k1", 1.0),
+        }
+        
+        self.test_results.append(result)
+        return result
+    
+    def test_few_shot(
+        self,
+        controller: UniversalController,
+        source_tasks: List[TaskSpec],
+        target_task: TaskSpec,
+        K: int = 10,
+    ) -> Dict[str, Any]:
+        """Test few-shot transfer with K examples.
+        
+        Args:
+            controller: Universal controller
+            source_tasks: Source tasks for adaptation (K tasks)
+            target_task: Target task
+            K: Number of few-shot examples
+            
+        Returns:
+            Few-shot transfer result
+        """
+        # Execute K source tasks
+        source_k1_values = []
+        for task in source_tasks[:K]:
+            result = controller.process_task(task)
+            source_k1_values.append(result.get("k1", 1.0))
+        
+        # Execute target task
+        target_result = controller.process_task(target_task)
+        
+        avg_source_k1 = sum(source_k1_values) / len(source_k1_values) if source_k1_values else 1.0
+        
+        result = {
+            "test_type": "few_shot",
+            "K": K,
+            "avg_source_k1": avg_source_k1,
+            "target_k1": target_result.get("k1", 1.0),
+            "transfer_improvement": avg_source_k1 - target_result.get("k1", 1.0),
+        }
+        
+        self.test_results.append(result)
+        return result
+    
+    def get_transfer_report(self) -> Dict[str, Any]:
+        """Get transfer learning report.
+        
+        Returns:
+            Transfer report dictionary
+        """
+        zero_shot_tests = [r for r in self.test_results if r["test_type"] == "zero_shot"]
+        few_shot_tests = [r for r in self.test_results if r["test_type"] == "few_shot"]
+        
+        return {
+            "total_tests": len(self.test_results),
+            "zero_shot_tests": len(zero_shot_tests),
+            "few_shot_tests": len(few_shot_tests),
+            "avg_zero_shot_improvement": (
+                sum(r["transfer_improvement"] for r in zero_shot_tests) / len(zero_shot_tests)
+                if zero_shot_tests else 0.0
+            ),
+            "avg_few_shot_improvement": (
+                sum(r["transfer_improvement"] for r in few_shot_tests) / len(few_shot_tests)
+                if few_shot_tests else 0.0
+            ),
+            "results": self.test_results,
         }
