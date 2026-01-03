@@ -28,6 +28,10 @@ from ..universal_intelligence import (
     QUANTUM_ADVANTAGE_TARGET,
     NEGATIVE_TRANSFER_THRESHOLD,
     STRATEGIES,
+    DEFAULT_MAX_DEMO_STEPS,
+    EARLY_TERMINATION_PROBABILITY,
+    MAX_QUANTUM_ADVANTAGE,
+    K1_EPSILON,
     # UTI
     TaskSpec,
     TaskResult,
@@ -59,6 +63,8 @@ from ..universal_intelligence import (
     AdiabaticScheduler,
     # Decoherence
     DecoherenceModel,
+    # Helper functions
+    calculate_safe_quantum_advantage,
 )
 
 
@@ -91,6 +97,40 @@ class TestConstants:
         assert len(STRATEGIES) >= 5
         assert "maml" in STRATEGIES
         assert "reptile" in STRATEGIES
+    
+    def test_execution_constants(self):
+        """Test execution constants are defined."""
+        assert DEFAULT_MAX_DEMO_STEPS == 100
+        assert EARLY_TERMINATION_PROBABILITY == 0.01
+        # MAX_QUANTUM_ADVANTAGE = 10 * QUANTUM_ADVANTAGE_TARGET = 35.7
+        assert MAX_QUANTUM_ADVANTAGE == 10.0 * QUANTUM_ADVANTAGE_TARGET
+        assert K1_EPSILON == 1e-10
+
+
+class TestHelperFunctions:
+    """Test helper functions."""
+    
+    def test_calculate_safe_quantum_advantage_normal(self):
+        """Test quantum advantage with normal k1."""
+        # k1 = 0.28 -> advantage = 1/0.28 = 3.57
+        advantage = calculate_safe_quantum_advantage(0.28)
+        assert advantage == pytest.approx(3.57, abs=0.01)
+    
+    def test_calculate_safe_quantum_advantage_zero(self):
+        """Test quantum advantage with zero k1."""
+        advantage = calculate_safe_quantum_advantage(0.0)
+        assert advantage == MAX_QUANTUM_ADVANTAGE
+    
+    def test_calculate_safe_quantum_advantage_tiny(self):
+        """Test quantum advantage with very small k1."""
+        advantage = calculate_safe_quantum_advantage(1e-15)
+        assert advantage == MAX_QUANTUM_ADVANTAGE
+    
+    def test_calculate_safe_quantum_advantage_capped(self):
+        """Test quantum advantage is capped."""
+        advantage = calculate_safe_quantum_advantage(0.001)
+        # 1/0.001 = 1000, but capped at MAX_QUANTUM_ADVANTAGE (~35.7)
+        assert advantage == MAX_QUANTUM_ADVANTAGE
 
 
 # =============================================================================

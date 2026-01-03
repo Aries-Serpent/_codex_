@@ -57,6 +57,34 @@ STRATEGIES = [
 # Default annealing schedule
 DEFAULT_ANNEALING_STEPS = 100
 
+# Execution constants
+DEFAULT_MAX_DEMO_STEPS = 100  # Cap for demo/test execution
+EARLY_TERMINATION_PROBABILITY = 0.01  # 1% termination chance per step
+# Cap based on 10x target quantum advantage to provide meaningful relationship
+MAX_QUANTUM_ADVANTAGE = 10.0 * QUANTUM_ADVANTAGE_TARGET  # = 35.7
+K1_EPSILON = 1e-10  # Minimum k1 for division safety
+
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+
+def calculate_safe_quantum_advantage(k1: float) -> float:
+    """Calculate quantum advantage with safety bounds.
+    
+    Uses max(k1, K1_EPSILON) to prevent division by very small k1 values
+    that would result in unrealistically large advantage values.
+    
+    Args:
+        k1: Decision error rate (1 - decision_score)
+        
+    Returns:
+        Quantum advantage value, capped at MAX_QUANTUM_ADVANTAGE
+    """
+    safe_k1 = max(k1, K1_EPSILON)
+    return min(1.0 / safe_k1, MAX_QUANTUM_ADVANTAGE)
+
 
 # =============================================================================
 # UNIVERSAL TASK INTERFACE (UTI)
@@ -154,7 +182,7 @@ class UniversalTaskInterface:
             seed: Master random seed for determinism
         """
         self.seed = seed
-        self._rng = random.Random(seed)
+        self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
         self.task_history: List[Tuple[TaskSpec, TaskResult]] = []
     
     def validate_task_spec(self, spec: TaskSpec) -> Tuple[bool, List[str]]:
@@ -194,14 +222,14 @@ class UniversalTaskInterface:
             TaskResult with execution outcomes
         """
         # Seed for this specific task
-        task_rng = random.Random(spec.seed)
+        task_rng = random.Random(spec.seed)  # nosec B311 - deterministic simulation
         
         # Simulate task execution
         max_steps = spec.termination.get("max_steps", 1000)
         actions = []
         total_reward = 0.0
         
-        for step in range(min(max_steps, 100)):  # Cap for demo
+        for step in range(min(max_steps, DEFAULT_MAX_DEMO_STEPS)):
             # Select action (use policy if available)
             if policy:
                 action = policy.select_action(spec, step)
@@ -215,7 +243,7 @@ class UniversalTaskInterface:
             total_reward += step_reward
             
             # Check termination
-            if task_rng.random() < 0.01:  # 1% termination chance
+            if task_rng.random() < EARLY_TERMINATION_PROBABILITY:
                 break
         
         # Calculate metrics
@@ -317,7 +345,7 @@ class MetaPolicyRouter:
             strategies: List of available strategies
         """
         self.seed = seed
-        self._rng = random.Random(seed)
+        self._rng = random.Random(seed)  # nosec B311 - deterministic simulation
         self.strategies = strategies or STRATEGIES
         
         # Initialize uniform superposition
@@ -380,7 +408,7 @@ class MetaPolicyRouter:
         Returns:
             Selected strategy name
         """
-        rng = random.Random(seed) if seed else self._rng
+        rng = random.Random(seed) if seed else self._rng  # nosec B311 - deterministic
         
         probs = self.get_probability_distribution()
         strategies = list(probs.keys())
@@ -408,7 +436,7 @@ class MetaPolicyRouter:
         """
         # Use step as part of seed for determinism
         action_seed = hash((spec.seed, step)) % (2**31)
-        rng = random.Random(action_seed)
+        rng = random.Random(action_seed)  # nosec B311 - deterministic simulation
         
         return f"action_{rng.randint(0, 9)}"
     
@@ -788,7 +816,7 @@ class GroundingLayer:
                     action = adapter_fn(step)
                     if action:
                         break
-                except Exception:
+                except Exception:  # nosec B112 - intentional adapter fallback
                     continue
             
             if action:
@@ -1209,10 +1237,10 @@ class UniversalController:
             result.metrics.get("accuracy", 0.5),
         )
         
-        # 9. Calculate k₁
+        # 9. Calculate k₁ and quantum advantage
         decision_score = result.v_mu_pi
         k1 = 1.0 - decision_score
-        advantage = 1.0 / k1 if k1 > 0 else float("inf")
+        advantage = calculate_safe_quantum_advantage(k1)
         
         # 10. Record metrics
         metrics = {
