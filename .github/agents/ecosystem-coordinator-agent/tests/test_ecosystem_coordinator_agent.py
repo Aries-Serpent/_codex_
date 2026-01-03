@@ -59,7 +59,7 @@ class TestPDA:
         agent.decide({})
         agent.act({})
         agent.aftermath({})
-        assert all(len(agent.pda_state[k]) == 1 for k in pda_state.keys())
+        assert all(len(agent.pda_state[k]) == 1 for k in ["perception", "decision", "action", "aftermath"])
 
 class TestPublicAPI:
     def test_coordinate(self):

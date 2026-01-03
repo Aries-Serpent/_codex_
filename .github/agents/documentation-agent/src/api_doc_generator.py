@@ -5,7 +5,6 @@ Extracts docstrings and type hints to generate comprehensive API docs
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 import ast
-import inspect
 import random
 import re
 

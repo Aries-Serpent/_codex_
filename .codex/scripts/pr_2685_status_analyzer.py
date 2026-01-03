@@ -13,7 +13,7 @@ import hashlib
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 import re
 
 
@@ -47,6 +47,7 @@ class CodebaseAnalyzer:
                         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                             exts[ext] += len(f.readlines())
                     except Exception:
+                        # Silently skip files that cannot be read or decoded
                         pass
         
         return exts
@@ -93,6 +94,7 @@ class CodebaseAnalyzer:
                         if matches:
                             patterns["quality_patterns"].append(f"{file}: {len(matches)} matches")
             except Exception:
+                # Silently skip files that fail pattern matching
                 pass
         
         return patterns

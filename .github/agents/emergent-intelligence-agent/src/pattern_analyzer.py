@@ -14,7 +14,7 @@ Integration Points:
 - phase8_10_production_deployment.py::MonitoringObservability
 """
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 from enum import Enum
 import random
@@ -26,7 +26,7 @@ try:
     import sys
     import os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'core'))
-    from phase8_9_emergent_behavior import EmergentPatternDetector, PatternType
+    from phase8_9_emergent_behavior import EmergentPatternDetector
     from phase8_9_emergent_behavior import SelfImprovementEngine
     CORE_AVAILABLE = True
 except ImportError:

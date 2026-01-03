@@ -2,7 +2,7 @@
 Throughput Optimizer for Performance Agent
 Optimizes system throughput and identifies bottlenecks
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import random

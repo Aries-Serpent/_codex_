@@ -149,7 +149,7 @@ class PerformanceMonitorAgent:
         elif action_type == "optimize_throughput":
             # Trigger throughput optimization
             result["outputs"].append("Throughput optimization triggered")
-            bottlenecks = self.throughput_optimizer.identify_bottlenecks()
+            _ = self.throughput_optimizer.identify_bottlenecks()  # Analyze bottlenecks
             optimizations = self.throughput_optimizer.suggest_optimizations()
             result["outputs"].extend(optimizations)
         

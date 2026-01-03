@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from __init__ import create_agent, PerformanceMonitorAgent, RANDOM_SEED
+from __init__ import create_agent, RANDOM_SEED
 from latency_monitor import create_monitor
 from throughput_optimizer import create_optimizer
 from resource_predictor import create_predictor
@@ -307,7 +307,7 @@ class TestPDALoopIntegration:
         action_result = agent.act(decision)
         
         # AfterMath
-        aftermath = agent.aftermath(action_result)
+        agent.aftermath(action_result)
         
         # Verify complete cycle
         assert len(agent.pda_state["perception"]) == 1

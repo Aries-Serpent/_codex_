@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from __init__ import create_agent, DocumentationAgent, RANDOM_SEED
+from __init__ import create_agent, RANDOM_SEED
 from api_doc_generator import create_generator
 from changelog_generator import create_changelog_generator
 from tutorial_generator import create_tutorial_generator
@@ -184,7 +184,7 @@ class TestPDALoopIntegration:
         perception = agent.perceive({"task": "doc"})
         decision = agent.decide(perception)
         action = agent.act(decision)
-        aftermath = agent.aftermath(action)
+        agent.aftermath(action)
         
         assert len(agent.pda_state["perception"]) == 1
         assert len(agent.pda_state["decision"]) == 1

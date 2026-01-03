@@ -19,7 +19,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from pattern_analyzer import (
     EmergentIntelligenceAgent,
     EmergentPattern,
-    BehaviorPrediction,
     EmergenceType,
     RANDOM_SEED,
     create_agent
@@ -130,7 +129,7 @@ class TestCrossRepositoryPatternDetection:
         repos = ["repo1", "repo2"]
         initial_count = agent.metrics["patterns_detected"]
         
-        patterns = agent.detect_cross_repo_patterns(repos)
+        _ = agent.detect_cross_repo_patterns(repos)  # Trigger detection
         
         assert agent.metrics["patterns_detected"] >= initial_count
         assert agent.metrics["avg_latency_ms"] >= 0
@@ -262,7 +261,7 @@ class TestBehaviorPrediction:
         context = {}
         initial_count = agent.metrics["predictions_made"]
         
-        predictions = agent.predict_behavior(context)
+        _ = agent.predict_behavior(context)  # Trigger prediction
         
         assert agent.metrics["predictions_made"] > initial_count
         assert len(agent.predictions) > 0
@@ -494,14 +493,14 @@ class TestIntegration:
         agent = EmergentIntelligenceAgent(seed=RANDOM_SEED)
         
         # Initial detection
-        patterns1 = agent.detect_cross_repo_patterns(["repo1"])
+        _ = agent.detect_cross_repo_patterns(["repo1"])  # Initial patterns
         initial_accuracy = agent.metrics["accuracy"]
         
         # Provide feedback
         agent.improve_accuracy({"accuracy": 0.95})
         
         # Second detection
-        patterns2 = agent.detect_cross_repo_patterns(["repo1"])
+        _ = agent.detect_cross_repo_patterns(["repo1"])  # Patterns after improvement
         
         # Accuracy should have changed
         assert agent.metrics["accuracy"] != initial_accuracy

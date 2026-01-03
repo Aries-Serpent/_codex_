@@ -2,7 +2,7 @@
 Resource Predictor for Performance Agent
 Predicts resource usage patterns and capacity needs
 """
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 from dataclasses import dataclass
 from datetime import datetime
 import random
@@ -67,7 +67,7 @@ class ResourcePredictor:
             return values[0] if values else 0.0
         
         # Calculate trend
-        avg = sum(values) / len(values)
+        _ = sum(values) / len(values)  # Calculate average for context
         recent_avg = sum(values[-10:]) / min(10, len(values))
         
         # Predict peak as recent trend + 20% buffer

@@ -64,7 +64,7 @@ class TestPDA:
         p = agent.perceive({})
         d = agent.decide(p)
         a = agent.act(d)
-        aft = agent.aftermath(a)
+        agent.aftermath(a)
         assert all(len(agent.pda_state[k]) == 1 for k in ["perception","decision","action","aftermath"])
 
 class TestPublicAPI:

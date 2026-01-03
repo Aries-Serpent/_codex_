@@ -297,6 +297,11 @@ jobs:
           approvers: mbaetiong
           minimum-approvals: 1
           issue-title: "Deploy approval required"
+        # SECURITY NOTE: This third-party action is pinned to mutable tag v1.
+        # Consider pinning to a specific commit SHA for supply chain security:
+        # uses: trstringer/manual-approval@<commit-sha>
+        # Alternative: Use GitHub Environment protection rules with required reviewers
+        # which provides native approval gates without third-party dependencies.
 ```
 
 ### 2.3 V10 Agent Deployment with Variable Seeds
