@@ -449,34 +449,34 @@
     <aside class="sidebar">
       <h3>🗺️ Navigation</h3>
       <ul class="nav-list">
-        <li><button onclick="showSection('overview')" class="active">Overview</button></li>
-        <li><button onclick="showSection('cli-explorer')">CLI Explorer</button></li>
-        <li><button onclick="showSection('cognitive-brain')">Cognitive Brain</button></li>
-        <li><button onclick="showSection('code-structure')">Code Structure</button></li>
-        <li><button onclick="showSection('api-reference')">API Reference</button></li>
+        <li><button onclick="showSection('overview', event)" class="active">Overview</button></li>
+        <li><button onclick="showSection('cli-explorer', event)">CLI Explorer</button></li>
+        <li><button onclick="showSection('cognitive-brain', event)">Cognitive Brain</button></li>
+        <li><button onclick="showSection('code-structure', event)">Code Structure</button></li>
+        <li><button onclick="showSection('api-reference', event)">API Reference</button></li>
       </ul>
 
       <h3>🔬 Deep Dive</h3>
       <ul class="nav-list">
-        <li><button onclick="showSection('quantum-system')">Quantum Decision System</button></li>
-        <li><button onclick="showSection('memory-architecture')">Memory Architecture</button></li>
-        <li><button onclick="showSection('agent-system')">Agent Orchestration</button></li>
-        <li><button onclick="showSection('physics-integration')">Physics Integration</button></li>
+        <li><button onclick="showSection('quantum-system', event)">Quantum Decision System</button></li>
+        <li><button onclick="showSection('memory-architecture', event)">Memory Architecture</button></li>
+        <li><button onclick="showSection('agent-system', event)">Agent Orchestration</button></li>
+        <li><button onclick="showSection('physics-integration', event)">Physics Integration</button></li>
       </ul>
 
       <h3>📚 Documentation</h3>
       <ul class="nav-list">
-        <li><button onclick="showSection('doc-library')">Full Documentation Library</button></li>
-        <li><button onclick="showSection('mcp-packages')">MCP Packages</button></li>
-        <li><button onclick="showSection('examples')">Code Examples</button></li>
-        <li><button onclick="showSection('tutorials')">Tutorials</button></li>
+        <li><button onclick="showSection('doc-library', event)">Full Documentation Library</button></li>
+        <li><button onclick="showSection('mcp-packages', event)">MCP Packages</button></li>
+        <li><button onclick="showSection('examples', event)">Code Examples</button></li>
+        <li><button onclick="showSection('tutorials', event)">Tutorials</button></li>
       </ul>
 
       <h3>⚙️ Tools</h3>
       <ul class="nav-list">
-        <li><button onclick="showSection('query-builder')">Query Builder</button></li>
-        <li><button onclick="showSection('function-explorer')">Function Explorer</button></li>
-        <li><button onclick="showSection('dependency-graph')">Dependency Graph</button></li>
+        <li><button onclick="showSection('query-builder', event)">Query Builder</button></li>
+        <li><button onclick="showSection('function-explorer', event)">Function Explorer</button></li>
+        <li><button onclick="showSection('dependency-graph', event)">Dependency Graph</button></li>
       </ul>
     </aside>
 
@@ -494,37 +494,37 @@
         </div>
 
         <div class="card-grid">
-          <div class="capability-card" onclick="showSection('cli-explorer')">
+          <div class="capability-card" onclick="showSection('cli-explorer', event)">
             <div class="icon">💻</div>
             <h4>CLI Explorer</h4>
             <p>Interactive command-line interface with real-time execution and output</p>
           </div>
 
-          <div class="capability-card" onclick="showSection('cognitive-brain')">
+          <div class="capability-card" onclick="showSection('cognitive-brain', event)">
             <div class="icon">🧠</div>
             <h4>Cognitive Brain</h4>
             <p>Explore quantum decision systems, memory management, and neural architectures</p>
           </div>
 
-          <div class="capability-card" onclick="showSection('code-structure')">
+          <div class="capability-card" onclick="showSection('code-structure', event)">
             <div class="icon">📁</div>
             <h4>Code Structure</h4>
             <p>Navigate the full repository structure with file previews and documentation</p>
           </div>
 
-          <div class="capability-card" onclick="showSection('api-reference')">
+          <div class="capability-card" onclick="showSection('api-reference', event)">
             <div class="icon">📡</div>
             <h4>API Reference</h4>
             <p>Complete API documentation with examples and interactive testing</p>
           </div>
 
-          <div class="capability-card" onclick="showSection('query-builder')">
+          <div class="capability-card" onclick="showSection('query-builder', event)">
             <div class="icon">🔍</div>
             <h4>Query Builder</h4>
             <p>Build complex queries to search and filter codebase components</p>
           </div>
 
-          <div class="capability-card" onclick="showSection('doc-library')">
+          <div class="capability-card" onclick="showSection('doc-library', event)">
             <div class="icon">📚</div>
             <h4>Documentation Library</h4>
             <p>Access 100+ documentation files with full-text search</p>
@@ -561,9 +561,9 @@
         </div>
 
         <div class="tabs">
-          <button class="tab active" onclick="showTab('cli-commands')">CLI Commands</button>
-          <button class="tab" onclick="showTab('mcp-functions')">MCP Functions</button>
-          <button class="tab" onclick="showTab('quick-actions')">Quick Actions</button>
+          <button class="tab active" onclick=\"showTab('cli-commands', event)\">CLI Commands</button>
+          <button class="tab" onclick=\"showTab('mcp-functions', event)\">MCP Functions</button>
+          <button class="tab" onclick=\"showTab('quick-actions', event)\">Quick Actions</button>
         </div>
 
         <div id="cli-commands" class="tab-content active">
@@ -663,25 +663,25 @@ navigator.execute('AUDIT_EXEC')
 
         <div id="quick-actions" class="tab-content">
           <div class="card-grid">
-            <div class="capability-card" onclick="runQuickAction('status')">
+            <div class="capability-card" onclick="runQuickAction('status', event)">
               <div class="icon">📊</div>
               <h4>System Status</h4>
               <p>Check current system health and metrics</p>
             </div>
 
-            <div class="capability-card" onclick="runQuickAction('audit')">
+            <div class="capability-card" onclick="runQuickAction('audit', event)">
               <div class="icon">🔍</div>
               <h4>Run Audit</h4>
               <p>Execute full capability audit</p>
             </div>
 
-            <div class="capability-card" onclick="runQuickAction('docs')">
+            <div class="capability-card" onclick="runQuickAction('docs', event)">
               <div class="icon">📝</div>
               <h4>Generate Docs</h4>
               <p>Build API documentation</p>
             </div>
 
-            <div class="capability-card" onclick="runQuickAction('tests')">
+            <div class="capability-card" onclick="runQuickAction('tests', event)">
               <div class="icon">🧪</div>
               <h4>Run Tests</h4>
               <p>Execute test suite with coverage</p>
@@ -704,11 +704,11 @@ navigator.execute('AUDIT_EXEC')
         </div>
 
         <div class="tabs">
-          <button class="tab active" onclick="showTab('quantum-overview')">Overview</button>
-          <button class="tab" onclick="showTab('superposition')">Superposition Engine</button>
-          <button class="tab" onclick="showTab('entanglement')">Entanglement Manager</button>
-          <button class="tab" onclick="showTab('memory-mgmt')">Memory System</button>
-          <button class="tab" onclick="showTab('adaptive-scoring')">Adaptive Scoring</button>
+          <button class="tab active" onclick=\"showTab('quantum-overview', event)\">Overview</button>
+          <button class="tab" onclick=\"showTab('superposition', event)\">Superposition Engine</button>
+          <button class="tab" onclick=\"showTab('entanglement', event)\">Entanglement Manager</button>
+          <button class="tab" onclick=\"showTab('memory-mgmt', event)\">Memory System</button>
+          <button class="tab" onclick=\"showTab('adaptive-scoring', event)\">Adaptive Scoring</button>
         </div>
 
         <div id="quantum-overview" class="tab-content active">
@@ -783,19 +783,19 @@ navigator.execute('AUDIT_EXEC')
           <div class="card">
             <h3>Source Files</h3>
             <div class="tree-view">
-              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/superposition.py')">
+              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/superposition.py', event)">
                 <span class="tree-icon">📄</span><span class="tree-file">superposition.py</span> - SuperpositionEngine
               </div>
-              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/entanglement.py')">
+              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/entanglement.py', event)">
                 <span class="tree-icon">📄</span><span class="tree-file">entanglement.py</span> - EntanglementManager
               </div>
-              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/memory.py')">
+              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/memory.py', event)">
                 <span class="tree-icon">📄</span><span class="tree-file">memory.py</span> - QuantumMemoryManager
               </div>
-              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/adaptive_scoring.py')">
+              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/adaptive_scoring.py', event)">
                 <span class="tree-icon">📄</span><span class="tree-file">adaptive_scoring.py</span> - AdaptiveScoringOptimizer
               </div>
-              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/uncertainty.py')">
+              <div class="tree-item" onclick="viewFile('src/cognitive_brain/quantum/uncertainty.py', event)">
                 <span class="tree-icon">📄</span><span class="tree-file">uncertainty.py</span> - UncertaintyOptimizer
               </div>
             </div>
@@ -1106,7 +1106,7 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
   </div>
 
   <script>
-    function showSection(sectionId) {
+    function showSection(sectionId, event) {
       // Hide all sections
       document.querySelectorAll('.section').forEach(section => {
         section.style.display = 'none';
@@ -1119,10 +1119,14 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       document.querySelectorAll('.nav-list button').forEach(btn => {
         btn.classList.remove('active');
       });
-      event.target.classList.add('active');
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
     }
 
-    function showTab(tabId) {
+    function showTab(tabId, event) {
+      if (!event || !event.target) return;
+      
       // Get parent tabs container
       const tabsContainer = event.target.closest('.section');
       
@@ -1147,12 +1151,22 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       console.log('Searching for:', query);
     }
 
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function executeCommand() {
       const command = document.getElementById('cliCommand').value;
       const args = document.getElementById('cliArgs').value;
       const output = document.getElementById('cliOutput');
       
-      output.innerHTML = `<span class="terminal-prompt">$</span> Executing: ${command} ${args}<br>`;
+      // Escape user input to prevent XSS
+      const escapedCommand = escapeHtml(command);
+      const escapedArgs = escapeHtml(args);
+      
+      output.innerHTML = `<span class="terminal-prompt">$</span> Executing: ${escapedCommand} ${escapedArgs}<br>`;
       output.innerHTML += `<span style="color: #8b949e;">Command execution simulated - connect to live backend for real execution</span>`;
     }
 
@@ -1161,7 +1175,10 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       const params = document.getElementById('mcpParams').value;
       const output = document.getElementById('mcpOutput');
       
-      output.innerHTML = `<span style="color: #3fb950;">✓</span> Function: ${func}<br>`;
+      // Escape user input to prevent XSS
+      const escapedFunc = escapeHtml(func);
+      
+      output.innerHTML = `<span style="color: #3fb950;">✓</span> Function: ${escapedFunc}<br>`;
       output.innerHTML += `<span style="color: #8b949e;">MCP function execution simulated</span>`;
     }
 
@@ -1198,8 +1215,15 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       const states = document.getElementById('superpositionStates').value;
       const output = document.getElementById('superpositionOutput');
       
-      output.innerHTML = `<span style="color: #3fb950;">✓</span> Evaluating ${states.split('\n').length} states in parallel...<br><br>`;
-      output.innerHTML += `<span style="color: #58a6ff;">Selected state:</span> ${states.split('\n')[0]}<br>`;
+      const stateLines = states.split('\n');
+      const numStates = stateLines.length;
+      const firstState = stateLines[0] || '';
+      
+      // Escape user input to prevent XSS
+      const escapedFirstState = escapeHtml(firstState);
+      
+      output.innerHTML = `<span style="color: #3fb950;">✓</span> Evaluating ${numStates} states in parallel...<br><br>`;
+      output.innerHTML += `<span style="color: #58a6ff;">Selected state:</span> ${escapedFirstState}<br>`;
       output.innerHTML += `<span style="color: #8b949e;">Coherence: 0.892</span>`;
     }
   </script>

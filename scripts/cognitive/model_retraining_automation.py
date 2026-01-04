@@ -4,7 +4,7 @@ Automated Model Retraining System
 Monthly retraining with performance comparison and automatic deployment
 """
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 import json
 import logging
 from datetime import datetime, timedelta
