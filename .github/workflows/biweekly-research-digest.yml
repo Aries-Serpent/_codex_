@@ -16,7 +16,7 @@ on:
 
 permissions:
   contents: write
-  issues: create
+  issues: write
 
 jobs:
   research_integration:
