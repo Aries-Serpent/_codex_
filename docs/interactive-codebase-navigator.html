@@ -561,9 +561,9 @@
         </div>
 
         <div class="tabs">
-          <button class="tab active" onclick=\"showTab('cli-commands', event)\">CLI Commands</button>
-          <button class="tab" onclick=\"showTab('mcp-functions', event)\">MCP Functions</button>
-          <button class="tab" onclick=\"showTab('quick-actions', event)\">Quick Actions</button>
+          <button class="tab active" onclick="showTab('cli-commands', event)">CLI Commands</button>
+          <button class="tab" onclick="showTab('mcp-functions', event)">MCP Functions</button>
+          <button class="tab" onclick="showTab('quick-actions', event)">Quick Actions</button>
         </div>
 
         <div id="cli-commands" class="tab-content active">
@@ -704,11 +704,11 @@ navigator.execute('AUDIT_EXEC')
         </div>
 
         <div class="tabs">
-          <button class="tab active" onclick=\"showTab('quantum-overview', event)\">Overview</button>
-          <button class="tab" onclick=\"showTab('superposition', event)\">Superposition Engine</button>
-          <button class="tab" onclick=\"showTab('entanglement', event)\">Entanglement Manager</button>
-          <button class="tab" onclick=\"showTab('memory-mgmt', event)\">Memory System</button>
-          <button class="tab" onclick=\"showTab('adaptive-scoring', event)\">Adaptive Scoring</button>
+          <button class="tab active" onclick="showTab('quantum-overview', event)">Overview</button>
+          <button class="tab" onclick="showTab('superposition', event)">Superposition Engine</button>
+          <button class="tab" onclick="showTab('entanglement', event)">Entanglement Manager</button>
+          <button class="tab" onclick="showTab('memory-mgmt', event)">Memory System</button>
+          <button class="tab" onclick="showTab('adaptive-scoring', event)">Adaptive Scoring</button>
         </div>
 
         <div id="quantum-overview" class="tab-content active">
@@ -1129,14 +1129,19 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       
       // Get parent tabs container
       const tabsContainer = event.target.closest('.section');
+      if (!tabsContainer) return;
       
       // Hide all tab contents in this section
       tabsContainer.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
       });
       
-      // Show selected tab
-      tabsContainer.querySelector(`#${tabId}`).classList.add('active');
+      // Show selected tab safely by ID (no template literal to avoid XSS)
+      const tabContent = document.getElementById(tabId);
+      if (!tabContent || !tabsContainer.contains(tabContent)) {
+        return;
+      }
+      tabContent.classList.add('active');
       
       // Update active tab button
       tabsContainer.querySelectorAll('.tab').forEach(btn => {
@@ -1203,11 +1208,11 @@ Target: k₁ ≤ 0.35 (industry standard for precision)
       argsField.value = templates[template] || '';
     }
 
-    function runQuickAction(action) {
+    function runQuickAction(action, event) {
       alert(`Running quick action: ${action}\nThis would execute the corresponding CLI command.`);
     }
 
-    function viewFile(filepath) {
+    function viewFile(filepath, event) {
       alert(`Opening file: ${filepath}\nFile viewer would display the source code here.`);
     }
 
