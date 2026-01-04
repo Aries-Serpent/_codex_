@@ -5,11 +5,9 @@ Comprehensive test suite for Phase 4 Full Autonomy components.
 Tests self-healing, autonomous decision-making, multi-agent coalitions, and safety guardrails.
 """
 
-import json
 import pytest
 import numpy as np
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestSelfHealing:
@@ -273,12 +271,6 @@ class TestSafetyGuardrails:
     
     def test_hard_constraint_enforcement(self):
         """Test enforcing non-overridable safety constraints"""
-        hard_constraints = [
-            'no_data_deletion',
-            'no_external_network',
-            'require_approval_critical'
-        ]
-        
         action = {'type': 'delete_database', 'critical': True}
         
         # Check hard constraints

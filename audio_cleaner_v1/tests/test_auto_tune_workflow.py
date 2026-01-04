@@ -2,7 +2,6 @@
 """Test suite for auto-tune workflow."""
 
 import pytest
-from pathlib import Path
 from audio_cleaner_v1.src.workflow.auto_tune_workflow import (
     AutoTuneWorkflow,
     WorkflowResult,

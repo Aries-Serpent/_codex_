@@ -4,7 +4,7 @@ Community Knowledge Hub
 Pattern contribution system with peer review and public library
 """
 
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Optional
 import json
 import logging
 from datetime import datetime

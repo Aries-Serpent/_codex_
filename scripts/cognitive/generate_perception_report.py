@@ -30,6 +30,15 @@ def generate_perception_report(input_dir: str, output_path: str) -> str:
     patterns = {}
     anomalies = {}
     
+    # Load all data files into dictionary
+    data_files = {
+        "git_data": git_data,
+        "pr_data": pr_data,
+        "ci_data": ci_data,
+        "patterns": patterns,
+        "anomalies": anomalies
+    }
+    
     for filename, data_var in [
         ("git_data.json", "git_data"),
         ("pr_metrics.json", "pr_data"),
@@ -40,7 +49,14 @@ def generate_perception_report(input_dir: str, output_path: str) -> str:
         file_path = input_path / filename
         if file_path.exists():
             with open(file_path) as f:
-                locals()[data_var] = json.load(f)
+                data_files[data_var] = json.load(f)
+    
+    # Extract data from dictionary
+    git_data = data_files["git_data"]
+    pr_data = data_files["pr_data"]
+    ci_data = data_files["ci_data"]
+    patterns = data_files["patterns"]
+    anomalies = data_files["anomalies"]
     
     # Generate report
     report_lines = [

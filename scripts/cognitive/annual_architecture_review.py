@@ -4,7 +4,7 @@ Annual Architecture Review
 Comprehensive system health assessment and technology stack evaluation
 """
 
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Optional
 import json
 import logging
 from datetime import datetime
