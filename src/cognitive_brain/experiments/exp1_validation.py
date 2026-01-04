@@ -15,9 +15,6 @@ PDA Loop + AfterMath:
 
 import json
 import random
-# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
-# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
-# are false positives - no security-sensitive operations here.
 import tempfile
 import os
 from datetime import datetime
@@ -67,15 +64,18 @@ def generate_audit_scenarios(count: int) -> List[Tuple[AuditResult, ComplianceDe
     Returns:
         List of (audit_result, ground_truth) tuples
     """
-    random.seed(42)  # Deterministic for reproducibility
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing compliance decision algorithms.
+    _rng = random.Random(42)  # nosec B311 - Deterministic for reproducibility
     scenarios = []
     
     for i in range(count):
         # Generate diverse audit parameters
-        score = random.random()
-        risk_level = random.choice(["low", "medium", "high"])
-        remediation_cost = random.uniform(0, 10000)
-        business_impact = random.random()
+        score = _rng.random()
+        risk_level = _rng.choice(["low", "medium", "high"])
+        remediation_cost = _rng.uniform(0, 10000)
+        business_impact = _rng.random()
         num_violations = max(0, int((1.0 - score) * 10))
         violations = [f"Violation-{j}" for j in range(num_violations)]
         

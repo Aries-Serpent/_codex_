@@ -1,0 +1,44 @@
+{
+  "b7d03700bc4a": {
+    "pattern_id": "b7d03700bc4a",
+    "pattern_type": "code_conversion",
+    "source_agent": 0,
+    "context": {
+      "task": "external_repo_integration",
+      "lesson": "Code conversion/wrapping required - meta-learning should track conversion patterns",
+      "applies_to": "licecap"
+    },
+    "effectiveness": 0.85,
+    "usage_count": 0,
+    "last_used": null,
+    "metadata": {}
+  },
+  "69a79e0845c0": {
+    "pattern_id": "69a79e0845c0",
+    "pattern_type": "plugin_architecture",
+    "source_agent": 0,
+    "context": {
+      "task": "external_repo_integration",
+      "lesson": "Rich capability set (9 capabilities) - suitable for plugin system",
+      "pattern": "adapter"
+    },
+    "effectiveness": 0.8,
+    "usage_count": 0,
+    "last_used": null,
+    "metadata": {}
+  },
+  "9cf39baefcb6": {
+    "pattern_id": "9cf39baefcb6",
+    "pattern_type": "plugin_architecture",
+    "source_agent": 0,
+    "context": {
+      "task": "external_repo_integration",
+      "lesson": "Plugin adapter pattern needed - meta-learning can reuse adapter templates",
+      "pattern": "adapter"
+    },
+    "effectiveness": 0.8,
+    "usage_count": 0,
+    "last_used": null,
+    "metadata": {}
+  }
+}

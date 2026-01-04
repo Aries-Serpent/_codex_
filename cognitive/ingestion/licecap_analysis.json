@@ -1,0 +1,74 @@
+{
+  "repo_url": "https://github.com/justinfrankel/licecap.git",
+  "repo_name": "licecap",
+  "timestamp": "2026-01-04T01:44:52.363103",
+  "languages": {
+    "C/C++": 280082,
+    "PHP": 895,
+    "Shell": 227
+  },
+  "total_lines": 281204,
+  "license_type": null,
+  "capabilities": [
+    "compression",
+    "database",
+    "file_io",
+    "gif_encoding",
+    "image_processing",
+    "networking",
+    "screen_capture",
+    "threading",
+    "ui_framework"
+  ],
+  "integration_strategy": "PYTHON_WRAPPER: Create Python bindings using ctypes, cffi, or pybind11 | SCREEN_CAPTURE: Integrate as screenshot/recording tool for cognitive perception | GIF_EXPORT: Use for automated GIF generation in documentation and reports | UI_COMPONENT: Potentially adapt UI components for cognitive dashboard",
+  "plugin_adapter_needed": true,
+  "conversion_required": true,
+  "key_components": [
+    {
+      "file": "WDL/lice/test/main.cpp",
+      "lines": 1137,
+      "classes": [
+        "struct timeval tm={0,};"
+      ],
+      "functions": [
+        "bool m_cap;",
+        "int x=rand()%(r.right+300)-150;",
+        "int y=rand()%(r.bottom+300)-150;",
+        "int n = LICE_BuildPalette(srcbmp, palette, palnumcols);",
+        "void LICE_TestPalette(LICE_IBitmap*, LICE_pixel*, int);"
+      ]
+    },
+    {
+      "file": "WDL/swell/sample_project/app_main.cpp",
+      "lines": 198,
+      "classes": [],
+      "functions": [
+        "int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nShowCmd)",
+        "int vvv = GetMessage(&msg,NULL,0,0);",
+        "int a= GetMenuItemCount(sm);"
+      ]
+    },
+    {
+      "file": "licecap/licecap_ui.cpp",
+      "lines": 2231,
+      "classes": [
+        "class gif_encoder",
+        "class videoFrameWrap : public IVideoFrame"
+      ],
+      "functions": [
+        "bool WDL_ChooseFileForSave(HWND parent, const char *text, const char *initialdir, const char *initialfile, const char *extlist,const char *defext,bool preservecwd,char *fn, int fnsize,const char *dlgid=NULL, void *dlgProc=NULL, void *hi=NULL);",
+        "void OnAudioBuffer(bool isPost, int len, double srate, struct audio_hook_register_t *reg); // called twice per frame, isPost being false then true",
+        "bool s_audiohook_reg;",
+        "int lastbm_coords[4]; // coordinates of previous frame which need to be updated, [2], [3] will always be >0 if in progress",
+        "int lastbm_accumdelay; // delay of previous frame which is latent"
+      ]
+    }
+  ],
+  "lessons_learned": [
+    "Multi-language repository with 3 languages detected",
+    "Code conversion/wrapping required - meta-learning should track conversion patterns",
+    "Rich capability set (9 capabilities) - suitable for plugin system",
+    "Plugin adapter pattern needed - meta-learning can reuse adapter templates"
+  ],
+  "meta_learning_applicable": true
+}

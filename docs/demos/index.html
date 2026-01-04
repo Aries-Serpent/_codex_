@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Demonstrations | _codex_ Documentation</title>
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+    }
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .demo-category {
+      margin: 3rem 0;
+    }
+    .demo-category h2 {
+      font-size: 1.75rem;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    .demo-card {
+      border: 2px solid #e1e4e8;
+      border-radius: 8px;
+      padding: 1.5rem;
+      background: #f6f8fa;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+    .demo-card h3 {
+      margin-top: 0;
+      color: #667eea;
+      font-size: 1.25rem;
+    }
+    .demo-card p {
+      color: #586069;
+      margin: 1rem 0;
+    }
+    .demo-card .status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .status.ready {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status.coming-soon {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .demo-card .btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+      font-weight: 600;
+    }
+    .demo-card .btn:hover {
+      background: #5568d3;
+      text-decoration: none;
+    }
+    .demo-card .btn.disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .getting-started {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 3rem 0;
+    }
+    .getting-started h2 {
+      margin-top: 0;
+      color: white;
+    }
+    .getting-started ul {
+      list-style: none;
+      padding: 0;
+    }
+    .getting-started li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .getting-started li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+      .page-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>🚀 Interactive Demonstrations</h1>
+    <p>Explore _codex_ features through hands-on, browser-based examples</p>
+    <p style="margin-top: 1rem;"><a href="../" style="color: white; text-decoration: underline;">← Back to Documentation</a></p>
+  </header>
+
+  <main class="main-content">
+    <section class="demo-category">
+      <h2>🤖 Multi-Agent Systems</h2>
+      <p>See how AI agents work together to analyze, optimize, and improve code quality.</p>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Code Quality Analyzer</h3>
+          <p>Paste Python code and watch as our AI agent analyzes complexity, style, and provides intelligent suggestions in real-time.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Cyclomatic complexity analysis</li>
+            <li>Style violation detection</li>
+            <li>Refactoring suggestions</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Unused Import Detector</h3>
+          <p>Upload or paste a Python file to see which imports are actually used. Our AST-based analyzer shows exactly what can be removed.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>AST-based static analysis</li>
+            <li>Safe removal recommendations</li>
+            <li>Before/after comparisons</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>8-Agent Code Sweep</h3>
+          <p>Watch 8 specialized agents collaborate through a message bus to optimize your codebase using physics-inspired algorithms.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Real-time agent communication</li>
+            <li>Entropy & coupling visualization</li>
+            <li>Step-by-step execution</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-category">
+      <h2>🧠 Cognitive Brain Architecture</h2>
+      <p>Explore the PDA Loop (Perception → Decision → Action) and AfterMath evaluation system.</p>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>PDA Loop Visualization</h3>
+          <p>Interactive flowchart showing how data flows through Perception, Decision, Action, and AfterMath phases.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Click to drill down into phases</li>
+            <li>Animated data flow</li>
+            <li>Real-time metrics</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Memory System Explorer</h3>
+          <p>See how Short-Term Memory (STM) and Long-Term Memory (LTM) work together for pattern recognition and caching.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>STM/LTM visualization</li>
+            <li>Cache hit/miss tracking</li>
+            <li>Consolidation process</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status ready">Ready</span>
+          <h3>Quantum Advantage Calculator</h3>
+          <p>Calculate performance improvements using the k₁ constant. See how _codex_ achieves 5.56x quantum advantage.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Interactive calculator</li>
+            <li>Real examples from codebase</li>
+            <li>Visual comparisons</li>
+          </ul>
+          <a href="category-2-cognitive/quantum-advantage.html" class="btn">Try Demo →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-category">
+      <h2>⚛️ Physics-Inspired Algorithms</h2>
+      <p>Understand how concepts from physics drive code optimization and analysis.</p>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Entropy Visualization</h3>
+          <p>See code complexity through information theory. Adjust symbol usage and watch entropy change in real-time.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Formula: S = -Σ p_i log(p_i)</li>
+            <li>Interactive sliders</li>
+            <li>Ordered vs disordered states</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Coupling Strength Calculator</h3>
+          <p>Calculate and visualize coupling (λ_ij) between code symbols. Identify refactoring opportunities.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Interactive graph visualization</li>
+            <li>Strong vs weak coupling</li>
+            <li>Refactoring suggestions</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Hamiltonian Energy</h3>
+          <p>Explore code optimization as energy minimization. Drag symbols to see energy landscape changes.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Formula: H = Σε_i + ΣJ_ij</li>
+            <li>Interactive energy landscape</li>
+            <li>Optimal configuration finder</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-category">
+      <h2>🛠️ Build Your Own Agent System</h2>
+      <p>Create custom multi-agent systems using our framework.</p>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Agent System Builder</h3>
+          <p>Drag-and-drop interface to create custom agent systems. Choose agents, connect workflows, and generate Python code.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Visual agent configuration</li>
+            <li>Workflow designer</li>
+            <li>Code generation & download</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+        
+        <div class="demo-card">
+          <span class="status coming-soon">Coming Soon</span>
+          <h3>Message Bus Simulator</h3>
+          <p>Visualize how agents communicate through a message bus. Create messages, see routing, monitor history.</p>
+          <ul style="font-size: 0.9em; color: #586069;">
+            <li>Live message flow</li>
+            <li>Pub-sub visualization</li>
+            <li>Message filtering</li>
+          </ul>
+          <a href="#" class="btn disabled">Demo Coming Soon</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="getting-started">
+      <h2>🎯 Getting Started</h2>
+      <p>All demonstrations run entirely in your browser - no installation or setup required!</p>
+      <ul>
+        <li>Click any "Try Demo" button to start (currently only Quantum Advantage Calculator is ready)</li>
+        <li>Follow the on-screen instructions and experiment with settings</li>
+        <li>All demos are interactive - change values and see results instantly</li>
+        <li>Download generated code for use in your own projects</li>
+        <li>Check back soon for more demos!</li>
+      </ul>
+      
+      <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.3);">
+        <h3 style="margin-top: 0;">Development Status</h3>
+        <p><strong>Phase 1 Complete:</strong> Foundation and planning (✓)</p>
+        <p><strong>Phase 2 In Progress:</strong> Building individual demos</p>
+        <p><strong>Target:</strong> 13+ interactive demos over 7 weeks</p>
+        <p style="margin-top: 1rem; font-size: 0.9em;">
+          For details on the full plan, see 
+          <a href="../.codex/plans/interactive_demos_plan.md" style="color: white; text-decoration: underline;">Interactive Demos Plan</a>
+        </p>
+      </div>
+    </section>
+
+    <section style="text-align: center; padding: 3rem 0; color: #586069;">
+      <p><strong>Questions or suggestions?</strong></p>
+      <p>
+        <a href="https://github.com/Aries-Serpent/_codex_/issues" style="color: #667eea;">Open an issue</a> on GitHub
+      </p>
+    </section>
+  </main>
+</body>
+</html>

@@ -8,7 +8,6 @@ import json
 import pytest
 import subprocess  # Using stdlib subprocess.run which supports timeout parameter
 import sys
-import tempfile
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 

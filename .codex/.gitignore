@@ -2,7 +2,13 @@
 *.db
 *.sqlite
 cache/
-reports/
+# Allow specific report files for PR status
+!reports/pr_*_status*.md
+!reports/pr_*_status*.json
+!reports/pr_*_status*.txt
+# Allow plan files
+!plans/
+!plans/**
 !README.md
 !.gitignore
 config/*.yaml

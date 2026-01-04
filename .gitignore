@@ -107,7 +107,7 @@ manifests/k8s/*/secret.yaml
 !.codex/evidence/
 !.codex/evidence/.gitkeep
 !.codex/reports/
-!.codex/reports/.gitkeep
+!.codex/reports/**
 !.codex/sbom/
 !.codex/sbom/.gitkeep
 .codex/validation/

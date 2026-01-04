@@ -13,9 +13,6 @@ Metrics:
 """
 
 import random
-# NOTE: Using 'random' module for reproducible test data generation (not cryptographic)
-# This is intentional for deterministic experiments with seed=42. Bandit B311 alerts
-# are false positives - no security-sensitive operations here.
 from typing import Dict, Any, List
 from dataclasses import dataclass
 
@@ -68,7 +65,10 @@ def generate_test_audits(count: int, seed: int = 42) -> List[AuditResult]:
     Returns:
         List of AuditResult objects
     """
-    random.seed(seed)
+    # Copilot: Using random.Random() instance for reproducible test data generation.
+    # This is NOT for security/cryptographic purposes - Bandit B311 is a false positive here.
+    # These are experiment scenarios for testing compliance decision algorithms.
+    _rng = random.Random(seed)  # nosec B311
     
     violation_types = [
         ("PII exposure in user profile", 0.3, "high", 500.0),
@@ -83,12 +83,12 @@ def generate_test_audits(count: int, seed: int = 42) -> List[AuditResult]:
     
     audits = []
     for i in range(count):
-        violation_desc, score, risk, cost = random.choice(violation_types)
+        violation_desc, score, risk, cost = _rng.choice(violation_types)
         
         # Randomly vary parameters slightly
-        score = max(0.0, min(1.0, score + random.uniform(-0.1, 0.1)))
-        cost = cost * random.uniform(0.8, 1.2)
-        business_impact = random.uniform(0.3, 0.9)
+        score = max(0.0, min(1.0, score + _rng.uniform(-0.1, 0.1)))
+        cost = cost * _rng.uniform(0.8, 1.2)
+        business_impact = _rng.uniform(0.3, 0.9)
         
         audit = AuditResult(
             audit_id=f"EXP2-AUD-{i:04d}",

@@ -69,6 +69,7 @@ are available for testing and development purposes.
 3. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
 4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 5. **[README.md](README.md)** - Repository overview (5 min)
+6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
 
 ### Reference Documents
 
@@ -77,6 +78,8 @@ are available for testing and development purposes.
 - [.codex/change_log.md](.codex/change_log.md) - Audit trail
 - [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
 - [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
+- [.codex/plans/cognitive_brain_phase_implementation.md](.codex/plans/cognitive_brain_phase_implementation.md) - Cognitive Brain Phase Plan 🆕
+- [scripts/cognitive/](scripts/cognitive/) - Cognitive Brain Scripts (22 files) 🆕
 
 ###human Workflow & Artifact Resources (Updated 2025-12-28)
 

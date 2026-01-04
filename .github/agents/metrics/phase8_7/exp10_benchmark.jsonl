@@ -1,0 +1,11 @@
+{"type": "summary", "avg_k1": 1.1986358548717289, "passes_target": false, "timestamp": "2026-01-03T10:52:59.283217"}
+{"type": "task_result", "task_id": "exp10_task_1", "environment": "gridworld", "k1": 1.5999999999999999, "decision_score": -0.5999999999999999, "quantum_advantage": 0.625, "timestamp": "2026-01-03T10:52:59.283236"}
+{"type": "task_result", "task_id": "exp10_task_2", "environment": "bandit", "k1": 0.6197789701974228, "decision_score": 0.3802210298025772, "quantum_advantage": 1.6134784303531025, "timestamp": "2026-01-03T10:52:59.283247"}
+{"type": "task_result", "task_id": "exp10_task_3", "environment": "classification", "k1": 0.7333333333333334, "decision_score": 0.2666666666666666, "quantum_advantage": 1.3636363636363635, "timestamp": "2026-01-03T10:52:59.283255"}
+{"type": "task_result", "task_id": "exp10_task_4", "environment": "gridworld", "k1": 3.0, "decision_score": -2.0, "quantum_advantage": 0.3333333333333333, "timestamp": "2026-01-03T10:52:59.283263"}
+{"type": "task_result", "task_id": "exp10_task_5", "environment": "bandit", "k1": 0.5252684690565148, "decision_score": 0.4747315309434852, "quantum_advantage": 1.903788365207217, "timestamp": "2026-01-03T10:52:59.283269"}
+{"type": "task_result", "task_id": "exp10_task_6", "environment": "classification", "k1": 0.76, "decision_score": 0.24, "quantum_advantage": 1.3157894736842106, "timestamp": "2026-01-03T10:52:59.283276"}
+{"type": "task_result", "task_id": "exp10_task_7", "environment": "gridworld", "k1": 1.4, "decision_score": -0.3999999999999999, "quantum_advantage": 0.7142857142857143, "timestamp": "2026-01-03T10:52:59.283282"}
+{"type": "task_result", "task_id": "exp10_task_8", "environment": "bandit", "k1": 0.4379777761300174, "decision_score": 0.5620222238699826, "quantum_advantage": 2.2832208721548044, "timestamp": "2026-01-03T10:52:59.283289"}
+{"type": "task_result", "task_id": "exp10_task_9", "environment": "classification", "k1": 0.91, "decision_score": 0.08999999999999997, "quantum_advantage": 1.0989010989010988, "timestamp": "2026-01-03T10:52:59.283296"}
+{"type": "task_result", "task_id": "exp10_task_10", "environment": "gridworld", "k1": 2.0, "decision_score": -1.0, "quantum_advantage": 0.5, "timestamp": "2026-01-03T10:52:59.283302"}

@@ -1,0 +1,196 @@
+name: Cognitive AfterMath Evaluator
+
+on:
+  workflow_run:
+    workflows: ["Cognitive Action Executor"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      evaluation_mode:
+        description: 'Evaluation mode (quick|full|deep)'
+        required: false
+        default: 'full'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  aftermath_evaluator:
+    name: Evaluate Outcomes and Learn
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install scikit-learn pandas numpy
+      
+      - name: Download Action Artifacts
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: action-executor-results-${{ github.event.workflow_run.run_number }}
+          path: cognitive/
+      
+      - name: Evaluate Outcomes
+        id: evaluate
+        run: |
+          MODE="${{ github.event.inputs.evaluation_mode || 'full' }}"
+          
+          python scripts/cognitive/evaluate_outcomes.py \
+            --validation-results cognitive/actions/validation_results.json \
+            --execution-status cognitive/actions/execution_status.json \
+            --mode "$MODE" \
+            --output cognitive/aftermath/outcome_evaluation.json
+        continue-on-error: true
+      
+      - name: Extract Learnings
+        id: learn
+        run: |
+          python scripts/cognitive/extract_learnings.py \
+            --outcome-evaluation cognitive/aftermath/outcome_evaluation.json \
+            --execution-history cognitive/actions/ \
+            --output cognitive/aftermath/extracted_learnings.json \
+            --min-confidence 0.75
+        continue-on-error: true
+      
+      - name: Archive Knowledge
+        id: archive
+        run: |
+          python scripts/cognitive/archive_knowledge.py \
+            --learnings cognitive/aftermath/extracted_learnings.json \
+            --meta-learning-db cognitive/meta_learning/shared_memory.json \
+            --output cognitive/aftermath/archive_summary.json
+        continue-on-error: true
+      
+      - name: Update Agent Performance Scores
+        if: steps.evaluate.outcome == 'success'
+        run: |
+          # Update reputation scores based on outcomes
+          python -c "
+          import json
+          from pathlib import Path
+          
+          # Load outcome evaluation
+          eval_file = Path('cognitive/aftermath/outcome_evaluation.json')
+          if eval_file.exists():
+              with open(eval_file) as f:
+                  outcomes = json.load(f)
+              
+              # Update agent scores
+              scores_file = Path('cognitive/meta_learning/agent_scores.json')
+              scores_file.parent.mkdir(parents=True, exist_ok=True)
+              
+              if scores_file.exists():
+                  with open(scores_file) as f:
+                      scores = json.load(f)
+              else:
+                  scores = {}
+              
+              # Calculate new scores
+              for agent_id, result in outcomes.get('agent_results', {}).items():
+                  current_score = scores.get(agent_id, 0.5)
+                  success_rate = result.get('success_rate', 0)
+                  
+                  # Exponential moving average
+                  alpha = 0.3
+                  new_score = alpha * success_rate + (1 - alpha) * current_score
+                  scores[agent_id] = round(new_score, 3)
+              
+              with open(scores_file, 'w') as f:
+                  json.dump(scores, f, indent=2)
+              
+              print(f'Updated scores for {len(scores)} agents')
+          "
+      
+      - name: Generate AfterMath Report
+        if: always()
+        run: |
+          mkdir -p cognitive/reports
+          cat > cognitive/reports/aftermath_report.md << 'EOF'
+          # Cognitive AfterMath Evaluator Report
+          
+          **Timestamp**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Evaluation Mode**: ${{ github.event.inputs.evaluation_mode || 'full' }}
+          
+          ## Evaluation Summary
+          
+          | Component | Status | Details |
+          |-----------|--------|---------|
+          | Outcome Evaluation | ${{ steps.evaluate.outcome }} | Performance analysis |
+          | Learning Extraction | ${{ steps.learn.outcome }} | Pattern discovery |
+          | Knowledge Archival | ${{ steps.archive.outcome }} | Memory consolidation |
+          
+          ## Key Insights
+          
+          ### Success Patterns
+          $([ -f cognitive/aftermath/extracted_learnings.json ] && jq -r '.success_patterns[]' cognitive/aftermath/extracted_learnings.json 2>/dev/null || echo "No success patterns identified")
+          
+          ### Failure Patterns
+          $([ -f cognitive/aftermath/extracted_learnings.json ] && jq -r '.failure_patterns[]' cognitive/aftermath/extracted_learnings.json 2>/dev/null || echo "No failure patterns identified")
+          
+          ### Optimization Opportunities
+          $([ -f cognitive/aftermath/extracted_learnings.json ] && jq -r '.optimization_patterns[]' cognitive/aftermath/extracted_learnings.json 2>/dev/null || echo "No optimization opportunities identified")
+          
+          ## Learning Metrics
+          
+          - **Patterns Extracted**: $([ -f cognitive/aftermath/extracted_learnings.json ] && jq -r '.patterns_count // 0' cognitive/aftermath/extracted_learnings.json || echo "0")
+          - **Knowledge Items Archived**: $([ -f cognitive/aftermath/archive_summary.json ] && jq -r '.archived_count // 0' cognitive/aftermath/archive_summary.json || echo "0")
+          - **Confidence Score**: $([ -f cognitive/aftermath/extracted_learnings.json ] && jq -r '.avg_confidence // "N/A"' cognitive/aftermath/extracted_learnings.json || echo "N/A")
+          
+          ## Recommended Improvements
+          
+          $([ -f cognitive/aftermath/outcome_evaluation.json ] && jq -r '.recommendations[]' cognitive/aftermath/outcome_evaluation.json 2>/dev/null || echo "No recommendations available")
+          
+          ---
+          *Generated by Cognitive AfterMath Evaluator*
+          EOF
+      
+      - name: Upload AfterMath Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aftermath-evaluator-results-${{ github.run_number }}
+          path: |
+            cognitive/aftermath/
+            cognitive/reports/aftermath_report.md
+            cognitive/meta_learning/
+          retention-days: 90
+      
+      - name: Commit Learning Updates
+        if: steps.archive.outcome == 'success'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          if [ -n "$(git status --porcelain cognitive/meta_learning)" ]; then
+            git add cognitive/meta_learning/
+            git commit -m "chore(cognitive): Update meta-learning knowledge base - run ${{ github.run_number }}"
+            git push
+          fi
+      
+      - name: Create Summary Issue (on significant learnings)
+        if: steps.learn.outcome == 'success'
+        run: |
+          PATTERNS=$(jq -r '.patterns_count // 0' cognitive/aftermath/extracted_learnings.json)
+          if [ "$PATTERNS" -gt 5 ]; then
+            echo "📊 $PATTERNS significant patterns discovered - consider creating summary issue"
+            # Could create an issue here with gh CLI
+          fi

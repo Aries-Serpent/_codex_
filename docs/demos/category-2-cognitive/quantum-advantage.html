@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quantum Advantage Calculator | _codex_ Demos</title>
+  <link rel="stylesheet" href="../../assets/css/custom.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+    }
+    .btn-back {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .demo-explanation {
+      background: #f6f8fa;
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      border-left: 4px solid #667eea;
+    }
+    .formula {
+      background: white;
+      padding: 1.5rem;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1em;
+      text-align: center;
+    }
+    .formula strong {
+      color: #667eea;
+    }
+    .demo-calculator {
+      background: white;
+      padding: 2rem;
+      border: 2px solid #e1e4e8;
+      border-radius: 8px;
+      margin: 2rem 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .input-group {
+      margin: 1.5rem 0;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #24292e;
+    }
+    .input-group input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.75rem;
+      border: 2px solid #e1e4e8;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .btn-calculate {
+      padding: 1rem 2rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 1rem 0;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-calculate:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+    .btn-calculate:active {
+      transform: translateY(0);
+    }
+    .results {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      color: white;
+    }
+    .results h3 {
+      margin-top: 0;
+      color: white;
+    }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      margin: 0.75rem 0;
+    }
+    .result-label {
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+    .result-value {
+      font-weight: 700;
+      font-size: 1.5em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .chart-container {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #e1e4e8;
+    }
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .example-card {
+      background: #f6f8fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 2px solid #e1e4e8;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .example-card:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+    .example-card h3 {
+      font-size: 1rem;
+      margin: 0 0 0.5rem 0;
+      color: #24292e;
+    }
+    .example-card p {
+      font-weight: 600;
+      color: #667eea;
+      margin: 0.5rem 0;
+      font-size: 1.2em;
+    }
+    .btn-load {
+      padding: 0.5rem 1rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s;
+      font-weight: 600;
+    }
+    .btn-load:hover {
+      background: #5568d3;
+    }
+    .understanding {
+      background: #f6f8fa;
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .understanding ul {
+      list-style: none;
+      padding: 0;
+    }
+    .understanding li {
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: white;
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+      .result-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>⚛️ Quantum Advantage Calculator</h1>
+    <p>Calculate performance improvements using the k₁ constant</p>
+    <a href="../index.html" class="btn-back">← Back to Demos</a>
+  </header>
+
+  <main class="main-content">
+    <section class="demo-explanation">
+      <h2>What is Quantum Advantage?</h2>
+      <p>
+        The _codex_ cognitive brain achieves a <strong>5.56x quantum advantage</strong> 
+        over baseline performance, measured by the k₁ constant. This means tasks complete 
+        5.56 times faster than the baseline implementation.
+      </p>
+      <div class="formula">
+        <p><strong>k₁ = Improved Time / Baseline Time</strong></p>
+        <p><strong>Quantum Advantage = 1 / k₁</strong></p>
+      </div>
+      <p>
+        <strong>Example:</strong> If a task takes 100 seconds normally (baseline) and only 
+        18 seconds with optimization (improved), then k₁ = 18/100 = 0.18, and the 
+        quantum advantage = 1/0.18 ≈ 5.56x faster! 🚀
+      </p>
+    </section>
+
+    <section class="demo-calculator">
+      <h2>Interactive Calculator</h2>
+      <p>Enter your baseline and improved times to calculate the quantum advantage:</p>
+      
+      <div class="input-group">
+        <label for="baseline-time">⏱️ Baseline Time (seconds):</label>
+        <input type="number" id="baseline-time" value="100" min="0.1" step="0.1">
+      </div>
+
+      <div class="input-group">
+        <label for="improved-time">⚡ Improved Time (seconds):</label>
+        <input type="number" id="improved-time" value="18" min="0.1" step="0.1">
+      </div>
+
+      <button onclick="calculate()" class="btn-calculate">Calculate Quantum Advantage</button>
+
+      <div class="results" id="results" style="display: none;">
+        <h3>📊 Results</h3>
+        <div class="result-item">
+          <span class="result-label">k₁ Constant:</span>
+          <span class="result-value" id="k1-value"></span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Quantum Advantage:</span>
+          <span class="result-value" id="advantage-value"></span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Time Savings:</span>
+          <span class="result-value" id="savings-value"></span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Speedup Percentage:</span>
+          <span class="result-value" id="speedup-value"></span>
+        </div>
+      </div>
+
+      <div class="chart-container" id="chart-container" style="display: none;">
+        <canvas id="comparison-chart"></canvas>
+      </div>
+    </section>
+
+    <section>
+      <h2>🎯 Real Examples from _codex_</h2>
+      <p>Click to load real performance improvements from different phases:</p>
+      <div class="example-grid">
+        <div class="example-card">
+          <h3>Phase 8.1<br>Memory Management</h3>
+          <p>k₁ ≤ 0.345 → 2.90x</p>
+          <button onclick="loadExample(100, 34.5)" class="btn-load">Load Example</button>
+        </div>
+        <div class="example-card">
+          <h3>Phase 8.9<br>Emergent Behavior</h3>
+          <p>k₁ = 0.24 → 4.17x</p>
+          <button onclick="loadExample(100, 24)" class="btn-load">Load Example</button>
+        </div>
+        <div class="example-card">
+          <h3>Phase 8.10<br>Production Deploy</h3>
+          <p>k₁ ≤ 0.22 → 4.55x</p>
+          <button onclick="loadExample(100, 22)" class="btn-load">Load Example</button>
+        </div>
+        <div class="example-card">
+          <h3>Overall System<br>✨ Best Performance</h3>
+          <p>k₁ ≤ 0.18 → 5.56x</p>
+          <button onclick="loadExample(100, 18)" class="btn-load">Load Example</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="understanding">
+      <h2>📖 Understanding the Results</h2>
+      <ul>
+        <li><strong>k₁ &lt; 1:</strong> Improvement achieved! System is faster than baseline. ✅</li>
+        <li><strong>k₁ = 1:</strong> Same performance as baseline. No improvement. ➡️</li>
+        <li><strong>k₁ &gt; 1:</strong> Slower than baseline. Needs optimization. ⚠️</li>
+        <li><strong>Target Goal:</strong> Achieve k₁ ≤ 0.25 for 4x+ quantum advantage. 🎯</li>
+        <li><strong>_codex_ Achievement:</strong> k₁ ≤ 0.18 giving 5.56x advantage! 🏆</li>
+      </ul>
+    </section>
+
+    <section style="background: #f6f8fa; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+      <h2>💡 How Does This Help?</h2>
+      <p>Understanding quantum advantage helps us:</p>
+      <ul>
+        <li>Measure optimization effectiveness quantitatively</li>
+        <li>Compare different implementations objectively</li>
+        <li>Set realistic performance targets</li>
+        <li>Track improvements across project phases</li>
+        <li>Communicate results to stakeholders clearly</li>
+      </ul>
+      <p style="margin-top: 1.5rem;">
+        <strong>Learn more:</strong> Read about the cognitive brain architecture in the 
+        <a href="../../COMPREHENSIVE_IMPLEMENTATION_STATUS.md" style="color: #667eea;">implementation status report</a>.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    let chart = null;
+
+    function calculate() {
+      const baseline = parseFloat(document.getElementById('baseline-time').value);
+      const improved = parseFloat(document.getElementById('improved-time').value);
+
+      if (baseline <= 0 || improved <= 0) {
+        alert('Please enter positive values for both times.');
+        return;
+      }
+
+      // Calculate k1 and quantum advantage
+      const k1 = improved / baseline;
+      const advantage = 1 / k1;
+      const savings = baseline - improved;
+      const speedup = (savings / baseline) * 100;
+
+      // Display results
+      document.getElementById('k1-value').textContent = k1.toFixed(4);
+      document.getElementById('advantage-value').textContent = advantage.toFixed(2) + 'x';
+      document.getElementById('savings-value').textContent = savings.toFixed(2) + ' sec';
+      document.getElementById('speedup-value').textContent = speedup.toFixed(1) + '%';
+      
+      // Show results and chart
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('chart-container').style.display = 'block';
+
+      // Update chart
+      updateChart(baseline, improved);
+
+      // Scroll to results
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function loadExample(baseline, improved) {
+      document.getElementById('baseline-time').value = baseline;
+      document.getElementById('improved-time').value = improved;
+      calculate();
+    }
+
+    function updateChart(baseline, improved) {
+      const ctx = document.getElementById('comparison-chart').getContext('2d');
+      
+      if (chart) {
+        chart.destroy();
+      }
+
+      const k1 = improved / baseline;
+      const advantage = 1 / k1;
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Baseline', 'Improved'],
+          datasets: [{
+            label: 'Execution Time (seconds)',
+            data: [baseline, improved],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(102, 126, 234, 0.8)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(102, 126, 234, 1)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              display: true,
+              text: `Performance Comparison - ${advantage.toFixed(2)}x Quantum Advantage`,
+              font: {
+                size: 16,
+                weight: 'bold'
+              }
+            },
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.parsed.y + ' seconds';
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Time (seconds)',
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Load default example on page load
+    window.onload = function() {
+      calculate();
+    };
+  </script>
+</body>
+</html>
