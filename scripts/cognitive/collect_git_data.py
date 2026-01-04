@@ -6,9 +6,9 @@ Part of Perception Layer - collects Git commit history for pattern analysis
 import argparse
 import json
 import subprocess
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:

@@ -86,7 +86,6 @@ class MemoryHealthCheck(HealthCheck):
         start = time.time()
         
         try:
-            import sys
             # NOTE: This is a placeholder implementation for demonstration only.
             # In production, integrate with psutil (e.g. Process().memory_info().rss)
             # or the deployment platform's metrics to obtain actual memory usage in MB.
@@ -1019,7 +1018,6 @@ class ProcessHealthCheck(HealthCheck):
         start = time.time()
         
         try:
-            import sys
             import os
             
             # Get process info

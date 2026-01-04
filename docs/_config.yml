@@ -1,0 +1,78 @@
+# _codex_ Documentation Site Configuration
+# https://aries-serpent.github.io/_codex_/
+
+# Site settings
+title: "_codex_ Documentation"
+description: "Comprehensive documentation for the _codex_ machine learning framework and cognitive brain architecture"
+baseurl: "/_codex_"
+url: "https://aries-serpent.github.io"
+
+# Theme
+theme: jekyll-theme-cayman
+remote_theme: pages-themes/cayman@v0.2.0
+
+# Build settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+# Metadata
+lang: en-US
+timezone: America/New_York
+author: "Aries-Serpent"
+
+# Plugins
+plugins:
+  - jekyll-github-metadata
+  - jekyll-sitemap
+  - jekyll-relative-links
+
+# Jekyll Relative Links
+relative_links:
+  enabled: true
+  collections: false
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+  - .github
+  - scripts
+  - tests
+  - "*.py"
+  - "*.sh"
+
+# Include files
+include:
+  - _layouts
+  - assets
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+
+# Custom variables (accessible via site.*)
+github:
+  repository_url: "https://github.com/Aries-Serpent/_codex_"
+  issues_url: "https://github.com/Aries-Serpent/_codex_/issues"
+
+# SEO
+google_analytics: # Add your GA tracking ID here if needed
+
+# Social
+social:
+  name: "_codex_"
+  links:
+    - https://github.com/Aries-Serpent/_codex_

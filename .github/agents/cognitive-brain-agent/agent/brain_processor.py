@@ -10,15 +10,10 @@ from pathlib import Path
 
 # Try imports from parent packages
 try:
-    from ...core.adaptive_learning import AdaptiveLearningEngine, RewardShaper
-    from ...core.pattern_recognizer import PatternRecognizer
-    from ...core.cognitive_brain import CognitiveBrain
+    from ...core.adaptive_learning import AdaptiveLearningEngine
 except ImportError:
     # Fallback for standalone testing
     AdaptiveLearningEngine = None
-    RewardShaper = None
-    PatternRecognizer = None
-    CognitiveBrain = None
 
 
 @dataclass

@@ -11,11 +11,9 @@ import json
 # Try imports
 try:
     from ...core.adaptive_learning import AdaptiveLearningEngine, RewardShaper
-    from ...core.cognitive_brain import CognitiveBrain
 except ImportError:
     AdaptiveLearningEngine = None
     RewardShaper = None
-    CognitiveBrain = None
 
 
 @dataclass

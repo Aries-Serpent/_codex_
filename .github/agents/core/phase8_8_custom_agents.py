@@ -18,7 +18,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List
 import random
 import re
-from collections import defaultdict
 
 
 # =============================================================================

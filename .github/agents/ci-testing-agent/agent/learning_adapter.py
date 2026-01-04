@@ -21,11 +21,9 @@ DEFAULT_DURATION_NORMALIZATION_MS = 1000
 # Try imports from cognitive brain
 try:
     from ...core.adaptive_learning import AdaptiveLearningEngine, RewardShaper
-    from ...core.pattern_recognizer import PatternRecognizer
 except ImportError:
     AdaptiveLearningEngine = None
     RewardShaper = None
-    PatternRecognizer = None
 
 
 @dataclass
