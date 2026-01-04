@@ -1,0 +1,5 @@
+name: ci-optimizer-agent
+version: 1.0.0
+description: Self-optimizing CI with test prioritization
+seed: 49
+test_count: 20

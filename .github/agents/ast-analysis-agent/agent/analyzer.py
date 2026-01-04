@@ -12,8 +12,8 @@ from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
 
 # Compiled regex patterns for snake_case conversion (performance optimization)
-_SNAKE_CASE_PATTERN1 = re.compile('(.)([A-Z][a-z]+)')
-_SNAKE_CASE_PATTERN2 = re.compile('([a-z0-9])([A-Z])')
+_SNAKE_CASE_PATTERN1 = re.compile(r'(.)([A-Z][a-z]+)')
+_SNAKE_CASE_PATTERN2 = re.compile(r'([a-z0-9])([A-Z])')
 
 
 @dataclass

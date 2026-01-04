@@ -401,10 +401,10 @@ class AdaptiveLearningEngine:
             Hashable string key
         """
         # Create deterministic string representation
-        # Using sha256 for state hashing (truncated for efficiency)
+        # Using full sha256 hexdigest for state hashing to minimize collisions
         sorted_items = sorted(state.items())
         state_str = str(sorted_items)
-        return hashlib.sha256(state_str.encode()).hexdigest()[:16]
+        return hashlib.sha256(state_str.encode()).hexdigest()
     
     def get_q_value(self, state: str, action: str) -> float:
         """Get Q-value for state-action pair.

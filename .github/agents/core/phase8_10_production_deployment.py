@@ -36,7 +36,7 @@ from enum import Enum
 # =============================================================================
 
 K1_PHASE_8_10_TARGET = 0.22  # Improved target from Phase 8.9 (0.24)
-QUANTUM_ADVANTAGE_8_10_TARGET = 1.0 / K1_PHASE_8_10_TARGET  # = 4.55x
+UNUSED_QUANTUM_ADVANTAGE_8_10_TARGET = 1.0 / K1_PHASE_8_10_TARGET  # = 4.55x (preserved for documentation)
 
 # Agent Marketplace constants
 MARKETPLACE_API_VERSION = "v1"
@@ -50,13 +50,13 @@ BETA_TEST_SAMPLE_SIZE = 100
 
 # Performance Benchmarking constants
 LATENCY_PERCENTILES = [50, 90, 95, 99]
-THROUGHPUT_WINDOW_SECONDS = 10
+unused_THROUGHPUT_WINDOW_SECONDS = 10  # Reserved for future throughput calculation
 RESOURCE_SAMPLE_RATE_HZ = 1.0
 
 # Monitoring constants
-METRICS_EXPORT_INTERVAL_SECONDS = 15
-TRACE_SAMPLE_RATE = 0.1
-LOG_RETENTION_DAYS = 30
+UNUSED_METRICS_EXPORT_INTERVAL_SECONDS = 15  # Reserved for future metrics export
+UNUSED_TRACE_SAMPLE_RATE = 0.1  # Reserved for future distributed tracing
+UNUSED_LOG_RETENTION_DAYS = 30  # Reserved for future log retention policy
 
 # Documentation constants
 DOC_FORMATS = ["markdown", "html", "pdf"]
@@ -73,8 +73,8 @@ CANARY_PERCENTAGE = 10
 HEALTH_CHECK_TIMEOUT_SECONDS = 30
 ROLLBACK_THRESHOLD_ERROR_RATE = 0.05
 
-# Random seed for deterministic behavior
-RANDOM_SEED_8_10 = 43
+# Random seed for deterministic behavior (aligned with project-wide seed)
+RANDOM_SEED_8_10 = 42
 
 
 # =============================================================================
