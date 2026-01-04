@@ -1,6 +1,6 @@
 metadata:
-  generated_at: '2026-01-04T01:48:23.204639Z'
-  total_workflows: 57
+  generated_at: '2026-01-04T06:09:54.860820Z'
+  total_workflows: 63
   active_count: 0
   disabled_count: 0
   archived_count: 0
@@ -31,6 +31,11 @@ workflows:
   error: '''.github/workflows/autonomous-agent.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
   status: error
+- filename: biweekly-research-digest.yml
+  error: '''.github/workflows/biweekly-research-digest.yml'' is not in the subpath
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
+  status: error
 - filename: build-chatgpt-package.yml
   error: '''.github/workflows/build-chatgpt-package.yml'' is not in the subpath of
     ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
@@ -55,6 +60,23 @@ workflows:
 - filename: codeql-analysis.yml
   error: '''.github/workflows/codeql-analysis.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
+  status: error
+- filename: cognitive-action.yml
+  error: '''.github/workflows/cognitive-action.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+- filename: cognitive-aftermath.yml
+  error: '''.github/workflows/cognitive-aftermath.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+- filename: cognitive-decision.yml
+  error: '''.github/workflows/cognitive-decision.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
+    OR one path is relative and the other is absolute.'
+  status: error
+- filename: cognitive-perception.yml
+  error: '''.github/workflows/cognitive-perception.yml'' is not in the subpath of
+    ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other is
+    absolute.'
   status: error
 - filename: copilot-cascade-review.yml
   error: '''.github/workflows/copilot-cascade-review.yml'' is not in the subpath of
@@ -130,6 +152,11 @@ workflows:
 - filename: labeler.yml
   error: '''.github/workflows/labeler.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''
     OR one path is relative and the other is absolute.'
+  status: error
+- filename: monthly-model-retraining.yml
+  error: '''.github/workflows/monthly-model-retraining.yml'' is not in the subpath
+    of ''/home/runner/work/_codex_/_codex_'' OR one path is relative and the other
+    is absolute.'
   status: error
 - filename: nox_gates.yml
   error: '''.github/workflows/nox_gates.yml'' is not in the subpath of ''/home/runner/work/_codex_/_codex_''

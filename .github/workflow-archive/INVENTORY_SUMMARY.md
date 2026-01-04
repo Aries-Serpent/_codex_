@@ -1,12 +1,12 @@
 # Workflow Inventory Summary
 
-**Generated**: 2026-01-04T01:48:23.204639Z
+**Generated**: 2026-01-04T06:09:54.860820Z
 
-**Total Workflows**: 57
+**Total Workflows**: 63
 
 ## Workflows by Category
 
-### Other (57 workflows)
+### Other (63 workflows)
 
 - 🔴  `aftermath.yml` - N/A
 - 🔴  `agent-runtime.yml` - N/A
@@ -14,11 +14,16 @@
 - 🔴  `audit-improvement-pipeline.yml` - N/A
 - 🔴  `auto-update-configs.yml` - N/A
 - 🔴  `autonomous-agent.yml` - N/A
+- 🔴  `biweekly-research-digest.yml` - N/A
 - 🔴  `build-chatgpt-package.yml` - N/A
 - 🔴 ⚠️ `cache-cleanup.yml` - N/A
 - 🔴  `ci-health-monitor.yml` - N/A
 - 🔴  `code-quality.yml` - N/A
 - 🔴  `codeql-analysis.yml` - N/A
+- 🔴  `cognitive-action.yml` - N/A
+- 🔴  `cognitive-aftermath.yml` - N/A
+- 🔴  `cognitive-decision.yml` - N/A
+- 🔴  `cognitive-perception.yml` - N/A
 - 🔴  `copilot-cascade-review.yml` - N/A
 - 🔴  `copilot-self-evolution.yml` - N/A
 - 🔴  `coverage_report.yml` - N/A
@@ -36,6 +41,7 @@
 - 🔴  `html_visual_regression.yml` - N/A
 - 🔴  `integration-gated.yml` - N/A
 - 🔴  `labeler.yml` - N/A
+- 🔴  `monthly-model-retraining.yml` - N/A
 - 🔴  `nox_gates.yml` - N/A
 - 🔴  `optimized-ci.yml` - N/A
 - 🔴  `pages-mkdocs.yml` - N/A
