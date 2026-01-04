@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
-import glob
 
 
 def monitor_execution(results_dir: str, output_path: str, real_time: bool = False) -> Dict[str, Any]:

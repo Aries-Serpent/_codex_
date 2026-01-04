@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
-import shutil
 
 
 def rollback(results_dir: str, state_backup_dir: str, output_path: str) -> Dict[str, Any]:

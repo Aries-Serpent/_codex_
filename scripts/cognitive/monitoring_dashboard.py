@@ -641,7 +641,7 @@ def main():
     
     elif args.mode == "html":
         # Generate HTML dashboard
-        html = dashboard.generate_dashboard_html(output_path=args.output)
+        dashboard.generate_dashboard_html(output_path=args.output)
         
         print(f"\n✅ HTML dashboard generated: {args.output}")
         print(f"Open in browser to view real-time metrics")
