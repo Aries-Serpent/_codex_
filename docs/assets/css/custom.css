@@ -1,0 +1,373 @@
+/* ==========================================================================
+   Custom CSS for _codex_ Documentation Site
+   Fixes: Code block overflow, responsive design, layout constraints
+   Version: 1.0.0
+   Date: 2026-01-04
+   ========================================================================== */
+
+/* Container and Layout
+   ========================================================================== */
+.markdown-body {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Code Block Overflow Fixes
+   ========================================================================== */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: #f6f8fa;
+  border: 1px solid #d1d5da;
+  white-space: pre;
+  word-wrap: normal;
+}
+
+code {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+pre code {
+  display: block;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Inline code */
+:not(pre) > code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* Scrollbar Styling for Code Blocks
+   ========================================================================== */
+pre::-webkit-scrollbar {
+  height: 8px;
+  background: #f1f1f1;
+}
+
+pre::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox scrollbar */
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+/* Table Responsiveness
+   ========================================================================== */
+table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-collapse: collapse;
+}
+
+table thead {
+  background-color: #f6f8fa;
+}
+
+table th,
+table td {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5da;
+  text-align: left;
+}
+
+/* Responsive Breakpoints - Tablet
+   ========================================================================== */
+@media (max-width: 768px) {
+  .markdown-body {
+    padding: 1rem;
+    font-size: 14px;
+  }
+  
+  pre,
+  pre code {
+    font-size: 0.85em;
+    padding: 0.75rem;
+  }
+  
+  table {
+    font-size: 0.85em;
+  }
+  
+  table th,
+  table td {
+    padding: 0.4rem 0.6rem;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+/* Responsive Breakpoints - Mobile
+   ========================================================================== */
+@media (max-width: 480px) {
+  .markdown-body {
+    padding: 0.75rem;
+    font-size: 13px;
+  }
+  
+  pre,
+  pre code {
+    font-size: 0.8em;
+    padding: 0.5rem;
+  }
+  
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.1rem; }
+}
+
+/* Image Responsiveness
+   ========================================================================== */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+}
+
+/* Link Styling
+   ========================================================================== */
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 2px solid #0366d6;
+  outline-offset: 2px;
+}
+
+/* Heading Spacing
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child {
+  margin-top: 0;
+}
+
+/* List Styling
+   ========================================================================== */
+ul, ol {
+  padding-left: 2em;
+  margin: 1em 0;
+}
+
+li {
+  margin: 0.25em 0;
+}
+
+/* Nested lists */
+li > ul,
+li > ol {
+  margin: 0.5em 0;
+}
+
+/* Blockquote Styling
+   ========================================================================== */
+blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 4px solid #ddd;
+  background-color: #f9f9f9;
+  color: #666;
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Horizontal Rule
+   ========================================================================== */
+hr {
+  border: 0;
+  border-top: 1px solid #d1d5da;
+  margin: 2em 0;
+}
+
+/* Accessibility - Focus Styles
+   ========================================================================== */
+:focus {
+  outline: 2px solid #0366d6;
+  outline-offset: 2px;
+}
+
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #0366d6;
+  outline-offset: 2px;
+}
+
+/* Definition Lists
+   ========================================================================== */
+dl {
+  margin: 1em 0;
+}
+
+dt {
+  font-weight: 600;
+  margin-top: 1em;
+}
+
+dd {
+  margin-left: 2em;
+  margin-bottom: 0.5em;
+}
+
+/* Task Lists
+   ========================================================================== */
+.task-list-item {
+  list-style-type: none;
+}
+
+.task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+/* Footnotes
+   ========================================================================== */
+.footnotes {
+  font-size: 0.9em;
+  color: #666;
+  border-top: 1px solid #d1d5da;
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+/* Print Styles
+   ========================================================================== */
+@media print {
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+  }
+  
+  pre {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+    overflow: visible;
+    white-space: pre-wrap;
+  }
+  
+  a {
+    text-decoration: underline;
+    color: #000;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+  
+  /* Avoid page breaks inside important elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  blockquote, pre, table {
+    page-break-inside: avoid;
+  }
+}
+
+/* Dark Mode Support (Optional - for future enhancement)
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  /* Uncomment to enable dark mode support */
+  /*
+  .markdown-body {
+    background-color: #0d1117;
+    color: #c9d1d9;
+  }
+  
+  pre {
+    background-color: #161b22;
+    border-color: #30363d;
+  }
+  
+  :not(pre) > code {
+    background-color: #161b22;
+    color: #c9d1d9;
+  }
+  
+  table th {
+    background-color: #161b22;
+  }
+  
+  table th, table td {
+    border-color: #30363d;
+  }
+  
+  a {
+    color: #58a6ff;
+  }
+  
+  blockquote {
+    border-left-color: #30363d;
+    background-color: #161b22;
+    color: #8b949e;
+  }
+  
+  hr {
+    border-top-color: #30363d;
+  }
+  */
+}
+
+/* ==========================================================================
+   End Custom CSS
+   ========================================================================== */
