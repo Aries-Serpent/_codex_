@@ -27,7 +27,7 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Set, Callable
 import random
-from collections import defaultdict, deque
+from collections import deque
 from enum import Enum
 from datetime import datetime
 

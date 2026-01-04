@@ -27,7 +27,6 @@ from typing import Any, Dict, List, Optional, Tuple, Callable, Union
 from enum import Enum
 import random
 import math
-from collections import defaultdict
 
 
 # =============================================================================

@@ -12,7 +12,7 @@ Phase 8.4 Implementation (100% Complete):
 Status: Complete implementation with 51+ tests
 """
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Callable, Set
+from typing import Any, Dict, List, Optional, Tuple, Set
 from abc import ABC, abstractmethod
 import hashlib
 import json

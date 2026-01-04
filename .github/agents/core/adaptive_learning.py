@@ -9,10 +9,9 @@ Phase 8.3 Implementation:
 - RewardShaper: Multi-component reward function
 - ExperienceReplayBuffer: Prioritized experience replay
 """
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, List, Tuple
 import random
-import math
 from collections import deque
 import hashlib
 

@@ -1019,7 +1019,6 @@ class ProcessHealthCheck(HealthCheck):
         start = time.time()
         
         try:
-            import sys
             import os
             
             # Get process info

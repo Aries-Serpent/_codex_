@@ -3,7 +3,7 @@ Cognitive Brain - Core Integration Module
 Coordinates the 4-layer cognitive system: Perception → Decision → Action → AfterMath
 """
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import json
 from datetime import datetime
 
