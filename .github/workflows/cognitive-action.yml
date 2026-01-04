@@ -1,0 +1,167 @@
+name: Cognitive Action Executor
+
+on:
+  workflow_run:
+    workflows: ["Cognitive Decision Engine"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      task_file:
+        description: 'Task allocation file to execute'
+        required: false
+        default: 'cognitive/decisions/task_allocation.json'
+      dry_run:
+        description: 'Dry run mode (no actual execution)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  action_executor:
+    name: Execute Allocated Actions
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Download Decision Artifacts
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: decision-engine-results-${{ github.event.workflow_run.run_number }}
+          path: cognitive/
+      
+      - name: Parse Task Allocations
+        id: parse
+        run: |
+          TASK_FILE="${{ github.event.inputs.task_file || 'cognitive/decisions/task_allocation.json' }}"
+          python scripts/cognitive/parse_tasks.py \
+            --input "$TASK_FILE" \
+            --output cognitive/actions/parsed_tasks.json
+        continue-on-error: true
+      
+      - name: Execute Agent Dispatches
+        id: dispatch
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "🔍 DRY RUN MODE - No actual execution"
+            python scripts/cognitive/dispatch_agent.py \
+              --tasks cognitive/actions/parsed_tasks.json \
+              --output cognitive/actions/dispatch_results.json \
+              --dry-run
+          else
+            python scripts/cognitive/dispatch_agent.py \
+              --tasks cognitive/actions/parsed_tasks.json \
+              --output cognitive/actions/dispatch_results.json \
+              --max-parallel 3 \
+              --timeout 300
+          fi
+        continue-on-error: true
+      
+      - name: Monitor Execution
+        id: monitor
+        run: |
+          python scripts/cognitive/monitor_execution.py \
+            --dispatch-results cognitive/actions/dispatch_results.json \
+            --output cognitive/actions/execution_status.json \
+            --poll-interval 10 \
+            --max-wait 600
+        continue-on-error: true
+      
+      - name: Validate Outcomes
+        id: validate
+        run: |
+          python scripts/cognitive/validate_outcomes.py \
+            --execution-status cognitive/actions/execution_status.json \
+            --expected-outcomes cognitive/decisions/task_allocation.json \
+            --output cognitive/actions/validation_results.json
+        continue-on-error: true
+      
+      - name: Rollback on Failure
+        if: steps.validate.outcome == 'failure'
+        run: |
+          echo "❌ Validation failed - initiating rollback"
+          python scripts/cognitive/rollback.py \
+            --execution-status cognitive/actions/execution_status.json \
+            --backup-dir cognitive/backups/ \
+            --output cognitive/actions/rollback_results.json
+      
+      - name: Generate Action Report
+        if: always()
+        run: |
+          mkdir -p cognitive/reports
+          cat > cognitive/reports/action_report.md << 'EOF'
+          # Cognitive Action Executor Report
+          
+          **Timestamp**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Mode**: ${{ github.event.inputs.dry_run == 'true' && 'DRY RUN' || 'LIVE EXECUTION' }}
+          
+          ## Execution Summary
+          
+          | Stage | Status | Details |
+          |-------|--------|---------|
+          | Task Parsing | ${{ steps.parse.outcome }} | Prepared tasks for execution |
+          | Agent Dispatch | ${{ steps.dispatch.outcome }} | Dispatched to agents |
+          | Execution Monitor | ${{ steps.monitor.outcome }} | Tracked execution progress |
+          | Outcome Validation | ${{ steps.validate.outcome }} | Verified results |
+          
+          ## Execution Metrics
+          
+          - **Tasks Parsed**: $([ -f cognitive/actions/parsed_tasks.json ] && jq -r '.tasks | length' cognitive/actions/parsed_tasks.json || echo "0")
+          - **Dispatched**: $([ -f cognitive/actions/dispatch_results.json ] && jq -r '.dispatched_count // 0' cognitive/actions/dispatch_results.json || echo "0")
+          - **Succeeded**: $([ -f cognitive/actions/validation_results.json ] && jq -r '.success_count // 0' cognitive/actions/validation_results.json || echo "0")
+          - **Failed**: $([ -f cognitive/actions/validation_results.json ] && jq -r '.failure_count // 0' cognitive/actions/validation_results.json || echo "0")
+          
+          ## Agent Performance
+          
+          $([ -f cognitive/actions/execution_status.json ] && jq -r '.agent_performance[]' cognitive/actions/execution_status.json || echo "No performance data")
+          
+          ---
+          *Generated by Cognitive Action Executor*
+          EOF
+      
+      - name: Upload Action Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: action-executor-results-${{ github.run_number }}
+          path: |
+            cognitive/actions/
+            cognitive/reports/action_report.md
+          retention-days: 30
+      
+      - name: Commit Changes (if not dry run)
+        if: github.event.inputs.dry_run != 'true' && steps.dispatch.outcome == 'success'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            git add cognitive/
+            git commit -m "chore(cognitive): Action execution results - run ${{ github.run_number }}"
+            git push
+          fi
