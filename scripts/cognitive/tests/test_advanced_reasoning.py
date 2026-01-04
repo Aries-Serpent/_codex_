@@ -5,12 +5,9 @@ Comprehensive test suite for Phase 3 Advanced Reasoning components.
 Tests causal inference (DoWhy), counterfactual reasoning (CausalML), and explainability (SHAP).
 """
 
-import json
 import pytest
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestCausalReasoning:
@@ -115,17 +112,7 @@ class TestCausalReasoning:
         except ImportError:
             pytest.skip("DoWhy or NetworkX not installed")
         
-        # Define causal graph
-        graph = """
-        digraph {
-            developer_experience -> code_quality;
-            code_quality -> test_coverage;
-            test_coverage -> success_rate;
-            developer_experience -> success_rate;
-        }
-        """
-        
-        # Verify graph is valid
+        # Build causal graph
         G = nx.DiGraph()
         G.add_edges_from([
             ('developer_experience', 'code_quality'),
@@ -236,7 +223,7 @@ class TestExplainability:
     
     def test_feature_importance(self, trained_model):
         """Test computing feature importance with SHAP"""
-        model, X, y = trained_model
+        model, X, _y = trained_model
         
         try:
             import shap
@@ -253,7 +240,7 @@ class TestExplainability:
     
     def test_decision_explanation(self, trained_model):
         """Test explaining individual predictions"""
-        model, X, y = trained_model
+        model, X, _y = trained_model
         
         try:
             import shap
@@ -274,7 +261,7 @@ class TestExplainability:
     
     def test_global_explanations(self, trained_model):
         """Test generating global model explanations"""
-        model, X, y = trained_model
+        model, X, _y = trained_model
         
         try:
             import shap

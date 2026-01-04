@@ -5,11 +5,9 @@ Comprehensive test suite for Phase 2 Meta-Learning components.
 Tests meta-learning engine, pattern library, knowledge transfer, and external ingestion.
 """
 
-import json
 import pytest
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 # Assume meta_learning_engine exists
 try:

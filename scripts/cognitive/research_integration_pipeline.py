@@ -4,7 +4,7 @@ Research Integration Pipeline
 Bi-weekly ArXiv monitoring with relevance scoring and feasibility assessment
 """
 
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Optional
 import json
 import logging
 from datetime import datetime, timedelta
@@ -550,7 +550,7 @@ def main():
         help="Number of top papers to include in report"
     )
     
-    args = args.parse_args()
+    args = parser.parse_args()
     
     # Initialize pipeline
     pipeline = ResearchIntegrationPipeline()

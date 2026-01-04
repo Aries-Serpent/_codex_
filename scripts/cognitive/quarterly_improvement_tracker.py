@@ -4,12 +4,11 @@ Quarterly Improvement Tracker
 Aggregates metrics and analyzes trends for 5-10% quarterly improvements
 """
 
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Tuple
 import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-import pandas as pd
 import numpy as np
 from dataclasses import dataclass, asdict
 from collections import defaultdict

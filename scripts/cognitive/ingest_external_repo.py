@@ -121,7 +121,8 @@ class ExternalRepoIngestor:
                         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                             line_count += sum(1 for _ in f)
                     except Exception:
-                        pass
+                        # Skip files that can't be read
+                        continue
             
             if line_count > 0:
                 lang_counts[lang] = line_count
@@ -172,7 +173,8 @@ class ExternalRepoIngestor:
                                 break
                                 
                 except Exception:
-                    pass
+                    # Skip files that can't be processed
+                    continue
         
         return sorted(list(capabilities))
     
@@ -203,7 +205,8 @@ class ExternalRepoIngestor:
                         if len(components) >= max_files:
                             break
                     except Exception:
-                        pass
+                        # Skip files that can't be parsed
+                        continue
         
         return components
     

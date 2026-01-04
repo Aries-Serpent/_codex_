@@ -5,7 +5,6 @@ import pytest
 import json
 from pathlib import Path
 import tempfile
-import shutil
 
 
 def test_git_data_collector():

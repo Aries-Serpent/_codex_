@@ -9,11 +9,9 @@ import csv
 import json
 import logging
 import os
-import sys
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set
+from typing import Dict, List, Optional
 
 import requests
 from requests.exceptions import RequestException

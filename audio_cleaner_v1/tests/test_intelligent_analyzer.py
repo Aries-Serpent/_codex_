@@ -2,7 +2,6 @@
 """Test suite for intelligent audio analyzer."""
 
 import pytest
-from pathlib import Path
 from audio_cleaner_v1.src.analysis.intelligent_analyzer import (
     IntelligentAudioAnalyzer,
     AudioAnalysis,
