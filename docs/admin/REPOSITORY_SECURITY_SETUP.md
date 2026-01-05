@@ -613,9 +613,9 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 
 ## Additional Resources
 
-- **Internal Wiki**: [Security Best Practices](https://wiki.example.com/security)
+- **Internal Wiki**: [Security Best Practices](<!-- Security documentation placeholder -->)
 - **Slack Channel**: #security-alerts
-- **Email**: security@example.com
+- **Email**: security@localhost
 - **Incident Response**: [Runbook](docs/security/INCIDENT_RESPONSE.md)
 
 ---
@@ -649,4 +649,4 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 **Next Review**: 2026-03-23  
 **Version**: 2.0
 
-For questions or updates, contact: security@example.com
+For questions or updates, contact: security@localhost

@@ -45,4 +45,4 @@ pip check
 ## References
 
 - Security scan: https://github.com/Aries-Serpent/_codex_/security
-- Dependabot: https://github.com/Aries-Serpent/_codex_/security/dependabot
+- Dependabot: https://github.com/Aries-Serpent/_codex_/security
