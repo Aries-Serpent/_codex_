@@ -90,7 +90,7 @@ cachetools==5.5.2
     #   mlflow-tracing
 celery==5.5.3
     # via dvc-task
-certifi==2025.11.12
+certifi==2026.1.4
     # via
     #   evidently
     #   httpcore
