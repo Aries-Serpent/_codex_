@@ -55,7 +55,7 @@ Configure at: `https://github.com/Aries-Serpent/_codex_/settings/variables/actio
 
 | Variable Name | Type | Purpose | Required | Default Value | Example Value |
 |--------------|------|---------|----------|---------------|---------------|
-| `MCP_ENDPOINT` | string | MCP service endpoint | No | `http://localhost:8080` | `http://localhost:8080`, `https://mcp.example.com` |
+| `MCP_ENDPOINT` | string | MCP service endpoint | No | `http://localhost:8080` | `http://localhost:8080`, `http://localhost:8080` |
 | `MCP_VERSION` | string | MCP protocol version | No | `1.0` | `1.0`, `2.0` |
 | `CACHE_WARM_SCHEDULE` | string | Cache warming cron | No | `15 3 * * *` | `15 3 * * *` (3:15 AM daily) |
 | `RATE_LIMIT_RPM` | integer | Rate limit (requests/min) | No | `60` | `60`, `100` |

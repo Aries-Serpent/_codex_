@@ -37,7 +37,7 @@ On-call ML Engineer: [Name] <email> | [Phone]
 Team Lead: [Name] <email> | [Phone]  
 Engineering Manager: [Name] <email> | [Phone]
 VP Engineering: [Name] <email> | [Phone]
-Security Team: security@example.com | [Phone]
+Security Team: security@localhost | [Phone]
 ```
 
 ## On-Call Rotation
