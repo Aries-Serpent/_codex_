@@ -12,9 +12,9 @@
 ```
 @copilot Begin Cognitive Brain Phase 8.3 implementation following `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_3_CONTINUATION.md`.
 
-**Phase 8.3: Adaptive Learning Engine** (6 weeks)
+**Phase 8.3: Adaptive Learning Engine** (Pre-commit cycles 1-12)
 
-**Week 1-2 Tasks (Outcome Analyzer):**
+**Pre-commit 1-4: Outcome Analyzer:**
 1. Create `src/cognitive_brain/learning/outcome_analyzer.py`
 2. Create `src/cognitive_brain/models/learning_outcome.py`
 3. Create `tests/cognitive_brain/learning/test_outcome_analyzer.py`
@@ -26,7 +26,7 @@
 - Reward calculation validated
 - Integration with existing cognitive brain
 
-**Week 3-4 Tasks (Strategy Optimizer):**
+**Pre-commit 5-8: Strategy Optimizer:**
 1. Implement Q-Learning algorithm
 2. Implement Deep Q-Network (DQN)
 3. Implement Proximal Policy Optimization (PPO)
@@ -47,20 +47,20 @@
 ### Goal
 Implement adaptive learning engine that continuously improves decision-making strategies through reinforcement learning and meta-learning.
 
-### Components (3 weeks × 2 subphases each)
+### Components (3 phases × 2 pre-commit cycles each)
 
-1. **Outcome Analyzer** (Week 1-2)
+1. **Outcome Analyzer** (Pre-commit 1-4)
    - Extract learnings from decision outcomes
    - Pattern detection and classification
    - Reward signal calculation for RL
 
-2. **Strategy Optimizer** (Week 3-4)
+2. **Strategy Optimizer** (Pre-commit 5-8)
    - Q-Learning for discrete actions
    - Deep Q-Network for complex states
    - Proximal Policy Optimization
    - Policy gradient methods
 
-3. **Meta-Learner** (Week 5-6)
+3. **Meta-Learner** (Pre-commit 9-12)
    - Cross-domain knowledge transfer
    - Few-shot learning (3-5 examples)
    - Knowledge graph construction
@@ -78,7 +78,7 @@ Implement adaptive learning engine that continuously improves decision-making st
 
 ---
 
-## 📅 Week 1-2: Outcome Analyzer
+## 📅 Pre-commit 1-4: Outcome Analyzer
 
 ### Overview
 Extract structured learnings from AfterMath feedback loop. Analyze decision outcomes to identify success/failure patterns and calculate reward signals for RL algorithms.
@@ -612,7 +612,7 @@ Minimum 10 tests:
 
 ---
 
-## 📅 Week 3-4: Strategy Optimizer
+## 📅 Pre-commit 5-8: Strategy Optimizer
 
 ### Implementation Summary
 
@@ -639,7 +639,7 @@ Support classes for RL:
 
 ---
 
-## 📅 Week 5-6: Meta-Learner
+## 📅 Pre-commit 9-12: Meta-Learner
 
 ### Implementation Summary
 

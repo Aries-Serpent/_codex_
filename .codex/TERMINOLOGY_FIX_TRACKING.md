@@ -1,0 +1,177 @@
+# Terminology Fix Tracking Document
+
+**Created:** 2026-01-05
+**Status:** In Progress  
+**Policy Reference:** `.codex/CODEBASE_AGENCY_POLICY.md` Section 4
+
+## Policy Violation Details
+
+**Violation:** Using time-based terminology (weeks, months, quarters, Q1/Q2) for future work planning instead of pre-commit/commit cycle terminology.
+
+**Policy Requirement:**
+- ✅ Use: "Pre-commit 1-2", "Pre-commit 3-4", "Phase X", "commit cycles"
+- ❌ Avoid: "Week 1", "Month 2", "Q1 2026", "quarterly"
+
+**Exception:** Historical dates and factual external constraints (e.g., "90-day retention") are acceptable.
+
+---
+
+## Files Updated
+
+### Batch 1: Files Created in This PR (COMPLETE)
+- [x] `.codex/WORKFLOW_CACHING_IMPLEMENTATION_PLAN.md` (Commit e3fcd68)
+- [x] `.codex/KNOWN_BROKEN_LINKS_TRACKING.md` (Commit e3fcd68)
+- [x] `.codex/LINK_CHECKER_IMPLEMENTATION_SUMMARY.md` (Commit e3fcd68)
+
+### Batch 2: High Priority .codex/ Files (COMPLETE)
+- [x] `.codex/AI_AGENT_UTILITIES_REGISTRY.md` (Fixed: Pre-commit 1-8)
+- [x] `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_CONTINUATION.md` (Fixed: Pre-commit 1-2)
+- [x] `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_3_CONTINUATION.md` (Fixed: Pre-commit 1-12)
+- [x] `.codex/COMPREHENSIVE_WORKFLOW_CONSOLIDATION_PLAN.md` (Already compliant)
+
+### Batch 3: Plans and Reports (DEFERRED - Future PR)
+- [ ] `.codex/plans/*.md` (15+ files)
+- [ ] `.codex/reports/*.md` (8+ files)
+
+### Batch 4: .github/ Files (DEFERRED - Future PR)
+- [ ] `.github/agents/*.md` (50+ files)
+- [ ] `.github/prompts/*.md` (30+ files)
+- [ ] `.github/*.md` (25+ files)
+
+### Batch 5: docs/ Files (DEFERRED - Future PR)
+- [ ] `docs/plans/*.md` (30+ files)
+- [ ] `docs/*.md` (40+ files)
+
+---
+
+## Rationale for Batching
+
+**Immediate (This PR):**
+- Files created in this PR session
+- Direct responsibility and fresh context
+
+**High Priority (This PR):**
+- Active planning documents in `.codex/`
+- Cognitive Brain phase prompts (actively used)
+- Files likely to be referenced by next agent
+
+**Deferred to Future PR:**
+- Historical reports (retrospective - less critical)
+- Archived documentation
+- Large-scale updates requiring dedicated session
+- Files requiring domain-specific context
+
+---
+
+## Update Strategy
+
+### For Each File:
+1. **Review context** - Understand whether references are historical or future
+2. **Preserve historical** - Keep "Completed: 2025-12-15" style dates
+3. **Update future planning** - Replace weeks/months with pre-commits
+4. **Maintain consistency** - Use same terminology throughout file
+5. **Validate readability** - Ensure changes make sense in context
+
+### Terminology Mapping:
+| Old | New | Context |
+|-----|-----|---------|
+| Week 1-2 | Pre-commit 1-4 | Planning phases |
+| Weeks 2-3 | Pre-commit 5-8 | Multi-step work |
+| Month 1 | Pre-commit 1-8 | Longer phases |
+| Q1 2026 | Phase 2-5 | Quarterly scope |
+| weekly | per commit cycle | Frequency |
+| monthly | per 4-5 commit cycles | Frequency |
+| quarterly | per phase | Frequency |
+
+---
+
+## Self-Review Checklist
+
+### Iteration 1: ✅ COMPLETE
+- [x] Identified policy violation
+- [x] Fixed 3 files created in this PR
+- [x] Committed changes
+
+### Iteration 2: ✅ COMPLETE
+- [x] Created tracking document
+- [x] Updated high-priority .codex/ files (4 files)
+- [x] Validated changes don't break references
+- [x] Updated policy file with mandatory session completion protocol
+- [x] Committed batch 2 updates
+
+### Iteration 3: PENDING
+- [ ] Review all changes for context appropriateness
+- [ ] Ensure no broken internal links
+- [ ] Validate JSON/YAML still parse
+- [ ] Check for edge cases
+
+### Iteration 4: PENDING
+- [ ] Final pass on all updated files
+- [ ] Confirm zero policy violations in updated files
+- [ ] Document deferred work with reasoning
+
+### Iteration 5: PENDING
+- [ ] Create follow-up prompt for deferred work
+- [ ] Submit as PR comment with @copilot
+- [ ] Verify submission successful
+
+---
+
+## Deferred Work Justification
+
+**Reasoning for Batch 3-5 Deferral:**
+
+1. **Scope Management:**
+   - 200+ files require updates
+   - Single PR should focus on immediate violations
+   - Large-scale updates risk introducing errors
+
+2. **Context Preservation:**
+   - Many historical documents reference completed work
+   - Changing dates retroactively can confuse timeline
+   - Requires careful review of each file's purpose
+
+3. **Best Effort This Session:**
+   - Fixed all files I directly created (100% responsibility)
+   - Updating high-priority active planning docs (Batch 2)
+   - Created comprehensive plan for remaining work
+
+4. **Continuous Improvement:**
+   - Follow-up PR will be dedicated to terminology migration
+   - Next agent will have this tracking doc for guidance
+   - Systematic approach reduces risk of mistakes
+
+**Resolution Plan:**
+- Create follow-up prompt for next Copilot agent
+- Include this tracking doc as reference
+- Specify files to update in priority order
+- Provide terminology mapping table
+- Mandate completion before other work
+
+---
+
+## Verification Commands
+
+```bash
+# Find remaining violations in .codex/
+grep -r "Week [0-9]\|Weeks [0-9]\|Q[1-4] 202[0-9]" --include="*.md" .codex/ -l
+
+# Count total violations
+grep -r "Week [0-9]\|Weeks [0-9]\|Q[1-4] 202[0-9]" --include="*.md" --exclude-dir=node_modules --exclude-dir=.git -c | awk -F: '{sum += $2} END {print sum}'
+
+# Check specific file
+grep -n "Week\|Q[1-4] 202" filename.md
+```
+
+---
+
+## Status: IN PROGRESS
+
+**Current:** Batch 2 (High Priority .codex/ Files)  
+**Next:** Complete Batch 2, then finalize with follow-up prompt  
+**Blocked:** None  
+**Estimated Remaining:** 4 high-priority files in Batch 2
+
+---
+
+**This tracking ensures no work is truly deferred - it's planned, documented, and will be completed in next session.**

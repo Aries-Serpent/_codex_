@@ -11,7 +11,7 @@
 ```
 @copilot Begin Cognitive Brain Phase 8.2 implementation following `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md` and `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_CONTINUATION.md`. 
 
-**Immediate Tasks (Week 1):**
+**Immediate Tasks (Pre-commit 1-2):**
 1. Create `src/cognitive_brain/quantum/ghz_state_manager.py` with N-qubit GHZ state generation (N≥3)
 2. Create `src/cognitive_brain/models/ghz_state.py` with GHZState dataclass
 3. Create `tests/cognitive_brain/quantum/test_ghz_state_manager.py` with 10+ tests
@@ -30,9 +30,9 @@
 
 ---
 
-## 📋 Phase 8.2: Multi-Agent GHZ States (4 weeks)
+## 📋 Phase 8.2: Multi-Agent GHZ States (Pre-commit cycles 1-8)
 
-### Week 1 Detailed Tasks
+### Pre-commit 1-2: GHZ Foundations
 
 #### Task 1: GHZ State Manager
 **File:** `src/cognitive_brain/quantum/ghz_state_manager.py`

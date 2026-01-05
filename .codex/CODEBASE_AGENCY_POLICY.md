@@ -338,6 +338,77 @@ If ANY checkpoint fails:
 - Continue until zero concerns remain
 - Document all iterations in commit message
 
+### Mandatory Session Completion Protocol
+
+**BEFORE finalizing ANY session, ALL agents MUST:**
+
+1. **Perform Comprehensive Self-Review:**
+   - Minimum 5+ iterations until zero concerns remain
+   - Each iteration documents findings and resolutions
+   - Continue iterating until no new issues discovered
+   - Use autonomous self-healing and continuous improvement
+
+2. **Address ALL Concerns Repo-Wide:**
+   - Address concerns you worked on directly
+   - Address related concerns in affected areas
+   - Address pre-existing issues discovered during work
+   - NEVER claim "not my responsibility"
+   - Search repo-wide for similar issues
+
+3. **Never Defer Work Without Full Resolution:**
+   - Document reasoning for any deferral
+   - Provide comprehensive resolution plan
+   - Best-effort iterations (minimum 5 attempts)
+   - Include timeline and success criteria
+   - Assign clear ownership for continuation
+
+4. **Create and Submit Follow-Up Prompt:**
+   - REQUIRED for all incomplete work
+   - Submit as new comment on current PR
+   - First line MUST start with `@copilot` (no spaces, no backticks)
+   - Include full context and next steps
+   - Reference planning documents
+   - Mandate policy compliance
+
+### Follow-Up Prompt Requirements
+
+**Format:**
+```
+@copilot [Task description]
+
+**Current Status:**
+- [x] Completed items
+- [ ] Pending items
+
+**Next Pre-commit Tasks:**
+1. Specific task with acceptance criteria
+2. Another task with details
+
+**Success Criteria:**
+- Measurable outcome 1
+- Measurable outcome 2
+
+**Policy Compliance:**
+Must follow .codex/CODEBASE_AGENCY_POLICY.md
+
+**Context:**
+Reference to planning docs with full details
+```
+
+**Verification Steps:**
+1. Write follow-up prompt with exact format above
+2. Post as comment on current PR (not in file)
+3. Verify comment appears in PR timeline
+4. Confirm @copilot trigger is correctly formatted
+
+### Consequences of Non-Compliance
+
+Failing to complete session protocol results in:
+- Incomplete work requiring rework
+- Context loss for next agent
+- Broken continuity in implementation
+- Policy violation requiring correction
+
 ---
 
 ## Code Quality Standards
@@ -603,6 +674,10 @@ The following are policy violations:
 6. Incomplete planning before execution
 7. Missing AfterMath/PDA integration
 8. Poor error messages exposing technical details
+9. **NEW:** Concluding session without 5+ self-review iterations
+10. **NEW:** Failing to address ALL concerns (including repo-wide)
+11. **NEW:** Not creating follow-up prompt for incomplete work
+12. **NEW:** Not submitting follow-up prompt as PR comment with @copilot
 
 ### Correction Process
 
@@ -626,11 +701,12 @@ Repeated violations or inability to correct:
 
 ### Must Do ✅
 
-- Address ALL issues (pre-existing + new)
+- Address ALL issues (pre-existing + new + repo-wide)
 - Plan before executing
 - Use pre-commit/commit terminology
 - Document ALL utilities created
-- 5-pass self-review (zero concerns)
+- **5+ self-review iterations (zero concerns)**
+- **Submit @copilot follow-up prompt as PR comment**
 - AfterMath/PDA integration
 - Comprehensive error handling
 - Clear, actionable error messages
@@ -640,9 +716,10 @@ Repeated violations or inability to correct:
 ### Never Do ❌
 
 - Claim "not my responsibility"
-- Defer without resolution plan
+- Defer without resolution plan + 5 best-effort attempts
 - Create utilities without docs
 - Skip self-review passes
+- **Conclude session without follow-up prompt**
 - Use weeks/days for future planning
 - Expose technical details in UI
 - Skip input validation
@@ -651,10 +728,12 @@ Repeated violations or inability to correct:
 ### Always Remember 💡
 
 - Leave codebase better than found
-- Best-effort iterations (5+)
+- **Best-effort iterations (minimum 5)**
+- **Address ALL concerns until zero remain**
 - Knowledge transfer to future agents
 - Cumulative improvements
 - Root cause resolution
+- **Post follow-up prompt on PR with @copilot**
 - Lessons learned documentation
 
 ---
@@ -664,6 +743,7 @@ Repeated violations or inability to correct:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2026-01-05 | Initial policy creation |
+| 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
 
 ---
 
