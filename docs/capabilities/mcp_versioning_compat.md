@@ -253,7 +253,7 @@ def check_version_status(version: str) -> Dict[str, Any]:
             "supported": True,
             "warning": f"Version {version} will be removed in next major release",
             "recommended": MCP_VERSIONS["current"],
-            "migration_guide": "https://docs.example.com/mcp/migration"
+            "migration_guide": "http://localhost:8080/mcp/migration"
         }
     elif version in MCP_VERSIONS["supported"]:
         return {
@@ -402,6 +402,6 @@ versioning, compatibility, negotiation, semver, semantic-versioning, backward-co
 ## References
 
 - [Semantic Versioning 2.0.0](https://semver.org/)
-- [API Versioning Best Practices](https://www.example.com/api-versioning)
+- [API Versioning Best Practices](http://localhost:8080/api-versioning)
 - MCP Protocol Specification
 - Version Negotiation RFC

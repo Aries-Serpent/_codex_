@@ -151,7 +151,7 @@ configobj==5.0.9
     # via dvc
 contourpy==1.3.3
     # via matplotlib
-coverage==7.12.0
+coverage==7.13.1
     # via pytest-cov
 cryptography==45.0.7
     # via
@@ -335,7 +335,7 @@ hf-xet==1.2.0
     # via huggingface-hub
 httpcore==1.0.9
     # via httpx
-httptools==0.6.4
+httptools==0.7.1
     # via uvicorn
 httpx==0.28.1
     # via
@@ -359,7 +359,7 @@ hypothesis==6.142.1
     # via codex-ml (pyproject.toml)
 identify==2.6.14
     # via pre-commit
-idna==3.10
+idna==3.11
     # via
     #   anyio
     #   email-validator
@@ -776,7 +776,7 @@ prompt-toolkit==3.0.52
     # via
     #   click-repl
     #   ipython
-propcache==0.3.2
+propcache==0.4.1
     # via
     #   aiohttp
     #   yarl

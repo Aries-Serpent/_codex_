@@ -290,7 +290,7 @@ secret = storage.load_secret("api_key.enc")
 
 ## 📞 CONTACT & SUPPORT
 
-**Security Team**: security@example.com  
+**Security Team**: security@localhost  
 **Documentation**: `docs/security/SECURITY_GUIDELINES.md`  
 **Report Vulnerabilities**: Via email (not GitHub issues)
 
