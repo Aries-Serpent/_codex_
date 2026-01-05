@@ -1426,7 +1426,7 @@ Estimated time: 25 minutes
 
 ### External Resources
 - [GitHub Apps Documentation](https://docs.github.com/en/apps)
-- [GitHub Copilot Agents Platform](https://docs.github.com/en/copilot/building-copilot-extensions)
+- [GitHub Copilot Agents Platform](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension)
 - [Webhook Events Reference](https://docs.github.com/en/webhooks/webhook-events-and-payloads)
 
 ---

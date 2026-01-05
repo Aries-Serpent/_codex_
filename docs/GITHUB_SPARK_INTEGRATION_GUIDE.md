@@ -751,7 +751,7 @@ Add collaboration tools:
 
 SHARE BUTTON (Top right):
 - Click to generate shareable URL
-  - Format: https://app.example.com/share/{uuid}
+  - Format: http://localhost:8080/share/{uuid}
   - Expiry: dropdown (1 hour, 1 day, 1 week, never)
   - Read-only or editable
 - Copy link button
@@ -1689,4 +1689,4 @@ MIT License - see [LICENSE](../LICENSE) for details
 
 ---
 
-**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@codex-ml.example.com)
+**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@localhost)
