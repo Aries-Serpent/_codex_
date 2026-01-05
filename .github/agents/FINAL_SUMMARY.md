@@ -256,7 +256,7 @@ Test Suite: 14 comprehensive tests
 5. Test with live GitHub API
 
 **Effort:** 8-12 hours  
-**Timeline:** Week 1
+**Timeline:** Pre-commit 1-2
 
 ### P1 - High (Before Production)
 1. Achieve >80% code coverage
@@ -266,34 +266,34 @@ Test Suite: 14 comprehensive tests
 5. Operational runbook
 
 **Effort:** 12-16 hours  
-**Timeline:** Week 2-3
+**Timeline:** Pre-commit 3-6
 
 ---
 
 ## 🚀 Deployment Roadmap
 
-### Week 1: Infrastructure
+### Pre-commit 1-2: Infrastructure
 - Create Terraform templates
 - Deploy AWS resources
 - Register GitHub App
 - Configure secrets
 - Fix pattern issues
 
-### Week 2: Staging
+### Pre-commit 3-4: Staging
 - Deploy to staging
 - Live API testing
 - Performance validation
 - Bug fixes
 - Documentation updates
 
-### Week 3: Pilot
+### Pre-commit 5-6: Pilot
 - Enable for 5 repositories
 - Collect metrics
 - User feedback
 - Pattern tuning
 - Iteration
 
-### Week 4: Production
+### Pre-commit 7-8: Production
 - Production deployment
 - Monitoring active
 - Gradual rollout
@@ -384,7 +384,7 @@ The Custom GitHub Agent PR Reviewer System represents a **complete, production-q
 4. Deploy to staging
 5. Run live validation tests
 
-### Short Term (Week 2-3)
+### Short Term (Pre-commit 3-6)
 1. Performance benchmarking
 2. Security audit
 3. User acceptance testing

@@ -1341,7 +1341,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 
 ## 🚀 Rollout Plan (Detailed)
 
-### Week 1: Infrastructure & Local Testing
+### Pre-commit 1-2: Infrastructure & Local Testing
 
 | Day | Task | Owner | Deliverable | Status |
 |-----|------|-------|-------------|--------|
@@ -1355,7 +1355,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 | Thu | Measure current coverage baseline | @mbaetiong | Metrics | ⬜ |
 | Fri | Review & adjust threshold if needed | Team | Decision | ⬜ |
 
-### Week 2: CI Integration
+### Pre-commit 3-4: CI Integration
 
 | Day | Task | Owner | Deliverable | Status |
 |-----|------|-------|-------------|--------|
@@ -1368,7 +1368,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 | Thu | Review CI logs and optimize if needed | @mbaetiong | Performance | ⬜ |
 | Fri | Merge to main after successful validation | Team | Deployment | ⬜ |
 
-### Week 3: Documentation & Enablement
+### Pre-commit 5-6: Documentation & Enablement
 
 | Day | Task | Owner | Deliverable | Status |
 |-----|------|-------|-------------|--------|
@@ -1380,7 +1380,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 | Thu | Collect feedback and iterate | Team | Improvements | ⬜ |
 | Fri | Retrospective and document lessons learned | Team | Knowledge capture | ⬜ |
 
-### Week 4: Monitoring & Optimization
+### Pre-commit 7-8: Monitoring & Optimization
 
 | Day | Task | Owner | Deliverable | Status |
 |-----|------|-------|-------------|--------|
@@ -1417,7 +1417,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 ### Health Checks (Weekly)
 
 ```bash
-# Run this weekly to verify system health
+# Run this per commit cycle to verify system health
 
 # 1. Check current coverage
 CODEX_COLLECT_COVERAGE=1 nox -s tests

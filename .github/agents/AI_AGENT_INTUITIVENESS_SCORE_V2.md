@@ -766,12 +766,12 @@ Phase Breakdown:
 
 ### Option A: Aggressive (2 weeks)
 ```
-Week 1:
+Pre-commit 1-2:
 ├── Days 1-2: Phase 1 (Quick Wins)
 ├── Days 3-4: Phase 2 (Documentation)
 └── Day 5: Phase 3 starts
 
-Week 2:
+Pre-commit 3-4:
 ├── Days 1-2: Phase 3 (Observability)
 └── Days 3-5: Phase 4 (Advanced Features)
 
@@ -780,9 +780,9 @@ Result: 98.5/100 in 2 weeks
 
 ### Option B: Steady (3 weeks)
 ```
-Week 1: Phase 1 (Quick Wins) + Start Phase 2
-Week 2: Complete Phase 2 + Phase 3
-Week 3: Phase 4 + Buffer for testing
+Pre-commit 1-2: Phase 1 (Quick Wins) + Start Phase 2
+Pre-commit 3-4: Complete Phase 2 + Phase 3
+Pre-commit 5-6: Phase 4 + Buffer for testing
 
 Result: 98.5/100 in 3 weeks with better quality
 ```

@@ -354,22 +354,22 @@ if __name__ == '__main__':
 
 ## Priority-Based Cleanup Schedule
 
-**Week 1-2: P0 Stubs (15 items)**
+**Pre-commit 1-4: P0 Stubs (15 items)**
 - Blocking functionality
 - Import errors
 - Critical path failures
 
-**Week 3-4: P1 Stubs (45 items)**
+**Pre-commit 5-8: P1 Stubs (45 items)**
 - High-value features
 - Commonly used paths
 - Security/reliability issues
 
-**Week 5-8: P2 Stubs (128 items)**
+**Pre-commit 9-16: P2 Stubs (128 items)**
 - Medium-value features
 - Edge cases
 - Optimization opportunities
 
-**Week 9-12: P3 Stubs (110 items)**
+**Pre-commit 17-24: P3 Stubs (110 items)**
 - Low-impact items
 - Nice-to-have features
 - Documentation placeholders
@@ -420,7 +420,7 @@ Phases:
 3. Apply auto-resolution where possible
 4. Generate manual review list for remainder
 5. Validate no regressions
-6. Track progress weekly
+6. Track progress per commit cycle
 
 Target: 298 → 0 stubs
 Timeline: 12 weeks (throughout Phases 1-3)

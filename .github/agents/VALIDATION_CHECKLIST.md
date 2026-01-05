@@ -348,8 +348,8 @@
 
 **Timeline:**
 - P0 Items: 1-2 weeks
-- Staging Deployment: Week 3
-- Production Deployment: Week 6-8
+- Staging Deployment: Pre-commit 5-6
+- Production Deployment: Pre-commit 11-16
 
 ---
 

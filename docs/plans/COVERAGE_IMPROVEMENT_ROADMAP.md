@@ -10,7 +10,7 @@
 
 This roadmap outlines a phased approach to increase test coverage from 15.9% to 90% over 12 weeks. The strategy focuses on high-value modules first, automated coverage tracking, and continuous integration of new tests.
 
-## Phase 1: Foundation (Weeks 1-4) - Target: 30%
+## Phase 1: Foundation (Pre-commit 1-8) - Target: 30%
 
 ### Goals
 - Increase coverage to 30% (+14.1 points)
@@ -19,7 +19,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ### Modules to Cover (Priority Order)
 
-#### Week 1: Core Training (Target: 20%)
+#### Pre-commit 1-2: Core Training (Target: 20%)
 - `src/codex_ml/train_loop.py` (Current: ~10% → Target: 70%)
   - Test basic training iteration
   - Test checkpoint saving/loading
@@ -33,7 +33,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 25-30 tests  
 **Lines Covered**: ~500 lines
 
-#### Week 2: Data Processing (Target: 25%)
+#### Pre-commit 3-4: Data Processing (Target: 25%)
 - `src/codex_ml/data_utils.py` (Current: ~15% → Target: 75%)
   - Test data loading
   - Test preprocessing
@@ -46,7 +46,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 20-25 tests  
 **Lines Covered**: ~400 lines
 
-#### Week 3: Model Management (Target: 28%)
+#### Pre-commit 5-6: Model Management (Target: 28%)
 - `src/codex_ml/codex_model.py` (Current: ~12% → Target: 75%)
   - Test model initialization
   - Test model loading
@@ -59,7 +59,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 20 tests  
 **Lines Covered**: ~350 lines
 
-#### Week 4: Pipeline & Integration (Target: 30%)
+#### Pre-commit 7-8: Pipeline & Integration (Target: 30%)
 - `src/codex_ml/pipeline.py` (Current: ~5% → Target: 60%)
   - Test pipeline creation
   - Test step execution
@@ -80,7 +80,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ---
 
-## Phase 2: Expansion (Weeks 5-8) - Target: 60%
+## Phase 2: Expansion (Pre-commit 9-16) - Target: 60%
 
 ### Goals
 - Increase coverage to 60% (+30 points)
@@ -89,7 +89,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ### Modules to Cover
 
-#### Week 5-6: Advanced Training Features (Target: 45%)
+#### Pre-commit 9-12: Advanced Training Features (Target: 45%)
 - `src/codex_ml/callbacks/` (Current: ~8% → Target: 70%)
 - `src/codex_ml/checkpointing/` (Current: ~10% → Target: 75%)
 - `src/codex_ml/distributed/` (Current: ~5% → Target: 60%)
@@ -98,7 +98,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 40-50 tests  
 **Lines Covered**: ~800 lines
 
-#### Week 7: Evaluation & Metrics (Target: 52%)
+#### Pre-commit 13-14: Evaluation & Metrics (Target: 52%)
 - `src/codex_ml/eval/` (Current: ~15% → Target: 80%)
 - `src/codex_ml/metrics/` (Current: ~20% → Target: 85%)
 - `src/codex_ml/evaluation/` (Current: ~12% → Target: 75%)
@@ -106,7 +106,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 30-35 tests  
 **Lines Covered**: ~600 lines
 
-#### Week 8: Integration & Connectors (Target: 60%)
+#### Pre-commit 15-16: Integration & Connectors (Target: 60%)
 - `src/codex_ml/integrations/` (Current: ~10% → Target: 70%)
 - `src/codex_ml/connectors/` (Current: ~8% → Target: 65%)
 - `src/codex_ml/tracking/` (Current: ~18% → Target: 75%)
@@ -122,7 +122,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ---
 
-## Phase 3: Completion (Weeks 9-12) - Target: 90%
+## Phase 3: Completion (Pre-commit 17-24) - Target: 90%
 
 ### Goals
 - Increase coverage to 90% (+30 points)
@@ -131,7 +131,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ### Modules to Cover
 
-#### Week 9-10: Remaining Core Features (Target: 75%)
+#### Pre-commit 17-20: Remaining Core Features (Target: 75%)
 - `src/codex_ml/cli/` (Current: ~25% → Target: 85%)
 - `src/codex_ml/config/` (Current: ~30% → Target: 90%)
 - `src/codex_ml/utils/` (Current: ~35% → Target: 85%)
@@ -140,7 +140,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 35-40 tests  
 **Lines Covered**: ~700 lines
 
-#### Week 11: Edge Cases & Error Handling (Target: 83%)
+#### Pre-commit 21-22: Edge Cases & Error Handling (Target: 83%)
 - Error path testing for all major modules
 - Exception handling coverage
 - Edge case scenarios
@@ -149,7 +149,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 **Estimated New Tests**: 30-35 tests  
 **Lines Covered**: ~600 lines
 
-#### Week 12: Final Push & Optimization (Target: 90%)
+#### Pre-commit 23-24: Final Push & Optimization (Target: 90%)
 - Cover remaining uncovered lines
 - Optimize slow tests
 - Remove flaky tests
@@ -221,7 +221,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ### Coverage Tracking Dashboard
 - Real-time coverage metrics
 - Module-by-module breakdown
-- Trend analysis (weekly)
+- Trend analysis (per commit cycle)
 - Uncovered line highlighting
 
 ### Automated Test Generation
@@ -277,17 +277,17 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ## Success Criteria
 
-**Phase 1 Success** (Week 4):
+**Phase 1 Success** (Pre-commit 7-8):
 - ✅ Coverage ≥ 30%
 - ✅ CI coverage gate working
 - ✅ All new tests passing
 
-**Phase 2 Success** (Week 8):
+**Phase 2 Success** (Pre-commit 15-16):
 - ✅ Coverage ≥ 60%
 - ✅ Property-based tests implemented
 - ✅ Coverage trending dashboard live
 
-**Phase 3 Success** (Week 12):
+**Phase 3 Success** (Pre-commit 23-24):
 - ✅ Coverage ≥ 90%
 - ✅ All quality gates met
 - ✅ Test suite execution time acceptable
@@ -297,7 +297,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ## Implementation Checklist
 
-### Week 1 Actions
+### Pre-commit 1-2 Actions
 - [ ] Set up coverage tracking infrastructure
 - [ ] Create coverage baseline report
 - [ ] Identify highest-priority uncovered code
@@ -309,7 +309,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 - [ ] Adjust targets based on actual progress
 - [ ] Document any excluded code with rationale
 - [ ] Optimize test execution time
-- [ ] Share progress in weekly updates
+- [ ] Share progress in per commit cycle updates
 
 ---
 

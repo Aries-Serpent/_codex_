@@ -17,13 +17,13 @@
 
 ### Phase Progression
 ```
-Phase 1 (Weeks 1-4) → Foundation
+Phase 1 (Pre-commit 1-8) → Foundation
   ↓ Coverage + Security + Observability
-Phase 2 (Weeks 5-8) → Reproducibility
+Phase 2 (Pre-commit 9-16) → Reproducibility
   ↓ Determinism + Supply Chain
-Phase 3 (Weeks 9-12) → Autonomy
+Phase 3 (Pre-commit 17-24) → Autonomy
   ↓ Drift Detection + Self-Healing
-Phase 4 (Weeks 13-16) → Excellence
+Phase 4 (Pre-commit 25-32) → Excellence
   ↓ Advanced Features + Documentation
 ```
 
@@ -331,7 +331,7 @@ Approach:
 Timeline: 16 weeks
 Effort: Autonomous with 2-3 engineer oversight
 
-Report progress weekly.
+Report progress per commit cycle.
 Final validation at week 16.
 ```
 

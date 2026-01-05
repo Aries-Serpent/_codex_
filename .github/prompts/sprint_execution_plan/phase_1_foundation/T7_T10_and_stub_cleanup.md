@@ -173,9 +173,9 @@ stub_categories = {
 ```
 
 ### Phase 2: Prioritize by Impact
-- P0: Breaks functionality (15 items) → Fix Week 1
-- P1: High value (45 items) → Fix Weeks 2-4  
-- P2: Medium value (128 items) → Fix Weeks 5-12
+- P0: Breaks functionality (15 items) → Fix Pre-commit 1-2
+- P1: High value (45 items) → Fix Pre-commit 3-8  
+- P2: Medium value (128 items) → Fix Pre-commit 9-24
 - P3: Low impact (110 items) → Fix opportunistically
 
 ### Phase 3: Auto-Resolution Strategies

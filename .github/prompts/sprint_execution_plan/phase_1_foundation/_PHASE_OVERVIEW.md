@@ -2,7 +2,7 @@
 
 🎯 **COPILOT INSTRUCTION: PHASE-LEVEL ORCHESTRATION**
 
-@workspace Execute Phase 1 (Weeks 1-4) with autonomous coordination
+@workspace Execute Phase 1 (Pre-commit 1-8) with autonomous coordination
 
 ## Phase Overview
 
@@ -22,7 +22,7 @@
 
 ## Task Execution Order
 
-### Sprint 1 (Week 1-2): Quality & Security Foundation
+### Sprint 1 (Pre-commit 1-4): Quality & Security Foundation
 
 **Day 1-5: T1 Coverage Gate** ⚡ CRITICAL PATH
 - No dependencies, starts immediately
@@ -40,7 +40,7 @@
 - Prompt: `phase_1_foundation/T7_T10_and_stub_cleanup.md` → T9 section
 - Expected: Bandit, pip-audit, detect-secrets in CI
 
-### Sprint 2 (Week 3-4): Observability & Operations
+### Sprint 2 (Pre-commit 5-8): Observability & Operations
 
 **Day 11-13: T7 Health Probes** 🏥 OPERATIONS
 - Can run in parallel with security work
@@ -140,7 +140,7 @@ def execute_task(task_id):
 
 ## Validation Checkpoints
 
-### Sprint 1 Checkpoint (End of Week 2)
+### Sprint 1 Checkpoint (End of Pre-commit 3-4)
 ```bash
 # T1 Validation
 pytest --cov=src --cov-fail-under=70
@@ -160,7 +160,7 @@ gh workflow view security
 # - P0 stubs resolved: ≥5/15
 ```
 
-### Sprint 2 Checkpoint (End of Week 4)
+### Sprint 2 Checkpoint (End of Pre-commit 7-8)
 ```bash
 # T7 Validation
 curl http://localhost:8000/health

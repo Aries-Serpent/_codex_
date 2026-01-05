@@ -85,7 +85,7 @@ Each batchset includes:
 
 ## 🚀 Implementation Strategy
 
-### Phase 1: P1 Critical (Weeks 1-2)
+### Phase 1: P1 Critical (Pre-commit 1-4)
 **Focus**: Inference Serving & Distributed Training
 
 - E1: Inference serving to 1.00
@@ -93,7 +93,7 @@ Each batchset includes:
 
 **Expected Impact**: +0.30 overall maturity
 
-### Phase 2: P2 High (Weeks 3-4)
+### Phase 2: P2 High (Pre-commit 5-8)
 **Focus**: Vector Stores, Feature Store, Model Registry
 
 - E2: Vector stores to 1.00
@@ -102,14 +102,14 @@ Each batchset includes:
 
 **Expected Impact**: +0.25 overall maturity
 
-### Phase 3: P3 Medium (Weeks 5-6)
+### Phase 3: P3 Medium (Pre-commit 9-12)
 **Focus**: Reasoning Curriculum
 
 - E6: Reasoning curriculum to 1.00
 
 **Expected Impact**: +0.20 overall maturity
 
-### Phase 4: Validation & Polish (Week 7)
+### Phase 4: Validation & Polish (Pre-commit 13-14)
 - Comprehensive E2E testing
 - Performance benchmarking
 - Documentation review

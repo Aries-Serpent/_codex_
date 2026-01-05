@@ -20,7 +20,7 @@
 
 ## Day-by-Day Execution
 
-### 📅 Week 1: Kubernetes Orchestration
+### 📅 Pre-commit 1-2: Kubernetes Orchestration
 
 **Day 1 Morning:** Base Manifests
 ```
@@ -48,7 +48,7 @@ Prompts to use:
 Verify: Deploy to minikube successfully
 ```
 
-### 📅 Week 2: Feature Store
+### 📅 Pre-commit 3-4: Feature Store
 
 **Day 4 Full Day:** Core Implementation
 ```
@@ -82,7 +82,7 @@ Prompts to use:
 Verify: Examples run, docs complete
 ```
 
-### 📅 Week 3: Cloud Events & Freshness
+### 📅 Pre-commit 5-6: Cloud Events & Freshness
 
 **Day 8 Full Day:** Event Base
 ```

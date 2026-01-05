@@ -236,7 +236,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ---
 
-### Phase 3: Functionality Gaps (Weeks 7-9)
+### Phase 3: Functionality Gaps (Pre-commit 13-18)
 
 **3 Capabilities with Functionality Issues**:
 
@@ -271,7 +271,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ---
 
-### Phase 4: AST-Level Consistency (v1.6.x) (Weeks 10-11)
+### Phase 4: AST-Level Consistency (v1.6.x) (Pre-commit 19-22)
 
 **Objective**: Improve AST parsing consistency across analysis tools
 
@@ -287,7 +287,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ---
 
-### Phase 5: Real Pytest-Cov Integration (v1.7.x) (Weeks 12-13)
+### Phase 5: Real Pytest-Cov Integration (v1.7.x) (Pre-commit 23-26)
 
 **Objective**: Implement proper pytest-cov integration for accurate coverage reporting
 
@@ -304,7 +304,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ---
 
-### Phase 6: Zero-Component Capabilities (Weeks 14-15)
+### Phase 6: Zero-Component Capabilities (Pre-commit 27-30)
 
 **Objective**: Eliminate all zero-component scores
 
@@ -351,11 +351,11 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ### Timeline
 
-- **Phase 2**: Weeks 4-6 (2-3 weeks)
-- **Phase 3**: Weeks 7-9 (2-3 weeks)
-- **Phase 4**: Weeks 10-11 (1-2 weeks)
-- **Phase 5**: Weeks 12-13 (1-2 weeks)
-- **Phase 6**: Weeks 14-15 (1-2 weeks)
+- **Phase 2**: Pre-commit 7-12 (2-3 weeks)
+- **Phase 3**: Pre-commit 13-18 (2-3 weeks)
+- **Phase 4**: Pre-commit 19-22 (1-2 weeks)
+- **Phase 5**: Pre-commit 23-26 (1-2 weeks)
+- **Phase 6**: Pre-commit 27-30 (1-2 weeks)
 
 **Total Remaining Time**: 8-12 weeks
 
@@ -397,25 +397,25 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ## Recommended Execution Strategy
 
-### Priority 1 (Immediate - Weeks 4-6)
+### Priority 1 (Immediate - Pre-commit 7-12)
 Continue momentum with Phase 2 (documentation, experiments, PEFT, tokenization, status-reporting):
 - Low complexity, similar patterns to Phase 1
 - High impact on maturity scores
 - Well-defined requirements
 
-### Priority 2 (Next - Weeks 7-9)
+### Priority 2 (Next - Pre-commit 13-18)
 Address functionality gaps in Phase 3:
 - Make defer/implement decisions early
 - Focus on inference-serving (highest impact)
 - Vector-stores and duplication_ratio can be minimal/deferred
 
-### Priority 3 (Advanced - Weeks 10-13)
+### Priority 3 (Advanced - Pre-commit 19-26)
 Technical improvements in Phases 4-5:
 - AST consistency (v1.6.x)
 - Pytest-cov integration (v1.7.x)
 - These provide infrastructure improvements
 
-### Priority 4 (Cleanup - Weeks 14-15)
+### Priority 4 (Cleanup - Pre-commit 27-30)
 Final validation in Phase 6:
 - Verify all zero-components eliminated
 - Run full test suite

@@ -1320,14 +1320,14 @@ Estimated time: 25 minutes
 
 ## 🚀 Implementation Checklist
 
-### Phase 1: Foundation (Week 1-2)
+### Phase 1: Foundation (Pre-commit 1-4)
 - [ ] Create `.github/agents/` directory structure
 - [ ] Implement agent manifest YAML file
 - [ ] Set up Python package structure for agent code
 - [ ] Create core `ReviewContext` and `ReviewResult` data classes
 - [ ] Implement basic `CodexQuantumReviewer` class with event handling
 
-### Phase 2: Analysis Components (Week 3-4)
+### Phase 2: Analysis Components (Pre-commit 5-8)
 - [ ] Implement `QuantumPatternAnalyzer` class
   - [ ] Superposition opportunity detection
   - [ ] Entanglement candidate identification
@@ -1344,7 +1344,7 @@ Estimated time: 25 minutes
 - [ ] Implement `KnowledgeGapDetector` class
 - [ ] Implement `SelfEvolutionSystem` class
 
-### Phase 3: GitHub Integration (Week 5-6)
+### Phase 3: GitHub Integration (Pre-commit 9-12)
 - [ ] Create GitHub App in GitHub Developer Settings
   - [ ] Generate App ID and private key
   - [ ] Configure webhook URL
@@ -1361,7 +1361,7 @@ Estimated time: 25 minutes
   - [ ] Post review comments
   - [ ] Update check runs
 
-### Phase 4: Testing (Week 7)
+### Phase 4: Testing (Pre-commit 13-14)
 - [ ] Write unit tests for all components
 - [ ] Create integration tests for GitHub API interactions
 - [ ] Test with sample PRs
@@ -1369,7 +1369,7 @@ Estimated time: 25 minutes
 - [ ] Test learning system with feedback
 - [ ] Load testing for concurrent reviews
 
-### Phase 5: Deployment (Week 8)
+### Phase 5: Deployment (Pre-commit 15-16)
 - [ ] Set up cloud infrastructure (AWS Lambda / Google Cloud Functions / etc.)
 - [ ] Create deployment workflow (`.github/workflows/deploy-reviewer-agent.yml`)
 - [ ] Configure environment variables and secrets
@@ -1377,7 +1377,7 @@ Estimated time: 25 minutes
 - [ ] Register agent with Copilot platform (if available)
 - [ ] Test end-to-end flow
 
-### Phase 6: Documentation (Week 9)
+### Phase 6: Documentation (Pre-commit 17-18)
 - [ ] Write usage guide (`.github/agents/REVIEWER_USAGE.md`)
 - [ ] Document configuration options
 - [ ] Create troubleshooting guide

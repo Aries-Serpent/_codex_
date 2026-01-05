@@ -147,7 +147,7 @@ post-evolution-summary
 | Timeframe | Generation | Fitness | Capabilities | Patterns |
 |-----------|------------|---------|--------------|----------|
 | **Initial** | 1 | 0.50 | 0 | 0 |
-| **Week 1** | ~20 | 0.65 | 5 | 50 |
+| **Pre-commit 1-2** | ~20 | 0.65 | 5 | 50 |
 | **Month 1** | ~100 | 0.85 | 25 | 300 |
 | **Month 3** | ~300 | 0.95 | 50+ | 1000+ |
 
@@ -283,7 +283,7 @@ gh workflow run copilot-self-evolution.yml \
 3. ✅ Review test results and pattern reports
 4. ✅ Begin feeding knowledge to enhance capabilities
 
-### Short-term (Week 1)
+### Short-term (Pre-commit 1-2)
 1. Monitor evolution metrics (generation, fitness)
 2. Validate pattern correlations
 3. Answer generated questions

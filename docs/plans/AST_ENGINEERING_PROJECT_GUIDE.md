@@ -290,7 +290,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 ## 10. Engineering Recommendations
 
-### Immediate Actions (Week 0)
+### Immediate Actions (Pre-commit -1-0)
 
 1. **Stakeholder Alignment**
    - Present `PHASE0_READINESS_REPORT.md` to stakeholders
@@ -307,7 +307,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
    - Set up performance benchmarking infrastructure
    - Configure code coverage reporting
 
-### Phase 1: Foundation (Weeks 1-2)
+### Phase 1: Foundation (Pre-commit 1-4)
 
 **Dependencies First**:
 ```bash
@@ -327,7 +327,7 @@ dependencies = [
 - Implement `UniversalParser` facade
 - Implement error handling framework
 
-### Phase 2-6: Core Implementation (Weeks 3-9)
+### Phase 2-6: Core Implementation (Pre-commit 5-18)
 
 **Incremental Approach**:
 - Start with `StandardizedASTNode` and `UniversalParser`
@@ -341,7 +341,7 @@ dependencies = [
 - Aim for 80%+ coverage from day one
 - Use TDD where appropriate
 
-### Phase 7-9: Testing & Documentation (Weeks 10-12)
+### Phase 7-9: Testing & Documentation (Pre-commit 19-24)
 
 **Comprehensive Testing**:
 - 50+ unit tests covering core classes
@@ -355,7 +355,7 @@ dependencies = [
 - Migration guide for existing code
 - Architecture documentation
 
-### Phase 10-11: Migration & Review (Weeks 13-14)
+### Phase 10-11: Migration & Review (Pre-commit 25-28)
 
 **Migration Strategy**:
 1. Create adapter layer for backward compatibility
@@ -456,7 +456,7 @@ P1 → P2 → P3 → P7 → P8 → P10 → P11
 
 ### Communication
 - **Status Updates**: Weekly
-- **Stakeholder Reviews**: Bi-weekly
+- **Stakeholder Reviews**: Bi-per commit cycle
 - **Demos**: End of each phase
 - **Documentation**: Confluence/Wiki
 

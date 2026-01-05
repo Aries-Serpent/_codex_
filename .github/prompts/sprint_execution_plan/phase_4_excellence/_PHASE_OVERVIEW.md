@@ -2,7 +2,7 @@
 
 🎯 **COPILOT INSTRUCTION: PHASE 4 - PRODUCTION EXCELLENCE**
 
-@workspace Execute Phase 4 (Weeks 13-16) - Advanced Features & Polish
+@workspace Execute Phase 4 (Pre-commit 25-32) - Advanced Features & Polish
 
 ## Phase Overview
 

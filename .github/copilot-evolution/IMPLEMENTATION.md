@@ -307,7 +307,7 @@ print(f"Capabilities: {len(system.evolution_state.capabilities)}")  # 15
 
 Expected growth rates:
 
-| Metric | Initial | Week 1 | Month 1 | Impact |
+| Metric | Initial | Pre-commit 1-2 | Month 1 | Impact |
 |--------|---------|--------|---------|--------|
 | **Fitness** | 0.50 | 0.65 | 0.85 | Capability level |
 | **Generation** | 1 | 20 | 100+ | Evolution cycles |

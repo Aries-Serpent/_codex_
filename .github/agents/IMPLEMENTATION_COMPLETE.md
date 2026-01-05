@@ -250,21 +250,21 @@ Integration: Foundation ready
 
 ## 🚀 Deployment Plan
 
-### Phase 1: Staging (Week 1)
+### Phase 1: Staging (Pre-commit 1-2)
 1. Create GitHub App in test organization
 2. Deploy infrastructure to AWS staging
 3. Configure secrets and environment variables
 4. Run smoke tests
 5. Test with sample PRs
 
-### Phase 2: Pilot (Week 2-3)
+### Phase 2: Pilot (Pre-commit 3-6)
 1. Enable for selected repositories
 2. Monitor performance and errors
 3. Collect user feedback
 4. Tune patterns based on results
 5. Iterate on suggestions quality
 
-### Phase 3: Production (Week 4)
+### Phase 3: Production (Pre-commit 7-8)
 1. Deploy to production infrastructure
 2. Enable for all repositories
 3. Monitor dashboards and alerts

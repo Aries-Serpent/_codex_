@@ -20,7 +20,7 @@ This document contains **autonomous continuation prompts** for implementing Phas
 
 ## Prompt Sequence
 
-### Phase 7.1: Infrastructure Setup (Weeks 1-2)
+### Phase 7.1: Infrastructure Setup (Pre-commit 1-4)
 
 #### Prompt 1.1: Create Quantum Module Structure
 ```
@@ -190,7 +190,7 @@ Starting infrastructure implementation.
 
 ---
 
-### Phase 7.2: Feature 1 - Superposition Engine (Weeks 3-4)
+### Phase 7.2: Feature 1 - Superposition Engine (Pre-commit 5-8)
 
 #### Prompt 2.1: Superposition Engine Core Implementation
 ```
@@ -370,7 +370,7 @@ def assess_compliance(self, audit_result: AuditResult) -> Decision:
 
 ---
 
-### Phase 7.3: Feature 2 - Entanglement Manager (Weeks 5-6)
+### Phase 7.3: Feature 2 - Entanglement Manager (Pre-commit 9-12)
 
 #### Prompt 3.1: Entanglement Manager Core Implementation
 ```
@@ -518,7 +518,7 @@ class EntanglementManager:
 
 ---
 
-### Phase 7.4: Feature 3 - Uncertainty Optimizer (Weeks 7-8)
+### Phase 7.4: Feature 3 - Uncertainty Optimizer (Pre-commit 13-16)
 
 #### Prompt 4.1: Uncertainty Optimizer Core Implementation
 ```
@@ -633,7 +633,7 @@ class EntanglementManager:
 
 ---
 
-### Phase 7.5: Feature 4 - Wave Collapse (Weeks 9-10)
+### Phase 7.5: Feature 4 - Wave Collapse (Pre-commit 17-20)
 
 #### Prompt 5.1: Wave Collapse Optimizer Implementation
 ```
@@ -666,7 +666,7 @@ class EntanglementManager:
 
 ---
 
-### Phase 7.6: Integration & Rollout (Weeks 11-12)
+### Phase 7.6: Integration & Rollout (Pre-commit 21-24)
 
 #### Prompt 6.1: Full Integration Testing
 ```
@@ -709,9 +709,9 @@ class EntanglementManager:
 **Task:** Execute gradual rollout to production.
 
 **Rollout Stages:**
-1. Week 11: 10% traffic (CODEX_QUANTUM_ROLLOUT_PCT=10)
-2. Week 12: 50% traffic (CODEX_QUANTUM_ROLLOUT_PCT=50)
-3. Week 13: 100% traffic - General Availability
+1. Pre-commit 21-22: 10% traffic (CODEX_QUANTUM_ROLLOUT_PCT=10)
+2. Pre-commit 23-24: 50% traffic (CODEX_QUANTUM_ROLLOUT_PCT=50)
+3. Pre-commit 25-26: 100% traffic - General Availability
 
 **Monitoring:**
 - Track coherence, error rate, latency daily
@@ -731,31 +731,31 @@ class EntanglementManager:
 
 ### Prompt Execution Checklist
 
-- [ ] **Phase 7.1 (Weeks 1-2):** Infrastructure
+- [ ] **Phase 7.1 (Pre-commit 1-4):** Infrastructure
   - [ ] 1.1: Quantum module structure
   - [ ] 1.2: Database schema
   - [ ] 1.3: Monitoring setup
   - [ ] 1.4: A/B testing framework
 
-- [ ] **Phase 7.2 (Weeks 3-4):** Superposition
+- [ ] **Phase 7.2 (Pre-commit 5-8):** Superposition
   - [ ] 2.1: Core implementation
   - [ ] 2.2: Compliance integration
   - [ ] 2.3: EXP-1 validation
 
-- [ ] **Phase 7.3 (Weeks 5-6):** Entanglement
+- [ ] **Phase 7.3 (Pre-commit 9-12):** Entanglement
   - [ ] 3.1: Core implementation
   - [ ] 3.2: Security/Compliance integration
   - [ ] 3.3: EXP-2 validation
 
-- [ ] **Phase 7.4 (Weeks 7-8):** Uncertainty
+- [ ] **Phase 7.4 (Pre-commit 13-16):** Uncertainty
   - [ ] 4.1: Core implementation
   - [ ] 4.2: CI testing integration
   - [ ] 4.3: EXP-3 validation
 
-- [ ] **Phase 7.5 (Weeks 9-10):** Wave Collapse
+- [ ] **Phase 7.5 (Pre-commit 17-20):** Wave Collapse
   - [ ] 5.1: Core implementation
 
-- [ ] **Phase 7.6 (Weeks 11-12):** Integration & Rollout
+- [ ] **Phase 7.6 (Pre-commit 21-24):** Integration & Rollout
   - [ ] 6.1: Integration testing
   - [ ] 6.2: Production rollout
 

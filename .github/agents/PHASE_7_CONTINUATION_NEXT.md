@@ -88,34 +88,34 @@
 
 ## Subsequent Tasks (Phases 7.2-7.6)
 
-### Phase 7.2: Superposition Engine (Weeks 3-4)
+### Phase 7.2: Superposition Engine (Pre-commit 5-8)
 
 **Prompts 2.1-2.3:**
 1. SuperpositionEngine core implementation
 2. Integration with compliance-checker-agent
 3. EXP-1 A/B experiment validation
 
-### Phase 7.3: Entanglement Manager (Weeks 5-6)
+### Phase 7.3: Entanglement Manager (Pre-commit 9-12)
 
 **Prompts 3.1-3.3:**
 1. EntanglementManager core implementation
 2. Integration with security-scan + compliance-checker
 3. EXP-2 A/B experiment validation
 
-### Phase 7.4: Uncertainty Optimizer (Weeks 7-8)
+### Phase 7.4: Uncertainty Optimizer (Pre-commit 13-16)
 
 **Prompts 4.1-4.3:**
 1. UncertaintyOptimizer core implementation
 2. Integration with ci-testing-agent
 3. EXP-3 A/B experiment validation
 
-### Phase 7.5: Wave Collapse (Weeks 9-10)
+### Phase 7.5: Wave Collapse (Pre-commit 17-20)
 
 **Prompt 5.1:**
 1. WaveCollapseOptimizer implementation
 2. Integration with pattern-synthesis-agent
 
-### Phase 7.6: Integration & Rollout (Weeks 11-12)
+### Phase 7.6: Integration & Rollout (Pre-commit 21-24)
 
 **Prompts 6.1-6.2:**
 1. Full integration testing (30 tests)

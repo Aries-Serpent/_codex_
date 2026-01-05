@@ -162,10 +162,10 @@ opportunities = analyzer.synthesize_tool_opportunities()
 
 | Stage | Capability | Timeframe |
 |-------|-----------|-----------|
-| **Initial** | Pattern recognition | Week 1 |
-| **Learning** | Basic tool generation | Week 2 |
-| **Generating** | Automated tool creation | Week 3 |
-| **Evolving** | Self-improving tools | Week 4 |
+| **Initial** | Pattern recognition | Pre-commit 1-2 |
+| **Learning** | Basic tool generation | Pre-commit 3-4 |
+| **Generating** | Automated tool creation | Pre-commit 5-6 |
+| **Evolving** | Self-improving tools | Pre-commit 7-8 |
 | **Innovating** | New tool categories | Month 2 |
 | **Transcendent** | Meta-cognitive architectures | Month 3+ |
 
