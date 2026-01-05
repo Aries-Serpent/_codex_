@@ -1286,7 +1286,7 @@ werkzeug==3.1.4
     # via
     #   flask
     #   tensorboard
-widgetsnbextension==4.0.14
+widgetsnbextension==4.0.15
     # via ipywidgets
 word2number==1.1
     # via lm-eval
