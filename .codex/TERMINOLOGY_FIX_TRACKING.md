@@ -29,9 +29,18 @@
 - [x] `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_3_CONTINUATION.md` (Fixed: Pre-commit 1-12)
 - [x] `.codex/COMPREHENSIVE_WORKFLOW_CONSOLIDATION_PLAN.md` (Already compliant)
 
-### Batch 3: Plans and Reports (DEFERRED - Future PR)
-- [ ] `.codex/plans/*.md` (15+ files)
-- [ ] `.codex/reports/*.md` (8+ files)
+### Batch 3: Plans and Reports (IN PROGRESS - 2 of 11 complete)
+- [x] `.codex/plans/cognitive_brain_phase_implementation.md` (Historical markers preserved)
+- [x] `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md` (Pre-commit 1-2)
+- [ ] `.codex/plans/interactive_demos_plan.md`
+- [ ] `.codex/plans/v10_implementation_verification_and_phases.md` (Cognitive brain correlated)
+- [ ] `.codex/plans/autonomous_implementation_master_plan.md`
+- [ ] `.codex/plans/COGNITIVE_BRAIN_PHASE_8_STATUS_ASSESSMENT.md` (Cognitive brain)
+- [ ] `.codex/plans/github_pages_improvement_plan.md`
+- [ ] `.codex/plans/v10_agents_enhanced_implementation_plan.md`
+- [ ] `.codex/reports/COMPREHENSIVE_IMPLEMENTATION_STATUS.md`
+- [ ] `.codex/reports/v10_agents_capabilities_and_research_roadmap.md` (Cognitive brain)
+- [ ] `.codex/reports/pr_2685_status_report.md`
 
 ### Batch 4: .github/ Files (DEFERRED - Future PR)
 - [ ] `.github/agents/*.md` (50+ files)
