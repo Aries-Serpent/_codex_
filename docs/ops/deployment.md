@@ -62,7 +62,7 @@ Override values per environment using `--values` or `--set` flags. For productio
 After deploying, validate endpoints:
 ```bash
 pytest tests/deployment/test_api_integration.py -k health
-curl https://codex.example.com/ready
+curl https://localhost:8000/health
 ```text
 
 ## Secrets Management
