@@ -452,7 +452,7 @@ session_response = requests.post(
     "http://localhost:8080/sessions",
     headers={"Authorization": f"Bearer {token}"},
     json={
-        "url": "https://staging.example.com/login",
+        "url": "http://localhost:8080/login",
         "browser": "chromium",
         "headless": True
     }

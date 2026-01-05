@@ -3,8 +3,8 @@ Check for must recent active branch:
 
 Branches:
 //fetch https://github.com/Aries-Serpent/_codex_
-//fetch https://github.com/Aries-Serpent/_codex_/tree/0A_base_
-//fetch https://github.com/Aries-Serpent/_codex_/tree/0B_base_
+//fetch <!-- Branch no longer exists -->_
+//fetch <!-- Branch no longer exists -->_
 //fetch https://github.com/Aries-Serpent/_codex_/tree/0C_base_
 
 Objective:
