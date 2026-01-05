@@ -739,12 +739,12 @@ docs/
 
 ## Timeline
 
-### Week 1
+### Pre-commit 1-2
 - **Days 1-2**: Phase 1 - Diagnosis & Analysis
 - **Days 3-4**: Phase 2 - Solution Design
 - **Day 5**: Phase 3 - Implementation (Part 1)
 
-### Week 2
+### Pre-commit 3-4
 - **Day 1**: Phase 3 - Implementation (Part 2)
 - **Days 2-3**: Phase 4 - Validation & Testing
 - **Days 4-5**: Phase 5 - Documentation & Monitoring
