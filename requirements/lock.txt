@@ -133,7 +133,7 @@ click-plugins==1.1.1.2
     # via celery
 click-repl==0.3.0
     # via celery
-cloudpickle==3.1.1
+cloudpickle==3.1.2
     # via mlflow-skinny
 colorama==0.4.6
     # via
@@ -630,7 +630,7 @@ nvidia-curand-cu12==10.3.9.90
     # via torch
 nvidia-cusolver-cu12==11.7.5.82
     # via torch
-nvidia-cusparse-cu12==12.5.8.93
+nvidia-cusparse-cu12==12.5.10.65
     # via
     #   nvidia-cusolver-cu12
     #   torch
@@ -996,7 +996,7 @@ ruamel-yaml==0.18.17
     # via
     #   dvc
     #   great-expectations
-ruff==0.12.7
+ruff==0.14.10
     # via codex-ml (pyproject.toml)
 sacrebleu==2.5.1
     # via lm-eval
@@ -1286,7 +1286,7 @@ werkzeug==3.1.4
     # via
     #   flask
     #   tensorboard
-widgetsnbextension==4.0.14
+widgetsnbextension==4.0.15
     # via ipywidgets
 word2number==1.1
     # via lm-eval
