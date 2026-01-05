@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Clock, Lightning, XCircle, Circle } from '@phosphor-icons/react';
+import { CheckCircle, Clock, Lightning, XCircle } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 

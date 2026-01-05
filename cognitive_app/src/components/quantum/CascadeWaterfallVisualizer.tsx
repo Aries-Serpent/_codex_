@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { WorkflowToken } from '@/lib/workflow-dependency-engine';
 import { motion } from 'framer-motion';
 import { Lightning, CheckCircle, Circle } from '@phosphor-icons/react';

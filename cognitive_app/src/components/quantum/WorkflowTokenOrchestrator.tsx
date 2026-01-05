@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Lightning, ArrowRight, CheckCircle, Circle, Link, GitBranch } from '@phosphor-icons/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgentOrchestration } from '@/hooks/use-agent-orchestration';
@@ -17,7 +17,7 @@ import { CascadingExecutionMonitor } from './CascadingExecutionMonitor';
 import { CascadeWaterfallVisualizer } from './CascadeWaterfallVisualizer';
 import { Agent } from '@/lib/codex-api-client';
 import { useKV } from '@github/spark/hooks';
-import { WorkflowToken, WorkflowExecution as WFExecution, OrchestrationChain, workflowDependencyEngine } from '@/lib/workflow-dependency-engine';
+import { WorkflowToken, OrchestrationChain, workflowDependencyEngine } from '@/lib/workflow-dependency-engine';
 
 const WORKFLOW_TOKENS: WorkflowToken[] = [
   {

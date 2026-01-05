@@ -21,7 +21,6 @@ interface OrchestrationChainBuilderProps {
 export function OrchestrationChainBuilder({ allTokens, onChainExecute }: OrchestrationChainBuilderProps) {
   const [chains, setChains] = useKV<OrchestrationChain[]>('orchestration-chains', []);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingChain, setEditingChain] = useState<OrchestrationChain | null>(null);
   
   const [newChain, setNewChain] = useState<Partial<OrchestrationChain>>({
     name: '',

@@ -1,4 +1,3 @@
-"use client"
 
 import { ComponentProps, useContext } from "react"
 import { OTPInput, OTPInputContext } from "input-otp"

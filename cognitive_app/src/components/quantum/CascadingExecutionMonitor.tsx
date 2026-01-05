@@ -61,7 +61,6 @@ export function CascadingExecutionMonitor({
   const calculateCascadeStructure = (): CascadeNode[] => {
     const nodes: CascadeNode[] = [];
     const depths = new Map<string, number>();
-    const parallelGroups = new Map<string, number>();
     
     const calculateDepth = (token: WorkflowToken): number => {
       if (depths.has(token.id)) return depths.get(token.id)!;

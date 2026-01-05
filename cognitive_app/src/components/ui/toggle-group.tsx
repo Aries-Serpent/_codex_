@@ -1,4 +1,3 @@
-"use client"
 
 import { ComponentProps, createContext, useContext } from "react"
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
