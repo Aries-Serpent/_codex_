@@ -183,7 +183,7 @@ except (FileNotFoundError, IOError, json.JSONDecodeError):
 
 ## Section 3: Cognitive Brain Enhancement Roadmap
 
-### 3.1 Phase 1: Core Infrastructure (Q1 2026)
+### 3.1 Phase 1: Core Infrastructure (Phase 1 (2026))
 
 #### 3.1.1 Enhanced Pattern Recognition Engine
 
@@ -367,7 +367,7 @@ class CognitiveAgent(ABC):
         pass
 ```
 
-### 3.2 Phase 2: Agent Expansion (Q1-Q2 2026)
+### 3.2 Phase 2: Agent Expansion (Q1-Phase 2 (2026))
 
 #### 3.2.1 Priority 1 Agents (Critical Path)
 
@@ -620,7 +620,7 @@ outputs:
 - Suggests similar issues
 - Tracks resolution patterns
 
-### 3.3 Phase 3: Advanced Intelligence (Q2 2026)
+### 3.3 Phase 3: Advanced Intelligence (Phase 2 (2026))
 
 #### 3.3.1 Cross-Agent Collaboration
 
@@ -711,7 +711,7 @@ class AgentOrchestrator:
 
 ## Section 4: Implementation Timeline & Milestones
 
-### Q1 2026: Foundation & Critical Agents
+### Phase 1 (2026): Foundation & Critical Agents
 
 **Month 1 (January 2026)**:
 - [x] Pre-commit 1-2: Complete PR #2676 code review feedback ✅
@@ -738,7 +738,7 @@ class AgentOrchestrator:
 - ✅ Cross-agent data sharing via cognitive brain
 - ✅ Documentation and runbooks for all agents
 
-### Q2 2026: Scale & Intelligence
+### Phase 2 (2026): Scale & Intelligence
 
 **Month 4 (April 2026)**:
 - [ ] Implement code-review-summarizer.v1
@@ -968,7 +968,7 @@ def execute(self, task):
 - [ ] Create unified agent documentation template
 - [ ] Update AGENT_ECOSYSTEM_MAP.md with implementation progress
 
-### Medium-Term Goals (Q1 2026)
+### Medium-Term Goals (Phase 1 (2026))
 
 - [ ] Complete flaky-triage, security-scan, dep-upgrade agents
 - [ ] Implement cross-agent data sharing via cognitive brain
@@ -976,7 +976,7 @@ def execute(self, task):
 - [ ] Create agent orchestrator for workflow automation
 - [ ] Comprehensive integration testing of 4-agent ecosystem
 
-### Long-Term Goals (Q2 2026)
+### Long-Term Goals (Phase 2 (2026))
 
 - [ ] Complete remaining 8 agents
 - [ ] Production deployment of all 12 agents

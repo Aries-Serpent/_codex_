@@ -37,7 +37,7 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 - **Invocation:** `python -m codex.cli <task>`
 
 ### Base Configuration
-- **Location:** `configs/` directory (NOT `conf/` - deprecated, removal scheduled Q2 2026)
+- **Location:** `configs/` directory (NOT `conf/` - deprecated, removal scheduled Phase 2 (2026))
 - **Format:** Hydra-compatible YAML
 - **Purpose:** Runtime configuration management
 - **Migration Guide:** `misc/repo-owner-review/MIGRATION_GUIDE.md`

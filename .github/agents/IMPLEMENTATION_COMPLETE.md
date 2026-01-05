@@ -335,10 +335,10 @@ Integration: Foundation ready
 4. ⏭️ **Collect feedback** - Post-pilot
 
 ### Long-term Roadmap
-- Q1 2026: Multi-language support
-- Q2 2026: Plugin system
-- Q3 2026: Advanced learning
-- Q4 2026: Analytics dashboard
+- Phase 1 (2026): Multi-language support
+- Phase 2 (2026): Plugin system
+- Phase 3 (2026): Advanced learning
+- Phase 4 (2026): Analytics dashboard
 
 ### Support & Maintenance
 - **Repository:** Aries-Serpent/_codex_

@@ -366,7 +366,7 @@ All Phase 1-4 features are production-ready:
 - Tune alert thresholds
 - Optimize performance
 
-### Optional Enhancements (Weeks 5+)
+### Optional Enhancements (Pre-commit 9+)
 See `.github/prompts/followup_execution_plan/` for:
 - Kubernetes orchestration
 - Feature store implementation

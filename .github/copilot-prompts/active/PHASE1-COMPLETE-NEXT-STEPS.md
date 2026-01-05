@@ -261,11 +261,11 @@ class FlakyTriageAgent(CognitiveAgent):
 
 ---
 
-## Phase 4: Remaining Agents (Q1-Q2 2026)
+## Phase 4: Remaining Agents (Q1-Phase 2 (2026))
 
 Following the same pattern as flaky-triage-agent, implement:
 
-### Q1 2026 (3 agents)
+### Phase 1 (2026) (3 agents)
 1. **security-scan-agent.v1** (P0 - Critical)
    - Scan for security vulnerabilities
    - Integration with CodeQL, Snyk, etc.
@@ -281,7 +281,7 @@ Following the same pattern as flaky-triage-agent, implement:
    - Extract actionable items
    - Track review patterns
 
-### Q2 2026 (8 agents)
+### Phase 2 (2026) (8 agents)
 4. **doc-reporter-agent.v1** (P2)
 5. **issue-triage-agent.v1** (P2)
 6. **release-gate-agent.v1** (P1)
@@ -327,7 +327,7 @@ Following the same pattern as flaky-triage-agent, implement:
 
 ## Cognitive Brain Enhancements
 
-### Dashboard Development (Q1 2026)
+### Dashboard Development (Phase 1 (2026))
 
 Create real-time dashboard for cognitive brain visualization:
 
@@ -347,7 +347,7 @@ Create real-time dashboard for cognitive brain visualization:
 - Agent performance metrics
 - Cross-agent collaboration graph
 
-### Advanced Analytics (Q2 2026)
+### Advanced Analytics (Phase 2 (2026))
 
 1. **Pattern Evolution Tracking**
    - How patterns change over time
@@ -366,7 +366,7 @@ Create real-time dashboard for cognitive brain visualization:
 
 ## Migration Timeline
 
-### ci-testing-agent Migration (Pre-commit 1-4, Q1 2026)
+### ci-testing-agent Migration (Pre-commit 1-4, Phase 1 (2026))
 
 **Status**: Ready to start (migration guide complete)
 
@@ -378,7 +378,7 @@ Create real-time dashboard for cognitive brain visualization:
 
 **Risk**: Low (existing functionality preserved)
 
-### Other Agents (Q1-Q2 2026)
+### Other Agents (Q1-Phase 2 (2026))
 
 Once ci-testing-agent migration proven successful:
 - Use as template for other existing agents
