@@ -13,12 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       
+      - name: Compute time bucket for cache key
+        id: time_bucket
+        run: |
+          # Use hour-based time bucket for 1-hour TTL caching
+          TIME_BUCKET=$(date -u +%Y%m%d%H)
+          echo "time_bucket=$TIME_BUCKET" >> $GITHUB_OUTPUT
+      
       - name: Check cache for recent successful check
         id: cache
         uses: actions/cache@v4
         with:
           path: .connector-check-success
-          key: connector-check-${{ hashFiles('tools/connectors/github_connector_check.py') }}-${{ github.run_id }}
+          key: connector-check-${{ hashFiles('tools/connectors/github_connector_check.py') }}-${{ steps.time_bucket.outputs.time_bucket }}
           restore-keys: |
             connector-check-${{ hashFiles('tools/connectors/github_connector_check.py') }}-
       
