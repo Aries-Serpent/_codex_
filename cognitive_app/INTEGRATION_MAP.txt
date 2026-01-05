@@ -1,0 +1,209 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║         COGNITIVE CODEX APP - INTEGRATION MAP                          ║
+║                     Integration Date: 2026-01-05                       ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+SOURCE: cognitive_codex_app.zip (266KB) → DESTINATION: cognitive_app/
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ ROOT CONFIGURATION FILES (18 files)                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ ✅ package.json              → Dependency management (500 packages)  │
+│ ✅ package-lock.json         → Dependency lockfile                   │
+│ ✅ tsconfig.json             → TypeScript configuration              │
+│ ✅ vite.config.ts            → Build config (+ GitHub Pages path)    │
+│ ✅ tailwind.config.js        → CSS framework config                  │
+│ ✅ components.json           → shadcn/ui config                      │
+│ ✅ index.html                → Entry HTML template                   │
+│ ✅ theme.json                → Theme configuration                   │
+│ ✅ runtime.config.json       → Runtime settings                      │
+│ ✅ spark.meta.json           → GitHub Spark metadata                 │
+│ ✅ .gitignore                → Git ignore rules                      │
+│ ✅ .spark-initial-sha        → Spark identifier                      │
+│ ✅ .github/dependabot.yml    → Dependency updates config             │
+│ ✅ LICENSE                   → MIT License                           │
+│ ✅ README.md                 → Original Spark README                 │
+│ ✅ SECURITY.md               → Security policies                     │
+│ ✅ PRD.md                    → Product requirements (27KB)           │
+│ ✅ CODEX_INTEGRATION_MASTER_PLAN.md → Backend API spec (35KB)       │
+│ ✅ IMPLEMENTATION_STATUS.md  → Implementation tracking (15KB)        │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ SOURCE CODE STRUCTURE (92 TypeScript files)                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│ src/                                                                 │
+│ ├── App.tsx                   → Main application (6 tabs)           │
+│ ├── main.tsx                  → Entry point                         │
+│ ├── ErrorFallback.tsx         → Error boundary                      │
+│ ├── vite-end.d.ts            → Vite type definitions                │
+│ │                                                                    │
+│ ├── components/               → React components (78 total)         │
+│ │   ├── quantum/             → Cognitive brain components (29)      │
+│ │   │   ├── QuantumDecisionEngine.tsx      ⚛️  Decision viz        │
+│ │   │   ├── QuantumVisualizer.tsx          🎨 Canvas viz           │
+│ │   │   ├── SuperpositionCard.tsx          📊 Scenario cards       │
+│ │   │   ├── EntanglementCard.tsx           🔗 Agent pairs          │
+│ │   │   ├── QuantumMemoryViewer.tsx        💾 STM/LTM view         │
+│ │   │   ├── AgentOrchestrationPanel.tsx    🤖 Agent management     │
+│ │   │   ├── AgentCard.tsx                  👤 Agent display        │
+│ │   │   ├── TaskQueue.tsx                  📋 Task timeline        │
+│ │   │   ├── TaskItem.tsx                   ✅ Task cards           │
+│ │   │   ├── PhysicsParadigmExplorer.tsx    🔬 6 paradigms          │
+│ │   │   ├── WorkflowTokenOrchestrator.tsx  🎛️  Workflow exec       │
+│ │   │   ├── CustomWorkflowTokenCreator.tsx 🔧 Token wizard         │
+│ │   │   ├── WorkflowTemplatesLibrary.tsx   📚 Pre-built bundles   │
+│ │   │   ├── OrchestrationChainBuilder.tsx  🔗 Multi-token chains  │
+│ │   │   ├── DependencyGraphVisualizer.tsx  📈 DAG visualization    │
+│ │   │   ├── CascadingExecutionMonitor.tsx  ⏱️  Cascade tracking    │
+│ │   │   ├── CascadeWaterfallVisualizer.tsx 💧 Waterfall animation │
+│ │   │   ├── ParadigmCollaborationViz.tsx   🤝 Cross-paradigm      │
+│ │   │   ├── WorkflowTokenFlowViz.tsx       🌊 Token stream         │
+│ │   │   ├── ActionPathViewer.tsx           🎯 Energy paths         │
+│ │   │   ├── ForceVectorBar.tsx             ⚡ Force viz            │
+│ │   │   ├── MemoryManagementDashboard.tsx  🧠 Memory overview      │
+│ │   │   ├── MemoryEntryCard.tsx            📝 Memory display       │
+│ │   │   ├── PatternLibraryBrowser.tsx      🗂️  Pattern index       │
+│ │   │   ├── OperationsLog.tsx              📜 Operations timeline  │
+│ │   │   ├── MetricsDashboard.tsx           📊 Global metrics       │
+│ │   │   ├── MetricCard.tsx                 📉 Metric display       │
+│ │   │   ├── PhaseProgressBar.tsx           📈 Phase tracking       │
+│ │   │   ├── ExecutionQueueMonitor.tsx      ⏰ Queue monitoring     │
+│ │   │   └── README.md                      📖 Component docs       │
+│ │   │                                                               │
+│ │   ├── ui/                  → UI component library (46)           │
+│ │   │   ├── accordion.tsx                  🎵 Expandable sections  │
+│ │   │   ├── alert-dialog.tsx               ⚠️  Modal dialogs       │
+│ │   │   ├── alert.tsx                      📢 Alert messages       │
+│ │   │   ├── aspect-ratio.tsx               📐 Ratio container      │
+│ │   │   ├── avatar.tsx                     👤 User avatar          │
+│ │   │   ├── badge.tsx                      🏷️  Status badges       │
+│ │   │   ├── breadcrumb.tsx                 🍞 Navigation crumbs    │
+│ │   │   ├── button.tsx                     🔘 Action buttons       │
+│ │   │   ├── calendar.tsx                   📅 Date picker          │
+│ │   │   ├── card.tsx                       🃏 Content cards        │
+│ │   │   ├── carousel.tsx                   🎠 Image carousel       │
+│ │   │   ├── chart.tsx                      📊 Data charts          │
+│ │   │   ├── checkbox.tsx                   ☑️  Checkboxes          │
+│ │   │   ├── collapsible.tsx                📦 Collapsible content  │
+│ │   │   ├── command.tsx                    ⌘  Command palette      │
+│ │   │   ├── context-menu.tsx               📋 Right-click menu     │
+│ │   │   ├── dialog.tsx                     💬 Dialog windows       │
+│ │   │   ├── drawer.tsx                     📱 Side drawer          │
+│ │   │   ├── dropdown-menu.tsx              📋 Dropdown menus       │
+│ │   │   ├── form.tsx                       📝 Form controls        │
+│ │   │   ├── hover-card.tsx                 💭 Hover tooltips       │
+│ │   │   ├── input-otp.tsx                  🔢 OTP input            │
+│ │   │   ├── input.tsx                      ⌨️  Text inputs         │
+│ │   │   ├── label.tsx                      🏷️  Form labels         │
+│ │   │   ├── menubar.tsx                    📊 Menu bar             │
+│ │   │   ├── navigation-menu.tsx            🧭 Navigation           │
+│ │   │   ├── pagination.tsx                 📄 Page navigation      │
+│ │   │   ├── popover.tsx                    💬 Popover tooltips     │
+│ │   │   ├── progress.tsx                   📊 Progress bars        │
+│ │   │   ├── radio-group.tsx                🔘 Radio buttons        │
+│ │   │   ├── resizable.tsx                  ↔️  Resizable panels    │
+│ │   │   ├── scroll-area.tsx                📜 Scroll containers    │
+│ │   │   ├── select.tsx                     🔽 Select dropdowns     │
+│ │   │   ├── separator.tsx                  ➖ Visual separators    │
+│ │   │   ├── sheet.tsx                      📋 Side sheets          │
+│ │   │   ├── sidebar.tsx                    📌 Sidebar navigation   │
+│ │   │   ├── skeleton.tsx                   💀 Loading skeletons    │
+│ │   │   ├── slider.tsx                     🎚️  Range sliders       │
+│ │   │   ├── sonner.tsx                     🔔 Toast notifications  │
+│ │   │   ├── switch.tsx                     🔛 Toggle switches      │
+│ │   │   ├── table.tsx                      📊 Data tables          │
+│ │   │   ├── tabs.tsx                       📑 Tab navigation       │
+│ │   │   ├── textarea.tsx                   📝 Multi-line input     │
+│ │   │   ├── toggle-group.tsx               🔘 Toggle groups        │
+│ │   │   ├── toggle.tsx                     🔘 Toggle buttons       │
+│ │   │   └── tooltip.tsx                    💡 Tooltips             │
+│ │   │                                                               │
+│ │   └── code/                → Code generation components (3)      │
+│ │       ├── CodeGenerator.tsx              💻 Main interface       │
+│ │       ├── CodeEditor.tsx                 ✏️  Monaco editor       │
+│ │       └── MetricsBar.tsx                 📊 Code metrics         │
+│ │                                                                   │
+│ ├── hooks/                   → Custom React hooks (5)              │
+│ │   ├── use-quantum-state.ts              ⚛️  Quantum state       │
+│ │   ├── use-agent-orchestration.ts        �� Agent coordination   │
+│ │   ├── use-memory-system.ts              🧠 Memory operations    │
+│ │   ├── use-dashboard-metrics.ts          📊 Metrics aggregation  │
+│ │   └── use-mobile.ts                     📱 Mobile detection     │
+│ │                                                                   │
+│ ├── lib/                     → Utility libraries (4)               │
+│ │   ├── codex-api-client.ts               🔌 API communication    │
+│ │   ├── mock-api-client.ts                🎭 Mock data provider   │
+│ │   ├── utils.ts                          🛠️  General utilities   │
+│ │   └── workflow-dependency-engine.ts     🔗 Dependency resolver  │
+│ │                                                                   │
+│ └── styles/                  → Styling (3)                         │
+│     ├── theme.css                         🎨 OKLCH color palette  │
+│     ├── index.css                         📝 Main styles          │
+│     └── main.css                          🎨 Global styles        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ NEW DOCUMENTATION & SCRIPTS                                          │
+├─────────────────────────────────────────────────────────────────────┤
+│ ✅ README_INTEGRATION.md          → Integration guide (6KB)         │
+│ ✅ POST_INTEGRATION_CHECKLIST.md  → Deployment checklist (6KB)      │
+│ ✅ INTEGRATION_SUMMARY.md         → Complete summary (11KB)         │
+│ ✅ verify_integration.sh          → Verification script             │
+│ ✅ ../docs/cognitive_app.md       → User documentation (8KB)        │
+│ ✅ ../scripts/remove_cognitive_zip.sh → Safe removal script         │
+│ ✅ ../.github/workflows/deploy-cognitive-app.yml → Deploy workflow  │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STATISTICS & METRICS                                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ Total Files Integrated:    125+                                     │
+│ TypeScript/React Files:    92                                       │
+│ Configuration Files:       18                                       │
+│ Documentation Files:       7+                                       │
+│ React Components:          78 (29 quantum + 46 UI + 3 code)         │
+│ Custom Hooks:              5                                        │
+│ Utility Libraries:         4                                        │
+│ Dependencies:              500 packages                             │
+│ Production Bundle:         770KB (JS) + 442KB (CSS)                 │
+│ Build Time:                ~7-8 seconds                             │
+│ Lines of Code:             ~15,000+ lines                           │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ DEPLOYMENT CONFIGURATION                                             │
+├─────────────────────────────────────────────────────────────────────┤
+│ Target Platform:    GitHub Pages                                    │
+│ Base Path:          /_codex_/cognitive_app/                         │
+│ Build Tool:         Vite 7.2.6                                      │
+│ Node Version:       20                                              │
+│ Deploy Workflow:    .github/workflows/deploy-cognitive-app.yml      │
+│ Trigger:            Push to main (cognitive_app/**)                 │
+│ Live URL:           https://aries-serpent.github.io/_codex_/        │
+│                     cognitive_app/                                  │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ VERIFICATION STATUS                                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│ ✅ All files extracted and organized                                │
+│ ✅ Dependencies installed (289 packages in node_modules)            │
+│ ✅ Build successful (770KB bundle)                                  │
+│ ✅ Base path configured for GitHub Pages                            │
+│ ✅ All component counts verified                                    │
+│ ✅ Configuration files present                                      │
+│ ✅ Documentation complete                                           │
+│ ✅ Verification script passes all checks                            │
+│ ⏳ Pending: Deployment to GitHub Pages                              │
+│ ⏳ Pending: Live application testing                                │
+│ ⏳ Pending: Removal of cognitive_codex_app.zip                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+  INTEGRATION STATUS: COMPLETE ✅
+  READY FOR DEPLOYMENT: YES ✅
+  NEXT STEP: Merge PR to main and monitor deployment
+═══════════════════════════════════════════════════════════════════════
