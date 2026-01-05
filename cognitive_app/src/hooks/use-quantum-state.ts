@@ -24,7 +24,11 @@ export function useQuantumState(autoRefresh = false, intervalMs = 10000) {
         setState(mockData);
         setError(null);
       } catch (mockErr) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch quantum state');
+        const primaryMessage = err instanceof Error ? err.message : 'unknown primary error';
+        const fallbackMessage = mockErr instanceof Error ? mockErr.message : 'unknown fallback error';
+        setError(
+          `Failed to fetch quantum state from both production and fallback sources. Primary error: ${primaryMessage}. Fallback error: ${fallbackMessage}.`
+        );
       }
     } finally {
       setLoading(false);

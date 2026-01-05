@@ -352,10 +352,11 @@ export function WorkflowTemplatesLibrary() {
   }).sort((a, b) => b.popularity - a.popularity);
 
   const handleInstallBundle = (bundle: TokenBundle) => {
-    const newTokens = bundle.tokens.map(token => ({
+    const timestamp = Date.now();
+    const newTokens = bundle.tokens.map((token, index) => ({
       ...token,
-      id: `${bundle.id}_${token.id}_${Date.now()}`,
-      createdAt: Date.now(),
+      id: `${bundle.id}_${token.id}_${timestamp}_${index}`,
+      createdAt: timestamp,
     }));
 
     setCustomTokens((current) => [...(current || []), ...newTokens]);

@@ -31,7 +31,7 @@ const TOKEN_ICONS: Record<string, string> = {
 
 export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: WorkflowTokenFlowVisualizerProps) {
   const [transfers, setTransfers] = useState<TokenTransfer[]>([]);
-  const [stats, setStats] = useState({
+  const [transferStats, setTransferStats] = useState({
     totalTransfers: 0,
     activeTransfers: 0,
     avgLatency: 0,
@@ -64,7 +64,7 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
       };
 
       setTransfers(prev => [...prev.slice(-9), newTransfer]);
-      setStats(prev => ({
+      setTransferStats(prev => ({
         totalTransfers: prev.totalTransfers + 1,
         activeTransfers: prev.activeTransfers + 1,
         avgLatency: prev.avgLatency,
@@ -74,7 +74,7 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
         setTransfers(prev => 
           prev.map(t => t.id === newTransfer.id ? { ...t, status: 'completed' as const } : t)
         );
-        setStats(prev => ({
+        setTransferStats(prev => ({
           ...prev,
           activeTransfers: Math.max(0, prev.activeTransfers - 1),
           avgLatency: Math.random() * 50 + 50,
@@ -88,7 +88,7 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
   useEffect(() => {
     if (!activeWorkflow) {
       setTransfers([]);
-      setStats({ totalTransfers: 0, activeTransfers: 0, avgLatency: 0 });
+      setTransferStats({ totalTransfers: 0, activeTransfers: 0, avgLatency: 0 });
     }
   }, [activeWorkflow]);
 

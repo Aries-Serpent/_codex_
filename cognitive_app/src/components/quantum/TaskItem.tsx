@@ -57,13 +57,34 @@ export function TaskItem({ task, index }: TaskItemProps) {
   const config = statusConfig[task.status];
   const StatusIcon = config.icon;
 
+  const formatRelativeTime = (dateString: string | null, prefix: string): string | null => {
+    if (!dateString) return null;
+
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+      // Invalid date string; fall back to prefix without relative time
+      return prefix;
+    }
+
+    try {
+      return `${prefix} ${formatDistanceToNow(date, { addSuffix: true })}`;
+    } catch {
+      // In case formatDistanceToNow throws for any reason, avoid breaking the UI
+      return prefix;
+    }
+  };
+
   const getTimeDisplay = () => {
-    if (task.completed_at) {
-      return `Completed ${formatDistanceToNow(new Date(task.completed_at), { addSuffix: true })}`;
+    const completedDisplay = formatRelativeTime(task.completed_at, 'Completed');
+    if (completedDisplay) {
+      return completedDisplay;
     }
-    if (task.started_at) {
-      return `Started ${formatDistanceToNow(new Date(task.started_at), { addSuffix: true })}`;
+
+    const startedDisplay = formatRelativeTime(task.started_at, 'Started');
+    if (startedDisplay) {
+      return startedDisplay;
     }
+
     return 'Queued';
   };
 

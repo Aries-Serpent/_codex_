@@ -110,8 +110,12 @@ export function WorkflowTokenOrchestrator() {
     const analysis = workflowDependencyEngine.analyzeDependencies(token, allTokens);
     
     if (!analysis.canExecute) {
+      console.debug('Workflow execution blocked', {
+        tokenId: token.id,
+        blockedReason: analysis.blockedReason,
+      });
       toast.error('Cannot execute workflow', {
-        description: analysis.blockedReason,
+        description: 'This workflow is blocked by unmet dependencies. Please review the workflow setup and try again.',
       });
       return;
     }

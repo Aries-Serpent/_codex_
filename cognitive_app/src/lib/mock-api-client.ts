@@ -17,7 +17,14 @@ export class MockCodexAPIClient {
   async generateCode(request: CodexRequest): Promise<CodexResponse> {
     await this.mockDelay(800 + Math.random() * 400);
 
-    const sampleCode = `def ${request.prompt.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 30)}():
+    // Sanitize function name to ensure valid Python identifier
+    const sanitizedName = request.prompt
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+      .replace(/^[0-9]/, '_')  // Python identifiers can't start with digit
+      .substring(0, 30) || 'generated_function';
+
+    const sampleCode = `def ${sanitizedName}():
     """
     ${request.prompt}
     
