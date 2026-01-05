@@ -1,0 +1,183 @@
+@import 'tailwindcss';
+@import "tw-animate-css";
+
+@layer base {
+  * {
+    @apply border-border
+  }
+}
+
+:root {
+  --background: oklch(0.15 0.02 260);
+  --foreground: oklch(0.95 0 0);
+
+  --card: oklch(0.25 0.02 250);
+  --card-foreground: oklch(0.92 0 0);
+  --popover: oklch(0.22 0.02 250);
+  --popover-foreground: oklch(0.95 0 0);
+
+  --primary: oklch(0.45 0.18 295);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.50 0.20 280);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.30 0.02 250);
+  --muted-foreground: oklch(0.65 0.02 260);
+  --accent: oklch(0.75 0.15 195);
+  --accent-foreground: oklch(0.15 0.02 260);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.35 0.02 250);
+  --input: oklch(0.35 0.02 250);
+  --ring: oklch(0.75 0.15 195);
+
+  --radius: 0.5rem;
+
+  --quantum-superposition: oklch(0.65 0.22 310);
+  --quantum-entangled: oklch(0.55 0.25 350);
+  --quantum-collapsed: oklch(0.70 0.18 200);
+  --quantum-coherence: oklch(0.60 0.20 285);
+
+  --agent-active: oklch(0.75 0.18 140);
+  --agent-thinking: oklch(0.65 0.20 280);
+  --agent-idle: oklch(0.50 0.05 260);
+  --agent-error: oklch(0.55 0.22 25);
+  --agent-success: oklch(0.70 0.20 145);
+
+  --physics-chaos: oklch(0.50 0.25 30);
+  --physics-fractal: oklch(0.55 0.22 60);
+  --physics-fluid: oklch(0.60 0.20 220);
+  --physics-em: oklch(0.65 0.20 180);
+  --physics-wave: oklch(0.70 0.18 250);
+  --physics-relativity: oklch(0.50 0.20 320);
+
+  --memory-stm: oklch(0.70 0.18 40);
+  --memory-ltm: oklch(0.60 0.15 220);
+  --memory-compressed: oklch(0.55 0.20 160);
+  --memory-pattern: oklch(0.65 0.18 280);
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+  --radius-2xl: calc(var(--radius) * 3);
+  --radius-full: 9999px;
+
+  --font-space: 'Space Grotesk', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-inter);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-space);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, oklch(0.45 0.18 295) 0%, oklch(0.75 0.15 195) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  border-image: linear-gradient(135deg, oklch(0.45 0.18 295) 0%, oklch(0.75 0.15 195) 100%) 1;
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  50% { transform: translate(10px, -10px); opacity: 0.6; }
+}
+
+.particle {
+  animation: particle-float 3s ease-in-out infinite;
+}
+
+@keyframes quantum-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.quantum-pulse {
+  animation: quantum-pulse 2s ease-in-out infinite;
+}
+
+@keyframes quantum-collapse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.quantum-collapse-effect {
+  animation: quantum-collapse 0.3s ease-out;
+}
+
+@keyframes agent-thinking {
+  0%, 100% { border-color: oklch(0.65 0.20 280); }
+  50% { border-color: oklch(0.75 0.25 290); }
+}
+
+.agent-thinking {
+  animation: agent-thinking 1.5s ease-in-out infinite;
+}
+
+@keyframes energy-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.energy-flow {
+  background: linear-gradient(90deg, 
+    oklch(0.45 0.18 295) 0%, 
+    oklch(0.75 0.15 195) 50%, 
+    oklch(0.45 0.18 295) 100%
+  );
+  background-size: 200% 100%;
+  animation: energy-flow 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}

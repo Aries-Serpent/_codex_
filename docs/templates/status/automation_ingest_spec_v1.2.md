@@ -21,7 +21,7 @@ Sections and Shapes
 
 Examples (YAML-like, conceptual)
 - issues:
-  - url: "https://github.com/owner/repo/issues/1"
+  - url: "https://github.com/Aries-Serpent/_codex_/issues/1"
     number: 1
     title: "Fix schema validation"
     state: "open"
