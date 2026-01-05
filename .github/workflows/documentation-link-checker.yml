@@ -1,4 +1,5 @@
 # Generated: 2025-12-26T08:25:00Z | Author: mbaetiong
+# Updated: 2026-01-05 | Checksum-based caching to skip unchanged files
 # Link Checker for Documentation
 # Validates all internal and external links in documentation files
 
@@ -27,16 +28,80 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Need full history for checksum comparison
+
+      - name: Compute documentation checksum
+        id: checksum
+        run: |
+          echo "🔍 Computing checksum of documentation files..."
+          
+          # Find all markdown files to check
+          MD_FILES=$(find . -name "*.md" \
+            -not -path "./node_modules/*" \
+            -not -path "./.git/*" \
+            -not -path "./temp/*" \
+            -not -path "./archive/*" \
+            -not -path "./cognitive_app/node_modules/*" \
+            | sort)
+          
+          # Create sorted list of file paths + content hashes
+          CHECKSUM_INPUT=""
+          for file in $MD_FILES; do
+            if [ -f "$file" ]; then
+              FILE_HASH=$(sha1sum "$file" | cut -d' ' -f1)
+              CHECKSUM_INPUT="${CHECKSUM_INPUT}${file}:${FILE_HASH}\n"
+            fi
+          done
+          
+          # Compute aggregate checksum
+          AGGREGATE_CHECKSUM=$(echo -e "$CHECKSUM_INPUT" | sha1sum | cut -d' ' -f1)
+          echo "aggregate_checksum=$AGGREGATE_CHECKSUM" >> $GITHUB_OUTPUT
+          echo "✅ Aggregate checksum: $AGGREGATE_CHECKSUM"
+          
+          # Store file list for later use
+          echo "$MD_FILES" > /tmp/md_files.txt
+
+      - name: Check cache for previous successful run
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .link-check-success
+          key: link-check-${{ steps.checksum.outputs.aggregate_checksum }}
+          restore-keys: |
+            link-check-
+
+      - name: Determine if link check is needed
+        id: skip_check
+        run: |
+          if [ -f .link-check-success ]; then
+            CACHED_CHECKSUM=$(cat .link-check-success)
+            CURRENT_CHECKSUM="${{ steps.checksum.outputs.aggregate_checksum }}"
+            
+            if [ "$CACHED_CHECKSUM" = "$CURRENT_CHECKSUM" ]; then
+              echo "✅ Documentation unchanged since last successful check"
+              echo "skip=true" >> $GITHUB_OUTPUT
+            else
+              echo "📝 Documentation has changed, running link check"
+              echo "skip=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "📝 No cache found, running link check"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set up Node.js
+        if: steps.skip_check.outputs.skip != 'true'
         uses: actions/setup-node@v6
         with:
           node-version: '20'
 
       - name: Install markdown-link-check
+        if: steps.skip_check.outputs.skip != 'true'
         run: npm install -g markdown-link-check
 
       - name: Verify link check config
+        if: steps.skip_check.outputs.skip != 'true'
         run: |
           # The .markdown-link-check.json config file should already exist in the repo
           if [ ! -f .markdown-link-check.json ]; then
@@ -47,6 +112,7 @@ jobs:
           cat .markdown-link-check.json
 
       - name: Check links in documentation
+        if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "🔍 Checking links in documentation files..."
           
@@ -62,6 +128,7 @@ jobs:
           done
 
       - name: Check critical documentation files
+        if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "🔍 Checking critical Genesis documentation..."
           
@@ -95,16 +162,25 @@ jobs:
             echo "✅ All critical documentation links valid"
           fi
 
+      - name: Mark successful check
+        if: steps.skip_check.outputs.skip != 'true' && success()
+        run: |
+          echo "${{ steps.checksum.outputs.aggregate_checksum }}" > .link-check-success
+          echo "✅ Saved checksum for future cache hits"
+
       - name: Generate link check report
         if: always()
         run: |
           echo "📋 Generating link check report..."
-          cat > link-check-report.json << 'EOFREPORT'
+          SKIPPED="${{ steps.skip_check.outputs.skip }}"
+          cat > link-check-report.json << EOFREPORT
           {
             "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
             "workflow": "documentation-link-checker",
             "branch": "${{ github.ref_name }}",
-            "status": "completed"
+            "status": "completed",
+            "skipped": "$SKIPPED",
+            "checksum": "${{ steps.checksum.outputs.aggregate_checksum }}"
           }
           EOFREPORT
 
