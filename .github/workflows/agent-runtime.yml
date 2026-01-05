@@ -46,53 +46,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements-minimal.txt || pip install pyyaml pydantic
-
-      - name: Execute Autonomous Agent
-        id: agent
-        env:
-          OPENAI_API_KEY: ${{ secrets.GITHUB_CODEX }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AGENT_TASK: ${{ inputs.agent_task }}
-          MODEL_PREFERENCE: ${{ inputs.model_preference }}
-          ORG_CONTEXT: 'Aries-Serpent'
-          REPO_CONTEXT: '_codex_'
-        run: |
-          python -m src.agents.autonomous_runner || echo "Agent execution completed"
-
-      - name: Upload Agent Report
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: agent-execution-report-${{ github.run_id }}
-          path: .agents/reports/
-          retention-days: 30
-          if-no-files-found: ignore
-
-      - name: Summary
-        if: always()
-        run: |
-          echo "## 🤖 Agent Execution Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Task:** ${{ inputs.agent_task }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Model:** ${{ inputs.model_preference }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -d ".agents/reports" ] && [ "$(ls -A .agents/reports/*.json 2>/dev/null)" ]; then
-            echo "### Report" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            cat .agents/reports/*.json >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No report generated" >> $GITHUB_STEP_SUMMARY
-          fi
+          python-version: 3.11
+          cache-tier: 'common'

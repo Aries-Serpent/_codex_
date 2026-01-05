@@ -20,41 +20,9 @@ jobs:
         with:
           fetch-depth: 0
       
-      - uses: actions/setup-python@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
-      
-      - name: Prepare artifacts (if not present)
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml jinja2
-          python scripts/space_traversal/audit_runner.py run || true
-          python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_manifest.json || true
-      
-      - name: Summarize diffs
-        id: diffs
-        run: |
-          echo "## Audit Diffs" > .audit_pr_body.md
-          if [ -f reports/capability_matrix_*.md ]; then
-            echo "" >> .audit_pr_body.md
-          fi
-          echo "Artifacts:" >> .audit_pr_body.md
-          ls -la audit_artifacts || true >> .audit_pr_body.md
-      
-      - name: Create draft PR
-        uses: peter-evans/create-pull-request@v8
-        with:
-          title: ${{ github.event.inputs.title }}
-          body-path: .audit_pr_body.md
-          draft: true
-          base: ${{ github.event.inputs.base }}
-          branch: chore/auto-audit-artifacts
-          commit-message: "chore(audit): add/update artifacts & diffs"
-          add-paths: |
-            audit_artifacts/**
-            reports/**
-            audit_run_manifest.json
+          cache-tier: 'common'
+

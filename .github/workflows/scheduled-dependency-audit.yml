@@ -51,13 +51,10 @@ jobs:
 
       - name: Set up Python
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
+          cache-tier: 'common'
 
       - name: Cache Dependencies
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}

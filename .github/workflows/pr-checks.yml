@@ -23,13 +23,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - uses: actions/setup-python@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
+          cache-tier: 'live'
 
       # SECURITY: Read-only cache from main branch
       - name: Restore cache from main (read-only)

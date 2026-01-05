@@ -23,64 +23,7 @@ jobs:
           fetch-depth: 0
           
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml
-          
-      - name: Parse AfterMath from PR comments
-        id: parse
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get PR comments
-          gh pr view ${{ github.event.pull_request.number }} \
-            --json comments --jq '.comments[].body' > /tmp/pr_comments.txt
-          
-          # Check for aftermath blocks
-          if grep -q '```aftermath' /tmp/pr_comments.txt; then
-            echo "aftermath_found=true" >> $GITHUB_OUTPUT
-          else
-            echo "aftermath_found=false" >> $GITHUB_OUTPUT
-          fi
-          
-      - name: Extract and process AfterMath data
-        if: steps.parse.outputs.aftermath_found == 'true'
-        run: |
-          python scripts/aftermath/parse_session.py \
-            --source=/tmp/pr_comments.txt \
-            --output=.codex/lessons_learned/
-            
-      - name: Update Cognitive Brain
-        if: steps.parse.outputs.aftermath_found == 'true'
-        run: |
-          python scripts/aftermath/update_cognitive_brain.py \
-            --lessons=.codex/lessons_learned/ \
-            --dashboard=docs/system/CODEBASE_DASHBOARD.md
-            
-      - name: Commit artifacts
-        if: steps.parse.outputs.aftermath_found == 'true'
-        run: |
-          git config --local user.email "aftermath[bot]@users.noreply.github.com"
-          git config --local user.name "AfterMath Bot"
-          git add .codex/lessons_learned/ .codex/checkpoints/ docs/system/CODEBASE_DASHBOARD.md
-          git commit -m "chore: Update AfterMath lessons learned [skip ci]" || echo "No changes to commit"
-          git push
-          
-      - name: Upload artifacts
-        if: steps.parse.outputs.aftermath_found == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: aftermath-lessons-${{ github.event.pull_request.number }}
-          path: |
-            .codex/lessons_learned/
-            .codex/checkpoints/
-          retention-days: 90
+          python-version: 3.11
+          cache-tier: 'common'
