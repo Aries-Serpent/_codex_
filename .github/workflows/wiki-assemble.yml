@@ -41,6 +41,9 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+          cache-dependency-path: |
+            requirements*.txt
+            pyproject.toml
 
       - name: Extract version from pyproject.toml
         id: get_version

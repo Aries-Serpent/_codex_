@@ -15,15 +15,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      
-      - name: Cache Dependencies
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/nox
-          key: ${{ runner.os }}-${{ github.workflow }}-pip-nox-${{ hashFiles('**/requirements*.txt', 'pyproject.toml', 'noxfile.py') }}
-          restore-keys: |
+          cache: 'pip'
+          cache-dependency-path: |
+            requirements*.txt
+            pyproject.toml
             ${{ runner.os }}-${{ github.workflow }}-pip-nox-
             ${{ runner.os }}-pip-
       
