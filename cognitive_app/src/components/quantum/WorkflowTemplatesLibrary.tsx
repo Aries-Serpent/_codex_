@@ -50,7 +50,14 @@ interface TokenBundle {
   description: string;
   /** 
    * Category determines the workflow type and available actions.
-   * @see TokenBundle documentation for detailed category descriptions.
+   * 
+   * Categories:
+   * - `development`: Code generation, refactoring, dependency management
+   * - `operations`: Deployment, monitoring, infrastructure management
+   * - `data`: Data processing, ETL, database operations
+   * - `security`: Security scanning, compliance, vulnerability management
+   * - `quality`: Testing, linting, code review
+   * - `analytics`: Metrics collection, reporting, insights generation
    */
   category: 'development' | 'operations' | 'data' | 'security' | 'quality' | 'analytics';
   tokens: WorkflowToken[];
