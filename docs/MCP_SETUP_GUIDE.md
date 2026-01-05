@@ -360,7 +360,7 @@ Watch for MCP support in JetBrains IDEs.
 ## Resources
 
 - **MCP Documentation:** https://modelcontextprotocol.io/
-- **GitHub MCP Server:** https://github.com/modelcontextprotocol/servers/tree/main/src/github
+- **GitHub MCP Server:** https://github.com/modelcontextprotocol/servers
 - **Claude Desktop Download:** https://claude.ai/download
 - **GitHub Token Docs:** https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 

@@ -452,7 +452,7 @@ session_response = requests.post(
     "http://localhost:8080/sessions",
     headers={"Authorization": f"Bearer {token}"},
     json={
-        "url": "https://staging.example.com/login",
+        "url": "http://localhost:8080/login",
         "browser": "chromium",
         "headless": True
     }
@@ -519,7 +519,7 @@ Track these metrics via `mcp-observability`:
 
 ### External Documentation
 - MCP Specification: https://modelcontextprotocol.io/specification
-- GitHub Copilot API: https://docs.github.com/copilot/building-copilot-extensions
+- GitHub Copilot API: https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension
 - Playwright Python: https://playwright.dev/python/docs/intro
 - JSON-RPC 2.0: https://www.jsonrpc.org/specification
 
