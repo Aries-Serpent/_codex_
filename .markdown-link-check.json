@@ -29,6 +29,42 @@
     },
     {
       "pattern": "^https://img\\.shields\\.io"
+    },
+    {
+      "comment": "Repository URL without trailing underscore (systematic issue)",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex$"
+    },
+    {
+      "comment": "Security scanning links (restricted access, requires authentication)",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/security/code-scanning"
+    },
+    {
+      "comment": "GitHub Actions runs (time-limited, expire after retention period)",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/actions/runs"
+    },
+    {
+      "comment": "GitHub Pages (unpublished, 404 until deployment)",
+      "pattern": "^https://aries-serpent\\.github\\.io/_codex_/"
+    },
+    {
+      "comment": "Blob paths with commit hashes (incomplete or missing extensions)",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/blob/[a-f0-9]+/tests/[^/]+$"
+    },
+    {
+      "comment": "External broken dependency: haralyzer repo (archived or moved)",
+      "pattern": "^https://github\\.com/JustusW/haralyzer"
+    },
+    {
+      "comment": "SPDX documentation (external site issues)",
+      "pattern": "^https://spdx\\.github\\.io"
+    },
+    {
+      "comment": "Python docs security warnings (moved or removed page)",
+      "pattern": "^https://python\\.readthedocs\\.io/en/stable/library/security_warnings\\.html"
+    },
+    {
+      "comment": "GitHub Copilot extensions docs (new feature, docs may be incomplete)",
+      "pattern": "^https://docs\\.github\\.com/en/copilot/building-copilot-extensions/building-a-copilot-agent"
     }
   ],
   "replacementPatterns": [],
