@@ -187,10 +187,11 @@ git diff --name-only ${{ github.event.before }}..${{ github.sha }} -- '*.md'
 - **Optimization:** Skip linting/formatting if no code changes
 - **Implementation:** Per-file checksums for Python files
 
-#### 4.2 `github_connector_check.yml`
-- **Current behavior:** Always checks GitHub API connectivity
-- **Optimization:** Cache last successful check (1 hour TTL)
-- **Implementation:** Time-based cache key
+#### 4.2 `github_connector_check.yml` - REMOVED
+- **Status:** ❌ Workflow removed due to missing dependencies
+- **Original plan:** Cache last successful check (1 hour TTL)
+- **Issue:** Referenced non-existent `tools/connectors/github_connector_check.py`
+- **Resolution:** Workflow deleted; if needed in future, create script first
 
 #### 4.3 Security Workflows
 - **Note:** Security scans (CodeQL, secrets) should NOT be skipped

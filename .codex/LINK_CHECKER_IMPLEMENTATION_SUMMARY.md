@@ -46,16 +46,18 @@ Resolve documentation link checker failures and implement intelligent caching to
 
 ---
 
-### 3. Implemented Time-Based Caching for Connector Check
+### 3. Time-Based Caching for Connector Check - REMOVED
 
-**File:** `.github/workflows/github_connector_check.yml`
+**File:** `.github/workflows/github_connector_check.yml` *(Removed in this commit)*
 
-**Features:**
-- ✅ Time-based caching (1 hour TTL)
-- ✅ Skip check if recent successful run exists
-- ✅ Fallback to full check if cache expired or missing
+**Reason for Removal:**
+- Referenced non-existent script `tools/connectors/github_connector_check.py`
+- No Python setup configured in workflow
+- Was demonstration example, not functional implementation
 
-**Commit:** 8eefb52
+**Status:** ❌ REMOVED - Workflow deleted due to missing dependencies
+
+**Original Commits:** 8eefb52 (added), 255aa50 (cache key fix), This commit (removed)
 
 ---
 
