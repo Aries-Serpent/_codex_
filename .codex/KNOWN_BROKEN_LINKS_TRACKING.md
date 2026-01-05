@@ -45,7 +45,7 @@ This document tracks all known broken, missing, or restricted documentation link
 - [ ] **Phase 4:** Verify all 25 links resolve correctly
 - [ ] **Phase 5:** Remove ignore pattern from `.markdown-link-check.json`
 
-**Timeline:** Q1 2026, Week 2-3
+**Timeline:** Pre-commit cycles 4-6 (GitHub Pages deployment phase)
 
 **Files Affected:**
 ```bash
@@ -76,7 +76,7 @@ grep -r "aries-serpent\.github\.io/_codex_" --include="*.md" -l
 
 **Decision:** Option A recommended - security details should not be exposed via public links
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate remediation)
 
 **Files Affected:**
 ```bash
@@ -105,7 +105,7 @@ grep -r "security/code-scanning" --include="*.md" -l
 - [ ] **Phase 2:** Add documentation note about expiration
 - [ ] **Phase 3:** Consider archiving critical run logs as artifacts
 
-**Timeline:** Ongoing maintenance
+**Timeline:** Ongoing per commit cycle maintenance
 
 **Temporary Solution:** Links already ignored in existing config
 
@@ -130,7 +130,7 @@ grep -r "security/code-scanning" --include="*.md" -l
 - [ ] **Phase 3:** Update links with complete paths
 - [ ] **Phase 4:** Remove ignore pattern after fixes
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate investigation)
 
 **Search Command:**
 ```bash
@@ -165,7 +165,7 @@ pip search haralyzer
 https://pypi.org/project/pyharer/
 ```
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate investigation)
 
 **Temporary Solution:** Link ignored via pattern
 
@@ -186,7 +186,7 @@ https://pypi.org/project/pyharer/
 
 **Alternative URL:** `https://spdx.org/licenses/` (official SPDX license list)
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate investigation)
 
 **Temporary Solution:** Pattern ignored in config
 
@@ -209,7 +209,7 @@ https://pypi.org/project/pyharer/
 - `https://docs.python.org/3/library/warnings.html#warning-categories`
 - `https://docs.python.org/3/library/security_considerations.html`
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate investigation)
 
 **Temporary Solution:** Pattern ignored in config
 
@@ -230,7 +230,7 @@ https://pypi.org/project/pyharer/
 
 **Search:** Check `docs.github.com` for "Copilot extensions" current path
 
-**Timeline:** Q1 2026, Week 1
+**Timeline:** Pre-commit cycle 1-2 (immediate investigation)
 
 **Temporary Solution:** Pattern ignored in config
 
@@ -256,7 +256,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 
 ## 📋 Action Plan Summary
 
-### Immediate Actions (Week 1)
+### Immediate Actions (Pre-commit 1-2)
 
 | Priority | Action | Owner | Status |
 |----------|--------|-------|--------|
@@ -266,7 +266,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 | 🟡 MEDIUM | Update external dependency links (haralyzer, SPDX, Python docs, Copilot) | ⏳ TODO | Pending |
 | 🟡 MEDIUM | Replace or remove security scanning links | ⏳ TODO | Pending |
 
-### Short-term Actions (Weeks 2-3)
+### Short-term Actions (Pre-commit 3-6)
 
 | Priority | Action | Owner | Status |
 |----------|--------|-------|--------|
@@ -274,7 +274,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 | 🔴 CRITICAL | Deploy cognitive_app to GitHub Pages | ⏳ TODO | Blocked (requires Pages) |
 | 🔴 CRITICAL | Verify all 25 GitHub Pages links | ⏳ TODO | Blocked (requires deployment) |
 
-### Long-term Actions (Month 2+)
+### Long-term Actions (Phase 2+)
 
 | Priority | Action | Owner | Status |
 |----------|--------|-------|--------|
@@ -315,7 +315,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
    - Requires developer setup
 
 3. **Link Health Dashboard**
-   - Weekly report of link health metrics
+   - Per-commit-cycle report of link health metrics
    - Trend analysis (new breaks, fixes)
    - Stored in `.codex/metrics/LINK_HEALTH.md`
 
@@ -339,10 +339,10 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 
 | Task | Frequency | Last Run | Next Run |
 |------|-----------|----------|----------|
-| Review broken links report | Weekly | 2026-01-05 | 2026-01-12 |
-| Update ignore patterns | Monthly | 2026-01-05 | 2026-02-05 |
-| Audit external links | Quarterly | 2026-01-05 | 2026-04-05 |
-| Review GitHub Pages status | Bi-weekly | 2026-01-05 | 2026-01-19 |
+| Review broken links report | Per commit cycle | 2026-01-05 | Next commit |
+| Update ignore patterns | Per 4-5 commit cycles | 2026-01-05 | Commit 5 |
+| Audit external links | Per phase (12-15 commits) | 2026-01-05 | Phase 2 start |
+| Review GitHub Pages status | Every 2-3 commits | 2026-01-05 | Commit 3 |
 
 ---
 
@@ -363,7 +363,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 - [ ] `.markdown-link-check.json` updated with comprehensive ignore patterns
 - [ ] Documentation Link Checker workflow passes on main branch
 - [ ] Zero CRITICAL broken links in public documentation (GitHub Pages excluded until deployment)
-- [ ] Monthly link health reports show <5% broken external links
+- [ ] Per-phase link health reports show <5% broken external links
 - [ ] New documentation submissions include link validation before merge
 
 ---

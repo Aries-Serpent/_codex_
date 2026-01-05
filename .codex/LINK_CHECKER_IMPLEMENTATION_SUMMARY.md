@@ -65,10 +65,10 @@ Resolve documentation link checker failures and implement intelligent caching to
 
 **Contents:**
 - Phase 1: Aggregate checksum (✅ IMPLEMENTED)
-- Phase 2: Per-folder granular caching (📋 PLANNED Q1 2026 Week 2-3)
-- Phase 3: Per-file incremental caching (📋 PLANNED Q1 2026 Week 4-5)
-- Phase 4: Extended scope to other workflows (📋 PLANNED Q1 2026 Week 6)
-- Phase 5: Monitoring and metrics (📋 PLANNED Q1 2026 Week 7)
+- Phase 2: Per-folder granular caching (📋 PLANNED Pre-commit 2-5)
+- Phase 3: Per-file incremental caching (📋 PLANNED Pre-commit 6-9)
+- Phase 4: Extended scope to other workflows (📋 PLANNED Pre-commit 10-12)
+- Phase 5: Monitoring and metrics (📋 PLANNED Pre-commit 13-15)
 
 **Additional Documentation:**
 - Checksum computation algorithm (Appendix A)
@@ -201,7 +201,7 @@ The following were NOT created because they are either:
 
 ### 3. Per-Folder/Per-File Caching Scripts
 
-**Status:** Planned for Phase 2 & 3 (Q1 2026)
+**Status:** Planned for Phase 2 & 3 (Pre-commit cycles 2-9)
 
 **Reason:** These are future enhancements that build on Phase 1 (already implemented)
 
@@ -309,17 +309,17 @@ The following were NOT created because they are either:
 - ✅ All tasks complete
 - ⏳ Await PR merge
 
-### Short-term (Next PR - Week 1)
+### Short-term (Next PR - Pre-commit 1-2)
 1. Investigate incomplete blob paths
 2. Update external dependency links (haralyzer, SPDX, Python docs, Copilot)
 3. Replace or remove security scanning links from documentation
 
-### Medium-term (Weeks 2-3)
+### Medium-term (Pre-commit 3-6)
 1. Request GitHub Pages enablement from repository admin
 2. Deploy cognitive_app to GitHub Pages
 3. Verify all 25 GitHub Pages links
 
-### Long-term (Weeks 4-7)
+### Long-term (Pre-commit 7-15)
 1. Implement Phase 2: Per-folder caching
 2. Implement Phase 3: Per-file caching
 3. Extend caching to other workflows

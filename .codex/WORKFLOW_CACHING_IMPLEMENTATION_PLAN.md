@@ -2,7 +2,7 @@
 
 **Created:** 2026-01-05  
 **Status:** Planning Phase  
-**Target:** Q1 2026
+**Target:** Phase 2-5 implementation across multiple pre-commit cycles
 
 ## Overview
 
@@ -36,7 +36,7 @@ This document outlines the comprehensive plan for implementing intelligent cachi
 
 ## Phase 2: Per-Folder Granular Caching
 
-### Timeline: Q1 2026, Week 1-2
+### Timeline: Pre-commit cycles 1-4 (estimated)
 
 ### Objective
 Enable folder-level granularity so only changed directories trigger rescans.
@@ -107,7 +107,7 @@ jobs:
 
 ## Phase 3: Per-File Granular Caching
 
-### Timeline: Q1 2026, Week 3-4
+### Timeline: Pre-commit cycles 5-8 (estimated)
 
 ### Objective
 Enable file-level granularity for maximum efficiency on single-file changes.
@@ -178,7 +178,7 @@ git diff --name-only ${{ github.event.before }}..${{ github.sha }} -- '*.md'
 
 ## Phase 4: Extended Scope - Other Workflows
 
-### Timeline: Q1 2026, Week 5-6
+### Timeline: Pre-commit cycles 9-12 (estimated)
 
 ### Target Workflows
 
@@ -224,12 +224,12 @@ Track cache efficiency and cost savings
 ### Implementation
 - Add telemetry step to each workflow
 - Store metrics in workflow artifacts
-- Generate weekly summary report
+- Generate per-commit-cycle summary report
 - Dashboard in `.codex/metrics/` directory
 
 ### Files
 - `.github/scripts/collect-cache-metrics.py` (new)
-- `.codex/metrics/CACHE_PERFORMANCE.md` (generated weekly)
+- `.codex/metrics/CACHE_PERFORMANCE.md` (generated per commit cycle)
 
 ---
 
@@ -276,13 +276,13 @@ workflows:
 
 ## Migration Plan
 
-### Week 1: Phase 1 (Aggregate) ✅
+### Pre-commit 1: Phase 1 (Aggregate) ✅
 - [x] Implement aggregate checksum for link checker
 - [x] Test on sample PRs
 - [x] Monitor for false negatives
 - [x] Document in this plan
 
-### Week 2-3: Phase 2 (Per-Folder)
+### Pre-commit 2-5: Phase 2 (Per-Folder)
 - [ ] Design folder matrix strategy
 - [ ] Implement helper scripts
 - [ ] Create parallel workflow
@@ -290,7 +290,7 @@ workflows:
 - [ ] Measure performance improvement
 - [ ] Deploy if >30% faster on partial changes
 
-### Week 4-5: Phase 3 (Per-File)
+### Pre-commit 6-9: Phase 3 (Per-File)
 - [ ] Design checksum database schema
 - [ ] Implement Python helper for DB management
 - [ ] Create incremental workflow
@@ -298,16 +298,16 @@ workflows:
 - [ ] Benchmark against Phase 2
 - [ ] Deploy if >50% faster on single file changes
 
-### Week 6: Phase 4 (Other Workflows)
+### Pre-commit 10-12: Phase 4 (Other Workflows)
 - [ ] Audit all workflows for caching candidates
 - [ ] Prioritize by runtime impact
 - [ ] Implement caching for top 3 workflows
 - [ ] Document exclusions (security scans)
 
-### Week 7: Phase 5 (Monitoring)
+### Pre-commit 13-15: Phase 5 (Monitoring)
 - [ ] Implement metrics collection
 - [ ] Create dashboard template
-- [ ] Generate first weekly report
+- [ ] Generate first per-phase report
 - [ ] Set up alerts for cache issues
 
 ---
@@ -378,18 +378,18 @@ workflows:
 ### Current State
 - Documentation link check: ~3 minutes per run
 - Runs on every doc change PR
-- ~20 PRs per week = 60 minutes/week
-- Annual: ~52 hours of CI time
+- ~20 PRs per commit cycle = 60 minutes/cycle
+- Annual: ~52 hours of CI time (assuming ~17 commit cycles/year)
 
 ### With Phase 1 (Aggregate)
 - Cache hit: ~15 seconds
 - Estimated hit rate: 30% (no changes after first check)
-- Savings: ~18 minutes/week → ~15.6 hours/year
+- Savings: ~18 minutes/cycle → ~15.6 hours/year
 
 ### With Phase 3 (Per-File)
 - Single file change: ~20 seconds
 - Estimated hit rate: 70% (single file changes)
-- Savings: ~42 minutes/week → ~36.4 hours/year
+- Savings: ~42 minutes/cycle → ~36.4 hours/year
 
 ### Additional Benefits
 - Faster feedback for developers
