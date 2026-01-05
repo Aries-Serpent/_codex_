@@ -19,78 +19,12 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for git analysis
       
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
-      
-      - name: Create perception directory
-        run: mkdir -p cognitive/perceptions
-      
-      - name: Collect Git commit data
-        run: |
-          python scripts/cognitive/collect_git_data.py \
-            --since "${{ github.event.inputs.since_date || '7 days ago' }}" \
-            --output cognitive/perceptions/git_data.json
-      
-      - name: Collect PR metrics
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python scripts/cognitive/collect_pr_metrics.py \
-            --lookback-days 7 \
-            --output cognitive/perceptions/pr_metrics.json
-      
-      - name: Collect CI/CD data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python scripts/cognitive/collect_ci_data.py \
-            --max-runs 100 \
-            --output cognitive/perceptions/ci_data.json
-      
-      - name: Run pattern recognition
-        run: |
-          python scripts/cognitive/detect_patterns.py \
-            --input cognitive/perceptions/ \
-            --output cognitive/perceptions/patterns.json \
-            --agent-1-integration
-      
-      - name: Run anomaly detection
-        run: |
-          python scripts/cognitive/detect_anomalies.py \
-            --input cognitive/perceptions/ \
-            --output cognitive/perceptions/anomalies.json \
-            --agent-5-integration
-      
-      - name: Generate perception report
-        run: |
-          python scripts/cognitive/generate_perception_report.py \
-            --input cognitive/perceptions/ \
-            --output cognitive/reports/perception_report.md
-      
-      - name: Store perceptions
-        uses: actions/upload-artifact@v4
-        with:
-          name: perceptions-${{ github.run_number }}
-          path: cognitive/perceptions/
-          retention-days: 30
-      
-      - name: Store reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: perception-report-${{ github.run_number }}
-          path: cognitive/reports/
-          retention-days: 90
-      
-      - name: Display summary
-        run: |
-          echo "## Cognitive Perception Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f cognitive/reports/perception_report.md ]; then
-            cat cognitive/reports/perception_report.md >> $GITHUB_STEP_SUMMARY
-          fi
+          python-version: 3.11
+          cache-tier: 'common'

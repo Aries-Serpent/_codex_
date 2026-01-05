@@ -93,7 +93,7 @@ pip-audit --desc
 
 ## 🚨 Reporting Issues
 
-**Contact**: security@example.com  
+**Contact**: security@localhost  
 **Response**: Critical (24h), High (48h), Moderate (1wk), Low (2wk)
 
 **DO NOT** open public GitHub issues for security vulnerabilities.

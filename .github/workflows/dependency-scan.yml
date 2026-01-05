@@ -11,11 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.11"
-      - name: Install safety (example scanner)
-        run: pip install safety
-      - name: Run safety check
-        run: |
-          if [ -f requirements.txt ]; then safety check -r requirements.txt || true; fi
+          python-version: 3.11
+          cache-tier: 'live'

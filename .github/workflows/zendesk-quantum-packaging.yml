@@ -35,25 +35,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.11"
-
-      - name: Install packaging dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pyyaml
-
-      - name: Build Zendesk quantum packages
-        run: |
-          python scripts/packaging/build_zendesk_quantum_packages.py \
-            --config configs/packaging/zendesk_quantum_packages.yaml \
-            --version "${{ inputs.version }}" \
-            --package "${{ inputs.package }}" \
-            ${{ inputs.include_bundle && '--include-bundle' || '' }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: zendesk-quantum-packages
-          path: build/zendesk_quantum_packages/*.zip
+          python-version: 3.11
+          cache-tier: 'ephemeral'

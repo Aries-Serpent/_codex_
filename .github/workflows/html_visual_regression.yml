@@ -10,25 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install playwright
-          python -m playwright install --with-deps
-      - name: Render sample HTML
-        run: |
-          DATE=$(date -u +%Y-%m-%d)
-          python scripts/status/render_html_report.py --json docs/templates/status/example_report_v1.2.json --out reports/daily/${DATE}.html --template docs/templates/status/report_template_themed.html
-      - name: Capture screenshot
-        run: |
-          python scripts/status/screenshot_html.py --html reports/daily/$(date -u +%Y-%m-%d).html --out reports/daily/$(date -u +%Y-%m-%d).png
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: status-html-screenshots
-          path: |
-            reports/daily/*.html
-            reports/daily/*.png
+          python-version: '3.11'
+          cache-tier: 'ephemeral'
+

@@ -295,7 +295,7 @@ export MASK_TOKEN_SHOW_CHARS=6
 
 **DO NOT** open public GitHub issues for security vulnerabilities.
 
-Contact: security@example.com (replace with actual contact)
+Contact: security@localhost (replace with actual contact)
 
 Include:
 - Description of the vulnerability
