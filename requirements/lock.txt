@@ -335,7 +335,7 @@ hf-xet==1.2.0
     # via huggingface-hub
 httpcore==1.0.9
     # via httpx
-httptools==0.6.4
+httptools==0.7.1
     # via uvicorn
 httpx==0.28.1
     # via
