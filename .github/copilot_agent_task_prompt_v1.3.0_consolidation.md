@@ -462,7 +462,7 @@ pytest -q tests/validation/
    - nightly-audit.yml (scheduled monitoring)
    - determinism.yml (PR gating)
 
-### Week 1 Post-Merge
+### Pre-commit 1-2 Post-Merge
 
 1. **Monitor legacy import usage**:
    ```bash

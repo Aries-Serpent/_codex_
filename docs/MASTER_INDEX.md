@@ -204,7 +204,7 @@ All documentation should include:
 ### Update Process
 1. Update the relevant canonical document
 2. Update this index if structure changes
-3. Check for broken links monthly
+3. Check for broken links per 4-5 commit cycles
 4. Archive obsolete documentation (don't delete)
 
 ### Archived Documentation

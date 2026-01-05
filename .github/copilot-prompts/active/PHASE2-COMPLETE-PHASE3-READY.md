@@ -283,7 +283,7 @@ def _analyze_test_code(self) -> Dict[str, List[Pattern]]:
 
 ## Phase 3 Implementation Plan
 
-### Week 1: Core Agent Implementation
+### Pre-commit 1-2: Core Agent Implementation
 
 **Day 1-2: Detector (PERCEIVE)**
 - [ ] Create `detector.py` module
@@ -317,7 +317,7 @@ def _analyze_test_code(self) -> Dict[str, List[Pattern]]:
 - [ ] Integrate with cognitive brain
 - [ ] Unit tests for reporter
 
-### Week 2: Testing & Integration
+### Pre-commit 3-4: Testing & Integration
 
 **Day 1-2: Integration Tests**
 - [ ] Create integration test suite
@@ -474,8 +474,8 @@ All PDA loops + AfterMath patterns MUST remain active throughout.
 ## Timeline & Resource Requirements
 
 ### Estimated Time
-- **Week 1**: Core implementation (7 days)
-- **Week 2**: Testing & documentation (7 days)
+- **Pre-commit 1-2**: Core implementation (7 days)
+- **Pre-commit 3-4**: Testing & documentation (7 days)
 - **Total**: 14 days (~2 weeks)
 
 ### Dependencies
@@ -538,7 +538,7 @@ Each agent: ~2,950 lines, 13 files, 2 weeks development time
 ---
 
 **Last Updated**: 2026-01-01  
-**Next Review**: After Phase 3 Week 1 (detector + classifier complete)  
+**Next Review**: After Phase 3 Pre-commit 1-2 (detector + classifier complete)  
 **Version**: 2.0.0
 
 ---

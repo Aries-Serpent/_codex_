@@ -157,7 +157,7 @@ gh run list --workflow="<workflow-name>" --limit 5 | grep -i "cache"
 
 ### Option 1: Remove Low-Value Caches
 **Candidates for Removal**:
-- scheduled-dependency-audit.yml (weekly runs) - saves ~0.5 GB
+- scheduled-dependency-audit.yml (per commit cycle runs) - saves ~0.5 GB
 - integration-gated.yml (manual only) - saves ~0.3 GB
 
 ### Option 2: Switch to Built-in Caching
@@ -195,7 +195,7 @@ path: |
 
 ### Advanced Caching Strategies
 1. **Conditional Caching**: Only cache on main branch
-2. **Time-based Invalidation**: Force refresh monthly
+2. **Time-based Invalidation**: Force refresh per 4-5 commit cycles
 3. **Dependency-specific Keys**: Separate keys for dev/prod deps
 4. **Cross-workflow Sharing**: Strategic sharing for common deps
 
@@ -205,7 +205,7 @@ path: |
 - Collect hit/miss rates
 - Track storage usage trends
 - Alert on threshold breaches
-- Generate monthly reports
+- Generate per 4-5 commit cycles reports
 ```
 
 ### Cache Analytics
@@ -226,7 +226,7 @@ path: |
 
 ### Create New Documentation
 - [ ] PHASE3_IMPLEMENTATION_REPORT.md (after completion)
-- [ ] CACHE_PERFORMANCE_ANALYSIS.md (monthly)
+- [ ] CACHE_PERFORMANCE_ANALYSIS.md (per 4-5 commit cycles)
 - [ ] PHASE4_RECOMMENDATIONS.md (future scope)
 
 ---
@@ -316,9 +316,9 @@ grep -l "actions/cache@v5\|cache: 'pip'" .github/workflows/*.yml | wc -l
 ## Next Steps Summary
 
 1. **Immediate**: Monitor Phase 2 workflows for 2 weeks
-2. **Week 3**: Review monitoring data and decide on Phase 3 scope
-3. **Week 4-6**: Implement Phase 3 selectively (5-8 workflows)
-4. **Week 7**: Final review and Phase 3 report
+2. **Pre-commit 5-6**: Review monitoring data and decide on Phase 3 scope
+3. **Pre-commit 7-12**: Implement Phase 3 selectively (5-8 workflows)
+4. **Pre-commit 13-14**: Final review and Phase 3 report
 5. **Month 2**: Continuous optimization and monitoring
 6. **Quarter 2**: Evaluate Phase 4 feasibility
 

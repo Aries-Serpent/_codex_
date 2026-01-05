@@ -94,7 +94,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 ---
 
 #### 2. Advanced Drift Detection (Priority: HIGH)
-**Current State**: Basic statistical drift detection (KS test on monthly batch)  
+**Current State**: Basic statistical drift detection (KS test on per 4-5 commit cycles batch)  
 **Target State**: Real-time multivariate drift detection with root cause analysis  
 **Benefits**:
 - Early warning before model degradation

@@ -901,7 +901,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-**Document Maintenance**: Update quarterly as research progresses  
+**Document Maintenance**: Update per phase as research progresses  
 **Owner**: Test Infrastructure Team  
 **Last Review**: 2025-12-31  
 **Next Review**: 2026-04-01

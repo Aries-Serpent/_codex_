@@ -530,7 +530,7 @@ def recommend_packages(topic_scores: Dict[str, int],
 ```
 
 **Integration**:
-- Add to CI/CD pipeline (weekly cron)
+- Add to CI/CD pipeline (per commit cycle cron)
 - Slack/email notifications
 - Automated packaging when threshold met
 
@@ -550,13 +550,13 @@ def recommend_packages(topic_scores: Dict[str, int],
 
 ### Phase 1: High Priority (Q1 2026)
 
-**Week 1-2**: Size Estimation
+**Pre-commit 1-4**: Size Estimation
 - Implement estimate_size() method
 - Add --estimate CLI flag
 - Test with all topics
 - Document usage
 
-**Week 3-4**: Exclude Patterns
+**Pre-commit 5-8**: Exclude Patterns
 - Enhance expand_globs() with exclusions
 - Add --exclude CLI parameter
 - Test edge cases
@@ -566,13 +566,13 @@ def recommend_packages(topic_scores: Dict[str, int],
 
 ### Phase 2: Medium Priority (Q2 2026)
 
-**Week 1-2**: Duplicate Resolution
+**Pre-commit 1-4**: Duplicate Resolution
 - Implement hash suffix logic
 - Update manifest schema
 - Test with duplicate-prone patterns
 - Document behavior
 
-**Week 3-5**: Package Diff Tool
+**Pre-commit 5-10**: Package Diff Tool
 - Implement package_diff.py
 - Add verbose and JSON modes
 - Integration tests
@@ -582,19 +582,19 @@ def recommend_packages(topic_scores: Dict[str, int],
 
 ### Phase 3: Low Priority (Q3 2026)
 
-**Week 1-3**: Package Merge Tool
+**Pre-commit 1-6**: Package Merge Tool
 - Implement package_merge.py
 - All conflict strategies
 - Comprehensive testing
 - Documentation
 
-**Week 4-6**: Interactive Mode (if demand exists)
+**Pre-commit 7-12**: Interactive Mode (if demand exists)
 - Choose TUI library
 - Implement tree selector
 - Test UX thoroughly
 - Document workflows
 
-**Week 7-8**: Smart Recommendations (if resources available)
+**Pre-commit 13-16**: Smart Recommendations (if resources available)
 - Implement recommend_topics.py
 - CI integration
 - Threshold tuning

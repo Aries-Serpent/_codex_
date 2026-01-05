@@ -366,7 +366,7 @@ Create real-time dashboard for cognitive brain visualization:
 
 ## Migration Timeline
 
-### ci-testing-agent Migration (Week 1-2, Q1 2026)
+### ci-testing-agent Migration (Pre-commit 1-4, Q1 2026)
 
 **Status**: Ready to start (migration guide complete)
 
