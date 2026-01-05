@@ -36,19 +36,22 @@ interface WorkflowToken {
 /**
  * TokenBundle represents a collection of workflow tokens grouped by category.
  * 
- * Categories:
- * - development: Code generation, testing, CI/CD workflows
- * - operations: Deployment, monitoring, infrastructure tasks
- * - data: Data processing, ETL, analytics pipelines
- * - security: Security scanning, compliance, vulnerability checks
- * - quality: Code review, static analysis, quality gates
- * - analytics: Metrics collection, reporting, insights generation
+ * @see Categories for workflow organization:
+ * - `development`: Code generation, testing, CI/CD workflows
+ * - `operations`: Deployment, monitoring, infrastructure tasks
+ * - `data`: Data processing, ETL, analytics pipelines
+ * - `security`: Security scanning, compliance, vulnerability checks
+ * - `quality`: Code review, static analysis, quality gates
+ * - `analytics`: Metrics collection, reporting, insights generation
  */
 interface TokenBundle {
   id: string;
   name: string;
   description: string;
-  /** Category determines the workflow type and available actions */
+  /** 
+   * Category determines the workflow type and available actions.
+   * @see TokenBundle documentation for detailed category descriptions.
+   */
   category: 'development' | 'operations' | 'data' | 'security' | 'quality' | 'analytics';
   tokens: WorkflowToken[];
   icon: string;

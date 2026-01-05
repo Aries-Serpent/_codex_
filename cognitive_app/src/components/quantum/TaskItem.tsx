@@ -68,8 +68,12 @@ export function TaskItem({ task, index }: TaskItemProps) {
 
     try {
       return `${prefix} ${formatDistanceToNow(date, { addSuffix: true })}`;
-    } catch {
-      // In case formatDistanceToNow throws for any reason, avoid breaking the UI
+    } catch (error) {
+      // In case formatDistanceToNow throws for any reason, log and avoid breaking the UI
+      console.error('Failed to format relative time for TaskItem:', {
+        dateString,
+        error,
+      });
       return prefix;
     }
   };

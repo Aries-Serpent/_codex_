@@ -1,8 +1,19 @@
 import { Card } from '@/components/ui/card';
 import { Database } from '@phosphor-icons/react';
 
+/**
+ * Pattern object from the pattern library.
+ */
+interface Pattern {
+  id?: string;
+  type?: string;
+  usage_count?: number;
+  compression_ratio?: number;
+  last_accessed?: string;
+}
+
 interface PatternLibraryBrowserProps {
-  patterns: unknown[];
+  patterns: Pattern[];
 }
 
 export function PatternLibraryBrowser({ patterns }: PatternLibraryBrowserProps) {
@@ -35,7 +46,7 @@ export function PatternLibraryBrowser({ patterns }: PatternLibraryBrowserProps) 
                 </tr>
               </thead>
               <tbody>
-                {patterns.slice(0, 10).map((pattern: any, index) => (
+                {patterns.slice(0, 10).map((pattern, index) => (
                   <tr key={index} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="py-3 px-4 font-mono text-xs">{pattern.id || `pattern-${index}`}</td>
                     <td className="py-3 px-4">{pattern.type || 'unknown'}</td>
