@@ -9,8 +9,8 @@
 
 | Priority | Plan | Status | Progress | ETA |
 |----------|------|--------|----------|-----|
-| 🟡 ACTIVE | Cognitive Brain Phase 8.3-8.5 | 📋 Planned | 60% (8.0-8.2 done) | Q1 2026 |
-| 🟡 ACTIVE | Unified Agent Framework | 🟡 In Progress | 60% | Q1 2026 |
+| 🟡 ACTIVE | Cognitive Brain Phase 8.3-8.5 | 📋 Planned | 60% (8.0-8.2 done) | Phase 1 (2026) |
+| 🟡 ACTIVE | Unified Agent Framework | 🟡 In Progress | 60% | Phase 1 (2026) |
 | ✅ COMPLETE | HIGH_MATURITY_ACHIEVEMENT | ✅ COMPLETE | 40/40 (100%) | DONE |
 | ✅ COMPLETE | Python Ingestion Pipeline | ✅ COMPLETE | All phases | DONE |
 | ✅ COMPLETE | 4-Stream Infrastructure | ✅ COMPLETE | All streams | DONE |

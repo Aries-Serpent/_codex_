@@ -61,7 +61,7 @@ lessons:
           ".github/FINAL_SELF_REVIEW_PHASE9_1.md",
           ".github/CONTINUATION_PROMPT_PHASE9_2.md"
         ]
-    outcome: "Complete documentation enables seamless continuation to Phase 9.2, comprehensive research guidance for Q1-Q3 2026"
+    outcome: "Complete documentation enables seamless continuation to Phase 9.2, comprehensive research guidance for Q1-Phase 3 (2026)"
 
   - title: "5-pass self-review ensures zero-defect delivery"
     context: "Required comprehensive quality validation before completion"
@@ -90,7 +90,7 @@ decisions:
     tradeoffs: "85% gives excellent critical path coverage; remaining 15% for Phases 9.2-9.4 with specific focus areas"
 
   - what: "Create comprehensive future research documentation (28.8 KB)"
-    why: "Q1-Q3 2026 research needs implementation-ready guidance with tools, keywords, papers"
+    why: "Q1-Phase 3 (2026) research needs implementation-ready guidance with tools, keywords, papers"
     alternatives: ["Brief bullet points", "External wiki", "Issue tracking only"]
     tradeoffs: "Large doc but self-contained; provides complete context for automated test gen, mutation testing, property-based expansion"
 
@@ -169,7 +169,7 @@ future_research:
     estimated_complexity: "high"
     dependencies: ["coverage.py API", "OpenAI/Claude API", "AST analysis", "Test pattern templates", "Validation pipeline"]
     expected_impact: "Reduce Phase 9.2-9.4 from ~200 minutes to ~40 minutes; consistent test quality"
-    timeline: "Q3 2026"
+    timeline: "Phase 3 (2026)"
     research_keywords: ["neural program synthesis", "code-to-test generation", "GPT-4 for testing", "automated pytest generation", "coverage-guided test synthesis"]
     implementation_steps: [
       "1. Build coverage parser (coverage.py JSON → uncovered functions list)",
@@ -187,7 +187,7 @@ future_research:
     estimated_complexity: "medium"
     dependencies: ["mutpy or cosmic-ray", "CI integration", "Mutation score thresholds (75% min)", "Test enhancement guidelines"]
     expected_impact: "Identify 20-30% weak tests; improve from coverage-only to mutation-validated quality"
-    timeline: "Q2 2026"
+    timeline: "Phase 2 (2026)"
     research_keywords: ["mutation testing python", "mutpy", "cosmic-ray", "test effectiveness", "mutation operators", "test quality metrics"]
     implementation_steps: [
       "1. Evaluate mutation tools (mutpy, cosmic-ray, mutmut)",
@@ -205,7 +205,7 @@ future_research:
     estimated_complexity: "low"
     dependencies: ["hypothesis library (available)", "Property identification", "Strategy design (st.text, st.lists, custom)"]
     expected_impact: "Discover 20-30% more edge case bugs; test robustness 10x (1000 cases vs 10 examples)"
-    timeline: "Q1 2026"
+    timeline: "Phase 1 (2026)"
     research_keywords: ["property-based testing", "Hypothesis python", "QuickCheck", "generative testing", "test strategies", "stateful testing"]
     implementation_steps: [
       "1. Identify 20-30 functions suitable for property testing",

@@ -25,7 +25,7 @@
 - Commit: f786673
 - CODEBASE_COGNITIVE_MAP.md (8.5 KB) - Architecture overview
 - CODEBASE_DASHBOARD.md (13 KB) - Live status & metrics
-- ROADMAP.md (13 KB) - Unified Q1-Q3 2026 plan
+- ROADMAP.md (13 KB) - Unified Q1-Phase 3 (2026) plan
 - Component READMEs (src/, agents/, scripts/)
 - Root README updated
 

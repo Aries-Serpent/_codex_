@@ -11,7 +11,7 @@
 ### **Unified Navigation System** - NEW!
 - 🗺️ **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
 - 📊 **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
-- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope (Q1-Q3 2026)
+- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope (Q1-Phase 3 (2026))
 
 ### **Why This Matters**
 The cognitive brain enables:
@@ -37,7 +37,7 @@ The cognitive brain enables:
 - 🎯 **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
 - 🤖 **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
 - 🧭 **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
-- 🚀 **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap (Q1-Q3 2026)
+- 🚀 **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap (Q1-Phase 3 (2026))
 
 ### Capability Guides
 - 📝 **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
