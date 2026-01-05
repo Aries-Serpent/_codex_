@@ -21,7 +21,7 @@
 4. Verify health probes:
    ```bash
    kubectl get pods -l app=codex
-   curl https://codex.example.com/health
+   curl http://localhost:8080/health
    ```
 5. Run smoke tests:
    ```bash
