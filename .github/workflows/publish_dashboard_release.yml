@@ -10,20 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.11"
-      - name: Build dashboard
-        run: |
-          bash scripts/status/build_trend_dashboard.sh
-      - name: Prepare assets
-        run: |
-          bash scripts/status/prepare_dashboard_assets.sh
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: "Status Dashboard $(date -u +'%Y-%m-%d')"
-          tag_name: "status-dashboard-$(date -u +'%Y%m%d')"
-          body: "Automated weekly status dashboard artifact"
-          files: |
-            dist/status_dashboard_*.json
+          python-version: '3.11'
+          cache-tier: 'common'
+

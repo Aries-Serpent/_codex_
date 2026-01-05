@@ -1,0 +1,97 @@
+name: Cache Warmup - Live Tier
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC to warm up cache before work hours
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      python-versions:
+        description: 'Python versions to warm (comma-separated)'
+        required: false
+        default: '3.11,3.12'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  warmup-live-cache:
+    name: Warm up LIVE tier cache
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python with LIVE cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: 'live'
+
+      - name: Install core dependencies
+        run: |
+          echo "🔥 Warming up LIVE cache for Python ${{ matrix.python-version }}"
+          
+          # Install all common dependencies to warm the cache
+          pip install --upgrade pip wheel setuptools
+          
+          # Install from all requirements files
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt || true
+          fi
+          
+          if [ -f requirements-test.txt ]; then
+            pip install -r requirements-test.txt || true
+          fi
+          
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt || true
+          fi
+          
+          if [ -f requirements-minimal.txt ]; then
+            pip install -r requirements-minimal.txt || true
+          fi
+          
+          # Install project in editable mode
+          if [ -f pyproject.toml ] || [ -f setup.py ]; then
+            pip install -e . || pip install . || true
+          fi
+          
+          echo "✅ Cache warmed successfully"
+
+      - name: Verify installations
+        run: |
+          echo "📊 Installed packages:"
+          pip list --format=columns | head -20
+          echo "..."
+          echo "Total packages: $(pip list | wc -l)"
+          
+          echo ""
+          echo "💾 Cache size:"
+          du -sh $(pip cache dir)
+
+      - name: Cache warmup summary
+        run: |
+          cat << EOF
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          🔥 LIVE CACHE WARMUP COMPLETE
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          Python Version: ${{ matrix.python-version }}
+          Cache Tier: LIVE (permanent retention)
+          Cache Key: live-pip-Linux-py${{ matrix.python-version }}-*
+          
+          This cache is now available to ALL workflows using the
+          LIVE tier with Python ${{ matrix.python-version }}.
+          
+          Workflows using this cache:
+            - audit-improvement-pipeline.yml
+            - code-quality.yml
+            - security-suite.yml
+            - pr-checks.yml
+            - And more...
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          EOF

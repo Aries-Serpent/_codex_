@@ -51,10 +51,10 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
-          cache: 'pip'
+          cache-tier: 'live'
 
       - name: Install dependencies
         run: |
@@ -65,21 +65,25 @@ jobs:
       - name: Run Full Audit
         if: inputs.audit_type == 'full' || inputs.audit_type == ''
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py run
 
       - name: Run Gap Analysis
         if: inputs.audit_type == 'gap-analysis'
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py run --stages S1,S2,S3
 
       - name: Run Code Quality Audit
         if: inputs.audit_type == 'code-quality'
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py run --stages S4,S5,S6
 
       - name: Run Capability Validation
         if: inputs.audit_type == 'capability-validation'
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py validate
 
       - name: Analyze Results
@@ -142,10 +146,12 @@ jobs:
 
       - name: Store Trend Data
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py store-trend || true
 
       - name: Check Regressions
         run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/space_traversal/audit_runner.py check-regressions || true
 
       - name: Upload Audit Artifacts

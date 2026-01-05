@@ -1,0 +1,203 @@
+name: Cache Management
+
+on:
+  schedule:
+    # Run weekly on Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options:
+          - 'report'
+          - 'cleanup-ephemeral'
+          - 'cleanup-common'
+          - 'cleanup-all-tiers'
+        default: 'report'
+
+permissions:
+  contents: read
+  actions: write  # Required to delete caches
+
+jobs:
+  cache-report:
+    name: Generate Cache Report
+    runs-on: ubuntu-latest
+    if: inputs.action == 'report' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: List all caches
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const tiers = {
+              live: [],
+              common: [],
+              ephemeral: [],
+              other: []
+            };
+            
+            let totalSize = 0;
+            
+            for (const cache of caches.data.actions_caches) {
+              totalSize += cache.size_in_bytes;
+              
+              if (cache.key.startsWith('live-pip-')) {
+                tiers.live.push(cache);
+              } else if (cache.key.startsWith('common-pip-')) {
+                tiers.common.push(cache);
+              } else if (cache.key.startsWith('ephemeral-pip-')) {
+                tiers.ephemeral.push(cache);
+              } else {
+                tiers.other.push(cache);
+              }
+            }
+            
+            const formatSize = (bytes) => {
+              const mb = bytes / (1024 * 1024);
+              return mb > 1024 ? `${(mb/1024).toFixed(2)} GB` : `${mb.toFixed(2)} MB`;
+            };
+            
+            const getAge = (timestamp) => {
+              const age = Date.now() - new Date(timestamp);
+              const days = Math.floor(age / (1000 * 60 * 60 * 24));
+              return days;
+            };
+            
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('📊 CACHE TIER REPORT');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log(`Total caches: ${caches.data.actions_caches.length}`);
+            console.log(`Total size: ${formatSize(totalSize)}`);
+            console.log('');
+            
+            console.log('🟢 LIVE TIER (Permanent)');
+            console.log(`  Count: ${tiers.live.length}`);
+            console.log(`  Size: ${formatSize(tiers.live.reduce((s, c) => s + c.size_in_bytes, 0))}`);
+            if (tiers.live.length > 0) {
+              console.log('  Caches:');
+              tiers.live.slice(0, 5).forEach(c => {
+                console.log(`    - ${c.key.slice(0, 60)}... (${formatSize(c.size_in_bytes)}, ${getAge(c.created_at)}d old)`);
+              });
+              if (tiers.live.length > 5) console.log(`    ... and ${tiers.live.length - 5} more`);
+            }
+            console.log('');
+            
+            console.log('🟡 COMMON TIER (7-day retention)');
+            console.log(`  Count: ${tiers.common.length}`);
+            console.log(`  Size: ${formatSize(tiers.common.reduce((s, c) => s + c.size_in_bytes, 0))}`);
+            const oldCommon = tiers.common.filter(c => getAge(c.created_at) > 7);
+            if (oldCommon.length > 0) {
+              console.log(`  ⚠️  ${oldCommon.length} caches are >7 days old and can be cleaned`);
+            }
+            console.log('');
+            
+            console.log('🔴 EPHEMERAL TIER (1-day retention)');
+            console.log(`  Count: ${tiers.ephemeral.length}`);
+            console.log(`  Size: ${formatSize(tiers.ephemeral.reduce((s, c) => s + c.size_in_bytes, 0))}`);
+            const oldEphemeral = tiers.ephemeral.filter(c => getAge(c.created_at) > 1);
+            if (oldEphemeral.length > 0) {
+              console.log(`  ⚠️  ${oldEphemeral.length} caches are >1 day old and should be cleaned`);
+            }
+            console.log('');
+            
+            console.log('⚪ OTHER CACHES');
+            console.log(`  Count: ${tiers.other.length}`);
+            console.log(`  Size: ${formatSize(tiers.other.reduce((s, c) => s + c.size_in_bytes, 0))}`);
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  cleanup-ephemeral:
+    name: Cleanup Ephemeral Caches
+    runs-on: ubuntu-latest
+    if: inputs.action == 'cleanup-ephemeral' || inputs.action == 'cleanup-all-tiers'
+    steps:
+      - name: Cleanup old ephemeral caches
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const getAge = (timestamp) => {
+              const age = Date.now() - new Date(timestamp);
+              const days = Math.floor(age / (1000 * 60 * 60 * 24));
+              return days;
+            };
+            
+            let deletedCount = 0;
+            let deletedSize = 0;
+            
+            for (const cache of caches.data.actions_caches) {
+              if (cache.key.startsWith('ephemeral-pip-') && getAge(cache.created_at) > 1) {
+                try {
+                  await github.rest.actions.deleteActionsCacheById({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    cache_id: cache.id
+                  });
+                  deletedCount++;
+                  deletedSize += cache.size_in_bytes;
+                  console.log(`Deleted: ${cache.key} (${(cache.size_in_bytes / 1024 / 1024).toFixed(2)} MB)`);
+                } catch (error) {
+                  console.log(`Failed to delete ${cache.key}: ${error.message}`);
+                }
+              }
+            }
+            
+            console.log(`\n✅ Deleted ${deletedCount} ephemeral caches, freed ${(deletedSize / 1024 / 1024).toFixed(2)} MB`);
+
+  cleanup-common:
+    name: Cleanup Common Caches
+    runs-on: ubuntu-latest
+    if: inputs.action == 'cleanup-common' || inputs.action == 'cleanup-all-tiers'
+    steps:
+      - name: Cleanup old common caches
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const getAge = (timestamp) => {
+              const age = Date.now() - new Date(timestamp);
+              const days = Math.floor(age / (1000 * 60 * 60 * 24));
+              return days;
+            };
+            
+            let deletedCount = 0;
+            let deletedSize = 0;
+            
+            for (const cache of caches.data.actions_caches) {
+              if (cache.key.startsWith('common-pip-') && getAge(cache.created_at) > 7) {
+                try {
+                  await github.rest.actions.deleteActionsCacheById({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    cache_id: cache.id
+                  });
+                  deletedCount++;
+                  deletedSize += cache.size_in_bytes;
+                  console.log(`Deleted: ${cache.key} (${(cache.size_in_bytes / 1024 / 1024).toFixed(2)} MB)`);
+                } catch (error) {
+                  console.log(`Failed to delete ${cache.key}: ${error.message}`);
+                }
+              }
+            }
+            
+            console.log(`\n✅ Deleted ${deletedCount} common caches, freed ${(deletedSize / 1024 / 1024).toFixed(2)} MB`);

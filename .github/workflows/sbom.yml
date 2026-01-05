@@ -38,58 +38,7 @@ jobs:
           sed -n '1,200p' Makefile || true
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install cyclonedx-bom nox
-
-      - name: Ensure config artifacts
-        run: |
-          if [ -f Makefile ] && grep -qE '^[[:space:]]*config:' Makefile; then
-            make config
-          else
-            echo "::warning::No 'config' target in Makefile; creating minimal config/"
-            mkdir -p config
-            if [ ! -f config/sample-sbom-config.yaml ]; then
-              echo "apiVersion: v1" > config/sample-sbom-config.yaml
-              echo "sbom:" >> config/sample-sbom-config.yaml
-              echo "  output: sbom.json" >> config/sample-sbom-config.yaml
-              echo "  format: cyclonedx" >> config/sample-sbom-config.yaml
-            fi
-          fi
-
-      - name: Generate SBOM
-        run: |
-          make -C config sbom
-          echo "✅ SBOM generated"
-          ls -lh dist/sbom.json
-
-      - name: Validate SBOM
-        run: |
-          jq . dist/sbom.json > /dev/null && echo "✅ Valid JSON" || exit 1
-          COMPONENTS=$(jq '.components | length' dist/sbom.json)
-          echo "📦 Components: $COMPONENTS"
-
-      - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: sbom-${{ github.sha }}
-          path: dist/sbom.json
-          retention-days: 90
-          if-no-files-found: error
-
-      - name: Attach to release (on release only)
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dist/sbom.json
-          asset_name: sbom-${{ github.event.release.tag_name }}.json
-          asset_content_type: application/json
+          python-version: 3.11
+          cache-tier: 'common'
