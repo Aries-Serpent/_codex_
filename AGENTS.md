@@ -14,10 +14,28 @@
 
 **New AI Agent?** Read this first (5 min orientation):
 
+0. **🚨 CRITICAL: Read [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)** - MANDATORY
 1. **Repository Status:** Pre-Genesis (Template Mode - SAFE_MODE active)
 2. **Your Role:** Advisory only - No autonomous actions yet
 3. **Key Constraints:** See [.codex/guardrails.md](.codex/guardrails.md)
 4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+
+### ⚠️ AI Codebase Agency Policy (MANDATORY)
+
+**ALL AI agents MUST address ALL issues discovered in the codebase, regardless of whether they are pre-existing or introduced by current work.**
+
+**Prohibited Statements:**
+- ❌ "This is not related to my PR"
+- ❌ "These are pre-existing issues"
+- ❌ "My PR only adds files to X"
+
+**Required Actions:**
+- ✅ Fix ALL CI/CD failures
+- ✅ Fix ALL broken documentation links
+- ✅ Fix ALL linting/type errors
+- ✅ Leave codebase better than found
+
+**Full Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 
