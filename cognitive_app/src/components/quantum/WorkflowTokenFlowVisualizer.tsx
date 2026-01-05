@@ -111,21 +111,21 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
       <div className="grid grid-cols-3 gap-4 mb-6">
         <Card className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30">
           <div className="text-2xl font-bold text-blue-500 mb-1">
-            {stats.totalTransfers}
+            {transferStats.totalTransfers}
           </div>
           <p className="text-xs text-muted-foreground">Total Transfers</p>
         </Card>
 
         <Card className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30">
           <div className="text-2xl font-bold text-green-500 mb-1">
-            {stats.activeTransfers}
+            {transferStats.activeTransfers}
           </div>
           <p className="text-xs text-muted-foreground">In Flight</p>
         </Card>
 
         <Card className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30">
           <div className="text-2xl font-bold text-purple-500 mb-1">
-            {stats.avgLatency.toFixed(0)}ms
+            {transferStats.avgLatency.toFixed(0)}ms
           </div>
           <p className="text-xs text-muted-foreground">Avg Latency</p>
         </Card>

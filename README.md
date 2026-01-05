@@ -57,7 +57,7 @@ For detailed instructions, see: [Genesis Setup Guide](docs/admin/GENESIS_SETUP_G
 ## 🎨 Cognitive Codex Web Application
 
 **Status:** Integrated & Built Successfully ✅  
-**Access:** [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/) (after deployment)
+**Access:** https://aries-serpent.github.io/_codex_/cognitive_app/ (GitHub Pages deployment - available after PR merge)
 
 A React/Vite-based quantum-enhanced code generation platform with real-time cognitive brain visualization.
 

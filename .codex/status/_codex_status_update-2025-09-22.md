@@ -1,11 +1,11 @@
-Check for must recent active branch:
+Check for most recent active branch:
 //fetch https://github.com/Aries-Serpent/_codex_/activity?time_period=day
 
 Branches:
 //fetch https://github.com/Aries-Serpent/_codex_
 //fetch <!-- Branch no longer exists -->_
 //fetch <!-- Branch no longer exists -->_
-//fetch https://github.com/Aries-Serpent/_codex_/tree/0C_base_
+//fetch <!-- Branch no longer exists (0C_base archived) -->_
 
 Objective:
 > Traverse the repository and provide a comprehensive status audit. The goal is to assess **modularity**, **reproducibility**, and **production readiness** of the Codex Environment for Ubuntu, following best practices in ML systems design.
