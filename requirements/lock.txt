@@ -776,7 +776,7 @@ prompt-toolkit==3.0.52
     # via
     #   click-repl
     #   ipython
-propcache==0.3.2
+propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
