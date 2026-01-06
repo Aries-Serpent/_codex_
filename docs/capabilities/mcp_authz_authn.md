@@ -339,7 +339,7 @@ export MCP_JWT_ALGORITHM="HS256"
 export MCP_JWT_EXPIRY_SECONDS="3600"
 
 # OAuth settings
-export MCP_OAUTH_PROVIDER="https://auth.example.com"
+export MCP_OAUTH_PROVIDER="http://localhost:8080"
 export MCP_OAUTH_CLIENT_ID="your-client-id"
 export MCP_OAUTH_CLIENT_SECRET="your-client-secret"
 ```
@@ -364,7 +364,7 @@ authentication:
   
   oauth:
     enabled: false
-    provider: "https://auth.example.com"
+    provider: "http://localhost:8080"
 
 authorization:
   default_role: "reader"
