@@ -163,7 +163,7 @@ export function CodeGenerator() {
     } finally {
       setLoading(false);
     }
-  }, [prompt, getClient]);
+  }, [prompt, getClient, getMockClient]);
 
   const handleCopy = useCallback(() => {
     if (result?.code) {
