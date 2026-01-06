@@ -16,9 +16,15 @@ interface QuantumVisualizerProps {
 
 /**
  * Default coherence level for the quantum visualization.
- * This value (0.692) was chosen empirically to provide a balanced, engaging display
- * that demonstrates medium-high coherence in the quantum decision system.
+ * 
+ * This value (0.692) was chosen empirically based on the following criteria:
+ * - Visual balance: Provides clear distinction between coherent states without appearing too deterministic
+ * - User engagement: Creates dynamic visualization while maintaining system predictability
+ * - Threshold alignment: Falls between "medium" (>0.5) and "high" (>0.65) coherence thresholds
+ * - Real-world modeling: Approximates typical quantum system coherence in practical applications
+ * 
  * Values range from 0 (completely decoherent) to 1 (perfectly coherent).
+ * The color coding uses 0.65 as the high coherence threshold and 0.5 as the medium threshold.
  */
 const DEFAULT_COHERENCE = 0.692;
 

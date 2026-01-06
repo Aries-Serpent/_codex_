@@ -23,6 +23,15 @@ function createClient(): CodexAPIClient | null {
   return apiKey ? new CodexAPIClient(API_URL, apiKey) : null;
 }
 
+/**
+ * Factory function to create a MockCodexAPIClient instance.
+ * Uses lazy initialization to maintain consistency with the main client pattern.
+ * @returns MockCodexAPIClient instance
+ */
+function createMockClient(): MockCodexAPIClient {
+  return new MockCodexAPIClient();
+}
+
 export function CodeGenerator() {
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState<CodexResponse | null>(null);
@@ -30,15 +39,23 @@ export function CodeGenerator() {
   const [error, setError] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
   
-  // Lazy initialization: client is created on first use and can be recreated if needed
+  // Lazy initialization: clients are created on first use and can be recreated if needed
   const clientRef = useRef<CodexAPIClient | null>(null);
-  const mockClientRef = useRef<MockCodexAPIClient>(new MockCodexAPIClient());
+  const mockClientRef = useRef<MockCodexAPIClient | null>(null);
 
   const getClient = useCallback(() => {
+    // Attempt to recreate client if it doesn't exist or if API key might have changed
     if (!clientRef.current) {
       clientRef.current = createClient();
     }
     return clientRef.current;
+  }, []);
+
+  const getMockClient = useCallback(() => {
+    if (!mockClientRef.current) {
+      mockClientRef.current = createMockClient();
+    }
+    return mockClientRef.current;
   }, []);
 
   const checkApiStatus = useCallback(async () => {
@@ -53,13 +70,14 @@ export function CodeGenerator() {
       setApiStatus('connected');
     } catch {
       try {
-        await mockClientRef.current.getStatus();
+        const mockClient = getMockClient();
+        await mockClient.getStatus();
         setApiStatus('connected');
       } catch {
         setApiStatus('error');
       }
     }
-  }, [getClient]);
+  }, [getClient, getMockClient]);
 
   useEffect(() => {
     checkApiStatus();
@@ -107,7 +125,8 @@ export function CodeGenerator() {
       });
     } catch (err) {
       try {
-        const mockResponse = await mockClientRef.current.generateCode({
+        const mockClient = getMockClient();
+        const mockResponse = await mockClient.generateCode({
           prompt,
           context: { language: 'python', tier: 'A' },
         });
