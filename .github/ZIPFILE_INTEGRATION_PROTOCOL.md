@@ -19,7 +19,7 @@
 
 **Example Workflow:**
 ```bash
-# User provides: https://github.com/.../cognitivecodex-main.zip
+# User provides: https://github.com/user/repo/releases/download/v1.0.0/cognitivecodex-main.zip
 # Extract filename: cognitivecodex-main.zip
 
 # Step 1: Search repository
@@ -57,9 +57,10 @@ find . -name "$FILENAME" -type f 2>/dev/null
 
 #### 1.2 Extraction Strategy
 ```bash
-# Create isolated extraction directory
-mkdir -p /tmp/extraction-$(date +%Y%m%d-%H%M%S)
-cd /tmp/extraction-TIMESTAMP
+# Create isolated extraction directory with timestamp
+EXTRACTION_DIR="/tmp/extraction-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$EXTRACTION_DIR"
+cd "$EXTRACTION_DIR"
 
 # Extract and verify
 unzip -q /path/to/zipfile.zip
@@ -101,7 +102,7 @@ grep -r "codex" . --include="*.ts" --include="*.tsx" | grep -v "_codex_" | head 
 ```bash
 # Identify files that exist in both source and target
 TARGET_DIR="/home/runner/work/_codex_/_codex_/cognitive_app"
-SOURCE_DIR="/tmp/extraction-TIMESTAMP/cognitivecodex-main"
+SOURCE_DIR="$EXTRACTION_DIR/cognitivecodex-main"  # Use the variable from extraction step
 
 # Compare directory structures
 diff -rq "$SOURCE_DIR/src" "$TARGET_DIR/src" 2>/dev/null | grep "Only in"
@@ -278,7 +279,7 @@ EOF
 3. [Expected outcome]
 
 ## Context for Next Agent
-- Source extracted: /tmp/extraction-TIMESTAMP
+- Source extracted: $EXTRACTION_DIR (use the actual path from extraction)
 - Integration analysis: reports/cognitivecodex_integration_analysis_2026-01-06.md
 - Protected files: [list files that must not be modified]
 ```
