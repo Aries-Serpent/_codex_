@@ -50,13 +50,13 @@ export function PatternLibraryBrowser({ patterns }: PatternLibraryBrowserProps) 
                 {patterns.slice(0, 10).map((pattern) => (
                   <tr key={pattern.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="py-3 px-4 font-mono text-xs">{pattern.id}</td>
-                    <td className="py-3 px-4">{pattern.type || 'unknown'}</td>
-                    <td className="py-3 px-4 text-right font-mono">{pattern.usage_count || 0}</td>
+                    <td className="py-3 px-4">{pattern.type}</td>
+                    <td className="py-3 px-4 text-right font-mono">{pattern.usage_count}</td>
                     <td className="py-3 px-4 text-right font-mono text-accent">
-                      {pattern.compression_ratio ? `${(pattern.compression_ratio * 100).toFixed(0)}%` : 'N/A'}
+                      {(pattern.compression_ratio * 100).toFixed(0)}%
                     </td>
                     <td className="py-3 px-4 text-right text-xs text-muted-foreground">
-                      {pattern.last_accessed || 'Never'}
+                      {pattern.last_accessed}
                     </td>
                   </tr>
                 ))}
