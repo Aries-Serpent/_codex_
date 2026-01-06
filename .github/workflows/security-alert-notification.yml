@@ -143,7 +143,7 @@ jobs:
             return summary;
       
       - name: Create GitHub Issue for new alerts
-        if: steps.get-alerts.outputs.has-alerts == 'true' && steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0
+        if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -201,5 +201,5 @@ jobs:
       - name: Send notification (optional - requires configuration)
         if: steps.get-alerts.outputs.has-alerts == 'true' && steps.get-alerts.outputs.critical-count > 0
         run: |
-          echo "::notice::🚨 ${{'{{' }} steps.get-alerts.outputs.critical-count }} critical security alert(s) detected!"
+          echo "::notice::🚨 ${{ steps.get-alerts.outputs.critical-count }} critical security alert(s) detected!"
           echo "Configure Slack/Teams/Email notifications by adding secrets and updating this step"

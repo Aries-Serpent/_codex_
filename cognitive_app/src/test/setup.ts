@@ -23,15 +23,23 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+global.IntersectionObserver = class IntersectionObserver implements IntersectionObserver {
+  readonly root: Element | null = null;
+  readonly rootMargin: string = '';
+  readonly thresholds: ReadonlyArray<number> = [];
+
   constructor() {}
-  disconnect() {}
-  observe() {}
-  takeRecords() {
+  
+  disconnect(): void {}
+  
+  observe(): void {}
+  
+  takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  unobserve() {}
-} as any;
+  
+  unobserve(): void {}
+};
 
 // Extend expect with custom matchers
 expect.extend({
