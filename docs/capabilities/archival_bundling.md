@@ -4,6 +4,9 @@
 
 The **archival-bundling** capability provides comprehensive functionality for packaging, versioning, and archiving ML artifacts including models, datasets, configurations, and experiment results. This system ensures reproducibility by creating self-contained archives that capture all dependencies and metadata needed to recreate experimental conditions.
 
+See [Bundle Builder Spec](bundle_builder_spec.md) for the formal bundle model,
+manifest schema, and UI projection map used by Create Agent workflows.
+
 ### Purpose
 
 - **Reproducibility**: Bundle all artifacts needed to reproduce experiments
@@ -171,7 +174,7 @@ for bundle in bundles:
 ### Bundle Settings
 
 ```yaml
-# config/archival.yaml
+# configs/archival.yaml (canonical location; example schema)
 archival:
   # Storage location
   storage:

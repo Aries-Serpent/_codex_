@@ -1,6 +1,8 @@
 # ⚠️ DEPRECATED DIRECTORY
 
 This directory (`config/`) is deprecated. Please use `configs/` instead.
+SBOM workflows still read from this location for compatibility, but new
+configuration should live in `configs/`.
 
 ## Migration Guide
 
@@ -22,4 +24,4 @@ This directory will be removed in v2.0.0.
 
 ## Need Help?
 
-See `configs/README.md` for the new configuration structure.
+See `configs/README.md` and `configs/CONFIGURATION_STRUCTURE.md` for the canonical configuration structure.

@@ -1,3 +1,6 @@
+# DEPRECATED: Use the root Dockerfile.optimized for production builds.
+# This legacy Dockerfile remains for historical reference and will be removed.
+#
 # Multi-Stage Optimized Dockerfile
 # Produces smaller, more secure Docker images
 

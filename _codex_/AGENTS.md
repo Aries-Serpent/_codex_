@@ -5,6 +5,9 @@
 
 ---
 
+**Canonical guidance** lives in [`AGENTS.md`](../AGENTS.md). This file is a scoped
+supplement for internal `_codex_` structures.
+
 ## 📋 Internal Codex Structures
 
 This directory contains internal codex structures and utilities.
@@ -38,4 +41,3 @@ from codex.security.storage import SecureStorage
 **AST Module**: `src/codex/ast/` - Syntax tree analysis  
 **Agent Directory**: `agents/` - Agent implementations  
 **Agent Scripts**: `scripts/agent/` - Automation scripts
-

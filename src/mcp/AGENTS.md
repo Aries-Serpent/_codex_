@@ -5,6 +5,9 @@
 
 ---
 
+**Canonical guidance** lives in [`AGENTS.md`](../../AGENTS.md). This file is a
+scoped supplement covering MCP-specific security practices.
+
 ## 📋 MCP Server Components
 
 This directory contains the MCP server implementation.
@@ -57,4 +60,3 @@ async def handler(request: Request):
 **AST Module**: `src/codex/ast/` - Code analysis integration  
 **Agent Directory**: `agents/` - Agent implementations  
 **Agent Scripts**: `scripts/agent/` - Automation utilities
-

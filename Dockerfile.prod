@@ -1,3 +1,6 @@
+# DEPRECATED: Use Dockerfile.optimized for production builds.
+# This file remains for historical reference and will be removed in a future cycle.
+#
 # Multi-stage production/test image for optimized build and smaller runtime
 # Maintainer note: This Dockerfile produces a smaller image by using multi-stage builds.
 # Stage 1 builds and tests, Stage 2 copies only necessary files for runtime.

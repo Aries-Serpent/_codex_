@@ -2,11 +2,18 @@
 
 ## Hydra defaults
 
+- **Canonical root**: `configs/` (authoritative runtime configuration).
+- Legacy root: `conf/` (retained for minimal CLI workflows; deprecated).
+
+Canonical locations:
+- Root config: `configs/base/app.yaml` (or `configs/base/default.yaml` depending on workflow).
+- Model variants live in `configs/model/`; data presets in `configs/training/data/`;
+  training presets in `configs/training/`; experiment metadata in `configs/experiments/`.
+- Example sweep overrides are provided in `configs/experiments/sweep_template.yaml`.
+
+Legacy-only (minimal workflows):
 - Root config: `conf/config.yaml` with grouped defaults for `model`, `data`,
   `training`, and `experiment`.
-- Model variants live in `conf/model/`; data presets in `conf/data/`; training
-  presets in `conf/training/`; experiment metadata in `conf/experiment/`.
-- Example sweep overrides are provided in `conf/experiment/sweep.yaml`.
 
 ## ModelConfig
 

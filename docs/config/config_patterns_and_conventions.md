@@ -70,7 +70,7 @@ where `raw_dict` is typically produced by:
 
 ```python
 import yaml, pathlib as p
-raw_dict = yaml.safe_load(p.Path("conf/my_run.yaml").read_text()) or {}
+raw_dict = yaml.safe_load(p.Path("configs/my_run.yaml").read_text()) or {}
 cfg = schema.from_dict(raw_dict)
 ```
 
@@ -84,14 +84,14 @@ Usage:
 
 ```bash
 python tools/codex_config_validate.py \
-  --conf-dir conf \
+  --conf-dir configs \
   --json-out codex_config_validation_report.json \
   --md-out codex_config_validation_report.md
 ```
 
 Behavior:
 
-* Scans `conf/` recursively for `*.yaml`.
+* Scans `configs/` recursively for `*.yaml`.
 * For each file:
   * Parses YAML.
   * Calls `schema.from_dict(...)`.
@@ -103,7 +103,7 @@ Behavior:
 This tool is wired into `codex_task_sequence.yaml` so that configuration
 issues are detected early.
 
-## 4. Hydra Compatibility (Future Work)
+## 4. Hydra Compatibility (Current State)
 
 The current schema is **Hydra-friendly** but does not require Hydra:
 
@@ -111,11 +111,10 @@ The current schema is **Hydra-friendly** but does not require Hydra:
 * Nothing prevents using these dataclasses as the "target" of a Hydra
   instantiation step in the future.
 
-Future work Phase 5:
+Notes:
 
-* Introduce a dedicated `conf/` tree with Hydra-friendly defaults.
-* Provide example `hydra.main()` entrypoints that adapt to the schema.
-* Add explicit support for structured configs.
+* `configs/` is the canonical Hydra configuration root.
+* `conf/` remains as a deprecated minimal-flow tree (see `conf/DEPRECATED.md`).
 
 ## 5. Best Practices
 

@@ -5,6 +5,9 @@
 
 ---
 
+**Canonical guidance** lives in [`AGENTS.md`](../AGENTS.md). This file is a scoped
+supplement for prompt templates and should be read alongside the root guidance.
+
 ## 📋 Prompt Templates
 
 This directory contains prompt templates and task templates for agents.
@@ -46,4 +49,3 @@ user_prompt = sanitize_log(user_input)
 **AST Module**: `src/codex/ast/` - Code parsing for prompt generation  
 **Agent Directory**: `agents/` - Agent configurations  
 **Agent Scripts**: `scripts/agent/` - Automation scripts
-

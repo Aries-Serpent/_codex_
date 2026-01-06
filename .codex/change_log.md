@@ -16142,3 +16142,11 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 [Previous Cycle-09-20T05:37:18Z] Generated exhaustive daily status update for Previous Cycle-09-20
 
 ```
+
+## Documentation Consolidation Update - 2026-01-06
+
+- Identified root `AGENTS.md` as canonical and updated scoped supplements with explicit references.
+- Documented configuration root inventory and confirmed `configs/` as the authoritative runtime location.
+- Consolidated changelog content into `CHANGELOG.md` and added deprecation pointers in legacy files.
+- Documented Dockerfile/compose inventory with canonical build pathway and deprecated legacy Dockerfiles.
+- Added the bundle builder specification, manifest schema/example, and UI projection map documentation.

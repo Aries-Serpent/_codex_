@@ -20,6 +20,17 @@
 3. **Key Constraints:** See [.codex/guardrails.md](.codex/guardrails.md)
 4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
 
+### 📌 Scoped Override Notes
+
+The canonical guidance for the repository lives in this root `AGENTS.md`. The following
+scoped supplements intentionally override or extend guidance for their subtrees:
+
+- `prompts/AGENTS.md` (prompt templates and security handling)
+- `scripts/AGENTS.md` (script conventions and safety utilities)
+- `docs/guides/AGENTS.md` (documentation guide conventions)
+- `src/mcp/AGENTS.md` (MCP server security integration)
+- `_codex_/AGENTS.md` (internal `_codex_` structures)
+
 ### ⚠️ AI Codebase Agency Policy (MANDATORY)
 
 **ALL AI agents MUST address ALL issues discovered in the codebase, regardless of whether they are pre-existing or introduced by current work.**

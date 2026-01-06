@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed whitelist parsing in `scripts/remediation/verify_conflicts.py` to correctly
+  exclude whitelisted duplicates from strict mode violations. The script now properly
+  matches module paths against the `whitelist_duplicates` entries in `.github/SHIM_INVENTORY.yaml`,
+  preventing false positive violations in nightly audit runs.
+
+### Added
+- Offline-friendly BLEU/ROUGE-L generative metrics with registry integration and unit tests.
+- Evaluation CLI options for selecting metrics and providing prediction/target transforms.
+- Capability-audit validation now honors `CODEX_SKIP_VALIDATE_CHECKOUT` with a regression test
+  confirming required templates, detectors, schemas, and supporting scripts are present.
+- Post-iteration status checklist capturing audit artifacts and capability-to-marker mapping.
+- Comprehensive test suite for `verify_conflicts.py` in `tests/scripts/test_verify_conflicts.py`
+  validating whitelist parsing logic and edge cases.
+
+### Changed
+- Evaluation loop now supports text post-processing hooks to unlock generative metrics.
+- NDJSON logger registry reuses the core logger with rotation, GPU telemetry, and configurable size limits.
+- Capability audit validator now exits non-zero with clear messaging when required assets are missing
+  or ripgrep patterns have zero hits; tests exercise both branches.
+
+### Documentation
+- Updated metrics guide and logging guide to reflect generative metrics and NDJSON rotation controls.
+- Optional BitsAndBytes quantization hints in `codex_ml.models.factory.create_model` with regression tests.
+- Remote checkpoint synchronization via `codex_ml.utils.storage.FSSpecStorage` and smoke tests.
+- Offline CI runner script mirroring `.github/workflows/ci.yml` and documentation under
+  `docs/development/offline_ci.md`.
+- Minimal Hydra sweep definition (`configs/sweeps/minimal.yaml`) plus `nox -s sweeps_smoke` session
+  and helper script.
+- Prompt-injection and credential redaction rules in `configs/base/safety/policy.yaml`.
+- Plugin development guide summarising dataset/metric/logger registries.
+- Dataset manifest guide updated to highlight deterministic JSONL/CSV loaders.
+- Checkpointing documentation expanded with remote storage workflow and test guidance.
+- Historical note (Previous Cycle-11-14): AGENTS.md operational rewrite and migration notes
+  consolidated into this changelog.
+
 ### Planned
 - OpenTelemetry integration for distributed tracing
 - Plugin architecture for custom adapters

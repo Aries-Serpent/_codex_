@@ -5,6 +5,9 @@
 
 ---
 
+**Canonical guidance** lives in [`AGENTS.md`](../../AGENTS.md). This file is a
+scoped supplement for documentation guide conventions.
+
 ## 📋 Guide Categories
 
 This directory contains comprehensive guides for using the repository.
@@ -47,4 +50,3 @@ from codex.security.storage import SecureStorage
 **AST Module**: `src/codex/ast/` - Code analysis and parsing  
 **Agent Directory**: `agents/` - Agent implementations  
 **Agent Scripts**: `scripts/agent/` - Agent automation
-

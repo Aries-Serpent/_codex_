@@ -1,6 +1,9 @@
 # ⚠️ DEPRECATED DIRECTORY
 
 This directory (`conf/`) is deprecated. Please use `configs/` instead.
+Minimal CLI workflows (`train_minimal`, `eval_minimal`) still reference this
+tree for backwards compatibility, but new runtime configuration must live in
+`configs/`.
 
 ## Migration Guide
 
@@ -37,5 +40,5 @@ This directory (`conf/`) is deprecated. Please use `configs/` instead.
 ## Need Help?
 
 - See [`misc/repo-owner-review/MIGRATION_GUIDE.md`](../misc/repo-owner-review/MIGRATION_GUIDE.md) for comprehensive instructions
-- See `configs/README.md` for the new configuration structure
+- See `configs/README.md` and `configs/CONFIGURATION_STRUCTURE.md` for the canonical configuration structure
 - Use `scripts/remediation/consolidate_configs.py` for automated migration

@@ -6,6 +6,34 @@ This repo ships a local-first Docker workflow that remains CI-gated by policy. U
 - Docker engine with Buildx (recommended)
 - Optional: `syft` for SBOM, `trivy` for vulnerability scanning
 
+## Dockerfile & Compose Inventory (Canonical vs. Legacy)
+
+| File | Environment | Status | Recommended Use |
+| --- | --- | --- | --- |
+| `Dockerfile` | dev/test (CPU) | ✅ Canonical | Local builds, smoke tests, CI parity for CPU dev workflows. |
+| `Dockerfile.ci` | CI | ✅ Canonical | CI build stages and dependency pre-warming. |
+| `Dockerfile.optimized` | prod | ✅ Canonical | Production-ready multi-stage build. |
+| `Dockerfile.gpu` | GPU | ✅ Canonical | CUDA-enabled GPU runtime builds. |
+| `Dockerfile.embedding` | embedding worker | ✅ Canonical | Embedding service image. |
+| `Dockerfile.local` | local dev | ⚠️ Local-only | Local-only development build aid. |
+| `Dockerfile.local-codex-env` | local dev env | ⚠️ Local-only | Dedicated local environment image. |
+| `Dockerfile.prod` | prod | ⚠️ Deprecated | Use `Dockerfile.optimized`. |
+| `docker/Dockerfile.cpu` | dev/test (CPU) | ⚠️ Deprecated | Use `Dockerfile`. |
+| `docker/Dockerfile.optimized` | prod | ⚠️ Deprecated | Use `Dockerfile.optimized`. |
+| `docker-compose.yml` | local orchestration | ✅ Canonical | Local CPU service wiring. |
+| `docker-compose.override.yml` | local override | ✅ Canonical | Local overrides for base compose. |
+| `docker-compose.override.local.yml` | local build/run | ✅ Canonical | Local override for building from source. |
+| `docker-compose.embedding.yml` | embedding worker | ✅ Canonical | Embedding worker compose wiring. |
+
+## Canonical Build & Deploy Pathway
+
+1. **Local CPU (development/test)**: build from `Dockerfile`, then run via `docker-compose.yml`
+   (optionally with `docker-compose.override.local.yml` for local source builds).
+2. **Production (CPU)**: build from `Dockerfile.optimized`, publish, and deploy.
+3. **GPU**: build from `Dockerfile.gpu` and run with NVIDIA runtime on compatible hosts.
+4. **Embedding worker**: build from `Dockerfile.embedding` and run via `docker-compose.embedding.yml`.
+5. **CI**: use `Dockerfile.ci` for pipeline-specific layers and caches.
+
 ## Build
 ```bash
 bash scripts/ci/build_image.sh codex:local Dockerfile --load

@@ -8,6 +8,19 @@
 
 This directory (`configs/`) is the **canonical configuration root** for all Hydra-based configuration in the _codex_ repository. 
 
+**Authoritative runtime location:** `configs/` is the single source of truth for runtime configuration. Other
+trees exist only for legacy shims or narrow tooling needs and should not be used for new runtime config.
+
+## Inventory (Config Roots & Legacy Shims)
+
+| Location | Status | Primary Use | Notes |
+| --- | --- | --- | --- |
+| `configs/` | ✅ Canonical | Runtime (Hydra/OmegaConf), deployment, eval/training presets | Use for all new configuration. |
+| `conf/` | ⚠️ Legacy | Minimal CLI workflows (`train_minimal`, `eval_minimal`) | Deprecated. Retained for minimal examples; see `conf/DEPRECATED.md`. |
+| `config/` | ⚠️ Legacy | SBOM tooling inputs | Deprecated. Retained for SBOM workflows; see `config/DEPRECATED.md`. |
+| `config_legacy/` | ⚠️ Deprecated shim | Avoid `hydra` shadowing | Import shim only; see `config_legacy/README.md`. |
+| `yaml_legacy/` | ⚠️ Deprecated shim | PyYAML fallback shim | Used only when PyYAML is missing; avoid direct imports. |
+
 ## Directory Structure
 
 ```
@@ -35,6 +48,7 @@ For backward compatibility, the following directories are maintained as legacy a
 - `conf/` - Legacy Hydra config root (deprecated, use `configs/` instead)
 - `config/` - Miscellaneous configuration files (non-Hydra)
 - `config_legacy/` - Archived legacy configurations
+- `yaml_legacy/` - Legacy shim for PyYAML fallback
 
 ### Migration Path
 
