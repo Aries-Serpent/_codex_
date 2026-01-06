@@ -11,7 +11,13 @@ import { CodeEditor } from './CodeEditor';
 import { MetricsBar } from './MetricsBar';
 
 const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
-const API_KEY = import.meta.env.VITE_CODEX_KEY || 'demo-key';
+const API_KEY = import.meta.env.VITE_CODEX_KEY;
+
+if (!API_KEY) {
+  throw new Error(
+    'Missing VITE_CODEX_KEY environment variable. Please set a valid API key in your environment configuration.',
+  );
+}
 
 const client = new CodexAPIClient(API_URL, API_KEY);
 const mockClient = new MockCodexAPIClient();
