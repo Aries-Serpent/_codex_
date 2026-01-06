@@ -941,6 +941,7 @@ export class CodexAPIError extends Error {
 ### Example 2: React Code Generator Component
 
 ```typescript
+{% raw %}
 // CodeGenerator.tsx
 import React, { useState, useCallback } from 'react';
 import { CodexAPIClient, CodexResponse } from './codex-api-client';
@@ -1055,6 +1056,7 @@ export const CodeGenerator: React.FC = () => {
     </div>
   );
 };
+{% endraw %}
 ```
 
 ### Example 3: Quantum Visualizer Component
