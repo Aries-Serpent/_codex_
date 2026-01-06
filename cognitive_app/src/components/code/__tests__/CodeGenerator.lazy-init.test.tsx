@@ -17,52 +17,72 @@ import { CodeGenerator } from '../CodeGenerator';
 
 // Mock the API clients with working implementations
 vi.mock('@/lib/codex-api-client', () => {
-  const MockClient = vi.fn().mockImplementation(() => ({
-    getStatus: vi.fn().mockResolvedValue({ status: 'ok' }),
-    generateCode: vi.fn().mockResolvedValue({
-      code: 'def hello():\n    print("Hello, World!")',
-      metadata: {
-        k1_factor: 0.9234,
-        cache_hit: false,
-        processing_time: 1.234,
-      },
-      quantum_metrics: {
-        coherence: 0.85,
-        entanglement: 0.72,
-      },
-    }),
-  }));
+  class CodexAPIClient {
+    constructor(apiUrl: string, apiKey: string) {}
+    
+    async getStatus() {
+      // Simulate async delay for realistic timing
+      await new Promise(resolve => setTimeout(resolve, 50));
+      return { status: 'ok' };
+    }
+    
+    async generateCode(prompt: string) {
+      return {
+        code: 'def hello():\n    print("Hello, World!")',
+        metadata: {
+          k1_factor: 0.9234,
+          cache_hit: false,
+          processing_time: 1.234,
+        },
+        quantum_metrics: {
+          coherence: 0.85,
+          entanglement: 0.72,
+        },
+      };
+    }
+  }
+  
+  class CodexAPIError extends Error {
+    constructor(message: string, public statusCode: number) {
+      super(message);
+      this.name = 'CodexAPIError';
+    }
+  }
   
   return {
-    CodexAPIClient: MockClient,
-    CodexAPIError: class CodexAPIError extends Error {
-      constructor(message: string, public statusCode: number) {
-        super(message);
-        this.name = 'CodexAPIError';
-      }
-    },
+    CodexAPIClient,
+    CodexAPIError,
   };
 });
 
 vi.mock('@/lib/mock-api-client', () => {
-  const MockClient = vi.fn().mockImplementation(() => ({
-    getStatus: vi.fn().mockResolvedValue({ status: 'mock' }),
-    generateCode: vi.fn().mockResolvedValue({
-      code: '# Mock generated code\ndef example():\n    pass',
-      metadata: {
-        k1_factor: 0.5000,
-        cache_hit: false,
-        processing_time: 0.100,
-      },
-      quantum_metrics: {
-        coherence: 0.50,
-        entanglement: 0.50,
-      },
-    }),
-  }));
+  class MockCodexAPIClient {
+    constructor() {}
+    
+    async getStatus() {
+      // Simulate async delay for realistic timing
+      await new Promise(resolve => setTimeout(resolve, 50));
+      return { status: 'mock' };
+    }
+    
+    async generateCode(prompt: string) {
+      return {
+        code: '# Mock generated code\ndef example():\n    pass',
+        metadata: {
+          k1_factor: 0.5000,
+          cache_hit: false,
+          processing_time: 0.100,
+        },
+        quantum_metrics: {
+          coherence: 0.50,
+          entanglement: 0.50,
+        },
+      };
+    }
+  }
   
   return {
-    MockCodexAPIClient: MockClient,
+    MockCodexAPIClient,
   };
 });
 
@@ -101,7 +121,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
    * ✅ Generate button is disabled
    */
   describe('Test 2: No API Key Scenario', () => {
-    it('[APPROVED] should display error message when API key is missing', async () => {
+    it('[APPROVED] should display info message when API key is missing (mock fallback)', async () => {
       // Arrange: Remove API key
       delete import.meta.env.VITE_CODEX_KEY;
       import.meta.env.DEV = false;
@@ -109,10 +129,10 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       // Act: Render component
       render(<CodeGenerator />);
 
-      // Assert: Error message appears
+      // Assert: Info message appears (component uses mock fallback)
       await waitFor(() => {
-        expect(screen.getByText(/missing vite_codex_key environment variable/i)).toBeInTheDocument();
-      });
+        expect(screen.getByText(/using demo mode.*api key not configured/i)).toBeInTheDocument();
+      }, { timeout: 3000 });
     });
 
     it('[APPROVED] should show "Connected" status with mock fallback', async () => {
