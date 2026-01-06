@@ -240,10 +240,18 @@ export function MetricsDashboard() {
             
             <MetricCard
               title="STM Usage"
-              value={memoryState ? ((memoryState.stm_count / memoryState.capacity) * 100).toFixed(0) : '0'}
+              value={
+                memoryState && memoryState.capacity > 0
+                  ? ((memoryState.stm_count / memoryState.capacity) * 100).toFixed(0)
+                  : '0'
+              }
               unit="%"
               icon={<Lightning weight="duotone" className="w-4 h-4 text-[oklch(0.70_0.18_40)]" />}
-              status={memoryState && (memoryState.stm_count / memoryState.capacity) < 0.8 ? 'good' : 'warning'}
+              status={
+                memoryState && memoryState.capacity > 0 && (memoryState.stm_count / memoryState.capacity) >= 0.8
+                  ? 'warning'
+                  : 'good'
+              }
               subtitle={`${memoryState?.stm_count || 0} entries`}
             />
           </div>

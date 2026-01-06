@@ -37,6 +37,8 @@ interface CascadingExecutionMonitorProps {
   showVisualization?: boolean;
 }
 
+const STAGE_EXECUTION_TIME_MS = 800;
+
 export function CascadingExecutionMonitor({ 
   tokens,
   onExecuteToken,
@@ -165,7 +167,7 @@ export function CascadingExecutionMonitor({
 
   const simulateExecution = async (node: CascadeNode): Promise<boolean> => {
     const stages = node.token.stages.length;
-    const stageTime = 800;
+    const stageTime = STAGE_EXECUTION_TIME_MS;
     
     for (let i = 0; i < stages; i++) {
       if (isPaused) {
