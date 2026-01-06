@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { WorkflowTokenOrchestrator } from '../../quantum/WorkflowTokenOrchestrator';
 
 describe('WorkflowTokenOrchestrator - Workflow Orchestration (20 tests)', () => {

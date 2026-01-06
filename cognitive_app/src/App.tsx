@@ -12,7 +12,7 @@ import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [generatedCode, setGeneratedCode] = useState<string>('');
+  const [generatedCode] = useState<string>('');
 
   return (
     <div className="min-h-screen bg-background text-foreground">

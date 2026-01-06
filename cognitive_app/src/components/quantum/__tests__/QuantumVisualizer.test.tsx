@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { QuantumVisualizer } from '../../quantum/QuantumVisualizer';
 
 describe('QuantumVisualizer - Quantum Visualization (10 tests)', () => {
-  let mockCanvas: HTMLCanvasElement;
   let mockContext: CanvasRenderingContext2D;
 
   beforeEach(() => {

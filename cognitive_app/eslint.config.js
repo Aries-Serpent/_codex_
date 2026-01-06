@@ -35,7 +35,7 @@ export default tseslint.config(
           caughtErrorsIgnorePattern: '^_',
         },
       ],
-      // Allow console in development
+      // Allow specific console methods (warn, error, info)
       'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
       // Allow any types in tests and mocks
       '@typescript-eslint/no-explicit-any': ['warn'],

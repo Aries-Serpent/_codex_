@@ -340,8 +340,6 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
 
-      const initialCheckCount = mockSpark.llm.mock.calls.length;
-
       vi.advanceTimersByTime(30000);
 
       await waitFor(() => {

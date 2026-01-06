@@ -341,7 +341,6 @@ describe('CodeGenerator - Real Workflows', () => {
 
     // Mock document.createElement for download link
     const mockLink = document.createElement('a');
-    const clickSpy = vi.spyOn(mockLink, 'click');
     vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
 
     render(<CodeGenerator />);
