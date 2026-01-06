@@ -3,13 +3,14 @@ import { Database } from '@phosphor-icons/react';
 
 /**
  * Pattern object from the pattern library.
+ * All fields are required to ensure proper rendering and React key usage.
  */
 interface Pattern {
-  id: string;  // Required: unique pattern identifier
-  type?: string;
-  usage_count?: number;
-  compression_ratio?: number;
-  last_accessed?: string;
+  id: string;  // Required: unique pattern identifier for React keys
+  type: string;  // Required: pattern type/name for display
+  usage_count: number;  // Required: number of times pattern was used
+  compression_ratio: number;  // Required: efficiency metric (0-1)
+  last_accessed: string;  // Required: ISO timestamp of last access
 }
 
 interface PatternLibraryBrowserProps {

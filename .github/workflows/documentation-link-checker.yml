@@ -34,6 +34,10 @@ jobs:
         run: |
           echo "🔍 Computing checksum of documentation files..."
           
+          # NOTE: This is Phase 1 aggregate caching (all-or-nothing approach).
+          # For granular per-folder/per-file caching (Phase 2-3), see:
+          # .codex/WORKFLOW_CACHING_IMPLEMENTATION_PLAN.md
+          
           # Find all markdown files to check
           MD_FILES=$(find . -name "*.md" \
             -not -path "./node_modules/*" \

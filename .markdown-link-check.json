@@ -47,8 +47,8 @@
       "pattern": "^https://aries-serpent\\.github\\.io/_codex_/"
     },
     {
-      "comment": "Blob paths with commit hashes (incomplete or missing extensions)",
-      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/blob/[a-f0-9]+/tests/[^/]+$"
+      "comment": "Blob paths with commit hashes in tests/ (SPECIFIC: files without .py/.md/.txt extensions only)",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/blob/[a-f0-9]+/tests/[^/]+(?<!\\.(py|md|txt|yaml|yml|json))$"
     },
     {
       "comment": "External broken dependency: haralyzer repo (archived or moved)",
