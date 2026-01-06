@@ -188,7 +188,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Trigger Frequency**: Weekly on Mondays at 00:00 UTC  
 **Estimated Impact**:
-- 2-3 minutes saved per weekly run
+- 2-3 minutes saved per per commit cycle run
 - ~10-15 minutes saved per month
 - Improves SBOM generation performance
 
@@ -425,25 +425,25 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 - Additional security scans: ~3-4 minutes per PR + daily runs
 - Additional nox gates: ~3-4 minutes per PR
 - Monthly savings: ~300-360 minutes (5-6 hours)
-- **Total monthly savings (Phase 1 + 2)**: 525-585 minutes (8.75-9.75 hours)
+- **Total per 4-5 commit cycles savings (Phase 1 + 2)**: 525-585 minutes (8.75-9.75 hours)
 
 **Phase 3A Results (✅ Completed 2025-12-30)**:
 - pr-followup-generator.yml: 8.4 hours/month
 - agent-runtime.yml: 3.4 hours/month
 - detect-duplicates.yml: 6.0 hours/month
-- **Additional monthly savings (Phase 3A)**: 17.8 hours
-- **Total monthly savings (Phase 1 + 2 + 3A)**: 26.5-27.5 hours
+- **Additional per 4-5 commit cycles savings (Phase 3A)**: 17.8 hours
+- **Total per 4-5 commit cycles savings (Phase 1 + 2 + 3A)**: 26.5-27.5 hours
 
 **Phase 3B Results (✅ Completed 2025-12-30)**:
 - Converted Phase 3A workflows from explicit to built-in caching (storage optimization)
 - determinism.yml: 2.2 hours/month
 - draft-audit-pr.yml: 1.2 hours/month
-- **Additional monthly savings (Phase 3B)**: 3.4 hours
-- **Total monthly savings (Phase 1 + 2 + 3A + 3B)**: 29.9-30.9 hours
+- **Additional per 4-5 commit cycles savings (Phase 3B)**: 3.4 hours
+- **Total per 4-5 commit cycles savings (Phase 1 + 2 + 3A + 3B)**: 29.9-30.9 hours
 
 **Projected (After Phase 3C+)**:
 - Total workflows with caching: 45+
-- Estimated monthly savings: 38-43 hours of runner time
+- Estimated per 4-5 commit cycles savings: 38-43 hours of runner time
 - Network bandwidth reduction: 60-85%
 
 ### Resource Optimization
@@ -545,7 +545,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 
 4. **Use Conditional Caching**:
    - Don't cache in workflows that run infrequently
-   - Example: scheduled-dependency-audit.yml (weekly) - consider removing if space needed
+   - Example: scheduled-dependency-audit.yml (per commit cycle) - consider removing if space needed
 
 5. **Leverage Built-in Caching**:
    - Use `actions/setup-python@v6` with `cache: 'pip'` instead of explicit cache action
@@ -595,7 +595,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 If approaching 9.5 GB, take these actions:
 
 1. **Remove caching from infrequent workflows**:
-   - scheduled-dependency-audit.yml (weekly) - saves ~0.5 GB
+   - scheduled-dependency-audit.yml (per commit cycle) - saves ~0.5 GB
    - integration-gated.yml (manual only) - saves ~0.3 GB
 
 2. **Optimize cache paths**:
@@ -626,7 +626,7 @@ If approaching 9.5 GB, take these actions:
 - detect-duplicates.yml (every PR)
 
 **Skip Phase 3 caching for**:
-- Infrequent workflows (monthly, quarterly runs)
+- Infrequent workflows (per 4-5 commit cycles, per phase runs)
 - Manual-only workflows with low usage
 - Workflows with built-in caching already
 
@@ -677,7 +677,7 @@ The implementation of caching across Phase 1, Phase 2, Phase 3A, and Phase 3B re
 - ✅ integration-gated.yml - pip caching for integration tests
 - ✅ nox_gates.yml - pip + nox dual caching
 - ✅ scheduled-dependency-audit.yml - pip caching for SBOM generation
-- ✅ ~5-6 hours additional monthly runner time savings
+- ✅ ~5-6 hours additional per 4-5 commit cycles runner time savings
 - ✅ Zero breaking changes introduced
 - ✅ All YAML files validated
 
@@ -692,11 +692,11 @@ The implementation of caching across Phase 1, Phase 2, Phase 3A, and Phase 3B re
 - Track cache hit rates for new Phase 2 workflows
 - Monitor workflow execution times for improvements
 - Watch for any cache-related issues in PR feedback
-- Review cache storage utilization weekly
+- Review cache storage utilization per commit cycle
 
 ---
 
 **Report Generated**: 2025-12-30 (Phase 2 Complete)  
 **Analysis Period**: Phase 1 (2025-12-30) + Phase 2 (2025-12-30)  
 **Next Review**: Recommended in 2-4 weeks to assess Phase 2 impact  
-**Phase 3 Target**: Q1 2026 - Remaining 28 workflows
+**Phase 3 Target**: Phase 1 (2026) - Remaining 28 workflows

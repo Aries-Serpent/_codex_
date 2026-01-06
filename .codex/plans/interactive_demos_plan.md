@@ -859,44 +859,44 @@ docs/
 
 ## Implementation Phases
 
-### Phase 1: Foundation (Week 1)
+### Phase 1: Foundation (Pre-commit 1-2)
 - [ ] Create directory structure
 - [ ] Set up demos landing page
 - [ ] Create shared CSS and JS utilities
 - [ ] Test Pyodide integration
 - [ ] Choose and integrate visualization libraries
 
-### Phase 2: Category 1 - Multi-Agent (Week 2-3)
+### Phase 2: Category 1 - Multi-Agent (Pre-commit 3-6)
 - [ ] Build code quality analyzer demo
 - [ ] Create unused import detector
 - [ ] Implement multi-agent sweep simulator
 - [ ] Add interactive visualizations
 
-### Phase 3: Category 2 - Cognitive Brain (Week 3-4)
+### Phase 3: Category 2 - Cognitive Brain (Pre-commit 5-8)
 - [ ] Create PDA loop interactive diagram
 - [ ] Build memory system visualization
 - [ ] Implement quantum advantage calculator
 - [ ] Add metrics dashboards
 
-### Phase 4: Category 3 - Physics (Week 4-5)
+### Phase 4: Category 3 - Physics (Pre-commit 7-10)
 - [ ] Build entropy visualization
 - [ ] Create coupling strength calculator
 - [ ] Implement Hamiltonian energy demo
 - [ ] Add physics formula explanations
 
-### Phase 5: Category 4 - Builder (Week 5-6)
+### Phase 5: Category 4 - Builder (Pre-commit 9-12)
 - [ ] Create drag-and-drop agent builder
 - [ ] Implement message bus simulator
 - [ ] Add code generation
 - [ ] Enable download of generated systems
 
-### Phase 6: Category 5 - Testing (Week 6)
+### Phase 6: Category 5 - Testing (Pre-commit 11-12)
 - [ ] Build test coverage visualizer
 - [ ] Create CodeQL demo
 - [ ] Add security examples
 - [ ] Implement before/after comparisons
 
-### Phase 7: Polish & Deploy (Week 7)
+### Phase 7: Polish & Deploy (Pre-commit 13-14)
 - [ ] Performance optimization
 - [ ] Mobile responsiveness
 - [ ] Accessibility audit
@@ -952,7 +952,7 @@ docs/
 ### Regular Updates
 - Update examples with new features
 - Fix bugs reported by users
-- Update dependencies quarterly
+- Update dependencies per phase
 - Add new demos as features are added
 
 ### Monitoring

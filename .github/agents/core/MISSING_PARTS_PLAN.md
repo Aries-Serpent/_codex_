@@ -274,7 +274,7 @@ class FrameworkConfig:
 
 **Plan**: Add SQLite connection pooling for better performance under load
 
-**Action**: Future enhancement (Q1 2026)
+**Action**: Future enhancement (Phase 1 (2026))
 
 ---
 
@@ -284,7 +284,7 @@ class FrameworkConfig:
 
 **Plan**: Add caching for frequently accessed patterns/lessons
 
-**Action**: Future enhancement (Q1 2026)
+**Action**: Future enhancement (Phase 1 (2026))
 
 ---
 
@@ -298,7 +298,7 @@ class FrameworkConfig:
 
 **Dependencies**: scikit-learn, TensorFlow/PyTorch
 
-**Action**: Phase 2 (Q1 2026)
+**Action**: Phase 2 (Phase 1 (2026))
 
 ---
 
@@ -310,7 +310,7 @@ class FrameworkConfig:
 
 **Dependencies**: Celery or Ray
 
-**Action**: Phase 3 (Q2 2026)
+**Action**: Phase 3 (Phase 2 (2026))
 
 ---
 

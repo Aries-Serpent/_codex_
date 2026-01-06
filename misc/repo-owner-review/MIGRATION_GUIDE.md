@@ -18,7 +18,7 @@ The repository is consolidating configuration files from the legacy `conf/` dire
 | **Deprecation Notice** | December 2025 | All `conf/` files marked deprecated |
 | **Grace Period** | January 2026 - June 2026 | Both directories functional |
 | **Migration Deadline** | June 30, 2026 | All references should be updated |
-| **Removal** | v2.0.0 (Q2 2026) | `conf/` directory removed |
+| **Removal** | v2.0.0 (Phase 2 (2026)) | `conf/` directory removed |
 
 ---
 

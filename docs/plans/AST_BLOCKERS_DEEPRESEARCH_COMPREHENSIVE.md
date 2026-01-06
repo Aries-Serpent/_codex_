@@ -265,7 +265,7 @@ class ParallelAnalyzer:
 
 ## Part 5: Implementation Roadmap (Phases 4-6)
 
-### Phase 4: Core AST Implementation (Weeks 1-2, 10 days)
+### Phase 4: Core AST Implementation (Pre-commit 1-4, 10 days)
 
 **Objectives**:
 - ✅ All 5 dependencies resolved (no conflicts)
@@ -312,7 +312,7 @@ tests/ast/
 
 ---
 
-### Phase 5: Analysis & Metrics (Weeks 3-4, 10 days)
+### Phase 5: Analysis & Metrics (Pre-commit 5-8, 10 days)
 
 **Objectives**:
 - ✅ Dependency graph with cycle detection (Tarjan's SCC)
@@ -351,11 +351,11 @@ tests/ast/
 - ✅ Incremental analysis working correctly
 - ✅ All tests passing
 
-**Timeline**: 10 person-days (Weeks 3-4)
+**Timeline**: 10 person-days (Pre-commit 5-8)
 
 ---
 
-### Phase 6: Integration & Optimization (Weeks 5-6, 10 days)
+### Phase 6: Integration & Optimization (Pre-commit 9-12, 10 days)
 
 **Objectives**:
 - ✅ Plugin architecture (registry + loader)
@@ -415,7 +415,7 @@ tests/ast/
 - ✅ Documentation complete
 - ✅ GitHub Actions workflow passing
 
-**Timeline**: 10 person-days (Weeks 5-6)
+**Timeline**: 10 person-days (Pre-commit 9-12)
 
 ---
 
@@ -425,10 +425,10 @@ tests/ast/
 
 | Objective | Method | Deliverable | Owner | Timeline |
 |-----------|--------|-------------|-------|----------|
-| **Identify ideal code patterns** | Scan 25+ OSS repos | Pattern library + code refs | Research Lead | Week 1 |
-| **Gather best-practice docs** | Review papers + OSS docs | Best practices guide + ADRs | Tech Writer | Week 1 |
-| **Assess feasibility** | Prototype critical blockers | Feasibility report + PoC code | Architecture Lead | Week 1-2 |
-| **Create contingencies** | Risk analysis + fallbacks | Risk mitigation matrix | Risk Manager | Week 2 |
+| **Identify ideal code patterns** | Scan 25+ OSS repos | Pattern library + code refs | Research Lead | Pre-commit 1-2 |
+| **Gather best-practice docs** | Review papers + OSS docs | Best practices guide + ADRs | Tech Writer | Pre-commit 1-2 |
+| **Assess feasibility** | Prototype critical blockers | Feasibility report + PoC code | Architecture Lead | Pre-commit 1-4 |
+| **Create contingencies** | Risk analysis + fallbacks | Risk mitigation matrix | Risk Manager | Pre-commit 3-4 |
 
 ---
 

@@ -115,10 +115,10 @@ python tools/coverage_physics_toolkit.py --mode velocity
 **Key Equations**: #41-#62 (advanced)
 
 **Focus**:
-- Week 1 (70→80%): Error handling & exceptions
-- Week 2 (80→85%): Edge cases & null inputs
-- Week 3 (85→90%): Integration workflows
-- Week 4 (90→95%): Security & performance
+- Pre-commit 1-2 (70→80%): Error handling & exceptions
+- Pre-commit 3-4 (80→85%): Edge cases & null inputs
+- Pre-commit 5-6 (85→90%): Integration workflows
+- Pre-commit 7-8 (90→95%): Security & performance
 
 ---
 

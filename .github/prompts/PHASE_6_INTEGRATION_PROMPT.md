@@ -156,7 +156,7 @@ Enable early stopping and advanced schedulers in production training.
 
 ## Implementation Approach
 
-### Week 1: Planning & Prerequisites
+### Pre-commit 1-2: Planning & Prerequisites
 ```bash
 # 1. Review completed implementation
 git checkout copilot/continue-phase-2-implementation
@@ -168,7 +168,7 @@ git log --oneline -15
 # 5. Schedule team training sessions
 ```
 
-### Week 2-3: MLflow & Feature Store
+### Pre-commit 3-6: MLflow & Feature Store
 ```bash
 # Enable MLflow in development
 # configs/local/tracking_dev.yaml
@@ -186,7 +186,7 @@ python -m codex_ml.cli.feature_store register user_features 1.0.0 \
 nox -s feature_health
 ```
 
-### Week 4: Data Validation & Evaluation
+### Pre-commit 7-8: Data Validation & Evaluation
 ```bash
 # Enable data validation
 # configs/production/data_validation.yaml
@@ -203,7 +203,7 @@ python -m codex_ml.cli.evaluation run \
   --metrics accuracy,f1_score
 ```
 
-### Week 5-6: Training Enhancements & Monitoring
+### Pre-commit 9-12: Training Enhancements & Monitoring
 ```bash
 # Enable early stopping
 # configs/production/training.yaml
@@ -293,7 +293,7 @@ training_enhancements:
 
 ## Success Metrics
 
-### Adoption Metrics (Week 6)
+### Adoption Metrics (Pre-commit 11-12)
 - **MLflow Tracking:** ≥80% of training runs logged
 - **Feature Store:** ≥10 feature groups registered
 - **Data Validation:** 100% of critical datasets validated
@@ -487,9 +487,9 @@ Deliverables:
 - Runbooks for operations
 
 Approach:
-- Phase 6.1: MLflow + Feature Store (Week 1-3)
-- Phase 6.2: Data Validation + Evaluation (Week 4)
-- Phase 6.3: Training Enhancements + Monitoring (Week 5-6)
+- Phase 6.1: MLflow + Feature Store (Pre-commit 1-6)
+- Phase 6.2: Data Validation + Evaluation (Pre-commit 7-8)
+- Phase 6.3: Training Enhancements + Monitoring (Pre-commit 9-12)
 - Phase 6.4: Optimization + Documentation (Ongoing)
 
 Success Criteria:

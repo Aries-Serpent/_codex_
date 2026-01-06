@@ -504,7 +504,7 @@ Minimal implementations to complete Phase 1 foundation.
 
 ## Recommendations
 
-### Immediate (Week 0)
+### Immediate (Pre-commit -1-0)
 
 1. **✅ APPROVE Phase 1 Quick Wins** (5 days, low risk, high value)
    - Add dependencies to pyproject.toml
@@ -517,7 +517,7 @@ Minimal implementations to complete Phase 1 foundation.
    - Needs dedicated resources (3-8 weeks)
    - Performance and security review required
 
-### Short-term (Weeks 1-2)
+### Short-term (Pre-commit 1-4)
 
 - Execute Phase 1 implementation
 - Verify all success metrics met

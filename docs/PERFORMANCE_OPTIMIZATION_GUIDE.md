@@ -317,7 +317,7 @@ breaker = CircuitBreaker(config)
 
 # Use circuit breaker
 def call_external_service():
-    response = requests.post("http://api.example.com/predict", ...)
+    response = requests.post("http://localhost:8080/predict", ...)
     return response.json()
 
 try:

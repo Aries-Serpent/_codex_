@@ -190,7 +190,7 @@ Test Execution → Cache Management → Artifact Generation
 - `PACKAGEABLE_CAPABILITIES.md` - Capability transfer
 - `ChatGPT_Project_SYSTEM_PROMPT.md` - AI prompt
 - `GENERIC_NAVIGATION_SYSTEM.md` - Universal navigation
-- `ADVANCED_FEATURES_PLANSET.md` - Roadmap (Q1-Q3 2026)
+- `ADVANCED_FEATURES_PLANSET.md` - Roadmap (Q1-Phase 3 (2026))
 
 ---
 

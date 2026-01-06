@@ -34,7 +34,7 @@ priority: "[P0|P1|P2|P3]"
 phase: "[1|2|3|4]"
 phase_name: "[Foundation|Reproducibility|Autonomy|Excellence]"
 effort_estimate: "[Small: 1-2 days | Medium: 3-5 days | Large: 1-2 weeks]"
-sprint_week: "[Week 1-16]"
+sprint_week: "[Pre-commit 1-32]"
 dependencies: 
   - "[Task IDs that must be completed first]"
   - "[None if no dependencies]"

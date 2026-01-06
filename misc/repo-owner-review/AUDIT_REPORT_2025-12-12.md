@@ -335,7 +335,7 @@ The conf/ to configs/ migration is now properly documented:
 - ✅ Deprecation notices added to all 10 conf/ YAML files
 - ✅ MIGRATION_GUIDE.md created with step-by-step instructions
 - ✅ conf/DEPRECATED.md updated with mapping table
-- ✅ Timeline established (grace period through Q2 2026)
+- ✅ Timeline established (grace period through Phase 2 (2026))
 
 **Remaining During Grace Period**:
 - 196 code references to update (documented in MIGRATION_GUIDE.md)
@@ -345,7 +345,7 @@ The conf/ to configs/ migration is now properly documented:
 **Timeline**:
 - December 2025: Deprecation notices active
 - January - June 2026: Migration grace period
-- v2.0.0 (Q2 2026): conf/ directory removal
+- v2.0.0 (Phase 2 (2026)): conf/ directory removal
 
 See `misc/repo-owner-review/MIGRATION_GUIDE.md` for migration instructions.
 See `scripts/remediation/consolidate_configs.py` for automated migration tool.
@@ -394,12 +394,12 @@ The codebase is in good health with Phase 2 improvements completed:
 
 ⚠️ **Pending Actions (Grace Period)**:
 - Update 196 conf/ references during migration period
-- Complete migration before v2.0.0 (Q2 2026)
+- Complete migration before v2.0.0 (Phase 2 (2026))
 
 🎯 **Next Steps**:
 1. Review and approve this Phase 2 PR
 2. Monitor migration progress during grace period
-3. Conduct Q1 2026 quarterly audit
+3. Conduct Phase 1 (2026) quarterly audit
 4. Complete conf/ removal in v2.0.0
 
 ---

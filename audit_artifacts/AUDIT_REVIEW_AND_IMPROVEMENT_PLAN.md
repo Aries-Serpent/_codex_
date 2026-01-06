@@ -342,10 +342,10 @@ Expected Impact: +0.20 overall test component average
 
 ### Milestones
 
-- **Week 4**: All capabilities > 0.60
-- **Week 8**: All capabilities > 0.70  
-- **Week 12**: 50% capabilities > 0.85
-- **Week 16**: Average score > 0.85
+- **Pre-commit 7-8**: All capabilities > 0.60
+- **Pre-commit 15-16**: All capabilities > 0.70  
+- **Pre-commit 23-24**: 50% capabilities > 0.85
+- **Pre-commit 31-32**: Average score > 0.85
 
 ---
 

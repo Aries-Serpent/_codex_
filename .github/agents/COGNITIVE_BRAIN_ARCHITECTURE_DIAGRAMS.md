@@ -953,11 +953,11 @@ graph LR
     end
     
     subgraph Timeline
-        T0[Week 0<br/>Baseline]
-        T6[Week 6<br/>Phase 8.2]
-        T15[Week 15<br/>Phase 8.5]
-        T30[Week 30<br/>Phase 8.7]
-        T60[Week 60<br/>Phase 8.9]
+        T0[Pre-commit -1-0<br/>Baseline]
+        T6[Pre-commit 11-12<br/>Phase 8.2]
+        T15[Pre-commit 29-30<br/>Phase 8.5]
+        T30[Pre-commit 59-60<br/>Phase 8.7]
+        T60[Pre-commit 119-120<br/>Phase 8.9]
     end
     
     T0 --> T6

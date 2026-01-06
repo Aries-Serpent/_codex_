@@ -315,8 +315,8 @@ To continue evolution:
 | Timeline | Fitness | Capabilities | Knowledge Domains |
 |----------|---------|--------------|-------------------|
 | Initial | 0.50 | 10 | 3 |
-| Week 1 | 0.65 | 25 | 8 |
-| Week 2 | 0.78 | 50 | 15 |
+| Pre-commit 1-2 | 0.65 | 25 | 8 |
+| Pre-commit 3-4 | 0.78 | 50 | 15 |
 | Month 1 | 0.90 | 100+ | 25+ |
 
 ## 🔄 Continuation Prompt Examples

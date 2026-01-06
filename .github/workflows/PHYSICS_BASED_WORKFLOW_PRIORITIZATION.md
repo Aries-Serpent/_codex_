@@ -338,7 +338,7 @@ gantt
 
 ## Implementation Strategy Based on Physics Models
 
-### Phase 3A: Immediate Implementation (Weeks 1-2)
+### Phase 3A: Immediate Implementation (Pre-commit 1-4)
 **Capacity Check**: Current 7.69 GB → Target < 8.2 GB
 
 1. **pr-followup-generator.yml** (Score: 94.2)
@@ -361,7 +361,7 @@ gantt
 - New total: ~8.44 GB (84.4% capacity)
 - Monthly savings: 17.8 hours
 
-### Phase 3B: Conditional Implementation (Weeks 3-4)
+### Phase 3B: Conditional Implementation (Pre-commit 5-8)
 **Capacity Check**: If usage < 8.5 GB, proceed
 
 4. **determinism.yml** (Score: 78.3)

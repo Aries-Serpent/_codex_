@@ -80,9 +80,9 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 
 ## Execution Protocol
 
-### Phase 1: Foundation (Weeks 1-4)
+### Phase 1: Foundation (Pre-commit 1-8)
 
-**Sprint 1 (Week 1-2):**
+**Sprint 1 (Pre-commit 1-4):**
 ```
 1. READ: .github/prompts/sprint_execution_plan/phase_1_foundation/_PHASE_OVERVIEW.md
 2. EXECUTE: T1 (Coverage Gate) - CRITICAL PATH, NO DEPENDENCIES
@@ -98,7 +98,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
    - Verify coverage ≥70%, prompt sanitization active
 ```
 
-**Sprint 2 (Week 3-4):**
+**Sprint 2 (Pre-commit 5-8):**
 ```
 5. EXECUTE after T1 complete:
    - T9 (Security Scans in CI)
@@ -121,9 +121,9 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
    - Verify Phase 1 complete, ready for Phase 2
 ```
 
-### Phase 2: Reproducibility (Weeks 5-8)
+### Phase 2: Reproducibility (Pre-commit 9-16)
 
-**Sprint 3 (Week 5-6):**
+**Sprint 3 (Pre-commit 9-12):**
 ```
 9. READ: .github/prompts/sprint_execution_plan/phase_2_reproducibility/_PHASE_OVERVIEW.md
 10. EXECUTE:
@@ -143,7 +143,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
     - Verify bit-exact reproducibility
 ```
 
-**Sprint 4 (Week 7-8):**
+**Sprint 4 (Pre-commit 13-16):**
 ```
 14. EXECUTE:
     - T6 (Dataset Hash Manifest)
@@ -163,9 +163,9 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
     - Verify Phase 2 complete, reproducibility ≥60%
 ```
 
-### Phase 3: Autonomy (Weeks 9-12)
+### Phase 3: Autonomy (Pre-commit 17-24)
 
-**Sprint 5 (Week 9-10):**
+**Sprint 5 (Pre-commit 17-20):**
 ```
 18. READ: .github/prompts/sprint_execution_plan/phase_3_autonomy/_PHASE_OVERVIEW.md
 19. EXECUTE:
@@ -184,7 +184,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
     - Verify drift alerts functional
 ```
 
-**Sprint 6 (Week 11-12):**
+**Sprint 6 (Pre-commit 21-24):**
 ```
 23. EXECUTE:
     - Auto-Remediation Framework
@@ -201,9 +201,9 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
     - Verify <50 stubs, auto-remediation working
 ```
 
-### Phase 4: Excellence (Weeks 13-16)
+### Phase 4: Excellence (Pre-commit 25-32)
 
-**Sprint 7 (Week 13-14):**
+**Sprint 7 (Pre-commit 25-28):**
 ```
 26. READ: .github/prompts/sprint_execution_plan/phase_4_excellence/_PHASE_OVERVIEW.md
 27. EXECUTE:
@@ -224,7 +224,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
     - Verify comprehensive documentation
 ```
 
-**Sprint 8 (Week 15-16):**
+**Sprint 8 (Pre-commit 29-32):**
 ```
 31. EXECUTE:
     - Final Stub Cleanup
@@ -342,7 +342,7 @@ Result: Fixed after 3 diagnostic iterations
 
 ## Progress Reporting
 
-**Update progress weekly:**
+**Update progress per commit cycle:**
 
 ```yaml
 week_1:
@@ -363,7 +363,7 @@ week_2:
   blocked: []
   stubs_resolved: 10/298
 
-# ... continue weekly updates
+# ... continue per commit cycle updates
 ```
 
 **Report blocking issues immediately:**
@@ -398,7 +398,7 @@ python scripts/compare_audits.py audit_baseline.json audit_current.json
 python generate_progress_report.py --sprint N
 ```
 
-**Final validation (Week 16):**
+**Final validation (Pre-commit 31-32):**
 ```bash
 # Complete audit
 python scripts/space_traversal/audit_runner.py run
@@ -435,10 +435,10 @@ Contains: Dependency graphs, parallel coordination, self-healing protocol
 
 **Phase Overviews:**
 ```
-phase_1_foundation/_PHASE_OVERVIEW.md (Weeks 1-4)
-phase_2_reproducibility/_PHASE_OVERVIEW.md (Weeks 5-8)
-phase_3_autonomy/_PHASE_OVERVIEW.md (Weeks 9-12)
-phase_4_excellence/_PHASE_OVERVIEW.md (Weeks 13-16)
+phase_1_foundation/_PHASE_OVERVIEW.md (Pre-commit 1-8)
+phase_2_reproducibility/_PHASE_OVERVIEW.md (Pre-commit 9-16)
+phase_3_autonomy/_PHASE_OVERVIEW.md (Pre-commit 17-24)
+phase_4_excellence/_PHASE_OVERVIEW.md (Pre-commit 25-32)
 ```
 
 **Task Prompts:**
@@ -523,7 +523,7 @@ BEGIN WITH:
 1. Read MASTER_ORCHESTRATOR.md fully
 2. Read Phase 1 overview
 3. Start T1 (Coverage Gate) - CRITICAL PATH
-4. Report progress weekly
+4. Report progress per commit cycle
 5. Escalate only blocking issues
 
 Authorization: FULL AUTONOMOUS EXECUTION GRANTED
@@ -574,7 +574,7 @@ Continue from last completed task
 **Copilot:** You are now authorized to execute the complete 16-week autonomous transformation of the _codex_ repository. Read MASTER_ORCHESTRATOR.md, execute all phases systematically, self-expand for prerequisites, self-heal on failures, self-validate continuously, and escalate only truly blocking issues.
 
 **Timeline:** 16 weeks starting NOW
-**Supervision:** Minimal (weekly progress reviews)
+**Supervision:** Minimal (per commit cycle progress reviews)
 **Authority:** Full autonomous execution
 **Target:** Level 4 production-grade autonomy
 
