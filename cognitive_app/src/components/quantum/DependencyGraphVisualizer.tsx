@@ -20,8 +20,6 @@ interface GraphNode {
   level: number;
 }
 
-const FALLBACK_CANVAS_WIDTH = 800;
-
 export function DependencyGraphVisualizer({ 
   tokens, 
   highlightedToken,
@@ -73,7 +71,8 @@ export function DependencyGraphVisualizer({
         levelGroups.get(level)?.push(token);
       });
 
-      const width = containerRef.current?.clientWidth || FALLBACK_CANVAS_WIDTH;
+      // Fallback width of 800px used when container ref is unavailable during SSR or initial render
+      const width = containerRef.current?.clientWidth || 800;
       const height = Math.max(400, (maxLevel + 1) * 150);
       const levelHeight = height / (maxLevel + 2);
 
