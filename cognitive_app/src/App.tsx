@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Code, Brain, Atom, Database, Lightning, ChartLine } from '@phosphor-icons/react';
+import { Code, Brain, Atom, Database, Lightning, ChartLine, Play } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeGenerator } from '@/components/code/CodeGenerator';
+import { InteractiveDemo } from '@/components/code/InteractiveDemo';
 import { QuantumVisualizer } from '@/components/quantum/QuantumVisualizer';
 import { QuantumDecisionEngine } from '@/components/quantum/QuantumDecisionEngine';
 import { MemoryManagementDashboard } from '@/components/quantum/MemoryManagementDashboard';
@@ -11,6 +12,7 @@ import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [generatedCode, setGeneratedCode] = useState<string>('');
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -47,7 +49,7 @@ function App() {
 
       <main className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 max-w-3xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-7 max-w-4xl mx-auto mb-8">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <ChartLine weight="duotone" className="w-4 h-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -55,6 +57,10 @@ function App() {
             <TabsTrigger value="code" className="flex items-center gap-2">
               <Code weight="duotone" className="w-4 h-4" />
               <span className="hidden sm:inline">Code</span>
+            </TabsTrigger>
+            <TabsTrigger value="demo" className="flex items-center gap-2">
+              <Play weight="duotone" className="w-4 h-4" />
+              <span className="hidden sm:inline">Demo</span>
             </TabsTrigger>
             <TabsTrigger value="quantum" className="flex items-center gap-2">
               <Atom weight="duotone" className="w-4 h-4" />
@@ -80,6 +86,24 @@ function App() {
 
           <TabsContent value="code">
             <CodeGenerator />
+          </TabsContent>
+
+          <TabsContent value="demo">
+            <Card className="p-6">
+              <h2 className="text-2xl font-semibold mb-4 text-accent">
+                Interactive Code Demo
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                Test and execute generated code in real-time with resource monitoring.
+              </p>
+              <InteractiveDemo
+                script={generatedCode || 'print("Hello from Codex AI!")'}
+                language="python"
+                onExecute={(result) => {
+                  console.log('Execution result:', result);
+                }}
+              />
+            </Card>
           </TabsContent>
 
           <TabsContent value="quantum">
