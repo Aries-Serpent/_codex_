@@ -13,13 +13,8 @@ import { MetricsBar } from './MetricsBar';
 const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
 const API_KEY = import.meta.env.VITE_CODEX_KEY;
 
-if (!API_KEY) {
-  throw new Error(
-    'Missing VITE_CODEX_KEY environment variable. Please set a valid API key in your environment configuration.',
-  );
-}
-
-const client = new CodexAPIClient(API_URL, API_KEY);
+// Initialize clients only if API_KEY is available
+const client = API_KEY ? new CodexAPIClient(API_URL, API_KEY) : null;
 const mockClient = new MockCodexAPIClient();
 
 export function CodeGenerator() {
@@ -30,6 +25,11 @@ export function CodeGenerator() {
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
 
   const checkApiStatus = useCallback(async () => {
+    if (!client) {
+      setApiStatus('error');
+      setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
+      return;
+    }
     try {
       await client.getStatus();
       setApiStatus('connected');
@@ -50,6 +50,14 @@ export function CodeGenerator() {
   }, [checkApiStatus]);
 
   const handleGenerate = useCallback(async () => {
+    if (!client) {
+      setError('Missing API key configuration. Please set VITE_CODEX_KEY environment variable.');
+      toast.error('Configuration Error', {
+        description: 'API key not configured',
+      });
+      return;
+    }
+
     if (prompt.trim().length < 10) {
       setError('Prompt must be at least 10 characters');
       toast.error('Prompt too short', {
