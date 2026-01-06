@@ -37,7 +37,16 @@ interface CascadingExecutionMonitorProps {
   showVisualization?: boolean;
 }
 
-const STAGE_EXECUTION_TIME_MS = 800;
+const STAGE_EXECUTION_TIME_MS = (() => {
+  const envValue = import.meta.env.VITE_STAGE_EXECUTION_TIME_MS;
+  if (typeof envValue === 'string') {
+    const parsed = parseInt(envValue, 10);
+    if (!Number.isNaN(parsed) && parsed > 0 && parsed <= 10000) {
+      return parsed;
+    }
+  }
+  return 800;
+})();
 
 export function CascadingExecutionMonitor({ 
   tokens,

@@ -20,7 +20,7 @@ interface GraphNode {
   level: number;
 }
 
-const DEFAULT_CANVAS_WIDTH = 800;
+const FALLBACK_CANVAS_WIDTH = 800;
 
 export function DependencyGraphVisualizer({ 
   tokens, 
@@ -73,7 +73,7 @@ export function DependencyGraphVisualizer({
         levelGroups.get(level)?.push(token);
       });
 
-      const width = containerRef.current?.clientWidth || DEFAULT_CANVAS_WIDTH;
+      const width = containerRef.current?.clientWidth || FALLBACK_CANVAS_WIDTH;
       const height = Math.max(400, (maxLevel + 1) * 150);
       const levelHeight = height / (maxLevel + 2);
 

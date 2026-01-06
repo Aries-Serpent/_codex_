@@ -4,6 +4,20 @@ import type { FallbackProps } from "react-error-boundary";
 
 import { AlertTriangleIcon, RefreshCwIcon } from "lucide-react";
 
+/**
+ * ErrorFallback component for displaying error boundaries in the application.
+ * 
+ * In development mode, errors are rethrown to leverage the development server's
+ * more detailed error overlay and debugging tools. The "parent UI" refers to
+ * the browser's development error dialog (Vite/React DevTools overlay) which
+ * provides stack traces, source maps, and interactive debugging features.
+ * 
+ * In production, this component renders a user-friendly error page with
+ * the option to reset the error boundary and retry.
+ * 
+ * @param error - The error that was caught by the error boundary
+ * @param resetErrorBoundary - Function to reset the error boundary state
+ */
 export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   // When encountering an error in the development mode, rethrow it and don't display the boundary.
   // The parent UI will take care of showing a more helpful dialog.
