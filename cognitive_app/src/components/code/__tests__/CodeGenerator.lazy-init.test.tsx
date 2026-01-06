@@ -334,8 +334,9 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       // Main heading
       expect(screen.getByText(/code generation/i)).toBeInTheDocument();
       
-      // API status section
-      expect(screen.getByText(/api status:/i)).toBeInTheDocument();
+      // Status section (updated from API status)
+      expect(screen.getByText(/AI Mode:/i)).toBeInTheDocument();
+      expect(screen.getByText(/Status:/i)).toBeInTheDocument();
       
       // Prompt textarea
       expect(screen.getByPlaceholderText(/example: create a fastapi endpoint/i)).toBeInTheDocument();
