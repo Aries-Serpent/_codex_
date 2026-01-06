@@ -39,4 +39,4 @@ CREATE TABLE archived_data (
    - Move data to the SQL storage and create a tombstone.
 
 2. **Archiving Logs**:  
-   - Regularly archive logs older than 90 days and create evidence logs for audit purposes.
+   - Regularly archive logs older than 90 sessions and create evidence logs for audit purposes.

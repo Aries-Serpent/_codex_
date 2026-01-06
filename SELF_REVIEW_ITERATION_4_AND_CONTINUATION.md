@@ -5,7 +5,7 @@
 **Iteration 4 Status:** INFRASTRUCTURE COMPLETE - Mock pattern fixes needed for test completion  
 **Coverage:** 93.4% (155/166 tests passing)  
 **Target:** 95.2% (158/166 tests passing) - Phase 1  
-**Time to Target:** ~2 hours (Iteration 5)
+**Time to Target:** ~2 iterations (Iteration 5)
 
 ---
 
@@ -142,7 +142,7 @@ vi.mock('@/lib/mock-api-client', () => ({
 - Check for regressions
 - Validate build still passes
 
-**Total Time:** 2 hours
+**Total Time:** 2 iterations
 
 ### Validation Commands
 
@@ -199,7 +199,7 @@ npm test
 **Impact:** 10 tests failing due to MockCodexAPIClient not being instantiated  
 **Solution:** Fix mock implementation pattern in beforeEach and tests  
 
-## Tasks for Iteration 5 (2 hours)
+## Tasks for Iteration 5 (2 iterations)
 
 ### Task 1: Fix Mock Pattern (30 min)
 
@@ -350,7 +350,7 @@ For each of the 10 failing tests:
 Once 95.2% achieved, proceed to Phase 2:
 - Fix WorkflowTokenOrchestrator.test.tsx (11 tests)
 - Target: 100% coverage (166/166)
-- Time: 2-3 hours
+- Time: 2-3 iterations
 
 ## Context Documents
 
@@ -472,7 +472,7 @@ Execute iteration 5 to complete Phase 1. Do not stop until 95.2% coverage achiev
 
 **Completion:** 90% (infrastructure work complete)  
 **Next:** Iteration 5 (mock pattern fixes)  
-**Time to Phase 1:** ~2 hours  
+**Time to Phase 1:** ~2 iterations  
 **Confidence:** HIGH (root cause identified, solution clear)  
 
 **Session:** 2026-01-06 19:45 UTC  

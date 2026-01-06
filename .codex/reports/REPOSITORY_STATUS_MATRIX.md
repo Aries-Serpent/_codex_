@@ -19,7 +19,7 @@
 
 ### Phase 1: Test Infrastructure & Coverage (COMPLETE)
 **Status:** ✅ 100% Complete  
-**Duration:** 5 hours (5 iterations)  
+**Iterations: ** 5 iterations (5 iterations)  
 **Coverage Achievement:** 93.1% (exceeded 90% baseline)
 
 **Deliverables:**
@@ -43,7 +43,7 @@
 
 ### Phase 2: Workflow Orchestration (COMPLETE)
 **Status:** ✅ 100% Complete  
-**Duration:** 1 hour (1 iteration)  
+**Iterations: ** 1 iterations (1 iteration)  
 **Coverage Achievement:** 100% (all 166 tests passing)
 
 **Deliverables:**
@@ -59,7 +59,7 @@
 
 ### Phase 3: Quantum Agent Framework (COMPLETE)
 **Status:** ✅ 100% Complete  
-**Duration:** 2 hours  
+**Iterations: ** 2 iterations  
 **Mathematical Foundation:** Established
 
 **Deliverables:**
@@ -98,7 +98,7 @@
 
 #### 1. Documentation Reorganization
 **Status:** 🔄 IN PROGRESS (This session)  
-**Est. Time:** 2 hours  
+**Est. Time:** 2 iterations  
 **Priority:** HIGH
 
 **Tasks:**
@@ -116,7 +116,7 @@
 
 #### 2. Quantum Framework Testing
 **Status:** ⏳ NOT STARTED  
-**Est. Time:** 8 hours  
+**Est. Time:** 8 iterations  
 **Priority:** HIGH
 
 **Tasks:**
@@ -130,7 +130,7 @@
 
 #### 3. Code Quality Improvements
 **Status:** ⏳ PARTIALLY COMPLETE  
-**Est. Time:** 3 hours  
+**Est. Time:** 3 iterations  
 **Priority:** MEDIUM
 
 **Tasks from PR Review:**
@@ -142,11 +142,11 @@
 - [ ] Remove unused import in WorkflowTokenOrchestrator.test.tsx (fireEvent)
 - [ ] Update eslint.config.js comment to match intent
 
-### Medium Priority (Q1 2026)
+### Medium Priority (Cycle 1 2026)
 
 #### 4. Performance Optimization
 **Status:** ⏳ NOT STARTED  
-**Est. Time:** 10 hours  
+**Est. Time:** 10 iterations  
 **Priority:** MEDIUM
 
 **Tasks:**
@@ -162,7 +162,7 @@
 
 #### 5. Production Deployment
 **Status:** ⏳ READY (Requires Human Admin)  
-**Est. Time:** 2 hours  
+**Est. Time:** 2 iterations  
 **Priority:** HIGH
 
 **Human Admin Tasks:**
@@ -180,7 +180,7 @@
 
 #### 6. API Development
 **Status:** ⏳ NOT STARTED  
-**Est. Time:** 20 hours  
+**Est. Time:** 20 iterations  
 **Priority:** MEDIUM
 
 **Tasks:**
@@ -195,8 +195,8 @@
 
 #### 7. Configuration Migration
 **Status:** ⏳ IN PROGRESS  
-**Est. Time:** 4 hours  
-**Priority:** LOW (Deadline: Q2 2026)
+**Est. Time:** 4 iterations  
+**Priority:** LOW (Deadline: Cycle 2 2026)
 
 **Tasks:**
 - [ ] Complete migration from conf/ to configs/
@@ -207,7 +207,7 @@
 
 #### 8. CodeGenerator Test Backlog
 **Status:** ⏳ BACKLOG  
-**Est. Time:** 6-10 hours  
+**Est. Time:** 6-10 iterations  
 **Priority:** LOW
 
 **Tasks:**
@@ -221,7 +221,7 @@
 #### 9. Advanced Quantum Features
 **Status:** ⏳ PLANNED  
 **Est. Time:** 30+ hours  
-**Priority:** LOW (Q2-Q3 2026)
+**Priority:** LOW (Q2-Cycle 3 2026)
 
 **Tasks:**
 - [ ] Quantum superposition implementation
@@ -238,7 +238,7 @@
 
 ✅ **Included in GitHub Team:**
 - Pull Requests & Code Review ✅
-- GitHub Actions (2000 min/month) ✅ Using ~100 min/month
+- GitHub Actions (2000 min/month) ✅ Using ~100 actions/cycle
 - Issues & Project boards ✅
 - Branch protection rules ✅
 - Code scanning (public repos) ✅
@@ -275,7 +275,7 @@
 
 ## Human Admin Required Tasks
 
-### Immediate (Week 1)
+### Immediate (phase 1)
 
 **GitHub Repository Settings:**
 1. [ ] Merge PR #2714 to main
@@ -283,16 +283,16 @@
 3. [ ] Check workflow permissions
 4. [ ] Validate branch protection rules
 
-**Estimated Time:** 30 minutes
+**Estimated Time:** 30 pre-commits
 
-### Near-term (Week 2-4)
+### Near-term (phase 2-4)
 
 **Configuration:**
 1. [ ] Review and configure repository secrets (if needed for features)
 2. [ ] Set up error monitoring account (Sentry/similar)
 3. [ ] Configure analytics (Google Analytics/similar)
 
-**Estimated Time:** 2 hours
+**Estimated Time:** 2 iterations
 
 ### Optional Enhancements
 
@@ -301,7 +301,7 @@
 2. [ ] Set up team-based permissions
 3. [ ] Configure code owners file
 
-**Estimated Time:** 1 hour
+**Estimated Time:** 1 iterations
 
 ---
 
@@ -404,7 +404,7 @@
 
 - Bundle size (788.90 kB, target <500 kB)
 - Quantum framework tests (not yet implemented)
-- Configuration migration (conf/ deprecated Q2 2026)
+- Configuration migration (conf/ deprecated Cycle 2 2026)
 - Documentation organization (root level cluttered)
 
 ### Mitigated Risks ✅
@@ -418,8 +418,8 @@
 
 ## Next Phase Planning
 
-### Sprint 1 (Week 1-2): Documentation & Quality
-**Duration:** 2 weeks  
+### Sprint 1 (phase 1-2): Documentation & Quality
+**Iterations: ** 2 phases  
 **Focus:** Organization and cleanup
 
 **Tasks:**
@@ -434,8 +434,8 @@
 - All PR review issues resolved
 - Clean root directory
 
-### Sprint 2 (Week 3-4): Quantum Testing
-**Duration:** 2 weeks  
+### Sprint 2 (phase 3-4): Quantum Testing
+**Iterations: ** 2 phases  
 **Focus:** Test coverage for quantum framework
 
 **Tasks:**
@@ -450,8 +450,8 @@
 - 100% coverage maintained
 - Quantum framework validated
 
-### Sprint 3 (Week 5-6): Performance
-**Duration:** 2 weeks  
+### Sprint 3 (phase 5-6): Performance
+**Iterations: ** 2 phases  
 **Focus:** Optimization
 
 **Tasks:**

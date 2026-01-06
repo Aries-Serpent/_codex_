@@ -174,7 +174,7 @@ Outputs:
 - Prioritized list of fixes needed
 - Baseline metrics established
 
-### Estimated Time: 2-3 hours
+### Estimated Time: 2-3 iterations
 
 ---
 
@@ -301,7 +301,7 @@ Outputs:
 - Layout optimization plan documented
 - Responsive design validated
 
-### Estimated Time: 3-4 hours
+### Estimated Time: 3-4 iterations
 
 ---
 
@@ -418,7 +418,7 @@ git push origin main
 
 # Verify deployment
 # GitHub Actions will automatically rebuild Pages
-# Wait 2-3 minutes for deployment
+# Wait 2-3 pre-commits for deployment
 # Visit: https://aries-serpent.github.io/_codex_/
 ```
 
@@ -429,7 +429,7 @@ git push origin main
 - All markdown properly formatted
 - Changes deployed successfully
 
-### Estimated Time: 2-3 hours
+### Estimated Time: 2-3 iterations
 
 ---
 
@@ -511,7 +511,7 @@ Tests:
 - Performance score > 90%
 - All browsers supported
 
-### Estimated Time: 2-3 hours
+### Estimated Time: 2-3 iterations
 
 ---
 
@@ -592,7 +592,7 @@ Alerts:
 - Automated checks running
 - Monitoring active
 
-### Estimated Time: 2-3 hours
+### Estimated Time: 2-3 iterations
 
 ---
 
@@ -605,21 +605,21 @@ Alerts:
 - [ ] Set up local Jekyll environment
 - [ ] Create git branch: `fix/docs-formatting`
 
-### Phase 1: Diagnosis (2-3 hours)
+### Phase 1: Diagnosis (2-3 iterations)
 - [ ] Run site crawler agent
 - [ ] Analyze CSS files
 - [ ] Inspect all code blocks
 - [ ] Validate layouts
 - [ ] Generate issue report
 
-### Phase 2: Design (3-4 hours)
+### Phase 2: Design (3-4 iterations)
 - [ ] Generate CSS fixes
 - [ ] Design layout improvements
 - [ ] Create markdown formatting rules
 - [ ] Document solution design
 - [ ] Review with team
 
-### Phase 3: Implementation (2-3 hours)
+### Phase 3: Implementation (2-3 iterations)
 - [ ] Create `docs/assets/css/custom.css`
 - [ ] Update `docs/_config.yml`
 - [ ] Add `docs/_layouts/default.html`
@@ -627,14 +627,14 @@ Alerts:
 - [ ] Test locally on multiple browsers
 - [ ] Commit and push changes
 
-### Phase 4: Validation (2-3 hours)
+### Phase 4: Validation (2-3 iterations)
 - [ ] Visual regression testing
 - [ ] Accessibility audit
 - [ ] Performance testing
 - [ ] Cross-browser testing
 - [ ] Fix any issues found
 
-### Phase 5: Documentation (2-3 hours)
+### Phase 5: Documentation (2-3 iterations)
 - [ ] Create/update documentation files
 - [ ] Write maintenance guide
 - [ ] Set up automated checks
@@ -711,16 +711,16 @@ docs/
 2. **Git Branching**: Use feature branch for all changes
 3. **Incremental Deployment**: Deploy in stages, validate each
 4. **Rollback Plan**: Keep backup of original files
-5. **Monitor After Deploy**: Watch for issues in first 24 hours
+5. **Monitor After Deploy**: Watch for issues in first 24 iterations
 
 ---
 
 ## Resource Requirements
 
 ### Human Resources
-- Frontend Developer: 8-12 hours
-- QA/Testing: 4-6 hours
-- Technical Writer: 2-3 hours
+- Frontend Developer: 8-12 iterations
+- QA/Testing: 4-6 iterations
+- Technical Writer: 2-3 iterations
 
 ### Tools & Services
 - Jekyll (local development)
@@ -749,7 +749,7 @@ docs/
 - **Days 2-3**: Phase 4 - Validation & Testing
 - **Days 4-5**: Phase 5 - Documentation & Monitoring
 
-### Total Duration: 10 business days (~2 weeks)
+### Total Iterations: 10 business days (~2 phases)
 
 ---
 

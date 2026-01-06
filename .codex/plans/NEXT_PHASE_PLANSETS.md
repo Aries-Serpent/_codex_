@@ -9,7 +9,7 @@
 ## Planset 1: Documentation Reorganization (IMMEDIATE)
 
 **Priority:** HIGH  
-**Duration:** 2 hours  
+**Iterations: ** 2 iterations  
 **Status:** IN PROGRESS
 
 ### Objectives
@@ -96,7 +96,7 @@ Commit message: "Docs: Reorganize documentation structure, create centralized kn
 ## Planset 2: PR Review Issue Fixes (QUICK WINS)
 
 **Priority:** HIGH  
-**Duration:** 1 hour  
+**Iterations: ** 1 iterations  
 **Status:** NOT STARTED
 
 ### Objectives
@@ -204,7 +204,7 @@ Commit message: "Fix: Address PR review issues - remove unused variables and imp
 ## Planset 3: Quantum Framework Testing (SPRINT 2)
 
 **Priority:** HIGH  
-**Duration:** 8-10 hours (2 weeks)  
+**Iterations: ** 8-10 iterations (2 phases)  
 **Status:** NOT STARTED
 
 ### Objectives
@@ -350,12 +350,12 @@ describe('Quantum Framework Integration', () => {
 
 ### Implementation Strategy
 
-**Week 1:**
+**phase 1:**
 - Days 1-2: Categories 1-2 (Unit tests + Energy)
 - Days 3-4: Category 3 (Source projections)
 - Day 5: Review and refinement
 
-**Week 2:**
+**phase 2:**
 - Days 1-2: Category 4 (Policy functions)
 - Days 3-4: Category 5 (Integration)
 - Day 5: Full suite validation + documentation
@@ -371,14 +371,14 @@ describe('Quantum Framework Integration', () => {
 ```markdown
 @copilot Implement comprehensive quantum framework testing per Planset 3:
 
-**Week 1 Tasks:**
+**phase 1 Tasks:**
 1. Create test file: quantum-agent-framework.test.ts
 2. Implement Category 1: QuantumAgent unit tests (20 tests)
 3. Implement Category 2: Energy computation tests (15 tests)
 4. Implement Category 3: Source projection tests (10 tests)
 5. Validate all pass, update documentation
 
-**Week 2 Tasks:**
+**phase 2 Tasks:**
 1. Implement Category 4: Policy function tests (15 tests)
 2. Implement Category 5: Integration tests (10 tests)
 3. Run full suite: npm test (expect 236/236 passing)
@@ -399,7 +399,7 @@ Commit after each category completion with descriptive messages.
 ## Planset 4: Performance Optimization (SPRINT 3)
 
 **Priority:** MEDIUM  
-**Duration:** 10 hours (2 weeks)  
+**Iterations: ** 10 iterations (2 phases)  
 **Status:** NOT STARTED
 
 ### Objectives
@@ -467,14 +467,14 @@ if ('serviceWorker' in navigator) {
 ```markdown
 @copilot Execute performance optimization planset (Sprint 3):
 
-**Week 1: Analysis & Code Splitting**
+**phase 1: Analysis & Code Splitting**
 1. Run bundle analysis: npm run build -- --report
 2. Identify top 10 largest dependencies
 3. Implement code splitting for all routes
 4. Implement lazy loading for heavy components
 5. Validate: tests passing, functionality intact
 
-**Week 2: Optimization & Service Worker**
+**phase 2: Optimization & Service Worker**
 1. Configure Vite for optimal tree shaking
 2. Optimize all images (WebP, compression)
 3. Minify and optimize SVGs
@@ -496,7 +496,7 @@ Create performance report with before/after metrics.
 ## Planset 5: Production Deployment (HUMAN ADMIN)
 
 **Priority:** HIGH  
-**Duration:** 2 hours  
+**Iterations: ** 2 iterations  
 **Status:** READY FOR HUMAN ADMIN
 
 ### Prerequisites
@@ -576,18 +576,18 @@ If issues are found:
 - Documentation: COGNITIVE_BRAIN_UNIFIED_V4.md (central hub)
 - Roadmap: .codex/plans/COGNITIVE_BRAIN_ROADMAP_2026.md
 
-## Current Sprint: Documentation & Quality (Week 1-2)
+## Current Sprint: Documentation & Quality (phase 1-2)
 
 Execute plansets in order:
-1. Planset 1: Documentation reorganization (2 hours)
-2. Planset 2: PR review issue fixes (1 hour)
+1. Planset 1: Documentation reorganization (2 iterations)
+2. Planset 2: PR review issue fixes (1 iterations)
 3. Update status documents
 4. Commit with clear messages
 
-## Next Sprint: Quantum Testing (Week 3-4)
+## Next Sprint: Quantum Testing (phase 3-4)
 
 Execute:
-1. Planset 3: Quantum framework testing (10 hours)
+1. Planset 3: Quantum framework testing (10 iterations)
 2. Achieve 70 new tests
 3. Maintain 100% coverage
 4. Update cognitive brain status
@@ -631,10 +631,10 @@ The phased approach ensures manageable scope while maintaining the high quality 
 
 **Next Actions:**
 1. Execute Planset 1 (Documentation) - IMMEDIATELY
-2. Execute Planset 2 (PR fixes) - WEEK 1
-3. Human admin: Execute Planset 5 (Deployment) - WEEK 1
-4. Execute Planset 3 (Quantum tests) - WEEK 3-4
-5. Execute Planset 4 (Performance) - WEEK 5-6
+2. Execute Planset 2 (PR fixes) - phase 1
+3. Human admin: Execute Planset 5 (Deployment) - phase 1
+4. Execute Planset 3 (Quantum tests) - phase 3-4
+5. Execute Planset 4 (Performance) - phase 5-6
 
 ---
 

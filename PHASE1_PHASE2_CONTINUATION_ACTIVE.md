@@ -17,7 +17,7 @@
 - Coverage gain: +1.8% (150/166 → 163/166)
 - Commit: a2369ac
 
-### ⏳ Remaining Phase 1 Tasks (Quick Wins - 1-2 hours)
+### ⏳ Remaining Phase 1 Tasks (Quick Wins - 1-2 iterations)
 
 **Task 1.2: CodeGenerator.test.tsx (3 tests - 20 min)**
 File: `cognitive_app/src/components/code/__tests__/CodeGenerator.test.tsx`
@@ -70,13 +70,13 @@ beforeEach(() => {
 });
 ```
 
-### ⏳ Phase 2 Tasks (Workflow Validation - 2-3 hours)
+### ⏳ Phase 2 Tasks (Workflow Validation - 2-3 iterations)
 
 **Task 2.1: WorkflowTokenOrchestrator (11 tests)**
 File: `cognitive_app/src/components/quantum/__tests__/WorkflowTokenOrchestrator.test.tsx`
 Issue: Complex state management, button selectors not matching
 Strategy: Systematic fix of all 11 tests, update selectors and assertions
-Time: 2-3 hours (requires careful component analysis)
+Time: 2-3 iterations (requires careful component analysis)
 
 ---
 
@@ -139,7 +139,7 @@ Before committing any changes:
 ## Next Agent Instructions
 
 **Priority:** Continue Phase 1 tasks 1.2-1.4, then Phase 2
-**Time Estimate:** 3-4 hours total
+**Time Estimate:** 3-4 iterations total
 **Validation:** Test after each task, commit incrementally
 
 Run this command to continue:

@@ -244,7 +244,7 @@ Please implement these phases systematically, validate after each phase, and rep
 4. Post continuation prompt as PR comment (see above)
 5. Monitor deployment at https://aries-serpent.github.io/_codex_/cognitive_app/
 
-**Total Time:** 35 minutes
+**Total Time:** 35 pre-commits
 **Quality:** Production-ready
 **Risk:** Low (zero breaking changes)
 **Impact:** High (AI-powered code generation enabled)

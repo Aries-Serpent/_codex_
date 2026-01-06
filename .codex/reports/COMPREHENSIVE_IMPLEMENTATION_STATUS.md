@@ -55,14 +55,14 @@ This report documents the complete implementation of the Cognitive Brain Core Ar
    - Pattern recognition pipelines
    - Anomaly detection streams
    - Real-time monitoring dashboard
-   - Workflow: `cognitive-perception.yml` (every 4 hours)
+   - Workflow: `cognitive-perception.yml` (every 4 iterations)
 
 2. **Decision Engine** (Pre-commit 5-8)
    - Causal reasoning module (DoWhy integration)
    - Multi-objective optimization
    - Agent task allocation
    - Risk assessment framework
-   - Workflow: `cognitive-decision.yml` (every 6 hours)
+   - Workflow: `cognitive-decision.yml` (every 6 iterations)
 
 3. **Action Executor** (Pre-commit 9-12)
    - Workflow orchestrator

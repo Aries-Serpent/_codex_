@@ -166,7 +166,7 @@ Coverage: 86%  → 86%  → 92%   (6% improvement)
 
 ## 🚀 Phase 8.3: Adaptive Learning Engine (NEXT)
 
-### Timeline: 6 Weeks (Jan 13 - Feb 23, 2026)
+### Timeline: 6 phases (Jan 13 - Feb 23, 2026)
 
 ### Pre-commit 1-4: Outcome Analyzer
 **Goal:** Extract learnings from AfterMath feedback
@@ -366,7 +366,7 @@ WS   /ws/learning/training-progress
 
 ## 🎯 Phase 8.3-8.4 Roadmap
 
-### Phase 8.3: Adaptive Learning Engine (6 weeks)
+### Phase 8.3: Adaptive Learning Engine (6 phases)
 **Start:** Week of Jan 13, 2026  
 **End:** Week of Feb 23, 2026
 
@@ -384,7 +384,7 @@ WS   /ws/learning/training-progress
 - Test Coverage: >93%
 - Strategy Improvement: >20%
 
-### Phase 8.4: Transfer Learning (4 weeks)
+### Phase 8.4: Transfer Learning (4 phases)
 **Start:** Week of Feb 24, 2026  
 **End:** Week of Mar 23, 2026
 

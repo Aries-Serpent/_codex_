@@ -894,7 +894,7 @@ jobs:
   cleanup-old-datasets:
     runs-on: ubuntu-latest
     steps:
-      - name: Cleanup datasets older than 7 days
+      - name: Cleanup datasets older than 7 sessions
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -904,7 +904,7 @@ jobs:
             if [[ "$VAR" == *"_INDEX" ]]; then
               # Read created_at from index
               CREATED_AT=$(gh variable get "${VAR}" | jq -r '.created_at')
-              # Check if older than 7 days
+              # Check if older than 7 sessions
               # (Implement date comparison logic)
               # gh variable delete "${VAR}"
             fi

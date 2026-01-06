@@ -8,19 +8,19 @@
 
 ## Overview
 
-This roadmap outlines the strategic development path for the _codex_ Cognitive Brain system from Q1 2026 through Q4 2026, building upon the successful completion of Phases 1-3 (100% test coverage + Quantum Framework integration).
+This roadmap outlines the strategic development path for the _codex_ Cognitive Brain system from Cycle 1 2026 through Cycle 4 2026, building upon the successful completion of Phases 1-3 (100% test coverage + Quantum Framework integration).
 
 ---
 
-## Q1 2026 (January - March)
+## Cycle 1 2026 (January - March)
 
 ### Phase 4: Production Deployment & Monitoring
 
-**Duration:** 4-6 weeks  
+**Iterations: ** 4-6 phases  
 **Priority:** HIGH
 
 #### 4.1 Deployment Infrastructure
-- [ ] Deploy to GitHub Pages (week 1)
+- [ ] Deploy to GitHub Pages (phase 1)
 - [ ] Configure CDN for static assets
 - [ ] Set up error monitoring (Sentry/similar)
 - [ ] Implement analytics tracking
@@ -56,11 +56,11 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ---
 
-## Q2 2026 (April - June)
+## Cycle 2 2026 (April - June)
 
 ### Phase 5: Quantum Superposition & Advanced Features
 
-**Duration:** 8-10 weeks  
+**Iterations: ** 8-10 phases  
 **Priority:** MEDIUM-HIGH
 
 #### 5.1 Quantum Superposition Implementation
@@ -85,7 +85,7 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 - [ ] API documentation with Swagger/OpenAPI
 
 #### 5.4 Configuration Migration Completion
-- [ ] Deprecate `conf/` directory (Q2 2026 deadline)
+- [ ] Deprecate `conf/` directory (Cycle 2 2026 deadline)
 - [ ] Migrate all configs to `configs/`
 - [ ] Update all references
 - [ ] Remove deprecated directory
@@ -99,11 +99,11 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ---
 
-## Q3 2026 (July - September)
+## Cycle 3 2026 (July - September)
 
 ### Phase 6: Quantum Entanglement & Multi-Agent Systems
 
-**Duration:** 10-12 weeks  
+**Iterations: ** 10-12 phases  
 **Priority:** MEDIUM
 
 #### 6.1 Quantum Entanglement Framework
@@ -142,11 +142,11 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ---
 
-## Q4 2026 (October - December)
+## Cycle 4 2026 (October - December)
 
 ### Phase 7: Ecosystem Expansion & Scaling
 
-**Duration:** 12 weeks  
+**Iterations: ** 12 phases  
 **Priority:** MEDIUM-LOW
 
 #### 7.1 Plugin System
@@ -219,28 +219,28 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ## Success Metrics by Quarter
 
-### Q1 2026 Targets
+### Cycle 1 2026 Targets
 - [ ] 100% test coverage maintained
 - [ ] <3s page load time
 - [ ] <500KB bundle size
 - [ ] 0 critical bugs in production
 - [ ] 70+ new quantum tests added
 
-### Q2 2026 Targets
+### Cycle 2 2026 Targets
 - [ ] API response time <100ms (p95)
 - [ ] 99.9% API uptime
 - [ ] 1000+ API calls/day
 - [ ] Quantum superposition 20% faster
 - [ ] Configuration migration 100% complete
 
-### Q3 2026 Targets
+### Cycle 3 2026 Targets
 - [ ] Multi-agent coordination <200ms overhead
 - [ ] ML-optimized parameters 30% better
 - [ ] 95% user satisfaction score
 - [ ] 10+ active multi-agent workflows
 - [ ] Entanglement framework stable
 
-### Q4 2026 Targets
+### Cycle 4 2026 Targets
 - [ ] 10,000+ users/month
 - [ ] 20+ plugins available
 - [ ] 99.95% uptime
@@ -303,27 +303,27 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ### Time Distribution
 
-**Q1 2026:**
+**Cycle 1 2026:**
 - Development: 60%
 - Testing: 20%
 - Documentation: 15%
 - Planning: 5%
 
-**Q2 2026:**
+**Cycle 2 2026:**
 - Development: 55%
 - Testing: 20%
 - API Development: 15%
 - Documentation: 8%
 - Planning: 2%
 
-**Q3 2026:**
+**Cycle 3 2026:**
 - Development: 50%
 - ML Integration: 20%
 - Testing: 15%
 - Visualization: 10%
 - Documentation: 5%
 
-**Q4 2026:**
+**Cycle 4 2026:**
 - Development: 40%
 - Scaling: 20%
 - Community: 20%
@@ -399,28 +399,28 @@ The roadmap is successful when:
 
 ## Next Steps (Immediate)
 
-### Week 1 (Jan 6-12, 2026)
+### phase 1 (Jan 6-12, 2026)
 1. ✅ Complete Phase 3 (Quantum Integration)
 2. [ ] Merge PR #2714 to main
 3. [ ] Deploy to GitHub Pages
 4. [ ] Begin Phase 4 planning
 5. [ ] Create sprint backlog
 
-### Week 2 (Jan 13-19, 2026)
+### phase 2 (Jan 13-19, 2026)
 1. [ ] Implement error monitoring
 2. [ ] Start performance optimization
 3. [ ] Begin quantum framework testing
 4. [ ] Create video tutorial (first)
 5. [ ] Weekly progress update
 
-### Week 3 (Jan 20-26, 2026)
+### phase 3 (Jan 20-26, 2026)
 1. [ ] Bundle size optimization
 2. [ ] Code splitting implementation
 3. [ ] Continue quantum tests
 4. [ ] API documentation enhancement
 5. [ ] Performance baseline established
 
-### Week 4 (Jan 27-Feb 2, 2026)
+### phase 4 (Jan 27-Feb 2, 2026)
 1. [ ] Complete performance optimization
 2. [ ] Finish quantum framework tests
 3. [ ] Enhanced documentation review
