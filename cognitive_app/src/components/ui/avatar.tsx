@@ -1,3 +1,4 @@
+"use client"
 
 import { ComponentProps } from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
