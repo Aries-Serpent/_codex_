@@ -256,7 +256,7 @@ Plugins are automatically disabled after 3 consecutive failures to prevent casca
 
 ### Cleanup Strategy
 
-#### Phase 1: P0 Stubs (Critical - Week 15)
+#### Phase 1: P0 Stubs (Critical - Pre-commit 29-30)
 1. **NotImplementedError items** (highest priority)
    - Review each NotImplementedError
    - Implement minimal viable functionality
@@ -267,7 +267,7 @@ Plugins are automatically disabled after 3 consecutive failures to prevent casca
    - Data integrity TODOs
    - Production-blocking TODOs
 
-#### Phase 2: P1 Stubs (High - Week 16)
+#### Phase 2: P1 Stubs (High - Pre-commit 31-32)
 1. **High-priority FIXMEs**
    - Performance issues
    - Scalability concerns
@@ -415,11 +415,11 @@ Configure monitoring for:
 
 ## Timeline
 
-**Week 15:**
+**Pre-commit 29-30:**
 - Days 1-3: API documentation
 - Days 4-5: P0 stub cleanup
 
-**Week 16:**
+**Pre-commit 31-32:**
 - Days 1-2: User guides & architecture docs
 - Day 3: P1 stub cleanup
 - Days 4-5: Final audit & validation

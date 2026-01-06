@@ -311,10 +311,10 @@ See: `docs/plans/Test_Execution_Guide.md`
 
 ### Phase 4-5: 70% → 95% (4 weeks)
 
-**Week 1** (70→80%): Error paths & exception handling  
-**Week 2** (80→85%): Edge cases & null inputs  
-**Week 3** (85→90%): Integration workflows  
-**Week 4** (90→95%): Security & performance
+**Pre-commit 1-2** (70→80%): Error paths & exception handling  
+**Pre-commit 3-4** (80→85%): Edge cases & null inputs  
+**Pre-commit 5-6** (85→90%): Integration workflows  
+**Pre-commit 7-8** (90→95%): Security & performance
 
 **Expected Gain**: +25%
 

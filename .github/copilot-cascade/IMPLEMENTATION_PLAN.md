@@ -194,17 +194,17 @@ copilot auth status  # Should show authenticated
 
 ## Next Actions (Phase 2 Kickoff)
 
-1. **Week 1**: Environment setup
+1. **Pre-commit 1-2**: Environment setup
    - Install Node.js 22+
    - Install Copilot CLI
    - Configure authentication
 
-2. **Week 2-3**: CLI integration
+2. **Pre-commit 3-6**: CLI integration
    - Map command structure
    - Implement execution wrapper
    - Test response parsing
 
-3. **Week 4**: Validation
+3. **Pre-commit 7-8**: Validation
    - Integration testing
    - Performance benchmarking
    - Security review

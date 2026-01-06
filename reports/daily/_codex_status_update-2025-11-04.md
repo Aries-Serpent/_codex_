@@ -201,7 +201,7 @@
 ---
 
 ### 2.9 Deferred Items
-- **Hydra sweep orchestration CLI helper (DEFER-001)** — Rationale: Manual sweep configuration sufficient for current workflows; automation deferred until Q1 2026 — Risk: 2 — Next Review: 2026-01-15
+- **Hydra sweep orchestration CLI helper (DEFER-001)** — Rationale: Manual sweep configuration sufficient for current workflows; automation deferred until Phase 1 (2026) — Risk: 2 — Next Review: 2026-01-15
 - **Best-K checkpoint retention policy (DEFER-002)** — Rationale: Current single-checkpoint approach adequate for development phase; retention policy deferred until production — Risk: 3 — Next Review: 2025-12-01
 - **Global dataset index (DEFER-003)** — Rationale: Low priority with current small dataset count; index helpful but not critical — Risk: 2 — Next Review: 2025-12-15
 

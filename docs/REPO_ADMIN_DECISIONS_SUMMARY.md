@@ -40,7 +40,7 @@
 
 ## Implementation Timeline
 
-### Phase 1: Foundation (Weeks 1-4) - **HIGH PRIORITY**
+### Phase 1: Foundation (Pre-commit 1-8) - **HIGH PRIORITY**
 ```yaml
 deliverables:
   - configs/code_quality.yaml
@@ -49,7 +49,7 @@ deliverables:
   - .codex/ directory structure
 ```
 
-### Phase 2: CI Integration (Weeks 5-8) - **HIGH PRIORITY**
+### Phase 2: CI Integration (Pre-commit 9-16) - **HIGH PRIORITY**
 ```yaml
 deliverables:
   - .github/workflows/code-quality.yml (observation mode)
@@ -58,7 +58,7 @@ deliverables:
   - Quality gate configuration
 ```
 
-### Phase 3: Enhanced Analysis (Weeks 9-12) - **MEDIUM PRIORITY**
+### Phase 3: Enhanced Analysis (Pre-commit 17-24) - **MEDIUM PRIORITY**
 ```yaml
 deliverables:
   - Tree-sitter YAML validation
@@ -67,7 +67,7 @@ deliverables:
   - Interactive dashboard
 ```
 
-### Phase 4: Advanced Features (Weeks 13-16) - **LOW PRIORITY**
+### Phase 4: Advanced Features (Pre-commit 25-32) - **LOW PRIORITY**
 ```yaml
 deliverables:
   - Cross-language refactoring
@@ -123,11 +123,11 @@ fail_on: [error, critical]    # Block on these severities
 
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
-| **CI Analysis Time** | 5 min | <30 sec | Phase 2 (Week 8) |
-| **Code Smell Detection** | Manual | Automated | Phase 2 (Week 8) |
-| **Developer Satisfaction** | Baseline | >80% | Phase 3 (Week 12) |
-| **Quality Score** | Undefined | Tracked | Phase 1 (Week 4) |
-| **YAML/SQL Errors** | Runtime | CI-caught | Phase 3 (Week 12) |
+| **CI Analysis Time** | 5 min | <30 sec | Phase 2 (Pre-commit 15-16) |
+| **Code Smell Detection** | Manual | Automated | Phase 2 (Pre-commit 15-16) |
+| **Developer Satisfaction** | Baseline | >80% | Phase 3 (Pre-commit 23-24) |
+| **Quality Score** | Undefined | Tracked | Phase 1 (Pre-commit 7-8) |
+| **YAML/SQL Errors** | Runtime | CI-caught | Phase 3 (Pre-commit 23-24) |
 
 ---
 

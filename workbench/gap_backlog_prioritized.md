@@ -154,25 +154,25 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 
 ## Recommended Execution Strategy
 
-### Phase 1: Foundation (Weeks 1-4)
+### Phase 1: Foundation (Pre-commit 1-8)
 Focus: Security, Monitoring, Basic Autonomy
 - Complete all P0 tasks (gaps 1-5)
 - Complete P1 autonomy tasks (gaps 10-13)
 - Complete P1 observability tasks (gaps 14-16)
 
-### Phase 2: Reproducibility & Quality (Weeks 5-8)
+### Phase 2: Reproducibility & Quality (Pre-commit 9-16)
 Focus: Determinism, Testing, Supply Chain
 - Complete P1 reproducibility tasks (gaps 6-9)
 - Complete P2 testing tasks (gaps 21-24)
 - Complete P2 security tasks (gaps 25-28)
 
-### Phase 3: Advanced Autonomy (Weeks 9-12)
+### Phase 3: Advanced Autonomy (Pre-commit 17-24)
 Focus: Drift Detection, Error Handling, Data Management
 - Complete P2 data/model tasks (gaps 17-20)
 - Complete P2 resilience tasks (gaps 29-31)
 - Start P3 code quality cleanup (gap 32)
 
-### Phase 4: Excellence & Innovation (Weeks 13-16)
+### Phase 4: Excellence & Innovation (Pre-commit 25-32)
 Focus: Advanced Features, Documentation, Long-term Quality
 - Complete remaining P3 tasks
 - Build continuous improvement systems

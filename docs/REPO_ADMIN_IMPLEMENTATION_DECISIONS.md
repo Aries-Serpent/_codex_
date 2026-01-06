@@ -1026,7 +1026,7 @@ from agents.advanced_physics_calculators import ElectromagneticField
 
 **Implementation Strategy:**
 
-**Phase 1: Observation (Weeks 1-4)**
+**Phase 1: Observation (Pre-commit 1-8)**
 ```yaml
 # .github/workflows/code-quality.yml
 name: Code Quality Analysis
@@ -1068,7 +1068,7 @@ jobs:
             });
 ```
 
-**Phase 2: Soft Warnings (Weeks 5-8)**
+**Phase 2: Soft Warnings (Pre-commit 9-16)**
 ```yaml
       - name: Check Quality Thresholds
         run: |
@@ -1077,7 +1077,7 @@ jobs:
           # WARNING severity prints but exits 0
 ```
 
-**Phase 3: Enforcement (Week 9+)**
+**Phase 3: Enforcement (Pre-commit 17-18+)**
 ```yaml
       - name: Enforce Quality Gates
         run: |
@@ -1148,9 +1148,9 @@ quality_gates:
 ## Code Quality Gates - Rollout Plan
 
 ### Timeline
-- **Weeks 1-4**: Observation phase - Reports only
-- **Weeks 5-8**: Warning phase - Soft checks
-- **Week 9+**: Enforcement - Blocking on errors
+- **Pre-commit 1-8**: Observation phase - Reports only
+- **Pre-commit 9-16**: Warning phase - Soft checks
+- **Pre-commit 17-18+**: Enforcement - Blocking on errors
 
 ### What's Changing
 - PR checks will analyze code quality
@@ -1430,7 +1430,7 @@ Current pain points:
 
 **Implementation Plan:**
 
-**Phase 1: YAML Validation (Weeks 1-2)**
+**Phase 1: YAML Validation (Pre-commit 1-4)**
 ```python
 # src/codex/parsers/yaml_parser.py
 
@@ -1465,7 +1465,7 @@ class YAMLValidator:
     codex-validate-yaml configs/ --strict
 ```
 
-**Phase 2: SQL Analysis (Weeks 3-4)**
+**Phase 2: SQL Analysis (Pre-commit 5-8)**
 ```python
 # src/codex/parsers/sql_parser.py
 
@@ -1488,7 +1488,7 @@ class SQLAnalyzer:
         pass
 ```
 
-**Phase 3: Cross-language Refactoring (Weeks 5-6)**
+**Phase 3: Cross-language Refactoring (Pre-commit 9-12)**
 ```python
 # src/codex/refactoring/cross_language.py
 
@@ -1799,9 +1799,9 @@ Visual reports serve different audience:
 
 | Report Type | Content | Audience | Update Frequency |
 |-------------|---------|----------|------------------|
-| **Dashboard** | KPIs, trends | Management | Daily/weekly |
+| **Dashboard** | KPIs, trends | Management | Daily/per commit cycle |
 | **Detail Report** | File-level metrics | Developers | Per-commit |
-| **Trend Analysis** | Historical data | Tech leads | Weekly/monthly |
+| **Trend Analysis** | Historical data | Tech leads | Weekly/per 4-5 commit cycles |
 | **Comparison** | Before/after | Code reviewers | Per-PR |
 
 #### Recommendation
@@ -1950,7 +1950,7 @@ codex-report --format html --output report.html --open
 
 ## Implementation Roadmap
 
-### Phase 1: Foundation (Weeks 1-4)
+### Phase 1: Foundation (Pre-commit 1-8)
 
 **Priority: HIGH**
 
@@ -1960,7 +1960,7 @@ codex-report --format html --output report.html --open
 - [ ] Register CLI entry points in `pyproject.toml`
 - [ ] Set up `.codex/` directory structure
 
-### Phase 2: CI Integration (Weeks 5-8)
+### Phase 2: CI Integration (Pre-commit 9-16)
 
 **Priority: HIGH**
 
@@ -1969,7 +1969,7 @@ codex-report --format html --output report.html --open
 - [ ] Implement incremental analysis with baseline storage
 - [ ] Configure quality gates with graduated severities
 
-### Phase 3: Enhanced Analysis (Weeks 9-12)
+### Phase 3: Enhanced Analysis (Pre-commit 17-24)
 
 **Priority: MEDIUM**
 
@@ -1978,7 +1978,7 @@ codex-report --format html --output report.html --open
 - [ ] Create HTML report generator
 - [ ] Build interactive dashboard
 
-### Phase 4: Advanced Features (Weeks 13-16)
+### Phase 4: Advanced Features (Pre-commit 25-32)
 
 **Priority: LOW**
 

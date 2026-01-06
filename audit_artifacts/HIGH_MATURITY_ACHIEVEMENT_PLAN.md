@@ -251,7 +251,7 @@ ACCEPTANCE CRITERIA:
 
 ---
 
-## Phase 2: Elevate Approaching Target to High (Weeks 3-6)
+## Phase 2: Elevate Approaching Target to High (Pre-commit 5-12)
 
 ### Batch Prompt 2A: MCP Capabilities Suite (11 capabilities: 0.61-0.69 → 0.85+)
 ```
@@ -547,7 +547,7 @@ ACCEPTANCE CRITERIA:
 
 ---
 
-## Phase 3: Elevate Medium to High (Weeks 6-9)
+## Phase 3: Elevate Medium to High (Pre-commit 11-18)
 
 ### Batch Prompt 3A: Medium Maturity Boost (15 capabilities: 0.70-0.84 → 0.90+)
 ```
@@ -618,7 +618,7 @@ ACCEPTANCE CRITERIA (each):
 
 ---
 
-## Phase 4: Excellence & Optimization (Weeks 9-12)
+## Phase 4: Excellence & Optimization (Pre-commit 17-24)
 
 ### Prompt 4A: Push to Excellence (ALL capabilities → 0.95+)
 ```
@@ -754,14 +754,14 @@ ACCEPTANCE CRITERIA:
 ## Execution Order & Dependency Map
 
 ```
-Week 1-2:  Execute Prompts 1A, 1B (Critical tier)
-Week 2-3:  Execute Prompts 1C, 1D, 1E (Needs improvement)
-Week 3-4:  Execute Prompt 2A (MCP suite - parallel work possible)
-Week 5:    Execute Prompt 2B (Infrastructure capabilities)
-Week 5-6:  Execute Prompt 2C (Inference serving)
-Week 6-8:  Execute Prompt 3A (Medium → High, batch by component)
-Week 9-10: Execute Prompt 4A (Push to excellence)
-Week 11-12: Execute Prompt 4B (Continuous system)
+Pre-commit 1-4:  Execute Prompts 1A, 1B (Critical tier)
+Pre-commit 3-6:  Execute Prompts 1C, 1D, 1E (Needs improvement)
+Pre-commit 5-8:  Execute Prompt 2A (MCP suite - parallel work possible)
+Pre-commit 9-10:    Execute Prompt 2B (Infrastructure capabilities)
+Pre-commit 9-12:  Execute Prompt 2C (Inference serving)
+Pre-commit 11-16:  Execute Prompt 3A (Medium → High, batch by component)
+Pre-commit 17-20: Execute Prompt 4A (Push to excellence)
+Pre-commit 21-24: Execute Prompt 4B (Continuous system)
 ```
 
 ---
@@ -770,18 +770,18 @@ Week 11-12: Execute Prompt 4B (Continuous system)
 
 ### Weekly Checkpoints
 
-Week 1: 2 capabilities → 0.85+ (Total: 10)
-Week 2: 3 capabilities → 0.85+ (Total: 13)
-Week 3: 5 capabilities → 0.85+ (Total: 18) - MCP starts
-Week 4: 6 capabilities → 0.85+ (Total: 24)
-Week 5: 3 capabilities → 0.85+ (Total: 27)
-Week 6: 5 capabilities → 0.85+ (Total: 32)
-Week 7: 4 capabilities → 0.85+ (Total: 36)
-Week 8: 3 capabilities → 0.85+ (Total: 39) - ALL AT OR ABOVE 0.85
-Week 9: 15 capabilities → 0.90+ (Total at 0.90+: 24)
-Week 10: 12 capabilities → 0.90+ (Total at 0.90+: 36)
-Week 11: 3 capabilities → 0.90+ (Total at 0.90+: 39) - ALL AT OR ABOVE 0.90
-Week 12: System automation and maintenance setup
+Pre-commit 1-2: 2 capabilities → 0.85+ (Total: 10)
+Pre-commit 3-4: 3 capabilities → 0.85+ (Total: 13)
+Pre-commit 5-6: 5 capabilities → 0.85+ (Total: 18) - MCP starts
+Pre-commit 7-8: 6 capabilities → 0.85+ (Total: 24)
+Pre-commit 9-10: 3 capabilities → 0.85+ (Total: 27)
+Pre-commit 11-12: 5 capabilities → 0.85+ (Total: 32)
+Pre-commit 13-14: 4 capabilities → 0.85+ (Total: 36)
+Pre-commit 15-16: 3 capabilities → 0.85+ (Total: 39) - ALL AT OR ABOVE 0.85
+Pre-commit 17-18: 15 capabilities → 0.90+ (Total at 0.90+: 24)
+Pre-commit 19-20: 12 capabilities → 0.90+ (Total at 0.90+: 36)
+Pre-commit 21-22: 3 capabilities → 0.90+ (Total at 0.90+: 39) - ALL AT OR ABOVE 0.90
+Pre-commit 23-24: System automation and maintenance setup
 
 ### Final Target Metrics
 

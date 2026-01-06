@@ -241,7 +241,7 @@ graph TB
 
 ### Integration Pattern
 
-**Trigger:** Scheduled (weekly) + on-demand via PR comment
+**Trigger:** Scheduled (per commit cycle) + on-demand via PR comment
 
 **Workflow:**
 ```yaml
@@ -582,13 +582,13 @@ quantization_bits: 7           # Adjusted from 8 (lower importance features)
 - Monitor for false positives
 - Tune generation patterns
 
-**Phase 2: Optimization Agent** (Week 2)
+**Phase 2: Optimization Agent** (Pre-commit 3-4)
 - Deploy after Phase 8.3 (Adaptive Learning)
-- Run weekly optimization cycles
+- Run per commit cycle optimization cycles
 - Build historical performance database
 - Enable on-demand optimization
 
-**Phase 3: Memory Agent** (Week 4)
+**Phase 3: Memory Agent** (Pre-commit 7-8)
 - Deploy after Phase 8.1 validation
 - Start with monitoring only
 - Enable auto-healing after 1-week observation

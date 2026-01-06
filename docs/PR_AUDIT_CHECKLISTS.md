@@ -168,7 +168,7 @@ Both templates can be customized based on:
 - **v1.3.0**: Integrated in this document (enhanced)
 
 ### Future Versions
-- **v1.4.0**: Planned for Q1 2026
+- **v1.4.0**: Planned for Phase 1 (2026)
   - AI-assisted validation
   - Automated compliance checking
   - Integration with CI/CD pipelines
@@ -200,7 +200,7 @@ All validation gates passed:
 - **v1.3.0** (2025-12-05): Enhanced with security and evolution tracking
 
 ### Next Review
-- **Scheduled**: Q1 2026
+- **Scheduled**: Phase 1 (2026)
 - **Trigger**: Major codebase changes or new compliance requirements
 
 ### Contact

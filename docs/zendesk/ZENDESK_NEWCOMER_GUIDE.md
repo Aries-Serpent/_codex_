@@ -792,7 +792,7 @@ cp -r snapshot/prod/<timestamp>/ archive/snapshots/prod/release-v1.0/
 ### 8. Monitoring
 
 - **Set up alerts** for apply failures
-- **Monitor metrics** weekly
+- **Monitor metrics** per commit cycle
 - **Review logs** after major changes
 - **Track ticket impact** after trigger changes
 
@@ -931,10 +931,10 @@ update_all_triggers('configs/desired/zendesk/triggers.json', add_tag_action)
 
 ### Learning Path
 
-1. **Week 1**: Complete first snapshot-diff-plan-apply cycle
-2. **Week 2**: Manage triggers and views for a small team
-3. **Week 3**: Set up multi-environment workflow
-4. **Week 4**: Implement monitoring and alerting
+1. **Pre-commit 1-2**: Complete first snapshot-diff-plan-apply cycle
+2. **Pre-commit 3-4**: Manage triggers and views for a small team
+3. **Pre-commit 5-6**: Set up multi-environment workflow
+4. **Pre-commit 7-8**: Implement monitoring and alerting
 5. **Month 2+**: Advanced topics (ML, automation, custom workflows)
 
 ### Resources

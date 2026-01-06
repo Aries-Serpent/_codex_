@@ -1,4 +1,4 @@
-# Week 1 Coverage Improvement Status Report
+# Pre-commit 1-2 Coverage Improvement Status Report
 
 **Date**: 2025-12-16  
 **Target**: 20% coverage  
@@ -7,7 +7,7 @@
 
 ## Summary
 
-Week 1 of the Coverage Improvement Roadmap has been implemented. Created comprehensive test suites for core training functionality with 100+ new tests targeting previously uncovered code paths.
+Pre-commit 1-2 of the Coverage Improvement Roadmap has been implemented. Created comprehensive test suites for core training functionality with 100+ new tests targeting previously uncovered code paths.
 
 ## Tests Created
 
@@ -142,7 +142,7 @@ Will be automatically included in test-suite.yml workflow once merged.
 
 ## Next Steps
 
-### Week 2 Tasks (If continuing)
+### Pre-commit 3-4 Tasks (If continuing)
 1. Data Processing modules
    - src/codex_ml/data_utils.py
    - src/codex_ml/codex_data.py
@@ -174,7 +174,7 @@ Will be automatically included in test-suite.yml workflow once merged.
 
 ## Success Criteria
 
-### Week 1 Goals
+### Pre-commit 1-2 Goals
 - [x] Create comprehensive test suite for core training
 - [x] Cover basic training iteration
 - [x] Cover checkpoint saving/loading
@@ -187,7 +187,7 @@ Will be automatically included in test-suite.yml workflow once merged.
 - [x] Documentation included
 
 ### Overall Coverage Goal Progress
-- **Phase 1 Week 1 Target**: 20% coverage
+- **Phase 1 Pre-commit 1-2 Target**: 20% coverage
 - **Estimated Achievement**: 18-20% (pending verification)
 - **Status**: ✅ ON TRACK
 
@@ -209,10 +209,10 @@ Will be automatically included in test-suite.yml workflow once merged.
 
 ## Conclusion
 
-Week 1 coverage improvement successfully implemented with 50+ high-quality tests added for core training functionality. Tests are well-structured, maintainable, and follow established patterns. Ready for integration and validation.
+Pre-commit 1-2 coverage improvement successfully implemented with 50+ high-quality tests added for core training functionality. Tests are well-structured, maintainable, and follow established patterns. Ready for integration and validation.
 
 **Status**: ✅ WEEK 1 COMPLETE  
-**Recommendation**: MERGE and proceed to Week 2
+**Recommendation**: MERGE and proceed to Pre-commit 3-4
 
 ---
 

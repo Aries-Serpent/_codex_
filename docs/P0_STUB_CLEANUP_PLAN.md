@@ -315,19 +315,19 @@ bandit -r src/ training/ cli/ -ll
 
 If full resolution in one sprint is not feasible:
 
-### Sprint 1 (Week 17): Critical P0 Resolution
+### Sprint 1 (Pre-commit 33-34): Critical P0 Resolution
 - Resolve security-related P0 stubs
 - Resolve production-blocking P0 stubs
 - Target: 25 most critical P0 stubs
 - Outcome: Production-safe for current features
 
-### Sprint 2 (Week 18): Remaining P0 Resolution
+### Sprint 2 (Pre-commit 35-36): Remaining P0 Resolution
 - Resolve remaining P0 stubs
 - Downgrade non-critical to P1 with justification
 - Target: All P0 stubs resolved or downgraded
 - Outcome: Zero P0 technical debt
 
-### Sprint 3 (Week 19): P1 Cleanup
+### Sprint 3 (Pre-commit 37-38): P1 Cleanup
 - Resolve high-priority P1 stubs
 - Document P2 stubs for future work
 - Target: <5 P1 stubs remaining
@@ -408,4 +408,4 @@ P0 stub cleanup is a **non-blocking** task for production deployment but should 
 **Status:** Plan Created  
 **Priority:** High (but non-blocking)  
 **Estimated Effort:** 9 days  
-**Target Date:** Week 17-18  
+**Target Date:** Pre-commit 33-36  

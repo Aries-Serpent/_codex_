@@ -307,7 +307,7 @@ torchrun \
     --nnodes=2 \
     --node_rank=0 \
     --nproc_per_node=4 \
-    --master_addr=node0.example.com \
+    --master_addr=node0.local \
     --master_port=29500 \
     cli/train_codex.py --config configs/training.yaml
 
@@ -316,7 +316,7 @@ torchrun \
     --nnodes=2 \
     --node_rank=1 \
     --nproc_per_node=4 \
-    --master_addr=node0.example.com \
+    --master_addr=node0.local \
     --master_port=29500 \
     cli/train_codex.py --config configs/training.yaml
 ```

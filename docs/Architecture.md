@@ -52,9 +52,9 @@ __all__ = [k for k in globals() if not k.startswith("_")]
 ### Rule 1: Canonicalization Priority
 | Priority | Action | Timeline |
 |----------|--------|----------|
-| P0 | Migrate high-usage runtime modules to `src/` | Q1 2026 |
+| P0 | Migrate high-usage runtime modules to `src/` | Phase 1 (2026) |
 | P1 | Keep minimal, documented shims during transition | Until migration complete |
-| P2 | Deprecate and remove shims after migration | Q2 2026 |
+| P2 | Deprecate and remove shims after migration | Phase 2 (2026) |
 
 ### Rule 2: Shim Requirements
 All shims MUST:
@@ -173,4 +173,4 @@ Two paths available:
 
 ---
 
-**Status**: Active | **Next Review**: Q1 2026 or upon consolidation decision
+**Status**: Active | **Next Review**: Phase 1 (2026) or upon consolidation decision

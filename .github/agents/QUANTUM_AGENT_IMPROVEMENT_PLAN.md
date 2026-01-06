@@ -940,7 +940,7 @@ __version__ = "2.0.0"
 
 ## Integration & Validation Plan
 
-### Phase 1: Quick Wins (Week 1)
+### Phase 1: Quick Wins (Pre-commit 1-2)
 
 **Days 1-2:** Discovery Improvements
 - Create QUICKSTART.md
@@ -968,7 +968,7 @@ pytest --capture=no  # Should show timing output
 cd docs && make html && open _build/html/index.html
 ```
 
-### Phase 2: Structural Changes (Week 2)
+### Phase 2: Structural Changes (Pre-commit 3-4)
 
 **Days 1-3:** Path Flattening
 - Create src/cognitive_brain/
@@ -993,7 +993,7 @@ pytest tests/cognitive_brain/ -v
 cd docs && make clean && make html
 ```
 
-### Phase 3: Measurement & Refinement (Week 3)
+### Phase 3: Measurement & Refinement (Pre-commit 5-6)
 
 **Continuous Measurement:**
 - Run discovery probability daily

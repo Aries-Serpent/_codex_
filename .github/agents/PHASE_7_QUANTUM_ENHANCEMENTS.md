@@ -4,7 +4,7 @@
 > **Generated:** 2026-01-01T17:10:00Z  
 > **Author:** GitHub Copilot Agent  
 > **Status:** Design & Planning Phase  
-> **Target:** Q1-Q2 2026
+> **Target:** Q1-Phase 2 (2026)
 
 ---
 
@@ -1281,11 +1281,11 @@ class ComplianceAssessor:
 
 | Phase | Duration | Feature | Traffic % | Success Metric |
 |-------|----------|---------|-----------|----------------|
-| **Phase 1** | Week 1-2 | Feature flags + monitoring | 0% | Infrastructure stable |
-| **Phase 2** | Week 3-4 | EXP-1 (Superposition) | 10% → 50% | +10% accuracy |
-| **Phase 3** | Week 5-6 | EXP-2 (Entanglement) | 10% → 50% | -20% redundancy |
-| **Phase 4** | Week 7-8 | EXP-3 (Uncertainty) | 10% → 50% | -20% test time |
-| **Phase 5** | Week 9-10 | All features | 100% | All metrics met |
+| **Phase 1** | Pre-commit 1-4 | Feature flags + monitoring | 0% | Infrastructure stable |
+| **Phase 2** | Pre-commit 5-8 | EXP-1 (Superposition) | 10% → 50% | +10% accuracy |
+| **Phase 3** | Pre-commit 9-12 | EXP-2 (Entanglement) | 10% → 50% | -20% redundancy |
+| **Phase 4** | Pre-commit 13-16 | EXP-3 (Uncertainty) | 10% → 50% | -20% test time |
+| **Phase 5** | Pre-commit 17-20 | All features | 100% | All metrics met |
 
 ### 9.2 Rollback Procedures
 
@@ -1400,7 +1400,7 @@ QUANTUM_METRICS = {
 
 ## 12. Deployment Roadmap
 
-### 12.1 Timeline (Q1-Q2 2026)
+### 12.1 Timeline (Q1-Phase 2 (2026))
 
 ```mermaid
 gantt
@@ -1442,25 +1442,25 @@ gantt
 
 ### 12.3 Next Steps (Immediate)
 
-**Week 1-2 (Infrastructure):**
+**Pre-commit 1-4 (Infrastructure):**
 1. Create `cognitive_brain/quantum/` module structure
 2. Implement `QuantumConfig` class with feature flags
 3. Add quantum metrics to cognitive brain DB schema
 4. Set up monitoring dashboards
 
-**Week 3-4 (Feature 1 POC):**
+**Pre-commit 5-8 (Feature 1 POC):**
 1. Implement `SuperpositionEngine` class
 2. Write 20 unit tests
 3. Integrate with compliance-checker-agent
 4. Run EXP-1 experiment (100 audits)
 
-**Week 5-6 (Feature 2 POC):**
+**Pre-commit 9-12 (Feature 2 POC):**
 1. Implement `EntanglementManager` class
 2. Write 25 unit tests
 3. Integrate with security-scan + compliance agents
 4. Run EXP-2 experiment (500 actions)
 
-**Week 7-8 (Feature 3 POC):**
+**Pre-commit 13-16 (Feature 3 POC):**
 1. Implement `UncertaintyOptimizer` class
 2. Write 15 unit tests
 3. Integrate with ci-testing-agent
@@ -1495,6 +1495,6 @@ gantt
 ---
 
 **Document Status:** ✅ Complete  
-**Next Action:** Begin Week 1-2 infrastructure implementation  
+**Next Action:** Begin Pre-commit 1-4 infrastructure implementation  
 **Owner:** @mbaetiong  
 **Last Updated:** 2026-01-01T17:10:00Z

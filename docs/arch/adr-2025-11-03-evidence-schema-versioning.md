@@ -172,10 +172,10 @@ Each schema is:
 
 ## Timeline
 
-1. **Week 1**: Create schema definitions (v1 + v2)
-2. **Week 2**: Implement `EvidenceSchemaValidator`
-3. **Week 3**: Integrate into archive operations
-4. **Week 4**: Testing + documentation
+1. **Pre-commit 1-2**: Create schema definitions (v1 + v2)
+2. **Pre-commit 3-4**: Implement `EvidenceSchemaValidator`
+3. **Pre-commit 5-6**: Integrate into archive operations
+4. **Pre-commit 7-8**: Testing + documentation
 
 ## Future Considerations
 

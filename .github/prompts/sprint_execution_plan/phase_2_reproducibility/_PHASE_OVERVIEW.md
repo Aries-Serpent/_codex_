@@ -2,7 +2,7 @@
 
 🎯 **COPILOT INSTRUCTION: PHASE 2 ORCHESTRATION**
 
-@workspace Execute Phase 2 (Weeks 5-8) - Determinism & Supply Chain
+@workspace Execute Phase 2 (Pre-commit 9-16) - Determinism & Supply Chain
 
 ## Phase Overview
 
@@ -23,7 +23,7 @@
 
 ## Task Execution Order
 
-### Sprint 3 (Week 5-6): RNG & Checkpointing
+### Sprint 3 (Pre-commit 9-12): RNG & Checkpointing
 
 **T4: Strict Resume RNG** (3 days)
 - Prompt: `phase_2_reproducibility/T4_strict_resume_rng.md`
@@ -40,7 +40,7 @@
 - Add determinism tests across pipeline
 - Expected: Bit-exact reproducibility
 
-### Sprint 4 (Week 7-8): Data & Supply Chain
+### Sprint 4 (Pre-commit 13-16): Data & Supply Chain
 
 **T6: Dataset Hash Manifest** (3 days)
 - Prompt: `phase_2_reproducibility/T6_dataset_hash_manifest.md`

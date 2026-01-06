@@ -7,7 +7,7 @@ The repository contains **60+ GitHub Actions workflows**, creating complexity an
 **Key Metrics**:
 - Total workflows: 60+
 - Average workflow length: ~150 lines
-- Estimated monthly CI minutes: High
+- Estimated per 4-5 commit cycles CI minutes: High
 - Complexity score: High
 
 ## Issues with Current State
@@ -153,7 +153,7 @@ jobs:
 
 ## Implementation Plan
 
-### Week 1: Test Suite Consolidation
+### Pre-commit 1-2: Test Suite Consolidation
 
 1. Create new `test-suite.yml`
 2. Test on feature branch
@@ -161,7 +161,7 @@ jobs:
 4. Monitor for 1 week
 5. Delete old workflows
 
-### Week 2: Security Suite Consolidation
+### Pre-commit 3-4: Security Suite Consolidation
 
 1. Create new `security-suite.yml`
 2. Test on feature branch

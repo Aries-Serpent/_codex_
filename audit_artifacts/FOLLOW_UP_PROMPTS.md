@@ -34,7 +34,7 @@ Use the mcp-lifecycle-management implementation as a reference pattern.
 
 ## Continuation Prompts by Phase
 
-### Phase 1: Critical & Needs Improvement (Weeks 1-3)
+### Phase 1: Critical & Needs Improvement (Pre-commit 1-6)
 
 #### Prompt 1B: duplication_ratio (0.39 → 0.85+)
 ```
@@ -111,7 +111,7 @@ For each capability:
 Reference the lifecycle-management example for implementation patterns.
 ```
 
-### Phase 2: MCP Capabilities Suite (Weeks 3-6)
+### Phase 2: MCP Capabilities Suite (Pre-commit 5-12)
 
 #### Prompt 2A: Batch MCP Improvements
 ```
@@ -134,7 +134,7 @@ Use the lifecycle-management implementation as the template. Each capability nee
 Start with mcp-configuration (0.61) and work through the list.
 ```
 
-### Phase 3: Medium to High Elevation (Weeks 6-9)
+### Phase 3: Medium to High Elevation (Pre-commit 11-18)
 
 #### Prompt 3A: Elevate Medium Maturity
 ```
@@ -156,7 +156,7 @@ Capabilities to address (15 total):
 Target: All 15 capabilities ≥ 0.90
 ```
 
-### Phase 4: Excellence & Automation (Weeks 9-12)
+### Phase 4: Excellence & Automation (Pre-commit 17-24)
 
 #### Prompt 4A: Push to Excellence
 ```
@@ -273,10 +273,10 @@ Use report_progress tool to update PR, then proceed to next capability.
 - Phase 1: 1/16 capabilities (mcp-lifecycle-management)
 
 **Remaining**:
-- Phase 1: 15 capabilities (Weeks 1-3)
-- Phase 2: 11 MCP capabilities (Weeks 3-6)
-- Phase 3: 15 medium-maturity capabilities (Weeks 6-9)
-- Phase 4: Excellence & automation (Weeks 9-12)
+- Phase 1: 15 capabilities (Pre-commit 1-6)
+- Phase 2: 11 MCP capabilities (Pre-commit 5-12)
+- Phase 3: 15 medium-maturity capabilities (Pre-commit 11-18)
+- Phase 4: Excellence & automation (Pre-commit 17-24)
 
 **Progress Tracking**:
 ```bash

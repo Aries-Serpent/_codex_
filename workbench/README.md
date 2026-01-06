@@ -227,7 +227,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 
 ## Roadmap to Production Autonomy
 
-### Phase 1: Foundation (Weeks 1-4)
+### Phase 1: Foundation (Pre-commit 1-8)
 **Focus:** Security, Monitoring, Basic Autonomy
 
 **Key Tasks:**
@@ -240,7 +240,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 
 ---
 
-### Phase 2: Reproducibility & Quality (Weeks 5-8)
+### Phase 2: Reproducibility & Quality (Pre-commit 9-16)
 **Focus:** Determinism, Testing, Supply Chain
 
 **Key Tasks:**
@@ -253,7 +253,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 
 ---
 
-### Phase 3: Advanced Autonomy (Weeks 9-12)
+### Phase 3: Advanced Autonomy (Pre-commit 17-24)
 **Focus:** Drift Detection, Error Handling, Data Management
 
 **Key Tasks:**
@@ -266,7 +266,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 
 ---
 
-### Phase 4: Excellence & Innovation (Weeks 13-16)
+### Phase 4: Excellence & Innovation (Pre-commit 25-32)
 **Focus:** Advanced Features, Documentation, Long-term Quality
 
 **Key Tasks:**

@@ -318,17 +318,17 @@ restore-keys: |
 
 ## Monitoring & Verification Plan
 
-### Week 1: Initial Monitoring
+### Pre-commit 1-2: Initial Monitoring
 - [ ] Track cache hit rates per workflow
 - [ ] Verify no cache conflicts in logs
 - [ ] Monitor cache size trend
 
-### Week 2-3: Performance Analysis
+### Pre-commit 3-6: Performance Analysis
 - [ ] Calculate actual time savings
 - [ ] Compare to baseline (70% hit rate)
 - [ ] Identify any remaining issues
 
-### Week 4: Final Assessment
+### Pre-commit 7-8: Final Assessment
 - [ ] Document actual improvements
 - [ ] Adjust cache keys if needed
 - [ ] Update CACHE_ANALYSIS_REPORT.md

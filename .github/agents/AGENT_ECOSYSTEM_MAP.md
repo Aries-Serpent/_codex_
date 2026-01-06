@@ -14,7 +14,7 @@ This document maps the complete agent ecosystem for the _codex_ repository, deta
 **Ecosystem Maturity**:
 - ✅ **Implemented**: ci-testing-agent.v1 (production ready)
 - 📋 **Planned**: 11 additional agents (specifications complete)
-- 🎯 **Target**: Full ecosystem by Q2 2026
+- 🎯 **Target**: Full ecosystem by Phase 2 (2026)
 
 ---
 
@@ -298,7 +298,7 @@ class ReleaseGate:
 
 ## Implementation Roadmap
 
-### Phase 1: Core Infrastructure (Q1 2026)
+### Phase 1: Core Infrastructure (Phase 1 (2026))
 **Priority**: P0 - Critical
 
 1. ✅ **ci-testing-agent.v1** - COMPLETE
@@ -307,7 +307,7 @@ class ReleaseGate:
 
 **Rationale**: Core quality and security gates
 
-### Phase 2: Reliability & Maintenance (Q1-Q2 2026)
+### Phase 2: Reliability & Maintenance (Q1-Phase 2 (2026))
 **Priority**: P1 - High
 
 4. **flaky-triage-agent.v1** - 2 weeks
@@ -317,7 +317,7 @@ class ReleaseGate:
 
 **Rationale**: Improve CI/CD reliability and maintenance
 
-### Phase 3: Developer Experience (Q2 2026)
+### Phase 3: Developer Experience (Phase 2 (2026))
 **Priority**: P2 - Medium
 
 8. **doc-reporter-agent.v1** - 1 week
@@ -326,7 +326,7 @@ class ReleaseGate:
 
 **Rationale**: Enhance developer productivity
 
-### Phase 4: Advanced Features (Q2-Q3 2026)
+### Phase 4: Advanced Features (Q2-Phase 3 (2026))
 **Priority**: P3 - Low
 
 11. **data-rag-helper.v1** - 3 weeks
@@ -457,19 +457,19 @@ class AgentGuardrails:
 
 ### KPIs by Quarter
 
-**Q1 2026**:
+**Phase 1 (2026)**:
 - ✅ 3 agents implemented (ci-testing, security-scan, compliance)
 - Coverage: 85%+ maintained
 - CI pass rate: 95%+
 - Security findings: <5 critical
 
-**Q2 2026**:
+**Phase 2 (2026)**:
 - ✅ 9 agents implemented
 - MTTR for flaky tests: <24h
 - Dependency updates: 100% minor/patch current
 - PR review time: -30%
 
-**Q3 2026**:
+**Phase 3 (2026)**:
 - ✅ 12 agents implemented (full ecosystem)
 - Agent uptime: 99.9%
 - False positive rate: <10%
@@ -519,12 +519,12 @@ Each agent must maintain:
 2. Implement security-scan-agent.v1 (P0)
 3. Implement compliance-checker-agent.v1 (P0)
 
-### Short-term (Q1 2026)
+### Short-term (Phase 1 (2026))
 4. Implement flaky-triage-agent.v1
 5. Implement dep-upgrade-agent.v1
 6. Create agent framework base class
 
-### Long-term (Q2-Q3 2026)
+### Long-term (Q2-Phase 3 (2026))
 7. Complete all 12 agents
 8. Add ML-based false positive filtering
 9. Implement agent coordination bus

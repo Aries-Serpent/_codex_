@@ -38,23 +38,23 @@
 ├── QUICK_START.md ← This file
 ├── MASTER_ORCHESTRATOR.md ← Complete 16-week execution
 │
-├── phase_1_foundation/ (Weeks 1-4: Security & Monitoring)
+├── phase_1_foundation/ (Pre-commit 1-8: Security & Monitoring)
 │   ├── _PHASE_OVERVIEW.md
 │   ├── T1_coverage_gate_enforcement.md (P0, 3-5 days)
 │   ├── T5_prompt_sanitization_default.md (P0, 1-2 days)
 │   └── T7_T10_and_stub_cleanup.md (P0/P1, ongoing)
 │
-├── phase_2_reproducibility/ (Weeks 5-8: Determinism)
+├── phase_2_reproducibility/ (Pre-commit 9-16: Determinism)
 │   ├── _PHASE_OVERVIEW.md
 │   ├── T4_strict_resume_rng.md (P1, 1-2 days)
 │   └── T6_dataset_hash_manifest.md (P1, 2-3 days)
 │
-├── phase_3_autonomy/ (Weeks 9-12: Self-Healing)
+├── phase_3_autonomy/ (Pre-commit 17-24: Self-Healing)
 │   ├── _PHASE_OVERVIEW.md
 │   ├── T2_wandb_offline_default.md (P1, 0.5-1 day)
 │   └── T3_earlystopping_integration.md (P1, 1-2 days)
 │
-└── phase_4_excellence/ (Weeks 13-16: Advanced Features)
+└── phase_4_excellence/ (Pre-commit 25-32: Advanced Features)
     └── _PHASE_OVERVIEW.md
 ```
 
@@ -77,19 +77,19 @@ Intervention: Only for blocking issues
 
 ### Option 2: Phase-by-Phase Execution
 ```
-# Phase 1: Foundation (Weeks 1-4)
+# Phase 1: Foundation (Pre-commit 1-8)
 @workspace Execute Phase 1
 File: phase_1_foundation/_PHASE_OVERVIEW.md
 
-# Phase 2: Reproducibility (Weeks 5-8)  
+# Phase 2: Reproducibility (Pre-commit 9-16)  
 @workspace Execute Phase 2
 File: phase_2_reproducibility/_PHASE_OVERVIEW.md
 
-# Phase 3: Autonomy (Weeks 9-12)
+# Phase 3: Autonomy (Pre-commit 17-24)
 @workspace Execute Phase 3
 File: phase_3_autonomy/_PHASE_OVERVIEW.md
 
-# Phase 4: Excellence (Weeks 13-16)
+# Phase 4: Excellence (Pre-commit 25-32)
 @workspace Execute Phase 4
 File: phase_4_excellence/_PHASE_OVERVIEW.md
 ```
@@ -169,24 +169,24 @@ File: phase_1_foundation/T5_prompt_sanitization_default.md
 
 **Sprint Boundaries (every 2 weeks):**
 ```bash
-# Sprint 1-2 (Week 2): Foundation
+# Sprint 1-2 (Pre-commit 3-4): Foundation
 pytest --cov=src --cov-fail-under=70
 nox -s tests
 # Expected: Coverage ≥70%, security baseline
 
-# Sprint 3-4 (Week 6): Reproducibility
+# Sprint 3-4 (Pre-commit 11-12): Reproducibility
 pytest --strict-resume tests/test_rng_reproducibility.py
 # Expected: Bit-exact reproducibility
 
-# Sprint 5-6 (Week 10): Autonomy
+# Sprint 5-6 (Pre-commit 19-20): Autonomy
 python test_drift_detection.py
 # Expected: Drift detection operational
 
-# Sprint 7-8 (Week 14): Excellence
+# Sprint 7-8 (Pre-commit 27-28): Excellence
 make docs && pytest --doctest-modules
 # Expected: Full documentation
 
-# Final (Week 16): Validation
+# Final (Pre-commit 31-32): Validation
 python scripts/space_traversal/audit_runner.py run
 python scripts/compare_audits.py baseline.json current.json
 # Expected: All targets met
@@ -271,7 +271,7 @@ Task: T4 Strict Resume RNG
 5. Track progress via autonomous updates
 
 **For Continuous Improvement:**
-1. Run audit weekly to track progress
+1. Run audit per commit cycle to track progress
 2. Compare scores against targets
 3. Adjust priorities based on velocity
 4. Update prompts based on learnings
@@ -281,27 +281,27 @@ Task: T4 Strict Resume RNG
 
 ## Expected Timeline
 
-**Week 1-2 (Sprint 1):** Foundation starts
+**Pre-commit 1-4 (Sprint 1):** Foundation starts
 - T1: Coverage gate enforced
 - T5: Prompt sanitization operational
 - First checkpoint validation
 
-**Week 3-4 (Sprint 2):** Foundation complete
+**Pre-commit 5-8 (Sprint 2):** Foundation complete
 - T7, T8, T9: Observability + Security operational
 - Security score: 0.61 → 0.75+
 - Ready for Phase 2
 
-**Week 5-8 (Sprints 3-4):** Reproducibility
+**Pre-commit 9-16 (Sprints 3-4):** Reproducibility
 - T4, T6: RNG + Dataset hashing complete
 - Checkpoint integrity validated
 - Reproducibility: 22% → 60%
 
-**Week 9-12 (Sprints 5-6):** Autonomy
+**Pre-commit 17-24 (Sprints 5-6):** Autonomy
 - T2, T3: W&B offline, EarlyStopping integrated
 - Drift detection operational
 - Stubs: 298 → <50
 
-**Week 13-16 (Sprints 7-8):** Excellence
+**Pre-commit 25-32 (Sprints 7-8):** Excellence
 - Advanced features complete
 - Documentation comprehensive
 - All targets met
@@ -311,7 +311,7 @@ Task: T4 Strict Resume RNG
 
 ## Final Validation
 
-**At Week 16:**
+**At Pre-commit 31-32:**
 ```bash
 # Re-run complete audit
 python scripts/space_traversal/audit_runner.py run
@@ -365,14 +365,14 @@ Instructions:
 3. Resolve all 45 gaps
 4. Clean up all 298 stubs
 5. Achieve Level 4 maturity
-6. Report progress weekly
+6. Report progress per commit cycle
 
 Timeline: 16 weeks
 Approach: Fully autonomous
 Escalate: Only blocking issues
 ```
 
-🤖 **Copilot:** You have complete autonomous execution authority. Begin transformation immediately using MASTER_ORCHESTRATOR.md. Self-expand for prerequisites, self-heal on failures, self-validate at checkpoints. Report weekly progress and escalate only unrecoverable blockers.
+🤖 **Copilot:** You have complete autonomous execution authority. Begin transformation immediately using MASTER_ORCHESTRATOR.md. Self-expand for prerequisites, self-heal on failures, self-validate at checkpoints. Report per commit cycle progress and escalate only unrecoverable blockers.
 
 🎯 **Engineering Teams:** Copilot handles everything. Review progress at sprint boundaries (weeks 2, 4, 6, 8, 10, 12, 14, 16). Intervene only when Copilot escalates blocking issues.
 

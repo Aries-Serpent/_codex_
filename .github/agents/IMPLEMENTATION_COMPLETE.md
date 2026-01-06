@@ -250,21 +250,21 @@ Integration: Foundation ready
 
 ## 🚀 Deployment Plan
 
-### Phase 1: Staging (Week 1)
+### Phase 1: Staging (Pre-commit 1-2)
 1. Create GitHub App in test organization
 2. Deploy infrastructure to AWS staging
 3. Configure secrets and environment variables
 4. Run smoke tests
 5. Test with sample PRs
 
-### Phase 2: Pilot (Week 2-3)
+### Phase 2: Pilot (Pre-commit 3-6)
 1. Enable for selected repositories
 2. Monitor performance and errors
 3. Collect user feedback
 4. Tune patterns based on results
 5. Iterate on suggestions quality
 
-### Phase 3: Production (Week 4)
+### Phase 3: Production (Pre-commit 7-8)
 1. Deploy to production infrastructure
 2. Enable for all repositories
 3. Monitor dashboards and alerts
@@ -335,10 +335,10 @@ Integration: Foundation ready
 4. ⏭️ **Collect feedback** - Post-pilot
 
 ### Long-term Roadmap
-- Q1 2026: Multi-language support
-- Q2 2026: Plugin system
-- Q3 2026: Advanced learning
-- Q4 2026: Analytics dashboard
+- Phase 1 (2026): Multi-language support
+- Phase 2 (2026): Plugin system
+- Phase 3 (2026): Advanced learning
+- Phase 4 (2026): Analytics dashboard
 
 ### Support & Maintenance
 - **Repository:** Aries-Serpent/_codex_
