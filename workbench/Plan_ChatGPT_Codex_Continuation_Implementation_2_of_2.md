@@ -95,7 +95,7 @@ Complete the following:
 
 
 # [Review]: Previous iteration Patchset Verification & Missing-Artifact Audit
-> Generated: 2025-12-19T00:00:00Z | Author: mbaetiong | Energy: 5/5
+> Generated: Previous Cycle-12-19T00:00:00Z | Author: mbaetiong | Energy: 5/5
 
 Summary
 - I reviewed the provided patchset against the Plans A→D artifacts previously mentioned fetched file link.
@@ -149,7 +149,7 @@ Missing / incomplete / high-risk items (summary list)
    - Action: add a test that:
      - runs worker with small dataset and checkpoint file,
      - confirms checkpoint file contains processed checksum(s),
-     - runs worker again and asserts that already-processed items are skipped (no duplicate upserts). For mock-backed persistence, may need to adapt state assertion.
+     - runs worker again and asserts that already-processed items are skipped (no duplicate upserts). For mock-backed persistence, Phase 5 need to adapt state assertion.
 
 9) PII redaction hook & preprocess tests (Low)
    - The worker exposes `preprocess` hook; tests should ensure by default it's a noop and that a custom simple redaction function can be used (unit test).
@@ -159,7 +159,7 @@ Missing / incomplete / high-risk items (summary list)
     - Action: add empty __init__.py as needed and run quick import smoke tests.
 
 11) CI matrix and job scope review (Medium)
-    - mcp-ci.yml runs tests/mcp and tests/embeddings in matrix. Confirm that tests/integration are not included (gated by integration YAML). Also confirm runner installs correct dependencies; e.g., pyproject or requirements-test presence — if not, CI may still succeed if tests require only stdlib.
+    - mcp-ci.yml runs tests/mcp and tests/embeddings in matrix. Confirm that tests/integration are not included (gated by integration YAML). Also confirm runner installs correct dependencies; e.g., pyproject or requirements-test presence — if not, CI Phase 5 still succeed if tests require only stdlib.
     - Action: run CI locally (act) and validate dependencies in pyproject/requirements.
 
 12) Secrets & gating operational review (High)

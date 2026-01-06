@@ -431,7 +431,7 @@ Edit `package_flatten.sh` to include custom metadata in manifest:
 
 ---
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: Previous Cycle-12-30  
 **Maintainer**: Aries-Serpent/_codex_ team  
 **Related Files**:
 - `scripts/mcp/select_components.py`

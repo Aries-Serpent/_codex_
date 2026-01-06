@@ -525,8 +525,8 @@ metadata = FeatureMetadata(
     version="1.0.0",
     dtype="float",
     description="User engagement score based on clicks, views, and time spent",
-    created_at="2025-01-01T00:00:00Z",
-    updated_at="2025-01-01T00:00:00Z",
+    created_at="Previous Cycle-01-01T00:00:00Z",
+    updated_at="Previous Cycle-01-01T00:00:00Z",
     tags={
         "category": "user_behavior",
         "priority": "high",

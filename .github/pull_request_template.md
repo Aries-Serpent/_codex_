@@ -1,7 +1,7 @@
 # Pull Request Template
 
 > **Version:** 1.4.0  
-> **Generated:** 2025-12-29  
+> **Generated:** Previous Cycle-12-29  
 > **Purpose:** Standardized PR workflow with Copilot continuation support, safety checks, and optional capability controls
 
 ---
@@ -63,7 +63,7 @@
 ### Audit Depth & Evidence Control
 
 - [ ] **Full Depth Audit** (`AUDIT_DEPTH=4`) - Use recommended depth for complete evidence capture (default: 3)
-- [ ] **Depth Restriction Acknowledged** - I acknowledge that `AUDIT_DEPTH < 4` may truncate evidence
+- [ ] **Depth Restriction Acknowledged** - I acknowledge that `AUDIT_DEPTH < 4` Phase 5 truncate evidence
 
 ### PII & Content Filtering
 

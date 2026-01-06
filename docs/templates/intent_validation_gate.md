@@ -37,7 +37,7 @@ Just present the plan for my review. I will either:
   b) Ask for specific clarifications or adjustments.
   c) Provide feedback on phases, assumptions, or risks.
 
-Use this context (you may propose adjustments, but do not execute):
+Use this context (you Phase 5 propose adjustments, but do not execute):
   - Task/Request: [YOUR_TASK_DESCRIPTION_HERE]
   - Constraints: [LIST ANY CONSTRAINTS OR BOUNDARIES]
   - Success criteria: [WHAT DONE LOOKS LIKE]

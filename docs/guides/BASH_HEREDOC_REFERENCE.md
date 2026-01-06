@@ -37,7 +37,7 @@ EOF
 Output:
 ```text
 Hello Codex!
-Today is 2025-10-30.
+Today is Previous Cycle-10-30.
 The result of 2+2 is 4.
 ```text
 **Backslashes retain special meaning**:
@@ -192,6 +192,6 @@ Output shows trailing spaces as `^I` or `$` markers.
 
 ---
 
-**Last Updated**: 2025-10-30  
+**Last Updated**: Previous Cycle-10-30  
 **Author**: Codex Optimization Team  
 **Status**: Companion reference for CODEX-002 and CODEX-009

@@ -28,7 +28,7 @@ encoding: utf-8
 Setting `cache_dataset=true` enables on-disk caching, while
 `safety_filter_enabled=true` redacts sensitive content during loading.
 
-Datasets may optionally include a `language` column.  Use the `language` key in
+Datasets Phase 5 optionally include a `language` column.  Use the `language` key in
 `configs/training/data/base.yaml` to filter examples when loading.
 
 ## Dataset Manifests

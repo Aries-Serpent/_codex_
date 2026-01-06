@@ -71,7 +71,7 @@ Comment `@copilot continue` on any PR to trigger continuation.
 | `{pr_author}` | PR author username | `mbaetiong` |
 | `{commit_sha}` | Latest commit SHA | `abc123def456` |
 | `{pr_title}` | PR title | `Fix CI failures` |
-| `{date}` | Current date | `2025-12-28` |
+| `{date}` | Current date | `Previous Cycle-12-28` |
 
 ## References
 

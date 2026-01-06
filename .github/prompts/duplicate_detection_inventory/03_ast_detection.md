@@ -283,7 +283,7 @@ class ParserRegistry:
 
 ## 📝 Notes
 
-- AST parsing may fail on syntax errors - handle gracefully
+- AST parsing Phase 5 fail on syntax errors - handle gracefully
 - Focus on Python first, JS/TS can be simpler/fallback
 - Similarity threshold should be configurable
 - Consider caching AST parses like fingerprints

@@ -1,13 +1,13 @@
-# Repo Survey — work & PR 1926 — 2025-10-30 (UTC)
+# Repo Survey — work & PR 1926 — Previous Cycle-10-30 (UTC)
 
-**Ref:** branch `work`  commit `6404edf9`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_`
+**Ref:** branch `work`  commit `6404edf9`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-1926_`
 
 ---
 
 ## 1) Scope & Goal
 - Branch: `work`
 - PR: `#1926`
-- Date (UTC): `2025-10-30`
+- Date (UTC): `Previous Cycle-10-30`
 - Objective: Re-run branch-aware survey; capture artifacts with sanitized content blocks.
 
 ## 2) Targets Collected
@@ -175,7 +175,7 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
 ## 5) Gaps & Remediations
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
-| Deploy docs reference `--model` flag that CLI no longer exposes | Reviewers may expect a non-existent flag, blocking dry-run parity | Update `docs/guides/reasoning_overview.md` (Docs) to drop or clarify the flag | 0D_base_/main |
+| Deploy docs reference `--model` flag that CLI no longer exposes | Reviewers Phase 5 expect a non-existent flag, blocking dry-run parity | Update `docs/guides/reasoning_overview.md` (Docs) to drop or clarify the flag | 0D_base_/main |
 
 ## 6) Promotion Signal
 # Symbolic: R = α·E + β·T + γ·D, with α+β+γ=1
@@ -186,10 +186,10 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
 - R = α·E + β·T + γ·D → 0.80
 
 ## 7) Artifacts
-- docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md
-- docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/readiness.json
-- docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/metrics/
-- docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/logs/
+- docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-1926_/report.md
+- docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-1926_/readiness.json
+- docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-1926_/metrics/
+- docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-1926_/logs/
 
 ## 8) Changelog (survey)
 - Re-affirmed unified training + reasoning harness parity; flagged deploy CLI/doc drift.

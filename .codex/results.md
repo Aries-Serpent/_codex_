@@ -1,4 +1,4 @@
-# Workflow Merge Results (2025-08-23T18:16:11Z)
+# Workflow Merge Results (Previous Cycle-08-23T18:16:11Z)
 
 - Authoritative: `codex_workflow.py`
 - Redundant files: []
@@ -51,7 +51,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 - Added automation entry point `tools/codex_exec.py`.
 - Enhanced executor with phased operations and robust logging.
 
-# Hydra Validation 2025-08-25T05:00:03Z
+# Hydra Validation Previous Cycle-08-25T05:00:03Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -65,7 +65,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:00:58Z
+# Hydra Validation Previous Cycle-08-25T05:00:58Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -79,7 +79,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:01:07Z
+# Hydra Validation Previous Cycle-08-25T05:01:07Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -93,7 +93,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:01:17Z
+# Hydra Validation Previous Cycle-08-25T05:01:17Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -107,7 +107,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:02:06Z
+# Hydra Validation Previous Cycle-08-25T05:02:06Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -121,7 +121,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:03:36Z
+# Hydra Validation Previous Cycle-08-25T05:03:36Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -135,7 +135,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:03:45Z
+# Hydra Validation Previous Cycle-08-25T05:03:45Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -149,7 +149,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation 2025-08-25T05:04:25Z
+# Hydra Validation Previous Cycle-08-25T05:04:25Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -196,7 +196,7 @@ dry_run: true
 [pipeline] step=train dry_run=True
 [pipeline] step=evaluate dry_run=True
 
-# Validation 2025-08-25T05:32:07Z
+# Validation Previous Cycle-08-25T05:32:07Z
 
 ## pytest (metrics)
 ```text
@@ -238,7 +238,7 @@ ERROR tests/test_metrics.py
 
 ```text
 {
-  "ts": "2025-08-25T05:59:45Z",
+  "ts": "Previous Cycle-08-25T05:59:45Z",
   "acceptance": {
     "tensorboard_dir": "/workspace/_codex_/runs/demo/tensorboard",
     "mlflow_dir": "/workspace/_codex_/runs/demo/mlruns",
@@ -248,9 +248,9 @@ ERROR tests/test_metrics.py
   "note": "TensorBoard should display scalars/histograms; W&B logs if enabled; MLflow artifacts recorded."
 }
 
-# Monitoring Integration 2025-08-25T06:05:02Z
+# Monitoring Integration Previous Cycle-08-25T06:05:02Z
 `SKIP=semgrep,detect-secrets pre-commit run --all-files`
-## 2025-08-25T15:04:00Z Checkpointing
+## Previous Cycle-08-25T15:04:00Z Checkpointing
 
 ### pre-commit
 ```text
@@ -271,7 +271,7 @@ semgrep.................................................................Skipped
 8 passed, 1 skipped in 29.46s
 ```text
 
-# Data loaders validation 2025-08-25T15:44:06Z
+# Data loaders validation Previous Cycle-08-25T15:44:06Z
 
 ## pytest tests/test_loaders.py
 ```text
@@ -286,7 +286,7 @@ semgrep.................................................................Skipped
 ```text
 Pre-commit run was interrupted during semgrep environment setup.
 
-# Validation 2025-08-25T15:54:21Z
+# Validation Previous Cycle-08-25T15:54:21Z
 
 ## $ pytest -q -k safety --maxfail=1
 ```text
@@ -309,7 +309,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 (exit=1)
 ```text
 
-# Validation 2025-08-25T15:58:16Z
+# Validation Previous Cycle-08-25T15:58:16Z
 
 ## $ pytest -q tests/test_safety.py
 ```...                                                                                                                      [100%]
@@ -318,7 +318,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 (exit=0)
 ```text
 
-# Validation 2025-08-25T16:06:37Z
+# Validation Previous Cycle-08-25T16:06:37Z
 
 ## pre-commit (all files)
 ```text
@@ -331,19 +331,19 @@ ERROR tests/test_checkpoint_roundtrip.py
 [INFO] Initializing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO] Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO] Once installed this environment will be reused.
-[INFO] This may take a few minutes...
+[INFO] This Phase 5 take a few minutes...
 [INFO] Installing environment for https://github.com/psf/black.
 [INFO] Once installed this environment will be reused.
-[INFO] This may take a few minutes...
+[INFO] This Phase 5 take a few minutes...
 [INFO] Installing environment for https://github.com/pycqa/isort.
 [INFO] Once installed this environment will be reused.
-[INFO] This may take a few minutes...
+[INFO] This Phase 5 take a few minutes...
 [INFO] Installing environment for https://github.com/pycqa/flake8.
 [INFO] Once installed this environment will be reused.
-[INFO] This may take a few minutes...
+[INFO] This Phase 5 take a few minutes...
 [INFO] Installing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO] Once installed this environment will be reused.
-[INFO] This may take a few minutes...
+[INFO] This Phase 5 take a few minutes...
 fix end of files.........................................................Failed
 - hook id: end-of-file-fixer
 - exit code: 1
@@ -2708,7 +2708,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation 2025-08-25T16:08:15Z
+# Validation Previous Cycle-08-25T16:08:15Z
 
 ## pre-commit (all files)
 ```text
@@ -3124,7 +3124,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation 2025-08-25T16:09:02Z
+# Validation Previous Cycle-08-25T16:09:02Z
 
 ## pre-commit (all files)
 ```text
@@ -3335,7 +3335,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation 2025-08-25T16:19:31Z
+# Validation Previous Cycle-08-25T16:19:31Z
 
 ## docker build
 ``
@@ -3344,7 +3344,7 @@ scripts/deploy/build.sh: line 6: docker: command not found
 (exit=127)
 ERROR: name 'sys' is not defined
 
-# Validation 2025-08-25T16:19:47Z
+# Validation Previous Cycle-08-25T16:19:47Z
 
 ## docker build
 ``
@@ -3410,7 +3410,7 @@ curl: (7) Failed to connect to localhost port 8000 after 0 ms: Couldn't connect 
 (exit=7)
 ``
 
-# Validation 2025-08-25T20:21:56Z
+# Validation Previous Cycle-08-25T20:21:56Z
 
 ## Install MkDocs deps
 ```text
@@ -3455,7 +3455,7 @@ Requirement already satisfied: pygments~=2.16 in /root/.pyenv/versions/3.12.10/l
 Collecting pymdown-extensions~=10.2 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Downloading pymdown_extensions-10.16.1-py3-none-any.whl.metadata (3.1 kB)
 Collecting regex>=2022.4 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
-  Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+  Downloading regex-Previous Cycle.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
 Collecting requests~=2.26 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
 Collecting charset_normalizer<4,>=2 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
@@ -3465,7 +3465,7 @@ Collecting idna<4,>=2.5 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/r
 Collecting urllib3<3,>=1.21.1 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Using cached urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-Previous Cycle.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting fastjsonschema>=2.15 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading fastjsonschema-2.21.2-py3-none-any.whl.metadata (2.3 kB)
 Collecting jsonschema>=2.6 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
@@ -3497,7 +3497,7 @@ Collecting python-dateutil>=2.8.1 (from ghp-import>=1.0->mkdocs==1.6.0->-r docs/
 Collecting attrs>=22.2.0 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
@@ -3535,12 +3535,12 @@ Downloading nbconvert-7.16.6-py3-none-any.whl (258 kB)
 Downloading mistune-3.1.3-py3-none-any.whl (53 kB)
 Downloading bleach-6.2.0-py3-none-any.whl (163 kB)
 Downloading tinycss2-1.4.0-py3-none-any.whl (26 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-Previous Cycle.8.3-py3-none-any.whl (161 kB)
 Downloading fastjsonschema-2.21.2-py3-none-any.whl (24 kB)
 Downloading ghp_import-2.1.0-py3-none-any.whl (11 kB)
 Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl (18 kB)
 Downloading jupyter_core-5.8.1-py3-none-any.whl (28 kB)
 Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
 Downloading mergedeep-1.3.4-py3-none-any.whl (6.4 kB)
@@ -3555,7 +3555,7 @@ Downloading pyyaml_env_tag-1.1-py3-none-any.whl (4.7 kB)
 Downloading pyzmq-27.0.2-cp312-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (840 kB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 840.6/840.6 kB 55.8 MB/s  0:00:00
 Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
-Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+Downloading regex-Previous Cycle.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.9/801.9 kB 30.4 MB/s  0:00:00
 Downloading rpds_py-0.27.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (386 kB)
 Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
@@ -3569,7 +3569,7 @@ Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
 Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)
 Installing collected packages: webencodings, paginate, fastjsonschema, watchdog, urllib3, traitlets, tornado, tinycss2, soupsieve, six, rpds-py, regex, pyzmq, pyyaml, pandocfilters, mkdocs-material-extensions, mistune, mergedeep, markupsafe, markdown, jupyterlab-pygments, idna, defusedxml, colorama, charset_normalizer, certifi, bleach, babel, attrs, requests, referencing, pyyaml-env-tag, python-dateutil, pymdown-extensions, mkdocs-get-deps, jupyter-core, jinja2, beautifulsoup4, jupyter-client, jsonschema-specifications, ghp-import, mkdocs, jsonschema, nbformat, mkdocs-material, nbclient, nbconvert
 
-Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.2.0 certifi-2025.8.3 charset_normalizer-3.4.3 colorama-0.4.6 defusedxml-0.7.1 fastjsonschema-2.21.2 ghp-import-2.1.0 idna-3.10 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 jupyter-client-8.6.3 jupyter-core-5.8.1 jupyterlab-pygments-0.3.0 markdown-3.8.2 markupsafe-3.0.2 mergedeep-1.3.4 mistune-3.1.3 mkdocs-1.6.0 mkdocs-get-deps-0.2.0 mkdocs-material-9.5.27 mkdocs-material-extensions-1.3.1 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 paginate-0.5.7 pandocfilters-1.5.1 pymdown-extensions-10.16.1 python-dateutil-2.9.0.post0 pyyaml-6.0.2 pyyaml-env-tag-1.1 pyzmq-27.0.2 referencing-0.36.2 regex-2025.7.34 requests-2.32.5 rpds-py-0.27.0 six-1.17.0 soupsieve-2.7 tinycss2-1.4.0 tornado-6.5.2 traitlets-5.14.3 urllib3-2.5.0 watchdog-6.0.0 webencodings-0.5.1
+Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.2.0 certifi-Previous Cycle.8.3 charset_normalizer-3.4.3 colorama-0.4.6 defusedxml-0.7.1 fastjsonschema-2.21.2 ghp-import-2.1.0 idna-3.10 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-Previous Cycle.4.1 jupyter-client-8.6.3 jupyter-core-5.8.1 jupyterlab-pygments-0.3.0 markdown-3.8.2 markupsafe-3.0.2 mergedeep-1.3.4 mistune-3.1.3 mkdocs-1.6.0 mkdocs-get-deps-0.2.0 mkdocs-material-9.5.27 mkdocs-material-extensions-1.3.1 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 paginate-0.5.7 pandocfilters-1.5.1 pymdown-extensions-10.16.1 python-dateutil-2.9.0.post0 pyyaml-6.0.2 pyyaml-env-tag-1.1 pyzmq-27.0.2 referencing-0.36.2 regex-Previous Cycle.7.34 requests-2.32.5 rpds-py-0.27.0 six-1.17.0 soupsieve-2.7 tinycss2-1.4.0 tornado-6.5.2 traitlets-5.14.3 urllib3-2.5.0 watchdog-6.0.0 webencodings-0.5.1
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
@@ -3593,7 +3593,7 @@ nbconvert ok
 (exit=0)
 $ nbconvert examples/notebooks/demo_infer.ipynb
 [NbConvertApp] Converting notebook examples/notebooks/demo_infer.ipynb to notebook
-/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
+/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You Phase 5 want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
   validate(nb)
 [NbConvertApp] WARNING | Kernelspec name python3 cannot be found!
 [NbConvertApp] ERROR | No such kernel named python3
@@ -3703,7 +3703,7 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 (exit=1)
 $ nbconvert examples/notebooks/demo_train_eval.ipynb
 [NbConvertApp] Converting notebook examples/notebooks/demo_train_eval.ipynb to notebook
-/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
+/root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/nbformat/__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You Phase 5 want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
   validate(nb)
 [NbConvertApp] WARNING | Kernelspec name python3 cannot be found!
 [NbConvertApp] ERROR | No such kernel named python3
@@ -3813,15 +3813,15 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 (exit=1)
 ```text
 
-# Validation 2025-08-25T20:43:46Z
+# Validation Previous Cycle-08-25T20:43:46Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154626
 - MLflow enabled: False
 
-# Validation 2025-08-25T20:44:01Z
+# Validation Previous Cycle-08-25T20:44:01Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154641
 - MLflow enabled: True
 
-# Repo scan 2025-08-26T00:50:52Z
+# Repo scan Previous Cycle-08-26T00:50:52Z
 - codex_ml/interfaces/reward_model.py
 - codex_ml/interfaces/rl.py
 - codex_ml/interfaces/tokenizer.py
@@ -3830,7 +3830,7 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation 2025-08-26T00:50:52Z
+# Validation Previous Cycle-08-26T00:50:52Z
 
 ## mypy interfaces
 ```text
@@ -3865,7 +3865,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Repo scan 2025-08-26T00:51:15Z
+# Repo scan Previous Cycle-08-26T00:51:15Z
 - codex_ml/interfaces/reward_model.py
 - codex_ml/interfaces/rl.py
 - codex_ml/interfaces/tokenizer.py
@@ -3874,7 +3874,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation 2025-08-26T00:51:15Z
+# Validation Previous Cycle-08-26T00:51:15Z
 
 ## mypy interfaces
 ```text
@@ -3908,7 +3908,7 @@ ERROR tests/test_interfaces_compat.py
 
 ```text
 
-# Repo scan 2025-08-26T00:51:52Z
+# Repo scan Previous Cycle-08-26T00:51:52Z
 - src/codex_ml/interfaces/reward_model.py
 - src/codex_ml/interfaces/rl.py
 - src/codex_ml/interfaces/tokenizer.py
@@ -3917,7 +3917,7 @@ ERROR tests/test_interfaces_compat.py
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation 2025-08-26T00:51:52Z
+# Validation Previous Cycle-08-26T00:51:52Z
 
 ## mypy interfaces
 ```text
@@ -3936,7 +3936,7 @@ sss                                                                             
 
 ```text
 
-# Repo scan 2025-08-26T00:52:00Z
+# Repo scan Previous Cycle-08-26T00:52:00Z
 - src/codex_ml/interfaces/reward_model.py
 - src/codex_ml/interfaces/rl.py
 - src/codex_ml/interfaces/tokenizer.py
@@ -3945,7 +3945,7 @@ sss                                                                             
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation 2025-08-26T00:52:00Z
+# Validation Previous Cycle-08-26T00:52:00Z
 
 ## mypy interfaces
 ```text
@@ -3964,7 +3964,7 @@ sss                                                                             
 
 ```text
 
-# Pre-commit 2025-08-26T00:52:30Z
+# Pre-commit Previous Cycle-08-26T00:52:30Z
 
 [INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
 Interrupted (^C): KeyboardInterrupt:
@@ -3984,34 +3984,34 @@ Check the log at /root/.cache/pre-commit/pre-commit.log
 [INFO][m Initializing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/astral-sh/ruff-pre-commit.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/PyCQA/bandit.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/Yelp/detect-secrets.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/returntocorp/semgrep.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/psf/black.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/pycqa/isort.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/pycqa/flake8.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 [INFO][m Installing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This may take a few minutes...
+[INFO][m This Phase 5 take a few minutes...
 fix end of files.........................................................[41mFailed[m
 [2m- hook id: end-of-file-fixer[m
 [2m- exit code: 1[m
@@ -4557,7 +4557,7 @@ tests/test_mlflow_utils.py ....                                                 
 
 Runs appear under specified experiment (when enabled); repeated runs with the same seed produce identical metrics.
 
-# Deps 2025-08-26T05:28:24Z
+# Deps Previous Cycle-08-26T05:28:24Z
 
 ## python -m pip install -r requirements-dev.txt
 ```text
@@ -4648,7 +4648,7 @@ Collecting wcmatch~=8.3 (from semgrep->-r requirements-dev.txt (line 9))
 Collecting face>=20.1.0 (from glom~=22.1->semgrep->-r requirements-dev.txt (line 9))
   Downloading face-24.0.0-py3-none-any.whl.metadata (1.1 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
@@ -4821,7 +4821,7 @@ Collecting charset_normalizer<4,>=2 (from requests~=2.22->semgrep->-r requiremen
 Collecting idna<4,>=2.5 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
   Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-Previous Cycle.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting markdown-it-py>=2.2.0 (from rich->bandit->-r requirements-dev.txt (line 8))
   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
 Collecting bracex>=2.1.1 (from wcmatch~=8.3->semgrep->-r requirements-dev.txt (line 9))
@@ -4869,11 +4869,11 @@ Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.man
 Downloading detect_secrets-1.5.0-py3-none-any.whl (120 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
 Downloading bracex-2.6-py3-none-any.whl (11 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-Previous Cycle.8.3-py3-none-any.whl (161 kB)
 Downloading coverage-7.10.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (251 kB)
 Downloading Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
 Downloading face-24.0.0-py3-none-any.whl (54 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl (18 kB)
 Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
@@ -4898,7 +4898,7 @@ Installing collected packages: peewee, boltons, zipp, wrapt, urllib3, tomli, ste
     Uninstalling click-8.2.1:
       Successfully uninstalled click-8.2.1
 
-Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2025.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
+Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-Previous Cycle.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-Previous Cycle.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
@@ -4907,7 +4907,7 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 ## python -m pip install -r requirements.txt
 ```text
 
-# Validation 2025-08-26T05:29:34Z
+# Validation Previous Cycle-08-26T05:29:34Z
 
 ## GPU check
 ```text
@@ -6428,7 +6428,7 @@ Check the log at /root/.cache/pre-commit/pre-commit.log
 
 
 
-# Deps 2025-08-26T05:45:48Z
+# Deps Previous Cycle-08-26T05:45:48Z
 
 ## python -m pip install -r requirements-dev.txt
 ```text
@@ -6519,7 +6519,7 @@ Collecting wcmatch~=8.3 (from semgrep->-r requirements-dev.txt (line 9))
 Collecting face>=20.1.0 (from glom~=22.1->semgrep->-r requirements-dev.txt (line 9))
   Downloading face-24.0.0-py3-none-any.whl.metadata (1.1 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
@@ -6692,7 +6692,7 @@ Collecting charset_normalizer<4,>=2 (from requests~=2.22->semgrep->-r requiremen
 Collecting idna<4,>=2.5 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
   Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-Previous Cycle.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting markdown-it-py>=2.2.0 (from rich->bandit->-r requirements-dev.txt (line 8))
   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
 Collecting bracex>=2.1.1 (from wcmatch~=8.3->semgrep->-r requirements-dev.txt (line 9))
@@ -6740,11 +6740,11 @@ Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.man
 Downloading detect_secrets-1.5.0-py3-none-any.whl (120 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
 Downloading bracex-2.6-py3-none-any.whl (11 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-Previous Cycle.8.3-py3-none-any.whl (161 kB)
 Downloading coverage-7.10.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (251 kB)
 Downloading Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
 Downloading face-24.0.0-py3-none-any.whl (54 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema_specifications-Previous Cycle.4.1-py3-none-any.whl (18 kB)
 Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
@@ -6769,7 +6769,7 @@ Installing collected packages: peewee, boltons, zipp, wrapt, urllib3, tomli, ste
     Uninstalling click-8.2.1:
       Successfully uninstalled click-8.2.1
 
-Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2025.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
+Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-Previous Cycle.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-Previous Cycle.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
@@ -6778,7 +6778,7 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 ## python -m pip install -r requirements.txt
 ```text
 
-# Validation 2025-08-26T05:50:44Z
+# Validation Previous Cycle-08-26T05:50:44Z
 
 ## GPU check
 ```text
@@ -8259,7 +8259,7 @@ ERROR: /workspace/_codex_/tests/test_mlflow_utils.py Imports are incorrectly sor
 ```text
 
 
-# Validation 2025-08-26T13:08:17Z
+# Validation Previous Cycle-08-26T13:08:17Z
 
 ## HF Trainer knobs doc check
 ```text
@@ -8275,12 +8275,12 @@ Try `python -h' for more information.
 ERROR: [Errno 2] No such file or directory: 'docker'
 ```text
 
-# Patch Summary 2025-08-26T13:18:52Z
+# Patch Summary Previous Cycle-08-26T13:18:52Z
 - Added GPU compose reservation and run.sh flag.
 - CLI file missing; patch skipped.
 - Training engine structurally diverged; patch reverted.
 
-# Validation 2025-08-26T14:31:18Z
+# Validation Previous Cycle-08-26T14:31:18Z
 
 ## python -m compileall .
 ```text
@@ -8597,7 +8597,7 @@ SyntaxError: keyword argument repeated: eval_dataset
 ## pytest -q --maxfail=1
 ```text
 
-# Validation 2025-08-26T15:35:50.872437Z
+# Validation Previous Cycle-08-26T15:35:50.872437Z
 
 ## python -m compileall .
 ````
@@ -8949,7 +8949,7 @@ ERROR tests/test_deploy_codex_pipeline.py
 (exit=1)
 ````
 
-# Validation 2025-08-26T15:46:22.880252Z
+# Validation Previous Cycle-08-26T15:46:22.880252Z
 
 ## python -m compileall .
 ````

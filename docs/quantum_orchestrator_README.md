@@ -311,7 +311,7 @@ Optimization tips:
 
 1. **Approximations**: First-order Euler method for time evolution
 2. **Discrete Space**: Finite-difference gradients
-3. **Simplified Potential**: May not capture all constraints
+3. **Simplified Potential**: Phase 5 not capture all constraints
 4. **No Entanglement**: Tasks are independent (no quantum entanglement)
 
 ## Future Extensions

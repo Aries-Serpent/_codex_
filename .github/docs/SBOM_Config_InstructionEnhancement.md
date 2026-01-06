@@ -1,5 +1,5 @@
 # [InstructionEnhancement]: SBOM Config and Makefile Target
-> Generated: 2025-10-30 23:34:52 | Author: mbaetiong
+> Generated: Previous Cycle-10-30 23:34:52 | Author: mbaetiong
 
 ## Objective
 Prevent the CI failure:

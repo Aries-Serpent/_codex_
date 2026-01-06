@@ -375,7 +375,7 @@ pip install rouge-score
 
 **Symptom:** Metrics raise `ImportError` when called
 
-**Solution:** This should not happen - metrics are designed to catch ImportError and return None. If you see this, it may be a bug. Please report it with:
+**Solution:** This should not happen - metrics are designed to catch ImportError and return None. If you see this, it Phase 5 be a bug. Please report it with:
 - Python version
 - Installed packages (`pip list`)
 - Minimal reproduction code

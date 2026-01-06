@@ -2,7 +2,7 @@
 
 **Purpose**: Central index for all documentation in the `_codex_` repository. Use this to discover, navigate, and understand the documentation structure.
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: Previous Cycle-12-30  
 **Version**: 1.0.0  
 **Status**: 🟢 Active
 
@@ -19,7 +19,7 @@
 ### Cognitive Brain (AI Agent Navigation)
 - **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
 - **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status & metrics
-- **[Roadmap](ROADMAP.md)** - Unified roadmap Q1-Phase 3 (2026)
+- **[Roadmap](ROADMAP.md)** - Unified roadmap Cycle 1-Phase 3 (Current Cycle)
 
 ---
 

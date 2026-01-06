@@ -30,7 +30,7 @@ failed hook run.
 | `CODEX_LLM_MODEL` | Optional model identifier forwarded to the endpoint. |
 | `CODEX_LLM_TIMEOUT` | Request timeout in seconds (default `60`). |
 | `CODEX_AUTO_FIX_CHECK_CMD` | Override for the validation command. Use `{files}` placeholder to interpolate staged paths. |
-| `CODEX_LLM_MAX_FILES` | Maximum number of files that a generated patch may touch (default `10`). |
+| `CODEX_LLM_MAX_FILES` | Maximum number of files that a generated patch Phase 5 touch (default `10`). |
 | `CODEX_LLM_MAX_LINE_CHANGES` | Total added+removed line cap (default `500`). |
 
 Additional quality-of-life toggles live in `.env.example`.

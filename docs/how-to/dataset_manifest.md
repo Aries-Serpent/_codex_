@@ -1,5 +1,5 @@
 # [How-to]: Dataset Manifest & Shard Integrity  
-> Generated: 2025-10-09 20:04:41 UTC | Author: mbaetiong  
+> Generated: Previous Cycle-10-09 20:04:41 UTC | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 Purpose

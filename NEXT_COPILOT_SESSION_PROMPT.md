@@ -25,7 +25,7 @@
 
 4. **Test 3.3 (Styling): `should apply correct styling based on validation state`**
    - **Issue:** Async timing for class application
-   - **Fix:** Already has waitFor, may need act() wrapper
+   - **Fix:** Already has waitFor, Phase 5 need act() wrapper
 
 ### Implementation Steps
 
@@ -331,7 +331,7 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
 **Known Issues:**
 - Mock clients resolve too quickly
 - Need 50-100ms delays in mock responses
-- waitFor timeouts may need adjustment
+- waitFor timeouts Phase 5 need adjustment
 
 **Best Practices:**
 - Test after each fix

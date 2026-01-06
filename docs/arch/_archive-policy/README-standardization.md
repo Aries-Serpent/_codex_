@@ -65,8 +65,8 @@ tests/archive/
 └── test_standardization.py  # 10+ comprehensive tests
 
 docs/arch/
-├── adr-2025-11-02-archive-sigstore-integration.md
-├── adr-2025-11-03-evidence-schema-versioning.md
+├── adr-Previous Cycle-11-02-archive-sigstore-integration.md
+├── adr-Previous Cycle-11-03-evidence-schema-versioning.md
 └── _archive-policy/
     └── standardization-framework.md
 ```text
@@ -75,7 +75,7 @@ docs/arch/
 ### Before (v1)
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
+  "ts": "Previous Cycle-11-02T19:44:00Z",
   "action": "ARCHIVE",
   "actor": "marc",
   "tombstone": "d3e8729-...",
@@ -86,7 +86,7 @@ docs/arch/
 ### After (v2)
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
+  "ts": "Previous Cycle-11-02T19:44:00Z",
   "action": "ARCHIVE",
   "actor": "marc",
   "tombstone": "d3e8729-...",
@@ -96,7 +96,7 @@ docs/arch/
     "slsa_level": "L3",
     "signature": "MOCK_SIG_abc123...",
     "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "2025-11-02T19:44:01Z"
+    "signed_at": "Previous Cycle-11-02T19:44:01Z"
   }
 }
 ```text
@@ -177,8 +177,8 @@ pytest tests/archive/test_standardization.py::TestBackwardCompatibility -v
 ## Documentation
 
 - **Standardization Framework**: `docs/arch/_archive-policy/standardization-framework.md`
-- **ADR - Sigstore Integration**: `docs/arch/adr-2025-11-02-archive-sigstore-integration.md`
-- **ADR - Schema Versioning**: `docs/arch/adr-2025-11-03-evidence-schema-versioning.md`
+- **ADR - Sigstore Integration**: `docs/arch/adr-Previous Cycle-11-02-archive-sigstore-integration.md`
+- **ADR - Schema Versioning**: `docs/arch/adr-Previous Cycle-11-03-evidence-schema-versioning.md`
 
 ## Performance Impact
 

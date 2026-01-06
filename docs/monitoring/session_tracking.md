@@ -21,7 +21,7 @@ Each line in `.codex/logs/session_<SESSION_ID>.jsonl` contains a JSON record wit
 
 ```json
 {
-  "timestamp": "2025-01-01T12:00:00Z",
+  "timestamp": "Previous Cycle-01-01T12:00:00Z",
   "session_id": "550e8400-e29b-41d4-a716-446655440000",
   "role": "system|user|assistant|tool",
   "event_type": "training_start|training_end|inference_request|error",

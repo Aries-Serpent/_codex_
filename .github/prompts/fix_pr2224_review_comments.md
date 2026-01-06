@@ -48,7 +48,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
 # AFTER
 with patch.object(DBManager._logger, 'info') as mock_info:
     db.init_schema()
-    # Schema may already exist, logging is optional
+    # Schema Phase 5 already exist, logging is optional
     # Test passes if no exception raised
 ```text
 

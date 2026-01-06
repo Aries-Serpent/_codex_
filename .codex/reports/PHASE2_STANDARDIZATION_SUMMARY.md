@@ -1,6 +1,6 @@
 # Archive Standardization Phase 2 - Implementation Summary
 
-**Generated**: 2025-11-03  
+**Generated**: Previous Cycle-11-03  
 **Status**: ✅ Core Foundation Complete  
 **Coverage**: Schemas, Modules, Migrations, Tests, Documentation  
 
@@ -54,8 +54,8 @@ tests/archive/
 ### Documentation
 ```text
 docs/arch/
-├── adr-2025-11-02-archive-sigstore-integration.md      (NEW) - 180 lines
-├── adr-2025-11-03-evidence-schema-versioning.md        (NEW) - 200 lines
+├── adr-Previous Cycle-11-02-archive-sigstore-integration.md      (NEW) - 180 lines
+├── adr-Previous Cycle-11-03-evidence-schema-versioning.md        (NEW) - 200 lines
 └── _archive-policy/
     ├── standardization-framework.md                    (NEW) - 380 lines
     └── README-standardization.md                       (NEW) - 185 lines
@@ -141,7 +141,7 @@ tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_migrate
   "signature": "MOCK_SIG_...",
   "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
   "issuer": "https://token.actions.githubusercontent.com",
-  "signed_at": "2025-11-03T00:00:00Z"
+  "signed_at": "Previous Cycle-11-03T00:00:00Z"
 }
 ```text
 
@@ -186,7 +186,7 @@ print(report)
 ### Enhance Evidence Record
 ```python
 record = {
-    "ts": "2025-11-03T00:00:00Z",
+    "ts": "Previous Cycle-11-03T00:00:00Z",
     "action": "ARCHIVE",
     "actor": "user",
     "tombstone": "uuid-here",
@@ -210,12 +210,12 @@ v2_record = validator.migrate_to_v2(v1_record)
 ## 📖 Documentation Structure
 
 ### ADRs (Architecture Decision Records)
-1. **ADR-2025-11-02**: Sigstore Keyless Signing Integration
+1. **ADR-Previous Cycle-11-02**: Sigstore Keyless Signing Integration
    - Why Sigstore over GPG/TUF
    - SLSA L3 alignment
    - GitHub OIDC integration
 
-2. **ADR-2025-11-03**: Evidence Schema Versioning
+2. **ADR-Previous Cycle-11-03**: Evidence Schema Versioning
    - v1/v2 coexistence strategy
    - Backward compatibility guarantees
    - Migration approach
@@ -303,7 +303,7 @@ v2_record = validator.migrate_to_v2(v1_record)
 ### Documentation
 - Framework: `docs/arch/_archive-policy/standardization-framework.md`
 - Quick Start: `docs/arch/_archive-policy/README-standardization.md`
-- ADRs: `docs/arch/adr-2025-11-0*.md`
+- ADRs: `docs/arch/adr-Previous Cycle-11-0*.md`
 
 ### External References
 - [Sigstore](https://docs.sigstore.dev/)

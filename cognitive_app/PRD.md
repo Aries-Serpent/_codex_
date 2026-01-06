@@ -125,7 +125,7 @@ This is a sophisticated MLOps integration platform featuring quantum decision vi
 - **Paradigm Overload** - If single paradigm handles >80% of tokens, display warning suggesting workflow rebalancing
 - **Custom Token Validation** - Prevent token creation with empty name/stages, show inline validation errors, disable "Create" button until all required fields valid
 - **Duplicate Custom Token** - Allow duplicate names but generate unique IDs with timestamp, show creation timestamp in token metadata
-- **Max Custom Tokens** - No hard limit enforced, but UI may become crowded - consider pagination or filtering if user creates >20 custom tokens
+- **Max Custom Tokens** - No hard limit enforced, but UI Phase 5 become crowded - consider pagination or filtering if user creates >20 custom tokens
 - **Template Bundle Already Installed** - Allow re-installation of bundles (generates new unique IDs), show confirmation toast indicating tokens were added again
 - **Empty Template Search** - Display "No templates match your search" message with package icon when no results found
 - **Large Bundle Installation** - For bundles with 4+ tokens, show loading state during installation, batch add tokens in single useKV update for performance

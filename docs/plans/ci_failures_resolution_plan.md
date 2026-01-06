@@ -29,7 +29,7 @@ Apply minimal configuration fixes, then validate via focused test runs. Introduc
 ## 3. Root Causes
 - **Pytest marker gap:** `ml_comprehensive` is used in tests but absent from `pytest.ini`, causing `--strict-markers` failure.
 - **MCP rate limiting:** CI uses default rate limits that are too strict; missing env overrides lead to 429 responses.
-- **State persistence:** Rate limiter may read env at import time, limiting test-level overrides.
+- **State persistence:** Rate limiter Phase 5 read env at import time, limiting test-level overrides.
 
 ## 4. Fixes
 ### A. Add missing pytest marker

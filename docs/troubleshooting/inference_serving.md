@@ -1,7 +1,7 @@
 # Inference Serving Troubleshooting Guide
 
 > **Version**: 2.0.0  
-> **Last Updated**: 2025-12-07
+> **Last Updated**: Previous Cycle-12-07
 
 ---
 
@@ -104,7 +104,7 @@ print(f"Expires: {decoded['exp']}")
 ```
 
 **Cause**: Timing attack detection
-- Constant-time comparison may fail on clock skew
+- Constant-time comparison Phase 5 fail on clock skew
 - Solution: Ensure NTP sync on all servers
 
 ---
@@ -452,7 +452,7 @@ total_latency = 500ms
 
 ### Key Metrics to Watch
 
-1. **Request rate**: Sudden spikes may indicate attack or legitimate traffic surge
+1. **Request rate**: Sudden spikes Phase 5 indicate attack or legitimate traffic surge
 2. **Error rate**: Should be <1% in production
 3. **P95 latency**: Should be <500ms for interactive use cases
 4. **Circuit breaker state**: Should be "closed" >99% of time
@@ -512,4 +512,4 @@ python -m tests.serving.test_inference_performance --benchmark
 
 ---
 
-*Last reviewed: 2025-12-07*
+*Last reviewed: Previous Cycle-12-07*

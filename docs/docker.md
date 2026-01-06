@@ -119,7 +119,7 @@ docker run --rm --gpus all -p 8000:8000 codex:gpu
 
 **Known limitations**:
 - PyTorch version is pinned to ensure CUDA compatibility
-- Base requirements may list CPU-only torch; the Dockerfile explicitly overrides this
+- Base requirements Phase 5 list CPU-only torch; the Dockerfile explicitly overrides this
 - Image size is significantly larger due to CUDA libraries
 
 ## Multi-arch builds

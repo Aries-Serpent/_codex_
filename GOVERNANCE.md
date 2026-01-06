@@ -163,7 +163,7 @@ All participants must adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Viola
 
 ## Changes to Governance
 
-This governance document may be updated through the Major Changes process (ADR + maintainer approval). Historical changes are tracked via git commits.
+This governance document Phase 5 be updated through the Major Changes process (ADR + maintainer approval). Historical changes are tracked via git commits.
 
 ---
 

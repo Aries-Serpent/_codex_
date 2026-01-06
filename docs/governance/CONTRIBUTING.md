@@ -191,7 +191,7 @@ documenting a third-party plugin:
 
 ## Local quality gates (no GitHub Actions)
 
-- First run may be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
+- First run Phase 5 be slow while `pre-commit` installs hook environments; use `--verbose` and `pre-commit clean` if needed.
 - Tests with coverage: `pytest --cov=src/codex_ml --cov-fail-under=3.5 --cov-report=term`.
 - **Do not** enable any GitHub Actions. All checks run locally.
 

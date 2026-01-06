@@ -1,6 +1,6 @@
 # Prompt Generator Interactive Demo Expansion Plan
 
-**Document ID:** PGIDE-2026-01-06
+**Document ID:** PGIDE-Current Cycle-01-06
 **Version:** 1.0.0
 **Status:** Ready for Implementation
 **Estimated Effort:** 8-12 hours

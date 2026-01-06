@@ -1,5 +1,5 @@
 # FORMAL_ARTIFACTS v0.3 — Interpretable Specs (CLI/metrics/policy)  
-> Generated: 2025-10-09 | Author: mbaetiong  
+> Generated: Previous Cycle-10-09 | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 Scope

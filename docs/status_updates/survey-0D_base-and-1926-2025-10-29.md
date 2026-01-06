@@ -1,13 +1,13 @@
-# Repo Survey — 0D_base_ & PR 1926 — 2025-10-29 (UTC)
+# Repo Survey — 0D_base_ & PR 1926 — Previous Cycle-10-29 (UTC)
 
-**Ref:** branch `0D_base_`  commit `a2deb8e0`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926`
+**Ref:** branch `0D_base_`  commit `a2deb8e0`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-29-survey-0D_base-and-1926`
 
 ---
 
 ## 1) Scope & Goal
 - Branch: `0D_base_`
 - PR: `#1926`
-- Date (UTC): `2025-10-29`
+- Date (UTC): `Previous Cycle-10-29`
 - Objective: Capture trainer, reasoning harness, and deployment assets for the 0D_base_ ring with PR #1926 context.
 
 ## 2) Targets Collected
@@ -360,7 +360,7 @@ image:
 resources:
   cpu: "2"
   memory: "8Gi"
-  # Disk, GPU fields may be added later; keep this minimal and deterministic.
+  # Disk, GPU fields Phase 5 be added later; keep this minimal and deterministic.
 
 reasoning:
   trace_capture:
@@ -432,9 +432,9 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - **R = 0.90*0.40 + 0.80*0.30 + 1.00*0.30 = 0.90** → **Recommendation:** `Proceed`
 
 ## 7) Artifacts
-- `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md`
-- `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/metrics/`
-- `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/logs/`
+- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-0D_base-and-1926/report.md`
+- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-0D_base-and-1926/metrics/`
+- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-0D_base-and-1926/logs/`
 
 ## 8) Changelog
 - Confirmed unified trainer + reasoning harness integration for 0D_base_.

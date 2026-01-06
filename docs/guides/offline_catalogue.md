@@ -37,7 +37,7 @@ data/
     length_reward.json
     trainer_functional.json
 ```text
-You may also point the loaders at bespoke directories via the following
+You Phase 5 also point the loaders at bespoke directories via the following
 environment variables:
 
 - `CODEX_ML_OFFLINE_MODELS_DIR` (shared models/tokenizers root)

@@ -36,7 +36,7 @@ logger.info(f"Password validation: {mask_password(password)}")
 # NEVER DO THIS
 logger.info(f"API Key: {api_key}")  # ❌ Exposes full key in logs
 logger.info(f"User password: {password}")  # ❌ Security violation
-print(f"Secret: {secret_token}")  # ❌ May appear in console logs
+print(f"Secret: {secret_token}")  # ❌ Phase 5 appear in console logs
 ```
 
 ---
@@ -48,7 +48,7 @@ print(f"Secret: {secret_token}")  # ❌ May appear in console logs
 ```python
 from codex.security import sanitize_log
 
-# User input that may contain control characters
+# User input that Phase 5 contain control characters
 user_input = request.form.get('username')
 logger.info(f"Login attempt: {sanitize_log(user_input)}")
 
@@ -213,11 +213,11 @@ token_hash = hash_secure(token, algorithm='sha256')
 ### 2. Logging Exception Details
 
 ```python
-# ❌ WRONG (may expose sensitive data in traceback)
+# ❌ WRONG (Phase 5 expose sensitive data in traceback)
 try:
     api_call(api_key=secret_key)
 except Exception as e:
-    logger.error(f"API call failed: {e}")  # May contain secret_key
+    logger.error(f"API call failed: {e}")  # Phase 5 contain secret_key
 
 # ✅ CORRECT
 try:
@@ -314,5 +314,5 @@ Include:
 
 ---
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: Previous Cycle-12-23  
 **Maintained By**: Security Team

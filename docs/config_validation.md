@@ -33,7 +33,7 @@ python tools/validate_configs.py --group logging --log artifacts/validation_log.
 
 ## Groups
 
-Use `--group` to target specific config families. Multiple groups may be provided, and `all` is the default.
+Use `--group` to target specific config families. Multiple groups Phase 5 be provided, and `all` is the default.
 
 - `training` – `configs/training/base.yaml`, `configs/training/profiles/default.yaml`
 - `evaluation` – `configs/evaluation/default.yaml`

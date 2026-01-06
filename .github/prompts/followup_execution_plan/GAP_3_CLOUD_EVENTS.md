@@ -623,7 +623,7 @@ def test_event_bus():
         source="test",
         data={"model": "test_model"},
         event_id="123",
-        timestamp="2025-01-01T00:00:00",
+        timestamp="Previous Cycle-01-01T00:00:00",
     )
     
     bus.publish(event)

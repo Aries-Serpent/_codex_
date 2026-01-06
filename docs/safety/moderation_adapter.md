@@ -76,7 +76,7 @@ Audit entries are JSON lines in the configured file:
 ```json
 {
   "event": "moderation.decision",
-  "timestamp": "2025-01-18T12:34:56Z",
+  "timestamp": "Previous Cycle-01-18T12:34:56Z",
   "stage": "prompt",
   "provider": "offline",
   "approved": true,
