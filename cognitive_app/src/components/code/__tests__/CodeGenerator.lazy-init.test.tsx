@@ -362,16 +362,16 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       // Short input (invalid) should show error styling
       fireEvent.change(textarea, { target: { value: 'Short' } });
       
-      // Wait for the style to be applied
+      // Wait for the aria-invalid attribute to be applied
       await waitFor(() => {
-        expect(textarea).toHaveClass('border-destructive');
+        expect(textarea).toHaveAttribute('aria-invalid', 'true');
       }, { timeout: 1000 });
       
       // Valid input should not have error styling
       fireEvent.change(textarea, { target: { value: 'This is a valid prompt with enough characters' } });
       
       await waitFor(() => {
-        expect(textarea).not.toHaveClass('border-destructive');
+        expect(textarea).toHaveAttribute('aria-invalid', 'false');
       }, { timeout: 1000 });
     });
   });

@@ -38,4 +38,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  define: {
+    'import.meta.env.DEV': true,
+    'import.meta.env.PROD': false,
+    'import.meta.env.MODE': '"test"',
+    'import.meta.env.SSR': false,
+  },
 });

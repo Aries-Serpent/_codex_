@@ -7,11 +7,11 @@ import { SparkLLMClient } from '@/lib/spark-llm-client';
 
 // Create mock instances that will be reused
 const createMockCodexClient = () => ({
-  getStatus: vi.fn().mockResolvedValue({
+  getStatus: async () => ({
     healthy: true,
     metrics: { k1_factor: 0.312 },
   }),
-  generateCode: vi.fn().mockResolvedValue({
+  generateCode: async () => ({
     code: '# Generated code',
     metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
     quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
@@ -19,12 +19,12 @@ const createMockCodexClient = () => ({
 });
 
 const createMockSparkClient = () => ({
-  generateCode: vi.fn().mockResolvedValue({
+  generateCode: async () => ({
     code: '# AI generated code',
     metadata: { k1_factor: 0.28, coherence: 0.85 },
     quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
   }),
-  getStatus: vi.fn().mockResolvedValue({
+  getStatus: async () => ({
     healthy: true,
     model: 'gpt-4o-mini (Spark Runtime)',
   }),
@@ -36,9 +36,10 @@ vi.mock('@/lib/codex-api-client', () => ({
   CodexAPIError: class CodexAPIError extends Error {},
 }));
 
-vi.mock('@/lib/mock-api-client', () => ({
-  MockCodexAPIClient: vi.fn(),
-}));
+// Don't mock MockCodexAPIClient - use the real implementation
+// vi.mock('@/lib/mock-api-client', () => ({
+//   MockCodexAPIClient: vi.fn(),
+// }));
 
 vi.mock('@/lib/spark-llm-client', () => ({
   SparkLLMClient: vi.fn(),
@@ -54,7 +55,7 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     const mockCodexClient = createMockCodexClient();
     const mockSparkClient = createMockSparkClient();
     
-    vi.mocked(MockCodexAPIClient).mockImplementation(() => mockCodexClient as any);
+    // MockCodexAPIClient uses real implementation, only mock CodexAPIClient and SparkLLMClient
     vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
     vi.mocked(SparkLLMClient).mockImplementation(() => mockSparkClient as any);
   });
@@ -110,14 +111,19 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     beforeEach(() => {
       import.meta.env.VITE_CODEX_KEY = 'test-api-key-12345';
       import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
+      
+      // Ensure CodexAPIClient mock is set up for this scenario
+      const mockCodexClient = createMockCodexClient();
+      vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
     });
 
     it('should show "Checking..." status initially', async () => {
       // Mock delayed response
       const delayedMock = createMockCodexClient();
-      delayedMock.getStatus = vi.fn().mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve({ healthy: true, metrics: {} }), 100))
-      );
+      delayedMock.getStatus = async () => {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return { healthy: true, metrics: {} };
+      };
       vi.mocked(CodexAPIClient).mockImplementation(() => delayedMock as any);
 
       render(<CodeGenerator />);
@@ -270,8 +276,7 @@ describe('CodeGenerator - Real Workflows', () => {
   beforeEach(() => {
     // Reset mocks for this suite
     vi.clearAllMocks();
-    const mockClient = createMockCodexClient();
-    vi.mocked(MockCodexAPIClient).mockImplementation(() => mockClient as any);
+    // No need to mock MockCodexAPIClient - using real implementation
   });
 
   it('should generate code successfully in demo mode', async () => {

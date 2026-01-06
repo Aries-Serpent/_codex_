@@ -69,6 +69,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
   scale: vi.fn(),
   rotate: vi.fn(),
   arc: vi.fn(),
+  setLineDash: vi.fn(),
   createLinearGradient: vi.fn(() => ({
     addColorStop: vi.fn(),
   })),

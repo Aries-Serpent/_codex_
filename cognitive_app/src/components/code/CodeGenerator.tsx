@@ -90,18 +90,13 @@ export function CodeGenerator() {
 
     const client = getClient();
     if (!client) {
-      // Check if mock client works as fallback
-      try {
-        const mockClient = getMockClient();
-        await mockClient.getStatus();
-        setApiStatus('connected'); // Mock available as fallback
-        setInfoMessage('Using demo mode (API key not configured)');
-        setError(null);
-      } catch {
-        setApiStatus('error');
-        setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
-        setInfoMessage(null);
-      }
+      // No API key - use mock client in demo mode  
+      const mockClient = getMockClient();
+      // Check mock status to maintain consistent async behavior
+      await mockClient.getStatus();
+      setApiStatus('connected'); // Mock available
+      setInfoMessage('Using demo mode (API key not configured)');
+      setError(null);
       return;
     }
     try {
@@ -320,9 +315,8 @@ export function CodeGenerator() {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Example: Create a FastAPI endpoint for user authentication with JWT tokens..."
               rows={8}
-              className={`font-mono resize-none ${
-                !isValidPrompt && charCount > 0 ? 'border-destructive' : ''
-              }`}
+              className="font-mono resize-none"
+              aria-invalid={!isValidPrompt && charCount > 0}
             />
           </div>
 

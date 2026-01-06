@@ -79,7 +79,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       fireEvent.change(textarea, { target: { value: 'Short' } });
       
       expect(screen.getByText('5 / 5000 (min: 10)')).toBeInTheDocument();
-      expect(textarea.className).toContain('border-destructive');
+      expect(textarea).toHaveAttribute('aria-invalid', 'true');
     });
 
     it('should remove validation styling when input is valid', () => {
@@ -89,7 +89,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       fireEvent.change(textarea, { target: { value: 'Create a hello world function' } });
       
       expect(screen.getByText('29 / 5000')).toBeInTheDocument();
-      expect(textarea.className).not.toContain('border-destructive');
+      expect(textarea).toHaveAttribute('aria-invalid', 'false');
     });
 
     it('should disable button when input is too short', async () => {
