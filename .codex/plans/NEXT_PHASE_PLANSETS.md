@@ -1,7 +1,7 @@
 # 🎯 Next Phase Plansets & Promptsets
 
 **Version:** 1.0.0  
-**Generated:** 2026-01-06  
+**Generated:** Current Cycle-01-06  
 **Purpose:** Actionable plansets for continued _codex_ development
 
 ---
@@ -574,7 +574,7 @@ If issues are found:
 - Repository: Aries-Serpent/_codex_
 - Current Status: 100% test coverage, quantum framework integrated, production ready
 - Documentation: COGNITIVE_BRAIN_UNIFIED_V4.md (central hub)
-- Roadmap: .codex/plans/COGNITIVE_BRAIN_ROADMAP_2026.md
+- Roadmap: .codex/plans/COGNITIVE_BRAIN_ROADMAP_Current Cycle.md
 
 ## Current Sprint: Documentation & Quality (phase 1-2)
 
@@ -597,7 +597,7 @@ Execute:
 - All PR review issues resolved
 - 70+ quantum tests passing
 - 100% coverage maintained
-- Clear path to Q2 milestones
+- Clear path to Cycle milestones
 
 ## Guidelines
 - Follow AI AGENT POLICY (no deferral)
@@ -608,7 +608,7 @@ Execute:
 
 ## References
 - Central Hub: COGNITIVE_BRAIN_UNIFIED_V4.md
-- Roadmap: .codex/plans/COGNITIVE_BRAIN_ROADMAP_2026.md
+- Roadmap: .codex/plans/COGNITIVE_BRAIN_ROADMAP_Current Cycle.md
 - Status: .codex/reports/REPOSITORY_STATUS_MATRIX.md
 - This File: .codex/plans/NEXT_PHASE_PLANSETS.md
 
@@ -639,5 +639,5 @@ The phased approach ensures manageable scope while maintaining the high quality 
 ---
 
 *Created by: AI Agent*  
-*Date: 2026-01-06*  
+*Date: Current Cycle-01-06*  
 *Version: 1.0.0*
