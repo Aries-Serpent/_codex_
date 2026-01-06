@@ -37,6 +37,7 @@ export function CodeGenerator() {
   const [result, setResult] = useState<CodexResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
   
   // Lazy initialization: clients are created on first use and can be recreated if needed
@@ -61,20 +62,36 @@ export function CodeGenerator() {
   const checkApiStatus = useCallback(async () => {
     const client = getClient();
     if (!client) {
-      setApiStatus('error');
-      setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
+      // Check if mock client works as fallback
+      try {
+        const mockClient = getMockClient();
+        await mockClient.getStatus();
+        setApiStatus('connected'); // Mock available as fallback
+        setInfoMessage('Using demo mode (API key not configured)');
+        setError(null);
+      } catch {
+        setApiStatus('error');
+        setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
+        setInfoMessage(null);
+      }
       return;
     }
     try {
       await client.getStatus();
       setApiStatus('connected');
+      setError(null);
+      setInfoMessage(null);
     } catch {
       try {
         const mockClient = getMockClient();
         await mockClient.getStatus();
-        setApiStatus('connected');
+        setApiStatus('connected'); // Mock available as fallback
+        setInfoMessage('API connection failed, using demo mode');
+        setError(null);
       } catch {
         setApiStatus('error');
+        setError('Unable to connect to API or demo mode');
+        setInfoMessage(null);
       }
     }
   }, [getClient, getMockClient]);
@@ -86,15 +103,6 @@ export function CodeGenerator() {
   }, [checkApiStatus]);
 
   const handleGenerate = useCallback(async () => {
-    const client = getClient();
-    if (!client) {
-      setError('Missing API key configuration. Please set VITE_CODEX_KEY environment variable.');
-      toast.error('Configuration Error', {
-        description: 'API key not configured',
-      });
-      return;
-    }
-
     if (prompt.trim().length < 10) {
       setError('Prompt must be at least 10 characters');
       toast.error('Prompt too short', {
@@ -107,26 +115,12 @@ export function CodeGenerator() {
     setError(null);
 
     const startTime = Date.now();
+    const client = getClient();
 
-    try {
-      const response = await client.generateCode({
-        prompt,
-        context: { language: 'python', tier: 'A' },
-      });
-
-      const elapsed = Date.now() - startTime;
-      if (elapsed < 500) {
-        await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-      }
-
-      setResult(response);
-      toast.success('Code generated successfully', {
-        description: `k₁ factor: ${response.metadata.k1_factor.toFixed(4)}`,
-      });
-    } catch (err) {
+    // Try API client first, fall back to mock if not available or fails
+    if (client) {
       try {
-        const mockClient = getMockClient();
-        const mockResponse = await mockClient.generateCode({
+        const response = await client.generateCode({
           prompt,
           context: { language: 'python', tier: 'A' },
         });
@@ -136,23 +130,14 @@ export function CodeGenerator() {
           await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
         }
 
-        setResult(mockResponse);
-        toast.success('Code generated successfully (Demo Mode)', {
-          description: `k₁ factor: ${mockResponse.metadata.k1_factor.toFixed(4)}`,
+        setResult(response);
+        toast.success('Code generated successfully', {
+          description: `k₁ factor: ${response.metadata.k1_factor.toFixed(4)}`,
         });
-        setError(null);
-      } catch (mockErr) {
-        const errorMessage = err instanceof CodexAPIError 
-          ? `${err.message} (HTTP ${err.statusCode})`
-          : err instanceof Error 
-          ? err.message 
-          : 'Unknown error occurred';
-        
-        setError(errorMessage);
-        toast.error('Generation failed', {
-          description: errorMessage,
-        });
-
+        setLoading(false);
+        return;
+      } catch (err) {
+        // Fall through to mock client
         if (err instanceof CodexAPIError && err.statusCode === 429) {
           toast.error('Rate limit exceeded', {
             description: 'Please try again later or upgrade your plan',
@@ -160,6 +145,36 @@ export function CodeGenerator() {
           });
         }
       }
+    }
+
+    // Use mock client as fallback
+    try {
+      const mockClient = getMockClient();
+      const mockResponse = await mockClient.generateCode({
+        prompt,
+        context: { language: 'python', tier: 'A' },
+      });
+
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) {
+        await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+      }
+
+      setResult(mockResponse);
+      toast.success('Code generated successfully (Demo Mode)', {
+        description: `k₁ factor: ${mockResponse.metadata.k1_factor.toFixed(4)}`,
+      });
+      setError(null);
+      setInfoMessage(null);
+    } catch (mockErr) {
+      const errorMessage = mockErr instanceof Error 
+        ? mockErr.message 
+        : 'Unknown error occurred';
+      
+      setError(errorMessage);
+      toast.error('Generation failed', {
+        description: errorMessage,
+      });
     } finally {
       setLoading(false);
     }
@@ -257,6 +272,18 @@ export function CodeGenerator() {
             )}
           </Button>
         </div>
+
+        {infoMessage && !error && (
+          <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-4,48a12,12,0,1,1-12,12A12,12,0,0,1,124,72Zm12,112a16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40a8,8,0,0,1,0,16Z"/>
+            </svg>
+            <div>
+              <p className="font-semibold text-blue-600 dark:text-blue-400">Info</p>
+              <p className="text-sm text-blue-600/90 dark:text-blue-400/90 mt-1">{infoMessage}</p>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mt-4 p-4 bg-destructive/10 border border-destructive rounded-lg flex items-start gap-3">

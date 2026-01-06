@@ -174,9 +174,9 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       fireEvent.change(textarea, { target: { value: 'Short' } });
       expect(screen.getByText(/5 \/ 5000/)).toBeInTheDocument();
       
-      // Valid prompt (10+ chars)
+      // Valid prompt (10+ chars) - "Create a hello world function" = 29 chars
       fireEvent.change(textarea, { target: { value: 'Create a hello world function' } });
-      expect(screen.getByText(/30 \/ 5000/)).toBeInTheDocument();
+      expect(screen.getByText(/29 \/ 5000/)).toBeInTheDocument();
     });
 
     it('[APPROVED] should show character count and validation', () => {
