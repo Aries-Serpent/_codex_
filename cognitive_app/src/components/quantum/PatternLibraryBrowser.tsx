@@ -3,13 +3,14 @@ import { Database } from '@phosphor-icons/react';
 
 /**
  * Pattern object from the pattern library.
+ * All fields are required to ensure proper rendering and React key usage.
  */
 interface Pattern {
-  id?: string;
-  type?: string;
-  usage_count?: number;
-  compression_ratio?: number;
-  last_accessed?: string;
+  id: string;  // Required: unique pattern identifier for React keys
+  type: string;  // Required: pattern type/name for display
+  usage_count: number;  // Required: number of times pattern was used
+  compression_ratio: number;  // Required: efficiency metric (0-1)
+  last_accessed: string;  // Required: ISO timestamp of last access
 }
 
 interface PatternLibraryBrowserProps {
@@ -46,16 +47,16 @@ export function PatternLibraryBrowser({ patterns }: PatternLibraryBrowserProps) 
                 </tr>
               </thead>
               <tbody>
-                {patterns.slice(0, 10).map((pattern, index) => (
-                  <tr key={index} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="py-3 px-4 font-mono text-xs">{pattern.id || `pattern-${index}`}</td>
-                    <td className="py-3 px-4">{pattern.type || 'unknown'}</td>
-                    <td className="py-3 px-4 text-right font-mono">{pattern.usage_count || 0}</td>
+                {patterns.slice(0, 10).map((pattern) => (
+                  <tr key={pattern.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                    <td className="py-3 px-4 font-mono text-xs">{pattern.id}</td>
+                    <td className="py-3 px-4">{pattern.type}</td>
+                    <td className="py-3 px-4 text-right font-mono">{pattern.usage_count}</td>
                     <td className="py-3 px-4 text-right font-mono text-accent">
-                      {pattern.compression_ratio ? `${(pattern.compression_ratio * 100).toFixed(0)}%` : 'N/A'}
+                      {(pattern.compression_ratio * 100).toFixed(0)}%
                     </td>
                     <td className="py-3 px-4 text-right text-xs text-muted-foreground">
-                      {pattern.last_accessed || 'Never'}
+                      {pattern.last_accessed}
                     </td>
                   </tr>
                 ))}

@@ -345,10 +345,10 @@ Session: <Session reference>
 3. Convergence Detector ✅ Planned
 
 **Implementation Order:**
-1. Week 1: RL Validator foundations
-2. Week 2: Integration with OutcomeAnalyzer
-3. Week 3: Metrics dashboard
-4. Week 4: Full validation suite
+1. Pre-commit 1-2: RL Validator foundations
+2. Pre-commit 3-4: Integration with OutcomeAnalyzer
+3. Pre-commit 5-6: Metrics dashboard
+4. Pre-commit 7-8: Full validation suite
 
 ### Phase 8.3 Pre-commit 5-6 (Meta-Learner)
 

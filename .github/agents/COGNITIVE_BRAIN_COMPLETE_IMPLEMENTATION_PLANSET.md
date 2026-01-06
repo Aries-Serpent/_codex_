@@ -724,24 +724,24 @@ Root Documentation
 
 ## Next Actions
 
-### Immediate (Week 1)
+### Immediate (Pre-commit 1-2)
 1. ✅ Complete Phase 8.2 validation (EXP-6)
 2. ✅ Update all documentation
 3. ✅ Create continuation prompts for 8.3-8.5
 4. 📋 Post Phase 8.3 continuation prompt
 5. 📋 Begin Phase 8.3 implementation
 
-### Short-term (Weeks 2-4)
+### Short-term (Pre-commit 3-8)
 1. 📋 Complete Phase 8.3 (Adaptive Learning)
 2. 📋 Run EXP-7 validation
 3. 📋 Begin Phase 8.4 (Transfer Learning)
 
-### Medium-term (Weeks 5-9)
+### Medium-term (Pre-commit 9-18)
 1. 📋 Complete Phase 8.4
 2. 📋 Run EXP-8 validation
 3. 📋 Begin Phase 8.5 (Production)
 
-### Long-term (Weeks 10-13)
+### Long-term (Pre-commit 19-26)
 1. 📋 Complete Phase 8.5
 2. 📋 Production launch
 3. 📋 Monitor 99.9% uptime

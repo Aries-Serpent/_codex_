@@ -18,7 +18,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 | ❌ Old Term | ✅ New Term | Example Usage |
 |------------|------------|---------------|
-| Week 1, Week 2 | Iteration 1, Iteration 2 | "Iteration 1: Foundation" |
+| Pre-commit 1-2, Pre-commit 3-4 | Iteration 1, Iteration 2 | "Iteration 1: Foundation" |
 | Day 1, Day 2 | Commit Step 1, Commit Step 2 | "Commit Step 3: Integration" |
 | Sprint 1-3 (6-9 weeks) | Iteration Cycles 1-3 | "Cycles 1-3 (flexible timeline)" |
 | 2-week timeline | Iteration cycle | "Complete in one iteration cycle" |
@@ -29,8 +29,8 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 | ❌ Old Term | ✅ New Term |
 |------------|------------|
-| Phase 1 (Week 1-2) | Iteration 1 |
-| Phase 2 (Week 3-4) | Iteration 2 |
+| Phase 1 (Pre-commit 1-4) | Iteration 1 |
+| Phase 2 (Pre-commit 5-8) | Iteration 2 |
 | Week-based Phase N | Iteration N |
 
 ---
@@ -99,12 +99,12 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 ```markdown
 ## Timeline: 6-8 Weeks
 
-### Week 1-2: Foundation
+### Pre-commit 1-4: Foundation
 - Day 1: Setup
 - Day 2: Configuration
 - Day 3-4: Core implementation
 
-### Week 3-4: Integration
+### Pre-commit 5-8: Integration
 - Day 5-6: API development
 - Day 7-8: Testing
 ```
@@ -190,7 +190,7 @@ Use these symbols to indicate the physics principle aligned with each iteration:
 ## Historical Context
 
 **Previous Approach** (2024-2025 Q1):
-- Week-based timelines (Week 1-8)
+- Week-based timelines (Pre-commit 1-16)
 - Day-level task breakdowns
 - Fixed sprint durations
 - Calendar-bound milestones

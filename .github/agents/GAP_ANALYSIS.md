@@ -420,8 +420,8 @@ The Codex Quantum Reviewer has a solid foundation with all core components imple
 **Recommended Path Forward:**
 1. Complete Iteration 1 (critical blockers) - **This session**
 2. Deploy to staging environment - **Next session**
-3. Run pilot with selected PRs - **Week 1**
-4. Collect feedback and iterate - **Week 2-4**
+3. Run pilot with selected PRs - **Pre-commit 1-2**
+4. Collect feedback and iterate - **Pre-commit 3-8**
 5. Production rollout - **Month 2**
 
 **Timeline to Production:** 4-6 weeks with dedicated effort

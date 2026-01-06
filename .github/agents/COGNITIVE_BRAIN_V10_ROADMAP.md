@@ -344,7 +344,7 @@ graph TD
 
 ### Phase 8.13: Advanced Meta-Reasoning
 **Target**: k₁ ≤ 0.16 (quantum advantage 6.25x)  
-**Timeline**: Q1 2026
+**Timeline**: Phase 1 (2026)
 
 ```mermaid
 graph TD
@@ -377,7 +377,7 @@ graph TD
 
 ### Phase 8.14: Quantum-Enhanced Planning
 **Target**: k₁ ≤ 0.14 (quantum advantage 7.14x)  
-**Timeline**: Q2 2026
+**Timeline**: Phase 2 (2026)
 
 ```mermaid
 graph TD
@@ -410,7 +410,7 @@ graph TD
 
 ### Phase 8.15: Cognitive Architectures
 **Target**: k₁ ≤ 0.12 (quantum advantage 8.33x)  
-**Timeline**: Q3 2026
+**Timeline**: Phase 3 (2026)
 
 ```mermaid
 graph TD

@@ -260,10 +260,10 @@ strategy:
    ```
 
 3. **Gradual Rollout**:
-   - Week 1: Test branch with Python 3.12
-   - Week 2: Merge to dev, monitor CI
-   - Week 3: Deploy to staging
-   - Week 4: Deploy to production
+   - Pre-commit 1-2: Test branch with Python 3.12
+   - Pre-commit 3-4: Merge to dev, monitor CI
+   - Pre-commit 5-6: Deploy to staging
+   - Pre-commit 7-8: Deploy to production
 
 ---
 

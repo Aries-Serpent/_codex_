@@ -144,7 +144,7 @@
 **Status**: Documented in `NORMALIZATION_CHECKLIST.md`, phased plan ready
 
 ### 5. MCP Advanced Features
-**Challenge**: Deferred to Q1-Q3 2026
+**Challenge**: Deferred to Q1-Phase 3 (2026)
 - Lower priority than coverage
 - Requires focused effort
 - Good documentation exists
@@ -316,7 +316,7 @@ pytest --cov=src --cov-fail-under=85
 #### Core Cognitive Brain
 - ✅ `docs/system/CODEBASE_COGNITIVE_MAP.md` - Current architecture
 - ✅ `docs/system/CODEBASE_DASHBOARD.md` - Current status (Phase 9 at 10%)
-- ✅ `docs/ROADMAP.md` - Current roadmap (Q1-Q3 2026)
+- ✅ `docs/ROADMAP.md` - Current roadmap (Q1-Phase 3 (2026))
 
 #### Documentation Hub
 - ✅ `docs/MASTER_INDEX.md` - Complete catalog (23 guides)
@@ -393,7 +393,7 @@ pytest --cov=src --cov-fail-under=85
 3. Performance optimization - 1-2 sessions
 4. Fix remaining broken links - 1-2 sessions
 
-### Long-Term (Q2-Q3 2026)
+### Long-Term (Q2-Phase 3 (2026))
 1. MCP interactive mode - 2-3 sessions
 2. Package diff/merge tools - 2-3 sessions
 3. Smart recommendations - 1-2 sessions

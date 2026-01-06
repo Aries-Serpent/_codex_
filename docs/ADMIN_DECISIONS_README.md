@@ -108,10 +108,10 @@ Each decision leverages physics paradigms from `agents/advanced_physics_calculat
 
 | Phase | Duration | Priority | Deliverables |
 |-------|----------|----------|--------------|
-| **1: Foundation** | Weeks 1-4 | HIGH | Configs, CLI tools, file utils |
-| **2: CI Integration** | Weeks 5-8 | HIGH | Quality gates, incremental analysis |
-| **3: Enhanced Analysis** | Weeks 9-12 | MEDIUM | Tree-sitter, HTML reports |
-| **4: Advanced Features** | Weeks 13-16 | LOW | ML detection, visualization |
+| **1: Foundation** | Pre-commit 1-8 | HIGH | Configs, CLI tools, file utils |
+| **2: CI Integration** | Pre-commit 9-16 | HIGH | Quality gates, incremental analysis |
+| **3: Enhanced Analysis** | Pre-commit 17-24 | MEDIUM | Tree-sitter, HTML reports |
+| **4: Advanced Features** | Pre-commit 25-32 | LOW | ML detection, visualization |
 
 ---
 

@@ -138,21 +138,21 @@ if __name__ == "__main__":
       patterns: [
         {
           id: "pattern-1",
-          name: "Refactor Extract Method",
+          type: "Refactor Extract Method",
           usage_count: 15,
           compression_ratio: 0.62,
           last_accessed: new Date(Date.now() - 30 * 60000).toISOString(),
         },
         {
           id: "pattern-2",
-          name: "Error Handling Best Practices",
+          type: "Error Handling Best Practices",
           usage_count: 23,
           compression_ratio: 0.58,
           last_accessed: new Date(Date.now() - 60 * 60000).toISOString(),
         },
         {
           id: "pattern-3",
-          name: "API Response Caching",
+          type: "API Response Caching",
           usage_count: 18,
           compression_ratio: 0.65,
           last_accessed: new Date(Date.now() - 90 * 60000).toISOString(),

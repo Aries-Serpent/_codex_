@@ -421,7 +421,7 @@ gantt
 
 ## ✅ Next Immediate Actions
 
-### Week 1 (Starting 2026-01-06)
+### Pre-commit 1-2 (Starting 2026-01-06)
 
 1. **Create GHZ State Manager skeleton**
    - File: `src/cognitive_brain/quantum/ghz_state_manager.py`
@@ -459,6 +459,6 @@ gantt
 ---
 
 **Generated:** 2026-01-05  
-**Next Review:** 2026-01-12 (Week 1 checkpoint)  
+**Next Review:** 2026-01-12 (Pre-commit 1-2 checkpoint)  
 **Owner:** Cognitive Brain Team  
 **Status:** READY FOR PHASE 8.2 EXECUTION ✅

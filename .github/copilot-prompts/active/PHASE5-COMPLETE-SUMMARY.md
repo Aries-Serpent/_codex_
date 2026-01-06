@@ -262,7 +262,7 @@ If working from a fresh branch:
 
 ## Next Session Tasks
 
-### Immediate (Week 3):
+### Immediate (Pre-commit 5-6):
 1. Begin release-gate-agent.v1
 2. Implement validator.py (PERCEIVE)
 3. Implement assessor.py (DECIDE)

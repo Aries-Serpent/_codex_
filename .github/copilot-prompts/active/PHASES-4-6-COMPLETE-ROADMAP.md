@@ -74,7 +74,7 @@
 
 ---
 
-#### 2. release-gate-agent.v1 (Week 3) - **NEXT PRIORITY**
+#### 2. release-gate-agent.v1 (Pre-commit 5-6) - **NEXT PRIORITY**
 **Priority**: P1 - High  
 **Purpose**: Automated dependency update management
 
@@ -101,7 +101,7 @@
 
 ---
 
-#### 2. release-gate-agent.v1 (Week 3)
+#### 2. release-gate-agent.v1 (Pre-commit 5-6)
 **Priority**: P1 - High  
 **Purpose**: Release readiness validation and gating
 
@@ -128,7 +128,7 @@
 
 ---
 
-#### 3. infra-linter-agent.v1 (Week 4)
+#### 3. infra-linter-agent.v1 (Pre-commit 7-8)
 **Priority**: P1 - High  
 **Purpose**: Infrastructure configuration validation
 
@@ -154,9 +154,9 @@
 
 ---
 
-### Priority 2: Developer Experience (Q1-Q2 2026 - 3 agents)
+### Priority 2: Developer Experience (Q1-Phase 2 (2026) - 3 agents)
 
-#### 4. code-review-summarizer.v1 (Week 5)
+#### 4. code-review-summarizer.v1 (Pre-commit 9-10)
 **Priority**: P2 - Medium  
 **Purpose**: Code review analysis and summarization
 
@@ -182,7 +182,7 @@
 
 ---
 
-#### 5. issue-triage-agent.v1 (Week 6)
+#### 5. issue-triage-agent.v1 (Pre-commit 11-12)
 **Priority**: P2 - Medium  
 **Purpose**: Automated issue classification and routing
 
@@ -208,7 +208,7 @@
 
 ---
 
-#### 6. doc-reporter-agent.v1 (Week 7)
+#### 6. doc-reporter-agent.v1 (Pre-commit 13-14)
 **Priority**: P2 - Medium  
 **Purpose**: Documentation coverage and quality reporting
 
@@ -234,9 +234,9 @@
 
 ---
 
-### Priority 3: Advanced Capabilities (Q2 2026 - 3 agents)
+### Priority 3: Advanced Capabilities (Phase 2 (2026) - 3 agents)
 
-#### 7. compliance-checker-agent.v1 (Week 8)
+#### 7. compliance-checker-agent.v1 (Pre-commit 15-16)
 **Priority**: P1 - High  
 **Purpose**: Compliance validation automation
 
@@ -262,7 +262,7 @@
 
 ---
 
-#### 8. data-rag-helper.v1 (Week 9)
+#### 8. data-rag-helper.v1 (Pre-commit 17-18)
 **Priority**: P3 - Lower  
 **Purpose**: Data retrieval and augmentation for agent queries
 
@@ -288,7 +288,7 @@
 
 ---
 
-#### 9. mcp-registry-adapter.v1 (Week 10)
+#### 9. mcp-registry-adapter.v1 (Pre-commit 19-20)
 **Priority**: P3 - Lower  
 **Purpose**: MCP (Model Context Protocol) registry integration
 
@@ -328,52 +328,52 @@
 ### Remaining Agents (8 of 11)
 
 **P1 - Critical** (3 remaining):
-- release-gate-agent.v1 (Week 3) - **NEXT**
-- infra-linter-agent.v1 (Week 4)
-- compliance-checker-agent.v1 (Week 5)
+- release-gate-agent.v1 (Pre-commit 5-6) - **NEXT**
+- infra-linter-agent.v1 (Pre-commit 7-8)
+- compliance-checker-agent.v1 (Pre-commit 9-10)
 
 **P2 - Developer Experience** (3):
-- code-review-summarizer.v1 (Week 6)
-- issue-triage-agent.v1 (Week 7)
-- doc-reporter-agent.v1 (Week 8)
+- code-review-summarizer.v1 (Pre-commit 11-12)
+- issue-triage-agent.v1 (Pre-commit 13-14)
+- doc-reporter-agent.v1 (Pre-commit 15-16)
 
 **P3 - Advanced** (2):
-- data-rag-helper.v1 (Week 9)
-- mcp-registry-adapter.v1 (Week 10)
+- data-rag-helper.v1 (Pre-commit 17-18)
+- mcp-registry-adapter.v1 (Pre-commit 19-20)
 
 ### Updated Timeline
 
-**Weeks 1-2**: ✅ **COMPLETE** - dep-upgrade-agent.v1
-**Week 3**: release-gate-agent.v1 (NEXT)
-**Week 4**: infra-linter-agent.v1
-**Week 5**: compliance-checker-agent.v1
-**Week 6**: code-review-summarizer.v1
-**Week 7**: issue-triage-agent.v1
-**Week 8**: doc-reporter-agent.v1
-**Week 9**: data-rag-helper.v1
-**Week 10**: mcp-registry-adapter.v1
+**Pre-commit 1-4**: ✅ **COMPLETE** - dep-upgrade-agent.v1
+**Pre-commit 5-6**: release-gate-agent.v1 (NEXT)
+**Pre-commit 7-8**: infra-linter-agent.v1
+**Pre-commit 9-10**: compliance-checker-agent.v1
+**Pre-commit 11-12**: code-review-summarizer.v1
+**Pre-commit 13-14**: issue-triage-agent.v1
+**Pre-commit 15-16**: doc-reporter-agent.v1
+**Pre-commit 17-18**: data-rag-helper.v1
+**Pre-commit 19-20**: mcp-registry-adapter.v1
 
 **Total Remaining Time**: 8 weeks (~2 months)
 - Day 1-3: Core modules (monitor, evaluator)
 - Day 4-6: Upgrader + tracker
 - Day 7-10: Tests, docs, validation
 
-**Week 3**: release-gate-agent.v1
+**Pre-commit 5-6**: release-gate-agent.v1
 - Day 1-2: Validator + assessor
 - Day 3-4: Gatekeeper + auditor
 - Day 5-7: Tests, docs, integration
 
-**Week 4**: infra-linter-agent.v1
+**Pre-commit 7-8**: infra-linter-agent.v1
 - Day 1-2: Linter + analyzer
 - Day 3-4: Fixer + reporter
 - Day 5-7: Tests, docs, tool integration
 
-**Weeks 5-7**: Developer experience agents (3 agents)
+**Pre-commit 9-14**: Developer experience agents (3 agents)
 - Each agent: 5-7 days development + testing
 - Focus on GitHub API integration
 - Emphasis on developer UX
 
-**Weeks 8-10**: Advanced capability agents (3 agents)
+**Pre-commit 15-20**: Advanced capability agents (3 agents)
 - Compliance checker: 7 days (complex rules)
 - RAG helper: 5 days (cognitive brain focus)
 - MCP adapter: 5 days (protocol integration)
@@ -646,19 +646,19 @@ brain_cli.py                       # CLI tool (Phase 1)
 
 ## Next Steps
 
-**Immediate** (Week 1-2):
+**Immediate** (Pre-commit 1-4):
 1. Begin dep-upgrade-agent.v1 implementation
 2. Follow proven PDA Loop pattern
 3. Integrate with cognitive brain
 4. Use SecurityPatternMatcher + PerformancePatternMatcher
 5. Comprehensive tests + documentation
 
-**Short-term** (Weeks 3-4):
+**Short-term** (Pre-commit 5-8):
 1. Complete P1 agents (release-gate, infra-linter)
 2. Validate cross-agent integration
 3. Monitor cognitive brain performance
 
-**Medium-term** (Weeks 5-10):
+**Medium-term** (Pre-commit 9-20):
 1. Complete all 9 remaining agents
 2. Build agent dashboard
 3. Comprehensive integration tests

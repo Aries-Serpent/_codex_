@@ -241,7 +241,7 @@ _codex_/
 
 ## 4. Phase Planning Beyond Phase 9
 
-### Phase 10: Performance Optimization (Q1 2026)
+### Phase 10: Performance Optimization (Phase 1 (2026))
 
 **Objective**: Optimize CI/CD and runtime performance
 
@@ -259,7 +259,7 @@ _codex_/
 
 **Estimated Duration**: 2-3 sessions
 
-### Phase 11: MCP Advanced Features (Q1-Q2 2026)
+### Phase 11: MCP Advanced Features (Q1-Phase 2 (2026))
 
 **Objective**: Implement 7 advanced MCP features
 
@@ -276,7 +276,7 @@ _codex_/
 
 **Estimated Duration**: 5-8 sessions over Q1-Q2
 
-### Phase 12: Agent Enhancement (Q2 2026)
+### Phase 12: Agent Enhancement (Phase 2 (2026))
 
 **Objective**: Expand agent autonomy and capabilities
 
@@ -293,7 +293,7 @@ _codex_/
 
 **Estimated Duration**: 4-6 sessions
 
-### Phase 13: Production Scaling (Q2-Q3 2026)
+### Phase 13: Production Scaling (Q2-Phase 3 (2026))
 
 **Objective**: Scale for production workloads
 

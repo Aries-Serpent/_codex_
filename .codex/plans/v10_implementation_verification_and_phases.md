@@ -300,10 +300,10 @@
 
 ```
 Phase 0: Current State (COMPLETE)
-    └─> Phase 1: Research Foundation (Weeks 1-8)
-        └─> Phase 2: Core Capabilities (Weeks 9-16)
-            └─> Phase 3: Advanced Integration (Weeks 17-24)
-                └─> Phase 4: Production Optimization (Weeks 25-32)
+    └─> Phase 1: Research Foundation (Pre-commit 1-16)
+        └─> Phase 2: Core Capabilities (Pre-commit 17-32)
+            └─> Phase 3: Advanced Integration (Pre-commit 33-48)
+                └─> Phase 4: Production Optimization (Pre-commit 49-64)
                     └─> Phase 5: Continuous Improvement (Ongoing)
 ```
 
@@ -331,12 +331,12 @@ Phase 0: Current State (COMPLETE)
 
 ---
 
-## 📅 PHASE 1: RESEARCH FOUNDATION (Weeks 1-8)
+## 📅 PHASE 1: RESEARCH FOUNDATION (Pre-commit 1-16)
 
 ### Objective
 Establish research infrastructure, form team, and begin highest-ROI research projects (R4, R10)
 
-### Week 1-2: Team & Infrastructure Setup
+### Pre-commit 1-4: Team & Infrastructure Setup
 
 **Actions**:
 1. **Form Research Team** (3-5 people)
@@ -370,7 +370,7 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
 
 ---
 
-### Week 3-4: R4 Prototype Development
+### Pre-commit 5-8: R4 Prototype Development
 
 **Focus**: Predictive Resource Modeling (Agent 2)
 
@@ -385,7 +385,7 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
    - Commit size features
    - Workload characteristics
    - System configuration state
-   - Temporal patterns (daily/weekly cycles)
+   - Temporal patterns (daily/per commit cycle cycles)
 
 3. **LSTM Model Training**
    - Implement multi-variate LSTM (CPU, memory, IO)
@@ -411,7 +411,7 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
 
 ---
 
-### Week 5-6: R10 Model Development
+### Pre-commit 9-12: R10 Model Development
 
 **Focus**: Test Prioritization Algorithms (Agent 4) - **CRITICAL PATH**
 
@@ -455,7 +455,7 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
 
 ---
 
-### Week 7-8: Phase 1 Integration & Validation
+### Pre-commit 13-16: Phase 1 Integration & Validation
 
 **Actions**:
 1. **R4 Production Deployment**
@@ -489,12 +489,12 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
 
 ---
 
-## 📅 PHASE 2: CORE CAPABILITIES (Weeks 9-16)
+## 📅 PHASE 2: CORE CAPABILITIES (Pre-commit 17-32)
 
 ### Objective
 Deploy R4 and R10, begin R11, R13, R1, R7; build core agent capabilities
 
-### Week 9-10: R10 Production Rollout
+### Pre-commit 17-20: R10 Production Rollout
 
 **Actions**:
 1. **Production Deployment**
@@ -517,7 +517,7 @@ Deploy R4 and R10, begin R11, R13, R1, R7; build core agent capabilities
 
 ---
 
-### Week 11-12: R13 Foundation (Causal Inference)
+### Pre-commit 21-24: R13 Foundation (Causal Inference)
 
 **Focus**: Causal Impact Analysis (Agent 5) - **CRITICAL PATH**
 
@@ -548,7 +548,7 @@ Deploy R4 and R10, begin R11, R13, R1, R7; build core agent capabilities
 
 ---
 
-### Week 13-14: R1 & R7 Development
+### Pre-commit 25-28: R1 & R7 Development
 
 **R1: Advanced Pattern Detection (Agent 1)**
 
@@ -587,7 +587,7 @@ Deploy R4 and R10, begin R11, R13, R1, R7; build core agent capabilities
 
 ---
 
-### Week 15-16: Phase 2 Integration
+### Pre-commit 29-32: Phase 2 Integration
 
 **Actions**:
 1. **Multi-Agent Testing**
@@ -622,12 +622,12 @@ Deploy R4 and R10, begin R11, R13, R1, R7; build core agent capabilities
 
 ---
 
-## 📅 PHASE 3: ADVANCED INTEGRATION (Weeks 17-24)
+## 📅 PHASE 3: ADVANCED INTEGRATION (Pre-commit 33-48)
 
 ### Objective
 Complete critical research areas (R11, R13, R14, R18), achieve meta-learning integration
 
-### Week 17-18: R11 & R14 Completion
+### Pre-commit 33-36: R11 & R14 Completion
 
 **R11: Build Failure Prediction**
 
@@ -653,7 +653,7 @@ Complete critical research areas (R11, R13, R14, R18), achieve meta-learning int
 
 ---
 
-### Week 19-20: R18 Coalition Formation
+### Pre-commit 37-40: R18 Coalition Formation
 
 **Focus**: Coalition Formation Algorithms (Agent 6) - **CRITICAL PATH**
 
@@ -683,7 +683,7 @@ Complete critical research areas (R11, R13, R14, R18), achieve meta-learning int
 
 ---
 
-### Week 21-22: Meta-Learning Integration (Theme 1)
+### Pre-commit 41-44: Meta-Learning Integration (Theme 1)
 
 **Focus**: Cognitive Brain Meta-Learning across all agents
 
@@ -713,7 +713,7 @@ Complete critical research areas (R11, R13, R14, R18), achieve meta-learning int
 
 ---
 
-### Week 23-24: Phase 3 Finalization
+### Pre-commit 45-48: Phase 3 Finalization
 
 **Actions**:
 1. **Complete Remaining HIGH Priority Items**
@@ -746,12 +746,12 @@ Complete critical research areas (R11, R13, R14, R18), achieve meta-learning int
 
 ---
 
-## 📅 PHASE 4: PRODUCTION OPTIMIZATION (Weeks 25-32)
+## 📅 PHASE 4: PRODUCTION OPTIMIZATION (Pre-commit 49-64)
 
 ### Objective
 Complete all remaining research, optimize for scale, achieve production excellence
 
-### Week 25-26: Scale Testing (Theme 3)
+### Pre-commit 49-52: Scale Testing (Theme 3)
 
 **Focus**: Scalability and Performance
 
@@ -776,7 +776,7 @@ Complete all remaining research, optimize for scale, achieve production excellen
 
 ---
 
-### Week 27-28: Complete MEDIUM Priority Research
+### Pre-commit 53-56: Complete MEDIUM Priority Research
 
 **Actions**:
 1. **R3: Self-Improvement** (Agent 1)
@@ -802,7 +802,7 @@ Complete all remaining research, optimize for scale, achieve production excellen
 
 ---
 
-### Week 29-30: UX & Explainability (Theme 2)
+### Pre-commit 57-60: UX & Explainability (Theme 2)
 
 **Focus**: Human-AI Collaboration
 
@@ -833,7 +833,7 @@ Complete all remaining research, optimize for scale, achieve production excellen
 
 ---
 
-### Week 31-32: Production Readiness & Launch
+### Pre-commit 61-64: Production Readiness & Launch
 
 **Actions**:
 1. **Final Integration Testing**
@@ -881,7 +881,7 @@ Monitor, maintain, and continuously improve V10 ecosystem
 
 ### Monthly Activities
 
-**Weeks 33+**: Ongoing Operations
+**Pre-commit 65+**: Ongoing Operations
 
 **Actions**:
 1. **Performance Monitoring**
@@ -891,7 +891,7 @@ Monitor, maintain, and continuously improve V10 ecosystem
    - Incident response
 
 2. **Model Retraining**
-   - R1, R2, R4, R10, R11, R13 models retrained monthly
+   - R1, R2, R4, R10, R11, R13 models retrained per 4-5 commit cycles
    - Incorporate new data
    - Adapt to code/project changes
    - Validate improvements
@@ -964,7 +964,7 @@ Parallel Development:
 
 Meta-Learning (Theme 1):
 - Depends on agents being operational
-- Starts Week 21-22
+- Starts Pre-commit 41-44
 - Continues through Phase 4 and beyond
 ```
 
@@ -1099,7 +1099,7 @@ Comprehensive 5-phase plan created with:
 ---
 
 **Generated**: 2026-01-03T22:15:00Z  
-**Next Review**: Phase 1 Week 1 (upon team formation)  
+**Next Review**: Phase 1 Pre-commit 1-2 (upon team formation)  
 **Status**: ✅ **VERIFICATION COMPLETE, PHASES DEFINED, READY TO EXECUTE**
 
 ---
@@ -1114,10 +1114,10 @@ Comprehensive 5-phase plan created with:
 - **Management Script**: `.codex/scripts/manage_github_variables.py`
 
 ### Key Contacts
-- **Research Lead**: TBD (Phase 1 Week 1)
-- **ML Engineers**: TBD (Phase 1 Week 1)
-- **DevOps Lead**: TBD (Phase 1 Week 1)
-- **UX Researcher**: TBD (Phase 1 Week 1)
+- **Research Lead**: TBD (Phase 1 Pre-commit 1-2)
+- **ML Engineers**: TBD (Phase 1 Pre-commit 1-2)
+- **DevOps Lead**: TBD (Phase 1 Pre-commit 1-2)
+- **UX Researcher**: TBD (Phase 1 Pre-commit 1-2)
 
 ### Emergency Contacts
 - **Technical Issues**: GitHub Issues

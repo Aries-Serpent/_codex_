@@ -54,10 +54,10 @@ class AdvancedPatternDetector:
 - **Privacy**: All data from organization's repos or open-source (no external services)
 
 **Implementation Steps**:
-1. Week 1-2: Data collection pipeline (GitHub API + AST extraction)
-2. Week 3-6: GNN model training on code structure graphs
-3. Week 7-10: Transformer fine-tuning for semantic patterns
-4. Week 11-12: Integration testing and benchmark evaluation
+1. Pre-commit 1-4: Data collection pipeline (GitHub API + AST extraction)
+2. Pre-commit 5-12: GNN model training on code structure graphs
+3. Pre-commit 13-20: Transformer fine-tuning for semantic patterns
+4. Pre-commit 21-24: Integration testing and benchmark evaluation
 
 **Success Metrics** (from research):
 - Pattern detection accuracy: 85% → 95% (+25-40% improvement target achieved)
@@ -108,10 +108,10 @@ class BehaviorPredictor:
 - **Size**: ~100GB/year for medium-sized projects
 
 **Timeline**: 6-10 weeks
-- Week 1-2: Feature engineering pipeline
-- Week 3-5: LSTM training on historical sequences
-- Week 6-8: ARIMA model tuning for seasonal components
-- Week 9-10: Integration and validation
+- Pre-commit 1-4: Feature engineering pipeline
+- Pre-commit 5-10: LSTM training on historical sequences
+- Pre-commit 11-16: ARIMA model tuning for seasonal components
+- Pre-commit 17-20: Integration and validation
 
 **Success Criteria**:
 - Forecast accuracy: Mean Absolute Error <15% at 3-month horizon
@@ -152,10 +152,10 @@ class SelfImprovementLoop:
 - **Storage**: .github/agent_feedback/ directory (JSON logs)
 
 **Timeline**: 10-14 weeks
-- Week 1-3: Feedback collection infrastructure
-- Week 4-7: RL algorithm implementation and testing
-- Week 8-11: Simulated training on historical data
-- Week 12-14: Live deployment with safety guardrails
+- Pre-commit 1-6: Feedback collection infrastructure
+- Pre-commit 7-14: RL algorithm implementation and testing
+- Pre-commit 15-22: Simulated training on historical data
+- Pre-commit 23-28: Live deployment with safety guardrails
 
 **Success Metrics**:
 - False positive reduction: 15% → <7% (>50% reduction achieved)
@@ -212,10 +212,10 @@ class ResourcePredictor:
 - False alarm rate: <15%
 
 **Implementation Phases**:
-1. Week 1-2: Prometheus integration + feature extraction
-2. Week 3-5: LSTM model training with multi-variate inputs
-3. Week 6-7: Prediction pipeline optimization
-4. Week 8-10: Alert system integration + testing
+1. Pre-commit 1-4: Prometheus integration + feature extraction
+2. Pre-commit 5-10: LSTM model training with multi-variate inputs
+3. Pre-commit 11-14: Prediction pipeline optimization
+4. Pre-commit 15-20: Alert system integration + testing
 
 ---
 
@@ -365,10 +365,10 @@ class GPTStyleDocGenerator:
 - Clarity score: >85% (readability metrics)
 
 **Timeline**: 12-16 weeks
-- Week 1-4: Data collection and prompt engineering
-- Week 5-10: Generation pipeline + quality checks
-- Week 11-14: Integration with CI/CD
-- Week 15-16: Human evaluation and refinement
+- Pre-commit 1-8: Data collection and prompt engineering
+- Pre-commit 9-20: Generation pipeline + quality checks
+- Pre-commit 21-28: Integration with CI/CD
+- Pre-commit 29-32: Human evaluation and refinement
 
 ---
 
@@ -519,10 +519,10 @@ class MLTestPrioritizer:
 - Overhead of prediction: <2s
 
 **Timeline**: 10-14 weeks (CRITICAL path)
-- Week 1-3: Data collection pipeline
-- Week 4-7: Feature engineering + model training
-- Week 8-11: Integration with test runner
-- Week 12-14: Production deployment + monitoring
+- Pre-commit 1-6: Data collection pipeline
+- Pre-commit 7-14: Feature engineering + model training
+- Pre-commit 15-22: Integration with test runner
+- Pre-commit 23-28: Production deployment + monitoring
 
 **Implementation Priority**: START IMMEDIATELY (highest ROI)
 
@@ -657,10 +657,10 @@ class CausalAnalyzer:
 - Time to insight: <10 minutes
 
 **Timeline**: 14-20 weeks (CRITICAL research depth)
-- Week 1-6: Causal graph construction framework
-- Week 7-12: Do-calculus implementation + testing
-- Week 13-17: Integration with repository data
-- Week 18-20: Validation on historical incidents
+- Pre-commit 1-12: Causal graph construction framework
+- Pre-commit 13-24: Do-calculus implementation + testing
+- Pre-commit 25-34: Integration with repository data
+- Pre-commit 35-40: Validation on historical incidents
 
 **Research Priority**: HIGHEST for Agent 5
 
@@ -1050,7 +1050,7 @@ class SecurityLayer:
 
 ## 📅 Implementation Timeline (32 Weeks)
 
-### Phase 1: Foundation (Weeks 1-8)
+### Phase 1: Foundation (Pre-commit 1-16)
 
 **Immediate Actions**:
 - Form research team (3-5 people: 2 ML engineers, 1 SE researcher, 1 DevOps, 1 UX)
@@ -1067,7 +1067,7 @@ class SecurityLayer:
 
 ---
 
-### Phase 2: Core Capabilities (Weeks 9-16)
+### Phase 2: Core Capabilities (Pre-commit 17-32)
 
 **Focus**:
 - Complete R10 (Test Prioritization) deployment
@@ -1084,7 +1084,7 @@ class SecurityLayer:
 
 ---
 
-### Phase 3: Advanced Integration (Weeks 17-24)
+### Phase 3: Advanced Integration (Pre-commit 33-48)
 
 **Focus**:
 - Complete R13, R11
@@ -1102,7 +1102,7 @@ class SecurityLayer:
 
 ---
 
-### Phase 4: Refinement & Scale (Weeks 25-32)
+### Phase 4: Refinement & Scale (Pre-commit 49-64)
 
 **Focus**:
 - Complete all remaining research areas
@@ -1236,7 +1236,7 @@ class SecurityLayer:
 
 ## 🚀 Next Steps (Immediate Actions)
 
-### Week 1 Actions
+### Pre-commit 1-2 Actions
 
 1. **Team Formation**
    - Recruit: 2 ML engineers, 1 SE researcher, 1 DevOps, 1 UX researcher
@@ -1259,7 +1259,7 @@ class SecurityLayer:
    - Document baseline metrics
    - Create validation scripts
 
-### Week 2-4 Actions
+### Pre-commit 3-8 Actions
 
 5. **R4 Prototype Deployment**
    - LSTM model trained on historical resource data

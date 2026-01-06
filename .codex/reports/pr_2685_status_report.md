@@ -207,31 +207,31 @@
 ## 🚀 Next Steps
 
 ### Immediate (Next Session)
-1. **Create Performance Monitor Agent** (Week 2, Day 3)
+1. **Create Performance Monitor Agent** (Pre-commit 3-4, Day 3)
    - 15+ tests required
    - Integration with Phase 8.10 performance benchmarking
    - Latency monitoring, throughput optimization
    - Estimated: 400-500 LOC
 
-2. **Create Documentation Agent** (Week 2, Day 4)
+2. **Create Documentation Agent** (Pre-commit 3-4, Day 4)
    - 15+ tests required
    - Auto-generate API docs, tutorials, changelogs
    - Integration with Phase 8.10 documentation portal
    - Estimated: 450-550 LOC
 
-3. **Create Self-Optimizing CI Agent** (Week 2, Day 1-2)
+3. **Create Self-Optimizing CI Agent** (Pre-commit 3-4, Day 1-2)
    - 20+ tests required
    - Test execution order optimization
    - Build failure prediction
    - Estimated: 550-650 LOC
 
 ### Short Term (1-2 weeks)
-1. **Create Reasoning Advisor Agent** (Week 3, Day 1-2)
+1. **Create Reasoning Advisor Agent** (Pre-commit 5-6, Day 1-2)
    - 20+ tests required
    - Integration with Phase 8.11 reasoning
    - Causal analysis, counterfactual planning
 
-2. **Create Ecosystem Coordinator Agent** (Week 3, Day 3-4)
+2. **Create Ecosystem Coordinator Agent** (Pre-commit 5-6, Day 3-4)
    - 20+ tests required
    - Integration with Phase 8.12 multi-agent
    - Task decomposition, coalition formation

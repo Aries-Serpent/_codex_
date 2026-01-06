@@ -139,7 +139,7 @@ Include HAR files in `determinism-audit-*.zip`:
 
 ## Implementation Plan
 
-### Phase 1: Foundation (Week 1-2)
+### Phase 1: Foundation (Pre-commit 1-4)
 
 #### 1.1 Create HAR Utility Module
 
@@ -268,7 +268,7 @@ class HARPlayer:
 - Configuration options
 - Best practices
 
-### Phase 2: Integration (Week 3-4)
+### Phase 2: Integration (Pre-commit 5-8)
 
 #### 2.1 Integrate with Audit Runner
 
@@ -349,7 +349,7 @@ class GitHubHARClient:
         return response.json()
 ```
 
-### Phase 3: Dashboard Enhancement (Week 5-6)
+### Phase 3: Dashboard Enhancement (Pre-commit 9-12)
 
 #### 3.1 Add HAR Viewer to Dashboard
 
@@ -387,7 +387,7 @@ function exportSessionAsHAR() {
 }
 ```
 
-### Phase 4: Testing & Optimization (Week 7-8)
+### Phase 4: Testing & Optimization (Pre-commit 13-16)
 
 #### 4.1 Performance Testing
 

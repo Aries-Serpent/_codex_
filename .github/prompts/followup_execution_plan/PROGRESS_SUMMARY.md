@@ -344,29 +344,29 @@ The _codex_ system has successfully completed its transformation to Level 4 MLOp
 ### Immediate Deployment ✅
 All Phase 1-4 features are production-ready:
 
-**Week 1: Enable Core Features**
+**Pre-commit 1-2: Enable Core Features**
 - Coverage gate
 - Security scans
 - Health probes
 - Prometheus metrics
 
-**Week 2: Enable Reproducibility**
+**Pre-commit 3-4: Enable Reproducibility**
 - RNG checkpointing
 - Dataset manifests
 - Deterministic algorithms
 
-**Week 3: Enable Autonomy**
+**Pre-commit 5-6: Enable Autonomy**
 - Offline-first mode
 - Drift detection
 - Auto-retraining
 - Self-healing
 
-**Week 4: Monitor & Optimize**
+**Pre-commit 7-8: Monitor & Optimize**
 - Review metrics
 - Tune alert thresholds
 - Optimize performance
 
-### Optional Enhancements (Weeks 5+)
+### Optional Enhancements (Pre-commit 9+)
 See `.github/prompts/followup_execution_plan/` for:
 - Kubernetes orchestration
 - Feature store implementation
@@ -389,8 +389,8 @@ See `.github/prompts/followup_execution_plan/` for:
    - Optimize auto-scaling (if using K8s)
 
 3. **Continuous Improvement**
-   - Review failed job logs monthly
-   - Update documentation quarterly
+   - Review failed job logs per 4-5 commit cycles
+   - Update documentation per phase
    - Refresh runbooks based on incidents
    - Enhance monitoring as needed
 
@@ -404,7 +404,7 @@ If business needs require:
 - Keep AGENTS.md updated with new patterns
 - Update API_REFERENCE.md as features added
 - Maintain runbooks with incident learnings
-- Refresh getting started guides quarterly
+- Refresh getting started guides per phase
 
 ---
 
@@ -460,5 +460,5 @@ The _codex_ system has successfully achieved **Level 4 MLOps maturity** with a *
 
 **Report Version:** 1.0  
 **Last Updated:** December 6, 2025  
-**Next Review:** Post-deployment (Week 4)  
+**Next Review:** Post-deployment (Pre-commit 7-8)  
 **Certification:** Azure MLOps Level 4 (100/100)

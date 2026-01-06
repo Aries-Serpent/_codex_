@@ -19,7 +19,7 @@
 ### Cognitive Brain (AI Agent Navigation)
 - **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
 - **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status & metrics
-- **[Roadmap](ROADMAP.md)** - Unified roadmap Q1-Q3 2026
+- **[Roadmap](ROADMAP.md)** - Unified roadmap Q1-Phase 3 (2026)
 
 ---
 
@@ -204,7 +204,7 @@ All documentation should include:
 ### Update Process
 1. Update the relevant canonical document
 2. Update this index if structure changes
-3. Check for broken links monthly
+3. Check for broken links per 4-5 commit cycles
 4. Archive obsolete documentation (don't delete)
 
 ### Archived Documentation

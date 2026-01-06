@@ -403,22 +403,22 @@ jobs:
 
 ## Iterative Improvement Process
 
-### Phase 1: Detection (Week 1)
+### Phase 1: Detection (Pre-commit 1-2)
 - Monitor agent interactions
 - Collect feedback data
 - Identify patterns
 
-### Phase 2: Analysis (Week 2)
+### Phase 2: Analysis (Pre-commit 3-4)
 - Categorize feedback
 - Prioritize gaps
 - Generate improvement plans
 
-### Phase 3: Implementation (Week 3-4)
+### Phase 3: Implementation (Pre-commit 5-8)
 - Implement high-priority fixes
 - Add missing capabilities
 - Update documentation
 
-### Phase 4: Validation (Week 5)
+### Phase 4: Validation (Pre-commit 9-10)
 - Test improvements
 - Verify gap closure
 - Measure impact

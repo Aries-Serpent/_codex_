@@ -21,22 +21,22 @@ This roadmap provides step-by-step GitHub Copilot prompts to implement the 4 rem
 
 ### Execution Order (Recommended)
 
-**Week 1 (Days 1-3): Kubernetes Orchestration**
+**Pre-commit 1-2 (Days 1-3): Kubernetes Orchestration**
 - Day 1: Base K8s manifests
 - Day 2: Auto-scaling & monitoring
 - Day 3: Testing & deployment scripts
 
-**Week 2 (Days 4-7): Feature Store**
+**Pre-commit 3-4 (Days 4-7): Feature Store**
 - Day 4-5: Core feature store module
 - Day 6: CLI & monitoring
 - Day 7: Integration & tests
 
-**Week 3 (Days 8-10): Cloud Events**
+**Pre-commit 5-6 (Days 8-10): Cloud Events**
 - Day 8: Event abstraction layer
 - Day 9: Cloud provider integrations
 - Day 10: Testing & documentation
 
-**Week 3 (Day 11): Feature Freshness**
+**Pre-commit 5-6 (Day 11): Feature Freshness**
 - Day 11: Enhance monitoring
 
 ---
