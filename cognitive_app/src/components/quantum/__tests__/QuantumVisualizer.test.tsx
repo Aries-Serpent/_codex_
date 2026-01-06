@@ -94,8 +94,10 @@ describe('QuantumVisualizer - Quantum Visualization (10 tests)', () => {
       render(<QuantumVisualizer />);
 
       await waitFor(() => {
+        // Verify canvas rendering methods were called
         const fillStyleSet = mockContext.fillStyle !== '';
-        expect(fillStyleSet || mockContext.arc).toHaveProperty('mock');
+        // Check that canvas methods were invoked (vitest mocks have been called)
+        expect(fillStyleSet || mockContext.arc.mock.calls.length > 0 || mockContext.fill.mock.calls.length > 0).toBeTruthy();
       }, { timeout: 2000 });
     });
   });
