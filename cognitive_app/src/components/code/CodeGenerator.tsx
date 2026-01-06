@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Copy, Download, Sparkle, CheckCircle, XCircle } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,17 @@ import { CodeEditor } from './CodeEditor';
 import { MetricsBar } from './MetricsBar';
 
 const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
-const API_KEY = import.meta.env.VITE_CODEX_KEY;
 
-// Initialize clients only if API_KEY is available
-const client = API_KEY ? new CodexAPIClient(API_URL, API_KEY) : null;
-const mockClient = new MockCodexAPIClient();
+/**
+ * Factory function to create a CodexAPIClient instance.
+ * Uses lazy initialization to support hot module replacement during development,
+ * allowing the API key to be reconfigured without reloading the module.
+ * @returns CodexAPIClient instance or null if API key is not available
+ */
+function createClient(): CodexAPIClient | null {
+  const apiKey = import.meta.env.VITE_CODEX_KEY;
+  return apiKey ? new CodexAPIClient(API_URL, apiKey) : null;
+}
 
 export function CodeGenerator() {
   const [prompt, setPrompt] = useState('');
@@ -23,8 +29,20 @@ export function CodeGenerator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
+  
+  // Lazy initialization: client is created on first use and can be recreated if needed
+  const clientRef = useRef<CodexAPIClient | null>(null);
+  const mockClientRef = useRef<MockCodexAPIClient>(new MockCodexAPIClient());
+
+  const getClient = useCallback(() => {
+    if (!clientRef.current) {
+      clientRef.current = createClient();
+    }
+    return clientRef.current;
+  }, []);
 
   const checkApiStatus = useCallback(async () => {
+    const client = getClient();
     if (!client) {
       setApiStatus('error');
       setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
@@ -35,13 +53,13 @@ export function CodeGenerator() {
       setApiStatus('connected');
     } catch {
       try {
-        await mockClient.getStatus();
+        await mockClientRef.current.getStatus();
         setApiStatus('connected');
       } catch {
         setApiStatus('error');
       }
     }
-  }, []);
+  }, [getClient]);
 
   useEffect(() => {
     checkApiStatus();
@@ -50,6 +68,7 @@ export function CodeGenerator() {
   }, [checkApiStatus]);
 
   const handleGenerate = useCallback(async () => {
+    const client = getClient();
     if (!client) {
       setError('Missing API key configuration. Please set VITE_CODEX_KEY environment variable.');
       toast.error('Configuration Error', {
@@ -88,7 +107,7 @@ export function CodeGenerator() {
       });
     } catch (err) {
       try {
-        const mockResponse = await mockClient.generateCode({
+        const mockResponse = await mockClientRef.current.generateCode({
           prompt,
           context: { language: 'python', tier: 'A' },
         });
@@ -125,7 +144,7 @@ export function CodeGenerator() {
     } finally {
       setLoading(false);
     }
-  }, [prompt]);
+  }, [prompt, getClient]);
 
   const handleCopy = useCallback(() => {
     if (result?.code) {

@@ -14,13 +14,21 @@ interface QuantumVisualizerProps {
   collapsed?: boolean;
 }
 
+/**
+ * Default coherence level for the quantum visualization.
+ * This value (0.692) was chosen empirically to provide a balanced, engaging display
+ * that demonstrates medium-high coherence in the quantum decision system.
+ * Values range from 0 (completely decoherent) to 1 (perfectly coherent).
+ */
+const DEFAULT_COHERENCE = 0.692;
+
 export function QuantumVisualizer({ 
   states = [
     { state: 'Option A', probability: 0.35 },
     { state: 'Option B', probability: 0.28 },
     { state: 'Option C', probability: 0.37 },
   ],
-  coherence = 0.692,
+  coherence = DEFAULT_COHERENCE,
   collapsed = false,
 }: QuantumVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

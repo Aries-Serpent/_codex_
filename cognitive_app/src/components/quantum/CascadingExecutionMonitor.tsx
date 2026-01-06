@@ -37,6 +37,19 @@ interface CascadingExecutionMonitorProps {
   showVisualization?: boolean;
 }
 
+/**
+ * Stage execution time in milliseconds for cascade animation timing.
+ * 
+ * This constant determines how long each execution stage takes in the cascading workflow
+ * visualization. It can be configured via the VITE_STAGE_EXECUTION_TIME_MS environment
+ * variable to allow different execution speeds for testing, demos, or production.
+ * 
+ * - Default: 800ms - Provides a smooth, visible animation for users to follow execution flow
+ * - Min: 1ms - Must be positive to allow progression
+ * - Max: 10000ms - Capped to prevent unreasonably slow animations
+ * 
+ * The timing affects visual feedback only and does not impact actual workflow execution performance.
+ */
 const STAGE_EXECUTION_TIME_MS = (() => {
   const envValue = import.meta.env.VITE_STAGE_EXECUTION_TIME_MS;
   if (typeof envValue === 'string') {

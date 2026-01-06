@@ -19,8 +19,8 @@ import { AlertTriangleIcon, RefreshCwIcon } from "lucide-react";
  * @param resetErrorBoundary - Function to reset the error boundary state
  */
 export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-  // When encountering an error in the development mode, rethrow it and don't display the boundary.
-  // The parent UI will take care of showing a more helpful dialog.
+  // When encountering an error in development mode, rethrow it and don't display the boundary.
+  // Vite's development server error overlay (and React's dev tools) will handle showing a richer error dialog.
   if (import.meta.env.DEV) throw error;
 
   return (
