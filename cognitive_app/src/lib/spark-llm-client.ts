@@ -1,4 +1,5 @@
-/// <reference path="../vite-end.d.ts" />
+// Type definitions for spark API are in vite-env.d.ts
+import type {} from '../vite-env.d.ts';
 
 import { 
   CodexRequest, 
