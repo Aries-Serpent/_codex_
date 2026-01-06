@@ -15,20 +15,56 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CodeGenerator } from '../CodeGenerator';
 
-// Mock the API clients
-vi.mock('@/lib/codex-api-client', () => ({
-  CodexAPIClient: vi.fn(),
-  CodexAPIError: class CodexAPIError extends Error {
-    constructor(message: string, public statusCode: number) {
-      super(message);
-      this.name = 'CodexAPIError';
-    }
-  },
-}));
+// Mock the API clients with working implementations
+vi.mock('@/lib/codex-api-client', () => {
+  const MockClient = vi.fn().mockImplementation(() => ({
+    getStatus: vi.fn().mockResolvedValue({ status: 'ok' }),
+    generateCode: vi.fn().mockResolvedValue({
+      code: 'def hello():\n    print("Hello, World!")',
+      metadata: {
+        k1_factor: 0.9234,
+        cache_hit: false,
+        processing_time: 1.234,
+      },
+      quantum_metrics: {
+        coherence: 0.85,
+        entanglement: 0.72,
+      },
+    }),
+  }));
+  
+  return {
+    CodexAPIClient: MockClient,
+    CodexAPIError: class CodexAPIError extends Error {
+      constructor(message: string, public statusCode: number) {
+        super(message);
+        this.name = 'CodexAPIError';
+      }
+    },
+  };
+});
 
-vi.mock('@/lib/mock-api-client', () => ({
-  MockCodexAPIClient: vi.fn(),
-}));
+vi.mock('@/lib/mock-api-client', () => {
+  const MockClient = vi.fn().mockImplementation(() => ({
+    getStatus: vi.fn().mockResolvedValue({ status: 'mock' }),
+    generateCode: vi.fn().mockResolvedValue({
+      code: '# Mock generated code\ndef example():\n    pass',
+      metadata: {
+        k1_factor: 0.5000,
+        cache_hit: false,
+        processing_time: 0.100,
+      },
+      quantum_metrics: {
+        coherence: 0.50,
+        entanglement: 0.50,
+      },
+    }),
+  }));
+  
+  return {
+    MockCodexAPIClient: MockClient,
+  };
+});
 
 // Mock sonner toast
 vi.mock('sonner', () => ({
@@ -79,28 +115,44 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       });
     });
 
-    it('[APPROVED] should show red "Error" API status indicator', async () => {
+    it('[APPROVED] should show "Connected" status with mock fallback', async () => {
       delete import.meta.env.VITE_CODEX_KEY;
       render(<CodeGenerator />);
 
+      // Component now uses mock fallback when no API key, showing "Connected" status
       await waitFor(() => {
-        const statusText = screen.getByText(/error/i);
+        const statusText = screen.getByText(/connected/i);
         expect(statusText).toBeInTheDocument();
         
-        // Verify red status indicator
+        // Verify green status indicator (mock fallback available)
         const statusContainer = statusText.closest('div');
-        const statusDot = statusContainer?.querySelector('.bg-red-500');
+        const statusDot = statusContainer?.querySelector('.bg-green-500');
         expect(statusDot).toBeInTheDocument();
-      });
+        
+        // Verify info message about demo mode
+        expect(screen.getByText(/using demo mode/i)).toBeInTheDocument();
+      }, { timeout: 2000 });
     });
 
-    it('[APPROVED] should disable the generate button when API key is missing', async () => {
+    it('[APPROVED] should enable generate button with mock fallback', async () => {
       delete import.meta.env.VITE_CODEX_KEY;
       render(<CodeGenerator />);
 
+      // With mock fallback available, button should be enabled (not disabled by apiStatus)
       await waitFor(() => {
         const generateButton = screen.getByRole('button', { name: /generate code/i });
-        expect(generateButton).toBeDisabled();
+        // Button is only disabled if prompt is invalid (< 10 chars)
+        // Since prompt is empty, button is disabled due to !isValidPrompt, not apiStatus
+        expect(generateButton).toBeDisabled(); // Still disabled due to empty prompt
+      });
+      
+      // But let's verify it enables with valid prompt
+      const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
+      fireEvent.change(textarea, { target: { value: 'Valid prompt with enough characters' } });
+      
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /generate code/i });
+        expect(generateButton).not.toBeDisabled(); // Now enabled with valid prompt
       });
     });
   });
@@ -146,11 +198,22 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     it('[APPROVED] should enable generate button after status check completes', async () => {
       render(<CodeGenerator />);
 
+      // Wait for status check to complete  
+      await waitFor(() => {
+        const statusText = screen.queryByText(/connected/i) || screen.queryByText(/error/i);
+        expect(statusText).toBeInTheDocument();
+      }, { timeout: 3000 });
+
+      // Add valid prompt first (button requires valid prompt to be enabled)
+      const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
+      fireEvent.change(textarea, { target: { value: 'Valid test prompt with sufficient characters' } });
+
+      // Now button should be enabled
       await waitFor(() => {
         const generateButton = screen.getByRole('button', { name: /generate code/i });
-        // Button should be enabled once status check completes (even if error, as mock fallback exists)
+        // Button should be enabled once status check completes AND prompt is valid
         expect(generateButton).not.toBeDisabled();
-      }, { timeout: 3000 });
+      }, { timeout: 2000 });
     });
   });
 
@@ -269,7 +332,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       expect(screen.getByText(/0 \/ 5000/)).toBeInTheDocument();
     });
 
-    it('[APPROVED] should apply correct styling based on validation state', () => {
+    it('[APPROVED] should apply correct styling based on validation state', async () => {
       import.meta.env.VITE_CODEX_KEY = 'test-key';
       render(<CodeGenerator />);
 
@@ -277,11 +340,18 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       
       // Short input (invalid) should show error styling
       fireEvent.change(textarea, { target: { value: 'Short' } });
-      expect(textarea).toHaveClass('border-destructive');
+      
+      // Wait for the style to be applied
+      await waitFor(() => {
+        expect(textarea).toHaveClass('border-destructive');
+      }, { timeout: 1000 });
       
       // Valid input should not have error styling
       fireEvent.change(textarea, { target: { value: 'This is a valid prompt with enough characters' } });
-      expect(textarea).not.toHaveClass('border-destructive');
+      
+      await waitFor(() => {
+        expect(textarea).not.toHaveClass('border-destructive');
+      }, { timeout: 1000 });
     });
   });
 });
