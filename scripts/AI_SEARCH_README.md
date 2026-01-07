@@ -145,7 +145,7 @@ Per-file detailed information:
     "relative_path": "src/codex/file.py",
     "language": "python",
     "size": 4501,
-    "last_modified": "2024-12-21T01:00:00",
+    "last_modified": "2025-12-21T01:00:00",
     "entities": [
       {
         "type": "class",
@@ -235,7 +235,7 @@ Repository summary:
 
 ```json
 {
-  "generated_at": "2024-12-21T01:00:00",
+  "generated_at": "2025-12-21T01:00:00",
   "repository_path": "/home/runner/work/_codex_/_codex_",
   "total_files": 250,
   "total_entities": 1500,

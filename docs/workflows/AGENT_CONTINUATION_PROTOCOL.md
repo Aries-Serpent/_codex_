@@ -2,7 +2,7 @@
 
 **Purpose**: Standardized protocol for AI agents to continue work across sessions using the cognitive brain for context and planning.
 
-**Last Updated**: 2024-12-30  
+**Last Updated**: 2025-12-30  
 **Version**: 2.0.0  
 **Status**: 🟢 Active
 
@@ -318,8 +318,8 @@ Context:
 ## 🔄 Protocol Updates
 
 **Version History**:
-- 2.0.0 (2024-12-30) - Added cognitive brain integration, duration-aware planning
-- 1.0.0 (2024-11-06) - Initial protocol
+- 2.0.0 (2025-12-30) - Added cognitive brain integration, duration-aware planning
+- 1.0.0 (2025-11-06) - Initial protocol
 
 **Change Process**:
 1. Propose changes via PR

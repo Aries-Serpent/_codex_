@@ -1,6 +1,6 @@
 # Security Remediation Summary
 
-**Date**: 2024-12-22  
+**Date**: 2025-12-22  
 **Author**: mbaetiong  
 **Branch**: copilot/fix-security-vulnerabilities
 
@@ -13,29 +13,29 @@ This document summarizes the comprehensive security remediation work completed t
 ### 1. Dependabot Vulnerabilities (14/14 Fixed)
 
 #### Critical Severity (2)
-- ✅ **CVE-2024-XXXXX**: PyTorch RCE via torch.load
+- ✅ **CVE-2025-XXXXX**: PyTorch RCE via torch.load
   - Updated `torch>=2.1.0` to `torch>=2.2.2` in requirements.txt
   - Created `utils/safe_torch_loader.py` with mandatory `weights_only=True`
 
 #### High Severity (4)
-- ✅ **CVE-2024-XXXXX**: Starlette DoS via multipart forms
+- ✅ **CVE-2025-XXXXX**: Starlette DoS via multipart forms
   - Created `services/api/middleware/form_validator.py`
   - Implemented `SecureMultipartMiddleware` with size limits
-- ✅ **CVE-2024-XXXXX**: nbconvert path traversal (3 instances)
+- ✅ **CVE-2025-XXXXX**: nbconvert path traversal (3 instances)
   - Verified already fixed at `>=7.16.4` in all requirements files
 
 #### Moderate Severity (4)
-- ✅ **CVE-2024-XXXXX**: Starlette DoS via large files
+- ✅ **CVE-2025-XXXXX**: Starlette DoS via large files
   - Created `services/api/config.py` with `APIConfig` security limits
-- ✅ **CVE-2024-XXXXX**: marshmallow DoS
+- ✅ **CVE-2025-XXXXX**: marshmallow DoS
   - Verified already fixed at `>=3.21.3` in requirements/lock.txt
-- ✅ **CVE-2024-XXXXX**: PyTorch resource leak (2 instances)
+- ✅ **CVE-2025-XXXXX**: PyTorch resource leak (2 instances)
   - Created `utils/torch_resource_manager.py` with context manager
 
 #### Low Severity (4)
-- ✅ **CVE-2024-XXXXX**: PyTorch local DoS (2 instances)
+- ✅ **CVE-2025-XXXXX**: PyTorch local DoS (2 instances)
   - Fixed by torch upgrade to >=2.2.2
-- ✅ **CVE-2024-XXXXX**: aiohttp HTTP smuggling
+- ✅ **CVE-2025-XXXXX**: aiohttp HTTP smuggling
   - Verified already fixed at `>=3.9.5` (currently 3.12.15)
 
 ### 2. Security Infrastructure Created

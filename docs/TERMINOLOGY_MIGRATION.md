@@ -2,7 +2,7 @@
 
 > **Status**: Active Migration  
 > **Version**: 1.0  
-> **Last Updated**: 2024-12-24
+> **Last Updated**: 2025-12-24
 
 ---
 
@@ -189,7 +189,7 @@ Use these symbols to indicate the physics principle aligned with each iteration:
 
 ## Historical Context
 
-**Previous Approach** (2024-Previous Cycle Cycle 1):
+**Previous Approach** (2025-Previous Cycle Cycle 1):
 - Week-based timelines (Pre-commit 1-16)
 - Day-level task breakdowns
 - Fixed sprint durations
@@ -228,5 +228,5 @@ For questions about terminology migration or template usage, refer to:
 ---
 
 **Approved By**: [@mbaetiong]  
-**Effective Date**: 2024-12-24  
+**Effective Date**: 2025-12-24  
 **Review Cycle**: Quarterly

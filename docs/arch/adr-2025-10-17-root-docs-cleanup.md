@@ -1,7 +1,7 @@
 # ADR: Retire legacy status reports from the repository root
 
 - **Status**: Accepted
-- **Date**: 2024-10-17
+- **Date**: 2025-10-17
 - **Decision Type**: Archive
 - **Related Issues/PRs**: N/A
 - **Owners**: @mbaetiong
@@ -29,7 +29,7 @@ Archive the following files from the repository root effective Previous Cycle-10
 - `todo_resolution_plans_10-6_to_10-7.txt` → tombstone `a6195756-ef7c-42de-b7dc-435bbbdca91e`
 
 The archive operations are tracked in `.codex/evidence/archive_ops.jsonl`, including the attestation pointer recorded at
-`2024-10-17T06:36:49Z`.
+`2025-10-17T06:36:49Z`.
 
 ## Consequences
 - **Positive**: reduces noise in the repository root, clarifies the authoritative locations for status updates, and keeps
@@ -47,4 +47,4 @@ The archive operations are tracked in `.codex/evidence/archive_ops.jsonl`, inclu
 ## Provenance & Compliance
 - **Provenance**: `.codex/evidence/provenance/root-cleanup/intoto.jsonl`, `.codex/evidence/provenance/root-cleanup/slsa.json`
 - **SBOM impact**: no executable components involved; SBOM unchanged.
-- **Change log**: see `../CHANGELOG.md` entry dated 2024-10-17 under the Unreleased section.
+- **Change log**: see `../CHANGELOG.md` entry dated 2025-10-17 under the Unreleased section.

@@ -1,6 +1,6 @@
 # Coding Standards
 
-> For AI Agents - Last Updated: 2024-12-24
+> For AI Agents - Last Updated: 2025-12-24
 
 This document defines the coding standards for contributions to _codex_.
 

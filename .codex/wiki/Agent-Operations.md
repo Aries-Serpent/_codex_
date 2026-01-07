@@ -757,7 +757,7 @@ git commit -m "security: update torch to fix RCE vulnerability"
 
 # 5. Create PR
 gh pr create --title "security: update torch to 2.6.0" \
-             --body "Fixes vulnerability CVE-2024-XXXXX"
+             --body "Fixes vulnerability CVE-2025-XXXXX"
 ```
 
 **Task: Format Code**

@@ -42,7 +42,7 @@ A unit is a candidate when all are true:
 - Append-only: new entries only; never rewrite prior lines.
 - Each line includes: `id`, `path`, `sha256`, `removed_by`, `when`, `adr`, `reason`, `provenance`.
 ```json
-{"id":"arch-Previous Cycle-10-16-1234","path":"src/foo/bar.py","sha256":"…","removed_by":"@owner","when":"2024-10-16T19:44:00Z","adr":"docs/arch/adr-0421-archive-foo.md","reason":"orphaned, 0 refs, age>180d","provenance":"attestations/arch-Previous Cycle-10-16-1234.intoto.jsonl"}
+{"id":"arch-Previous Cycle-10-16-1234","path":"src/foo/bar.py","sha256":"…","removed_by":"@owner","when":"2025-10-16T19:44:00Z","adr":"docs/arch/adr-0421-archive-foo.md","reason":"orphaned, 0 refs, age>180d","provenance":"attestations/arch-Previous Cycle-10-16-1234.intoto.jsonl"}
 ```text
 
 ## 5. PR Checklist (must pass)

@@ -671,7 +671,7 @@ For issues or questions:
 
 ## Version History
 
-- **v1.0.0** (2024-12-16): Initial release
+- **v1.0.0** (2025-12-16): Initial release
   - Basic test generation
   - CLI tool
   - 4 pre-defined flow specifications

@@ -167,7 +167,7 @@ All prompt templates support these variables:
 | `{pr_author}` | PR author username | `mbaetiong` |
 | `{commit_sha}` | Latest commit SHA | `abc123def456` |
 | `{pr_title}` | PR title | `Fix CI failures and consolidate workflows` |
-| `{date}` | Current date (YYYY-MM-DD) | `2024-12-28` |
+| `{date}` | Current date (YYYY-MM-DD) | `2025-12-28` |
 | `{phase_number}` | Current phase | `2` |
 | `{total_phases}` | Total phases planned | `5` |
 | `{immediate_tasks}` | Priority 1 tasks | `- [ ] Fix test failures` |
@@ -3099,7 +3099,7 @@ Failed Workflows:
 Priority 1:
 - [ ] Fix import order error in module_a.py
 - [ ] Resolve linting issues (2 files)
-- [ ] Update dependency to patch CVE-2024-1234
+- [ ] Update dependency to patch CVE-2025-1234
 
 # Continue
 @copilot continue with CI fixes

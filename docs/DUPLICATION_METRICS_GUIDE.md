@@ -203,7 +203,7 @@ codex duplication report src/ --output=src-report.json
 DUPLICATION REPORT
 ============================================================
 Scan path: /home/user/project
-Generated: 2024-11-17T14:00:00.000000
+Generated: 2025-11-17T14:00:00.000000
 
 SUMMARY
 ------------------------------------------------------------
@@ -683,6 +683,6 @@ For issues or questions:
 
 ---
 
-**Last Updated:** 2024-11-17  
+**Last Updated:** 2025-11-17  
 **Version:** 1.0.0  
 **Maintainer:** Codex Team

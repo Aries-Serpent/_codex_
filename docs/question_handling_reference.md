@@ -4,7 +4,7 @@ This note provides a quick-access guide for ChatGPT Codex sessions to track, ans
 
 ## Canonical sources of truth
 
-- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the 2024-09-22 mandate).
+- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the 2025-09-22 mandate).
 - **Session scratchpad:** [`.codex/notes/Codex_Questions.md`](../.codex/notes/Codex_Questions.md) — ad-hoc capture of Q&A snippets created during automation workflows.
 - **Historical error log:** [`docs/troubleshooting/error_log.md`](troubleshooting/error_log.md) — recent failures promoted into the canonical table.
 - **Legacy audit artifacts:** e.g., [`CODEBASE_AUDIT_2025-08-26_203612.md`](../CODEBASE_AUDIT_2025-08-26_203612.md) where early unanswered questions were first recorded.

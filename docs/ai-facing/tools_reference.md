@@ -1,6 +1,6 @@
 # Tools Reference
 
-> For AI Agents - Last Updated: 2024-12-24
+> For AI Agents - Last Updated: 2025-12-24
 
 This document provides reference information for tools available to AI agents.
 

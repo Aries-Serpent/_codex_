@@ -5,7 +5,7 @@ codebase, and what behaviour developers should expect when they are absent. A fu
 grep across `tests/` identified **370 guarded imports** via `pytest.importorskip`,
 confirming that every optional integration has an explicit offline fallback.
 
-## Exception Handling for Optional Dependencies (Updated 2024-12-13)
+## Exception Handling for Optional Dependencies (Updated 2025-12-13)
 
 The repository uses a **broad exception handling pattern** for optional imports to ensure graceful degradation:
 

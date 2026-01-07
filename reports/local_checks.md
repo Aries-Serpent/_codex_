@@ -1,4 +1,4 @@
-# Local Checks & Tooling — Run 1 (2024-09-22)
+# Local Checks & Tooling — Run 1 (2025-09-22)
 
 ## Environment Preparation
 

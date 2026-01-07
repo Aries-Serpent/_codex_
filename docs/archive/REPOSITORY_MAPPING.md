@@ -1,6 +1,6 @@
 # Codex Repository File Mapping (v1.4.0)
 
-**Generated**: 2024-12-09  
+**Generated**: 2025-12-09  
 **Purpose**: Quick reference for navigating the _codex_ repository structure  
 **Audience**: AI agents, contributors, maintainers
 
@@ -339,5 +339,5 @@ scripts/space_traversal/audit_runner.py
 ---
 
 **Document Version**: 1.0  
-**Last Updated**: 2024-12-09  
+**Last Updated**: 2025-12-09  
 **Maintained By**: Codex Repository Team

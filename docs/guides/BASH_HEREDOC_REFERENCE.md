@@ -192,6 +192,6 @@ Output shows trailing spaces as `^I` or `$` markers.
 
 ---
 
-**Last Updated**: 2024-10-30  
+**Last Updated**: 2025-10-30  
 **Author**: Codex Optimization Team  
 **Status**: Companion reference for CODEX-002 and CODEX-009

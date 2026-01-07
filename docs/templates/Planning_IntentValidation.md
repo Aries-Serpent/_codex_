@@ -1,6 +1,6 @@
 # [Template]: Intent Validation & Plan of Action Approval Gate
 **Version:** v1.0.0  
-**Last Updated:** 2024-10-25  
+**Last Updated:** 2025-10-25  
 **Role Workflow:** Developers draft → Maintainers review → Stakeholders approve
 
 > [PLACEHOLDER: INTENT_STATEMENT]

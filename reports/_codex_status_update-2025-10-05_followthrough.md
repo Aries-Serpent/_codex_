@@ -1,6 +1,6 @@
-# Follow-Through Audit — Status Update 2024-10-05
+# Follow-Through Audit — Status Update 2025-10-05
 
-This note cross-references the remediation guidance from the 2024-10-05 status update and documents the current implementation or remaining work. Each subsection quotes the relevant gap/plan from the report and cites the code paths that now satisfy (or still miss) the recommendation.
+This note cross-references the remediation guidance from the 2025-10-05 status update and documents the current implementation or remaining work. Each subsection quotes the relevant gap/plan from the report and cites the code paths that now satisfy (or still miss) the recommendation.
 
 ## Capability Follow-Through
 

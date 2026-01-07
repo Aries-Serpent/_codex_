@@ -1,7 +1,7 @@
 # AGENTS — Guidelines for contributors and Codex automation
 
 > **Version**: 2.1.0  
-> **Updated**: 2024-12-16  
+> **Updated**: 2025-12-16  
 > **CI/CD Status**: ✅ Fully Operational
 
 Keep this document updated as conventions evolve.

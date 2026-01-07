@@ -1,5 +1,5 @@
 # Owner Approval Gate — Timeboxed Enablement (with auto-disable)
-> Generated: 2024-10-20 23:58:36 UTC | Author: mbaetiong
+> Generated: 2025-10-20 23:58:36 UTC | Author: mbaetiong
 
 This repository supports temporarily enabling cost-incurring workflows (e.g., Docker build/push) via a timeboxed owner approval. When the time window expires, the Workflow Expiry Enforcer will automatically disable workflows by moving them to .github/_workflows_disabled/ on the next user commit.
 
@@ -12,7 +12,7 @@ mode: "duration"
 duration: "24h"
 cost_workflows:
   - docker-build-push
-created_at: "2024-10-20T19:43:52Z"
+created_at: "2025-10-20T19:43:52Z"
 ```text
 
 Until timestamp (file-based)
@@ -21,17 +21,17 @@ enabled: true
 reason: "Enable until midnight UTC"
 approved_by: "OWNER"
 mode: "until"
-until: "2024-10-21T00:00:00Z"
+until: "2025-10-21T00:00:00Z"
 cost_workflows:
   - docker-build-push
-created_at: "2024-10-20T19:43:52Z"
+created_at: "2025-10-20T19:43:52Z"
 ```text
 
 Env-based (no commit)
 ```bash
 gh variable set OWNER_APPROVED_DURATION -b "24h"
 # Or:
-gh variable set OWNER_APPROVED_UNTIL -b "2024-10-21T00:00:00Z"
+gh variable set OWNER_APPROVED_UNTIL -b "2025-10-21T00:00:00Z"
 ```text
 
 Auto-disable behavior

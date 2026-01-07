@@ -1,6 +1,6 @@
 # [Prompt]: AfterMath Action Workflow — Copilot Agent Emission Standard
 > **Version**: 1.0.0  
-> **Last Updated**: 2024-12-30  
+> **Last Updated**: 2025-12-30  
 > **Purpose**: Structured session logging for AI-driven lessons learned
 
 ## Objective
@@ -48,8 +48,8 @@ meta:
   run_id: 59168839007
 
   # Timestamps (ISO 8601, UTC)
-  started_at: "2024-12-30T08:00:00Z"
-  finished_at: "2024-12-30T08:18:00Z"
+  started_at: "2025-12-30T08:00:00Z"
+  finished_at: "2025-12-30T08:18:00Z"
 
   # Context (free text or short bullets)
   context: "Resolve PR review items; implement AfterMath logging; advance Phase 9"

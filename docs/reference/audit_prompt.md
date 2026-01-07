@@ -154,7 +154,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 
 ## Codex-ready Task Sequence
 
-The following section outlines a robust, phased execution plan for ChatGPT @codex to iteratively implement the missing and incomplete features identified in the status audit for the `_codex_` repository (dated 2024-10-05). Each numbered phase comprises fine-grained sub-steps and enforces best-effort construction before any pruning decisions. An **error capture** block template is provided to guide structured reporting of any failures encountered during execution. In keeping with the repository’s policy, all work must run **solely within the Codex environment** (no cost-incurring GitHub Actions, no external workflows). Seeds, deterministic settings and environmental captures should be honored to maximize reproducibility.
+The following section outlines a robust, phased execution plan for ChatGPT @codex to iteratively implement the missing and incomplete features identified in the status audit for the `_codex_` repository (dated 2025-10-05). Each numbered phase comprises fine-grained sub-steps and enforces best-effort construction before any pruning decisions. An **error capture** block template is provided to guide structured reporting of any failures encountered during execution. In keeping with the repository’s policy, all work must run **solely within the Codex environment** (no cost-incurring GitHub Actions, no external workflows). Seeds, deterministic settings and environmental captures should be honored to maximize reproducibility.
 
 ### 🔁 Execution Phases
 

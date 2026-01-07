@@ -36,5 +36,5 @@ The following documentation references were found to be broken and need manual r
 
 ---
 
-*Generated: 2024-12-21*
+*Generated: 2025-12-21*
 *By: Copilot Workflow Fixes PR*

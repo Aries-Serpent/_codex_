@@ -1,6 +1,6 @@
 # Remaining Work - PR #2205 Gap Analysis
 
-**Generated:** 2024-11-11  
+**Generated:** 2025-11-11  
 **Current HEAD:** 04fcefc (Fix P1: keep_last checkpoint retention leak in best-k)  
 **Status:** P1 fixes complete (6/6), Iteration 1-3 implementation complete (100%), Gap items in progress
 
@@ -259,4 +259,4 @@ artifacts/
 
 ---
 
-**Last Updated:** 2024-11-11 (after commit 04fcefc)
+**Last Updated:** 2025-11-11 (after commit 04fcefc)

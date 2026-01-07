@@ -4,7 +4,7 @@ pr: 1926
 rollout_ring: 0D_base_
 eval_preset: base
 deployment_preset: reasoning_pod
-generated_utc: 2024-10-30T03:51:18Z
+generated_utc: 2025-10-30T03:51:18Z
 ```text
 
 ## File Survey: Branch 0D_base_ / PR #1926
@@ -2290,7 +2290,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2024-10-25
+Last updated: 2025-10-25
 
 [END CONTENT]
 ````
@@ -2785,7 +2785,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2024-10-25
+Last updated: 2025-10-25
 
 --- docs/README_ROOT.md ---
 - `evaluation.preset`

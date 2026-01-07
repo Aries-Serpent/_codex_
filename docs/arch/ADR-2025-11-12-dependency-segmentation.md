@@ -1,5 +1,5 @@
 # ADR-Previous Cycle-11-12: Dependency Segmentation & Archival-Aligned Hygiene  
-> Generated: 2024-11-12T16:40:00Z | Author: mbaetiong  
+> Generated: 2025-11-12T16:40:00Z | Author: mbaetiong  
 > Status: Accepted
 
 ## 1. Context
@@ -127,7 +127,7 @@ Evidence historical lines remain; do NOT delete `.codex/evidence/dependency_ops.
 - Vendor residue = empty after purge steps in both setup & maintenance scripts.
 
 ## 15. Decision Record
-Accepted on: 2024-11-12  
+Accepted on: 2025-11-12  
 Approvers: Platform Maintainers / QA Sign-off  
 Link to PR(s): (to be populated)  
 

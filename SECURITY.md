@@ -1,6 +1,6 @@
 # Security Policy
 
-## Recent Security Updates (2024-12-23)
+## Recent Security Updates (2025-12-23)
 
 ### Fixed Vulnerabilities
 
@@ -43,46 +43,46 @@ pip list | grep -E "(filelock|torch|starlette|nbconvert)"
 
 ---
 
-## Patched Vulnerabilities (2024-12-22)
+## Patched Vulnerabilities (2025-12-22)
 
 ### Critical (Remote Code Execution)
-- ✅ **CVE-2024-XXXXX**: PyTorch `torch.load` RCE → **Fixed in torch 2.2.2+**
+- ✅ **CVE-2025-XXXXX**: PyTorch `torch.load` RCE → **Fixed in torch 2.2.2+**
   - **Impact**: Remote Code Execution via malicious model files
   - **Mitigation**: Updated torch to >=2.2.2 in all requirements files
   - **Additional Protection**: Implemented `utils/safe_torch_loader.py` wrapper
   - **Usage**: All torch.load calls must now use `weights_only=True`
 
 ### High Severity
-- ✅ **CVE-2024-XXXXX**: Starlette multipart DoS → **Fixed in starlette 0.37.2+**
+- ✅ **CVE-2025-XXXXX**: Starlette multipart DoS → **Fixed in starlette 0.37.2+**
   - **Impact**: Denial of Service through malicious multipart forms
   - **Mitigation**: Updated starlette to >=0.37.2
   - **Additional Protection**: Added `SecureMultipartMiddleware` with size limits
   
-- ✅ **CVE-2024-XXXXX**: nbconvert path traversal → **Fixed in nbconvert 7.16.4+**
+- ✅ **CVE-2025-XXXXX**: nbconvert path traversal → **Fixed in nbconvert 7.16.4+**
   - **Impact**: Unauthorized code execution via uncontrolled search path (Windows)
   - **Mitigation**: Updated nbconvert to >=7.16.4 in all notebook requirements
 
 ### Moderate Severity
-- ✅ **CVE-2024-XXXXX**: Starlette DoS (large files) → **Fixed in starlette 0.37.2+**
+- ✅ **CVE-2025-XXXXX**: Starlette DoS (large files) → **Fixed in starlette 0.37.2+**
   - **Impact**: DoS when parsing large multipart files
   - **Mitigation**: Already addressed by starlette upgrade
   - **Additional Protection**: Added `APIConfig` with security limits
 
-- ✅ **CVE-2024-XXXXX**: marshmallow DoS → **Fixed in marshmallow 3.21.3+**
+- ✅ **CVE-2025-XXXXX**: marshmallow DoS → **Fixed in marshmallow 3.21.3+**
   - **Impact**: DoS in Schema.load with many=True
   - **Mitigation**: Updated marshmallow to >=3.21.3
 
-- ✅ **CVE-2024-XXXXX**: PyTorch resource leak → **Fixed in torch 2.2.2+**
+- ✅ **CVE-2025-XXXXX**: PyTorch resource leak → **Fixed in torch 2.2.2+**
   - **Impact**: Improper resource shutdown/release
   - **Mitigation**: Already addressed by torch upgrade
   - **Additional Protection**: Added `torch_resource_guard` context manager
 
 ### Low Severity
-- ✅ **CVE-2024-XXXXX**: PyTorch local DoS → **Fixed in torch 2.2.2+**
+- ✅ **CVE-2025-XXXXX**: PyTorch local DoS → **Fixed in torch 2.2.2+**
   - **Impact**: Susceptible to local denial of service
   - **Mitigation**: Already addressed by torch upgrade
 
-- ✅ **CVE-2024-XXXXX**: aiohttp HTTP smuggling → **Fixed in aiohttp 3.9.5+**
+- ✅ **CVE-2025-XXXXX**: aiohttp HTTP smuggling → **Fixed in aiohttp 3.9.5+**
   - **Impact**: Request/Response smuggling via chunked trailer parsing
   - **Mitigation**: Updated aiohttp to >=3.9.5
 
@@ -380,7 +380,7 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2024-12-22
+Last updated: 2025-12-22
 
 ---
 

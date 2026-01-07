@@ -1,6 +1,6 @@
 # AST Standardization Implementation - Blockers & Issues Report
 
-**Generated**: 2024-11-09  
+**Generated**: 2025-11-09  
 **Context**: Analysis of AST standardization requirements vs current _codex_ repository state  
 **Purpose**: Document explicit blockers, issues, and implementation challenges  
 **Status**: ASSESSMENT COMPLETE

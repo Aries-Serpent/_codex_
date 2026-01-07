@@ -1,11 +1,11 @@
 # PyTorch Security Migration Guide
 
-**Date**: 2024-12-22  
+**Date**: 2025-12-22  
 **Purpose**: Migrate existing `torch.load()` calls to secure wrappers
 
 ## 🚨 Security Issue
 
-CVE-2024-XXXXX: PyTorch's `torch.load()` can execute arbitrary code when loading malicious model files. This affects all versions before 2.2.2 and requires using `weights_only=True`.
+CVE-2025-XXXXX: PyTorch's `torch.load()` can execute arbitrary code when loading malicious model files. This affects all versions before 2.2.2 and requires using `weights_only=True`.
 
 ## ✅ Solution
 
@@ -155,7 +155,7 @@ If you encounter issues during migration:
 
 ## 🔗 References
 
-- [CVE-2024-XXXXX](https://github.com/Aries-Serpent/_codex_/security)
+- [CVE-2025-XXXXX](https://github.com/Aries-Serpent/_codex_/security)
 - [PyTorch Security Advisory](https://pytorch.org/docs/stable/generated/torch.load.html)
 - [utils/safe_torch_loader.py](../utils/safe_torch_loader.py)
 - [SECURITY.md](../SECURITY.md)
