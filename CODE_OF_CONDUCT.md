@@ -30,7 +30,7 @@ This Code of Conduct applies within all community spaces (GitHub repositories, d
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior Phase 5 be reported to:
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to:
 - **Email**: conduct@aries-serpent.dev
 - **GitHub**: Report via repository maintainers (@Aries-Serpent/owners)
 

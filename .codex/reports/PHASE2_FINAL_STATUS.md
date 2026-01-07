@@ -1,6 +1,6 @@
 # Phase 2 Standardization - Final Status Report
 
-**Generated**: Previous Cycle-11-03 00:56:00 UTC  
+**Generated**: 2025-11-03 00:56:00 UTC  
 **Session**: Enhanced Implementation Run  
 **Status**: ✅ COMPLETE - All Deliverables Implemented  
 
@@ -51,8 +51,8 @@ All Phase 2 standardization deliverables have been successfully implemented, tes
 
 | Document | File | Status | LOC | Purpose |
 |----------|------|--------|-----|---------|
-| ADR: Sigstore | `docs/arch/adr-Previous Cycle-11-02-archive-sigstore-integration.md` | ✅ | 180 | Decision rationale |
-| ADR: Versioning | `docs/arch/adr-Previous Cycle-11-03-evidence-schema-versioning.md` | ✅ | 200 | Schema evolution |
+| ADR: Sigstore | `docs/arch/adr-2025-11-02-archive-sigstore-integration.md` | ✅ | 180 | Decision rationale |
+| ADR: Versioning | `docs/arch/adr-2025-11-03-evidence-schema-versioning.md` | ✅ | 200 | Schema evolution |
 | Framework Guide | `docs/arch/_archive-policy/standardization-framework.md` | ✅ | 380 | Architecture overview |
 | Quick Start | `docs/arch/_archive-policy/README-standardization.md` | ✅ | 185 | Getting started |
 | Standards Mapping | `docs/compliance/archive_standards_mapping.md` | ✅ | 310 | SLSA/in-toto/SAA |
@@ -373,6 +373,6 @@ All planned deliverables have been implemented, tested, and documented. The syst
 
 **Next Action**: Await code review approval and proceed to deployment sequence.
 
-**Generated**: Previous Cycle-11-03 00:56:00 UTC  
+**Generated**: 2025-11-03 00:56:00 UTC  
 **Author**: Archive Standardization Team  
 **Session ID**: enhanced-implementation-run

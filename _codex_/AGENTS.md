@@ -1,6 +1,6 @@
 # AGENTS — _codex_ Internal
 
-**Last Updated**: Previous Cycle-12-23  
+**Last Updated**: 2025-12-23  
 **Scope**: _codex_/**
 
 ---
@@ -13,7 +13,7 @@ For complete repository guidance, see the main AGENTS.md file in the repository 
 
 ---
 
-## 🔒 Security Module (Previous Cycle-12-23)
+## 🔒 Security Module (2025-12-23)
 
 The repository now includes comprehensive security utilities:
 

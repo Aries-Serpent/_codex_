@@ -84,7 +84,7 @@ tests/codex_ml/test_inference_server.py::.......... (10/10)
 ## Notes
 
 - Current PR already has significant scope (17 new files, 26 modified/added)
-- Phase 5 be cleaner to create separate PR for PR #2264 comment resolution
+- may be cleaner to create separate PR for PR #2264 comment resolution
 - All gap remediation work is well-documented and tested
 - Ready to pivot to new requirements
 

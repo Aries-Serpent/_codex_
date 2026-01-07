@@ -1,5 +1,5 @@
 # [Checklist]: PR Audit Template (v1.3.0) — Deterministic Capability Audit & Compliance
-> Generated: Previous Cycle-12-05 | Author: mbaetiong
+> Generated: 2025-12-05 | Author: mbaetiong
 
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer]  
 ⚡ Energy: 5  
@@ -347,10 +347,10 @@ jobs:
 
 ## Version History
 
-- **v1.3.0** (Previous Cycle-12-05): Enhanced with S1-S7 pipeline integration, determinism verification, security checks, code evolution tracking
-- **v1.2.0** (Previous Cycle-11-06): Baseline version with safety confirmations and standard verification
-- **v1.1.0** (Previous Cycle-10-01): Initial structured checklist
-- **v1.0.0** (Previous Cycle-09-01): Original basic checklist
+- **v1.3.0** (2025-12-05): Enhanced with S1-S7 pipeline integration, determinism verification, security checks, code evolution tracking
+- **v1.2.0** (2025-11-06): Baseline version with safety confirmations and standard verification
+- **v1.1.0** (2025-10-01): Initial structured checklist
+- **v1.0.0** (2025-09-01): Original basic checklist
 
 ---
 
@@ -368,4 +368,4 @@ jobs:
 **Template Status**: ✅ ACTIVE  
 **Recommended For**: All PRs with code changes, especially those affecting capabilities, detectors, or audit pipeline  
 **Maintained By**: @copilot, @mbaetiong  
-**Last Updated**: Previous Cycle-12-05
+**Last Updated**: 2025-12-05

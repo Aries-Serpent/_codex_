@@ -2,7 +2,7 @@
 
 **Purpose**: Central index for all documentation in the `_codex_` repository. Use this to discover, navigate, and understand the documentation structure.
 
-**Last Updated**: Previous Cycle-12-30  
+**Last Updated**: 2025-12-30  
 **Version**: 1.0.0  
 **Status**: 🟢 Active
 

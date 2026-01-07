@@ -1,7 +1,7 @@
 # PR #2639 - Phase 4-8 Continuation Prompt
 
 **Status:** 🟢 Ready for Execution  
-**Created:** Previous Cycle-12-29  
+**Created:** 2025-12-29  
 **Parent Session Commit:** cd72b75a  
 **Target Branch:** copilot/sub-pr-2639
 
@@ -169,9 +169,9 @@ gh run view <run-id> --log
   - Check last modified date
 - [ ] Archive obsolete files:
   ```bash
-  mkdir -p misc/repo-owner-review/archived-prompts/Previous Cycle-12-29
+  mkdir -p misc/repo-owner-review/archived-prompts/2025-12-29
   mv .github/copilot-prompts/active/PR-26XX-followup.md \
-     misc/repo-owner-review/archived-prompts/Previous Cycle-12-29/
+     misc/repo-owner-review/archived-prompts/2025-12-29/
   ```
 - [ ] Create README in archived-prompts explaining archival policy
 - [ ] Update `.github/copilot-prompts/README.md` with cleanup notes

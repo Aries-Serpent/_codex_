@@ -1,5 +1,5 @@
-# Security Fixes Report - Previous Cycle-12-20
-> Generated: Previous Cycle-12-20T01:50:00Z | Author: Automated Security Review
+# Security Fixes Report - 2025-12-20
+> Generated: 2025-12-20T01:50:00Z | Author: Automated Security Review
 
 ## Executive Summary
 

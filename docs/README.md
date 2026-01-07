@@ -2,7 +2,7 @@
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 
-**Last Updated**: Previous Cycle-12-30
+**Last Updated**: 2025-12-30
 
 ---
 
@@ -154,4 +154,4 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: Previous Cycle-10-25
+Last updated: 2025-10-25

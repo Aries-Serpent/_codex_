@@ -1,6 +1,6 @@
 # AST Standardization Implementation - Blockers & Issues Report
 
-**Generated**: Previous Cycle-11-09  
+**Generated**: 2025-11-09  
 **Context**: Analysis of AST standardization requirements vs current _codex_ repository state  
 **Purpose**: Document explicit blockers, issues, and implementation challenges  
 **Status**: ASSESSMENT COMPLETE
@@ -58,7 +58,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-PERF-003** | **No parallel processing** | Will violate NFR-PERF-002 (<5s per 1000 LOC) | Implement concurrent parsing |
 
 **Resolution Time**: 1-2 weeks (performance engineering)  
-**Risk**: Medium (Phase 5 require significant optimization)
+**Risk**: Medium (may require significant optimization)
 
 ---
 
@@ -329,7 +329,7 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 
 4. **Offline Operation Config** (CR-ENV-001)
    - Missing: No offline mode validation
-   - Impact: Phase 5 have hidden network dependencies
+   - Impact: may have hidden network dependencies
 
 ---
 

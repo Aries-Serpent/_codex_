@@ -1,6 +1,6 @@
 # Security Policy
 
-## Recent Security Updates (Previous Cycle-12-23)
+## Recent Security Updates (2025-12-23)
 
 ### Fixed Vulnerabilities
 
@@ -380,7 +380,7 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: Previous Cycle-12-22
+Last updated: 2025-12-22
 
 ---
 

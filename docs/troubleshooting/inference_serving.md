@@ -1,7 +1,7 @@
 # Inference Serving Troubleshooting Guide
 
 > **Version**: 2.0.0  
-> **Last Updated**: Previous Cycle-12-07
+> **Last Updated**: 2025-12-07
 
 ---
 
@@ -512,4 +512,4 @@ python -m tests.serving.test_inference_performance --benchmark
 
 ---
 
-*Last reviewed: Previous Cycle-12-07*
+*Last reviewed: 2025-12-07*

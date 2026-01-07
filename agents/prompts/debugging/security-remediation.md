@@ -259,7 +259,7 @@ I need help remediating a security vulnerability in the Codex repository.
 
 **Warning: False Positives**
 
-Some security alerts Phase 5 be false positives:
+Some security alerts may be false positives:
 - Review context carefully
 - Understand the code flow
 - Document why it's safe if applicable

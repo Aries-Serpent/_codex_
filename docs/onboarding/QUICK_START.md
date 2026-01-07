@@ -1,7 +1,7 @@
 # Quick Start Guide for _codex_ Contributors
 
 > **Version**: 1.0.0  
-> **Last Updated**: Previous Cycle-12-11  
+> **Last Updated**: 2025-12-11  
 > **Audience**: New contributors, AI agents, developers
 
 ---

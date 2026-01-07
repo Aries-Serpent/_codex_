@@ -1,5 +1,5 @@
 # [Doc]: Ready-to-Run PoC Repo Layout — Codex ⇄ Bridge ⇄ Copilot CLI ⇄ GitHub (Self-Hosted Only)
-> Generated: Previous Cycle-09-28 | Author: mbaetiong  
+> Generated: 2025-09-28 | Author: mbaetiong  
 Roles: [Primary: Copilot Integrator], [Secondary: DevSecOps]
 
 ## Alignment note

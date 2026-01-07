@@ -336,7 +336,7 @@ nox -s final_validation
 ## Support & Resources
 
 **Audit Artifacts (reference):**
-- `reports/_codex_status_update-(Previous Cycle-12-06).md` - Comprehensive status
+- `reports/_codex_status_update-(2025-12-06).md` - Comprehensive status
 - `reports/_codex_task_sequences-20251206.md` - Task definitions
 - `workbench/exhaustive_audit/gap_backlog_prioritized.md` - All 45 gaps
 - `reports/_stubs_inventory-20251206.md` - All 298 stubs

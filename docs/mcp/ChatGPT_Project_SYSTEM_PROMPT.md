@@ -173,12 +173,12 @@ Files affected:
 ## Limitations
 
 - Dataset is a snapshot; Phase 5 not reflect latest repository state
-- Large files Phase 5 require summarization
+- Large files may require summarization
 - Binary files are not included in text-based packages
 - Cross-repository dependencies are not included
 
 ---
 
-**Generated**: Previous Cycle-12-30  
+**Generated**: 2025-12-30  
 **Repository**: https://github.com/Aries-Serpent/_codex_  
 **Packaging Tool**: scripts/mcp/package_flatten.sh

@@ -1,6 +1,6 @@
 # Runtime Variables Documentation
 
-**Generated:** Previous Cycle-12-26  
+**Generated:** 2025-12-26  
 **Purpose:** Central documentation for all operational variables used across the _codex_ repository  
 **Audience:** Developers, CI/CD systems, and autonomous agents
 
@@ -315,7 +315,7 @@ To migrate existing workflows to use standardized variables:
 - ✅ Repository access: Confirmed (read/write via git operations)
 - ✅ GitHub Actions context: Available when running in CI/CD
 - ❌ Explicit GitHub API tokens: Not available in all environments
-  - `GITHUB_TOKEN`: Phase 5 not be set in all execution contexts
+  - `GITHUB_TOKEN`: may not be set in all execution contexts
   - `GH_TOKEN`: Not configured by default
   - `CODEX_MASTER_KEY`: Requires human admin setup
 
@@ -421,5 +421,5 @@ git config credential.helper
 3. Add migration notes if breaking change
 4. Notify team of changes
 
-**Last Updated:** Previous Cycle-12-26  
-**Next Review:** Previous Cycle-03-26
+**Last Updated:** 2025-12-26  
+**Next Review:** 2025-03-26

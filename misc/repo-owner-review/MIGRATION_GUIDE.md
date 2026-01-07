@@ -1,6 +1,6 @@
 # Configuration Migration Guide
 
-**Last Updated**: Previous Cycle-12-12  
+**Last Updated**: 2025-12-12  
 **Purpose**: Step-by-step migration from `conf/` to `configs/` directory structure
 
 ---
@@ -223,7 +223,7 @@ find . -name "*.py" -exec sed -i 's|config_path="../conf"|config_path="../config
 defaults:
   - experiment: basic
 
-# Phase 5 need to update to:
+# may need to update to:
 defaults:
   - /experiments: basic
 ```

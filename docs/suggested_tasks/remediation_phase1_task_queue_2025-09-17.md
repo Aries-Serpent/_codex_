@@ -1,4 +1,4 @@
-# Codex Remediation Task Queue – Phase 1 Execution Packet (Previous Cycle-09-17)
+# Codex Remediation Task Queue – Phase 1 Execution Packet (2025-09-17)
 
 ## 0. Orientation & Linkage
 
@@ -21,7 +21,7 @@ Key conventions used in this packet:
 ## 2. Phase 1A – Urgent Gate Activation (Top Five Urgent Tasks)
 
 ### Task U1 – Restore Gate Tooling for `pre-commit`
-- **Source references**: Phase 1/U1 in remediation plan; outstanding questions table entries dated Previous Cycle-09-13 and Previous Cycle-09-17 concerning missing `pre-commit` gating.
+- **Source references**: Phase 1/U1 in remediation plan; outstanding questions table entries dated 2025-09-13 and 2025-09-17 concerning missing `pre-commit` gating.
 - **Objective**: Guarantee that `pre-commit` is installed, discoverable, and enforced in all dev/automation contexts, eliminating false negatives in gate validation.
 - **Preconditions**: Fresh Python environment prepared; access to `requirements/dev.txt`, `scripts/`, `cli/setup.py`, and `.codex/session_logs.db`.
 - **Actions**:
@@ -81,7 +81,7 @@ Key conventions used in this packet:
 - **Queue trigger**: Once dependency drift hardening is verified, queue Quick Win **Cycle 4 – Introduce System Metrics Logger** (relies on stable test harness for new monitoring).
 
 ### Task U5 – Guard the Training CLI Against Missing `torch`
-- **Source references**: Phase 1/U5; outstanding question entry dated Previous Cycle-09-13 for `ModuleNotFoundError: torch`.
+- **Source references**: Phase 1/U5; outstanding question entry dated 2025-09-13 for `ModuleNotFoundError: torch`.
 - **Objective**: Provide a clear, user-friendly guard that instructs operators how to install torch extras and offers a CPU-only fallback.
 - **Preconditions**: Ability to modify training CLI modules, docs, and tests.
 - **Actions**:

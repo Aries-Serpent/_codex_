@@ -1,5 +1,5 @@
 # [Plan]: Resolve Outstanding Unresolveds — Next Atomic Diffs
-> Generated: Previous Cycle-10-11 | Owner: Codex Ops
+> Generated: 2025-10-11 | Owner: Codex Ops
 
 ## Executive Summary
 - Remove duplicated seeding logic; unify on centralized helpers.

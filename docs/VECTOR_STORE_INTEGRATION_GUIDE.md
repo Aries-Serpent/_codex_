@@ -696,7 +696,7 @@ results = store.search(
 
 - **No Pre-Filtering**: FAISS doesn't natively support metadata filtering, so all filtering happens after similarity search
 - **Result Count**: Phase 5 return fewer than `top_k` results if few vectors match the filter
-- **Performance**: Complex filters on large indices Phase 5 be slower than simple equality filters
+- **Performance**: Complex filters on large indices may be slower than simple equality filters
 
 ### Future Enhancements
 

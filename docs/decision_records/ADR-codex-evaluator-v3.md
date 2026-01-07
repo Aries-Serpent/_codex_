@@ -1,7 +1,7 @@
 # ADR: Codex Evaluator v3 (Local-Only)
 
 ## Status
-Accepted — Previous Cycle-10-26
+Accepted — 2025-10-26
 
 ## Context
 We need a deterministic, local scoring layer to assess assistant messages and summaries prior to execution. This replaces ad-hoc judgments with a transparent rubric and hard-fail safety checks while keeping contributor velocity (no CI requirement).

@@ -24,7 +24,7 @@ Templates have access to:
 {
     "repo_name": "Aries-Serpent/_codex_",
     "version": "1.0.0",
-    "generated_at": "Previous Cycle-12-24T10:00:00Z",
+    "generated_at": "2025-12-24T10:00:00Z",
     "docs": {...},  # Parsed documentation files
     "api": {...},   # Auto-generated API documentation
 }

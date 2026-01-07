@@ -7,8 +7,8 @@ unified CLI.
 
 - A recent audit file, e.g.:
 
-  - `_codex_: Status Update (Previous Cycle-11-27)` saved as
-    `_codex_status_update-Previous Cycle-11-27.md`
+  - `_codex_: Status Update (2025-11-27)` saved as
+    `_codex_status_update-2025-11-27.md`
 
 - Local environment with:
   - Python 3.10+ (or similar)
@@ -32,7 +32,7 @@ From the repository root:
 
 ```bash
 python tools/codex_gap_pipeline.py \
-  --audit _codex_status_update-Previous Cycle-11-27.md \
+  --audit _codex_status_update-2025-11-27.md \
   --registry codex_gap_registry.yaml
 ```
 

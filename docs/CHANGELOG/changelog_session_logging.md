@@ -1,6 +1,6 @@
 # Session Logging Change Log
 
-Date: Previous Cycle-08-18T12:21:47.014117+00:00
+Date: 2025-08-18T12:21:47.014117+00:00
 
 - Added `src/codex/logging/session_logger.py` (SQLite-backed).
 - Patched `entrypoint.sh` with start/end logging hooks (idempotent).

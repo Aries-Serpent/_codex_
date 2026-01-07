@@ -115,7 +115,7 @@ python examples/interpretability/mlp_neuron_analysis.py  # if exists
 
 ### Constraints
 - Cannot use gh CLI without GITHUB_TOKEN (use git commands instead)
-- Some GitHub domains Phase 5 be blocked (agent will notify if access needed)
+- Some GitHub domains may be blocked (agent will notify if access needed)
 - Cannot directly modify PR descriptions or create new PRs (use report_progress tool)
 
 ## 📊 Success Criteria

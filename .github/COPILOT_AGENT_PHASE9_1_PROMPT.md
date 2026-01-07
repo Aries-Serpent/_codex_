@@ -255,7 +255,7 @@ mkdir -p tests/integration
 # tests/integration/test_agent_coordination_phase9_1.py
 # tests/integration/test_state_management_phase9_1.py
 
-# 3. Run integration tests (Phase 5 be slower)
+# 3. Run integration tests (may be slower)
 pytest tests/integration/ -v --timeout=60
 
 # 4. Verify overall coverage

@@ -1,6 +1,6 @@
 # Guardrails - Genesis (template)
 
-Generated: Previous Cycle-12-26T07:54:45Z | Author: mbaetiong
+Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
 
 ## Overview
 
@@ -102,6 +102,6 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 
 ---
 
-**Last Updated**: Previous Cycle-12-26T07:54:45Z  
+**Last Updated**: 2025-12-26T07:54:45Z  
 **Status**: Template - Awaiting Human Review  
 **Next Action**: Human admin must complete TODO checklist before enabling autonomous operations

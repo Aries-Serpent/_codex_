@@ -351,7 +351,7 @@ $$
 
 Interpret $\phi_d$ as a **potential well**:
 - **High $\phi_d$** → Low "action cost" to realize capability
-- **Low $\phi_d$** → High friction, Phase 5 not be feasible
+- **Low $\phi_d$** → High friction, may not be feasible
 - $\phi_d = 0$ → Forbidden/impossible
 
 ## Security Boundary Constraints
@@ -1142,7 +1142,7 @@ This documentation was created with assistance from AI language models. Understa
 **AI Assistant Limitations**:
 - Not authoritative on current Zendesk specifics
 - Patterns are generalized; verify against official documentation
-- Not version-specific; capabilities Phase 5 have changed post-cutoff
+- Not version-specific; capabilities may have changed post-cutoff
 - ASCII diagrams are illustrative, not a substitute for platform specs
 
 **Recommended Validation Steps**:

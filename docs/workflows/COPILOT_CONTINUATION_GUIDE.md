@@ -124,7 +124,7 @@ Posts Status Comment
 **On PR Open**:
 1. Workflow auto-generates prompt
 2. Prompt link appears in PR description
-3. Comment Phase 5 be posted with summary
+3. Comment may be posted with summary
 
 **On `@copilot continue`**:
 1. Load prompt from `.github/copilot-prompts/active/PR-{number}-followup.md`
@@ -512,5 +512,5 @@ A: Yes. Generate prompts locally for any task. Commit to `docs/prompts/`.
 ---
 
 **Version**: 2.0.0  
-**Last Updated**: Previous Cycle-12-29  
+**Last Updated**: 2025-12-29  
 **Maintainer**: Copilot Agent Automation System

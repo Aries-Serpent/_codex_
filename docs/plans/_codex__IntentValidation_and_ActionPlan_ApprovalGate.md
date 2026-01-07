@@ -1,5 +1,5 @@
 # [Prompt Template]: Intent Validation & Plan of Action Approval Gate
-> Generated: Previous Cycle-11-11 07:12:59 UTC | Author: mbaetiong
+> Generated: 2025-11-11 07:12:59 UTC | Author: mbaetiong
 > 🧠 Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
 > ⚡ Energy: 5
 > ⚛️ Physics:
@@ -263,7 +263,7 @@ def audit(session):
 
 ### Notes:
 
-- You Phase 5 need to adjust subprocess usage, depending on your Nox version (stdout=subprocess.PIPE is an example).
+- You may need to adjust subprocess usage, depending on your Nox version (stdout=subprocess.PIPE is an example).
 - You can also run against a requirements.txt file with:  
   session.run("pip-audit", "-r", "requirements.txt", "-f", "json", external=True, ...)
 - session.error() will terminate and fail the session if vulnerabilities of specified severity are found.

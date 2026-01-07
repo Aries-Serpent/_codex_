@@ -40,7 +40,7 @@
 
 ### Q: Copilot Agents aren't available for my organization
 
-**A:** This feature Phase 5 be in preview. You can:
+**A:** This feature may be in preview. You can:
 1. Use the GitHub App approach (Section 2 of the full guide)
 2. Contact GitHub support about preview access
 3. Wait for general availability
