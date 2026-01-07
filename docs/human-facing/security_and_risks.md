@@ -1,6 +1,6 @@
 # Security & Risks
 
-> Last Updated: 2024-12-24
+> Last Updated: 2025-12-24
 
 This document outlines security considerations and risk mitigation strategies.
 

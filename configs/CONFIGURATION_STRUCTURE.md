@@ -1,7 +1,7 @@
 # Configuration Structure
 
 **Status:** Canonical configuration root established  
-**Date:** 2024-12-07  
+**Date:** 2025-12-07  
 **Work Package:** WP-F (Config Consolidation)
 
 ## Overview
@@ -216,7 +216,7 @@ with initialize(config_path="../configs", version_base=None):
 
 ## Changelog
 
-### 2024-12-07 (WP-F: Config Consolidation)
+### 2025-12-07 (WP-F: Config Consolidation)
 - Established `configs/` as canonical root
 - Documented legacy paths (`conf/`, `config/`)
 - Added migration guide for gradual transition

@@ -438,7 +438,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 
 ## Changelog
 
-### v1.1.0 (2024-12-12) - Code Review Fixes
+### v1.1.0 (2025-12-12) - Code Review Fixes
 - Fixed local maxima detection in EMFieldRouter
 - Added epsilon to prevent division by zero in WavePropagator
 - Optimized FluidFlowScheduler from O(n²) to O(n)
@@ -448,7 +448,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 - Added missing test cases
 - Improved documentation examples
 
-### v1.0.0 (2024-12-12) - Initial Release
+### v1.0.0 (2025-12-12) - Initial Release
 - Implemented all 6 physics paradigms
 - Created AdvancedPhysicsOrchestrator
 - Built PhysicsGuidedDeveloperOrchestrator
@@ -458,6 +458,6 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 ---
 
 **Document Version**: 1.1.0  
-**Last Updated**: 2024-12-12  
+**Last Updated**: 2025-12-12  
 **Maintained By**: Codex AI Development Team  
 **Status**: Production Ready ✅

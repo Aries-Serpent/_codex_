@@ -1,6 +1,6 @@
 # [Reference]: P6 Advanced Features — AST, Synonyms, Context, Federation
 
-> Generated: 2024-11-06 22:15:00 UTC | Author: copilot  
+> Generated: 2025-11-06 22:15:00 UTC | Author: copilot  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## 1. Overview

@@ -1,6 +1,6 @@
 # Archive Standardization Guide
 
-> **Generated**: 2024-11-03 | **Author**: Archive Team | **Version**: 1.0
+> **Generated**: 2025-11-03 | **Author**: Archive Team | **Version**: 1.0
 
 ## Table of Contents
 
@@ -94,7 +94,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 **v1 (Legacy)**:
 ```json
 {
-  "ts": "2024-11-03T00:00:00Z",
+  "ts": "2025-11-03T00:00:00Z",
   "action": "ARCHIVE",
   "actor": "user",
   "tombstone": "uuid",
@@ -105,7 +105,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 **v2 (Standardized)**:
 ```json
 {
-  "ts": "2024-11-03T00:00:00Z",
+  "ts": "2025-11-03T00:00:00Z",
   "action": "ARCHIVE",
   "actor": "user",
   "tombstone": "uuid",
@@ -158,7 +158,7 @@ from codex.archive.standardization import StandardizationManager
 manager = StandardizationManager(enable_signing=False)
 
 record = {
-    "ts": "2024-11-03T00:00:00Z",
+    "ts": "2025-11-03T00:00:00Z",
     "action": "ARCHIVE",
     "actor": "developer",
     "tombstone": "uuid",
@@ -584,4 +584,4 @@ For issues or questions:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2024-11-03 | Initial comprehensive guide for Phase 2 |
+| 1.0 | 2025-11-03 | Initial comprehensive guide for Phase 2 |

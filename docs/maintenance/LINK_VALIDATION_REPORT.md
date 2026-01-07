@@ -90,11 +90,11 @@ _... and 4 more files_
 - `[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)` → Possible: ../../_codex_/docs/admin/GENESIS_SETUP_GUIDE.md
   _... and 8 more_
 
-### .codex/status/_codex_status_update-Previous Cycle-08-31.md
+### .codex/status/_codex_status_update-2025-08-31.md
 
 - `[`.codex/deferred_items.md`](.codex/deferred_items.md)` → Possible: ../../_codex_/docs/deferred_items.md
 
-### .codex/status/_codex_status_update-Previous Cycle-09-07.md
+### .codex/status/_codex_status_update-2025-09-07.md
 
 - `[docs/guides/AGENTS.md](docs/guides/AGENTS.md)` → Possible: ../../_codex_/_codex_/AGENTS.md
 

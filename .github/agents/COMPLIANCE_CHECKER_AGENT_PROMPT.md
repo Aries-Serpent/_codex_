@@ -251,7 +251,7 @@ graph LR
 ```python
 {
     "report_generated": True,
-    "report_path": "/tmp/compliance-audit-Current Cycle-01-01.pdf",
+    "report_path": "/tmp/compliance-audit-2026-01-01.pdf",
     "report_formats": ["pdf", "html", "json"],
     "remediation_plan": {
         "critical": [
@@ -261,7 +261,7 @@ graph LR
                 "action": "Implement masking in payment_display()",
                 "file": "api/payments.py",
                 "estimated_effort": "2 hours",
-                "deadline": "Current Cycle-01-08"
+                "deadline": "2026-01-08"
             }
         ],
         "high": [...],

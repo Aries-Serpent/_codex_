@@ -1,6 +1,6 @@
 # Consolidation Playbook: Move & Shim Removal (v1.2.9-pre)
 
-> Generated: 2024-12-05 | Author: mbaetiong  
+> Generated: 2025-12-05 | Author: mbaetiong  
 > Status: Draft | Target: v1.3.0
 
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
@@ -416,7 +416,7 @@ Consolidation is successful when:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| v1.2.9-pre | 2024-12-05 | mbaetiong | Initial playbook draft |
+| v1.2.9-pre | 2025-12-05 | mbaetiong | Initial playbook draft |
 
 ---
 

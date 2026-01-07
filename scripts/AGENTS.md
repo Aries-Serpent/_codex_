@@ -1,6 +1,6 @@
 # AGENTS — Scripts
 
-**Last Updated**: 2024-12-23  
+**Last Updated**: 2025-12-23  
 **Scope**: scripts/**
 
 ---
@@ -14,7 +14,7 @@
 ### Agent Scripts (`agent/`)
 - Agent automation and brain activation scripts
 
-### Security Scripts (🆕 2024-12-23)
+### Security Scripts (🆕 2025-12-23)
 - `check_documentation_updates.py` - Systematic documentation verification
 
 ---

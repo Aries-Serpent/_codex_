@@ -154,8 +154,8 @@ from codex.archival import list_bundles
 # List recent bundles
 bundles = list_bundles(
     experiment_pattern="exp_2025_*",
-    min_date="Previous Cycle-01-01",
-    max_date="Previous Cycle-01-31",
+    min_date="2025-01-01",
+    max_date="2025-01-31",
     sort_by="created",
     limit=10
 )

@@ -1,6 +1,6 @@
 # Archive Record: pages_publish_tiles.yml
 
-**Archived**: 2024-11-02T23:29:34Z  
+**Archived**: 2025-11-02T23:29:34Z  
 **Actor**: copilot  
 **Reason**: legacy (violates repository policy prohibiting GitHub Actions workflows)
 
@@ -44,7 +44,7 @@ The archival operation was logged in `.codex/evidence/archive_ops.jsonl`:
   "sha256": "f9abea9ee43487a639343027cf399d6fb36e3ab36a38afd4f60d69d01bc1fd68",
   "size": 1217,
   "tombstone": "7b799ac3-9da9-4d47-9d51-9e052c74a9d1",
-  "ts": "2024-11-02T23:29:34Z"
+  "ts": "2025-11-02T23:29:34Z"
 }
 ```text
 
