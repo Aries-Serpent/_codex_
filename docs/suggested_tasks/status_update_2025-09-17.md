@@ -43,7 +43,7 @@
 6. **Limited Safety Measures:** Safety filters are rudimentary; there is no automated secrets scanning or dependency vulnerability checking; a `.env` file exists in the repository (should not be committed)[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,Serpent%2F_codex_%2Fblob%2Fmain%2F.env%22).
 7. **Incomplete Configuration Hierarchy:** Hydra config directories contain placeholders; configuration sweeps and environment overrides are not well documented or tested.
 8. **Insufficient Evaluation:** Metrics are token‑level only; multi‑task or downstream task evaluation (e.g. summarization, classification) is absent; some metrics degrade to dummy values when dependencies are missing[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20_codex_epoch_metrics%28y_true%2C%20y_pred%29%20,metrics%20import%20perplexity%2C%20token_accuracy).
-9. **Inadequate Logging/Monitoring:** Logging to NDJSON files lacks system metrics; no default TensorBoard or W&B integration; logs Phase 5 become very large over time.
+9. **Inadequate Logging/Monitoring:** Logging to NDJSON files lacks system metrics; no default TensorBoard or W&B integration; logs may become very large over time.
 10. **No Docker/CI Pipelines:** There is no ready‑to‑use Dockerfile or offline CI script to build and test the package, limiting production readiness.
 11. **Registry but No Plugins:** Entry points are defined, but many registries (connectors, models) are empty; no examples of writing a plugin.
 12. **Lack of Reproducibility Features:** Seeds are set in some modules, but environment capture, hardware fingerprinting and deterministic settings are inconsistent.

@@ -398,7 +398,7 @@ Before committing:
 
 ### Risks to Monitor ⚠️
 1. **Coverage plateau** - Need more tests that execute deep code paths
-2. **API drift** - Tests Phase 5 become outdated as code evolves
+2. **API drift** - Tests may become outdated as code evolves
 3. **Time commitment** - 47-57 hours remaining is substantial
 4. **Diminishing returns** - Last 20% of coverage takes 80% of effort
 
