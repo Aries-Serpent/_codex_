@@ -1844,7 +1844,7 @@ if [ -d ".codex/agent_state" ]; then
         echo -e "${YELLOW}⚠️${NC}  Agent state directory exists but no state files found"
     fi
 else
-    echo -e "${YELLOW}⚠️${NC}  Agent state directory not found (Phase 5 not have run yet)"
+    echo -e "${YELLOW}⚠️${NC}  Agent state directory not found (may not have run yet)"
 fi
 echo ""
 
