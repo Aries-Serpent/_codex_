@@ -294,3 +294,25 @@ class QuantumComplianceAssessor:
         # Partial score
         cost_factor = max(0, 1.0 - audit.remediation_cost / 10000)
         return audit.score * 0.3 + cost_factor * 0.3
+
+
+class ComplianceAssessor:
+    """
+    Compatibility wrapper for simplified compliance assessments.
+
+    Provides a minimal interface that only requires a config object, wiring
+    default in-memory monitoring and metrics storage.
+    """
+
+    def __init__(self, config: QuantumConfig, enable_superposition: bool = True):
+        repository = QuantumMetricRepository()
+        monitor = CoherenceMonitor(config, repository)
+        self._assessor = QuantumComplianceAssessor(
+            config=config,
+            monitor=monitor,
+            repository=repository,
+            enable_superposition=enable_superposition,
+        )
+
+    def assess(self, audit_result: AuditResult) -> ComplianceAssessment:
+        return self._assessor.assess_compliance(audit_result)

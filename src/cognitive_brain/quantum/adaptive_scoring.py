@@ -17,7 +17,8 @@ PDA Loop + AfterMath Pattern:
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Any
+import math
 
 
 @dataclass
@@ -263,3 +264,146 @@ def create_scoring_function(optimizer: AdaptiveScoringOptimizer) -> Callable[[Di
     def scoring_fn(features: Dict[str, float]) -> float:
         return optimizer.compute_score(features)
     return scoring_fn
+
+
+class AdaptiveScoringEngine:
+    """
+    Simplified adaptive scoring engine for scenario-based scoring.
+
+    Provides a lightweight interface for tests that expect tunable weights,
+    trainable updates, and robust handling of edge-case inputs.
+    """
+
+    def __init__(
+        self,
+        compliance_score_weight: float = 0.38,
+        risk_weight: float = 0.32,
+        impact_weight: float = 0.15,
+        mitigation_weight: float = 0.15,
+        learning_rate: float = 0.12,
+    ) -> None:
+        self.learning_rate = learning_rate
+        self.compliance_score_weight = compliance_score_weight
+        self.risk_weight = risk_weight
+        self.impact_weight = impact_weight
+        self.mitigation_weight = mitigation_weight
+        self._validate_and_normalize()
+
+    def _validate_and_normalize(self) -> None:
+        weights = [
+            self.compliance_score_weight,
+            self.risk_weight,
+            self.impact_weight,
+            self.mitigation_weight,
+        ]
+        if any(w < 0 for w in weights):
+            raise ValueError("Weights must be non-negative")
+        total = sum(weights)
+        if total == 0:
+            raise ValueError("Weights must sum to 1.0")
+        if total > 1.0 + 1e-9:
+            raise ValueError("Weights must sum to 1.0")
+        if not math.isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-9):
+            self.compliance_score_weight /= total
+            self.risk_weight /= total
+            self.impact_weight /= total
+            self.mitigation_weight /= total
+
+    def _safe_float(self, value: Any, default: float) -> float:
+        try:
+            val = float(value)
+        except (TypeError, ValueError):
+            return default
+        if not math.isfinite(val):
+            return default
+        return val
+
+    def _risk_to_score(self, risk: Any) -> float:
+        if isinstance(risk, str):
+            risk_key = risk.lower()
+            return {"low": 0.2, "medium": 0.5, "high": 0.8, "critical": 0.95}.get(
+                risk_key, 0.5
+            )
+        return self._safe_float(risk, 0.5)
+
+    def _extract_features(self, scenario: Any) -> Dict[str, float]:
+        audit = None
+        complexity = None
+        if isinstance(scenario, (tuple, list)) and scenario:
+            audit = scenario[0]
+            if len(scenario) > 2:
+                complexity = scenario[2]
+        else:
+            audit = scenario
+
+        compliance_score = self._safe_float(
+            getattr(audit, "compliance_score", getattr(audit, "score", 0.5)), 0.5
+        )
+        risk_level = getattr(audit, "risk_level", 0.5)
+        risk_score = self._risk_to_score(risk_level)
+        impact_score = self._safe_float(
+            getattr(audit, "business_impact", getattr(audit, "impact_score", 0.5)), 0.5
+        )
+        remediation_cost = self._safe_float(getattr(audit, "remediation_cost", 5000.0), 5000.0)
+        mitigation_score = self._safe_float(
+            getattr(audit, "mitigation_effectiveness", 1.0 - min(remediation_cost / 10000.0, 1.0)),
+            0.5,
+        )
+        ambiguity_score = self._safe_float(
+            getattr(complexity, "ambiguity_score", getattr(audit, "ambiguity_score", 0.5)), 0.5
+        )
+        return {
+            "compliance_score": max(0.0, min(1.0, compliance_score)),
+            "risk_score": max(0.0, min(1.0, risk_score)),
+            "impact_score": max(0.0, min(1.0, impact_score)),
+            "mitigation_score": max(0.0, min(1.0, mitigation_score)),
+            "ambiguity_score": max(0.0, min(1.0, ambiguity_score)),
+        }
+
+    def compute_score(self, scenario: Any) -> float:
+        features = self._extract_features(scenario)
+        base = (
+            self.compliance_score_weight * features["compliance_score"]
+            + self.risk_weight * (1.0 - features["risk_score"])
+            + self.impact_weight * features["impact_score"]
+            + self.mitigation_weight * features["mitigation_score"]
+        )
+        ambiguity_penalty = 1.0 - 0.2 * features["ambiguity_score"]
+        score = max(0.0, min(1.0, base * ambiguity_penalty))
+        return score * 100.0
+
+    def train(self, scenarios: List[Any], epochs: int = 1) -> None:
+        if not scenarios:
+            raise ValueError("Cannot train on empty scenarios")
+        if self.learning_rate == 0:
+            return
+
+        for _ in range(max(1, epochs)):
+            aggregates = {
+                "compliance": 0.0,
+                "risk": 0.0,
+                "impact": 0.0,
+                "mitigation": 0.0,
+            }
+            for scenario in scenarios:
+                feats = self._extract_features(scenario)
+                aggregates["compliance"] += feats["compliance_score"]
+                aggregates["risk"] += 1.0 - feats["risk_score"]
+                aggregates["impact"] += feats["impact_score"]
+                aggregates["mitigation"] += feats["mitigation_score"]
+            count = len(scenarios)
+            if count == 0:
+                return
+            target = {k: v / count for k, v in aggregates.items()}
+
+            self.compliance_score_weight += self.learning_rate * (
+                target["compliance"] - self.compliance_score_weight
+            )
+            self.risk_weight += self.learning_rate * (target["risk"] - self.risk_weight)
+            self.impact_weight += self.learning_rate * (
+                target["impact"] - self.impact_weight
+            )
+            self.mitigation_weight += self.learning_rate * (
+                target["mitigation"] - self.mitigation_weight
+            )
+            self._validate_and_normalize()
