@@ -300,6 +300,11 @@ prompt templates.
 - Capture brief file notes, plus explicit risks/concerns per domain.
 - Use existing repository tooling references as anchors for deterministic planning.
 
+### Tooling observations (generate_ai_index + scan_links)
+
+- `scripts/generate_ai_index.py` produced `.codex/ai_index/*` with 5,353 indexed files, 22,151 code entities, and 19,889 semantic mappings.
+- `tools/docs/scan_links.py` wrote `artifacts/docs_link_audit/links.json` with 20,364 total links; 4,963 relative links; 766 missing relative targets.
+
 ### Core runtime & interfaces
 
 **File checks**
@@ -313,6 +318,11 @@ prompt templates.
 - `cognitive/ingestion/Note_v2.py` pulls heavy optional dependencies (Streamlit, transformers, KeyBERT); requires dependency guards or docs when used in minimal environments.【F:cognitive/ingestion/Note_v2.py†L1-L13】
 - Runtime shims imply dual import paths; ensure packaging keeps `src/` and top-level shims aligned.
 
+**Additional file checks (pass 2)**
+1. `src/codex/cli.py` — unified CLI with optional Typer subcommands and guarded imports.【F:src/codex/cli.py†L1-L33】
+2. `codex_task_executor.py` — sequential task executor with structured change log records and timestamped runs.【F:codex_task_executor.py†L1-L27】
+3. `codex_task_sequence.py` — compatibility shim forwarding to `cli.task_sequence` for legacy import stability.【F:codex_task_sequence.py†L1-L26】
+
 ### Docs & governance
 
 **File checks**
@@ -322,6 +332,11 @@ prompt templates.
 
 **Risks/concerns**
 - Several docs declare “implementation required” or “not configured” states; governance docs should be periodically reconciled with current repo status to avoid stale readiness signals.【F:docs/ADMIN_IMPLEMENTATION_GUIDE.md†L1-L33】
+
+**Additional file checks (pass 2)**
+1. `README.md` — repository overview, maturity claims, and Genesis protocol setup guidance.【F:README.md†L1-L33】
+2. `QUICKSTART.md` — agent onboarding guidance with example imports and entry points.【F:QUICKSTART.md†L1-L28】
+3. `GOVERNANCE.md` — role definitions and responsibility boundaries for maintainers and teams.【F:GOVERNANCE.md†L1-L27】
 
 ### Config & policy
 
@@ -333,6 +348,11 @@ prompt templates.
 **Risks/concerns**
 - Multiple config roots require careful migration; tooling referencing legacy paths should be tracked to prevent drift. (`config/`, `conf/`, `config_legacy/`).【F:configs/CONFIGURATION_STRUCTURE.md†L11-L23】
 
+**Additional file checks (pass 2)**
+1. `configs/README.md` — canonical config overview with migration notes and directory map.【F:configs/README.md†L1-L29】
+2. `config_legacy/README.md` — deprecation details and guidance to avoid hydra shadowing.【F:config_legacy/README.md†L1-L23】
+3. `yaml_legacy/__init__.py` — PyYAML shim resolving real site-packages modules when available.【F:yaml_legacy/__init__.py†L1-L28】
+
 ### Tooling & automation
 
 **File checks**
@@ -343,6 +363,11 @@ prompt templates.
 **Risks/concerns**
 - Offline-first tooling is clearly documented but relies on optional dependencies (e.g., `psutil`, `wandb`) and should surface missing-dependency handling consistently.【F:automation/codex_ready_executor.py†L1-L37】
 
+**Additional file checks (pass 2)**
+1. `scripts/generate_ai_index.py` — builds multi-layered AI indices for repo navigation and discovery.【F:scripts/generate_ai_index.py†L1-L31】
+2. `tools/docs/scan_links.py` — Markdown link audit writing `artifacts/docs_link_audit/links.json` results.【F:tools/docs/scan_links.py†L1-L40】
+3. `tools/validate_fences.py` — fenced-code validator for Markdown/patch files with compatibility helpers.【F:tools/validate_fences.py†L1-L29】
+
 ### Tests & QA
 
 **File checks**
@@ -352,6 +377,11 @@ prompt templates.
 
 **Risks/concerns**
 - `monitoring/system_metrics.py` depends on `psutil`; ensure optional dependency is documented or pinned in environments that require metrics.【F:monitoring/system_metrics.py†L8-L33】
+
+**Additional file checks (pass 2)**
+1. `tests/agents/test_mental_mapping_core_flows.py` — coverage goals and deterministic clock fixture for mental mapping flows.【F:tests/agents/test_mental_mapping_core_flows.py†L1-L35】
+2. `tests/agents/test_quantum_game_core_flows.py` — coverage targets for quantum/classical game engine behaviors.【F:tests/agents/test_quantum_game_core_flows.py†L1-L23】
+3. `pytest.ini` — test marker definitions and global pytest configuration.【F:pytest.ini†L1-L16】
 
 ### Data & models
 
@@ -366,6 +396,11 @@ prompt templates.
 - Deprecation shims emit warnings; downstream users should migrate to canonical imports to reduce noise.【F:models/chat_model.py†L1-L14】【F:tokenization/loader.py†L1-L15】
 - Optional dependency stubs require careful handling in production packaging to avoid accidental shadowing.【F:sentencepiece/__init__.py†L1-L33】【F:torch/__init__.py†L1-L33】
 
+**Additional file checks (pass 2)**
+1. `models/peft_utils.py` — deprecated shim for PEFT utilities with deprecation warning.【F:models/peft_utils.py†L1-L17】
+2. `tokenization/api.py` — deprecated shim re-exporting canonical tokenizer APIs.【F:tokenization/api.py†L1-L12】
+3. `datasets/reasoning/challenge.jsonl` — reasoning dataset samples with metadata fields (difficulty/category/latency).【F:datasets/reasoning/challenge.jsonl†L1-L2】
+
 ### Containers & deployment
 
 **File checks**
@@ -377,6 +412,11 @@ prompt templates.
 **Risks/concerns**
 - Legacy Dockerfiles note deprecation; ensure canonical Dockerfile usage is enforced to avoid drift.【F:docker/Dockerfile.cpu†L1-L3】
 - Deployment scripts use optional monitoring libs; missing libs are silently ignored and should be documented for observability expectations.【F:deploy/deploy_codex_pipeline.py†L8-L36】
+
+**Additional file checks (pass 2)**
+1. `docker/entrypoint.sh` — normalizes env vars, optional prestart hooks, and default ASGI module selection.【F:docker/entrypoint.sh†L1-L29】
+2. `docker/healthcheck.sh` — health check wrapper relying on `codex_ml.serving.health` response shape.【F:docker/healthcheck.sh†L1-L17】
+3. `services/api/main.py` — FastAPI service with optional torch dependency and fallback tensor stub.【F:services/api/main.py†L1-L28】
 
 ### Examples, experiments, notebooks
 
@@ -394,6 +434,11 @@ prompt templates.
 - Notebooks and experiments encode reproducibility assumptions; ensure seeds and artifact paths remain available when referenced in docs.【F:experiments/2025-01-15_smoke.md†L1-L36】
 - `analysis/audit_pipeline.py` modifies README in-place; should be run in controlled environments to avoid unintended doc changes.【F:analysis/audit_pipeline.py†L12-L28】
 
+**Additional file checks (pass 2)**
+1. `examples/TROUBLESHOOTING.md` — documents optional deps and runtime write-path assumptions for examples.【F:examples/TROUBLESHOOTING.md†L1-L13】
+2. `analysis/branch_0B_base_overview.md` — historical overview of branch layout and dependencies.【F:analysis/branch_0B_base_overview.md†L1-L9】
+3. `benchmarks/ast_parsing.py` — AST parsing benchmark harness and sample code blocks.【F:benchmarks/ast_parsing.py†L1-L28】
+
 ### Assets & misc
 
 **File checks**
@@ -404,3 +449,8 @@ prompt templates.
 **Risks/concerns**
 - `assets/manifest.json` is large and should be regenerated via tooling to avoid drift or partial edits.【F:assets/manifest.json†L1-L20】
 - `temp/` contains prototype scaffolds; ensure it does not leak into production packaging or CI workflows.【F:temp/bridge_codex_copilot_bridge/README.md†L1-L24】
+
+**Additional file checks (pass 2)**
+1. `misc/ARCHIVE_README.md` — archive bundle summary and contents list for owner review.【F:misc/ARCHIVE_README.md†L1-L26】
+2. `misc/repo-owner-review/README.md` — rules for review folder content and deletion warnings.【F:misc/repo-owner-review/README.md†L1-L29】
+3. `temp/bridge_codex_copilot_bridge/README-FROM-USER.md` — user-provided reminder on manual config integration steps.【F:temp/bridge_codex_copilot_bridge/README-FROM-USER.md†L1-L1】

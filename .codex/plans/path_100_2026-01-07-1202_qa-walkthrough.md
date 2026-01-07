@@ -31,3 +31,19 @@ Reach full repo-wide QA walkthrough coverage with deterministic, file-level samp
 ## Next verification commands
 - `python -m pytest -q tests/agents/test_mental_mapping_core_flows.py tests/agents/test_quantum_game_core_flows.py`
 - `pytest -m smoke` (if environment supports optional deps)
+
+## Progress update (2026-01-07)
+- File-level sampling expanded with 3 additional files per domain and risks documented.
+- Tooling runs:
+  - `scripts/generate_ai_index.py` generated 5,353 file indices, 22,151 entities, 19,889 semantic mappings.
+  - `tools/docs/scan_links.py` produced `artifacts/docs_link_audit/links.json` with 20,364 links (4,963 relative, 766 missing).
+
+## Smoke test failures observed (2026-01-07)
+- `tests/deployment/test_k8s_manifests.py::test_deployment_parse_manifests_if_present` expects `kind` in Helm chart metadata.
+- `tests/smoke/test_config_validate_cli.py` failing CLI invocation (`codex_ml.cli.validate`) due to Typer subcommand parsing.
+- `tests/specs/test_audit_*` failures due to audit runner CLI args (`stage S1`) and missing optional deps (hydra/mlflow).
+
+### Remediation path (next iteration)
+1. Review `scripts/space_traversal/audit_runner.py` CLI args and align with tests for `stage` subcommand.
+2. Ensure `codex_ml.cli.validate` exposes `file` subcommand that accepts path argument correctly.
+3. Clarify k8s manifest parsing expectations for Helm `Chart.yaml` vs deployment manifests.

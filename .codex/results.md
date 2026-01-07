@@ -9300,3 +9300,29 @@ Result: ✅ Passed (with warnings).
 ```
 ....................................................                     [100%]
 ```
+
+## Test Run - 2026-01-07
+
+### `python -m pytest -q tests/agents/test_mental_mapping_core_flows.py tests/agents/test_quantum_game_core_flows.py`
+
+Result: ✅ Passed (with warnings).
+
+```
+....................................................                     [100%]
+```
+
+### `pytest -m smoke`
+
+Result: ❌ Failed.
+
+```
+FAILED tests/deployment/test_k8s_manifests.py::test_deployment_parse_manifests_if_present
+FAILED tests/smoke/test_config_validate_cli.py::test_validate_ok
+FAILED tests/smoke/test_config_validate_cli.py::test_validate_bad
+FAILED tests/specs/test_audit_diff_cli.py::test_audit_diff_cli_with_self
+FAILED tests/specs/test_audit_explain_cli.py::test_audit_explain_cli_smoke
+FAILED tests/specs/test_audit_manifest_fields.py::test_manifest_contains_integrity_chain_and_weights
+FAILED tests/specs/test_audit_meta_in_report.py::test_meta_propagates_and_renders
+FAILED tests/specs/test_component_caps_clamp.py::test_component_caps_reduce_component_value
+FAILED tests/specs/test_dup_similarity.py::test_dup_heuristic_switch_fallback
+```

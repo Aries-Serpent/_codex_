@@ -16177,3 +16177,8 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 
 - Added file-level QA sampling notes and risks per domain.
 - Added path to 100% coverage plan for QA walkthrough deepening.
+
+## QA Walkthrough File-Level Sampling Expansion - 2026-01-07
+
+- Added additional per-domain file checks with tooling observations (AI index + link scan).
+- Updated QA walkthrough coverage plan progress.
