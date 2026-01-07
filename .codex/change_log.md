@@ -16172,3 +16172,8 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 ## QA Walkthrough Traversal Log Update - 2026-01-07
 
 - Logged repo-wide traversal coverage and representative entries in the QA walkthrough prompt.
+
+## QA Walkthrough File-Level Sampling Update - 2026-01-07
+
+- Added file-level QA sampling notes and risks per domain.
+- Added path to 100% coverage plan for QA walkthrough deepening.

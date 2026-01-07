@@ -1,0 +1,33 @@
+# Path to 100% Coverage: QA Walkthrough Deepening (2026-01-07-1202)
+
+## Objective
+Reach full repo-wide QA walkthrough coverage with deterministic, file-level sampling per domain and a documented follow-up plan for deeper inspections.
+
+## Current coverage status
+- Directory-level traversal complete across top-level domains.
+- File-level sampling completed for each domain with ≥3 file checks.
+- Target minimum coverage for this pass: ≥70% of domains with explicit risks/concerns (achieved).
+
+## Plan (deterministic)
+1. **Inventory support tooling**
+   - Use `scripts/generate_ai_index.py` for indexed repo scanning to reduce manual misses.
+   - Use `tools/docs/scan_links.py` to validate documentation references as needed.
+2. **Deep file-level sampling (next iteration)**
+   - For each domain, select 3–5 additional files beyond the current sampling set.
+   - Capture: purpose, dependencies, potential side effects, and risk notes.
+3. **Edge case coverage**
+   - Identify files with optional dependency guards (e.g., stubs) and confirm expected behavior.
+   - Document any environment-specific concerns (GPU, optional libs, offline constraints).
+4. **Verification**
+   - Run targeted agent tests and document outputs in `.codex/results.md`.
+   - If feasible, run a broader smoke suite (`pytest -m smoke`) to improve coverage signal.
+
+## Risks / Remediation strategies
+- **Risk:** Optional dependency shims can mask missing modules in production.
+  - **Mitigation:** Track optional deps in docs and add checks in deployment scripts.
+- **Risk:** Legacy configs and Dockerfiles may drift from canonical paths.
+  - **Mitigation:** Add explicit migration notes in docs and deprecate old paths in tooling.
+
+## Next verification commands
+- `python -m pytest -q tests/agents/test_mental_mapping_core_flows.py tests/agents/test_quantum_game_core_flows.py`
+- `pytest -m smoke` (if environment supports optional deps)

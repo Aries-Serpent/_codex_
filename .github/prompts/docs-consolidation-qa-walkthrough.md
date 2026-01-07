@@ -289,3 +289,118 @@ prompt templates.
 
 - Traversal completed at the directory + immediate entry level across all top-level domains.
 - Next iteration can deepen file-by-file inspection within each domain (e.g., sample `src/`, `services/`, and `scripts/` modules) if a full artifact-level QA review is required.
+
+---
+
+## 8) File-level sampling (repo-wide, 2026-01-07)
+
+### Plan scope update
+
+- Expand traversal to include file-level sampling (≥3 files per domain).
+- Capture brief file notes, plus explicit risks/concerns per domain.
+- Use existing repository tooling references as anchors for deterministic planning.
+
+### Core runtime & interfaces
+
+**File checks**
+1. `src/README.md` — defines core runtime responsibilities and references ingestion/RAG/MCP components.【F:src/README.md†L1-L5】
+2. `interfaces/tokenizer.py` — compatibility wrapper re-exporting `codex_ml` tokenizer adapters.【F:interfaces/tokenizer.py†L1-L9】
+3. `cli/README.md` — enumerates CLI entry points and their roles in automation workflows.【F:cli/README.md†L1-L33】
+4. `codex_utils/json_report.py` — deterministic JSON report merging utilities and key taxonomy definitions.【F:codex_utils/json_report.py†L1-L32】
+5. `codex_ml/pipeline.py` — shim that loads the canonical pipeline from `src/` for editable installs.【F:codex_ml/pipeline.py†L1-L33】
+
+**Risks/concerns**
+- `cognitive/ingestion/Note_v2.py` pulls heavy optional dependencies (Streamlit, transformers, KeyBERT); requires dependency guards or docs when used in minimal environments.【F:cognitive/ingestion/Note_v2.py†L1-L13】
+- Runtime shims imply dual import paths; ensure packaging keeps `src/` and top-level shims aligned.
+
+### Docs & governance
+
+**File checks**
+1. `docs/ADMIN_IMPLEMENTATION_GUIDE.md` — admin checklist and system readiness status; highlights unmet setup tasks.【F:docs/ADMIN_IMPLEMENTATION_GUIDE.md†L1-L23】
+2. `guides/CODE_STYLE_GUIDE.md` — coding conventions, line length, and tooling commands (Black/Ruff/isort).【F:guides/CODE_STYLE_GUIDE.md†L1-L33】
+3. `prompts/AGENTS.md` — scoped prompt template guidance and security reminders for prompt handling.【F:prompts/AGENTS.md†L1-L33】
+
+**Risks/concerns**
+- Several docs declare “implementation required” or “not configured” states; governance docs should be periodically reconciled with current repo status to avoid stale readiness signals.【F:docs/ADMIN_IMPLEMENTATION_GUIDE.md†L1-L33】
+
+### Config & policy
+
+**File checks**
+1. `config/DEPRECATED.md` — marks `config/` deprecated and instructs migration to `configs/`.【F:config/DEPRECATED.md†L1-L19】
+2. `configs/CONFIGURATION_STRUCTURE.md` — canonical configuration root, includes inventory of legacy shims.【F:configs/CONFIGURATION_STRUCTURE.md†L1-L23】
+3. `conf/config.yaml` — deprecated minimal config stub with defaults and seed settings.【F:conf/config.yaml†L1-L11】
+
+**Risks/concerns**
+- Multiple config roots require careful migration; tooling referencing legacy paths should be tracked to prevent drift. (`config/`, `conf/`, `config_legacy/`).【F:configs/CONFIGURATION_STRUCTURE.md†L11-L23】
+
+### Tooling & automation
+
+**File checks**
+1. `scripts/AI_SEARCH_README.md` — documents repo search/index tooling and indexing pipeline components.【F:scripts/AI_SEARCH_README.md†L1-L33】
+2. `automation/codex_ready_executor.py` — offline workflow runner with structured artifacts and staged phases.【F:automation/codex_ready_executor.py†L1-L37】
+3. `actions/openapi.yaml` — local actions API spec for offline tooling usage.【F:actions/openapi.yaml†L1-L23】
+
+**Risks/concerns**
+- Offline-first tooling is clearly documented but relies on optional dependencies (e.g., `psutil`, `wandb`) and should surface missing-dependency handling consistently.【F:automation/codex_ready_executor.py†L1-L37】
+
+### Tests & QA
+
+**File checks**
+1. `tests/README.md` — outlines pytest usage and marker taxonomy for test selection.【F:tests/README.md†L1-L23】
+2. `monitoring/system_metrics.py` — optional `psutil` metrics logging; safe no-op when dependency missing.【F:monitoring/system_metrics.py†L1-L41】
+3. `semgrep_rules/default.yml` — baseline static analysis rules (eval/exec, yaml.load guard).【F:semgrep_rules/default.yml†L1-L15】
+
+**Risks/concerns**
+- `monitoring/system_metrics.py` depends on `psutil`; ensure optional dependency is documented or pinned in environments that require metrics.【F:monitoring/system_metrics.py†L8-L33】
+
+### Data & models
+
+**File checks**
+1. `db/schema.sql` — snippet table + FTS5 indexes and triggers for content search.【F:db/schema.sql†L1-L19】
+2. `models/chat_model.py` — deprecated shim to `src.models.chat_model` with deprecation warning.【F:models/chat_model.py†L1-L14】
+3. `tokenization/loader.py` — deprecated shim re-exporting canonical tokenizer API.【F:tokenization/loader.py†L1-L15】
+4. `sentencepiece/__init__.py` — dependency stub that defers to real module if installed.【F:sentencepiece/__init__.py†L1-L33】
+5. `torch/__init__.py` — dependency stub that imports real PyTorch or raises clear `ImportError`.【F:torch/__init__.py†L1-L33】
+
+**Risks/concerns**
+- Deprecation shims emit warnings; downstream users should migrate to canonical imports to reduce noise.【F:models/chat_model.py†L1-L14】【F:tokenization/loader.py†L1-L15】
+- Optional dependency stubs require careful handling in production packaging to avoid accidental shadowing.【F:sentencepiece/__init__.py†L1-L33】【F:torch/__init__.py†L1-L33】
+
+### Containers & deployment
+
+**File checks**
+1. `docker/Dockerfile.cpu` — deprecated CPU image uses Python 3.10 and installs pytest/nox for dev tests.【F:docker/Dockerfile.cpu†L1-L17】
+2. `deploy/deploy_codex_pipeline.py` — deployment orchestrator with optional monitoring hooks (psutil/pynvml/W&B/MLflow).【F:deploy/deploy_codex_pipeline.py†L1-L36】
+3. `services/__init__.py` — service package initializer for API/service apps.【F:services/__init__.py†L1-L1】
+4. `ops/threat_model/STRIDE.md` — STRIDE snapshot of security guardrails and mitigations.【F:ops/threat_model/STRIDE.md†L1-L6】
+
+**Risks/concerns**
+- Legacy Dockerfiles note deprecation; ensure canonical Dockerfile usage is enforced to avoid drift.【F:docker/Dockerfile.cpu†L1-L3】
+- Deployment scripts use optional monitoring libs; missing libs are silently ignored and should be documented for observability expectations.【F:deploy/deploy_codex_pipeline.py†L8-L36】
+
+### Examples, experiments, notebooks
+
+**File checks**
+1. `examples/advanced_physics_demo.py` — demo script with optional dependency guards for advanced physics modules.【F:examples/advanced_physics_demo.py†L1-L31】
+2. `experiments/2025-01-15_smoke.md` — smoke training loop baseline with reproducibility notes and artifacts list.【F:experiments/2025-01-15_smoke.md†L1-L36】
+3. `notebooks/quick_start.ipynb` — notebook with 10 cells and standard Python kernel metadata (validated via JSON parse).【F:notebooks/quick_start.ipynb†L1-L1】
+4. `analysis/audit_pipeline.py` — registered pipeline steps for inventory and workflow checks with mutation behavior on README. 【F:analysis/audit_pipeline.py†L1-L28】
+5. `benchmarks/security_benchmarks.py` — security utility performance benchmarks and CLI usage guidance.【F:benchmarks/security_benchmarks.py†L1-L29】
+6. `baseline/README.md` — baseline scoring metadata for audit regression comparisons.【F:baseline/README.md†L1-L23】
+7. `samples/README.md` — local-only validation samples and commands.【F:samples/README.md†L1-L16】
+8. `implementation_completed/README_STUB.md` — pointer to full implementation status doc.【F:implementation_completed/README_STUB.md†L1-L2】
+
+**Risks/concerns**
+- Notebooks and experiments encode reproducibility assumptions; ensure seeds and artifact paths remain available when referenced in docs.【F:experiments/2025-01-15_smoke.md†L1-L36】
+- `analysis/audit_pipeline.py` modifies README in-place; should be run in controlled environments to avoid unintended doc changes.【F:analysis/audit_pipeline.py†L12-L28】
+
+### Assets & misc
+
+**File checks**
+1. `assets/manifest.json` — manifest of file hashes for integrity tracking (large registry).【F:assets/manifest.json†L1-L20】
+2. `misc/ARCHIVAL_SYSTEM.md` — archival system rules and safe-removal guarantees.【F:misc/ARCHIVAL_SYSTEM.md†L1-L26】
+3. `temp/bridge_codex_copilot_bridge/README.md` — temporary bridge scaffold with constraints and layout. 【F:temp/bridge_codex_copilot_bridge/README.md†L1-L24】
+
+**Risks/concerns**
+- `assets/manifest.json` is large and should be regenerated via tooling to avoid drift or partial edits.【F:assets/manifest.json†L1-L20】
+- `temp/` contains prototype scaffolds; ensure it does not leak into production packaging or CI workflows.【F:temp/bridge_codex_copilot_bridge/README.md†L1-L24】
