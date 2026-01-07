@@ -1,6 +1,6 @@
 # Runtime Variables Documentation
 
-**Generated:** 2024-12-26  
+**Generated:** 2025-12-26  
 **Purpose:** Central documentation for all operational variables used across the _codex_ repository  
 **Audience:** Developers, CI/CD systems, and autonomous agents
 
@@ -320,7 +320,7 @@ To migrate existing workflows to use standardized variables:
   - `CODEX_MASTER_KEY`: Requires human admin setup
 
 **Impact:**
-- GitHub CLI (`gh`) commands may fail without explicit token
+- GitHub CLI (`gh`) commands Phase 5 fail without explicit token
 - Some GitHub API operations require workarounds
 - Direct API calls via `curl` require authentication headers
 
@@ -335,7 +335,7 @@ To migrate existing workflows to use standardized variables:
    git fetch origin
    git push origin branch-name
    
-   # ❌ may fail: gh CLI operations
+   # ❌ Phase 5 fail: gh CLI operations
    gh pr view 123
    gh issue create --title "..."
    ```
@@ -421,5 +421,5 @@ git config credential.helper
 3. Add migration notes if breaking change
 4. Notify team of changes
 
-**Last Updated:** 2024-12-26  
-**Next Review:** 2024-03-26
+**Last Updated:** 2025-12-26  
+**Next Review:** 2025-03-26

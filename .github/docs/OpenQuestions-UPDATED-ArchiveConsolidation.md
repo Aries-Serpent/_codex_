@@ -12,7 +12,7 @@ Answer with patterns:
 Recommend based on existing structure:
 - Location: `.archived/<YYYY-MM-DD>-<component>/`
 - Structure: manifest.json, checksum.sha256, metadata.json, README.md, files/
-- Example: `.archived/Previous Cycle-10-24-root-files-migration/`
+- Example: `.archived/2025-10-24-root-files-migration/`
 - Reasoning: Mirrors existing .codex/ structure; append-only JSONL in .codex/evidence/
 
 **Question 3 (High): Testing Requirements**

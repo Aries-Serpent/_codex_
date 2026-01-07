@@ -1,7 +1,7 @@
 # Incident Response Procedures
 
 **Version**: 1.0.0  
-**Last Updated**: 2024-12-11  
+**Last Updated**: 2025-12-11  
 **Classification**: Internal Operations
 
 ---
@@ -341,4 +341,4 @@ kubectl rollout undo deployment/codex-ml
 
 **Document Owner**: Operations Team  
 **Review Frequency**: Quarterly  
-**Next Review**: 2025-03-11
+**Next Review**: 2026-03-11

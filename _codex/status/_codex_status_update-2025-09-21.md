@@ -1,4 +1,4 @@
-# _codex_: Status Update (2024-09-21)
+# _codex_: Status Update (2025-09-21)
 
 ## Repo Map Snapshot
 ```text
@@ -41,10 +41,10 @@ _codex/
 - Repository remains on existing `work` branch per higher-priority instructions.
 
 ## Applied Patch Review
-- Previous Cycle-09-21_deterministic_loader.patch — Already merged; validated deterministic loader implementation. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
-- Previous Cycle-09-21_eval_loop.patch — Already merged; evaluation metrics computed within training loop. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
-- Previous Cycle-09-21_hydra_entrypoint.patch — Already merged; Hydra entrypoint operational offline. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
-- Previous Cycle-09-21_metrics_default_min.patch — Already merged; telemetry defaults verified. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
+- 2025-09-21_deterministic_loader.patch — Already merged; validated deterministic loader implementation. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
+- 2025-09-21_eval_loop.patch — Already merged; evaluation metrics computed within training loop. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
+- 2025-09-21_hydra_entrypoint.patch — Already merged; Hydra entrypoint operational offline. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
+- 2025-09-21_metrics_default_min.patch — Already merged; telemetry defaults verified. Risk: low. Rollback: N/A. Tests: `pytest tests/codex_ml`.
 
 ## Local Gates
 - pytest (codex_ml subset): total=2, passed=2, skipped=0, failed=0, rate=100.00%.

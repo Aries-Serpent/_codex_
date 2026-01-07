@@ -1,6 +1,6 @@
 # [Guide]: MCP Usage & Validation
 
-> Generated: 2024-11-18 05:32:13 | Author: mbaetiong  
+> Generated: 2025-11-18 05:32:13 | Author: mbaetiong  
 > Roles: [Audit Orchestrator], [Capability Cartographer] · Energy: 5
 
 ## 1. Running the MCP-Aware Audit

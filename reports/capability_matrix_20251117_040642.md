@@ -79,7 +79,7 @@ Evidence Files (first 10):
 .codex/reports/Archive_Policy_Operations.md
 .codex/reports/archive_policy_operations.md
 .codex/reports/merge_summary_archive_policy_20251024.txt
-.codex/status/manifest-2024-09-22T02-15-21Z.json
+.codex/status/manifest-2025-09-22T02-15-21Z.json
 .codex/validation/20250910T052842Z/post_manifest.json
 ```text
 ### checkpointing
@@ -305,7 +305,7 @@ Evidence Files (first 10):
 .codex/copilot_bridge/var/manifests/.gitkeep
 .codex/evidence/provenance/root-cleanup/intoto.jsonl
 .codex/evidence/provenance/root-cleanup/slsa.json
-.codex/status/manifest-2024-09-22T02-15-21Z.json
+.codex/status/manifest-2025-09-22T02-15-21Z.json
 .codex/status/provenance.json
 .codex/validation/20250910T052842Z/post_manifest.json
 .codex/validation/20250910T052842Z/pre_manifest.json
@@ -440,8 +440,8 @@ Missing Patterns: None
 Evidence Files (first 10):
 ```text
 .codex/validation/file_integrity_compare.json
-_codex_reports/Previous Cycle-10-06/reproducibility.json
-_codex_reports/Previous Cycle-10-06/seed_scan.json
+_codex_reports/2025-10-06/reproducibility.json
+_codex_reports/2025-10-06/seed_scan.json
 codex_ml/data/checksums.py
 configs/base/deterministic.yaml
 docs/checkpoint_integrity.md
@@ -554,7 +554,7 @@ Missing Patterns: None
 
 Evidence Files (first 10):
 ```text
-_codex_reports/Previous Cycle-10-06/tokenizer_check.json
+_codex_reports/2025-10-06/tokenizer_check.json
 artifacts/models/tiny_tokenizer/vocab.json
 codex_digest/tokenizer.py
 configs/training/tokenization/base.yaml
@@ -577,8 +577,8 @@ Missing Patterns: None
 
 Evidence Files (first 10):
 ```text
-_codex_reports/Previous Cycle-10-06/trainer_smoke.json
-_codex_reports/Previous Cycle-10-06/trainer_smoke.log
+_codex_reports/2025-10-06/trainer_smoke.json
+_codex_reports/2025-10-06/trainer_smoke.log
 artifacts/diffs/training_py01_removal.md
 cli/train_schema_demo.py
 configs/deployment/hhg_logistics/train/default.yaml

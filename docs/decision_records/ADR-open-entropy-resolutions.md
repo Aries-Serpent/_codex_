@@ -1,7 +1,7 @@
 # ADR: "Open Entropy" Decisions — Local Gates, Reporting, and UX
 
 ## Status
-Accepted — 2024-10-26
+Accepted — 2025-10-26
 
 ## Context
 We captured several ambiguous choices ("Areas of Open Entropy") around local gates, report generation, and developer experience. This ADR records the defaults so contributors have a single reference.

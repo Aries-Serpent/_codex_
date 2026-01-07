@@ -436,8 +436,8 @@ This roadmap provides a clear path forward for the _codex_ Cognitive Brain syste
 The phased approach ensures manageable scope, clear deliverables, and continuous value delivery while maintaining the high quality standards established in the initial phases.
 
 **Status:** ✅ Ready for Execution  
-**Next Review:** 2025-02-06 (Monthly)  
-**Next Revision:** 2025-04-01 (Quarterly)
+**Next Review:** 2026-02-06 (Monthly)  
+**Next Revision:** 2026-04-01 (Quarterly)
 
 ---
 

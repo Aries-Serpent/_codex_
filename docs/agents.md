@@ -1,7 +1,7 @@
 # AGENTS — Guidelines for contributors and Codex automation
 
 > **Version**: 2.1.0  
-> **Updated**: 2024-12-16  
+> **Updated**: 2025-12-16  
 > **CI/CD Status**: ✅ Fully Operational
 
 Keep this document updated as conventions evolve.
@@ -44,7 +44,7 @@ nox -s tests
 
 ## CI/CD Workflows
 
-As of Previous Cycle-12-16:
+As of 2025-12-16:
 - **45 active workflows** (all passing YAML validation)
 - **GitHub Pages**: Enabled with MkDocs (`pages-mkdocs.yml`)
 - **Key workflows**:

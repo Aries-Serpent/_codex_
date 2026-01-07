@@ -13,7 +13,7 @@ Objective:
 
 Audit Scope
 
-# 📍_codex_: Status Update (2024-09-22)
+# 📍_codex_: Status Update (2025-09-22)
 
 1. **Repo Map**
    - **Top-level directories.** Source code under `src/` spans training loops, registries, and monitoring hooks; automation scripts live in `tools/`; tests sit in `tests/`; documentation is under `docs/`; operational assets (nox, manifests, Dockerfile) sit at the repository root.【F:src/codex_ml/training/__init__.py†L360-L558】【F:tools/apply_interfaces.py†L1-L120】【F:tests/test_training_eval.py†L1-L36】【F:docs/gaps_report.md†L1-L40】【F:noxfile.py†L1-L72】【F:Dockerfile†L1-L20】
@@ -50,7 +50,7 @@ Audit Scope
    7. MLflow helpers provide lazy contexts yet training workflows never surface run IDs or tracking toggles, keeping experiment tracking manual.【F:src/codex_ml/tracking/mlflow_utils.py†L1-L120】【F:src/codex_ml/cli/codex_cli.py†L145-L208】
    8. Checkpoint manager writes checksum metadata but lacks best-K retention or checksum verification on resume, leaving corruption undetected until load time fails.【F:src/codex_ml/utils/checkpointing.py†L1-L120】
    9. Dependency locks live in `pyproject.toml`/`requirements.lock`, yet refresh procedures remain manual and undocumented in CLI scripts.【F:pyproject.toml†L1-L120】
-   10. Outstanding-questions ledger hasn’t been updated since 2024-09-18; status updates must reference it but no automation ensures freshness.【F:docs/status_update_outstanding_questions.md†L1-L74】
+   10. Outstanding-questions ledger hasn’t been updated since 2025-09-18; status updates must reference it but no automation ensures freshness.【F:docs/status_update_outstanding_questions.md†L1-L74】
    11. Docker image targets API runtime only—training extras and offline artefacts require manual layering, risking drift between local and container environments.【F:Dockerfile†L1-L20】
    12. Tests around checkpoint resume and training rely on torch availability; in CPU-only setups the most critical coverage still skips, masking regressions.【F:tests/test_checkpoint_save_resume.py†L1-L27】【F:tests/test_training_eval.py†L1-L36】
 
@@ -203,7 +203,7 @@ diff --git a/src/codex_ml/cli/codex_cli.py b/src/codex_ml/cli/codex_cli.py
 | Environment capture (configs, pip freeze, git SHA) | ✅ | Checkpointing utilities embed provenance summaries, and training exports environment metadata per run.【F:src/codex_ml/utils/checkpointing.py†L64-L132】【F:src/codex_ml/training/__init__.py†L504-L528】 |
 | Metrics artefacts persisted | ⚠️ | Evaluation runner emits NDJSON/CSV, but training fallback metrics remain in-memory until Atomic Diff 2 lands.【F:src/codex_ml/eval/eval_runner.py†L22-L86】【F:src/codex_ml/training/__init__.py†L516-L544】 |
 | Dependency/version pinning | ✅ | `pyproject.toml`/lockfiles pin accelerate/transformers/torch plus dev tooling for reproducible installs.【F:pyproject.toml†L17-L88】 |
-| Outstanding question ledger referenced | ⚠️ | Ledger exists but last update 2024-09-18; needs refresh when new findings arise.【F:docs/status_update_outstanding_questions.md†L1-L74】 |
+| Outstanding question ledger referenced | ⚠️ | Ledger exists but last update 2025-09-18; needs refresh when new findings arise.【F:docs/status_update_outstanding_questions.md†L1-L74】 |
 
 7. **Deferred Items**
    - Regenerate `docs/gaps_report.md` with modern scanner output and wire refresh into `scripts/run_codex_tasks.py`.

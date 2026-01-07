@@ -1,6 +1,6 @@
 # [Guide]: The Genesis Protocol - Sovereign Admin Initialization
 
-> **Generated:** 2024-12-26T07:54:45Z | **Author:** mbaetiong  
+> **Generated:** 2025-12-26T07:54:45Z | **Author:** mbaetiong  
 > **Repository:** `Aries-Serpent/_codex_` (ID: 1040037790)  
 > **Classification:** 🔒 Internal - Administrative Operations
 
@@ -114,7 +114,7 @@ openssl rand -hex 32
 | `CODEX_ISOLATED_PATH` | `/codex/network/isolated` | Network path reference |
 | `CODEX_API_VERSION` | `2022-11-28` | GitHub API version |
 | `CODEX_LOG_LEVEL` | `INFO` | Runtime log level |
-| `GENESIS_TIMESTAMP` | `2024-12-26T07:54:45Z` | Protocol initialization time |
+| `GENESIS_TIMESTAMP` | `2025-12-26T07:54:45Z` | Protocol initialization time |
 | `AUDIT_RETENTION_DAYS` | `90` | Audit log retention period |
 
 ---
@@ -150,7 +150,7 @@ Create `codex-production` environment:
 **Pre-Execution Steps:**
 1. Edit `.github/workflows/genesis-bootstrap.yml`
 2. Find line: `if: false # <<< HUMAN: remove this guard...`
-3. Remove or comment out: `# if: false # Guard removed by mbaetiong on Previous Cycle-12-26`
+3. Remove or comment out: `# if: false # Guard removed by mbaetiong on 2025-12-26`
 4. Commit change: `chore(genesis): enable bootstrap workflow`
 
 **Execute Workflow:**
@@ -339,6 +339,6 @@ Upon successful completion of all phases:
 ---
 
 > **Document Version:** 1.0.0  
-> **Last Updated:** 2024-12-26T07:54:45Z  
+> **Last Updated:** 2025-12-26T07:54:45Z  
 > **Maintainer:** mbaetiong (Human Admin)  
 > **Classification:** 🔒 Internal - Administrative Operations

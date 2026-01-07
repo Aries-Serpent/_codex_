@@ -1,8 +1,8 @@
-# Validation Errors: _codex_status_update-Previous Cycle-11-04.md
+# Validation Errors: _codex_status_update-2025-11-04.md
 
 This file contains validation errors and incomplete aspects detected in the status report.
 
-**Report Path:** `reports/daily/_codex_status_update-Previous Cycle-11-04.md`
+**Report Path:** `reports/daily/_codex_status_update-2025-11-04.md`
 **Schema:** `docs/templates/status/codex_status_template.schema_v1.2.yaml`
 **Validator:** `tools/validate_status_report.py`
 

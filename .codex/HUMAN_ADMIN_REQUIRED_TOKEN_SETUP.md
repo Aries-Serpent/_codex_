@@ -1,7 +1,7 @@
 # Human Admin Required Actions - Token Configuration & Setup
 # Critical Prerequisites for AI Agent Continuation
 
-**Date:** 2024-12-27T21:40:00Z
+**Date:** 2025-12-27T21:40:00Z
 **Priority:** P0 - BLOCKING
 **Estimated Time:** 15-30 minutes
 **Repository:** Aries-Serpent/_codex_
@@ -276,9 +276,9 @@ gh run list --limit 5
   5. Document in `.codex/key-archive/rotation-log.txt`
 
 **Set Calendar Reminder:**
-- [ ] Reminder for 2024-03-27: Rotate ORG_MASTER_KEY
-- [ ] Reminder for 2024-04-27: Rotate ORG_MASTER_KEY
-- [ ] Reminder for 2024-05-27: Rotate ORG_MASTER_KEY
+- [ ] Reminder for 2025-03-27: Rotate ORG_MASTER_KEY
+- [ ] Reminder for 2025-04-27: Rotate ORG_MASTER_KEY
+- [ ] Reminder for 2025-05-27: Rotate ORG_MASTER_KEY
 
 ---
 
@@ -369,4 +369,4 @@ gh run view --log
 **Document Status:** Ready for Human Admin Action
 **Next Step:** AI Agent continuation after token setup
 **Priority:** P0 - Blocking all advanced automation
-**Created:** 2024-12-27T21:40:00Z
+**Created:** 2025-12-27T21:40:00Z

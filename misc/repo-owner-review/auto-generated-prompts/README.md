@@ -5,7 +5,7 @@ This directory contains auto-generated follow-up prompt files that were previous
 
 ## Why These Files Were Moved
 
-**Date Moved**: 2024-12-29  
+**Date Moved**: 2025-12-29  
 **Original Location**: `.github/copilot-prompts/active/`  
 **Moved By**: Copilot Agent (PR #2639)  
 **Reason**: Code review identified these as "auto-generated bloat"

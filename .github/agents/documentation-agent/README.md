@@ -48,8 +48,8 @@ print(api_docs)
 
 # Generate changelog
 commits = [
-    {"sha": "abc123", "message": "feat: Add calculator", "date": "Current Cycle-01-03"},
-    {"sha": "def456", "message": "fix: Handle edge cases", "date": "Current Cycle-01-03"}
+    {"sha": "abc123", "message": "feat: Add calculator", "date": "2026-01-03"},
+    {"sha": "def456", "message": "fix: Handle edge cases", "date": "2026-01-03"}
 ]
 changelog = agent.generate_changelog(commits, version="1.0.0")
 print(changelog)
@@ -231,9 +231,9 @@ docs = agent.generate_api_docs(code)
 agent = create_agent(seed=48)
 
 commits = [
-    {"sha": "a1", "message": "feat(auth): Add JWT support", "date": "Current Cycle-01-01"},
-    {"sha": "b2", "message": "fix(api): Handle null values", "date": "Current Cycle-01-02"},
-    {"sha": "c3", "message": "docs: Update README", "date": "Current Cycle-01-03"}
+    {"sha": "a1", "message": "feat(auth): Add JWT support", "date": "2026-01-01"},
+    {"sha": "b2", "message": "fix(api): Handle null values", "date": "2026-01-02"},
+    {"sha": "c3", "message": "docs: Update README", "date": "2026-01-03"}
 ]
 
 changelog = agent.generate_changelog(commits, "2.0.0")
