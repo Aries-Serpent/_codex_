@@ -9326,3 +9326,11 @@ FAILED tests/specs/test_audit_meta_in_report.py::test_meta_propagates_and_render
 FAILED tests/specs/test_component_caps_clamp.py::test_component_caps_reduce_component_value
 FAILED tests/specs/test_dup_similarity.py::test_dup_heuristic_switch_fallback
 ```
+
+### `pytest -m smoke tests/specs/test_audit_manifest_fields.py tests/specs/test_audit_diff_cli.py tests/specs/test_audit_explain_cli.py tests/specs/test_audit_meta_in_report.py tests/specs/test_component_caps_clamp.py tests/specs/test_dup_similarity.py`
+
+Result: ✅ Passed.
+
+```
+6 passed, 2 warnings in 243.71s (0:04:03)
+```

@@ -16182,3 +16182,16 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 
 - Added additional per-domain file checks with tooling observations (AI index + link scan).
 - Updated QA walkthrough coverage plan progress.
+
+## Smoke Test Remediation Update - 2026-01-07
+
+- Added audit runner CLI subcommands and scoring stage outputs for smoke expectations.
+- Adjusted validate CLI to route Typer subcommands correctly.
+- Skipped Helm Chart.yaml in deployment manifest smoke validation.
+- Updated QA walkthrough notes and progress plan.
+
+## Audit Runner Stage Pipeline Updates - 2026-01-07
+
+- Generated context index artifacts with depth-aware file lists and seeded raw capabilities.
+- Enhanced scoring, gaps, rendering context, and manifest generation to align with audit pipeline expectations.
+- Added explain CLI output and absolute imports for stage execution.
