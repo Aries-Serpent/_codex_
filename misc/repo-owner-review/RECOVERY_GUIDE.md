@@ -1,6 +1,6 @@
 # File Recovery Guide
 
-**Last Updated**: Previous Cycle-12-12  
+**Last Updated**: 2024-12-12  
 **Purpose**: Instructions for recovering archived files from this folder
 
 ---
@@ -59,7 +59,7 @@ Recovery: Copy directly to original path from metadata
 
 ### Large Archives
 Location: `archived-artifacts/*/`  
-Format: Phase 5 be compressed (`.tar.gz`, `.zip`)  
+Format: may be compressed (`.tar.gz`, `.zip`)  
 Recovery: Extract first, then move
 
 ```bash

@@ -1,10 +1,10 @@
-# _codex_: Status Update (Previous Cycle-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
+# _codex_: Status Update (2024-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
 
 ## Audit Scope & Provenance
 - Default branch `main`; selected branch `main` at `9883d9bc4485a5aad11bf34907b56a397cb841f5` (parents `17392b43cff5160cce3aec941864b1a9279b3cab`, `8f25d33ce264fcb975e229c8a0692a37519426e2`) (`.codex/status/provenance.json`).
 - GitHub Events API exposed no recent `PushEvent`s; selection defaulted to branch HEAD (recorded in `.codex/errors.ndjson`).
-- Commit timestamp `Previous Cycle-09-30T12:59:33-05:00`; repo `pushed_at` `Previous Cycle-09-30T17:59:41Z`.
-- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `Previous Cycle-09-30T19:30:18Z`.
+- Commit timestamp `2024-09-30T12:59:33-05:00`; repo `pushed_at` `2024-09-30T17:59:41Z`.
+- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `2024-09-30T19:30:18Z`.
 
 ## Repo Map
 - `src/` ? 34,268 LOC across 223 files, dominated by `codex_ml`, `tokenization`, and `utils` modules (`artifacts/metrics/loc_by_dir.csv`).
@@ -20,7 +20,7 @@
 | Capability | Status | Existing artefacts | Gaps | Risks | Minimal patch plan | Rollback plan |
 | --- | --- | --- | --- | --- | --- | --- |
 | Tokenization | Implemented | `src/codex_ml/tokenization/__init__.py:60`; `src/tokenization/cli.py:1`; `tests/tokenization/test_sentencepiece_tokenizer.py:98` | Optional deps (`sentencepiece`, `tokenizers`) skip key tests and CLI encode paths; fallback `SentencePieceAdapter.encode` raises without fast backend | Silent regressions on vocab/config changes when extras absent | Bundle tiny SentencePiece fixture and add offline CLI round-trip test; extend fallback to emit IDs for smoke mode | Revert fixture/test and CLI update |
-| ChatGPT Codex Modeling | Implemented | `src/codex_ml/models/registry.py:1`; `src/codex_ml/models/utils/peft.py:10` | No automated check of offline `local_files_only` flows; accelerate warnings unchecked | Offline bootstrap Phase 5 fail unexpectedly when caches missing | Add pytest covering `gpt2-offline` path with dummy weights and assert helpful error messaging | Remove test and dummy assets |
+| ChatGPT Codex Modeling | Implemented | `src/codex_ml/models/registry.py:1`; `src/codex_ml/models/utils/peft.py:10` | No automated check of offline `local_files_only` flows; accelerate warnings unchecked | Offline bootstrap may fail unexpectedly when caches missing | Add pytest covering `gpt2-offline` path with dummy weights and assert helpful error messaging | Remove test and dummy assets |
 | Training Engine | Implemented | `src/codex_ml/training/functional_training.py:41`; `tests/training/test_run_functional_training_resume.py:96` | `_prepare` materialises iterables, blocking streaming; grad accumulation untested | Memory pressure on large corpora undermines reproducibility claims | Add generator-aware path leveraging `codex_ml.data.jsonl_stream` and regression test exercising accumulation | Revert streaming branch and test |
 | Config Management | Implemented | `src/codex_ml/cli/config.py:15`; `conf/config.yaml:1` | Hydra defaults list undocumented, overrides ordering implicit | Misconfigured experiments drift silently | Publish `docs/config/defaults.md` detailing defaults list and link from README | Drop doc and backlink |
 | Evaluation & Metrics | Implemented | `src/codex_ml/metrics/registry.py:39`; `src/codex_ml/training/eval.py:37` | Offline metric asset resolution lacks guardrails; NDJSON logging absent | Evaluation aborts mid-run with opaque `FileNotFoundError` | Add preflight logging + NDJSON summaries under `metrics_out` | Revert preflight and logging |

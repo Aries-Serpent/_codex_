@@ -13,7 +13,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 ## Examples
 
 ```text
-Question for ChatGPT-5 Previous Cycle-08-28T04:45Z:
+Question for ChatGPT-5 2024-08-28T04:45Z:
 While performing STEP 1: run `chatgpt-codex --prompt-file AUDIT_PROMPT.md`, encountered the following error:
 `bash: command not found: chatgpt-codex`
 Context: generating audit file. What are the possible causes, and how can this be resolved while preserving intended functionality?
@@ -31,7 +31,7 @@ C) Keep the fallback as the default to ensure determinism; retain CLI only as op
 ```text
 
 ```text
-Question for ChatGPT-5 Previous Cycle-08-28T04:50Z:
+Question for ChatGPT-5 2024-08-28T04:50Z:
 While performing STEP 2: `pre-commit run --all-files`, encountered the following issue:
 `command hung without producing output after >100s`
 Context: executing repository hooks. What are the possible causes, and how can this be resolved while preserving intended functionality?
@@ -50,7 +50,7 @@ E) Add a local timeout wrapper in your script; print which hook exceeded the thr
 ```text
 
 ```text
-Question for ChatGPT-5 Previous Cycle-08-28T04:55Z:
+Question for ChatGPT-5 2024-08-28T04:55Z:
 While performing STEP 3: `pytest`, encountered the following error:
 `pytest: error: unrecognized arguments: --cov=src/codex_ml --cov-report=term --cov-fail-under=70`
 Context: running unit tests; pytest-cov plugin missing. What are the possible causes, and how can this be resolved while preserving intended functionality?
@@ -67,7 +67,7 @@ D) If coverage is temporarily blocking, run tests without coverage, then re-enab
 ```text
 
 ```text
-Question for ChatGPT @codex Previous Cycle-09-02T03:08Z:
+Question for ChatGPT @codex 2024-09-02T03:08Z:
 While performing step "nox -s tests", encountered the following error:
 RuntimeError: Failed to import transformers.trainer because it cannot import name 'clear_device_cache' from 'accelerate.utils.memory'.
 Context: running test suite in isolated nox environment after installing dependencies.

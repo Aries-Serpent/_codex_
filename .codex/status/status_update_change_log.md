@@ -27,7 +27,7 @@
   - tools/apply_interfaces.py:148 — raise NotImplementedError
   - tools/apply_interfaces.py:164 — raise NotImplementedError
 
-- **Previous Cycle-09-24 – Offline telemetry + deterministic tests**
+- **2024-09-24 – Offline telemetry + deterministic tests**
   - Enforced MLflow offline guard requiring ``MLFLOW_OFFLINE=1`` and local ``file:`` URIs before starting runs.
   - Extended HF loader to attach optional PEFT adapters from ``PEFT_ADAPTER_PATH`` without failing base model loads.
   - Added deterministic tiny overfit regression and tokenizer CLI round-trip smoke with graceful skips when helpers absent.

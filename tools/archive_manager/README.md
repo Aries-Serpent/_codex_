@@ -51,11 +51,11 @@ python archive_manager.py vacuum \
   --tombstones-logs ./tombstones_logs.jsonl \
   --summary
 
-# Prune records strictly older than Previous Cycle-06-01 (UTC) and regenerate gzip
+# Prune records strictly older than 2024-06-01 (UTC) and regenerate gzip
 python archive_manager.py vacuum \
   --tombstones-code ./tombstones_code.jsonl \
   --tombstones-logs ./tombstones_logs.jsonl \
-  --before Previous Cycle-06-01 \
+  --before 2024-06-01 \
   --gzip-tombstones
 ```text
 

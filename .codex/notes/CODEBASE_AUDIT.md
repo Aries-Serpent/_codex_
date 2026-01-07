@@ -51,7 +51,7 @@
 
 - LoRA/PEFT integration is stubbed; without it, parameter-efficient fine-tuning is impossible.
 - Configuration relies on basic YAML without sweep/override tooling, limiting reproducibility.
-- Custom training loop lacks gradient accumulation and precision options; Phase 5 fail on limited hardware.
+- Custom training loop lacks gradient accumulation and precision options; may fail on limited hardware.
 - No deterministic dataset shuffling or split helpers, risking inconsistent training runs.
 - Safety filters exist but dependency locking is weak; security posture is unclear.
 - Coverage reporting is absent despite an extensive test suite.
@@ -179,7 +179,7 @@
 The following features are intentionally postponed for a later cycle, with minimal plans noted for future work:
 
 - **Advanced RL support:** Implementing RL agents and reward models is complex and not required for initial production. Defer until a clear use case arises. Minimal plan: finish scaffolding and implement a trivial reward model for testing.
-- **Full multi-node distributed training:** While single-node multi-GPU support is important, adding multi-node support requires significant engineering and Phase 5 not be necessary for the current scale. Defer until model sizes demand it.
+- **Full multi-node distributed training:** While single-node multi-GPU support is important, adding multi-node support requires significant engineering and may not be necessary for the current scale. Defer until model sizes demand it.
 - **Comprehensive secret scanning integration:** Adding third-party secret scanning tools requires careful tuning to avoid false positives. Schedule for a later security audit.
 - **Notebook auto-generation:** Automatically generating interactive notebooks (e.g., quick start) can be helpful but is not critical. Provide manual examples first.
 

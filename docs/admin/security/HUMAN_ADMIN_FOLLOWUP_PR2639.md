@@ -4,7 +4,7 @@
 **PR**: #2639 / #2660  
 **Branch**: copilot/sub-pr-2639  
 **Status**: ✅ Implementation Complete - **ACTION REQUIRED**  
-**Generated**: Previous Cycle-12-29  
+**Generated**: 2024-12-29  
 **Priority**: 🔴 **HIGH** - Security Enhancement
 
 ---
@@ -287,7 +287,7 @@ history -c  # Clears history in current session
 ```bash
 # Create a reminder for token rotation (90 days)
 # Add to your calendar: "Rotate _codex_ GitHub token"
-# Date: Current Cycle-03-29 (90 days from Previous Cycle-12-29)
+# Date: 2025-03-29 (90 days from 2024-12-29)
 ```
 
 ---
@@ -415,6 +415,6 @@ Once all phases are complete, update this document:
 ---
 
 **Document Version**: 1.0  
-**Last Updated**: Previous Cycle-12-29  
+**Last Updated**: 2024-12-29  
 **Maintainer**: @mbaetiong  
 **Status**: 🟢 **READY FOR ADMIN ACTION**

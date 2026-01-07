@@ -89,7 +89,7 @@ Low quality (<0.3): Minimal structure, errors, simple
 ```json
 {
   "version": "v1.0",
-  "created_at": "Previous Cycle-12-21T02:00:00",
+  "created_at": "2024-12-21T02:00:00",
   "total_files": 250,
   "total_size_original": 52428800,
   "total_size_compressed": 10485760,
@@ -107,7 +107,7 @@ Low quality (<0.3): Minimal structure, errors, simple
       "size_original": 4096,
       "size_compressed": 1024,
       "checksum": "a1b2c3...",
-      "last_modified": "Previous Cycle-12-21T01:00:00",
+      "last_modified": "2024-12-21T01:00:00",
       "quality_score": 0.85,
       "metadata": {
         "extracted_metadata": "{\"classes\": 3, \"functions\": 12}"

@@ -1,4 +1,4 @@
-# Open Questions & Next Steps — Run 4 (Previous Cycle-10-05)
+# Open Questions & Next Steps — Run 4 (2024-10-05)
 
 ## Offline Hardening Integration Notes
 - Deterministic dataset assignments now flow through `src/codex_ml/data/splits.py` and the JSONL/CSV loaders so every record carries a stable `split` keyed by its hashed identifier.
@@ -29,15 +29,15 @@
 ---
 
 ## Historical Snapshot
-### Run 3 (Previous Cycle-09-22)
+### Run 3 (2024-09-22)
 - Covered Menu items: Docs polish (7), Quality gates (3), Self-management (8).【F:AUDIT_PROMPT.md†L5-L72】【F:scripts/codex_local_audit.sh†L1-L72】
 - Outcomes: offline-first audit prompt, reusable local audit runner, and prompt copy workflow for deterministic artefacts.【F:AUDIT_PROMPT.md†L5-L72】【F:scripts/codex_local_audit.sh†L1-L72】
-### Run 2 (Previous Cycle-09-22)
+### Run 2 (2024-09-22)
 - Covered Menu items: Security (4), Observability (5), Self-management (8).
 - Added security sweep and observability templates plus shared audit artefact library.
 - Outstanding automation and reproducibility questions rolled forward above.
 
-### Run 1 (Previous Cycle-09-22)
+### Run 1 (2024-09-22)
 - Covered Menu items: Repo map (1), Quality gates (3), Docs polish (7).
 - Seeded foundational audit reports, fence validator, and prompt refresh.
 - Pending investigations captured above remain relevant until resolved.

@@ -1,6 +1,6 @@
 # Semgrep Suppression Register
 
-> Last Updated: Previous Cycle-12-17
+> Last Updated: 2024-12-17
 > Maintained by: @mbaetiong
 
 ## Overview
@@ -18,20 +18,20 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 
 | Rule ID | File | Line | Severity | Reason | Approved By | Approved Date | Review Date |
 |---------|------|------|----------|--------|-------------|---------------|-------------|
-| python.lang.security.audit.eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | Previous Cycle-12-17 | Current Cycle-06-17 |
-| python.lang.security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | Previous Cycle-12-17 | Current Cycle-06-17 |
+| python.lang.security.audit.eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | 2024-12-17 | 2025-06-17 |
+| python.lang.security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | 2024-12-17 | 2025-06-17 |
 
 ## Path Exclusions
 
 | Path Pattern | Reason | Approved By | Approved Date |
 |--------------|--------|-------------|---------------|
-| tests/** | Test files contain intentional vulnerable patterns for testing | @mbaetiong | Previous Cycle-12-17 |
-| examples/** | Example code demonstrates patterns without production context | @mbaetiong | Previous Cycle-12-17 |
-| docs/code-samples/** | Documentation samples are not production code | @mbaetiong | Previous Cycle-12-17 |
+| tests/** | Test files contain intentional vulnerable patterns for testing | @mbaetiong | 2024-12-17 |
+| examples/** | Example code demonstrates patterns without production context | @mbaetiong | 2024-12-17 |
+| docs/code-samples/** | Documentation samples are not production code | @mbaetiong | 2024-12-17 |
 
 ## Review History
 
-### Previous Cycle-12-17 - Initial Suppression Setup
+### 2024-12-17 - Initial Suppression Setup
 - Created suppression register
 - Documented path exclusions
 - Added eval/exec suppressions for agent sandbox

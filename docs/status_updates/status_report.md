@@ -1,6 +1,6 @@
-<!-- generated Previous Cycle-10-29T20:36:36 UTC -->
+<!-- generated 2024-10-29T20:36:36 UTC -->
 # Status Report — _codex_ (v1.2.0)
-Generated: Previous Cycle-10-29T20:36:36
+Generated: 2024-10-29T20:36:36
 
 ## Gates Summary
 - Fence integrity: PASS
@@ -18,4 +18,4 @@ Generated: Previous Cycle-10-29T20:36:36
 - If any gate is FAIL, inspect tool output and iterate on the change.
 
 
-> Provenance: generated locally by `tools/status_report.py` (v1.2.0) at Previous Cycle-10-29T20:36:36.
+> Provenance: generated locally by `tools/status_report.py` (v1.2.0) at 2024-10-29T20:36:36.

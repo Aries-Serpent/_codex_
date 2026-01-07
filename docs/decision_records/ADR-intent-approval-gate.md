@@ -1,7 +1,7 @@
 # ADR: Introduce Intent Validation & Plan of Action Approval Gate
 
 ## Status
-Accepted — Previous Cycle-10-26
+Accepted — 2024-10-26
 
 ## Context
 Repeated workstreams benefited from an explicit alignment gate before implementation:

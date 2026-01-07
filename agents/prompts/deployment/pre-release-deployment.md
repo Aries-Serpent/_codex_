@@ -272,7 +272,7 @@ cat release.log | jq 'select(.event_type == "validation_complete")'
 cat release.log | jq -r '.event_type' | sort | uniq -c
 
 # Filter by timestamp
-cat release.log | jq 'select(.timestamp > "Previous Cycle-12-10T00:00:00")'
+cat release.log | jq 'select(.timestamp > "2024-12-10T00:00:00")'
 ```
 
 ## Hypothesis Testing

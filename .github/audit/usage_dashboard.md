@@ -1,6 +1,6 @@
 # OpenAI Usage Dashboard
 
-> Generated: Previous Cycle-12-25T06:36:03.249863+00:00
+> Generated: 2024-12-25T06:36:03.249863+00:00
 
 ## Summary
 

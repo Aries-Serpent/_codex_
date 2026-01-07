@@ -230,13 +230,13 @@ def test_rate_limit_throttling():
 
     client = TestClient(app)
 
-    # Make rapid requests: first two should pass, subsequent Phase 5 be throttled
+    # Make rapid requests: first two should pass, subsequent may be throttled
     res1 = client.get("/ping")
     assert res1.status_code == 200
     res2 = client.get("/ping")
     assert res2.status_code == 200
 
-    # Make several quick requests to trigger 429. Depending on timing this Phase 5 be 429.
+    # Make several quick requests to trigger 429. Depending on timing this may be 429.
     throttled = False
     for _ in range(5):
         r = client.get("/ping")

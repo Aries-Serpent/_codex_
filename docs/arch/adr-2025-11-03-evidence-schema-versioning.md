@@ -1,6 +1,6 @@
 # ADR-Previous Cycle-11-03: Evidence Record Schema Versioning
 
-**Date**: Previous Cycle-11-03  
+**Date**: 2024-11-03  
 **Status**: Accepted (Phase 2)  
 **Author**: Archive Standardization Team  
 **Stakeholders**: Architecture, Data Engineering, Operations  

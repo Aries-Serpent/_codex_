@@ -9,7 +9,7 @@ The `Aries-Serpent` organization has enabled the "GitHub recommended (default) c
 ## Backup Information
 
 - **Backup Branch**: `backup/codeql-advanced-YYYYMMDD-XXXXXXX`
-- **Disabled Date**: Previous Cycle-12-17
+- **Disabled Date**: 2024-12-17
 - **Disabled By**: Copilot Agent
 
 ## Restoration

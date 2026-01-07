@@ -2,7 +2,7 @@
 
 **Purpose**: Standards and guidelines for AI agent prompt templates in the `_codex_` repository.
 
-**Last Updated**: Previous Cycle-12-30  
+**Last Updated**: 2024-12-30  
 **Version**: 2.0.0  
 **Status**: 🟢 Active
 

@@ -1,6 +1,6 @@
 # Validation: Reproducibility — Seed, Env Snapshot, Checkpoint Metadata
 
-> Generated: Previous Cycle-11-05 07:27:25 | Author: mbaetiong
+> Generated: 2024-11-05 07:27:25 | Author: mbaetiong
 
 ## Objective
 
@@ -86,7 +86,7 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
 {
   "format_version": "1.0",
   "codex_commit": "abc123...",
-  "created_at": "Previous Cycle-11-05T...",
+  "created_at": "2024-11-05T...",
   "model_config": {...}
 }
 ```text
@@ -113,7 +113,7 @@ All validation steps work offline:
 ### Git Availability
 
 If git is unavailable:
-- `git_commit` field Phase 5 be `null` or empty string
+- `git_commit` field may be `null` or empty string
 - This is acceptable and documented
 - Tests handle this gracefully
 

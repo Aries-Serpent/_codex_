@@ -44,7 +44,7 @@ The tool generates a JSON file with the following structure:
 {
   "metadata": {
     "title": "📍 `_codex_` : Status Update Previous Cycle-11-10",
-    "timestamp_utc": "Previous Cycle-11-10T23:00:00.000000+00:00",
+    "timestamp_utc": "2024-11-10T23:00:00.000000+00:00",
     "report_version": "1.0.0",
     "template_version": "v1.2",
     "git_context": { ... },

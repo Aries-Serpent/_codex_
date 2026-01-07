@@ -113,7 +113,7 @@ Current version: **v1.2** (Recommended)
 Previous version: **v1.1** (Still supported)
 
 ### Version History
-- **v1.2** (Previous Cycle-11-02):
+- **v1.2** (2024-11-02):
   - **Enhanced Template**: Schema validation, audit integrity chains, security input validation
   - **Repository Context**: Git state (branch, commit SHA, dirty flag), environment snapshot
   - **40+ New Fields**: ML Test Score, Hydra configs, structured automation data
@@ -124,12 +124,12 @@ Previous version: **v1.1** (Still supported)
   - **Enhanced Tracking**: Nox sessions, MLflow offline, per-module coverage, determinism tests
   - **See `SCHEMA_ENHANCEMENTS_v1.2.md` for complete details**
 
-- **v1.1** (Previous Cycle-11-02):
+- **v1.1** (2024-11-02):
   - Dynamic Capability Audit with Extended Catalog
   - Reproducibility Registry for extensible controls
   - Schemas updated to allow additional properties and tagging
 
-- **v1.0** (Previous Cycle-11-02):
+- **v1.0** (2024-11-02):
   - Initial release with full snapshot, delta tracking
   - Severity/Confidence scoring (1-5)
   - Atomic patch diffs with validation checklists

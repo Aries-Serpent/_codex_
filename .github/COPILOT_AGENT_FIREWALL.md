@@ -1,7 +1,7 @@
 # Copilot Agent Firewall Configuration
 
 > **Version:** 1.0.0  
-> **Last Updated:** Previous Cycle-12-17
+> **Last Updated:** 2024-12-17
 
 ## Overview
 

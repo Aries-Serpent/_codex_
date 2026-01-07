@@ -1,4 +1,4 @@
-# Codex Remediation Plan – Phased Outline (Previous Cycle-09-17)
+# Codex Remediation Plan – Phased Outline (2024-09-17)
 
 ## Purpose & Inputs
 
@@ -63,7 +63,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 - **Exit criteria**: Test runs succeed regardless of optional dependency presence, with logs referencing the fallback decisions.
 
 ### U5 – Guard the Training CLI Against Missing `torch`
-- **Source gaps**: Outstanding table row (Previous Cycle-09-13) for `ModuleNotFoundError`; capability audit (Training Engine, ChatGPT Modeling).
+- **Source gaps**: Outstanding table row (2024-09-13) for `ModuleNotFoundError`; capability audit (Training Engine, ChatGPT Modeling).
 - **Impacted components**: `src/codex_ml/cli/train_model.py` (or equivalent), `pyproject.toml` extras, `docs/suggested_tasks/status_update_2025-09-17.md` (Diff 3), README quickstart, `.codex/session_logs.db` run metadata.
 - **Actions**:
   1. Add a runtime guard that surfaces a clear remediation (`pip install codex_ml[torch]`) and records the incident in session logs.

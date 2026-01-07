@@ -1,5 +1,5 @@
 # Detailed Gaps by Capability
-**Generated:** Previous Cycle-12-06 03:39:05
+**Generated:** 2024-12-06 03:39:05
 
 This document provides detailed gap analysis for each capability domain, including:
 - Missing paths and files

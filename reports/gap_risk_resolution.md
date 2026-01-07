@@ -1,6 +1,6 @@
-# Gap → Risk → Resolution Register — Previous Cycle-10-05 Alignment
+# Gap → Risk → Resolution Register — 2024-10-05 Alignment
 
-This register translates the open items from the Previous Cycle-10-05 status update into
+This register translates the open items from the 2024-10-05 status update into
 actionable containment plans and records which mitigations have already landed
 in the repository.
 

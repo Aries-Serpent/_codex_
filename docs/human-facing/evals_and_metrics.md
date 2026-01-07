@@ -1,6 +1,6 @@
 # Evals & Metrics
 
-> Last Updated: Previous Cycle-12-24
+> Last Updated: 2024-12-24
 
 This document describes the evaluation framework and metrics for the _codex_ system.
 

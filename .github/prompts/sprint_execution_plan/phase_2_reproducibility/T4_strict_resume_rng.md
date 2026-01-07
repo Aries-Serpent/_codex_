@@ -58,7 +58,7 @@ class RNGCheckpoint:
                     f"Cannot guarantee deterministic resume."
                 )
             else:
-                print(f"⚠️ RNG sidecar not found, resume Phase 5 not be deterministic")
+                print(f"⚠️ RNG sidecar not found, resume may not be deterministic")
                 return None
         
         with open(path) as f:

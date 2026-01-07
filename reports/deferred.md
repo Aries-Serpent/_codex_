@@ -1,4 +1,4 @@
-# Deferred Items — Run 1 (Previous Cycle-09-22)
+# Deferred Items — Run 1 (2024-09-22)
 
 | Item | Reason Deferred | Proposed Next Step |
 | --- | --- | --- |
@@ -7,7 +7,7 @@
 | Security markdown remediation | Existing docs violate new fence rule; heavy lift to refactor safely. | Address alongside security sweep (Menu 4) to avoid piecemeal edits. |
 | Offline MLflow usage guide | Requires coordination with tracking maintainers. | Capture expectations in future documentation polish run (Menu 7). |
 
-## Update Previous Cycle-09-26T18:57:07Z
+## Update 2024-09-26T18:57:07Z
 
 | Module | Rationale |
 | --- | --- |

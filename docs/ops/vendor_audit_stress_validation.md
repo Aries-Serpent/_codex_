@@ -1,4 +1,4 @@
-# Vendor Audit Stress Validation (Previous Cycle-09-18)
+# Vendor Audit Stress Validation (2024-09-18)
 
 This note captures a fresh stress validation pass for the `vendor_audit_setup.sh`
 and `vendor_audit_maint.sh` wrappers. The goal was to exercise the higher trial

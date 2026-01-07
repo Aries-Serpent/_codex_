@@ -107,9 +107,9 @@ Common issues and solutions.
 
 ## Version History
 
-- **v1.1.0** (Previous Cycle-12-11): Added debugging prompts for AI Agents
+- **v1.1.0** (2024-12-11): Added debugging prompts for AI Agents
   - Test failure debugging
   - Merge conflict resolution
   - Performance optimization
   - Security vulnerability remediation
-- **v1.0.0** (Previous Cycle-12-10): Initial prompt structure for ChatGPT 5.1 Agent Mode
+- **v1.0.0** (2024-12-10): Initial prompt structure for ChatGPT 5.1 Agent Mode

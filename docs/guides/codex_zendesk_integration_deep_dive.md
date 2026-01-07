@@ -1,9 +1,9 @@
 # Guide: Codex ↔ Zendesk Integration Deep Dive
-> Generated: Previous Cycle-10-31 16:17:26 | Author: mbaetiong
+> Generated: 2024-10-31 16:17:26 | Author: mbaetiong
 
  Roles: [Primary] Educator, [Secondary] Navigator   Energy: 5/5
 
-Note on scope: Some references below were discovered via code search and Phase 5 be incomplete due to platform limits. For a broader view, browse the code search results: https://github.com/search?q=repo%3AAries-Serpent%2F_codex_+Zendesk&type=code and the repo tree: https://github.com/Aries-Serpent/_codex_/tree/main
+Note on scope: Some references below were discovered via code search and may be incomplete due to platform limits. For a broader view, browse the code search results: https://github.com/search?q=repo%3AAries-Serpent%2F_codex_+Zendesk&type=code and the repo tree: https://github.com/Aries-Serpent/_codex_/tree/main
 
 ---
 
@@ -132,7 +132,7 @@ How to use:
 | `codex zendesk deps-check` | List optional deps availability | Useful for setup verification |
 | `codex zendesk snapshot --env <env>` | Export current Zendesk configuration | Produces JSON snapshots |
 | `codex zendesk diff <resource> <desired.json> <current.json> > diff.json` | Compute resource-specific drift | Resource can be `triggers`, `views`, etc. |
-| `codex zendesk plan <resource> diff.json > plan.json` | Turn diffs into operations | Phase 5 be identity depending on design |
+| `codex zendesk plan <resource> diff.json > plan.json` | Turn diffs into operations | may be identity depending on design |
 | `codex zendesk apply <resource> plan.json --env <env> [--dry-run]` | Apply changes (or simulate) | Emits evidence JSONL |
 | `codex zendesk metrics` | Emit metrics to console/registry | Connect to your monitoring stack |
 | `codex zendesk docs-sync [--dry-run]` | Snapshot Zendesk docs locally | Uses curated manifest |

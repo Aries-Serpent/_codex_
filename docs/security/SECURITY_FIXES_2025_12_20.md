@@ -1,5 +1,5 @@
-# Security Fixes Report - Previous Cycle-12-20
-> Generated: Previous Cycle-12-20T01:50:00Z | Author: Automated Security Review
+# Security Fixes Report - 2024-12-20
+> Generated: 2024-12-20T01:50:00Z | Author: Automated Security Review
 
 ## Executive Summary
 
@@ -99,7 +99,7 @@ if not credentials:
 **Status:** ✅ RESOLVED
 
 ### Analysis
-The secret scan stub writes findings (which Phase 5 contain sensitive snippets) to output files.
+The secret scan stub writes findings (which may contain sensitive snippets) to output files.
 
 ### Resolution
 **Fix:** Redact actual secret values in output, only show location and type.

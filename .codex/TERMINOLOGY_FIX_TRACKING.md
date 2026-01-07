@@ -1,6 +1,6 @@
 # Terminology Fix Tracking Document
 
-**Created:** Current Cycle-01-05
+**Created:** 2026-01-05
 **Status:** In Progress  
 **Policy Reference:** `.codex/CODEBASE_AGENCY_POLICY.md` Section 4
 
@@ -82,7 +82,7 @@
 
 ### For Each File:
 1. **Review context** - Understand whether references are historical or future
-2. **Preserve historical** - Keep "Completed: Previous Cycle-12-15" style dates
+2. **Preserve historical** - Keep "Completed: 2024-12-15" style dates
 3. **Update future planning** - Replace weeks/months with pre-commits
 4. **Maintain consistency** - Use same terminology throughout file
 5. **Validate readability** - Ensure changes make sense in context

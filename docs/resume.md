@@ -7,7 +7,7 @@ Manifest schema
 The resume manifest (`run_dir/resume_manifest.json`) contains the following top-level fields:
 
 - manifest_version: (int) optional version stamp for future schema evolution.
-- checkpoint_dir: (string|null) path to checkpoint directory (Phase 5 be inside run dir)
+- checkpoint_dir: (string|null) path to checkpoint directory (may be inside run dir)
 - last_checkpoint: (string|null) last saved checkpoint path
 - best_checkpoint: (string|null) best model checkpoint path
 - global_step: (int) training step at manifest write time

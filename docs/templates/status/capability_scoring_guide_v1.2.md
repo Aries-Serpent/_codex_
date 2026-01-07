@@ -1,5 +1,5 @@
 # Guide: Capability Scoring & Gaps (v1.2)
-> Generated: Previous Cycle-11-02 15:21:24 UTC | Author: mbaetiong  
+> Generated: 2024-11-02 15:21:24 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Capability Scoring Lead], [Secondary: Auditor] ⚡ Energy: 5
 
 Scoring Heuristic

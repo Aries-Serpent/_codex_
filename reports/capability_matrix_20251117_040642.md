@@ -79,7 +79,7 @@ Evidence Files (first 10):
 .codex/reports/Archive_Policy_Operations.md
 .codex/reports/archive_policy_operations.md
 .codex/reports/merge_summary_archive_policy_20251024.txt
-.codex/status/manifest-Previous Cycle-09-22T02-15-21Z.json
+.codex/status/manifest-2024-09-22T02-15-21Z.json
 .codex/validation/20250910T052842Z/post_manifest.json
 ```text
 ### checkpointing
@@ -305,7 +305,7 @@ Evidence Files (first 10):
 .codex/copilot_bridge/var/manifests/.gitkeep
 .codex/evidence/provenance/root-cleanup/intoto.jsonl
 .codex/evidence/provenance/root-cleanup/slsa.json
-.codex/status/manifest-Previous Cycle-09-22T02-15-21Z.json
+.codex/status/manifest-2024-09-22T02-15-21Z.json
 .codex/status/provenance.json
 .codex/validation/20250910T052842Z/post_manifest.json
 .codex/validation/20250910T052842Z/pre_manifest.json

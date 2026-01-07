@@ -75,7 +75,7 @@ docs/arch/
 ### Before (v1)
 ```json
 {
-  "ts": "Previous Cycle-11-02T19:44:00Z",
+  "ts": "2024-11-02T19:44:00Z",
   "action": "ARCHIVE",
   "actor": "marc",
   "tombstone": "d3e8729-...",
@@ -86,7 +86,7 @@ docs/arch/
 ### After (v2)
 ```json
 {
-  "ts": "Previous Cycle-11-02T19:44:00Z",
+  "ts": "2024-11-02T19:44:00Z",
   "action": "ARCHIVE",
   "actor": "marc",
   "tombstone": "d3e8729-...",
@@ -96,7 +96,7 @@ docs/arch/
     "slsa_level": "L3",
     "signature": "MOCK_SIG_abc123...",
     "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "Previous Cycle-11-02T19:44:01Z"
+    "signed_at": "2024-11-02T19:44:01Z"
   }
 }
 ```text

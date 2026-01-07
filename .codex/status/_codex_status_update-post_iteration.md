@@ -4,7 +4,7 @@
 - [ ] audit_artifacts/capabilities_scored.json
 - [ ] audit_artifacts/gaps.json
 - [ ] reports/capability_audit.md
-- [ ] reports/_codex_status_update-0D_base_-Previous Cycle-10-10.md
+- [ ] reports/_codex_status_update-0D_base_-2024-10-10.md
 
 ## Capability coverage to test markers/sessions
 

@@ -101,7 +101,7 @@ When Dependabot reports a vulnerability that's already patched:
    - Run security scans after update
    - Document in security audit
 
-### Example: aiohttp Security Analysis (Current Cycle-01-06)
+### Example: aiohttp Security Analysis (2026-01-06)
 
 Recent analysis of 8 Dependabot alerts for aiohttp:
 - **Current Version:** 3.13.3 (latest, patched)
@@ -264,5 +264,5 @@ We appreciate the efforts of security researchers who help keep our project secu
 
 ---
 
-**Last Updated:** Current Cycle-01-06  
-**Next Review:** Current Cycle-02-03 (monthly review schedule)
+**Last Updated:** 2026-01-06  
+**Next Review:** 2025-02-03 (monthly review schedule)

@@ -92,5 +92,5 @@ This document should be updated whenever:
 - False positives are resolved through tooling updates
 - Patterns change that make previous exceptions obsolete
 
-**Last Updated**: Previous Cycle-12-08
+**Last Updated**: 2024-12-08
 **Maintainer**: Repository Admins

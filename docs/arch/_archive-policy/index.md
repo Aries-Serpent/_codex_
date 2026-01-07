@@ -1,6 +1,6 @@
 # Archive & Deprecation Policy Index
 
-> Last updated: Previous Cycle-10-24
+> Last updated: 2024-10-24
 > Status: Canonical policy consolidated; historical summaries retained for reference only.
 
 This directory hosts the authoritative guidance for archiving and deprecating code or documentation within the repository. The
@@ -20,9 +20,9 @@ work; the canonical policy above is the single source of truth.
 
 | Variant | Deprecated On | Notes |
 | --- | --- | --- |
-| [v2 Summary](./_deprecated/v2-archiving-summary.md) | Previous Cycle-10-24 | Condensed excerpt retained only for provenance. |
-| [v3 Summary](./_deprecated/v3-archiving-summary.md) | Previous Cycle-10-24 | Alternative phrasing superseded by canonical guidance. |
-| [v4 Summary](./_deprecated/v4-archiving-summary.md) | Previous Cycle-10-24 | Legacy abstraction kept for audit trails. |
+| [v2 Summary](./_deprecated/v2-archiving-summary.md) | 2024-10-24 | Condensed excerpt retained only for provenance. |
+| [v3 Summary](./_deprecated/v3-archiving-summary.md) | 2024-10-24 | Alternative phrasing superseded by canonical guidance. |
+| [v4 Summary](./_deprecated/v4-archiving-summary.md) | 2024-10-24 | Legacy abstraction kept for audit trails. |
 
 ## Related Artifacts
 

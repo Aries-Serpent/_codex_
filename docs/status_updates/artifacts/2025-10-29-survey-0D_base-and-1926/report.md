@@ -1,4 +1,4 @@
-# Repo Survey — 0D_base_ & PR 1926 — Previous Cycle-10-29 (UTC)
+# Repo Survey — 0D_base_ & PR 1926 — 2024-10-29 (UTC)
 
 **Ref:** branch `0D_base_`  commit `a2deb8e0`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-29-survey-0D_base-and-1926`
 
@@ -360,7 +360,7 @@ image:
 resources:
   cpu: "2"
   memory: "8Gi"
-  # Disk, GPU fields Phase 5 be added later; keep this minimal and deterministic.
+  # Disk, GPU fields may be added later; keep this minimal and deterministic.
 
 reasoning:
   trace_capture:

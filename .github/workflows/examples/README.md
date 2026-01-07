@@ -252,6 +252,6 @@ To add new example workflows:
 
 ---
 
-**Last Updated**: Previous Cycle-12-30  
+**Last Updated**: 2024-12-30  
 **Maintainer**: @mbaetiong  
 **Status**: Example Templates ✅

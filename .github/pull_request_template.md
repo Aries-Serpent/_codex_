@@ -1,7 +1,7 @@
 # Pull Request Template
 
 > **Version:** 1.4.0  
-> **Generated:** Previous Cycle-12-29  
+> **Generated:** 2024-12-29  
 > **Purpose:** Standardized PR workflow with Copilot continuation support, safety checks, and optional capability controls
 
 ---

@@ -1,6 +1,6 @@
 # Archive Standards Mapping
 
-> **Generated**: Previous Cycle-11-03 | **Author**: Archive Standardization Team | **Version**: 1.0
+> **Generated**: 2024-11-03 | **Author**: Archive Standardization Team | **Version**: 1.0
 
 ## Overview
 
@@ -32,7 +32,7 @@ from codex.archive.standardization import StandardizationManager
 
 manager = StandardizationManager(enable_signing=True)
 evidence_record = {
-    "ts": "Previous Cycle-11-03T00:00:00Z",
+    "ts": "2024-11-03T00:00:00Z",
     "action": "ARCHIVE",
     "actor": "user@example.com",
     "tombstone": "uuid",
@@ -133,7 +133,7 @@ link = generate_link_metadata(
 **v2 Evidence Record** (SAA-compliant):
 ```json
 {
-  "ts": "Previous Cycle-11-03T00:00:00Z",
+  "ts": "2024-11-03T00:00:00Z",
   "action": "ARCHIVE",
   "actor": "user@example.com",
   "repo": "_codex_",
@@ -149,7 +149,7 @@ link = generate_link_metadata(
     "signature": "MOCK_SIG_abc123...",
     "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
     "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "Previous Cycle-11-03T00:00:01Z"
+    "signed_at": "2024-11-03T00:00:01Z"
   }
 }
 ```text
@@ -273,4 +273,4 @@ Compliance:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | Previous Cycle-11-03 | Initial standards mapping for Phase 2 |
+| 1.0 | 2024-11-03 | Initial standards mapping for Phase 2 |

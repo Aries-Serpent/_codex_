@@ -1,5 +1,5 @@
 # [PromptBundle]: Dependency Segmentation & Archival Alignment Rollout  
-> Generated: Previous Cycle-11-12 16:13:40 UTC | Author: mbaetiong  
+> Generated: 2024-11-12 16:13:40 UTC | Author: mbaetiong  
 
 This bundle provides READY-TO-COPY prompts for GitHub Copilot Agents to implement the archival-aligned, memory-saving dependency segmentation strategy across branches `0C_base_`, `0D_base_`, and `main` in the `Aries-Serpent/_codex_` repository.
 
@@ -219,7 +219,7 @@ Deliverable: Minimal, append-only update; preserve original reference.
 Goal: Document segmentation rollout.
 Branch: 0D_base_
 If CHANGELOG.md exists, append:
-  ## Previous Cycle-11-12
+  ## 2024-11-12
   - Dependency segmentation (requirements-ml-cpu/eval/notebook)
   - Evidence logging introduced (.codex/evidence/dependency_ops.jsonl)
   - rc5 environment scripts (setup.sh, maintenance.sh)

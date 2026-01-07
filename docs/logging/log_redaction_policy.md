@@ -1,5 +1,5 @@
 # Guide: Security Logging and Redaction Policy
-> Generated: Previous Cycle-10-20 06:15:16 UTC | Author: mbaetiong
+> Generated: 2024-10-20 06:15:16 UTC | Author: mbaetiong
 
 ## Objectives
 - Prevent sensitive data leakage via logs.
@@ -7,7 +7,7 @@
 
 ## Redaction Rules
 - Tokens, API keys, secrets → redact to `"***"`.
-- File paths Phase 5 be truncated to basename in user-facing logs.
+- File paths may be truncated to basename in user-facing logs.
 - Request/response bodies: log schema-only summaries for PII-prone endpoints.
 
 ## Deterministic Logging

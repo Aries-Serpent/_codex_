@@ -92,7 +92,7 @@ Add under verify job after Install dependencies:
 | Area | Risk | Mitigation |
 |------|------|------------|
 | Secret Baseline | False negatives if stale | Routine scans + PR gate |
-| SQLite Patch | Regex-based mutation Phase 5 miss patterns | Refactor with explicit AST or manual edit |
+| SQLite Patch | Regex-based mutation may miss patterns | Refactor with explicit AST or manual edit |
 | CLI Exit Codes | sys.exit calls missing import (sys not imported) | Import sys or use click.Abort |
 | Workflow Scope | Only manual dispatch | Add push / PR triggers when ready |
 | Inventory Data | Potential size growth | Prune or compress older inventories |
@@ -103,7 +103,7 @@ Add under verify job after Install dependencies:
 |-------|--------|------|
 | sys import used in cli.py? | Missing | Need to add `import sys` for exit path |
 | mypy in CI | Not yet | Doc only |
-| detect-secrets installed in env? | Unverified | Generation Phase 5 fail silently (logged) |
+| detect-secrets installed in env? | Unverified | Generation may fail silently (logged) |
 | Bandit severity level | High (-lll) | Accept if policy requires strictness |
 
 ## Immediate Fix Suggestion (CLI sys import)

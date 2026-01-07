@@ -58,7 +58,7 @@ head -30 reports/legacy_import_usage.csv
 
 **Expected high-priority targets** (from dry-run):
 - `scripts/train.py` - Has `training.*` imports
-- `cli/task_sequence.py` - Phase 5 have training/tokenization refs
+- `cli/task_sequence.py` - may have training/tokenization refs
 - `cli/script_polish.py` - Has tokenization/modeling references
 - Other files in scripts/ and cli/ directories
 

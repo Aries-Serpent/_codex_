@@ -1,7 +1,7 @@
 # Inference Serving Troubleshooting Guide
 
 > **Version**: 2.0.0  
-> **Last Updated**: Previous Cycle-12-07
+> **Last Updated**: 2024-12-07
 
 ---
 
@@ -104,7 +104,7 @@ print(f"Expires: {decoded['exp']}")
 ```
 
 **Cause**: Timing attack detection
-- Constant-time comparison Phase 5 fail on clock skew
+- Constant-time comparison may fail on clock skew
 - Solution: Ensure NTP sync on all servers
 
 ---

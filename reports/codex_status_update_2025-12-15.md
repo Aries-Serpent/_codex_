@@ -1,6 +1,6 @@
-# [Daily Audit Status] Previous Cycle-12-15
+# [Daily Audit Status] 2024-12-15
 
-- Generated: Previous Cycle-12-15 21:13:32 UTC
+- Generated: 2024-12-15 21:13:32 UTC
 - Capabilities scored: 40
 - Low maturity (< 0.7): 0
 - Matrix report: reports/capability_matrix_20251215_211332.md

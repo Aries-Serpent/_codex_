@@ -1,4 +1,4 @@
-# Codex ML Ops Iteration — Previous Cycle-11-28
+# Codex ML Ops Iteration — 2024-11-28
 
 ## Overview
 This iteration focused on closing a configuration drift risk surfaced during routine readiness review. While configuration schemas and validators already existed, they were not wired into the standard automation path, leaving room for unnoticed breaking changes.

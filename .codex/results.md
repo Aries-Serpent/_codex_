@@ -1,4 +1,4 @@
-# Workflow Merge Results (Previous Cycle-08-23T18:16:11Z)
+# Workflow Merge Results (2024-08-23T18:16:11Z)
 
 - Authoritative: `codex_workflow.py`
 - Redundant files: []
@@ -51,7 +51,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 - Added automation entry point `tools/codex_exec.py`.
 - Enhanced executor with phased operations and robust logging.
 
-# Hydra Validation Previous Cycle-08-25T05:00:03Z
+# Hydra Validation 2024-08-25T05:00:03Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -65,7 +65,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:00:58Z
+# Hydra Validation 2024-08-25T05:00:58Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -79,7 +79,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:01:07Z
+# Hydra Validation 2024-08-25T05:01:07Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -93,7 +93,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:01:17Z
+# Hydra Validation 2024-08-25T05:01:17Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -107,7 +107,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:02:06Z
+# Hydra Validation 2024-08-25T05:02:06Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -121,7 +121,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:03:36Z
+# Hydra Validation 2024-08-25T05:03:36Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -135,7 +135,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:03:45Z
+# Hydra Validation 2024-08-25T05:03:45Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -149,7 +149,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 (exit=1)
 ```text
 
-# Hydra Validation Previous Cycle-08-25T05:04:25Z
+# Hydra Validation 2024-08-25T05:04:25Z
 
 ## $ python -m codex_ml.cli.main +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
@@ -196,7 +196,7 @@ dry_run: true
 [pipeline] step=train dry_run=True
 [pipeline] step=evaluate dry_run=True
 
-# Validation Previous Cycle-08-25T05:32:07Z
+# Validation 2024-08-25T05:32:07Z
 
 ## pytest (metrics)
 ```text
@@ -238,7 +238,7 @@ ERROR tests/test_metrics.py
 
 ```text
 {
-  "ts": "Previous Cycle-08-25T05:59:45Z",
+  "ts": "2024-08-25T05:59:45Z",
   "acceptance": {
     "tensorboard_dir": "/workspace/_codex_/runs/demo/tensorboard",
     "mlflow_dir": "/workspace/_codex_/runs/demo/mlruns",
@@ -248,9 +248,9 @@ ERROR tests/test_metrics.py
   "note": "TensorBoard should display scalars/histograms; W&B logs if enabled; MLflow artifacts recorded."
 }
 
-# Monitoring Integration Previous Cycle-08-25T06:05:02Z
+# Monitoring Integration 2024-08-25T06:05:02Z
 `SKIP=semgrep,detect-secrets pre-commit run --all-files`
-## Previous Cycle-08-25T15:04:00Z Checkpointing
+## 2024-08-25T15:04:00Z Checkpointing
 
 ### pre-commit
 ```text
@@ -271,7 +271,7 @@ semgrep.................................................................Skipped
 8 passed, 1 skipped in 29.46s
 ```text
 
-# Data loaders validation Previous Cycle-08-25T15:44:06Z
+# Data loaders validation 2024-08-25T15:44:06Z
 
 ## pytest tests/test_loaders.py
 ```text
@@ -286,7 +286,7 @@ semgrep.................................................................Skipped
 ```text
 Pre-commit run was interrupted during semgrep environment setup.
 
-# Validation Previous Cycle-08-25T15:54:21Z
+# Validation 2024-08-25T15:54:21Z
 
 ## $ pytest -q -k safety --maxfail=1
 ```text
@@ -309,7 +309,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 (exit=1)
 ```text
 
-# Validation Previous Cycle-08-25T15:58:16Z
+# Validation 2024-08-25T15:58:16Z
 
 ## $ pytest -q tests/test_safety.py
 ```...                                                                                                                      [100%]
@@ -318,7 +318,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 (exit=0)
 ```text
 
-# Validation Previous Cycle-08-25T16:06:37Z
+# Validation 2024-08-25T16:06:37Z
 
 ## pre-commit (all files)
 ```text
@@ -331,19 +331,19 @@ ERROR tests/test_checkpoint_roundtrip.py
 [INFO] Initializing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO] Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO] Once installed this environment will be reused.
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 [INFO] Installing environment for https://github.com/psf/black.
 [INFO] Once installed this environment will be reused.
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 [INFO] Installing environment for https://github.com/pycqa/isort.
 [INFO] Once installed this environment will be reused.
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 [INFO] Installing environment for https://github.com/pycqa/flake8.
 [INFO] Once installed this environment will be reused.
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 [INFO] Installing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO] Once installed this environment will be reused.
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 fix end of files.........................................................Failed
 - hook id: end-of-file-fixer
 - exit code: 1
@@ -2708,7 +2708,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation Previous Cycle-08-25T16:08:15Z
+# Validation 2024-08-25T16:08:15Z
 
 ## pre-commit (all files)
 ```text
@@ -3124,7 +3124,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation Previous Cycle-08-25T16:09:02Z
+# Validation 2024-08-25T16:09:02Z
 
 ## pre-commit (all files)
 ```text
@@ -3335,7 +3335,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Validation Previous Cycle-08-25T16:19:31Z
+# Validation 2024-08-25T16:19:31Z
 
 ## docker build
 ``
@@ -3344,7 +3344,7 @@ scripts/deploy/build.sh: line 6: docker: command not found
 (exit=127)
 ERROR: name 'sys' is not defined
 
-# Validation Previous Cycle-08-25T16:19:47Z
+# Validation 2024-08-25T16:19:47Z
 
 ## docker build
 ``
@@ -3410,7 +3410,7 @@ curl: (7) Failed to connect to localhost port 8000 after 0 ms: Couldn't connect 
 (exit=7)
 ``
 
-# Validation Previous Cycle-08-25T20:21:56Z
+# Validation 2024-08-25T20:21:56Z
 
 ## Install MkDocs deps
 ```text
@@ -3813,15 +3813,15 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 (exit=1)
 ```text
 
-# Validation Previous Cycle-08-25T20:43:46Z
+# Validation 2024-08-25T20:43:46Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154626
 - MLflow enabled: False
 
-# Validation Previous Cycle-08-25T20:44:01Z
+# Validation 2024-08-25T20:44:01Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154641
 - MLflow enabled: True
 
-# Repo scan Previous Cycle-08-26T00:50:52Z
+# Repo scan 2024-08-26T00:50:52Z
 - codex_ml/interfaces/reward_model.py
 - codex_ml/interfaces/rl.py
 - codex_ml/interfaces/tokenizer.py
@@ -3830,7 +3830,7 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation Previous Cycle-08-26T00:50:52Z
+# Validation 2024-08-26T00:50:52Z
 
 ## mypy interfaces
 ```text
@@ -3865,7 +3865,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 ```text
 
-# Repo scan Previous Cycle-08-26T00:51:15Z
+# Repo scan 2024-08-26T00:51:15Z
 - codex_ml/interfaces/reward_model.py
 - codex_ml/interfaces/rl.py
 - codex_ml/interfaces/tokenizer.py
@@ -3874,7 +3874,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation Previous Cycle-08-26T00:51:15Z
+# Validation 2024-08-26T00:51:15Z
 
 ## mypy interfaces
 ```text
@@ -3908,7 +3908,7 @@ ERROR tests/test_interfaces_compat.py
 
 ```text
 
-# Repo scan Previous Cycle-08-26T00:51:52Z
+# Repo scan 2024-08-26T00:51:52Z
 - src/codex_ml/interfaces/reward_model.py
 - src/codex_ml/interfaces/rl.py
 - src/codex_ml/interfaces/tokenizer.py
@@ -3917,7 +3917,7 @@ ERROR tests/test_interfaces_compat.py
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation Previous Cycle-08-26T00:51:52Z
+# Validation 2024-08-26T00:51:52Z
 
 ## mypy interfaces
 ```text
@@ -3936,7 +3936,7 @@ sss                                                                             
 
 ```text
 
-# Repo scan Previous Cycle-08-26T00:52:00Z
+# Repo scan 2024-08-26T00:52:00Z
 - src/codex_ml/interfaces/reward_model.py
 - src/codex_ml/interfaces/rl.py
 - src/codex_ml/interfaces/tokenizer.py
@@ -3945,7 +3945,7 @@ sss                                                                             
 - tests/test_tokenization.py
 - tools/codex_agents_workflow.py
 
-# Validation Previous Cycle-08-26T00:52:00Z
+# Validation 2024-08-26T00:52:00Z
 
 ## mypy interfaces
 ```text
@@ -3964,7 +3964,7 @@ sss                                                                             
 
 ```text
 
-# Pre-commit Previous Cycle-08-26T00:52:30Z
+# Pre-commit 2024-08-26T00:52:30Z
 
 [INFO][m Initializing environment for https://github.com/returntocorp/semgrep.
 Interrupted (^C): KeyboardInterrupt:
@@ -3984,34 +3984,34 @@ Check the log at /root/.cache/pre-commit/pre-commit.log
 [INFO][m Initializing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/astral-sh/ruff-pre-commit.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/PyCQA/bandit.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/Yelp/detect-secrets.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/returntocorp/semgrep.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/pre-commit/pre-commit-hooks.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/psf/black.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/pycqa/isort.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/pycqa/flake8.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 [INFO][m Installing environment for https://github.com/pre-commit/mirrors-mypy.
 [INFO][m Once installed this environment will be reused.
-[INFO][m This Phase 5 take a few minutes...
+[INFO][m This may take a few minutes...
 fix end of files.........................................................[41mFailed[m
 [2m- hook id: end-of-file-fixer[m
 [2m- exit code: 1[m
@@ -4557,7 +4557,7 @@ tests/test_mlflow_utils.py ....                                                 
 
 Runs appear under specified experiment (when enabled); repeated runs with the same seed produce identical metrics.
 
-# Deps Previous Cycle-08-26T05:28:24Z
+# Deps 2024-08-26T05:28:24Z
 
 ## python -m pip install -r requirements-dev.txt
 ```text
@@ -4907,7 +4907,7 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 ## python -m pip install -r requirements.txt
 ```text
 
-# Validation Previous Cycle-08-26T05:29:34Z
+# Validation 2024-08-26T05:29:34Z
 
 ## GPU check
 ```text
@@ -6428,7 +6428,7 @@ Check the log at /root/.cache/pre-commit/pre-commit.log
 
 
 
-# Deps Previous Cycle-08-26T05:45:48Z
+# Deps 2024-08-26T05:45:48Z
 
 ## python -m pip install -r requirements-dev.txt
 ```text
@@ -6778,7 +6778,7 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 ## python -m pip install -r requirements.txt
 ```text
 
-# Validation Previous Cycle-08-26T05:50:44Z
+# Validation 2024-08-26T05:50:44Z
 
 ## GPU check
 ```text
@@ -8259,7 +8259,7 @@ ERROR: /workspace/_codex_/tests/test_mlflow_utils.py Imports are incorrectly sor
 ```text
 
 
-# Validation Previous Cycle-08-26T13:08:17Z
+# Validation 2024-08-26T13:08:17Z
 
 ## HF Trainer knobs doc check
 ```text
@@ -8275,12 +8275,12 @@ Try `python -h' for more information.
 ERROR: [Errno 2] No such file or directory: 'docker'
 ```text
 
-# Patch Summary Previous Cycle-08-26T13:18:52Z
+# Patch Summary 2024-08-26T13:18:52Z
 - Added GPU compose reservation and run.sh flag.
 - CLI file missing; patch skipped.
 - Training engine structurally diverged; patch reverted.
 
-# Validation Previous Cycle-08-26T14:31:18Z
+# Validation 2024-08-26T14:31:18Z
 
 ## python -m compileall .
 ```text
@@ -8597,7 +8597,7 @@ SyntaxError: keyword argument repeated: eval_dataset
 ## pytest -q --maxfail=1
 ```text
 
-# Validation Previous Cycle-08-26T15:35:50.872437Z
+# Validation 2024-08-26T15:35:50.872437Z
 
 ## python -m compileall .
 ````
@@ -8949,7 +8949,7 @@ ERROR tests/test_deploy_codex_pipeline.py
 (exit=1)
 ````
 
-# Validation Previous Cycle-08-26T15:46:22.880252Z
+# Validation 2024-08-26T15:46:22.880252Z
 
 ## python -m compileall .
 ````

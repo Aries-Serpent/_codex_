@@ -1,5 +1,5 @@
 # Owner Approval Validation — 24h Duration Window
-> Generated: Previous Cycle-10-20 19:43:52 UTC | Author: mbaetiong
+> Generated: 2024-10-20 19:43:52 UTC | Author: mbaetiong
 
 This runbook verifies the OWNER approval window for cost-incurring workflows with a 24h duration. CI workflows remain disabled by policy; validation runs locally.
 
@@ -20,7 +20,7 @@ bash scripts/ci/owner_approval_test.sh docker-build-push
 ```text
 2) Expiry simulation
 - Edit .github/OWNER_APPROVAL.yml and set created_at 25h in the past:
-  created_at: "Previous Cycle-10-19T18:00:00Z"
+  created_at: "2024-10-19T18:00:00Z"
 - Rerun:
 ```bash
 bash scripts/ci/owner_approval_test.sh docker-build-push
@@ -29,7 +29,7 @@ bash scripts/ci/owner_approval_test.sh docker-build-push
 ```bash
 OWNER_APPROVED_DURATION=24h bash scripts/ci/owner_approval_test.sh docker-build-push
 # Alternatively (until timestamp):
-OWNER_APPROVED_UNTIL="Previous Cycle-10-21T19:43:52Z" bash scripts/ci/owner_approval_test.sh docker-build-push
+OWNER_APPROVED_UNTIL="2024-10-21T19:43:52Z" bash scripts/ci/owner_approval_test.sh docker-build-push
 ```text
 4) Push (guarded)
 ```bash

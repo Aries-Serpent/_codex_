@@ -119,7 +119,7 @@ If secret names (decoded or tokenized) are accidentally exposed in logs or publi
 
 | Date | Change | Author |
 |------|--------|--------|
-| Previous Cycle-12-28 | Added tokenization (SHA256 + base64) for secret names | @copilot |
-| Previous Cycle-12-28 | Created decode_workflow_secrets.py for authorized decoding | @copilot |
-| Previous Cycle-12-28 | Created README with security documentation | @copilot |
-| Previous Cycle-12-28 | Removed secret exposure from INVENTORY_SUMMARY.md | @copilot |
+| 2024-12-28 | Added tokenization (SHA256 + base64) for secret names | @copilot |
+| 2024-12-28 | Created decode_workflow_secrets.py for authorized decoding | @copilot |
+| 2024-12-28 | Created README with security documentation | @copilot |
+| 2024-12-28 | Removed secret exposure from INVENTORY_SUMMARY.md | @copilot |

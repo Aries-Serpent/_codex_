@@ -1,10 +1,10 @@
-# Capability Audit Snapshot — Previous Cycle-09-22
+# Capability Audit Snapshot — 2024-09-22
 
 | Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback Plan |
 | --- | --- | --- | --- | --- | --- | --- |
 | Tokenization | Implemented | `src/codex_ml/tokenization/`, numerous pytest modules (`tests/test_tokenizer_*`) | Fence discipline missing in legacy docs describing usage examples. | Confusing onboarding docs Phase 5 mislead contributors. | Update docs/examples after fence gate lands; cross-link to tests. | Revert doc edits if regressions surface; no code rollback expected. |
 | ChatGPT Codex Modeling | Partially Implemented | `src/codex_ml/models/`, registry entries, PEFT hooks | Need refreshed architecture summary to explain LoRA/adapter interplay. | Misconfiguration when extending adapters. | Author design note in docs + ensure registry defaults tested offline. | Revert doc note if inaccurate; keep tests untouched. |
-| Training Engine | Implemented | `src/codex_ml/training/`, `train_loop.py`, CLI wrappers | Long-run reproducibility guidance scattered. | Operators Phase 5 miss required flags when resuming. | Consolidate reproducibility checklist in `reports/` (this run) and refine in later passes. | Remove checklist if contradictions appear; training code unchanged. |
+| Training Engine | Implemented | `src/codex_ml/training/`, `train_loop.py`, CLI wrappers | Long-run reproducibility guidance scattered. | Operators may miss required flags when resuming. | Consolidate reproducibility checklist in `reports/` (this run) and refine in later passes. | Remove checklist if contradictions appear; training code unchanged. |
 | Configuration Management | Partially Implemented | Hydra configs in `configs/`, CLI overrides | Audit prompt still references remote fetch instructions. | Conflicting guidance leads to misuse of offline gates. | Refresh `AUDIT_PROMPT.md` to align with offline-only operations (this run). | Restore previous prompt if downstream tools depend on it. |
 | Evaluation & Metrics | Implemented | `codex_ml/eval`, metrics registry/tests | No central index of available metrics in audit docs. | Duplicate work during audits. | Add summary to future high-signal findings doc. | Remove summary if redundant. |
 | Logging & Monitoring | Implemented | `monitoring/`, telemetry modules, logging tests | Observability guidance for audits not centralised. | Slow incident triage. | Schedule observability-focused run from Menu item 5. | Skip if future work reprioritises. |
