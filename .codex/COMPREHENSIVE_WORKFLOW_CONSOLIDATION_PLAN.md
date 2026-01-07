@@ -584,22 +584,25 @@ config.override("inference.timeout_seconds", 60)
 - [Environment Setup](../docs/ops/environment.md)
 - [Secrets Management](../docs/security/secret_handling.md)
 - [Deployment Guide](../docs/zendesk/README.md)
+```
 
-EOF
 
 # Fix external URLs (example.com → real docs)
+```
 find docs -type f -name "*.md" -exec sed -i 's|https://www\. example\.com/api-versioning|https://semver. org/|g' {} +
 find docs -type f -name "*.md" -exec sed -i 's|https://github\.com/owner/repo/issues/1|https://github.com/Aries-Serpent/_codex_/issues|g' {} +
-
+```
 # Fix repository URL (missing trailing underscore)
+```
 find docs -type f -name "*.md" -exec sed -i 's|https://github\.com/Aries-Serpent/_codex\([^_/]\)|https://github.com/Aries-Serpent/_codex_\1|g' {} +
-
+```
 # Fix malformed URLs
+```
 find docs -type f -name "*.md" -exec sed -i 's|https://docs\.github\.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#|https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#|g' {} +
-
+```
 git add docs/
 git commit -m "docs: fix broken links and create missing documentation
-
+```
 Created files:
 - LEVEL_4_MLOPS_ASSESSMENT.md (comprehensive MLOps maturity analysis)
 - capabilities/configuration.md (configuration guide with examples)
@@ -612,7 +615,7 @@ Fixed URLs:
 
 Resolves: 30+ broken links in documentation link checker
 Found in: documentation-link-checker workflow failures"
-
+```
 git push origin main
 ```
 
