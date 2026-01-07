@@ -884,7 +884,7 @@ Create directory structure and implement validator.py (PERCEIVE module) first. F
 
 ---
 
-**Good luck! Phase 5 the PDA Loop be with you. 🤖**
+**Good luck! May the PDA Loop be with you. 🤖**
 
 ---
 

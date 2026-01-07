@@ -51,7 +51,7 @@
 
 - LoRA/PEFT integration is stubbed; without it, parameter-efficient fine-tuning is impossible.
 - Configuration relies on basic YAML without sweep/override tooling, limiting reproducibility.
-- Custom training loop lacks gradient accumulation and precision options; Phase 5 fail on limited hardware.
+- Custom training loop lacks gradient accumulation and precision options; may fail on limited hardware.
 - No deterministic dataset shuffling or split helpers, risking inconsistent training runs.
 - Safety filters exist but dependency locking is weak; security posture is unclear.
 - Coverage reporting is absent despite an extensive test suite.

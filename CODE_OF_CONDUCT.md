@@ -22,7 +22,7 @@ We are committed to providing a welcoming, harassment-free community for everyon
 
 ## Enforcement Responsibilities
 
-Community leaders and maintainers are responsible for clarifying and enforcing our standards of acceptable behavior. They Phase 5 take appropriate and fair corrective action in response to behavior they deem inappropriate, threatening, offensive, or harmful.
+Community leaders and maintainers are responsible for clarifying and enforcing our standards of acceptable behavior. They may take appropriate and fair corrective action in response to behavior they deem inappropriate, threatening, offensive, or harmful.
 
 ## Scope
 
