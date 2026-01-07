@@ -13,13 +13,13 @@ Objective:
 
 Audit Scope
 
-# 📍_codex_: Status Update (Previous Cycle-09-22)
+# 📍_codex_: Status Update (2025-09-22)
 
 1. **Repo Map**
    - **Top-level directories.** `_codex`, `agents`, `analysis`, `configs`, `docs`, `services`, `src`, `tests`, `tools`, `training`, `artifacts`, and related offline-support folders define the project layout used by automation and ML code paths.【69d2e3†L1-L14】
    - **Key files.** `pyproject.toml` pins build metadata and extras for CLI/test/tracking workloads; `noxfile.py` centralizes local gates and coverage policies; and the multi-stage `Dockerfile` provides runtime packaging for the service surface.【F:pyproject.toml†L1-L66】【F:noxfile.py†L1-L195】【F:Dockerfile†L1-L21】
    - **Stubs & placeholders.** Base interfaces such as `SearchProvider` and tokenizer adapters still expose abstract methods that raise `NotImplementedError`, tracking writers rely on interface stubs for subclassing, and optional dependencies are skipped in tokenization gates via `pytest.importorskip` markers.【F:src/codex_ml/analysis/providers.py†L16-L118】【F:src/codex_ml/interfaces/tokenizer.py†L42-L159】【F:src/codex_ml/tracking/writers.py†L26-L124】【F:tests/test_hf_tokenizer_padding.py†L1-L22】
-   - **Recent changes.** The Previous Cycle-09-21 changelog documents merged deterministic loaders, Hydra entrypoints, telemetry defaults, and status artefact refreshes that define today's baselines.【F:docs/CHANGELOG.md†L1-L32】
+   - **Recent changes.** The 2025-09-21 changelog documents merged deterministic loaders, Hydra entrypoints, telemetry defaults, and status artefact refreshes that define today's baselines.【F:docs/CHANGELOG.md†L1-L32】
 
 2. **Capability Audit Table**
 

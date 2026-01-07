@@ -1,6 +1,6 @@
 # Production Readiness Checklist — _codex_ Repository
 
-**Last Updated**: Previous Cycle-12-05 (PR #2390)  
+**Last Updated**: 2025-12-05 (PR #2390)  
 **Status**: 🟡 IN PROGRESS (40% Complete)
 
 ---
@@ -229,6 +229,6 @@
 
 ---
 
-**Last Validated**: Previous Cycle-12-05 (commit e902006)  
+**Last Validated**: 2025-12-05 (commit e902006)  
 **Next Review**: After v1.2.8 completion  
 **Reviewer**: @mbaetiong

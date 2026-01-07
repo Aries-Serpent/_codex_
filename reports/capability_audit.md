@@ -1,4 +1,4 @@
-# Capability Audit Snapshot — Previous Cycle-09-22
+# Capability Audit Snapshot — 2025-09-22
 
 | Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback Plan |
 | --- | --- | --- | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Infrastructure Basics
 
-> For AI Agents - Last Updated: Previous Cycle-12-24
+> For AI Agents - Last Updated: 2025-12-24
 
 This document provides essential infrastructure knowledge for AI agents.
 

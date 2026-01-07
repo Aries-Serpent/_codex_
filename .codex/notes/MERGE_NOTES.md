@@ -21,7 +21,7 @@ Rollback:
 - `pytest tests/test_tokenizer_batch_encode.py tests/test_mlflow_step_logging.py tests/test_repro_determinism.py tests/test_sqlite_wal.py tests/test_checkpoint_checksum.py tests/test_telemetry_degrade.py -q -p no:cov --override-ini addopts=""`
 
 ## Risks
-- HF Trainer path minimally wired; further integration Phase 5 require additional flags
+- HF Trainer path minimally wired; further integration may require additional flags
 - WAL mode requires short reader transactions to avoid locks
 - existing formatting and test failures in repository
 

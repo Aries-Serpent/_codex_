@@ -1,10 +1,10 @@
-# _codex_: Status Update (Previous Cycle-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
+# _codex_: Status Update (2025-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
 
 ## Audit Scope & Provenance
 - Default branch `main`; selected branch `main` at `9883d9bc4485a5aad11bf34907b56a397cb841f5` (parents `17392b43cff5160cce3aec941864b1a9279b3cab`, `8f25d33ce264fcb975e229c8a0692a37519426e2`) (`.codex/status/provenance.json`).
 - GitHub Events API exposed no recent `PushEvent`s; selection defaulted to branch HEAD (recorded in `.codex/errors.ndjson`).
-- Commit timestamp `Previous Cycle-09-30T12:59:33-05:00`; repo `pushed_at` `Previous Cycle-09-30T17:59:41Z`.
-- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `Previous Cycle-09-30T19:30:18Z`.
+- Commit timestamp `2025-09-30T12:59:33-05:00`; repo `pushed_at` `2025-09-30T17:59:41Z`.
+- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `2025-09-30T19:30:18Z`.
 
 ## Repo Map
 - `src/` ? 34,268 LOC across 223 files, dominated by `codex_ml`, `tokenization`, and `utils` modules (`artifacts/metrics/loc_by_dir.csv`).

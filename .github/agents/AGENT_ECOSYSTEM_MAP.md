@@ -1,7 +1,7 @@
 # Agent Ecosystem Mapping - Aries-Serpent/_codex_
 
 **Version**: 1.0.0  
-**Date**: Previous Cycle-12-31  
+**Date**: 2025-12-31  
 **Purpose**: Comprehensive mapping of all agents in the _codex_ repository ecosystem  
 **Status**: 🟢 Active - Implementation Roadmap
 
@@ -398,7 +398,7 @@ Example artifact schema:
 ```json
 {
   "agent_id": "ci-testing-agent.v1",
-  "timestamp": "Previous Cycle-12-31T21:00:00Z",
+  "timestamp": "2025-12-31T21:00:00Z",
   "status": "success",
   "metrics": {
     "coverage_delta": 10.5,
@@ -487,7 +487,7 @@ class AgentGuardrails:
 
 ### Deprecation Policy
 
-Agents Phase 5 be deprecated if:
+Agents may be deprecated if:
 1. Replaced by better solution
 2. No usage for 6 months
 3. Maintenance cost exceeds value
@@ -542,6 +542,6 @@ Each agent must maintain:
 ---
 
 **Document Status**: ✅ Complete  
-**Next Review**: Current Cycle-01-31  
+**Next Review**: 2026-01-31  
 **Owner**: Agent Development Team  
 **Maintainers**: @mbaetiong, @copilot

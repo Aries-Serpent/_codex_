@@ -1,6 +1,6 @@
 # IMDS Diagnostic Runbook
-> Generated: Previous Cycle-11-14 21:33:15 UTC | Author: mbaetiong  
-> Script Version: 1.6 | Last Updated: Previous Cycle-11-14T23:14:07Z UTC
+> Generated: 2025-11-14 21:33:15 UTC | Author: mbaetiong  
+> Script Version: 1.6 | Last Updated: 2025-11-14T23:14:07Z UTC
 
 ## Purpose
 This runbook describes the IMDS diagnostic script added to the repository to detect and (optionally) remediate issues that block access to the Azure Instance Metadata Service (IMDS - 169.254.169.254). The script is intended to run on affected hosts (runners or VMs) and helps resolve failures observed in issue #2226.

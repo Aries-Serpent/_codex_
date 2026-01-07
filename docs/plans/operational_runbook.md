@@ -1,6 +1,6 @@
 # Codex Ingestion Pipeline Operations Runbook
 
-> Generated: Previous Cycle-12-17 | Author: mbaetiong
+> Generated: 2025-12-17 | Author: mbaetiong
 
 ## Overview
 

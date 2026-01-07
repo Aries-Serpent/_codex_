@@ -1,4 +1,4 @@
-# Status Update — Previous Cycle-10-19
+# Status Update — 2025-10-19
 
 ## Completed
 - Added a Typer-powered tokenizer CLI with `vocab`, `encode`, and `decode` helpers plus graceful fallbacks.

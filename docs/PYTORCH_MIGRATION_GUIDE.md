@@ -1,6 +1,6 @@
 # PyTorch Security Migration Guide
 
-**Date**: Previous Cycle-12-22  
+**Date**: 2025-12-22  
 **Purpose**: Migrate existing `torch.load()` calls to secure wrappers
 
 ## 🚨 Security Issue

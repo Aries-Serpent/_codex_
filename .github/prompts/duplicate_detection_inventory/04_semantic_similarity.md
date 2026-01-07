@@ -223,7 +223,7 @@ class SemanticDetector:
 
 ## 📝 Notes
 
-- MinHash is probabilistic - Phase 5 have false positives/negatives
+- MinHash is probabilistic - may have false positives/negatives
 - Clustering threshold affects granularity
 - Consider parallel processing for large repos
 - Similarity scores help prioritize refactoring

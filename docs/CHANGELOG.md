@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-### Fixed (Previous Cycle-12-16) - CI/CD Pipeline Restoration (PR #2509)
+### Fixed (2025-12-16) - CI/CD Pipeline Restoration (PR #2509)
 
 - **Critical Build Fix**: Fixed package directory mapping for `agents` package:
   - Added `agents = "agents"` to `[tool.setuptools.package-dir]` in pyproject.toml
@@ -26,7 +26,7 @@ All notable changes to this project will be documented in this file.
   - `sbom.yml`: Fixed heredoc YAML syntax
   - `repo-organization.yml`: Fixed Python heredoc indentation
 
-### Added (Previous Cycle-12-16) - Documentation & Tooling (PR #2509)
+### Added (2025-12-16) - Documentation & Tooling (PR #2509)
 
 - **GitHub Pages Workflow**: New `pages-mkdocs.yml` for MkDocs-based documentation deployment
   - Automatically builds and deploys documentation on push to main
@@ -39,7 +39,7 @@ All notable changes to this project will be documented in this file.
   - Updated `copilot-instructions.md` with CTEP activation logic
   - Activation commands: "Enable CTEP", "CTEP Mode: ON", "Task mode: ON"
 
-### Changed (Previous Cycle-12-16) - CI/CD Improvements (PR #2509)
+### Changed (2025-12-16) - CI/CD Improvements (PR #2509)
 
 - **All 45 workflow files now pass YAML validation** (was 42/45)
 - **CI/CD Success Rate**: 14% → 100% (pending GitHub Pages manual config - now complete)
@@ -49,7 +49,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-### Added (Previous Cycle-11-18) - MCP + ITA Integration (PR #2297)
+### Added (2025-11-18) - MCP + ITA Integration (PR #2297)
 
 - **MCP Modules**: Complete implementation of Model Context Protocol integration:
   - `src/mcp/registry.py` - Tool registry with `MCPToolRegistry`, `compute_tool_checksum`, and confirmation support
@@ -63,7 +63,7 @@ All notable changes to this project will be documented in this file.
   - Tools integration tests (59), Multi-tenant tests (12), Observability tests (12)
   - Core smoke tests (12), Integration tests (1)
 
-### Fixed (Previous Cycle-11-18) - Security & Consistency (PR #2297)
+### Fixed (2025-11-18) - Security & Consistency (PR #2297)
 
 - **Security**: Fixed principal_id entropy reduction vulnerability:
   - Changed `Principal.from_credential()` to use full 64-character SHA-256 hash instead of truncated 16 characters
@@ -75,7 +75,7 @@ All notable changes to this project will be documented in this file.
   - Updated test expectations for 64-character hash tokens
   - Fixed authentication token format to use deterministic SHA-256 hashing
 
-### Changed (Previous Cycle-11-18) - Code Quality (PR #2297)
+### Changed (2025-11-18) - Code Quality (PR #2297)
 
 - **Code Quality**: Applied comprehensive validation standards:
   - Formatted all MCP modules with Black (zero formatting errors)
@@ -112,7 +112,7 @@ All notable changes to this project will be documented in this file.
 - Tooling: Documented fence validator architecture and added focused tests
   covering default returns, skip lists, and warn-mode output.
 
-### Fixed (Previous Cycle-11-19) - Metrics
+### Fixed (2025-11-19) - Metrics
 - **BLEU brevity penalty**: Corrected corpus BLEU brevity penalty logic in
   `src/codex_ml/metrics/generation.py` to iterate over hypotheses and their
   reference sets in lockstep, preventing `norm_refs.index(refs)` from pairing
@@ -126,7 +126,7 @@ All notable changes to this project will be documented in this file.
   `docs/migrations/bleu_brevity_penalty_migration.md` to guide downstream
   threshold updates.
 
-## Previous Cycle-10-26
+## 2025-10-26
 
 ### Added
 - **Operational templates (v1.0.0):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
@@ -139,7 +139,7 @@ All notable changes to this project will be documented in this file.
 - No GitHub Actions were created or modified.
 - Hooks are **local-only** and optional to run in CI.
 
-## Previous Cycle-10-26 (Self-management)
+## 2025-10-26 (Self-management)
 
 ### Added
 - Local status reporter:
@@ -175,4 +175,4 @@ All notable changes to this project will be documented in this file.
 - Updated `docs/ops/local_gates.md` and added ADR for self-management.
 
 ---
-Previous Cycle-10-25
+2025-10-25

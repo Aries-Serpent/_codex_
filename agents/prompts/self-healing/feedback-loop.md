@@ -261,7 +261,7 @@ python scripts/feedback_loop.py
 ### Capability Gaps Analysis
 ```json
 {
-  "detected_at": "Previous Cycle-12-10T18:00:00",
+  "detected_at": "2025-12-10T18:00:00",
   "gaps": [
     "Shadow Deployment",
     "Canary Release",
@@ -276,7 +276,7 @@ python scripts/feedback_loop.py
 ### Self-Healing Plan
 ```json
 {
-  "created_at": "Previous Cycle-12-10T18:00:00",
+  "created_at": "2025-12-10T18:00:00",
   "objective": "Close capability gaps identified in analysis",
   "phases": [
     {

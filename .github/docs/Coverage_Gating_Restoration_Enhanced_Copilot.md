@@ -1,5 +1,5 @@
 # [Problem]: Restore coverage gating in CI workflow — Enhanced Implementation Guide
-> Generated: Previous Cycle-11-13 23:50:21 | Author: mbaetiong
+> Generated: 2025-11-13 23:50:21 | Author: mbaetiong
 
 🧠 **Roles**: [Primary: CI/CD Architect] | [Secondary: Quality Automation Engineer] ⚡ **Energy**: 5/5
 
@@ -506,7 +506,7 @@ jobs:
         run: |
           if [ ! -f artifacts/coverage.xml ]; then
             echo "::error ::❌ coverage.xml not found in artifacts/"
-            echo "::error ::Baseline test session Phase 5 have failed to collect coverage."
+            echo "::error ::Baseline test session may have failed to collect coverage."
             echo "::error ::Check the 'baseline (tests + coverage)' job logs."
             exit 1
           fi
@@ -729,7 +729,7 @@ Exit Codes:
     1: Error (file not found, parse error, invalid structure)
 
 Author: Copilot + mbaetiong
-Generated: Previous Cycle-11-13
+Generated: 2025-11-13
 """
 import sys
 import xml.etree.ElementTree as ET
@@ -894,7 +894,7 @@ if __name__ == "__main__":
 # PRs with coverage below this threshold will fail CI.
 # 
 # History:
-#   Previous Cycle-11-13: Initial threshold set at 85.0%
+#   2025-11-13: Initial threshold set at 85.0%
 # 
 # To update:
 #   1. Ensure current coverage is >= new threshold
@@ -1306,7 +1306,7 @@ The threshold is stored in `.github/coverage_threshold.txt`.
 - Ensure source code is in `src/codex_ml/`
 
 #### "Coverage decreased but I added tests"
-- New code Phase 5 have low coverage (brings average down)
+- New code may have low coverage (brings average down)
 - Check the HTML report to see which new lines are uncovered
 - Add tests for the new code paths
 
@@ -2425,7 +2425,7 @@ This implementation is **DONE** when:
 
 ---
 
-**Generated**: Previous Cycle-11-13 23:56:21 UTC  
+**Generated**: 2025-11-13 23:56:21 UTC  
 **Author**: mbaetiong  
 **Document Version**: 2.0 (Enhanced)  
 **Status**: ✅ Complete & Ready for Implementation

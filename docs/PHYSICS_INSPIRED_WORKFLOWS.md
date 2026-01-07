@@ -1,7 +1,7 @@
 # Physics-Inspired Workflows and CLI Reference
 
 > **Version:** 1.0.0  
-> **Generated:** Previous Cycle-12-12  
+> **Generated:** 2025-12-12  
 > **Status:** Production Ready ✅  
 > **CodeQL Scan:** Clear ✅
 
@@ -1306,6 +1306,6 @@ print(f"P(frontend succeeds | backend succeeds): {p_b_given_a:.2%}")
 ---
 
 **Version**: 2.0.0  
-**Last Updated**: Previous Cycle-12-12  
+**Last Updated**: 2025-12-12  
 **CodeQL Scan**: Clear ✅  
 **Maintained by**: Aries-Serpent/_codex_ team

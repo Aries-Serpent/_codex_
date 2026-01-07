@@ -1,7 +1,7 @@
 # Codex Status Update Prompt & Templates
 
 ## Prompt
-Use the following prompt when generating a status update for the `_codex_` repository. This is the **mandated** template that aligns with the Previous Cycle-09-22 audit refresh.
+Use the following prompt when generating a status update for the `_codex_` repository. This is the **mandated** template that aligns with the 2025-09-22 audit refresh.
 
 ```text
 Check for most recent active branch:
@@ -200,4 +200,4 @@ Audit Scope
 {{codex_script}}
 ```text
 ```text
-> **Reminder:** Outstanding automation questions remain tracked in `docs/status_update_outstanding_questions.md`. Reference that ledger when relevant, but embedding the entire table in the daily status update is no longer required under the Previous Cycle-09-22 template.
+> **Reminder:** Outstanding automation questions remain tracked in `docs/status_update_outstanding_questions.md`. Reference that ledger when relevant, but embedding the entire table in the daily status update is no longer required under the 2025-09-22 template.

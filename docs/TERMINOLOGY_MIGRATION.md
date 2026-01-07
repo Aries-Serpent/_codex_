@@ -2,7 +2,7 @@
 
 > **Status**: Active Migration  
 > **Version**: 1.0  
-> **Last Updated**: Previous Cycle-12-24
+> **Last Updated**: 2025-12-24
 
 ---
 
@@ -228,5 +228,5 @@ For questions about terminology migration or template usage, refer to:
 ---
 
 **Approved By**: [@mbaetiong]  
-**Effective Date**: Previous Cycle-12-24  
+**Effective Date**: 2025-12-24  
 **Review Cycle**: Quarterly

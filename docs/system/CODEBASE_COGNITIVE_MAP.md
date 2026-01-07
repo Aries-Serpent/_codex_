@@ -2,7 +2,7 @@
 
 **Purpose**: High-level cognitive map of the `_codex_` repository - components, flows, dependencies, and operational context for AI agents.
 
-**Last Updated**: Previous Cycle-12-30 | **Version**: 1.0.0 | **Status**: Active
+**Last Updated**: 2025-12-30 | **Version**: 1.0.0 | **Status**: Active
 
 ---
 
@@ -282,6 +282,6 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 **Owner**: DevOps + Agent Development Team  
 **Review**: Monthly or after major changes  
-**Last Reviewed**: Previous Cycle-12-30
+**Last Reviewed**: 2025-12-30
 
 **Questions?** → [Dashboard](CODEBASE_DASHBOARD.md)

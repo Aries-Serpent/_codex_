@@ -1,6 +1,6 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (Previous Cycle-12-26)  
+> **Status:** ✅ UP-TO-DATE (2025-12-26)  
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 
@@ -243,7 +243,7 @@ All operations must be logged to:
 ## 📝 Document Status
 
 **Version:** 2.0.0  
-**Last Updated:** Previous Cycle-12-26T08:35:00Z  
+**Last Updated:** 2025-12-26T08:35:00Z  
 **Status:** ✅ UP-TO-DATE  
 **Next Review:** After Phase 2 completion
 

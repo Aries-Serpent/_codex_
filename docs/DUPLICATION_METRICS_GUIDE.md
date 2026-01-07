@@ -203,7 +203,7 @@ codex duplication report src/ --output=src-report.json
 DUPLICATION REPORT
 ============================================================
 Scan path: /home/user/project
-Generated: Previous Cycle-11-17T14:00:00.000000
+Generated: 2025-11-17T14:00:00.000000
 
 SUMMARY
 ------------------------------------------------------------
@@ -365,7 +365,7 @@ for metric in history:
 
 # Filter by time
 recent = storage.query_history(
-    since="Previous Cycle-01-01T00:00:00Z",
+    since="2025-01-01T00:00:00Z",
     limit=5,
 )
 ```text
@@ -683,6 +683,6 @@ For issues or questions:
 
 ---
 
-**Last Updated:** Previous Cycle-11-17  
+**Last Updated:** 2025-11-17  
 **Version:** 1.0.0  
 **Maintainer:** Codex Team

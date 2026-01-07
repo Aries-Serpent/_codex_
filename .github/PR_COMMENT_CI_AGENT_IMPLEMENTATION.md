@@ -61,8 +61,8 @@ mkdir -p .github/agents/ci-testing-agent/{agent,tests/{unit,contract,integration
 name: CI Testing Agent
 version: 1.0.0
 description: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
-created: Previous Cycle-12-29
-updated: Previous Cycle-12-31
+created: 2025-12-29
+updated: 2025-12-31
 
 capabilities:
   - ci_pipeline_debugging

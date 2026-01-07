@@ -1,5 +1,5 @@
 # [Script Collection]: mcp_core_modules_setup.py
-> Generated: Previous Cycle-11-18 03:40:04 | Author: mbaetiong
+> Generated: 2025-11-18 03:40:04 | Author: mbaetiong
 > Assistant: GitHub Copilot Chat Assistant
 
 Included files
@@ -66,7 +66,7 @@ def load_mcp_config() -> MCPSettings:
 
     # Read environment overrides
     base_url = os.environ.get(_ENV_ITA_URL, "http://localhost:8000")  # default ITA base URL
-    api_key = os.environ.get(_ENV_ITA_API_KEY)  # Phase 5 be None if not set
+    api_key = os.environ.get(_ENV_ITA_API_KEY)  # may be None if not set
     rate_limit_env = os.environ.get(_ENV_MCP_RATE_LIMIT)
     default_rate_limit = int(rate_limit_env) if rate_limit_env else 60  # default 60 calls/min
 
@@ -198,7 +198,7 @@ class MCPAuthenticator:
         env_key = os.environ.get("ITA_API_KEY")
         if env_key:
             self._valid_keys.append(env_key)
-        # Allow list Phase 5 be extended via config or multi-key setup in future
+        # Allow list may be extended via config or multi-key setup in future
         self._valid_keys = list(set(self._valid_keys))  # deduplicate
 
     def authenticate(self, api_key: str) -> Principal:

@@ -1,15 +1,15 @@
-# Repo Survey — main & PR 0 — Previous Cycle-10-30 (UTC)
+# Repo Survey — main & PR 0 — 2025-10-30 (UTC)
 
-**Ref:** branch `main`  commit `0a6b27b0`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-30-survey-main-and-0`
+**Ref:** branch `main`  commit `0a6b27b0`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-main-and-0`
 
 ---
 
 ```text
-Repo Survey — main — Previous Cycle-10-30 (UTC)
+Repo Survey — main — 2025-10-30 (UTC)
 
 Scope & Goal:
 - Branch: main
-- Date (UTC): Previous Cycle-10-30
+- Date (UTC): 2025-10-30
 - Objective: Refresh survey artifacts for main after ring alignment.
 
 Targets Collected:

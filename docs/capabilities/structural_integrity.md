@@ -406,7 +406,7 @@ The structural integrity detector includes the following safeguards:
 
 ---
 
-**Last Updated**: Previous Cycle-12-09  
+**Last Updated**: 2025-12-09  
 **Maintainer**: Codex Audit System  
 **Capability ID**: structural-integrity
 

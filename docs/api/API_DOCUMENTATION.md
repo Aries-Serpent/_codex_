@@ -1,7 +1,7 @@
 # API Reference Documentation
 
 > **Version**: 1.0.0  
-> **Generated**: Previous Cycle-12-11  
+> **Generated**: 2025-12-11  
 > **Auto-sync**: Updates with code changes via CI
 
 ---

@@ -1,5 +1,5 @@
 # Metrics Plugin Conflict Resolution Guide
-> Generated: Previous Cycle-11-12 06:54:52 UTC | Author: mbaetiong
+> Generated: 2025-11-12 06:54:52 UTC | Author: mbaetiong
 
 ## Overview
 Plugin-discovered metrics (entry points) Phase 5 duplicate locally registered metrics. A policy-based resolver prevents repeated error logs and provides explicit control over precedence.
