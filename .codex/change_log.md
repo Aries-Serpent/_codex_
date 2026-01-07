@@ -16150,3 +16150,10 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - Consolidated changelog content into `CHANGELOG.md` and added deprecation pointers in legacy files.
 - Documented Dockerfile/compose inventory with canonical build pathway and deprecated legacy Dockerfiles.
 - Added the bundle builder specification, manifest schema/example, and UI projection map documentation.
+
+## Audit Runner Stabilization - 2026-01-07
+
+- Added rendering helper for capability matrix markdown + JSON companion output.
+- Guarded audit module imports to avoid hard failure when optional audit helpers are unavailable.
+- Added documentation scoring helpers for synonym expansion and coverage scoring.
+- Recorded QA walkthrough inventory under `.github/prompts/`.

@@ -9229,3 +9229,25 @@ Result: ✅ Passed (1 skipped).
 ```
 s                                                                        [100%]
 ```
+
+## Test Run - 2026-01-07
+
+### `python -m pytest -q`
+
+Result: ❌ Failed during collection (missing optional deps and symbols).
+
+```
+E   ModuleNotFoundError: No module named 'hypothesis'
+E   ImportError: cannot import name 'AdaptiveScoringEngine' from 'cognitive_brain.quantum.adaptive_scoring'
+E   ImportError: cannot import name 'ComplianceAssessor' from 'cognitive_brain.integrations.compliance_integration'
+E   NameError: name 'pytest' is not defined
+E   ModuleNotFoundError: No module named 'responses'
+```
+
+### `python -m pytest -q tests/audit/test_json_companion.py`
+
+Result: ✅ Passed.
+
+```
+.                                                                        [100%]
+```

@@ -20,7 +20,10 @@ try:
     from .vulnerability_db import VulnerabilityDatabase
 except ImportError as e:
     logger.error(f"Failed to import audit modules: {e}")
-    sys.exit(1)
+    SecurityAuditor = None  # type: ignore[assignment]
+    DependencyScanner = None  # type: ignore[assignment]
+    CodeQualityChecker = None  # type: ignore[assignment]
+    VulnerabilityDatabase = None  # type: ignore[assignment]
 
 try:
     import yaml
@@ -40,10 +43,10 @@ class AuditRunner:
             config_path: Path to configuration file
         """
         self.config = self._load_config(config_path)
-        self.auditor = SecurityAuditor(self.config)
-        self.dep_scanner = DependencyScanner(self.config)
-        self.quality_checker = CodeQualityChecker(self.config)
-        self.vuln_db = VulnerabilityDatabase(self.config)
+        self.auditor = _ensure_dependency(SecurityAuditor, "SecurityAuditor")(self.config)
+        self.dep_scanner = _ensure_dependency(DependencyScanner, "DependencyScanner")(self.config)
+        self.quality_checker = _ensure_dependency(CodeQualityChecker, "CodeQualityChecker")(self.config)
+        self.vuln_db = _ensure_dependency(VulnerabilityDatabase, "VulnerabilityDatabase")(self.config)
         
     def _load_config(self, config_path: Optional[Path]) -> Dict[str, Any]:
         """Load configuration from file or use defaults"""
@@ -161,6 +164,97 @@ class AuditRunner:
         except Exception as e:
             logger.error(f"Failed to save results: {e}")
             raise
+
+
+def _ensure_dependency(dep: Any, name: str):
+    if dep is None:
+        raise RuntimeError(f"{name} dependency is unavailable; ensure audit modules are installed.")
+    return dep
+
+
+def _expand_doc_tokens(domain: str, tokens: List[str]) -> List[str]:
+    """Expand doc tokens with naive pluralization and known synonyms."""
+    expanded = set()
+    for token in tokens:
+        normalized = token.strip().lower()
+        if not normalized:
+            continue
+        expanded.add(normalized)
+        if not normalized.endswith("s"):
+            expanded.add(f"{normalized}s")
+    domain_key = domain.strip().lower()
+    expanded.add(domain_key)
+
+    synonyms = {
+        "tokenization": {"sentencepiece", "tokenizer", "tokenizers", "subword"},
+        "checkpointing": {"checkpoint", "checkpoints"},
+    }
+    expanded.update(synonyms.get(domain_key, set()))
+    return sorted(expanded)
+
+
+def _docs_score(domain: str, cache: Dict[str, str], tokens: List[str]) -> float:
+    """Score documentation coverage based on token presence."""
+    expanded = _expand_doc_tokens(domain, tokens)
+    if not cache:
+        return 0.0
+    hits = 0
+    for _, content in cache.items():
+        lower = content.lower()
+        if any(token in lower for token in expanded):
+            hits += 1
+    return hits / max(len(cache), 1)
+
+
+def render_template(
+    cfg: Dict[str, Any],
+    payload: Dict[str, Any],
+    *,
+    template_path: Optional[Path] = None,
+) -> tuple[Path, Path]:
+    """Render capability matrix Markdown and write a JSON companion file."""
+    root = Path(__file__).resolve().parents[2]
+    output_cfg = cfg.get("output", {}) if isinstance(cfg, dict) else {}
+    artifacts_dir = Path(output_cfg.get("artifacts_dir", root / "audit_artifacts"))
+    reports_dir = Path(output_cfg.get("reports_dir", root / "reports"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
+
+    tpl_rel = cfg.get("matrix_template", "templates/audit/capability_matrix.md.j2")
+    template_path = template_path or (root / tpl_rel)
+
+    timestamp = payload.get("timestamp") or datetime.utcnow().isoformat()
+    context = dict(payload)
+    context.setdefault("timestamp", timestamp)
+    context.setdefault("metrics_schema_version", cfg.get("metrics_schema_version", "1.0.0"))
+
+    md_path = reports_dir / "capability_matrix.md"
+    js_path = artifacts_dir / "capability_matrix.json"
+
+    rendered = None
+    try:
+        from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
+
+        if template_path.exists():
+            env = Environment(
+                loader=FileSystemLoader(str(template_path.parent)),
+                autoescape=select_autoescape(["html", "xml", "jinja2"]),
+                trim_blocks=True,
+                lstrip_blocks=True,
+            )
+            template = env.get_template(template_path.name)
+            rendered = template.render(**context)
+    except Exception as exc:
+        logger.warning(f"Template rendering unavailable: {exc}")
+
+    if rendered is None:
+        rendered = f"# Capability Matrix\n\nGenerated: {timestamp}\n"
+
+    md_path.write_text(rendered, encoding="utf-8")
+    js_payload = dict(context)
+    js_payload["metrics_schema_version"] = context["metrics_schema_version"]
+    js_path.write_text(json.dumps(js_payload, indent=2), encoding="utf-8")
+    return md_path, js_path
 
 
 def main():
