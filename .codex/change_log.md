@@ -16162,3 +16162,9 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 
 - Added Compatibility wrappers for compliance assessment and adaptive scoring engine tests.
 - Added responses to test requirements for Zendesk API tests.
+
+## Mental Mapping & Quantum Game Compatibility Update - 2026-01-07
+
+- Added compatibility aliases and metadata/evidence handling in mental mapping workflows.
+- Improved decision appraisal, iterative review reporting, and save/load compatibility in mental maps.
+- Enhanced quantum game state initialization, entangling gate support, simulator bookkeeping, and classical dynamics utilities.

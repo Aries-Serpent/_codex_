@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fe518490ea4924a031c615156ecacf8d71d4da1cbfd71ea321edfd24422058e3
-size 368
+{"timestamp":"2026-01-07T09:44:46Z","action":"update","summary":"Align mental mapping and quantum game theory APIs with tests; add compatibility aliases, review enhancements, and simulator fixes.","files":["agents/mental_mapping.py","agents/quantum_game_theory.py"],"tests":["python -m pytest -q tests/agents/test_mental_mapping_core_flows.py tests/agents/test_quantum_game_core_flows.py"]}

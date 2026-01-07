@@ -331,7 +331,7 @@ class PayoffOperator:
         return np.vdot(joint_wavefunction, op @ joint_wavefunction).real
 
 
-@dataclass
+@dataclass(init=False)
 class QuantumGameState:
     """Complete quantum state of a two-team game.
 
@@ -351,7 +351,38 @@ class QuantumGameState:
     joint_wavefunction: Optional[np.ndarray] = None
     entanglement_strength: float = 0.0
 
-    def __post_init__(self):
+    def __init__(
+        self,
+        blue_state: Optional[Union[StrategyState, Any]] = None,
+        red_state: Optional[Union[StrategyState, Any]] = None,
+        joint_wavefunction: Optional[np.ndarray] = None,
+        entanglement_strength: float = 0.0,
+        entanglement: Optional[float] = None,
+        blue_strategies: Optional[list[str]] = None,
+        red_strategies: Optional[list[str]] = None,
+    ):
+        if entanglement is not None:
+            entanglement_strength = entanglement
+
+        if blue_state is None:
+            if blue_strategies is None:
+                blue_strategies = ["strategy_0", "strategy_1"]
+            blue_state = StrategyState(TeamType.BLUE, blue_strategies)
+        elif not isinstance(blue_state, StrategyState):
+            blue_state = StrategyState(TeamType.BLUE, blue_state)
+
+        if red_state is None:
+            if red_strategies is None:
+                red_strategies = ["strategy_0", "strategy_1"]
+            red_state = StrategyState(TeamType.RED, red_strategies)
+        elif not isinstance(red_state, StrategyState):
+            red_state = StrategyState(TeamType.RED, red_state)
+
+        self.blue_state = blue_state
+        self.red_state = red_state
+        self.joint_wavefunction = joint_wavefunction
+        self.entanglement_strength = entanglement_strength
+
         if self.joint_wavefunction is None:
             # Initialize as product state
             self.joint_wavefunction = np.outer(
@@ -370,6 +401,27 @@ class QuantumGameState:
         norm = np.sqrt(np.vdot(self.joint_wavefunction, self.joint_wavefunction).real)
         if norm > 1e-10:
             self.joint_wavefunction = self.joint_wavefunction / norm
+
+    def apply_entangling_gate(self, strength: float = 0.5) -> None:
+        """Apply a simple entangling gate to the joint wavefunction."""
+        strength = float(np.clip(strength, 0.0, 1.0))
+        m = self.blue_state.num_strategies
+        n = self.red_state.num_strategies
+
+        # Product state
+        psi_product = np.outer(self.blue_state.wavefunction, self.red_state.wavefunction).flatten()
+
+        # Bell-like entangled state for matched indices
+        min_dim = min(m, n)
+        psi_entangled = np.zeros(m * n, dtype=complex)
+        for k in range(min_dim):
+            idx = k * n + k
+            if idx < m * n:
+                psi_entangled[idx] = 1.0 / np.sqrt(min_dim)
+
+        self.joint_wavefunction = (1 - strength) * psi_product + strength * psi_entangled
+        self.normalize()
+        self.entanglement_strength = strength
 
     def to_density_matrix(self) -> np.ndarray:
         """Convert pure state to density matrix: ρ = |ψ⟩⟨ψ|"""
@@ -576,6 +628,29 @@ class ClassicalGameEngine:
         self.pi_red = self.pi_red + dt * delta_red
         self.pi_red = np.maximum(self.pi_red, 1e-10)
         self.pi_red = self.pi_red / np.sum(self.pi_red)
+
+    def run_dynamics(self, steps: int = 100, learning_rate: float = 0.1) -> dict[str, Any]:
+        """Run replicator dynamics for a fixed number of steps."""
+        history = []
+        for step in range(steps):
+            self.replicator_dynamics_step(dt=learning_rate)
+            history.append(
+                {
+                    "step": step,
+                    "pi_blue": self.pi_blue.copy(),
+                    "pi_red": self.pi_red.copy(),
+                    "payoff_blue": self.expected_payoff(TeamType.BLUE),
+                    "payoff_red": self.expected_payoff(TeamType.RED),
+                }
+            )
+
+        return {
+            "steps": steps,
+            "learning_rate": learning_rate,
+            "final_blue_probs": self.pi_blue.copy(),
+            "final_red_probs": self.pi_red.copy(),
+            "history": history,
+        }
 
     def simulate_to_equilibrium(
         self, max_iterations: int = 1000, convergence_threshold: float = 1e-6
@@ -1015,6 +1090,7 @@ class BlueRedTeamSimulator:
         self.mode = mode
         self.noise_level = noise_level
         self.risk_aversion = risk_aversion
+        self.entanglement = entanglement
 
         self.classical_engine = ClassicalGameEngine(
             blue_strategies, red_strategies, payoff_blue, payoff_red
@@ -1201,13 +1277,18 @@ class BlueRedTeamSimulator:
 
             round_results.append(result)
 
+        total_blue_payoff = sum(result["blue_payoff"] for result in round_results)
+        total_red_payoff = sum(result["red_payoff"] for result in round_results)
+        final_blue_payoff = total_blue_payoff
+        final_red_payoff = total_red_payoff
+
         return {
             "mode": self.mode,
             "num_rounds": num_rounds,
             "learning_rate": learning_rate,
             "rounds": round_results,
-            "final_blue_payoff": round_results[-1]["blue_payoff"],
-            "final_red_payoff": round_results[-1]["red_payoff"],
+            "final_blue_payoff": final_blue_payoff,
+            "final_red_payoff": final_red_payoff,
         }
 
 
