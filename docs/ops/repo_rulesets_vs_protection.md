@@ -1,5 +1,5 @@
 # [Ops]: GitHub Rulesets vs Classic Branch Protection (Primer)  
-> Generated: 2025-10-09 20:04:41 UTC | Author: mbaetiong  
+> Generated: 2024-10-09 20:04:41 UTC | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 Context

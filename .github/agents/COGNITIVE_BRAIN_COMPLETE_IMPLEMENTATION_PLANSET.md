@@ -629,9 +629,9 @@ Week │ 1  2  3  4  5  6  7  8  9  10 11 12 13
 | Phase 8.3 Start | 2026-01-09 | 📋 |
 | Phase 8.3 Complete | 2026-01-23 | 📋 |
 | Phase 8.4 Start | 2026-01-30 | 📋 |
-| Phase 8.4 Complete | 2026-02-20 | 📋 |
-| Phase 8.5 Start | 2026-02-27 | 📋 |
-| Production Launch | 2026-03-27 | 📋 |
+| Phase 8.4 Complete | 2025-02-20 | 📋 |
+| Phase 8.5 Start | 2025-02-27 | 📋 |
+| Production Launch | 2025-03-27 | 📋 |
 
 ---
 

@@ -1,7 +1,7 @@
 # Configuration Guide for v1.4.0 Features
 
 **Version**: 1.4.0  
-**Last Updated**: 2025-12-09
+**Last Updated**: 2024-12-09
 
 ---
 
@@ -147,7 +147,7 @@ The `threshold` parameter controls sensitivity:
 **Conservative (0.9 - 1.0)**:
 - Only detects near-identical files
 - Fewer false positives
-- May miss legitimate duplicates
+- may miss legitimate duplicates
 
 ```yaml
 scoring:

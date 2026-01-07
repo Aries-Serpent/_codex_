@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.0.1] - 2025-12-23
+## [1.0.1] - 2024-12-23
 
 ### 🐛 Fixed
 
@@ -87,7 +87,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.0.0] - 2025-12-21
+## [1.0.0] - 2024-12-21
 
 ### ✨ Initial Release
 
@@ -287,6 +287,6 @@ See repository LICENSE file.
 
 ---
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2024-12-23  
 **Maintained By**: Copilot Evolution Team  
 **Status**: Active Development

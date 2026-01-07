@@ -106,7 +106,7 @@ For modules requiring optional dependencies:
 
 ```python
 OPTIONAL_MODULES = [
-    "codex_ml",  # May require torch and other heavy dependencies
+    "codex_ml",  # may require torch and other heavy dependencies
     "your_optional_module",  # Add here
 ]
 ```text

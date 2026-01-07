@@ -1,5 +1,5 @@
 # [Runbook]: Convergence & Audit Verification
-> Generated: 2025-12-04 | Author: mbaetiong
+> Generated: 2024-12-04 | Author: mbaetiong
 
 ## Commands
 | Task | Command |
@@ -249,7 +249,7 @@ Before approving audit remediation PR, verify:
 Wave 2 focused on resolving critical shadowing issues and establishing production-ready CI regression tracking.
 
 **Status**: ✅ **COMPLETE**  
-**Date**: 2025-12-04  
+**Date**: 2024-12-04  
 **PR**: #2389  
 **Key Commits**: `b8e4b83`, `1a81ef1`, `569844b`
 
@@ -350,7 +350,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 3. **CI Enhancements**: Consider auto-baseline refresh on scheduled intervals
 4. **Split-Brain Resolution**: Long-term architectural convergence
 
-### Wave 2.1 Update (Determinism Hardening) - 2025-12-05
+### Wave 2.1 Update (Determinism Hardening) - 2024-12-05
 
 **PR**: #2390 (sub-PR copilot/sub-pr-2390)  
 **Status**: ✅ **COMPLETE**
@@ -384,7 +384,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
    - Enhanced PR comments with quality metrics, shadowing status, and regression analysis
    - Added shadowing check step in quality-gates job
 
-#### Validation Results (2025-12-05)
+#### Validation Results (2024-12-05)
 
 ```
 ✅ Determinism Check: PASS (2 runs identical)

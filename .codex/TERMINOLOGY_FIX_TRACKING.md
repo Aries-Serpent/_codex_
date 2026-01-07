@@ -6,11 +6,11 @@
 
 ## Policy Violation Details
 
-**Violation:** Using time-based terminology (weeks, months, quarters, Q1/Q2) for future work planning instead of pre-commit/commit cycle terminology.
+**Violation:** Using time-based terminology (weeks, months, quarters, Cycle 1/Cycle 2) for future work planning instead of pre-commit/commit cycle terminology.
 
 **Policy Requirement:**
 - ✅ Use: "Pre-commit 1-2", "Pre-commit 3-4", "Phase X", "commit cycles"
-- ❌ Avoid: "Pre-commit 1-2", "Month 2", "Phase 1 (2026)", "quarterly"
+- ❌ Avoid: "Pre-commit 1-2", "Month 2", "Phase 1 (Current Cycle)", "quarterly"
 
 **Exception:** Historical dates and factual external constraints (e.g., "90-day retention") are acceptable.
 
@@ -82,7 +82,7 @@
 
 ### For Each File:
 1. **Review context** - Understand whether references are historical or future
-2. **Preserve historical** - Keep "Completed: 2025-12-15" style dates
+2. **Preserve historical** - Keep "Completed: 2024-12-15" style dates
 3. **Update future planning** - Replace weeks/months with pre-commits
 4. **Maintain consistency** - Use same terminology throughout file
 5. **Validate readability** - Ensure changes make sense in context
@@ -93,7 +93,7 @@
 | Pre-commit 1-4 | Pre-commit 1-4 | Planning phases |
 | Pre-commit 3-6 | Pre-commit 5-8 | Multi-step work |
 | Month 1 | Pre-commit 1-8 | Longer phases |
-| Phase 1 (2026) | Phase 2-5 | Quarterly scope |
+| Phase 1 (Current Cycle) | Phase 2-5 | Quarterly scope |
 | weekly | per commit cycle | Frequency |
 | monthly | per 4-5 commit cycles | Frequency |
 | quarterly | per phase | Frequency |

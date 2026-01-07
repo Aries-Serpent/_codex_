@@ -1,5 +1,5 @@
 # Ops: Incident Response for Status/Validation (v1.2)
-> Generated: 2025-11-02 15:55:27 UTC | Author: mbaetiong  
+> Generated: 2024-11-02 15:55:27 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Incident Commander], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 Trigger Conditions
@@ -14,7 +14,7 @@ Response Playbook
 | Investigate | Root cause analysis; check recent commits | IC + Author | 2h |
 | Mitigate | Rollback or hotfix; document in Finding (FIND-XXX) | IC + Author | 4h |
 | Document | Update status report with incident details | IC | 24h |
-| Post-mortem | Schedule review; add to Decision Log (DEC-XXX) | AI Assistant Incident Commander + AI Assistant Response System | 7d |
+| Post-mortem | Schedule review; add to Decision Log (Phase 12-XXX) | AI Assistant Incident Commander + AI Assistant Response System | 7d |
 
 Communication
 - Create incident issue using .github/ISSUE_TEMPLATE/schema_failure.md or security_gap.md

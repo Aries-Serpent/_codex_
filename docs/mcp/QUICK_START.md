@@ -195,7 +195,7 @@ package_<topic>.zip
 ```json
 {
   "version": "1.0",
-  "generated_at": "2025-12-30T17:00:00Z",
+  "generated_at": "2024-12-30T17:00:00Z",
   "repository": "Aries-Serpent/_codex_",
   "files": [
     {
@@ -356,6 +356,6 @@ Always check manifest and file count before uploading to ChatGPT.
 
 ---
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2024-12-30  
 **Version**: 1.0  
 **Status**: Production Ready ✅

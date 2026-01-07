@@ -60,10 +60,10 @@ A **Planset** is a structured work plan that defines objectives, tasks, dependen
 ```json
 {
   "planset_version": "1.0.0",
-  "id": "plan-2025-12-10-001",
+  "id": "plan-Previous Cycle-12-10-001",
   "name": "Repository Organization Phase 1",
   "description": "Clean up root directory and archive old files",
-  "created_at": "2025-12-10T18:00:00Z",
+  "created_at": "2024-12-10T18:00:00Z",
   "status": "active",
   "priority": "high",
   "objectives": [
@@ -126,7 +126,7 @@ planset = PlansetAPI.create(
 )
 
 # Load existing planset
-planset = PlansetAPI.load("plan-2025-12-10-001")
+planset = PlansetAPI.load("plan-Previous Cycle-12-10-001")
 
 # Execute planset
 results = planset.execute()
@@ -145,10 +145,10 @@ planset.rollback()
 codex planset create --file plan.json
 
 # Execute planset
-codex planset execute plan-2025-12-10-001
+codex planset execute plan-Previous Cycle-12-10-001
 
 # Show status
-codex planset status plan-2025-12-10-001
+codex planset status plan-Previous Cycle-12-10-001
 
 # List all plansets
 codex planset list --status active
@@ -169,7 +169,7 @@ A **Promptset** is a collection of AI Agent prompts organized by category, with 
   "id": "promptset-audit-v1",
   "name": "Audit Operations Promptset",
   "description": "Comprehensive prompts for audit pipeline operations",
-  "created_at": "2025-12-10T18:00:00Z",
+  "created_at": "2024-12-10T18:00:00Z",
   "category": "audit",
   "prompts": [
     {
@@ -269,10 +269,10 @@ A **Batchset** groups multiple operations for efficient batch execution with tra
 ```json
 {
   "batchset_version": "1.0.0",
-  "id": "batch-2025-12-10-001",
+  "id": "batch-Previous Cycle-12-10-001",
   "name": "Pre-Release Preparation Batch",
   "description": "Batch all pre-release preparation tasks",
-  "created_at": "2025-12-10T18:00:00Z",
+  "created_at": "2024-12-10T18:00:00Z",
   "transaction_mode": "atomic",
   "parallel": false,
   "operations": [
@@ -375,16 +375,16 @@ if not results.success:
 codex batchset create --file batch.json
 
 # Execute batchset
-codex batchset execute batch-2025-12-10-001
+codex batchset execute batch-Previous Cycle-12-10-001
 
 # Monitor execution
-codex batchset status batch-2025-12-10-001 --watch
+codex batchset status batch-Previous Cycle-12-10-001 --watch
 
 # View results
-codex batchset results batch-2025-12-10-001
+codex batchset results batch-Previous Cycle-12-10-001
 
 # Rollback
-codex batchset rollback batch-2025-12-10-001
+codex batchset rollback batch-Previous Cycle-12-10-001
 ```
 
 ---
@@ -399,10 +399,10 @@ A **Patchset** is a collection of code changes (patches) with metadata, validati
 ```json
 {
   "patchset_version": "1.0.0",
-  "id": "patch-2025-12-10-001",
+  "id": "patch-Previous Cycle-12-10-001",
   "name": "Fix Unused Format Arguments",
   "description": "Remove unused timestamp and version arguments in visualization modules",
-  "created_at": "2025-12-10T18:00:00Z",
+  "created_at": "2024-12-10T18:00:00Z",
   "author": "copilot-agent",
   "issue_refs": ["#2459"],
   "patches": [
@@ -500,19 +500,19 @@ else:
 codex patchset create --from-diff changes.diff --name "Fix format args"
 
 # Preview patchset
-codex patchset preview patch-2025-12-10-001
+codex patchset preview patch-Previous Cycle-12-10-001
 
 # Validate before applying
-codex patchset validate patch-2025-12-10-001
+codex patchset validate patch-Previous Cycle-12-10-001
 
 # Apply patchset
-codex patchset apply patch-2025-12-10-001
+codex patchset apply patch-Previous Cycle-12-10-001
 
 # Commit changes
-codex patchset commit patch-2025-12-10-001 -m "fix: Remove unused format arguments"
+codex patchset commit patch-Previous Cycle-12-10-001 -m "fix: Remove unused format arguments"
 
 # Rollback if needed
-codex patchset rollback patch-2025-12-10-001
+codex patchset rollback patch-Previous Cycle-12-10-001
 ```
 
 ---
@@ -549,7 +549,7 @@ pr = gh.pull_requests.create_from_results(
 archives = gh.archives.query(
     repo='Aries-Serpent/_codex_',
     pattern='*STATUS*.md',
-    date_range=('2025-01-01', '2025-12-10')
+    date_range=('Previous Cycle-01-01', 'Previous Cycle-12-10')
 )
 ```
 
@@ -714,5 +714,5 @@ class Patchset:
 ---
 
 **Version**: 1.0.0  
-**Last Updated**: 2025-12-10  
+**Last Updated**: 2024-12-10  
 **Maintained by**: Aries-Serpent/_codex_ team

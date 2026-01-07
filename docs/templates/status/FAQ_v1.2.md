@@ -1,5 +1,5 @@
 # FAQ: Status v1.2
-> Generated: 2025-11-02 15:05:03 UTC | Author: mbaetiong  
+> Generated: 2024-11-02 15:05:03 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Docs Maintainer], [Secondary: Onboarding Mentor] ⚡ Energy: 5
 
 Q: Do I need to fill every section?
@@ -15,4 +15,4 @@ Q: How do I prove report integrity?
 - A: Run scripts/audit/build_integrity_chain.py and include audit_run_manifest.json in the report artifacts.
 
 Q: What IDs are required?
-- A: CAP-/FIND-/PATCH-/REPRO-/Q-/DEC-/DEFER- per ID_Conventions_v1.2.md.
+- A: CAP-/FIND-/PATCH-/REPRO-/Q-/Phase 12-/DEFER- per ID_Conventions_v1.2.md.

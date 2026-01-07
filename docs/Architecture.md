@@ -1,6 +1,6 @@
 # Architecture: Shim Governance & Canonical Import Policy (v1.2.9)
 
-> Generated: 2025-12-05 | Author: mbaetiong  
+> Generated: 2024-12-05 | Author: mbaetiong  
 > Status: Active | Readiness: 85% → 99% path
 
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
@@ -12,7 +12,7 @@ This document defines the governance policy for import shims and canonical modul
 ## Policy Summary
 
 - **Canonical Location**: All runtime modules should ultimately live under `src/`
-- **Legacy Shims**: Temporary shims may exist in root paths (e.g., `training/`) during convergence
+- **Legacy Shims**: Temporary shims Phase 5 exist in root paths (e.g., `training/`) during convergence
 - **Shim Implementation**: Shims MUST re-export from `src.*` and maintain API equivalence
 - **Identity Requirements**: `training.X` must resolve to equivalent functionality as `src.training.X`
 - **CI Enforcement**: Strict conflict detection enabled; duplicates allowed only if whitelisted
@@ -52,9 +52,9 @@ __all__ = [k for k in globals() if not k.startswith("_")]
 ### Rule 1: Canonicalization Priority
 | Priority | Action | Timeline |
 |----------|--------|----------|
-| P0 | Migrate high-usage runtime modules to `src/` | Phase 1 (2026) |
+| P0 | Migrate high-usage runtime modules to `src/` | Phase 1 (Current Cycle) |
 | P1 | Keep minimal, documented shims during transition | Until migration complete |
-| P2 | Deprecate and remove shims after migration | Phase 2 (2026) |
+| P2 | Deprecate and remove shims after migration | Phase 2 (Current Cycle) |
 
 ### Rule 2: Shim Requirements
 All shims MUST:
@@ -169,8 +169,8 @@ Two paths available:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| v1.2.9 | 2025-12-05 | mbaetiong | Initial policy definition |
+| v1.2.9 | 2024-12-05 | mbaetiong | Initial policy definition |
 
 ---
 
-**Status**: Active | **Next Review**: Phase 1 (2026) or upon consolidation decision
+**Status**: Active | **Next Review**: Phase 1 (Current Cycle) or upon consolidation decision

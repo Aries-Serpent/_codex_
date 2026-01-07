@@ -1,7 +1,7 @@
 # Performance Optimization Guide
 
 **Version:** 1.0  
-**Last Updated:** 2025-11-17  
+**Last Updated:** 2024-11-17  
 **Component:** Inference Serving & Vector Retrieval
 
 ---

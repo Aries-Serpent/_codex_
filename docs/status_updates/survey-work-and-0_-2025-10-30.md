@@ -1,6 +1,6 @@
-# Repo Survey — work & PR 0 — 2025-10-30 (UTC)
+# Repo Survey — work & PR 0 — 2024-10-30 (UTC)
 
-**Ref:** branch `work`  commit `63694ea8`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-0_`
+**Ref:** branch `work`  commit `63694ea8`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-30-survey-work-and-0_`
 
 ---
 
@@ -10,7 +10,7 @@ pr: 0
 rollout_ring: 0D_base_   # intent badge carried forward in templates (docs)
 eval_preset: base
 deployment_preset: reasoning_pod
-generated_utc: 2025-10-30T00:00:00Z
+generated_utc: 2024-10-30T00:00:00Z
 ```text
 
 ## File Survey: Branch work

@@ -1,7 +1,7 @@
 # 🚨 CRITICAL: Temporary File Usage Policy
 
 **Policy Status**: MANDATORY - Zero Tolerance  
-**Last Updated**: 2025-12-29  
+**Last Updated**: 2024-12-29  
 **Enforcement**: All agents, scripts, and contributors
 
 ---
@@ -217,6 +217,6 @@ When in doubt, use the repository structure. Storage is cheap, lost work is expe
 ---
 
 **Policy Version**: 1.0.0  
-**Effective Date**: 2025-12-29  
+**Effective Date**: 2024-12-29  
 **Review Frequency**: Quarterly  
 **Owner**: Repository Automation Team

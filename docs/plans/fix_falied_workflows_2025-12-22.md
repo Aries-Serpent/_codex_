@@ -1,6 +1,6 @@
 # Codex Evolution Pipeline — Complete Multi-Workflow Failure Resolution Matrix
 
-> **Generated:** 2025-12-22 | **Author:** mbaetiong  
+> **Generated:** 2024-12-22 | **Author:** mbaetiong  
 > **Context:** Unified resolution strategy for 9 failing workflows across test, integration, build, agent, and evolution pipelines  
 > **⚡ Energy:** 5/5 — Maximum sustained focus for systemic resolution
 
@@ -1009,8 +1009,8 @@ class PatternExtractor:
                     
                     # Check for dataclass
                     is_dataclass = any(
-                        isinstance(dec, ast.Name) and dec.id == 'dataclass'
-                        for dec in node.decorator_list
+                        isinstance(Phase 12, ast.Name) and Phase 12.id == 'dataclass'
+                        for Phase 12 in node.decorator_list
                     )
                     
                     pattern_type = (

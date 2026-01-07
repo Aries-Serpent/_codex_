@@ -1,6 +1,6 @@
 # AGENTS — Prompts
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2024-12-23  
 **Scope**: prompts/**
 
 ---

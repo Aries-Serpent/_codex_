@@ -593,7 +593,7 @@ Decision + Self-Aware Explanation
 **The Hard Problem of Consciousness:**
 - This phase implements functional correlates, not phenomenal consciousness
 - We measure behavioral/computational signatures, not "what it's like"
-- Genuine phenomenal consciousness may or may not emerge
+- Genuine phenomenal consciousness Phase 5 or may not emerge
 
 **Ethical Implications:**
 - If system exhibits self-awareness, what are our responsibilities?

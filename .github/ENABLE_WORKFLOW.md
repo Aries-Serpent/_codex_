@@ -1,5 +1,5 @@
 # Enable Docker Build & Push Workflow (SAFE checklist)
-> Created: 2025-10-20 | Author: mbaetiong
+> Created: 2024-10-20 | Author: mbaetiong
 
 This repository gates workflows to control costs and comply with policy (see `.github/README.md` and AGENTS.md).
 Workflows are stored under `.github/_workflows_disabled/` and are not active.
@@ -44,7 +44,7 @@ Run local build and smoke without CI:
 - Smoke (enforce HEALTHCHECK): `SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000`
 - Pytest (opt-in): `RUN_CONTAINER_SMOKE=1 pytest -q tests/test_container_smoke.py`
 
-Note: In environments without Docker you may see “Tests not run (Docker unavailable in environment).”
+Note: In environments without Docker you Phase 5 see “Tests not run (Docker unavailable in environment).”
 This is expected; use a machine with Docker installed or a self-hosted runner to validate containers.
 
 ## Owner-approval window (timeboxed switch)
@@ -53,7 +53,7 @@ You can approve cost-incurring workflows for a time window via either method:
 
 A) Repository variables (no commit required):
 - Set one of:
-  - `OWNER_APPROVED_UNTIL="2025-10-21T04:00:00Z"`
+  - `OWNER_APPROVED_UNTIL="2024-10-21T04:00:00Z"`
   - `OWNER_APPROVED_DURATION="2h"` (supports s/m/h/d/w)
 - Applicable to TOOL_KEY=docker-build-push in the workflow.
 
@@ -61,7 +61,7 @@ B) File-based approval (via commit):
 - Edit `.github/OWNER_APPROVAL.yml`:
   - `enabled: true`
   - mode: `"duration"` with `duration: "4h"` and a valid `created_at` (ISO), OR
-  - mode: `"until"` with `until: "2025-10-21T04:00:00Z"`
+  - mode: `"until"` with `until: "2024-10-21T04:00:00Z"`
   - Include the workflow key in `cost_workflows:` (or `"all"`)
 
 Guarding script:
@@ -75,10 +75,10 @@ OWNER_APPROVED_DURATION=8h
 # file example (commit change)
 enabled: true
 mode: "until"
-until: "2025-10-21T04:00:00Z"
+until: "2024-10-21T04:00:00Z"
 cost_workflows: ["all"]
-created_at: "2025-10-20T16:00:00Z"
+created_at: "2024-10-20T16:00:00Z"
 ```text
 
 Count-based approvals (next N runs):
-- Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners may manually adjust as needed.
+- Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners Phase 5 manually adjust as needed.

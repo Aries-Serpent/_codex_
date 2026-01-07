@@ -1,7 +1,7 @@
 # MCP Security Guide
 
 **Version:** 1.0  
-**Last Updated:** 2025-11-18  
+**Last Updated:** 2024-11-18  
 **Audience:** Developers, Security Engineers, Operations
 
 ## Overview

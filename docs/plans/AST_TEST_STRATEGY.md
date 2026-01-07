@@ -1,6 +1,6 @@
 # AST Standardization - Test Strategy
 
-**Generated**: 2025-11-09  
+**Generated**: 2024-11-09  
 **Purpose**: Comprehensive testing strategy for AST standardization  
 **Status**: PLANNING - Tests not yet implemented
 

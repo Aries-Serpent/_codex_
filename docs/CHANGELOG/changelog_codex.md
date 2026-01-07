@@ -1,6 +1,6 @@
 # Codex Changelog
 
-## 2025-10-14 – Evaluation helper & tokenizer adapter refresh
+## 2024-10-14 – Evaluation helper & tokenizer adapter refresh
 
 ### WHY
 - Provide the reusable `evaluate_dataloader` helper promised in the audit plan.
@@ -26,7 +26,7 @@
 ### Tests/Docs
 - Added focused pytest coverage for the evaluation helper. No documentation build required.
 
-## 2025-10-06 — Unified training + tracking guards + data determinism tests
+## 2024-10-06 — Unified training + tracking guards + data determinism tests
 
 ### WHY
 - Reduce training-loop drift and standardize resume/grad-clipping hooks.
@@ -55,7 +55,7 @@
 ### Tests/Docs
 - See new `tests/*` and `docs/*` files. No GitHub Actions were added or modified.
 
-## 2025-09-17 – Checkpoint resume & dataset manifest updates
+## 2024-09-17 – Checkpoint resume & dataset manifest updates
 
 - Removed duplicate `src/codex/training.py01` after verifying no live references remained.
 - Implemented `CheckpointManager.load_latest`, updated the training CLI to auto-discover the latest checkpoint for `--resume-from`, and added regression tests.
@@ -63,52 +63,52 @@
 
 
 
-- Pinned `pre-commit==4.0.1`, `nox==2025.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
+- Pinned `pre-commit==4.0.1`, `nox==Previous Cycle.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
 - Extended `codex_setup.py`, `scripts/codex_local_gates.sh`, and `codex_workflow.py` to record gate CLI availability in `.codex/session_logs.db`.
 - Hardened `configs/development/noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
 
 
-## 2025-08-28 – Codex offline runner
+## 2024-08-28 – Codex offline runner
 
 - Added tools/codex_run.py orchestrator with audit fallback and local gates.
 - Added tools/codex_run.sh wrapper.
 
-## 2025-08-31 – CLI testing improvements
+## 2024-08-31 – CLI testing improvements
 
 - Restricted Nox test session to Python 3.12 and installed missing CLI/API dependencies.
 - Enabled `importlib` import mode via `pytest.ini` to prevent module name collisions during collection.
 
-## 2025-11-25 – Static code analysis step
+## 2024-11-25 – Static code analysis step
 
 - Added `static_code_analysis` stage to `analysis/audit_pipeline.py` and integrated it with `scripts/codex_local_gates.sh`.
 - Logs syntax-check metrics for Python sources.
 - Introduced a unit test verifying metric emission.
 
-## 2025-11-24 – Offline upgrade script
+## 2024-11-24 – Offline upgrade script
 
 - Added `codex_ast_upgrade.py` to automate tiered parsing setup and offline auditing.
 
-## 2025-11-23 – Tiered parsing and offline audit pipeline
+## 2024-11-23 – Tiered parsing and offline audit pipeline
 
 - Added analysis modules with tiered parsing fallbacks and search providers.
 - Added CLI `codex_ml.cli.audit_pipeline` and tests for AST extraction.
 - Documented "Fallback Modes & Feature Flags" in README.
 - Deferred advanced codemods and online external search; kept AST-only analyzers as fallback.
 
-## 2025-05-19 – Validation metrics & splits
+## 2024-05-19 – Validation metrics & splits
 
 - Added: `--val-split`/`--test-split` flags and per-epoch validation logging to `metrics.json`.
 - Deferred: stratified splits, GPU-heavy metrics, and online trackers.
-- Risks: small datasets may skip evaluation when insufficient tokens.
+- Risks: small datasets Phase 5 skip evaluation when insufficient tokens.
 
-## 2025-11-09 – Offline experiment tracking
+## 2024-11-09 – Offline experiment tracking
 
 - Added unified `codex_ml.monitoring.codex_logging` with optional TensorBoard, W&B, and MLflow sinks.
 - Patched `engine_hf_trainer.py` and `functional_training.py` to sample CPU/GPU metrics and log per-step scalars.
 - Added offline test coverage for logging bootstrap and docs for monitoring and experiment tracking.
 - Deferred: online W&B/remote MLflow servers, full Trainer callbacks, and extended NVML telemetry.
 
-## 2025-08-26 – LoRA and deterministic splits
+## 2024-08-26 – LoRA and deterministic splits
 
 - Implemented optional LoRA adapter with graceful fallback when `peft` is missing.
 - Added grad accumulation and mixed precision helpers to `functional_training.py`.
@@ -116,16 +116,16 @@
 - Generated `requirements/lock.txt` and local test gate script.
 - Sanitized external links in README for offline use.
 
-## CI policy docs — 2025-08-26T20:17:49Z
+## CI policy docs — 2024-08-26T20:17:49Z
 
 - Created /workspace/_codex_/docs/ci.md (web search allowed; remote CI disallowed)
 
-## Disable remote CI — 2025-08-26T20:17:49Z
+## Disable remote CI — 2024-08-26T20:17:49Z
 
 - Patched 5 workflow file(s) to `workflow_dispatch` and guarded jobs.
 - Total jobs guarded: 7
 
-## 2025-08-26 – Δ PR Checklist Applied
+## 2024-08-26 – Δ PR Checklist Applied
 
 ### New
 
@@ -145,7 +145,7 @@
 
 - existing analysis utilities under `src/codex_ml/analysis` retained without duplication.
 
-## 2025-08-28 – Portable workflow tooling
+## 2024-08-28 – Portable workflow tooling
 
 ### New
 - `tools/audit_runner.py` provides dual-path audit execution with optional external CLI.
@@ -154,7 +154,7 @@
 - `tools/codex_workflow.py` and `tools/codex_workflow.sh` orchestrate audit, hooks, and tests locally.
 
 
-## 2025-08-29 – Misc bug fixes and utilities
+## 2024-08-29 – Misc bug fixes and utilities
 - Added shebang and docs to `tools/label_policy_lint.py`.
 - Ensured `git_tag.current_commit` decodes byte output.
 - Added setter for SentencePieceAdapter `model_prefix`.
@@ -166,7 +166,7 @@
 - Added seed-controlled shuffling to data loaders.
 - Warned on duplicate registry registrations.
 
-## 2025-08-29 – Utilities and test cleanup
+## 2024-08-29 – Utilities and test cleanup
 
 - Added standalone `utils.training_callbacks` with EarlyStopping.
   - WHY: share training callback outside `codex_ml` package.
@@ -182,7 +182,7 @@
   - ROLLBACK: revert `tests/test_label_policy_lint.py`.
 # Codex Changelog
 
-## 2025-08-30 – Tokenizer, MLflow, and ingestion utilities
+## 2024-08-30 – Tokenizer, MLflow, and ingestion utilities
 
 ### WHY
 - Introduce a canonical `HFTokenizer` adapter with batching and decode/pad APIs to unify tokenization usage across the codebase.
@@ -203,7 +203,7 @@
 
 ---
 
-## 2025-08-30 – Tokenizer unification and ingestion consolidation (alternate notes)
+## 2024-08-30 – Tokenizer unification and ingestion consolidation (alternate notes)
 
 ### WHY
 - Consolidate tokenization into a single HFTokenizer adapter with batch helpers.
@@ -219,7 +219,7 @@
 
 ---
 
-## 2025-08-29 – Restore no-op MLflow context manager
+## 2024-08-29 – Restore no-op MLflow context manager
 
 ### WHY
 - Maintain previous behaviour where disabled MLflow tracking yields a no-op context manager so `with start_run(cfg)` remains safe when tracking is off or mlflow is unavailable.
@@ -232,7 +232,7 @@
 
 ---
 
-## 2025-08-29 – Local orchestration scripts
+## 2024-08-29 – Local orchestration scripts
 
 ### WHY
 - Add local tooling to run the sequential Codex workflow:
@@ -250,7 +250,7 @@
 
 ---
 
-## 2025-08-29 – Tokenizer & training wiring
+## 2024-08-29 – Tokenizer & training wiring
 
 ### WHY
 - Thread gradient-accumulation and bf16/fp16 flags into the HF Trainer wrapper.
@@ -265,7 +265,7 @@
 
 ---
 
-## 2025-08-29 – Tokenizer and tracking utilities (detailed)
+## 2024-08-29 – Tokenizer and tracking utilities (detailed)
 
 ### WHY
 - Introduce `HFTokenizer` interface with padding/truncation controls and batch encode/decode helpers.
@@ -282,13 +282,13 @@
 ### REPRO CHECKLIST
 - Set `PYTHONHASHSEED=0` for deterministic ordering where needed.
 - Use `seeded_shuffle` (or `deterministic_shuffle`) for reproducible splits.
-- Use `read_text(..., encoding="auto")` where encoding may vary.
+- Use `read_text(..., encoding="auto")` where encoding Phase 5 vary.
 - `pre-commit run --all-files --verbose`.
 - `pytest --cov=src/codex_ml --cov-report=term`.
 
 ---
 
-## 2025-08-29 – Phase 3 integrations
+## 2024-08-29 – Phase 3 integrations
 
 ### WHY
 - Guard MLflow run initialization behind `CODEX_ENABLE_MLFLOW` and related flags to avoid accidental tracking.
@@ -305,9 +305,9 @@
 ---
 
 ## Notes and Next Steps
-- Multiple entries on 2025-08-29/30 reflect iterative integration steps across tokenizer, ingestion, tracking, and trainer wiring. The changes are intentionally additive and guarded; follow-up PRs should address the remaining test collection errors and tighten compatibility layers (e.g., signature normalization for legacy `read_text` implementations, optional dependency detection, and test environment setup).
+- Multiple entries on Previous Cycle-08-29/30 reflect iterative integration steps across tokenizer, ingestion, tracking, and trainer wiring. The changes are intentionally additive and guarded; follow-up PRs should address the remaining test collection errors and tighten compatibility layers (e.g., signature normalization for legacy `read_text` implementations, optional dependency detection, and test environment setup).
 - When backporting or cherry-picking these changes to other branches, ensure environment flags (e.g., `CODEX_ENABLE_MLFLOW`, `CODEX_POST_COMMIT_COMMENT`) and optional-dependency handling remain consistent to avoid surprising behavior in CI.
-## 2025-08-28 — Codex Run
+## 2024-08-28 — Codex Run
 - Enforced self-hosted-only gates via `make codex-gates` and `scripts/codex_local_gates.sh`
 - Added doctor script and workflow executor
 - Updated README and docs to recommend self-hosted runners and MLflow tracking
@@ -322,11 +322,11 @@
 - Added tests for tokenizer IDs, grad accumulation, and checkpoint system metadata.
 - Added codex_seq_runner and run_codex_sequence utilities.
 
-## 2025-09-02 — Codex Run
+## 2024-09-02 — Codex Run
 - Enabled optional padding/truncation in `HFTokenizerAdapter.encode`.
 - Wired `apply_lora` into `run_hf_trainer` with dtype/device placement.
 - Added checkpoint resume support via `resume_from` parameter.
-## [Unreleased] - 2025-09-02
+## [Unreleased] - 2024-09-02
 - Format `src/codex_ml/safety/risk_score.py` with Black.
 - Correct README typos and complete environment description.
 - Pin `peft` dependency to ensure `nox -s tests` passes.
@@ -347,7 +347,7 @@
 - Introduced general `TokenizerAdapter` with HuggingFace and whitespace implementations; added basic round-trip tests.
 - Added simple dataset loader supporting text/NDJSON/CSV with caching and safety hooks, plus deterministic split utilities.
 
-### Unreleased - 2025-09-07
+### Unreleased - 2024-09-07
 - Updated README references to current configuration structure.
 - Integrate safety filter with data loader and add license checker script.
 - Generated gaps report for TODOs and stubs.
@@ -355,7 +355,7 @@
 - Add dataset loader supporting TXT/NDJSON/CSV with caching and safety filtering.
 - feat(model): introduce model registry with optional LoRA configuration and tests.
 - docs: document tokenizer adapter, Hydra configuration groups, and data loading utilities.
-## [Unreleased] - 2025-09-02
+## [Unreleased] - 2024-09-02
 - Format `src/codex_ml/safety/risk_score.py` with Black.
 - Correct README typos and complete environment description.
 - Pin `peft` dependency to ensure `nox -s tests` passes.
@@ -376,7 +376,7 @@
 - Introduced general `TokenizerAdapter` with HuggingFace and whitespace implementations; added basic round-trip tests.
 - Added simple dataset loader supporting text/NDJSON/CSV with caching and safety hooks, plus deterministic split utilities.
 
-### Unreleased - 2025-09-07
+### Unreleased - 2024-09-07
 - Updated README references to current configuration structure.
 - Integrate safety filter with data loader and add license checker script.
 - Generated gaps report for TODOs and stubs.
@@ -385,7 +385,7 @@
 - feat(model): introduce model registry with optional LoRA configuration and tests.
 - docs: document tokenizer adapter, Hydra configuration groups, and data loading utilities.
 
-## 2025-09-26 – Codex-ready task sequence foundation
+## 2024-09-26 – Codex-ready task sequence foundation
 
 - Added codex_ready_task_sequence.yaml to document the reproducible workflow specification.
 - Replaced codex_task_sequence.py with offline CLI orchestrating preparation, mapping, construction, pruning, and finalization phases.

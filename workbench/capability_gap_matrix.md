@@ -1,5 +1,5 @@
 # Capability Gap Matrix
-**Generated:** 2025-12-06 03:39:05
+**Generated:** 2024-12-06 03:39:05
 
 ## Overview
 - **Total Capabilities Assessed:** 18

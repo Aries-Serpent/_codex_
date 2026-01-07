@@ -1,5 +1,5 @@
-# Guide: ID Conventions for Status v1.2 (CAP/FIND/PATCH/REPRO/Q/DEC/DEFER)
-> Generated: 2025-11-02 15:01:45 UTC | Author: mbaetiong  
+# Guide: ID Conventions for Status v1.2 (CAP/FIND/PATCH/REPRO/Q/Phase 12/DEFER)
+> Generated: 2024-11-02 15:01:45 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Taxonomy Steward], [Secondary: QA Reviewer] ⚡ Energy: 5  
 
 
@@ -14,7 +14,7 @@ ID Formats
 | Patch | PATCH-XXX | PATCH-021 | Template 4.x, Extended Catalog links |
 | Repro Control | REPRO-XXX | REPRO-003 | Template 2.5.2, patches[].repro_ids |
 | Question | Q-XXX | Q-007 | Template 9 |
-| Decision | DEC-XXX | DEC-005 | Template 10 |
+| Decision | Phase 12-XXX | Phase 12-005 | Template 10 |
 | Deferred | DEFER-XXX | DEFER-002 | Template 2.9 |
 
 Allocation Rules
@@ -29,7 +29,7 @@ Validation Hints
   - PATCH: ^PATCH-[0-9]{3,}$
   - REPRO: ^REPRO-[0-9]{3,}$
   - Q: ^Q-[0-9]{3,}$
-  - DEC: ^DEC-[0-9]{3,}$
+  - Phase 12: ^Phase 12-[0-9]{3,}$
   - DEFER: ^DEFER-[0-9]{3,}$
 
 DoD

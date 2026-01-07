@@ -1,6 +1,6 @@
 # AGENTS — MCP (Model Context Protocol)
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2024-12-23  
 **Scope**: src/mcp/**
 
 ---
@@ -11,7 +11,7 @@ This directory contains the MCP server implementation.
 
 ---
 
-## 🔒 Security Integration (2025-12-23)
+## 🔒 Security Integration (2024-12-23)
 
 MCP server integrates with security utilities:
 

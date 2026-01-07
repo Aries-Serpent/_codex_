@@ -1,4 +1,4 @@
-# Reproducibility Checklist — Run 1 (2025-09-22)
+# Reproducibility Checklist — Run 1 (2024-09-22)
 
 | Item | Status | Notes |
 | --- | --- | --- |

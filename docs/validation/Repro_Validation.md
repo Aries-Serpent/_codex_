@@ -1,6 +1,6 @@
 # Validation: Reproducibility — Seed, Env Snapshot, Checkpoint Metadata
 
-> Generated: 2025-11-05 07:27:25 | Author: mbaetiong
+> Generated: 2024-11-05 07:27:25 | Author: mbaetiong
 
 ## Objective
 
@@ -86,7 +86,7 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
 {
   "format_version": "1.0",
   "codex_commit": "abc123...",
-  "created_at": "2025-11-05T...",
+  "created_at": "2024-11-05T...",
   "model_config": {...}
 }
 ```text

@@ -501,7 +501,7 @@ At the end of EVERY session, verify:
 - Quarterly comprehensive review
 
 ### Version History
-- v1.0.0 (2025-12-29): Initial policy
+- v1.0.0 (2024-12-29): Initial policy
 - v1.5.0 (2026-01-05): Added ZIP integration protocol
 - v2.0.0 (2026-01-06): ✅ CURRENT - Added explicit terminology, no-deferral enforcement, file discovery mandate
 

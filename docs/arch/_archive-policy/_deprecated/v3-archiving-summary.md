@@ -1,6 +1,6 @@
 ---
 deprecated: true
-deprecated_since: 2025-10-24
+deprecated_since: 2024-10-24
 replaced_by: ../canonical-archiving-policy.md
 summary: "Legacy abbreviated archive workflow outline."
 ---

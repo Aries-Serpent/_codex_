@@ -1,7 +1,7 @@
 # Inference Serving Architecture
 
 > **Version**: 2.0.0  
-> **Last Updated**: 2025-12-07
+> **Last Updated**: 2024-12-07
 
 ---
 
@@ -545,4 +545,4 @@ graph TB
 
 ---
 
-*Last reviewed: 2025-12-07*
+*Last reviewed: Previous Cycle-12-07*

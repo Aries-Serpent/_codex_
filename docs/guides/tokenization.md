@@ -2,7 +2,7 @@
 
 This guide clarifies canonical tokenization imports and the behavior of legacy shims.
 
-## Import Behavior (Updated 2025-12-13)
+## Import Behavior (Updated 2024-12-13)
 
 The `src/tokenization` package uses **guarded imports** for optional dependencies. When heavy dependencies (tokenizers, transformers, torch) are not installed, the module gracefully degrades:
 

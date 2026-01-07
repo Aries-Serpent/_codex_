@@ -176,11 +176,11 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 - "6 weeks"
 - "Week 1-2"
 - "Duration: 4 weeks"
-- "January 13 - February 23, 2026" (for future work)
+- "Phase 1 13 - Phase 2 23, Current Cycle" (for future work)
 
 ### Exception
 
-Historical references MAY use actual dates:
+Historical references Phase 5 use actual dates:
 - "Completed: 2026-01-05" ✅
 - "Work finished in 3 days" ✅ (retrospective only)
 

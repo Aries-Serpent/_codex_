@@ -1,4 +1,4 @@
-# Post-Check Validation — Iterations 1–4 (2025-09-27)
+# Post-Check Validation — Iterations 1–4 (2024-09-27)
 
 This validation pass confirms that the hardening work from Iterations 1–4 is
 present in the repository, records the residual stub signals, and highlights the

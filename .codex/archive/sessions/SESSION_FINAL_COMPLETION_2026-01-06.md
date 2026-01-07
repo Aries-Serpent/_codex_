@@ -205,7 +205,7 @@ async getStatus() {
 ## Security Analysis Summary
 
 **8 Dependabot Alerts Analyzed:**
-- 1 High severity (CVE-2025-69223 - zip bomb)
+- 1 High severity (CVE-Previous Cycle-69223 - zip bomb)
 - 3 Moderate severity (DoS vulnerabilities)
 - 4 Low severity (various issues)
 

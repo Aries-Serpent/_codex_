@@ -2,7 +2,7 @@
 
 **Purpose**: Track broken documentation links discovered during Phase 8 consolidation.
 
-**Created**: 2025-12-30  
+**Created**: 2024-12-30  
 **Status**: 🟡 Pending Validation  
 **Priority**: Medium
 
@@ -30,7 +30,7 @@ Many links reference files that don't exist:
 
 ### Category: Moved/Renamed Files
 
-Links that may point to renamed or relocated files:
+Links that Phase 5 point to renamed or relocated files:
 - `./decision_records/0001-record-architecture-decisions.md`
 - `../CODEBASE_AUDIT_2025-08-26_203612.md`
 - `./README_ROOT.md`

@@ -1,6 +1,6 @@
 # Architecture Decision Record: SQLite Archive Restore Fix
 
-> Generated: 2025-10-17 09:19:54 | Author: mbaetiong | Type: Bug Fix
+> Generated: 2024-10-17 09:19:54 | Author: mbaetiong | Type: Bug Fix
 
 ## Status
 ✅ **RESOLVED** - Patch implementation complete

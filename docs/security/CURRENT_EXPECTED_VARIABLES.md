@@ -229,12 +229,12 @@ All variables listed are compatible with:
 | Date | Changes | Author |
 |------|---------|--------|
 | 2026-01-01 | Initial comprehensive inventory | @copilot |
-| 2025-12-29 | Added security tool variables | @mbaetiong |
-| 2025-12-23 | Added integration test secrets | Security Team |
+| 2024-12-29 | Added security tool variables | @mbaetiong |
+| 2024-12-23 | Added integration test secrets | Security Team |
 
 ---
 
 **Maintained By**: Security Team & @copilot  
 **Last Verified**: 2026-01-01  
-**Next Review**: 2026-04-01 (Quarterly)
+**Next Review**: 2025-04-01 (Quarterly)
 

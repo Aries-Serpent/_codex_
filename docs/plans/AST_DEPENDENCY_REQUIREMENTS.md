@@ -1,6 +1,6 @@
 # AST Standardization - Dependency Requirements
 
-**Generated**: 2025-11-09  
+**Generated**: 2024-11-09  
 **Purpose**: Complete dependency specification for AST standardization project  
 **Status**: PLANNING - Not yet installed
 

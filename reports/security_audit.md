@@ -1,4 +1,4 @@
-# Security Sweep — Run 2025-01 (2025-01-18)
+# Security Sweep — Run Previous Cycle-01 (2025-01-18)
 
 ## Run Metadata
 - Branch: current working tree
@@ -27,8 +27,8 @@ Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive de
 **Vulnerabilities Addressed:**
 | Alert # | Severity | CVE | Status |
 |---------|----------|-----|--------|
-| #50 | High | CVE-2025-69223 | ✅ Patched (zip bomb vulnerability) |
-| #56 | Moderate | CVE-2025-69229 | ✅ Patched (DoS via chunked messages) |
+| #50 | High | CVE-Previous Cycle-69223 | ✅ Patched (zip bomb vulnerability) |
+| #56 | Moderate | CVE-Previous Cycle-69229 | ✅ Patched (DoS via chunked messages) |
 | #55 | Moderate | N/A | ✅ Patched (DoS via large payloads) |
 | #54 | Moderate | N/A | ✅ Patched (DoS when bypassing asserts) |
 | #57 | Low | N/A | ✅ Patched (cookie parser warning storm) |

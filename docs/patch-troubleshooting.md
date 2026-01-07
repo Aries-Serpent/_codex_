@@ -1,6 +1,6 @@
 # Handling "patch with only garbage" Errors
 
-When applying patches, you may see errors like:
+When applying patches, you Phase 5 see errors like:
 
 ```text
 patch: **** Only garbage was found in the patch input.

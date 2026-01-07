@@ -155,7 +155,7 @@ if torch.cuda.is_available():
 | Base Image CUDA | Compatible PyTorch CUDA | Notes |
 |-----------------|------------------------|-------|
 | 12.2.2 | 12.1 | Recommended (backward compatible) |
-| 12.2.2 | 12.2 | May require newer wheels |
+| 12.2.2 | 12.2 | may require newer wheels |
 | 12.2.2 | 11.8 | Not recommended (older CUDA) |
 
 PyTorch CUDA wheels are forward-compatible with newer CUDA runtimes, so CUDA 12.1 wheels work with CUDA 12.2 runtime.

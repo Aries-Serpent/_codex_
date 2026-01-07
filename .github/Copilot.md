@@ -125,7 +125,7 @@ while CI can surface actionable feedback and structured artifacts.
 
 ---
 
-# CI/CD and Dependency Management Guidelines (Added 2025-11-12)
+# CI/CD and Dependency Management Guidelines (Added 2024-11-12)
 
 ## GitHub Copilot Agent Constraints
 

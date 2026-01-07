@@ -76,7 +76,7 @@ class AdvancedPatternDetector:
 #### R2: Behavior Prediction Enhancement (HIGH PRIORITY)
 
 **Research-Backed Approach**:
-Based on 2025 study showing ARIMAX models forecast technical debt trends effectively, implement:
+Based on Previous Cycle study showing ARIMAX models forecast technical debt trends effectively, implement:
 
 **Architecture**:
 ```python
@@ -107,7 +107,7 @@ class BehaviorPredictor:
 - External signals: Developer activity, release cycles
 - **Size**: ~100GB/year for medium-sized projects
 
-**Timeline**: 6-10 weeks
+**Timeline**: 6-10 phases
 - Pre-commit 1-4: Feature engineering pipeline
 - Pre-commit 5-10: LSTM training on historical sequences
 - Pre-commit 11-16: ARIMA model tuning for seasonal components
@@ -151,7 +151,7 @@ class SelfImprovementLoop:
 - Missed opportunities: Bugs found that agent didn't warn about
 - **Storage**: .github/agent_feedback/ directory (JSON logs)
 
-**Timeline**: 10-14 weeks
+**Timeline**: 10-14 phases
 - Pre-commit 1-6: Feedback collection infrastructure
 - Pre-commit 7-14: RL algorithm implementation and testing
 - Pre-commit 15-22: Simulated training on historical data
@@ -203,7 +203,7 @@ class ResourcePredictor:
 - Workload characteristics: concurrent users, request rates
 - **Size**: ~1TB/year for production telemetry
 
-**Timeline**: 8-10 weeks (HIGH PRIORITY)
+**Timeline**: 8-10 phases (HIGH PRIORITY)
 
 **Success Criteria** (from research):
 - Prediction accuracy: >80% at 1-4 commit horizon
@@ -255,7 +255,7 @@ class EnsembleAnomalyDetector:
 - Detection latency: <2s (real-time)
 - Recall on known incidents: >90%
 
-**Timeline**: 6-8 weeks
+**Timeline**: 6-8 phases
 
 ---
 
@@ -305,7 +305,7 @@ class ThroughputOptimizer:
 - Suggestion acceptance rate: >50%
 - No functionality regressions (all tests pass)
 
-**Timeline**: 8-10 weeks
+**Timeline**: 8-10 phases
 
 ---
 
@@ -364,7 +364,7 @@ class GPTStyleDocGenerator:
 - Coverage: 90%+ of public functions documented
 - Clarity score: >85% (readability metrics)
 
-**Timeline**: 12-16 weeks
+**Timeline**: 12-16 phases
 - Pre-commit 1-8: Data collection and prompt engineering
 - Pre-commit 9-20: Generation pipeline + quality checks
 - Pre-commit 21-28: Integration with CI/CD
@@ -420,14 +420,14 @@ class TutorialGenerator:
 - User testing: Developers successfully follow tutorials
 - Completeness: Core features covered
 
-**Timeline**: 10-14 weeks
+**Timeline**: 10-14 phases
 
 ---
 
 #### R9: Architecture Diagram Intelligence (MEDIUM PRIORITY)
 
 **Research-Backed Approach**:
-Based on Swark (2025) using LLMs to generate Mermaid diagrams from code:
+Based on Swark (Previous Cycle) using LLMs to generate Mermaid diagrams from code:
 
 **Architecture**:
 ```python
@@ -468,7 +468,7 @@ class ArchitectureDiagramGenerator:
 - Usability: Minimal editing needed (<30% changes)
 - Automatic update: Regenerate on major architectural changes
 
-**Timeline**: 8-12 weeks
+**Timeline**: 8-12 phases
 
 ---
 
@@ -518,7 +518,7 @@ class MLTestPrioritizer:
 - All failures still caught (no regressions missed)
 - Overhead of prediction: <2s
 
-**Timeline**: 10-14 weeks (CRITICAL path)
+**Timeline**: 10-14 phases (CRITICAL path)
 - Pre-commit 1-6: Data collection pipeline
 - Pre-commit 7-14: Feature engineering + model training
 - Pre-commit 15-22: Integration with test runner
@@ -569,7 +569,7 @@ class BuildFailurePredictor:
 - Prediction time: <5s
 - Integration: Block or warn before CI starts
 
-**Timeline**: 8-12 weeks (Depends on R10)
+**Timeline**: 8-12 phases (Depends on R10)
 
 ---
 
@@ -601,7 +601,7 @@ class CIResourceAllocator:
         return allocation
 ```
 
-**Timeline**: 6-10 weeks
+**Timeline**: 6-10 phases
 
 ---
 
@@ -654,9 +654,9 @@ class CausalAnalyzer:
 - Correct causal attribution: >75% on test scenarios
 - Confidence calibration: 95% confidence → actually 90%+ correct
 - Avoid false blame: Detect external causes
-- Time to insight: <10 minutes
+- Time to insight: <10 pre-commits
 
-**Timeline**: 14-20 weeks (CRITICAL research depth)
+**Timeline**: 14-20 phases (CRITICAL research depth)
 - Pre-commit 1-12: Causal graph construction framework
 - Pre-commit 13-24: Do-calculus implementation + testing
 - Pre-commit 25-34: Integration with repository data
@@ -710,7 +710,7 @@ class CounterfactualReasoner:
 - Uncertainty quantification: Provide confidence bounds
 - Usefulness: Architects report value in decision-making
 
-**Timeline**: 12-16 weeks (Depends on R13)
+**Timeline**: 12-16 phases (Depends on R13)
 
 ---
 
@@ -765,7 +765,7 @@ class ExplanationGenerator:
 - Time to decision: Reduced with clear explanations
 - Feedback: Thumbs up rate >80%
 
-**Timeline**: 8-12 weeks
+**Timeline**: 8-12 phases
 
 ---
 
@@ -814,7 +814,7 @@ class TaskDecomposer:
 - Agent utilization: Minimize idle time
 - Adaptability: Re-plan if agent fails
 
-**Timeline**: 10-14 weeks
+**Timeline**: 10-14 phases
 
 ---
 
@@ -864,7 +864,7 @@ class ReputationSystem:
 - False positive reduction: Lower-reputation agents downweighted
 - Adaptability: Reputation updates quickly (decay old performance)
 
-**Timeline**: 6-8 weeks
+**Timeline**: 6-8 phases
 
 ---
 
@@ -914,7 +914,7 @@ class CoalitionFormation:
 - Efficiency: No unnecessary agents assigned
 - Overhead: Coalition coordination cost <20% of task time
 
-**Timeline**: 12-18 weeks (CRITICAL)
+**Timeline**: 12-18 phases (CRITICAL)
 
 ---
 
@@ -945,7 +945,7 @@ class CognitiveBrainIntegration:
         self.shared_knowledge_base.add(learned_pattern)
 ```
 
-**Timeline**: Ongoing (16-24 weeks continuous refinement)
+**Timeline**: Ongoing (16-24 phases continuous refinement)
 
 ---
 
@@ -1028,7 +1028,7 @@ class SecurityLayer:
 | Research Area | Agent | Weeks | Dependencies | Expected Impact |
 |--------------|-------|-------|--------------|----------------|
 | **R1: Advanced Patterns** | 1 | 8-12 | Data collection | 25-40% accuracy gain |
-| **R2: Behavior Prediction** | 1 | 6-10 | Historical data | 3-6 month foresight |
+| **R2: Behavior Prediction** | 1 | 6-10 | Historical data | 3-6 cycles foresight |
 | **R4: Resource Prediction** | 2 | 8-10 | Prometheus data | Proactive scaling |
 | **R7: NLG Documentation** | 3 | 12-16 | LLM access | 90% doc quality |
 | **R8: Tutorial Generation** | 3 | 10-14 | Code search | 80% auto-content |
@@ -1048,7 +1048,7 @@ class SecurityLayer:
 
 ---
 
-## 📅 Implementation Timeline (32 Weeks)
+## 📅 Implementation Timeline (32 phases)
 
 ### Phase 1: Foundation (Pre-commit 1-16)
 
@@ -1184,7 +1184,7 @@ class SecurityLayer:
 **Agent 1 (Emergent Intelligence)**:
 - Pattern detection accuracy: 85% → 95%
 - False positive rate: 15% → <5%
-- Prediction lead time: 3-6 months
+- Prediction lead time: 3-6 cycles
 
 **Agent 2 (Performance)**:
 - Resource prediction accuracy: >80%
@@ -1301,7 +1301,7 @@ This enhanced implementation plan provides a comprehensive, research-backed road
 - **40% CI/CD time reduction** via intelligent prioritization
 - **90% agent adoption** via explainability and trust
 
-**Timeline**: 32 weeks to complete all research and implementation, with incremental value delivery every 2-4 weeks.
+**Timeline**: 32 phases to complete all research and implementation, with incremental value delivery every 2-4 phases.
 
 ---
 

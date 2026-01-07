@@ -626,7 +626,7 @@ Justification: Provides a high-level summary of what was added for MCP support, 
 *** Begin Patch
 *** Update File: MCP_IMPLEMENTATION_SUMMARY.md
 +# [Report]: MCP Capabilities Implementation Summary
-+> **Date**: 2025-11-17  
++> **Date**: 2024-11-17  
 +> **Authors**: Copilot Extended (System)  
 +> **Energy**: 5  
 +
@@ -706,7 +706,7 @@ This document uses a similar format to the existing IMPLEMENTATION_AUDIT_V1.4.0.
 We cite a snippet from existing docs (the ITA README)[68] to root some claims in evidence (and potentially boost the mcp-security-safeguards docs component by showing we documented that aspect).
 (No changes to templates/audit/capability_matrix.md.j2 are needed, as it automatically lists all capabilities present. The new ones will appear sorted alphabetically among others, which is fine. Optionally, we could group by category in the future, but that's beyond scope.)
 4. Configuration Adjustments
-We should ensure the config knows about these new capabilities if needed. The YAML workflow.yaml already has capability_map.dynamic: true[10], so all new detectors will run automatically. However, to avoid validate failing due to new capabilities not listed in overrides, we may add them to capability_map.overrides. The overrides in workflow.yaml serve as an expected list of all capability IDs (any missing from results will trigger fail_on_missing_detector). We will append the new IDs to that list.
+We should ensure the config knows about these new capabilities if needed. The YAML workflow.yaml already has capability_map.dynamic: true[10], so all new detectors will run automatically. However, to avoid validate failing due to new capabilities not listed in overrides, we Phase 5 add them to capability_map.overrides. The overrides in workflow.yaml serve as an expected list of all capability IDs (any missing from results will trigger fail_on_missing_detector). We will append the new IDs to that list.
 Patch: .copilot-space/workflow.yaml (capability_map.overrides update)
 Justification: Include MCP capabilities in the overrides map to acknowledge them as expected. This prevents validate from complaining that, say, mcp-protocol-surface is absent (assuming at least evidence is found, they should all appear except perhaps multi-tenant which might appear with no evidence but still present). We add them with some representative synonyms (though overrides mainly serve the missing-detector check; synonyms aren’t used elsewhere in logic from what we see, but we’ll include a few to be consistent with pattern of mapping capability to keyword triggers).
 *** Begin Patch

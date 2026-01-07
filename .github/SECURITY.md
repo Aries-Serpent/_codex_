@@ -105,7 +105,7 @@ When Dependabot reports a vulnerability that's already patched:
 
 Recent analysis of 8 Dependabot alerts for aiohttp:
 - **Current Version:** 3.13.3 (latest, patched)
-- **Vulnerabilities:** CVE-2025-69223 (High), CVE-2025-69229 (Moderate), plus 6 others
+- **Vulnerabilities:** CVE-Previous Cycle-69223 (High), CVE-Previous Cycle-69229 (Moderate), plus 6 others
 - **Status:** All patched in current version
 - **Action:** Alerts dismissed after verification
 - **Documentation:** `reports/security_analysis_aiohttp_2026-01-06.md`
@@ -265,4 +265,4 @@ We appreciate the efforts of security researchers who help keep our project secu
 ---
 
 **Last Updated:** 2026-01-06  
-**Next Review:** 2026-02-03 (monthly review schedule)
+**Next Review:** 2025-02-03 (monthly review schedule)

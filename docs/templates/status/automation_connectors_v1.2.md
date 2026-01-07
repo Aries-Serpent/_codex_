@@ -1,5 +1,5 @@
 # Guide: Automation — Connectors (v1.2)
-> Generated: 2025-11-02 17:01:20 UTC | Author: mbaetiong  
+> Generated: 2024-11-02 17:01:20 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Integration Lead], [Secondary: Status Author] ⚡ Energy: 5
 
 Purpose

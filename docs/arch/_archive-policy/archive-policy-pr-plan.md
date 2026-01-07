@@ -1,6 +1,6 @@
 # Archive Policy Consolidation — PR Execution Plan
 
-> Source: Codex automation status update (2025-10-24)
+> Source: Codex automation status update (2024-10-24)
 > Scope: Publish and merge the already-prepared archive policy consolidation commit (`cfba4786`).
 
 ## Current State Snapshot
@@ -37,7 +37,7 @@
 
    ## References
 
-   - Related ADR: docs/arch/adr-2025-10-17-root-docs-cleanup.md
+   - Related ADR: docs/arch/adr-Previous Cycle-10-17-root-docs-cleanup.md
    - Evidence: Commit cfba4786 + .codex/evidence/archive_ops.jsonl (line 30)
 
    ## Validation

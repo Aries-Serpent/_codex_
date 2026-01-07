@@ -42,7 +42,7 @@
 - Dataset manifest guide updated to highlight deterministic JSONL/CSV loaders.
 - Checkpointing documentation expanded with remote storage workflow and test guidance.
 
-## [2025-11-09] Feature Batch 1: Metrics & MLflow Guard
+## [Previous Cycle-11-09] Feature Batch 1: Metrics & MLflow Guard
 
 ### Added
 - ✅ Metrics API completion: F1, BLEU, token accuracy, recall classes plus NDJSON summariser

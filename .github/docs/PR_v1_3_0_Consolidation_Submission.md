@@ -1,7 +1,7 @@
 # Pull Request — Completed for v1.3.0 Consolidation
 
 > Version: 1.2.0  
-> Generated: 2025-12-05  
+> Generated: 2024-12-05  
 > Purpose: Final consolidation to canonical src/training/, strict validation zero-duplicate compliance, governance hardened
 
 ---
@@ -394,7 +394,7 @@ git reset --hard v1.2.9-pre-consolidation
 
 ---
 
-**Generated**: 2025-12-05  
+**Generated**: 2024-12-05  
 **Commit**: 0700e3a  
 **Backup Tag**: v1.2.9-pre-consolidation  
 **Authorization**: Autonomous execution approved by @mbaetiong  

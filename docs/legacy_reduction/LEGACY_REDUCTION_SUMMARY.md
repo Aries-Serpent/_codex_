@@ -1,5 +1,5 @@
 # Legacy Import Reduction - Final Report
-> Generated: 2025-12-05 | PR #2395 | Branch: 0D_base_
+> Generated: 2024-12-05 | PR #2395 | Branch: 0D_base_
 
 ## Executive Summary
 

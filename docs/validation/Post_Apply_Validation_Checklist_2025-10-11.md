@@ -1,5 +1,5 @@
 # [Checklist]: Post-Apply Validation — Next Atomic Diffs
-> Generated: 2025-10-11 | Owner: Codex Ops
+> Generated: 2024-10-11 | Owner: Codex Ops
 
 ## Nox Sessions
 | Session | Command | Expected |

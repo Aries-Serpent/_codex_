@@ -1,5 +1,5 @@
 # [Template]: Legacy Import Refactor — Batch 01 (v1.2.5)
-> Generated: 2025-12-05 | Author: mbaetiong
+> Generated: 2024-12-05 | Author: mbaetiong
 
 🧠 Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer] ⚡ Energy: 5
 

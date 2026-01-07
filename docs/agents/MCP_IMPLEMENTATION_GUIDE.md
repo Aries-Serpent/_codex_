@@ -1,6 +1,6 @@
 # MCP Implementation Guide for AI Agents
 
-> Version: 1.0.0 | Generated: 2025-12-17 | Author: Copilot Agent
+> Version: 1.0.0 | Generated: 2024-12-17 | Author: Copilot Agent
 
 This guide provides step-by-step instructions for AI agents to implement, extend, and maintain MCP (Model Context Protocol) capabilities in the `_codex_` repository.
 

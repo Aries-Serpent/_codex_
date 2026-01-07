@@ -2,7 +2,7 @@
 ## Complete Setup & Configuration for _codex_ Security Infrastructure
 
 **Document Version**: 2.0  
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2024-12-23  
 **Maintainer**: Security Team
 
 ---
@@ -646,7 +646,7 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 
 **Document Owner**: Security Team  
 **Review Cycle**: Quarterly  
-**Next Review**: 2026-03-23  
+**Next Review**: 2025-03-23  
 **Version**: 2.0
 
 For questions or updates, contact: security@localhost

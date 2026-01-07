@@ -1,6 +1,6 @@
 # Archive Standardization Framework
 
-> **Status**: Phase 2 | **Effective**: 2025-11-02 | **Version**: 1.0
+> **Status**: Phase 2 | **Effective**: 2024-11-02 | **Version**: 1.0
 
 ## Executive Overview
 
@@ -24,7 +24,7 @@ The standardization framework elevates the _codex_ archive system from baseline 
 **Example v2 Record**:
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
+  "ts": "2024-11-02T19:44:00Z",
   "action": "ARCHIVE",
   "actor": "marc",
   "tombstone": "d3e8729-...",
@@ -311,4 +311,4 @@ A: Run the test suite: `pytest tests/archive/test_standardization.py::TestBackwa
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2025-11-02 | Initial Phase 2 standardization framework |
+| 1.0 | 2024-11-02 | Initial Phase 2 standardization framework |

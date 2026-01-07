@@ -26,14 +26,14 @@ gaps:
     location: ["src/codex_ml/tokenization", "tests/codex_ml/test_fast_tokenizer.py"]
     description: "Fast tokenizer backend missing, parity tests absent"
     status: missing        # or stubbed|partial|implemented
-    risk_level: medium     # optional, may come from Hardship Map
+    risk_level: medium     # optional, Phase 5 come from Hardship Map
     yaml_phase_step: "3.1" # phase.step id from codex_task_sequence.yaml
     ml_test_categories: ["data", "model"]
-    last_seen_in_audit: "2025-11-27"
+    last_seen_in_audit: "Previous Cycle-11-27"
     notes: "Extracted from High-Signal Findings in audit."
 ```
 
-The exact fields may evolve over time as the project matures.
+The exact fields Phase 5 evolve over time as the project matures.
 
 ## Per-gap docs stubs
 

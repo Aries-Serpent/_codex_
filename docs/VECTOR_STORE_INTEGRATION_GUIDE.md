@@ -667,7 +667,7 @@ The current implementation uses post-filtering, which means:
 
 1. FAISS returns the top-k results by similarity
 2. Results are filtered based on metadata
-3. If fewer than k results match the filter, you may get fewer results
+3. If fewer than k results match the filter, you Phase 5 get fewer results
 
 **Fetch Multiplier:**
 To increase the chance of getting k filtered results, the system automatically fetches more results when filters are present:
@@ -695,7 +695,7 @@ results = store.search(
 ### Limitations
 
 - **No Pre-Filtering**: FAISS doesn't natively support metadata filtering, so all filtering happens after similarity search
-- **Result Count**: May return fewer than `top_k` results if few vectors match the filter
+- **Result Count**: Phase 5 return fewer than `top_k` results if few vectors match the filter
 - **Performance**: Complex filters on large indices may be slower than simple equality filters
 
 ### Future Enhancements

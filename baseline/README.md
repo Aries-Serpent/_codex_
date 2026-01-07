@@ -1,6 +1,6 @@
 # Baseline Scores - Post Gap Remediation
 
-> Created: 2025-11-17 06:30 UTC  
+> Created: 2024-11-17 06:30 UTC  
 > Purpose: Establish baseline for regression tracking
 
 ## Files

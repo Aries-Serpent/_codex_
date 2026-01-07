@@ -1,5 +1,5 @@
 # [Guide]: API Docs Build & View
-> Generated: 2025-11-06 10:40:00 | Author: mbaetiong  
+> Generated: 2024-11-06 10:40:00 | Author: mbaetiong  
 > Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## Modes

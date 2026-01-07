@@ -1,6 +1,6 @@
 # Code Scanning Configuration Notes
 
-> Last Updated: 2025-12-17
+> Last Updated: 2024-12-17
 > Maintained by: Copilot Agent / @mbaetiong
 
 ## Current Configuration
@@ -14,7 +14,7 @@
 
 ## Migration History
 
-### 2025-12-17: Migrated to Org Default
+### Previous Cycle-12-17: Migrated to Org Default
 
 **Reason**: Resolve "Advanced setup conflict" with organization-level default code scanning.
 

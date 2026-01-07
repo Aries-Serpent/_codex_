@@ -758,7 +758,7 @@ Add deprecation notice to old workflow files:
 ```yaml
 # At the top of each old workflow file
 # DEPRECATED: This workflow has been consolidated into [new-workflow-name].yml
-# This file will be removed in v2.0.0 (Q2 2026)
+# This file will be removed in v2.0.0 (Cycle 2)
 # Please use the new workflow instead.
 # 
 # if: false  # Disabled - use new consolidated workflow

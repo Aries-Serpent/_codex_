@@ -1,6 +1,6 @@
 # Guide: Resolving GH CLI Issues in GitHub Actions
 
-> Generated: 2025-12-27 | Author: mbaetiong
+> Generated: 2024-12-27 | Author: mbaetiong
 
 To use GitHub CLI (gh) within GitHub Actions workflows, the most important step is to ensure authentication by setting the GH_TOKEN environment variable. This enables gh commands to interact securely with GitHub's API during the workflow. Below is an overview of the process and how to resolve common issues related to GH_TOKEN:
 
@@ -44,7 +44,7 @@ You can run and manage workflows from the CLI both locally and within Actions. F
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   ```
-- The `gh workflow`, `gh run`, and other commands allow advanced workflow management directly from Actions or your terminal[[5]](https://blogs.reliablepenguin.com/2025/07/15/automating-github-actions-workflows-with-the-gh-cli)[[6]](https://commandmasters.com/commands/gh-workflow-common/)[[7]](https://cli.github.com/manual/gh_workflow).
+- The `gh workflow`, `gh run`, and other commands allow advanced workflow management directly from Actions or your terminal[[5]](https://blogs.reliablepenguin.com/Previous Cycle/07/15/automating-github-actions-workflows-with-the-gh-cli)[[6]](https://commandmasters.com/commands/gh-workflow-common/)[[7]](https://cli.github.com/manual/gh_workflow).
 
 ## Fallback: Using GitHub MCP Tools
 
@@ -120,7 +120,7 @@ for run in workflow_runs["workflow_runs"]:
 
 # Alternatives for Checking Workflow Runs (Extended Guide)
 
-> Updated: 2025-12-27T12:00:00Z
+> Updated: 2024-12-27T12:00:00Z
 
 When `gh` CLI is unavailable or you want more control, use these alternative methods:
 
@@ -464,5 +464,5 @@ jobs:
 
 ---
 
-**Last Updated**: 2025-12-27  
+**Last Updated**: 2024-12-27  
 **Maintainer**: @mbaetiong

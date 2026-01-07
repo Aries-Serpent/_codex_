@@ -1,6 +1,6 @@
 # Configuration Migration Guide
 
-**Last Updated**: 2025-12-12  
+**Last Updated**: 2024-12-12  
 **Purpose**: Step-by-step migration from `conf/` to `configs/` directory structure
 
 ---
@@ -15,10 +15,10 @@ The repository is consolidating configuration files from the legacy `conf/` dire
 
 | Phase | Date | Action |
 |-------|------|--------|
-| **Deprecation Notice** | December 2025 | All `conf/` files marked deprecated |
-| **Grace Period** | January 2026 - June 2026 | Both directories functional |
-| **Migration Deadline** | June 30, 2026 | All references should be updated |
-| **Removal** | v2.0.0 (Phase 2 (2026)) | `conf/` directory removed |
+| **Deprecation Notice** | Phase 12 Previous Cycle | All `conf/` files marked deprecated |
+| **Grace Period** | Phase 1 Current Cycle - Phase 6 Current Cycle | Both directories functional |
+| **Migration Deadline** | Phase 6 30, Current Cycle | All references should be updated |
+| **Removal** | v2.0.0 (Phase 2 (Current Cycle)) | `conf/` directory removed |
 
 ---
 
@@ -223,7 +223,7 @@ find . -name "*.py" -exec sed -i 's|config_path="../conf"|config_path="../config
 defaults:
   - experiment: basic
 
-# May need to update to:
+# may need to update to:
 defaults:
   - /experiments: basic
 ```

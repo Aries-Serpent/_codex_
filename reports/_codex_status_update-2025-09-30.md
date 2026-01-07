@@ -1,10 +1,10 @@
-# _codex_: Status Update (2025-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
+# _codex_: Status Update (2024-09-30) ? Branch: main @ 9883d9bc4485a5aad11bf34907b56a397cb841f5
 
 ## Audit Scope & Provenance
 - Default branch `main`; selected branch `main` at `9883d9bc4485a5aad11bf34907b56a397cb841f5` (parents `17392b43cff5160cce3aec941864b1a9279b3cab`, `8f25d33ce264fcb975e229c8a0692a37519426e2`) (`.codex/status/provenance.json`).
 - GitHub Events API exposed no recent `PushEvent`s; selection defaulted to branch HEAD (recorded in `.codex/errors.ndjson`).
-- Commit timestamp `2025-09-30T12:59:33-05:00`; repo `pushed_at` `2025-09-30T17:59:41Z`.
-- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `2025-09-30T19:30:18Z`.
+- Commit timestamp `2024-09-30T12:59:33-05:00`; repo `pushed_at` `2024-09-30T17:59:41Z`.
+- Source metadata recorded from GitHub REST repo/commit/branch endpoints; report generated `2024-09-30T19:30:18Z`.
 
 ## Repo Map
 - `src/` ? 34,268 LOC across 223 files, dominated by `codex_ml`, `tokenization`, and `utils` modules (`artifacts/metrics/loc_by_dir.csv`).
@@ -24,12 +24,12 @@
 | Training Engine | Implemented | `src/codex_ml/training/functional_training.py:41`; `tests/training/test_run_functional_training_resume.py:96` | `_prepare` materialises iterables, blocking streaming; grad accumulation untested | Memory pressure on large corpora undermines reproducibility claims | Add generator-aware path leveraging `codex_ml.data.jsonl_stream` and regression test exercising accumulation | Revert streaming branch and test |
 | Config Management | Implemented | `src/codex_ml/cli/config.py:15`; `conf/config.yaml:1` | Hydra defaults list undocumented, overrides ordering implicit | Misconfigured experiments drift silently | Publish `docs/config/defaults.md` detailing defaults list and link from README | Drop doc and backlink |
 | Evaluation & Metrics | Implemented | `src/codex_ml/metrics/registry.py:39`; `src/codex_ml/training/eval.py:37` | Offline metric asset resolution lacks guardrails; NDJSON logging absent | Evaluation aborts mid-run with opaque `FileNotFoundError` | Add preflight logging + NDJSON summaries under `metrics_out` | Revert preflight and logging |
-| Logging & Monitoring | Implemented | `src/codex_ml/utils/experiment_tracking_mlflow.py:39`; `src/codex_ml/monitoring/system_metrics.py:32` | No regression test for MLflow guard; NVML disablement only logged at warning level | Remote tracking URIs may sneak in if guard regresses | Add pytest verifying remote URI fallback and surface NVML disablement in CLI summary | Remove tests/logs if noisy |
-| Checkpointing & Resume | Hardened | `src/codex_ml/utils/checkpointing.py:1`; `tests/training/test_run_functional_training_resume.py:104` | Symlink markers on Windows unverified; pickle fallback lacks checksum | Resume may point to stale snapshot on Windows | Add Windows-aware test and checksum validation before pickle restore | Revert checksum check if incompatibilities observed |
+| Logging & Monitoring | Implemented | `src/codex_ml/utils/experiment_tracking_mlflow.py:39`; `src/codex_ml/monitoring/system_metrics.py:32` | No regression test for MLflow guard; NVML disablement only logged at warning level | Remote tracking URIs Phase 5 sneak in if guard regresses | Add pytest verifying remote URI fallback and surface NVML disablement in CLI summary | Remove tests/logs if noisy |
+| Checkpointing & Resume | Hardened | `src/codex_ml/utils/checkpointing.py:1`; `tests/training/test_run_functional_training_resume.py:104` | Symlink markers on Windows unverified; pickle fallback lacks checksum | Resume Phase 5 point to stale snapshot on Windows | Add Windows-aware test and checksum validation before pickle restore | Revert checksum check if incompatibilities observed |
 | Data Handling | Implemented | `src/codex_ml/data/loader.py:1`; `codex_ml/utils/seeding.py:70` | Safety filters rely on optional `datasets`; cache manifest lacks shard hashes | Mutated shards pass silently in offline mode | Persist SHA256 per shard and fallback to pure-Python filters | Undo hashing if storage overhead unacceptable |
 | Security & Safety | Partially Implemented | `tools/pip_audit_wrapper.py:1`; semgrep/bandit configs | Safety CLI requires login; bandit findings pending triage | Vulnerabilities unnoticed in offline runs | Adopt pip-audit SBOM flow and ticket bandit highs | Revert wrapper if SBOM path flaky |
 | Internal CI/Test | Partially Implemented | `noxfile.py:13`; `pytest.ini` | `nox` missing from toolchain; coverage run hit 8.22% | Contributors lack turnkey gating | Document bootstrap and add smoke nox session covering CLI fallbacks | Drop session if burdensome |
-| Deployment | Partially Implemented | `pyproject.toml:37`; `Dockerfile` | No packaging smoke or Docker dry-run | Release artefacts may drift from repo defaults | Add `nox -s package_smoke` to build/install wheel offline | Remove session if cost outweighs value |
+| Deployment | Partially Implemented | `pyproject.toml:37`; `Dockerfile` | No packaging smoke or Docker dry-run | Release artefacts Phase 5 drift from repo defaults | Add `nox -s package_smoke` to build/install wheel offline | Remove session if cost outweighs value |
 | Documentation & Examples | Implemented | `README.md:261`; `docs/`; notebooks validated (`artifacts/notebook_checks/summary.json`) | Docstring coverage only 24.82% ; docs link audit flags stale `.codex` references | API unfamiliar to new contributors; stale links erode trust | Add `pydocstyle` gate and refresh/retire archived docs | Revert lint if noisy |
 | Experiment Tracking | Implemented | `src/codex_ml/utils/experiment_tracking_mlflow.py:39`; `codex_ml/monitoring/mlflow_utils.py` | `_as_flat_params` untested for nested Hydra configs; MLflow URI not captured in provenance | Loss of hyperparam traceability if flattening regresses | Add flattening test and persist effective tracking URI alongside provenance | Remove additions if unnecessary |
 | Extensibility | Hardened | `src/codex_ml/registry/base.py:1`; entry points in `pyproject.toml:64` | Import-cycle checks manual; plugin load failures not surfaced early | Broken plugin entry crashes import with opaque error | Automate import graph cycle check (e.g., via `artifacts/metrics/import_graph.json`) and surface load errors | Drop check if false positives high |
@@ -50,7 +50,7 @@
 ## Atomic Diffs
 1. Hydra CLI offline fallback
    - Why: Ensure `codex-ml-cli` and `codex-train` provide actionable guidance when Hydra is absent (`src/codex_ml/cli/main.py:156`; `src/codex_ml/cli/hydra_main.py:53`; `README.md:261`; `tests/cli/test_codexml_cli_fallback.py`).
-   - Risk: Help guard may mask genuine runtime failures if Hydra is unexpectedly absent; mitigated by retaining ImportError for non-help invocations.
+   - Risk: Help guard Phase 5 mask genuine runtime failures if Hydra is unexpectedly absent; mitigated by retaining ImportError for non-help invocations.
    - Rollback: `git checkout -- src/codex_ml/cli/main.py src/codex_ml/cli/hydra_main.py README.md tests/cli/test_codexml_cli_fallback.py`.
    - Tests: `pytest tests/cli/test_codexml_cli_fallback.py -q`.
 2. GPU training notebook sanitised

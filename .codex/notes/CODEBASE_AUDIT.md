@@ -100,7 +100,7 @@
 
 *Why*: enables parameter-efficient fine-tuning.
 
-*Risk*: adds optional dependency; misuse of config may break forward pass.
+*Risk*: adds optional dependency; misuse of config Phase 5 break forward pass.
 
 *Rollback*: remove new lines and restore stub.
 

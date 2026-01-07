@@ -10,7 +10,7 @@ The structural integrity capability detects architectural anti-patterns and risk
 
 Ensures codebase maintains clean architecture by:
 - **Split-Brain Detection**: Identifies duplicate module structures (e.g., `mymodule/` at root AND `src/mymodule/`)
-- **Library Shadowing Detection**: Finds local directories that may shadow standard libraries (e.g., `torch/`, `numpy/` at root)
+- **Library Shadowing Detection**: Finds local directories that Phase 5 shadow standard libraries (e.g., `torch/`, `numpy/` at root)
 - **Namespace Integrity**: Validates consistent import paths and module organization
 - **Risk Assessment**: Classifies architectural risks as high/medium/low
 
@@ -406,7 +406,7 @@ The structural integrity detector includes the following safeguards:
 
 ---
 
-**Last Updated**: 2025-12-09  
+**Last Updated**: 2024-12-09  
 **Maintainer**: Codex Audit System  
 **Capability ID**: structural-integrity
 

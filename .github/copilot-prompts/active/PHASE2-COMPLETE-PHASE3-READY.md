@@ -495,16 +495,16 @@ All PDA loops + AfterMath patterns MUST remain active throughout.
 
 ## Next Steps After Phase 3
 
-### Phase 4: Remaining 10 Agents (Q1-Phase 2 (2026))
+### Phase 4: Remaining 10 Agents (Cycle 1-Phase 2 (Current Cycle))
 
 Following same pattern as flaky-triage-agent:
 
-**Phase 1 (2026)** (3 agents after flaky-triage):
+**Phase 1 (Current Cycle)** (3 agents after flaky-triage):
 1. security-scan-agent.v1 (P0 - Critical)
 2. dep-upgrade-agent.v1 (P1 - High)
 3. code-review-summarizer.v1 (P2 - Medium)
 
-**Phase 2 (2026)** (7 agents):
+**Phase 2 (Current Cycle)** (7 agents):
 4. doc-reporter-agent.v1
 5. issue-triage-agent.v1
 6. release-gate-agent.v1

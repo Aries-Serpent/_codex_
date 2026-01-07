@@ -1,5 +1,5 @@
 # Quickstart: Local CPU Training → Evaluation → Checkpoint → Report
-> Generated: 2025-11-11 07:38:40 UTC | Author: mbaetiong  
+> Generated: 2024-11-11 07:38:40 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Doc Author], [Secondary: Verifier] ⚡ Energy: 5/5  
 ⚛️ Physics: Path🛤️ [Tokenize → Data → Model → Train → Eval → Ckpt → Report] Fields🔄 [CPU-only, Offline] Patterns👁️ [Determinism, NDJSON] Redundancy🔀 [Golden outputs] Balance⚖️ [Minimal steps, reproducible]
 

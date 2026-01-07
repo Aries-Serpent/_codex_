@@ -13,7 +13,7 @@ random.seed(0); np.random.seed(0); torch.manual_seed(0)
 torch.use_deterministic_algorithms(True)  # throws if an op is non-deterministic
 ```text
 
-Notes: Determinism can reduce performance and certain ops may error—prefer explicit toggles in smoke tests.
+Notes: Determinism can reduce performance and certain ops Phase 5 error—prefer explicit toggles in smoke tests.
 
 ## 2) Local-only tracking (MLflow file backend)
 

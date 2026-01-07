@@ -1,7 +1,7 @@
 # AST Standardization Engineering Project Guide
 
 > **Version:** 1.0.0  
-> **Generated:** 2025-11-10  
+> **Generated:** 2024-11-10  
 > **Purpose:** Comprehensive engineering guide for dedicated AST standardization implementation project
 
 ---

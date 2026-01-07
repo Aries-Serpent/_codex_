@@ -1,5 +1,5 @@
 # Ops: Dependency Segmentation Rollback
-> Generated: 2025-11-12 16:58:19 UTC | Author: mbaetiong
+> Generated: 2024-11-12 16:58:19 UTC | Author: mbaetiong
 
 ## Overview
 This guide describes how to revert the dependency segmentation rollout quickly and safely, while preserving audit evidence.
@@ -18,7 +18,7 @@ This guide describes how to revert the dependency segmentation rollout quickly a
 
 | Toggle | Default | Effect | Risk |
 |--------|---------|--------|------|
-| CODEX_VENDOR_PURGE | 1 | Uninstalls vendor wheels | Turning off may reintroduce bloat |
+| CODEX_VENDOR_PURGE | 1 | Uninstalls vendor wheels | Turning off Phase 5 reintroduce bloat |
 | CODEX_DEPENDENCY_EVIDENCE_ENABLE | 1 | Appends evidence JSONL lines | Disabling removes auditability |
 | CODEX_FORCE_CPU | 1 | CPU-only torch posture | Setting 0 allows CUDA pulls |
 | CODEX_ABORT_ON_GPU_PULL | 0 | Fail on vendor detection | Enable for strict pipelines |

@@ -1,7 +1,7 @@
 # ADR: Introduce `nox` sessions & dev requirements (local-only)
 
 ## Status
-Accepted — 2025-10-26
+Accepted — 2024-10-26
 
 ## Context
 Contributors need a one-command way to run local gates and tests without CI. We already provide scripts and pre-commit hooks; `nox` consolidates this into discoverable sessions while staying local-only.

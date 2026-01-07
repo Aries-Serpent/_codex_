@@ -156,7 +156,7 @@ sed -i 's|price|$100|g' file.txt  # Use | as delimiter
 
 ❌ **WRONG**: Applying patch without checking
 ```bash
-git apply potentially-broken.patch  # May silently fail or corrupt files!
+git apply potentially-broken.patch  # Phase 5 silently fail or corrupt files!
 ```text
 
 ✅ **CORRECT**: Dry-run first
@@ -177,6 +177,6 @@ fi
 
 ---
 
-**Last Updated**: 2025-10-30  
+**Last Updated**: 2024-10-30  
 **Author**: Codex Optimization Team  
 **Status**: Reference documentation for preventing CODEX-007

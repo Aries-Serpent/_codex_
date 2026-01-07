@@ -1,7 +1,7 @@
 # MCP Developer Guide
 
 **Version:** 1.0  
-**Last Updated:** 2025-11-18  
+**Last Updated:** 2024-11-18  
 **Audience:** Developers implementing MCP tools and integrations
 
 ## Getting Started with MCP
