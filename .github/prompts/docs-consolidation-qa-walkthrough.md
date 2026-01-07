@@ -236,3 +236,56 @@ prompt templates.
 | `tests/**/*.py` | Test template (scope, fixtures, gaps) |
 | `notebooks/`, `experiments/` | Experiment template (goals, reproducibility) |
 | `data/`, `models/` | Asset template (consumers, validation) |
+
+---
+
+## 7) QA walkthrough execution log (repo-wide traversal)
+
+### Plan scope (deterministic)
+
+1. Enumerate all top-level domains from the canonical inventory.
+2. Traverse each domain’s root directory and capture representative immediate entries.
+3. Record coverage notes and any follow-up traversal needs.
+
+### Execution (2026-01-07)
+
+**Core runtime & interfaces**
+- Traversed: `src/`, `interfaces/`, `cli/`, `codex_utils/`, `codex_ml/`, `cognitive/`, `cognitive_app/`, `workbench/`.
+- Representative entries (samples): `src/README.md`, `src/agent/`, `src/agents/`, `interfaces/tokenizer.py`, `cli/ast_upgrade.py`, `codex_utils/json_report.py`, `codex_ml/pipeline.py`, `cognitive/ingestion/`, `cognitive_app/BLUEPRINT_V2.md`, `workbench/INDEX.md`.
+
+**Docs & governance**
+- Traversed: `docs/`, `guides/`, `prompts/`, `PROMPTS/`.
+- Representative entries (samples): `docs/ADMIN_IMPLEMENTATION_GUIDE.md`, `guides/CODE_STYLE_GUIDE.md`, `prompts/domains/`, `PROMPTS/CHATGPT_SEARCH_RECIPES.md`.
+
+**Config & policy**
+- Traversed: `config/`, `configs/`, `conf/`, `config_legacy/`, `yaml_legacy/`.
+- Representative entries (samples): `config/DEPRECATED.md`, `configs/CONFIGURATION_STRUCTURE.md`, `conf/config.yaml`, `config_legacy/README.md`, `yaml_legacy/__init__.py`.
+
+**Tooling & automation**
+- Traversed: `scripts/`, `automation/`, `actions/`.
+- Representative entries (samples): `scripts/AI_SEARCH_README.md`, `automation/codex_ready_executor.py`, `actions/openapi.yaml`.
+
+**Tests & QA**
+- Traversed: `tests/`, `monitoring/`, `great_expectations/`, `semgrep_rules/`.
+- Representative entries (samples): `tests/README.md`, `monitoring/system_metrics.py`, `great_expectations/checkpoints/`, `semgrep_rules/default.yml`.
+
+**Data & models**
+- Traversed: `data/`, `datasets/`, `db/`, `models/`, `tokenization/`, `sentencepiece/`, `transformers/`, `torch/`.
+- Representative entries (samples): `data/models/`, `datasets/reasoning/`, `db/schema.sql`, `models/chat_model.py`, `tokenization/loader.py`, `sentencepiece/__init__.py`, `transformers/__init__.py`, `torch/nn/`.
+
+**Containers & deployment**
+- Traversed: `docker/`, `deploy/`, `services/`, `ops/`.
+- Representative entries (samples): `docker/Dockerfile.cpu`, `deploy/deploy_codex_pipeline.py`, `services/api/`, `ops/threat_model/`.
+
+**Examples, experiments, notebooks**
+- Traversed: `examples/`, `experiments/`, `notebooks/`, `analysis/`, `benchmarks/`, `baseline/`, `samples/`, `archive/`, `implementation_completed/`.
+- Representative entries (samples): `examples/advanced_physics_demo.py`, `experiments/2025-01-15_smoke.md`, `notebooks/quick_start.ipynb`, `analysis/audit_pipeline.py`, `benchmarks/security_benchmarks.py`, `baseline/README.md`, `samples/README.md`, `archive/removed/`, `implementation_completed/README_STUB.md`.
+
+**Assets & misc**
+- Traversed: `assets/`, `misc/`, `temp/`.
+- Representative entries (samples): `assets/manifest.json`, `misc/ARCHIVAL_SYSTEM.md`, `temp/bridge_codex_copilot_bridge/`.
+
+### Coverage notes
+
+- Traversal completed at the directory + immediate entry level across all top-level domains.
+- Next iteration can deepen file-by-file inspection within each domain (e.g., sample `src/`, `services/`, and `scripts/` modules) if a full artifact-level QA review is required.
