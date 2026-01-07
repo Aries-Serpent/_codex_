@@ -1,6 +1,6 @@
 # Runtime Variables Documentation
 
-**Generated:** 2024-12-26  
+**Generated:** 2025-12-26  
 **Purpose:** Central documentation for all operational variables used across the _codex_ repository  
 **Audience:** Developers, CI/CD systems, and autonomous agents
 
@@ -421,5 +421,5 @@ git config credential.helper
 3. Add migration notes if breaking change
 4. Notify team of changes
 
-**Last Updated:** 2024-12-26  
-**Next Review:** 2024-03-26
+**Last Updated:** 2025-12-26  
+**Next Review:** 2025-03-26
