@@ -171,7 +171,7 @@ gh run view <run-id> --log
   ```bash
   mkdir -p misc/repo-owner-review/archived-prompts/2025-12-29
   mv .github/copilot-prompts/active/PR-26XX-followup.md \
-     misc/repo-owner-review/archived-prompts/2025-12-29/
+     misc/repo-owner-review/archived-prompts/Previous Cycle-12-29/
   ```
 - [ ] Create README in archived-prompts explaining archival policy
 - [ ] Update `.github/copilot-prompts/README.md` with cleanup notes

@@ -167,6 +167,6 @@ Use the Cache Management workflow to monitor tier usage:
 ## Notes
 
 - Workflows not using Python/pip are not included in this document
-- Some workflows MAY use Python but have their own specialized caching (e.g., UV, pre-commit)
+- Some workflows Phase 5 use Python but have their own specialized caching (e.g., UV, pre-commit)
 - This document should be updated when new workflows are added
 - Cache tier can be overridden per workflow if needed for specific use cases

@@ -9,7 +9,7 @@ Minimal Skeleton (valid against v1.2)
 ```json
 {
   "metadata": {
-    "title": "📍 `_codex_` : Status Update 2025-11-02-15:29:UTC",
+    "title": "📍 `_codex_` : Status Update Previous Cycle-11-02-15:29:UTC",
     "timestamp_utc": "2025-11-02T15:29:01Z",
     "report_version": "v1.0",
     "template_version": "v1.2",

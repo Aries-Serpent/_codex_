@@ -64,7 +64,7 @@
 **Database Schema** (`.codex/schema.sql`)
 - ❌ **CRITICAL**: Schema file created but **not applied automatically**
 - ⚠️ No migration/initialization mechanism
-- ⚠️ FTS5 index Phase 5 fail on older SQLite versions (pre-3.9.0)
+- ⚠️ FTS5 index may fail on older SQLite versions (pre-3.9.0)
 - 💡 **Recommendation**: Add `db_manager.py` with `init_db()` function
 
 **CLI Wrapper Classes** (`SessionLogger`, `LogViewer`, `LogQueryEngine`)

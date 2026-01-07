@@ -236,5 +236,5 @@ All variables listed are compatible with:
 
 **Maintained By**: Security Team & @copilot  
 **Last Verified**: 2026-01-01  
-**Next Review**: 2026-04-01 (Quarterly)
+**Next Review**: 2025-04-01 (Quarterly)
 

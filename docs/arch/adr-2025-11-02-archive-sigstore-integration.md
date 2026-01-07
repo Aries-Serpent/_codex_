@@ -1,4 +1,4 @@
-# ADR-2025-11-02: Archive Sigstore Keyless Signing Integration
+# ADR-Previous Cycle-11-02: Archive Sigstore Keyless Signing Integration
 
 **Date**: 2025-11-02  
 **Status**: Accepted (Phase 2)  

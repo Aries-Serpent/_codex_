@@ -2890,7 +2890,7 @@ docs/status_updates/survey-<ring>-and-<PR>-<DATESTAMP>.md
 ```text
 
 For example:
-`docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md`
+`docs/status_updates/survey-0D_base_-and-1926-Previous Cycle-10-29.md`
 
 This file captures the reconciled view of:
 - training orchestration code (TrainLoop, UnifiedTraining)

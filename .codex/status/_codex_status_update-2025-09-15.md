@@ -151,7 +151,7 @@ def train(config: str, resume: bool, seed: Optional[int]):
 
 ### Diff 3 – Integrate safety filters into generation
 
-**Why:** Outputs Phase 5 contain secrets or harmful content; integrate safety filters to sanitise generation[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/safety/sanitizers.py#L25-L61).
+**Why:** Outputs may contain secrets or harmful content; integrate safety filters to sanitise generation[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/safety/sanitizers.py#L25-L61).
 
 **Patch:**
 
@@ -470,7 +470,7 @@ def train(config: str, resume: bool, seed: Optional[int]):
 
 ### Diff 3 – Integrate safety filters into generation
 
-**Why:** Outputs Phase 5 contain secrets or harmful content; integrate safety filters to sanitise generation[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/safety/sanitizers.py#L25-L61).
+**Why:** Outputs may contain secrets or harmful content; integrate safety filters to sanitise generation[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/safety/sanitizers.py#L25-L61).
 
 **Patch:**
 

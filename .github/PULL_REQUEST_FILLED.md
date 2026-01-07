@@ -420,7 +420,7 @@ CPU: Moderate during scan, negligible at rest
    # Add entries to .github/SHIM_INVENTORY.yaml
    ```
 
-**Timeline:** Gradual migration over 3 months (deprecation date: 2026-03-01)
+**Timeline:** Gradual migration over 3 months (deprecation date: 2025-03-01)
 
 ---
 

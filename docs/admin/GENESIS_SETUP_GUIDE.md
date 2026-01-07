@@ -150,7 +150,7 @@ Create `codex-production` environment:
 **Pre-Execution Steps:**
 1. Edit `.github/workflows/genesis-bootstrap.yml`
 2. Find line: `if: false # <<< HUMAN: remove this guard...`
-3. Remove or comment out: `# if: false # Guard removed by mbaetiong on 2025-12-26`
+3. Remove or comment out: `# if: false # Guard removed by mbaetiong on Previous Cycle-12-26`
 4. Commit change: `chore(genesis): enable bootstrap workflow`
 
 **Execute Workflow:**

@@ -24,7 +24,7 @@ Use this playbook if:
 cd /path/to/_codex_
 
 # Copy all workflows from backup
-cp .github/workflow-archive/backups/2025-12-28/*.yml .github/workflows/
+cp .github/workflow-archive/backups/Previous Cycle-12-28/*.yml .github/workflows/
 
 # Verify count
 ls -1 .github/workflows/*.yml | wc -l  # Should show 67
@@ -119,7 +119,7 @@ Before any rollback, verify backup integrity:
 
 ```bash
 # Navigate to backup directory
-cd .github/workflow-archive/backups/2025-12-28/
+cd .github/workflow-archive/backups/Previous Cycle-12-28/
 
 # Verify SHA256 checksums
 sha256sum -c MANIFEST.txt
@@ -181,7 +181,7 @@ for file in .github/workflows/*.yml; do
 done
 
 # Fix syntax errors or restore from backup again
-cp .github/workflow-archive/backups/2025-12-28/BROKEN_FILE.yml .github/workflows/
+cp .github/workflow-archive/backups/Previous Cycle-12-28/BROKEN_FILE.yml .github/workflows/
 ```
 
 ### Issue: Workflows restored but not running
@@ -222,7 +222,7 @@ If rollback fails or issues persist:
 ## 🔐 Backup Locations
 
 ### Primary Backup
-- **Location**: `.github/workflow-archive/backups/2025-12-28/`
+- **Location**: `.github/workflow-archive/backups/Previous Cycle-12-28/`
 - **Files**: 67 workflows
 - **Checksum**: MANIFEST.txt with SHA256 hashes
 - **Retention**: Indefinite (never delete)
@@ -235,7 +235,7 @@ If rollback fails or issues persist:
 
 ### Backup Manifest Structure
 ```
-.github/workflow-archive/backups/2025-12-28/
+.github/workflow-archive/backups/Previous Cycle-12-28/
 ├── MANIFEST.txt (SHA256 checksums)
 ├── agent-runtime.yml
 ├── api-documentation.yml

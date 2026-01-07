@@ -37,7 +37,7 @@
 
    ## References
 
-   - Related ADR: docs/arch/adr-2025-10-17-root-docs-cleanup.md
+   - Related ADR: docs/arch/adr-Previous Cycle-10-17-root-docs-cleanup.md
    - Evidence: Commit cfba4786 + .codex/evidence/archive_ops.jsonl (line 30)
 
    ## Validation

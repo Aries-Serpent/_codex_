@@ -49,7 +49,7 @@ state, its root cause, and the remediation that preserves intended behaviour.
 - **Resolution**: The local gates script detects stub installs, prints reinstall guidance, and pytest treats the stub as missing so
   Torch-specific suites skip.
 
-## GitHub API 401 unauthenticated probes (2025-10-15/16)
+## GitHub API 401 unauthenticated probes (Previous Cycle-10-15/16)
 - **Context**: Offline logging exercises attempted to query the GitHub REST API without authentication, returning HTTP 401.
 - **Cause**: Requests lacked tokens in a restricted sandbox.
 - **Resolution**: Document the limitation and avoid unauthenticated GitHub calls during offline exercises.

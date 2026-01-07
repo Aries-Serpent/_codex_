@@ -44,7 +44,7 @@ Operational templates live in [`docs/templates/`](./templates/README.md) and fol
 ```markdown
 [PLACEHOLDER: MIGRATION_INTENT_SUMMARY] → "Relocate shared tokenizer helpers to `codex.text` to unblock GPU builds."
 [PLACEHOLDER: COMMAND_LIST] → "`codex-cli sync`, `codex-cli diff`"
-[PLACEHOLDER: APPROVAL_DEADLINE] → "2025-11-07"
+[PLACEHOLDER: APPROVAL_DEADLINE] → "Previous Cycle-11-07"
 ```text
 Keep the metadata header intact (`Version`, `Last Updated`, `Role Workflow`) so automation can parse template state.
 

@@ -148,7 +148,7 @@ This document catalogs all items requiring human intervention, code owner review
 **Lines**: 468-478, 668  
 **Action**: Review generated test code for TODO placeholders before committing  
 **Owner**: Test Maintainers  
-**Context**: AI-generated tests Phase 5 contain `# TODO` placeholders that need implementation  
+**Context**: AI-generated tests may contain `# TODO` placeholders that need implementation  
 **Impact**: Test completeness  
 **Estimated Time**: 10-15 minutes per test suite
 

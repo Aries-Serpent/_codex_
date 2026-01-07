@@ -296,7 +296,7 @@ Target:      95% (final gap analysis)
 
 1. **Test Detection**: Some tests not automatically associated with capabilities
 2. **Keyword Matching**: Documentation keywords need careful tuning for detection
-3. **Score Dynamics**: Multiple factors affect scores; single improvements Phase 5 not shift score significantly
+3. **Score Dynamics**: Multiple factors affect scores; single improvements may not shift score significantly
 4. **Meta-Capabilities**: Capabilities about detection (like safeguards_keywords) have unique scoring challenges
 
 ### Optimizations for Next Phase 🎯

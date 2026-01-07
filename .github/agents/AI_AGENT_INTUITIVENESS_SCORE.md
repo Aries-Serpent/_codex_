@@ -83,7 +83,7 @@ The _codex_ codebase demonstrates exceptional AI agent intuitiveness through com
 3. **Changelog Granularity** (Moderate)
    - Changes documented but not version-tagged
    - No semantic versioning for API changes
-   - **Impact:** Agents MAY use deprecated patterns
+   - **Impact:** Agents Phase 5 use deprecated patterns
    - **Recommendation:** Add CHANGELOG.md with semver
 
 **Score Justification:**

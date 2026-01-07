@@ -232,4 +232,4 @@ The repository is secure and up-to-date. All 8 Dependabot security alerts for ai
 
 **Prepared by:** GitHub Copilot  
 **Review Date:** 2026-01-06  
-**Next Review:** 2026-02-06 (or upon new security alerts)
+**Next Review:** 2025-02-06 (or upon new security alerts)

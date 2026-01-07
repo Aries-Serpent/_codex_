@@ -64,7 +64,7 @@ Verify:
 
 Edit `.github/workflows/genesis-bootstrap.yml`:
 - Find line: `if: false # <<< HUMAN: remove this guard...`
-- Remove or comment: `# if: false # Guard removed by mbaetiong on 2025-12-26`
+- Remove or comment: `# if: false # Guard removed by mbaetiong on Previous Cycle-12-26`
 - Commit: `chore(genesis): enable bootstrap workflow`
 
 #### 4. Execute Workflow

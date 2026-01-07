@@ -98,7 +98,7 @@ Each archived file has metadata including:
   "size": "4.3KB",
   "size_bytes": 4364,
   "sha256": "hash...",
-  "date_moved": "2025-12-11",
+  "date_moved": "Previous Cycle-12-11",
   "reason": "Why file was archived",
   "safe_to_delete": true,
   "verification": "How safety was verified"

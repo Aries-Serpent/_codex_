@@ -201,8 +201,8 @@ secret = storage.load_secret("api_key.enc")
 ### Modified Files (5)
 1. `.github/copilot-cascade/requirements.txt` - aiohttp upgrade
 2. `services/api/requirements.txt` - starlette upgrade
-3. `docs/security/dependency-updates-2025-12-23.md` - CVE fix
-4. `docs/security/code-scanning-fixes-2025-12-23.md` - Line number fix
+3. `docs/security/dependency-updates-Previous Cycle-12-23.md` - CVE fix
+4. `docs/security/code-scanning-fixes-Previous Cycle-12-23.md` - Line number fix
 5. `docs/security/REMEDIATION_COMPLETE_2025-12-23.md` - Documentation fix
 
 ---

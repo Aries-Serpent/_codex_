@@ -305,7 +305,7 @@
 ---
 
 ## Notes and Next Steps
-- Multiple entries on 2025-08-29/30 reflect iterative integration steps across tokenizer, ingestion, tracking, and trainer wiring. The changes are intentionally additive and guarded; follow-up PRs should address the remaining test collection errors and tighten compatibility layers (e.g., signature normalization for legacy `read_text` implementations, optional dependency detection, and test environment setup).
+- Multiple entries on Previous Cycle-08-29/30 reflect iterative integration steps across tokenizer, ingestion, tracking, and trainer wiring. The changes are intentionally additive and guarded; follow-up PRs should address the remaining test collection errors and tighten compatibility layers (e.g., signature normalization for legacy `read_text` implementations, optional dependency detection, and test environment setup).
 - When backporting or cherry-picking these changes to other branches, ensure environment flags (e.g., `CODEX_ENABLE_MLFLOW`, `CODEX_POST_COMMIT_COMMENT`) and optional-dependency handling remain consistent to avoid surprising behavior in CI.
 ## 2025-08-28 — Codex Run
 - Enforced self-hosted-only gates via `make codex-gates` and `scripts/codex_local_gates.sh`

@@ -202,7 +202,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch*.py \
 
 #### 1. **Test Dependency Issues**
 **Risk Level:** 🔴 HIGH  
-**Description:** Tests Phase 5 fail due to missing dependencies or import errors  
+**Description:** Tests may fail due to missing dependencies or import errors  
 **Mitigation:** 
 - Add try-except imports where needed
 - Use pytest.skip for optional dependencies
@@ -210,7 +210,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch*.py \
 
 #### 2. **API Mismatches**
 **Risk Level:** 🟡 MEDIUM  
-**Description:** Test assumptions Phase 5 not match actual API signatures  
+**Description:** Test assumptions may not match actual API signatures  
 **Mitigation:**
 - Fix mismatches as discovered
 - Update tests to match actual APIs

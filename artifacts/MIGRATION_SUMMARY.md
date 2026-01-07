@@ -21,7 +21,7 @@ All target files successfully migrated with backups created in `.codex/backups/2
 6. ✓ docs/analysis/dependency_space_triage.md (16012 bytes)
 7. ✓ noxfile.py (13744 bytes)
 8. ✓ AGENTS.md (11104 bytes)
-9. ✓ docs/arch/ADR-2025-11-12-dependency-segmentation.md (7101 bytes)
+9. ✓ docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md (7101 bytes)
 10. ✓ .codex/evidence/dependency_ops.jsonl (6476 bytes)
 11. ✓ .github/workflows/ci.yml (3823 bytes)
 12. ✓ scripts/vendor_guard.py (1498 bytes)

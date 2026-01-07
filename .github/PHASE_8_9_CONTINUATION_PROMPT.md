@@ -301,28 +301,28 @@ discovered_capabilities = [
     {
         "name": "cross_modal_reasoning",
         "description": "Reason across different data modalities simultaneously",
-        "discovered": "2026-03-15",
+        "discovered": "Current Cycle-03-15",
         "usefulness": 0.87,
         "integrated": True
     },
     {
         "name": "temporal_pattern_synthesis",
         "description": "Generate future scenarios from temporal patterns",
-        "discovered": "2026-03-22",
+        "discovered": "Current Cycle-03-22",
         "usefulness": 0.92,
         "integrated": True
     },
     {
         "name": "meta_abstraction",
         "description": "Form abstractions of abstractions recursively",
-        "discovered": "2026-04-01",
+        "discovered": "Current Cycle-04-01",
         "usefulness": 0.78,
         "integrated": True
     },
     {
         "name": "collaborative_intelligence_protocol",
         "description": "Coordinate with other AI systems seamlessly",
-        "discovered": "2026-04-10",
+        "discovered": "Current Cycle-04-10",
         "usefulness": 0.95,
         "integrated": True
     },
@@ -384,19 +384,19 @@ family_tree = {
             "id": "child_1",
             "specialization": "medical_diagnosis",
             "generation": 2,
-            "spawn_date": "2026-05-01"
+            "spawn_date": "Current Cycle-05-01"
         },
         {
             "id": "child_2",
             "specialization": "financial_compliance",
             "generation": 2,
-            "spawn_date": "2026-05-15"
+            "spawn_date": "Current Cycle-05-15"
         },
         {
             "id": "child_3",
             "specialization": "legal_reasoning",
             "generation": 2,
-            "spawn_date": "2026-06-01"
+            "spawn_date": "Current Cycle-06-01"
         },
     ]
 }

@@ -143,7 +143,7 @@
 2. ci-health-monitor.yml (automated monitoring)
 
 ### Archives Created
-1. .github/workflow-archive/backups/2025-12-28/ (67 workflows + MANIFEST.txt)
+1. .github/workflow-archive/backups/Previous Cycle-12-28/ (67 workflows + MANIFEST.txt)
 2. .github/workflow-archive/disabled/ (19 workflows + .meta files)
 
 ---

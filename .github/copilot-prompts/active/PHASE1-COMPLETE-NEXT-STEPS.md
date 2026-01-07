@@ -490,7 +490,7 @@ Begin Phase 2 (Pattern Recognition Enhancement):
 
 **Reference Documents**:
 - Framework: `.github/agents/core/README.md`
-- Status: `.github/copilot-prompts/active/COGNITIVE-BRAIN-STATUS-2026-01-01.md`
+- Status: `.github/copilot-prompts/active/COGNITIVE-BRAIN-STATUS-Current Cycle-01-01.md`
 - This file: `.github/copilot-prompts/active/PHASE1-COMPLETE-NEXT-STEPS.md`
 
 All PDA loops + AfterMath patterns must remain active.

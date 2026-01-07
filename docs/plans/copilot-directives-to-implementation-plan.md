@@ -2954,8 +2954,8 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 
 | Rule ID | File | Line | Severity | Reason | Approved By | Approved Date | Review Date |
 |---------|------|------|----------|--------|-------------|---------------|-------------|
-| python. lang.security.audit. eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | 2025-12-17 | 2026-06-17 |
-| python.lang. security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | 2025-12-17 | 2026-06-17 |
+| python. lang.security.audit. eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | 2025-12-17 | 2025-06-17 |
+| python.lang. security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | 2025-12-17 | 2025-06-17 |
 
 ## Path Exclusions
 
@@ -3361,7 +3361,7 @@ jobs:
 
 ## Migration History
 
-### 2025-12-17: Migrated to Org Default
+### Previous Cycle-12-17: Migrated to Org Default
 
 **Reason**: Resolve "Advanced setup conflict" with organization-level default code scanning. 
 
@@ -3680,7 +3680,7 @@ execution_sequence:
 
 ---
 
-*Document compiled by Copilot Agent on 2025-12-17*
+*Document compiled by Copilot Agent on Previous Cycle-12-17*
 *Target Repository: Aries-Serpent/_codex_ (ID: 1040037790)*
 *Total Implementation Streams: 4*
 *Estimated Completion: 5 phases*

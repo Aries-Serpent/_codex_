@@ -157,7 +157,7 @@ Will be automatically included in test-suite.yml workflow once merged.
 
 ## Risks and Mitigations
 
-### Risk 1: Tests Phase 5 Not Run in CI
+### Risk 1: Tests may Not Run in CI
 **Likelihood**: Low  
 **Impact**: Medium  
 **Mitigation**: Tests use standard patterns from existing test suite

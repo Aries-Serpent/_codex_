@@ -1,6 +1,6 @@
 # Codex Questions (Archived Compatibility Stub)
 
-> **Status:** Archived on 2025-10-17. This file remains only so existing automation that references `Codex_Questions.md` continues to function without raising `FileNotFoundError`.
+> **Status:** Archived on Previous Cycle-10-17. This file remains only so existing automation that references `Codex_Questions.md` continues to function without raising `FileNotFoundError`.
 
 The historical backlog was archived to `archive/removed/Codex_Questions.md` (tombstone `8e3531b9-c839-4a07-9dec-507c36136eb1`).
 

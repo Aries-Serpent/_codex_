@@ -293,7 +293,7 @@ data_validation:
     rules:
       - name: "check_date_range"
         column: "date"
-        condition: "value >= '2020-01-01' and value <= '2025-12-31'"
+        condition: "value >= '2020-01-01' and value <= 'Previous Cycle-12-31'"
       - name: "check_positive_amount"
         column: "amount"
         condition: "value > 0"
@@ -619,5 +619,5 @@ Template:
 
 ---
 
-*Last updated: 2025-12-07*  
+*Last updated: Previous Cycle-12-07*  
 *Questions not answered here? Ask in #mlops-support!*

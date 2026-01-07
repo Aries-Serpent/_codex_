@@ -300,22 +300,22 @@ gantt
     axisFormat %b %d
     
     section High Frequency
-    agent-runtime (45 runs)           :a1, 2024-10-01, 90d
-    pr-followup-generator (120 runs)  :a2, 2024-10-01, 90d
-    detect-duplicates (95 runs)       :a3, 2024-10-01, 90d
-    code-quality (110 runs)           :a4, 2024-10-01, 90d
+    agent-runtime (45 runs)           :a1, 2025-10-01, 90d
+    pr-followup-generator (120 runs)  :a2, 2025-10-01, 90d
+    detect-duplicates (95 runs)       :a3, 2025-10-01, 90d
+    code-quality (110 runs)           :a4, 2025-10-01, 90d
     
     section Medium Frequency
-    determinism (38 runs)             :b1, 2024-10-01, 90d
-    draft-audit-pr (25 runs)          :b2, 2024-10-01, 90d
-    coverage_report (30 runs)         :b3, 2024-10-01, 90d
+    determinism (38 runs)             :b1, 2025-10-01, 90d
+    draft-audit-pr (25 runs)          :b2, 2025-10-01, 90d
+    coverage_report (30 runs)         :b3, 2025-10-01, 90d
     
     section Low Frequency
-    documentation-link-checker (15)   :c1, 2024-10-01, 90d
-    token-rotation (4 runs)           :c2, 2024-10-01, 90d
+    documentation-link-checker (15)   :c1, 2025-10-01, 90d
+    token-rotation (4 runs)           :c2, 2025-10-01, 90d
 ```
 
-**Note**: Dates represent a historical 90-day analysis period ending 2025-12-30. These are representative data points for prioritization purposes.
+**Note**: Dates represent a historical 90-day analysis period ending Previous Cycle-12-30. These are representative data points for prioritization purposes.
 
 ---
 

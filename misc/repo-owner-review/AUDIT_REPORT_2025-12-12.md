@@ -182,7 +182,7 @@ Scanned 100 Python files - all had at least 1-2 references in the codebase.
 **Files Checked**: 200+ markdown files
 
 **Findings**:
-- Most documentation is current (2024-Previous Cycle)
+- Most documentation is current (2025-Previous Cycle)
 - Older docs (2022-2023) already archived in `archive/historical_docs_20251210/`
 - No immediate action needed
 
@@ -292,7 +292,7 @@ Scanned 100 Python files - all had at least 1-2 references in the codebase.
 **Configuration Files Updated**: 10 conf/ YAML files with deprecation notices
 
 **Files Archived for External Storage Offloading** (verified safe):
-- `_codex_reports/2025-10-06/` - 15 files (~100KB compressed)
+- `_codex_reports/Previous Cycle-10-06/` - 15 files (~100KB compressed)
 - `archive/historical_docs_20251210/` - 100+ files (~400KB compressed)
 - `actions/runs-completion/*.zip` - 5 CI artifacts (~2.2MB compressed)
 - `pytest_validation*.txt` - 2 files (~140KB compressed)

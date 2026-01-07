@@ -10707,8 +10707,8 @@ index 80d2f41..ec056e7 100644
 -        c.executemany(
 -            "INSERT INTO session_events VALUES (?,?,?,?)",
 -            [
--                ("s1", "2024-01-01T00:00:00", "user", "hi"),
--                ("s1", "2024-01-01T00:01:00", "assistant", "hello"),
+-                ("s1", "2025-01-01T00:00:00", "user", "hi"),
+-                ("s1", "2025-01-01T00:01:00", "assistant", "hello"),
 -            ],
 -        )
 -    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
@@ -10840,8 +10840,8 @@ index 80d2f41..ec056e7 100644
 +        c.executemany(
 +            "INSERT INTO session_events VALUES (?,?,?,?)",
 +            [
-+                ("s1", "2024-01-01T00:00:00", "user", "hi"),
-+                ("s1", "2024-01-01T00:01:00", "assistant", "hello"),
++                ("s1", "2025-01-01T00:00:00", "user", "hi"),
++                ("s1", "2025-01-01T00:01:00", "assistant", "hello"),
 +            ],
 +        )
 +    monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))

@@ -21,12 +21,12 @@
 {
   "allowlisted_vulnerabilities": [
     {
-      "id": "PYSEC-2024-99999",
+      "id": "PYSEC-2025-99999",
       "package": "examplepkg",
       "version": "1.2.3",
       "severity": "HIGH",
       "rationale": "False positive due to vendored code not executed",
-      "expiry_date": "2025-12-31"
+      "expiry_date": "Previous Cycle-12-31"
     }
   ]
 }

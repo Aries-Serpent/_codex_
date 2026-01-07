@@ -54,11 +54,11 @@ fields are expected unless noted otherwise.
 ### Usage Notes
 
 1. Store experiment write-ups under the `experiments/` directory. File names should include the date and a short slug
-   (for example, `experiments/2025-01-12_token_baseline.md`).
+   (for example, `experiments/Previous Cycle-01-12_token_baseline.md`).
 2. Reference run artefacts by relative path, and link to external dashboards (TensorBoard, MLflow) when enabled.
 3. When multiple runs contribute to a single conclusion, summarise the aggregate findings and include a table mapping run IDs to
    their respective artefacts.
 4. Cross-link PRs or issues that implemented follow-up actions so future readers can trace decisions back to implementation
    details.
 
-A sample record using this template is available in `experiments/2025-01-15_smoke.md`.
+A sample record using this template is available in `experiments/Previous Cycle-01-15_smoke.md`.

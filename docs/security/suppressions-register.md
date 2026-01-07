@@ -18,8 +18,8 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 
 | Rule ID | File | Line | Severity | Reason | Approved By | Approved Date | Review Date |
 |---------|------|------|----------|--------|-------------|---------------|-------------|
-| python.lang.security.audit.eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | 2025-12-17 | 2026-06-17 |
-| python.lang.security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | 2025-12-17 | 2026-06-17 |
+| python.lang.security.audit.eval-used | src/agents/sandbox_executor.py | 142 | High | Eval used in sandboxed agent executor with AST validation | @mbaetiong | 2025-12-17 | 2025-06-17 |
+| python.lang.security.audit.exec-used | src/agents/code_runner.py | 89 | High | Exec in isolated subprocess with resource limits | @mbaetiong | 2025-12-17 | 2025-06-17 |
 
 ## Path Exclusions
 

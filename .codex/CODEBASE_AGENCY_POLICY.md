@@ -180,7 +180,7 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 
 ### Exception
 
-Historical references MAY use actual dates:
+Historical references Phase 5 use actual dates:
 - "Completed: 2026-01-05" ✅
 - "Work finished in 3 days" ✅ (retrospective only)
 

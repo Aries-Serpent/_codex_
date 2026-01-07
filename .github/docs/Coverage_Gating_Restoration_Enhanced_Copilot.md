@@ -894,7 +894,7 @@ if __name__ == "__main__":
 # PRs with coverage below this threshold will fail CI.
 # 
 # History:
-#   2025-11-13: Initial threshold set at 85.0%
+#   Previous Cycle-11-13: Initial threshold set at 85.0%
 # 
 # To update:
 #   1. Ensure current coverage is >= new threshold

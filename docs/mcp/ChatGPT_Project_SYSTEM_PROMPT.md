@@ -172,7 +172,7 @@ Files affected:
 
 ## Limitations
 
-- Dataset is a snapshot; Phase 5 not reflect latest repository state
+- Dataset is a snapshot; may not reflect latest repository state
 - Large files may require summarization
 - Binary files are not included in text-based packages
 - Cross-repository dependencies are not included

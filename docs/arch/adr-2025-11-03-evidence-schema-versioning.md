@@ -1,4 +1,4 @@
-# ADR-2025-11-03: Evidence Record Schema Versioning
+# ADR-Previous Cycle-11-03: Evidence Record Schema Versioning
 
 **Date**: 2025-11-03  
 **Status**: Accepted (Phase 2)  

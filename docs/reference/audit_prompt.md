@@ -14,7 +14,7 @@ Instructions
 - Inventory all files (skipping .git, venvs, caches). For files <= 5MB, record a SHA-256 for reproducibility.
 - Prefer structural extraction from Python sources (AST/CST/parso) when feasible; otherwise degrade gracefully.
 - Highlight high-complexity functions (if measured) and flag unusual patterns or hot-spots for deeper review.
-- Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-2025-10-05.md`—to fold prior gap → risk → resolution guidance into the current run. Carry forward any still-open mitigations.
+- Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-Previous Cycle-10-05.md`—to fold prior gap → risk → resolution guidance into the current run. Carry forward any still-open mitigations.
 - **Error capture:** On any failure, append a block to `docs/reference/codex_questions.md`:
   ```text
   Question for ChatGPT-5 @codex {{TIMESTAMP}}:
@@ -108,7 +108,7 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 5. **Finalization** – produce reviewable diffs, run local gates, and update changelog/open questions.
 
 ### Gap → Risk → Resolution register
-- Begin with the latest `_codex` status signal (`reports/_codex_status_update-2025-10-05.md`) to seed known gaps and residual risks.
+- Begin with the latest `_codex` status signal (`reports/_codex_status_update-Previous Cycle-10-05.md`) to seed known gaps and residual risks.
 - For every new observation, document:
   - **Gap** – the concrete missing artifact or behaviour (file, flag, test, doc entry).
   - **Risk** – production or reproducibility impact if the gap remains.
@@ -120,7 +120,7 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 ```markdown
 | Capability | Gap | Risk | Containment / Resolution | Source (status update / commit) | Status |
 | --- | --- | --- | --- | --- | --- |
-| Tokenization | {{gap}} | {{risk}} | {{containment}} | `reports/_codex_status_update-2025-10-05.md` §{{section}} | {{status}} |
+| Tokenization | {{gap}} | {{risk}} | {{containment}} | `reports/_codex_status_update-Previous Cycle-10-05.md` §{{section}} | {{status}} |
 ```text
 - Use Markdown links for source references when possible (e.g., commit URLs, report anchors).
 - Keep status values constrained to `open`, `in-progress`, or `closed` for deterministic parsing.

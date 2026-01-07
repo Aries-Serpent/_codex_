@@ -1,9 +1,9 @@
-# AfterMath Block: Session S-PR2671-2025-12-30-Final
+# AfterMath Block: Session S-PR2671-Previous Cycle-12-30-Final
 
 ```aftermath
 meta:
   # Identifiers
-  session_id: "S-PR2671-2025-12-30-Final"
+  session_id: "S-PR2671-Previous Cycle-12-30-Final"
   pr: 2671
   branch: "copilot/sub-pr-2668-again"
   run_id: null

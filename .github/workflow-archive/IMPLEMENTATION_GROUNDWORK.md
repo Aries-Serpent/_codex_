@@ -104,7 +104,7 @@ All 49 active workflows pass YAML syntax validation. No lint issues detected.
   3. `archive-disabled`: From disabled workflows archive
 
 ### Backup Integrity
-- **Backup Location**: `.github/workflow-archive/backups/2025-12-28/`
+- **Backup Location**: `.github/workflow-archive/backups/Previous Cycle-12-28/`
 - **Files**: 67 workflows backed up
 - **Verification**: MANIFEST.txt with SHA256 checksums present
 - **Status**: ✅ Backup integrity verified
@@ -126,7 +126,7 @@ All 49 active workflows pass YAML syntax validation. No lint issues detected.
 #### Option 1: Full Restoration (All 67 Workflows)
 ```bash
 # Restore all workflows from backup
-cp .github/workflow-archive/backups/2025-12-28/*.yml .github/workflows/
+cp .github/workflow-archive/backups/Previous Cycle-12-28/*.yml .github/workflows/
 git add .github/workflows/
 git commit -m "rollback: restore all 67 workflows from 2025-12-28 backup"
 git push
@@ -150,7 +150,7 @@ git push
 6. Click "Run workflow"
 
 ### Checksum Index
-**File**: `.github/workflow-archive/backups/2025-12-28/MANIFEST.txt`  
+**File**: `.github/workflow-archive/backups/Previous Cycle-12-28/MANIFEST.txt`  
 **Contents**: SHA256 checksums for all 67 backed up workflows  
 **Verification Command**: `cd .github/workflow-archive/backups/2025-12-28 && sha256sum -c MANIFEST.txt`
 

@@ -16,14 +16,14 @@
 - ✅ **Self-management (8)** — Refreshed the high-signal dashboard to highlight remaining open items (advanced modeling, security, deployment).【F:reports/high_signal_findings.md†L1-L7】
 
 ## Proposed Menu Focus for Run 5
-1. **ChatGPT Codex Modeling (2)** — Deliver guarded Hugging Face model loading and LoRA tests to close the open modeling item.【F:reports/_codex_status_update-2025-10-05.md†L53-L53】
-2. **Security (4)** — Add SBOM tooling plus moderation adapters to satisfy the outstanding safety mitigation.【F:reports/_codex_status_update-2025-10-05.md†L60-L60】
-3. **Deployment (6)** — Produce offline container/Makefile assets for reproducible installs.【F:reports/_codex_status_update-2025-10-05.md†L62-L62】
+1. **ChatGPT Codex Modeling (2)** — Deliver guarded Hugging Face model loading and LoRA tests to close the open modeling item.【F:reports/_codex_status_update-Previous Cycle-10-05.md†L53-L53】
+2. **Security (4)** — Add SBOM tooling plus moderation adapters to satisfy the outstanding safety mitigation.【F:reports/_codex_status_update-Previous Cycle-10-05.md†L60-L60】
+3. **Deployment (6)** — Produce offline container/Makefile assets for reproducible installs.【F:reports/_codex_status_update-Previous Cycle-10-05.md†L62-L62】
 
 ## Outstanding Questions
-- Which AutoModel targets and tokenizer configs should be validated first to exercise the LoRA pipeline without exceeding offline resource limits?【F:reports/_codex_status_update-2025-10-05.md†L53-L53】
-- What SBOM format (SPDX vs CycloneDX) best fits the offline toolchain while covering Python and system packages?【F:reports/_codex_status_update-2025-10-05.md†L60-L60】
-- Where should the Dockerfile live to avoid clashing with existing deployment scripts, and how do we wire it into the make-based workflow?【F:reports/_codex_status_update-2025-10-05.md†L62-L62】
+- Which AutoModel targets and tokenizer configs should be validated first to exercise the LoRA pipeline without exceeding offline resource limits?【F:reports/_codex_status_update-Previous Cycle-10-05.md†L53-L53】
+- What SBOM format (SPDX vs CycloneDX) best fits the offline toolchain while covering Python and system packages?【F:reports/_codex_status_update-Previous Cycle-10-05.md†L60-L60】
+- Where should the Dockerfile live to avoid clashing with existing deployment scripts, and how do we wire it into the make-based workflow?【F:reports/_codex_status_update-Previous Cycle-10-05.md†L62-L62】
 - Do we need additional automation to surface gap status changes (e.g., `pre-commit` hook or `nox` task) now that the tracker exists?【F:reports/gap_risk_resolution.md†L1-L15】
 
 ---

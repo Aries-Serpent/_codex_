@@ -38,7 +38,7 @@
 
 ### 2. GitHub Copilot Agent PR Comment Capabilities
 
-**Source**: [GitHub Changelog - Copilot coding agent: Improved pull request review experience](https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/)
+**Source**: [GitHub Changelog - Copilot coding agent: Improved pull request review experience](https://github.blog/changelog/Previous Cycle-08-05-copilot-coding-agent-improved-pull-request-review-experience/)
 
 **Key Facts**:
 - ✅ Copilot Agent **responds to `@copilot` mentions in PR comments**
@@ -49,7 +49,7 @@
 **Direct Quote from GitHub Official Blog**:
 > "Copilot Agent now only responds when it is explicitly mentioned via `@copilot` in a pull request comment... After Copilot opens a pull request and requests a review, you can iterate by giving more instructions via PR comments with `@copilot`"
 
-**Blog URL**: https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/  
+**Blog URL**: https://github.blog/changelog/Previous Cycle-08-05-copilot-coding-agent-improved-pull-request-review-experience/  
 **Publication Date**: 2025-08-05  
 **Documentation Type**: Official GitHub Changelog  
 **Last Verified**: 2025-12-31
@@ -111,7 +111,7 @@
 
 ### 6. Remote GitHub MCP Server GA Announcement
 
-**Source**: [Remote GitHub MCP Server is now generally available](https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/)
+**Source**: [Remote GitHub MCP Server is now generally available](https://github.blog/changelog/Previous Cycle-09-04-remote-github-mcp-server-is-now-generally-available/)
 
 **Highlights**:
 - ✅ OAuth 2.1 authentication
@@ -119,7 +119,7 @@
 - ✅ Enhanced pagination
 - ✅ **Full GitHub API access** (read + write)
 
-**Blog URL**: https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/  
+**Blog URL**: https://github.blog/changelog/Previous Cycle-09-04-remote-github-mcp-server-is-now-generally-available/  
 **Publication Date**: 2025-09-04  
 **Documentation Type**: Official GitHub Changelog  
 **Last Verified**: 2025-12-31
@@ -296,7 +296,7 @@
 
 | Capability | Supported | Documentation Source | Direct Quote Evidence | URL |
 |-----------|-----------|---------------------|----------------------|-----|
-| **Post PR Comments** | ✅ YES | GitHub Changelog | "iterate by giving more instructions via PR comments with `@copilot`" | [Link](https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/) |
+| **Post PR Comments** | ✅ YES | GitHub Changelog | "iterate by giving more instructions via PR comments with `@copilot`" | [Link](https://github.blog/changelog/Previous Cycle-08-05-copilot-coding-agent-improved-pull-request-review-experience/) |
 | **Create PRs** | ✅ YES | GitHub MCP Server | "autonomously create branches... and open pull requests" | [Link](https://github.com/github/github-mcp-server) |
 | **Update PR Bodies** | ✅ YES | GitHub MCP Server | "Issue & PR Automation: file, triage, label, review, and merge" | [Link](https://github.com/github/github-mcp-server) |
 | **Merge PRs** | ✅ YES | GitHub MCP Server | "agents can... merge issues and pull requests" | [Link](https://github.com/github/github-mcp-server) |
@@ -573,7 +573,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
    - Content: Implementation guide, use cases, examples
 
 3. **GitHub Changelog - Copilot PR Review**
-   - URL: https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience/
+   - URL: https://github.blog/changelog/Previous Cycle-08-05-copilot-coding-agent-improved-pull-request-review-experience/
    - Type: Official GitHub Changelog
    - Content: Feature announcement, capabilities, usage
 
@@ -588,7 +588,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
    - Content: Concepts, architecture, integration
 
 6. **Remote GitHub MCP Server GA Announcement**
-   - URL: https://github.blog/changelog/2025-09-04-remote-github-mcp-server-is-now-generally-available/
+   - URL: https://github.blog/changelog/Previous Cycle-09-04-remote-github-mcp-server-is-now-generally-available/
    - Type: Official GitHub Changelog
    - Content: GA announcement, features, availability
 
@@ -628,7 +628,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
 - `.github/POST_TO_PR_2671.md` - Continuation prompt (blocked by false claim)
 
 **Change Log**:
-- 2025-12-31: Initial version created in response to critical feedback
+- Previous Cycle-12-31: Initial version created in response to critical feedback
 - Future: Update when GitHub releases new MCP features or documentation
 
 ---

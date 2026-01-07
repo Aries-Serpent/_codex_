@@ -32,7 +32,7 @@
 - [x] Generated WORKFLOW_INVENTORY.yaml with comprehensive metadata
 - [x] Generated INVENTORY_SUMMARY.md with category breakdown
 - [x] Created backup_workflows.sh with integrity verification
-- [x] Backed up all 67 workflows to backups/2025-12-28/
+- [x] Backed up all 67 workflows to backups/Previous Cycle-12-28/
 
 ---
 
@@ -105,7 +105,7 @@
 ### Emergency Rollback
 ```bash
 # Restore all workflows from backup
-cp .github/workflow-archive/backups/2025-12-28/*.yml .github/workflows/
+cp .github/workflow-archive/backups/Previous Cycle-12-28/*.yml .github/workflows/
 git add .github/workflows/
 git commit -m "rollback: restore all workflows from 2025-12-28 backup"
 git push

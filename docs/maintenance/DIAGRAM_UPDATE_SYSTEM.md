@@ -280,7 +280,7 @@ This will:
 ### Naming Conventions
 - Use descriptive, kebab-case filenames for diagram files
 - Prefix with diagram type: `mermaid-`, `plantuml-`, etc.
-- Include date in version history: `architecture-2025-12-30`
+- Include date in version history: `architecture-Previous Cycle-12-30`
 
 ### Styling Guidelines
 - **Completed**: Green (#90EE90)

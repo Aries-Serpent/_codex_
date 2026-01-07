@@ -189,7 +189,7 @@ Deliverable: scripts/maintenance.sh updated and consistent with setup.sh pattern
 ```text
 Goal: Create architectural decision record.
 Branch: 0D_base_
-File: docs/arch/ADR-2025-11-12-dependency-segmentation.md
+File: docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md
 Sections:
   - Status: Accepted
   - Context: Disk pressure, optional ML, classification table summary
@@ -446,7 +446,7 @@ Stage A (branch 0C_base_):
 
 Stage B (branch 0D_base_):
   - Replace scripts/setup.sh and scripts/maintenance.sh with rc5 evidence-enabled versions.
-  - Add ADR docs/arch/ADR-2025-11-12-dependency-segmentation.md.
+  - Add ADR docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md.
   - Append implementation status section to docs/analysis/dependency_space_triage.md.
   - Update CHANGELOG.md with segmentation entry.
   - Add scripts/verify_dependency_hygiene.py and scripts/check_dependency_evidence.py.

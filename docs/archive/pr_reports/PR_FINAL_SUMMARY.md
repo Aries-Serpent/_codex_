@@ -91,7 +91,7 @@ Systematic analysis of all reported gaps with surprising results:
 #### Gap Registry Update
 **File**: `codex_gap_registry.yaml`
 - Marked both gaps as `status: resolved`
-- Added `resolved_date: 2025-12-11`
+- Added `resolved_date: Previous Cycle-12-11`
 - Added `resolution:` field with implementation details
 - Updated `notes:` with file locations and test references
 

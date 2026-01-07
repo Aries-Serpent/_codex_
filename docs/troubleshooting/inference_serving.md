@@ -104,7 +104,7 @@ print(f"Expires: {decoded['exp']}")
 ```
 
 **Cause**: Timing attack detection
-- Constant-time comparison Phase 5 fail on clock skew
+- Constant-time comparison may fail on clock skew
 - Solution: Ensure NTP sync on all servers
 
 ---
@@ -512,4 +512,4 @@ python -m tests.serving.test_inference_performance --benchmark
 
 ---
 
-*Last reviewed: 2025-12-07*
+*Last reviewed: Previous Cycle-12-07*

@@ -186,7 +186,7 @@ import { TaskItem } from '@/components/quantum/TaskItem';
     description: "Analyze code complexity",
     assigned_agent: "agent-003",
     status: "running",
-    started_at: "2024-01-04T10:30:00Z",
+    started_at: "2025-01-04T10:30:00Z",
     completed_at: null,
     priority: 1,
     workflow_token: "AUDIT_EXEC"
@@ -339,7 +339,7 @@ import { OperationsLog } from '@/components/quantum/OperationsLog';
       id: "op-001",
       type: "store",
       description: "Stored decision pattern",
-      timestamp: "2024-01-04T10:30:00Z",
+      timestamp: "2025-01-04T10:30:00Z",
       duration_ms: 45,
       success: true,
       metadata: {
@@ -519,7 +519,7 @@ npm install @phosphor-icons/react@2.1.10
 **Solution:** Ensure timestamps are ISO 8601 format:
 ```tsx
 timestamp: new Date().toISOString()  // ✓ Correct
-timestamp: "2024-01-04 10:30:00"     // ✗ Incorrect
+timestamp: "2025-01-04 10:30:00"     // ✗ Incorrect
 ```
 
 ### Issue: Colors not applying
@@ -608,4 +608,4 @@ For questions or issues:
 - Consult Codex master plan document
 
 **Version:** 1.0.0  
-**Last Updated:** 2024-01-04
+**Last Updated:** 2025-01-04

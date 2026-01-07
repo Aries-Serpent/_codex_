@@ -129,7 +129,7 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 ### Medium-term (Next Quarter)
 1. 🏗️ **Execute P1 refactoring** - High-value consolidation opportunities
-2. 📦 **Complete config migration** - Move from flat to hierarchical (deadline: 2026-03-01)
+2. 📦 **Complete config migration** - Move from flat to hierarchical (deadline: 2025-03-01)
 3. 🎯 **Update prevention guidelines** - Based on duplicate patterns found
 
 ---

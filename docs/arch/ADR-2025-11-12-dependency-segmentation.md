@@ -1,4 +1,4 @@
-# ADR-2025-11-12: Dependency Segmentation & Archival-Aligned Hygiene  
+# ADR-Previous Cycle-11-12: Dependency Segmentation & Archival-Aligned Hygiene  
 > Generated: 2025-11-12T16:40:00Z | Author: mbaetiong  
 > Status: Accepted
 
@@ -133,4 +133,4 @@ Link to PR(s): (to be populated)
 
 ---
 
-*End of ADR-2025-11-12-dependency-segmentation*
+*End of ADR-Previous Cycle-11-12-dependency-segmentation*

@@ -1,5 +1,5 @@
 # TOMBSTONE ARCHIVE STUB — DO NOT DELETE
-# File: _codex_codex-ready-sequence-and-patches-2025-09-27.md
+# File: _codex_codex-ready-sequence-and-patches-Previous Cycle-09-27.md
 # ArchivedBy: mbaetiong
 # Reason: dead
 # Tombstone: 94ba1b35-5745-40d6-8f08-8b3d0a62f786
@@ -8,6 +8,6 @@
 # Commit: ae10c1607ae2a07cf7005cf07e965480968ca8c8
 #
 # To restore:
-#   python -m codex.cli archive restore 94ba1b35-5745-40d6-8f08-8b3d0a62f786 --out _codex_codex-ready-sequence-and-patches-2025-09-27.md
+#   python -m codex.cli archive restore 94ba1b35-5745-40d6-8f08-8b3d0a62f786 --out _codex_codex-ready-sequence-and-patches-Previous Cycle-09-27.md
 #
 # NOTE: This stub intentionally contains no functional code.

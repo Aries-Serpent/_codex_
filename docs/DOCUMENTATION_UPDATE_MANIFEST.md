@@ -15,8 +15,8 @@
 - [x] **docs/security/README.md** - Complete rewrite with navigation and examples
 - [x] **docs/security/SECURITY_GUIDELINES.md** - 7KB best practices guide (NEW)
 - [x] **docs/security/COMPLETE_STATUS_REPORT.md** - 7.8KB status report (NEW)
-- [x] **docs/security/dependency-updates-2025-12-23.md** - Fixed CVE placeholders
-- [x] **docs/security/code-scanning-fixes-2025-12-23.md** - Fixed line numbers
+- [x] **docs/security/dependency-updates-Previous Cycle-12-23.md** - Fixed CVE placeholders
+- [x] **docs/security/code-scanning-fixes-Previous Cycle-12-23.md** - Fixed line numbers
 - [x] **docs/security/REMEDIATION_COMPLETE_2025-12-23.md** - Updated fixes list
 
 ### 3. Admin Documentation

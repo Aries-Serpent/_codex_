@@ -42,7 +42,7 @@ Emit exactly one fenced block labeled `aftermath` with the following YAML struct
 ```aftermath
 meta:
   # Identifiers
-  session_id: "S-PR2671-2025-12-30-1"
+  session_id: "S-PR2671-Previous Cycle-12-30-1"
   pr: 2671
   branch: "copilot/sub-pr-2668-again"
   run_id: 59168839007
@@ -173,7 +173,7 @@ overall_health: "excellent"
 If fenced blocks are not feasible, emit fallback inline tags:
 
 ```
-<!--AFTERMATH:SESSION_ID=S-PR2671-2025-12-30-1-->
+<!--AFTERMATH:SESSION_ID=S-PR2671-Previous Cycle-12-30-1-->
 <!--AFTERMATH:LESSONS_COUNT=2-->
 <!--AFTERMATH:LESSON_1="Code quality: Removed unused imports (b62e012)"-->
 <!--AFTERMATH:LESSON_2="Documentation: Created diagram update system (ff3c5e9)"-->

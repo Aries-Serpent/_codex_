@@ -37,7 +37,7 @@ EOF
 Output:
 ```text
 Hello Codex!
-Today is 2025-10-30.
+Today is Previous Cycle-10-30.
 The result of 2+2 is 4.
 ```text
 **Backslashes retain special meaning**:

@@ -1208,7 +1208,7 @@ from agents.advanced_physics_calculators import ChaoticAttractor
 |---------|---------|------|------|
 | **Single DB** | `.codex/codex.db` | Simple, centralized | Large file, locking issues |
 | **Purpose-based** | `.codex/logs.db`, `.codex/metrics.db` | Organized, parallel access | More files to manage |
-| **Time-based** | `.codex/2024-12.db` | Easy archival | Requires rotation logic |
+| **Time-based** | `.codex/2025-12.db` | Easy archival | Requires rotation logic |
 | **Hierarchical** | `.codex/sessions/`, `.codex/analysis/` | Clear separation | Complex discovery |
 
 **Standard Locations (Industry):**

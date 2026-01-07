@@ -86,7 +86,7 @@ python3 scripts/security/copilot_token_decoder.py
 
 1. Navigate to: https://github.com/settings/tokens/new
 2. Configure:
-   - **Note**: `_codex_ Copilot Agent Token - Created 2025-12-29`
+   - **Note**: `_codex_ Copilot Agent Token - Created Previous Cycle-12-29`
    - **Expiration**: 90 days
    - **Scopes**:
      - ☑️ `repo` (Full control of private repositories)
@@ -287,7 +287,7 @@ history -c  # Clears history in current session
 ```bash
 # Create a reminder for token rotation (90 days)
 # Add to your calendar: "Rotate _codex_ GitHub token"
-# Date: 2026-03-29 (90 days from 2025-12-29)
+# Date: 2025-03-29 (90 days from 2025-12-29)
 ```
 
 ---

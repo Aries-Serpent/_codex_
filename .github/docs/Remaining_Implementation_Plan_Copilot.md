@@ -345,7 +345,7 @@ def test_streaming_retry_logic():
 
 ## Problem
 
-Streaming datasets from HuggingFace Phase 5 fail in offline environments.
+Streaming datasets from HuggingFace may fail in offline environments.
 
 ## Solutions
 

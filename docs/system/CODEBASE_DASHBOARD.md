@@ -344,25 +344,25 @@ nox -s lint type format
 
 ### Recent Decisions
 
-**2025-12-30**: Cognitive Brain Infrastructure
+**Previous Cycle-12-30**: Cognitive Brain Infrastructure
 - **Decision**: Create `docs/system/` with cognitive map and dashboard
 - **Rationale**: AI agents need unified navigation and status awareness
 - **Impact**: Improved agent efficiency, better continuation between sessions
 - **Status**: In Progress
 
-**2025-12-30**: PR #2671 Review Comments
+**Previous Cycle-12-30**: PR #2671 Review Comments
 - **Decision**: Fix all review items (shebang, BSD date, error handling)
 - **Rationale**: Code quality and cross-platform compatibility
 - **Impact**: All systems work on macOS/BSD, better error handling
 - **Status**: Complete
 
-**2025-12-30**: Duration-Aware Planning
+**Previous Cycle-12-30**: Duration-Aware Planning
 - **Decision**: Maximize work within token budget, continue if capacity remains
 - **Rationale**: Avoid premature session termination, deliver more value
 - **Impact**: Higher productivity, better resource utilization
 - **Status**: Active (current session using ~90K/1M tokens)
 
-**2025-12-29**: MCP Advanced Features Roadmap
+**Previous Cycle-12-29**: MCP Advanced Features Roadmap
 - **Decision**: Document Cycle 1-Phase 3 (Current Cycle) roadmap with 7 features
 - **Rationale**: Clear future direction, prioritization framework
 - **Impact**: Stakeholders informed, development prioritized

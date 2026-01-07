@@ -54,14 +54,14 @@
   - nbconvert==7.16.6 (>=7.16.5 required)
   - marshmallow==3.26.1 (>=3.23.0 required)
   - aiohttp==3.12.15 (>=3.11.0 required)
-- **Documentation**: `docs/security/dependency-updates-2025-12-23.md`
+- **Documentation**: `docs/security/dependency-updates-Previous Cycle-12-23.md`
 
 ### TASK 3: Code Scanning Alerts ✅
 - **MD5 Usage**: Already has `usedforsecurity=False`
 - **eval() Usage**: All are `model.eval()` (PyTorch, not Python eval)
 - **XML Parsing**: Already uses defusedxml
 - **Duplicate Logging**: Fixed in registry.py
-- **Documentation**: `docs/security/code-scanning-fixes-2025-12-23.md`
+- **Documentation**: `docs/security/code-scanning-fixes-Previous Cycle-12-23.md`
 
 ### TASK 4: Complete AST Implementation ✅
 - **New Modules**:
@@ -100,8 +100,8 @@
 ## 📚 Documentation Created
 
 1. `docs/security/CVE-Previous Cycle-68146-filelock.md`
-2. `docs/security/dependency-updates-2025-12-23.md`
-3. `docs/security/code-scanning-fixes-2025-12-23.md`
+2. `docs/security/dependency-updates-Previous Cycle-12-23.md`
+3. `docs/security/code-scanning-fixes-Previous Cycle-12-23.md`
 4. `docs/security/REMEDIATION_COMPLETE_2025-12-23.md`
 
 ---

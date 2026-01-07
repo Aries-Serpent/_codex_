@@ -95,7 +95,7 @@ Reduce GitHub Actions workflows from **67 to 48** active workflows (-28.4% reduc
 ## 🛡️ Safety Measures Implemented
 
 ### Backup System
-- ✅ All 67 workflows backed up to `.github/workflow-archive/backups/2025-12-28/`
+- ✅ All 67 workflows backed up to `.github/workflow-archive/backups/Previous Cycle-12-28/`
 - ✅ SHA256 checksums for all backups
 - ✅ Manifest files with verification data
 - ✅ Integrity verification passed
@@ -153,7 +153,7 @@ Reduce GitHub Actions workflows from **67 to 48** active workflows (-28.4% reduc
 ### Emergency Full Rollback
 ```bash
 # Restore ALL workflows from backup
-cp .github/workflow-archive/backups/2025-12-28/*.yml .github/workflows/
+cp .github/workflow-archive/backups/Previous Cycle-12-28/*.yml .github/workflows/
 git add .github/workflows/
 git commit -m "rollback: restore all workflows from 2025-12-28 backup"
 git push

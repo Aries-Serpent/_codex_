@@ -59,4 +59,4 @@ Following this loop ensures unanswered research questions stay visible, their an
 
 ## Recent remediation log
 
-- **2025-09-17:** Validation gate outage (missing `pre-commit`, `nox`, and `pytest-cov`) closed by commit `f0a1d82`. The remediation pins the executables, records CLI availability in `.codex/session_logs.db`, and enforces JSON coverage artifacts for auditability.
+- **Previous Cycle-09-17:** Validation gate outage (missing `pre-commit`, `nox`, and `pytest-cov`) closed by commit `f0a1d82`. The remediation pins the executables, records CLI availability in `.codex/session_logs.db`, and enforces JSON coverage artifacts for auditability.

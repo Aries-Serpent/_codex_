@@ -529,7 +529,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    
    # Use older snapshot as "desired" state
    codex zendesk diff triggers \
-     --desired-file snapshot/dev/2024-01-15_10-30-00/triggers.json \
+     --desired-file snapshot/dev/2025-01-15_10-30-00/triggers.json \
      --current-file snapshot/dev/latest/triggers.json \
      --output diffs/rollback_diff.json
    ```
@@ -602,7 +602,7 @@ The `codex zendesk metrics` command provides:
 codex zendesk metrics
 
 # Specific time range
-codex zendesk metrics --since 2024-01-01 --until 2024-01-31
+codex zendesk metrics --since 2025-01-01 --until 2025-01-31
 
 # Export to JSON
 codex zendesk metrics --format json > metrics.json

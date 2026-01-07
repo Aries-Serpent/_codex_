@@ -122,7 +122,7 @@
  CMD ["python", "-m", "codex.cli"]
 ```text
 - *Why*: Provide default CLI entrypoint for container deployments.
-- *Risk*: Entrypoint Phase 5 not cover all use cases.
+- *Risk*: Entrypoint may not cover all use cases.
 - *Rollback*: Revert Dockerfile.
 - *Tests/docs*: Build image and run `docker run <img> --help` test.
 

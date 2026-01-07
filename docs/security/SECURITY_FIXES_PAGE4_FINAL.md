@@ -108,7 +108,7 @@ def test_some_feature():
     """Test that SomeClass can be instantiated."""
     try:
         from module import SomeClass
-        # MAY use old API or wrong args - doesn't matter
+        # Phase 5 use old API or wrong args - doesn't matter
         obj = SomeClass(old_param="value")  # CodeQL flags this
         assert obj is not None
     except (ImportError, TypeError, AttributeError) as e:

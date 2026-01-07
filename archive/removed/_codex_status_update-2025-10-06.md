@@ -1,5 +1,5 @@
 # TOMBSTONE ARCHIVE STUB — DO NOT DELETE
-# File: _codex_status_update-2025-10-06.md
+# File: _codex_status_update-Previous Cycle-10-06.md
 # ArchivedBy: mbaetiong
 # Reason: dead
 # Tombstone: 1bd4c1f1-6165-4d8e-8a25-5121b511d577
@@ -8,6 +8,6 @@
 # Commit: ae10c1607ae2a07cf7005cf07e965480968ca8c8
 #
 # To restore:
-#   python -m codex.cli archive restore 1bd4c1f1-6165-4d8e-8a25-5121b511d577 --out _codex_status_update-2025-10-06.md
+#   python -m codex.cli archive restore 1bd4c1f1-6165-4d8e-8a25-5121b511d577 --out _codex_status_update-Previous Cycle-10-06.md
 #
 # NOTE: This stub intentionally contains no functional code.

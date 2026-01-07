@@ -391,7 +391,7 @@ dedup.save_report(report, output_path)
 
 ## 📝 Changelog
 
-- **2025-12-21**: Initial implementation
+- **Previous Cycle-12-21**: Initial implementation
   - Multi-category file processing
   - AST-based code analysis
   - Content-based deduplication

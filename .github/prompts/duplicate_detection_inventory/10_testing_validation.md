@@ -340,7 +340,7 @@ After all testing, create final validation report:
 
 ## Known Limitations
 
-1. AST parsing Phase 5 fail on syntax errors
+1. AST parsing may fail on syntax errors
 2. Semantic detection is probabilistic
 3. Git integration requires git >= 2.0
 

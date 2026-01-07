@@ -152,7 +152,7 @@ Audit Scope
 
 ### Atomic Diff 5 — Persist dataset checksums alongside metrics artefacts
 - **Why:** Capture dataset fingerprints whenever the demo trainer runs to detect silent drift in offline catalogues.【F:src/codex_ml/train_loop.py†L50-L118】【F:src/codex_ml/utils/repro.py†L1-L24】
-- **Risk:** Writing checksum manifests adds IO and Phase 5 fail on read-only artefact directories; the trainer must degrade gracefully.
+- **Risk:** Writing checksum manifests adds IO and may fail on read-only artefact directories; the trainer must degrade gracefully.
 - **Rollback:** Remove the checksum invocation if operators prefer manual manifests or storage is constrained.
 - **Tests/docs:** Extend the training smoke test to assert the presence of `dataset_checksums.json` and update the reproducibility docs accordingly.
 ```diff

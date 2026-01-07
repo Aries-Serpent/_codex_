@@ -307,7 +307,7 @@ class TestDBManagerPoolCleanup:
                 DBManager.close_all_pools()
             
             # Verify error was logged (if occurred)
-            # Note: Phase 5 not always trigger error depending on SQLite version
+            # Note: may not always trigger error depending on SQLite version
             # Just verify no exception raised
             assert len(DBManager._CONNECTION_POOL) == 0
 ```text

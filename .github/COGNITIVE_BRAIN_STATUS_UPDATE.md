@@ -377,25 +377,25 @@ _codex_/
 
 ### Key Decisions (Last 7 Days)
 
-**2025-12-31**: Review Comment Fixes + Status Update
+**Previous Cycle-12-31**: Review Comment Fixes + Status Update
 - **Decision**: Address all review comments and provide comprehensive status
 - **Rationale**: Maintain code quality and provide clarity on next phases
 - **Impact**: Cleaner codebase, better stakeholder communication
 - **Status**: In Progress (this session)
 
-**2025-12-30**: Cognitive Brain Infrastructure
+**Previous Cycle-12-30**: Cognitive Brain Infrastructure
 - **Decision**: Create `docs/system/` with cognitive map and dashboard
 - **Rationale**: AI agents need unified navigation and status awareness
 - **Impact**: Improved agent efficiency, better continuation between sessions
 - **Status**: Complete ✅
 
-**2025-12-30**: Phase 9 Structure
+**Previous Cycle-12-30**: Phase 9 Structure
 - **Decision**: 4-phase approach to 100% coverage (9.1-9.4)
 - **Rationale**: Systematic, manageable progression with clear milestones
 - **Impact**: Clear roadmap, predictable progress, achievable targets
 - **Status**: Active (Phase 9.1 in progress)
 
-**2025-12-30**: Duration-Aware Planning
+**Previous Cycle-12-30**: Duration-Aware Planning
 - **Decision**: Maximize work within token budget, continue if capacity remains
 - **Rationale**: Avoid premature session termination, deliver more value
 - **Impact**: Higher productivity, better resource utilization

@@ -569,7 +569,7 @@ class GitHubClient:
 
 ### 1. Sensitive Data Filtering
 
-**Problem**: HAR files Phase 5 contain sensitive data (tokens, passwords, API keys)
+**Problem**: HAR files may contain sensitive data (tokens, passwords, API keys)
 
 **Solution**:
 ```python

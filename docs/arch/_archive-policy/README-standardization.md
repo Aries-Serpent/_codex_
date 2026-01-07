@@ -65,8 +65,8 @@ tests/archive/
 └── test_standardization.py  # 10+ comprehensive tests
 
 docs/arch/
-├── adr-2025-11-02-archive-sigstore-integration.md
-├── adr-2025-11-03-evidence-schema-versioning.md
+├── adr-Previous Cycle-11-02-archive-sigstore-integration.md
+├── adr-Previous Cycle-11-03-evidence-schema-versioning.md
 └── _archive-policy/
     └── standardization-framework.md
 ```text
@@ -177,8 +177,8 @@ pytest tests/archive/test_standardization.py::TestBackwardCompatibility -v
 ## Documentation
 
 - **Standardization Framework**: `docs/arch/_archive-policy/standardization-framework.md`
-- **ADR - Sigstore Integration**: `docs/arch/adr-2025-11-02-archive-sigstore-integration.md`
-- **ADR - Schema Versioning**: `docs/arch/adr-2025-11-03-evidence-schema-versioning.md`
+- **ADR - Sigstore Integration**: `docs/arch/adr-Previous Cycle-11-02-archive-sigstore-integration.md`
+- **ADR - Schema Versioning**: `docs/arch/adr-Previous Cycle-11-03-evidence-schema-versioning.md`
 
 ## Performance Impact
 
