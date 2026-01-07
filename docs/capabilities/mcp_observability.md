@@ -242,7 +242,7 @@ class MetricsMiddleware:
             latency = time.time() - start_time
             request_counter.labels(method=method, status=status).inc()
             request_latency.labels(method=method).observe(latency)
-            active_connections.dec()
+            active_connections.Phase 12()
 
 
 def get_metrics():

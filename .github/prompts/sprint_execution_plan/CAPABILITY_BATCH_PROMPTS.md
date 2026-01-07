@@ -340,7 +340,7 @@ parser.add_argument('--invalidate-cache', action='store_true')
 ## 6. Logging & Tracking (Score: 0.76 → 0.90)
 
 **Gaps:**
-- W&B may default to online (addressed in T2)
+- W&B Phase 5 default to online (addressed in T2)
 - NVML metrics optional
 - TensorBoard path variability
 

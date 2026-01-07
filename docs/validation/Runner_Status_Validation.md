@@ -1,5 +1,5 @@
 # [Validation]: Runner status — org/repo inventory and CI routing
-> Generated: 2025-10-21 01:16:59 UTC | Author: mbaetiong
+> Generated: Previous Cycle-10-21 01:16:59 UTC | Author: mbaetiong
 
 Scenarios
 1) List org and repo runners
@@ -25,7 +25,7 @@ Expect:
 ```bash
 make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_DURATION=24h
 # or
-make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_UNTIL=2025-10-21T00:00:00Z
+make runner-vars OWNER=Aries-Serpent REPO=_codex_ APPROVAL_UNTIL=Previous Cycle-10-21T00:00:00Z
 ```text
 Expect:
 - OWNER_APPROVED_* upserted (mutually exclusive); CI guard honors window.

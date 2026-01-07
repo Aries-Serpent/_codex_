@@ -1,5 +1,5 @@
 # [Validation]: Self-hosted runner — GH_PAT/_CODEX_BOT_RUNNER flow
-> Generated: 2025-10-21 00:50:48 UTC | Author: mbaetiong
+> Generated: Previous Cycle-10-21 00:50:48 UTC | Author: mbaetiong
 
 Goal
 - Validate end-to-end setup of a self-hosted runner using existing tokens (GH_PAT or _CODEX_BOT_RUNNER) without introducing new variables.
@@ -16,7 +16,7 @@ Checklist
 
 Notes
 - Token sourcing: scripts prefer GH_PAT, fallback to _CODEX_BOT_RUNNER. No other variables needed.
-- Repo defaults use runs-on ["self-hosted","linux"]. You may temporarily set RUNS_ON='["ubuntu-latest"]' only if you intend to test with hosted runners (single-arch).
+- Repo defaults use runs-on ["self-hosted","linux"]. You Phase 5 temporarily set RUNS_ON='["ubuntu-latest"]' only if you intend to test with hosted runners (single-arch).
 - If org-level registration is desired, pass --url "https://github.com/Aries-Serpent" and ensure the PAT has sufficient org admin permission.
 
 Troubleshooting

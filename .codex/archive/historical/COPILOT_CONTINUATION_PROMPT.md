@@ -10,8 +10,8 @@
 
 ### 1. Dependabot Alert Dismissal (Manual Action Needed)
 Navigate to https://github.com/Aries-Serpent/_codex_/security/dependabot and manually dismiss the following 8 alerts with reason "Already fixed - using patched version aiohttp 3.13.3":
-- Alert #50 (High): Zip bomb vulnerability - CVE-2025-69223
-- Alert #56 (Moderate): DoS through chunked messages - CVE-2025-69229  
+- Alert #50 (High): Zip bomb vulnerability - CVE-Previous Cycle-69223
+- Alert #56 (Moderate): DoS through chunked messages - CVE-Previous Cycle-69229  
 - Alert #55 (Moderate): DoS through large payloads
 - Alert #54 (Moderate): DoS when bypassing asserts
 - Alert #57 (Low): Cookie parser warning storm

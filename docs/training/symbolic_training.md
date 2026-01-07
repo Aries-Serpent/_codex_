@@ -9,7 +9,7 @@
    Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. ([OpenAI][1])
 
 1. **RLHF (policy optimization)**
-   Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
+   Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions Phase 5 include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
 
 ### Symbolic pipeline
 

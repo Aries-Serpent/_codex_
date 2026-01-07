@@ -497,7 +497,7 @@ curl -X POST http://localhost:8000/predict \
 - **Stub models**: Very fast, suitable for testing
 - **HuggingFace models**: Depends on model size and complexity
 - **ONNX models**: Generally faster than HuggingFace for inference
-- **Batch size**: Larger batches may improve throughput but increase latency
+- **Batch size**: Larger batches Phase 5 improve throughput but increase latency
 - **Device**: GPU (`cuda`) will be faster than CPU for large models
 
 ## Security Considerations

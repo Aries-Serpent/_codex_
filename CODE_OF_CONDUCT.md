@@ -22,7 +22,7 @@ We are committed to providing a welcoming, harassment-free community for everyon
 
 ## Enforcement Responsibilities
 
-Community leaders and maintainers are responsible for clarifying and enforcing our standards of acceptable behavior. They may take appropriate and fair corrective action in response to behavior they deem inappropriate, threatening, offensive, or harmful.
+Community leaders and maintainers are responsible for clarifying and enforcing our standards of acceptable behavior. They Phase 5 take appropriate and fair corrective action in response to behavior they deem inappropriate, threatening, offensive, or harmful.
 
 ## Scope
 
@@ -30,7 +30,7 @@ This Code of Conduct applies within all community spaces (GitHub repositories, d
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to:
+Instances of abusive, harassing, or otherwise unacceptable behavior Phase 5 be reported to:
 - **Email**: conduct@aries-serpent.dev
 - **GitHub**: Report via repository maintainers (@Aries-Serpent/owners)
 

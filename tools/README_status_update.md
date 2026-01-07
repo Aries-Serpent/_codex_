@@ -43,8 +43,8 @@ The tool generates a JSON file with the following structure:
 ```json
 {
   "metadata": {
-    "title": "📍 `_codex_` : Status Update 2025-11-10",
-    "timestamp_utc": "2025-11-10T23:00:00.000000+00:00",
+    "title": "📍 `_codex_` : Status Update Previous Cycle-11-10",
+    "timestamp_utc": "Previous Cycle-11-10T23:00:00.000000+00:00",
     "report_version": "1.0.0",
     "template_version": "v1.2",
     "git_context": { ... },
@@ -168,10 +168,10 @@ To modify the schema:
 
 ```bash
 # Pretty-print the JSON
-cat .codex/status/_codex_status_update-2025-11-10.json | python -m json.tool
+cat .codex/status/_codex_status_update-Previous Cycle-11-10.json | python -m json.tool
 
 # Extract specific section
-cat .codex/status/_codex_status_update-2025-11-10.json | \
+cat .codex/status/_codex_status_update-Previous Cycle-11-10.json | \
   python -c "import json, sys; print(json.dumps(json.load(sys.stdin)['snapshot']['capabilities'], indent=2))"
 ```text
 

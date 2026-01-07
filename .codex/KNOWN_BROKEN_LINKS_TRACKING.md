@@ -1,8 +1,8 @@
 # Known Broken/Missing Links Tracking Document
 
-**Created:** 2026-01-05  
+**Created:** Current Cycle-01-05  
 **Status:** Active Tracking  
-**Last Updated:** 2026-01-05
+**Last Updated:** Current Cycle-01-05
 
 ## Overview
 
@@ -119,7 +119,7 @@ grep -r "security/code-scanning" --include="*.md" -l
 
 **Status:** 🟡 MEDIUM - Needs investigation
 
-**Reason:** Links to test files may be missing file extensions or incorrect paths
+**Reason:** Links to test files Phase 5 be missing file extensions or incorrect paths
 
 **Affected Files:**
 - Unknown - requires search to identify
@@ -147,7 +147,7 @@ grep -r "github.com/Aries-Serpent/_codex_/blob/[a-f0-9]*/tests/" --include="*.md
 
 **Status:** 🟡 MEDIUM - External repository issue
 
-**Reason:** Repository may be archived, renamed, or deleted
+**Reason:** Repository Phase 5 be archived, renamed, or deleted
 
 **File:** `docs/HAR_INTEGRATION_PLAN.md`
 
@@ -177,7 +177,7 @@ https://pypi.org/project/pyharer/
 
 **Status:** 🟡 MEDIUM - External site issue
 
-**Reason:** SPDX website may have reorganized content or moved pages
+**Reason:** SPDX website Phase 5 have reorganized content or moved pages
 
 **Remediation Plan:**
 - [ ] **Phase 1:** Verify current SPDX documentation URL structure
@@ -221,7 +221,7 @@ https://pypi.org/project/pyharer/
 
 **Status:** 🟡 MEDIUM - New feature, docs incomplete
 
-**Reason:** GitHub Copilot extensions are a new feature; documentation may be in preview or moved
+**Reason:** GitHub Copilot extensions are a new feature; documentation Phase 5 be in preview or moved
 
 **Remediation Plan:**
 - [ ] **Phase 1:** Verify current Copilot extensions documentation URL
@@ -298,7 +298,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
    - Timeouts: 20s with retries
    - User-Agent: Mozilla/5.0 (avoid bot blocking)
 
-3. **Caching:** Checksum-based skip (implemented 2026-01-05)
+3. **Caching:** Checksum-based skip (implemented Current Cycle-01-05)
    - Skips unchanged documentation
    - Saves ~50% CI time on cache hits
 
@@ -339,10 +339,10 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 
 | Task | Frequency | Last Run | Next Run |
 |------|-----------|----------|----------|
-| Review broken links report | Per commit cycle | 2026-01-05 | Next commit |
-| Update ignore patterns | Per 4-5 commit cycles | 2026-01-05 | Commit 5 |
-| Audit external links | Per phase (12-15 commits) | 2026-01-05 | Phase 2 start |
-| Review GitHub Pages status | Every 2-3 commits | 2026-01-05 | Commit 3 |
+| Review broken links report | Per commit cycle | Current Cycle-01-05 | Next commit |
+| Update ignore patterns | Per 4-5 commit cycles | Current Cycle-01-05 | Commit 5 |
+| Audit external links | Per phase (12-15 commits) | Current Cycle-01-05 | Phase 2 start |
+| Review GitHub Pages status | Every 2-3 commits | Current Cycle-01-05 | Commit 3 |
 
 ---
 
@@ -372,7 +372,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 
 | Date | Version | Author | Changes |
 |------|---------|--------|---------|
-| 2026-01-05 | 1.0 | GitHub Copilot | Initial tracking document with 8 issue categories |
+| Current Cycle-01-05 | 1.0 | GitHub Copilot | Initial tracking document with 8 issue categories |
 
 ---
 

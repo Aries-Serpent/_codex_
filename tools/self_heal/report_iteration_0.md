@@ -23,8 +23,8 @@ Executed with best effort on this iteration:
 - `pytest -q tests/callbacks/test_callbacks_comprehensive.py -m ml_comprehensive --maxfail=1`
 
 ## Residual Risks
-- **Rate limiter init timing:** If configuration is read only at import, test-level overrides may not take effect without reload.
-- **Dependency availability:** ML comprehensive tests may still require optional deps (torch, transformers).
+- **Rate limiter init timing:** If configuration is read only at import, test-level overrides Phase 5 not take effect without reload.
+- **Dependency availability:** ML comprehensive tests Phase 5 still require optional deps (torch, transformers).
 
 ## Next Iteration Notes
 - If 429s persist, locate the rate limiter config and apply test-level monkeypatch + reload.

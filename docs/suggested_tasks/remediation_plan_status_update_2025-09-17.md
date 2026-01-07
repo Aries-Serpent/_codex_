@@ -1,4 +1,4 @@
-# Codex Remediation Plan – Phased Outline (2025-09-17)
+# Codex Remediation Plan – Phased Outline (Previous Cycle-09-17)
 
 ## Purpose & Inputs
 
@@ -24,7 +24,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 
 ## Phase 1 – Urgent Remediations (Top 5)
 
-**Execution packet linkage:** The detailed task-by-task instructions for delivering Phase 1 are expanded inside `docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md`. That packet maps each urgent gate (U1–U5) and quick win (Q1–Q5) to concrete steps, deliverables, instrumentation requirements, and queue triggers that automatically tee up the subsequent phase backlog once the first iteration closes. Refer to that file whenever scheduling or logging work so the iterative workflow remains synchronized across Codex sessions.
+**Execution packet linkage:** The detailed task-by-task instructions for delivering Phase 1 are expanded inside `docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md`. That packet maps each urgent gate (U1–U5) and quick win (Cycle 1–Q5) to concrete steps, deliverables, instrumentation requirements, and queue triggers that automatically tee up the subsequent phase backlog once the first iteration closes. Refer to that file whenever scheduling or logging work so the iterative workflow remains synchronized across Codex sessions.
 
 ### U1 – Restore Gate Tooling for `pre-commit`
 - **Source gaps**: Outstanding table rows for Phase 6 & validation failures (multiple timestamps).
@@ -63,7 +63,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 - **Exit criteria**: Test runs succeed regardless of optional dependency presence, with logs referencing the fallback decisions.
 
 ### U5 – Guard the Training CLI Against Missing `torch`
-- **Source gaps**: Outstanding table row (2025-09-13) for `ModuleNotFoundError`; capability audit (Training Engine, ChatGPT Modeling).
+- **Source gaps**: Outstanding table row (Previous Cycle-09-13) for `ModuleNotFoundError`; capability audit (Training Engine, ChatGPT Modeling).
 - **Impacted components**: `src/codex_ml/cli/train_model.py` (or equivalent), `pyproject.toml` extras, `docs/suggested_tasks/status_update_2025-09-17.md` (Diff 3), README quickstart, `.codex/session_logs.db` run metadata.
 - **Actions**:
   1. Add a runtime guard that surfaces a clear remediation (`pip install codex_ml[torch]`) and records the incident in session logs.
@@ -73,28 +73,28 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 
 ## Phase 2 – Quick Wins (Top 5)
 
-### Q1 – Remove Duplicate `training.py01`
+### Cycle 1 – Remove Duplicate `training.py01`
 - **Components**: `src/codex/training.py01`, audit references, `docs/suggested_tasks/status_update_2025-09-17.md` (High-Signal Finding #1).
 - **Steps**:
   1. Confirm no import references remain using `rg "training.py01"`.
   2. Delete the duplicate file; note in `CHANGELOG_CODEX.md` and session datablot.
   3. Update documentation to prevent reintroduction.
 
-### Q2 – Implement `load_latest` in Checkpointing
+### Cycle 2 – Implement `load_latest` in Checkpointing
 - **Components**: `src/codex_ml/utils/checkpointing.py`, tests, docs.
 - **Steps**:
   1. Add the load helper (per Atomic Diff 1); write integration tests.
   2. Document CLI usage (`--resume-from`) in README and outstanding ledger.
   3. Store last resume metadata in `.codex/session_logs.db` for reproducibility.
 
-### Q3 – Deterministic Dataset Loader & Manifest
+### Cycle 3 – Deterministic Dataset Loader & Manifest
 - **Components**: `src/codex_ml/data/registry.py`, dataset manifests, docs.
 - **Steps**:
   1. Implement seeded shuffling with manifest emission (Atomic Diff 5).
   2. Archive manifests under `artifacts/data_manifests/` and record in session datablot.
   3. Update documentation with usage instructions and reproduction steps.
 
-### Q4 – Introduce System Metrics Logger
+### Cycle 4 – Introduce System Metrics Logger
 - **Components**: `src/codex_ml/monitoring/system_metrics.py`, CLI flags, docs, logs directory.
 - **Steps**:
   1. Create psutil-based logger (Atomic Diff 4) with JSONL output into `logs/system_metrics/`.
@@ -136,20 +136,20 @@ To guarantee that every incomplete/missing element is tracked, execute the follo
 | Metrics returning dummy values | Code | Phase 3 (Files & Code) | Implement real metrics once dependency strategy finalized. |
 | Stub connectors | Code | Phase 3 | Document expectations and assign ownership. |
 | Skeleton `deploy` assets | Docs/Config | Phase 3 | Defer until deployment roadmap defined. |
-| Duplicate `training.py01` | Code | Phase 2 – Q1 | Quick win removal. |
+| Duplicate `training.py01` | Code | Phase 2 – Cycle 1 | Quick win removal. |
 | Optional dependency fallbacks raising generic errors | Code | Phase 1 – U4 | Harden messaging and fallbacks. |
 | Placeholder directories in configs | Config | Phase 3 | Populate as features mature. |
-| Missing resume functionality | Code | Phase 2 – Q2 | Implement load helper. |
-| Logging gaps / lack of system metrics | Artifacts/Monitoring | Phase 2 – Q4 | Add psutil logger. |
-| Checkpoint resume absent | Code | Phase 2 – Q2 | Covered via load helper. |
-| Dataset reproducibility lacking | Data/Artifacts | Phase 2 – Q3 | Manifest + deterministic shuffle. |
+| Missing resume functionality | Code | Phase 2 – Cycle 2 | Implement load helper. |
+| Logging gaps / lack of system metrics | Artifacts/Monitoring | Phase 2 – Cycle 4 | Add psutil logger. |
+| Checkpoint resume absent | Code | Phase 2 – Cycle 2 | Covered via load helper. |
+| Dataset reproducibility lacking | Data/Artifacts | Phase 2 – Cycle 3 | Manifest + deterministic shuffle. |
 | Safety & secrets scanning minimal | Docs/Code | Phase 3 | Integrate scanning in follow-up iteration. |
 | Evaluation limited to token metrics | Code | Phase 3 | Expand after urgent gating tasks. |
-| Monitoring optional / NDJSON growth | Artifacts | Phase 2 – Q4 + Phase 3 rotation | Add structured metrics + retention policy. |
+| Monitoring optional / NDJSON growth | Artifacts | Phase 2 – Cycle 4 + Phase 3 rotation | Add structured metrics + retention policy. |
 | No Docker/CI pipeline | Config/Deploy | Phase 3 backlog | Document requirement and schedule later sprint. |
 | Plugin registries empty | Code | Phase 3 backlog | Encourage sample implementations. |
 | Seeds & environment capture partial | Config/Artifacts | Phase 3 – configuration audits | Document seeds, capture environment snapshots. |
-| Dataset versioning missing | Data | Phase 2 – Q3 (manifest) | Evaluate DVC after manifest adoption. |
+| Dataset versioning missing | Data | Phase 2 – Cycle 3 (manifest) | Evaluate DVC after manifest adoption. |
 | RNG state not saved | Code | Phase 3 backlog | Add to checkpoint manager in future iteration. |
 | `.env` committed | Docs/Safety | Phase 3 backlog | Replace with `.env.example` only. |
 | Large logs unchecked into repo | Artifacts | Phase 3 rotation | Purge/move to git-ignored paths. |

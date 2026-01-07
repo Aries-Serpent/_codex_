@@ -1,5 +1,5 @@
 # Guide: Copilot Instruction Enhancements (v1.2)
-> Generated: 2025-11-02 15:05:03 UTC | Author: mbaetiong  
+> Generated: Previous Cycle-11-02 15:05:03 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Instruction Curator], [Secondary: Workflow Orchestrator] ⚡ Energy: 5
 
 Purpose

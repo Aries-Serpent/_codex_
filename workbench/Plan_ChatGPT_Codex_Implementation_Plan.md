@@ -1,5 +1,5 @@
 # [Pre-Plan]: Review & Readiness — MCP Plans A→D Implementation
-> Generated: 2025-12-19T00:00:00Z | Author: mbaetiong
+> Generated: Previous Cycle-12-19T00:00:00Z | Author: mbaetiong
 
 Purpose
 - Provide a concise, actionable pre-plan that reviews Plans A–D (as attached), captures preconditions, orders work, lists risks & mitigations, and defines an execution checklist that ChatGPT Codex (or a human) will follow before implementing Plan A→D files into the repository.
@@ -120,7 +120,7 @@ Next immediate actions (for implementer)
 ------
 
 # [Plan]: Plan A — ChatGPT Codex Implementation (Adapter Interface + Mock Backend + CI)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: Previous Cycle-12-18T00:00:00Z | Author: mbaetiong 
 
 Purpose / Summary
 - Implement a minimal, import-safe, and testable scaffolding for MCP adapter support:
@@ -876,7 +876,7 @@ Next steps after Plan A merged (short)
 ------
 
 # [Plan]: Plan B — ChatGPT Codex Implementation (Pinecone Adapter Skeleton + Mocked Unit Tests + Audit-driven Scaffolds)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: Previous Cycle-12-18T00:00:00Z | Author: mbaetiong 
 
 Purpose
 - Implement a production-ready scaffold for a Pinecone adapter that conforms to the BackendAdapter interface created in Plan A, including:
@@ -1387,7 +1387,7 @@ Recorded-mode guidance
 ------
 
 # [Plan]: Plan C — ChatGPT Codex Implementation (Cloud Run FastAPI façade + Health Endpoints + Audit Scaffolds)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong
+> Generated: Previous Cycle-12-18T00:00:00Z | Author: mbaetiong
 
 Purpose
 - Component-focused implementation plan for a Cloud Run / containerized FastAPI façade that:
@@ -1421,7 +1421,7 @@ Context & Preconditions
   - tests/mcp/test_tenant_isolation.py
   - .github/workflows/integration-gated.yml
   - docs/SECRETS_RUNBOOK.md
-- Plan B (Pinecone adapter) may exist but façade must default to the mock backend when ADAPTER_CLASS not set.
+- Plan B (Pinecone adapter) Phase 5 exist but façade must default to the mock backend when ADAPTER_CLASS not set.
 - All new modules must be import-safe (lazy imports for optional heavy dependencies) and unit tests must use mocks/fixtures only (no network or provider secrets in default CI).
 
 Non-goals
@@ -1856,7 +1856,7 @@ def ensure_request_id(request: Request) -> str:
     rid = request.headers.get("x-request-id")
     if not rid:
         rid = str(uuid.uuid4())
-        # Note: we don't mutate headers immutable mapping; handler may read request.state.request_id
+        # Note: we don't mutate headers immutable mapping; handler Phase 5 read request.state.request_id
     request.state.request_id = rid
     return rid
 ```
@@ -2156,7 +2156,7 @@ Next steps after Plan C merged
 ------
 
 # [Plan]: Plan D — ChatGPT Codex Implementation (Embedding Worker, Batching & Adapters Integration)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: Previous Cycle-12-18T00:00:00Z | Author: mbaetiong 
 
 Purpose
 - Implement a production-ready embedding ingestion worker and supporting components while remaining import-safe and CI-friendly:
@@ -2735,7 +2735,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 COPY pyproject.toml pyproject.toml
-# Install minimal runtime deps (user may extend)
+# Install minimal runtime deps (user Phase 5 extend)
 RUN pip install --upgrade pip
 RUN pip install fastapi pytest
 
@@ -2983,7 +2983,7 @@ Notes on wiring & next steps
 ------
 
 # [Post-Plan]: Validation, Handover & Next Steps — MCP Plans A→D
-> Generated: 2025-12-19T00:00:00Z | Author: mbaetiong
+> Generated: Previous Cycle-12-19T00:00:00Z | Author: mbaetiong
 
 Purpose
 - Provide a post-implementation plan that describes validation steps, monitoring, handover items, follow-up tickets, retrospective notes and recommended actions after Plans A–D are merged to main.

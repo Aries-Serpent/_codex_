@@ -1,7 +1,7 @@
 # ADR: Codex Evaluator v3 (Local-Only)
 
 ## Status
-Accepted — 2025-10-26
+Accepted — Previous Cycle-10-26
 
 ## Context
 We need a deterministic, local scoring layer to assess assistant messages and summaries prior to execution. This replaces ad-hoc judgments with a transparent rubric and hard-fail safety checks while keeping contributor velocity (no CI requirement).
@@ -25,7 +25,7 @@ We need a deterministic, local scoring layer to assess assistant messages and su
 - Slight overhead to run evaluator and fence checks locally.
 
 **Negative / Risks**
-- Overly strict settings may cause false positives.
+- Overly strict settings Phase 5 cause false positives.
 
 ## Mitigations
 - Provide clear documentation (see `docs/ops/local_gates.md`) and allow manual execution of evaluator hook.

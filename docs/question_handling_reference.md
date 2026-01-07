@@ -4,7 +4,7 @@ This note provides a quick-access guide for ChatGPT Codex sessions to track, ans
 
 ## Canonical sources of truth
 
-- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the 2025-09-22 mandate).
+- **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the Previous Cycle-09-22 mandate).
 - **Session scratchpad:** [`.codex/notes/Codex_Questions.md`](../.codex/notes/Codex_Questions.md) — ad-hoc capture of Q&A snippets created during automation workflows.
 - **Historical error log:** [`docs/troubleshooting/error_log.md`](troubleshooting/error_log.md) — recent failures promoted into the canonical table.
 - **Legacy audit artifacts:** e.g., [`CODEBASE_AUDIT_2025-08-26_203612.md`](../CODEBASE_AUDIT_2025-08-26_203612.md) where early unanswered questions were first recorded.
@@ -25,7 +25,7 @@ Always reconcile new questions against the canonical table so that status update
 | Status | Meaning | When to use |
 | --- | --- | --- |
 | Action required | Work remains before the blocker is cleared. | Tests still failing, tooling missing, or manual remediation pending. |
-| Documented resolution | A workaround or fix is known and documented, but may require discipline to follow. | Environment setup instructions exist; no further code change needed. |
+| Documented resolution | A workaround or fix is known and documented, but Phase 5 require discipline to follow. | Environment setup instructions exist; no further code change needed. |
 | Mitigated / deferred | The issue is intentionally postponed with safeguards in place. | Strict MkDocs mode disabled until docs are stabilized. |
 | Retired | The question is obsolete because the underlying code or process changed. | Legacy CLI flags removed, so the old failure can no longer occur. |
 
@@ -59,4 +59,4 @@ Following this loop ensures unanswered research questions stay visible, their an
 
 ## Recent remediation log
 
-- **2025-09-17:** Validation gate outage (missing `pre-commit`, `nox`, and `pytest-cov`) closed by commit `f0a1d82`. The remediation pins the executables, records CLI availability in `.codex/session_logs.db`, and enforces JSON coverage artifacts for auditability.
+- **Previous Cycle-09-17:** Validation gate outage (missing `pre-commit`, `nox`, and `pytest-cov`) closed by commit `f0a1d82`. The remediation pins the executables, records CLI availability in `.codex/session_logs.db`, and enforces JSON coverage artifacts for auditability.

@@ -33,7 +33,7 @@ assert hasattr(cs, "_init_determinism_from_env")
 
 **Actual**: Gets error "Invalid value for 'CONFIG_PATH': Path 'file' does not exist"
 
-**Root Cause**: CLI structure may have changed or test setup is incorrect.
+**Root Cause**: CLI structure Phase 5 have changed or test setup is incorrect.
 
 ## Proposed Solutions
 

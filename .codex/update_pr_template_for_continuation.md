@@ -167,7 +167,7 @@ All prompt templates support these variables:
 | `{pr_author}` | PR author username | `mbaetiong` |
 | `{commit_sha}` | Latest commit SHA | `abc123def456` |
 | `{pr_title}` | PR title | `Fix CI failures and consolidate workflows` |
-| `{date}` | Current date (YYYY-MM-DD) | `2025-12-28` |
+| `{date}` | Current date (YYYY-MM-DD) | `Previous Cycle-12-28` |
 | `{phase_number}` | Current phase | `2` |
 | `{total_phases}` | Total phases planned | `5` |
 | `{immediate_tasks}` | Priority 1 tasks | `- [ ] Fix test failures` |

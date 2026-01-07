@@ -387,13 +387,13 @@ def quantile_bin(inputs):
     q75 = inputs.get("q75", 75)
     
     if value < q25:
-        return "Q1"
+        return "Cycle 1"
     elif value < q50:
-        return "Q2"
+        return "Cycle 2"
     elif value < q75:
-        return "Q3"
+        return "Cycle 3"
     else:
-        return "Q4"
+        return "Cycle 4"
 
 quantile_binned = Feature(
     name="value_quantile",

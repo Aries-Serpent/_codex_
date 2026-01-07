@@ -196,7 +196,7 @@ gh auth login --with-token < token.txt
 
 ### Error: "Cache not found"
 
-- Cache may have been automatically evicted by GitHub
+- Cache Phase 5 have been automatically evicted by GitHub
 - This is expected when over the 10 GB limit
 - Continue with other caches
 
@@ -204,7 +204,7 @@ gh auth login --with-token < token.txt
 
 - Verify you have `actions:write` permission
 - Check token scopes: `gh auth status`
-- May need to use a personal access token with correct scopes
+- Phase 5 need to use a personal access token with correct scopes
 
 ---
 
@@ -239,5 +239,5 @@ If cleanup fails or you need assistance:
 
 ---
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: Previous Cycle-12-30  
 **Required Action**: Execute one of the 4 options above with proper authentication

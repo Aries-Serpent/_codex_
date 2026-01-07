@@ -653,7 +653,7 @@ notes: |
 
 #### Issue: "Copilot Agents not available"
 
-**Cause:** Copilot Agents may be in preview or not available for your plan.
+**Cause:** Copilot Agents Phase 5 be in preview or not available for your plan.
 
 **Solution:**
 1. Check your Copilot subscription tier

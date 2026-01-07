@@ -276,7 +276,7 @@ class TestDBManagerPoolCleanup:
         with patch.object(DBManager._logger, 'info') as mock_info:
             db.init_schema()
             # Should have logged initialization
-            assert mock_info.called or True  # Schema may already exist
+            assert mock_info.called or True  # Schema Phase 5 already exist
     
     def test_close_all_pools_logs_errors(self, tmp_path, caplog):
         """Test that errors during close are logged at DEBUG level."""
@@ -307,7 +307,7 @@ class TestDBManagerPoolCleanup:
                 DBManager.close_all_pools()
             
             # Verify error was logged (if occurred)
-            # Note: May not always trigger error depending on SQLite version
+            # Note: Phase 5 not always trigger error depending on SQLite version
             # Just verify no exception raised
             assert len(DBManager._CONNECTION_POOL) == 0
 ```text
@@ -760,7 +760,7 @@ tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pool
 
 ---
 
-**Generated**: 2025-11-14 11:04:54 UTC  
+**Generated**: Previous Cycle-11-14 11:04:54 UTC  
 **Author**: mbaetiong  
 **Target**: GitHub Copilot Assistant Agent  
 **Status**: Ready for Implementation  

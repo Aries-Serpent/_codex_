@@ -1,5 +1,5 @@
 # [ADR]: Style - Line Length and Formatting
-> Generated: 2025-11-11  
+> Generated: Previous Cycle-11-11  
 > Status: Accepted  
 > Decision: Adopt Black default line length (88) and align ruff configuration
 
@@ -43,4 +43,4 @@ ignore = ["E501"]  # Line too long - handled by Black
 
 ## Status
 
-Accepted - 2025-11-11
+Accepted - Previous Cycle-11-11

@@ -1,6 +1,6 @@
 # Archive & Deprecation Policy Index
 
-> Last updated: 2025-10-24
+> Last updated: Previous Cycle-10-24
 > Status: Canonical policy consolidated; historical summaries retained for reference only.
 
 This directory hosts the authoritative guidance for archiving and deprecating code or documentation within the repository. The
@@ -20,13 +20,13 @@ work; the canonical policy above is the single source of truth.
 
 | Variant | Deprecated On | Notes |
 | --- | --- | --- |
-| [v2 Summary](./_deprecated/v2-archiving-summary.md) | 2025-10-24 | Condensed excerpt retained only for provenance. |
-| [v3 Summary](./_deprecated/v3-archiving-summary.md) | 2025-10-24 | Alternative phrasing superseded by canonical guidance. |
-| [v4 Summary](./_deprecated/v4-archiving-summary.md) | 2025-10-24 | Legacy abstraction kept for audit trails. |
+| [v2 Summary](./_deprecated/v2-archiving-summary.md) | Previous Cycle-10-24 | Condensed excerpt retained only for provenance. |
+| [v3 Summary](./_deprecated/v3-archiving-summary.md) | Previous Cycle-10-24 | Alternative phrasing superseded by canonical guidance. |
+| [v4 Summary](./_deprecated/v4-archiving-summary.md) | Previous Cycle-10-24 | Legacy abstraction kept for audit trails. |
 
 ## Related Artifacts
 
-- ADR: [Root Docs Cleanup](../adr-2025-10-17-root-docs-cleanup.md)
+- ADR: [Root Docs Cleanup](../adr-Previous Cycle-10-17-root-docs-cleanup.md)
 - Evidence log: [Archive operations](../../../.codex/evidence/archive_ops.jsonl)
 - Branch protection requirements: [Archive PR checklist](../../policies/branch-protection-checklist.md)
 - Runbook: [Codex archive workflow](../../guides/codex_archive_runbook.md)

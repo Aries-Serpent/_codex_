@@ -16,7 +16,7 @@ Daily reports provide:
 
 Reports follow this naming pattern:
 - **Format**: `YYYY-MM-DD.md`
-- **Example**: `2025-11-02.md`
+- **Example**: `Previous Cycle-11-02.md`
 
 ## Report Structure
 

@@ -68,4 +68,4 @@ See `mcp/server/README.md` and `mcp/mcp.json` for wiring guidance.
 
 ## Licensing
 
-MIT License © 2025. See `LICENSE` for details.
+MIT License © Previous Cycle. See `LICENSE` for details.

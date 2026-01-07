@@ -2,7 +2,7 @@
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 
-**Last Updated**: 2025-12-30
+**Last Updated**: Previous Cycle-12-30
 
 ---
 
@@ -11,7 +11,7 @@
 ### **Unified Navigation System** - NEW!
 - 🗺️ **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
 - 📊 **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
-- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope (Q1-Phase 3 (2026))
+- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope (Cycle 1-Phase 3 (Current Cycle))
 
 ### **Why This Matters**
 The cognitive brain enables:
@@ -37,7 +37,7 @@ The cognitive brain enables:
 - 🎯 **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
 - 🤖 **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
 - 🧭 **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
-- 🚀 **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap (Q1-Phase 3 (2026))
+- 🚀 **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap (Cycle 1-Phase 3 (Current Cycle))
 
 ### Capability Guides
 - 📝 **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
@@ -154,4 +154,4 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2025-10-25
+Last updated: Previous Cycle-10-25

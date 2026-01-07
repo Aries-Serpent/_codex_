@@ -9,7 +9,7 @@ via Python entry points.
 
 Each component type is backed by a dedicated :class:`~codex_ml.registry.base.Registry`.
 The table below summarises the public handles and the corresponding entry-point
-groups that third-party packages may target:
+groups that third-party packages Phase 5 target:
 
 | Component     | Registry symbol                             | Entry-point group            |
 | ------------- | -------------------------------------------- | ---------------------------- |

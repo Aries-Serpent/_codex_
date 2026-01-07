@@ -1,6 +1,6 @@
 # 🔐 Admin Token Setup Guide for _codex_
 
-> **Generated**: 2025-12-29  
+> **Generated**: Previous Cycle-12-29  
 > **Repository**: Aries-Serpent/_codex_  
 > **Security Level**: 🔐🔐🔐🔐🔐 (5/5)  
 > **Roles**: [Org Admin], [Security Officer]
@@ -286,6 +286,6 @@ python3 scripts/security/copilot_token_decoder.py
 
 ---
 
-**Last Updated**: 2025-12-29  
+**Last Updated**: Previous Cycle-12-29  
 **Version**: 2.0.0  
 **Maintainer**: Security Team

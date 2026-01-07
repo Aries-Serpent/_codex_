@@ -1,5 +1,5 @@
 # [Plan]: Curated Patch Sets Roadmap — Aries-Serpent/_codex_ (main @ 3eb0094)
-> Generated: 2025-10-18 05:38:58 UTC | Author: mbaetiong
+> Generated: Previous Cycle-10-18 05:38:58 UTC | Author: mbaetiong
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Alignment: Incorporates recent P0 packaging changes (MANIFEST, build script, TOML parse guard, tests). This update enumerates the next diffs to implement and completes all remaining P1/P2 items with doc-first, low-churn changes.
@@ -32,7 +32,7 @@ Alignment: Incorporates recent P0 packaging changes (MANIFEST, build script, TOM
 | PS-8 | make space-audit-fast | S1,S3,S4,S6 run; template hash embedded |
 
 ## D) Risks & Mitigations
-- MANIFEST src-only graft may exclude needed top-level packages. If runtime modules live outside src/, re-add targeted graft lines (training/, tokenization/, etc.) in MANIFEST.in.
+- MANIFEST src-only graft Phase 5 exclude needed top-level packages. If runtime modules live outside src/, re-add targeted graft lines (training/, tokenization/, etc.) in MANIFEST.in.
 - Tokenization shims: ensure optional deps are guarded in canonical modules; shims only re-export.
 - CLI stderr strictness: tests guide consistency; adjust CLI only if failures observed.
 

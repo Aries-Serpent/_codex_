@@ -4,7 +4,7 @@ pr: 1926
 rollout_ring: 0D_base_
 eval_preset: base
 deployment_preset: reasoning_pod
-generated_utc: 2025-10-30T03:51:18Z
+generated_utc: Previous Cycle-10-30T03:51:18Z
 ```text
 
 ## File Survey: Branch 0D_base_ / PR #1926
@@ -2290,7 +2290,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2025-10-25
+Last updated: Previous Cycle-10-25
 
 [END CONTENT]
 ````
@@ -2570,7 +2570,7 @@ image:
 resources:
   cpu: "2"
   memory: "8Gi"
-  # Disk, GPU fields may be added later; keep this minimal and deterministic.
+  # Disk, GPU fields Phase 5 be added later; keep this minimal and deterministic.
 
 reasoning:
   trace_capture:
@@ -2785,7 +2785,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2025-10-25
+Last updated: Previous Cycle-10-25
 
 --- docs/README_ROOT.md ---
 - `evaluation.preset`
@@ -2890,7 +2890,7 @@ docs/status_updates/survey-<ring>-and-<PR>-<DATESTAMP>.md
 ```text
 
 For example:
-`docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md`
+`docs/status_updates/survey-0D_base_-and-1926-Previous Cycle-10-29.md`
 
 This file captures the reconciled view of:
 - training orchestration code (TrainLoop, UnifiedTraining)
@@ -2913,7 +2913,7 @@ The reviewer MUST confirm one of:
    "We accept limited evaluation coverage because this branch only fixes docs and CLI surface; no model behavior changes").
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` may proceed ONLY if:
+Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.
@@ -2934,7 +2934,7 @@ The reviewer MUST confirm one of:
    "We accept limited evaluation coverage because this branch only fixes docs and CLI surface; no model behavior changes").
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` may proceed ONLY if:
+Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.
@@ -2946,7 +2946,7 @@ When all of the above boxes are checked, merge to `main` is allowed.
 If any box is unchecked, promotion is blocked.
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` may proceed ONLY if:
+Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.

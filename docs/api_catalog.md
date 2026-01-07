@@ -20,4 +20,4 @@ catalog when extending adapters or adding new resource types.
 | Apps | POST | `/api/v2/apps/private` | `apps:write` | Upload and update private apps |
 | Guide Themes | GET/POST/PUT | `/api/v2/guide/themes` | `themes:write` | Manage Guide themes and publications |
 
-Additional endpoints (e.g., incremental exports) may be added later.
+Additional endpoints (e.g., incremental exports) Phase 5 be added later.

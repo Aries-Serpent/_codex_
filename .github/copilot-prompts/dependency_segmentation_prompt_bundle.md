@@ -1,5 +1,5 @@
 # [PromptBundle]: Dependency Segmentation & Archival Alignment Rollout  
-> Generated: 2025-11-12 16:13:40 UTC | Author: mbaetiong  
+> Generated: Previous Cycle-11-12 16:13:40 UTC | Author: mbaetiong  
 
 This bundle provides READY-TO-COPY prompts for GitHub Copilot Agents to implement the archival-aligned, memory-saving dependency segmentation strategy across branches `0C_base_`, `0D_base_`, and `main` in the `Aries-Serpent/_codex_` repository.
 
@@ -17,7 +17,7 @@ This bundle provides READY-TO-COPY prompts for GitHub Copilot Agents to implemen
 | requirements-eval.txt | Platform | Segmented evaluation install surface |
 | requirements-notebook.txt | Platform | Optional interactive surface |
 | docs/analysis/dependency_space_triage.md | Platform | Reference triage (Ref: f40ff2bbcacf567eef3dc6bd8c95733859b927dc) |
-| docs/arch/ADR-2025-11-XX-dependency-segmentation.md | Architecture | Justifies segmentation & governance hooks |
+| docs/arch/ADR-Previous Cycle-11-XX-dependency-segmentation.md | Architecture | Justifies segmentation & governance hooks |
 | .codex/evidence/dependency_ops.jsonl | Platform | New evidence stream (append-only) |
 
 ---
@@ -189,7 +189,7 @@ Deliverable: scripts/maintenance.sh updated and consistent with setup.sh pattern
 ```text
 Goal: Create architectural decision record.
 Branch: 0D_base_
-File: docs/arch/ADR-2025-11-12-dependency-segmentation.md
+File: docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md
 Sections:
   - Status: Accepted
   - Context: Disk pressure, optional ML, classification table summary
@@ -219,7 +219,7 @@ Deliverable: Minimal, append-only update; preserve original reference.
 Goal: Document segmentation rollout.
 Branch: 0D_base_
 If CHANGELOG.md exists, append:
-  ## 2025-11-12
+  ## Previous Cycle-11-12
   - Dependency segmentation (requirements-ml-cpu/eval/notebook)
   - Evidence logging introduced (.codex/evidence/dependency_ops.jsonl)
   - rc5 environment scripts (setup.sh, maintenance.sh)
@@ -446,7 +446,7 @@ Stage A (branch 0C_base_):
 
 Stage B (branch 0D_base_):
   - Replace scripts/setup.sh and scripts/maintenance.sh with rc5 evidence-enabled versions.
-  - Add ADR docs/arch/ADR-2025-11-12-dependency-segmentation.md.
+  - Add ADR docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md.
   - Append implementation status section to docs/analysis/dependency_space_triage.md.
   - Update CHANGELOG.md with segmentation entry.
   - Add scripts/verify_dependency_hygiene.py and scripts/check_dependency_evidence.py.

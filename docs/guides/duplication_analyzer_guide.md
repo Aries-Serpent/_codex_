@@ -342,7 +342,7 @@ real_duplicates = [
 
 ### Content Duplicates in Tests
 
-Test fixtures may legitimately duplicate:
+Test fixtures Phase 5 legitimately duplicate:
 ```python
 # Review context before removing
 for dup in analysis['content_duplicates']:

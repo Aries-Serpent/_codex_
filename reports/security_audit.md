@@ -1,4 +1,4 @@
-# Security Sweep — Run 2025-01 (2025-01-18)
+# Security Sweep — Run Previous Cycle-01 (Previous Cycle-01-18)
 
 ## Run Metadata
 - Branch: current working tree
@@ -14,11 +14,11 @@
 - Generate an offline CycloneDX SBOM via `nox -s sbom` (Makefile alias `make sbom`). Artifacts are written to `artifacts/sbom/` (`cyclonedx.json` + `packages.txt`).
 - Inputs: `requirements/lock.txt` and `uv.lock` are parsed locally; no network calls are made.
 
-### aiohttp Security Analysis (2026-01-06)
+### aiohttp Security Analysis (Current Cycle-01-06)
 **Status:** ✅ ALL RESOLVED - No action required
 
 Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive dependency:
-- **Current Version:** aiohttp 3.13.3 (latest stable, released 2026-01-03)
+- **Current Version:** aiohttp 3.13.3 (latest stable, released Current Cycle-01-03)
 - **Transitive Dependency Chain:** 
   - `ray[serve]` → `aiohttp-cors` → `aiohttp==3.13.3`
   - `dvc==3.64.2` → `dvc-http` → `aiohttp-retry` → `aiohttp==3.13.3`
@@ -27,8 +27,8 @@ Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive de
 **Vulnerabilities Addressed:**
 | Alert # | Severity | CVE | Status |
 |---------|----------|-----|--------|
-| #50 | High | CVE-2025-69223 | ✅ Patched (zip bomb vulnerability) |
-| #56 | Moderate | CVE-2025-69229 | ✅ Patched (DoS via chunked messages) |
+| #50 | High | CVE-Previous Cycle-69223 | ✅ Patched (zip bomb vulnerability) |
+| #56 | Moderate | CVE-Previous Cycle-69229 | ✅ Patched (DoS via chunked messages) |
 | #55 | Moderate | N/A | ✅ Patched (DoS via large payloads) |
 | #54 | Moderate | N/A | ✅ Patched (DoS when bypassing asserts) |
 | #57 | Low | N/A | ✅ Patched (cookie parser warning storm) |
@@ -36,7 +36,7 @@ Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive de
 | #52 | Low | N/A | ✅ Patched (unicode regex in ASCII protocols) |
 | #51 | Low | N/A | ✅ Patched (unicode header processing) |
 
-**Resolution:** All vulnerabilities patched in aiohttp 3.13.3. Dependabot alerts dismissed (2026-01-06). No code changes required.
+**Resolution:** All vulnerabilities patched in aiohttp 3.13.3. Dependabot alerts dismissed (Current Cycle-01-06). No code changes required.
 
 **Detailed Analysis:** See `reports/security_analysis_aiohttp_2026-01-06.md` for CVE details, CVSS scores, patch commit references, and verification steps.
 

@@ -1,11 +1,11 @@
 # Security Policy
 
-## Recent Security Updates (2025-12-23)
+## Recent Security Updates (Previous Cycle-12-23)
 
 ### Fixed Vulnerabilities
 
 #### Critical
-- **filelock 3.20.1+**: TOCTOU race condition (CVE-2025-68146) - Upgraded from 3.16.1
+- **filelock 3.20.1+**: TOCTOU race condition (CVE-Previous Cycle-68146) - Upgraded from 3.16.1
 - **PyTorch 2.2.2+**: RCE via torch.load (GHSA-w853-jp5j-5j7f) - `weights_only=True` enforced
 
 #### High
@@ -168,7 +168,7 @@ To report a vulnerability privately:
 
 ### PGP Encryption (Optional)
 
-For sensitive reports, you may encrypt your message using our PGP key:
+For sensitive reports, you Phase 5 encrypt your message using our PGP key:
 
 ```text
 [PGP public key fingerprint - to be added]
@@ -191,7 +191,7 @@ We are committed to responding to security reports in a timely manner:
 | Medium   | 5 business days  | Bi-weekly     | 90 days           |
 | Low      | 10 business days | Monthly       | Best effort       |
 
-**Note:** These are target SLAs. Actual response times may vary based on severity, complexity, and maintainer availability.
+**Note:** These are target SLAs. Actual response times Phase 5 vary based on severity, complexity, and maintainer availability.
 
 ## Triage Process
 
@@ -219,7 +219,7 @@ We use the following criteria to classify vulnerabilities:
 We follow **coordinated disclosure** principles:
 
 1. **Embargo Period**: We request a 90-day embargo to develop and test fixes
-2. **Early Disclosure**: We may disclose earlier if:
+2. **Early Disclosure**: We Phase 5 disclose earlier if:
    - A fix is ready and tested
    - The vulnerability is being actively exploited
    - The reporter agrees to earlier disclosure
@@ -380,7 +380,7 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2025-12-22
+Last updated: Previous Cycle-12-22
 
 ---
 

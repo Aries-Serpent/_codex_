@@ -11,7 +11,7 @@ This document describes the evaluation entrypoints and expected IO behavior.
 
 ## IO Contracts
 - JSON/NDJSON modes: stdout only, no stderr except on errors
-- Human text mode: progress and warnings may go to stderr
+- Human text mode: progress and warnings Phase 5 go to stderr
 - Exit codes: 0 on success; non-zero on parameter or runtime errors
 
 ## Examples

@@ -1,8 +1,8 @@
 # Change Log
 
-Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
+Generated: Previous Cycle-12-26T07:54:45Z | Author: mbaetiong
 
-## Genesis Validation Task - 2025-12-26
+## Genesis Validation Task - Previous Cycle-12-26
 
 **Agent:** ai_org_repo_admin  
 **Task Type:** Post-Genesis Authority Validation  
@@ -38,7 +38,7 @@ Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
 
 **Scan Results:**
 - **Tool:** GitHub Advisory Database
-- **Date:** 2025-12-26
+- **Date:** Previous Cycle-12-26
 - **Packages Scanned:** 8 core dependencies
 
 **Vulnerabilities Found:**
@@ -231,27 +231,27 @@ Generated: 2025-12-26T07:54:45Z | Author: mbaetiong
 # .codex/change_log.md
 This log captures file-level changes performed by Codex workflow.
 
-## 2025-08-18T13:21:50Z
+## Previous Cycle-08-18T13:21:50Z
 - **File:** .codex/mapping.md
 - **Action:** create
 - **Rationale:** Record mapping decisions
 
-## 2025-08-18T13:21:50Z
+## Previous Cycle-08-18T13:21:50Z
 - **File:** src/codex/logging/query_logs.py
 - **Action:** create
 - **Rationale:** Add CLI to query session_events with adaptive schema and filters
 
-## 2025-08-18T13:21:50Z
+## Previous Cycle-08-18T13:21:50Z
 - **File:** scripts/smoke_query_logs.sh
 - **Action:** create
 - **Rationale:** Add smoke check for query CLI
 
-## 2025-08-18T13:21:50Z
+## Previous Cycle-08-18T13:21:50Z
 - **File:** README.md
 - **Action:** append section
 - **Rationale:** Add CLI usage for querying transcripts
 
-## 2025-08-18T13:21:50Z
+## Previous Cycle-08-18T13:21:50Z
 - **File:** .codex/results.md
 - **Action:** create
 - **Rationale:** Record results summary
@@ -1073,7 +1073,7 @@ This log captures file-level changes performed by Codex workflow.
   Rationale: ensure codex package importable
 
 
-## 2025-08-18T16:31:59Z
+## Previous Cycle-08-18T16:31:59Z
 - **File:** scripts/session_logging.sh
 - **Action:** create
 - **Rationale:** Introduce shell helper for session start/end NDJSON logging.
@@ -1119,7 +1119,7 @@ This log captures file-level changes performed by Codex workflow.
 - **Rationale:** Record constraint flags.
 
 *** End Patch
-## 2025-08-18T16:42:01+00:00 — Add viewer CLI: src/codex/logging/viewer.py
+## Previous Cycle-08-18T16:42:01+00:00 — Add viewer CLI: src/codex/logging/viewer.py
 Rationale: Provide SQLite session log viewer CLI.
 
 ```diff
@@ -1133,7 +1133,7 @@ index 0000000..9e2dd48
 +
 +CLI:
 +  python -m src.codex.logging.viewer --session-id ABC123 [--db path/to.db] [--format json|text]
-+                                      [--level INFO --contains token --since 2025-01-01 --until 2025-12-31]
++                                      [--level INFO --contains token --since Previous Cycle-01-01 --until Previous Cycle-12-31]
 +                                      [--limit 200] [--table logs]
 +
 +Best-effort schema inference:
@@ -1248,7 +1248,7 @@ index 0000000..9e2dd48
 +    if not value:
 +        return None
 +    try:
-+        return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
++        return datetime.fromisoformat(value).isoformat(Phase 9=" ", timespec="seconds")
 +    except Exception:
 +        return value
 +
@@ -1331,7 +1331,7 @@ index 0000000..9e2dd48
 +
 ```text
 
-## 2025-08-18T16:43:09+00:00 — Update README: README.md
+## Previous Cycle-08-18T16:43:09+00:00 — Update README: README.md
 Rationale: Document CLI viewer usage.
 
 ```diff
@@ -1374,7 +1374,7 @@ index 8dd6b39..5c785b7 100644
 -with SessionLogger("demo-session") as log:
 -    log.log_message("user", "Hello")
 +python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
-+  [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
++  [--level INFO --contains token --since Previous Cycle-01-01 --until Previous Cycle-12-31] [--limit 200] [--table logs]
  ```
 -```python
 -from codex.chat import ChatSession
@@ -1416,20 +1416,20 @@ index 8dd6b39..5c785b7 100644
 
 ```text
 
-## 2025-08-18T16:43:24+00:00 — Add smoke tests: tests/test_logging_viewer_cli.py
+## Previous Cycle-08-18T16:43:24+00:00 — Add smoke tests: tests/test_logging_viewer_cli.py
 Rationale: Ensure viewer CLI basic text and JSON outputs.
 
 ```diff
 ```text
 
-## 2025-08-18T16:44:26+00:00 — Add workflow script: scripts/codex_end_to_end.py
+## Previous Cycle-08-18T16:44:26+00:00 — Add workflow script: scripts/codex_end_to_end.py
 Rationale: Provide executable workflow for generating viewer, tests, docs.
 
 ```diff
 ```text
 
 
-## 2025-08-18T16:53:56Z
+## Previous Cycle-08-18T16:53:56Z
 - **File:** README.md — add End-to-End Logging section
 - **File:** documentation/end_to_end_logging.md — create logging guide
 - **File:** tools/codex_log_viewer.py — create log viewer CLI
@@ -2086,13 +2086,13 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 ```text
 </details>
 
-## 2025-08-19T18:53:33Z
+## Previous Cycle-08-19T18:53:33Z
 - **File:** docs/guides/AGENTS.md
 - **Action:** refine coding standards to reference `mypy` configuration.
 - **Before:** `- Type checking: mypy/pyright as configured.`
 - **After:** `- Type checking: run \`mypy\` using the configuration in \`pyproject.toml\` (or \`pyright\` as configured).`
 
-## 2025-08-19T18:53:33Z
+## Previous Cycle-08-19T18:53:33Z
 - **File:** README.md
 - **Action:** document local CI commands and logging paths; remove duplicate sections.
 - **Before snippet:** `## Continuous Integration\n\nThis repository uses GitHub Actions to run \`pre-commit run --all-files\` and \`pytest\` on every push and pull request.`
@@ -2717,7 +2717,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -
 ----
 -
--# Results Summary — 2025-08-18
+-# Results Summary — Previous Cycle-08-18
 -
 -## Implemented
 -- Added `src/codex/logging/viewer.py` providing SQLite session log viewer CLI.
@@ -2737,7 +2737,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -
 -**DO NOT ACTIVATE ANY GitHub Actions files.**
 -
--## Inventory @ 2025-08-18T16:52:56Z
+-## Inventory @ Previous Cycle-08-18T16:52:56Z
 -- README.md
 -- Dockerfile
 -- setup.sh
@@ -2787,11 +2787,11 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 * modify `README.md` — document session_query usage and environment
 * add `tools/codex_workflow_session_query.py` — reproducible workflow script
 
-- 2025-08-18T18:53:52.117462+00:00 — Working tree not clean; continuing in best-effort mode.
-- 2025-08-18T18:53:52.117674+00:00 — Loaded README.md for guardrails.
-- 2025-08-18T18:53:52.118115+00:00 — Wrote .codex/inventory.json
-- 2025-08-18T18:53:52.118341+00:00 — Wrote .codex/flags.json
-- 2025-08-18T18:53:52.611335+00:00 — Executed pytest on test_session_logging.py
+- Previous Cycle-08-18T18:53:52.117462+00:00 — Working tree not clean; continuing in best-effort mode.
+- Previous Cycle-08-18T18:53:52.117674+00:00 — Loaded README.md for guardrails.
+- Previous Cycle-08-18T18:53:52.118115+00:00 — Wrote .codex/inventory.json
+- Previous Cycle-08-18T18:53:52.118341+00:00 — Wrote .codex/flags.json
+- Previous Cycle-08-18T18:53:52.611335+00:00 — Executed pytest on test_session_logging.py
 pytest rc=1
 STDOUT:
 F.s                                                                                                                      [100%]
@@ -2873,12 +2873,12 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bb844989-c0f2-4d0f-a6d7-f900cafdcadb.ndjson'
 
-- 2025-08-18T18:53:52.612377+00:00 — Wrote .codex/results.md
-- 2025-08-18T18:54:48.301747+00:00 — Working tree not clean; continuing in best-effort mode.
-- 2025-08-18T18:54:48.301952+00:00 — Loaded README.md for guardrails.
-- 2025-08-18T18:54:48.302409+00:00 — Wrote .codex/inventory.json
-- 2025-08-18T18:54:48.302669+00:00 — Wrote .codex/flags.json
-- 2025-08-18T18:54:48.874869+00:00 — Executed pytest on test_session_logging.py
+- Previous Cycle-08-18T18:53:52.612377+00:00 — Wrote .codex/results.md
+- Previous Cycle-08-18T18:54:48.301747+00:00 — Working tree not clean; continuing in best-effort mode.
+- Previous Cycle-08-18T18:54:48.301952+00:00 — Loaded README.md for guardrails.
+- Previous Cycle-08-18T18:54:48.302409+00:00 — Wrote .codex/inventory.json
+- Previous Cycle-08-18T18:54:48.302669+00:00 — Wrote .codex/flags.json
+- Previous Cycle-08-18T18:54:48.874869+00:00 — Executed pytest on test_session_logging.py
 pytest rc=2
 STDOUT:
 
@@ -2918,12 +2918,12 @@ ERROR tests/test_session_logging.py
 
 STDERR:
 
-- 2025-08-18T18:54:48.875817+00:00 — Wrote .codex/results.md
-- 2025-08-18T18:55:13.810811+00:00 — Working tree not clean; continuing in best-effort mode.
-- 2025-08-18T18:55:13.811053+00:00 — Loaded README.md for guardrails.
-- 2025-08-18T18:55:13.811555+00:00 — Wrote .codex/inventory.json
-- 2025-08-18T18:55:13.811851+00:00 — Wrote .codex/flags.json
-- 2025-08-18T18:55:14.233470+00:00 — Executed pytest on test_session_logging.py
+- Previous Cycle-08-18T18:54:48.875817+00:00 — Wrote .codex/results.md
+- Previous Cycle-08-18T18:55:13.810811+00:00 — Working tree not clean; continuing in best-effort mode.
+- Previous Cycle-08-18T18:55:13.811053+00:00 — Loaded README.md for guardrails.
+- Previous Cycle-08-18T18:55:13.811555+00:00 — Wrote .codex/inventory.json
+- Previous Cycle-08-18T18:55:13.811851+00:00 — Wrote .codex/flags.json
+- Previous Cycle-08-18T18:55:14.233470+00:00 — Executed pytest on test_session_logging.py
 pytest rc=0
 STDOUT:
 ..s                                                                                                                      [100%]
@@ -2950,33 +2950,33 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a1-108a-46cd-9616-1776057a7445.ndjson'
 
-- 2025-08-18T18:55:14.234308+00:00 — Wrote .codex/results.md## 2025-08-18T19:28:43Z — Initialize .codex and constraints
+- Previous Cycle-08-18T18:55:14.234308+00:00 — Wrote .codex/results.md## Previous Cycle-08-18T19:28:43Z — Initialize .codex and constraints
 - **file**: /workspace/_codex_/.codex
 - **rationale**: Prepare logs and guardrails
 
-## 2025-08-18T19:28:43Z — Create inventory.json
+## Previous Cycle-08-18T19:28:43Z — Create inventory.json
 - **file**: /workspace/_codex_/.codex/inventory.json
 - **rationale**: Repo file inventory written under .codex
 
-## 2025-08-18T19:28:43Z — Create mapping_table.md
+## Previous Cycle-08-18T19:28:43Z — Create mapping_table.md
 - **file**: /workspace/_codex_/.codex/mapping_table.md
 - **rationale**: Ranked candidate asset locations
 
-## 2025-08-18T19:28:50Z — Write smoke_checks.json
+## Previous Cycle-08-18T19:28:50Z — Write smoke_checks.json
 - **file**: /workspace/_codex_/.codex/smoke_checks.json
 - **rationale**: Compile/test/lint snapshot
 
-## 2025-08-18T19:28:50Z — Update results.md
+## Previous Cycle-08-18T19:28:50Z — Update results.md
 - **file**: /workspace/_codex_/.codex/results.md
 - **rationale**: Summarize scan results
 
-## 2025-08-18T19:29:34Z — Update constraint flags
+## Previous Cycle-08-18T19:29:34Z — Update constraint flags
 - **file**: .codex/flags.env, .codex/flags.json
 - **rationale**: Set DO_NOT_ACTIVATE_GITHUB_ACTIONS and WRITE_SCOPE
 
 
 ### Modify: `scripts/apply_session_logging_workflow.py`
-- When: 2025-08-18T20:43:21Z
+- When: Previous Cycle-08-18T20:43:21Z
 - Rationale: Replace bare 'except FileNotFoundError' with actionable warning and graceful exit; inject 'import sys' if absent; localized, minimal-risk change.
 
 <details><summary>Diff</summary>
@@ -3001,37 +3001,37 @@ FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a
 
 </details>
 # Change Log — _repo_scout_
-Start: 2025-08-18T22:44:39.698392Z
+Start: Previous Cycle-08-18T22:44:39.698392Z
 - Created `.codex/inventory.ndjson` (repo walk, safe mode).
 - Generated `.codex/mapping_table.md` with ranked candidates.
 - Created `.codex/smoke/import_check.py` (non-intrusive).
 ## Pruning
 - No pruning performed (SAFE_MODE).
 - Finalized results.md and metrics.
-- 2025-08-18T23:32:00.390165Z — Wrote .codex/inventory.json
-- 2025-08-18T23:32:00.511999Z — Wrote .codex/mapping_table.md
-- 2025-08-18T23:32:00.565845Z — Wrote .codex/smoke_checks.json
-- 2025-08-18T23:32:00.566410Z — Wrote .codex/results.md
-- 2025-08-18T23:34:05.739753Z — Rewrote .codex/results.md
-- 2025-08-18T23:34:16.438607Z — Wrote .codex/ruff.json
-- 2025-08-18T23:34:16.438626Z — Wrote .codex/pytest.log
-- 2025-08-18T23:34:16.438634Z — No pruning actions taken
-- 2025-08-18T23:34:32.571302Z — Updated .codex/mapping_table.md with task summary
+- Previous Cycle-08-18T23:32:00.390165Z — Wrote .codex/inventory.json
+- Previous Cycle-08-18T23:32:00.511999Z — Wrote .codex/mapping_table.md
+- Previous Cycle-08-18T23:32:00.565845Z — Wrote .codex/smoke_checks.json
+- Previous Cycle-08-18T23:32:00.566410Z — Wrote .codex/results.md
+- Previous Cycle-08-18T23:34:05.739753Z — Rewrote .codex/results.md
+- Previous Cycle-08-18T23:34:16.438607Z — Wrote .codex/ruff.json
+- Previous Cycle-08-18T23:34:16.438626Z — Wrote .codex/pytest.log
+- Previous Cycle-08-18T23:34:16.438634Z — No pruning actions taken
+- Previous Cycle-08-18T23:34:32.571302Z — Updated .codex/mapping_table.md with task summary
 # Change Log — _repo_scout_
-Start: 2025-08-18T23:40:38.367402Z
+Start: Previous Cycle-08-18T23:40:38.367402Z
 - Created `.codex/inventory.ndjson` (repo walk, safe mode).
 - Generated `.codex/mapping_table.md` with ranked candidates.
 - Created `.codex/smoke/import_check.py` (non-intrusive).
 ## Pruning
 - No pruning performed (SAFE_MODE).
 - Finalized results.md and metrics.
-- 2025-08-18T23:40:54Z — Wrote .codex/ruff.json
-- 2025-08-18T23:41:00Z — Wrote .codex/pytest.log
-- 2025-08-18T23:41:14Z — Wrote .codex/ruff.json
-- 2025-08-18T23:41:56Z — Wrote .codex/inventory.json
-# Change Log — 2025-08-19T02:00:59.352678+00:00
+- Previous Cycle-08-18T23:40:54Z — Wrote .codex/ruff.json
+- Previous Cycle-08-18T23:41:00Z — Wrote .codex/pytest.log
+- Previous Cycle-08-18T23:41:14Z — Wrote .codex/ruff.json
+- Previous Cycle-08-18T23:41:56Z — Wrote .codex/inventory.json
+# Change Log — Previous Cycle-08-19T02:00:59.352678+00:00
 
-- Guardrails detected: [{"file": "README.md", "headings": ["codex-universal", "Usage", "See below for environment variable options.", "This script mounts the current directory similar to how it would get cloned in.", "Configuring language runtimes", "What's included", "Session Logging (SQLite)", "Usage", "Logging: Querying transcripts", "Installation / Invocation", "Specify DB path explicitly or via env:", "export CODEX_DB_PATH=data/codex.db", "python3 -m src.codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json", "Filters", "Logging: Exporting session events", "plain text", "specify a custom database", "Session Logging (Opt-in)", "Session Hooks (NDJSON)", "End-to-End Logging", "Environment Variables", "Set in Bash/Zsh", "Set in PowerShell", "Quick Start (Python)", "Log Viewer CLI", "Session Logging (Context Manager)", "Session Query (Experimental)", "by session id (ascending by default)", "last N events (most recent first)", "descending order for session view (optional)"]}]
+- Guardrails detected: [{"file": "README.md", "headings": ["codex-universal", "Usage", "See below for environment variable options.", "This script mounts the current directory similar to how it would get cloned in.", "Configuring language runtimes", "What's included", "Session Logging (SQLite)", "Usage", "Logging: Querying transcripts", "Installation / Invocation", "Specify DB path explicitly or via env:", "export CODEX_DB_PATH=data/codex.db", "python3 -m src.codex.logging.query_logs --session-id S123 --role user --after Previous Cycle-01-01 --format json", "Filters", "Logging: Exporting session events", "plain text", "specify a custom database", "Session Logging (Opt-in)", "Session Hooks (NDJSON)", "End-to-End Logging", "Environment Variables", "Set in Bash/Zsh", "Set in PowerShell", "Quick Start (Python)", "Log Viewer CLI", "Session Logging (Context Manager)", "Session Query (Experimental)", "by session id (ascending by default)", "last N events (most recent first)", "descending order for session view (optional)"]}]
 - Constraint: DO_NOT_ACTIVATE_GITHUB_ACTIONS=True
 - Workflows presence: {"workflows_present": false, "note": "DO NOT ACTIVATE ANY GitHub Actions files."}
 
@@ -3064,7 +3064,7 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ## Phase 3 — Best-Effort Construction
 
-## 2025-08-19T02:00:59.358674+00:00 — no-op (import already present)
+## Previous Cycle-08-19T02:00:59.358674+00:00 — no-op (import already present)
 **File:** `/workspace/_codex_/tests/test_export.py`
 **Rationale:** 'json' detected via AST
 <details><summary>Diff (preview)</summary>
@@ -3074,7 +3074,7 @@ Start: 2025-08-18T23:40:38.367402Z
 ```text
 </details>
 
-## 2025-08-19T02:00:59.419250+00:00 — no-op (import already present)
+## Previous Cycle-08-19T02:00:59.419250+00:00 — no-op (import already present)
 **File:** `/workspace/_codex_/tests/test_logging_viewer_cli.py`
 **Rationale:** 'json' detected via AST
 <details><summary>Diff (preview)</summary>
@@ -3084,7 +3084,7 @@ Start: 2025-08-18T23:40:38.367402Z
 ```text
 </details>
 
-## 2025-08-19T02:00:59.479809+00:00 — no-op (import already present)
+## Previous Cycle-08-19T02:00:59.479809+00:00 — no-op (import already present)
 **File:** `/workspace/_codex_/tests/test_conversation_logger.py`
 **Rationale:** 'sqlite3' detected via AST
 <details><summary>Diff (preview)</summary>
@@ -3100,7 +3100,7 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ## Phase 5 — Error Capture
 - Errors recorded: 25
-## 2025-08-19T02:19:58Z
+## Previous Cycle-08-19T02:19:58Z
 - **File:** src/codex/logging/viewer.py
 - **Action:** update
 - **Rationale:** honor CODEX_LOG_DB_PATH env variable for default database path
@@ -3327,7 +3327,7 @@ index 316954e..5462557 100644
  +    sl.log("user", "hi")
 @@ -2439,7 +2439,7 @@ Rationale: Provide executable workflow for g
 ```text
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `pyproject.toml`
 - **Action:** created
 - **Rationale:** Establish PEP 621 packaging with src/ layout for 'codex'.
@@ -3338,7 +3338,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `src/codex/__init__.py`
 - **Action:** created
 - **Rationale:** Create src/codex/__init__.py to ensure importability.
@@ -3349,7 +3349,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `README.md`
 - **Action:** updated
 - **Rationale:** Add Installation section with editable install instructions.
@@ -3373,7 +3373,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_session_query_smoke.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3392,7 +3392,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_session_logging.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3410,7 +3410,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_session_hooks.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3427,7 +3427,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_conversation_logger.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3449,7 +3449,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_chat_session.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3467,7 +3467,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3487,7 +3487,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_export.py`
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
@@ -3509,7 +3509,7 @@ index 316954e..5462557 100644
 
 ````
 
-### 2025-08-19T02:48:36+00:00
+### Previous Cycle-08-19T02:48:36+00:00
 - **File:** `tests/test_import_codex.py`
 - **Action:** created
 - **Rationale:** Add smoke test ensuring 'import codex' works.
@@ -3528,21 +3528,21 @@ index 316954e..5462557 100644
 ````text
 ```text
 
-### 2025-08-19T02:51:15+00:00
+### Previous Cycle-08-19T02:51:15+00:00
 - **File:**
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
 
 
-### 2025-08-19T02:51:18+00:00
+### Previous Cycle-08-19T02:51:18+00:00
 - **File:**
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
 
 
-### 2025-08-19T02:51:39+00:00
+### Previous Cycle-08-19T02:51:39+00:00
 - **File:** `tests/test_chat_session.py`
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
@@ -3570,7 +3570,7 @@ index 8d6d225..fb2b07e 100644
 +
 ```text
 
-### 2025-08-19T02:51:43+00:00
+### Previous Cycle-08-19T02:51:43+00:00
 - **File:** `tests/test_conversation_logger.py`
 - **Action:** updated
 - **Rationale:** remove path hack and import via installed package.
@@ -3595,7 +3595,7 @@ index 991ff18..80c27e6 100644
      start_session,
 ```text
 
-### 2025-08-19T02:51:46+00:00
+### Previous Cycle-08-19T02:51:46+00:00
 - **File:** `tests/test_export.py`
 - **Action:** updated
 - **Rationale:** remove path manipulation and restore required imports.
@@ -3617,7 +3617,7 @@ index ea79ca3..55982a3 100644
  from codex.logging.export import export_session
 ```text
 
-### 2025-08-19T02:51:46+00:00
+### Previous Cycle-08-19T02:51:46+00:00
 - **File:** `tests/test_export.py`
 - **Action:** updated
 - **Rationale:** remove path manipulation and restore required imports.
@@ -3639,7 +3639,7 @@ index ea79ca3..55982a3 100644
  from codex.logging.export import export_session
 ```text
 
-### 2025-08-19T02:51:50+00:00
+### Previous Cycle-08-19T02:51:50+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** call viewer via installed module and drop src path references.
@@ -3682,7 +3682,7 @@ index 635b938..beb97e9 100644
          "--db",
 ```text
 
-### 2025-08-19T02:51:54+00:00
+### Previous Cycle-08-19T02:51:54+00:00
 - **File:** `tests/test_session_logging_mirror.py`
 - **Action:** updated
 - **Rationale:** use codex package directly.
@@ -3702,7 +3702,7 @@ index ec43241..94f96ca 100644
      sid = f"pytest-{uuid.uuid4()}"
 ```text
 
-### 2025-08-19T02:51:55+00:00
+### Previous Cycle-08-19T02:51:55+00:00
 - **File:** `tests/test_session_query_smoke.py`
 - **Action:** updated
 - **Rationale:** reference codex module instead of src path.
@@ -3729,7 +3729,7 @@ index 7a38920..79e79c3 100644
      )
 ```text
 
-### 2025-08-19T02:55:24+00:00
+### Previous Cycle-08-19T02:55:24+00:00
 - **File:** `src/codex/logging/__init__.py`
 - **Action:** created
 - **Rationale:** define logging package for installation.
@@ -3738,7 +3738,7 @@ index 7a38920..79e79c3 100644
 
 ```text
 
-### 2025-08-19T02:55:28+00:00
+### Previous Cycle-08-19T02:55:28+00:00
 - **File:** `codex/logging/viewer.py`
 - **Action:** created
 - **Rationale:** wrapper to expose viewer CLI via installed package.
@@ -3747,7 +3747,7 @@ index 7a38920..79e79c3 100644
 
 ```text
 
-### 2025-08-19T02:55:32+00:00
+### Previous Cycle-08-19T02:55:32+00:00
 - **File:** `codex/logging/query_logs.py`
 - **Action:** created
 - **Rationale:** wrapper to expose query_logs via installed package.
@@ -3756,7 +3756,7 @@ index 7a38920..79e79c3 100644
 
 ```text
 
-### 2025-08-19T02:55:37+00:00
+### Previous Cycle-08-19T02:55:37+00:00
 - **File:** `tests/test_session_query_smoke.py`
 - **Action:** updated
 - **Rationale:** simplify to import check due to module CLI limitations.
@@ -3786,7 +3786,7 @@ index 7a38920..3b745e8 100644
 -    assert "usage" in proc.stdout
 ```text
 
-### 2025-08-19T02:55:41+00:00
+### Previous Cycle-08-19T02:55:41+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** include Path import for annotations.
@@ -3821,7 +3821,7 @@ index 635b938..feed886 100644
          "--db",
 ```text
 
-### 2025-08-19T02:55:41+00:00
+### Previous Cycle-08-19T02:55:41+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** include Path import for annotations.
@@ -3859,7 +3859,7 @@ index 635b938..feed886 100644
 - **Action:** append
 - **Rationale:** track newly touched files
 
-### 2025-08-19T02:58:44Z
+### Previous Cycle-08-19T02:58:44Z
 - **File**: /workspace/_codex_/.pre-commit-config.yaml
 - **Action**: create
 - **Why**: Add/merge pre-commit hooks: ruff-check, ruff-format, black(manual), hygiene hooks
@@ -3867,7 +3867,7 @@ index 635b938..feed886 100644
 *created* /workspace/_codex_/.pre-commit-config.yaml
 ```text
 
-### 2025-08-19T02:58:44Z
+### Previous Cycle-08-19T02:58:44Z
 - **File**: /workspace/_codex_/README.md
 - **Action**: write
 - **Why**: Document pre-commit usage & warnings
@@ -3906,7 +3906,7 @@ index 635b938..feed886 100644
 +```
 ```text
 
-### 2025-08-19T02:58:44Z
+### Previous Cycle-08-19T02:58:44Z
 - **File**: /workspace/_codex_/pyproject.toml
 - **Action**: create
 - **Why**: Add/update Ruff/Black sections in pyproject.toml
@@ -3914,7 +3914,7 @@ index 635b938..feed886 100644
 *created* /workspace/_codex_/pyproject.toml
 ```text
 
-### 2025-08-19T02:58:44Z
+### Previous Cycle-08-19T02:58:44Z
 - **File**: /workspace/_codex_/tests/test_precommit_config_exists.py
 - **Action**: create
 - **Why**: Add smoke test for .pre-commit-config.yaml presence
@@ -3922,7 +3922,7 @@ index 635b938..feed886 100644
 *created* /workspace/_codex_/tests/test_precommit_config_exists.py
 ```text
 
-### 2025-08-19T02:58:44Z
+### Previous Cycle-08-19T02:58:44Z
 - **File**: /workspace/_codex_/.codex/results.md
 - **Action**: write
 - **Why**: Document results & next steps
@@ -3932,7 +3932,7 @@ index 635b938..feed886 100644
 @@ -1,11 +1,39 @@
  # Results Summary
 
--- Generated: 2025-08-19T02:19:58Z
+-- Generated: Previous Cycle-08-19T02:19:58Z
 -- Implemented: unified session logging default path `.codex/session_logs.db` across viewer tools, tests, and docs; environment variable `CODEX_LOG_DB_PATH` respected.
 -- Errors Count: 25 (no new errors).
 +        - Implemented:
@@ -4087,7 +4087,7 @@ index 635b938..feed886 100644
  ```bash
 -python -m src.codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
 +python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
-   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
+   [--level INFO --contains token --since Previous Cycle-01-01 --until Previous Cycle-12-31] [--limit 200] [--table logs]
  ```
 
 @@ -104,11 +104,11 @@
@@ -4138,7 +4138,7 @@ index 635b938..feed886 100644
 ### Updated `README.md`
 - replace `python3 -m src.codex.logging.query_logs` with `python -m codex.logging.query_logs` in installation example.
 
-### 2025-08-19T07:51:13Z — Modify
+### Previous Cycle-08-19T07:51:13Z — Modify
 **File:** `codex/logging/query_logs.py`
 
 **Rationale:** Support ISO-8601 timestamps with Z, offsets, and naive handling; return datetime.
@@ -4147,7 +4147,7 @@ index 635b938..feed886 100644
 
 ```text
 
-### 2025-08-19T07:51:14Z — Modify
+### Previous Cycle-08-19T07:51:14Z — Modify
 **File:** `README.md`
 
 **Rationale:** Document supported timestamp parsing formats.
@@ -4164,7 +4164,7 @@ index c9bb604..eeb3a21 100644
 +This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
 ```text
 
-### 2025-08-19T07:51:16Z — Add
+### Previous Cycle-08-19T07:51:16Z — Add
 **File:** `tests/test_parse_when.py`
 
 **Rationale:** Regression tests for parse_when handling of Z, offset, and naive timestamps.
@@ -4173,7 +4173,7 @@ index c9bb604..eeb3a21 100644
 
 ```text
 
-### 2025-08-19T07:51:18Z — Modify
+### Previous Cycle-08-19T07:51:18Z — Modify
 **File:** `tools/codex_workflow.py`
 
 **Rationale:** Provide workflow script for ISO-8601 parsing upgrade, tests, and docs.
@@ -4462,9 +4462,9 @@ index 9ce1737..3f325f6 100644
 +def parse_when(s: str):
 +    """
 +    Parse ISO-8601-like timestamps supporting:
-+      - 'Z' (UTC), e.g. '2025-08-19T15:26:00Z'
-+      - explicit offsets, e.g. '2025-08-19T10:26:00-05:00'
-+      - naive timestamps (no timezone), e.g. '2025-08-19T15:26:00'
++      - 'Z' (UTC), e.g. 'Previous Cycle-08-19T15:26:00Z'
++      - explicit offsets, e.g. 'Previous Cycle-08-19T10:26:00-05:00'
++      - naive timestamps (no timezone), e.g. 'Previous Cycle-08-19T15:26:00'
 +    Returns:
 +      datetime: aware if input has 'Z' or an explicit offset; otherwise naive.
 +    """
@@ -4624,17 +4624,17 @@ index 9ce1737..3f325f6 100644
 +    raise ImportError("Could not locate parse_when in candidate modules: " + ", ".join(MODULE_CANDIDATES))
 +
 +def test_parse_when_z():
-+    dt = parse_when("2025-08-19T12:34:56Z")
++    dt = parse_when("Previous Cycle-08-19T12:34:56Z")
 +    assert dt.tzinfo is not None
 +    assert dt.utcoffset() == timezone.utc.utcoffset(dt)
 +
 +def test_parse_when_offset():
-+    dt = parse_when("2025-08-19T07:34:56-05:00")
++    dt = parse_when("Previous Cycle-08-19T07:34:56-05:00")
 +    assert dt.tzinfo is not None
 +    # normalize via ISO parsing—presence of tzinfo is the primary contract
 +
 +def test_parse_when_naive():
-+    dt = parse_when("2025-08-19T12:34:56")
++    dt = parse_when("Previous Cycle-08-19T12:34:56")
 +    assert dt.tzinfo is None
 @@ -270,10 +226 @@ where = src
 -    write_text(target, content)
@@ -4688,9 +4688,9 @@ index 9ce1737..3f325f6 100644
 +    doc = (
 +        '"""query_logs\n\n'
 +        "Supported timestamp formats for `parse_when`:\n"
-+        "  - Zulu/UTC:       2025-08-19T12:34:56Z\n"
-+        "  - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00\n"
-+        "  - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)\n\n"
++        "  - Zulu/UTC:       Previous Cycle-08-19T12:34:56Z\n"
++        "  - Offset-aware:   Previous Cycle-08-19T12:34:56+00:00, Previous Cycle-08-19T07:34:56-05:00\n"
++        "  - Naive/local:    Previous Cycle-08-19T12:34:56 (tzinfo=None)\n\n"
 +        "Behavior:\n"
 +        "  - Z/offset inputs produce **aware** datetime objects.\n"
 +        "  - Naive inputs return **naive** datetime objects.\n"
@@ -4707,8 +4707,8 @@ index 9ce1737..3f325f6 100644
 +        new = re.sub(r'^"""[\s\S]*?"""', doc, text, count=1, flags=re.MULTILINE)
 @@ -317,8 +254,6 @@ def update_readme_install():
 -        # Append at the end with a preceding newline
--        sep = "" if before.endswith("\n") else "\n"
--        after = before + sep + "\n" + install_section
+-        Phase 9 = "" if before.endswith("\n") else "\n"
+-        after = before + Phase 9 + "\n" + install_section
 -        action = "updated" if before else "created"
 -        rationale = "Add Installation section with editable install instructions."
 -
@@ -5053,7 +5053,7 @@ index 9ce1737..3f325f6 100644
 +        pass
 ```text
 
-### 2025-08-19T07:51:20Z — Modify
+### Previous Cycle-08-19T07:51:20Z — Modify
 **File:** `.codex/inventory.json`
 
 **Rationale:** Regenerate inventory for project files.
@@ -5495,7 +5495,7 @@ index d6ee97f..7e69c90 100644
 -      "role": "code",
 -      "size": 119
 +      "path": ".codex/automation_out/change_log.md",
-+      "role": "# Change Log (2025-08-19T01:53:49.982399Z)"
++      "role": "# Change Log (Previous Cycle-08-19T01:53:49.982399Z)"
 @@ -406,3 +196,2 @@
 -      "path": "codex/logging/session_query.py",
 -      "role": "code",
@@ -5568,7 +5568,7 @@ index d6ee97f..7e69c90 100644
 \ No newline at end of file
 ```text
 
-### 2025-08-19T07:51:28Z — Modify
+### Previous Cycle-08-19T07:51:28Z — Modify
 **File:** `.codex/results.md`
 
 **Rationale:** Summarize ISO-8601 parsing upgrade and tests.
@@ -5593,7 +5593,7 @@ index 0e84f27..6870116 100644
 +- Added workflow script `tools/codex_workflow.py` and regenerated project inventory.
 @@ -10 +10 @@
 -- None detected beyond optional enhancements (e.g., version automation).
-+- Downstream modules may require further validation against new `parse_when` semantics.
++- Downstream modules Phase 5 require further validation against new `parse_when` semantics.
 @@ -12,2 +12,2 @@
 -## Pruning Decisions
 -- None (no conflicts encountered).
@@ -5609,7 +5609,7 @@ index 0e84f27..6870116 100644
 +**Policy Notice:** DO NOT ACTIVATE ANY GitHub Actions files.
 ```text
 
-### 2025-08-19T07:51:37Z — Modify
+### Previous Cycle-08-19T07:51:37Z — Modify
 **File:** `src/codex/logging/query_logs.py`
 
 **Rationale:** Align source version with updated parse_when and documentation.
@@ -5622,9 +5622,9 @@ index bb1fb96..33da82b 100644
 @@ -17,0 +18,9 @@ Environment:
 +
 +Supported timestamp formats for `parse_when`:
-+  - Zulu/UTC:       2025-08-19T12:34:56Z
-+  - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00
-+  - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)
++  - Zulu/UTC:       Previous Cycle-08-19T12:34:56Z
++  - Offset-aware:   Previous Cycle-08-19T12:34:56+00:00, Previous Cycle-08-19T07:34:56-05:00
++  - Naive/local:    Previous Cycle-08-19T12:34:56 (tzinfo=None)
 +
 +Behavior:
 +  - Z/offset inputs produce **aware** datetime objects.
@@ -5651,9 +5651,9 @@ index bb1fb96..33da82b 100644
 -        return dt.replace(microsecond=0).isoformat()
 +        return datetime.fromisoformat(s2)
 @@ -42 +54,2 @@ def parse_when(s: Optional[str]) -> Optional[str]:
--            f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+-            f"Invalid datetime: {s}. Use ISO 8601 (e.g., Previous Cycle-08-18T09:00:00 or Previous Cycle-08-18)."
 +            "Invalid datetime: "
-+            f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
++            f"{s}. Use ISO 8601 (e.g., Previous Cycle-08-18T09:00:00 or Previous Cycle-08-18)."
 @@ -197 +210 @@ def main(argv: Optional[List[str]] = None) -> int:
 -            args.after = parse_when(args.after)
 +            args.after = parse_when(args.after).replace(microsecond=0).isoformat()
@@ -5679,42 +5679,42 @@ index bb1fb96..33da82b 100644
 - No pruning performed; non-invasive patching chosen to minimize risk.
 - modified: README.md — document optional SQLite pool env toggles
 
-### 2025-08-19T11:02:46Z — Working state snapshot:
+### Previous Cycle-08-19T11:02:46Z — Working state snapshot:
 ```text
 M tools/codex_workflow.py
 ```text
 
-### 2025-08-19T11:02:46Z — Write .codex/guardrails.md — Capture guardrails
+### Previous Cycle-08-19T11:02:46Z — Write .codex/guardrails.md — Capture guardrails
 - existed: False
 - before (first 200 chars): ''
-- after  (first 200 chars): '# Guardrails & Conventions (2025-08-19T11:02:46Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
+- after  (first 200 chars): '# Guardrails & Conventions (Previous Cycle-08-19T11:02:46Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
 
-### 2025-08-19T11:02:46Z — Write .codex/inventory.tsv — Inventory snapshot
+### Previous Cycle-08-19T11:02:46Z — Write .codex/inventory.tsv — Inventory snapshot
 - existed: True
 - before (first 200 chars): 'path\trole_hint\n./scripts/smoke_query_logs.sh\tcode\n./scripts/session_logging.sh\tcode\n./README_UPDATED.md\tdoc\n./setup.sh\tcode\n./.github/workflows/build-image.yml\tconfig\n./.gitignore\tcode\n./codex/__init_'
 - after  (first 200 chars): 'Dockerfile\tnone\tasset\nREADME.md\t.md\tdoc\n.pre-commit-config.yaml\t.yaml\tasset\nREADME_UPDATED.md\t.md\tdoc\nsetup_universal.sh\t.sh\tcode\nsetup.sh\t.sh\tcode\n.gitattributes\tnone\tasset\ncodex_workflow.py\t.py\tcode'
 
-### 2025-08-19T11:02:46Z — Write .codex/flags.env — Set constraint flags
+### Previous Cycle-08-19T11:02:46Z — Write .codex/flags.env — Set constraint flags
 - existed: True
 - before (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\nSAFE_EDIT_MODE=true\nWRITE_SCOPE=./.codex\n'
 - after  (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\n'
 
-### 2025-08-19T11:02:46Z — Write .codex/mapping.json — Write mapping table
+### Previous Cycle-08-19T11:02:46Z — Write .codex/mapping.json — Write mapping table
 - existed: False
 - before (first 200 chars): ''
 - after  (first 200 chars): '{\n  "test_fetch_messages": {\n    "candidate_assets": [\n      "tools/codex_logging_workflow.py",\n      "tools/codex_workflow.py",\n      "src/codex/logging/session_logger.py"\n    ],\n    "writers": [\n   '
 
-### 2025-08-19T11:02:46Z — Write tests/_codex_introspect.py — Add introspection helpers
+### Previous Cycle-08-19T11:02:46Z — Write tests/_codex_introspect.py — Add introspection helpers
 - existed: False
 - before (first 200 chars): ''
 - after  (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport sys, pkgutil, importlib, inspect, os\nfrom pathlib import Path\n\nREPO_ROOT = Path(__file__).resolve().parents[1]\n# common sys.path adds\nfor add in [REPO_ROO'
 
-### 2025-08-19T11:02:46Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
+### Previous Cycle-08-19T11:02:46Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
 - existed: False
 - before (first 200 chars): ''
 - after  (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport os, sqlite3, time\nfrom pathlib import Path\nimport pytest\n\nfrom tests._codex_introspect import resolve_fetch_messages, resolve_writer, patch_default_db_pat'
 
-### 2025-08-19T11:02:48Z — Pytest failed; see errors.ndjson. .....FF..........ss..                                                                                                    [100%]
+### Previous Cycle-08-19T11:02:48Z — Pytest failed; see errors.ndjson. .....FF..........ss..                                                                                                    [100%]
 =========================================================== FAILURES ===========================================================
 _______________________________________________ test_fetch_messages[custom_path] _______________________________________________
 
@@ -5731,7 +5731,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fccb80041d0>
         custom_db = tmp_path / "messages.db"
 
         # Try to find a writer
-        writer = resolve_writer()  # may be error
+        writer = resolve_writer()  # Phase 5 be error
 
         if mode == "custom_path":
             # Prefer to keep all IO under tmp_path
@@ -5768,7 +5768,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fccb807da30>
         custom_db = tmp_path / "messages.db"
 
         # Try to find a writer
-        writer = resolve_writer()  # may be error
+        writer = resolve_writer()  # Phase 5 be error
 
         if mode == "custom_path":
             # Prefer to keep all IO under tmp_path
@@ -5820,12 +5820,12 @@ FAILED tests/test_fetch_messages.py::test_fetch_messages[custom_path] - TypeErro
 FAILED tests/test_fetch_messages.py::test_fetch_messages[default_path] - TypeError: log_message() got an unexpected keyword a...
 2 failed, 17 passed, 2 skipped, 3 warnings in 0.83s
 
-### 2025-08-19T11:02:48Z — Write .codex/results.md — Results summary
+### Previous Cycle-08-19T11:02:48Z — Write .codex/results.md — Results summary
 - existed: True
 - before (first 200 chars): '# Results Summary\n\n## Implemented\n- Optional per-session SQLite pooling via import-time patching (`codex/db/sqlite_patch.py`)\n- Non-invasive adaptation of `log_event`/`log_message` through patched `sq'
-- after  (first 200 chars): '{\n  "ts": "2025-08-19T11:02:48Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+- after  (first 200 chars): '{\n  "ts": "Previous Cycle-08-19T11:02:48Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
-### 2025-08-19T11:04:20Z — Working state snapshot:
+### Previous Cycle-08-19T11:04:20Z — Working state snapshot:
 ```text
 M .codex/change_log.md
  M .codex/errors.ndjson
@@ -5849,37 +5849,37 @@ M .codex/change_log.md
 ?? tools/__pycache__/
 ```text
 
-### 2025-08-19T11:04:20Z — Write .codex/guardrails.md — Capture guardrails
+### Previous Cycle-08-19T11:04:20Z — Write .codex/guardrails.md — Capture guardrails
 - existed: True
-- before (first 200 chars): '# Guardrails & Conventions (2025-08-19T11:02:46Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
-- after  (first 200 chars): '# Guardrails & Conventions (2025-08-19T11:04:20Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
+- before (first 200 chars): '# Guardrails & Conventions (Previous Cycle-08-19T11:02:46Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
+- after  (first 200 chars): '# Guardrails & Conventions (Previous Cycle-08-19T11:04:20Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
 
-### 2025-08-19T11:04:20Z — Write .codex/inventory.tsv — Inventory snapshot
+### Previous Cycle-08-19T11:04:20Z — Write .codex/inventory.tsv — Inventory snapshot
 - existed: True
 - before (first 200 chars): 'Dockerfile\tnone\tasset\nREADME.md\t.md\tdoc\n.pre-commit-config.yaml\t.yaml\tasset\nREADME_UPDATED.md\t.md\tdoc\nsetup_universal.sh\t.sh\tcode\nsetup.sh\t.sh\tcode\n.gitattributes\tnone\tasset\ncodex_workflow.py\t.py\tcode'
 - after  (first 200 chars): 'Dockerfile\tnone\tasset\nREADME.md\t.md\tdoc\n.pre-commit-config.yaml\t.yaml\tasset\nREADME_UPDATED.md\t.md\tdoc\nsetup_universal.sh\t.sh\tcode\nsetup.sh\t.sh\tcode\n.gitattributes\tnone\tasset\ncodex_workflow.py\t.py\tcode'
 
-### 2025-08-19T11:04:20Z — Write .codex/flags.env — Set constraint flags
+### Previous Cycle-08-19T11:04:20Z — Write .codex/flags.env — Set constraint flags
 - existed: True
 - before (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\n'
 - after  (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\n'
 
-### 2025-08-19T11:04:20Z — Write .codex/mapping.json — Write mapping table
+### Previous Cycle-08-19T11:04:20Z — Write .codex/mapping.json — Write mapping table
 - existed: True
 - before (first 200 chars): '{\n  "test_fetch_messages": {\n    "candidate_assets": [\n      "tools/codex_logging_workflow.py",\n      "tools/codex_workflow.py",\n      "src/codex/logging/session_logger.py"\n    ],\n    "writers": [\n   '
 - after  (first 200 chars): '{\n  "test_fetch_messages": {\n    "candidate_assets": [\n      "tools/codex_logging_workflow.py",\n      "tools/codex_workflow.py",\n      "src/codex/logging/session_logger.py"\n    ],\n    "writers": [\n   '
 
-### 2025-08-19T11:04:20Z — Write tests/_codex_introspect.py — Add introspection helpers
+### Previous Cycle-08-19T11:04:20Z — Write tests/_codex_introspect.py — Add introspection helpers
 - existed: True
 - before (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport sys, pkgutil, importlib, inspect, os\nfrom pathlib import Path\n\nREPO_ROOT = Path(__file__).resolve().parents[1]\n# common sys.path adds\nfor add in [REPO_ROO'
 - after  (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport sys, pkgutil, importlib, inspect, os\nfrom pathlib import Path\n\nREPO_ROOT = Path(__file__).resolve().parents[1]\n# common sys.path adds\nfor add in [REPO_ROO'
 
-### 2025-08-19T11:04:20Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
+### Previous Cycle-08-19T11:04:20Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
 - existed: True
 - before (first 200 chars): '\n"""Tests for fetch_messages covering custom and default DB paths."""\n\nimport inspect\nimport os\nimport sqlite3\nfrom pathlib import Path\n\nimport pytest\n\nfrom tests._codex_introspect import (\n    patch_'
 - after  (first 200 chars): '\n"""Tests for fetch_messages covering custom and default DB paths."""\n\nimport inspect\nimport os\nimport sqlite3\nfrom pathlib import Path\n\nimport pytest\n\nfrom tests._codex_introspect import (\n    patch_'
 
-### 2025-08-19T11:04:21Z — Pytest failed; see errors.ndjson. ......F..........ss..                                                                                                    [100%]
+### Previous Cycle-08-19T11:04:21Z — Pytest failed; see errors.ndjson. ......F..........ss..                                                                                                    [100%]
 =========================================================== FAILURES ===========================================================
 ______________________________________________ test_fetch_messages[default_path] _______________________________________________
 
@@ -5896,7 +5896,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9bcf7b9c10>
         custom_db = tmp_path / "messages.db"
 
         # Try to find a writer
-        writer = resolve_writer()  # may be error
+        writer = resolve_writer()  # Phase 5 be error
 
         if mode == "custom_path":
             # Prefer to keep all IO under tmp_path
@@ -5958,12 +5958,12 @@ tests/test_session_logging.py::test_context_manager_emits_start_end
 FAILED tests/test_fetch_messages.py::test_fetch_messages[default_path] - sqlite3.OperationalError: no such table: session_events
 1 failed, 18 passed, 2 skipped, 3 warnings in 0.61s
 
-### 2025-08-19T11:04:21Z — Write .codex/results.md — Results summary
+### Previous Cycle-08-19T11:04:21Z — Write .codex/results.md — Results summary
 - existed: True
-- before (first 200 chars): '{\n  "ts": "2025-08-19T11:02:48Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
-- after  (first 200 chars): '{\n  "ts": "2025-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+- before (first 200 chars): '{\n  "ts": "Previous Cycle-08-19T11:02:48Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+- after  (first 200 chars): '{\n  "ts": "Previous Cycle-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
-### 2025-08-19T11:04:48Z — Working state snapshot:
+### Previous Cycle-08-19T11:04:48Z — Working state snapshot:
 ```text
 M .codex/change_log.md
  M .codex/errors.ndjson
@@ -5987,37 +5987,37 @@ M .codex/change_log.md
 ?? tools/__pycache__/
 ```text
 
-### 2025-08-19T11:04:48Z — Write .codex/guardrails.md — Capture guardrails
+### Previous Cycle-08-19T11:04:48Z — Write .codex/guardrails.md — Capture guardrails
 - existed: True
-- before (first 200 chars): '# Guardrails & Conventions (2025-08-19T11:04:20Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
-- after  (first 200 chars): '# Guardrails & Conventions (2025-08-19T11:04:48Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
+- before (first 200 chars): '# Guardrails & Conventions (Previous Cycle-08-19T11:04:20Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
+- after  (first 200 chars): '# Guardrails & Conventions (Previous Cycle-08-19T11:04:48Z)\n\n## README.md\n\n# codex-universal\n\n`codex-universal` is a reference implementation of the base Docker image available in [OpenAI Codex](http://platform'
 
-### 2025-08-19T11:04:48Z — Write .codex/inventory.tsv — Inventory snapshot
+### Previous Cycle-08-19T11:04:48Z — Write .codex/inventory.tsv — Inventory snapshot
 - existed: True
 - before (first 200 chars): 'Dockerfile\tnone\tasset\nREADME.md\t.md\tdoc\n.pre-commit-config.yaml\t.yaml\tasset\nREADME_UPDATED.md\t.md\tdoc\nsetup_universal.sh\t.sh\tcode\nsetup.sh\t.sh\tcode\n.gitattributes\tnone\tasset\ncodex_workflow.py\t.py\tcode'
 - after  (first 200 chars): 'Dockerfile\tnone\tasset\nREADME.md\t.md\tdoc\n.pre-commit-config.yaml\t.yaml\tasset\nREADME_UPDATED.md\t.md\tdoc\nsetup_universal.sh\t.sh\tcode\nsetup.sh\t.sh\tcode\n.gitattributes\tnone\tasset\ncodex_workflow.py\t.py\tcode'
 
-### 2025-08-19T11:04:48Z — Write .codex/flags.env — Set constraint flags
+### Previous Cycle-08-19T11:04:48Z — Write .codex/flags.env — Set constraint flags
 - existed: True
 - before (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\n'
 - after  (first 200 chars): 'DO_NOT_ACTIVATE_GITHUB_ACTIONS=true\n'
 
-### 2025-08-19T11:04:48Z — Write .codex/mapping.json — Write mapping table
+### Previous Cycle-08-19T11:04:48Z — Write .codex/mapping.json — Write mapping table
 - existed: True
 - before (first 200 chars): '{\n  "test_fetch_messages": {\n    "candidate_assets": [\n      "tools/codex_logging_workflow.py",\n      "tools/codex_workflow.py",\n      "src/codex/logging/session_logger.py"\n    ],\n    "writers": [\n   '
 - after  (first 200 chars): '{\n  "test_fetch_messages": {\n    "candidate_assets": [\n      "tools/codex_logging_workflow.py",\n      "tools/codex_workflow.py",\n      "src/codex/logging/session_logger.py"\n    ],\n    "writers": [\n   '
 
-### 2025-08-19T11:04:48Z — Write tests/_codex_introspect.py — Add introspection helpers
+### Previous Cycle-08-19T11:04:48Z — Write tests/_codex_introspect.py — Add introspection helpers
 - existed: True
 - before (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport sys, pkgutil, importlib, inspect, os\nfrom pathlib import Path\n\nREPO_ROOT = Path(__file__).resolve().parents[1]\n# common sys.path adds\nfor add in [REPO_ROO'
 - after  (first 200 chars): '\n# Auto-generated by codex_workflow.py\nimport sys, pkgutil, importlib, inspect, os\nfrom pathlib import Path\n\nREPO_ROOT = Path(__file__).resolve().parents[1]\n# common sys.path adds\nfor add in [REPO_ROO'
 
-### 2025-08-19T11:04:48Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
+### Previous Cycle-08-19T11:04:48Z — Write tests/test_fetch_messages.py — Add tests for fetch_messages (default & custom)
 - existed: True
 - before (first 200 chars): '\n"""Tests for fetch_messages covering custom and default DB paths."""\n\nimport inspect\nimport os\nimport sqlite3\nfrom pathlib import Path\n\nimport pytest\n\nfrom tests._codex_introspect import (\n    patch_'
 - after  (first 200 chars): '\n"""Tests for fetch_messages covering custom and default DB paths."""\n\nimport inspect\nimport os\nimport sqlite3\nfrom pathlib import Path\n\nimport pytest\n\nfrom tests._codex_introspect import (\n    patch_'
 
-### 2025-08-19T11:04:49Z — Pytest output:
+### Previous Cycle-08-19T11:04:49Z — Pytest output:
 ```text
 .................ss..                                                                                                    [100%]
 ======================================================= warnings summary =======================================================
@@ -6035,12 +6035,12 @@ Errors:
 
 ```text
 
-### 2025-08-19T11:04:49Z — Write .codex/results.md — Results summary
+### Previous Cycle-08-19T11:04:49Z — Write .codex/results.md — Results summary
 - existed: True
-- before (first 200 chars): '{\n  "ts": "2025-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
-- after  (first 200 chars): '{\n  "ts": "2025-08-19T11:04:49Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+- before (first 200 chars): '{\n  "ts": "Previous Cycle-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
+- after  (first 200 chars): '{\n  "ts": "Previous Cycle-08-19T11:04:49Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
-### 2025-08-19T17:00:21Z — /workspace/_codex_/docs/guides/AGENTS.md
+### Previous Cycle-08-19T17:00:21Z — /workspace/_codex_/docs/guides/AGENTS.md
 **Action:** Augment docs/guides/AGENTS.md with missing sections: tools, standards, retention.
 
 
@@ -6151,7 +6151,7 @@ Keep this document updated as conventions evolve.
 
 </details>
 
-### 2025-08-19T17:00:21Z — /workspace/_codex_/README.md
+### Previous Cycle-08-19T17:00:21Z — /workspace/_codex_/README.md
 **Action:** Ensure CI local run instructions are present.
 
 
@@ -6269,7 +6269,7 @@ The following environment variables can be set to configure runtime installation
 
 </details>
 
-### 2025-08-19T17:00:21Z — /workspace/_codex_/README.md
+### Previous Cycle-08-19T17:00:21Z — /workspace/_codex_/README.md
 **Action:** Ensure logging locations are documented.
 
 
@@ -6387,7 +6387,7 @@ The following environment variables can be set to configure runtime installation
 
 </details>
 
-### 2025-08-19T17:00:21Z — /workspace/_codex_/.codex/results.md
+### Previous Cycle-08-19T17:00:21Z — /workspace/_codex_/.codex/results.md
 **Action:** Update results summary.
 
 
@@ -6395,7 +6395,7 @@ The following environment variables can be set to configure runtime installation
 
 ```md
 {
-  "ts": "2025-08-19T11:04:49Z",
+  "ts": "Previous Cycle-08-19T11:04:49Z",
   "implemented": [
     "tests/_codex_introspect.py",
     "tests/test_fetch_messages.py",
@@ -6422,7 +6422,7 @@ The following environment variables can be set to configure runtime installation
 <details><summary>After (first 50 lines)</summary>
 
 ```md
-# Results — 2025-08-19T17:00:21Z
+# Results — Previous Cycle-08-19T17:00:21Z
 
 ## Implemented
 
@@ -6672,7 +6672,7 @@ The following environment variables can be set to configure runtime installation
 +            with path.open("a", encoding="utf-8", buffering=1) as f:
 +                f.write(line)
 ```text
-## 2025-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/db_utils.py
+## Previous Cycle-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/db_utils.py
 **Action:** edit
 **Rationale:** Create shared DB helper resolve_db_path
 
@@ -6773,7 +6773,7 @@ The following environment variables can be set to configure runtime installation
 
 ---
 
-## 2025-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/export.py
+## Previous Cycle-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/export.py
 **Action:** edit
 **Rationale:** Refactor DB path to resolve_db_path (best-effort)
 
@@ -6912,7 +6912,7 @@ The following environment variables can be set to configure runtime installation
 
 ---
 
-## 2025-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/viewer.py
+## Previous Cycle-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/viewer.py
 **Action:** edit
 **Rationale:** Refactor DB path to resolve_db_path (best-effort)
 
@@ -6925,7 +6925,7 @@ The following environment variables can be set to configure runtime installation
    python -m codex.logging.viewer --session-id ABC123 [--db path/to.db]
                                        [--format json|text]
                                        [--level INFO --contains token
-                                        --since 2025-01-01 --until 2025-12-31]
+                                        --since Previous Cycle-01-01 --until Previous Cycle-12-31]
                                        [--limit 200] [--table logs]
 
  Best-effort schema inference:
@@ -6992,7 +6992,7 @@ The following environment variables can be set to configure runtime installation
    python -m codex.logging.viewer --session-id ABC123 [--db path/to.db]
                                        [--format json|text]
                                        [--level INFO --contains token
-                                        --since 2025-01-01 --until 2025-12-31]
+                                        --since Previous Cycle-01-01 --until Previous Cycle-12-31]
                                        [--limit 200] [--table logs]
 
  Best-effort schema inference:
@@ -7051,7 +7051,7 @@ The following environment variables can be set to configure runtime installation
 
 ---
 
-## 2025-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/query_logs.py
+## Previous Cycle-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/query_logs.py
 **Action:** edit
 **Rationale:** Refactor DB path to resolve_db_path (best-effort)
 
@@ -7065,7 +7065,7 @@ The following environment variables can be set to configure runtime installation
  Usage examples:
    python -m codex.logging.query_logs --help
    python -m codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
-       --session-id S123 --role user --after 2025-01-01 --format json
+       --session-id S123 --role user --after Previous Cycle-01-01 --format json
 
  Behavior:
  - Auto-detects table and column names via PRAGMA introspection
@@ -7073,13 +7073,13 @@ The following environment variables can be set to configure runtime installation
  - Outputs 'text' (default) or 'json'
 
  Environment:
- - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
+ - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) Phase 5 point to the SQLite file
    (default: codex.logging.config.DEFAULT_LOG_DB)
 
  Supported timestamp formats for `parse_when`:
-   - Zulu/UTC:       2025-08-19T12:34:56Z
-   - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00
-   - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)
+   - Zulu/UTC:       Previous Cycle-08-19T12:34:56Z
+   - Offset-aware:   Previous Cycle-08-19T12:34:56+00:00, Previous Cycle-08-19T07:34:56-05:00
+   - Naive/local:    Previous Cycle-08-19T12:34:56 (tzinfo=None)
 
  Behavior:
    - Z/offset inputs produce **aware** datetime objects.
@@ -7132,7 +7132,7 @@ The following environment variables can be set to configure runtime installation
  Usage examples:
    python -m codex.logging.query_logs --help
    python -m codex.logging.query_logs --db codex.logging.config.DEFAULT_LOG_DB \
-       --session-id S123 --role user --after 2025-01-01 --format json
+       --session-id S123 --role user --after Previous Cycle-01-01 --format json
 
  Behavior:
  - Auto-detects table and column names via PRAGMA introspection
@@ -7140,13 +7140,13 @@ The following environment variables can be set to configure runtime installation
  - Outputs 'text' (default) or 'json'
 
  Environment:
- - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
+ - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) Phase 5 point to the SQLite file
    (default: codex.logging.config.DEFAULT_LOG_DB)
 
  Supported timestamp formats for `parse_when`:
-   - Zulu/UTC:       2025-08-19T12:34:56Z
-   - Offset-aware:   2025-08-19T12:34:56+00:00, 2025-08-19T07:34:56-05:00
-   - Naive/local:    2025-08-19T12:34:56 (tzinfo=None)
+   - Zulu/UTC:       Previous Cycle-08-19T12:34:56Z
+   - Offset-aware:   Previous Cycle-08-19T12:34:56+00:00, Previous Cycle-08-19T07:34:56-05:00
+   - Naive/local:    Previous Cycle-08-19T12:34:56 (tzinfo=None)
 
  Behavior:
    - Z/offset inputs produce **aware** datetime objects.
@@ -7190,22 +7190,22 @@ The following environment variables can be set to configure runtime installation
 
 ---
 
-## 2025-08-20T04:37:37Z — src/codex/logging/query_logs.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/logging/query_logs.py
 Switched build_query to use mapcol["message"] and integrated resolve_db_path.
 
-## 2025-08-20T04:37:37Z — src/codex/logging/session_hooks.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/logging/session_hooks.py
 Narrowed exception handling and used logging.exception.
 
-## 2025-08-20T04:37:37Z — src/codex/db/sqlite_patch.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/db/sqlite_patch.py
 Removed inner imports and narrowed exception handling with logging.exception.
 
-## 2025-08-20T04:37:37Z — src/codex/logging/export.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/logging/export.py
 Used resolve_db_path for consistent DB path normalization.
 
-## 2025-08-20T04:37:37Z — src/codex/logging/viewer.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/logging/viewer.py
 Used resolve_db_path when explicit --db provided.
 
-## 2025-08-20T04:37:37Z — src/codex/chat.py
+## Previous Cycle-08-20T04:37:37Z — src/codex/chat.py
 Documented ChatSession.__exit__ protocol.
 
 ## Inventory
@@ -7263,7 +7263,7 @@ Purpose:
 Usage:
     python -m codex.logging.viewer --session-id <ID> [--db path/to.db]
       [--format json|text] [--level INFO --contains token]
-      [--since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
+      [--since Previous Cycle-01-01 --until Previous Cycle-12-31] [--limit 200] [--table logs]
 
 Environment:
     CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
@@ -7370,7 +7370,7 @@ Export all events for a given session as JSON or plain text.
 Usage:
     python -m codex.logging.export SESSION_ID --format {json,text}
 ```text
-## 2025-08-20T05:12:57Z
+## Previous Cycle-08-20T05:12:57Z
 - **File:** .pre-commit-config.yaml
 - **Action:** update
 - **Rationale:** Add local pytest hook and include tests in mypy files
@@ -7396,7 +7396,7 @@ index 07dd172..875d8e5 100644
 +        pass_filenames: false
 \```
 
-## 2025-08-20T05:12:57Z
+## Previous Cycle-08-20T05:12:57Z
 - **File:** scripts/run_coverage.sh
 - **Action:** update
 - **Rationale:** Provide pytest coverage script
@@ -7404,7 +7404,7 @@ index 07dd172..875d8e5 100644
 \```diff
 \```
 
-## 2025-08-20T05:12:57Z
+## Previous Cycle-08-20T05:12:57Z
 - **File:** README.md
 - **Action:** update
 - **Rationale:** Document coverage script and pre-commit usage
@@ -7440,7 +7440,7 @@ index 9096982..904b416 100644
  - SQLite DB: `.codex/session_logs.db`
 \```
 
-## 2025-08-20T05:12:57Z
+## Previous Cycle-08-20T05:12:57Z
 - **File:** tools/codex_workflow.py
 - **Action:** update
 - **Rationale:** Add workflow executor script
@@ -7492,7 +7492,7 @@ index 09e299d..fda8a56 100644
 -    "src/codex/logging/query_logs.py",
 -    "src/codex/logging/session_hooks.py",
 -    "src/codex/db/sqlite_patch.py",
--    "src/codex/logging/db_utils.py",  # may be created
+-    "src/codex/logging/db_utils.py",  # Phase 5 be created
 -    "src/codex/logging/export.py",
 -    "src/codex/logging/viewer.py",
 -    "src/codex/chat.py",
@@ -8277,7 +8277,7 @@ index 09e299d..fda8a56 100644
 +    main()
 \```
 
-## 2025-08-20T05:12:57Z
+## Previous Cycle-08-20T05:12:57Z
 - **File:** .codex/inventory.json
 - **Action:** update
 - **Rationale:** Update inventory listing
@@ -10446,7 +10446,7 @@ index 8542c8e..18c0ec8 100644
 \ No newline at end of file
 \```
 
-## 2025-08-20T05:14:43Z
+## Previous Cycle-08-20T05:14:43Z
 - **File:** .codex/results.md
 - **Action:** update
 - **Rationale:** Record outcomes of workflow
@@ -10456,12 +10456,12 @@ diff --git a/.codex/results.md b/.codex/results.md
 index 4b72610..f89cea9 100644
 --- a/.codex/results.md
 +++ b/.codex/results.md
-@@ -176,3 +176,21 @@ Completed: 2025-08-20T05:05:10Z
+@@ -176,3 +176,21 @@ Completed: Previous Cycle-08-20T05:05:10Z
 
  ## Policy
  **DO NOT ACTIVATE ANY GitHub Actions files.**
 +
-+# Codex Results — 2025-08-20T05:13:19Z
++# Codex Results — Previous Cycle-08-20T05:13:19Z
 +## Implemented
 +- Ensured `.pre-commit-config.yaml` includes a **local pytest** hook.
 +- Ensured **mypy** hook includes `tests/` in `files`.
@@ -10470,7 +10470,7 @@ index 4b72610..f89cea9 100644
 +- Added `tools/codex_workflow.py` for end-to-end workflow.
 +## Residual Gaps
 +- `pre-commit` and `pytest` must be installed in the environment.
-+- Hook versions may be pinned to meet organizational policies.
++- Hook versions Phase 5 be pinned to meet organizational policies.
 +## Pruning
 +- No assets pruned.
 +## Next Steps
@@ -10480,7 +10480,7 @@ index 4b72610..f89cea9 100644
 +**DO NOT ACTIVATE ANY GitHub Actions files.**
 \```
 
-## 2025-08-20T05:14:47Z
+## Previous Cycle-08-20T05:14:47Z
 - **File:** .codex/errors.ndjson
 - **Action:** update
 - **Rationale:** Record encountered errors
@@ -10491,18 +10491,18 @@ index 80d2f41..ec056e7 100644
 --- a/.codex/errors.ndjson
 +++ b/.codex/errors.ndjson
 @@ -1 +1,5 @@
- {"ts": "2025-08-20T05:05:10Z", "step": "1.1 CLEAN", "error": "Uncommitted changes detected", "context": "Proceeding anyway (non-fatal)", "chatgpt5_question": "Question for ChatGPT-5:\nWhile performing [1.1 CLEAN], encountered the following error:\nUncommitted changes detected\nContext: Proceeding anyway (non-fatal)\nWhat are the possible causes, and how can this be resolved while preserving intended functionality?"}
-+{"ts":"2025-08-20T05:14:16Z","step":"3.4","description":"pre-commit run --files .pre-commit-config.yaml","error":"TypeError in tests","context":"see /tmp/pre-commit-file.log"}
-+{"ts":"2025-08-20T05:14:16Z","step":"3.4","description":"pre-commit run --files .pre-commit-config.yaml","error":"TypeError in tests","context":"see /tmp/pre-commit-file.log"}
-+{"ts":"2025-08-20T05:14:31Z","step":"3.4","description":"pre-commit run --all-files","error":"TypeError in tests","context":"see /tmp/pre-commit-all.log"}
-+{"ts":"2025-08-20T05:14:39Z","step":"3.4","description":"pytest -q","error":"TypeError in tests","context":"see /tmp/pytest.log"}
+ {"ts": "Previous Cycle-08-20T05:05:10Z", "step": "1.1 CLEAN", "error": "Uncommitted changes detected", "context": "Proceeding anyway (non-fatal)", "chatgpt5_question": "Question for ChatGPT-5:\nWhile performing [1.1 CLEAN], encountered the following error:\nUncommitted changes detected\nContext: Proceeding anyway (non-fatal)\nWhat are the possible causes, and how can this be resolved while preserving intended functionality?"}
++{"ts":"Previous Cycle-08-20T05:14:16Z","step":"3.4","description":"pre-commit run --files .pre-commit-config.yaml","error":"TypeError in tests","context":"see /tmp/pre-commit-file.log"}
++{"ts":"Previous Cycle-08-20T05:14:16Z","step":"3.4","description":"pre-commit run --files .pre-commit-config.yaml","error":"TypeError in tests","context":"see /tmp/pre-commit-file.log"}
++{"ts":"Previous Cycle-08-20T05:14:31Z","step":"3.4","description":"pre-commit run --all-files","error":"TypeError in tests","context":"see /tmp/pre-commit-all.log"}
++{"ts":"Previous Cycle-08-20T05:14:39Z","step":"3.4","description":"pytest -q","error":"TypeError in tests","context":"see /tmp/pytest.log"}
 \```
 
-## 2025-08-20T05:22:32Z — .codex/inventory.json
+## Previous Cycle-08-20T05:22:32Z — .codex/inventory.json
 - **Action:** edit
 - **Rationale:** regenerate repository inventory with path, size, sha256, role.
 
-## 2025-08-20T05:22:32Z — src/codex/logging/viewer.py
+## Previous Cycle-08-20T05:22:32Z — src/codex/logging/viewer.py
 - **Action:** edit
 - **Rationale:** validate `--table` names and guard against invalid characters.
 - **Diff:**
@@ -10543,7 +10543,7 @@ index 80d2f41..ec056e7 100644
 +        )
 ```text
 
-## 2025-08-20T05:22:32Z — src/codex/logging/session_hooks.py
+## Previous Cycle-08-20T05:22:32Z — src/codex/logging/session_hooks.py
 - **Action:** edit
 - **Rationale:** emit warnings when write retries are exhausted.
 - **Diff:**
@@ -10590,23 +10590,23 @@ index 80d2f41..ec056e7 100644
 +            )
 ```text
 
-## 2025-08-20T05:22:32Z — tests/test_logging_viewer_cli.py
+## Previous Cycle-08-20T05:22:32Z — tests/test_logging_viewer_cli.py
 - **Action:** edit
 - **Rationale:** cover table name validation behavior.
 
-## 2025-08-20T05:22:32Z — tests/test_session_hooks_warnings.py
+## Previous Cycle-08-20T05:22:32Z — tests/test_session_hooks_warnings.py
 - **Action:** create
 - **Rationale:** test warning emission on retry exhaustion.
 
-## 2025-08-20T05:22:32Z — README.md
+## Previous Cycle-08-20T05:22:32Z — README.md
 - **Action:** edit
 - **Rationale:** document table name character constraints.
 
-## 2025-08-20T05:22:32Z — tools/run_supplied_task.py
+## Previous Cycle-08-20T05:22:32Z — tools/run_supplied_task.py
 - **Action:** create
 - **Rationale:** provide automation script for supplied task.
 
-## 2025-08-20T05:22:32Z — src/codex/logging/session_logger.py
+## Previous Cycle-08-20T05:22:32Z — src/codex/logging/session_logger.py
 - **Action:** edit
 - **Rationale:** ensure `init_db` returns the database path to avoid downstream TypeErrors during repeated calls.
 - **Diff:**
@@ -10618,7 +10618,7 @@ index 80d2f41..ec056e7 100644
 +        return p  # already initialized (no-op)
 ```text
 ## T1: parse_when -> ValueError
-- **Time:** 2025-08-20T05:43:32+00:00
+- **Time:** Previous Cycle-08-20T05:43:32+00:00
 - **File:** `/workspace/_codex_/src/codex/logging/query_logs.py`
 - **Action:** write/update
 - **Rationale:** Replace SystemExit/sys.exit with ValueError inside parse_when (localized).
@@ -10633,12 +10633,12 @@ index 80d2f41..ec056e7 100644
 -        raise SystemExit(
 +        raise ValueError(
              "Invalid datetime: "
-             f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+             f"{s}. Use ISO 8601 (e.g., Previous Cycle-08-18T09:00:00 or Previous Cycle-08-18)."
          ) from exc
 ```text
 
 ## T2: session_id validation
-- **Time:** 2025-08-20T05:43:32+00:00
+- **Time:** Previous Cycle-08-20T05:43:32+00:00
 - **File:** `/workspace/_codex_/src/codex/logging/export.py`
 - **Action:** write/update
 - **Rationale:** Insert session_id regex guard (^[A-Za-z0-9_-]+$) raising ValueError on invalid input.
@@ -10657,7 +10657,7 @@ index 80d2f41..ec056e7 100644
 ```text
 
 ## T2: tests/test_export.py updated
-- **Time:** 2025-08-20T05:43:32+00:00
+- **Time:** Previous Cycle-08-20T05:43:32+00:00
 - **File:** `/workspace/_codex_/tests/test_export.py`
 - **Action:** write/update
 - **Rationale:** Add/refresh tests for session_id validation with skip guards when wiring is unknown.
@@ -10730,7 +10730,7 @@ index 80d2f41..ec056e7 100644
 ```text
 
 ## T1: update query_logs caller
-- **Time:** 2025-08-20T05:50:00+00:00
+- **Time:** Previous Cycle-08-20T05:50:00+00:00
 - **File:** `src/codex/logging/query_logs.py`
 - **Action:** edit
 - **Rationale:** Widen top-level handler to include ValueError from parse_when.
@@ -10744,7 +10744,7 @@ index 80d2f41..ec056e7 100644
 ```text
 
 ## T2: session_id validation finalized
-- **Time:** 2025-08-20T05:50:00+00:00
+- **Time:** Previous Cycle-08-20T05:50:00+00:00
 - **File:** `src/codex/logging/export.py`
 - **Action:** edit
 - **Rationale:** Add regex session_id guard and tidy imports.
@@ -10779,7 +10779,7 @@ index 80d2f41..ec056e7 100644
 ```text
 
 ## T2: tests/test_export.py refined
-- **Time:** 2025-08-20T05:50:00+00:00
+- **Time:** Previous Cycle-08-20T05:50:00+00:00
 - **File:** `tests/test_export.py`
 - **Action:** rewrite
 - **Rationale:** Restore export tests and add session_id validation cases.
@@ -10868,7 +10868,7 @@ index 80d2f41..ec056e7 100644
 ```text
 
 ## Scripts: add codex_workflow
-- **Time:** 2025-08-20T05:50:00+00:00
+- **Time:** Previous Cycle-08-20T05:50:00+00:00
 - **File:** `scripts/codex_workflow.py`
 - **Action:** add
 - **Rationale:** Provide automated workflow script; does not activate GitHub Actions.
@@ -10890,7 +10890,7 @@ index 80d2f41..ec056e7 100644
 +"""
 ```text
 ## README: document DEV-AUTO session
-- **Time:** 2025-08-20T08:06:46Z
+- **Time:** Previous Cycle-08-20T08:06:46Z
 - **File:** `README.md`
 - **Action:** update
 - **Rationale:** Document special `DEV-AUTO` session for automated logging.
@@ -10959,7 +10959,7 @@ index 80d2f41..ec056e7 100644
 +    assert Ingestor.__doc__ is not None
 +    assert "placeholder" in Ingestor.__doc__.lower()
 ```text
-## 2025-08-21T19:14:48Z — update: src/ingestion/__init__.py
+## Previous Cycle-08-21T19:14:48Z — update: src/ingestion/__init__.py
 **Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
 
 
@@ -11086,7 +11086,7 @@ index a128dd0..e12ace3 100644
 
 
 
-## 2025-08-21T19:15:07Z — update: src/ingestion/__init__.py
+## Previous Cycle-08-21T19:15:07Z — update: src/ingestion/__init__.py
 **Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
 ```diff
 diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
@@ -11203,7 +11203,7 @@ index a128dd0..e12ace3 100644
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
 ```text
-## 2025-08-21T19:15:11Z — update: src/ingestion/README.md
+## Previous Cycle-08-21T19:15:11Z — update: src/ingestion/README.md
 **Rationale:** document encoding and chunk_size parameters with examples.
 ```diff
 diff --git a/src/ingestion/README.md b/src/ingestion/README.md
@@ -11298,7 +11298,7 @@ index bf53541..f6844d5 100644
 +    process(chunk)
 +```
 ```text
-## 2025-08-21T19:15:14Z — update: tests/test_ingestion_io.py
+## Previous Cycle-08-21T19:15:14Z — update: tests/test_ingestion_io.py
 **Rationale:** add coverage for encoding, chunk_size, string paths, and directory errors.
 ```diff
 diff --git a/tests/test_ingestion_io.py b/tests/test_ingestion_io.py
@@ -11435,7 +11435,7 @@ index f235b30..b69af8f 100644
 -        ingestor.ingest(missing_path)
 +        _call_ingest(d)
 ```text
-## 2025-08-21T19:15:19Z — update: scripts/deep_research_task_process.py
+## Previous Cycle-08-21T19:15:19Z — update: scripts/deep_research_task_process.py
 **Rationale:** remove ingestion placeholders and reference real ingest implementation.
 ```diff
 diff --git a/scripts/deep_research_task_process.py b/scripts/deep_research_task_process.py
@@ -11647,7 +11647,7 @@ index aa1a8c1..cb58b05 100644
          ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
          ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
 ```text
-## 2025-08-21T19:15:22Z — create: tools/codex_ingestion_workflow.py
+## Previous Cycle-08-21T19:15:22Z — create: tools/codex_ingestion_workflow.py
 **Rationale:** workflow script to automate ingestion updates and logging.
 ```diff
 diff --git a/tools/codex_ingestion_workflow.py b/tools/codex_ingestion_workflow.py
@@ -12431,7 +12431,7 @@ index 0000000..f00f94b
 +if __name__ == "__main__":
 +    sys.exit(main())
 ```text
-## 2025-08-21T19:15:26Z — update: .codex/results.md
+## Previous Cycle-08-21T19:15:26Z — update: .codex/results.md
 **Rationale:** append inventory table and final note.
 ```diff
 diff --git a/.codex/results.md b/.codex/results.md
@@ -12476,7 +12476,7 @@ index b428ae2..e6e50c2 100644
 +## Final Notes
 +- **DO NOT ACTIVATE ANY GitHub Actions files.**
 ```text
-    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/__init__.py`
+    ## Previous Cycle-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/__init__.py`
     **Rationale:** Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent.
     ```diff
 --- a//workspace/_codex_/src/ingestion/__init__.py
@@ -12555,7 +12555,7 @@ index b428ae2..e6e50c2 100644
 
 ```text
 
-    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/README.md`
+    ## Previous Cycle-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/README.md`
     **Rationale:** Document encoding and chunk_size behavior with examples.
     ```diff
 --- a//workspace/_codex_/src/ingestion/README.md
@@ -12588,7 +12588,7 @@ index b428ae2..e6e50c2 100644
 
 ```text
 
-    ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/tests/test_ingestion_io.py`
+    ## Previous Cycle-08-21T19:15:37 — update: `/workspace/_codex_/tests/test_ingestion_io.py`
     **Rationale:** Add tests for encoding, chunk_size, str(path), and directory error behavior.
     ```diff
 --- a//workspace/_codex_/tests/test_ingestion_io.py
@@ -12656,7 +12656,7 @@ index b428ae2..e6e50c2 100644
 
 ```text
 
-## 2025-08-21T19:16:49Z — update: src/ingestion/__init__.py
+## Previous Cycle-08-21T19:16:49Z — update: src/ingestion/__init__.py
 **Rationale:** convert ingest to return iterator only when chunked.
 ```diff
 diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
@@ -12896,8 +12896,8 @@ index a128dd0..39c53ae 100644
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
 ```text
-- 2025-08-21T23:17:38Z Initialized/verified .codex/ and log files (append-only guarantees).
-### 2025-08-21T23:34:25+00:00 — tools/codex_workflow_session_query.py
+- Previous Cycle-08-21T23:17:38Z Initialized/verified .codex/ and log files (append-only guarantees).
+### Previous Cycle-08-21T23:34:25+00:00 — tools/codex_workflow_session_query.py
 - **Action:** edit
 - **Rationale:** Split & alphabetize imports (one per line)
 ```diff
@@ -12923,7 +12923,7 @@ index a128dd0..39c53ae 100644
 
 ```text
 
-### 2025-08-21T23:34:25+00:00 — README.md
+### Previous Cycle-08-21T23:34:25+00:00 — README.md
 - **Action:** edit
 - **Rationale:** README add Ruff usage & DO-NOT-ACTIVATE note
 ```diff
@@ -12940,41 +12940,41 @@ index a128dd0..39c53ae 100644
 
 ```text
 
-### 2025-08-21T23:46:35Z — Update references
+### Previous Cycle-08-21T23:46:35Z — Update references
 Scanned 142 files; updated 0 files to use `codex_workflow`
 
-### 2025-08-21T23:46:35Z — Delete
+### Previous Cycle-08-21T23:46:35Z — Delete
 Deleted redundant scripts/codex_workflow.py
 
-### 2025-08-21T23:46:35Z — Delete
+### Previous Cycle-08-21T23:46:35Z — Delete
 Deleted redundant tools/codex_workflow.py
 
-### 2025-08-21T23:46:35Z — Delete
+### Previous Cycle-08-21T23:46:35Z — Delete
 Deleted redundant tools/codex_workflow_session_query.py
 
-### 2025-08-21T23:46:45Z — Commit suggestion
+### Previous Cycle-08-21T23:46:45Z — Commit suggestion
 git add -A && git commit -m 'feat: consolidate codex_workflow entrypoint; remove duplicates and update references'
 
-### 2025-08-21T23:46:45Z — Compliance
+### Previous Cycle-08-21T23:46:45Z — Compliance
 DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
 
-### 2025-08-21T23:49:44Z — Update references post-merge
+### Previous Cycle-08-21T23:49:44Z — Update references post-merge
 Adjusted README and tools to reference root codex_workflow.py
 
-### 2025-08-23T18:16:11Z — Update references
+### Previous Cycle-08-23T18:16:11Z — Update references
 Scanned 139 files; updated 0 files to use `codex_workflow`
 
-### 2025-08-23T18:16:20Z — Commit suggestion
+### Previous Cycle-08-23T18:16:20Z — Commit suggestion
 git add -A && git commit -m 'feat: consolidate codex_workflow entrypoint; remove duplicates and update references'
 
-### 2025-08-23T18:16:20Z — Compliance
+### Previous Cycle-08-23T18:16:20Z — Compliance
 DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.
-### 2025-08-24T03:42:09Z — Add codex_exec entrypoint
+### Previous Cycle-08-24T03:42:09Z — Add codex_exec entrypoint
 Created tools/codex_exec.py and ensured .codex scaffolding.
-### 2025-08-24T03:53:01Z — Improve codex_exec automation
+### Previous Cycle-08-24T03:53:01Z — Improve codex_exec automation
 Refined `tools/codex_exec.py` with phased execution, SAFE_MODE handling, and detailed logging.
 
-            ## 2025-08-25T05:00:03Z — configs/config.yaml
+            ## Previous Cycle-08-25T05:00:03Z — configs/config.yaml
             - **Action:** create
             - **Rationale:** Hydra root config
             ```text
@@ -13003,7 +13003,7 @@ pipeline:
 dry_run: false
             ```
 
-            ## 2025-08-25T05:00:03Z — configs/env/ubuntu.yaml
+            ## Previous Cycle-08-25T05:00:03Z — configs/env/ubuntu.yaml
             - **Action:** create
             - **Rationale:** Hydra ubuntu override
             ```text
@@ -13015,7 +13015,7 @@ env:
   tmp_dir: /tmp/codex
             ```
 
-            ## 2025-08-25T05:00:03Z — src/codex_ml/cli/main.py
+            ## Previous Cycle-08-25T05:00:03Z — src/codex_ml/cli/main.py
             - **Action:** create
             - **Rationale:** Hydra CLI entrypoint
             ```text
@@ -13065,7 +13065,7 @@ env:
             main()
             ```
 
-            ## 2025-08-25T05:00:03Z — README.md
+            ## Previous Cycle-08-25T05:00:03Z — README.md
             - **Action:** edit
             - **Rationale:** Append Hydra docs
             ```text
@@ -13086,7 +13086,7 @@ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
             ```
 
-            ## 2025-08-25T05:00:03Z — scripts/deploy_codex_pipeline.py
+            ## Previous Cycle-08-25T05:00:03Z — scripts/deploy_codex_pipeline.py
             - **Action:** edit
             - **Rationale:** Add Hydra entrypoint note
             ```text
@@ -13095,7 +13095,7 @@ Effective composed config is saved to `.codex/hydra_last/config.yaml`.
 # You can pass overrides, e.g. train.epochs=2 tokenizer.name=gpt2
             ```
 
-            ## 2025-08-25T05:03:45Z — src/codex_ml/cli/main.py
+            ## Previous Cycle-08-25T05:03:45Z — src/codex_ml/cli/main.py
             - **Action:** create
             - **Rationale:** Hydra CLI entrypoint
             ```text
@@ -13144,7 +13144,7 @@ if __name__ == "__main__":
     main()
             ```
 
-            ## 2025-08-25T05:03:55Z — src/codex_ml/cli/main.py
+            ## Previous Cycle-08-25T05:03:55Z — src/codex_ml/cli/main.py
             - **Action:** create
             - **Rationale:** Hydra CLI entrypoint
             ```text
@@ -13193,7 +13193,7 @@ if __name__ == "__main__":
     main()
             ```
 
-            ## 2025-08-25T05:04:08Z — src/codex_ml/cli/main.py
+            ## Previous Cycle-08-25T05:04:08Z — src/codex_ml/cli/main.py
             - **Action:** create
             - **Rationale:** Hydra CLI entrypoint
             ```text
@@ -13240,7 +13240,7 @@ def main(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     main()
             ```
-## 2025-08-25T05:31:58Z — src/codex_ml/eval/metrics.py
+## Previous Cycle-08-25T05:31:58Z — src/codex_ml/eval/metrics.py
     - **Action:** create
     - **Rationale:** Add metrics (ppl, acc, BLEU/ROUGE, exact match, unit-test hook)
     ```text
@@ -13353,7 +13353,7 @@ def rouge_l(candidates: List[str], references: List[str], lowercase: bool = True
         candidates = [c.lower() for c in candidates]
         reference
     ```
-## 2025-08-25T05:31:58Z — src/codex_ml/train_loop.py
+## Previous Cycle-08-25T05:31:58Z — src/codex_ml/train_loop.py
     - **Action:** create
     - **Rationale:** Add toy training loop with metrics logging
     ```text
@@ -13440,7 +13440,7 @@ if __name__ == "__main__":
 # END: CODEX_TRAIN_LOOP
 
     ```
-## 2025-08-25T05:31:58Z — tests/test_metrics.py
+## Previous Cycle-08-25T05:31:58Z — tests/test_metrics.py
     - **Action:** create
     - **Rationale:** Add unit tests for metrics
     ```text
@@ -13484,11 +13484,11 @@ def test_bleu_and_rouge_optional():
 # END: CODEX_TEST_METRICS
 
     ```
-## 2025-08-25T05:59:39Z — runs/demo
+## Previous Cycle-08-25T05:59:39Z — runs/demo
 - **Action:** create
 - **Rationale:** Prepare monitoring output dir
 
-## 2025-08-25T05:59:39Z — docs/ops/monitoring.md
+## Previous Cycle-08-25T05:59:39Z — docs/ops/monitoring.md
 - **Action:** create
 - **Rationale:** Add monitoring documentation
 ```text
@@ -13515,85 +13515,85 @@ All executions run locally via CLI. Do NOT activate any GitHub Actions online fi
 
 ```text
 
-## 2025-08-25T06:04:56Z — tools/monitoring_integrate.py
+## Previous Cycle-08-25T06:04:56Z — tools/monitoring_integrate.py
 - **Action:** create
 - **Rationale:** add monitoring demo CLI with TensorBoard/MLflow support
 ```text
 see file
 ```text
-## 2025-08-25T06:04:56Z — .gitignore
+## Previous Cycle-08-25T06:04:56Z — .gitignore
 - **Action:** edit
 - **Rationale:** ignore monitoring run outputs
 ```text
 runs/
 ```text
-## 2025-08-25T15:04:00Z — src/codex_ml/utils/__init__.py
+## Previous Cycle-08-25T15:04:00Z — src/codex_ml/utils/__init__.py
 - **Action:** create
 - **Rationale:** expose utility package and checkpoint manager
 
-## 2025-08-25T15:04:00Z — src/codex_ml/utils/checkpointing.py
+## Previous Cycle-08-25T15:04:00Z — src/codex_ml/utils/checkpointing.py
 - **Action:** create
 - **Rationale:** add CheckpointManager with save/resume and retention policy
 
-## 2025-08-25T15:04:00Z — tests/test_resume.py
+## Previous Cycle-08-25T15:04:00Z — tests/test_resume.py
 - **Action:** create
 - **Rationale:** verify checkpoint roundtrip and retention
 
-## 2025-08-25T15:04:00Z — functional_training.py
+## Previous Cycle-08-25T15:04:00Z — functional_training.py
 - **Action:** edit
 - **Rationale:** integrate CheckpointManager and resume flags
 
-## 2025-08-25T15:04:00Z — documentation/checkpointing_README.md
+## Previous Cycle-08-25T15:04:00Z — documentation/checkpointing_README.md
 - **Action:** create
 - **Rationale:** provide trainer integration hints for checkpoint manager
-## 2025-08-25T15:41:45Z — src/codex_ml/data/loaders.py
+## Previous Cycle-08-25T15:41:45Z — src/codex_ml/data/loaders.py
 - **Action:** create
 - **Rationale:** create data loaders module
 
-## 2025-08-25T15:41:45Z — src/codex_ml/data/cli.py
+## Previous Cycle-08-25T15:41:45Z — src/codex_ml/data/cli.py
 - **Action:** create
 - **Rationale:** add data loader CLI
 
-## 2025-08-25T15:41:45Z — src/codex_ml/data/__init__.py
+## Previous Cycle-08-25T15:41:45Z — src/codex_ml/data/__init__.py
 - **Action:** create
 - **Rationale:** export data loader APIs
 
-## 2025-08-25T15:41:45Z — tests/test_loaders.py
+## Previous Cycle-08-25T15:41:45Z — tests/test_loaders.py
 - **Action:** create
 - **Rationale:** add tests for data loaders
 
-## 2025-08-25T15:41:45Z — tools/apply_data_loaders.py
+## Previous Cycle-08-25T15:41:45Z — tools/apply_data_loaders.py
 - **Action:** create
 - **Rationale:** add orchestrator for data loaders
-## 2025-08-25T15:58:27Z — codex_ml/safety/filters.py
+## Previous Cycle-08-25T15:58:27Z — codex_ml/safety/filters.py
 - **Action:** create
 - **Rationale:** add safety filters module
 
-## 2025-08-25T15:58:27Z — codex_ml/safety/sandbox.py
+## Previous Cycle-08-25T15:58:27Z — codex_ml/safety/sandbox.py
 - **Action:** create
 - **Rationale:** constrained subprocess execution
 
-## 2025-08-25T15:58:27Z — codex_ml/safety/__init__.py
+## Previous Cycle-08-25T15:58:27Z — codex_ml/safety/__init__.py
 - **Action:** create
 - **Rationale:** expose safety utilities
 
-## 2025-08-25T15:58:27Z — tests/test_safety.py
+## Previous Cycle-08-25T15:58:27Z — tests/test_safety.py
 - **Action:** create
 - **Rationale:** test safety filters and sandbox
 
-## 2025-08-25T15:58:27Z — documentation/safety_README.md
+## Previous Cycle-08-25T15:58:27Z — documentation/safety_README.md
 - **Action:** create
 - **Rationale:** document safety utilities
 
-## 2025-08-25T15:58:27Z — tools/apply_safety.py
+## Previous Cycle-08-25T15:58:27Z — tools/apply_safety.py
 - **Action:** create
 - **Rationale:** orchestrator for safety modules
 
-## 2025-08-25T15:58:27Z — tests/test_resume.py
+## Previous Cycle-08-25T15:58:27Z — tests/test_resume.py
 - **Action:** edit
 - **Rationale:** fix import order for lint
 
-## 2025-08-25T16:06:33Z — .pre-commit-config.yaml
+## Previous Cycle-08-25T16:06:33Z — .pre-commit-config.yaml
 - **Action:** edit
 - **Rationale:** append guarded by # BEGIN: CODEX_PRECOMMIT
 ```text
@@ -13633,7 +13633,7 @@ repos:
 
 ```text
 
-## 2025-08-25T16:06:33Z — .github/workflows/optimized-ci.yml
+## Previous Cycle-08-25T16:06:33Z — .github/workflows/optimized-ci.yml
 - **Action:** edit
 - **Rationale:** append guarded by # BEGIN: CODEX_CI_MANUAL
 ```text
@@ -13695,7 +13695,7 @@ jobs:
 
 ```text
 
-## 2025-08-25T16:06:33Z — .github/workflows/release.yml.disabled
+## Previous Cycle-08-25T16:06:33Z — .github/workflows/release.yml.disabled
 - **Action:** create
 - **Rationale:** create guarded by # BEGIN: CODEX_RELEASE_DISABLED
 ```text
@@ -13715,7 +13715,7 @@ jobs:
 
 ```text
 
-## 2025-08-25T16:06:33Z — pyproject.toml
+## Previous Cycle-08-25T16:06:33Z — pyproject.toml
 - **Action:** edit
 - **Rationale:** append pytest coverage gate
 ```text
@@ -13726,7 +13726,7 @@ addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 
 ```text
 
-## 2025-08-25T16:06:33Z — README.md
+## Previous Cycle-08-25T16:06:33Z — README.md
 - **Action:** edit
 - **Rationale:** prepend manual badges
 ```text
@@ -13738,7 +13738,7 @@ addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 <!-- END: CODEX_BADGES -->
 
 ```text
-## 2025-08-25T16:19:23Z — services/api/requirements.txt
+## Previous Cycle-08-25T16:19:23Z — services/api/requirements.txt
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_API_REQS
 ```text
@@ -13749,7 +13749,7 @@ pydantic==2.8.2
 
 ```text
 
-## 2025-08-25T16:19:23Z — services/api/__init__.py
+## Previous Cycle-08-25T16:19:23Z — services/api/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_API_INIT
 ```text
@@ -13758,7 +13758,7 @@ pydantic==2.8.2
 
 ```text
 
-## 2025-08-25T16:19:23Z — services/api/main.py
+## Previous Cycle-08-25T16:19:23Z — services/api/main.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_API_MAIN
 ```text
@@ -13860,7 +13860,7 @@ async def status() -> Dict[str, Any]:
 
 ```text
 
-## 2025-08-25T16:19:23Z — Dockerfile
+## Previous Cycle-08-25T16:19:23Z — Dockerfile
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DOCKERFILE
 ```text
@@ -13887,7 +13887,7 @@ CMD python3 -c "import os; os.umask(0o077); import uvicorn; uvicorn.run('service
 
 ```text
 
-## 2025-08-25T16:19:23Z — docker-compose.yml
+## Previous Cycle-08-25T16:19:23Z — docker-compose.yml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_COMPOSE
 ```text
@@ -13916,7 +13916,7 @@ volumes:
 
 ```text
 
-## 2025-08-25T16:19:23Z — scripts/deploy/build.sh
+## Previous Cycle-08-25T16:19:23Z — scripts/deploy/build.sh
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DEPLOY_SCRIPT
 ```text
@@ -13930,7 +13930,7 @@ echo "Built $IMAGE"
 
 ```text
 
-## 2025-08-25T16:19:23Z — scripts/deploy/run.sh
+## Previous Cycle-08-25T16:19:23Z — scripts/deploy/run.sh
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DEPLOY_SCRIPT
 ```text
@@ -13958,7 +13958,7 @@ echo "API failed to become healthy in time"; exit 1
 
 ```text
 
-## 2025-08-25T16:19:23Z — scripts/deploy/push.sh
+## Previous Cycle-08-25T16:19:23Z — scripts/deploy/push.sh
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DEPLOY_SCRIPT
 ```text
@@ -13976,7 +13976,7 @@ echo "Pushed $REGISTRY"
 
 ```text
 
-## 2025-08-25T16:19:23Z — docs/ops/deployment.md
+## Previous Cycle-08-25T16:19:23Z — docs/ops/deployment.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DEPLOY_DOC -->
 ```text
@@ -14011,7 +14011,7 @@ Artifacts are written under the named volume `codex_artifacts` and visible insid
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations must run within the Codex environment.
 
 ```text
-## 2025-08-25T20:21:49Z — mkdocs.yml
+## Previous Cycle-08-25T20:21:49Z — mkdocs.yml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MKDOCS
 ```text
@@ -14044,7 +14044,7 @@ markdown_extensions:
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/requirements.txt
+## Previous Cycle-08-25T20:21:49Z — docs/requirements.txt
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DOCS_REQS
 ```text
@@ -14056,7 +14056,7 @@ nbconvert>=7.16
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/index.md
+## Previous Cycle-08-25T20:21:49Z — docs/index.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_INDEX -->
 ```text
@@ -14069,7 +14069,7 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/getting-started.md
+## Previous Cycle-08-25T20:21:49Z — docs/getting-started.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_GETTING_STARTED -->
 ```text
@@ -14095,7 +14095,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/concepts.md
+## Previous Cycle-08-25T20:21:49Z — docs/concepts.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_CONCEPTS -->
 ```text
@@ -14109,7 +14109,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/api.md
+## Previous Cycle-08-25T20:21:49Z — docs/api.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_API -->
 ```text
@@ -14127,7 +14127,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/tutorials/quickstart.md
+## Previous Cycle-08-25T20:21:49Z — docs/tutorials/quickstart.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_TUTORIALS_QUICKSTART -->
 ```text
@@ -14140,7 +14140,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/tutorials/end_to_end_cpu.md
+## Previous Cycle-08-25T20:21:49Z — docs/tutorials/end_to_end_cpu.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_TUTORIALS_END_TO_END -->
 ```text
@@ -14154,7 +14154,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/safety.md
+## Previous Cycle-08-25T20:21:49Z — docs/safety.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_SAFETY -->
 ```text
@@ -14170,7 +14170,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — docs/model_cards/template.md
+## Previous Cycle-08-25T20:21:49Z — docs/model_cards/template.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_DOCS_MODEL_CARD_TEMPLATE -->
 ```text
@@ -14194,7 +14194,7 @@ mkdocs serve
 
 ```text
 
-## 2025-08-25T20:21:49Z — examples/notebooks/demo_infer.ipynb
+## Previous Cycle-08-25T20:21:49Z — examples/notebooks/demo_infer.ipynb
 - **Action:** create
 - **Rationale:** CPU-only inference demo
 ```text
@@ -14237,7 +14237,7 @@ mkdocs serve
 }
 ```text
 
-## 2025-08-25T20:21:49Z — examples/notebooks/demo_train_eval.ipynb
+## Previous Cycle-08-25T20:21:49Z — examples/notebooks/demo_train_eval.ipynb
 - **Action:** create
 - **Rationale:** CPU-only train/eval demo
 ```text
@@ -14278,7 +14278,7 @@ mkdocs serve
   "nbformat_minor": 5
 }
 ```text
-## 2025-08-25T20:43:09Z — src/codex_ml/tracking/mlflow_utils.py
+## Previous Cycle-08-25T20:43:09Z — src/codex_ml/tracking/mlflow_utils.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MLFLOW_UTILS
 ```text
@@ -14348,7 +14348,7 @@ def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Dict[s
 
 ```text
 
-## 2025-08-25T20:43:09Z — src/codex_ml/tracking/__init__.py
+## Previous Cycle-08-25T20:43:09Z — src/codex_ml/tracking/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MLFLOW_INIT
 ```text
@@ -14374,7 +14374,7 @@ __all__ = [
 
 ```text
 
-## 2025-08-25T20:43:09Z — src/codex_ml/tracking/cli.py
+## Previous Cycle-08-25T20:43:09Z — src/codex_ml/tracking/cli.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MLFLOW_CLI
 ```text
@@ -14416,7 +14416,7 @@ def mlflow_from_args(args) -> MlflowConfig:
 
 ```text
 
-## 2025-08-25T20:43:09Z — docs/ops/experiment_tracking.md
+## Previous Cycle-08-25T20:43:09Z — docs/ops/experiment_tracking.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_MLFLOW_DOCS -->
 ```text
@@ -14463,7 +14463,7 @@ with start_run(cfg) as run:
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
 
 ```text
-## 2025-08-26T00:50:44Z — codex_ml/interfaces/tokenizer.py
+## Previous Cycle-08-26T00:50:44Z — codex_ml/interfaces/tokenizer.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TOKENIZER
 ```text
@@ -14513,7 +14513,7 @@ class TokenizerAdapter(ABC):
 
 ```text
 
-## 2025-08-26T00:50:44Z — codex_ml/interfaces/reward_model.py
+## Previous Cycle-08-26T00:50:44Z — codex_ml/interfaces/reward_model.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_REWARD
 ```text
@@ -14543,7 +14543,7 @@ class RewardModel(ABC):
 
 ```text
 
-## 2025-08-26T00:50:44Z — codex_ml/interfaces/rl.py
+## Previous Cycle-08-26T00:50:44Z — codex_ml/interfaces/rl.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_RL
 ```text
@@ -14580,7 +14580,7 @@ class RLAgent(ABC):
 
 ```text
 
-## 2025-08-26T00:50:44Z — codex_ml/interfaces/__init__.py
+## Previous Cycle-08-26T00:50:44Z — codex_ml/interfaces/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_INIT
 ```text
@@ -14595,7 +14595,7 @@ __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 
 ```text
 
-## 2025-08-26T00:50:44Z — tests/test_interfaces_compat.py
+## Previous Cycle-08-26T00:50:44Z — tests/test_interfaces_compat.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TESTS
 ```text
@@ -14661,7 +14661,7 @@ def test_rl_agent_contract(tmp_path):
 
 ```text
 
-## 2025-08-26T00:50:44Z — configs/interfaces.example.yaml
+## Previous Cycle-08-26T00:50:44Z — configs/interfaces.example.yaml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_CONFIG
 ```text
@@ -14674,7 +14674,7 @@ rl_agent: yourpkg.rl.ppo:PPOAgent
 
 ```text
 
-## 2025-08-26T00:50:44Z — docs/architecture/interfaces.md
+## Previous Cycle-08-26T00:50:44Z — docs/architecture/interfaces.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_IFACE_DOCS -->
 ```text
@@ -14707,7 +14707,7 @@ Projects can expose entry points under:
 
 ```text
 
-## 2025-08-26T00:50:44Z — pyproject.toml
+## Previous Cycle-08-26T00:50:44Z — pyproject.toml
 - **Action:** edit
 - **Rationale:** append commented entry-point groups
 ```text
@@ -14721,9 +14721,9 @@ Projects can expose entry points under:
 # END: CODEX_IFACE_ENTRYPOINTS
 
 ```text
-## 2025-08-26T03:52:50Z — tracking updates
+## Previous Cycle-08-26T03:52:50Z — tracking updates
 - Added seed_snapshot helper and docs.
-## 2025-08-26T05:28:19Z — requirements-dev.txt
+## Previous Cycle-08-26T05:28:19Z — requirements-dev.txt
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DEV_REQUIREMENTS
 ```text
@@ -14741,7 +14741,7 @@ detect-secrets
 
 ```text
 
-## 2025-08-26T05:28:19Z — requirements.txt
+## Previous Cycle-08-26T05:28:19Z — requirements.txt
 - **Action:** append
 - **Rationale:** insert guarded by # BEGIN: CODEX_RUN_REQUIREMENTS
 ```text
@@ -14755,7 +14755,7 @@ peft
 
 ```text
 
-## 2025-08-26T05:28:19Z — scripts/gpu/check_gpu.sh
+## Previous Cycle-08-26T05:28:19Z — scripts/gpu/check_gpu.sh
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_GPU_CHECK
 ```text
@@ -14773,7 +14773,7 @@ fi
 
 ```text
 
-## 2025-08-26T05:28:19Z — docs/ops/environment.md
+## Previous Cycle-08-26T05:28:19Z — docs/ops/environment.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_ENV_DOC -->
 ```text
@@ -14786,7 +14786,7 @@ fi
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/tokenization/sentencepiece_adapter.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/tokenization/sentencepiece_adapter.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_SENTENCEPIECE_ADAPTER
 ```text
@@ -14837,7 +14837,7 @@ class SentencePieceAdapter:
 
 ```text
 
-## 2025-08-26T05:28:19Z — tests/test_sentencepiece_adapter.py
+## Previous Cycle-08-26T05:28:19Z — tests/test_sentencepiece_adapter.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_TEST_SP_ADAPTER
 ```text
@@ -14849,7 +14849,7 @@ pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_mod
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/models/activations.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/models/activations.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_ACTIVATIONS
 ```text
@@ -14892,7 +14892,7 @@ def get_activation(name: str):
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/peft/peft_adapter.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/peft/peft_adapter.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_PEFT_ADAPTER
 ```text
@@ -14911,7 +14911,7 @@ def apply_lora(model, cfg: dict | None = None):
 
 ```text
 
-## 2025-08-26T05:28:19Z — tests/test_activations.py
+## Previous Cycle-08-26T05:28:19Z — tests/test_activations.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_TEST_ACT
 ```text
@@ -14927,11 +14927,11 @@ def test_activation_registry_smoke():
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/peft/__init__.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/peft/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by PEFT_INIT
 
-## 2025-08-26T05:28:19Z — src/codex_ml/training/callbacks.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/training/callbacks.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_TRAINING_CALLBACKS
 ```text
@@ -14954,11 +14954,11 @@ class EarlyStopping:
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/training/__init__.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/training/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by TRAIN_INIT
 
-## 2025-08-26T05:28:19Z — docs/ops/training_args.md
+## Previous Cycle-08-26T05:28:19Z — docs/ops/training_args.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_TRAIN_ARGS_DOC -->
 ```text
@@ -14970,7 +14970,7 @@ class EarlyStopping:
 
 ```text
 
-## 2025-08-26T05:28:19Z — docs/ops/hydra_distributed_overrides.md
+## Previous Cycle-08-26T05:28:19Z — docs/ops/hydra_distributed_overrides.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_HYDRA_DISTRIBUTED_OVERRIDES -->
 ```text
@@ -15000,7 +15000,7 @@ tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/metrics/curves.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/metrics/curves.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_METRIC_CURVES
 ```text
@@ -15031,11 +15031,11 @@ def summarize(path: Path, metric: str) -> Dict[str, float]:
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/metrics/__init__.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/metrics/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by METRICS_INIT
 
-## 2025-08-26T05:28:19Z — tests/test_metric_curves.py
+## Previous Cycle-08-26T05:28:19Z — tests/test_metric_curves.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_TEST_CURVES
 ```text
@@ -15054,7 +15054,7 @@ def test_curves_roundtrip(tmp_path: Path):
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/monitoring/prometheus.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/monitoring/prometheus.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_PROMETHEUS
 ```text
@@ -15075,11 +15075,11 @@ def maybe_export_metrics(app=None, port: int = 9000):
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/monitoring/__init__.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/monitoring/__init__.py
 - **Action:** upsert
 - **Rationale:** insert guarded by MONITOR_INIT
 
-## 2025-08-26T05:28:19Z — docs/ops/monitoring.md
+## Previous Cycle-08-26T05:28:19Z — docs/ops/monitoring.md
 - **Action:** append
 - **Rationale:** insert guarded by <!-- SENTINEL -->
 ```text
@@ -15088,7 +15088,7 @@ def maybe_export_metrics(app=None, port: int = 9000):
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/utils/checksums.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/utils/checksums.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_CHECKSUMS
 ```text
@@ -15115,7 +15115,7 @@ def write_checksum(path: Path):
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/data/cache.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/data/cache.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DATA_CACHE
 ```text
@@ -15146,7 +15146,7 @@ class SimpleCache:
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/data/sharding.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/data/sharding.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_DATA_SHARD
 ```text
@@ -15164,7 +15164,7 @@ def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
 
 ```text
 
-## 2025-08-26T05:28:19Z — tests/test_data_cache_sharding.py
+## Previous Cycle-08-26T05:28:19Z — tests/test_data_cache_sharding.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_TEST_DATA_CACHE_SHARD
 ```text
@@ -15183,7 +15183,7 @@ def test_shard_cover():
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/safety/risk_score.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/safety/risk_score.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_RISK_SCORE
 ```text
@@ -15203,7 +15203,7 @@ def risk_score(text: str) -> float:
 
 ```text
 
-## 2025-08-26T05:28:19Z — .github/workflows/nightly.yml.disabled
+## Previous Cycle-08-26T05:28:19Z — .github/workflows/nightly.yml.disabled
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_NIGHTLY_DISABLED
 ```text
@@ -15220,7 +15220,7 @@ def risk_score(text: str) -> float:
 
 ```text
 
-## 2025-08-26T05:28:19Z — .github/workflows/vuln_scan.yml.disabled
+## Previous Cycle-08-26T05:28:19Z — .github/workflows/vuln_scan.yml.disabled
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_VULN_DISABLED
 ```text
@@ -15236,7 +15236,7 @@ def risk_score(text: str) -> float:
 
 ```text
 
-## 2025-08-26T05:28:19Z — deploy/helm/Chart.yaml
+## Previous Cycle-08-26T05:28:19Z — deploy/helm/Chart.yaml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_HELM_CHART
 ```text
@@ -15249,7 +15249,7 @@ description: Helm chart (stub)
 
 ```text
 
-## 2025-08-26T05:28:19Z — deploy/helm/values.yaml
+## Previous Cycle-08-26T05:28:19Z — deploy/helm/values.yaml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_HELM_VALUES
 ```text
@@ -15264,7 +15264,7 @@ service:
 
 ```text
 
-## 2025-08-26T05:28:19Z — docs/ops/grpc_parity.md
+## Previous Cycle-08-26T05:28:19Z — docs/ops/grpc_parity.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_GRPC_PARITY_DOC -->
 ```text
@@ -15276,7 +15276,7 @@ service:
 
 ```text
 
-## 2025-08-26T05:28:19Z — notebooks/gpu_training_example.ipynb
+## Previous Cycle-08-26T05:28:19Z — notebooks/gpu_training_example.ipynb
 - **Action:** upsert
 - **Rationale:** insert guarded by "nbformat": 4
 ```text
@@ -15292,7 +15292,7 @@ service:
 
 ```text
 
-## 2025-08-26T05:28:19Z — docs/examples/model_card_template.md
+## Previous Cycle-08-26T05:28:19Z — docs/examples/model_card_template.md
 - **Action:** upsert
 - **Rationale:** insert guarded by <!-- BEGIN: CODEX_MODEL_CARD -->
 ```text
@@ -15307,7 +15307,7 @@ service:
 
 ```text
 
-## 2025-08-26T05:28:19Z — src/codex_ml/tracking/git_tag.py
+## Previous Cycle-08-26T05:28:19Z — src/codex_ml/tracking/git_tag.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_GIT_TAG
 ```text
@@ -15326,33 +15326,33 @@ def current_commit() -> str | None:
 
 ```text
 
-## 2025-08-26T05:44:30Z — src/codex_ml/peft/__init__.py
+## Previous Cycle-08-26T05:44:30Z — src/codex_ml/peft/__init__.py
 - **Action:** append
 - **Rationale:** insert guarded by PEFT_INIT
 
-## 2025-08-26T05:44:30Z — src/codex_ml/training/__init__.py
+## Previous Cycle-08-26T05:44:30Z — src/codex_ml/training/__init__.py
 - **Action:** append
 - **Rationale:** insert guarded by TRAIN_INIT
 
-## 2025-08-26T05:44:30Z — src/codex_ml/metrics/__init__.py
+## Previous Cycle-08-26T05:44:30Z — src/codex_ml/metrics/__init__.py
 - **Action:** append
 - **Rationale:** insert guarded by METRICS_INIT
 
-## 2025-08-26T05:44:30Z — src/codex_ml/monitoring/__init__.py
+## Previous Cycle-08-26T05:44:30Z — src/codex_ml/monitoring/__init__.py
 - **Action:** append
 - **Rationale:** insert guarded by MONITOR_INIT
 
-## 2025-08-26T05:44:30Z — docs/ops/monitoring.md
+## Previous Cycle-08-26T05:44:30Z — docs/ops/monitoring.md
 - **Action:** append
 - **Rationale:** insert guarded by <!-- SENTINEL -->
 ```text
 
 ## Prometheus (optional)
 
-## 2025-08-26T13:08:13Z — deploy_codex_pipeline.py
+## Previous Cycle-08-26T13:08:13Z — deploy_codex_pipeline.py
 - **Action:** prune
 - **Rationale:** CLI not found; skipping data flags
-## 2025-08-26T13:08:13Z — docker-compose.yml
+## Previous Cycle-08-26T13:08:13Z — docker-compose.yml
 - **Action:** edit
 - **Rationale:** GPU reservations block
 ```diff
@@ -15369,10 +15369,10 @@ deploy:
 
 ```text
 
-## 2025-08-26T13:08:13Z — deploy_codex_pipeline.py
+## Previous Cycle-08-26T13:08:13Z — deploy_codex_pipeline.py
 - **Action:** prune
 - **Rationale:** CLI not found; skipping data flags
-## 2025-08-26T13:08:13Z — docker-compose.yml
+## Previous Cycle-08-26T13:08:13Z — docker-compose.yml
 - **Action:** edit
 - **Rationale:** GPU reservations block
 ```diff
@@ -15387,7 +15387,7 @@ deploy:
           capabilities: [gpu]
 # END: CODEX_COMPOSE_GPU
 ```text
-## 2025-08-26T13:08:13Z — scripts/deploy/run.sh
+## Previous Cycle-08-26T13:08:13Z — scripts/deploy/run.sh
 - **Action:** edit
 - **Rationale:** pass --gpus all when available
 ```diff
@@ -15396,10 +15396,10 @@ if command -v nvidia-smi >/dev/null 2>&1; then GPU_OPT="--gpus all"; else GPU_OP
 docker compose up -d $GPU_OPT || docker-compose up -d $GPU_OPT
 # END: CODEX_RUN_GPU_FLAG
 ```text
-## 2025-08-26T13:17:17Z — training/engine_hf_trainer.py
+## Previous Cycle-08-26T13:17:17Z — training/engine_hf_trainer.py
 - **Action:** PRUNE
 - **Rationale:** structural mismatch; reverted patch
-## 2025-08-26T14:31:18Z — functional_training.py
+## Previous Cycle-08-26T14:31:18Z — functional_training.py
 - **Action:** append
 - **Rationale:** guarded by # BEGIN: CODEX_FUNCTR_DEEPNN
 ```diff
@@ -15499,7 +15499,7 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
         ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
 # END: CODEX_FUNCTR_DEEPNN
 ```text
-## 2025-08-26T14:31:18Z — deploy_codex_pipeline.py
+## Previous Cycle-08-26T14:31:18Z — deploy_codex_pipeline.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_DEPLOY_MONITORING
 ```diff
@@ -15594,7 +15594,7 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
             pass
 # END: CODEX_DEPLOY_MONITORING
 ```text
-## 2025-08-26T14:31:18Z — codex_ml/tracking/mlflow_utils.py
+## Previous Cycle-08-26T14:31:18Z — codex_ml/tracking/mlflow_utils.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_MLFLOW_UTILS
 ```diff
@@ -15637,7 +15637,7 @@ def log_artifacts(paths: Iterable[Path]):
         pass
 # END: CODEX_MLFLOW_UTILS
 ```text
-## 2025-08-26T14:31:18Z — codex_ml/utils/checkpointing.py
+## Previous Cycle-08-26T14:31:18Z — codex_ml/utils/checkpointing.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_CKPT_RNG_SEED
 ```diff
@@ -15710,7 +15710,7 @@ def log_seed(path: Path, seed: int) -> None:
     (path / "seeds.json").write_text(json.dumps({"seed": seed}), encoding="utf-8")
 # END: CODEX_CKPT_RNG_SEED
 ```text
-## 2025-08-26T14:31:18Z — services/api/main.py
+## Previous Cycle-08-26T14:31:18Z — services/api/main.py
 - **Action:** append
 - **Rationale:** guarded by # BEGIN: CODEX_FASTAPI_HARDEN
 ```diff
@@ -15776,7 +15776,7 @@ def build_app():
 app = build_app()
 # END: CODEX_FASTAPI_HARDEN
 ```text
-## 2025-08-26T14:31:18Z — docs/ops/monitoring.md
+## Previous Cycle-08-26T14:31:18Z — docs/ops/monitoring.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_MONITORING_DOC -->
 ```diff
@@ -15790,7 +15790,7 @@ Behavior:
 - Weights & Biases: enabled when flag set
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
 ```text
-## 2025-08-26T14:31:18Z — README.md
+## Previous Cycle-08-26T14:31:18Z — README.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_README_UPDATE -->
 ```diff
@@ -15798,7 +15798,7 @@ Behavior:
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
 ```text
-## 2025-08-26T15:35:50.869788Z — tests/smoke/test_hf_trainer_hello.py
+## Previous Cycle-08-26T15:35:50.869788Z — tests/smoke/test_hf_trainer_hello.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_TRAINER
 ```diff
@@ -15848,7 +15848,7 @@ def test_hf_trainer_on_tiny_hello_dataset():
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))
 ```text
-## 2025-08-26T15:35:50.870286Z — tests/smoke/test_logging_flags_end_to_end.py
+## Previous Cycle-08-26T15:35:50.870286Z — tests/smoke/test_logging_flags_end_to_end.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
 ```diff
@@ -15891,7 +15891,7 @@ def test_deploy_logging_flags_bootstrap_and_log():
         if handles.get("tb") is not None:
             assert any(tb_dir.glob("events.*")), "TensorBoard events missing"
 ```text
-## 2025-08-26T15:35:50.870604Z — tests/smoke/test_mlflow_utils_noop.py
+## Previous Cycle-08-26T15:35:50.870604Z — tests/smoke/test_mlflow_utils_noop.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_MLFLOW_NOOP
 ```diff
@@ -15910,7 +15910,7 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_artifacts([])
     assert True
 ```text
-## 2025-08-26T15:35:50.872152Z — README.md
+## Previous Cycle-08-26T15:35:50.872152Z — README.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_SMOKE_README -->
 ```diff
@@ -15918,7 +15918,7 @@ def test_mlflow_utils_tolerant_when_missing():
 ## Smoke Tests & Offline Logging
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
 ```text
-## 2025-08-26T15:40:24.573429Z — tests/smoke/test_hf_trainer_hello.py
+## Previous Cycle-08-26T15:40:24.573429Z — tests/smoke/test_hf_trainer_hello.py
 - **Action:** edit
 - **Rationale:** add explicit trainer.save_state and newline
 ```diff
@@ -15933,7 +15933,7 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 +        assert (out / "trainer_state.json").exists()
 +        assert any(out.glob("checkpoint-*"))
 ```text
-## 2025-08-26T15:40:24.573429Z — tests/smoke/test_mlflow_utils_noop.py
+## Previous Cycle-08-26T15:40:24.573429Z — tests/smoke/test_mlflow_utils_noop.py
 - **Action:** edit
 - **Rationale:** tolerate start_run signature mismatch
 ```diff
@@ -15955,72 +15955,72 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 +    MU.log_artifacts([])
 +    assert True
 ```text
-## 2025-08-26T15:47:42.066793Z — tools/codex_make_smoke_tests.py
+## Previous Cycle-08-26T15:47:42.066793Z — tools/codex_make_smoke_tests.py
 - **Action:** create
 - **Rationale:** generate smoke tests and logging validations
 ```diff
 +<script>
 ```text
-## 2025-08-27T00:00:00Z — training/engine_hf_trainer.py
+## Previous Cycle-08-27T00:00:00Z — training/engine_hf_trainer.py
 - **Action:** edit
 - **Rationale:** add LoRA, precision, checkpointing and error logging hooks.
 
-## 2025-08-27T00:00:00Z — training/checkpoint_manager.py
+## Previous Cycle-08-27T00:00:00Z — training/checkpoint_manager.py
 - **Action:** create
 - **Rationale:** simple step-based checkpoint manager for Trainer.
 
-## 2025-08-27T00:00:00Z — src/codex_ml/utils/error_log.py
+## Previous Cycle-08-27T00:00:00Z — src/codex_ml/utils/error_log.py
 - **Action:** create
 - **Rationale:** central utility to append structured error records.
 
-## 2025-08-27T00:00:00Z — src/codex_ml/safety/filters.py
+## Previous Cycle-08-27T00:00:00Z — src/codex_ml/safety/filters.py
 - **Action:** edit
 - **Rationale:** allow external safety classifier via environment hook.
 
-## 2025-08-27T00:00:00Z — src/codex_ml/eval/evaluator.py
+## Previous Cycle-08-27T00:00:00Z — src/codex_ml/eval/evaluator.py
 - **Action:** create
 - **Rationale:** lightweight evaluation runner using metric utilities.
 
-## 2025-08-27T00:00:00Z — configs/training/base.yaml
+## Previous Cycle-08-27T00:00:00Z — configs/training/base.yaml
 - **Action:** edit
 - **Rationale:** surface LoRA, precision and checkpoint options.
 
-## 2025-08-27T00:00:00Z — configs/config.yaml
+## Previous Cycle-08-27T00:00:00Z — configs/config.yaml
 - **Action:** edit
 - **Rationale:** add trainer group with new flags.
 
-## 2025-08-27T00:00:00Z — docs/getting-started.md
+## Previous Cycle-08-27T00:00:00Z — docs/getting-started.md
 - **Action:** edit
 - **Rationale:** document LoRA usage, checkpointing and evaluation.
 
-## 2025-08-27T00:00:00Z — tests/test_checkpoint_manager.py
+## Previous Cycle-08-27T00:00:00Z — tests/test_checkpoint_manager.py
 - **Action:** create
 - **Rationale:** cover checkpoint callback behaviour.
 
-## 2025-08-27T00:00:00Z — tests/test_eval_runner.py
+## Previous Cycle-08-27T00:00:00Z — tests/test_eval_runner.py
 - **Action:** create
 - **Rationale:** evaluate model and verify error capture.
 
-## 2025-08-27T00:00:00Z — noxfile.py
+## Previous Cycle-08-27T00:00:00Z — noxfile.py
 - **Action:** edit
 - **Rationale:** add codex_ext session for new tests.
 
-## 2025-09-06T00:00:00Z — src/tokenization/train_tokenizer.py
+## Previous Cycle-09-06T00:00:00Z — src/tokenization/train_tokenizer.py
 - **Action:** create
 - **Rationale:** add deterministic tokenizer training utility with manifest hashing.
 
-## 2025-09-06T00:00:00Z — src/tokenization/cli.py
+## Previous Cycle-09-06T00:00:00Z — src/tokenization/cli.py
 - **Action:** create
 - **Rationale:** provide Typer CLI to inspect, encode and export tokenizers.
 
-## 2025-09-06T00:00:00Z — src/codex_ml/interfaces/tokenizer.py
+## Previous Cycle-09-06T00:00:00Z — src/codex_ml/interfaces/tokenizer.py
 - **Action:** edit
 - **Rationale:** allow loading tokenizers from local artifact directories.
 
-## 2025-09-06T00:00:00Z — README.md
+## Previous Cycle-09-06T00:00:00Z — README.md
 - **Action:** edit
 - **Rationale:** document tokenizer workflow for training and export.
-## 2025-09-06T08:59:55Z
+## Previous Cycle-09-06T08:59:55Z
 - **File:** training/functional_training.py
 - **Action:** create
 - **Rationale:** add deterministic custom training loop with logging and checkpointing
@@ -16042,25 +16042,25 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - **File:** tests/training/test_lora_optional.py
 - **Action:** create
 - **Rationale:** smoke test optional LoRA integration
-## 2025-09-06T09:47:25Z — src/codex/cli.py
+## Previous Cycle-09-06T09:47:25Z — src/codex/cli.py
 - **Action:** edit
 - **Rationale:** accept legacy `hf` engine alias for backward compatibility
 
-## 2025-09-06T09:47:25Z — training/functional_training.py
+## Previous Cycle-09-06T09:47:25Z — training/functional_training.py
 - **Action:** edit
 - **Rationale:** skip processed steps on resume and persist RNG state
 
-## 2025-09-06T09:47:25Z — tests/training/test_checkpoint_resume.py
+## Previous Cycle-09-06T09:47:25Z — tests/training/test_checkpoint_resume.py
 - **Action:** edit
 - **Rationale:** verify resumed training matches uninterrupted baseline
 ## Root Reorg Finalized @ 20250910T135035Z
 - Moves standardized; integrity audit (v2) ready.
 - Pytest/pre-commit/MkDocs/nox repairs applied.
 - GH Actions gated (manual + self-hosted).
-## 2025-09-15T04:03:56Z — src/codex/cli.py
+## Previous Cycle-09-15T04:03:56Z — src/codex/cli.py
 - **Action:** edit
 - **Rationale:** add missing imports for SQLite pooling helper
-## 2025-09-15T04:03:56Z — tests/test_cli_pool.py
+## Previous Cycle-09-15T04:03:56Z — tests/test_cli_pool.py
 - **Action:** edit
 - **Rationale:** verify `_fix_pool` sets pooling environment variable
 
@@ -16139,6 +16139,6 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - Added README and training engine documentation notes for the new training config, CLI flags, and resume behaviour.
 - Implemented regression tests covering config loading, CLI invocation, and resume wiring.
 - Recorded pytest execution results after modifications (see Testing section of final summary).
-[2025-09-20T05:37:18Z] Generated exhaustive daily status update for 2025-09-20
+[Previous Cycle-09-20T05:37:18Z] Generated exhaustive daily status update for Previous Cycle-09-20
 
 ```

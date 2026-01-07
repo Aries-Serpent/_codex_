@@ -111,7 +111,7 @@ The current schema is **Hydra-friendly** but does not require Hydra:
 * Nothing prevents using these dataclasses as the "target" of a Hydra
   instantiation step in the future.
 
-Future work may:
+Future work Phase 5:
 
 * Introduce a dedicated `conf/` tree with Hydra-friendly defaults.
 * Provide example `hydra.main()` entrypoints that adapt to the schema.

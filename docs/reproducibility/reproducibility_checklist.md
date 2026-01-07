@@ -70,7 +70,7 @@ Example invocation:
 
 ```bash
 python tools/codex_reproducibility_bundle.py \
-  --audit _codex_status_update-2025-11-27.md \
+  --audit _codex_status_update-Previous Cycle-11-27.md \
   --manifest-out codex_reproducibility_manifest.json
 ```
 

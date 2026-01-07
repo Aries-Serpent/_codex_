@@ -1,6 +1,6 @@
 # Duplicate Files Policy
 
-This document describes the policy for handling duplicate files in the repository. Some duplicates are intentional and expected (e.g., Python package markers), while others may require investigation.
+This document describes the policy for handling duplicate files in the repository. Some duplicates are intentional and expected (e.g., Python package markers), while others Phase 5 require investigation.
 
 ## Intentional Duplicates
 
@@ -34,7 +34,7 @@ Test configuration files with shared fixtures:
 - `./tests/gates/conftest.py`
 - `./tests/interfaces/conftest.py`
 
-**Rationale**: Each test directory may have its own `conftest.py` file to define pytest fixtures and configuration specific to that test suite. This is a standard pytest pattern.
+**Rationale**: Each test directory Phase 5 have its own `conftest.py` file to define pytest fixtures and configuration specific to that test suite. This is a standard pytest pattern.
 
 </details>
 

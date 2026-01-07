@@ -1,6 +1,6 @@
 # AGENTS — Documentation Guides
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: Previous Cycle-12-23  
 **Scope**: docs/guides/**
 
 ---
@@ -11,7 +11,7 @@ This directory contains comprehensive guides for using the repository.
 
 ---
 
-## 🔒 Security Guides (2025-12-23)
+## 🔒 Security Guides (Previous Cycle-12-23)
 
 ### Quick Reference
 

@@ -19,7 +19,7 @@
 
 ### Immediate Actions (This Session):
 
-**Phase 1: Diagnosis & Analysis (2-3 hours)**
+**Phase 1: Diagnosis & Analysis (2-3 iterations)**
 1. Use the multi-agent framework from `.codex/tools/agent_system_framework.py` 
 2. Create and run the 8-agent documentation improvement system:
    - Site Crawler Agent: Scan https://aries-serpent.github.io/_codex_/
@@ -33,7 +33,7 @@
    - Responsive breakpoint failures
 4. Save report to `.codex/reports/github_pages_diagnosis.md`
 
-**Phase 2: Solution Design (3-4 hours)**
+**Phase 2: Solution Design (3-4 iterations)**
 5. Use Fix Generator Agent to create CSS patches
 6. Design responsive layout improvements
 7. Create `docs/assets/css/custom.css` with fixes:
@@ -43,7 +43,7 @@
    - Table handling improvements
 8. Save all CSS fixes to file
 
-**Phase 3: Implementation (2-3 hours)**  
+**Phase 3: Implementation (2-3 iterations)**  
 9. Create `docs/_layouts/default.html` if it doesn't exist
 10. Update `docs/_config.yml` to reference custom CSS
 11. Use Markdown Formatter Agent to standardize all .md files in docs/
@@ -53,7 +53,7 @@
     - Proper heading hierarchy
 13. Test locally with `bundle exec jekyll serve`
 
-**Phase 4: Validation (2-3 hours)**
+**Phase 4: Validation (2-3 iterations)**
 14. Run Testing Agent to validate improvements
 15. Check code blocks on multiple viewports (320, 768, 1024, 1920px)
 16. Verify responsive design works
