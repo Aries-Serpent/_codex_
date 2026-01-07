@@ -16,6 +16,12 @@ import re
 from typing import NamedTuple
 
 
+# Configuration constants
+CONTEXT_WINDOW_CHARS = 80  # Maximum characters to look back for context detection
+ISO_DATE_LOOKAHEAD_CHARS = 20  # Characters to look ahead for ISO time component
+ISO_DATE_LOOKBACK_CHARS = 50  # Characters to look back for technical markers
+
+
 class ReplacementRule(NamedTuple):
     """A date replacement rule with pattern and conditions."""
 
@@ -92,7 +98,7 @@ PLANNING_PATTERNS = [
 ]
 
 
-def is_preserved_context(text: str, match_start: int) -> bool:
+def _is_preserved_context(text: str, match_start: int) -> bool:
     """
     Check if a date match occurs in a context where it should be preserved.
 
@@ -104,10 +110,10 @@ def is_preserved_context(text: str, match_start: int) -> bool:
         True if the date should be preserved, False if it can be sanitized
     """
     # Look at text before the match
-    # First, check the immediate context (same line, up to 80 chars back or previous newline)
-    line_start = text.rfind('\n', max(0, match_start - 80), match_start)
+    # First, check the immediate context (same line, up to CONTEXT_WINDOW_CHARS back or previous newline)
+    line_start = text.rfind('\n', max(0, match_start - CONTEXT_WINDOW_CHARS), match_start)
     if line_start == -1:
-        line_start = max(0, match_start - 80)
+        line_start = max(0, match_start - CONTEXT_WINDOW_CHARS)
     else:
         line_start += 1  # Skip the newline itself
     
@@ -121,7 +127,7 @@ def is_preserved_context(text: str, match_start: int) -> bool:
     return False
 
 
-def is_iso_date(text: str, match_start: int, match_end: int) -> bool:
+def _is_iso_date(text: str, match_start: int, match_end: int) -> bool:
     """
     Check if a date is in ISO format (YYYY-MM-DD) which should typically be preserved.
 
@@ -140,12 +146,12 @@ def is_iso_date(text: str, match_start: int, match_end: int) -> bool:
     iso_pattern = r"^\d{4}-\d{2}-\d{2}$"
     if re.match(iso_pattern, matched):
         # Check if it's in a timestamp context (with time component)
-        look_ahead = text[match_end : match_end + 20]
+        look_ahead = text[match_end : match_end + ISO_DATE_LOOKAHEAD_CHARS]
         if re.match(r"^[T\s]\d{2}:\d{2}", look_ahead):
             return True
 
         # Check if it's preceded by technical markers
-        look_back = text[max(0, match_start - 50) : match_start]
+        look_back = text[max(0, match_start - ISO_DATE_LOOKBACK_CHARS) : match_start]
         technical_markers = [
             r"version",
             r"release",
@@ -187,11 +193,11 @@ def sanitize_planning_dates(text: str, preserve_iso_dates: bool = True) -> tuple
             match_end = match.end()
 
             # Check if this match should be preserved
-            if is_preserved_context(sanitized, match_start):
+            if _is_preserved_context(sanitized, match_start):
                 continue
 
             # Check if it's an ISO date that should be preserved
-            if preserve_iso_dates and is_iso_date(sanitized, match_start, match_end):
+            if preserve_iso_dates and _is_iso_date(sanitized, match_start, match_end):
                 continue
 
             # Perform the replacement

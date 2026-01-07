@@ -330,8 +330,10 @@ Add to workflow YAML:
 ```yaml
 - name: Sanitize Documentation Dates
   run: |
-    find docs/ -name "*.md" -exec \
-      python scripts/security/date_sanitizer.py {} \; > {}.tmp && mv {}.tmp {}
+    for file in $(find docs/ -name "*.md"); do
+      python scripts/security/date_sanitizer.py "$file" > "$file.tmp"
+      mv "$file.tmp" "$file"
+    done
 ```
 
 ### 3. Document Generation

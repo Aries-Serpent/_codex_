@@ -5,11 +5,7 @@ Ensures that actual timestamps are preserved while planning terminology is remov
 """
 import pytest
 
-from scripts.security.date_sanitizer import (
-    is_iso_date,
-    is_preserved_context,
-    sanitize_planning_dates,
-)
+from scripts.security.date_sanitizer import sanitize_planning_dates
 
 
 class TestPreservedContexts:
@@ -202,37 +198,6 @@ class TestEdgeCases:
         sanitized, replacements = sanitize_planning_dates(text)
         assert "q1 2026" not in sanitized
         assert "current cycle" in sanitized.lower()
-
-
-class TestPreservationFunctions:
-    """Test individual preservation detection functions."""
-
-    def test_is_preserved_context_positive(self):
-        """Test contexts that should be preserved."""
-        text = "Version: 1.0.0 released 2026-01-05"
-        # Position of "2026-01-05" is after "released"
-        match_start = text.index("2026-01-05")
-        assert is_preserved_context(text, match_start) is True
-
-    def test_is_preserved_context_negative(self):
-        """Test contexts that should not be preserved."""
-        text = "Planning for Q1 2026"
-        match_start = text.index("Q1 2026")
-        assert is_preserved_context(text, match_start) is False
-
-    def test_is_iso_date_with_time(self):
-        """ISO date followed by time should be detected."""
-        text = "2026-01-05T12:34:56Z"
-        match_start = 0
-        match_end = len("2026-01-05")
-        assert is_iso_date(text, match_start, match_end) is True
-
-    def test_is_iso_date_in_version_context(self):
-        """ISO date in version context should be detected."""
-        text = "v1.0.0 (2026-01-05)"
-        match_start = text.index("2026-01-05")
-        match_end = match_start + len("2026-01-05")
-        assert is_iso_date(text, match_start, match_end) is True
 
 
 class TestRealWorldExamples:
