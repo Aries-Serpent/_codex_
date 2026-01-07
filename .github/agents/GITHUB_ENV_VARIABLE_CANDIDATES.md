@@ -342,7 +342,7 @@ Central configuration management system:
 ### ⚠️ Warning
 
 **Near limit:** Uses 91.4% of available space
-**File growth risk:** Any expansion Phase 5 exceed 48KB limit
+**File growth risk:** Any expansion may exceed 48KB limit
 **Monitor size:** Track file size in CI/CD
 **Alternative:** Consider splitting into smaller modules
 
@@ -662,8 +662,8 @@ exec(code)
 - Hidden from code review
 
 **Stack Traces:**
-- Phase 5 show /tmp paths
-- Line numbers Phase 5 not match source
+- may show /tmp paths
+- Line numbers may not match source
 - Harder to correlate errors
 
 **IDE Support:**

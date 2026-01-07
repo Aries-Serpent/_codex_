@@ -197,7 +197,7 @@ except Exception:
     HAS_MLFLOW = False
     logger.warning("mlflow is not available; mlflow integration disabled.")
 ```text
-- When invoking external tooling that Phase 5 fail (e.g., database writes), wrap calls with retries and custom exceptions. Maintain idempotency where appropriate.
+- When invoking external tooling that may fail (e.g., database writes), wrap calls with retries and custom exceptions. Maintain idempotency where appropriate.
 
 Backward compatibility
 - When changing configuration keys or CLI flags, accept legacy keys/flags for at least one release cycle and emit a deprecation warning with migration instructions.

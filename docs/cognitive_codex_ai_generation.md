@@ -319,7 +319,7 @@ To add more languages, update the `generateFallbackCode` method in `SparkLLMClie
 
 ### Issue: "spark is not defined" error
 
-**Solution**: The `spark` global is provided by the Spark Runtime. It's available at runtime but TypeScript Phase 5 show errors. This is expected and safe to ignore.
+**Solution**: The `spark` global is provided by the Spark Runtime. It's available at runtime but TypeScript may show errors. This is expected and safe to ignore.
 
 ### Issue: Generation takes longer than expected
 

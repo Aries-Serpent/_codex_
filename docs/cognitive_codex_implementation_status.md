@@ -355,7 +355,7 @@ This document tracks the implementation status of all components, features, and 
 
 ### 🐛 Known Issues
 
-1. **Test Timing**: Some unit tests Phase 5 fail intermittently due to async timing issues with mock API responses. Need to add explicit waits and timing controls.
+1. **Test Timing**: Some unit tests may fail intermittently due to async timing issues with mock API responses. Need to add explicit waits and timing controls.
 
 2. **Canvas Rendering**: Heavy canvas rendering in quantum visualizer and cascade waterfall Phase 5 cause performance issues on lower-end devices. Consider implementing performance throttling.
 

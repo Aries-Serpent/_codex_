@@ -1218,7 +1218,7 @@ CANNOT: Execute code, test applications, access live systems, update model knowl
 
 ### Transparency Notes
 
-**Phase 5 Be Inaccurate**:
+**may Be Inaccurate**:
 - Endpoint URLs and exact rate limits (subject to change)
 - Specific error codes and latest best practices
 - Deprecated or newly released features (post-cutoff)

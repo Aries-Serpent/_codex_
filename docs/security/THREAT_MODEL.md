@@ -40,7 +40,7 @@ This document captures the major threats to the Codex platform and the controls 
 - **Container Compromise**: Non-root runtime images, minimal packages, and health checks detect drift.
 
 ## Residual Risks
-- Dependencies Phase 5 contain undisclosed vulnerabilities; monitor advisories and patch regularly.
+- Dependencies may contain undisclosed vulnerabilities; monitor advisories and patch regularly.
 - GPU runtime requires NVIDIA base image updates; track CVE bulletins.
 
 ## Future Improvements

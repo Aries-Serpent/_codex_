@@ -233,7 +233,7 @@ cognitive_brain/
 
 **Status:** ✅ Phase 7.1 Infrastructure Complete  
 **Next:** 🔄 Phase 7.1.4 A/B Testing Framework  
-**ETA:** Phase 7 GA by Phase 5 14, Current Cycle (on track)
+**ETA:** Phase 7 GA by May 14, 2026 (on track)
 
 ---
 
