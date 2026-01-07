@@ -4,7 +4,7 @@
 
 This document explains the CI coverage infrastructure, uv.lock maintenance procedures, and troubleshooting steps for the `_codex_` repository.
 
-## Recent Changes (2024-11-12)
+## Recent Changes (2025-11-12)
 
 ### CI Workflow Fixes
 

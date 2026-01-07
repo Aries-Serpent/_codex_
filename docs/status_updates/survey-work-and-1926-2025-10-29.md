@@ -1,13 +1,13 @@
-# Repo Survey — work & PR 1926 — 2024-10-29 (UTC)
+# Repo Survey — work & PR 1926 — 2025-10-29 (UTC)
 
-**Ref:** branch `work`  commit `c829fec7`  •  **Artifacts:** `docs/status_updates/artifacts/Previous Cycle-10-29-survey-work-and-1926`
+**Ref:** branch `work`  commit `c829fec7`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
 
 ---
 
 ## 1) Scope & Goal
 - Branch: `work`
 - PR: `#1926`
-- Date (UTC): `Previous Cycle-10-29`
+- Date (UTC): `2025-10-29`
 - Objective: Capture survey-writer and sanitizer updates for the work branch.
 
 ## 2) Targets Collected
@@ -98,9 +98,9 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - **R = 0.54** → **Recommendation:** `Proceed`
 
 ## 7) Artifacts
-- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-work-and-1926/report.md`
-- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-work-and-1926/metrics/`
-- `docs/status_updates/artifacts/Previous Cycle-10-29-survey-work-and-1926/logs/`
+- `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md`
+- `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/metrics/`
+- `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/logs/`
 
 ## 8) Changelog
 - Added branch-aware writer with slug sanitization and artifact mirroring.

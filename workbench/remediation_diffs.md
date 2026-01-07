@@ -1,5 +1,5 @@
 # Atomic Remediation Diffs for Top 10 Critical Fixes
-**Generated:** 2024-12-06 03:45:00
+**Generated:** 2025-12-06 03:45:00
 
 This document provides ready-to-apply atomic diffs for the top 10 most critical gaps identified in the audit. Each diff is minimal, focused, and can be applied independently.
 
@@ -888,4 +888,4 @@ bandit -r src/ -ll
 
 ---
 
-*Generated: 2024-12-06 03:45:00*
+*Generated: 2025-12-06 03:45:00*

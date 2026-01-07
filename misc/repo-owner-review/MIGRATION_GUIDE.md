@@ -1,6 +1,6 @@
 # Configuration Migration Guide
 
-**Last Updated**: 2024-12-12  
+**Last Updated**: 2025-12-12  
 **Purpose**: Step-by-step migration from `conf/` to `configs/` directory structure
 
 ---

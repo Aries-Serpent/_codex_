@@ -1,6 +1,6 @@
 # [Template]: Intent Validation & Plan of Action Approval Gate
 **Version:** v1.0.0  
-**Last Updated:** 2024-10-25  
+**Last Updated:** 2025-10-25  
 **Role Workflow:** Developers draft → Maintainers review → Stakeholders approve
 
 > [PLACEHOLDER: INTENT_STATEMENT]
@@ -45,7 +45,7 @@ List experiments, spikes, or prototypes that validate feasibility. Link to noteb
 | `[PLACEHOLDER: INITIATIVE_NAME]` | Internal or customer-facing project name. | "Arcturus CLI refactor" |
 | `[PLACEHOLDER: OWNER]` | Person accountable for delivery. | "@maintainer-handle" |
 | `[PLACEHOLDER: LINKED_TEMPLATES]` | Execution templates paired with this plan. | "Migration — CLI Hardening" |
-| `[PLACEHOLDER: APPROVAL_DEADLINE]` | Deadline for stakeholder sign-off. | "Previous Cycle-11-07" |
+| `[PLACEHOLDER: APPROVAL_DEADLINE]` | Deadline for stakeholder sign-off. | "2025-11-07" |
 
 ## Example Instantiations
 1. **CLI stabilization** — Pair with [Migration — CLI Hardening](./Migration_CLIHardening.md) to capture discovery for argument contract updates.

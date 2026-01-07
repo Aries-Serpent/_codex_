@@ -1,5 +1,5 @@
 # Validation: Dependency Segmentation Readiness
-> Generated: 2024-11-12 16:58:19 UTC | Author: mbaetiong
+> Generated: 2025-11-12 16:58:19 UTC | Author: mbaetiong
 
 ## Summary
 This validation confirms that the opened workbench files and new support utilities enable GitHub Copilot Agents to orchestrate segmented CI (`.github/workflows/ci.yml`) with auditable, reversible dependency hygiene.
@@ -16,7 +16,7 @@ This validation confirms that the opened workbench files and new support utiliti
 | docs/analysis/dependency_space_triage.md | Present | Rationale & triage | Space savings table and governance |
 | noxfile.py | Present | Session orchestration | tests/ml_tests/eval_tests + helpers |
 | AGENTS.md | Present | Maintainer/agent guide | Evidence schema, toggles, sessions |
-| docs/arch/ADR-Previous Cycle-11-12-dependency-segmentation.md | Present | Decision record | Accepted; compliance-aligned |
+| docs/arch/ADR-2025-11-12-dependency-segmentation.md | Present | Decision record | Accepted; compliance-aligned |
 | .codex/evidence/dependency_ops.jsonl | Present | Evidence stream | Append-only; sample lines provided |
 | .github/workflows/ci.yml | Added | CI matrix and env posture | Matrix: baseline/ml/eval/hygiene |
 | scripts/vendor_guard.py | Added | Vendor guard | Fail-fast CPU posture check |

@@ -243,5 +243,5 @@ def format_resume_prompt(cursor, topic):
 ---
 
 **Version:** 1.0  
-**Last Updated:** 2024-11-02  
+**Last Updated:** 2025-11-02  
 **Maintainer:** @Aries-Serpent/docs-team

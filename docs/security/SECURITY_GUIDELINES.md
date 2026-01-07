@@ -48,7 +48,7 @@ print(f"Secret: {secret_token}")  # ❌ Phase 5 appear in console logs
 ```python
 from codex.security import sanitize_log
 
-# User input that may contain control characters
+# User input that Phase 5 contain control characters
 user_input = request.form.get('username')
 logger.info(f"Login attempt: {sanitize_log(user_input)}")
 
@@ -217,7 +217,7 @@ token_hash = hash_secure(token, algorithm='sha256')
 try:
     api_call(api_key=secret_key)
 except Exception as e:
-    logger.error(f"API call failed: {e}")  # may contain secret_key
+    logger.error(f"API call failed: {e}")  # Phase 5 contain secret_key
 
 # ✅ CORRECT
 try:
@@ -314,5 +314,5 @@ Include:
 
 ---
 
-**Last Updated**: 2024-12-23  
+**Last Updated**: 2025-12-23  
 **Maintained By**: Security Team

@@ -1,6 +1,6 @@
 `````markdown name=.github/prompts/fix_imds_sudo_blocking_pr2229.md
 # Implementation Prompt: Fix IMDS Diagnostic Sudo Blocking Bug (PR #2229)
-> Generated: 2024-11-15 04:43:27 | Author: mbaetiong
+> Generated: 2025-11-15 04:43:27 | Author: mbaetiong
 
 🧠 **Roles**: [Primary: Bug Fix Implementation Agent] | [Secondary: Test Validation Engineer] ⚡ **Energy**: 5/5
 
@@ -212,8 +212,8 @@ ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
 
 ```markdown
 # IMDS Diagnostic Runbook
-> Generated: 2024-11-14 21:33:15 UTC | Author: mbaetiong
-> Script Version: 1.6 | Last Updated: 2024-11-14T23:14:07Z UTC
+> Generated: 2025-11-14 21:33:15 UTC | Author: mbaetiong
+> Script Version: 1.6 | Last Updated: 2025-11-14T23:14:07Z UTC
 
 ## Purpose
 ```text
@@ -464,14 +464,14 @@ Closes: #2229 review thread
 ````text
 $ bash .github/scripts/imds_diagnostic.sh
 
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
-[2024-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: requires passwordless sudo or root
-[2024-11-15T04:43:27Z] ℹ️  To enable iptables checks, configure passwordless sudo or run as root
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: requires passwordless sudo or root
+[2025-11-15T04:43:27Z] ℹ️  To enable iptables checks, configure passwordless sudo or run as root
 
 [... continues with other checks ...]
 
-[2024-11-15T04:43:42Z] ✅ Diagnostic completed in 15s
+[2025-11-15T04:43:42Z] ✅ Diagnostic completed in 15s
 ```text
 
 **Test Case 5 (CI/CD Pipeline)**:
@@ -530,7 +530,7 @@ All P1-P3 issues addressed. Script now works reliably across all environments wi
 
 ---
 
-**Generated**: 2024-11-15 04:43:27 UTC
+**Generated**: 2025-11-15 04:43:27 UTC
 **Author**: mbaetiong
 **Role**: Bug Fix Implementation Agent
 **Status**: Ready for Copilot Implementation
@@ -540,7 +540,7 @@ All P1-P3 issues addressed. Script now works reliably across all environments wi
 
 `````markdown name=.github/docs/AGENTS_IMDS_Sudo_Fix_Validation_Tests.md
 # [Validation]: IMDS Sudo Blocking Fix — Comprehensive Test Suite
-> Generated: 2024-11-15 04:43:27 | Author: mbaetiong
+> Generated: 2025-11-15 04:43:27 | Author: mbaetiong
 
 🧠 **Roles**: [Primary: Test Validation Engineer] | [Secondary: Environment Simulation Specialist] ⚡ **Energy**: 5/5
 
@@ -597,15 +597,15 @@ bash .github/scripts/imds_diagnostic.sh
 **Expected Output**:
 
 ```text
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
-[2024-11-15T04:43:27Z] Passwordless sudo available for iptables
-[2024-11-15T04:43:27Z] No explicit OUTPUT rule referencing 169.254.169.254.
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] Passwordless sudo available for iptables
+[2025-11-15T04:43:27Z] No explicit OUTPUT rule referencing 169.254.169.254.
 
-[2024-11-15T04:43:28Z] ----------------------------------------
-[2024-11-15T04:43:28Z] nftables Inspection
-[2024-11-15T04:43:28Z] Passwordless sudo available for nftables
-[2024-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
+[2025-11-15T04:43:28Z] ----------------------------------------
+[2025-11-15T04:43:28Z] nftables Inspection
+[2025-11-15T04:43:28Z] Passwordless sudo available for nftables
+[2025-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
 ```text
 
 **Success Criteria**:
@@ -640,15 +640,15 @@ bash .github/scripts/imds_diagnostic.sh
 **Expected Output**:
 
 ```text
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
-[2024-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: requires passwordless sudo or root
-[2024-11-15T04:43:27Z] ℹ️  To enable iptables checks, configure passwordless sudo or run as root
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: requires passwordless sudo or root
+[2025-11-15T04:43:27Z] ℹ️  To enable iptables checks, configure passwordless sudo or run as root
 
-[2024-11-15T04:43:28Z] ----------------------------------------
-[2024-11-15T04:43:28Z] nftables Inspection
-[2024-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: requires passwordless sudo or root
-[2024-11-15T04:43:28Z] ℹ️  To enable nftables checks, configure passwordless sudo or run as root
+[2025-11-15T04:43:28Z] ----------------------------------------
+[2025-11-15T04:43:28Z] nftables Inspection
+[2025-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: requires passwordless sudo or root
+[2025-11-15T04:43:28Z] ℹ️  To enable nftables checks, configure passwordless sudo or run as root
 ```text
 
 **Success Criteria**:
@@ -665,8 +665,8 @@ bash .github/scripts/imds_diagnostic.sh
 **Before Fix Behavior** (regression check):
 
 ```text
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [sudo] password for user: ▂
                             ↑
                             HUNG HERE (no visible prompt)
@@ -694,15 +694,15 @@ bash /path/to/.github/scripts/imds_diagnostic.sh
 **Expected Output**:
 
 ```text
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
-[2024-11-15T04:43:27Z] Running as root, direct iptables access available
-[2024-11-15T04:43:27Z] No explicit OUTPUT rule referencing 169.254.169.254.
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] Running as root, direct iptables access available
+[2025-11-15T04:43:27Z] No explicit OUTPUT rule referencing 169.254.169.254.
 
-[2024-11-15T04:43:28Z] ----------------------------------------
-[2024-11-15T04:43:28Z] nftables Inspection
-[2024-11-15T04:43:28Z] Running as root, direct nftables access available
-[2024-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
+[2025-11-15T04:43:28Z] ----------------------------------------
+[2025-11-15T04:43:28Z] nftables Inspection
+[2025-11-15T04:43:28Z] Running as root, direct nftables access available
+[2025-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
 ```text
 
 **Success Criteria**:
@@ -737,13 +737,13 @@ bash .github/scripts/imds_diagnostic.sh
 **Expected Output**:
 
 ```text
-[2024-11-15T04:43:27Z] ----------------------------------------
-[2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
-[2024-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: sudo not available
+[2025-11-15T04:43:27Z] ----------------------------------------
+[2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+[2025-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: sudo not available
 
-[2024-11-15T04:43:28Z] ----------------------------------------
-[2024-11-15T04:43:28Z] nftables Inspection
-[2024-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: sudo not available
+[2025-11-15T04:43:28Z] ----------------------------------------
+[2025-11-15T04:43:28Z] nftables Inspection
+[2025-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: sudo not available
 ```text
 
 **Success Criteria**:
@@ -829,7 +829,7 @@ jobs:
 
 ```text
 Run bash .github/scripts/imds_diagnostic.sh
-  [2024-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
+  [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
   [... hangs here ...]
   Error: The operation was canceled.
   (timeout after 10 minutes)
@@ -1042,7 +1042,7 @@ bash tests/validate_sudo_fix.sh
 ````markdown
 ## Validation Complete: IMDS Sudo Blocking Fix
 
-**Date**: 2024-11-15 04:43:27 UTC
+**Date**: 2025-11-15 04:43:27 UTC
 **Validator**: mbaetiong
 **Test Suite**: validate_sudo_fix.sh
 **Duration**: 15 minutes
@@ -1116,7 +1116,7 @@ All critical and non-critical tests passed. Fix validated across all target envi
 
 ---
 
-**Generated**: 2024-11-15 04:43:27 UTC
+**Generated**: 2025-11-15 04:43:27 UTC
 **Author**: mbaetiong
 **Role**: Test Validation Engineer
 **Status**: Ready for Execution

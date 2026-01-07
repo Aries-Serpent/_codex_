@@ -1,6 +1,6 @@
 # Level 4 MLOps Assessment
 
-**Generated**: 2024-12-28 | **Author**: mbaetiong
+**Generated**: 2025-12-28 | **Author**: mbaetiong
 
 ## Overview
 
@@ -183,4 +183,4 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 | Date | Author | Changes |
 |------|--------|---------|
-| 2024-12-28 | mbaetiong | Initial Level 3.5 assessment with Level 4 roadmap |
+| 2025-12-28 | mbaetiong | Initial Level 3.5 assessment with Level 4 roadmap |

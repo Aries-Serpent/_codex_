@@ -59,8 +59,8 @@
 - `LICENSES/codex-universal-image-sbom.spdx.json`
 
 ## _codex (4 files)
-- `_codex/status/_codex_status_update-Previous Cycle-09-21.md`
-- `_codex/status/_codex_status_update-Previous Cycle-09-22.md`
+- `_codex/status/_codex_status_update-2025-09-21.md`
+- `_codex/status/_codex_status_update-2025-09-22.md`
 - `_codex/status/manifest-20250922T013307Z.json`
 - `_codex/status/manifest-20250922T013826Z.json`
 
@@ -241,7 +241,7 @@
 - ... (+4 more)
 
 ## experiments (1 files)
-- `experiments/Previous Cycle-01-15_smoke.md`
+- `experiments/2025-01-15_smoke.md`
 
 ## hydra (2 files)
 - `hydra/__init__.py`
@@ -285,16 +285,16 @@
 - `patches/analysis_registry.py.patch`
 - `patches/changelog.patch`
 - `patches/ci_local.patch`
-- `patches/pending/Previous Cycle-09-21_deterministic_loader.patch`
-- `patches/pending/Previous Cycle-09-21_eval_loop.patch`
-- `patches/pending/Previous Cycle-09-21_hydra_entrypoint.patch`
-- `patches/pending/Previous Cycle-09-21_metrics_default_min.patch`
+- `patches/pending/2025-09-21_deterministic_loader.patch`
+- `patches/pending/2025-09-21_eval_loop.patch`
+- `patches/pending/2025-09-21_hydra_entrypoint.patch`
+- `patches/pending/2025-09-21_metrics_default_min.patch`
 - `patches/readme_offline_block.patch`
 - ... (+5 more)
 
 ## reports (13 files)
-- `reports/_codex_status_update-Previous Cycle-09-28.md`
-- `reports/_codex_status_update-Previous Cycle-09-29.md`
+- `reports/_codex_status_update-2025-09-28.md`
+- `reports/_codex_status_update-2025-09-29.md`
 - `reports/branch_analysis.md`
 - `reports/capability_audit.md`
 - `reports/critical_repo_summary.md`

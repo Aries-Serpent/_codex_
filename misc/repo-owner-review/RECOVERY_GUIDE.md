@@ -1,6 +1,6 @@
 # File Recovery Guide
 
-**Last Updated**: 2024-12-12  
+**Last Updated**: 2025-12-12  
 **Purpose**: Instructions for recovering archived files from this folder
 
 ---
