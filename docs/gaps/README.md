@@ -29,7 +29,7 @@ gaps:
     risk_level: medium     # optional, Phase 5 come from Hardship Map
     yaml_phase_step: "3.1" # phase.step id from codex_task_sequence.yaml
     ml_test_categories: ["data", "model"]
-    last_seen_in_audit: "Previous Cycle-11-27"
+    last_seen_in_audit: "2025-11-27"
     notes: "Extracted from High-Signal Findings in audit."
 ```
 

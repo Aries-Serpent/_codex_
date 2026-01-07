@@ -265,4 +265,4 @@ We appreciate the efforts of security researchers who help keep our project secu
 ---
 
 **Last Updated:** 2026-01-06  
-**Next Review:** 2025-02-03 (monthly review schedule)
+**Next Review:** 2026-02-03 (monthly review schedule)

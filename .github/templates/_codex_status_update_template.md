@@ -1,5 +1,5 @@
 # [Audit]: Status Update — Comprehensive Canonical Template (v2.0.0)
-> Generated: 2024-11-19 13:00:38 | Author: mbaetiong  
+> Generated: 2025-11-19 13:00:38 | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 Purpose: single canonical Status Update audit report template that merges: (a) the previously generated v1.2.0 template, (b) the Enhancement & Instrumentation Plan (v1.2.0-enhance), and (c) the concrete implementation details found in the repository attachments (audit_runner.py, Traversal_Workflow.md, workflow.yaml, capability_scoring.py, templates/capability_matrix.j2, Usage_Guide.md, etc.). This file explicitly lists measurable, reportable, trackable artifacts and the schema & methods required to produce an ideal, deterministic, auditable report for S1→S7 runs.
@@ -47,7 +47,7 @@ Table of Contents (for automation & machines)
 | Field | Type | Example / Notes |
 |-------|------|-----------------|
 | report_type | str | "Status Update Audit" |
-| generated_at | timestamp | 2024-11-19 13:00:38 UTC |
+| generated_at | timestamp | 2025-11-19 13:00:38 UTC |
 | run_id | str | UUID or timestamp |
 | runner_version | semver | e.g., "1.2.0" or current audit_runner.py VERSION |
 | repo | str | Aries-Serpent/_codex_ |
@@ -161,7 +161,7 @@ Structured table and ISSUE templates (machine-friendly).
 
 | Priority | Capability ID | Score | Primary Deficit | Evidence Samples | Suggested Action | Assignee | ETA |
 |--------:|---------------|------:|-----------------|------------------|------------------|---------|-----|
-| 1 | training-engine | 0.42 | tests | src/train/loop.py | Add unit tests & CI coverage; add examples | @owner | 2024-12-05 |
+| 1 | training-engine | 0.42 | tests | src/train/loop.py | Add unit tests & CI coverage; add examples | @owner | 2025-12-05 |
 
 Accept criteria: changes increase target metric (e.g., m.tests.coverage >= 0.5) and pass determinism checks.
 

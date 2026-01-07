@@ -137,7 +137,7 @@ class InventoryWriter:
 ```markdown
 # Supplemental Duplicate Detection Report
 
-Generated: 2024-12-08T18:00:00Z
+Generated: 2025-12-08T18:00:00Z
 Repository: /path/to/repo
 Scanner Version: 1.0.0
 

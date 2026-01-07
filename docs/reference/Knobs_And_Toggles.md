@@ -1,6 +1,6 @@
 # [Reference]: Knobs & Toggles Taxonomy (P2 Normalization)
 
-> Generated: 2024-11-06 18:47:08 | Author: mbaetiong  
+> Generated: 2025-11-06 18:47:08 | Author: mbaetiong  
 > Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## 1) Overview

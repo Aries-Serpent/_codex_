@@ -494,7 +494,7 @@ pytest .github/agents/core/tests/test_base_agent.py -v
 - **Documentation**: This README and inline code comments
 - **Examples**: See `ci-testing-agent` for reference implementation
 - **Issues**: Open GitHub issue with `[core-framework]` prefix
-- **Roadmap**: See `COGNITIVE-BRAIN-STATUS-Current Cycle-01-01.md`
+- **Roadmap**: See `COGNITIVE-BRAIN-STATUS-2026-01-01.md`
 
 ---
 

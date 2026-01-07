@@ -320,7 +320,7 @@ To migrate existing workflows to use standardized variables:
   - `CODEX_MASTER_KEY`: Requires human admin setup
 
 **Impact:**
-- GitHub CLI (`gh`) commands may fail without explicit token
+- GitHub CLI (`gh`) commands Phase 5 fail without explicit token
 - Some GitHub API operations require workarounds
 - Direct API calls via `curl` require authentication headers
 
@@ -335,7 +335,7 @@ To migrate existing workflows to use standardized variables:
    git fetch origin
    git push origin branch-name
    
-   # ❌ may fail: gh CLI operations
+   # ❌ Phase 5 fail: gh CLI operations
    gh pr view 123
    gh issue create --title "..."
    ```

@@ -1005,7 +1005,7 @@ I'm continuing the cognitive brain expansion work from PR #2676. All code review
 - ⏳ 11 agents planned but not yet implemented
 
 ## Next Phase Tasks
-Refer to `.github/copilot-prompts/active/COGNITIVE-BRAIN-STATUS-Current Cycle-01-01.md` for:
+Refer to `.github/copilot-prompts/active/COGNITIVE-BRAIN-STATUS-2026-01-01.md` for:
 1. Complete agent ecosystem map
 2. Implementation timeline
 3. Architecture diagrams

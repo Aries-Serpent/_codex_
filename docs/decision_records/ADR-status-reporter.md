@@ -1,7 +1,7 @@
 # ADR: Local Status Reporter (STATUS_REPORT.md)
 
 ## Status
-Accepted — 2024-10-26
+Accepted — 2025-10-26
 
 ## Context
 We need a deterministic, local-only way to summarize repository health and candidate evaluations into a markdown report suitable for PR reviews and audit logs. The solution must not enable CI and should compose existing gates.

@@ -4,7 +4,7 @@
 **PR**: #2639 / #2660  
 **Branch**: copilot/sub-pr-2639  
 **Status**: ✅ Implementation Complete - **ACTION REQUIRED**  
-**Generated**: 2024-12-29  
+**Generated**: 2025-12-29  
 **Priority**: 🔴 **HIGH** - Security Enhancement
 
 ---
@@ -86,7 +86,7 @@ python3 scripts/security/copilot_token_decoder.py
 
 1. Navigate to: https://github.com/settings/tokens/new
 2. Configure:
-   - **Note**: `_codex_ Copilot Agent Token - Created Previous Cycle-12-29`
+   - **Note**: `_codex_ Copilot Agent Token - Created 2025-12-29`
    - **Expiration**: 90 days
    - **Scopes**:
      - ☑️ `repo` (Full control of private repositories)
@@ -287,7 +287,7 @@ history -c  # Clears history in current session
 ```bash
 # Create a reminder for token rotation (90 days)
 # Add to your calendar: "Rotate _codex_ GitHub token"
-# Date: 2025-03-29 (90 days from 2024-12-29)
+# Date: 2026-03-29 (90 days from 2025-12-29)
 ```
 
 ---
@@ -415,6 +415,6 @@ Once all phases are complete, update this document:
 ---
 
 **Document Version**: 1.0  
-**Last Updated**: 2024-12-29  
+**Last Updated**: 2025-12-29  
 **Maintainer**: @mbaetiong  
 **Status**: 🟢 **READY FOR ADMIN ACTION**

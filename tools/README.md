@@ -36,7 +36,7 @@ Wraps the evaluator with helpful CLI ergonomics.
 ### Validate Status Reports
 
 ```bash
-python tools/validate_status_report.py reports/daily/_codex_status_update-Previous Cycle-11-04.md
+python tools/validate_status_report.py reports/daily/_codex_status_update-2025-11-04.md
 ```text
 
 Validates status update markdown files against the template schema to ensure all required sections are present and properly formatted.
@@ -44,7 +44,7 @@ Validates status update markdown files against the template schema to ensure all
 ### Extract Validation Errors
 
 ```bash
-python tools/extract_validation_errors.py reports/daily/_codex_status_update-Previous Cycle-11-04.md
+python tools/extract_validation_errors.py reports/daily/_codex_status_update-2025-11-04.md
 ```text
 
 Validates a status report and automatically creates an `error-<report_name>.md` file in the same directory listing all incomplete or incorrect aspects. The error file includes:

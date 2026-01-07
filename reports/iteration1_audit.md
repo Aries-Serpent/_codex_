@@ -1,5 +1,5 @@
 # [Audit]: Implementation Status for Aries-Serpent/_codex_
-> Generated: 2024-10-03 15:29:25 | Author: offline-auditor
+> Generated: 2025-10-03 15:29:25 | Author: offline-auditor
 
 ## 1) Repo Map
 
@@ -79,8 +79,8 @@
   - Makefile
   - docs/troubleshooting/open_questions.md
   - README.md
-  - _codex_codex-ready-sequence-and-patches-Previous Cycle-09-27.md
-  - _codex_status_update-0C_base_-Previous Cycle-09-27.md
+  - _codex_codex-ready-sequence-and-patches-2025-09-27.md
+  - _codex_status_update-0C_base_-2025-09-27.md
   - bandit.yaml
   - codex.mk
   - codex_ast_upgrade.py
@@ -125,7 +125,7 @@
   - mkdocs.yml:78 [\bTODO\b] strict: false  # TODO: enable strict once nav paths are verified
   - codex_setup.py:50 [^\s*pass\s*(#.*)?$] pass
   - codex_setup.py:65 [^\s*pass\s*(#.*)?$] pass
-  - _codex_status_update-0C_base_-Previous Cycle-09-27.md:109 [\bTODO\b] (no TODO/FIXME/NotImplementedError/pass signals sampled in small scan)
+  - _codex_status_update-0C_base_-2025-09-27.md:109 [\bTODO\b] (no TODO/FIXME/NotImplementedError/pass signals sampled in small scan)
   - codex_ast_upgrade.py:176 [^\s*pass\s*(#.*)?$] pass
   - codex_ast_upgrade.py:182 [^\s*pass\s*(#.*)?$] pass
   - codex_ast_upgrade.py:188 [^\s*pass\s*(#.*)?$] pass

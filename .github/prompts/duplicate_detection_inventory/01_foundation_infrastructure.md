@@ -281,7 +281,7 @@ After running the scanner on a test repository:
 **SUPPLEMENTAL_DUPLICATE_INVENTORY.yaml** (partial):
 ```yaml
 metadata:
-  generated_at: "2024-12-08T17:55:00Z"
+  generated_at: "2025-12-08T17:55:00Z"
   scanner_version: "1.0.0"
   repository_root: "/home/runner/work/_codex_/_codex_"
   detection_modes: ["exact"]
@@ -306,7 +306,7 @@ duplicate_groups:
     tags: ["exact-duplicate"]
     meta:
       detection_method: ["sha256"]
-      created_at: "2024-12-08T17:55:00Z"
+      created_at: "2025-12-08T17:55:00Z"
       scanner_version: "1.0.0"
     summary: "# Helper utilities for data processing..."
 ```

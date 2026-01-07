@@ -1,6 +1,6 @@
 # [Prompt]: AfterMath Action Workflow — Copilot Agent Emission Standard
 > **Version**: 1.0.0  
-> **Last Updated**: 2024-12-30  
+> **Last Updated**: 2025-12-30  
 > **Purpose**: Structured session logging for AI-driven lessons learned
 
 ## Objective
@@ -42,14 +42,14 @@ Emit exactly one fenced block labeled `aftermath` with the following YAML struct
 ```aftermath
 meta:
   # Identifiers
-  session_id: "S-PR2671-Previous Cycle-12-30-1"
+  session_id: "S-PR2671-2025-12-30-1"
   pr: 2671
   branch: "copilot/sub-pr-2668-again"
   run_id: 59168839007
 
   # Timestamps (ISO 8601, UTC)
-  started_at: "2024-12-30T08:00:00Z"
-  finished_at: "2024-12-30T08:18:00Z"
+  started_at: "2025-12-30T08:00:00Z"
+  finished_at: "2025-12-30T08:18:00Z"
 
   # Context (free text or short bullets)
   context: "Resolve PR review items; implement AfterMath logging; advance Phase 9"
@@ -173,7 +173,7 @@ overall_health: "excellent"
 If fenced blocks are not feasible, emit fallback inline tags:
 
 ```
-<!--AFTERMATH:SESSION_ID=S-PR2671-Previous Cycle-12-30-1-->
+<!--AFTERMATH:SESSION_ID=S-PR2671-2025-12-30-1-->
 <!--AFTERMATH:LESSONS_COUNT=2-->
 <!--AFTERMATH:LESSON_1="Code quality: Removed unused imports (b62e012)"-->
 <!--AFTERMATH:LESSON_2="Documentation: Created diagram update system (ff3c5e9)"-->

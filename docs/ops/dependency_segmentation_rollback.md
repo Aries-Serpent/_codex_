@@ -1,5 +1,5 @@
 # Ops: Dependency Segmentation Rollback
-> Generated: 2024-11-12 16:58:19 UTC | Author: mbaetiong
+> Generated: 2025-11-12 16:58:19 UTC | Author: mbaetiong
 
 ## Overview
 This guide describes how to revert the dependency segmentation rollout quickly and safely, while preserving audit evidence.

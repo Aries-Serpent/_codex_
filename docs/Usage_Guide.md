@@ -136,4 +136,4 @@ See `MCP_IMPLEMENTATION_SUMMARY.md` for detailed information on MCP capabilities
 - [CLI reference](CLI.md)
 - [Logging guide](guides/LOGGING.md)
 
-*Last reviewed:* 2024-10-19
+*Last reviewed:* 2025-10-19

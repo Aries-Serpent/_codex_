@@ -1,4 +1,4 @@
-# _codex_ Exhaustive Autonomy Audit — 2024-12-06
+# _codex_ Exhaustive Autonomy Audit — 2025-12-06
 
 ## Executive Summary
 - Repository breadth: 7,152 files (2,386 Python, 1,480 Markdown, 304 YAML); 298 TODO/FIXME/NotImplemented hits detected.
