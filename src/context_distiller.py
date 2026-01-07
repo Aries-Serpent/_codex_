@@ -166,10 +166,17 @@ class ContextDistiller:
             func_pattern = r'^def\s+(\w+)'
             structure["functions"] = re.findall(func_pattern, content, re.MULTILINE)
             
-            # Extract imports
-            import_pattern = r'^(?:from\s+[\w.]+\s+)?import\s+([\w, ]+)'
-            imports = re.findall(import_pattern, content, re.MULTILINE)
-            structure["imports"] = [imp.strip() for line in imports for imp in line.split(',')]
+            # Extract imports (handle both forms, skip relative and star imports)
+            import_pattern = r'^(?:from\s+([\w.]+)\s+)?import\s+([\w, ]+)'
+            imports = []
+            for match in re.finditer(import_pattern, content, re.MULTILINE):
+                module, names = match.groups()
+                # Skip relative imports (from . import) and star imports
+                if module and not module.startswith('.') and '*' not in names:
+                    imports.extend([n.strip() for n in names.split(',')])
+                elif not module and '*' not in names:
+                    imports.extend([n.strip() for n in names.split(',')])
+            structure["imports"] = imports[:20]  # Limit to first 20 for brevity
         
         return structure
     

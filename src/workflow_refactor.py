@@ -5,6 +5,10 @@ Refactors GitHub Actions workflows to add workflow_dispatch triggers
 for manual gating while keeping them in active .github/workflows/ directory.
 
 Part of Phase 4: CI/CD Pipeline Refactoring
+
+Note: Logging is configured using the standard logging module. For production use,
+ensure logging is properly configured via logging.basicConfig() or a logging
+configuration file before using this module.
 """
 from __future__ import annotations
 

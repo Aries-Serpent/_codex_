@@ -194,7 +194,7 @@ class ConfigLoader:
         
         return result
     
-    def _set_nested(self, d: Dict[str, Any], keys: list[str], value: Any) -> None:
+    def _set_nested(self, d: Dict[str, Any], keys: List[str], value: Any) -> None:
         """Set nested dictionary value using list of keys."""
         for key in keys[:-1]:
             d = d.setdefault(key, {})
@@ -311,7 +311,7 @@ def reset_config_loader() -> None:
 
 # Migration helpers
 
-def detect_config_sprawl() -> Dict[str, list[str]]:
+def detect_config_sprawl() -> Dict[str, List[str]]:
     """
     Detect configuration files across all directories.
     
@@ -341,10 +341,12 @@ def generate_migration_report() -> str:
     Returns:
         Markdown-formatted migration report
     """
+    from datetime import datetime
+    
     sprawl = detect_config_sprawl()
     
     report = ["# Configuration Sprawl Analysis\n"]
-    report.append(f"**Analysis Date:** {os.popen('date').read().strip()}\n")
+    report.append(f"**Analysis Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     report.append("## Summary\n")
     
     total_files = sum(len(files) for files in sprawl.values())
