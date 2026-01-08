@@ -48,3 +48,17 @@ type = layers
 layers =
     src.cognitive_brain.base
     agents
+
+[importlinter:contract:src_no_legacy_agents]
+name = src/ modules must not import from root-level agents/ (Split Brain Resolution)
+type = forbidden
+source_modules =
+    src.codex
+    src.codex_ml
+    src.services
+forbidden_modules =
+    agents
+ignore_imports =
+    # Allow imports from src.codex.quantum_orchestrator (modern)
+    # Forbid imports from agents.* (legacy)
+
