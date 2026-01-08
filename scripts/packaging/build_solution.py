@@ -80,6 +80,8 @@ def copy_includes(
                 ignored.add(name)
             elif name.endswith((".egg-info", ".dist-info")):
                 ignored.add(name)
+            elif name.endswith((".egg-info", ".dist-info")):
+                ignored.add(name)
         return ignored
     
     for entry in includes:
