@@ -287,19 +287,19 @@ graph TB
 - [x] Self-review and status update
 - [x] Generate continuation prompt
 
-### Phase 1: Enhanced Data Integrity (1-2 weeks)
+### Phase 1: Enhanced Data Integrity (Pre-commit 1-3)
 - [ ] Implement CI timestamp validation
 - [ ] Add markdown metadata linting
 - [ ] Create bulk replacement safeguards
 - [ ] Document timestamp format standards
 
-### Phase 2: Cognitive Brain Enhancement (2-4 weeks)
+### Phase 2: Cognitive Brain Enhancement (Pre-commit 4-7)
 - [ ] Integrate timestamp validation into cognitive brain
 - [ ] Enhance self-improvement engine with data integrity checks
 - [ ] Expand emergent pattern detector to catch format inconsistencies
 - [ ] Add automated documentation quality checks
 
-### Phase 3: Production Hardening (4-6 weeks)
+### Phase 3: Production Hardening (Pre-commit 8-12)
 - [ ] Comprehensive end-to-end testing
 - [ ] Performance optimization
 - [ ] Security hardening

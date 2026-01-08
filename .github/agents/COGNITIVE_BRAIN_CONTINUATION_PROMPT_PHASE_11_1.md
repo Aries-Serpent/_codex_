@@ -8,7 +8,7 @@
 **Generated**: 2026-01-08T05:30:00Z  
 **For**: GitHub Copilot Agent  
 **Purpose**: Implement data integrity enhancements and repository-wide folder structure analysis  
-**Duration**: 2-3 weeks (Jan 8 - Jan 29, 2026)  
+**Duration**: 6-9 pre-commits (Phase 11.1.1 - 11.1.3)  
 **Parent PR**: #2713
 
 ---
@@ -43,6 +43,42 @@ This continuation prompt adheres to the **AI Codebase Agency Policy**:
    - All work tagged: `data_integrity`, `timestamp_validation`, `folder_structure`, `cognitive_brain_v11`
    - Session artifacts location specified
    - Cognitive brain learning integration included
+
+6. **✅ Timeline Terminology Convention (CRITICAL)**
+   - **MUST USE**: "pre-commit cycles", "Pre-commit 1-2", "Phase X"
+   - **NEVER USE**: "weeks", "days", "Week 1-2", calendar dates for future work
+   - All future plans created must follow this convention
+   - See [Timeline Terminology](../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)
+
+---
+
+## 🚨 MANDATORY: Timeline Terminology for ALL Future Plans
+
+**When creating ANY plan or documentation, you MUST:**
+
+✅ **USE THIS**:
+- "Pre-commit 1-2: Task Name"
+- "Phase 11.1.1: Component Implementation"
+- "3-5 pre-commit cycles"
+- "Review, verify, commit"
+
+❌ **NEVER USE**:
+- "Week 1", "Week 2"
+- "2-3 weeks"
+- "Duration: 4 weeks"
+- "Jan 8 - Jan 29, 2026" (for planning future work)
+
+**This applies to**:
+- Task breakdowns
+- Milestone definitions
+- Duration estimates
+- Progress tracking
+- Any forward-looking timeline references
+
+**Why**: Repository uses commit-based cycles, not calendar time. This ensures:
+- Consistency across all agent documentation
+- Focus on work completion, not arbitrary dates
+- Better alignment with actual development workflow
 
 ---
 
@@ -1012,17 +1048,17 @@ class RepositoryStructureAnalyzer:
 
 | Task | Priority | Status | Assignee | ETA |
 |------|----------|--------|----------|-----|
-| CI Timestamp Validation | HIGH | 🔵 Not Started | Copilot | Week 1 |
-| Markdown Metadata Linting | HIGH | 🔵 Not Started | Copilot | Week 1 |
-| Bulk Replacement Safeguards | HIGH | 🔵 Not Started | Copilot | Week 1 |
-| Folder Structure Mapping | MEDIUM | 🔵 Not Started | Copilot | Week 2 |
-| Cognitive Brain Integration | MEDIUM | 🔵 Not Started | Copilot | Week 2-3 |
+| CI Timestamp Validation | HIGH | 🔵 Not Started | Copilot | Pre-commit 1-2 |
+| Markdown Metadata Linting | HIGH | 🔵 Not Started | Copilot | Pre-commit 1-2 |
+| Bulk Replacement Safeguards | HIGH | 🔵 Not Started | Copilot | Pre-commit 1-2 |
+| Folder Structure Mapping | MEDIUM | 🔵 Not Started | Copilot | Pre-commit 3-5 |
+| Cognitive Brain Integration | MEDIUM | 🔵 Not Started | Copilot | Pre-commit 6-9 |
 
 ### Milestones
 
-- **Week 1**: Complete all HIGH priority tasks
-- **Week 2**: Complete MEDIUM priority tasks
-- **Week 3**: Testing, documentation, and deployment
+- **Pre-commit 1-2**: Complete all HIGH priority tasks
+- **Pre-commit 3-5**: Complete MEDIUM priority task (folder mapping)
+- **Pre-commit 6-9**: Testing, integration, and cognitive brain enhancement
 
 ---
 
