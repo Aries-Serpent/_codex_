@@ -389,10 +389,14 @@ class ZendeskKnowledgeSyncService:
                     with self.api_index_path.open("r", encoding="utf-8") as f:
                         cache_data = json.load(f)
                     since = cache_data.get("last_sync")
-                except (json.JSONDecodeError, OSError):
+                except (json.JSONDecodeError, OSError) as e:
                     # Intentionally ignore errors reading the cache file.
                     # If the cache is corrupted or unreadable, we'll fall back to a full sync.
-                    pass
+                    logger.warning(
+                        "Failed to read cache file '%s', falling back to full sync: %s",
+                        self.api_index_path,
+                        e,
+                    )
             
             if since is None:
                 logger.warning("No previous sync found, performing full sync")
