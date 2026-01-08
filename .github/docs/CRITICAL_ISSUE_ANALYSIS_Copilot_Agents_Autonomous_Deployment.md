@@ -19,7 +19,7 @@ Implement a **Hybrid Autonomous-Supervisory Model** leveraging GitHub Copilot Ag
 
 ## 📊 Part 1: GITHUB COPILOT AGENTS - DEEP CAPABILITIES RESEARCH
 
-### 1.1 What GitHub Copilot Agents ARE (2024)
+### 1.1 What GitHub Copilot Agents ARE (2025)
 
 GitHub Copilot Agents are **autonomous AI "teammates"** that:
 

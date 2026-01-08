@@ -841,7 +841,7 @@ _Use this space for any additional notes, concerns, or observations:_
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2024-12-21 | Initial comprehensive guide |
+| 1.0.0 | 2025-12-21 | Initial comprehensive guide |
 
 ---
 
