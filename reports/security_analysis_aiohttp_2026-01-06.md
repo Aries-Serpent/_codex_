@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-All 8 Dependabot security alerts for aiohttp are **ALREADY RESOLVED** in the current codebase. The repository uses aiohttp version 3.13.3 (released Phase 1 3, Current Cycle), which contains patches for all reported vulnerabilities. The alerts appear to be stale or were created before the dependency was updated.
+All 8 Dependabot security alerts for aiohttp are **ALREADY RESOLVED** in the current codebase. The repository uses aiohttp version 3.13.3 (released Jan 3, 2026), which contains patches for all reported vulnerabilities. The alerts appear to be stale or were created before the dependency was updated.
 
 **Current Status:**
 - ✅ Repository aiohttp version: **3.13.3** (latest stable release)

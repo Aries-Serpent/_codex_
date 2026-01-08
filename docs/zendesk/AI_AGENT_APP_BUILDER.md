@@ -1125,7 +1125,7 @@ This documentation was created with assistance from AI language models. Understa
 
 **Training Foundation**:
 - Trained on broad technical materials (architecture patterns, API design, web security, developer resources)
-- Knowledge cutoff: Phase 4 2024
+- Knowledge cutoff: Apr 2024
 - No direct access to live Zendesk documentation or proprietary systems
 
 **Approach for This Output**:

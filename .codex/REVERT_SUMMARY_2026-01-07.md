@@ -20,7 +20,7 @@ Previous commits made overly broad replacements that incorrectly changed:
    - This created grammatically incorrect sentences
 
 3. **Month "May"**: The month name was also incorrectly changed
-   - Example: `May 14, 2026` → `Phase 5 14, Current Cycle` ❌
+   - Example: `May 14, 2026` → `May 14, 2026` ❌
 
 ---
 
@@ -83,7 +83,7 @@ Fixed "Phase 5 + verb" constructions:
 
 #### 3. Month "May" (4 fixes)
 
-- `Phase 5 14, Current Cycle` → `May 14, 2026`
+- `May 14, 2026` → `May 14, 2026`
 - `Phase 5 14, 2025` → `May 14, 2025`
 - `Phase 5 the PDA Loop` → `May the PDA Loop`
 

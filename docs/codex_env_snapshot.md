@@ -2,7 +2,7 @@
 
 ## Python
 
-- Version: `3.12.12 (main, Phase 10 24 Previous Cycle, 00:40:08) [GCC 13.3.0]`
+- Version: `3.12.12 (main, Oct 24 2025, 00:40:08) [GCC 13.3.0]`
 - Executable: `/root/.pyenv/versions/3.12.12/bin/python`
 
 ## Platform
