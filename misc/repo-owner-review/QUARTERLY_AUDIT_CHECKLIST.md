@@ -10,12 +10,12 @@
 
 | Quarter | Audit Due | Status |
 |---------|-----------|--------|
-| Phase 1 (Previous Cycle) | Phase 3 15, Previous Cycle | ⬜ Pending |
-| Phase 2 (Previous Cycle) | Phase 6 15, Previous Cycle | ⬜ Pending |
-| Phase 3 (Previous Cycle) | Phase 9 15, Previous Cycle | ⬜ Pending |
-| Phase 4 (Previous Cycle) | Phase 12 15, Previous Cycle | ✅ Completed (2025-12-12) |
-| Phase 1 (Current Cycle) | Phase 3 15, Current Cycle | ⬜ Pending |
-| Phase 2 (Current Cycle) | Phase 6 15, Current Cycle | ⬜ Pending |
+| Phase 1 (Previous Cycle) | Mar 15, 2025 | ⬜ Pending |
+| Phase 2 (Previous Cycle) | Jun 15, 2025 | ⬜ Pending |
+| Phase 3 (Previous Cycle) | Sep 15, 2025 | ⬜ Pending |
+| Phase 4 (Previous Cycle) | Dec 15, 2025 | ✅ Completed (2025-12-12) |
+| Phase 1 (Current Cycle) | Mar 15, 2026 | ⬜ Pending |
+| Phase 2 (Current Cycle) | Jun 15, 2026 | ⬜ Pending |
 
 ---
 
