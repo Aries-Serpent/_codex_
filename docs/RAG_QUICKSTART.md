@@ -23,6 +23,8 @@ The Codex RAG system provides semantic search over your codebase and documentati
 ```bash
 # Python 3.8+ required
 python --version
+# Expected output: Python 3.8.x or higher
+# If version is lower, upgrade Python before proceeding
 
 # Install core dependencies
 pip install sentence-transformers faiss-cpu numpy

@@ -8,6 +8,7 @@ Supports export to Prometheus and CloudWatch for production monitoring.
 
 import logging
 import time
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -451,20 +452,28 @@ class RAGMetrics:
         logger.info("Metrics reset")
 
 
-# Global metrics instance
+# Global metrics instance with thread-safe singleton
 _global_metrics: Optional[RAGMetrics] = None
+_metrics_lock = threading.Lock()
 
 
 def get_metrics() -> RAGMetrics:
     """
-    Get global metrics instance (singleton pattern).
+    Get global metrics instance (thread-safe singleton pattern).
     
     Returns:
         Global RAGMetrics instance
+    
+    Thread-Safe:
+        Uses threading.Lock to ensure only one instance is created
+        even when called from multiple threads simultaneously.
     """
     global _global_metrics
     if _global_metrics is None:
-        _global_metrics = RAGMetrics()
+        with _metrics_lock:
+            # Double-check locking pattern
+            if _global_metrics is None:
+                _global_metrics = RAGMetrics()
     return _global_metrics
 
 

@@ -106,8 +106,12 @@ triggers:
     action: check_index_staleness
     
   - type: schedule
-    cron: "0 2 * * *"  # Daily at 2 AM UTC
+    cron: "0 2 * * *"  # Daily at 2:00 AM UTC (adjust for your timezone)
     action: monitor_all_indices
+    description: |
+      Scheduled health check runs daily at 2 AM UTC.
+      For production deployments in different timezones, adjust the cron schedule.
+      Examples: "0 14 * * *" for 2 PM UTC, "0 22 * * *" for 10 PM UTC
     
   # Manual triggers
   - type: comment

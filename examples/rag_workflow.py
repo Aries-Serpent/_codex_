@@ -2,22 +2,35 @@
 """
 RAG End-to-End Workflow Example
 Demonstrates complete RAG system usage from indexing to querying with monitoring.
+
+Note: This script assumes codex package is installed.
+If not installed, run from repository root: pip install -e .
 """
 
 import sys
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+# Try proper import first, fall back to path manipulation for development
+try:
+    from codex.rag import (
+        build_index_from_files,
+        manage_tenant_indices,
+        Retriever,
+        CachedRetriever,
+        ProvenanceMetadata,
+    )
+    from codex.rag.monitoring import get_metrics
+except ImportError:
+    # Development mode: add src to path
+    sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+        build_index_from_files,
+        manage_tenant_indices,
+        Retriever,
+        CachedRetriever,
+        ProvenanceMetadata,
+    )
+    from codex.rag.monitoring import get_metrics
 
-from codex.rag import (
-    build_index_from_files,
-    manage_tenant_indices,
-    Retriever,
-    CachedRetriever,
-    ProvenanceMetadata,
-)
-from codex.rag.monitoring import get_metrics
 import time
 import glob
 
@@ -103,8 +116,11 @@ def example_2_cached_retrieval():
     print(f"⚡ Time: {time2:.2f}ms (cache hit)")
     
     # Performance improvement
-    speedup = time1 / time2 if time2 > 0 else 0
-    print(f"\n🚀 Speedup: {speedup:.1f}x faster")
+    if time2 < 0.001:  # Less than 1ms
+        print(f"\n🚀 Speedup: ∞x faster (cache instantaneous: <0.001ms)")
+    else:
+        speedup = time1 / time2
+        print(f"\n🚀 Speedup: {speedup:.1f}x faster")
     
     # Cache statistics
     stats = cached.get_cache_stats()

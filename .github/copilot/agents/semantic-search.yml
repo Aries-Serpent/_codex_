@@ -198,8 +198,13 @@ config:
   highlight_matches: true
   
   # Performance
-  query_timeout_seconds: 30
+  query_timeout_seconds: 15  # Reduced for better UX (cached queries <1ms)
   max_concurrent_searches: 5
+  timeout_explanation: |
+    15 second timeout balances user experience with search complexity.
+    Cached results return in ~1-2ms.
+    Fresh FAISS searches complete in 100-200ms.
+    Longer queries may hit timeout for very large indices.
 
 # Response Templates
 response_templates:
