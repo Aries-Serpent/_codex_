@@ -23,6 +23,7 @@ try:
     )
     from .retriever import MultiIndexRetriever, Retriever, CachedRetriever, LRUCache
     from .utils import safe_model_load, ProvenanceMetadata
+    from .monitoring import RAGMetrics, get_metrics, reset_metrics, MetricDataPoint
 
     _expanded_context_available = True
 except ImportError:
@@ -62,5 +63,10 @@ if _expanded_context_available:
             # Utils
             "safe_model_load",
             "ProvenanceMetadata",
+            # Monitoring
+            "RAGMetrics",
+            "get_metrics",
+            "reset_metrics",
+            "MetricDataPoint",
         ]
     )
