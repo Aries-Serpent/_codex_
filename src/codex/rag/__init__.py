@@ -19,6 +19,7 @@ try:
         persist_index,
     )
     from .retriever import MultiIndexRetriever, Retriever
+    from .utils import safe_model_load
 
     _expanded_context_available = True
 except ImportError:
@@ -50,5 +51,7 @@ if _expanded_context_available:
             # Retriever
             "Retriever",
             "MultiIndexRetriever",
+            # Utils
+            "safe_model_load",
         ]
     )
