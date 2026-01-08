@@ -7073,7 +7073,7 @@ The following environment variables can be set to configure runtime installation
  - Outputs 'text' (default) or 'json'
 
  Environment:
- - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) Phase 5 point to the SQLite file
+ - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
    (default: codex.logging.config.DEFAULT_LOG_DB)
 
  Supported timestamp formats for `parse_when`:
@@ -7140,7 +7140,7 @@ The following environment variables can be set to configure runtime installation
  - Outputs 'text' (default) or 'json'
 
  Environment:
- - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) Phase 5 point to the SQLite file
+ - CODEX_LOG_DB_PATH (or CODEX_DB_PATH) may point to the SQLite file
    (default: codex.logging.config.DEFAULT_LOG_DB)
 
  Supported timestamp formats for `parse_when`:

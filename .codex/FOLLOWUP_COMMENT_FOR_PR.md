@@ -139,7 +139,7 @@ lessons = LessonsLearned()
 - Document required human actions instead
 
 **Dependency Installation**
-- Large ML packages (torch, transformers, mlflow) Phase 5 hang
+- Large ML packages (torch, transformers, mlflow) may hang
 - Use incremental installation with `pip install --progress-bar on`
 - Refer to lessons_learned.json for solutions
 - Can defer to CI/CD if blocking

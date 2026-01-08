@@ -11,7 +11,7 @@
 *Added: 2025-12-26T20:46:26.336961*
 
 **Problem:**
-In automated environments, gh CLI commands Phase 5 fail even when git operations work. Git uses credential helper but gh requires explicit GITHUB_TOKEN or GH_TOKEN environment variable.
+In automated environments, gh CLI commands may fail even when git operations work. Git uses credential helper but gh requires explicit GITHUB_TOKEN or GH_TOKEN environment variable.
 
 **Solution:**
 Workaround 1: Use git commands instead of gh CLI. Workaround 2: Document operations requiring API access. Workaround 3: Request human admin to configure GITHUB_TOKEN. For workflows: Use GitHub Actions context variables.

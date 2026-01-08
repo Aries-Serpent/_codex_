@@ -36,7 +36,7 @@ def process(items: list[str]) -> dict[str, int]:
 **Policy**:
 - **Severity**: WARNING
 - **Auto-refactor**: NO (requires manual review)
-- **Rationale**: Phase 5 affect compatibility if targeting < Python 3.9
+- **Rationale**: may affect compatibility if targeting < Python 3.9
 
 **Migration Path**:
 1. Scanner reports all instances
@@ -134,7 +134,7 @@ class Config:
 **Policy**:
 - **Severity**: SUGGESTION
 - **Auto-refactor**: NO (requires verification of behavior)
-- **Rationale**: Dataclasses add features (repr, eq) that Phase 5 change behavior
+- **Rationale**: Dataclasses add features (repr, eq) that may change behavior
 
 **Migration Path**:
 1. Scanner identifies candidates

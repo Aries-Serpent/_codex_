@@ -231,7 +231,7 @@ python scripts/space_traversal/audit_runner.py diff \
 - Capabilities with poor coverage exposed
 
 **With Token-Similarity**:
-- Consistency scores Phase 5 change (usually more accurate)
+- Consistency scores may change (usually more accurate)
 - Actual code duplication detected
 - may see score decreases if duplicates were undetected before
 

@@ -175,7 +175,7 @@ Please implement these systematically, validate after each task, report progress
 3. **Post continuation prompt**
    - Copy prompt above
    - Post as new comment on PR #2714
-   - Tag @copilot to continue Phase 5 work
+   - Tag @copilot to continue may work
 
 4. **Monitor deployment**
    - Check GitHub Actions workflow

@@ -103,7 +103,7 @@ pip install -e .
 
 3. **Run Full Test Suite:**
    ```bash
-   # Run all tests (Phase 5 take 10-30 minutes)
+   # Run all tests (may take 10-30 minutes)
    pytest tests/ -v --tb=short
    
    # Generate coverage report

@@ -2072,7 +2072,7 @@ if !  grep -r "example\. com/api-versioning" docs/ 2>/dev/null && \
     echo "     - example.com → semver.org"
     echo "     - owner/repo → Aries-Serpent/_codex_"
 else
-    echo "  ⚠️  Some broken URLs Phase 5 remain"
+    echo "  ⚠️  Some broken URLs may remain"
 fi
 
 echo ""

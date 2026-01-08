@@ -28,7 +28,7 @@
 | Configuration Management | Partially Implemented | Hydra configs in `configs/`, CLI `src/codex_ml/cli/main.py` | Missing sweeps/overrides docs | Misconfigured runs | Add `configs/experiment/default.yaml`; document overrides | Remove config and docs |
 | Evaluation & Metrics | Partially Implemented | `_compute_metrics` in `training/engine_hf_trainer.py` | No metric registry; no NDJSON/CSV logging | Metrics inconsistent, no history | Implement metrics writer to NDJSON; add unit test | Remove metrics writer |
 | Logging & Monitoring | Partially Implemented | `src/codex_ml/monitoring/codex_logging.py`, `tools/monitoring_integrate.py` | Limited system metrics, optional W&B | Silent failures in production | Guarded init for TB/W&B/MLflow; add psutil/NVML capture | Revert logging changes |
-| Checkpointing & Resume | Implemented | `src/codex_ml/utils/checkpointing.py` with `CheckpointManager` | Load path validation minimal | Resume Phase 5 corrupt state | Add checksum validation; add round-trip test | Remove checksum logic |
+| Checkpointing & Resume | Implemented | `src/codex_ml/utils/checkpointing.py` with `CheckpointManager` | Load path validation minimal | Resume may corrupt state | Add checksum validation; add round-trip test | Remove checksum logic |
 | Data Handling | Partially Implemented | `src/ingestion/*` CSV/JSON/File ingestors | No deterministic shuffling, caching | Non-reproducible datasets | Add seed-controlled shuffling, on-disk cache; add tests | Revert shuffling and cache |
 | Security & Safety | Partially Implemented | `.secrets.baseline`, `semgrep_rules/` | No dependency pinning enforcement | Vulnerable dependencies | Add `pip-audit` pre-commit hook; lock files | Remove hook and lockfile |
 | Internal CI/Test | Partially Implemented | `pytest.ini`, `noxfile.py`, `.pre-commit-config.yaml` | pytest-cov plugin missing; pre-commit hung in audit | Uncaught regressions | Add requirements for pytest-cov; slim pre-commit set | Revert requirement changes |
@@ -123,7 +123,7 @@
 +        write_checksum(path)
 ```text
 *Why*: ensure integrity before loading.
-*Risk*: added checksum Phase 5 slow resume.
+*Risk*: added checksum may slow resume.
 *Rollback*: remove call to `write_checksum`.
 *Tests/docs*: extend `tests/test_resume.py` to assert checksum file creation.
 
@@ -177,7 +177,7 @@ Context: executing repository hooks. What are the possible causes, and how can t
 **Causes (from web)**
 
 * First run of `pre-commit` installs hook environments and can be slow; heavy hooks (e.g., pylint) can appear to “hang”. ([pre-commit.com][4], [GitHub][5])
-* Output is minimal unless verbose is enabled; it Phase 5 look idle when it’s busy. ([Stack Overflow][6], [GitHub][7])
+* Output is minimal unless verbose is enabled; it may look idle when it’s busy. ([Stack Overflow][6], [GitHub][7])
 
 **Resolutions**
 

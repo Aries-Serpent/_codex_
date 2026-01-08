@@ -28,7 +28,7 @@ This plan provides a systematic approach to diagnose, fix, and improve the docum
    - Long code lines extend beyond container width
    - Horizontal scrolling breaks page layout
    - Pre/code blocks lack proper CSS constraints
-   - Syntax highlighting Phase 5 interfere with layout
+   - Syntax highlighting may interfere with layout
 
 2. **Formatting Inconsistencies**
    - Different markdown rendering across pages

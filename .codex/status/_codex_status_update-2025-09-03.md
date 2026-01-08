@@ -14,7 +14,7 @@
 | Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback Plan |
 |-----------|--------|-------------------|------|-------|--------------------|---------------|
 | Tokenization | Partially Implemented | `src/codex_ml/tokenization/hf_tokenizer.py`, `sentencepiece_adapter.py` | No fast tokenizer wiring; SentencePiece dependency missing; limited padding/truncation tests | Runtime errors on missing packages; slow encoding | Add optional SentencePiece install guard, pad/truncate tests, and fast tokenizer configuration | Revert tokenization modules |
-| ChatGPT Codex Modeling | Partially Implemented | `src/codex_ml/modeling/codex_model_loader.py` | Limited dtype/device checks; LoRA path handling minimal | Models Phase 5 load on CPU or wrong precision; LoRA silently skipped | Extend loader with explicit dtype/device validation and LoRA load tests | Revert loader to previous version |
+| ChatGPT Codex Modeling | Partially Implemented | `src/codex_ml/modeling/codex_model_loader.py` | Limited dtype/device checks; LoRA path handling minimal | Models may load on CPU or wrong precision; LoRA silently skipped | Extend loader with explicit dtype/device validation and LoRA load tests | Revert loader to previous version |
 | Training Engine | Partially Implemented | `training/engine_hf_trainer.py`, `src/codex_ml/train_loop.py` | Checkpoint resume and gradient accumulation coverage incomplete | Restarting from scratch; incorrect step counts | Implement optimizer/scheduler state restore and grad‑accum tests | Revert trainer module |
 | Configuration Management | Implemented | `configs/` (Hydra YAMLs), `src/codex/cli.py` | No sweep/override docs; limited env capture | Misconfigured experiments | Document overrides and add sample sweep config | Remove docs if unstable |
 | Evaluation & Metrics | Implemented | `src/codex_ml/metrics/`, `src/codex_ml/train_loop.py` NDJSON writer | Few metrics; no CSV/NDJSON example in docs | Metrics lost or inconsistent | Provide logging examples and unit tests for writers | Revert metric utilities |
@@ -119,7 +119,7 @@
  CMD ["python", "-m", "codex.cli"]
 ```text
 - *Why*: Provide default CLI entrypoint for container deployments.
-- *Risk*: Entrypoint Phase 5 not cover all use cases.
+- *Risk*: Entrypoint may not cover all use cases.
 - *Rollback*: Revert Dockerfile.
 - *Tests/docs*: Build image and run `docker run <img> --help` test.
 

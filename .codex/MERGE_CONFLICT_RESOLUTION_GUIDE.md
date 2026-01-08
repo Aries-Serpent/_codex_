@@ -24,8 +24,8 @@ This PR reverted overly broad date and terminology replacements across 1,114 fil
 - `Previous Cycle-12-27` → `2025-12-27`
 
 **Word "may" fixes (237):**
-- `Phase 5 need` → `may need`
-- `Phase 5 be` → `may be`
+- `may need` → `may need`
+- `may be` → `may be`
 
 **Total: 2,515 corrections**
 
@@ -186,7 +186,7 @@ grep -n "2026-01-" .codex/AI_AGENT_UTILITIES_REGISTRY.md | head -3
 grep -n "may be\|may need\|may have" .codex/results.md | head -3
 
 # Verify no "Phase 5" word issues remain
-grep -n "Phase 5 be\|Phase 5 need" .codex/results.md | wc -l  # Should be 0
+grep -n "may be\|may need" .codex/results.md | wc -l  # Should be 0
 ```
 
 ### 3. Run Validation Script
