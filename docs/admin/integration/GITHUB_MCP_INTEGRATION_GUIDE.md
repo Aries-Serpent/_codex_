@@ -332,7 +332,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 
 ### Limitation 2: Secrets & Privacy Risks
 
-**Problem**: Copilot suggestions Phase 5 inadvertently send sensitive data to external LLMs.
+**Problem**: Copilot suggestions may inadvertently send sensitive data to external LLMs.
 
 **Workarounds Implemented**:
 - Content redaction for known secret patterns
@@ -342,7 +342,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 
 ### Limitation 3: API Rate Limits
 
-**Problem**: Frequent MCP requests to GitHub, PyPI, npm Phase 5 hit rate limits.
+**Problem**: Frequent MCP requests to GitHub, PyPI, npm may hit rate limits.
 
 **Workarounds Implemented**:
 - MCP-side caching with TTL

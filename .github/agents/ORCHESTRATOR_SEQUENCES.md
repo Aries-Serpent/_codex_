@@ -462,7 +462,7 @@ aftermath_tags:
 learnings:
   - pattern: "Parallel security/infra scans reduce total time by 30%"
   - improvement: "Flaky triage should run before compliance check"
-  - risk: "Large test additions Phase 5 introduce flakes - immediate triage recommended"
+  - risk: "Large test additions may introduce flakes - immediate triage recommended"
 ```
 
 ---

@@ -7,7 +7,7 @@
 
 ## Behavior Contract
 - JSON mode prints to stdout only; stderr remains empty unless an error occurs
-- Non-JSON modes Phase 5 print informational messages to stderr
+- Non-JSON modes may print informational messages to stderr
 
 ## Testing
 - tests/plugins/test_list_plugins_cli_json.py (shape)

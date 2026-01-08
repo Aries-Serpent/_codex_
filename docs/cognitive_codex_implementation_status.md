@@ -357,7 +357,7 @@ This document tracks the implementation status of all components, features, and 
 
 1. **Test Timing**: Some unit tests may fail intermittently due to async timing issues with mock API responses. Need to add explicit waits and timing controls.
 
-2. **Canvas Rendering**: Heavy canvas rendering in quantum visualizer and cascade waterfall Phase 5 cause performance issues on lower-end devices. Consider implementing performance throttling.
+2. **Canvas Rendering**: Heavy canvas rendering in quantum visualizer and cascade waterfall may cause performance issues on lower-end devices. Consider implementing performance throttling.
 
 3. **WebSocket Reconnection**: WebSocket reconnection logic needs more robust error handling and exponential backoff.
 

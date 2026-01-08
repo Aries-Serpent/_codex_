@@ -112,7 +112,7 @@ pytest -q tests/test_metrics_generative.py::test_runner_handles_rouge_dict_retur
 **What This Validates**:
 - Backward compatibility with different ROUGE implementations
 - Registry returns float (codex_ml.metrics.registry)
-- Some external implementations Phase 5 return dict
+- Some external implementations may return dict
 - Runner handles both gracefully
 
 **Implementation Details**:

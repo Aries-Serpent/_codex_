@@ -17,4 +17,4 @@
 ## Risks & Follow-Ups
 
 - If additional branches appear later, replicate this analysis and document merge bases before applying fixes.
-- Keep an eye on merges from numbered base branches—they Phase 5 overwrite audit scaffolding if not rebased carefully.
+- Keep an eye on merges from numbered base branches—they may overwrite audit scaffolding if not rebased carefully.

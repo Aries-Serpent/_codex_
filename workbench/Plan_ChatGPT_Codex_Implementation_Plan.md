@@ -1421,7 +1421,7 @@ Context & Preconditions
   - tests/mcp/test_tenant_isolation.py
   - .github/workflows/integration-gated.yml
   - docs/SECRETS_RUNBOOK.md
-- Plan B (Pinecone adapter) Phase 5 exist but façade must default to the mock backend when ADAPTER_CLASS not set.
+- Plan B (Pinecone adapter) may exist but façade must default to the mock backend when ADAPTER_CLASS not set.
 - All new modules must be import-safe (lazy imports for optional heavy dependencies) and unit tests must use mocks/fixtures only (no network or provider secrets in default CI).
 
 Non-goals
@@ -1856,7 +1856,7 @@ def ensure_request_id(request: Request) -> str:
     rid = request.headers.get("x-request-id")
     if not rid:
         rid = str(uuid.uuid4())
-        # Note: we don't mutate headers immutable mapping; handler Phase 5 read request.state.request_id
+        # Note: we don't mutate headers immutable mapping; handler may read request.state.request_id
     request.state.request_id = rid
     return rid
 ```
@@ -2735,7 +2735,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 COPY pyproject.toml pyproject.toml
-# Install minimal runtime deps (user Phase 5 extend)
+# Install minimal runtime deps (user may extend)
 RUN pip install --upgrade pip
 RUN pip install fastapi pytest
 

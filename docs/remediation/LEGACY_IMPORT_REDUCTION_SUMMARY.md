@@ -111,7 +111,7 @@ If strict numeric compliance with ≤15 is required:
 **Option B: Hydra Dependency Reduction** 
 - Refactor 14+ hydra-core usage sites to reduce dependency footprint
 - Estimated effort: 2-3 days, involves restructuring CLI and config management
-- Risk: Phase 5 impact functionality that relies on hydra features
+- Risk: may impact functionality that relies on hydra features
 
 **Option C: Accept Current State**
 - Primary architectural goal achieved (Split Brain eliminated)

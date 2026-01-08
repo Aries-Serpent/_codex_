@@ -74,7 +74,7 @@ Set `scoring.coverage.enabled: false` in workflow.yaml
 **Troubleshooting**:
 - If coverage_map.json not generated: Check xml_patterns match your coverage output location
 - If test scores unchanged: Verify coverage XML has actual coverage data (not 0%)
-- Performance: Large coverage files (>10MB) Phase 5 slow processing
+- Performance: Large coverage files (>10MB) may slow processing
 
 ### Token-Similarity Duplication Configuration
 ```yaml

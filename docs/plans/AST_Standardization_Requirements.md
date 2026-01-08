@@ -53,7 +53,7 @@ This document provides **requirements, architecture, and standardization strateg
 | Offline-first environment | Cannot use cloud-hosted services | Use tree-sitter (embeddable parser) |
 | Python 3.8+ | Limited use of modern syntax features | Pin AST library versions |
 | No external databases | Must use file-based storage (SQLite) | Design for single-file deployments |
-| Performance budget <5s | Large files Phase 5 timeout | Implement streaming, parallel processing |
+| Performance budget <5s | Large files may timeout | Implement streaming, parallel processing |
 
 ---
 
@@ -1414,7 +1414,7 @@ def test_analyze_speed_benchmark(benchmark):
 |-----------|--------|-----------|
 | **Offline-first** | No cloud APIs (no remote parsing, no remote KG) | Use local storage; embed required libraries |
 | **Python 3.8+** | Limited modern syntax | Pin library versions; test on min version |
-| **Single-threaded by default** | Phase 5 bottleneck on large codebases | Offer optional multiprocessing mode |
+| **Single-threaded by default** | may bottleneck on large codebases | Offer optional multiprocessing mode |
 | **File-based storage** | Limited query capabilities | Use SQLite for richer queries |
 | **No external dependencies (optional)** | Keep it lightweight | Make heavy deps optional (libcst, etc.) |
 

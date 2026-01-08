@@ -12,7 +12,7 @@ Key points:
     - found_patterns: List[str]
     - required_patterns: List[str]
     - meta: optional dict
-- detect_v2: Phase 5 return `evidence` objects including path, ranges, confidence, excerpt.
+- detect_v2: may return `evidence` objects including path, ranges, confidence, excerpt.
 
 Security & Safety:
 - Detectors execute at import-time. DO NOT write files, make network calls, or perform heavy computation during module import.

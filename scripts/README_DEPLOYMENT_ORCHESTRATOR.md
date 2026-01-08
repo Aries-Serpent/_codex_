@@ -259,7 +259,7 @@ ls -la .codex/deployments/
 ### Sensitive Data
 
 - Never commit `GH_TOKEN` to version control
-- Deployment logs Phase 5 contain sensitive information
+- Deployment logs may contain sensitive information
 - Artifacts are excluded from git via `.gitignore`
 
 ### Authentication

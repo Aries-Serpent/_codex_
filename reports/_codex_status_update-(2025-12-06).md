@@ -182,7 +182,7 @@ This report delivers an explicitly exhaustive, end-to-end audit of the `_codex_`
 ### 6) Logging & Monitoring (Status: Good, Tighten Defaults)
 
 **Gaps:**
-- W&B Phase 5 default to online; NVML metrics optional/off by default
+- W&B may default to online; NVML metrics optional/off by default
 - TensorBoard path variability between runs; offline constraints inconsistent
 - No centralized metrics sink; no alerting; no Prometheus/OTel exporters
 - Log rotation/PII scrubbing missing

@@ -555,7 +555,7 @@ If Navigation Confused:
 
 ## Limitations
 
-- Dataset is snapshot; Phase 5 not reflect latest
+- Dataset is snapshot; may not reflect latest
 - Cannot execute code (suggest user tests)
 - Large files may need summarization
 - Cross-repository dependencies not included

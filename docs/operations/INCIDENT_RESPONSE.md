@@ -226,7 +226,7 @@ Follow-up: Post-incident review scheduled for [Date]
 ```
 We are currently experiencing [issue description].
 
-Impact: [What users Phase 5 experience]
+Impact: [What users may experience]
 Status: Our team is actively working to resolve this.
 Updates: We will provide updates at [URL/channel].
 

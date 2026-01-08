@@ -453,7 +453,7 @@ diff <(cat audit_artifacts_run1/capabilities_scored.json | jq '.capabilities | s
 | CI Health Metrics | 30 days | Trend analysis |
 | Code Quality | 90 days | Quality improvement tracking |
 
-**Note**: GitHub Actions has a default artifact retention of 90 days. Individual workflows Phase 5 override this.
+**Note**: GitHub Actions has a default artifact retention of 90 days. Individual workflows may override this.
 
 ---
 

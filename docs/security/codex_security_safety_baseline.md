@@ -49,7 +49,7 @@ Artifacts produced:
 
 ## 4. Next Steps (Future Work)
 
-Future hardening Phase 5 include:
+Future hardening may include:
 
 * Stronger secret scanning (regex-based, entropy-based).
 * Dependency vulnerability checks (e.g. using offline advisories).

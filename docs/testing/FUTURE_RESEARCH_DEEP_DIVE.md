@@ -202,7 +202,7 @@ Output only the test code, no explanations."""
 4. Generate test file
 
 **Pros**: Faster, more predictable, no API costs  
-**Cons**: Less flexible, Phase 5 miss complex edge cases
+**Cons**: Less flexible, may miss complex edge cases
 
 #### Approach 3: Hybrid Approach
 **Method**: Template-based for simple cases, LLM for complex cases

@@ -12,7 +12,7 @@ This document defines the governance policy for import shims and canonical modul
 ## Policy Summary
 
 - **Canonical Location**: All runtime modules should ultimately live under `src/`
-- **Legacy Shims**: Temporary shims Phase 5 exist in root paths (e.g., `training/`) during convergence
+- **Legacy Shims**: Temporary shims may exist in root paths (e.g., `training/`) during convergence
 - **Shim Implementation**: Shims MUST re-export from `src.*` and maintain API equivalence
 - **Identity Requirements**: `training.X` must resolve to equivalent functionality as `src.training.X`
 - **CI Enforcement**: Strict conflict detection enabled; duplicates allowed only if whitelisted

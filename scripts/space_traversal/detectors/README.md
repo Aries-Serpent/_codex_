@@ -12,7 +12,7 @@ Key points:
     - found_patterns: List[str]
     - required_patterns: List[str]
     - meta: optional dict
-- detect_v2: Phase 5 return `evidence` objects including path, ranges, confidence, excerpt.
+- detect_v2: may return `evidence` objects including path, ranges, confidence, excerpt.
 
 Security & Safety:
 - Detectors execute at import-time. DO NOT write files, make network calls, or perform heavy computation during module import.
@@ -50,7 +50,7 @@ def detect(file_index: dict) -> dict:
    - Evidence: Balanced sample of files from both locations (5 from root + 5 from src)
 
 2. **Library Shadowing Detection**:
-   - Identifies root directories that Phase 5 shadow PyPI packages
+   - Identifies root directories that may shadow PyPI packages
    - Known shadow risks: `hydra`, `torch`, `numpy`, `requests`, `wandb`, `mlflow`, `pandas`
    - Evidence: Sample files from shadowing directory
 

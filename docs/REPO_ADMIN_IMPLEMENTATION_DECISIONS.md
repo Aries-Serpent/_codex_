@@ -189,7 +189,7 @@ code_smells:
     lines_threshold: 500
     coupling_threshold: 10
     severity: warning
-    description: "Classes exceeding multiple thresholds Phase 5 violate SRP"
+    description: "Classes exceeding multiple thresholds may violate SRP"
 ```
 
 **Tuning Guidance:**

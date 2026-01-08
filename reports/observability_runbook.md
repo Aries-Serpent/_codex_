@@ -48,4 +48,4 @@ This runbook captures the monitoring baseline for the audit. Update sections wit
 ## Next Steps
 - {{NEXT_STEP_ONE}}
 - {{NEXT_STEP_TWO}}
-- Residual risk: remote URIs Phase 5 still be configured in sanctioned environments—confirm `tracking_summary.ndjson` shows the intended `allow_remote_flag` and no unexpected downgrades.
+- Residual risk: remote URIs may still be configured in sanctioned environments—confirm `tracking_summary.ndjson` shows the intended `allow_remote_flag` and no unexpected downgrades.

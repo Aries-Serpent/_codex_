@@ -99,7 +99,7 @@ if not credentials:
 **Status:** ✅ RESOLVED
 
 ### Analysis
-The secret scan stub writes findings (which Phase 5 contain sensitive snippets) to output files.
+The secret scan stub writes findings (which may contain sensitive snippets) to output files.
 
 ### Resolution
 **Fix:** Redact actual secret values in output, only show location and type.

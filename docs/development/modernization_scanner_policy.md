@@ -196,7 +196,7 @@ if (result := expensive_computation()):
 1. Opt-in only
 2. Apply to obviously beneficial cases
 3. Team discussion for coding style
-4. Phase 5 remain disabled permanently
+4. may remain disabled permanently
 
 ## Using the Scanner
 

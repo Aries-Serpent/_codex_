@@ -359,7 +359,7 @@ we should see, after `python scripts/space_traversal/audit_runner.py run`:
 - **Safeguards** for:
   - `mcp-authz-authn`, `mcp-rate-limiting`, `mcp-error-handling`, `mcp-tools-integration`, `mcp-observability` move from ~0.0–0.3 toward ~0.5–1.0.
 - **Tests** for all `mcp-*` capabilities move closer to ~0.4–0.7 (depending on evidence overlap).
-- **Documentation** Phase 5 rise slightly from ~0.33 to ~0.4–0.6.
+- **Documentation** may rise slightly from ~0.33 to ~0.4–0.6.
 
 Given weights (tests 0.25, safeguards 0.15, docs 0.15), these improvements should move several MCP capabilities from **Low (<0.70)** into **Medium (≥0.70)**, possibly approaching **High (≥0.85)** for the stronger ones (e.g., `mcp-observability`, `mcp-tools-integration`).
 

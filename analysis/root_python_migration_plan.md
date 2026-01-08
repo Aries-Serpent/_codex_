@@ -25,7 +25,7 @@ _No safe-to-move files were identified under the current patterns._
 
 ### codex_task_sequence.py — Requires Refactor
 
-This shim re-exports `cli.task_sequence` so legacy entry points can continue importing the historical module name. While there are no direct code imports inside the repository, documentation and status templates cite the file explicitly, and downstream tooling Phase 5 still execute `import codex_task_sequence`.
+This shim re-exports `cli.task_sequence` so legacy entry points can continue importing the historical module name. While there are no direct code imports inside the repository, documentation and status templates cite the file explicitly, and downstream tooling may still execute `import codex_task_sequence`.
 
 | Reference | Line(s) | Snippet | Suggested Action |
 | --- | --- | --- | --- |

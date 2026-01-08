@@ -81,6 +81,6 @@ Use this to verify presets and required checks before enabling `--apply`.
 
 ## 6) Cautions
 
-- **Best-effort security features:** GitHub Phase 5 return `403/404` when the plan is not available (e.g., Free tier). The script reports "skipped" for those cases.
+- **Best-effort security features:** GitHub may return `403/404` when the plan is not available (e.g., Free tier). The script reports "skipped" for those cases.
 - **No workflow changes:** Scripts intentionally avoid workflow YAML creation/modification.
 - **Verbose logs:** Add `--verbose` to surface masked auth headers and target branch detection.

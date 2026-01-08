@@ -44,7 +44,7 @@ Run local build and smoke without CI:
 - Smoke (enforce HEALTHCHECK): `SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000`
 - Pytest (opt-in): `RUN_CONTAINER_SMOKE=1 pytest -q tests/test_container_smoke.py`
 
-Note: In environments without Docker you Phase 5 see “Tests not run (Docker unavailable in environment).”
+Note: In environments without Docker you may see “Tests not run (Docker unavailable in environment).”
 This is expected; use a machine with Docker installed or a self-hosted runner to validate containers.
 
 ## Owner-approval window (timeboxed switch)
@@ -81,4 +81,4 @@ created_at: "2025-10-20T16:00:00Z"
 ```text
 
 Count-based approvals (next N runs):
-- Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners Phase 5 manually adjust as needed.
+- Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners may manually adjust as needed.

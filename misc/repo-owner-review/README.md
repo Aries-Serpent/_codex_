@@ -5,7 +5,7 @@
 **⚠️ Important Notice**: 
 - Files in this folder are archived for review and potential deletion
 - These files are NOT maintained and may be outdated
-- Repository owner Phase 5 delete these files at any time
+- Repository owner may delete these files at any time
 - All files are backed up in git history
 
 ---

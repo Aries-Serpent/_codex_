@@ -17,6 +17,6 @@
 
 ## Failure Handling
 - Schema invalid → security session fails fast with message
-- Expired allowlist → treated as non-allowlisted; build Phase 5 fail on HIGH/CRITICAL
+- Expired allowlist → treated as non-allowlisted; build may fail on HIGH/CRITICAL
 
 — End —

@@ -24,7 +24,7 @@ Executed with best effort on this iteration:
 
 ## Residual Risks
 - **Rate limiter init timing:** If configuration is read only at import, test-level overrides may not take effect without reload.
-- **Dependency availability:** ML comprehensive tests Phase 5 still require optional deps (torch, transformers).
+- **Dependency availability:** ML comprehensive tests may still require optional deps (torch, transformers).
 
 ## Next Iteration Notes
 - If 429s persist, locate the rate limiter config and apply test-level monkeypatch + reload.

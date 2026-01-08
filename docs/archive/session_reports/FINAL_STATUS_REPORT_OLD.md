@@ -216,19 +216,19 @@ coverage:
 
 **Risk 1: Test Detection Accuracy**
 - **Issue**: Some tests not automatically associated with capabilities
-- **Impact**: Scores Phase 5 not reflect actual test coverage
+- **Impact**: Scores may not reflect actual test coverage
 - **Mitigation**: Tests exist and pass; audit scoring will improve with better detection
 - **Status**: Low priority - functional tests present
 
 **Risk 2: Documentation Keyword Matching**
-- **Issue**: Documentation Phase 5 not match expected keywords precisely
+- **Issue**: Documentation may not match expected keywords precisely
 - **Impact**: Doc scores lower than actual quality
 - **Mitigation**: Comprehensive docs created; keyword tuning in progress
 - **Status**: Medium priority - docs comprehensive, scoring improving
 
 **Risk 3: Batch Activation Complexity**
 - **Issue**: 113 tests may have API mismatches requiring fixes
-- **Impact**: Activation Phase 5 take multiple cycles
+- **Impact**: Activation may take multiple cycles
 - **Mitigation**: Sequential approach (Option A), proven cycle pattern from batches 1-12
 - **Status**: Low risk - well-understood process
 

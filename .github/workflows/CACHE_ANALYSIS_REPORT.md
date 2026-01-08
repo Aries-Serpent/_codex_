@@ -21,7 +21,7 @@ This document provides a comprehensive analysis of GitHub Actions caching implem
 **Breakdown by Type**:
 - Python pip caches: ~9 GB (largest consumer)
 - Python setup caches: 7 MB
-- UV/deps caches: ~6 GB (note: Phase 5 overlap with pip in accounting)
+- UV/deps caches: ~6 GB (note: may overlap with pip in accounting)
 - CodeQL caches: 0 MB
 - **Effective Total**: 7.69 GB (GitHub's calculation)
 
