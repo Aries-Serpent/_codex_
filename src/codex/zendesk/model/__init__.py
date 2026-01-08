@@ -9,6 +9,7 @@ from .role import Role, ZendeskRolePermissions
 from .routing import AgentSkills, Attribute, RoutingRule, SkillValue, TicketSkillsPolicy
 from .sla import SLAPolicy
 from .talk import Greeting, IVRMenu, IVRRoute, PhoneNumberBinding
+from .ticket import Ticket, TicketComment, TicketCustomField, TicketVia
 from .trigger import Action, Condition, Trigger
 from .view import View
 from .webhook import Webhook
@@ -33,9 +34,13 @@ __all__ = [
     "SLAPolicy",
     "SkillValue",
     "TemplatePatch",
+    "Ticket",
+    "TicketComment",
+    "TicketCustomField",
     "TicketField",
     "TicketForm",
     "TicketSkillsPolicy",
+    "TicketVia",
     "Trigger",
     "View",
     "Webhook",
