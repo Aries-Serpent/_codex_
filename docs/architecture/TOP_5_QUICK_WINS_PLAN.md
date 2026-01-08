@@ -73,7 +73,7 @@ Transform ad-hoc fetching into a resident service with "Check and Pull" synchron
 
 ### Implementation Plan
 
-#### Phase 1.1: Service Architecture (Day 1-2)
+#### Phase 1.1: Service Architecture (Pre-commit Cycle 1-2)
 
 **File:** `src/services/crawler/zendesk_sync.py`
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     # service.run_forever()  # Resident mode for production
 ```
 
-#### Phase 1.2: Integration Points (Day 3)
+#### Phase 1.2: Integration Points (Pre-commit Cycle 3)
 
 **File:** `src/codex/ingest/adapter.py`
 
@@ -262,7 +262,7 @@ def process_document(
     logger.info(f"Document {doc_id} staged at {doc_file}")
 ```
 
-#### Phase 1.3: Deployment Configuration (Day 4)
+#### Phase 1.3: Deployment Configuration (Pre-commit Cycle 4)
 
 **File:** `.github/workflows/knowledge-crawler.yml`
 
@@ -322,7 +322,7 @@ Establish `src/codex/zendesk/model` as Single Source of Truth with strict Pydant
 
 ### Implementation Plan
 
-#### Phase 2.1: Core Schema Definition (Day 1-2)
+#### Phase 2.1: Core Schema Definition (Pre-commit Cycle 1-2)
 
 **File:** `src/codex/zendesk/model/ticket.py`
 
@@ -515,7 +515,7 @@ class Ticket(BaseModel):
         )
 ```
 
-#### Phase 2.2: Validator Suite (Day 3)
+#### Phase 2.2: Validator Suite (Pre-commit Cycle 3)
 
 **File:** `tests/test_zendesk_ticket_schema.py`
 
@@ -639,7 +639,7 @@ class TestTicketValidation:
         assert "api" in ticket.tags
 ```
 
-#### Phase 2.3: Migration Path (Day 4)
+#### Phase 2.3: Migration Path (Pre-commit Cycle 4)
 
 **File:** `docs/migration/ZENDESK_SCHEMA_MIGRATION.md`
 
@@ -714,7 +714,7 @@ Migrate SLA business logic from CSV files into validated Policy Objects.
 
 ### Implementation Plan
 
-#### Phase 3.1: Policy Model (Day 1)
+#### Phase 3.1: Policy Model (Pre-commit Cycle 1)
 
 **File:** `src/codex/dynamics/model/sla_policy.py`
 
@@ -846,7 +846,7 @@ def calculate_sla_deadline(
     return start_time + duration
 ```
 
-#### Phase 3.2: Deprecate CSV (Day 2)
+#### Phase 3.2: Deprecate CSV (Pre-commit Cycle 2)
 
 **File:** `configs/deployment/d365/slas.csv.DEPRECATED`
 
@@ -876,7 +876,7 @@ Replace insecure file-based IPC with authenticated named pipes.
 
 ### Implementation Plan
 
-#### Phase 4.1: Secure Bridge Implementation (Day 1-2)
+#### Phase 4.1: Secure Bridge Implementation (Pre-commit Cycle 1-2)
 
 **File:** `src/bridge/secure_ipc.py`
 
@@ -995,7 +995,7 @@ def secure_bridge(bridge_name: str = "codex_copilot_bridge"):
         bridge.cleanup()
 ```
 
-#### Phase 4.2: Migration Script (Day 3)
+#### Phase 4.2: Migration Script (Pre-commit Cycle 3)
 
 **File:** `scripts/migrate_bridge.py`
 
@@ -1058,7 +1058,7 @@ Configure `codex_digest` to auto-generate concise `digest.md` from normalized da
 
 ### Implementation Plan
 
-#### Phase 5.1: Digest Pipeline (Day 1-2)
+#### Phase 5.1: Digest Pipeline (Pre-commit Cycle 1-2)
 
 **File:** `src/services/digest/pipeline.py`
 
@@ -1166,7 +1166,7 @@ if __name__ == "__main__":
     pipeline.generate_digest()
 ```
 
-#### Phase 5.2: Automation (Day 3)
+#### Phase 5.2: Automation (Pre-commit Cycle 3)
 
 **File:** `.github/workflows/digest-generation.yml`
 
@@ -1220,20 +1220,20 @@ jobs:
 
 ## Implementation Timeline
 
-### Week 1: Foundation
-- **Day 1-2:** Quick Win #1 Phase 1.1-1.2 (Knowledge Crawler core)
-- **Day 3-4:** Quick Win #2 Phase 2.1 (Schema Authority)
-- **Day 5:** Quick Win #3 Phase 3.1 (Policy Objects)
+### Phase 1: Foundation
+- **Pre-commit Cycle 1-2:** Quick Win #1 Phase 1.1-1.2 (Knowledge Crawler core)
+- **Pre-commit Cycle 3-4:** Quick Win #2 Phase 2.1 (Schema Authority)
+- **Pre-commit Cycle 5:** Quick Win #3 Phase 3.1 (Policy Objects)
 
-### Week 2: Integration
-- **Day 1-2:** Quick Win #4 (Bridge Hardening)
-- **Day 3-4:** Quick Win #5 (Documentation Distillation)
-- **Day 5:** Integration testing and validation
+### Phase 2: Integration
+- **Pre-commit Cycle 1-2:** Quick Win #4 (Bridge Hardening)
+- **Pre-commit Cycle 3-4:** Quick Win #5 (Documentation Distillation)
+- **Pre-commit Cycle 5:** Integration testing and validation
 
-### Week 3: Migration & Cleanup
-- **Day 1-2:** Legacy code deprecation
-- **Day 3:** Documentation updates
-- **Day 4-5:** Final testing and rollout
+### Phase 3: Migration & Cleanup
+- **Pre-commit Cycle 1-2:** Legacy code deprecation
+- **Pre-commit Cycle 3:** Documentation updates
+- **Pre-commit Cycle 4-5:** Final testing and rollout
 
 ---
 
@@ -1270,7 +1270,7 @@ jobs:
 
 ### Risk 1: Breaking Changes
 **Mitigation:** 
-- Parallel run legacy and modern systems for 2 weeks
+- Parallel run legacy and modern systems for 2 implementation cycles
 - Feature flags for gradual rollout
 - Comprehensive test coverage before deprecation
 
