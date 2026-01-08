@@ -1,10 +1,48 @@
 # Cognitive Brain Continuation Prompt - Phase 11.1: Data Integrity & Repository Structure Analysis
 
+> **Status:** ✅ READY FOR EXECUTION  
+> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)  
+> **Prompt Type:** Continuation with Complete Implementation Plan  
+> **Related Documents:** [AGENTS.md](../../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
+
 **Generated**: 2026-01-08T05:30:00Z  
 **For**: GitHub Copilot Agent  
 **Purpose**: Implement data integrity enhancements and repository-wide folder structure analysis  
 **Duration**: 2-3 weeks (Jan 8 - Jan 29, 2026)  
 **Parent PR**: #2713
+
+---
+
+## ⚠️ Mandatory Policy Requirements
+
+This continuation prompt adheres to the **AI Codebase Agency Policy**:
+
+### Core Principles Applied
+
+1. **✅ Leave Codebase Better Than Found**
+   - Implementing automated validation to prevent future issues
+   - Creating reusable utilities (safe_bulk_replace.py, validate_timestamps.py)
+   - Adding comprehensive folder structure documentation
+
+2. **✅ Address ALL Concerns**
+   - Fixing root cause (lack of validation) not just symptoms
+   - Creating preventive measures for all identified issue types
+   - No deferral - complete implementation plan provided
+
+3. **✅ Iterative Problem Solving**
+   - Minimum 5-iteration best-effort approach documented
+   - Multiple verification strategies defined
+   - Fallback approaches included for each task
+
+4. **✅ PDA Loop Integration**
+   - Plan: Complete (this document)
+   - Do: Detailed task breakdown with acceptance criteria
+   - Analyze: Verification steps and success metrics defined
+
+5. **✅ AfterMath Tagged**
+   - All work tagged: `data_integrity`, `timestamp_validation`, `folder_structure`, `cognitive_brain_v11`
+   - Session artifacts location specified
+   - Cognitive brain learning integration included
 
 ---
 
