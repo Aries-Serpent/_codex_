@@ -76,7 +76,7 @@ class AdvancedPatternDetector:
 #### R2: Behavior Prediction Enhancement (HIGH PRIORITY)
 
 **Research-Backed Approach**:
-Based on Previous Cycle study showing ARIMAX models forecast technical debt trends effectively, implement:
+Based on 2025 study showing ARIMAX models forecast technical debt trends effectively, implement:
 
 **Architecture**:
 ```python

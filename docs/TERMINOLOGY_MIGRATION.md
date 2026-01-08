@@ -189,13 +189,13 @@ Use these symbols to indicate the physics principle aligned with each iteration:
 
 ## Historical Context
 
-**Previous Approach** (2025-Previous Cycle Cycle 1):
+**Previous Approach** (2025-2025 Cycle 1):
 - Week-based timelines (Pre-commit 1-16)
 - Day-level task breakdowns
 - Fixed sprint durations
 - Calendar-bound milestones
 
-**Current Approach** (Previous Cycle Cycle 2+):
+**Current Approach** (2025 Cycle 2+):
 - Iteration-based cycles
 - Commit-level granularity
 - Flexible duration

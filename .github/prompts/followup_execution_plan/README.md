@@ -194,7 +194,7 @@ Create evidence file: `.codex/evidence/gap_N_implementation.json`
 ```json
 {
   "gap_id": "GAP_1_KUBERNETES",
-  "implemented_date": "Previous Cycle-12-XX",
+  "implemented_date": "2025-12-XX",
   "capabilities_addressed": [14, 15, 16],
   "files_created": [
     "manifests/k8s/base/deployment.yaml",

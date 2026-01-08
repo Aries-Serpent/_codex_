@@ -17,7 +17,7 @@ This bundle provides READY-TO-COPY prompts for GitHub Copilot Agents to implemen
 | requirements-eval.txt | Platform | Segmented evaluation install surface |
 | requirements-notebook.txt | Platform | Optional interactive surface |
 | docs/analysis/dependency_space_triage.md | Platform | Reference triage (Ref: f40ff2bbcacf567eef3dc6bd8c95733859b927dc) |
-| docs/arch/ADR-Previous Cycle-11-XX-dependency-segmentation.md | Architecture | Justifies segmentation & governance hooks |
+| docs/arch/ADR-2025-11-XX-dependency-segmentation.md | Architecture | Justifies segmentation & governance hooks |
 | .codex/evidence/dependency_ops.jsonl | Platform | New evidence stream (append-only) |
 
 ---

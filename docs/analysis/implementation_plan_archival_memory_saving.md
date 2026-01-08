@@ -44,7 +44,7 @@ Notes:
 | PR-A3 | 0C_base_ | Vendor guard step | CI job pre-test step invoking vendor scan (fail-fast) |
 | PR-B1 | 0D_base_ | Evidence-enabled scripts | scripts/setup.sh, scripts/maintenance.sh (rc5) with dependency_ops.jsonl logging |
 | PR-B2 | 0D_base_ | Agents & docs updates | AGENTS.md, docs/analysis/dependency_space_triage.md, CHANGELOG.md |
-| PR-B3 | 0D_base_ | ADRs for large families | docs/arch/ADR-Previous Cycle-11-XX-dependency-segmentation.md |
+| PR-B3 | 0D_base_ | ADRs for large families | docs/arch/ADR-2025-11-XX-dependency-segmentation.md |
 | PR-C1 | main | Enable minimal augmentation by default in CPU posture | Default CODEX_CPU_MINIMAL=1 for CI; keep developer opt-in documented |
 
 ---
@@ -217,6 +217,6 @@ Impact:
 | AGENTS.md | Docs/Platform | New sections per plan |
 | requirements-*.txt | Platform | Segmented install surfaces |
 | docs/analysis/dependency_space_triage.md | Platform | Triaged tables (Ref: f40ff2…) |
-| docs/arch/ADR-Previous Cycle-11-XX-*.md | Architecture | Dependency segmentation ADR |
+| docs/arch/ADR-2025-11-XX-*.md | Architecture | Dependency segmentation ADR |
 
 ---

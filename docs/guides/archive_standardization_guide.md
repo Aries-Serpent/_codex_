@@ -566,7 +566,7 @@ src/codex/archive/evidence_schema.py           # Schema validator
 - **Framework Guide**: `docs/arch/_archive-policy/standardization-framework.md`
 - **Sigstore Setup**: `docs/arch/_archive-policy/README-standardization.md`
 - **Standards Mapping**: `docs/compliance/archive_standards_mapping.md`
-- **ADRs**: `docs/arch/adr-Previous Cycle-11-*.md`
+- **ADRs**: `docs/arch/adr-2025-11-*.md`
 
 ---
 

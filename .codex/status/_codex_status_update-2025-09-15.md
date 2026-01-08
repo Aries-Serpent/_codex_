@@ -169,7 +169,7 @@ if redactions > 0:
     click.echo(f"[warning] {redactions} redaction(s) applied")
 ```text
 
-**Risk:** Sanitisation Phase 5 remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
+**Risk:** Sanitisation may remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
 
 **Rollback:** Add a `--no-safety` flag to disable sanitisation or revert the patch entirely.
 
@@ -487,7 +487,7 @@ if redactions > 0:
     click.echo(f"[warning] {redactions} redaction(s) applied")
 ```text
 
-**Risk:** Sanitisation Phase 5 remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
+**Risk:** Sanitisation may remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
 
 **Rollback:** Add a `--no-safety` flag to disable sanitisation or revert the patch entirely.
 

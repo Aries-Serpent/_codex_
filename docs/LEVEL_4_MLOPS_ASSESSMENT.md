@@ -155,7 +155,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ## Metrics & KPIs
 
-### Current Performance (Phase 4 (Previous Cycle))
+### Current Performance (Phase 4 (2024))
 - **Deployment Frequency**: 12 deployments/month (target: 20)
 - **Lead Time (code → production)**: 3.5 days (target: 1 day)
 - **Model Accuracy Drift**: 2.1% avg degradation/month (target: <1%)

@@ -335,7 +335,7 @@ All primary documentation now lives in the [`docs/`](docs/) directory.
 - **[Code Quality Tooling](docs/capabilities/code_quality_tooling.md)** - Complete code quality stack with Ruff, Black, mypy, pytest, and nox
 - **[GitHub CLI Troubleshooting](.github/docs/GH_CLI_Resolution_Copilot.md)** - Comprehensive guide for gh CLI issues and REST API alternatives
 
-### 🆕 Latest Updates (Phase 12 Previous Cycle)
+### 🆕 Latest Updates (Dec 2025)
 
 #### Audit Pipeline v1.5.5 (2025-12-10)
 

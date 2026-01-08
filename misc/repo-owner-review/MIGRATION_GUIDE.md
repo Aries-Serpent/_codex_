@@ -15,10 +15,10 @@ The repository is consolidating configuration files from the legacy `conf/` dire
 
 | Phase | Date | Action |
 |-------|------|--------|
-| **Deprecation Notice** | Phase 12 Previous Cycle | All `conf/` files marked deprecated |
-| **Grace Period** | Phase 1 Current Cycle - Phase 6 Current Cycle | Both directories functional |
+| **Deprecation Notice** | Dec 2025 | All `conf/` files marked deprecated |
+| **Grace Period** | Jan 2026 - Jun 2026 | Both directories functional |
 | **Migration Deadline** | Jun 30, 2026 | All references should be updated |
-| **Removal** | v2.0.0 (Phase 2 (Current Cycle)) | `conf/` directory removed |
+| **Removal** | v2.0.0 (Q2 2026) | `conf/` directory removed |
 
 ---
 
