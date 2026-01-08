@@ -69,7 +69,7 @@ def update_artifact_version(
     versions[artifact_name] = new_version
     version_file.write_text(json.dumps(versions, indent=2), encoding="utf-8")
 
-    timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%SZ")
+    timestamp = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%SZ")
     log_entry = f"{timestamp} - {artifact_name} updated to v{new_version} ({bump_level} change)\n"
     with changelog_file.open("a", encoding="utf-8") as chf:
         chf.write(log_entry)

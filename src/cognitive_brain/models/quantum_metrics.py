@@ -7,7 +7,7 @@ ORM-like interface that works with SQLite, PostgreSQL, and MariaDB.
 
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, UTC
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
@@ -53,7 +53,7 @@ class QuantumMetric:
             self.metadata = {}
         
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(UTC)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert model to dictionary representation."""
@@ -125,7 +125,7 @@ class QuantumMetricRepository:
             VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
-                metric.timestamp.isoformat() if metric.timestamp else datetime.utcnow().isoformat(),
+                metric.timestamp.isoformat() if metric.timestamp else datetime.now(UTC).isoformat(),
                 metric.feature,
                 metric.metric_name,
                 metric.metric_value,

@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Optional
 
@@ -145,7 +145,7 @@ class MetricStorage:
         Returns:
             Dictionary with saved file paths/IDs
         """
-        timestamp = timestamp or datetime.utcnow().isoformat() + "Z"
+        timestamp = timestamp or datetime.now(UTC).isoformat() + "Z"
 
         result = {}
 

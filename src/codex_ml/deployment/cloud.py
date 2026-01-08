@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Optional
 
@@ -16,7 +16,7 @@ _DEFAULT_PROJECT = "codex-offline"
 
 
 def _timestamp() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    return datetime.now(UTC).isoformat() + "Z"
 
 
 def _resolve_output_dir(output_dir: str | Path | None) -> Path | None:

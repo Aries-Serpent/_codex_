@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 """Minimal callback primitives shared by the training loops."""
 
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Optional
 
 __all__ = [
@@ -49,7 +49,7 @@ class Callback:
                 "callback": self.name,
                 "stage": stage,
                 "error": str(error),
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(UTC).isoformat() + "Z",
             }
         )
 

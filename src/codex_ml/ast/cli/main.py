@@ -13,7 +13,7 @@ Usage:
 import argparse
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import List, Optional
 
@@ -72,7 +72,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     if args.format == "json":
         output = {
             "path": str(target_path),
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "analyzers": registry.list_analyzers(),
             "findings": [],
             "status": "pending_parser_integration",
@@ -169,7 +169,7 @@ def cmd_export(args: argparse.Namespace) -> int:
 
         if args.format == "json":
             data = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "total": len(findings),
                 "findings": [f.to_dict() for f in findings],
             }

@@ -5,7 +5,7 @@ Monitors quantum feature metrics, detects degradation, and triggers
 automatic rollbacks when coherence falls below acceptable thresholds.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 from enum import Enum
@@ -198,7 +198,7 @@ class CoherenceMonitor:
                             if alert_level == AlertLevel.CRITICAL
                             else threshold.warning_threshold
                         ),
-                        timestamp=datetime.utcnow(),
+                        timestamp=datetime.now(UTC),
                         message=self._format_alert_message(
                             feature, metric_name, value, alert_level, threshold
                         )
@@ -411,7 +411,7 @@ class CoherenceMonitor:
         initial_count = len(self._active_alerts)
         
         if older_than_hours:
-            cutoff = datetime.utcnow() - timedelta(hours=older_than_hours)
+            cutoff = datetime.now(UTC) - timedelta(hours=older_than_hours)
             self._active_alerts = [
                 a for a in self._active_alerts
                 if a.timestamp > cutoff

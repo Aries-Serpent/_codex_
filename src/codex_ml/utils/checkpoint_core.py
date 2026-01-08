@@ -13,7 +13,7 @@ import shutil
 import time
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 from itertools import count
 from pathlib import Path
 from typing import Any
@@ -209,7 +209,7 @@ def capture_environment_summary() -> dict[str, Any]:
         "machine": platform.machine(),
     }
     try:
-        summary["timestamp_utc"] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+        summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat() + "Z"
     except Exception as exc:  # pragma: no cover
         logger.debug("Failed to get timestamp: %s", exc)
 
@@ -391,7 +391,7 @@ _CKPT_COUNTER = count()
 
 
 def _ckpt_name(prefix: str = "ckpt") -> str:
-    timestamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
     suffix = next(_CKPT_COUNTER)
     return f"{prefix}-{timestamp}-{suffix:04d}.pt"
 

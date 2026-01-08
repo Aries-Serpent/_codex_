@@ -143,7 +143,7 @@ def get_session_info(interactive: bool = True) -> dict[str, Any]:
         "short_commit": git_context["short_commit"] or "unknown",
         "author": git_context["author"] or "unknown",
         "email": git_context["email"] or "unknown",
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.datetime.now(datetime.UTC).isoformat() + "Z",
     }
 
     logger.info(f"Session context discovered: {session_info}")

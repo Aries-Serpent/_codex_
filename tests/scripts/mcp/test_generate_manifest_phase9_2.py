@@ -17,7 +17,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 
 
 class TestManifestSchema:
@@ -54,7 +54,7 @@ class TestManifestSchema:
     def test_manifest_timestamp_format(self) -> None:
         """Test timestamp format."""
         # Arrange
-        timestamp = datetime.utcnow().isoformat() + "Z"
+        timestamp = datetime.now(UTC).isoformat() + "Z"
         manifest = {"created_at": timestamp}
         
         # Act & Assert

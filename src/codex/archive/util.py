@@ -27,7 +27,7 @@ ISO_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 def utcnow() -> str:
     """Return a UTC timestamp truncated to seconds."""
 
-    return _dt.datetime.utcnow().replace(microsecond=0).strftime(ISO_FORMAT)
+    return _dt.datetime.now(_dt.UTC).replace(microsecond=0).strftime(ISO_FORMAT)
 
 
 def utcnow_iso() -> str:

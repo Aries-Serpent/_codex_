@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Iterable
 
@@ -113,7 +113,7 @@ class RemoteConnector(Connector):
             "files": sorted(str(item) for item in files),
         }
         timestamp_key = "created_at" if created else "updated_at"
-        payload[timestamp_key] = datetime.utcnow().isoformat() + "Z"
+        payload[timestamp_key] = datetime.now(UTC).isoformat() + "Z"
         self._manifest_path.write_text(
             json.dumps(payload, indent=2, sort_keys=True),
             encoding="utf-8",

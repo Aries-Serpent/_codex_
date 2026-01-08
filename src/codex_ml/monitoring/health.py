@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, MutableMapping
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def _now() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    return datetime.now(UTC).isoformat() + "Z"
 
 
 def _normalize(value: Any) -> Any:
@@ -137,7 +137,7 @@ class HealthChecker:
 
         return HealthReport(
             status=status,
-            timestamp=datetime.utcnow().isoformat() + "Z",
+            timestamp=datetime.now(UTC).isoformat() + "Z",
             checks=checks,
             message=f"System is {status.value}",
         )

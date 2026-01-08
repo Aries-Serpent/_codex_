@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 
 __all__ = ["append_error"]
@@ -33,7 +33,7 @@ def append_error(step_number: str, description: str, message: str, context: str)
         configuration snippet in use).
     """
 
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(UTC).isoformat()
     entry_lines = [
         f"> Question from ChatGPT @codex {timestamp}:",
         (
