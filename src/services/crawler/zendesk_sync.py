@@ -397,6 +397,7 @@ class ZendeskKnowledgeSyncService:
                         self.api_index_path,
                         e,
                     )
+                    since = None  # Explicitly set to None to ensure full sync fallback
             
             if since is None:
                 logger.warning("No previous sync found, performing full sync")

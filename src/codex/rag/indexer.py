@@ -293,6 +293,7 @@ def build_index_from_files(
     """
     all_chunks = []
     file_metadata = []
+    processing_errors = []  # Track files that failed to process
 
     # Process each file
     for file_path in files:
@@ -319,14 +320,22 @@ def build_index_from_files(
 
         except Exception as e:
             logger.error(f"Error processing {file_path}: {e}")
+            processing_errors.append(str(file_path))
 
     if not all_chunks:
         if not any(file_path.exists() for file_path in files):
             raise ValueError("No valid input files found")
         elif all(fm["chunks"] == 0 for fm in file_metadata if fm):
             raise ValueError("Input files contain no text content")
+        elif processing_errors:
+            raise ValueError(
+                f"No chunks generated - {len(processing_errors)} file(s) failed to process: "
+                f"{', '.join(processing_errors[:3])}{'...' if len(processing_errors) > 3 else ''}"
+            )
         else:
-            raise ValueError("No chunks generated from input files - check file processing errors above")
+            raise ValueError(
+                "No chunks generated from input files - files may be empty or in unsupported format"
+            )
 
     logger.info(f"Total chunks: {len(all_chunks)} from {len(files)} files")
 

@@ -22,30 +22,44 @@ logger = logging.getLogger(__name__)
 class MetricsConfig:
     """
     Configuration for RAG metrics tracking.
-    
+
     Allows fine-tuning memory usage by configuring window sizes per metric type.
     Smaller window sizes reduce memory but provide less historical data.
+
+    Notes:
+        A minimum window size of ``MIN_WINDOW_SIZE`` samples is enforced for each
+        metric. This heuristic avoids degenerate statistics (e.g., averages or
+        percentiles computed over only a handful of points) while still allowing
+        applications to choose larger windows when stricter statistical rigor is
+        required. Increase the window sizes if you need tighter confidence
+        intervals or more stable aggregates.
     """
+    # Minimum number of samples required in a metric window to consider the
+    # resulting aggregate statistics (mean, percentiles) minimally meaningful.
+    # This is a heuristic default rather than a hard statistical guarantee and
+    # can be adjusted by changing this constant if project requirements evolve.
+    MIN_WINDOW_SIZE: int = 10
+
     query_latency_window: int = 1000
     embedding_throughput_window: int = 500
     index_build_time_window: int = 100
-    
+
     def __post_init__(self):
         """Validate configuration."""
-        if self.query_latency_window < 10:
+        if self.query_latency_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
-                f"query_latency_window must be >= 10 to ensure statistically "
-                f"meaningful metrics (current: {self.query_latency_window})"
+                f"query_latency_window must be >= {self.MIN_WINDOW_SIZE} to ensure "
+                f"statistically meaningful metrics (current: {self.query_latency_window})"
             )
-        if self.embedding_throughput_window < 10:
+        if self.embedding_throughput_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
-                f"embedding_throughput_window must be >= 10 to ensure statistically "
-                f"meaningful metrics (current: {self.embedding_throughput_window})"
+                f"embedding_throughput_window must be >= {self.MIN_WINDOW_SIZE} to "
+                f"ensure statistically meaningful metrics (current: {self.embedding_throughput_window})"
             )
-        if self.index_build_time_window < 10:
+        if self.index_build_time_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
-                f"index_build_time_window must be >= 10 to ensure statistically "
-                f"meaningful metrics (current: {self.index_build_time_window})"
+                f"index_build_time_window must be >= {self.MIN_WINDOW_SIZE} to "
+                f"ensure statistically meaningful metrics (current: {self.index_build_time_window})"
             )
 
 
