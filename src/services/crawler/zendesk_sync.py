@@ -32,6 +32,15 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+# PII Scrubbing (mandatory before disk writes)
+try:
+    from codex.knowledge.pii import scrub as scrub_pii
+except ImportError:
+    # Fallback if running outside installed package
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+    from codex.knowledge.pii import scrub as scrub_pii
+
 logger = logging.getLogger(__name__)
 
 # Repository root detection
@@ -297,11 +306,16 @@ class ZendeskKnowledgeSyncService:
                             logger.info(f"Skipped (up-to-date): {url}")
                             continue
                         
-                        # Phase 2: Pull (write to disk)
+                        # PII Scrubbing (MANDATORY before disk write)
+                        scrubbed_content, pii_flags = scrub_pii(content.decode('utf-8') if isinstance(content, bytes) else content)
+                        if any(pii_flags.values()):
+                            logger.warning(f"PII detected and scrubbed in {url}: {pii_flags}")
+                        
+                        # Phase 2: Pull (write to disk with scrubbed content)
                         output_path = self._write_article(
                             outdir / section / bucket,
                             url,
-                            content
+                            scrubbed_content.encode('utf-8')
                         )
                         logger.info(f"Updated: {output_path}")
                         
