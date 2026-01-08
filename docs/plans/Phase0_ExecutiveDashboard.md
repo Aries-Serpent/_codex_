@@ -570,7 +570,7 @@ CONTINGENCY OPTIONS:
 ### RISK-3: Performance Targets Unrealistic (P=HIGH, I=HIGH)
 
 **Risk Description:**  
-Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may be impossible with libcst + full AST analysis. Baseline testing Phase 5 reveal need for optimization impossible to achieve in Phase 0.
+Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may be impossible with libcst + full AST analysis. Baseline testing may reveal need for optimization impossible to achieve in Phase 0.
 
 **Impact if Realized:**
 - Cannot validate NFR-PERF targets

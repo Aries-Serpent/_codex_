@@ -1784,7 +1784,7 @@ When a new team member joins:
 ### Coverage Data Privacy
 
 **Coverage.xml contains**:
-- File paths (Phase 5 reveal internal structure)
+- File paths (may reveal internal structure)
 - Line numbers (not sensitive)
 - Package names (public API)
 

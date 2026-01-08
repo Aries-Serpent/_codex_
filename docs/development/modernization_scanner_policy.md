@@ -134,7 +134,7 @@ class Config:
 **Policy**:
 - **Severity**: SUGGESTION
 - **Auto-refactor**: NO (requires verification of behavior)
-- **Rationale**: Dataclasses add features (repr, eq) that Phase 5 change behavior
+- **Rationale**: Dataclasses add features (repr, eq) that may change behavior
 
 **Migration Path**:
 1. Scanner identifies candidates

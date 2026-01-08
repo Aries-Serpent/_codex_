@@ -191,7 +191,7 @@ We are committed to responding to security reports in a timely manner:
 | Medium   | 5 business days  | Bi-weekly     | 90 days           |
 | Low      | 10 business days | Monthly       | Best effort       |
 
-**Note:** These are target SLAs. Actual response times Phase 5 vary based on severity, complexity, and maintainer availability.
+**Note:** These are target SLAs. Actual response times may vary based on severity, complexity, and maintainer availability.
 
 ## Triage Process
 

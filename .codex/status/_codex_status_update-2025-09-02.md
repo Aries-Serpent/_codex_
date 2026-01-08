@@ -13,7 +13,7 @@
 | Capability | Status | Existing Artifacts | Gaps | Risks | Minimal Patch Plan | Rollback Plan |
 |-----------|--------|-------------------|------|-------|--------------------|---------------|
 | Tokenization | Partially Implemented | `src/codex_ml/tokenization/hf_tokenizer.py` | No fast tokenizer wiring or padding/truncation flags | Inefficient encoding and runtime failures on long sequences | Add padding/truncation arguments and tests | Revert module import to previous revision |
-| ChatGPT Codex Modeling | Partially Implemented | `src/codex_ml/modeling/codex_model_loader.py` | Limited dtype/device handling; minimal PEFT hooks | Model Phase 5 load on CPU or with wrong precision | Extend loader with dtype checks and LoRA flags | Revert file if loaders break |
+| ChatGPT Codex Modeling | Partially Implemented | `src/codex_ml/modeling/codex_model_loader.py` | Limited dtype/device handling; minimal PEFT hooks | Model may load on CPU or with wrong precision | Extend loader with dtype checks and LoRA flags | Revert file if loaders break |
 | Training Engine | Partially Implemented | `training/engine_hf_trainer.py` | Resume checkpoints TODO, gradient accumulation tests missing | Training restarts from scratch | Implement optimizer/scheduler state restore and tests | Revert commit |
 | Configuration Management | Implemented | `configs/` Hydra YAMLs | No sweep/override docs | Misconfigured runs | Add README examples, Hydra sweep example | Remove doc if unstable |
 | Evaluation & Metrics | Implemented | `src/codex_ml/metrics/text.py`, NDJSON writer | No NDJSON/CSV logging example | Metrics lost | Wire metrics writer and tests | Revert metrics hooks |
@@ -52,7 +52,7 @@
 +        )
 ```text
 - *Why*: Enable consistent sequence lengths.
-- *Risk*: Incorrect max length Phase 5 truncate useful context.
+- *Risk*: Incorrect max length may truncate useful context.
 - *Rollback*: Revert `hf_tokenizer.py`.
 - *Tests/docs*: Add unit test for padding and README note.
 
