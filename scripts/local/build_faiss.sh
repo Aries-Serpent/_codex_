@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Build FAISS index from NDJSON knowledge base
+# Build FAISS index from repository documentation or NDJSON
 # Usage:
-#   scripts/local/build_faiss.sh [tenant_id] [ndjson_path]
+#   scripts/local/build_faiss.sh [tenant_id] [source_type] [path]
 #
 # Examples:
-#   scripts/local/build_faiss.sh my-tenant data/my_kb.ndjson
-#   scripts/local/build_faiss.sh   # Uses defaults
+#   scripts/local/build_faiss.sh default docs .        # Index markdown files
+#   scripts/local/build_faiss.sh my-tenant ndjson data/kb.ndjson  # Index NDJSON
 
 set -euo pipefail
 
@@ -16,7 +16,8 @@ cd "${REPO_ROOT}"
 
 # Arguments with defaults
 TENANT_ID="${1:-default}"
-NDJSON_PATH="${2:-data/kb_sample.ndjson}"
+SOURCE_TYPE="${2:-docs}"  # 'docs' or 'ndjson'
+SOURCE_PATH="${3:-.}"
 
 # Load .env if present
 if [[ -f ".env" ]]; then
@@ -25,59 +26,25 @@ if [[ -f ".env" ]]; then
 fi
 
 # Set defaults
-: "${MSP_OFFLINE:=1}"
 : "${MSP_EMBEDDING_MODEL:=sentence-transformers/all-MiniLM-L6-v2}"
-: "${MSP_EMBEDDING_CACHE_DIR:=artifacts/emb}"
 : "${MSP_FAISS_INDEX_DIR:=.codex/tenants}"
-
-export MSP_OFFLINE
+: "${CHUNK_SIZE:=1000}"
+: "${OVERLAP:=128}"
 
 echo "==================================="
-echo "FAISS Index Builder"
+echo "FAISS Index Builder (Expanded Context)"
 echo "==================================="
 echo "Repository:      ${REPO_ROOT}"
 echo "Tenant ID:       ${TENANT_ID}"
-echo "NDJSON Path:     ${NDJSON_PATH}"
+echo "Source Type:     ${SOURCE_TYPE}"
+echo "Source Path:     ${SOURCE_PATH}"
 echo "Embedding Model: ${MSP_EMBEDDING_MODEL}"
-echo "Offline Mode:    ${MSP_OFFLINE}"
+echo "Chunk Size:      ${CHUNK_SIZE}"
+echo "Overlap:         ${OVERLAP}"
 echo ""
-
-# Check if input file exists
-if [[ ! -f "${NDJSON_PATH}" ]]; then
-    echo "Warning: NDJSON file not found: ${NDJSON_PATH}"
-    echo ""
-    echo "Creating sample KB file..."
-    
-    # Create sample data directory
-    mkdir -p "$(dirname "${NDJSON_PATH}")"
-    
-    # Create sample NDJSON file
-    cat > "${NDJSON_PATH}" <<'EOF'
-{"id": "doc1", "content": "Machine learning is a subset of artificial intelligence that focuses on the development of algorithms that can learn from and make predictions on data.", "metadata": {"source": "ml_basics"}}
-{"id": "doc2", "content": "Natural language processing (NLP) is a field of AI that focuses on the interaction between computers and human language.", "metadata": {"source": "nlp_intro"}}
-{"id": "doc3", "content": "Deep learning is a type of machine learning that uses neural networks with multiple layers to learn hierarchical representations of data.", "metadata": {"source": "dl_overview"}}
-{"id": "doc4", "content": "Retrieval-augmented generation (RAG) combines retrieval systems with generative models to produce more accurate and contextual responses.", "metadata": {"source": "rag_guide"}}
-{"id": "doc5", "content": "Vector databases store embeddings and enable efficient similarity search for semantic retrieval tasks.", "metadata": {"source": "vector_db_intro"}}
-EOF
-    
-    echo "Sample KB created at ${NDJSON_PATH}"
-    echo ""
-fi
-
-# Verify file is readable
-if [[ ! -r "${NDJSON_PATH}" ]]; then
-    echo "Error: Cannot read file: ${NDJSON_PATH}"
-    exit 1
-fi
 
 # Create output directory
-INDEX_DIR="${MSP_FAISS_INDEX_DIR}/${TENANT_ID}/faiss"
-mkdir -p "${INDEX_DIR}"
-mkdir -p "${MSP_EMBEDDING_CACHE_DIR}"
-
-echo "Building embeddings and FAISS index..."
-echo "Output directory: ${INDEX_DIR}"
-echo ""
+mkdir -p "${MSP_FAISS_INDEX_DIR}"
 
 # Check for Python and required modules
 if ! command -v python3 &> /dev/null; then
@@ -85,36 +52,56 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Build index using Python
-python3 <<PYEOF
+echo "Building embeddings and FAISS index..."
+echo ""
+
+# Build index using Python with new RAG modules
+if [[ "${SOURCE_TYPE}" == "docs" ]]; then
+    python3 <<PYEOF
 import sys
+from pathlib import Path
 sys.path.insert(0, '.')
 
 try:
-    from src.codex.retrieval import build_embeddings
-    from src.codex.retrieval.stores import FAISSStore
+    from src.codex.rag.indexer import build_index_from_files
     
-    print('Loading documents from ${NDJSON_PATH}...')
-    embeddings, documents = build_embeddings(
-        ndjson_path='${NDJSON_PATH}',
-        model_name='${MSP_EMBEDDING_MODEL}',
-        cache_dir='${MSP_EMBEDDING_CACHE_DIR}',
-        batch_size=32,
+    # Collect documentation files
+    source_path = Path('${SOURCE_PATH}')
+    files = []
+    
+    if source_path.is_file():
+        files.append(source_path)
+    elif source_path.is_dir():
+        # Collect markdown, text, and RST files
+        files.extend(source_path.rglob('*.md'))
+        files.extend(source_path.rglob('*.txt'))
+        files.extend(source_path.rglob('*.rst'))
+        
+        # Filter out common non-doc directories
+        exclude_patterns = ['node_modules', '.git', '__pycache__', 'venv', '.venv']
+        files = [f for f in files if not any(ex in str(f) for ex in exclude_patterns)]
+    
+    if not files:
+        print('No files found to index', file=sys.stderr)
+        sys.exit(1)
+    
+    print(f'Found {len(files)} files to index')
+    
+    # Build index
+    index_path = build_index_from_files(
+        files=files,
+        index_name='docs',
+        tenant_id='${TENANT_ID}',
+        index_dir='${MSP_FAISS_INDEX_DIR}',
+        chunk_size=${CHUNK_SIZE},
+        overlap=${OVERLAP},
     )
-    
-    print(f'Creating FAISS index for {len(documents)} documents...')
-    store = FAISSStore(index_dir='${INDEX_DIR}', index_name='default')
-    store.create_index(embeddings, documents)
-    
-    print('Saving index...')
-    store.save()
     
     print('')
     print('✓ FAISS index built successfully!')
     print(f'  - Tenant:    ${TENANT_ID}')
-    print(f'  - Documents: {len(documents)}')
-    print(f'  - Dimension: {embeddings.shape[1]}')
-    print(f'  - Location:  ${INDEX_DIR}')
+    print(f'  - Files:     {len(files)}')
+    print(f'  - Location:  {index_path}')
     
 except ImportError as e:
     print(f'Error: Missing required Python packages: {e}', file=sys.stderr)
@@ -126,6 +113,58 @@ except Exception as e:
     traceback.print_exc()
     sys.exit(1)
 PYEOF
+
+elif [[ "${SOURCE_TYPE}" == "ndjson" ]]; then
+    # For NDJSON, use the old retrieval module if available
+    # Or implement NDJSON support in new indexer
+    python3 <<PYEOF
+import sys
+sys.path.insert(0, '.')
+
+try:
+    from src.codex.retrieval.embed import build_embeddings
+    from src.codex.retrieval.stores import FAISSStore
+    
+    print('Loading documents from ${SOURCE_PATH}...')
+    embeddings, documents = build_embeddings(
+        ndjson_path='${SOURCE_PATH}',
+        model_name='${MSP_EMBEDDING_MODEL}',
+        batch_size=32,
+    )
+    
+    print(f'Creating FAISS index for {len(documents)} documents...')
+    index_dir = '${MSP_FAISS_INDEX_DIR}/${TENANT_ID}/faiss'
+    import os
+    os.makedirs(index_dir, exist_ok=True)
+    
+    store = FAISSStore(index_dir=index_dir, index_name='default')
+    store.create_index(embeddings, documents)
+    
+    print('Saving index...')
+    store.save()
+    
+    print('')
+    print('✓ FAISS index built successfully!')
+    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Documents: {len(documents)}')
+    print(f'  - Dimension: {embeddings.shape[1]}')
+    print(f'  - Location:  {index_dir}')
+    
+except ImportError as e:
+    print(f'Error: Missing required Python packages: {e}', file=sys.stderr)
+    print('Install with: pip install sentence-transformers faiss-cpu', file=sys.stderr)
+    sys.exit(1)
+except Exception as e:
+    print(f'Error building index: {e}', file=sys.stderr)
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+PYEOF
+
+else
+    echo "Error: Unknown source type '${SOURCE_TYPE}'. Use 'docs' or 'ndjson'."
+    exit 1
+fi
 
 EXIT_CODE=$?
 
