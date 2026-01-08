@@ -156,7 +156,7 @@ sed -i 's|price|$100|g' file.txt  # Use | as delimiter
 
 ❌ **WRONG**: Applying patch without checking
 ```bash
-git apply potentially-broken.patch  # Phase 5 silently fail or corrupt files!
+git apply potentially-broken.patch  # may silently fail or corrupt files!
 ```text
 
 ✅ **CORRECT**: Dry-run first

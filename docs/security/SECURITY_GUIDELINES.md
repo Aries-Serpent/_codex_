@@ -36,7 +36,7 @@ logger.info(f"Password validation: {mask_password(password)}")
 # NEVER DO THIS
 logger.info(f"API Key: {api_key}")  # ❌ Exposes full key in logs
 logger.info(f"User password: {password}")  # ❌ Security violation
-print(f"Secret: {secret_token}")  # ❌ Phase 5 appear in console logs
+print(f"Secret: {secret_token}")  # ❌ may appear in console logs
 ```
 
 ---

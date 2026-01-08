@@ -123,7 +123,7 @@
 +        write_checksum(path)
 ```text
 *Why*: ensure integrity before loading.
-*Risk*: added checksum Phase 5 slow resume.
+*Risk*: added checksum may slow resume.
 *Rollback*: remove call to `write_checksum`.
 *Tests/docs*: extend `tests/test_resume.py` to assert checksum file creation.
 

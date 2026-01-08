@@ -36,7 +36,7 @@ def process(items: list[str]) -> dict[str, int]:
 **Policy**:
 - **Severity**: WARNING
 - **Auto-refactor**: NO (requires manual review)
-- **Rationale**: Phase 5 affect compatibility if targeting < Python 3.9
+- **Rationale**: may affect compatibility if targeting < Python 3.9
 
 **Migration Path**:
 1. Scanner reports all instances

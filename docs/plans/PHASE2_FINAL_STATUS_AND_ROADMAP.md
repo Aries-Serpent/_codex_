@@ -336,7 +336,7 @@ Target (95.00%)    |████████████████████
 - **Integration test complexity:** Some tests may require significant setup
   - *Mitigation:* Start with simplest tests, build fixtures incrementally
 
-- **Coverage measurement variance:** Local vs CI/CD Phase 5 differ
+- **Coverage measurement variance:** Local vs CI/CD may differ
   - *Mitigation:* Use CI/CD as source of truth
 
 - **Estimation accuracy:** Deep implementation work has high variance
