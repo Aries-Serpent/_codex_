@@ -328,3 +328,104 @@ def set_deterministic_seed():
 
     yield
     # nothing to cleanup; leave RNG state as-is for test isolation
+
+
+# ============================================================================
+# RAG Module Fixtures (Added 2026-01-08)
+# ============================================================================
+
+import tempfile
+from pathlib import Path
+from typing import Generator
+
+@pytest.fixture
+def temp_index_dir() -> Generator[Path, None, None]:
+    """Provide a temporary directory for RAG index storage."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield Path(tmpdir)
+
+
+@pytest.fixture
+def temp_cache_dir() -> Generator[Path, None, None]:
+    """Provide a temporary directory for RAG cache storage."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield Path(tmpdir)
+
+
+@pytest.fixture
+def sample_rag_documents():
+    """Provide sample documents for RAG testing."""
+    return [
+        {
+            "id": "doc1",
+            "content": "Python is a high-level programming language. " * 20,
+            "metadata": {"source": "python_intro", "category": "programming"},
+        },
+        {
+            "id": "doc2",
+            "content": "Machine learning uses algorithms to learn from data. " * 20,
+            "metadata": {"source": "ml_basics", "category": "ai"},
+        },
+        {
+            "id": "doc3",
+            "content": "Docker provides containerization for applications. " * 20,
+            "metadata": {"source": "docker_guide", "category": "devops"},
+        },
+    ]
+
+
+@pytest.fixture
+def sample_rag_corpus(temp_index_dir):
+    """Create a sample corpus of files for RAG testing."""
+    docs_dir = temp_index_dir / "docs"
+    docs_dir.mkdir()
+    
+    corpus = {
+        "python.txt": "Python is a versatile programming language. " * 30,
+        "ml.txt": "Machine learning algorithms process data. " * 30,
+        "docker.txt": "Docker containers isolate applications. " * 30,
+    }
+    
+    files = []
+    for filename, content in corpus.items():
+        file_path = docs_dir / filename
+        file_path.write_text(content)
+        files.append(file_path)
+    
+    return {
+        "files": files,
+        "docs_dir": docs_dir,
+        "corpus": corpus,
+    }
+
+
+@pytest.fixture
+def rag_test_config():
+    """Provide standard test configuration for RAG modules."""
+    return {
+        "chunk_size": 500,
+        "overlap": 100,
+        "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+        "index_type": "IndexFlatL2",
+        "cache_enabled": True,
+    }
+
+
+# Register RAG-specific markers
+def pytest_configure(config):
+    """Register custom markers for RAG tests."""
+    config.addinivalue_line(
+        "markers", "rag: marks tests as RAG module tests"
+    )
+    config.addinivalue_line(
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+    )
+    config.addinivalue_line(
+        "markers", "integration: marks tests as integration tests"
+    )
+    config.addinivalue_line(
+        "markers", "gpu: marks tests that require GPU (skipped without GPU)"
+    )
+    config.addinivalue_line(
+        "markers", "network: marks tests that require network access"
+    )
