@@ -73,7 +73,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
   },
   "env": {
     "cwd": "/path/to/repo",
-    "python": "3.12.3 (main, Phase 4  9 2024, 08:09:14) [GCC 11.4.0]"
+    "python": "3.12.3 (main, Apr  9 2025, 08:09:14) [GCC 11.4.0]"
   },
   "import_report": {
     "errors": [],

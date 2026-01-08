@@ -168,5 +168,5 @@ This governance document may be updated through the Major Changes process (ADR +
 ---
 
 **Version**: 1.0  
-**Last Updated**: 2024-11-02  
+**Last Updated**: 2025-11-02  
 **Contact**: @Aries-Serpent/architects
