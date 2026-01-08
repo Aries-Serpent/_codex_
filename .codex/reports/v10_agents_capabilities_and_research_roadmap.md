@@ -586,9 +586,9 @@ This report provides a comprehensive analysis of all V10 Custom Agents, their ca
 ## 📚 References & Resources
 
 ### Academic Papers to Review
-1. "Causal Inference in Software Engineering" (TSE 2024)
-2. "Deep Learning for Code Understanding" (ICML 2024)
-3. "Multi-Agent Systems in DevOps" (FSE 2024)
+1. "Causal Inference in Software Engineering" (TSE 2025)
+2. "Deep Learning for Code Understanding" (ICML 2025)
+3. "Multi-Agent Systems in DevOps" (FSE 2025)
 4. "Explainable AI for Developer Tools" (CHI 2025)
 
 ### Open Datasets
