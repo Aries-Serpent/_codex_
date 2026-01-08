@@ -14,10 +14,9 @@ Scans the repository for expanded-context workflow features including:
 
 import argparse
 import json
-import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 
 class ExpandedContextAuditor:
@@ -102,6 +101,8 @@ class ExpandedContextAuditor:
                         break  # Only count once per file per feature
 
         except (UnicodeDecodeError, PermissionError):
+            # Intentionally skip files that cannot be read due to encoding or permissions.
+            # These files cannot be scanned for text-based patterns, so we return no matches.
             pass
 
         return matches

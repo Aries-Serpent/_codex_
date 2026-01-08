@@ -1,12 +1,10 @@
 """Unit tests for Zendesk Ticket model."""
 
 import pytest
-from datetime import datetime
 
 from src.codex.zendesk.model.ticket import (
     Ticket,
     TicketComment,
-    TicketVia,
     TicketCustomField,
 )
 

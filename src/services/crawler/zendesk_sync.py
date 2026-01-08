@@ -390,6 +390,8 @@ class ZendeskKnowledgeSyncService:
                         cache_data = json.load(f)
                     since = cache_data.get("last_sync")
                 except (json.JSONDecodeError, OSError):
+                    # Intentionally ignore errors reading the cache file.
+                    # If the cache is corrupted or unreadable, we'll fall back to a full sync.
                     pass
             
             if since is None:

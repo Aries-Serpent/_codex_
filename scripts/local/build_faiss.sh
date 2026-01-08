@@ -57,16 +57,31 @@ echo ""
 
 # Build index using Python with new RAG modules
 if [[ "${SOURCE_TYPE}" == "docs" ]]; then
-    python3 <<PYEOF
+    # Export variables as environment variables for safe access in Python
+    export BUILD_TENANT_ID="${TENANT_ID}"
+    export BUILD_INDEX_DIR="${MSP_FAISS_INDEX_DIR}"
+    export BUILD_CHUNK_SIZE="${CHUNK_SIZE}"
+    export BUILD_OVERLAP="${OVERLAP}"
+    export BUILD_SOURCE_PATH="${SOURCE_PATH}"
+    
+    python3 <<'PYEOF'
 import sys
+import os
 from pathlib import Path
 sys.path.insert(0, '.')
 
 try:
     from src.codex.rag.indexer import build_index_from_files
     
+    # Safely retrieve values from environment variables
+    tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
+    index_dir = os.environ.get('BUILD_INDEX_DIR', '.codex/tenants')
+    chunk_size = int(os.environ.get('BUILD_CHUNK_SIZE', '1000'))
+    overlap = int(os.environ.get('BUILD_OVERLAP', '128'))
+    source_path_str = os.environ.get('BUILD_SOURCE_PATH', '.')
+    
     # Collect documentation files
-    source_path = Path('${SOURCE_PATH}')
+    source_path = Path(source_path_str)
     files = []
     
     if source_path.is_file():
@@ -91,15 +106,15 @@ try:
     index_path = build_index_from_files(
         files=files,
         index_name='docs',
-        tenant_id='${TENANT_ID}',
-        index_dir='${MSP_FAISS_INDEX_DIR}',
-        chunk_size=${CHUNK_SIZE},
-        overlap=${OVERLAP},
+        tenant_id=tenant_id,
+        index_dir=index_dir,
+        chunk_size=chunk_size,
+        overlap=overlap,
     )
     
     print('')
     print('✓ FAISS index built successfully!')
-    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Tenant:    {tenant_id}')
     print(f'  - Files:     {len(files)}')
     print(f'  - Location:  {index_path}')
     

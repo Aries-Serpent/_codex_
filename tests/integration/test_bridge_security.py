@@ -1,6 +1,5 @@
 """Integration test for bridge security features."""
 
-import os
 import tempfile
 from pathlib import Path
 

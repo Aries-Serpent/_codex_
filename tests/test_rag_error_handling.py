@@ -6,9 +6,8 @@ Tests all exception paths, edge cases, and failure scenarios.
 import os
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 import threading
-import time
 
 import numpy as np
 import pytest
@@ -19,7 +18,6 @@ pytest.importorskip("faiss")
 
 from codex.rag.indexer import (
     chunk_text,
-    embed_chunks,
     persist_index,
     load_index,
     build_index_from_files,
@@ -27,7 +25,6 @@ from codex.rag.indexer import (
 from codex.rag.retriever import Retriever, MultiIndexRetriever
 from codex.rag.embeddings import (
     LocalSentenceTransformerProvider,
-    OpenAIEmbeddingProvider,
     CachedEmbeddingProvider,
     create_embedding_provider,
 )

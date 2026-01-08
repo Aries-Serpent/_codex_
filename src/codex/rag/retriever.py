@@ -3,10 +3,8 @@ RAG Retriever Module
 Provides semantic search over FAISS indices with provenance tracking.
 """
 
-import hashlib
 import logging
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import numpy as np
