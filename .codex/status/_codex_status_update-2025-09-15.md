@@ -229,7 +229,7 @@ except FileNotFoundError:
     })
 ```text
 
-**Risk:** Warnings Phase 5 clutter output; some users Phase 5 treat warnings as errors.
+**Risk:** Warnings may clutter output; some users may treat warnings as errors.
 
 **Rollback:** Remove the `warnings.warn` call; fallback remains silent. Document the removal in change log.
 
@@ -547,7 +547,7 @@ except FileNotFoundError:
     })
 ```text
 
-**Risk:** Warnings Phase 5 clutter output; some users Phase 5 treat warnings as errors.
+**Risk:** Warnings may clutter output; some users may treat warnings as errors.
 
 **Rollback:** Remove the `warnings.warn` call; fallback remains silent. Document the removal in change log.
 

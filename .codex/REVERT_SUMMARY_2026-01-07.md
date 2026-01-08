@@ -70,16 +70,16 @@ The date sanitization policy enforcer (`scripts/security/date_sanitizer.py`) was
 #### 2. Auxiliary Verb "may" (237 fixes)
 
 Fixed "Phase 5 + verb" constructions:
-- `Phase 5 be` → `may be`
-- `Phase 5 need` → `may need`
-- `Phase 5 have` → `may have`
-- `Phase 5 fail` → `may fail`
-- `Phase 5 require` → `may require`
-- `Phase 5 exceed` → `may exceed`
-- `Phase 5 show` → `may show`
-- `Phase 5 flag` → `may flag`
-- `Phase 5 become` → `may become`
-- `Phase 5 benefit` → `may benefit`
+- `may be` → `may be`
+- `may need` → `may need`
+- `may have` → `may have`
+- `may fail` → `may fail`
+- `may require` → `may require`
+- `may exceed` → `may exceed`
+- `may show` → `may show`
+- `may flag` → `may flag`
+- `may become` → `may become`
+- `may benefit` → `may benefit`
 
 #### 3. Month "May" (4 fixes)
 
@@ -151,7 +151,7 @@ grep -r "Current Cycle-[0-9][0-9]-[0-9][0-9]" --include="*.md" | wc -l
 # 857
 
 # Found 241 incorrect "may" replacements
-grep -r "Phase 5 need|Phase 5 have|Phase 5 be" --include="*.md" | wc -l
+grep -r "may need|may have|may be" --include="*.md" | wc -l
 # 241
 ```
 
@@ -163,7 +163,7 @@ grep -r "Current Cycle-[0-9][0-9]-[0-9][0-9]" --include="*.md" | wc -l
 # 41
 
 # No incorrect "may" replacements remain
-grep -r "Phase 5 need|Phase 5 have|Phase 5 be" --include="*.md" | wc -l
+grep -r "may need|may have|may be" --include="*.md" | wc -l
 # 0
 ```
 
@@ -195,9 +195,9 @@ grep -r "Phase 5 need|Phase 5 have|Phase 5 be" --include="*.md" | wc -l
 
 **Before:**
 ```markdown
-9. **Inadequate Logging/Monitoring:** logs Phase 5 become very large over time.
-- Optional dependencies (MLflow, W&B) Phase 5 be absent
-- logs Phase 5 not be persisted or aggregated
+9. **Inadequate Logging/Monitoring:** logs may become very large over time.
+- Optional dependencies (MLflow, W&B) may be absent
+- logs may not be persisted or aggregated
 ```
 
 **After:**
@@ -213,7 +213,7 @@ grep -r "Phase 5 need|Phase 5 have|Phase 5 be" --include="*.md" | wc -l
 
 **Before:**
 ```markdown
-[INFO] This Phase 5 take a few minutes...
+[INFO] This may take a few minutes...
 ```
 
 **After:**
