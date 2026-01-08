@@ -39,7 +39,7 @@ def create_run_dir(base_dir: Path, mode: str, seed: int) -> RunContext:
     """Create a timestamped run directory and return a RunContext."""
 
     base_dir = base_dir.expanduser().resolve()
-    now = _dt.datetime.now(_dt.UTC).replace(microsecond=0).isoformat().replace(":", "-") + "Z"
+    now = _dt.datetime.now(_dt.UTC).replace(microsecond=0).isoformat().replace(":", "-")
     run_id = f"{now}_seed{seed}"
     run_dir = base_dir / mode / run_id
     run_dir.mkdir(parents=True, exist_ok=True)

@@ -16,7 +16,7 @@ def test_ndjson_matches_db(tmp_path, monkeypatch):
     with session() as s:
         sid = s.sid
     ndjson = log_dir / f"{sid}.ndjson"
-    now = datetime.now(UTC).isoformat() + "Z"
+    now = datetime.now(UTC).isoformat()
     with ndjson.open("a", encoding="utf-8") as f:
         f.write(json.dumps({"ts": now, "role": "user", "message": "hi"}) + "\n")
         f.write(json.dumps({"ts": now, "role": "assistant", "message": "yo"}) + "\n")

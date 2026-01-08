@@ -54,12 +54,13 @@ class TestManifestSchema:
     def test_manifest_timestamp_format(self) -> None:
         """Test timestamp format."""
         # Arrange
-        timestamp = datetime.now(UTC).isoformat() + "Z"
+        timestamp = datetime.now(UTC).isoformat()
         manifest = {"created_at": timestamp}
         
         # Act & Assert
         assert "T" in manifest["created_at"]
-        assert manifest["created_at"].endswith("Z")
+        # New format uses +00:00 instead of Z
+        assert manifest["created_at"].endswith(("+00:00", "Z"))
 
 
 class TestFileEntry:
