@@ -302,7 +302,7 @@ The audit identifies several areas that are intentionally deferred or not yet im
 During the audit, no tooling errors blocked analysis. Should future steps fail (e.g., file download issues or YAML parsing errors), questions should be formatted like the following:
 
 ```text
-Question for ChatGPT @codex Previous Cycle‑09‑17T18:02:00Z:
+Question for ChatGPT @codex 2025‑09‑17T18:02:00Z:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]

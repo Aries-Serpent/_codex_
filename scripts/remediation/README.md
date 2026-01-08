@@ -7,7 +7,7 @@ This directory contains scripts for addressing "Split Brain" architecture, impor
 ### verify_conflicts.py
 **Purpose**: Detect import shadowing, split-brain conflicts, and enforce SHIM inventory compliance.
 
-**Status**: ✅ **Fixed and Enhanced** (Phase 12 Previous Cycle)
+**Status**: ✅ **Fixed and Enhanced** (Phase 12 2025)
 - Fixed whitelist parsing bug (was causing false positives)
 - Added comprehensive test suite (3 tests, all passing)
 - Enhanced strict mode with proper SHIM inventory integration
@@ -161,7 +161,7 @@ python -m pytest tests/scripts/test_verify_conflicts.py -v
 python -m pytest tests/test_exact_detection.py tests/test_normalize.py tests/test_ast_detection.py tests/test_semantic_detection.py tests/test_shim_integration.py -v
 ```
 
-## Recent Updates (Phase 12 Previous Cycle)
+## Recent Updates (Phase 12 2025)
 
 ### Whitelist Parsing Fix ✅
 - Fixed bug causing 8 false positive violations in nightly audit

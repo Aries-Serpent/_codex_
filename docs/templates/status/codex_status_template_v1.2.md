@@ -7,7 +7,7 @@ This is the canonical template for producing the daily, single-document, full-te
 
 Title format for each report (must use exactly):
 - H1 Title: "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
-  - Example: "📍 `_codex_` : Status Update Previous Cycle‑11‑02‑12:07:UTC"
+  - Example: "📍 `_codex_` : Status Update 2025‑11‑02‑12:07:UTC"
 
 ---
 
@@ -19,9 +19,9 @@ Title format for each report (must use exactly):
   - Major (vX.0.0): Structural changes; field renames/removals; breaking changes.
 
 ## Template CHANGELOG (for the template itself)
-- v1.2 (Previous Cycle‑11‑02): **ENHANCED**—Integrated schema validation layer with JSON Schema / YAML schema support; added Audit Integrity Chain section for deterministic reproducibility; introduced Schema Validation Report subsection with remediation guidance; cross-linked to local validation tooling (`tools/schema_validate.py`, `tools/validate_configs.py`, `src/codex_ml/cli/validate.py`); added Security Input Validation patterns section documenting SQL injection, XSS, path traversal, and JSON injection detection from `src/security/core.py`. Added structured tracking for Git context, runtime environment, ML Test Scores, and Hydra configurations.
-- v1.1 (Previous Cycle‑11‑02): Made Capability Audit dynamic with Extended Capability Catalog and Discovery Log; added Reproducibility Registry for extensible, user-defined controls; updated schemas to allow additional properties and tagging.
-- v1.0 (Previous Cycle‑11‑02): Initial release with Full Snapshot, Delta, Scoring (Severity/Confidence 1–5), Atomic Patch Diffs, Automation hooks, Tokenization insights, Secret-masking guidance.
+- v1.2 (2025‑11‑02): **ENHANCED**—Integrated schema validation layer with JSON Schema / YAML schema support; added Audit Integrity Chain section for deterministic reproducibility; introduced Schema Validation Report subsection with remediation guidance; cross-linked to local validation tooling (`tools/schema_validate.py`, `tools/validate_configs.py`, `src/codex_ml/cli/validate.py`); added Security Input Validation patterns section documenting SQL injection, XSS, path traversal, and JSON injection detection from `src/security/core.py`. Added structured tracking for Git context, runtime environment, ML Test Scores, and Hydra configurations.
+- v1.1 (2025‑11‑02): Made Capability Audit dynamic with Extended Capability Catalog and Discovery Log; added Reproducibility Registry for extensible, user-defined controls; updated schemas to allow additional properties and tagging.
+- v1.0 (2025‑11‑02): Initial release with Full Snapshot, Delta, Scoring (Severity/Confidence 1–5), Atomic Patch Diffs, Automation hooks, Tokenization insights, Secret-masking guidance.
 
 ---
 

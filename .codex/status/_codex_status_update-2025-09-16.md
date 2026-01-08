@@ -125,7 +125,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 *** End Patch
 ```text
 
-*Risk:* Users Phase 5 mistakenly provide an invalid path, causing training to start from epoch `None`. The diff prints a message and continues.
+*Risk:* Users may mistakenly provide an invalid path, causing training to start from epoch `None`. The diff prints a message and continues.
 
 *Rollback:* Remove the new resume logic and the `resume_from` config key.
 
