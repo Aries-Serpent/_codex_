@@ -30,6 +30,8 @@ def pytest_configure(config: pytest.Config) -> None:
     an unnecessary failure. This hook disables coverage enforcement and raises
     the fail-under floor to zero for collection-only invocations while keeping
     the existing defaults for actual test runs.
+    
+    Also registers custom markers for RAG tests.
     """
 
     if getattr(config.option, "collectonly", False):
@@ -38,6 +40,23 @@ def pytest_configure(config: pytest.Config) -> None:
         cov_plugin = config.pluginmanager.get_plugin("_cov")
         if cov_plugin:
             config.pluginmanager.unregister(cov_plugin)
+    
+    # Register RAG-specific markers
+    config.addinivalue_line(
+        "markers", "rag: marks tests as RAG module tests"
+    )
+    config.addinivalue_line(
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+    )
+    config.addinivalue_line(
+        "markers", "integration: marks tests as integration tests"
+    )
+    config.addinivalue_line(
+        "markers", "gpu: marks tests that require GPU (skipped without GPU)"
+    )
+    config.addinivalue_line(
+        "markers", "network: marks tests that require network access"
+    )
 
 
 # Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
@@ -410,22 +429,3 @@ def rag_test_config():
         "cache_enabled": True,
     }
 
-
-# Register RAG-specific markers
-def pytest_configure(config):
-    """Register custom markers for RAG tests."""
-    config.addinivalue_line(
-        "markers", "rag: marks tests as RAG module tests"
-    )
-    config.addinivalue_line(
-        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
-    )
-    config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests"
-    )
-    config.addinivalue_line(
-        "markers", "gpu: marks tests that require GPU (skipped without GPU)"
-    )
-    config.addinivalue_line(
-        "markers", "network: marks tests that require network access"
-    )

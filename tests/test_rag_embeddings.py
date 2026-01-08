@@ -143,7 +143,7 @@ class TestOpenAIEmbeddingProvider:
             )
             assert provider_ada.get_dimension() == 1536
 
-    @patch("codex.rag.embeddings.OpenAI")
+    @patch("openai.OpenAI")
     def test_encode_basic(self, mock_openai):
         """Test basic encoding with mocked OpenAI"""
         # Mock the OpenAI client
@@ -164,7 +164,7 @@ class TestOpenAIEmbeddingProvider:
             assert len(embeddings) == 2
             assert embeddings.shape[1] == 1536
 
-    @patch("codex.rag.embeddings.OpenAI")
+    @patch("openai.OpenAI")
     def test_encode_with_batch_size(self, mock_openai):
         """Test encoding with batch processing"""
         mock_client = MagicMock()

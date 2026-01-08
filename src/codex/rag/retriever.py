@@ -192,7 +192,14 @@ class Retriever:
             Estimated line number (1-indexed)
         
         Note:
-            This uses a simple heuristic. For better accuracy:
+            This uses a simple heuristic based on chars_per_line=80.
+            
+            **Warning**: This estimation may be significantly inaccurate for files
+            with varying line lengths (e.g., markdown with long paragraphs vs code
+            with short lines). For production use, consider storing actual line
+            numbers during chunking for accurate line-level attribution.
+            
+            For better accuracy:
             - Store actual line numbers during chunking
             - Calculate average line length from source files
             - Re-read files to map positions to lines
@@ -277,7 +284,13 @@ class MultiIndexRetriever:
                     tenant_id=idx_config.get("tenant_id", "default"),
                     model_name=model_name,
                 )
-                self.retrievers.append(retriever)
+                # Only add retriever if it successfully loaded an index
+                if retriever.faiss_index is not None:
+                    self.retrievers.append(retriever)
+                else:
+                    logger.warning(
+                        f"Skipping index {idx_config.get('index_name')}: no index loaded"
+                    )
             except Exception as e:
                 logger.warning(
                     f"Failed to load index {idx_config.get('index_name')}: {e}"

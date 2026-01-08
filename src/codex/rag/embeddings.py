@@ -130,32 +130,28 @@ class OpenAIEmbeddingProvider:
             api_key: Optional API key (defaults to OPENAI_API_KEY env var)
         
         Security Note:
-            API keys are stored in memory during operation. Consider using
-            key rotation and secure key management practices in production.
+            API keys are resolved at initialization time and passed directly
+            to the OpenAI client. They are not stored on the provider
+            instance to avoid long-lived in-memory copies.
         """
         self.model_name = model_name
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        resolved_api_key = api_key or os.environ.get("OPENAI_API_KEY")
 
-        if not self.api_key:
+        if not resolved_api_key:
             raise ValueError(
                 "OpenAI API key not provided. "
                 "Set OPENAI_API_KEY environment variable or pass api_key parameter."
             )
 
         self.client = None
-        self._initialize_client()
+        self._initialize_client(resolved_api_key)
     
-    def __del__(self):
-        """Clean up on destruction (clear sensitive data)."""
-        if hasattr(self, 'api_key'):
-            self.api_key = None
-
-    def _initialize_client(self):
+    def _initialize_client(self, api_key: str) -> None:
         """Initialize OpenAI client."""
         try:
             from openai import OpenAI
 
-            self.client = OpenAI(api_key=self.api_key)
+            self.client = OpenAI(api_key=api_key)
             logger.info(f"Initialized OpenAI client with model: {self.model_name}")
         except ImportError:
             logger.error(

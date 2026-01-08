@@ -33,11 +33,20 @@ class MetricsConfig:
     def __post_init__(self):
         """Validate configuration."""
         if self.query_latency_window < 10:
-            raise ValueError("query_latency_window must be >= 10")
+            raise ValueError(
+                f"query_latency_window must be >= 10 to ensure statistically "
+                f"meaningful metrics (current: {self.query_latency_window})"
+            )
         if self.embedding_throughput_window < 10:
-            raise ValueError("embedding_throughput_window must be >= 10")
+            raise ValueError(
+                f"embedding_throughput_window must be >= 10 to ensure statistically "
+                f"meaningful metrics (current: {self.embedding_throughput_window})"
+            )
         if self.index_build_time_window < 10:
-            raise ValueError("index_build_time_window must be >= 10")
+            raise ValueError(
+                f"index_build_time_window must be >= 10 to ensure statistically "
+                f"meaningful metrics (current: {self.index_build_time_window})"
+            )
 
 
 @dataclass

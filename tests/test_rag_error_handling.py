@@ -137,7 +137,7 @@ class TestIndexerErrorHandling:
             mock_open.side_effect = PermissionError("Permission denied")
             
             # Should handle gracefully and raise appropriate error
-            with pytest.raises(ValueError, match="No chunks generated"):
+            with pytest.raises(ValueError, match="no text content"):
                 build_index_from_files(
                     files=[test_file],
                     index_name="test",
