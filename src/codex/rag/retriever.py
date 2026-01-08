@@ -179,30 +179,33 @@ class Retriever:
 
     def _estimate_line_number(self, char_pos: int, chars_per_line: int = 80) -> int:
         """
-        Estimate line number from character position.
+        Estimate line number from character position using a fixed heuristic.
 
-        This is approximate. For exact line numbers, file would need to be re-read.
-        Character positions should ideally be stored during chunking for accuracy.
+        This is an approximate helper that uses a fixed average characters-per-line
+        heuristic. It does **not** re-read source files or use precomputed line
+        offsets, so results should be treated as best-effort only.
 
         Args:
-            char_pos: Character position in file
-            chars_per_line: Estimated average characters per line (default 80)
+            char_pos: Character position in file.
+            chars_per_line: Estimated average characters per line (default 80).
 
         Returns:
-            Estimated line number (1-indexed)
-        
+            Estimated line number (1-indexed).
+
         Note:
-            This uses a simple heuristic based on chars_per_line=80.
-            
+            This uses a simple heuristic based on ``chars_per_line`` (default 80).
+
             **Warning**: This estimation may be significantly inaccurate for files
             with varying line lengths (e.g., markdown with long paragraphs vs code
-            with short lines). For production use, consider storing actual line
-            numbers during chunking for accurate line-level attribution.
-            
-            For better accuracy:
-            - Store actual line numbers during chunking
-            - Calculate average line length from source files
-            - Re-read files to map positions to lines
+            with short lines). For production use, or when you need precise
+            line-level attribution, you should implement one of the following
+            strategies *outside* of this helper:
+
+            - Store actual line numbers or line offsets during chunking.
+            - Calculate an average line length from the original source files and
+              pass a more accurate ``chars_per_line`` value.
+            - Re-read the original files at query time to map character positions
+              to exact line numbers.
         """
         if char_pos <= 0:
             return 1
