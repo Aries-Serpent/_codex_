@@ -132,24 +132,36 @@ PYEOF
 elif [[ "${SOURCE_TYPE}" == "ndjson" ]]; then
     # For NDJSON, use the old retrieval module if available
     # Or implement NDJSON support in new indexer
-    python3 <<PYEOF
+    # Export variables as environment variables for safe access in Python
+    export BUILD_SOURCE_PATH="${SOURCE_PATH}"
+    export BUILD_MSP_EMBEDDING_MODEL="${MSP_EMBEDDING_MODEL}"
+    export BUILD_MSP_FAISS_INDEX_DIR="${MSP_FAISS_INDEX_DIR}"
+    export BUILD_TENANT_ID="${TENANT_ID}"
+    
+    python3 <<'PYEOF'
 import sys
+import os
 sys.path.insert(0, '.')
 
 try:
     from src.codex.retrieval.embed import build_embeddings
     from src.codex.retrieval.stores import FAISSStore
     
-    print('Loading documents from ${SOURCE_PATH}...')
+    # Safely retrieve values from environment variables
+    source_path = os.environ.get('BUILD_SOURCE_PATH', '.')
+    embedding_model = os.environ.get('BUILD_MSP_EMBEDDING_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
+    faiss_index_dir = os.environ.get('BUILD_MSP_FAISS_INDEX_DIR', '.codex/tenants')
+    tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
+    
+    print(f'Loading documents from {source_path}...')
     embeddings, documents = build_embeddings(
-        ndjson_path='${SOURCE_PATH}',
-        model_name='${MSP_EMBEDDING_MODEL}',
+        ndjson_path=source_path,
+        model_name=embedding_model,
         batch_size=32,
     )
     
     print(f'Creating FAISS index for {len(documents)} documents...')
-    index_dir = '${MSP_FAISS_INDEX_DIR}/${TENANT_ID}/faiss'
-    import os
+    index_dir = f'{faiss_index_dir}/{tenant_id}/faiss'
     os.makedirs(index_dir, exist_ok=True)
     
     store = FAISSStore(index_dir=index_dir, index_name='default')
@@ -160,7 +172,7 @@ try:
     
     print('')
     print('✓ FAISS index built successfully!')
-    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Tenant:    {tenant_id}')
     print(f'  - Documents: {len(documents)}')
     print(f'  - Dimension: {embeddings.shape[1]}')
     print(f'  - Location:  {index_dir}')
