@@ -428,20 +428,20 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 | Phase 2 (Current Cycle) | Drift Detection | Real-time drift alerts, 90% detection rate |
 | Phase 2 (Current Cycle) | Automated Retraining | 3 models with auto-retrain enabled |
 | Phase 3 (Current Cycle) | Governance Framework | Model cards for all production models |
-| Phase 4 (Current Cycle) | Level 4 Certification | External audit confirms Level 4 compliance |
+| Phase 4 (2026) | Level 4 Certification | External audit confirms Level 4 compliance |
 
 ---
 
 ## Metrics & KPIs
 
-### Current Performance (Phase 4 (Previous Cycle))
+### Current Performance (Phase 4 (2024))
 - **Deployment Frequency**: 12 deployments/month (target: 20)
 - **Lead Time (code → production)**: 3.5 days (target: 1 day)
 - **Model Accuracy Drift**: 2.1% avg degradation/month (target: <1%)
 - **Incident Response Time**: 45 min (target: 15 min)
 - **Automated vs Manual Deployments**: 70% automated (target: 95%)
 
-### Level 4 Targets (Phase 4 (Current Cycle))
+### Level 4 Targets (Phase 4 (2026))
 - **Deployment Frequency**: 30+ deployments/month
 - **Lead Time**: <1 day (fully automated)
 - **Model Accuracy Drift**: <0.5% (proactive retraining)

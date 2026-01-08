@@ -238,7 +238,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - No deprecations in this release
 
 **Future (3.0.0)**
-- `conf/` directory will be removed in favor of `configs/` (Phase 2 (Current Cycle))
+- `conf/` directory will be removed in favor of `configs/` (Phase 2 (2026))
 
 ---
 

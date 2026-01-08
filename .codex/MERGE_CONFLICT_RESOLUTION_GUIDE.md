@@ -20,8 +20,8 @@ PR #2717 has merge conflicts with the base branch. This PR contains 1,114 files 
 This PR reverted overly broad date and terminology replacements across 1,114 files:
 
 **Timestamp fixes (2,274):**
-- `Current Cycle-01-06` → `2026-01-06`
-- `Previous Cycle-12-27` → `2025-12-27`
+- `2026-01-06` → `2026-01-06`
+- `2025-12-27` → `2025-12-27`
 
 **Word "may" fixes (237):**
 - `may need` → `may need`

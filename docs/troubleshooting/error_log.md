@@ -11,7 +11,7 @@ state, its root cause, and the remediation that preserves intended behaviour.
 
 ## Missing `nox` binary (2025-09-13)
 - **Context**: `nox -s tests` exited with `command not found: nox`.
-- **Cause**: The development extras that supply `nox==Previous Cycle.5.1` were not installed.
+- **Cause**: The development extras that supply `nox==2024.5.1` were not installed.
 - **Resolution**: Install `.[dev]` extras or use the local gates script so `nox` is provisioned prior to running automated checks.
 
 ## `pytest` coverage argument rejected (2025-09-13)

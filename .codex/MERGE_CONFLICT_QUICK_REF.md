@@ -31,7 +31,7 @@ git merge -X ours origin/0D_base_
 ## Why Conflicts Exist
 
 This PR reverted 2,515 incorrect changes across 1,114 files:
-- Restored years in timestamps: `Current Cycle-01-06` → `2026-01-06`
+- Restored years in timestamps: `2026-01-06` → `2026-01-06`
 - Restored "may" words: `may need` → `may need`
 
 Conflicts occur because the base branch may have been updated since our PR started.
