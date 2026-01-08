@@ -17,9 +17,12 @@ try:
         embed_chunks,
         load_index,
         persist_index,
+        manage_tenant_indices,
+        TenantOperationResult,
+        IndexOperation,
     )
-    from .retriever import MultiIndexRetriever, Retriever
-    from .utils import safe_model_load
+    from .retriever import MultiIndexRetriever, Retriever, CachedRetriever, LRUCache
+    from .utils import safe_model_load, ProvenanceMetadata
 
     _expanded_context_available = True
 except ImportError:
@@ -48,10 +51,16 @@ if _expanded_context_available:
             "persist_index",
             "load_index",
             "build_index_from_files",
+            "manage_tenant_indices",
+            "TenantOperationResult",
+            "IndexOperation",
             # Retriever
             "Retriever",
             "MultiIndexRetriever",
+            "CachedRetriever",
+            "LRUCache",
             # Utils
             "safe_model_load",
+            "ProvenanceMetadata",
         ]
     )

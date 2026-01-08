@@ -352,3 +352,393 @@ def build_index_from_files(
     )
 
     return index_path
+
+
+# ============================================================================
+# Multi-Tenant Index Management (Phase B)
+# ============================================================================
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional
+import shutil
+
+
+class IndexOperation(Enum):
+    """Operations supported by multi-tenant index manager."""
+    CREATE = "create"
+    UPDATE = "update"
+    DELETE = "delete"
+    MERGE = "merge"
+    LIST = "list"
+
+
+@dataclass
+class TenantOperationResult:
+    """
+    Result of a tenant index operation.
+    
+    Attributes:
+        success: Whether operation completed successfully
+        operation: Type of operation performed
+        tenant_id: Affected tenant ID
+        index_names: List of index names involved
+        message: Human-readable result message
+        details: Additional operation details
+    """
+    success: bool
+    operation: IndexOperation
+    tenant_id: str
+    index_names: List[str]
+    message: str
+    details: Optional[Dict[str, Any]] = None
+
+
+def manage_tenant_indices(
+    tenant_id: str,
+    operation: str,
+    index_names: List[str],
+    index_dir: str = ".codex/tenants",
+    **kwargs,
+) -> TenantOperationResult:
+    """
+    Manage tenant indices with operations: create, update, delete, merge, list.
+    
+    This function supports multi-tenant RAG workflows by providing centralized
+    index lifecycle management for expanded context scenarios (64k-512k tokens).
+    
+    Args:
+        tenant_id: Tenant identifier
+        operation: Operation to perform ('create', 'update', 'delete', 'merge', 'list')
+        index_names: List of index names to operate on
+        index_dir: Base directory for tenant indices
+        **kwargs: Additional operation-specific parameters:
+            - files: List[Path] for 'create' operation
+            - chunk_size: int for 'create' operation
+            - overlap: int for 'create' operation
+            - merge_name: str for 'merge' operation
+    
+    Returns:
+        TenantOperationResult with operation status and details
+    
+    Raises:
+        ValueError: If operation is invalid or parameters are missing
+    
+    Example:
+        >>> # Create new index for tenant
+        >>> result = manage_tenant_indices(
+        ...     tenant_id="customer_a",
+        ...     operation="create",
+        ...     index_names=["docs"],
+        ...     files=[Path("docs/guide.md")],
+        ...     chunk_size=1000
+        ... )
+        >>> print(result.message)
+        "Successfully created index 'docs' for tenant 'customer_a'"
+        
+        >>> # Merge multiple indices
+        >>> result = manage_tenant_indices(
+        ...     tenant_id="customer_a",
+        ...     operation="merge",
+        ...     index_names=["docs", "api", "faq"],
+        ...     merge_name="all_content"
+        ... )
+    """
+    try:
+        op_enum = IndexOperation(operation.lower())
+    except ValueError:
+        return TenantOperationResult(
+            success=False,
+            operation=IndexOperation.LIST,  # Default for invalid
+            tenant_id=tenant_id,
+            index_names=index_names,
+            message=f"Invalid operation: {operation}. Must be one of: create, update, delete, merge, list",
+        )
+    
+    tenant_dir = Path(index_dir) / tenant_id
+    
+    # CREATE: Build new index from files
+    if op_enum == IndexOperation.CREATE:
+        files = kwargs.get("files", [])
+        if not files:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message="'create' operation requires 'files' parameter",
+            )
+        
+        created = []
+        for index_name in index_names:
+            try:
+                index_path = build_index_from_files(
+                    files=files,
+                    index_name=index_name,
+                    tenant_id=tenant_id,
+                    index_dir=index_dir,
+                    chunk_size=kwargs.get("chunk_size", 1000),
+                    overlap=kwargs.get("overlap", 128),
+                )
+                created.append(index_name)
+                logger.info(f"Created index '{index_name}' at {index_path}")
+            except Exception as e:
+                logger.error(f"Failed to create index '{index_name}': {e}")
+        
+        if created:
+            return TenantOperationResult(
+                success=True,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=created,
+                message=f"Successfully created {len(created)} index(es) for tenant '{tenant_id}'",
+                details={"created_indices": created},
+            )
+        else:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message=f"Failed to create any indices for tenant '{tenant_id}'",
+            )
+    
+    # UPDATE: Rebuild existing index with new data
+    elif op_enum == IndexOperation.UPDATE:
+        files = kwargs.get("files", [])
+        if not files:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message="'update' operation requires 'files' parameter",
+            )
+        
+        updated = []
+        for index_name in index_names:
+            try:
+                # Delete old index if exists
+                old_path = tenant_dir / index_name
+                if old_path.exists():
+                    shutil.rmtree(old_path)
+                    logger.info(f"Removed old index '{index_name}'")
+                
+                # Create new index
+                index_path = build_index_from_files(
+                    files=files,
+                    index_name=index_name,
+                    tenant_id=tenant_id,
+                    index_dir=index_dir,
+                    chunk_size=kwargs.get("chunk_size", 1000),
+                    overlap=kwargs.get("overlap", 128),
+                )
+                updated.append(index_name)
+                logger.info(f"Updated index '{index_name}' at {index_path}")
+            except Exception as e:
+                logger.error(f"Failed to update index '{index_name}': {e}")
+        
+        if updated:
+            return TenantOperationResult(
+                success=True,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=updated,
+                message=f"Successfully updated {len(updated)} index(es) for tenant '{tenant_id}'",
+                details={"updated_indices": updated},
+            )
+        else:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message=f"Failed to update any indices for tenant '{tenant_id}'",
+            )
+    
+    # DELETE: Remove indices
+    elif op_enum == IndexOperation.DELETE:
+        deleted = []
+        for index_name in index_names:
+            try:
+                index_path = tenant_dir / index_name
+                if index_path.exists():
+                    shutil.rmtree(index_path)
+                    deleted.append(index_name)
+                    logger.info(f"Deleted index '{index_name}' from {tenant_dir}")
+                else:
+                    logger.warning(f"Index '{index_name}' not found for tenant '{tenant_id}'")
+            except Exception as e:
+                logger.error(f"Failed to delete index '{index_name}': {e}")
+        
+        if deleted:
+            return TenantOperationResult(
+                success=True,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=deleted,
+                message=f"Successfully deleted {len(deleted)} index(es) for tenant '{tenant_id}'",
+                details={"deleted_indices": deleted},
+            )
+        else:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message=f"No indices deleted for tenant '{tenant_id}'",
+            )
+    
+    # MERGE: Combine multiple indices into one
+    elif op_enum == IndexOperation.MERGE:
+        merge_name = kwargs.get("merge_name")
+        if not merge_name:
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message="'merge' operation requires 'merge_name' parameter",
+            )
+        
+        try:
+            import faiss
+            
+            # Load all indices to merge
+            all_embeddings = []
+            all_chunks = []
+            all_metadata = []
+            
+            for index_name in index_names:
+                try:
+                    index, chunks, metadata = load_index(index_name, tenant_id, index_dir)
+                    
+                    # Extract embeddings from FAISS index
+                    if index.ntotal > 0:
+                        embeddings = np.zeros((index.ntotal, index.d), dtype=np.float32)
+                        for i in range(index.ntotal):
+                            embeddings[i] = index.reconstruct(i)
+                        
+                        all_embeddings.append(embeddings)
+                        all_chunks.extend([(c["start"], c["end"], c["text"]) for c in chunks])
+                        all_metadata.append(metadata)
+                    
+                    logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
+                except Exception as e:
+                    logger.error(f"Failed to load index '{index_name}': {e}")
+            
+            if not all_embeddings:
+                return TenantOperationResult(
+                    success=False,
+                    operation=op_enum,
+                    tenant_id=tenant_id,
+                    index_names=index_names,
+                    message="No valid indices found to merge",
+                )
+            
+            # Combine all embeddings
+            combined_embeddings = np.vstack(all_embeddings)
+            
+            # Create merged metadata
+            merged_metadata = {
+                "merged_from": index_names,
+                "source_metadata": all_metadata,
+                "total_sources": len(index_names),
+            }
+            
+            # Persist merged index
+            index_path = persist_index(
+                index_name=merge_name,
+                embeddings=combined_embeddings,
+                chunks=all_chunks,
+                metadata=merged_metadata,
+                tenant_id=tenant_id,
+                index_dir=index_dir,
+            )
+            
+            return TenantOperationResult(
+                success=True,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message=f"Successfully merged {len(index_names)} indices into '{merge_name}' for tenant '{tenant_id}'",
+                details={
+                    "merged_name": merge_name,
+                    "source_indices": index_names,
+                    "total_vectors": len(combined_embeddings),
+                    "index_path": str(index_path),
+                },
+            )
+            
+        except Exception as e:
+            logger.error(f"Merge operation failed: {e}")
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=index_names,
+                message=f"Failed to merge indices: {str(e)}",
+            )
+    
+    # LIST: List all indices for tenant
+    elif op_enum == IndexOperation.LIST:
+        try:
+            if not tenant_dir.exists():
+                return TenantOperationResult(
+                    success=True,
+                    operation=op_enum,
+                    tenant_id=tenant_id,
+                    index_names=[],
+                    message=f"No indices found for tenant '{tenant_id}' (tenant directory does not exist)",
+                    details={"indices": []},
+                )
+            
+            indices = []
+            for item in tenant_dir.iterdir():
+                if item.is_dir() and (item / "index.faiss").exists():
+                    # Load metadata for summary
+                    metadata_file = item / "metadata.json"
+                    if metadata_file.exists():
+                        with open(metadata_file, "r") as f:
+                            metadata = json.load(f)
+                        indices.append({
+                            "name": item.name,
+                            "vectors": metadata.get("num_vectors", 0),
+                            "dimension": metadata.get("dimension", 0),
+                            "created_at": metadata.get("created_at", "unknown"),
+                        })
+                    else:
+                        indices.append({
+                            "name": item.name,
+                            "vectors": "unknown",
+                            "dimension": "unknown",
+                            "created_at": "unknown",
+                        })
+            
+            return TenantOperationResult(
+                success=True,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=[idx["name"] for idx in indices],
+                message=f"Found {len(indices)} index(es) for tenant '{tenant_id}'",
+                details={"indices": indices},
+            )
+            
+        except Exception as e:
+            logger.error(f"List operation failed: {e}")
+            return TenantOperationResult(
+                success=False,
+                operation=op_enum,
+                tenant_id=tenant_id,
+                index_names=[],
+                message=f"Failed to list indices: {str(e)}",
+            )
+    
+    # Fallback for unknown operations
+    return TenantOperationResult(
+        success=False,
+        operation=op_enum,
+        tenant_id=tenant_id,
+        index_names=index_names,
+        message=f"Operation '{operation}' not fully implemented",
+    )
