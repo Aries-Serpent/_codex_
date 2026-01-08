@@ -5,7 +5,7 @@
 ### Fixed Vulnerabilities
 
 #### Critical
-- **filelock 3.20.1+**: TOCTOU race condition (CVE-Previous Cycle-68146) - Upgraded from 3.16.1
+- **filelock 3.20.1+**: TOCTOU race condition (CVE-2025-68146) - Upgraded from 3.16.1
 - **PyTorch 2.2.2+**: RCE via torch.load (GHSA-w853-jp5j-5j7f) - `weights_only=True` enforced
 
 #### High

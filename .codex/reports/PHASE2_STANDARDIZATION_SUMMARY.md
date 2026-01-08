@@ -303,7 +303,7 @@ v2_record = validator.migrate_to_v2(v1_record)
 ### Documentation
 - Framework: `docs/arch/_archive-policy/standardization-framework.md`
 - Quick Start: `docs/arch/_archive-policy/README-standardization.md`
-- ADRs: `docs/arch/adr-Previous Cycle-11-0*.md`
+- ADRs: `docs/arch/adr-2024-11-0*.md`
 
 ### External References
 - [Sigstore](https://docs.sigstore.dev/)

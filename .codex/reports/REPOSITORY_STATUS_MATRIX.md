@@ -103,7 +103,7 @@
 
 **Tasks:**
 - [x] Create COGNITIVE_BRAIN_UNIFIED_V4.md (central hub)
-- [x] Create COGNITIVE_BRAIN_ROADMAP_Current Cycle.md (strategic plan)
+- [x] Create COGNITIVE_BRAIN_ROADMAP_2026.md (strategic plan)
 - [ ] Move session docs to .codex/archive/
 - [ ] Create .codex/cognitive_brain/ subdirectory
 - [ ] Update all internal links
@@ -142,7 +142,7 @@
 - [ ] Remove unused import in WorkflowTokenOrchestrator.test.tsx (fireEvent)
 - [ ] Update eslint.config.js comment to match intent
 
-### Medium Priority (Cycle 1 Current Cycle)
+### Medium Priority (Cycle 1 2026)
 
 #### 4. Performance Optimization
 **Status:** ⏳ NOT STARTED  
@@ -191,12 +191,12 @@
 - [ ] API authentication and rate limiting
 - [ ] API documentation (Swagger/OpenAPI)
 
-### Low Priority (Cycle+ Current Cycle)
+### Low Priority (Cycle+ 2026)
 
 #### 7. Configuration Migration
 **Status:** ⏳ IN PROGRESS  
 **Est. Time:** 4 iterations  
-**Priority:** LOW (Deadline: Cycle 2 Current Cycle)
+**Priority:** LOW (Deadline: Cycle 2 2026)
 
 **Tasks:**
 - [ ] Complete migration from conf/ to configs/
@@ -221,7 +221,7 @@
 #### 9. Advanced Quantum Features
 **Status:** ⏳ PLANNED  
 **Est. Time:** 30+ hours  
-**Priority:** LOW (Cycle-Cycle 3 Current Cycle)
+**Priority:** LOW (Cycle-Cycle 3 2026)
 
 **Tasks:**
 - [ ] Quantum superposition implementation
@@ -404,7 +404,7 @@
 
 - Bundle size (788.90 kB, target <500 kB)
 - Quantum framework tests (not yet implemented)
-- Configuration migration (conf/ deprecated Cycle 2 Current Cycle)
+- Configuration migration (conf/ deprecated Cycle 2 2026)
 - Documentation organization (root level cluttered)
 
 ### Mitigated Risks ✅

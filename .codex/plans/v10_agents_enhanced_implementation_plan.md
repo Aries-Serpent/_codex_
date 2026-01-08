@@ -427,7 +427,7 @@ class TutorialGenerator:
 #### R9: Architecture Diagram Intelligence (MEDIUM PRIORITY)
 
 **Research-Backed Approach**:
-Based on Swark (Previous Cycle) using LLMs to generate Mermaid diagrams from code:
+Based on Swark (2024) using LLMs to generate Mermaid diagrams from code:
 
 **Architecture**:
 ```python

@@ -586,10 +586,10 @@ This report provides a comprehensive analysis of all V10 Custom Agents, their ca
 ## 📚 References & Resources
 
 ### Academic Papers to Review
-1. "Causal Inference in Software Engineering" (TSE Previous Cycle)
-2. "Deep Learning for Code Understanding" (ICML Previous Cycle)
-3. "Multi-Agent Systems in DevOps" (FSE Previous Cycle)
-4. "Explainable AI for Developer Tools" (CHI Current Cycle)
+1. "Causal Inference in Software Engineering" (TSE 2024)
+2. "Deep Learning for Code Understanding" (ICML 2024)
+3. "Multi-Agent Systems in DevOps" (FSE 2024)
+4. "Explainable AI for Developer Tools" (CHI 2025)
 
 ### Open Datasets
 1. GitHub Archive (code evolution)

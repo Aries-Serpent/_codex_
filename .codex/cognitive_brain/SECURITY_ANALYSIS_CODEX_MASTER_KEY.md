@@ -612,7 +612,7 @@ gh api /orgs/Aries-Serpent/audit-log \
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 
 # Expected output if secret exists:
-# CODEX_MASTER_KEY    Updated Current Cycle-01-XX
+# CODEX_MASTER_KEY    Updated 2026-01-XX
 
 # If not found:
 echo "❌ CODEX_MASTER_KEY does not exist"
@@ -627,8 +627,8 @@ gh api /repos/Aries-Serpent/_codex_/actions/secrets/CODEX_MASTER_KEY \
 # Expected output:
 # {
 #   "name": "CODEX_MASTER_KEY",
-#   "created_at": "Previous Cycle-XX-XX...",
-#   "updated_at": "Previous Cycle-XX-XX..."
+#   "created_at": "2024-XX-XX...",
+#   "updated_at": "2024-XX-XX..."
 # }
 ```
 
