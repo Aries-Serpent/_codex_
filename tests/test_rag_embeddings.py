@@ -117,7 +117,8 @@ class TestOpenAIEmbeddingProvider:
         with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):
             provider = OpenAIEmbeddingProvider()
             
-            assert provider.api_key == "env-key"
+            assert provider.client is not None
+            assert provider.model_name == "text-embedding-3-small"
 
     def test_initialization_without_key(self):
         """Test initialization without API key raises error"""
@@ -185,7 +186,7 @@ class TestOpenAIEmbeddingProvider:
         """Test that destructor clears API key"""
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
             provider = OpenAIEmbeddingProvider()
-            assert provider.api_key is not None
+            assert provider.client is not None
             
             # Trigger destructor via deletion
             del provider

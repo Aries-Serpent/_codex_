@@ -12,7 +12,7 @@ Migration from: configs/deployment/d365/slas.csv
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from typing import Any
 
@@ -256,7 +256,7 @@ class SLAPolicyRegistry(BaseModel):
             if not (p.name == policy.name and p.version == policy.version)
         ]
         self.policies.append(policy)
-        self.last_updated = datetime.now().isoformat()
+        self.last_updated = datetime.now(UTC).isoformat()
 
     @classmethod
     def from_csv(cls, csv_path: str) -> SLAPolicyRegistry:
