@@ -180,13 +180,20 @@ class Retriever:
         Estimate line number from character position.
 
         This is approximate. For exact line numbers, file would need to be re-read.
+        Character positions should ideally be stored during chunking for accuracy.
 
         Args:
             char_pos: Character position in file
-            chars_per_line: Estimated average characters per line
+            chars_per_line: Estimated average characters per line (default 80)
 
         Returns:
             Estimated line number (1-indexed)
+        
+        Note:
+            This uses a simple heuristic. For better accuracy:
+            - Store actual line numbers during chunking
+            - Calculate average line length from source files
+            - Re-read files to map positions to lines
         """
         if char_pos <= 0:
             return 1

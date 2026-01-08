@@ -326,3 +326,77 @@ class TestEndToEnd:
             assert len(chunks) > 0
             assert all("text" in chunk for chunk in chunks)
             assert metadata["total_files"] == 3
+
+
+class TestIndexerEdgeCases:
+    """Additional edge case tests for indexer"""
+
+    def test_chunk_text_with_various_delimiters(self):
+        """Test chunking with different sentence delimiters"""
+        text = "First sentence.\nSecond sentence! Third sentence? Fourth sentence. "
+        chunks = chunk_text(text, chunk_size=30, overlap=10)
+        
+        assert len(chunks) > 0
+
+    def test_chunk_text_with_no_delimiters(self):
+        """Test chunking text with no sentence delimiters"""
+        text = "a" * 500
+        chunks = chunk_text(text, chunk_size=100, overlap=20)
+        
+        assert len(chunks) > 0
+
+    def test_persist_index_with_extensive_metadata(self):
+        """Test persisting index with rich metadata"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            chunks = [(0, 10, "Test")]
+            embeddings = np.random.randn(1, 384).astype(np.float32)
+            
+            metadata = {
+                "source": "test_source",
+                "version": "1.0",
+                "tags": ["test", "sample"],
+            }
+            
+            index_path = persist_index(
+                index_name="rich_meta",
+                embeddings=embeddings,
+                chunks=chunks,
+                metadata=metadata,
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            _, _, loaded_meta = load_index(
+                index_name="rich_meta",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            assert loaded_meta["source"] == "test_source"
+            assert loaded_meta["version"] == "1.0"
+
+    def test_load_index_with_missing_chunks_file(self):
+        """Test loading index when chunks.json is missing"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            chunks = [(0, 10, "Test")]
+            embeddings = np.random.randn(1, 384).astype(np.float32)
+            
+            index_path = persist_index(
+                index_name="partial",
+                embeddings=embeddings,
+                chunks=chunks,
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            chunks_file = index_path / "chunks.json"
+            chunks_file.unlink()
+            
+            index, loaded_chunks, _ = load_index(
+                index_name="partial",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            assert index is not None
+            assert len(loaded_chunks) == 0

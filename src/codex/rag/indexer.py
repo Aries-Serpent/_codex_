@@ -321,7 +321,12 @@ def build_index_from_files(
             logger.error(f"Error processing {file_path}: {e}")
 
     if not all_chunks:
-        raise ValueError("No chunks generated from input files")
+        if not any(file_path.exists() for file_path in files):
+            raise ValueError("No valid input files found")
+        elif all(fm["chunks"] == 0 for fm in file_metadata if fm):
+            raise ValueError("Input files contain no text content")
+        else:
+            raise ValueError("No chunks generated from input files - check file processing errors above")
 
     logger.info(f"Total chunks: {len(all_chunks)} from {len(files)} files")
 

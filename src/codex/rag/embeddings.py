@@ -124,6 +124,10 @@ class OpenAIEmbeddingProvider:
         Args:
             model_name: OpenAI model name
             api_key: Optional API key (defaults to OPENAI_API_KEY env var)
+        
+        Security Note:
+            API keys are stored in memory during operation. Consider using
+            key rotation and secure key management practices in production.
         """
         self.model_name = model_name
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
@@ -136,6 +140,11 @@ class OpenAIEmbeddingProvider:
 
         self.client = None
         self._initialize_client()
+    
+    def __del__(self):
+        """Clean up on destruction (clear sensitive data)."""
+        if hasattr(self, 'api_key'):
+            self.api_key = None
 
     def _initialize_client(self):
         """Initialize OpenAI client."""
@@ -383,11 +392,15 @@ def create_embedding_provider(
     elif provider_type == "openai":
         # Check if API key is available
         if not os.environ.get("OPENAI_API_KEY") and "api_key" not in kwargs:
-            logger.warning(
-                "OPENAI_API_KEY not found, falling back to local provider"
+            logger.error(
+                "OpenAI provider requested but OPENAI_API_KEY not found. "
+                "Set the environment variable or pass api_key parameter. "
+                "Use provider_type='local' for local embeddings instead."
             )
-            model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
-            provider = LocalSentenceTransformerProvider(model_name=model_name)
+            raise ValueError(
+                "OpenAI API key required for provider_type='openai'. "
+                "Use provider_type='local' or set OPENAI_API_KEY."
+            )
         else:
             model_name = model_name or "text-embedding-3-small"
             provider = OpenAIEmbeddingProvider(model_name=model_name, **kwargs)
