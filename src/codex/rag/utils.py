@@ -31,12 +31,15 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     try:
         # Check if model has a device attribute and is on meta device
-        if hasattr(model, "device") and str(model.device) == "meta":
-            # Use to_empty to move from meta device
-            if hasattr(model, "to_empty"):
-                return model.to_empty(device=device)
-            # Fallback to regular .to() method
-            return model.to(device)
+        if hasattr(model, "device"):
+            # Use device.type for robust comparison across PyTorch versions
+            device_type = getattr(model.device, "type", None)
+            if device_type == "meta":
+                # Use to_empty to move from meta device
+                if hasattr(model, "to_empty"):
+                    return model.to_empty(device=device)
+                # Fallback to regular .to() method
+                return model.to(device)
         # If not on meta device, just move to target device
         if hasattr(model, "to"):
             return model.to(device)
