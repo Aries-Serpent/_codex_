@@ -1,0 +1,122 @@
+name: Generate Repository Structure
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to analyze'
+        required: true
+        default: 'main'
+        type: string
+      
+      include_files:
+        description: 'Include files in output'
+        required: false
+        default: true
+        type: boolean
+      
+      include_summaries:
+        description: 'Include summary comments in JSON'
+        required: false
+        default: false
+        type: boolean
+      
+      format:
+        description: 'Output format'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - plain
+          - markdown
+          - categorized
+          - tree
+          - files
+          - json
+          - jsonl
+      
+      compress:
+        description: 'Compression format for JSON'
+        required: false
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - gzip
+          - brotli
+          - zstd
+          - all
+
+jobs:
+  generate-structure:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install optional compression dependencies
+        if: inputs.compress != 'none'
+        run: |
+          if [ "${{ inputs.compress }}" = "brotli" ] || [ "${{ inputs.compress }}" = "all" ]; then
+            pip install brotli
+          fi
+          if [ "${{ inputs.compress }}" = "zstd" ] || [ "${{ inputs.compress }}" = "all" ]; then
+            pip install zstandard
+          fi
+      
+      - name: Generate repository structure
+        run: |
+          # Build command
+          CMD="python scripts/analysis/list_all_folders.py --format ${{ inputs.format }}"
+          
+          if [ "${{ inputs.include_files }}" = "true" ]; then
+            CMD="$CMD --include-files"
+          fi
+          
+          if [ "${{ inputs.include_summaries }}" = "true" ]; then
+            CMD="$CMD --include-summaries"
+          fi
+          
+          if [ "${{ inputs.compress }}" != "none" ]; then
+            CMD="$CMD --compress ${{ inputs.compress }}"
+          fi
+          
+          echo "Running: $CMD"
+          $CMD
+      
+      - name: Upload generated files as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-structure-${{ inputs.branch }}-${{ github.run_id }}
+          path: .codex/repository_structure/
+          retention-days: 30
+      
+      - name: Summary
+        run: |
+          echo "## 📊 Repository Structure Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch**: \`${{ inputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Format**: \`${{ inputs.format }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Include Files**: \`${{ inputs.include_files }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Include Summaries**: \`${{ inputs.include_summaries }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Compression**: \`${{ inputs.compress }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated Files" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh .codex/repository_structure/ >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Files are available as workflow artifacts." >> $GITHUB_STEP_SUMMARY
