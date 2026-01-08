@@ -7,7 +7,7 @@ import hashlib
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol
 
@@ -288,7 +288,7 @@ class CachedEmbeddingProvider:
                 "cache_key": cache_key,
                 "num_texts": len(texts),
                 "embedding_dim": embeddings.shape[1] if len(embeddings) > 0 else 0,
-                "created_at": datetime.now(datetime.UTC).isoformat(),
+                "created_at": datetime.now(UTC).isoformat(),
                 "provider": self.provider.__class__.__name__,
                 **(metadata or {}),
             }

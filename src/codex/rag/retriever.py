@@ -4,7 +4,7 @@ Provides semantic search over FAISS indices with provenance tracking.
 """
 
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -143,7 +143,7 @@ class Retriever:
 
         # Build results with provenance
         results = []
-        timestamp = datetime.now(datetime.UTC).isoformat()
+        timestamp = datetime.now(UTC).isoformat()
 
         for i, (idx, distance) in enumerate(zip(indices[0], distances[0])):
             # Skip invalid indices

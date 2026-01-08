@@ -10,7 +10,7 @@ import logging
 import time
 import threading
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
 from collections import deque
 import json
@@ -417,7 +417,7 @@ class RAGMetrics:
             Dictionary compatible with CloudWatch PutMetricData API
         """
         metric_data = []
-        timestamp = datetime.now(datetime.UTC)
+        timestamp = datetime.now(UTC)
         
         # Query latency metrics
         if self.query_latencies:
