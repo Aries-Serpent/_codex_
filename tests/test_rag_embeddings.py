@@ -13,6 +13,13 @@ import pytest
 # Skip tests if dependencies not available
 pytest.importorskip("sentence_transformers")
 
+# Check if openai is available
+try:
+    import openai  # noqa: F401
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+
 from codex.rag.embeddings import (
     CachedEmbeddingProvider,
     LocalSentenceTransformerProvider,
@@ -93,6 +100,7 @@ class TestLocalSentenceTransformerProvider:
             assert provider.cache_dir == tmpdir
 
 
+@pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
 class TestOpenAIEmbeddingProvider:
     """Tests for OpenAIEmbeddingProvider"""
 
