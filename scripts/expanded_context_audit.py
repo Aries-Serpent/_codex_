@@ -103,7 +103,9 @@ class ExpandedContextAuditor:
         except (UnicodeDecodeError, PermissionError):
             # Intentionally skip files that cannot be read due to encoding or permissions.
             # These files cannot be scanned for text-based patterns, so we return no matches.
-            pass
+            # Intentionally skip files that cannot be read due to encoding or permissions.
+            # These files cannot be scanned for text-based patterns, so we return no matches.
+            return matches
 
         return matches
 
