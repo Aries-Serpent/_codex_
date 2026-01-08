@@ -1,0 +1,370 @@
+# Semantic Code Search Agent
+# Performs semantic code and documentation search using RAG embeddings
+
+name: semantic-search
+version: 1.0.0
+description: |
+  Autonomous agent for semantic search across code and documentation.
+  Uses RAG embeddings to find similar code patterns, relevant docs,
+  and generate usage examples from the codebase.
+
+# Agent Capabilities
+capabilities:
+  - name: search_code
+    description: Search code using natural language queries
+    parameters:
+      - name: query
+        type: string
+        required: true
+        description: Natural language search query
+      - name: tenant_id
+        type: string
+        default: "default"
+        description: Tenant to search within
+      - name: file_patterns
+        type: array
+        default: ["**/*.py", "**/*.js", "**/*.ts"]
+        description: File patterns to search
+      - name: top_k
+        type: integer
+        default: 5
+        description: Number of results to return
+      - name: min_score
+        type: float
+        default: 0.7
+        description: Minimum similarity score (0-1)
+    returns:
+      results:
+        - file: string
+          line_range: array
+          code_snippet: string
+          similarity_score: float
+          context: string
+    
+  - name: find_similar_code
+    description: Find code patterns similar to a given snippet
+    parameters:
+      - name: code_snippet
+        type: string
+        required: true
+        description: Code snippet to find similar patterns for
+      - name: language
+        type: string
+        required: false
+        description: Programming language (auto-detected if not provided)
+      - name: top_k
+        type: integer
+        default: 10
+        description: Number of similar patterns to return
+    
+  - name: suggest_documentation
+    description: Find relevant documentation for code
+    parameters:
+      - name: code_context
+        type: string
+        required: true
+        description: Code context to find docs for
+      - name: doc_types
+        type: array
+        default: ["usage", "api", "tutorial"]
+        description: Types of documentation to search
+    
+  - name: generate_usage_examples
+    description: Generate usage examples from codebase
+    parameters:
+      - name: api_name
+        type: string
+        required: true
+        description: API/function name to generate examples for
+      - name: num_examples
+        type: integer
+        default: 3
+        description: Number of examples to generate
+      - name: complexity
+        type: string
+        default: "medium"
+        enum: ["basic", "medium", "advanced"]
+        description: Complexity level of examples
+    
+  - name: explain_code
+    description: Explain code using semantic understanding
+    parameters:
+      - name: file_path
+        type: string
+        required: true
+        description: Path to file to explain
+      - name: line_start
+        type: integer
+        required: false
+        description: Start line (explain entire file if not provided)
+      - name: line_end
+        type: integer
+        required: false
+        description: End line
+      - name: detail_level
+        type: string
+        default: "medium"
+        enum: ["summary", "medium", "detailed"]
+        description: Level of detail in explanation
+
+# Triggers
+triggers:
+  # Manual triggers
+  - type: comment
+    pattern: "@semantic-search {query}"
+    action: search_code
+    example: "@semantic-search how to use RAG embeddings"
+    
+  - type: comment
+    pattern: "@semantic-search find similar to"
+    action: find_similar_code
+    example: "@semantic-search find similar to async def process_query()"
+    
+  - type: comment
+    pattern: "@semantic-search docs for {code_context}"
+    action: suggest_documentation
+    example: "@semantic-search docs for CachedRetriever"
+    
+  - type: comment
+    pattern: "@semantic-search examples for {api_name}"
+    action: generate_usage_examples
+    example: "@semantic-search examples for manage_tenant_indices"
+    
+  - type: slash_command
+    command: "/search-code"
+    action: search_code
+    parameters:
+      query: "Natural language query"
+    
+  - type: slash_command
+    command: "/find-similar"
+    action: find_similar_code
+    parameters:
+      code_snippet: "Code to find similar patterns"
+    
+  - type: slash_command
+    command: "/explain-code"
+    action: explain_code
+    parameters:
+      file_path: "Path to file"
+      line_start: "Start line (optional)"
+      line_end: "End line (optional)"
+    
+  # Automatic triggers
+  - type: pull_request_review
+    action: suggest_relevant_code
+    description: Suggest similar code patterns during PR review
+    
+  - type: issue_comment
+    contains: "how do I"
+    action: search_code_and_docs
+    description: Answer "how do I" questions with code examples
+
+# Permissions
+permissions:
+  contents: read        # Read codebase for search
+  pull-requests: write  # Comment search results on PRs
+  issues: write         # Comment search results on issues
+
+# Configuration
+config:
+  # Search settings
+  default_top_k: 5
+  max_results: 50
+  min_similarity_score: 0.6
+  
+  # Retrieval settings
+  use_cached_retriever: true
+  cache_ttl_seconds: 3600
+  cache_maxsize: 1000
+  
+  # Index settings
+  default_index_name: "codebase"
+  fallback_indices: ["docs", "examples", "tests"]
+  
+  # Language support
+  supported_languages:
+    - python
+    - javascript
+    - typescript
+    - go
+    - rust
+    - java
+    - cpp
+  
+  # Result formatting
+  max_snippet_lines: 20
+  include_context_lines: 3
+  highlight_matches: true
+  
+  # Performance
+  query_timeout_seconds: 15  # Reduced for better UX (cached queries <1ms)
+  max_concurrent_searches: 5
+  timeout_explanation: |
+    15 second timeout balances user experience with search complexity.
+    Cached results return in ~1-2ms.
+    Fresh FAISS searches complete in 100-200ms.
+    Longer queries may hit timeout for very large indices.
+
+# Response Templates
+response_templates:
+  search_results: |
+    🔍 **Semantic Search Results**
+    
+    **Query**: "{query}"
+    **Found**: {num_results} results
+    
+    {results_list}
+    
+    ---
+    **Search powered by RAG embeddings** | [Learn more](docs/agents/semantic-search.md)
+  
+  similar_code: |
+    🔗 **Similar Code Patterns**
+    
+    **Original snippet**:
+    ```{language}
+    {original_snippet}
+    ```
+    
+    **Found {num_results} similar patterns**:
+    
+    {similar_patterns_list}
+  
+  usage_examples: |
+    📚 **Usage Examples for `{api_name}`**
+    
+    {examples_list}
+    
+    **From codebase**:
+    {codebase_examples}
+    
+    ---
+    Need more examples? Try: `@semantic-search examples for {api_name} advanced`
+  
+  explanation: |
+    💡 **Code Explanation**
+    
+    **File**: `{file_path}`
+    **Lines**: {line_start}-{line_end}
+    
+    **Summary**:
+    {summary}
+    
+    **Details**:
+    {detailed_explanation}
+    
+    **Related concepts**:
+    {related_concepts}
+
+# Search Strategies
+search_strategies:
+  - name: hybrid_search
+    description: Combine semantic and keyword search
+    weights:
+      semantic: 0.7
+      keyword: 0.3
+    
+  - name: semantic_only
+    description: Pure semantic search using embeddings
+    use_case: Natural language queries
+    
+  - name: code_pattern
+    description: Specialized for code pattern matching
+    features:
+      - ast_analysis
+      - syntax_aware
+      - structure_matching
+
+# Result Ranking
+ranking:
+  factors:
+    - name: semantic_similarity
+      weight: 0.5
+      description: Embedding similarity score
+    
+    - name: recency
+      weight: 0.2
+      description: Recently modified code ranked higher
+    
+    - name: usage_frequency
+      weight: 0.15
+      description: Frequently used code ranked higher
+    
+    - name: code_quality
+      weight: 0.1
+      description: Well-documented, tested code ranked higher
+    
+    - name: relevance_to_context
+      weight: 0.05
+      description: Relevance to current PR/issue context
+
+# Query Enhancement
+query_enhancement:
+  - expand_acronyms: true
+  - add_synonyms: true
+  - correct_typos: true
+  - detect_programming_language: true
+  - extract_keywords: true
+
+# Privacy & Security
+privacy:
+  exclude_patterns:
+    - "**/*.env"
+    - "**/*secret*"
+    - "**/*password*"
+    - "**/credentials/**"
+  
+  redact_sensitive_data: true
+  respect_codeowners: true
+
+# Error Handling
+error_handling:
+  no_results_found: |
+    ℹ️ No results found for your query.
+    
+    **Suggestions**:
+    - Try rephrasing your query
+    - Use more specific terms
+    - Check if the code exists in the indexed branches
+  
+  search_timeout: |
+    ⏱️ Search timed out. Try narrowing your search scope.
+  
+  index_not_found: |
+    ⚠️ Search index not available. 
+    Contact @rag-index-manager to build the index.
+
+# Integration Points
+integrations:
+  rag_retriever:
+    module: "codex.rag.retriever"
+    class: "CachedRetriever"
+    
+  code_analysis:
+    ast_parser: "tree-sitter"
+    syntax_highlighter: "pygments"
+    
+  result_formatter:
+    markdown: true
+    code_blocks: true
+    collapsible_sections: true
+
+# Analytics
+analytics:
+  track_queries: true
+  track_result_clicks: true
+  track_user_satisfaction: true
+  
+  metrics:
+    - query_latency_ms
+    - results_per_query
+    - user_engagement_rate
+    - cache_hit_rate
+
+# Documentation
+documentation:
+  readme: "docs/agents/SEMANTIC_SEARCH.md"
+  examples: "docs/agents/examples/semantic-search/"
+  api_reference: "https://docs.example.com/agents/semantic-search"
+  video_tutorial: "https://www.youtube.com/watch?v=example"

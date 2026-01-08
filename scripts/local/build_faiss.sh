@@ -57,16 +57,31 @@ echo ""
 
 # Build index using Python with new RAG modules
 if [[ "${SOURCE_TYPE}" == "docs" ]]; then
-    python3 <<PYEOF
+    # Export variables as environment variables for safe access in Python
+    export BUILD_TENANT_ID="${TENANT_ID}"
+    export BUILD_INDEX_DIR="${MSP_FAISS_INDEX_DIR}"
+    export BUILD_CHUNK_SIZE="${CHUNK_SIZE}"
+    export BUILD_OVERLAP="${OVERLAP}"
+    export BUILD_SOURCE_PATH="${SOURCE_PATH}"
+    
+    python3 <<'PYEOF'
 import sys
+import os
 from pathlib import Path
 sys.path.insert(0, '.')
 
 try:
     from src.codex.rag.indexer import build_index_from_files
     
+    # Safely retrieve values from environment variables
+    tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
+    index_dir = os.environ.get('BUILD_INDEX_DIR', '.codex/tenants')
+    chunk_size = int(os.environ.get('BUILD_CHUNK_SIZE', '1000'))
+    overlap = int(os.environ.get('BUILD_OVERLAP', '128'))
+    source_path_str = os.environ.get('BUILD_SOURCE_PATH', '.')
+    
     # Collect documentation files
-    source_path = Path('${SOURCE_PATH}')
+    source_path = Path(source_path_str)
     files = []
     
     if source_path.is_file():
@@ -91,15 +106,15 @@ try:
     index_path = build_index_from_files(
         files=files,
         index_name='docs',
-        tenant_id='${TENANT_ID}',
-        index_dir='${MSP_FAISS_INDEX_DIR}',
-        chunk_size=${CHUNK_SIZE},
-        overlap=${OVERLAP},
+        tenant_id=tenant_id,
+        index_dir=index_dir,
+        chunk_size=chunk_size,
+        overlap=overlap,
     )
     
     print('')
     print('✓ FAISS index built successfully!')
-    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Tenant:    {tenant_id}')
     print(f'  - Files:     {len(files)}')
     print(f'  - Location:  {index_path}')
     
@@ -117,24 +132,36 @@ PYEOF
 elif [[ "${SOURCE_TYPE}" == "ndjson" ]]; then
     # For NDJSON, use the old retrieval module if available
     # Or implement NDJSON support in new indexer
-    python3 <<PYEOF
+    # Export variables as environment variables for safe access in Python
+    export BUILD_SOURCE_PATH="${SOURCE_PATH}"
+    export BUILD_MSP_EMBEDDING_MODEL="${MSP_EMBEDDING_MODEL}"
+    export BUILD_MSP_FAISS_INDEX_DIR="${MSP_FAISS_INDEX_DIR}"
+    export BUILD_TENANT_ID="${TENANT_ID}"
+    
+    python3 <<'PYEOF'
 import sys
+import os
 sys.path.insert(0, '.')
 
 try:
     from src.codex.retrieval.embed import build_embeddings
     from src.codex.retrieval.stores import FAISSStore
     
-    print('Loading documents from ${SOURCE_PATH}...')
+    # Safely retrieve values from environment variables
+    source_path = os.environ.get('BUILD_SOURCE_PATH', '.')
+    embedding_model = os.environ.get('BUILD_MSP_EMBEDDING_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
+    faiss_index_dir = os.environ.get('BUILD_MSP_FAISS_INDEX_DIR', '.codex/tenants')
+    tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
+    
+    print(f'Loading documents from {source_path}...')
     embeddings, documents = build_embeddings(
-        ndjson_path='${SOURCE_PATH}',
-        model_name='${MSP_EMBEDDING_MODEL}',
+        ndjson_path=source_path,
+        model_name=embedding_model,
         batch_size=32,
     )
     
     print(f'Creating FAISS index for {len(documents)} documents...')
-    index_dir = '${MSP_FAISS_INDEX_DIR}/${TENANT_ID}/faiss'
-    import os
+    index_dir = f'{faiss_index_dir}/{tenant_id}/faiss'
     os.makedirs(index_dir, exist_ok=True)
     
     store = FAISSStore(index_dir=index_dir, index_name='default')
@@ -145,7 +172,7 @@ try:
     
     print('')
     print('✓ FAISS index built successfully!')
-    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Tenant:    {tenant_id}')
     print(f'  - Documents: {len(documents)}')
     print(f'  - Dimension: {embeddings.shape[1]}')
     print(f'  - Location:  {index_dir}')

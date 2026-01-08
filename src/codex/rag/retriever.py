@@ -3,13 +3,13 @@ RAG Retriever Module
 Provides semantic search over FAISS indices with provenance tracking.
 """
 
-import hashlib
 import logging
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import numpy as np
+
+from .utils import safe_model_load
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +84,8 @@ class Retriever:
             self.model = SentenceTransformer(
                 self.model_name, cache_folder=self.cache_dir
             )
+            # Apply safe model loading to handle meta device tensors
+            self.model = safe_model_load(self.model, device="cpu")
             logger.info("Query embedding model loaded")
         except ImportError:
             logger.error(
@@ -320,3 +322,291 @@ class MultiIndexRetriever:
     def get_stats(self) -> List[Dict[str, Any]]:
         """Get statistics for all loaded indices."""
         return [r.get_stats() for r in self.retrievers]
+
+
+# ============================================================================
+# Cached Retriever with LRU Cache (Phase B)
+# ============================================================================
+
+from collections import OrderedDict
+import hashlib
+from time import time
+
+
+class LRUCache:
+    """
+    Simple LRU (Least Recently Used) cache implementation.
+    
+    Maintains a fixed-size cache that evicts the least recently used item
+    when capacity is reached. Used for caching query results in CachedRetriever.
+    
+    Attributes:
+        maxsize: Maximum number of items in cache
+        cache: Ordered dictionary maintaining insertion order
+        hits: Number of cache hits
+        misses: Number of cache misses
+    """
+    
+    def __init__(self, maxsize: int = 1000):
+        """
+        Initialize LRU cache.
+        
+        Args:
+            maxsize: Maximum cache size (default: 1000)
+        """
+        self.maxsize = maxsize
+        self.cache = OrderedDict()
+        self.hits = 0
+        self.misses = 0
+    
+    def get(self, key: str) -> Optional[Any]:
+        """
+        Get value from cache.
+        
+        Args:
+            key: Cache key
+        
+        Returns:
+            Cached value or None if not found
+        """
+        if key in self.cache:
+            self.hits += 1
+            # Move to end (most recently used)
+            self.cache.move_to_end(key)
+            return self.cache[key]
+        else:
+            self.misses += 1
+            return None
+    
+    def put(self, key: str, value: Any):
+        """
+        Put value in cache.
+        
+        Args:
+            key: Cache key
+            value: Value to cache
+        """
+        if key in self.cache:
+            # Update existing key
+            self.cache.move_to_end(key)
+        else:
+            # Add new key
+            self.cache[key] = value
+            # Evict oldest if over capacity
+            if len(self.cache) > self.maxsize:
+                self.cache.popitem(last=False)
+    
+    def clear(self):
+        """Clear all cache entries."""
+        self.cache.clear()
+        self.hits = 0
+        self.misses = 0
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cache statistics."""
+        total = self.hits + self.misses
+        hit_rate = self.hits / total if total > 0 else 0.0
+        return {
+            "size": len(self.cache),
+            "maxsize": self.maxsize,
+            "hits": self.hits,
+            "misses": self.misses,
+            "hit_rate": hit_rate,
+        }
+
+
+class CachedRetriever(Retriever):
+    """
+    Retriever with LRU query result caching for improved performance.
+    
+    Caches query results to avoid repeated FAISS searches for identical or
+    similar queries. Particularly useful for expanded context workflows
+    (64k-512k tokens) where repeated queries are common.
+    
+    Features:
+        - LRU cache with configurable size and TTL
+        - Automatic cache invalidation based on TTL
+        - Cache statistics and monitoring
+        - Optional query normalization for better hit rates
+    
+    Example:
+        >>> cached = CachedRetriever(
+        ...     index_name="docs",
+        ...     tenant_id="customer_a",
+        ...     cache_ttl=3600,  # 1 hour
+        ...     cache_maxsize=1000
+        ... )
+        >>> results = cached.query_with_cache("how to use API")
+        >>> stats = cached.get_cache_stats()
+        >>> print(f"Hit rate: {stats['hit_rate']:.2%}")
+    """
+    
+    def __init__(
+        self,
+        index_dir: str = ".codex/tenants",
+        index_name: str = "default",
+        tenant_id: str = "default",
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        cache_dir: Optional[str] = None,
+        cache_ttl: int = 3600,
+        cache_maxsize: int = 1000,
+        normalize_queries: bool = True,
+    ):
+        """
+        Initialize cached retriever.
+        
+        Args:
+            index_dir: Base directory containing tenant indices
+            index_name: Name of the index to load
+            tenant_id: Tenant identifier for multi-tenancy
+            model_name: Embedding model name for query encoding
+            cache_dir: Optional cache directory for model weights
+            cache_ttl: Time-to-live for cache entries in seconds (default: 3600)
+            cache_maxsize: Maximum number of cache entries (default: 1000)
+            normalize_queries: Whether to normalize queries before caching (default: True)
+        """
+        super().__init__(index_dir, index_name, tenant_id, model_name, cache_dir)
+        
+        self.cache_ttl = cache_ttl
+        self.normalize_queries = normalize_queries
+        self.query_cache = LRUCache(maxsize=cache_maxsize)
+        self.cache_timestamps = {}  # Track when entries were cached
+        
+        logger.info(
+            f"Initialized CachedRetriever with TTL={cache_ttl}s, maxsize={cache_maxsize}"
+        )
+    
+    def _normalize_query(self, q: str) -> str:
+        """
+        Normalize query for better cache hit rates.
+        
+        Args:
+            q: Original query
+        
+        Returns:
+            Normalized query
+        """
+        if not self.normalize_queries:
+            return q
+        
+        # Convert to lowercase and strip whitespace
+        normalized = q.lower().strip()
+        
+        # Remove extra whitespace
+        normalized = " ".join(normalized.split())
+        
+        return normalized
+    
+    def _make_cache_key(self, q: str, top_k: int, min_score: Optional[float]) -> str:
+        """
+        Create cache key from query parameters.
+        
+        Args:
+            q: Query text
+            top_k: Number of results
+            min_score: Minimum score threshold
+        
+        Returns:
+            Cache key string
+        """
+        normalized_q = self._normalize_query(q)
+        
+        # Create key from query + parameters
+        key_str = f"{normalized_q}|{top_k}|{min_score}"
+        
+        # Hash for consistent key length
+        key_hash = hashlib.sha256(key_str.encode()).hexdigest()[:16]
+        
+        return f"query_{key_hash}"
+    
+    def _is_cache_valid(self, cache_key: str) -> bool:
+        """
+        Check if cached entry is still valid based on TTL.
+        
+        Args:
+            cache_key: Cache key to check
+        
+        Returns:
+            True if cache entry is valid, False otherwise
+        """
+        if cache_key not in self.cache_timestamps:
+            return False
+        
+        cached_time = self.cache_timestamps[cache_key]
+        current_time = time()
+        
+        return (current_time - cached_time) < self.cache_ttl
+    
+    def query_with_cache(
+        self, q: str, top_k: int = 5, min_score: Optional[float] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Query with caching support.
+        
+        Checks cache before performing FAISS search. Returns cached results
+        if available and not expired, otherwise performs search and caches result.
+        
+        Args:
+            q: Query text
+            top_k: Number of results to return
+            min_score: Optional minimum similarity score threshold
+        
+        Returns:
+            List of result dictionaries (same format as Retriever.query)
+        """
+        # Create cache key
+        cache_key = self._make_cache_key(q, top_k, min_score)
+        
+        # Check cache
+        if self._is_cache_valid(cache_key):
+            cached_results = self.query_cache.get(cache_key)
+            if cached_results is not None:
+                logger.debug(f"Cache HIT for query: {q[:50]}...")
+                return cached_results
+        
+        # Cache miss - perform actual query
+        logger.debug(f"Cache MISS for query: {q[:50]}...")
+        results = self.query(q, top_k=top_k, min_score=min_score)
+        
+        # Cache results
+        self.query_cache.put(cache_key, results)
+        self.cache_timestamps[cache_key] = time()
+        
+        return results
+    
+    def clear_cache(self):
+        """Clear all cached query results."""
+        self.query_cache.clear()
+        self.cache_timestamps.clear()
+        logger.info("Query cache cleared")
+    
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """
+        Get cache statistics.
+        
+        Returns:
+            Dictionary with cache metrics including hit rate, size, etc.
+        """
+        cache_stats = self.query_cache.get_stats()
+        cache_stats["ttl"] = self.cache_ttl
+        cache_stats["normalize_queries"] = self.normalize_queries
+        cache_stats["valid_entries"] = sum(
+            1 for key in self.cache_timestamps 
+            if self._is_cache_valid(key)
+        )
+        return cache_stats
+    
+    def invalidate_expired(self):
+        """Manually invalidate all expired cache entries."""
+        current_time = time()
+        expired_keys = [
+            key for key, timestamp in self.cache_timestamps.items()
+            if (current_time - timestamp) >= self.cache_ttl
+        ]
+        
+        for key in expired_keys:
+            if key in self.query_cache.cache:
+                del self.query_cache.cache[key]
+            del self.cache_timestamps[key]
+        
+        logger.info(f"Invalidated {len(expired_keys)} expired cache entries")

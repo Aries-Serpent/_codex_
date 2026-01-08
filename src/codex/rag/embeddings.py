@@ -13,6 +13,8 @@ from typing import Any, Dict, List, Optional, Protocol
 
 import numpy as np
 
+from .utils import safe_model_load
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,6 +64,8 @@ class LocalSentenceTransformerProvider:
             self.model = SentenceTransformer(
                 self.model_name, cache_folder=self.cache_dir
             )
+            # Apply safe model loading to handle meta device tensors
+            self.model = safe_model_load(self.model, device="cpu")
             logger.info("Local embedding model loaded successfully")
         except ImportError:
             logger.error(

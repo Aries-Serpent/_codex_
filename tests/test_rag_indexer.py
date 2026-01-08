@@ -357,7 +357,7 @@ class TestIndexerEdgeCases:
                 "tags": ["test", "sample"],
             }
             
-            index_path = persist_index(
+            _ = persist_index(
                 index_name="rich_meta",
                 embeddings=embeddings,
                 chunks=chunks,

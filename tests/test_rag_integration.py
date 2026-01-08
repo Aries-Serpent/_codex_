@@ -207,8 +207,8 @@ class TestCrossModuleInteractions:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
             
-            # Create embedding provider with cache
-            cache_dir = tmpdir / "cache"
+            # Create embedding provider with cache (cache_dir declared but not explicitly used)
+            _ = tmpdir / "cache"
             
             # Create documents
             docs_dir = tmpdir / "docs"

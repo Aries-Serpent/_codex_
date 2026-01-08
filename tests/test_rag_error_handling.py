@@ -6,9 +6,8 @@ Tests all exception paths, edge cases, and failure scenarios.
 import os
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 import threading
-import time
 
 import numpy as np
 import pytest
@@ -17,9 +16,15 @@ import pytest
 pytest.importorskip("sentence_transformers")
 pytest.importorskip("faiss")
 
+# Check if openai is available
+try:
+    import openai  # noqa: F401
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+
 from codex.rag.indexer import (
     chunk_text,
-    embed_chunks,
     persist_index,
     load_index,
     build_index_from_files,
@@ -27,10 +32,13 @@ from codex.rag.indexer import (
 from codex.rag.retriever import Retriever, MultiIndexRetriever
 from codex.rag.embeddings import (
     LocalSentenceTransformerProvider,
-    OpenAIEmbeddingProvider,
     CachedEmbeddingProvider,
     create_embedding_provider,
 )
+
+# Only import OpenAI provider if available
+if OPENAI_AVAILABLE:
+    from codex.rag.embeddings import OpenAIEmbeddingProvider
 
 
 class TestIndexerErrorHandling:
@@ -244,12 +252,14 @@ class TestEmbeddingsErrorHandling:
             with pytest.raises(ImportError):
                 LocalSentenceTransformerProvider()
 
+    @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
     def test_openai_provider_no_api_key(self):
         """Test OpenAI provider without API key"""
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(ValueError, match="API key not provided"):
                 OpenAIEmbeddingProvider()
 
+    @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
     def test_openai_provider_import_error(self):
         """Test OpenAI provider with missing openai package"""
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
@@ -257,6 +267,7 @@ class TestEmbeddingsErrorHandling:
                 with pytest.raises(ImportError):
                     OpenAIEmbeddingProvider()
 
+    @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
     @patch("codex.rag.embeddings.OpenAI")
     def test_openai_provider_api_error(self, mock_openai):
         """Test OpenAI provider API errors"""
@@ -323,6 +334,7 @@ class TestEmbeddingsErrorHandling:
         with pytest.raises(ValueError, match="Unknown provider type"):
             create_embedding_provider(provider_type="unknown")
 
+    @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
     def test_create_provider_openai_without_key(self):
         """Test creating OpenAI provider without key raises error"""
         with patch.dict(os.environ, {}, clear=True):
