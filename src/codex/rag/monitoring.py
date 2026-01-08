@@ -19,6 +19,28 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class MetricsConfig:
+    """
+    Configuration for RAG metrics tracking.
+    
+    Allows fine-tuning memory usage by configuring window sizes per metric type.
+    Smaller window sizes reduce memory but provide less historical data.
+    """
+    query_latency_window: int = 1000
+    embedding_throughput_window: int = 500
+    index_build_time_window: int = 100
+    
+    def __post_init__(self):
+        """Validate configuration."""
+        if self.query_latency_window < 10:
+            raise ValueError("query_latency_window must be >= 10")
+        if self.embedding_throughput_window < 10:
+            raise ValueError("embedding_throughput_window must be >= 10")
+        if self.index_build_time_window < 10:
+            raise ValueError("index_build_time_window must be >= 10")
+
+
+@dataclass
 class MetricDataPoint:
     """Single data point for a metric."""
     timestamp: float
@@ -47,31 +69,41 @@ class RAGMetrics:
         >>> prom_output = metrics.export_prometheus()
     """
     
-    def __init__(self, window_size: int = 1000):
+    def __init__(self, config: Optional[MetricsConfig] = None):
         """
         Initialize RAG metrics tracker.
         
         Args:
-            window_size: Number of recent data points to keep for statistics
-        """
-        self.window_size = window_size
+            config: Optional MetricsConfig for fine-tuning memory usage.
+                   If None, uses default configuration.
         
-        # Metric storage (rolling windows)
-        self.query_latencies: deque = deque(maxlen=window_size)
+        Memory Optimization:
+            Uses configurable window sizes per metric type to reduce memory footprint.
+            Default total memory ~500KB for 1000 query latencies.
+        """
+        self.config = config or MetricsConfig()
+        
+        # Metric storage (rolling windows with optimized sizes)
+        self.query_latencies: deque = deque(maxlen=self.config.query_latency_window)
         self.index_sizes: Dict[str, MetricDataPoint] = {}
         self.cache_stats: Dict[str, int] = {"hits": 0, "misses": 0}
-        self.embedding_throughputs: deque = deque(maxlen=window_size)
+        self.embedding_throughputs: deque = deque(maxlen=self.config.embedding_throughput_window)
         
         # Additional metrics
         self.query_counts: Dict[str, int] = {}
         self.error_counts: Dict[str, int] = {}
-        self.index_build_times: deque = deque(maxlen=window_size)
+        self.index_build_times: deque = deque(maxlen=self.config.index_build_time_window)
         
         # Timestamp tracking
         self.start_time = time.time()
         self.last_reset = time.time()
         
-        logger.info(f"RAGMetrics initialized with window_size={window_size}")
+        logger.info(
+            f"RAGMetrics initialized with config: "
+            f"query_latency={self.config.query_latency_window}, "
+            f"embedding_throughput={self.config.embedding_throughput_window}, "
+            f"index_build_time={self.config.index_build_time_window}"
+        )
     
     def track_query_latency(
         self,
