@@ -888,11 +888,11 @@ resources = [
 
 # Plan deterministically
 planner = DeterministicQuantumPlanner(seed=12345)
-plan = planner.plan(tasks, resources, datetime(2026, 1, 10))
+plan = planner.plan(tasks, resources, datetime(Current Cycle, 1, 10))
 
 # Verify determinism
 planner2 = DeterministicQuantumPlanner(seed=12345)
-plan2 = planner2.plan(tasks, resources, datetime(2026, 1, 10))
+plan2 = planner2.plan(tasks, resources, datetime(Current Cycle, 1, 10))
 
 assert plan["determinism_hash"] == plan2["determinism_hash"]
 print("✓ Plans are identical (deterministic)")
@@ -914,7 +914,7 @@ def validate_determinism(seed: int, n_runs: int = 10) -> bool:
     """
     tasks = generate_test_tasks()
     resources = generate_test_resources()
-    start_date = datetime(2026, 1, 1)
+    start_date = datetime(Current Cycle, 1, 1)
     
     hashes = []
     for _ in range(n_runs):

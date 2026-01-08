@@ -13,7 +13,7 @@
 **Phase 7: Cognitive Brain Infrastructure** - ✅ 100%
 - CODEBASE_COGNITIVE_MAP.md (architecture overview)
 - CODEBASE_DASHBOARD.md (live status & metrics)
-- ROADMAP.md (unified Q1-Phase 3 (2026) plan)
+- ROADMAP.md (unified Cycle 1-Phase 3 (Current Cycle) plan)
 - Component READMEs (src/, agents/, scripts/)
 
 **Phase 8: Documentation Consolidation** - ✅ 100%

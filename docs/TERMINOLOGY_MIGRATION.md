@@ -153,7 +153,7 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 - Project guides with estimated durations
 - Audit improvement plans
 
-**Recommendation**: Update on-demand as these documents are revised. For historical accuracy, preserved completed project timelines may retain original week-based references.
+**Recommendation**: Update on-demand as these documents are revised. For historical accuracy, preserved completed project timelines Phase 5 retain original week-based references.
 
 ---
 
@@ -189,13 +189,13 @@ Use these symbols to indicate the physics principle aligned with each iteration:
 
 ## Historical Context
 
-**Previous Approach** (2024-2025 Q1):
+**Previous Approach** (2025-2025 Cycle 1):
 - Week-based timelines (Pre-commit 1-16)
 - Day-level task breakdowns
 - Fixed sprint durations
 - Calendar-bound milestones
 
-**Current Approach** (2025 Q2+):
+**Current Approach** (2025 Cycle 2+):
 - Iteration-based cycles
 - Commit-level granularity
 - Flexible duration

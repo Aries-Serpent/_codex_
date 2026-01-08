@@ -204,7 +204,7 @@ gh auth login --with-token < token.txt
 
 - Verify you have `actions:write` permission
 - Check token scopes: `gh auth status`
-- May need to use a personal access token with correct scopes
+- may need to use a personal access token with correct scopes
 
 ---
 

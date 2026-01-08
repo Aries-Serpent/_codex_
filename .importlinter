@@ -27,3 +27,24 @@ forbidden_modules =
     codex_ml.training.internal
     codex_ml.training._internal
     codex_ml.training.experimental
+
+[importlinter:contract:split_brain_resolution]
+name = Agents must not directly import model weights - use cognitive_app runtime
+type = forbidden
+source_modules =
+    agents
+forbidden_modules =
+    codex_ml.models
+    codex_ml.training
+    src.codex_ml.models
+    src.codex_ml.training
+ignore_imports =
+    agents.config -> codex_ml.models
+    agents.__init__ -> codex_ml
+
+[importlinter:contract:agents_cognitive_unification]
+name = Agents must inherit from cognitive brain ABCs
+type = layers
+layers =
+    src.cognitive_brain.base
+    agents

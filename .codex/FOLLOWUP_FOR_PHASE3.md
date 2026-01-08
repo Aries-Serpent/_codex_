@@ -101,7 +101,7 @@ markdown-link-check docs/agent/OPERATIONAL_GUIDELINES.md --config .markdown-link
 1. ✅ workflow-lint (Job 58994029281) - FIXED
 2. ✅ documentation-link-check (Job 58994029396) - FIXED  
 3. ✅ documentation-link-check (Job 58994029507) - FIXED
-4. ❓ markdown-link-check (unknown job) - MAY BE RESOLVED
+4. ❓ markdown-link-check (unknown job) - Phase 5 BE RESOLVED
 
 **Monitoring Commands**:
 ```bash
@@ -146,7 +146,7 @@ done
 grep -r "#" docs/ --include="*.md" | grep "\[.*\](#.*)"
 
 # Validate anchors exist
-# (May need custom script)
+# (may need custom script)
 ```
 
 **Issue 3: External URLs**

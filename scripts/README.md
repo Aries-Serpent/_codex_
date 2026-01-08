@@ -145,7 +145,7 @@ unzip -p test.zip manifest.json | jq .
 - [PACKAGEABLE_CAPABILITIES.md](../docs/mcp/PACKAGEABLE_CAPABILITIES.md) - Capability transfer (13.5 KB)
 - [ChatGPT_Project_SYSTEM_PROMPT.md](../docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md) - AI prompt (6.3 KB)
 - [GENERIC_NAVIGATION_SYSTEM.md](../docs/mcp/GENERIC_NAVIGATION_SYSTEM.md) - Universal navigation (25.5 KB)
-- [ADVANCED_FEATURES_PLANSET.md](../docs/mcp/ADVANCED_FEATURES_PLANSET.md) - Roadmap Q1-Phase 3 (2026) (18.4 KB)
+- [ADVANCED_FEATURES_PLANSET.md](../docs/mcp/ADVANCED_FEATURES_PLANSET.md) - Roadmap Cycle 1-Phase 3 (Current Cycle) (18.4 KB)
 
 ### General
 - [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
@@ -176,7 +176,7 @@ python scripts/refresh_requirements_lock.py
 
 ---
 
-## 🚀 Future Features (Q1-Phase 3 (2026))
+## 🚀 Future Features (Cycle 1-Phase 3 (Current Cycle))
 
 Planned MCP enhancements:
 1. **Size Estimation** (--estimate flag) - 2-3 days

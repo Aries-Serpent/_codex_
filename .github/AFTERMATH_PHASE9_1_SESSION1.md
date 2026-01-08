@@ -119,7 +119,7 @@ future_research:
     estimated_complexity: "high"
     dependencies: ["Coverage report parsing", "AST analysis", "Test pattern templates"]
     expected_impact: "5-10x faster test creation for coverage gaps"
-    timeline: "Phase 3 (2026)"
+    timeline: "Phase 3 (Current Cycle)"
     
   - topic: "Test quality metrics and mutation testing"
     rationale: "100% coverage doesn't guarantee effective tests"
@@ -127,7 +127,7 @@ future_research:
     estimated_complexity: "medium"
     dependencies: ["mutpy or similar mutation testing framework"]
     expected_impact: "Identify weak tests that pass despite code mutations"
-    timeline: "Phase 2 (2026)"
+    timeline: "Phase 2 (Current Cycle)"
     
   - topic: "Property-based testing expansion with Hypothesis"
     rationale: "Current 10% property-based tests could catch more edge cases"
@@ -135,7 +135,7 @@ future_research:
     estimated_complexity: "low"
     dependencies: ["hypothesis library (already available)"]
     expected_impact: "Discover 20-30% more edge case bugs automatically"
-    timeline: "Phase 1 (2026)"
+    timeline: "Phase 1 (Current Cycle)"
 ```
 
 ---

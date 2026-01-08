@@ -635,7 +635,7 @@ exec(code)
 **File Growth:**
 - Monitor file size in CI/CD
 - Alert if approaching limit
-- May require splitting
+- may require splitting
 
 ### Maintenance Burden
 
@@ -662,7 +662,7 @@ exec(code)
 - Hidden from code review
 
 **Stack Traces:**
-- May show /tmp paths
+- may show /tmp paths
 - Line numbers may not match source
 - Harder to correlate errors
 

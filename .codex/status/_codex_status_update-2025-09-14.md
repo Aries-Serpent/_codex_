@@ -306,7 +306,7 @@ Some features require significant effort or unclear ownership and are therefore 
 -----------------------------
 When analysis steps fail, capture the error in the prescribed format. Example:
 ```vbnet
-Question for ChatGPT @codex 2025‑09‑14T10:00Z: While performing [STEP_3:Search & Mapping], encountered the following error: FileNotFoundError: Config file 'configs/interfaces.yaml' not found Context: Attempting to load RL interface configuration in `apply_config()` for tests. What are the possible causes, and how can this be resolved while preserving intended functionality?
+Question for ChatGPT @codex 2025-09-14T10:00Z: While performing [STEP_3:Search & Mapping], encountered the following error: FileNotFoundError: Config file 'configs/interfaces.yaml' not found Context: Attempting to load RL interface configuration in `apply_config()` for tests. What are the possible causes, and how can this be resolved while preserving intended functionality?
 ```text
 This log would be appended to `.codex/errors.ndjson` and printed to stderr. Possible causes include missing file, incorrect path or mis‑spelled file name. Resolution could involve creating the file (as shown in Diff C) or setting the environment variable `CODEX_INTERFACES_CFG` to a custom path.
 

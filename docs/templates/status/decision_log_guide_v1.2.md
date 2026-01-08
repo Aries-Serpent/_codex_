@@ -8,7 +8,7 @@ Purpose
 Fields
 | Field | Type | Required |
 |---|---|---:|
-| id (DEC-XXX) | string | Yes |
+| id (Phase 12-XXX) | string | Yes |
 | title | string | Yes |
 | context | string | Yes |
 | options | array<object> | No |

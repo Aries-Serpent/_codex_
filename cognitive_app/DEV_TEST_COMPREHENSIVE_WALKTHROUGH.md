@@ -1012,12 +1012,12 @@ graph TB
 
 ```mermaid
 graph TD
-    Start[AI Agent Activated] --> Q1{Task Type?}
+    Start[AI Agent Activated] --> Cycle 1{Task Type?}
     
-    Q1 -->|Testing| T1[Testing Flow]
-    Q1 -->|Development| D1[Development Flow]
-    Q1 -->|Debugging| DB1[Debugging Flow]
-    Q1 -->|Documentation| DC1[Documentation Flow]
+    Cycle 1 -->|Testing| T1[Testing Flow]
+    Cycle 1 -->|Development| D1[Development Flow]
+    Cycle 1 -->|Debugging| DB1[Debugging Flow]
+    Cycle 1 -->|Documentation| DC1[Documentation Flow]
     
     T1 --> T2{Test Type?}
     T2 -->|Unit| T3[Run Vitest]

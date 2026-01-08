@@ -147,7 +147,7 @@ The `threshold` parameter controls sensitivity:
 **Conservative (0.9 - 1.0)**:
 - Only detects near-identical files
 - Fewer false positives
-- May miss legitimate duplicates
+- may miss legitimate duplicates
 
 ```yaml
 scoring:

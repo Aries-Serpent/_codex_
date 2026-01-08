@@ -117,7 +117,7 @@ Previous version: **v1.1** (Still supported)
   - **Enhanced Template**: Schema validation, audit integrity chains, security input validation
   - **Repository Context**: Git state (branch, commit SHA, dirty flag), environment snapshot
   - **40+ New Fields**: ML Test Score, Hydra configs, structured automation data
-  - **Cross-Referencing**: 7 structured ID patterns (CAP/FIND/PATCH/REPRO/Q/DEC/DEFER-XXX)
+  - **Cross-Referencing**: 7 structured ID patterns (CAP/FIND/PATCH/REPRO/Q/Phase 12/DEFER-XXX)
   - **Validation Integration**: `tools/validate_configs.py`, `src/codex_ml/cli/validate.py`
   - **Security Patterns**: SQL injection, XSS, path traversal, JSON injection detection
   - **Audit Integrity**: SHA256 hashing for tamper-evident audit trails

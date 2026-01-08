@@ -278,7 +278,7 @@ class TestCLIIntegration:
                 session_logger,
                 ["--role", "user", "--message", "Integration test message"]
             )
-            # May fail if session-logger not implemented - that's OK for now
+            # may fail if session-logger not implemented - that's OK for now
             # This test will pass once all CLI commands are implemented
         except Exception:
             pass  # Skip if command not available yet

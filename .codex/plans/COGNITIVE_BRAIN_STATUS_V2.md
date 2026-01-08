@@ -123,7 +123,7 @@ _codex_/
 
 ## 🎯 Enhancement Plan: Phases 8.2-8.4
 
-### Phase 8.2: Multi-Agent GHZ States (4 weeks)
+### Phase 8.2: Multi-Agent GHZ States (4 phases)
 
 **Objective:** Enable 3+ agent coordinated decision-making using GHZ entanglement states
 
@@ -156,7 +156,7 @@ _codex_/
 - ✅ Coherence maintained >70% during operations
 - ✅ All 20 tests passing
 
-### Phase 8.3: Adaptive Learning Engine (6 weeks)
+### Phase 8.3: Adaptive Learning Engine (6 phases)
 
 **Objective:** Enable cognitive brain to learn from outcomes and adapt strategies
 
@@ -190,7 +190,7 @@ _codex_/
 - ✅ No catastrophic forgetting
 - ✅ Meta-learning convergence <1000 iterations
 
-### Phase 8.4: Transfer Learning & Domain Adaptation (4 weeks)
+### Phase 8.4: Transfer Learning & Domain Adaptation (4 phases)
 
 **Objective:** Enable brain to transfer knowledge across different task domains
 
@@ -216,7 +216,7 @@ _codex_/
 **Success Criteria:**
 - ✅ Transfer success rate >75%
 - ✅ Few-shot learning working with 3-5 examples
-- ✅ Adaptation time <5 minutes
+- ✅ Adaptation time <5 pre-commits
 - ✅ Positive transfer >50%
 
 ---

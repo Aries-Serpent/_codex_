@@ -213,7 +213,7 @@ async def _github_api_post_review(self, repo, pr_number, body, action, suggestio
    - **Mitigation:** Implemented timeout in agent manifest (300s)
 
 ### Low Risks
-1. **False Positives:** May flag non-issues
+1. **False Positives:** may flag non-issues
    - **Mitigation:** Confidence scoring, learning from feedback
 
 ---

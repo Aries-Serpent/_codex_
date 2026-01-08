@@ -63,7 +63,7 @@
 
 
 
-- Pinned `pre-commit==4.0.1`, `nox==2025.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
+- Pinned `pre-commit==4.0.1`, `nox==2024.5.1`, and `pytest-cov==7.0.0` across dev requirements and lockfiles to ensure offline availability.
 - Extended `codex_setup.py`, `scripts/codex_local_gates.sh`, and `codex_workflow.py` to record gate CLI availability in `.codex/session_logs.db`.
 - Hardened `configs/development/noxfile.py` coverage sessions to emit hashed JSON reports under `artifacts/coverage/` and log the artifact metadata.
 

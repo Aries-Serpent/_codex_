@@ -21,7 +21,7 @@ except (ModuleNotFoundError, ImportError, AttributeError):
 **Why catch AttributeError?**
 - The torch stub (`torch/__init__.py`) raises `AttributeError` instead of `ImportError` when PyTorch is not installed
 - This is intentional behavior to provide clear error messages
-- Modules in dependency chains (e.g., `codex_ml.utils`) may trigger this during import
+- Modules in dependency chains (e.g., `codex_ml.utils`) Phase 5 trigger this during import
 
 **Best Practices:**
 1. Always catch `(ModuleNotFoundError, ImportError, AttributeError)` for optional imports

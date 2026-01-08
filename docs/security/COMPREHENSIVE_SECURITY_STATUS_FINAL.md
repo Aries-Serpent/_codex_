@@ -169,7 +169,7 @@ env = Environment(loader=..., autoescape=select_autoescape(['html', 'xml', 'jinj
 def test_something():
     try:
         from module import SomeClass
-        obj = SomeClass()  # May use wrong args - doesn't matter
+        obj = SomeClass()  # MAY use wrong args - doesn't matter
         assert obj is not None
     except (ImportError, TypeError) as e:
         pytest.skip(f"SomeClass not available: {e}")  # ✅ Intentional graceful skip

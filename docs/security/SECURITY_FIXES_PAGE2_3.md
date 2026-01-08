@@ -164,7 +164,7 @@ return Response(content="# Error generating metrics\n", status_code=500)
 ```python
 try:
     from module import SomeClass
-    obj = SomeClass()  # May fail if API changed
+    obj = SomeClass()  # may fail if API changed
     assert obj is not None
 except (ImportError, TypeError) as e:
     pytest.skip(f"SomeClass not available: {e}")  # Graceful skip

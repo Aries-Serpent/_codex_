@@ -15,10 +15,10 @@ The repository is consolidating configuration files from the legacy `conf/` dire
 
 | Phase | Date | Action |
 |-------|------|--------|
-| **Deprecation Notice** | December 2025 | All `conf/` files marked deprecated |
-| **Grace Period** | January 2026 - June 2026 | Both directories functional |
-| **Migration Deadline** | June 30, 2026 | All references should be updated |
-| **Removal** | v2.0.0 (Phase 2 (2026)) | `conf/` directory removed |
+| **Deprecation Notice** | Dec 2025 | All `conf/` files marked deprecated |
+| **Grace Period** | Jan 2026 - Jun 2026 | Both directories functional |
+| **Migration Deadline** | Jun 30, 2026 | All references should be updated |
+| **Removal** | v2.0.0 (Q2 2026) | `conf/` directory removed |
 
 ---
 
@@ -223,7 +223,7 @@ find . -name "*.py" -exec sed -i 's|config_path="../conf"|config_path="../config
 defaults:
   - experiment: basic
 
-# May need to update to:
+# may need to update to:
 defaults:
   - /experiments: basic
 ```

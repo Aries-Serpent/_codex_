@@ -23,9 +23,9 @@ This directory (`conf/`) is deprecated. Please use `configs/` instead.
 
 ## Timeline
 
-- **Current**: Deprecation warnings added (December 2025)
-- **Grace Period**: 6 months (through June 2026)
-- **Removal**: v2.0.0 (Phase 2 (2026))
+- **Current**: Deprecation warnings added (Dec 2025)
+- **Grace Period**: 6 months (through Jun 2026)
+- **Removal**: v2.0.0 (Q2 2026)
 
 ## What to Do
 

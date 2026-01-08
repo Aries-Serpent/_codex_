@@ -35,7 +35,7 @@ The following 21 follow-up prompt files were restored from commit `2e0369c~1` an
    - Status changed to "✅ IMPLEMENTATION COMPLETE - Awaiting CI Validation"
    - Multiple checked completion items (Priority 1 tasks marked with ✅)
    - Contains specific completed work with commit SHAs
-   - May be valuable as example of properly utilized follow-up prompt
+   - may be valuable as example of properly utilized follow-up prompt
 2. PR-2636-followup.md
 3. PR-2637-followup.md
 4. PR-2638-followup.md

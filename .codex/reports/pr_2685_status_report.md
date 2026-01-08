@@ -225,7 +225,7 @@
    - Build failure prediction
    - Estimated: 550-650 LOC
 
-### Short Term (1-2 weeks)
+### Short Term (1-2 phases)
 1. **Create Reasoning Advisor Agent** (Pre-commit 5-6, Day 1-2)
    - 20+ tests required
    - Integration with Phase 8.11 reasoning
@@ -242,7 +242,7 @@
    - ast-analysis-agent: +10 tests
    - security-scan-agent: +10 tests
 
-### Medium Term (2-4 weeks)
+### Medium Term (2-4 phases)
 1. **Integration Testing**
    - Full test suite validation (597+ tests)
    - Performance benchmarking
@@ -322,7 +322,7 @@
     "agent_enhancements_pending (4 agents)"
   ],
   "ready_to_merge": false,
-  "estimated_completion": "1-2 weeks"
+  "estimated_completion": "1-2 phases"
 }
 ```
 

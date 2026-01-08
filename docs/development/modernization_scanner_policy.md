@@ -36,7 +36,7 @@ def process(items: list[str]) -> dict[str, int]:
 **Policy**:
 - **Severity**: WARNING
 - **Auto-refactor**: NO (requires manual review)
-- **Rationale**: May affect compatibility if targeting < Python 3.9
+- **Rationale**: may affect compatibility if targeting < Python 3.9
 
 **Migration Path**:
 1. Scanner reports all instances
@@ -140,7 +140,7 @@ class Config:
 1. Scanner identifies candidates
 2. Developer evaluates if dataclass is appropriate
 3. Convert and test thoroughly
-4. May need to add `frozen=True` or other options
+4. may need to add `frozen=True` or other options
 
 ### 5. String Format Methods (SUGGESTION)
 
@@ -167,7 +167,7 @@ message = f"Count: {value}"
 1. Scanner reports usage
 2. Developer converts on a case-by-case basis
 3. Simpler cases first
-4. Complex formatting may stay as .format()
+4. Complex formatting Phase 5 stay as .format()
 
 ### 6. Walrus Operator Opportunities (SUGGESTION, opt-in)
 
@@ -196,7 +196,7 @@ if (result := expensive_computation()):
 1. Opt-in only
 2. Apply to obviously beneficial cases
 3. Team discussion for coding style
-4. May remain disabled permanently
+4. may remain disabled permanently
 
 ## Using the Scanner
 
@@ -323,7 +323,7 @@ The scanner runs automatically in post-merge validation:
 - Don't mix refactoring with feature changes
 
 **Style Preferences**:
-- Team may decide on specific patterns
+- Team Phase 5 decide on specific patterns
 - Document decisions in style guide
 - Scanner can be configured to align
 

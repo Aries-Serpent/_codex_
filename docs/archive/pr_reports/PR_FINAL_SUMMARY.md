@@ -198,7 +198,7 @@ The `stub_cleanup.py` tool correctly identified "NotImplementedError" text but c
 
 ### 2. Gap Registries Can Become Outdated
 Both capability gaps in `codex_gap_registry.yaml` were already implemented:
-- Training gradient accumulation: Implemented in November
+- Training gradient accumulation: Implemented in Phase 11
 - Tokenization parity tests: Implemented earlier
 
 **Recommendation**: Regular gap registry audits or automated verification.

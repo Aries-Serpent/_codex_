@@ -398,7 +398,7 @@ Maintain an "Errors & Resolutions" log if recurring.
 ---
 
 ## 10. Decision Log
-| Decision (DEC-XXX) | Context | Options Considered | Chosen | Owner | Date (UTC) | Impact |
+| Decision (Phase 12-XXX) | Context | Options Considered | Chosen | Owner | Date (UTC) | Impact |
 |---|---|---|---|---|---|---|
 | <title> | <why> | <opt A/B/C> | <opt> | <owner> | <ts> | <impact> |
 

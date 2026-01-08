@@ -1414,7 +1414,7 @@ def test_analyze_speed_benchmark(benchmark):
 |-----------|--------|-----------|
 | **Offline-first** | No cloud APIs (no remote parsing, no remote KG) | Use local storage; embed required libraries |
 | **Python 3.8+** | Limited modern syntax | Pin library versions; test on min version |
-| **Single-threaded by default** | May bottleneck on large codebases | Offer optional multiprocessing mode |
+| **Single-threaded by default** | may bottleneck on large codebases | Offer optional multiprocessing mode |
 | **File-based storage** | Limited query capabilities | Use SQLite for richer queries |
 | **No external dependencies (optional)** | Keep it lightweight | Make heavy deps optional (libcst, etc.) |
 

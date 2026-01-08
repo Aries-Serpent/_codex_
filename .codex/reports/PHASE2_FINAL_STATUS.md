@@ -207,10 +207,10 @@ cb04ad9 Add missing scripts/status/render_monthly_html.py CLI
 
 | Item | Reason | Priority | Effort |
 |------|--------|----------|--------|
-| API Integration | Requires careful integration with existing store() | High | 2-3 days |
-| Production Sigstore | Replace mock with sigstore-python SDK | Medium | 1-2 days |
-| GitHub Actions OIDC | Identify correct workflows to update | Medium | 1 day |
-| Performance Benchmarking | Needs production data | Low | 2 days |
+| API Integration | Requires careful integration with existing store() | High | 2-3 sessions |
+| Production Sigstore | Replace mock with sigstore-python SDK | Medium | 1-2 sessions |
+| GitHub Actions OIDC | Identify correct workflows to update | Medium | 1 sessions |
+| Performance Benchmarking | Needs production data | Low | 2 sessions |
 
 ### Rationale for Deferral
 

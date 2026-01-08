@@ -637,7 +637,7 @@ We support fast developer loops while keeping a hermetic fallback:
   },
   {
     "path": "docs/ops/training_args.md",
-    "size": 2026,
+    "size": Current Cycle,
     "sha256": "0fefa26378edd2aff6446235c2bca453e4a27cce9b4c508d6a9eb663f10e51c9"
   },
   {

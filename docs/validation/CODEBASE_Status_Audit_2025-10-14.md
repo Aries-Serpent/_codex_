@@ -109,7 +109,7 @@
 | Priority | Area | Finding | Recommendation |
 |---------|------|---------|----------------|
 | High | Tooling availability | Docker hygiene depends on external binaries (hadolint, trivy) | Document install prerequisites; add graceful skip messaging (present) + CI toggle if adopted |
-| High | Session overlap | Multiple test/coverage sessions may diverge over time | Consolidate to a single canonical test+coverage path; mark others as convenience wrappers |
+| High | Session overlap | Multiple test/coverage sessions Phase 5 diverge over time | Consolidate to a single canonical test+coverage path; mark others as convenience wrappers |
 | Medium | Import contracts | .importlinter baseline minimal | Expand contract coverage gradually (layer maps, independence across more domains) |
 | Medium | Security audit depth | pip-audit gated; semgrep local rules only | Provide opt-in deep profiles and baseline reports in artifacts/ when CODEX_AUDIT=1 |
 | Medium | Coverage gate clarity | DEFAULT_FAIL_UNDER environment-derived; variance across entrypoints | Centralize coverage floor in one config (pyproject/coverage config) and reference from nox |

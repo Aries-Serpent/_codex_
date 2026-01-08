@@ -13,7 +13,7 @@ All log files and ML tracking artifacts use **owner-only permissions** (`0o600`)
 
 | File Type | Default Mode | Rationale |
 |-----------|--------------|-----------|
-| NDJSON Logs | `0o600` | May contain API keys, connection strings |
+| NDJSON Logs | `0o600` | may contain API keys, connection strings |
 | Tracking Summaries | `0o600` | Contains model hyperparameters, system metadata |
 | Rotated Backups | `0o600` | Inherits sensitivity from active logs |
 

@@ -176,7 +176,7 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 - "6 weeks"
 - "Week 1-2"
 - "Duration: 4 weeks"
-- "January 13 - February 23, 2026" (for future work)
+- "Jan 13 - Feb 23, 2026" (for future work)
 
 ### Exception
 

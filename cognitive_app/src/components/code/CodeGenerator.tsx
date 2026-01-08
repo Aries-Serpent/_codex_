@@ -4,9 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { CodexAPIClient, CodexResponse, CodexAPIError } from '@/lib/codex-api-client';
 import { MockCodexAPIClient } from '@/lib/mock-api-client';
+import { SparkLLMClient } from '@/lib/spark-llm-client';
 import { CodeEditor } from './CodeEditor';
 import { MetricsBar } from './MetricsBar';
 
@@ -39,10 +41,12 @@ export function CodeGenerator() {
   const [error, setError] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
+  const [useAIMode, setUseAIMode] = useState(false);
   
   // Lazy initialization: clients are created on first use and can be recreated if needed
   const clientRef = useRef<CodexAPIClient | null>(null);
   const mockClientRef = useRef<MockCodexAPIClient | null>(null);
+  const sparkClientRef = useRef<SparkLLMClient | null>(null);
 
   const getClient = useCallback(() => {
     // Attempt to recreate client if it doesn't exist or if API key might have changed
@@ -59,21 +63,40 @@ export function CodeGenerator() {
     return mockClientRef.current;
   }, []);
 
+  const getSparkClient = useCallback(() => {
+    if (!sparkClientRef.current) {
+      sparkClientRef.current = new SparkLLMClient();
+    }
+    return sparkClientRef.current;
+  }, []);
+
   const checkApiStatus = useCallback(async () => {
-    const client = getClient();
-    if (!client) {
-      // Check if mock client works as fallback
+    // If AI mode is enabled, check Spark client
+    if (useAIMode) {
       try {
-        const mockClient = getMockClient();
-        await mockClient.getStatus();
-        setApiStatus('connected'); // Mock available as fallback
-        setInfoMessage('Using demo mode (API key not configured)');
+        const sparkClient = getSparkClient();
+        const status = await sparkClient.getStatus();
+        setApiStatus('connected');
         setError(null);
+        setInfoMessage(`AI Mode: ${status.model}`);
+        return;
       } catch {
         setApiStatus('error');
-        setError('Missing VITE_CODEX_KEY environment variable. Please configure your API key.');
+        setError('Spark LLM client unavailable');
         setInfoMessage(null);
+        return;
       }
+    }
+
+    const client = getClient();
+    if (!client) {
+      // No API key - use mock client in demo mode  
+      const mockClient = getMockClient();
+      // Check mock status to maintain consistent async behavior
+      await mockClient.getStatus();
+      setApiStatus('connected'); // Mock available
+      setInfoMessage('Using demo mode (API key not configured)');
+      setError(null);
       return;
     }
     try {
@@ -94,7 +117,7 @@ export function CodeGenerator() {
         setInfoMessage(null);
       }
     }
-  }, [getClient, getMockClient]);
+  }, [getClient, getMockClient, getSparkClient, useAIMode]);
 
   useEffect(() => {
     checkApiStatus();
@@ -115,6 +138,38 @@ export function CodeGenerator() {
     setError(null);
 
     const startTime = Date.now();
+
+    // Use Spark LLM client if AI mode is enabled
+    if (useAIMode) {
+      try {
+        const sparkClient = getSparkClient();
+        const response = await sparkClient.generateCode({
+          prompt,
+          context: { language: 'python', tier: 'B' },
+        });
+
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 500) {
+          await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+        }
+
+        setResult(response);
+        toast.success('Code generated with AI', {
+          description: `k₁: ${response.metadata.k1_factor.toFixed(4)}, coherence: ${response.metadata.coherence.toFixed(4)}`,
+        });
+        setLoading(false);
+        return;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'AI generation failed';
+        setError(errorMessage);
+        toast.error('AI generation failed', {
+          description: errorMessage,
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
     const client = getClient();
 
     // Try API client first, fall back to mock if not available or fails
@@ -178,7 +233,7 @@ export function CodeGenerator() {
     } finally {
       setLoading(false);
     }
-  }, [prompt, getClient, getMockClient]);
+  }, [prompt, getClient, getMockClient, getSparkClient, useAIMode]);
 
   const handleCopy = useCallback(() => {
     if (result?.code) {
@@ -210,22 +265,35 @@ export function CodeGenerator() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold text-accent">Code Generation</h2>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">API Status:</span>
-            <div className={`w-2 h-2 rounded-full ${
-              apiStatus === 'connected' ? 'bg-green-500' : 
-              apiStatus === 'error' ? 'bg-red-500' : 
-              'bg-yellow-500'
-            }`} />
-            <span className={`text-sm ${
-              apiStatus === 'connected' ? 'text-green-500' : 
-              apiStatus === 'error' ? 'text-red-500' : 
-              'text-yellow-500'
-            }`}>
-              {apiStatus === 'connected' ? 'Connected' : 
-               apiStatus === 'error' ? 'Error' : 
-               'Checking...'}
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">AI Mode:</span>
+              <Switch 
+                checked={useAIMode} 
+                onCheckedChange={setUseAIMode}
+                aria-label="Toggle AI Mode"
+              />
+              <span className="text-sm font-medium">
+                {useAIMode ? 'On' : 'Off'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Status:</span>
+              <div className={`w-2 h-2 rounded-full ${
+                apiStatus === 'connected' ? 'bg-green-500' : 
+                apiStatus === 'error' ? 'bg-red-500' : 
+                'bg-yellow-500'
+              }`} />
+              <span className={`text-sm ${
+                apiStatus === 'connected' ? 'text-green-500' : 
+                apiStatus === 'error' ? 'text-red-500' : 
+                'text-yellow-500'
+              }`}>
+                {apiStatus === 'connected' ? (useAIMode ? 'AI-Powered' : 'Connected') : 
+                 apiStatus === 'error' ? 'Error' : 
+                 'Checking...'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -247,9 +315,8 @@ export function CodeGenerator() {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Example: Create a FastAPI endpoint for user authentication with JWT tokens..."
               rows={8}
-              className={`font-mono resize-none ${
-                !isValidPrompt && charCount > 0 ? 'border-destructive' : ''
-              }`}
+              className="font-mono resize-none"
+              aria-invalid={!isValidPrompt && charCount > 0}
             />
           </div>
 

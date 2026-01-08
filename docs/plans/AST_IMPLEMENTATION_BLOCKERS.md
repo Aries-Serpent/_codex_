@@ -134,7 +134,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 
 | Challenge ID | Description | Impact | Solution |
 |--------------|-------------|--------|----------|
-| **ARCH-CHAL-001** | libcst downloads Python grammar files | May fail in offline environment | Bundle grammar files in package |
+| **ARCH-CHAL-001** | libcst downloads Python grammar files | may fail in offline environment | Bundle grammar files in package |
 | **ARCH-CHAL-002** | tree-sitter requires language parsers | Need to pre-bundle all parsers | Include in package dependencies |
 | **ARCH-CHAL-003** | Some type inference requires web lookups | Limited type analysis capability | Use only local inference |
 
@@ -163,8 +163,8 @@ After reviewing the AST standardization requirements documents and analyzing the
 
 | Challenge ID | Description | Impact | Solution |
 |--------------|-------------|--------|----------|
-| **ARCH-CHAL-006** | Full AST analysis is slow | May violate performance targets | Implement caching, incremental analysis |
-| **ARCH-CHAL-007** | Streaming reduces accuracy | May violate accuracy targets | Use streaming only for large files |
+| **ARCH-CHAL-006** | Full AST analysis is slow | may violate performance targets | Implement caching, incremental analysis |
+| **ARCH-CHAL-007** | Streaming reduces accuracy | may violate accuracy targets | Use streaming only for large files |
 | **ARCH-CHAL-008** | Parallel processing complicates error handling | Inconsistent behavior | Implement robust error aggregation |
 
 **Impact**: High - Core non-functional requirements at risk  
@@ -329,7 +329,7 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 
 4. **Offline Operation Config** (CR-ENV-001)
    - Missing: No offline mode validation
-   - Impact: May have hidden network dependencies
+   - Impact: may have hidden network dependencies
 
 ---
 

@@ -1125,7 +1125,7 @@ This documentation was created with assistance from AI language models. Understa
 
 **Training Foundation**:
 - Trained on broad technical materials (architecture patterns, API design, web security, developer resources)
-- Knowledge cutoff: April 2024
+- Knowledge cutoff: Apr 2024
 - No direct access to live Zendesk documentation or proprietary systems
 
 **Approach for This Output**:
@@ -1218,7 +1218,7 @@ CANNOT: Execute code, test applications, access live systems, update model knowl
 
 ### Transparency Notes
 
-**May Be Inaccurate**:
+**may Be Inaccurate**:
 - Endpoint URLs and exact rate limits (subject to change)
 - Specific error codes and latest best practices
 - Deprecated or newly released features (post-cutoff)

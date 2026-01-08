@@ -1,6 +1,6 @@
 # Azure MLOps Maturity Model - _codex_ Capability Assessment
 
-**Assessment Date:** December 6, 2025  
+**Assessment Date:** Dec 6, 2025  
 **Current Achievement:** Level 4 MLOps (100/100)  
 **Purpose:** Comprehensive capability-by-capability comparison against Azure MLOps maturity model (Levels 0-4)
 

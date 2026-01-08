@@ -243,7 +243,7 @@ git add . && git commit -m "Phase 1: Complete documentation blitz for remaining 
 
 **Option B: Focus on Low-Hanging Fruit**
 - Pros: Quick wins, immediate score improvements
-- Cons: May not fully resolve Phase 1
+- Cons: may not fully resolve Phase 1
 - Estimated: 4-5 hours for targeted improvements
 
 **Recommended**: Option A (comprehensive test creation)
@@ -317,7 +317,7 @@ git add . && git commit -m "Phase 1: Complete documentation blitz for remaining 
 2. **Test Score Improvements** ⚠️
    - Documentation helping but tests are the limiter
    - Need shift to test creation phase soon
-   - May need to create 200-300 tests for Phase 1
+   - may need to create 200-300 tests for Phase 1
 
 3. **Estimation Accuracy** ⚠️
    - Original "6-8 hours" estimate for Phase 1 too optimistic

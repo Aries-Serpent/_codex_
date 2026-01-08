@@ -315,7 +315,7 @@ To migrate existing workflows to use standardized variables:
 - ✅ Repository access: Confirmed (read/write via git operations)
 - ✅ GitHub Actions context: Available when running in CI/CD
 - ❌ Explicit GitHub API tokens: Not available in all environments
-  - `GITHUB_TOKEN`: May not be set in all execution contexts
+  - `GITHUB_TOKEN`: may not be set in all execution contexts
   - `GH_TOKEN`: Not configured by default
   - `CODEX_MASTER_KEY`: Requires human admin setup
 
@@ -335,7 +335,7 @@ To migrate existing workflows to use standardized variables:
    git fetch origin
    git push origin branch-name
    
-   # ❌ May fail: gh CLI operations
+   # ❌ may fail: gh CLI operations
    gh pr view 123
    gh issue create --title "..."
    ```

@@ -420,21 +420,21 @@ See [SECURITY.md](../SECURITY.md) for vulnerability reporting.
 - ✅ Evaluation with lm-eval
 - ✅ Plugin framework
 
-### Near-Term (Phase 1 (2026))
+### Near-Term (Phase 1 (Current Cycle))
 - 🔄 Enhanced model serving with caching
 - 🔄 Advanced evaluation metrics
 - 🔄 Automated hyperparameter tuning
 - 🔄 Better documentation and tutorials
 - 🔄 Distributed training optimizations
 
-### Medium-Term (Q2-Phase 3 (2026))
+### Medium-Term (Cycle 2-Phase 3 (Current Cycle))
 - 📋 Multi-modal support (vision + language)
 - 📋 Reinforcement learning from human feedback (RLHF)
 - 📋 Model compression and quantization
 - 📋 Automated dataset curation
 - 📋 Enhanced monitoring and alerting
 
-### Long-Term (2026+)
+### Long-Term (Current Cycle+)
 - 💡 Auto-ML capabilities
 - 💡 Federated learning support
 - 💡 Edge deployment

@@ -312,7 +312,7 @@ correlator = QuantumPatternCorrelator(repo_path="../..")
 cd .github/copilot-evolution
 python test_integrated_system.py
 
-# ❌ Incorrect (may pass but misleading)
+# ❌ Incorrect (Phase 5 pass but misleading)
 python .github/copilot-evolution/test_integrated_system.py
 ```
 

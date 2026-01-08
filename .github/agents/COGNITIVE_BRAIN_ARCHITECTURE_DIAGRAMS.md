@@ -424,9 +424,9 @@ graph TB
     end
     
     subgraph QLearning["Q-Learning Engine"]
-        Q1[Q-Table]
-        Q2[Action Selection<br/>ε-greedy]
-        Q3[Q-Value Update]
+        Cycle 1[Q-Table]
+        Cycle 2[Action Selection<br/>ε-greedy]
+        Cycle 3[Q-Value Update]
     end
     
     subgraph Reward["Reward Shaper"]
@@ -443,9 +443,9 @@ graph TB
         ER3[Prioritized Sampling]
     end
     
-    E1 --> Q2
-    E2 --> Q2
-    Q2 --> Action[Execute Action]
+    E1 --> Cycle 2
+    E2 --> Cycle 2
+    Cycle 2 --> Action[Execute Action]
     Action --> E3
     
     E3 --> R1
@@ -463,9 +463,9 @@ graph TB
     
     ER1 --> ER2
     ER2 --> ER3
-    ER3 --> Q3
-    Q3 --> Q1
-    Q1 --> Q2
+    ER3 --> Cycle 3
+    Cycle 3 --> Cycle 1
+    Cycle 1 --> Cycle 2
     
     style QLearning fill:#74B9FF
     style Reward fill:#FFEAA7

@@ -44,7 +44,7 @@ You can run and manage workflows from the CLI both locally and within Actions. F
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   ```
-- The `gh workflow`, `gh run`, and other commands allow advanced workflow management directly from Actions or your terminal[[5]](https://blogs.reliablepenguin.com/2025/07/15/automating-github-actions-workflows-with-the-gh-cli)[[6]](https://commandmasters.com/commands/gh-workflow-common/)[[7]](https://cli.github.com/manual/gh_workflow).
+- The `gh workflow`, `gh run`, and other commands allow advanced workflow management directly from Actions or your terminal[[5]](https://blogs.reliablepenguin.com/2024/07/15/automating-github-actions-workflows-with-the-gh-cli)[[6]](https://commandmasters.com/commands/gh-workflow-common/)[[7]](https://cli.github.com/manual/gh_workflow).
 
 ## Fallback: Using GitHub MCP Tools
 

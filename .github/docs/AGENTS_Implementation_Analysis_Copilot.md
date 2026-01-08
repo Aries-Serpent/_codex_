@@ -74,7 +74,7 @@
 
 **Environment Validation**
 - ⚠️ Validation runs on import (global `env_manager = EnvironmentManager()`)
-- ⚠️ May crash on import if required vars missing (by design, but aggressive)
+- ⚠️ may crash on import if required vars missing (by design, but aggressive)
 - 💡 **Recommendation**: Consider lazy validation or explicit `validate()` call
 
 ---

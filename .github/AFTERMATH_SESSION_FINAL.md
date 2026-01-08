@@ -154,7 +154,7 @@ future_research:
     estimated_complexity: "medium"
     dependencies: ["Sufficient lessons corpus (50+ sessions)", "ML infrastructure"]
     expected_impact: "Reduce recurring issues by 30-40%"
-    timeline: "Phase 2 (2026)"
+    timeline: "Phase 2 (Current Cycle)"
     
   - topic: "Automated test generation from coverage gaps"
     rationale: "AI generates tests for uncovered code paths based on code analysis"
@@ -162,7 +162,7 @@ future_research:
     estimated_complexity: "high"
     dependencies: ["Coverage data", "Code understanding model", "Test execution sandbox"]
     expected_impact: "Accelerate coverage improvement 2-3x"
-    timeline: "Phase 3 (2026)"
+    timeline: "Phase 3 (Current Cycle)"
     
   - topic: "Session checkpoint resume with context injection"
     rationale: "Resume interrupted sessions with full context from checkpoint data"
@@ -170,7 +170,7 @@ future_research:
     estimated_complexity: "low"
     dependencies: ["Checkpoint storage", "Prompt engineering"]
     expected_impact: "Enable seamless multi-session workflows; reduce context loss"
-    timeline: "Phase 1 (2026)"
+    timeline: "Phase 1 (Current Cycle)"
     
   - topic: "Cognitive brain predictive analytics"
     rationale: "Predict blockers and estimate effort based on historical patterns"
@@ -178,7 +178,7 @@ future_research:
     estimated_complexity: "medium"
     dependencies: ["Historical aftermath data (30+ sessions)", "Analytics framework"]
     expected_impact: "Improve planning accuracy 20-30%; early blocker detection"
-    timeline: "Phase 2 (2026)"
+    timeline: "Phase 2 (Current Cycle)"
     
   - topic: "AfterMath visualization dashboard"
     rationale: "Interactive dashboard for exploring lessons learned trends and patterns"
@@ -186,7 +186,7 @@ future_research:
     estimated_complexity: "medium"
     dependencies: ["Web framework", "Charting library", "AfterMath data store"]
     expected_impact: "Improved insight discovery; team learning acceleration"
-    timeline: "Phase 2 (2026)"
+    timeline: "Phase 2 (Current Cycle)"
 
 status: "complete"
 phases_complete: ["6", "7", "8"]

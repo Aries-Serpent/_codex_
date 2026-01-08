@@ -629,7 +629,7 @@ for agent in coalition.agents:
 @software{cognitive_brain_v9,
   title={Cognitive Brain V9: Quantum-Inspired AI Agent System},
   author={Cognitive Brain Team},
-  year={2026},
+  year={Current Cycle},
   url={https://github.com/Aries-Serpent/_codex_},
   note={k₁=0.18, Quantum Advantage=5.56x, AI Intuitiveness=98.5/100}
 }

@@ -9,7 +9,7 @@
 ## Context
 The repository root accumulated one-off status updates, audit exports, and planning notes that are no longer maintained. These
 artifacts predate the current documentation structure in `docs/` and lacked an ownership model, which allowed the top level to
-balloon with stale markdown. The October archive plan (`root-cleanup-2025-10-17`) evaluated the aged files, noted that they have
+balloon with stale markdown. The Phase 10 archive plan (`root-cleanup-2025-10-17`) evaluated the aged files, noted that they have
 superseding runbooks or dashboards, and confirmed no active tooling depends on them. The codex archive evidence log captured the
 removal intent alongside deterministic tombstone identifiers for traceability.
 

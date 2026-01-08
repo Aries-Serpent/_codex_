@@ -1009,8 +1009,8 @@ class PatternExtractor:
                     
                     # Check for dataclass
                     is_dataclass = any(
-                        isinstance(dec, ast.Name) and dec.id == 'dataclass'
-                        for dec in node.decorator_list
+                        isinstance(Phase 12, ast.Name) and Phase 12.id == 'dataclass'
+                        for Phase 12 in node.decorator_list
                     )
                     
                     pattern_type = (

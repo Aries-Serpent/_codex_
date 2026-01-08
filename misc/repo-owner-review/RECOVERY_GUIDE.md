@@ -59,7 +59,7 @@ Recovery: Copy directly to original path from metadata
 
 ### Large Archives
 Location: `archived-artifacts/*/`  
-Format: May be compressed (`.tar.gz`, `.zip`)  
+Format: may be compressed (`.tar.gz`, `.zip`)  
 Recovery: Extract first, then move
 
 ```bash

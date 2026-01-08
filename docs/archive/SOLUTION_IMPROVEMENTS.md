@@ -103,7 +103,7 @@ dev = [
 Time: ~2-3 minutes
 Steps:
 1. Install package + core deps from pyproject.toml
-2. Install test deps from requirements-test.txt (may reinstall some)
+2. Install test deps from requirements-test.txt (Phase 5 reinstall some)
 Cache: Only requirements*.txt changes trigger reinstall
 ```
 

@@ -18,7 +18,7 @@ This document provides comprehensive research context, keywords, methodologies, 
 ### Research Topic Classification
 **Category**: AI/ML for Software Testing  
 **Complexity**: High  
-**Timeline**: Phase 3 (2026)  
+**Timeline**: Phase 3 (Current Cycle)  
 **Expected ROI**: 5-10x faster test creation
 
 ### Problem Statement
@@ -228,25 +228,25 @@ Output only the test code, no explanations."""
 
 ### Implementation Roadmap
 
-**Phase 1: Proof of Concept** (Phase 2 (2026), 2 weeks)
+**Phase 1: Proof of Concept** (Phase 2 (Current Cycle), 2 weeks)
 - Build basic coverage-to-test pipeline
 - Generate tests for 5-10 uncovered functions
 - Validate generated tests pass and improve coverage
 - Measure time savings vs manual
 
-**Phase 2: Template Library** (Phase 2 (2026), 3 weeks)
+**Phase 2: Template Library** (Phase 2 (Current Cycle), 3 weeks)
 - Extract common test patterns from existing tests
 - Build template library (fixtures, assertions, mocks)
 - Implement template matching algorithm
 - Generate tests for simple uncovered code
 
-**Phase 3: LLM Integration** (Phase 3 (2026), 4 weeks)
+**Phase 3: LLM Integration** (Phase 3 (Current Cycle), 4 weeks)
 - Integrate OpenAI/Claude API
 - Build prompt engineering pipeline
 - Implement validation & refinement loop
 - Generate tests for complex uncovered code
 
-**Phase 4: Automation & CI Integration** (Phase 3 (2026), 2 weeks)
+**Phase 4: Automation & CI Integration** (Phase 3 (Current Cycle), 2 weeks)
 - CLI tool for test generation
 - GitHub Action for auto-generation on PR
 - Dashboard for coverage gaps and generated tests
@@ -295,7 +295,7 @@ Output only the test code, no explanations."""
 ### Research Topic Classification
 **Category**: Software Testing Quality Assurance  
 **Complexity**: Medium  
-**Timeline**: Phase 2 (2026)  
+**Timeline**: Phase 2 (Current Cycle)  
 **Expected ROI**: Identify 20-30% weak tests
 
 ### Problem Statement
@@ -533,22 +533,22 @@ jobs:
 
 ### Implementation Roadmap
 
-**Phase 1: Tool Selection** (Phase 1 (2026), 1 week)
+**Phase 1: Tool Selection** (Phase 1 (Current Cycle), 1 week)
 - Evaluate `mutpy`, `cosmic-ray`, `mutmut`
 - Run benchmark on 10 modules
 - Select tool based on speed, accuracy, maintainability
 
-**Phase 2: Baseline Measurement** (Phase 2 (2026), 2 weeks)
+**Phase 2: Baseline Measurement** (Phase 2 (Current Cycle), 2 weeks)
 - Run mutation testing on all test files
 - Generate baseline mutation scores
 - Identify weak test files (score < 60%)
 
-**Phase 3: Test Improvement** (Phase 2 (2026), 4 weeks)
+**Phase 3: Test Improvement** (Phase 2 (Current Cycle), 4 weeks)
 - Fix weak tests identified in Phase 2
 - Target: All modules ≥ 75% mutation score
 - Document test improvement patterns
 
-**Phase 4: CI Integration** (Phase 2 (2026), 2 weeks)
+**Phase 4: CI Integration** (Phase 2 (Current Cycle), 2 weeks)
 - Add mutation testing to CI pipeline
 - Set mutation score thresholds for PR approval
 - Create quality dashboard
@@ -567,7 +567,7 @@ jobs:
 ### Research Topic Classification
 **Category**: Advanced Testing Methodologies  
 **Complexity**: Low  
-**Timeline**: Phase 1 (2026)  
+**Timeline**: Phase 1 (Current Cycle)  
 **Expected ROI**: Discover 20-30% more edge case bugs
 
 ### Problem Statement
@@ -785,22 +785,22 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ### Implementation Roadmap
 
-**Phase 1: Identify Candidates** (Phase 1 (2026), 1 week)
+**Phase 1: Identify Candidates** (Phase 1 (Current Cycle), 1 week)
 - Scan codebase for string processing, data transformations
 - List 20-30 functions suitable for property-based testing
 - Prioritize by bug risk and complexity
 
-**Phase 2: Implement Property Tests** (Phase 1 (2026), 3 weeks)
+**Phase 2: Implement Property Tests** (Phase 1 (Current Cycle), 3 weeks)
 - Add property-based tests for 20-30 functions
 - Target: 20-30% of tests are property-based (up from 10%)
 - Document property testing patterns
 
-**Phase 3: Stateful Testing** (Phase 1 (2026), 2 weeks)
+**Phase 3: Stateful Testing** (Phase 1 (Current Cycle), 2 weeks)
 - Implement stateful tests for WorkflowNavigator
 - Add stateful tests for other stateful systems
 - Validate state invariants
 
-**Phase 4: Documentation & Training** (Phase 1 (2026), 1 week)
+**Phase 4: Documentation & Training** (Phase 1 (Current Cycle), 1 week)
 - Update testing guide with property-based examples
 - Document common properties and strategies
 - Share learnings from bugs found

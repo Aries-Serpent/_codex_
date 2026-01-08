@@ -10,12 +10,12 @@
 
 | Quarter | Audit Due | Status |
 |---------|-----------|--------|
-| Phase 1 (2025) | March 15, 2025 | ⬜ Pending |
-| Phase 2 (2025) | June 15, 2025 | ⬜ Pending |
-| Phase 3 (2025) | September 15, 2025 | ⬜ Pending |
-| Phase 4 (2025) | December 15, 2025 | ✅ Completed (2025-12-12) |
-| Phase 1 (2026) | March 15, 2026 | ⬜ Pending |
-| Phase 2 (2026) | June 15, 2026 | ⬜ Pending |
+| Q1 2025 | Mar 15, 2025 | ⬜ Pending |
+| Q2 2025 | Jun 15, 2025 | ⬜ Pending |
+| Q3 2025 | Sep 15, 2025 | ⬜ Pending |
+| Q4 2025 | Dec 15, 2025 | ✅ Completed (2025-12-12) |
+| Q1 2026 | Mar 15, 2026 | ⬜ Pending |
+| Q2 2026 | Jun 15, 2026 | ⬜ Pending |
 
 ---
 

@@ -89,7 +89,7 @@ export function MetricCard({
           )}
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
+        <div className="flex items-baseline gap-2 mb-2" style={animated ? { willChange: 'transform' } : undefined}>
           {animated ? (
             <motion.span
               className={`text-3xl font-bold font-mono ${valueColor}`}
@@ -113,6 +113,8 @@ export function MetricCard({
         {sparkline && sparkline.length > 0 && (
           <div className="mb-3">
             <svg
+              role="img"
+              aria-label="Sparkline chart"
               viewBox={`0 0 ${sparkline.length * 10} 30`}
               className="w-full h-8"
               preserveAspectRatio="none"

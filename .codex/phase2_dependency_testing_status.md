@@ -256,7 +256,7 @@ tests/integration/                                 # If exists
 ### Medium Risk ⚠️
 
 - **Untested ML workflows:** torch/transformers/mlflow actual usage not verified
-- **Optional groups:** May have conflicts not yet discovered
+- **Optional groups:** may have conflicts not yet discovered
 - **Performance:** New versions may have different performance characteristics
 
 ### Mitigation Strategies

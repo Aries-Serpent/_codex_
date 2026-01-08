@@ -109,7 +109,7 @@
 - **Files:** Physics_Equations_Coverage_Uplift_Paths.md, Physics_Equations_Monitor_Behavior_Plan_Prompts.md, etc.
 - **Status:** 📋 OPEN
 - **Action Needed:** Review and determine if covered by current test suite
-- **Note:** May be superseded by comprehensive physics testing already completed
+- **Note:** may be superseded by comprehensive physics testing already completed
 
 **3. MSP Audit Gap Remediation**
 - **Files:** MSP_Audit_Gap_Remediation_Execution_Blueprint.md, MSP_Audit_Gap_Remediation_Plan_of_Action.md
@@ -137,7 +137,7 @@
 
 3. **Physics Equations Coverage**
    - Verify if superseded by current work
-   - May already be complete
+   - may already be complete
    - Timeline: 2-3 days for verification
 
 4. **MSP Audit Gap Remediation**

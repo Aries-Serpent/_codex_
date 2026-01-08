@@ -207,7 +207,7 @@ integration:
 triggers:
   - pull_request
   - push
-  - schedule: "*/15 * * * *"  # Every 15 minutes
+  - schedule: "*/15 * * * *"  # Every 15 pre-commits
 
 config:
   random_seed: 47

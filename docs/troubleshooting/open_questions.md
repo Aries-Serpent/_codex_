@@ -11,7 +11,7 @@
 - Deterministic mode helper `src/codex_ml/utils/determinism.py` backs the shared seeding path and respects `CUBLAS_WORKSPACE_CONFIG` requirements.
 
 ## Menu Items Covered This Run
-- ✅ **Observability (5)** — Closed the system-metrics telemetry gap by wiring `log_system_metrics` and the collector surfaced in the October status update.【F:reports/gap_risk_resolution.md†L9-L11】【F:src/codex_ml/training/__init__.py†L90-L156】
+- ✅ **Observability (5)** — Closed the system-metrics telemetry gap by wiring `log_system_metrics` and the collector surfaced in the Phase 10 status update.【F:reports/gap_risk_resolution.md†L9-L11】【F:src/codex_ml/training/__init__.py†L90-L156】
 - ✅ **Docs polish (7)** — Authored the gap→risk→resolution register so subsequent runs inherit a prioritized mitigation backlog.【F:reports/gap_risk_resolution.md†L1-L15】
 - ✅ **Self-management (8)** — Refreshed the high-signal dashboard to highlight remaining open items (advanced modeling, security, deployment).【F:reports/high_signal_findings.md†L1-L7】
 

@@ -154,7 +154,7 @@
 
 ---
 
-### Priority 2: Developer Experience (Q1-Phase 2 (2026) - 3 agents)
+### Priority 2: Developer Experience (Cycle 1-Phase 2 (Current Cycle) - 3 agents)
 
 #### 4. code-review-summarizer.v1 (Pre-commit 9-10)
 **Priority**: P2 - Medium  
@@ -234,7 +234,7 @@
 
 ---
 
-### Priority 3: Advanced Capabilities (Phase 2 (2026) - 3 agents)
+### Priority 3: Advanced Capabilities (Phase 2 (Current Cycle) - 3 agents)
 
 #### 7. compliance-checker-agent.v1 (Pre-commit 15-16)
 **Priority**: P1 - High  

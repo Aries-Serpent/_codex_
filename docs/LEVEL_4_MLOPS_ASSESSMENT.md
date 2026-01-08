@@ -42,7 +42,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ### Level 4: Full MLOps Automation
 - ⚠️ Automated model retraining (in development)
-- ❌ Feature store (planned Phase 1 (2026))
+- ❌ Feature store (planned Phase 1 (Current Cycle))
 - ⚠️ Advanced drift detection (in development)
 - ✅ Continuous model evaluation
 - ⚠️ Automated production promotion with governance
@@ -86,7 +86,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 - Point-in-time correctness for time-travel
 
 **Action Items**:
-- [ ] Evaluate Feast vs. Tecton (Phase 1 (2026))
+- [ ] Evaluate Feast vs. Tecton (Phase 1 (Current Cycle))
 - [ ] Design feature registry schema
 - [ ] Migrate top 10 features to store
 - [ ] Update training pipelines to consume from store
@@ -102,7 +102,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 - Explainable drift reports
 
 **Action Items**:
-- [ ] Implement Evidently AI or Alibi Detect (Phase 2 (2026))
+- [ ] Implement Evidently AI or Alibi Detect (Phase 2 (Current Cycle))
 - [ ] Define drift severity thresholds
 - [ ] Integrate with automated retraining workflow
 - [ ] Create drift visualization dashboards
@@ -134,7 +134,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 - Bias and fairness monitoring
 
 **Action Items**:
-- [ ] Implement model card templates (Phase 3 (2026))
+- [ ] Implement model card templates (Phase 3 (Current Cycle))
 - [ ] Add fairness metrics to validation suite
 - [ ] Integrate with compliance reporting tools
 - [ ] Define model risk classification framework
@@ -145,10 +145,10 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 | Quarter | Milestone | Success Criteria |
 |---------|-----------|------------------|
-| Phase 1 (2026) | Feature Store PoC | 10 features in Feast, 1 model using store |
-| Phase 2 (2026) | Drift Detection | Real-time drift alerts, 90% detection rate |
-| Phase 2 (2026) | Automated Retraining | 3 models with auto-retrain enabled |
-| Phase 3 (2026) | Governance Framework | Model cards for all production models |
+| Phase 1 (Current Cycle) | Feature Store PoC | 10 features in Feast, 1 model using store |
+| Phase 2 (Current Cycle) | Drift Detection | Real-time drift alerts, 90% detection rate |
+| Phase 2 (Current Cycle) | Automated Retraining | 3 models with auto-retrain enabled |
+| Phase 3 (Current Cycle) | Governance Framework | Model cards for all production models |
 | Phase 4 (2026) | Level 4 Certification | External audit confirms Level 4 compliance |
 
 ---

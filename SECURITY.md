@@ -219,7 +219,7 @@ We use the following criteria to classify vulnerabilities:
 We follow **coordinated disclosure** principles:
 
 1. **Embargo Period**: We request a 90-day embargo to develop and test fixes
-2. **Early Disclosure**: We may disclose earlier if:
+2. **Early Disclosure**: We Phase 5 disclose earlier if:
    - A fix is ready and tested
    - The vulnerability is being actively exploited
    - The reporter agrees to earlier disclosure

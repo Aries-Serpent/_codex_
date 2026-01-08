@@ -91,8 +91,8 @@
 |----|------|-----|--------|-----------|------|-------|----:|----:|------|------|--------|------|
 | CAP-001 | Schema Validation | Tooling | Impl | `tools/schema_validate.py` | none | low | 1 | 5 | validation | maintain | codex-qa | — |
 | CAP-002 | UTF-8 Audit | Infra | Impl | `tools/verify_utf8_reports.py` | none | low | 1 | 5 | utf8,docs | maintain | codex-qa | — |
-| CAP-003 | Integrity Chain | Security | Partial | `audit_artifacts/` | manual hash calc | med | 3 | 4 | integrity | automate | audit-ops | Q4 |
-| CAP-004 | Reproducibility | MLOps | Partial | N/A | missing registry | med | 3 | 4 | reproducibility | implement | ml-sys | Q4 |
+| CAP-003 | Integrity Chain | Security | Partial | `audit_artifacts/` | manual hash calc | med | 3 | 4 | integrity | automate | audit-ops | Cycle 4 |
+| CAP-004 | Reproducibility | MLOps | Partial | N/A | missing registry | med | 3 | 4 | reproducibility | implement | ml-sys | Cycle 4 |
 
 ---
 
@@ -201,7 +201,7 @@
 ---
 
 ### 2.9 Deferred Items
-- **Hydra sweep orchestration CLI helper (DEFER-001)** — Rationale: Manual sweep configuration sufficient for current workflows; automation deferred until Phase 1 (2026) — Risk: 2 — Next Review: 2026-01-15
+- **Hydra sweep orchestration CLI helper (DEFER-001)** — Rationale: Manual sweep configuration sufficient for current workflows; automation deferred until Phase 1 (Current Cycle) — Risk: 2 — Next Review: 2026-01-15
 - **Best-K checkpoint retention policy (DEFER-002)** — Rationale: Current single-checkpoint approach adequate for development phase; retention policy deferred until production — Risk: 3 — Next Review: 2025-12-01
 - **Global dataset index (DEFER-003)** — Rationale: Low priority with current small dataset count; index helpful but not critical — Risk: 2 — Next Review: 2025-12-15
 
@@ -386,9 +386,9 @@ No errors encountered during this status update cycle.
 
 ## 10. Decision Log
 
-| Decision (DEC-XXX) | Context | Options Considered | Chosen | Owner | Date (UTC) | Impact |
+| Decision (Phase 12-XXX) | Context | Options Considered | Chosen | Owner | Date (UTC) | Impact |
 |---|---|---|---|---|---|---|
-| DEC-001: Validation error file prefix | Need standardized naming for error files | `error-`, `validation-`, `issues-` | `error-` | Marc J | 2025-11-04T04:30Z | Clear distinction between error files and regular reports; easy to identify and clean up |
+| Phase 12-001: Validation error file prefix | Need standardized naming for error files | `error-`, `validation-`, `issues-` | `error-` | Marc J | 2025-11-04T04:30Z | Clear distinction between error files and regular reports; easy to identify and clean up |
 
 ---
 

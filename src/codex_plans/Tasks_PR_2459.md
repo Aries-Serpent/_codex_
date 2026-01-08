@@ -903,7 +903,7 @@ def main():
         if r['cyclomatic_complexity'] > 10:
             print("   ⚠️  HIGH COMPLEXITY - Consider simplifying")
         if r['information_density'] < 2. 0:
-            print("   💡 LOW DENSITY - May benefit from abstraction")
+            print("   💡 LOW DENSITY - may benefit from abstraction")
 
 if __name__ == "__main__":
     main()

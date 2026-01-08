@@ -61,7 +61,7 @@ This note cross-references the remediation guidance from the 2025-10-05 status u
 
 ## High-Signal & Deferred Items
 
-The Oct-05 update also called out structural risks—distributed training, RLHF reward agents, dataset streaming, external moderation APIs, and automated release tooling—that remain deferred by design.【F:reports/_codex_status_update-2025-10-05.md†L351-L357】 Capture any decision to tackle these in dedicated roadmap entries so their status is visible in future audits.
+The Phase 10-05 update also called out structural risks—distributed training, RLHF reward agents, dataset streaming, external moderation APIs, and automated release tooling—that remain deferred by design.【F:reports/_codex_status_update-2025-10-05.md†L351-L357】 Capture any decision to tackle these in dedicated roadmap entries so their status is visible in future audits.
 
 ## Recommended Next Steps
 

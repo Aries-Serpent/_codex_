@@ -152,7 +152,7 @@ This document tracks iterative gap analysis and remediation for the Semgrep SAST
 
 **Estimated Impact:** Consistency and completeness  
 **Effort:** 1-2 hours  
-**Risk:** Medium - May require coordination with other workflows
+**Risk:** Medium - may require coordination with other workflows
 
 ---
 

@@ -129,10 +129,10 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 | Challenge ID | Challenge | Impact | Resolution | Days |
 |-------------|-----------|--------|-----------|------|
-| **ARCH-CHAL-001** | libcst downloads grammar files | May fail offline | Bundle grammar files | 0.5 |
+| **ARCH-CHAL-001** | libcst downloads grammar files | may fail offline | Bundle grammar files | 0.5 |
 | **ARCH-CHAL-002** | tree-sitter needs pre-built parsers | Offline incompatibility | Pre-bundle all parsers | 1 |
 | **ARCH-CHAL-004** | Different AST nodes per Python version | Parse inconsistencies | Version compatibility layer | 3 |
-| **ARCH-CHAL-006** | Full AST analysis is slow | May violate NFR-PERF-002 | Caching + streaming | 3 |
+| **ARCH-CHAL-006** | Full AST analysis is slow | may violate NFR-PERF-002 | Caching + streaming | 3 |
 
 **Total Challenge Effort:** 7.5 person-days
 
@@ -575,7 +575,7 @@ Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may b
 **Impact if Realized:**
 - Cannot validate NFR-PERF targets
 - Sprint 1 performance work critical
-- May fail customer acceptance criteria
+- may fail customer acceptance criteria
 
 **Probability:** 70% (complex AST analysis inherently slow)  
 **Impact:** CRITICAL  
@@ -608,7 +608,7 @@ If 3+ targets MISSED → 🔴 Architecture revision needed
 
 CONTINGENCY OPTIONS:
 1. OPTIMIZE: 2-week optimization sprint (delay Sprint 1)
-2. RELAX TARGETS: Adjust NFR thresholds (may impact user satisfaction)
+2. RELAX TARGETS: Adjust NFR thresholds (Phase 5 impact user satisfaction)
 3. HYBRID APPROACH: Fast mode (less analysis) + full mode
 4. INCREMENTAL ROLLOUT: Ship basic features first, optimize later
 ```text
@@ -876,7 +876,7 @@ risks:
   - id: RISK-1
     title: Dependency Version Conflicts
     description: |
-      libcst, radon, tree-sitter versions may conflict
+      libcst, radon, tree-sitter versions Phase 5 conflict
       with existing torch/transformers pins
     probability: HIGH
     impact: CRITICAL

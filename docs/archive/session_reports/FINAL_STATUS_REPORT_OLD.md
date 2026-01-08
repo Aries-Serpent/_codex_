@@ -234,7 +234,7 @@ coverage:
 
 **Risk 4: Coverage Measurement Accuracy**
 - **Issue**: Coverage gains may be lower than projected
-- **Impact**: May need additional tests to reach 95% target
+- **Impact**: may need additional tests to reach 95% target
 - **Mitigation**: Conservative projections, gap analysis after each batch
 - **Status**: Medium risk - will adapt based on measured gains
 

@@ -19,7 +19,7 @@
 ### Cognitive Brain (AI Agent Navigation)
 - **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
 - **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status & metrics
-- **[Roadmap](ROADMAP.md)** - Unified roadmap Q1-Phase 3 (2026)
+- **[Roadmap](ROADMAP.md)** - Unified roadmap Cycle 1-Phase 3 (Current Cycle)
 
 ---
 

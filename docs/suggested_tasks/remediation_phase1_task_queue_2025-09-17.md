@@ -2,7 +2,7 @@
 
 ## 0. Orientation & Linkage
 
-This execution packet translates the phased remediation outline recorded in `docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md` into immediately actionable work items. The focus is on the first remediation phase, covering the top five urgent gates (U1–U5) and the top five quick wins (Q1–Q5) that were enumerated in the foundational plan. Each task card below preserves the traceability back to the source findings (status update, capability audit, outstanding questions) while spelling out concrete steps, deliverables, instrumentation requirements, and forward-looking queue triggers that will cascade into the next remediation phase as soon as Phase 1 closes out.
+This execution packet translates the phased remediation outline recorded in `docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md` into immediately actionable work items. The focus is on the first remediation phase, covering the top five urgent gates (U1–U5) and the top five quick wins (Cycle 1–Q5) that were enumerated in the foundational plan. Each task card below preserves the traceability back to the source findings (status update, capability audit, outstanding questions) while spelling out concrete steps, deliverables, instrumentation requirements, and forward-looking queue triggers that will cascade into the next remediation phase as soon as Phase 1 closes out.
 
 Key conventions used in this packet:
 
@@ -14,7 +14,7 @@ Key conventions used in this packet:
 
 1. Kick off with the Urgent Gate series (U1 through U5) because failing gates block every downstream improvement.
 2. As each urgent gate closes, immediately enqueue the paired quick-win remediation (see "Queue trigger" on each urgent task card). This keeps high-leverage polish items ready for batched execution once stability is restored.
-3. When all five urgent gates are marked complete and their queue triggers have been issued, begin executing the quick-win cards (Q1 through Q5) in numerical order.
+3. When all five urgent gates are marked complete and their queue triggers have been issued, begin executing the quick-win cards (Cycle 1 through Q5) in numerical order.
 4. After each quick win is verified, push the explicitly named successor tasks (mostly Phase 2+ backlog items from Appendix A of the master plan) into the active queue. Document the queuing activity in both the task card and `.codex/session_logs.db`.
 5. When all ten Phase 1 cards have met their exit criteria and their queue triggers have been dispatched, compile a completion digest summarizing outcomes, metrics, and links to artifacts. Store the digest at `docs/suggested_tasks/remediation_phase1_completion_report_2025-09-17.md` (new file) and mark Phase 2 as unblocked.
 
@@ -33,7 +33,7 @@ Key conventions used in this packet:
 - **Deliverables**: Updated requirement manifests, revised nox session, refreshed documentation, and a session log entry confirming gate execution.
 - **Exit criteria**: `nox -s tests` finishes with `pre-commit` execution recorded; outstanding question rows resolved; documentation updated.
 - **Logging**: Append a row to `.codex/session_logs.db` indicating gate restoration, plus add a changelog bullet to `CHANGELOG_SESSION_LOGGING.md`.
-- **Queue trigger**: Upon completion, enqueue Quick Win **Q1 – Remove Duplicate `training.py01`** to kick off codebase cleanup reliant on functioning gates.
+- **Queue trigger**: Upon completion, enqueue Quick Win **Cycle 1 – Remove Duplicate `training.py01`** to kick off codebase cleanup reliant on functioning gates.
 
 ### Task U2 – Ensure `nox` Availability Across Phases
 - **Source references**: Phase 1/U2; outstanding validation rows citing missing `nox` binary.
@@ -48,7 +48,7 @@ Key conventions used in this packet:
 - **Deliverables**: Updated requirement files, orchestration scripts, documentation, and log entries verifying `nox` availability checks.
 - **Exit criteria**: Automated probe reports success; documentation cross-references updated; outstanding entries closed.
 - **Logging**: Record both the probe attempt and its success/failure in `.codex/session_logs.db`; add a `system` role entry summarizing the remediation.
-- **Queue trigger**: Once `nox` availability is confirmed, queue Quick Win **Q2 – Implement `load_latest` in Checkpointing** (requires stable tooling).
+- **Queue trigger**: Once `nox` availability is confirmed, queue Quick Win **Cycle 2 – Implement `load_latest` in Checkpointing** (requires stable tooling).
 
 ### Task U3 – Stabilize Coverage Session (`pytest-cov` / gating)
 - **Source references**: Phase 1/U3; capability audit notes on evaluation and coverage deficits.
@@ -63,7 +63,7 @@ Key conventions used in this packet:
 - **Deliverables**: Updated automation scripts, coverage report artifacts, documentation updates, and log records.
 - **Exit criteria**: Coverage gate enforced with recorded metrics; documentation instructs remediation steps; outstanding rows resolved.
 - **Logging**: Log coverage metrics and file paths in `.codex/session_logs.db` using `assistant` role entries for computed data.
-- **Queue trigger**: After stabilizing coverage, queue Quick Win **Q3 – Deterministic Dataset Loader & Manifest** (which depends on reliable tests).
+- **Queue trigger**: After stabilizing coverage, queue Quick Win **Cycle 3 – Deterministic Dataset Loader & Manifest** (which depends on reliable tests).
 
 ### Task U4 – Harden Test Suite Against Optional Dependency Drift
 - **Source references**: Phase 1/U4; outstanding question entries referencing Hydra/MLflow import failures; capability audit (Optional Dependency Pitfalls).
@@ -78,7 +78,7 @@ Key conventions used in this packet:
 - **Deliverables**: Updated test infrastructure, documentation, failure archives, and dual-run logs.
 - **Exit criteria**: Test suite passes in both dependency states; outstanding question entries are marked resolved with notes referencing the shim approach.
 - **Logging**: Store both run outputs and a summary of dependency states in `.codex/session_logs.db`; annotate `artifacts/test_failures/README.md` with reproduction steps.
-- **Queue trigger**: Once dependency drift hardening is verified, queue Quick Win **Q4 – Introduce System Metrics Logger** (relies on stable test harness for new monitoring).
+- **Queue trigger**: Once dependency drift hardening is verified, queue Quick Win **Cycle 4 – Introduce System Metrics Logger** (relies on stable test harness for new monitoring).
 
 ### Task U5 – Guard the Training CLI Against Missing `torch`
 - **Source references**: Phase 1/U5; outstanding question entry dated 2025-09-13 for `ModuleNotFoundError: torch`.
@@ -99,8 +99,8 @@ Key conventions used in this packet:
 
 Begin executing these cards once all urgent gate tasks have been completed and their queue triggers have been issued. Maintain strict logging parity with the urgent tasks to keep the remediation history queryable.
 
-### Task Q1 – Remove Duplicate `training.py01`
-- **Source references**: Phase 2/Q1 of remediation plan; high-signal finding #1.
+### Task Cycle 1 – Remove Duplicate `training.py01`
+- **Source references**: Phase 2/Cycle 1 of remediation plan; high-signal finding #1.
 - **Objective**: Eliminate the redundant `training.py01` file after verifying no code paths rely on it, reducing confusion.
 - **Preconditions**: Completion of Task U1 (ensures gate tooling is operational) and confirmation via `rg` scans.
 - **Actions**:
@@ -112,10 +112,10 @@ Begin executing these cards once all urgent gate tasks have been completed and t
 - **Deliverables**: Cleaned source tree, changelog entry, archived test log, documentation adjustments.
 - **Exit criteria**: Tests pass post-removal; documentation no longer references the duplicate file; logs captured.
 - **Logging**: Document the removal in session DB and update `docs/status_update_outstanding_questions.md` to mark the associated finding resolved.
-- **Queue trigger**: Queue Phase 2 backlog item **B1 – Consolidate Training Documentation and CLI Flags** (from Appendix A) for subsequent iteration once Q1 closes.
+- **Queue trigger**: Queue Phase 2 backlog item **B1 – Consolidate Training Documentation and CLI Flags** (from Appendix A) for subsequent iteration once Cycle 1 closes.
 
-### Task Q2 – Implement `load_latest` in Checkpointing
-- **Source references**: Phase 2/Q2; Atomic Diff 1.
+### Task Cycle 2 – Implement `load_latest` in Checkpointing
+- **Source references**: Phase 2/Cycle 2; Atomic Diff 1.
 - **Objective**: Provide resume functionality by adding `load_latest` (or similar) to `CheckpointManager` and wiring CLI support.
 - **Preconditions**: Task U2 completion (ensuring tooling stability) and accessible testing harness.
 - **Actions**:
@@ -129,8 +129,8 @@ Begin executing these cards once all urgent gate tasks have been completed and t
 - **Logging**: Capture demonstration runs and test results in `.codex/session_logs.db` with pointers to artifacts.
 - **Queue trigger**: Queue Phase 2 backlog item **B2 – Introduce Checkpoint Retention Policies** upon completion.
 
-### Task Q3 – Deterministic Dataset Loader & Manifest
-- **Source references**: Phase 2/Q3; Atomic Diff 5.
+### Task Cycle 3 – Deterministic Dataset Loader & Manifest
+- **Source references**: Phase 2/Cycle 3; Atomic Diff 5.
 - **Objective**: Ensure dataset loaders perform seeded shuffling and emit manifest files for reproducibility.
 - **Preconditions**: Task U3 completion (stable coverage gating) and accessible dataset samples.
 - **Actions**:
@@ -142,10 +142,10 @@ Begin executing these cards once all urgent gate tasks have been completed and t
 - **Deliverables**: Enhanced loader, tests, documentation, sample manifests, and logs.
 - **Exit criteria**: Tests demonstrate determinism; manifests archived; documentation and outstanding entries updated.
 - **Logging**: Record both deterministic test outcomes and sample manifest generation in session DB.
-- **Queue trigger**: Queue Phase 2 backlog item **B3 – Evaluate Streaming Data Loader Options** after Q3 closes.
+- **Queue trigger**: Queue Phase 2 backlog item **B3 – Evaluate Streaming Data Loader Options** after Cycle 3 closes.
 
-### Task Q4 – Introduce System Metrics Logger
-- **Source references**: Phase 2/Q4; Atomic Diff 4.
+### Task Cycle 4 – Introduce System Metrics Logger
+- **Source references**: Phase 2/Cycle 4; Atomic Diff 4.
 - **Objective**: Provide psutil-based system metrics logging integrated into training workflows.
 - **Preconditions**: Task U4 completion (stable test harness) and psutil availability in environment (document fallback if absent).
 - **Actions**:
@@ -180,10 +180,10 @@ To maintain momentum, prepare the following backlog items for immediate triage o
 
 | Pending Backlog ID | Description | Prerequisite Completion | Notes |
 | --- | --- | --- | --- |
-| B1 | Consolidate training documentation and CLI flags | Q1 | Draft a unified training README section and CLI flag reference. |
-| B2 | Introduce checkpoint retention policies | Q2 | Decide on retention count/TTL; integrate into CheckpointManager. |
-| B3 | Evaluate streaming data loader options | Q3 | Prototype streaming ingestion with fallbacks to current loader. |
-| B4 | Expand monitoring to GPU metrics & retention policies | Q4 | Extend system metrics logger to gather GPU info and rotate logs. |
+| B1 | Consolidate training documentation and CLI flags | Cycle 1 | Draft a unified training README section and CLI flag reference. |
+| B2 | Introduce checkpoint retention policies | Cycle 2 | Decide on retention count/TTL; integrate into CheckpointManager. |
+| B3 | Evaluate streaming data loader options | Cycle 3 | Prototype streaming ingestion with fallbacks to current loader. |
+| B4 | Expand monitoring to GPU metrics & retention policies | Cycle 4 | Extend system metrics logger to gather GPU info and rotate logs. |
 | B5 | Automate documentation link audit in gating sessions | Q5 | Integrate audit script into `nox` or `pre-commit` workflow. |
 
 When Phase 1 concludes, instantiate a new execution packet (e.g., `docs/suggested_tasks/remediation_phase2_task_queue_2025-09-24.md`) that elaborates each backlog item above with the same level of detail provided here. Ensure the completion digest for Phase 1 explicitly references the new packet so future sessions can navigate the remediation sequence without ambiguity.

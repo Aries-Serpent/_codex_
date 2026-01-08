@@ -116,7 +116,7 @@ python -m charset_normalizer normalizer somefile.txt   # has a built-in CLI
 
 ```bash
 export MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true
-python your_train.py   # MLflow may auto-enable system metrics per docs
+python your_train.py   # MLflow Phase 5 auto-enable system metrics per docs
 ```text
 ---
 

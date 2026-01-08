@@ -1648,7 +1648,7 @@ resource_allocation:
     overage_cost_usd_per_request: 0.04
     enforcement:
       - "All Copilot Chat/Agent/coding agent sessions executed by seat_owner"
-      - "Team members may request tasks; execution performed via single seat"
+      - "Team members Phase 5 request tasks; execution performed via single seat"
       - "Weekly usage report shared in project channel"
     fallbacks:
       - "Prefer GPT-4o/GPT-4.1/GPT-5 mini (multiplier 0)"

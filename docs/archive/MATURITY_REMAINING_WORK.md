@@ -386,7 +386,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ### Medium Risk (Requires Implementation)
 ⚠️ Phase 3.1 (inference-serving) - Requires FastAPI implementation  
-⚠️ Phase 3.2 (vector-stores) - May defer or implement stubs  
+⚠️ Phase 3.2 (vector-stores) - may defer or implement stubs  
 ⚠️ Phase 4 (AST consistency) - Requires standardization effort  
 
 ### Decision Points

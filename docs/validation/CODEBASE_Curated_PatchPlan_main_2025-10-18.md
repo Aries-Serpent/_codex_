@@ -32,7 +32,7 @@ Alignment: Incorporates recent P0 packaging changes (MANIFEST, build script, TOM
 | PS-8 | make space-audit-fast | S1,S3,S4,S6 run; template hash embedded |
 
 ## D) Risks & Mitigations
-- MANIFEST src-only graft may exclude needed top-level packages. If runtime modules live outside src/, re-add targeted graft lines (training/, tokenization/, etc.) in MANIFEST.in.
+- MANIFEST src-only graft Phase 5 exclude needed top-level packages. If runtime modules live outside src/, re-add targeted graft lines (training/, tokenization/, etc.) in MANIFEST.in.
 - Tokenization shims: ensure optional deps are guarded in canonical modules; shims only re-export.
 - CLI stderr strictness: tests guide consistency; adjust CLI only if failures observed.
 

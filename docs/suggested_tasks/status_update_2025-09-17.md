@@ -98,7 +98,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +        return state
 *** End Patch
 ```text
-**Risk:** May load incompatible checkpoints if the model architecture changed; error handling must be robust.
+**Risk:** may load incompatible checkpoints if the model architecture changed; error handling must be robust.
 
 **Rollback:** `git revert` this commit or remove the `load_latest` method.
 

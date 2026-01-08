@@ -176,7 +176,7 @@ This document details the enhancements made to the status update schema (v1.1 â†
    - PATCH-XXX: Same pattern
    - REPRO-XXX: Same pattern
    - Q-XXX: Questions
-   - DEC-XXX: Decisions
+   - Phase 12-XXX: Decisions
    - DEFER-XXX: Deferred items
 
 ## Validation

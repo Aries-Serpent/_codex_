@@ -253,7 +253,7 @@ If you use this module in your research, please cite:
 @software{codex_interpretability,
   title = {Codex ML Interpretability Module},
   author = {Aries-Serpent},
-  year = {2025},
+  year = {2024},
   url = {https://github.com/Aries-Serpent/_codex_}
 }
 ```

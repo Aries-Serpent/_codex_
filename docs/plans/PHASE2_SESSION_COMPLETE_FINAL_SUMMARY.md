@@ -420,7 +420,7 @@ Progress: 6.9% of journey to 95% complete (+4.93% / 71.79%)
 ### Medium Risk (Manageable) 🟡
 - Method implementation complexity: Some unknowns
   - *Mitigation:* Start with simplest, build incrementally
-- Integration test setup: May require fixtures
+- Integration test setup: may require fixtures
   - *Mitigation:* Reuse existing patterns
 - Coverage measurement variance: CI vs local
   - *Mitigation:* Use CI as authoritative
@@ -428,7 +428,7 @@ Progress: 6.9% of journey to 95% complete (+4.93% / 71.79%)
 ### Low-Medium Risk (Monitor) 🟡
 - Estimation accuracy for deep work: ±30% variance
   - *Mitigation:* Track actuals, update projections
-- WorkflowNavigator scope: May be larger than estimated
+- WorkflowNavigator scope: may be larger than estimated
   - *Mitigation:* Break into smaller increments
 
 ### No High Risks Identified 🟢

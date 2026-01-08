@@ -3455,7 +3455,7 @@ Requirement already satisfied: pygments~=2.16 in /root/.pyenv/versions/3.12.10/l
 Collecting pymdown-extensions~=10.2 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Downloading pymdown_extensions-10.16.1-py3-none-any.whl.metadata (3.1 kB)
 Collecting regex>=2022.4 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
-  Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+  Downloading regex-2024.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
 Collecting requests~=2.26 (from mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
 Collecting charset_normalizer<4,>=2 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
@@ -3465,7 +3465,7 @@ Collecting idna<4,>=2.5 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/r
 Collecting urllib3<3,>=1.21.1 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
   Using cached urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.26->mkdocs-material==9.5.27->-r docs/requirements.txt (line 3))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-2024.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting fastjsonschema>=2.15 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading fastjsonschema-2.21.2-py3-none-any.whl.metadata (2.3 kB)
 Collecting jsonschema>=2.6 (from nbformat>=5.9->-r docs/requirements.txt (line 4))
@@ -3497,7 +3497,7 @@ Collecting python-dateutil>=2.8.1 (from ghp-import>=1.0->mkdocs==1.6.0->-r docs/
 Collecting attrs>=22.2.0 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema>=2.6->nbformat>=5.9->-r docs/requirements.txt (line 4))
@@ -3535,12 +3535,12 @@ Downloading nbconvert-7.16.6-py3-none-any.whl (258 kB)
 Downloading mistune-3.1.3-py3-none-any.whl (53 kB)
 Downloading bleach-6.2.0-py3-none-any.whl (163 kB)
 Downloading tinycss2-1.4.0-py3-none-any.whl (26 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-2024.8.3-py3-none-any.whl (161 kB)
 Downloading fastjsonschema-2.21.2-py3-none-any.whl (24 kB)
 Downloading ghp_import-2.1.0-py3-none-any.whl (11 kB)
 Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl (18 kB)
 Downloading jupyter_core-5.8.1-py3-none-any.whl (28 kB)
 Downloading MarkupSafe-3.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
 Downloading mergedeep-1.3.4-py3-none-any.whl (6.4 kB)
@@ -3555,7 +3555,7 @@ Downloading pyyaml_env_tag-1.1-py3-none-any.whl (4.7 kB)
 Downloading pyzmq-27.0.2-cp312-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (840 kB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 840.6/840.6 kB 55.8 MB/s  0:00:00
 Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
-Downloading regex-2025.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+Downloading regex-2024.7.34-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.9/801.9 kB 30.4 MB/s  0:00:00
 Downloading rpds_py-0.27.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (386 kB)
 Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
@@ -3569,7 +3569,7 @@ Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
 Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)
 Installing collected packages: webencodings, paginate, fastjsonschema, watchdog, urllib3, traitlets, tornado, tinycss2, soupsieve, six, rpds-py, regex, pyzmq, pyyaml, pandocfilters, mkdocs-material-extensions, mistune, mergedeep, markupsafe, markdown, jupyterlab-pygments, idna, defusedxml, colorama, charset_normalizer, certifi, bleach, babel, attrs, requests, referencing, pyyaml-env-tag, python-dateutil, pymdown-extensions, mkdocs-get-deps, jupyter-core, jinja2, beautifulsoup4, jupyter-client, jsonschema-specifications, ghp-import, mkdocs, jsonschema, nbformat, mkdocs-material, nbclient, nbconvert
 
-Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.2.0 certifi-2025.8.3 charset_normalizer-3.4.3 colorama-0.4.6 defusedxml-0.7.1 fastjsonschema-2.21.2 ghp-import-2.1.0 idna-3.10 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 jupyter-client-8.6.3 jupyter-core-5.8.1 jupyterlab-pygments-0.3.0 markdown-3.8.2 markupsafe-3.0.2 mergedeep-1.3.4 mistune-3.1.3 mkdocs-1.6.0 mkdocs-get-deps-0.2.0 mkdocs-material-9.5.27 mkdocs-material-extensions-1.3.1 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 paginate-0.5.7 pandocfilters-1.5.1 pymdown-extensions-10.16.1 python-dateutil-2.9.0.post0 pyyaml-6.0.2 pyyaml-env-tag-1.1 pyzmq-27.0.2 referencing-0.36.2 regex-2025.7.34 requests-2.32.5 rpds-py-0.27.0 six-1.17.0 soupsieve-2.7 tinycss2-1.4.0 tornado-6.5.2 traitlets-5.14.3 urllib3-2.5.0 watchdog-6.0.0 webencodings-0.5.1
+Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.2.0 certifi-2024.8.3 charset_normalizer-3.4.3 colorama-0.4.6 defusedxml-0.7.1 fastjsonschema-2.21.2 ghp-import-2.1.0 idna-3.10 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-2024.4.1 jupyter-client-8.6.3 jupyter-core-5.8.1 jupyterlab-pygments-0.3.0 markdown-3.8.2 markupsafe-3.0.2 mergedeep-1.3.4 mistune-3.1.3 mkdocs-1.6.0 mkdocs-get-deps-0.2.0 mkdocs-material-9.5.27 mkdocs-material-extensions-1.3.1 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 paginate-0.5.7 pandocfilters-1.5.1 pymdown-extensions-10.16.1 python-dateutil-2.9.0.post0 pyyaml-6.0.2 pyyaml-env-tag-1.1 pyzmq-27.0.2 referencing-0.36.2 regex-2024.7.34 requests-2.32.5 rpds-py-0.27.0 six-1.17.0 soupsieve-2.7 tinycss2-1.4.0 tornado-6.5.2 traitlets-5.14.3 urllib3-2.5.0 watchdog-6.0.0 webencodings-0.5.1
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
@@ -4648,7 +4648,7 @@ Collecting wcmatch~=8.3 (from semgrep->-r requirements-dev.txt (line 9))
 Collecting face>=20.1.0 (from glom~=22.1->semgrep->-r requirements-dev.txt (line 9))
   Downloading face-24.0.0-py3-none-any.whl.metadata (1.1 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
@@ -4821,7 +4821,7 @@ Collecting charset_normalizer<4,>=2 (from requests~=2.22->semgrep->-r requiremen
 Collecting idna<4,>=2.5 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
   Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-2024.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting markdown-it-py>=2.2.0 (from rich->bandit->-r requirements-dev.txt (line 8))
   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
 Collecting bracex>=2.1.1 (from wcmatch~=8.3->semgrep->-r requirements-dev.txt (line 9))
@@ -4869,11 +4869,11 @@ Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.man
 Downloading detect_secrets-1.5.0-py3-none-any.whl (120 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
 Downloading bracex-2.6-py3-none-any.whl (11 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-2024.8.3-py3-none-any.whl (161 kB)
 Downloading coverage-7.10.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (251 kB)
 Downloading Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
 Downloading face-24.0.0-py3-none-any.whl (54 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl (18 kB)
 Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
@@ -4898,7 +4898,7 @@ Installing collected packages: peewee, boltons, zipp, wrapt, urllib3, tomli, ste
     Uninstalling click-8.2.1:
       Successfully uninstalled click-8.2.1
 
-Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2025.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
+Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2024.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2024.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
@@ -6519,7 +6519,7 @@ Collecting wcmatch~=8.3 (from semgrep->-r requirements-dev.txt (line 9))
 Collecting face>=20.1.0 (from glom~=22.1->semgrep->-r requirements-dev.txt (line 9))
   Downloading face-24.0.0-py3-none-any.whl.metadata (1.1 kB)
 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
-  Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+  Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl.metadata (2.9 kB)
 Collecting referencing>=0.28.4 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
 Collecting rpds-py>=0.7.1 (from jsonschema~=4.6->semgrep->-r requirements-dev.txt (line 9))
@@ -6692,7 +6692,7 @@ Collecting charset_normalizer<4,>=2 (from requests~=2.22->semgrep->-r requiremen
 Collecting idna<4,>=2.5 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
   Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
 Collecting certifi>=2017.4.17 (from requests~=2.22->semgrep->-r requirements-dev.txt (line 9))
-  Using cached certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+  Using cached certifi-2024.8.3-py3-none-any.whl.metadata (2.4 kB)
 Collecting markdown-it-py>=2.2.0 (from rich->bandit->-r requirements-dev.txt (line 8))
   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
 Collecting bracex>=2.1.1 (from wcmatch~=8.3->semgrep->-r requirements-dev.txt (line 9))
@@ -6740,11 +6740,11 @@ Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.man
 Downloading detect_secrets-1.5.0-py3-none-any.whl (120 kB)
 Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
 Downloading bracex-2.6-py3-none-any.whl (11 kB)
-Using cached certifi-2025.8.3-py3-none-any.whl (161 kB)
+Using cached certifi-2024.8.3-py3-none-any.whl (161 kB)
 Downloading coverage-7.10.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (251 kB)
 Downloading Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
 Downloading face-24.0.0-py3-none-any.whl (54 kB)
-Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+Downloading jsonschema-specifications-2024.4.1-py3-none-any.whl (18 kB)
 Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
@@ -6769,7 +6769,7 @@ Installing collected packages: peewee, boltons, zipp, wrapt, urllib3, tomli, ste
     Uninstalling click-8.2.1:
       Successfully uninstalled click-8.2.1
 
-Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2025.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
+Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bracex-2.6 certifi-2024.8.3 charset_normalizer-3.4.3 click-8.1.8 click-option-group-0.5.7 colorama-0.4.6 coverage-7.10.5 defusedxml-0.7.1 deprecated-1.2.18 detect-secrets-1.5.0 exceptiongroup-1.2.2 face-24.0.0 flake8-7.3.0 glom-22.1.0 googleapis-common-protos-1.70.0 idna-3.10 importlib-metadata-7.1.0 jsonschema-4.25.1 jsonschema-specifications-2024.4.1 markdown-it-py-4.0.0 mccabe-0.7.0 mdurl-0.1.2 opentelemetry-api-1.25.0 opentelemetry-exporter-otlp-proto-common-1.25.0 opentelemetry-exporter-otlp-proto-http-1.25.0 opentelemetry-instrumentation-0.46b0 opentelemetry-instrumentation-requests-0.46b0 opentelemetry-proto-1.25.0 opentelemetry-sdk-1.25.0 opentelemetry-semantic-conventions-0.46b0 opentelemetry-util-http-0.46b0 peewee-3.18.2 protobuf-4.25.8 pycodestyle-2.14.0 pyflakes-3.4.0 pytest-cov-6.2.1 referencing-0.36.2 requests-2.32.5 rich-13.5.3 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 semgrep-1.133.0 setuptools-80.9.0 stevedore-5.5.0 tomli-2.0.2 urllib3-2.5.0 wcmatch-8.5.2 wrapt-1.17.3 zipp-3.23.0
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
