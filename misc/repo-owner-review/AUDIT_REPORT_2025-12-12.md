@@ -343,9 +343,9 @@ The conf/ to configs/ migration is now properly documented:
 - Backward compatibility testing as references are updated
 
 **Timeline**:
-- Phase 12 2025: Deprecation notices active
-- Phase 1 - Phase 6 Current Cycle: Migration grace period
-- v2.0.0 (Phase 2 (Current Cycle)): conf/ directory removal
+- Dec 2025: Deprecation notices active
+- Jan - Jun 2026: Migration grace period
+- v2.0.0 (Q2 2026): conf/ directory removal
 
 See `misc/repo-owner-review/MIGRATION_GUIDE.md` for migration instructions.
 See `scripts/remediation/consolidate_configs.py` for automated migration tool.
