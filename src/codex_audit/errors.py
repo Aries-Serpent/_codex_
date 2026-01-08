@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Iterable, Mapping, Optional
 
@@ -18,7 +18,7 @@ class ErrorRecord:
     brief_context: str
     ra_references: list[str] = field(default_factory=lambda: ["RA-1", "RA-3"])
     timestamp: str = field(
-        default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z"
+        default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
     )
 
     def to_dict(self) -> dict[str, object]:
@@ -66,7 +66,7 @@ def load_error_records(path: Path) -> Iterable[ErrorRecord]:
             message=entry.get("message", ""),
             brief_context=entry.get("brief_context", ""),
             ra_references=list(entry.get("ra_references", [])),
-            timestamp=entry.get("timestamp", datetime.utcnow().isoformat(timespec="seconds") + "Z"),
+            timestamp=entry.get("timestamp", datetime.now(UTC).isoformat(timespec="seconds")),
         )
 
 

@@ -74,5 +74,5 @@ def cli_ndjson_to_csv() -> None:
 
 
 def make_run_metrics_path(base_dir: Path = Path(".codex/metrics")) -> Path:
-    timestamp = dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%SZ")
     return base_dir / f"run-{timestamp}.ndjson"

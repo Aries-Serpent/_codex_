@@ -14,7 +14,7 @@ import json
 import os
 import warnings
 from contextlib import suppress
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any
 
 try:
@@ -41,7 +41,7 @@ def save_checkpoint(
     # Add explicit schema version and creation timestamp
     payload = {
         "_schema_version": SCHEMA_VERSION,
-        "_created_at": datetime.utcnow().isoformat(),
+        "_created_at": datetime.now(UTC).isoformat(),
         "state": state,
     }
     torch.save(payload, weights)
@@ -52,7 +52,7 @@ def save_checkpoint(
             {
                 **meta,
                 "_schema_version": SCHEMA_VERSION,
-                "_created_at": datetime.utcnow().isoformat(),
+                "_created_at": datetime.now(UTC).isoformat(),
             },
             f,
             indent=2,

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 PhaseAction = Callable[["WorkflowContext", "CapabilityPlan"], None]
@@ -122,7 +122,7 @@ def record_error(
     extra_context: Mapping[str, object] | None = None,
 ) -> ErrorRecord:
     record = ErrorRecord(
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(UTC),
         phase=phase,
         capability=ctx.capability,
         step=step,

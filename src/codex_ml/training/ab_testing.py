@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any
 
@@ -112,7 +112,7 @@ class ABTestManager:
                 traffic_percentage=config.traffic_split.get(treatment, 0.0),
             )
 
-        self.start_time = datetime.utcnow().isoformat()
+        self.start_time = datetime.now(UTC).isoformat()
         logger.info(f"Started A/B test: {config.experiment_name}")
 
     def record_result(self, variant_name: str, metrics: dict[str, float]):

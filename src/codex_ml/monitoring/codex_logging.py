@@ -11,7 +11,7 @@ import re
 import shutil
 import subprocess  # used with validated executable path
 import sys
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse
@@ -327,7 +327,7 @@ def _maybe_rotate_log(path: Path) -> None:
         return
     if size < MAX_LOG_BYTES:
         return
-    timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     rotated = path.with_name(f"{path.name}.{timestamp}")
     try:
         os.replace(path, rotated)

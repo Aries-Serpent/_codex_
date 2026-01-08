@@ -7,7 +7,7 @@ incremental analysis and historical comparison.
 import json
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
@@ -168,7 +168,7 @@ class ASTStorage:
             language: Source language
             node_count: Number of AST nodes analyzed
         """
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(UTC).isoformat()
 
         with self._get_connection() as conn:
             cursor = conn.cursor()

@@ -41,7 +41,7 @@ def _evidence_dir() -> Path:
 
 def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase: str) -> None:
     try:
-        ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        ts = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {
             "ts": ts,
             "phase": phase,

@@ -9,7 +9,7 @@ import os
 import platform
 import subprocess
 from collections.abc import Mapping
-from datetime import datetime
+from datetime import datetime, UTC
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -44,7 +44,7 @@ def evidence_metadata() -> dict[str, str]:
 def utc_now() -> str:
     """Return an ISO 8601 timestamp in UTC without microseconds."""
 
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def append_evidence(filename: str, payload: Mapping[str, Any]) -> None:
