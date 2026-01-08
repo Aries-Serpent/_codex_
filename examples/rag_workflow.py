@@ -23,6 +23,7 @@ try:
 except ImportError:
     # Development mode: add src to path
     sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+    from codex.rag import (
         build_index_from_files,
         manage_tenant_indices,
         Retriever,
