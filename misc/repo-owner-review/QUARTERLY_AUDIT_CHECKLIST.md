@@ -218,7 +218,7 @@ If automated reminders are desired, create `.github/workflows/audit-reminder.yml
 name: Quarterly Audit Reminder
 on:
   schedule:
-    # 15th of Phase 3, Phase 6, Phase 9, Phase 12 at 9 AM UTC (matches audit due dates)
+    # 15th of March, June, September, December at 9 AM UTC (matches audit due dates)
     - cron: '0 9 15 3,6,9,12 *'
 jobs:
   reminder:
