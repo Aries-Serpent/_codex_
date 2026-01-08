@@ -288,7 +288,7 @@ class CachedEmbeddingProvider:
                 "cache_key": cache_key,
                 "num_texts": len(texts),
                 "embedding_dim": embeddings.shape[1] if len(embeddings) > 0 else 0,
-                "created_at": datetime.utcnow().isoformat() + "Z",
+                "created_at": datetime.now(datetime.UTC).isoformat(),
                 "provider": self.provider.__class__.__name__,
                 **(metadata or {}),
             }

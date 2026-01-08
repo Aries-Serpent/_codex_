@@ -417,7 +417,7 @@ class RAGMetrics:
             Dictionary compatible with CloudWatch PutMetricData API
         """
         metric_data = []
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(datetime.UTC)
         
         # Query latency metrics
         if self.query_latencies:

@@ -256,7 +256,7 @@ class SLAPolicyRegistry(BaseModel):
             if not (p.name == policy.name and p.version == policy.version)
         ]
         self.policies.append(policy)
-        self.last_updated = datetime.now().isoformat()
+        self.last_updated = datetime.now(datetime.UTC).isoformat()
 
     @classmethod
     def from_csv(cls, csv_path: str) -> SLAPolicyRegistry:

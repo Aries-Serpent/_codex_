@@ -143,7 +143,7 @@ class Retriever:
 
         # Build results with provenance
         results = []
-        timestamp = datetime.utcnow().isoformat() + "Z"
+        timestamp = datetime.now(datetime.UTC).isoformat()
 
         for i, (idx, distance) in enumerate(zip(indices[0], distances[0])):
             # Skip invalid indices

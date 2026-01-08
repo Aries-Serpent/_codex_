@@ -268,7 +268,7 @@ class TestEmbeddingsErrorHandling:
                     OpenAIEmbeddingProvider()
 
     @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
-    @patch("codex.rag.embeddings.OpenAI")
+    @patch("openai.OpenAI")
     def test_openai_provider_api_error(self, mock_openai):
         """Test OpenAI provider API errors"""
         mock_client = MagicMock()
