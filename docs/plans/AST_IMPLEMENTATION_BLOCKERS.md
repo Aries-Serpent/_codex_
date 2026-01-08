@@ -30,7 +30,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-DEP-005** | **SQLite storage not configured** | Cannot implement FR-AST-011 (Knowledge Graph Export) | Create schema and storage layer |
 
 **Resolution Time**: 1-2 days (dependency additions + testing)  
-**Risk**: Medium (some dependencies Phase 5 conflict with existing pins)
+**Risk**: Medium (some dependencies may conflict with existing pins)
 
 ---
 
@@ -134,7 +134,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 
 | Challenge ID | Description | Impact | Solution |
 |--------------|-------------|--------|----------|
-| **ARCH-CHAL-001** | libcst downloads Python grammar files | Phase 5 fail in offline environment | Bundle grammar files in package |
+| **ARCH-CHAL-001** | libcst downloads Python grammar files | may fail in offline environment | Bundle grammar files in package |
 | **ARCH-CHAL-002** | tree-sitter requires language parsers | Need to pre-bundle all parsers | Include in package dependencies |
 | **ARCH-CHAL-003** | Some type inference requires web lookups | Limited type analysis capability | Use only local inference |
 
@@ -163,8 +163,8 @@ After reviewing the AST standardization requirements documents and analyzing the
 
 | Challenge ID | Description | Impact | Solution |
 |--------------|-------------|--------|----------|
-| **ARCH-CHAL-006** | Full AST analysis is slow | Phase 5 violate performance targets | Implement caching, incremental analysis |
-| **ARCH-CHAL-007** | Streaming reduces accuracy | Phase 5 violate accuracy targets | Use streaming only for large files |
+| **ARCH-CHAL-006** | Full AST analysis is slow | may violate performance targets | Implement caching, incremental analysis |
+| **ARCH-CHAL-007** | Streaming reduces accuracy | may violate accuracy targets | Use streaming only for large files |
 | **ARCH-CHAL-008** | Parallel processing complicates error handling | Inconsistent behavior | Implement robust error aggregation |
 
 **Impact**: High - Core non-functional requirements at risk  

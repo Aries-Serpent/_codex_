@@ -129,10 +129,10 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 | Challenge ID | Challenge | Impact | Resolution | Days |
 |-------------|-----------|--------|-----------|------|
-| **ARCH-CHAL-001** | libcst downloads grammar files | Phase 5 fail offline | Bundle grammar files | 0.5 |
+| **ARCH-CHAL-001** | libcst downloads grammar files | may fail offline | Bundle grammar files | 0.5 |
 | **ARCH-CHAL-002** | tree-sitter needs pre-built parsers | Offline incompatibility | Pre-bundle all parsers | 1 |
 | **ARCH-CHAL-004** | Different AST nodes per Python version | Parse inconsistencies | Version compatibility layer | 3 |
-| **ARCH-CHAL-006** | Full AST analysis is slow | Phase 5 violate NFR-PERF-002 | Caching + streaming | 3 |
+| **ARCH-CHAL-006** | Full AST analysis is slow | may violate NFR-PERF-002 | Caching + streaming | 3 |
 
 **Total Challenge Effort:** 7.5 person-days
 
@@ -522,7 +522,7 @@ Action:
 ### RISK-2: Architecture Complexity Too High (P=MEDIUM, I=HIGH)
 
 **Risk Description:**  
-Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plugins) may be overengineered for current scope. Team Phase 5 struggle to implement in 7 days.
+Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plugins) may be overengineered for current scope. Team may struggle to implement in 7 days.
 
 **Impact if Realized:**
 - Architecture review blocked
@@ -575,7 +575,7 @@ Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may b
 **Impact if Realized:**
 - Cannot validate NFR-PERF targets
 - Sprint 1 performance work critical
-- Phase 5 fail customer acceptance criteria
+- may fail customer acceptance criteria
 
 **Probability:** 70% (complex AST analysis inherently slow)  
 **Impact:** CRITICAL  

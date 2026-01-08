@@ -71,7 +71,7 @@ Parameters: {"path": "tests/", "filter": "test_calculator"}
 
 ## Error Handling
 
-Tools Phase 5 return errors. Common error types:
+Tools may return errors. Common error types:
 
 | Error | Meaning | Action |
 |-------|---------|--------|

@@ -50,7 +50,7 @@ python -m pytest tests/agents/test_phase2_physics_orchestrator.py -v
 ```
 
 **Expected Output**:
-- 27 tests pass (some Phase 5 skip if features not implemented)
+- 27 tests pass (some may skip if features not implemented)
 - Coverage contribution: +1.76%
 
 #### 2b. Quantum Game Theory Tests
@@ -60,7 +60,7 @@ python -m pytest tests/agents/test_phase2_quantum_game_theory.py -v
 ```
 
 **Expected Output**:
-- 29 tests pass (some Phase 5 skip)
+- 29 tests pass (some may skip)
 - Coverage contribution: +1.89%
 
 #### 2c. Mental Mapping Tests
@@ -70,7 +70,7 @@ python -m pytest tests/agents/test_phase2_mental_mapping.py -v
 ```
 
 **Expected Output**:
-- 34 tests pass (some Phase 5 skip)
+- 34 tests pass (some may skip)
 - Coverage contribution: +2.21%
 
 ### Step 3: Measure Total Coverage (1 minute)

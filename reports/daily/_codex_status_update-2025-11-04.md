@@ -111,7 +111,7 @@
    - **Category**: reliability
    - **Status**: in_progress
    - **Evidence/Links**: Manual validation only, no automated gate
-   - **Impact**: Reports Phase 5 drift from schema without detection
+   - **Impact**: Reports may drift from schema without detection
    - **Proposed Action**: Integrate schema validation into CI/CD pipeline
    - **Links**: `CAP-001`
 
@@ -129,7 +129,7 @@
    - **Category**: reliability
    - **Status**: new
    - **Evidence/Links**: `repo_orchestrator.py` plugin hooks marked TODO
-   - **Impact**: Plugin system Phase 5 fail silently during initialization
+   - **Impact**: Plugin system may fail silently during initialization
    - **Proposed Action**: Add validation checks for plugin loading
    - **Links**: `CAP-014`
 

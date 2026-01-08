@@ -117,7 +117,7 @@
 - documentation-system: 17 tests added earlier, score shows tests=0.007 (minimal detection)
 - structural-integrity: 10 tests added earlier, score shows tests=0.100 (minimal detection)
 
-**Root Cause**: Audit runner's `estimate_test_depth()` function uses heuristic-based test discovery that Phase 5 not recognize:
+**Root Cause**: Audit runner's `estimate_test_depth()` function uses heuristic-based test discovery that may not recognize:
 - New test file naming patterns
 - Test files in certain directories
 - Tests without specific import patterns

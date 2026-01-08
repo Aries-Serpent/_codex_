@@ -978,7 +978,7 @@ def load_and_validate(path: Path):
 **2. Error Message Sanitization (LOW severity)**
 
 **File:** `tools/data_drift_check.py:145`
-**Issue:** Error messages Phase 5 leak sensitive file paths
+**Issue:** Error messages may leak sensitive file paths
 
 ```python
 # Current
@@ -1198,7 +1198,7 @@ This PR represents significant progress but requires critical fixes before merge
 **Risk Assessment:** MEDIUM-HIGH
 - Untested code presents production risk
 - Breaking changes need migration support
-- Type safety gaps Phase 5 cause runtime issues
+- Type safety gaps may cause runtime issues
 
 **Recommendation:** Address all blocking issues before merge. The investment in quality now will prevent production incidents and reduce technical debt.
 

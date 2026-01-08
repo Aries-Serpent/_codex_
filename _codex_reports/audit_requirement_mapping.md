@@ -1,6 +1,6 @@
 # Audit Requirement Mapping
 
-This document summarises how the inspected modules relate to the upcoming audit requirements (CLI surface, metric registry, manifest generation, offline tests, lock file management, and documentation). It also captures immediate observations about cross-module dependencies that Phase 5 influence remediation work.
+This document summarises how the inspected modules relate to the upcoming audit requirements (CLI surface, metric registry, manifest generation, offline tests, lock file management, and documentation). It also captures immediate observations about cross-module dependencies that may influence remediation work.
 
 ## Requirement Coverage Snapshot
 

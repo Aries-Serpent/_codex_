@@ -228,7 +228,7 @@ For large repositories (>10,000 files), consider:
 
 - Ensure you're in a git repository
 - Check that `git` command is available
-- Git operations Phase 5 timeout for large files
+- Git operations may timeout for large files
 
 ### "Performance issues"
 

@@ -1696,7 +1696,7 @@ ${deltaLine}
 **Cons**:
 - Third-party dependency
 - Requires token management
-- Phase 5 duplicate our custom gating
+- may duplicate our custom gating
 
 **Setup** (if desired):
 

@@ -54,7 +54,7 @@ if cfg.plugins.enable:
     load_plugins(cfg.plugins.modules)
 ```text
 
-Plugins Phase 5 also provide custom hooks; instantiate them within configuration or code as needed.
+Plugins may also provide custom hooks; instantiate them within configuration or code as needed.
 
 - No dynamic execution beyond `importlib.import_module` occurs.
 - Failures to import plugins are logged but non-fatal.

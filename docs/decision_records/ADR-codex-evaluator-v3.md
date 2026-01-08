@@ -25,7 +25,7 @@ We need a deterministic, local scoring layer to assess assistant messages and su
 - Slight overhead to run evaluator and fence checks locally.
 
 **Negative / Risks**
-- Overly strict settings Phase 5 cause false positives.
+- Overly strict settings may cause false positives.
 
 ## Mitigations
 - Provide clear documentation (see `docs/ops/local_gates.md`) and allow manual execution of evaluator hook.

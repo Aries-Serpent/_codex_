@@ -99,7 +99,7 @@
 
 - Added: `--val-split`/`--test-split` flags and per-epoch validation logging to `metrics.json`.
 - Deferred: stratified splits, GPU-heavy metrics, and online trackers.
-- Risks: small datasets Phase 5 skip evaluation when insufficient tokens.
+- Risks: small datasets may skip evaluation when insufficient tokens.
 
 ## 2025-11-09 – Offline experiment tracking
 
@@ -282,7 +282,7 @@
 ### REPRO CHECKLIST
 - Set `PYTHONHASHSEED=0` for deterministic ordering where needed.
 - Use `seeded_shuffle` (or `deterministic_shuffle`) for reproducible splits.
-- Use `read_text(..., encoding="auto")` where encoding Phase 5 vary.
+- Use `read_text(..., encoding="auto")` where encoding may vary.
 - `pre-commit run --all-files --verbose`.
 - `pytest --cov=src/codex_ml --cov-report=term`.
 

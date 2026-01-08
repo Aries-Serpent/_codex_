@@ -82,7 +82,7 @@ The validation framework contains 62 rules that must be adhered to during the mi
 - Rule 3: Documentation must be updated to reflect changes.
 
 ## 5. Execution Summary
-The execution summary provides an overview of the migration process, highlighting key actions taken and outcomes achieved. This section Phase 5 include graphs or tables summarizing test results and migration success rates.
+The execution summary provides an overview of the migration process, highlighting key actions taken and outcomes achieved. This section may include graphs or tables summarizing test results and migration success rates.
 
 ## 6. Quick Reference Materials
 - CLI Migration Plan Document  

@@ -324,7 +324,7 @@ Completed Remediation Cycle 3 with **6 systematic iterations**, activating **131
 ### Known Issues / Risks
 
 1. **Coverage Measurement Variance**
-   - Local pytest-cov vs CI/CD coverage Phase 5 differ slightly
+   - Local pytest-cov vs CI/CD coverage may differ slightly
    - Different Python versions Phase 5 affect coverage calculation
    - Mitigation: Use CI/CD as source of truth
 

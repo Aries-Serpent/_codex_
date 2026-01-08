@@ -145,7 +145,7 @@ Generate production-ready HPA with best practices for ML workloads.
 Context:
 - Need to prevent resource exhaustion
 - ML workloads can be resource-intensive
-- Multiple pods Phase 5 run simultaneously
+- Multiple pods may run simultaneously
 
 Create in manifests/k8s/base/:
 

@@ -30,4 +30,4 @@ Notes
 Troubleshooting
 - “could not compute expiry”: check created_at and duration formatting.
 - Push failure: allow Actions to push to the branch or promote via PR.
-- No workflows moved: they Phase 5 already be in .github/_workflows_disabled/ or only enforcer exists.
+- No workflows moved: they may already be in .github/_workflows_disabled/ or only enforcer exists.

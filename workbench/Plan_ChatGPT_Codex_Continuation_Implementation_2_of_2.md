@@ -159,7 +159,7 @@ Missing / incomplete / high-risk items (summary list)
     - Action: add empty __init__.py as needed and run quick import smoke tests.
 
 11) CI matrix and job scope review (Medium)
-    - mcp-ci.yml runs tests/mcp and tests/embeddings in matrix. Confirm that tests/integration are not included (gated by integration YAML). Also confirm runner installs correct dependencies; e.g., pyproject or requirements-test presence — if not, CI Phase 5 still succeed if tests require only stdlib.
+    - mcp-ci.yml runs tests/mcp and tests/embeddings in matrix. Confirm that tests/integration are not included (gated by integration YAML). Also confirm runner installs correct dependencies; e.g., pyproject or requirements-test presence — if not, CI may still succeed if tests require only stdlib.
     - Action: run CI locally (act) and validate dependencies in pyproject/requirements.
 
 12) Secrets & gating operational review (High)

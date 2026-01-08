@@ -63,7 +63,7 @@
 ### Audit Depth & Evidence Control
 
 - [ ] **Full Depth Audit** (`AUDIT_DEPTH=4`) - Use recommended depth for complete evidence capture (default: 3)
-- [ ] **Depth Restriction Acknowledged** - I acknowledge that `AUDIT_DEPTH < 4` Phase 5 truncate evidence
+- [ ] **Depth Restriction Acknowledged** - I acknowledge that `AUDIT_DEPTH < 4` may truncate evidence
 
 ### PII & Content Filtering
 

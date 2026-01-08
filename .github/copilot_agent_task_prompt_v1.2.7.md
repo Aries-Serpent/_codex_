@@ -123,7 +123,7 @@ Based on dry-run analysis:
    - Current: 99 legacy imports
    - Many already using src.* (counted in scan but correct)
    - Re-analyze with stricter criteria to get accurate "needs fixing" count
-   - Phase 5 already be close to target with existing migrations
+   - may already be close to target with existing migrations
 
 ## Self-Application Protocol
 

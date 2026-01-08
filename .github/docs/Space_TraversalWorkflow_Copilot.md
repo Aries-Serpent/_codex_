@@ -43,7 +43,7 @@ scoring:
 ```text
 
 ## 5. Meta Rendering
-- Detectors Phase 5 return `meta` (dictionary) along with evidence/patterns.
+- Detectors may return `meta` (dictionary) along with evidence/patterns.
 - Meta is informational only (not scored) and renders under each capability.
 
 ## 6. Integrity Chain (Manifest)

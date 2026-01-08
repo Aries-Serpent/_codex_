@@ -2913,7 +2913,7 @@ The reviewer MUST confirm one of:
    "We accept limited evaluation coverage because this branch only fixes docs and CLI surface; no model behavior changes").
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
+Promotion from `0D_base_` toward `main` may proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.
@@ -2934,7 +2934,7 @@ The reviewer MUST confirm one of:
    "We accept limited evaluation coverage because this branch only fixes docs and CLI surface; no model behavior changes").
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
+Promotion from `0D_base_` toward `main` may proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.
@@ -2946,7 +2946,7 @@ When all of the above boxes are checked, merge to `main` is allowed.
 If any box is unchecked, promotion is blocked.
 
 ## 6. Final check list for `main`
-Promotion from `0D_base_` toward `main` Phase 5 proceed ONLY if:
+Promotion from `0D_base_` toward `main` may proceed ONLY if:
 
 - rollout_ring is declared AND matches pod ring.
 - `codex_ml.cli.codex_cli status-report` has been attached to the PR.

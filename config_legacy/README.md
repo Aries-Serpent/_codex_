@@ -7,7 +7,7 @@ This directory was renamed from `hydra/` to `config_legacy/` to prevent shadowin
 ## Background
 
 Having a local `hydra/` directory in the repository root creates "split-brain" ambiguity:
-- Python's import system Phase 5 resolve `import hydra` to this local directory instead of the installed `hydra-core` package
+- Python's import system may resolve `import hydra` to this local directory instead of the installed `hydra-core` package
 - This causes inconsistent behavior depending on `PYTHONPATH` and import order
 - It violates the principle of single source of truth for package resolution
 

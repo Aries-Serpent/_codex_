@@ -121,7 +121,7 @@ All notable changes to this project will be documented in this file.
   reproduce the misalignment, assert the fixed penalty, and validate
   `compute_corpus_bleu()` precision.
 - **Impact**: BLEU scores for corpora that reuse or duplicate reference lists
-  will now reflect the correct brevity penalty and Phase 5 change relative to prior
+  will now reflect the correct brevity penalty and may change relative to prior
   (buggy) calculations. A migration/email template for model owners lives at
   `docs/migrations/bleu_brevity_penalty_migration.md` to guide downstream
   threshold updates.

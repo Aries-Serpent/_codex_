@@ -27,7 +27,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 ### 2. Logging & Monitoring
 
-**Original Gap**: "No TensorBoard or W&B; MLflow disabled by default; logs Phase 5 omit environment info"
+**Original Gap**: "No TensorBoard or W&B; MLflow disabled by default; logs may omit environment info"
 
 **Resolution**: 
 - Added optional TensorBoard logging via `CODEX_ENABLE_TENSORBOARD=1`

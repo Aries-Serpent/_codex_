@@ -206,7 +206,7 @@ codeql database analyze --format=sarif-latest --output=results.sarif
 - `docs/DUPLICATE_DETECTION.md` - Complete user guide (6.4KB)
 - `.codex/duplicate_analysis/COMPREHENSIVE_REMEDIATION_PLAN.md` (22KB)
 - `.codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md` (25KB)
-- `.codex/REMEDIATION_COMPLETE.md` - Phase 5 summary (10KB)
+- `.codex/REMEDIATION_COMPLETE.md` - may summary (10KB)
 - `PRODUCTION_READY_SUMMARY.md` - Executive summary (3.6KB)
 - `.codex/FINAL_VALIDATION_REPORT.md` - Complete validation (10KB)
 - `.github/prompts/duplicate_detection_inventory/` - 12 planning docs (~100KB)

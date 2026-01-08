@@ -168,7 +168,7 @@ To report a vulnerability privately:
 
 ### PGP Encryption (Optional)
 
-For sensitive reports, you Phase 5 encrypt your message using our PGP key:
+For sensitive reports, you may encrypt your message using our PGP key:
 
 ```text
 [PGP public key fingerprint - to be added]

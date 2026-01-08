@@ -146,7 +146,7 @@ Create monitoring dashboard:
 
 **Gap**: Limited smoke test coverage for critical paths
 
-**Impact**: Medium - Phase 5 miss critical failures
+**Impact**: Medium - may miss critical failures
 **Risk**: Medium - Regressions could reach production
 
 **Proposed Fix**:

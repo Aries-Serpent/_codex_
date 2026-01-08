@@ -4,7 +4,7 @@
 
 ## Summary
 The corpus BLEU brevity penalty now aligns each hypothesis with its own reference
-set. Corpora that reuse identical reference lists Phase 5 see BLEU changes (usually
+set. Corpora that reuse identical reference lists may see BLEU changes (usually
 slightly higher BP). Any dashboards, acceptance thresholds, or alerts that relied
 on the old buggy values should be reviewed.
 
@@ -19,12 +19,12 @@ on the old buggy values should be reviewed.
 
 ## Email / Message Template
 ```
-Subject: BLEU brevity penalty fix Phase 5 shift evaluation results
+Subject: BLEU brevity penalty fix may shift evaluation results
 
 Hi <team>,
 
 We merged the P1 fix that pairs each BLEU hypothesis with its reference set when
-computing the brevity penalty. Any corpus that reuses reference lists Phase 5 see
+computing the brevity penalty. Any corpus that reuses reference lists may see
 numerically different BLEU scores. Please re-run your evaluation pipeline,
 compare against stored baselines, and adjust CI/dashboard thresholds if they no
 longer reflect the corrected values.

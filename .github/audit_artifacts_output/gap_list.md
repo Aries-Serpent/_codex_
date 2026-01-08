@@ -63,7 +63,7 @@ This document identifies gaps between PR objectives and implementation evidence,
 
 **Priority**: MEDIUM  
 **Component**: Audit Artifacts  
-**Impact**: Validation fails, Phase 5 cause pipeline errors
+**Impact**: Validation fails, may cause pipeline errors
 
 **Evidence**:
 - File exists but missing required key "capabilities"
