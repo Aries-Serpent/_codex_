@@ -107,9 +107,14 @@ def _parse_ts(ts: str | None) -> float | None:
     if not ts:
         return None
     try:
-        return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+        # Handle both "Z" suffix (old format) and "+00:00" suffix (new format)
+        # Remove "Z" if present and let fromisoformat handle timezone
+        normalized_ts = ts.rstrip("Z")
+        if not normalized_ts.endswith(("+00:00", "-00:00")):
+            # Add timezone if not present
+            normalized_ts += "+00:00"
+        return datetime.fromisoformat(normalized_ts).timestamp()
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
 

@@ -209,7 +209,7 @@ def capture_environment_summary() -> dict[str, Any]:
         "machine": platform.machine(),
     }
     try:
-        summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat() + "Z"
+        summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat()
     except Exception as exc:  # pragma: no cover
         logger.debug("Failed to get timestamp: %s", exc)
 

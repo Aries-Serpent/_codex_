@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def _now() -> str:
-    return datetime.now(UTC).isoformat() + "Z"
+    return datetime.now(UTC).isoformat()
 
 
 def _normalize(value: Any) -> Any:
@@ -137,7 +137,7 @@ class HealthChecker:
 
         return HealthReport(
             status=status,
-            timestamp=datetime.now(UTC).isoformat() + "Z",
+            timestamp=datetime.now(UTC).isoformat(),
             checks=checks,
             message=f"System is {status.value}",
         )

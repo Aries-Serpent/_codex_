@@ -76,7 +76,7 @@ class SignstoreClient:
                 "cert_chain": None,
                 "issuer": None,
                 "actor": actor,
-                "signed_at": datetime.now(timezone.utc).isoformat() + "Z",
+                "signed_at": datetime.now(timezone.utc).isoformat(),
             }
 
         record_json = json.dumps(record, sort_keys=True)
@@ -91,7 +91,7 @@ class SignstoreClient:
             "cert_chain": [self._mock_certificate(actor)],
             "issuer": "https://token.actions.githubusercontent.com",
             "actor": actor,
-            "signed_at": datetime.now(timezone.utc).isoformat() + "Z",
+            "signed_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def verify_signature(

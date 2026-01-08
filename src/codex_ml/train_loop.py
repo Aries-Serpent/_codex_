@@ -430,7 +430,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
 
 def _now_ts() -> str:
-    return datetime.now(UTC).isoformat() + "Z"
+    return datetime.now(UTC).isoformat()
 
 
 _LEGACY_NDJSON = is_legacy_mode()

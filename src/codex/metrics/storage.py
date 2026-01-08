@@ -145,7 +145,7 @@ class MetricStorage:
         Returns:
             Dictionary with saved file paths/IDs
         """
-        timestamp = timestamp or datetime.now(UTC).isoformat() + "Z"
+        timestamp = timestamp or datetime.now(UTC).isoformat()
 
         result = {}
 

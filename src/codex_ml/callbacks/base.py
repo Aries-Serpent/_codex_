@@ -49,7 +49,7 @@ class Callback:
                 "callback": self.name,
                 "stage": stage,
                 "error": str(error),
-                "timestamp": datetime.now(UTC).isoformat() + "Z",
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         )
 

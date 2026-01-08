@@ -16,7 +16,7 @@ _DEFAULT_PROJECT = "codex-offline"
 
 
 def _timestamp() -> str:
-    return datetime.now(UTC).isoformat() + "Z"
+    return datetime.now(UTC).isoformat()
 
 
 def _resolve_output_dir(output_dir: str | Path | None) -> Path | None:
