@@ -5,14 +5,10 @@ PS-06 Enhancement: Tests for Knowledge Crawler enhancements:
 - Content diffing for micro-updates
 """
 
-import pytest
 from datetime import datetime, timedelta, timezone
-from unittest.mock import Mock, patch
 
 from services.crawler.multi_locale_sync import (
     LocaleConfig,
-    LocaleSyncResult,
-    MultiLocaleSyncResult,
     MultiLocaleSyncManager,
 )
 from services.crawler.content_diff import (

@@ -23,7 +23,7 @@ import ssl
 import tempfile
 import secrets
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, Tuple
+from typing import Any, Dict, Optional
 from datetime import datetime, UTC
 from dataclasses import dataclass, asdict
 from contextlib import contextmanager
@@ -35,8 +35,6 @@ try:
         encode_message as v2_encode,
         decode_message as v2_decode,
         MultiClientBridge,
-        MessageFlags,
-        PROTOCOL_VERSION,
     )
     HAS_PROTOCOL_V2 = True
 except ImportError:
@@ -47,7 +45,6 @@ try:
     from security.tls_config import (
         create_server_context,
         create_client_context,
-        TLSConfigError,
     )
     HAS_TLS_SUPPORT = True
 except ImportError:

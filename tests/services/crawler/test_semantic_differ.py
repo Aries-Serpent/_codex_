@@ -16,7 +16,6 @@ Tests include:
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
 import pytest
 
 from services.crawler.content_diff import (
@@ -48,7 +47,7 @@ class TestChangeType:
     def test_enum_comparison(self):
         """Test enum comparison."""
         assert ChangeType.NO_CHANGE != ChangeType.MINOR
-        assert ChangeType.MINOR == ChangeType.MINOR
+        assert ChangeType.MINOR is ChangeType.MINOR
 
 
 class TestDiffSegment:
@@ -720,7 +719,7 @@ class TestSemanticDifferIntegration:
         
         # Line differ might show change
         line_differ = ContentDiffer(ignore_whitespace=False)
-        line_result = line_differ.diff(old, new, normalize=False)
+        _line_result = line_differ.diff(old, new, normalize=False)
         
         # Semantic differ should recognize semantic equivalence
         semantic_differ = SemanticDiffer()

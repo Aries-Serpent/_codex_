@@ -8,8 +8,6 @@ PS-02 Enhancement: Tests for advanced bridge features:
 
 import pytest
 import time
-import threading
-from unittest.mock import patch
 
 from bridge_protocol_v2 import (
     PROTOCOL_VERSION,

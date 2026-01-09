@@ -6,7 +6,6 @@ PS-05 Enhancement: Tests for automated token rotation with:
 - Audit trail verification
 """
 
-import pytest
 from datetime import datetime, timedelta, UTC
 from pathlib import Path
 import tempfile

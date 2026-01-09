@@ -11,10 +11,7 @@ Tests all PII detection patterns including:
 - GPL license detection
 """
 
-import pytest
-
 from codex.knowledge.pii import (
-    PIIFlags,
     RedactionMode,
     scrub,
     scrub_for_embedding,

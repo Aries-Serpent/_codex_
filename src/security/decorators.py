@@ -237,10 +237,10 @@ try:
         Raises:
             HTTPException: If token is invalid
         """
-        token = credentials.credentials
+        _token = credentials.credentials
         
         # TODO: Decode token and extract scopes
-        # For JWT: jwt.decode(token, ...) and read 'scope' claim
+        # For JWT: jwt.decode(_token, ...) and read 'scope' claim
         # For OAuth: introspection endpoint
         
         # Placeholder implementation

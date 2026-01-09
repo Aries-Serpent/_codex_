@@ -1,6 +1,5 @@
 """Tests for index sharding module."""
 
-import pytest
 from src.codex.retrieval.sharding import (
     ShardInfo,
     ConsistentHashRing,
