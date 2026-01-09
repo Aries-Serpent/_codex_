@@ -1,0 +1,10 @@
+continual:
+  strategy: replay
+  buffer_size: 1024
+  replay_ratio: 0.1
+  active_corpus: null
+  corpora: {}
+  curriculum:
+    name: null
+  rehearsal: {}
+  phases: []

@@ -1,0 +1,33 @@
+# Base training configuration for local/offline runs.
+# Keep defaults minimal; override from CLI as needed.
+
+training:
+  seed: 42
+  model: "gpt2"
+  learning_rate: 0.0005
+  batch_size: 8
+  max_epochs: 1
+  gradient_accumulation: 1
+  amp_enable: false
+  eval_every_epochs: 1
+  metrics_out: ".codex/metrics.ndjson"
+
+dataset:
+  format: "jsonl"
+  train_path: "data/train.jsonl"
+  eval_path: "data/eval.jsonl"
+  val_fraction: 0.0
+
+scheduler:
+  name: "linear"
+  warmup_steps: 0
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  job_logging: disabled
+  hydra_logging: disabled
+
+defaults:
+  - _self_

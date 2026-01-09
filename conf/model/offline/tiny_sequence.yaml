@@ -1,0 +1,9 @@
+# Offline scripted sequence model configuration.
+# Uses the JSON payload stored in artifacts/models/tiny_sequence_model.
+defaults:
+  - override /model: base
+
+model:
+  name: offline:tiny-sequence
+  local_path: ${oc.env:CODEX_ML_TINY_SEQUENCE_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tiny_sequence_model}}
+  local_files_only: true
