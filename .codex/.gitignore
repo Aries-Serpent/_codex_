@@ -13,3 +13,9 @@ cache/
 !.gitignore
 config/*.yaml
 !config/*.example
+# Allow cognitive brain status documents
+!cognitive_brain/
+!cognitive_brain/**
+# Allow completion summaries
+!*COMPLETE*.md
+!*_SUMMARY.md

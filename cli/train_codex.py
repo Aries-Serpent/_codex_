@@ -1,7 +1,23 @@
+"""Legacy training entry point - DEPRECATED.
+
+**DEPRECATION NOTICE (PS-09):** This module is deprecated as of 2026-01-09.
+
+Use the unified training entry point instead:
+    python -m codex_ml.cli hydra-train [OPTIONS]
+
+Or programmatically:
+    from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+    cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)
+    run_unified_training(cfg)
+
+This file will be removed in v3.0.0.
+"""
+
 from __future__ import annotations
 
 import argparse
 import json
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -19,6 +35,14 @@ from transformers import (
     GPT2Config,
     Trainer,
     TrainingArguments,
+)
+
+# Emit deprecation warning on import
+warnings.warn(
+    "cli.train_codex is deprecated. Use 'python -m codex_ml.cli hydra-train' instead. "
+    "This module will be removed in v3.0.0.",
+    DeprecationWarning,
+    stacklevel=2,
 )
 
 
