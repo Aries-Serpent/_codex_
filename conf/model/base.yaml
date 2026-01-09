@@ -1,13 +1,35 @@
-# ============================================================================
-# DEPRECATED: Use configs/training/model/base.yaml instead
-# See misc/repo-owner-review/MIGRATION_GUIDE.md for migration instructions
-# Removal scheduled: v2.0.0 (Q2 2026)
-# ============================================================================
-base_model_path: null
-dtype: float32
-device: cpu
-enable_lora: false
-lora_r: 4
-lora_alpha: 8
-lora_dropout: 0.05
-lora_target_modules: []
+model:
+  name: sshleifer/tiny-gpt2
+  tokenizer_name: sshleifer/tiny-gpt2
+  dtype: float32
+  device: cpu
+  trust_remote_code: false
+  load_config: {}
+  lora:
+    enabled: false
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules:
+      - q_proj
+      - v_proj
+    bias: none
+    task_type: CAUSAL_LM
+
+# Backwards compatibility aliases
+name: ${model.name}
+pretrained_model_name_or_path: ${model.name}
+tokenizer_name: ${model.tokenizer_name}
+dtype: ${model.dtype}
+device: ${model.device}
+use_lora: ${model.lora.enabled}
+lora_rank: ${model.lora.r}
+lora_alpha: ${model.lora.alpha}
+lora_dropout: ${model.lora.dropout}
+lora_target_modules: ${model.lora.target_modules}
+lora:
+  enabled: ${model.lora.enabled}
+  r: ${model.lora.r}
+  lora_alpha: ${model.lora.alpha}
+  lora_dropout: ${model.lora.dropout}
+  task_type: ${model.lora.task_type}
