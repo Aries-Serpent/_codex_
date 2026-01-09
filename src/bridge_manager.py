@@ -219,11 +219,11 @@ class BridgeManager:
         # Protocol v2 settings
         self.use_protocol_v2 = use_protocol_v2 and HAS_PROTOCOL_V2
         self.enable_compression = enable_compression
+        self._max_clients = max_clients
         
-        # Multi-client bridge (v2 feature)
+        # Multi-client bridge (v2 feature) - lazy initialization
         self._multi_client_bridge: Optional[MultiClientBridge] = None
         if self.use_protocol_v2:
-            self._multi_client_bridge = MultiClientBridge(max_clients=max_clients)
             logger.info(f"Bridge Protocol v2 enabled (compression={enable_compression})")
         
         # Get auth token from environment
@@ -421,19 +421,22 @@ class BridgeManager:
     def _write_to_pipe(self, message: ContextMessage) -> bool:
         """Write message to named pipe with optional v2 protocol."""
         try:
-            payload = message.to_json().encode('utf-8')
-            
             # Use Protocol v2 with compression if enabled
             if self.use_protocol_v2 and HAS_PROTOCOL_V2:
+                payload = message.to_json().encode('utf-8')
                 payload = v2_encode(payload, compress=self.enable_compression)
                 logger.debug(f"Using Protocol v2 (compressed={self.enable_compression})")
-            
-            # Open pipe for writing (will block until reader connects)
-            with open(self.pipe_path, 'wb') as pipe:
-                pipe.write(payload)
-                if not self.use_protocol_v2:
-                    pipe.write(b'\n')  # Message delimiter for v1
-                pipe.flush()
+                
+                # Binary mode for v2 protocol
+                with open(self.pipe_path, 'wb') as pipe:
+                    pipe.write(payload)
+                    pipe.flush()
+            else:
+                # Text mode for v1 protocol compatibility
+                with open(self.pipe_path, 'w') as pipe:
+                    pipe.write(message.to_json())
+                    pipe.write('\n')  # Message delimiter for v1
+                    pipe.flush()
             
             logger.debug(f"Message written to pipe: {message.message_type}")
             return True
@@ -450,6 +453,8 @@ class BridgeManager:
             # Use Protocol v2 with compression if enabled
             if self.use_protocol_v2 and HAS_PROTOCOL_V2:
                 payload = v2_encode(payload, compress=self.enable_compression)
+            else:
+                payload = payload + b'\n'  # Message delimiter for v1
             
             # Connect to socket
             client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -457,8 +462,6 @@ class BridgeManager:
             
             # Send message
             client.sendall(payload)
-            if not self.use_protocol_v2:
-                client.sendall(b'\n')  # Message delimiter for v1
             
             client.close()
             logger.debug(f"Message written to socket: {message.message_type}")
@@ -469,6 +472,14 @@ class BridgeManager:
             return False
     
     # ==================== Protocol v2 Methods ====================
+    
+    def _ensure_multi_client_bridge(self) -> bool:
+        """Lazy initialization of multi-client bridge."""
+        if not self.use_protocol_v2:
+            return False
+        if self._multi_client_bridge is None:
+            self._multi_client_bridge = MultiClientBridge(max_clients=self._max_clients)
+        return True
     
     def register_client(self, client_id: str, socket_path: str, priority: int = 0) -> bool:
         """
@@ -482,7 +493,7 @@ class BridgeManager:
         Returns:
             True if registered successfully
         """
-        if not self.use_protocol_v2 or not self._multi_client_bridge:
+        if not self._ensure_multi_client_bridge():
             logger.warning("Multi-client not available (Protocol v2 not enabled)")
             return False
         
@@ -496,7 +507,7 @@ class BridgeManager:
     
     def unregister_client(self, client_id: str) -> bool:
         """Unregister a client from the multi-client bridge."""
-        if not self.use_protocol_v2 or not self._multi_client_bridge:
+        if not self._multi_client_bridge:
             return False
         
         result = self._multi_client_bridge.unregister_client(client_id)
@@ -513,7 +524,7 @@ class BridgeManager:
             "auth_required": self.require_auth,
         }
         
-        if self.use_protocol_v2 and self._multi_client_bridge:
+        if self._multi_client_bridge:
             stats["multi_client"] = self._multi_client_bridge.get_stats()
         
         return stats
@@ -561,16 +572,16 @@ class BridgeManager:
             return None
     
     def _read_from_pipe(self) -> Optional[ContextMessage]:
-        """Read message from named pipe with optional v2 protocol."""
+        """Read message from named pipe with auto-detection of v1/v2 protocol."""
         try:
-            # Open pipe for reading
+            # Always read in binary mode to detect protocol version
             with open(self.pipe_path, 'rb') as pipe:
                 data = pipe.read()
                 if not data:
                     return None
                 
-                # Decode using Protocol v2 if enabled and data has v2 header
-                if self.use_protocol_v2 and HAS_PROTOCOL_V2 and data[:4] == b"CBv2":
+                # Auto-detect v2 protocol by magic bytes (regardless of settings)
+                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == b"CBv2":
                     payload, header = v2_decode(data)
                     json_str = payload.decode('utf-8')
                     logger.debug(f"Read v2 message (compressed={bool(header.flags & 1)})")
@@ -590,7 +601,7 @@ class BridgeManager:
             return None
     
     def _read_from_socket(self) -> Optional[ContextMessage]:
-        """Read message from Unix socket with optional v2 protocol."""
+        """Read message from Unix socket with auto-detection of v1/v2 protocol."""
         try:
             # Create server socket
             server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -604,29 +615,39 @@ class BridgeManager:
             # Accept connection
             conn, _ = server.accept()
             
-            # Receive message
+            # Receive message - auto-detect protocol
             data = b''
+            is_v2 = False
+            v2_expected_len = 0
+            
             while True:
                 chunk = conn.recv(4096)
                 if not chunk:
                     break
                 data += chunk
-                # For v2 protocol, read based on header length
-                if self.use_protocol_v2 and HAS_PROTOCOL_V2 and len(data) >= 14:
-                    if data[:4] == b"CBv2":
-                        # Extract length from header bytes 6-10
-                        payload_len = int.from_bytes(data[6:10], "big")
-                        if len(data) >= 14 + payload_len:
-                            break
+                
+                # Auto-detect v2 protocol by magic bytes
+                if not is_v2 and len(data) >= 14 and data[:4] == b"CBv2":
+                    is_v2 = True
+                    # Use ProtocolHeader for proper parsing
+                    if HAS_PROTOCOL_V2:
+                        from bridge_protocol_v2 import ProtocolHeader
+                        header = ProtocolHeader.from_bytes(data[:14])
+                        v2_expected_len = 14 + header.length
+                
+                # Check if we have complete message
+                if is_v2 and v2_expected_len > 0:
+                    if len(data) >= v2_expected_len:
+                        break
                 elif b'\n' in data:
                     break
             
             conn.close()
             server.close()
             
-            # Parse message with v2 protocol support
+            # Parse message with auto-detected protocol
             if data:
-                if self.use_protocol_v2 and HAS_PROTOCOL_V2 and data[:4] == b"CBv2":
+                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == b"CBv2":
                     payload, header = v2_decode(data)
                     json_str = payload.decode('utf-8')
                 else:

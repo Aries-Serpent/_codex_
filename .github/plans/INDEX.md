@@ -206,8 +206,8 @@ Each planset contributes to the following cognitive brain objectives:
 | Token Rotation Automation | P1 | ✅ COMPLETE | `src/security/token_rotation.py` |
 | Bridge Protocol v2 Compression | P1 | ✅ COMPLETE | `src/bridge_protocol_v2.py` |
 | Multi-Client Bridge | P1 | ✅ COMPLETE | `src/bridge_protocol_v2.py` |
-| Multi-Locale Sync | P3 | 📋 PLANNED | - |
-| Content Diffing | P3 | 📋 PLANNED | - |
+| Multi-Locale Sync | P3 | ✅ COMPLETE | `src/services/crawler/multi_locale_sync.py` |
+| Content Diffing | P3 | ✅ COMPLETE | `src/services/crawler/content_diff.py` |
 | Distributed Bridge (TLS) | P4 | 📋 PLANNED | - |
 
 ---

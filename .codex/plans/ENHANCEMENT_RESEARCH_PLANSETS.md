@@ -1,6 +1,6 @@
 # Enhancement Research Plansets
 
-**Version:** 2.0.0  
+**Version:** 3.0.0  
 **Created:** 2026-01-09  
 **Updated:** 2026-01-09  
 **Purpose:** Detailed research and implementation guidance for enhancement plansets  
@@ -15,11 +15,11 @@
 | Message Compression | ✅ COMPLETE | `src/bridge_protocol_v2.py` | `tests/test_bridge_protocol_v2.py` |
 | Multi-Client Support | ✅ COMPLETE | `src/bridge_protocol_v2.py` | `tests/test_bridge_protocol_v2.py` |
 | Token Rotation | ✅ COMPLETE | `src/security/token_rotation.py` | `tests/security/test_token_rotation.py` |
+| Multi-Locale Sync | ✅ COMPLETE | `src/services/crawler/multi_locale_sync.py` | `tests/services/crawler/test_knowledge_crawler_enhancements.py` |
+| Content Diffing | ✅ COMPLETE | `src/services/crawler/content_diff.py` | `tests/services/crawler/test_knowledge_crawler_enhancements.py` |
 | Distributed Bridge (TLS) | 📋 PLANNED | - | - |
 | Scope Validation Library | 📋 PLANNED | - | - |
 | Multi-Provider Support | 📋 PLANNED | - | - |
-| Multi-Locale Sync | 📋 PLANNED | - | - |
-| Content Diffing | 📋 PLANNED | - | - |
 | Index Sharding | 📋 PLANNED | - | - |
 
 ---
