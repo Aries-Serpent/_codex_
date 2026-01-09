@@ -6,7 +6,7 @@ import json
 import logging
 import sys
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any
 
 from .config import LoggingConfig, PerformanceConfig
@@ -152,7 +152,7 @@ def log_restore(
     record = StructuredLogRecord(
         level="INFO",
         message=f"restore {status.lower()}",
-        timestamp=datetime.utcnow().strftime(ISO_FORMAT),
+        timestamp=datetime.now(UTC).strftime(ISO_FORMAT),
         component=logger.name,
         extra=extra,
     )

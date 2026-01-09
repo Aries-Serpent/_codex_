@@ -14,7 +14,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Optional, Sequence, Union
 
@@ -111,7 +111,7 @@ def _build_safe_ckpt_payload(
     payload: dict[str, Any] = {
         "epoch": int(epoch),
         "meta": {
-            "saved_at": datetime.utcnow().isoformat() + "Z",
+            "saved_at": datetime.now(UTC).isoformat(),
         },
     }
     if extra:
@@ -185,7 +185,7 @@ def _codex_config_hash(d: dict[str, Any]) -> str:
 def emit_validation_metric_record(path: str, payload: dict[str, Any]) -> None:
     """Append a single validation metric record to ``path`` as NDJSON."""
     payload = dict(payload)
-    payload.setdefault("ts", datetime.utcnow().isoformat() + "Z")
+    payload.setdefault("ts", datetime.now(UTC).isoformat())
     cfg = payload.pop("config", {})
     payload.setdefault("split", "val")
     payload.setdefault("notes", "codex.training/_run_minilm_training")

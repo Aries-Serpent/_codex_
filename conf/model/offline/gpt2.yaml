@@ -1,0 +1,13 @@
+# Offline GPT-2 model configuration.
+# Provides a local-first binding for the `gpt2-offline` registry entry.
+# Expected local layout (relative to the repo root):
+#   artifacts/models/gpt2/{config.json,pytorch_model.bin,tokenizer.json,...}
+defaults:
+  - override /model: base
+
+model:
+  name: gpt2-offline
+  local_files_only: true
+  local_path: ${oc.env:CODEX_ML_GPT2_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/gpt2}}
+  dtype: float32
+  device: cpu

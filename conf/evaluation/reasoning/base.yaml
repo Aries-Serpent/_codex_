@@ -1,0 +1,42 @@
+# Base reasoning evaluation configuration.
+# Runs theorem proving accuracy, math verification, and tool trace audits
+# over the sample reasoning corpora bundled with Codex ML.
+
+defaults:
+  - override hydra/job_logging: disabled
+  - override hydra/hydra_logging: disabled
+  - _self_
+
+datasets:
+  proof_logs:
+    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/proof_logs.jsonl
+    limit: ${oc.env:CODEX_REASONING_PROOF_LIMIT, 50}
+  math_word_problems:
+    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/math_word_problems.jsonl
+    limit: ${oc.env:CODEX_REASONING_MATH_LIMIT, 50}
+  tool_traces:
+    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/tool_traces.jsonl
+    limit: ${oc.env:CODEX_REASONING_TOOL_LIMIT, 50}
+
+probes:
+  - theorem_proving
+  - math_verification
+  - tool_audit
+
+output:
+  dir: ${oc.env:CODEX_REASONING_EVAL_DIR, ${hydra:runtime.cwd}/artifacts/reasoning_eval}
+  summary_filename: summary.json
+  records_filename: records.ndjson
+  metrics_filename: metrics.ndjson
+
+logging:
+  tags:
+    gate: reasoning
+    severity: info
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  job:
+    chdir: false

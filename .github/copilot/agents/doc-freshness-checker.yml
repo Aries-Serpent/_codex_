@@ -1,0 +1,52 @@
+name: doc-freshness-checker
+description: Documentation validation and freshness checking agent
+
+capabilities:
+  - Broken link detection
+  - Outdated content flagging
+  - Code-doc sync validation
+  - Auto-fix suggestions
+  - Documentation coverage analysis
+
+triggers:
+  pr:
+    events: [pull_request]
+    paths: [docs/**, README.md, "**/*.md"]
+  file_change:
+    events: [push]
+    paths: [src/**, agents/**]
+  schedule:
+    cron: "0 0 * * 0"  # Weekly Sunday midnight
+  manual:
+    command: "/check-docs"
+
+actions:
+  - name: check_broken_links
+    description: Scan for broken documentation links
+    script: markdown-link-check docs/**/*.md
+    
+  - name: validate_code_snippets
+    description: Ensure code examples are valid
+    script: python scripts/validate_doc_snippets.py
+    
+  - name: detect_outdated_content
+    description: Flag docs with outdated API references
+    heuristics:
+      - Check last_modified vs code_modified
+      - Detect deprecated function references
+      - Find TODOs older than 90 days
+    
+  - name: suggest_fixes
+    description: Generate PR with documentation fixes
+    auto_fix: true
+    review_required: true
+
+integration:
+  github_actions: true
+  pr_comments: true
+
+metadata:
+  created: "2026-01-09"
+  version: "1.0.0"
+  priority: MEDIUM
+  planset: POST_COMPLETION_PHASE_5

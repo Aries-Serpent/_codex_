@@ -1,0 +1,51 @@
+name: performance-regression-detector
+description: Automated performance monitoring and regression detection agent
+
+capabilities:
+  - Benchmark comparison across commits
+  - Automated regression detection (>10% slowdown)
+  - Performance alert generation
+  - Historical trend analysis
+  - Integration with CI/CD pipelines
+
+triggers:
+  ci_run:
+    events: [workflow_run]
+    workflows: [test-rag.yml, integration-tests.yml]
+  schedule:
+    cron: "0 */6 * * *"
+  manual:
+    command: "/check-performance"
+    
+actions:
+  - name: collect_metrics
+    description: Collect performance metrics from test runs
+    script: python tests/performance/test_performance_benchmarks.py -m benchmark
+    
+  - name: compare_baseline
+    description: Compare against 7-day baseline
+    script: python src/monitoring/performance_monitor.py --detect-regressions
+    
+  - name: alert_on_regression
+    description: Create GitHub issue if regression detected
+    condition: regression_percent > 10
+    template: |
+      **Performance Regression Detected**
+      
+      Metric: {metric_name}
+      Baseline: {baseline_mean}ms
+      Current: {recent_mean}ms
+      Regression: +{regression_percent}%
+      
+      Severity: {severity}
+
+integration:
+  github_actions: true
+  slack_notifications: true
+  pagerduty: false
+
+metadata:
+  created: "2026-01-09"
+  version: "1.0.0"
+  priority: HIGH
+  planset: POST_COMPLETION_PHASE_5

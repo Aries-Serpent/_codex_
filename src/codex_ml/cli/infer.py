@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, UTC
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Sequence
@@ -180,7 +180,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         art_root = Path(os.getenv("ARTIFACTS_DIR", "artifacts"))
         art_dir = art_root / "infer"
         art_dir.mkdir(parents=True, exist_ok=True)
-        ts = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+        ts = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
         (art_dir / f"{ts}.txt").write_text(text, encoding="utf-8")
         try:
             pkg_version = version("codex")

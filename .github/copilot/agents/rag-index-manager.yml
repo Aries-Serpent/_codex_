@@ -1,0 +1,244 @@
+# RAG Index Manager Agent
+# Manages FAISS index lifecycle for expanded context workflows (64k-512k tokens)
+
+name: rag-index-manager
+version: 1.0.0
+description: |
+  Autonomous agent for managing FAISS indices in the RAG system.
+  Handles index lifecycle operations including building, rebuilding, monitoring,
+  and optimization for expanded context workflows.
+
+# Agent Capabilities
+capabilities:
+  - name: build_index
+    description: Build new FAISS index from documentation sources
+    parameters:
+      - name: tenant_id
+        type: string
+        required: true
+        description: Tenant identifier for multi-tenancy
+      - name: index_name
+        type: string
+        required: true
+        description: Name for the new index
+      - name: source_paths
+        type: array
+        required: true
+        description: List of documentation paths to index
+      - name: chunk_size
+        type: integer
+        default: 1000
+        description: Text chunk size for embedding
+      - name: overlap
+        type: integer
+        default: 128
+        description: Overlap between chunks
+    
+  - name: rebuild_index
+    description: Rebuild existing index with updated documentation
+    parameters:
+      - name: tenant_id
+        type: string
+        required: true
+      - name: index_name
+        type: string
+        required: true
+      - name: incremental
+        type: boolean
+        default: false
+        description: Use incremental update if possible
+    
+  - name: monitor_index_health
+    description: Check index health metrics and staleness
+    parameters:
+      - name: tenant_id
+        type: string
+        required: true
+      - name: index_name
+        type: string
+        required: true
+    returns:
+      health_status: string  # "healthy", "stale", "degraded"
+      metrics:
+        num_vectors: integer
+        last_updated: timestamp
+        avg_query_latency_ms: float
+        cache_hit_rate: float
+    
+  - name: optimize_index
+    description: Suggest or apply index optimizations
+    parameters:
+      - name: tenant_id
+        type: string
+        required: true
+      - name: index_name
+        type: string
+        required: true
+      - name: auto_apply
+        type: boolean
+        default: false
+        description: Automatically apply suggested optimizations
+    
+  - name: merge_indices
+    description: Merge multiple indices for comprehensive search
+    parameters:
+      - name: tenant_id
+        type: string
+        required: true
+      - name: source_indices
+        type: array
+        required: true
+        description: List of index names to merge
+      - name: target_index
+        type: string
+        required: true
+        description: Name for merged index
+
+# Triggers
+triggers:
+  # Automatic triggers
+  - type: file_change
+    patterns:
+      - "docs/**/*.md"
+      - "docs/**/*.rst"
+      - "README.md"
+      - "*.md"
+    action: check_index_staleness
+    
+  - type: schedule
+    cron: "0 2 * * *"  # Daily at 2:00 AM UTC (adjust for your timezone)
+    action: monitor_all_indices
+    description: |
+      Scheduled health check runs daily at 2 AM UTC.
+      For production deployments in different timezones, adjust the cron schedule.
+      Examples: "0 14 * * *" for 2 PM UTC, "0 22 * * *" for 10 PM UTC
+    
+  # Manual triggers
+  - type: comment
+    pattern: "@rag-index-manager build index for {tenant_id}/{index_name}"
+    action: build_index
+    
+  - type: comment
+    pattern: "@rag-index-manager rebuild {tenant_id}/{index_name}"
+    action: rebuild_index
+    
+  - type: comment
+    pattern: "@rag-index-manager check health of {tenant_id}/{index_name}"
+    action: monitor_index_health
+    
+  - type: comment
+    pattern: "@rag-index-manager optimize {tenant_id}/{index_name}"
+    action: optimize_index
+    
+  - type: slash_command
+    command: "/build-index"
+    action: build_index
+    
+  - type: slash_command
+    command: "/rebuild-index"
+    action: rebuild_index
+
+# Permissions
+permissions:
+  contents: write       # Write FAISS indices to .codex/tenants/
+  pull-requests: write  # Comment on PRs with index status
+  actions: write        # Trigger index rebuild workflows
+
+# Configuration
+config:
+  # Index storage
+  index_base_dir: ".codex/tenants"
+  cache_dir: ".codex/embeddings_cache"
+  
+  # Embedding settings
+  default_model: "sentence-transformers/all-MiniLM-L6-v2"
+  embedding_dimension: 384
+  
+  # Performance tuning
+  max_chunk_size: 2000
+  min_chunk_size: 100
+  batch_size: 32
+  
+  # Health monitoring
+  staleness_threshold_days: 7
+  health_check_interval_hours: 24
+  
+  # Resource limits
+  max_index_size_gb: 10
+  max_indices_per_tenant: 50
+
+# Response Templates
+response_templates:
+  index_built: |
+    ✅ **Index Built Successfully**
+    
+    **Details**:
+    - Tenant: `{tenant_id}`
+    - Index: `{index_name}`
+    - Vectors: {num_vectors}
+    - Files processed: {num_files}
+    - Build time: {duration_seconds}s
+    
+    **Usage**:
+    ```python
+    from codex.rag import Retriever
+    
+    retriever = Retriever(
+        index_name="{index_name}",
+        tenant_id="{tenant_id}"
+    )
+    results = retriever.query("your query", top_k=5)
+    ```
+  
+  index_health: |
+    📊 **Index Health Report**
+    
+    **Index**: `{tenant_id}/{index_name}`
+    **Status**: {health_status}
+    
+    **Metrics**:
+    - Vectors: {num_vectors}
+    - Last updated: {last_updated}
+    - Avg query latency: {avg_query_latency_ms}ms
+    - Cache hit rate: {cache_hit_rate:.1%}
+    
+    {recommendations}
+  
+  optimization_applied: |
+    ⚡ **Index Optimized**
+    
+    **Optimizations Applied**:
+    {optimizations_list}
+    
+    **Performance Impact**:
+    - Query latency: {old_latency}ms → {new_latency}ms ({improvement}% faster)
+    - Index size: {old_size_mb}MB → {new_size_mb}MB ({size_reduction}% smaller)
+
+# Error Handling
+error_handling:
+  max_retries: 3
+  retry_delay_seconds: 60
+  fallback_actions:
+    - log_error_to_monitoring
+    - notify_on_slack
+    - create_issue_if_critical
+
+# Integration Points
+integrations:
+  github_actions:
+    workflow: ".github/workflows/rebuild-rag-indices.yml"
+    trigger_on: ["docs_updated", "manual_request"]
+  
+  monitoring:
+    prometheus_endpoint: "/metrics/rag-indices"
+    cloudwatch_namespace: "Codex/RAG"
+  
+  notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_alerts: ["rag-team@example.com"]
+
+# Documentation
+documentation:
+  readme: "docs/agents/RAG_INDEX_MANAGER.md"
+  examples: "docs/agents/examples/rag-index-manager/"
+  api_reference: "https://docs.example.com/agents/rag-index-manager"

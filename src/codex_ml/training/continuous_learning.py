@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -227,7 +227,7 @@ class ContinuousLearningPipeline:
             version=version_str,
             model_path=model_path,
             metrics=metrics,
-            trained_at=datetime.utcnow().isoformat(),
+            trained_at=datetime.now(UTC).isoformat(),
             dataset_hash=dataset_hash,
             drift_score=drift_score,
         )

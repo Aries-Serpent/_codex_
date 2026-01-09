@@ -14,7 +14,7 @@ import json
 import logging
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -598,7 +598,7 @@ class ZendeskJSONGenerator:
         if include_meta:
             result["_generated"] = {
                 "template": template_name,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "variables_used": list(variables.keys()),
             }
 

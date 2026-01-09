@@ -26,7 +26,7 @@ import sys
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
@@ -430,7 +430,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
 
 def _now_ts() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    return datetime.now(UTC).isoformat()
 
 
 _LEGACY_NDJSON = is_legacy_mode()
@@ -813,7 +813,7 @@ def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> N
             except Exception:
                 roll = False
         if roll:
-            ts = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+            ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
             try:
                 path.rename(base_dir / f"telemetry-{ts}.json")
             except Exception:

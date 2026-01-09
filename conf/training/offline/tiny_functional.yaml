@@ -1,0 +1,20 @@
+# Offline-first training defaults that exclusively use the tiny fixtures.
+defaults:
+  - override /training: base
+
+training:
+  model:
+    name: offline:tiny-sequence
+    local_files_only: true
+    local_path: ${oc.env:CODEX_ML_TINY_SEQUENCE_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tiny_sequence_model}}
+  tokenizer:
+    name: offline:tiny-vocab
+    name_or_path: ${oc.env:CODEX_ML_TINY_TOKENIZER_PATH,${oc.env:CODEX_ML_OFFLINE_MODELS_DIR,${hydra:runtime.cwd}/artifacts/models/tiny_tokenizer}}
+  dataset:
+    train_path: ${oc.env:CODEX_ML_TINY_CORPUS_PATH,${oc.env:CODEX_ML_OFFLINE_DATASETS_DIR,${hydra:runtime.cwd}/data/offline/tiny_corpus.txt}}
+    eval_path: null
+    format: text
+    shuffle: false
+  trainer:
+    name: offline:functional
+    config_path: ${oc.env:CODEX_ML_FUNCTIONAL_TRAINER_CONFIG,${oc.env:CODEX_ML_OFFLINE_CONFIGS_DIR,${hydra:runtime.cwd}/data/offline/trainer_functional.json}}}

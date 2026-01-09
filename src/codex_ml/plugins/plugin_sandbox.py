@@ -10,7 +10,7 @@ import logging
 import traceback
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from typing import Any, Optional, Type
 
@@ -59,7 +59,7 @@ class PluginHealth:
     def record_success(self):
         """Record successful execution."""
         self.failure_count = 0
-        self.last_success = datetime.utcnow().isoformat()
+        self.last_success = datetime.now(UTC).isoformat()
         if self.status == PluginStatus.FAILED:
             self.status = PluginStatus.ENABLED
         # Clear quarantine on success
@@ -74,13 +74,13 @@ class PluginHealth:
             error: Error message
         """
         self.failure_count += 1
-        self.last_failure = datetime.utcnow().isoformat()
+        self.last_failure = datetime.now(UTC).isoformat()
         self.last_error = error
 
     def set_quarantined(self):
         """set plugin to quarantined status."""
         self.status = PluginStatus.QUARANTINED
-        self.quarantined_at = datetime.utcnow().isoformat()
+        self.quarantined_at = datetime.now(UTC).isoformat()
 
     def is_quarantine_expired(self, quarantine_duration: int) -> bool:
         """Check if quarantine period has expired.
@@ -96,7 +96,7 @@ class PluginHealth:
 
         try:
             quarantined_time = datetime.fromisoformat(self.quarantined_at)
-            elapsed = (datetime.utcnow() - quarantined_time).total_seconds()
+            elapsed = (datetime.now(UTC) - quarantined_time).total_seconds()
             return elapsed >= quarantine_duration
         except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
@@ -277,7 +277,7 @@ class PluginSandbox:
                 if health.quarantined_at:
                     try:
                         quarantined_time = datetime.fromisoformat(health.quarantined_at)
-                        elapsed = int((datetime.utcnow() - quarantined_time).total_seconds())
+                        elapsed = int((datetime.now(UTC) - quarantined_time).total_seconds())
                     except (ValueError, TypeError):
                         # If quarantine timestamp is invalid or missing, default to zero elapsed time.
                         # If quarantine timestamp is invalid or missing, default to zero elapsed time.

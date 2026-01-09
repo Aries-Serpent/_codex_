@@ -1,0 +1,67 @@
+name: integration-test-runner
+description: Orchestrates parallel integration test execution with intelligent retry
+
+capabilities:
+  - Parallel test execution
+  - Test result aggregation
+  - Failure analysis
+  - Auto-retry with exponential backoff
+  - Test coverage tracking
+
+triggers:
+  pr:
+    events: [pull_request, pull_request_review]
+  schedule:
+    cron: "0 */4 * * *"  # Every 4 hours
+  manual:
+    command: "/run-integration-tests"
+
+actions:
+  - name: discover_tests
+    description: Discover all integration tests
+    script: pytest --collect-only tests/integration/
+    
+  - name: execute_parallel
+    description: Run tests in parallel
+    config:
+      workers: 4
+      timeout: 600  # 10 minutes per test
+      retry_flaky: true
+    script: pytest tests/integration/ -n 4 --tb=short
+    
+  - name: analyze_failures
+    description: Analyze test failures for patterns
+    heuristics:
+      - Group by error type
+      - Detect flaky tests (intermittent failures)
+      - Identify infrastructure issues
+    
+  - name: auto_retry
+    description: Retry failed tests with backoff
+    config:
+      max_attempts: 3
+      backoff: [30, 60, 120]  # seconds
+    condition: failure_type == "transient"
+    
+  - name: aggregate_results
+    description: Generate comprehensive test report
+    outputs:
+      - junit_xml: test-results.xml
+      - coverage_html: coverage_report/
+      - summary_json: test-summary.json
+    
+  - name: update_pr_status
+    description: Update PR with test results
+    github_check: integration-tests
+    status_badge: true
+
+integration:
+  github_actions: true
+  artifacts: true
+  pr_comments: true
+
+metadata:
+  created: "2026-01-09"
+  version: "1.0.0"
+  priority: HIGH
+  planset: POST_COMPLETION_PHASE_5

@@ -1,0 +1,157 @@
+name: Zendesk Knowledge Sync
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Sync mode'
+        required: true
+        default: 'incremental'
+        type: choice
+        options:
+          - incremental
+          - full
+      dry_run:
+        description: 'Dry run (no downloads)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-knowledge:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pyyaml  # For manifest parsing
+      
+      - name: Run Zendesk Knowledge Sync
+        env:
+          ZENDESK_URL: ${{ secrets.ZENDESK_URL }}
+          ZENDESK_USER: ${{ secrets.ZENDESK_USER }}
+          ZENDESK_TOKEN: ${{ secrets.ZENDESK_TOKEN }}
+        run: |
+          MODE="${{ inputs.mode || 'incremental' }}"
+          DRY_RUN="${{ inputs.dry_run || 'false' }}"
+          
+          echo "Running Zendesk sync: mode=$MODE, dry_run=$DRY_RUN"
+          
+          if [ "$DRY_RUN" = "true" ]; then
+            python -m src.services.crawler.zendesk_sync \
+              --mode "$MODE" \
+              --dry-run \
+              --log-level INFO
+          else
+            python -m src.services.crawler.zendesk_sync \
+              --mode "$MODE" \
+              --log-level INFO
+          fi
+      
+      - name: Check for updates
+        id: check_updates
+        run: |
+          if [ -d "docs/vendors/zendesk/$(date +%Y-%m-%d)" ]; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+            echo "sync_date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          else
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload JSON Dataset
+        if: steps.check_updates.outputs.has_updates == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: zendesk-knowledge-dataset-${{ steps.check_updates.outputs.sync_date }}
+          path: docs/vendors/zendesk/${{ steps.check_updates.outputs.sync_date }}/zendesk_knowledge_dataset.json
+          retention-days: 30
+      
+      - name: Setup DVC (if configured)
+        if: steps.check_updates.outputs.has_updates == 'true'
+        uses: iterative/setup-dvc@v1
+        continue-on-error: true
+      
+      - name: Track with DVC
+        if: steps.check_updates.outputs.has_updates == 'true'
+        continue-on-error: true
+        run: |
+          # Check if DVC is initialized
+          if [ -f ".dvc/config" ]; then
+            echo "Tracking knowledge data with DVC..."
+            dvc add docs/vendors/zendesk/
+            
+            # Configure DVC remote if credentials available
+            if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+              dvc remote modify storage access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+              dvc remote modify storage secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              dvc push || echo "DVC push failed, continuing..."
+            fi
+          else
+            echo "DVC not configured, skipping..."
+          fi
+      
+      - name: Commit metadata updates
+        if: steps.check_updates.outputs.has_updates == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add metadata files (not the actual content if using DVC)
+          git add data/zendesk_api_index.json
+          git add data/zendesk_docs_manifest.json
+          
+          # Add DVC files if they exist
+          if [ -f "docs/vendors/zendesk.dvc" ]; then
+            git add docs/vendors/zendesk.dvc
+            git add docs/vendors/zendesk/.gitignore
+          fi
+          
+          # Commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No metadata changes to commit"
+          else
+            git commit -m "chore: sync Zendesk knowledge ($(date +%Y-%m-%d))"
+            git push
+          fi
+      
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## Zendesk Knowledge Sync Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** ${{ inputs.mode || 'incremental' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry Run:** ${{ inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date:** $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.check_updates.outputs.has_updates }}" = "true" ]; then
+            echo "- **Status:** ✅ Updates found and processed" >> $GITHUB_STEP_SUMMARY
+            echo "- **Sync Date:** ${{ steps.check_updates.outputs.sync_date }}" >> $GITHUB_STEP_SUMMARY
+            
+            # Check if JSON dataset exists
+            if [ -f "docs/vendors/zendesk/${{ steps.check_updates.outputs.sync_date }}/zendesk_knowledge_dataset.json" ]; then
+              ARTICLE_COUNT=$(jq '.article_count' "docs/vendors/zendesk/${{ steps.check_updates.outputs.sync_date }}/zendesk_knowledge_dataset.json")
+              echo "- **Articles:** $ARTICLE_COUNT" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "- **Status:** ℹ️ No updates found" >> $GITHUB_STEP_SUMMARY
+          fi

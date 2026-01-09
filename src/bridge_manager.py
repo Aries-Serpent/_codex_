@@ -5,6 +5,7 @@ Replaces the fragile file-based IPC at temp/bridge_codex_copilot_bridge
 with a secure Named Pipe (FIFO) or Unix domain socket implementation.
 
 Part of Phase 2: Fragile Bridge Elimination
+Part of PS-02: IPC Bridge Hardening (Authentication & Audit Trail)
 """
 from __future__ import annotations
 
@@ -14,9 +15,10 @@ import json
 import logging
 import socket
 import tempfile
+import secrets
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
-from datetime import datetime
+from datetime import datetime, UTC
 from dataclasses import dataclass, asdict
 from contextlib import contextmanager
 from enum import Enum
@@ -43,6 +45,7 @@ class ContextMessage:
     message_type: str  # "context_update", "query", "response", etc.
     context: Dict[str, Any]
     metadata: Optional[Dict[str, Any]] = None
+    auth_token: Optional[str] = None  # Authentication token (PS-02)
     
     def to_json(self) -> str:
         """Serialize to JSON string."""
@@ -145,17 +148,25 @@ def bridge_lock(lock_path: Path, timeout: int = 5):
 
 class BridgeManager:
     """
-    Secure IPC bridge manager.
+    Secure IPC bridge manager with authentication and audit trail.
     
     Replaces temp/bridge_codex_copilot_bridge with secure Named Pipe
-    or Unix domain socket with proper permissions and locking.
+    or Unix domain socket with proper permissions, authentication, and logging.
+    
+    Security Features (PS-02):
+    - Named pipes with 0o600 permissions (owner-only)
+    - Authentication token validation (CODEX_BRIDGE_TOKEN)
+    - Security audit trail logging
+    - File-based locking for race condition prevention
     """
     
     def __init__(
         self,
         bridge_dir: Optional[Path] = None,
         mode: BridgeMode = BridgeMode.NAMED_PIPE,
-        owner_only: bool = True
+        owner_only: bool = True,
+        require_auth: bool = True,
+        audit_file: Optional[Path] = None
     ):
         """
         Initialize bridge manager.
@@ -164,6 +175,8 @@ class BridgeManager:
             bridge_dir: Directory for bridge files (defaults to secure temp location)
             mode: Communication mode (named_pipe or unix_socket)
             owner_only: Restrict permissions to owner only (0o600)
+            require_auth: Require authentication token (default: True)
+            audit_file: Path to audit log file (default: bridge_dir/audit.log)
         """
         if bridge_dir is None:
             # Use secure temp directory with restricted permissions
@@ -172,6 +185,16 @@ class BridgeManager:
         self.bridge_dir = Path(bridge_dir)
         self.mode = mode
         self.owner_only = owner_only
+        self.require_auth = require_auth
+        
+        # Get auth token from environment
+        self.auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
+        if self.require_auth and not self.auth_token:
+            logger.warning(
+                "CODEX_BRIDGE_TOKEN not set. Authentication disabled. "
+                "Set CODEX_BRIDGE_TOKEN for secure operation."
+            )
+            self.require_auth = False
         
         # Create bridge directory with secure permissions
         self.bridge_dir.mkdir(parents=True, exist_ok=True)
@@ -182,6 +205,24 @@ class BridgeManager:
         self.lock_path = self.bridge_dir / "bridge.lock"
         self.pipe_path = self.bridge_dir / "bridge.fifo"
         self.socket_path = self.bridge_dir / "bridge.sock"
+        
+        # Set up audit logging (PS-02)
+        if audit_file is None:
+            audit_file = self.bridge_dir / "audit.log"
+        self.audit_file = audit_file
+        
+        # Create audit log with secure permissions
+        if not self.audit_file.exists():
+            self.audit_file.touch()
+            if owner_only:
+                os.chmod(self.audit_file, 0o600)
+        
+        self._audit_log("BRIDGE_INIT", {
+            "mode": mode.value,
+            "owner_only": owner_only,
+            "require_auth": require_auth,
+            "bridge_dir": str(bridge_dir)
+        })
         
         logger.info(f"Bridge manager initialized: mode={mode.value}, dir={bridge_dir}")
         
@@ -220,9 +261,72 @@ class BridgeManager:
             logger.error(f"Failed to prepare unix socket: {e}")
             raise
     
+    def _audit_log(self, event: str, details: Dict[str, Any]) -> None:
+        """
+        Write security audit log entry (PS-02).
+        
+        Args:
+            event: Event type (e.g., "AUTH_SUCCESS", "AUTH_FAILURE", "MESSAGE_SENT")
+            details: Event details dictionary
+        """
+        try:
+            timestamp = datetime.now(UTC).isoformat()
+            log_entry = {
+                "timestamp": timestamp,
+                "event": event,
+                "pid": os.getpid(),
+                "uid": os.getuid(),
+                "details": details
+            }
+            
+            with open(self.audit_file, 'a') as f:
+                f.write(json.dumps(log_entry) + '\n')
+                
+        except Exception as e:
+            logger.error(f"Failed to write audit log: {e}")
+    
+    def _verify_auth_token(self, message: ContextMessage) -> bool:
+        """
+        Verify authentication token (PS-02).
+        
+        Args:
+            message: Message to authenticate
+            
+        Returns:
+            True if authentication passed, False otherwise
+        """
+        if not self.require_auth:
+            return True
+        
+        if not message.auth_token:
+            self._audit_log("AUTH_FAILURE", {
+                "reason": "missing_token",
+                "source": message.source,
+                "message_type": message.message_type
+            })
+            logger.warning(f"Authentication failed: missing token from {message.source}")
+            return False
+        
+        # Compare tokens directly using constant-time comparison to prevent timing attacks
+        # Note: secrets.compare_digest requires same-length inputs for security
+        if not secrets.compare_digest(self.auth_token, message.auth_token):
+            self._audit_log("AUTH_FAILURE", {
+                "reason": "invalid_token",
+                "source": message.source,
+                "message_type": message.message_type
+            })
+            logger.warning(f"Authentication failed: invalid token from {message.source}")
+            return False
+        
+        self._audit_log("AUTH_SUCCESS", {
+            "source": message.source,
+            "message_type": message.message_type
+        })
+        return True
+    
     def write_message(self, message: ContextMessage) -> bool:
         """
-        Write a message to the bridge with locking.
+        Write a message to the bridge with locking and authentication (PS-02).
         
         Args:
             message: Context message to send
@@ -232,20 +336,47 @@ class BridgeManager:
         """
         if not message.validate():
             logger.error("Invalid message format")
+            self._audit_log("MESSAGE_INVALID", {
+                "source": message.source,
+                "message_type": message.message_type
+            })
+            return False
+        
+        # Verify authentication token (PS-02)
+        if not self._verify_auth_token(message):
             return False
         
         try:
             with bridge_lock(self.lock_path):
                 if self.mode == BridgeMode.NAMED_PIPE:
-                    return self._write_to_pipe(message)
+                    result = self._write_to_pipe(message)
                 elif self.mode == BridgeMode.UNIX_SOCKET:
-                    return self._write_to_socket(message)
+                    result = self._write_to_socket(message)
+                else:
+                    result = False
+                
+                if result:
+                    self._audit_log("MESSAGE_SENT", {
+                        "source": message.source,
+                        "message_type": message.message_type,
+                        "mode": self.mode.value
+                    })
+                
+                return result
         
         except TimeoutError as e:
             logger.error(f"Bridge write timeout: {e}")
+            self._audit_log("WRITE_TIMEOUT", {
+                "error": str(e),
+                "source": message.source
+            })
             return False
         except Exception as e:
             logger.error(f"Bridge write error: {e}")
+            self._audit_log("WRITE_ERROR", {
+                "error": str(e),
+                "source": message.source
+            })
             return False
     
     def _write_to_pipe(self, message: ContextMessage) -> bool:
@@ -285,7 +416,7 @@ class BridgeManager:
     
     def read_message(self, timeout: Optional[int] = None) -> Optional[ContextMessage]:
         """
-        Read a message from the bridge with locking.
+        Read a message from the bridge with locking and audit logging (PS-02).
         
         Args:
             timeout: Maximum seconds to wait for message
@@ -296,15 +427,33 @@ class BridgeManager:
         try:
             with bridge_lock(self.lock_path, timeout=timeout or 5):
                 if self.mode == BridgeMode.NAMED_PIPE:
-                    return self._read_from_pipe()
+                    message = self._read_from_pipe()
                 elif self.mode == BridgeMode.UNIX_SOCKET:
-                    return self._read_from_socket()
+                    message = self._read_from_socket()
+                else:
+                    message = None
+                
+                if message:
+                    # Verify authentication for received messages (PS-02)
+                    if not self._verify_auth_token(message):
+                        return None
+                    
+                    self._audit_log("MESSAGE_RECEIVED", {
+                        "source": message.source,
+                        "message_type": message.message_type,
+                        "mode": self.mode.value
+                    })
+                    return message
+                
+                return None
         
         except TimeoutError as e:
             logger.warning(f"Bridge read timeout: {e}")
+            self._audit_log("READ_TIMEOUT", {"error": str(e)})
             return None
         except Exception as e:
             logger.error(f"Bridge read error: {e}")
+            self._audit_log("READ_ERROR", {"error": str(e)})
             return None
     
     def _read_from_pipe(self) -> Optional[ContextMessage]:
@@ -366,8 +515,13 @@ class BridgeManager:
             return None
     
     def cleanup(self) -> None:
-        """Clean up bridge resources."""
+        """Clean up bridge resources and audit log final state (PS-02)."""
         try:
+            self._audit_log("BRIDGE_CLEANUP", {
+                "mode": self.mode.value,
+                "bridge_dir": str(self.bridge_dir)
+            })
+            
             if self.mode == BridgeMode.NAMED_PIPE and self.pipe_path.exists():
                 self.pipe_path.unlink()
             elif self.mode == BridgeMode.UNIX_SOCKET and self.socket_path.exists():
@@ -380,6 +534,7 @@ class BridgeManager:
             
         except Exception as e:
             logger.error(f"Bridge cleanup error: {e}")
+            self._audit_log("CLEANUP_ERROR", {"error": str(e)})
 
 
 # Convenience functions for cognitive brain integration
@@ -398,12 +553,16 @@ def share_context_with_copilot(context: Dict[str, Any], bridge: Optional[BridgeM
     if bridge is None:
         bridge = BridgeManager()
     
+    # Get auth token from environment for authentication (PS-02)
+    auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
+    
     message = ContextMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
         source="cognitive_brain",
         message_type="context_update",
         context=context,
-        metadata={"version": "1.0"}
+        metadata={"version": "1.0"},
+        auth_token=auth_token
     )
     
     return bridge.write_message(message)

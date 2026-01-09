@@ -17,7 +17,7 @@ import json
 import random
 import tempfile
 import os
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import List, Dict, Tuple
 
 from cognitive_brain.quantum.config import QuantumConfig
@@ -240,7 +240,7 @@ def run_exp1_validation() -> Dict:
         # Compile results
         results = {
             "experiment_id": "EXP-1",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "sample_size": len(scenarios),
             "quantum_accuracy": quantum_accuracy,
             "classical_accuracy": classical_accuracy,

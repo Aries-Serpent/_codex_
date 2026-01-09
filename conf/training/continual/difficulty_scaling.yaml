@@ -1,0 +1,38 @@
+defaults:
+  - base
+
+training:
+  continual: ${continual}
+
+continual:
+  strategy: curriculum
+  buffer_size: 4096
+  curriculum:
+    name: difficulty_scaling
+    difficulty_metric: rolling_accuracy
+    target_difficulty: adaptive
+    warmup_epochs: 1
+    schedule:
+      - upto_epoch: 1
+        max_difficulty: 0.3
+      - upto_epoch: 3
+        max_difficulty: 0.6
+      - upto_epoch: null
+        max_difficulty: 1.0
+  phases:
+    - name: adaptive-difficulty
+      epochs: 6
+      dataset:
+        role: train
+        path: data/continual/reasoning_stream.jsonl
+        format: jsonl
+      difficulty_schedule: ${continual.curriculum.schedule}
+      notes: >-
+        Filters incoming curriculum records by metadata.difficulty thresholds
+        while monitoring ${continual.curriculum.difficulty_metric}.
+    - name: evaluation
+      epochs: 1
+      dataset:
+        role: eval
+        path: data/continual/reasoning_eval.jsonl
+        format: jsonl
