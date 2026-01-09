@@ -1,14 +1,40 @@
 #!/usr/bin/env python3
 """
-🔓 Copilot Token Decoder Module for _codex_
+⚠️ ⚠️ ⚠️  SECURITY WARNING  ⚠️ ⚠️ ⚠️
+
+This file has been DEPRECATED and moved to misc/manual_tools/ for security reasons.
+
+**CRITICAL SECURITY ISSUES:**
+- Decodes and potentially logs raw GitHub tokens
+- Exposes credentials in memory and logs
+- Violates security best practices
+- HIGH RISK of token compromise
+
+**DO NOT USE THIS FILE IN AUTOMATED SCRIPTS OR CI/CD PIPELINES**
+
+This tool is preserved ONLY for manual, one-time token extraction in controlled
+environments by authorized personnel. 
+
+**INSTEAD, USE:**
+- scripts/security/verify_token_scope.py - Safe token scope verification
+- Environment variables (GITHUB_TOKEN) - Direct token usage
+- GitHub API with headers - No decoding needed
+
+**MOVED:** 2026-01-09 (PS-05: Token Security Neutralization)
+**REASON:** Critical security vulnerability - token exposure risk
+
+---
+
+🔓 Copilot Token Decoder Module for _codex_ (DEPRECATED)
 
 > Generated: 2025-12-29 | Author: mbaetiong
 > Purpose: Decrypt tokens from GitHub secrets for Copilot Agent usage
+> **STATUS:** ⛔ DEPRECATED - DO NOT USE
 
 ⚡ Energy: 5/5
 🧠 Roles: [Copilot Agent], [Security Handler]
 
-USAGE (in Copilot Agent scripts):
+DEPRECATED USAGE (DO NOT USE):
     from scripts.security.copilot_token_decoder import copilot_get_github_token
     
     token = copilot_get_github_token()
