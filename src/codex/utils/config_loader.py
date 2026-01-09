@@ -162,6 +162,55 @@ class ConfigLoader:
             return ErrorConfig(**error_data)
         return None
     
+    def _resolve_config_dir(self, config_dir: str | Path | None) -> Path:
+        """Resolve config directory path with dual-path support.
+        
+        Args:
+            config_dir: Config directory path (None, relative, or absolute)
+            
+        Returns:
+            Resolved Path object
+        """
+        if config_dir is None:
+            # Default to conf/ (Hydra convention), fallback to configs/
+            primary = self.repo_root / "conf"
+            if primary.exists():
+                return primary
+            return self.repo_root / "configs"
+        elif not Path(config_dir).is_absolute():
+            return self.repo_root / config_dir
+        else:
+            return Path(config_dir)
+    
+    def _try_legacy_path(self, config_name: str, primary_dir: Path) -> Path | None:
+        """Try to find config in legacy location.
+        
+        Args:
+            config_name: Name of the config file
+            primary_dir: Primary directory that was checked
+            
+        Returns:
+            Path to legacy config file or None if not found
+        """
+        # If primary was conf/, try configs/
+        if primary_dir.name == "conf" or "conf" in str(primary_dir):
+            # Map conf/ structure to configs/ structure
+            relative_to_conf = primary_dir.relative_to(self.repo_root / "conf") if (self.repo_root / "conf") in primary_dir.parents else Path(".")
+            
+            # Try common legacy mappings
+            legacy_candidates = [
+                self.repo_root / "configs" / relative_to_conf / f"{config_name}.yaml",
+                self.repo_root / "configs" / "training" / relative_to_conf / f"{config_name}.yaml",
+                self.repo_root / "configs" / f"{config_name}.yaml",
+            ]
+            
+            for candidate in legacy_candidates:
+                if candidate.exists():
+                    logger.debug(f"Found legacy config: {candidate}")
+                    return candidate
+        
+        return None
+    
     def load_config(
         self,
         config_name: str,
@@ -185,15 +234,17 @@ class ConfigLoader:
         """
         overrides = overrides or []
         
-        # Resolve config directory
-        if config_dir is None:
-            config_dir = self.repo_root / "conf"
-        elif not Path(config_dir).is_absolute():
-            config_dir = self.repo_root / config_dir
-        else:
-            config_dir = Path(config_dir)
-        
+        # Resolve config directory with dual-path fallback
+        config_dir = self._resolve_config_dir(config_dir)
         config_file = config_dir / f"{config_name}.yaml"
+        
+        # Try legacy path if primary not found (backward compatibility)
+        if not config_file.exists() and allow_fallback:
+            legacy_file = self._try_legacy_path(config_name, config_dir)
+            if legacy_file:
+                logger.info(f"Using legacy config path: {legacy_file}")
+                config_file = legacy_file
+                config_dir = config_file.parent
         
         # Try Hydra Compose API first
         if _HYDRA_AVAILABLE and config_dir.is_dir() and config_file.exists():

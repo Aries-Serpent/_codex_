@@ -370,6 +370,27 @@ class TestConfigLoaderAdvanced:
         cfg = loader.load_config("test", config_dir=None, allow_fallback=True)
         assert cfg is not None
     
+    def test_dual_path_fallback(self, temp_config_dir: Path) -> None:
+        """Test dual-path fallback to legacy configs/ location."""
+        loader = ConfigLoader(repo_root=temp_config_dir)
+        
+        # Create a config in legacy location
+        legacy_dir = temp_config_dir / "configs" / "training"
+        legacy_dir.mkdir(parents=True)
+        legacy_config = legacy_dir / "legacy_test.yaml"
+        legacy_config.write_text("legacy: true\nvalue: 42")
+        
+        # Try to load with conf/ path (should fallback to configs/)
+        cfg = loader.load_config("legacy_test", config_dir="conf/training", allow_fallback=True)
+        
+        assert cfg is not None
+        if hasattr(cfg, "legacy"):
+            assert cfg.legacy is True  # type: ignore
+            assert cfg.value == 42  # type: ignore
+        else:
+            assert cfg["legacy"] is True
+            assert cfg["value"] == 42
+    
     def test_apply_overrides_nested_creation(self) -> None:
         """Test creating deeply nested structures via overrides."""
         data: dict[str, Any] = {}
