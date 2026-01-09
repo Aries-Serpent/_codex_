@@ -16,7 +16,6 @@ import logging
 import socket
 import tempfile
 import secrets
-import hashlib
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 from datetime import datetime, UTC
@@ -308,11 +307,9 @@ class BridgeManager:
             logger.warning(f"Authentication failed: missing token from {message.source}")
             return False
         
-        # Compare tokens using constant-time comparison to prevent timing attacks
-        expected_hash = hashlib.sha256(self.auth_token.encode()).hexdigest()
-        provided_hash = hashlib.sha256(message.auth_token.encode()).hexdigest()
-        
-        if not secrets.compare_digest(expected_hash, provided_hash):
+        # Compare tokens directly using constant-time comparison to prevent timing attacks
+        # Note: secrets.compare_digest requires same-length inputs for security
+        if not secrets.compare_digest(self.auth_token, message.auth_token):
             self._audit_log("AUTH_FAILURE", {
                 "reason": "invalid_token",
                 "source": message.source,

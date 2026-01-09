@@ -239,11 +239,13 @@ class TestBridgeAuditTrail:
                 with open(bridge.audit_file, 'r') as f:
                     lines = f.readlines()
                 
-                # Find AUTH_SUCCESS entry
-                auth_entries = [
-                    json.loads(line) for line in lines 
-                    if json.loads(line)["event"] == "AUTH_SUCCESS"
-                ]
+                # Find AUTH_SUCCESS entry (parse once)
+                auth_entries = []
+                for line in lines:
+                    entry = json.loads(line)
+                    if entry["event"] == "AUTH_SUCCESS":
+                        auth_entries.append(entry)
+                
                 assert len(auth_entries) >= 1
                 assert auth_entries[0]["details"]["source"] == "test_client"
                 
@@ -278,11 +280,13 @@ class TestBridgeAuditTrail:
                 with open(bridge.audit_file, 'r') as f:
                     lines = f.readlines()
                 
-                # Find AUTH_FAILURE entry
-                failure_entries = [
-                    json.loads(line) for line in lines 
-                    if json.loads(line)["event"] == "AUTH_FAILURE"
-                ]
+                # Find AUTH_FAILURE entry (parse once)
+                failure_entries = []
+                for line in lines:
+                    entry = json.loads(line)
+                    if entry["event"] == "AUTH_FAILURE":
+                        failure_entries.append(entry)
+                
                 assert len(failure_entries) >= 1
                 assert failure_entries[0]["details"]["reason"] == "invalid_token"
                 assert failure_entries[0]["details"]["source"] == "malicious_client"
@@ -308,11 +312,13 @@ class TestBridgeAuditTrail:
             with open(audit_file_path, 'r') as f:
                 lines = f.readlines()
             
-            # Find BRIDGE_CLEANUP entry
-            cleanup_entries = [
-                json.loads(line) for line in lines 
-                if json.loads(line)["event"] == "BRIDGE_CLEANUP"
-            ]
+            # Find BRIDGE_CLEANUP entry (parse once)
+            cleanup_entries = []
+            for line in lines:
+                entry = json.loads(line)
+                if entry["event"] == "BRIDGE_CLEANUP":
+                    cleanup_entries.append(entry)
+            
             assert len(cleanup_entries) >= 1
     
     def test_audit_log_includes_pid_and_uid(self):

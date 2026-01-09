@@ -37,8 +37,8 @@ os.chmod(self.bridge_dir, 0o700)
 
 **Implementation:**
 - Environment variable: `CODEX_BRIDGE_TOKEN`
-- SHA-256 hashing for comparison
-- Constant-time comparison using `secrets.compare_digest()`
+- Direct string comparison using `secrets.compare_digest()`
+- Constant-time comparison prevents timing attacks
 
 **Security Benefit:**
 - Prevents unauthorized message injection
@@ -47,9 +47,8 @@ os.chmod(self.bridge_dir, 0o700)
 
 **Code Reference:**
 ```python
-expected_hash = hashlib.sha256(self.auth_token.encode()).hexdigest()
-provided_hash = hashlib.sha256(message.auth_token.encode()).hexdigest()
-if not secrets.compare_digest(expected_hash, provided_hash):
+# Direct constant-time comparison (no hashing to avoid timing variations)
+if not secrets.compare_digest(self.auth_token, message.auth_token):
     return False
 ```
 
