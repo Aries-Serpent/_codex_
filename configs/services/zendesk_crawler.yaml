@@ -1,0 +1,80 @@
+# Zendesk Knowledge Crawler Service Configuration
+
+# Service behavior
+sync_mode: incremental  # Options: incremental, full
+dry_run: false
+force_update: false
+
+# Paths (relative to repository root)
+manifest_path: data/zendesk_docs_manifest.json
+api_index_path: data/zendesk_api_index.json
+output_root: docs/vendors/zendesk
+
+# HTTP client settings
+user_agent: "codex-zendesk-sync/2.0 (+knowledge-sync)"
+retries: 3
+backoff: 0.8
+timeout: 30
+
+# Sync behavior
+incremental:
+  enabled: true
+  since: null  # Auto-detect from last sync, or specify ISO 8601 timestamp
+
+full:
+  force: false  # Force re-fetch all articles ignoring cache
+
+# Pipeline settings
+pipeline:
+  enabled: true  # Automatically pipeline to codex_digest after sync
+  export_json: true  # Generate JSON dataset
+
+# PII scrubbing (mandatory)
+pii_scrubbing:
+  enabled: true  # Must always be true
+  fail_on_detection: false  # Log warning but continue if PII found
+  redaction_marker: "[REDACTED]"
+
+# Monitoring and alerting
+monitoring:
+  enabled: true
+  log_level: INFO  # DEBUG, INFO, WARNING, ERROR
+  
+  # Alert thresholds
+  alerts:
+    max_failures: 5  # Alert if > 5 articles fail in single sync
+    min_success_rate: 0.90  # Alert if success rate < 90%
+    max_sync_duration_minutes: 10  # Alert if sync takes > 10 minutes
+
+# Performance tuning
+performance:
+  max_concurrent_requests: 5  # Limit concurrent HTTP requests
+  rate_limit_delay_ms: 100  # Delay between requests to respect rate limits
+  chunk_size: 50  # Process articles in chunks of 50
+
+# Retry policy for failed syncs
+retry_policy:
+  max_attempts: 3
+  backoff_multiplier: 2.0
+  max_backoff_seconds: 60
+
+# Cache management
+cache:
+  max_age_days: 30  # Clean up cache entries older than 30 days
+  auto_clean: true  # Automatically clean stale cache entries
+  
+# Output management
+output:
+  retention_days: 90  # Keep snapshots for 90 days
+  compress_old_snapshots: true  # Compress snapshots older than 30 days
+  
+# Integration hooks
+hooks:
+  pre_sync: null  # Optional script to run before sync
+  post_sync: null  # Optional script to run after sync
+  on_failure: null  # Optional script to run on sync failure
+
+# Development/testing
+development:
+  mock_api: false  # Use mock API responses for testing
+  sample_size: null  # Limit to N articles for testing (null = no limit)
