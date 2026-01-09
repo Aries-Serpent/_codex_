@@ -426,10 +426,193 @@ class IncrementalSyncDecider:
         }
 
 
+class SemanticDiffer:
+    """Semantic content differ using embeddings.
+    
+    PS-06 P4 Enhancement: Upgrades content diffing from line-based to
+    semantic-based using embeddings to reduce noise in knowledge drift alerts.
+    
+    Example:
+        >>> differ = SemanticDiffer(similarity_threshold=0.98)
+        >>> result = differ.compute_semantic_diff(old_text, new_text)
+        >>> if result.is_semantically_similar:
+        ...     print("No significant semantic change")
+    """
+    
+    def __init__(
+        self,
+        similarity_threshold: float = 0.98,
+        use_embeddings: bool = True,
+    ):
+        """Initialize semantic differ.
+        
+        Args:
+            similarity_threshold: Cosine similarity threshold (0.98 = 98% similar)
+            use_embeddings: Use embeddings for comparison (fallback to TF-IDF)
+        """
+        self.similarity_threshold = similarity_threshold
+        self.use_embeddings = use_embeddings
+        
+        # Try to import embedding libraries
+        self._embedding_available = False
+        if use_embeddings:
+            try:
+                from sklearn.metrics.pairwise import cosine_similarity
+                from sklearn.feature_extraction.text import TfidfVectorizer
+                self._cosine_similarity = cosine_similarity
+                self._vectorizer = TfidfVectorizer(
+                    max_features=1000,
+                    stop_words='english',
+                    ngram_range=(1, 2)
+                )
+                self._embedding_available = True
+                logger.info("SemanticDiffer initialized with TF-IDF embeddings")
+            except ImportError:
+                logger.warning(
+                    "scikit-learn not available - semantic diffing will use "
+                    "basic text similarity. Install with: pip install scikit-learn"
+                )
+    
+    def compute_semantic_similarity(
+        self,
+        text1: str,
+        text2: str
+    ) -> float:
+        """Compute semantic similarity between two texts.
+        
+        Args:
+            text1: First text
+            text2: Second text
+            
+        Returns:
+            Cosine similarity score (0.0 to 1.0)
+        """
+        if not self._embedding_available:
+            # Fallback to basic text similarity
+            return self._basic_similarity(text1, text2)
+        
+        try:
+            # Vectorize texts
+            vectors = self._vectorizer.fit_transform([text1, text2])
+            
+            # Compute cosine similarity
+            similarity_matrix = self._cosine_similarity(vectors)
+            similarity = similarity_matrix[0, 1]
+            
+            return float(similarity)
+            
+        except Exception as e:
+            logger.error(f"Semantic similarity computation failed: {e}")
+            # Fallback to basic similarity
+            return self._basic_similarity(text1, text2)
+    
+    def _basic_similarity(self, text1: str, text2: str) -> float:
+        """Basic text similarity using sequence matcher.
+        
+        Args:
+            text1: First text
+            text2: Second text
+            
+        Returns:
+            Similarity ratio (0.0 to 1.0)
+        """
+        matcher = difflib.SequenceMatcher(None, text1, text2)
+        return matcher.ratio()
+    
+    def compute_semantic_diff(
+        self,
+        old_content: str,
+        new_content: str
+    ) -> Dict[str, Any]:
+        """Compute semantic diff between content versions.
+        
+        Args:
+            old_content: Original content
+            new_content: New content
+            
+        Returns:
+            Dictionary with semantic diff results
+        """
+        # Normalize whitespace and formatting
+        old_normalized = self._normalize_text(old_content)
+        new_normalized = self._normalize_text(new_content)
+        
+        # Compute semantic similarity
+        similarity = self.compute_semantic_similarity(
+            old_normalized,
+            new_normalized
+        )
+        
+        # Determine if semantically similar
+        is_similar = similarity >= self.similarity_threshold
+        
+        # Classify change significance
+        if similarity >= 0.98:
+            significance = "insignificant"  # Essentially identical
+        elif similarity >= 0.95:
+            significance = "minor"  # Small changes
+        elif similarity >= 0.85:
+            significance = "moderate"  # Notable changes
+        elif similarity >= 0.70:
+            significance = "major"  # Significant changes
+        else:
+            significance = "complete"  # Complete rewrite
+        
+        return {
+            "semantic_similarity": similarity,
+            "is_semantically_similar": is_similar,
+            "significance": significance,
+            "should_update": not is_similar,
+            "threshold": self.similarity_threshold,
+            "method": "embeddings" if self._embedding_available else "basic",
+        }
+    
+    def _normalize_text(self, text: str) -> str:
+        """Normalize text for semantic comparison.
+        
+        Removes extra whitespace, normalizes line breaks, and
+        converts to lowercase for consistent comparison.
+        
+        Args:
+            text: Text to normalize
+            
+        Returns:
+            Normalized text
+        """
+        # Convert to lowercase
+        text = text.lower()
+        
+        # Normalize whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Remove leading/trailing whitespace
+        text = text.strip()
+        
+        return text
+    
+    def should_resync(
+        self,
+        old_content: str,
+        new_content: str
+    ) -> Tuple[bool, Dict[str, Any]]:
+        """Determine if content should be resynced based on semantic diff.
+        
+        Args:
+            old_content: Original content
+            new_content: New content
+            
+        Returns:
+            Tuple of (should_resync, diff_details)
+        """
+        diff_result = self.compute_semantic_diff(old_content, new_content)
+        return diff_result["should_update"], diff_result
+
+
 __all__ = [
     "ChangeType",
     "DiffSegment",
     "ContentDiffResult",
     "ContentDiffer",
     "IncrementalSyncDecider",
+    "SemanticDiffer",
 ]
