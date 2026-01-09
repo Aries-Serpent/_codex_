@@ -27,9 +27,5 @@ lora_rank: ${model.lora.r}
 lora_alpha: ${model.lora.alpha}
 lora_dropout: ${model.lora.dropout}
 lora_target_modules: ${model.lora.target_modules}
-lora:
-  enabled: ${model.lora.enabled}
-  r: ${model.lora.r}
-  lora_alpha: ${model.lora.alpha}
-  lora_dropout: ${model.lora.dropout}
-  task_type: ${model.lora.task_type}
+# Backward compatibility: top-level lora references nested config
+lora: ${model.lora}

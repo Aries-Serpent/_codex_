@@ -19,7 +19,7 @@ training:
     num_cycles: 1.0
   warmup_steps: 0
   gradient_accumulation: 1
-  grad_accum: 1
+  grad_accum: ${training.gradient_accumulation}  # Alias for backward compatibility
   mixed_precision: false
   tensorboard: true
   mlflow_enable: false
@@ -29,9 +29,10 @@ training:
     dir: runs/default/checkpoints
     every_n_steps: 50
     keep_best_k: 1
-  checkpoint_dir: runs/default/checkpoints
-  checkpoint_every_n_steps: 50
-  checkpoint_keep: 1
+  # Backward compatibility aliases
+  checkpoint_dir: ${training.checkpoint.dir}
+  checkpoint_every_n_steps: ${training.checkpoint.every_n_steps}
+  checkpoint_keep: ${training.checkpoint.keep_best_k}
   dataset:
     train_path: data/tiny/train.jsonl
     eval_path: null
