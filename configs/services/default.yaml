@@ -1,0 +1,30 @@
+# Audio Cleaner v1.0 - Configuration
+
+# Processing profiles
+profiles:
+  speech:
+    noise_reduction: 0.8
+    eq_preset: "vocal"
+    compression: true
+    
+  music:
+    noise_reduction: 0.5
+    eq_preset: "balanced"
+    compression: false
+    
+  ambient:
+    noise_reduction: 0.3
+    eq_preset: "natural"
+    compression: false
+
+# Quality thresholds
+quality:
+  min_snr: 20  # dB
+  max_clipping: 0.01  # percentage
+  min_rms: 0.01  # normalized
+
+# Output settings
+output:
+  format: "wav"
+  bitrate: 320  # kbps for MP3
+  sample_rate: 44100  # Hz

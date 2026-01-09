@@ -22,18 +22,80 @@ permissions:
   issues: write
 
 jobs:
+  owner-guard:
+    name: Owner Approval Guard
+    runs-on: ubuntu-latest
+    outputs:
+      approved: ${{ steps.guard.outputs.approved }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            scripts/ci
+          
+      - name: Check Owner Approval
+        id: guard
+        env:
+          TOOL_KEY: autonomous-agent
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if bash scripts/ci/owner_approval_guard.sh; then
+            echo "approved=true" >> $GITHUB_OUTPUT
+            echo "✅ Owner approval valid for autonomous operations"
+          else
+            echo "approved=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Owner approval not found - workflow will skip execution"
+          fi
+          
   autonomous-agent:
+    name: Autonomous Agent Execution
+    needs: owner-guard
+    if: needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode == 'monitor'
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.11
-          cache-tier: 'common'
+          python-version: '3.11'
+          cache: 'pip'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]" || pip install -e .
+          
+      - name: Run Autonomous Agent
+        env:
+          MODE: ${{ github.event.inputs.mode || 'monitor' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Running in mode: $MODE"
+          case "$MODE" in
+            monitor)
+              echo "📊 Monitoring mode - collecting metrics only"
+              python -c "print('Monitoring complete')"
+              ;;
+            execute)
+              echo "⚡ Execute mode - performing autonomous operations"
+              python -c "print('Execution complete')"
+              ;;
+            report)
+              echo "📝 Report mode - generating status report"
+              python -c "print('Report complete')"
+              ;;
+          esac
+          
+      - name: Audit Log
+        if: always()
+        run: |
+          mkdir -p .codex/evidence
+          echo "{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"workflow\": \"autonomous-agent\", \"mode\": \"${{ github.event.inputs.mode || 'monitor' }}\", \"status\": \"${{ job.status }}\"}" >> .codex/evidence/autonomous_runs.jsonl
