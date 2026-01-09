@@ -92,8 +92,8 @@ def create_server_context(
     context.check_hostname = False  # We verify client certs, not hostnames
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
     
-    # Prefer strong cipher suites (TLS 1.3)
-    context.set_ciphers("TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256")
+    # TLS 1.3 ciphersuites are secure by default (AES-GCM, ChaCha20-Poly1305)
+    # No need to explicitly configure them as they're built into TLS 1.3
     
     logger.info(
         f"Created server TLS context (client cert required: {require_client_cert})"
@@ -163,8 +163,8 @@ def create_client_context(
     # Security hardening
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
     
-    # Prefer strong cipher suites (TLS 1.3)
-    context.set_ciphers("TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256")
+    # TLS 1.3 ciphersuites are secure by default (AES-GCM, ChaCha20-Poly1305)
+    # No need to explicitly configure them as they're built into TLS 1.3
     
     logger.info("Created client TLS context")
     return context
