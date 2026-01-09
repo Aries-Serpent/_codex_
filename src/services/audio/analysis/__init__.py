@@ -1,6 +1,6 @@
 """Audio analysis modules."""
 
-from audio_cleaner_v1.src.analysis.intelligent_analyzer import (
+from services.audio.analysis.intelligent_analyzer import (
     IntelligentAudioAnalyzer,
     AudioAnalysis,
     ProfileMatch,

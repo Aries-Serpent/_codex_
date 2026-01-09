@@ -1,6 +1,6 @@
 """Audio effects modules."""
 
-from audio_cleaner_v1.src.effects.noise_reduction import (
+from services.audio.effects.noise_reduction import (
     NoiseReducer,
     HumRemover,
     ReverbReducer

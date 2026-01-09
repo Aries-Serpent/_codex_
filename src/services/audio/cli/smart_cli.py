@@ -23,7 +23,7 @@ def main():
     print("🎵" * 30)
     
     try:
-        from audio_cleaner_v1.src.workflow.auto_tune_workflow import AutoTuneWorkflow
+        from services.audio.workflow.auto_tune_workflow import AutoTuneWorkflow
         workflow = AutoTuneWorkflow(cognitive_mode=True)
         result = workflow.process_path(
             input_path=args.path,

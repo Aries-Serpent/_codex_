@@ -2,7 +2,7 @@
 """Test suite for auto-tune workflow."""
 
 import pytest
-from audio_cleaner_v1.src.workflow.auto_tune_workflow import (
+from services.audio.workflow.auto_tune_workflow import (
     AutoTuneWorkflow,
     WorkflowResult,
     FileProcessingResult

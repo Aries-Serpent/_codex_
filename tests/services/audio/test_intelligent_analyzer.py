@@ -2,7 +2,7 @@
 """Test suite for intelligent audio analyzer."""
 
 import pytest
-from audio_cleaner_v1.src.analysis.intelligent_analyzer import (
+from services.audio.analysis.intelligent_analyzer import (
     IntelligentAudioAnalyzer,
     AudioAnalysis,
     ProfileMatch
