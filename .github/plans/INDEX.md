@@ -20,14 +20,14 @@ This index tracks all plansets for the comprehensive architectural remediation o
 |----|------|----------|-------|--------|--------------|
 | PS-01 | Configuration Consolidation | P0 | Cycle 1-3 | ✅ Complete | None |
 | PS-02 | IPC Bridge Hardening | P0 | Cycle 1-2 | ✅ Complete | None |
-| PS-03 | Split Brain Elimination | P0 | Cycle 1-3 | 📋 Planned | PS-02 |
-| PS-04 | Privacy-First Memory | P0 | Cycle 1-2 | 📋 Planned | PS-06 |
+| PS-03 | Split Brain Elimination | P0 | Cycle 1-3 | ✅ Complete | PS-02 ✅ |
+| PS-04 | Privacy-First Memory | P0 | Cycle 1-2 | ✅ Complete | PS-06 ✅ |
 | PS-05 | Token Security Neutralization | P0 | Cycle 1 | ✅ Complete | None |
-| PS-06 | Knowledge Crawler Service | P0 | Cycle 1-4 | ✅ Complete | PS-01 |
-| PS-07 | Business Logic Elevation | P1 | Cycle 1-2 | 📋 Planned | PS-01 |
-| PS-08 | Microservice Root Cleanup | P1 | Cycle 1-2 | 📋 Planned | None |
-| PS-09 | Training Entry Point Unification | P1 | Cycle 1-2 | 📋 Planned | PS-01 |
-| PS-10 | Owner Guard CI/CD Enforcement | P2 | Cycle 1 | 📋 Planned | PS-02 |
+| PS-06 | Knowledge Crawler Service | P0 | Cycle 1-4 | ✅ Complete | PS-01 ✅ |
+| PS-07 | Business Logic Elevation | P1 | Cycle 1-2 | 📋 Ready | PS-01 ✅ |
+| PS-08 | Microservice Root Cleanup | P1 | Cycle 1-2 | 📋 Ready | None |
+| PS-09 | Training Entry Point Unification | P1 | Cycle 1-2 | 📋 Ready | PS-01 ✅ |
+| PS-10 | Owner Guard CI/CD Enforcement | P2 | Cycle 1 | 📋 Ready | PS-02 ✅ |
 
 ---
 
@@ -164,9 +164,11 @@ Each planset contributes to the following cognitive brain objectives:
 
 ## Progression Tracking
 
-### Completed: 4/10
+### Completed: 6/10
 - ✅ PS-01: Configuration Consolidation
 - ✅ PS-02: IPC Bridge Hardening
+- ✅ PS-03: Split Brain Elimination
+- ✅ PS-04: Privacy-First Memory
 - ✅ PS-05: Token Security Neutralization
 - ✅ PS-06: Knowledge Crawler Service
 
@@ -176,22 +178,35 @@ Each planset contributes to the following cognitive brain objectives:
 ### Blocked: 0/10
 - None
 
-### Ready for Implementation: 6/10
-- PS-03: Split Brain Elimination (awaiting PS-02 integration)
-- PS-04: Privacy-First Memory (awaiting PS-06 integration)
-- PS-07: Business Logic Elevation
-- PS-08: Microservice Root Cleanup
-- PS-09: Training Entry Point Unification
-- PS-10: Owner Guard CI/CD Enforcement
+### Ready for Implementation: 4/10
+- PS-07: Business Logic Elevation (dependencies met)
+- PS-08: Microservice Root Cleanup (no dependencies)
+- PS-09: Training Entry Point Unification (dependencies met)
+- PS-10: Owner Guard CI/CD Enforcement (dependencies met)
 
 ---
 
 ## Next Actions
 
-1. **Completed:** PS-01, PS-02, PS-05, PS-06 (4/10) ✅
-2. **Post-Completion Phase:** Integration testing, performance benchmarking, operational readiness
-3. **Next Plansets:** PS-03 (Split Brain), PS-04 (PII Scrubbing), PS-07-10
-4. **Review:** Validate completed plansets with stakeholders
+1. **Completed:** PS-01, PS-02, PS-03, PS-04, PS-05, PS-06 (6/10) ✅
+2. **Next Plansets:** PS-07 (SLA Models), PS-08 (Root Cleanup), PS-09 (Training), PS-10 (Guard)
+3. **Enhancement Research:** Bridge v2, Token Rotation, Knowledge Crawler improvements
+4. **CI/CD:** Deploy Copilot agents (performance, docs, security, tests)
+5. **Documentation:** Maintain cognitive brain status documents
+
+---
+
+## Cognitive Brain Status Documents
+
+| Planset | Status Document | Last Updated |
+|---------|-----------------|--------------|
+| PS-01 | `.codex/cognitive_brain/ps01_status.md` | 2026-01-09 |
+| PS-02 | `.codex/cognitive_brain/ps02_status.md` | 2026-01-09 |
+| PS-03 | `.codex/cognitive_brain/ps03_status.md` | 2026-01-09 |
+| PS-04 | `.codex/cognitive_brain/ps04_status.md` | 2026-01-09 |
+| PS-05 | `.codex/cognitive_brain/ps05_status.md` | 2026-01-09 |
+| PS-06 | `.codex/cognitive_brain/ps06_status.md` | 2026-01-09 |
+| PS-07-10 | `.codex/cognitive_brain/ps07_10_roadmap.md` | 2026-01-09 |
 
 ---
 
