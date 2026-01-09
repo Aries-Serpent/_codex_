@@ -277,3 +277,5 @@ artifacts/security/detect-secrets.txt
 /index.md
 *.backup
 .codex/test-outputs/
+secrets.txt
+temp/
