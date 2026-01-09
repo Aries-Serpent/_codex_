@@ -239,7 +239,7 @@ class TestBridgeAuditTrail:
                 with open(bridge.audit_file, 'r') as f:
                     lines = f.readlines()
                 
-                # Find AUTH_SUCCESS entry (parse once)
+                # Find AUTH_SUCCESS entry
                 auth_entries = []
                 for line in lines:
                     entry = json.loads(line)
@@ -280,7 +280,7 @@ class TestBridgeAuditTrail:
                 with open(bridge.audit_file, 'r') as f:
                     lines = f.readlines()
                 
-                # Find AUTH_FAILURE entry (parse once)
+                # Find AUTH_FAILURE entry
                 failure_entries = []
                 for line in lines:
                     entry = json.loads(line)
@@ -312,7 +312,7 @@ class TestBridgeAuditTrail:
             with open(audit_file_path, 'r') as f:
                 lines = f.readlines()
             
-            # Find BRIDGE_CLEANUP entry (parse once)
+            # Find BRIDGE_CLEANUP entry
             cleanup_entries = []
             for line in lines:
                 entry = json.loads(line)
