@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, UTC
 from typing import Optional, List, Dict, Any
 
 from security.providers.base import (
@@ -174,7 +174,7 @@ class EnvironmentProvider(SecretProvider):
         """
         full_name = f"{self.prefix}{secret_id}"
         os.environ[full_name] = value
-        logger.info(f"Set environment variable: {full_name}")
+        logger.info("Set environment variable via EnvironmentSecretProvider")
         return True
     
     def list_secrets(

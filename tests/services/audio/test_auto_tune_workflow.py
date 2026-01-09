@@ -5,7 +5,6 @@ import pytest
 from services.audio.workflow.auto_tune_workflow import (
     AutoTuneWorkflow,
     WorkflowResult,
-    FileProcessingResult
 )
 
 

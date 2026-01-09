@@ -6,14 +6,12 @@ from security.scope_validator import (
     ScopeValidator,
     InsufficientScopeError,
     InvalidScopeError,
-    ScopeValidationResult,
 )
 from security.decorators import (
     require_scope,
     require_any_scope,
     optional_scope,
     set_scope_validator,
-    get_scope_validator,
     clear_scope_validator,
     scope_metadata,
 )

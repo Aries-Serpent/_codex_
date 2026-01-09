@@ -8,7 +8,6 @@ Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 
 from __future__ import annotations
 
-import json
 import logging
 from datetime import datetime, UTC
 from typing import Optional, List, Dict, Any
@@ -373,7 +372,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                         metadata = self.get_secret_metadata(secret["Name"])
                         secrets.append(metadata)
                     except Exception as e:
-                        logger.warning(f"Failed to get metadata for {secret['Name']}: {e}")
+                        logger.warning(f"Failed to get metadata for a secret: {e}")
             
             return secrets
             

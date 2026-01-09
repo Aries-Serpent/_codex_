@@ -9,7 +9,7 @@ Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 from __future__ import annotations
 
 import logging
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 from security.providers.base import (
     SecretProvider,
@@ -134,21 +134,14 @@ class ProviderFactory:
             from security.providers.github_provider import GitHubTokenProvider
             available.append(ProviderType.GITHUB)
         except ImportError:
-            pass
+            pass  # GitHub provider dependencies not available
         
         # Check AWS
         try:
             from security.providers.aws_provider import AWSSecretsManagerProvider
             available.append(ProviderType.AWS_SECRETS_MANAGER)
         except ImportError:
-            pass
-        
-        # Check Azure (future)
-        # try:
-        #     from security.providers.azure_provider import AzureKeyVaultProvider
-        #     available.append(ProviderType.AZURE_KEY_VAULT)
-        # except ImportError:
-        #     pass
+            pass  # AWS provider dependencies not available
         
         # Environment always available
         available.append(ProviderType.ENVIRONMENT)
