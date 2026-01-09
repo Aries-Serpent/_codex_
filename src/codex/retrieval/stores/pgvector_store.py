@@ -21,18 +21,20 @@ logger = logging.getLogger(__name__)
 
 # Check for optional dependencies
 try:
-    import psycopg  # psycopg3
-    from psycopg_pool import AsyncConnectionPool
+    from psycopg_pool import AsyncConnectionPool  # noqa: F401
     HAS_PSYCOPG3 = True
 except ImportError:
     HAS_PSYCOPG3 = False
+    AsyncConnectionPool = None  # type: ignore
     logger.warning("psycopg3 not installed - PGVectorStore will be stub only")
 
+# Future: KMeans for centroid-based partitioning (not yet implemented)
 try:
-    from sklearn.cluster import KMeans
+    from sklearn.cluster import KMeans  # noqa: F401
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
+    KMeans = None  # type: ignore
     logger.warning("scikit-learn not installed - Centroid-based partitioning disabled")
 
 

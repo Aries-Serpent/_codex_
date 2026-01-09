@@ -18,7 +18,6 @@ from src.quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTas
 # Import scope validation infrastructure
 try:
     from security.scope_validator import ScopeValidator, TokenScope
-    from security.decorators import require_scope, require_any_scope
     HAS_SCOPE_VALIDATION = True
 except ImportError:
     HAS_SCOPE_VALIDATION = False

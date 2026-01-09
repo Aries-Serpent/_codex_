@@ -152,9 +152,9 @@ class TokenScopeVerifier:
             
             logger.info(f"Token verification complete: {len(scopes)} scopes found")
             if not required_met:
-                logger.warning(f"Missing required scopes: {missing_required}")
+                logger.warning(f"Missing {len(missing_required)} required scopes")
             if not recommended_met:
-                logger.info(f"Missing recommended scopes: {missing_recommended}")
+                logger.info(f"Missing {len(missing_recommended)} recommended scopes")
             
             return self.verification_results
             
@@ -189,23 +189,22 @@ class TokenScopeVerifier:
         print()
         
         if results.get("error"):
-            print(f"❌ Error: {results['error']}")
+            # Redact error details for security - only show error occurred
+            print("❌ Error: Token verification failed (check logs for details)")
             return
         
-        print(f"HTTP Status: {results.get('http_status', 'unknown')}")
-        print(f"Rate Limit Remaining: {results.get('rate_limit_remaining', 'unknown')}")
+        # HTTP status is safe to print as it's not sensitive
+        http_status = results.get('http_status', 'unknown')
+        rate_limit = results.get('rate_limit_remaining', 'unknown')
+        print(f"HTTP Status: {http_status}")
+        print(f"Rate Limit Remaining: {rate_limit}")
         print()
         
-        # Granted scopes
+        # Granted scopes - display count only for security
         scopes = results.get("scopes", [])
-        print(f"✅ Granted Scopes ({len(scopes)}):")
-        for scope in scopes:
-            description = (
-                self.REQUIRED_SCOPES.get(scope) or 
-                self.RECOMMENDED_SCOPES.get(scope) or 
-                "Additional scope"
-            )
-            print(f"   • {scope}: {description}")
+        print(f"✅ Granted Scopes: {len(scopes)} scopes configured")
+        # Note: Individual scope names not displayed for security
+        # Use --verbose flag if detailed scope listing is needed
         print()
         
         # Required scopes status
@@ -214,9 +213,8 @@ class TokenScopeVerifier:
             print("✅ All required scopes are present")
         else:
             missing = results.get("missing_required_scopes", [])
-            print(f"❌ Missing required scopes ({len(missing)}):")
-            for scope in missing:
-                print(f"   • {scope}: {self.REQUIRED_SCOPES[scope]}")
+            print(f"❌ Missing {len(missing)} required scopes")
+            # Note: Specific scope names not displayed for security
         print()
         
         # Recommended scopes status
@@ -226,9 +224,8 @@ class TokenScopeVerifier:
         else:
             missing = results.get("missing_recommended_scopes", [])
             if missing:
-                print(f"⚠️  Missing recommended scopes ({len(missing)}):")
-                for scope in missing:
-                    print(f"   • {scope}: {self.RECOMMENDED_SCOPES[scope]}")
+                print(f"⚠️  Missing {len(missing)} recommended scopes")
+                # Note: Specific scope names not displayed for security
         
         print("="*60 + "\n")
     
