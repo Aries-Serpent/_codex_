@@ -46,11 +46,11 @@ monitoring:
     min_success_rate: 0.90  # Alert if success rate < 90%
     max_sync_duration_minutes: 10  # Alert if sync takes > 10 minutes
 
-# Performance tuning
+# Performance tuning (FUTURE ENHANCEMENT - not yet implemented)
 performance:
-  max_concurrent_requests: 5  # Limit concurrent HTTP requests
-  rate_limit_delay_ms: 100  # Delay between requests to respect rate limits
-  chunk_size: 50  # Process articles in chunks of 50
+  max_concurrent_requests: 5  # TODO: Implement concurrent HTTP requests
+  rate_limit_delay_ms: 100  # TODO: Implement rate limiting between requests
+  chunk_size: 50  # TODO: Implement chunked processing
 
 # Retry policy for failed syncs
 retry_policy:
@@ -74,7 +74,7 @@ hooks:
   post_sync: null  # Optional script to run after sync
   on_failure: null  # Optional script to run on sync failure
 
-# Development/testing
+# Development/testing (FUTURE ENHANCEMENT - not yet implemented)
 development:
-  mock_api: false  # Use mock API responses for testing
-  sample_size: null  # Limit to N articles for testing (null = no limit)
+  mock_api: false  # TODO: Implement mock API mode for testing
+  sample_size: null  # TODO: Implement sample size limiting for testing
