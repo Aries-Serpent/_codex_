@@ -19,10 +19,11 @@ import fcntl
 import json
 import logging
 import socket
+import ssl
 import tempfile
 import secrets
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, Tuple
 from datetime import datetime, UTC
 from dataclasses import dataclass, asdict
 from contextlib import contextmanager
@@ -41,6 +42,17 @@ try:
 except ImportError:
     HAS_PROTOCOL_V2 = False
 
+# Import TLS configuration for distributed bridge
+try:
+    from security.tls_config import (
+        create_server_context,
+        create_client_context,
+        TLSConfigError,
+    )
+    HAS_TLS_SUPPORT = True
+except ImportError:
+    HAS_TLS_SUPPORT = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,6 +60,7 @@ class BridgeMode(Enum):
     """Bridge communication mode."""
     NAMED_PIPE = "named_pipe"  # Unix FIFO
     UNIX_SOCKET = "unix_socket"  # Unix domain socket
+    TCP_TLS = "tcp_tls"  # TCP with TLS encryption (distributed)
     
 
 @dataclass
@@ -193,19 +206,36 @@ class BridgeManager:
         use_protocol_v2: bool = True,
         enable_compression: bool = True,
         max_clients: int = 10,
+        # TLS configuration (for TCP_TLS mode)
+        tls_host: str = "0.0.0.0",
+        tls_port: int = 8443,
+        tls_server_cert: Optional[str] = None,
+        tls_server_key: Optional[str] = None,
+        tls_ca_cert: Optional[str] = None,
+        tls_client_cert: Optional[str] = None,
+        tls_client_key: Optional[str] = None,
+        tls_require_client_cert: bool = True,
     ):
         """
         Initialize bridge manager.
         
         Args:
             bridge_dir: Directory for bridge files (defaults to secure temp location)
-            mode: Communication mode (named_pipe or unix_socket)
+            mode: Communication mode (named_pipe, unix_socket, or tcp_tls)
             owner_only: Restrict permissions to owner only (0o600)
             require_auth: Require authentication token (default: True)
             audit_file: Path to audit log file (default: bridge_dir/audit.log)
             use_protocol_v2: Enable Protocol v2 with compression (default: True)
             enable_compression: Enable payload compression (default: True)
             max_clients: Maximum concurrent clients for multi-client mode
+            tls_host: Bind address for TLS server (TCP_TLS mode only)
+            tls_port: Port for TLS server (TCP_TLS mode only)
+            tls_server_cert: Path to server certificate (TCP_TLS mode)
+            tls_server_key: Path to server key (TCP_TLS mode)
+            tls_ca_cert: Path to CA certificate (TCP_TLS mode)
+            tls_client_cert: Path to client certificate (TCP_TLS mode)
+            tls_client_key: Path to client key (TCP_TLS mode)
+            tls_require_client_cert: Require client certificates (mTLS)
         """
         if bridge_dir is None:
             # Use secure temp directory with restricted permissions
@@ -215,6 +245,25 @@ class BridgeManager:
         self.mode = mode
         self.owner_only = owner_only
         self.require_auth = require_auth
+        
+        # TLS configuration
+        self.tls_host = tls_host
+        self.tls_port = tls_port
+        self.tls_server_cert = tls_server_cert
+        self.tls_server_key = tls_server_key
+        self.tls_ca_cert = tls_ca_cert
+        self.tls_client_cert = tls_client_cert
+        self.tls_client_key = tls_client_key
+        self.tls_require_client_cert = tls_require_client_cert
+        self._tls_context: Optional[ssl.SSLContext] = None
+        
+        # Validate TLS configuration if TCP_TLS mode
+        if self.mode == BridgeMode.TCP_TLS:
+            if not HAS_TLS_SUPPORT:
+                raise RuntimeError(
+                    "TLS support not available. Install security.tls_config module."
+                )
+            self._validate_tls_config()
         
         # Protocol v2 settings
         self.use_protocol_v2 = use_protocol_v2 and HAS_PROTOCOL_V2
@@ -270,6 +319,11 @@ class BridgeManager:
             self._init_named_pipe()
         elif mode == BridgeMode.UNIX_SOCKET:
             self._init_unix_socket()
+        elif mode == BridgeMode.TCP_TLS:
+            # TLS sockets created on-demand in start_server/connect methods
+            logger.info(f"TCP_TLS mode configured: {self.tls_host}:{self.tls_port}")
+        else:
+            raise ValueError(f"Unsupported bridge mode: {mode}")
     
     def _init_named_pipe(self) -> None:
         """Initialize Named Pipe (FIFO)."""
@@ -299,6 +353,54 @@ class BridgeManager:
         except Exception as e:
             logger.error(f"Failed to prepare unix socket: {e}")
             raise
+    
+    def _validate_tls_config(self) -> None:
+        """Validate TLS configuration for TCP_TLS mode."""
+        if not all([
+            self.tls_server_cert,
+            self.tls_server_key,
+            self.tls_ca_cert,
+        ]):
+            raise ValueError(
+                "TCP_TLS mode requires server_cert, server_key, and ca_cert"
+            )
+        
+        # Validate paths exist
+        for path_name, path_value in [
+            ("server_cert", self.tls_server_cert),
+            ("server_key", self.tls_server_key),
+            ("ca_cert", self.tls_ca_cert),
+        ]:
+            if not Path(path_value).exists():
+                raise FileNotFoundError(f"TLS {path_name} not found: {path_value}")
+        
+        logger.info("TLS configuration validated")
+    
+    def _create_tls_server_context(self) -> ssl.SSLContext:
+        """Create TLS context for server mode."""
+        if self._tls_context is None:
+            self._tls_context = create_server_context(
+                cert_path=self.tls_server_cert,
+                key_path=self.tls_server_key,
+                ca_path=self.tls_ca_cert,
+                require_client_cert=self.tls_require_client_cert,
+            )
+            logger.info("TLS server context created")
+        return self._tls_context
+    
+    def _create_tls_client_context(self) -> ssl.SSLContext:
+        """Create TLS context for client mode."""
+        if not all([self.tls_client_cert, self.tls_client_key, self.tls_ca_cert]):
+            raise ValueError(
+                "Client mode requires client_cert, client_key, and ca_cert"
+            )
+        
+        return create_client_context(
+            cert_path=self.tls_client_cert,
+            key_path=self.tls_client_key,
+            ca_path=self.tls_ca_cert,
+            check_hostname=False,  # Internal bridge, no hostname verification
+        )
     
     def _audit_log(self, event: str, details: Dict[str, Any]) -> None:
         """
