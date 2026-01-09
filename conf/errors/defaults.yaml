@@ -1,0 +1,114 @@
+# Error Configuration - Structured Error Schemas
+# Consolidates error definitions from config_legacy/errors.py into YAML
+
+# Error codes and messages for configuration-related errors
+config_errors:
+  missing_config:
+    code: "CONFIG_001"
+    message: "Missing configuration file"
+    severity: "error"
+    resolution: "Ensure the configuration file exists at the specified path"
+    
+  invalid_config:
+    code: "CONFIG_002"
+    message: "Invalid configuration format"
+    severity: "error"
+    resolution: "Validate YAML syntax and structure"
+    
+  missing_key:
+    code: "CONFIG_003"
+    message: "Required configuration key is missing"
+    severity: "error"
+    resolution: "Add the required key to the configuration file"
+    
+  type_mismatch:
+    code: "CONFIG_004"
+    message: "Configuration value type mismatch"
+    severity: "error"
+    resolution: "Ensure configuration values match expected types"
+    
+  validation_failed:
+    code: "CONFIG_005"
+    message: "Configuration validation failed"
+    severity: "error"
+    resolution: "Review validation errors and correct configuration values"
+
+# Error codes for Hydra-specific issues
+hydra_errors:
+  hydra_not_available:
+    code: "HYDRA_001"
+    message: "Hydra framework is not available"
+    severity: "warning"
+    resolution: "Install hydra-core: pip install hydra-core"
+    
+  compose_failed:
+    code: "HYDRA_002"
+    message: "Hydra composition failed"
+    severity: "error"
+    resolution: "Check config directory structure and config name"
+    
+  initialization_failed:
+    code: "HYDRA_003"
+    message: "Hydra initialization failed"
+    severity: "error"
+    resolution: "Verify config_dir path and version_base compatibility"
+    
+  override_failed:
+    code: "HYDRA_004"
+    message: "Config override failed"
+    severity: "error"
+    resolution: "Check override syntax: key=value"
+
+# Error codes for file system operations
+filesystem_errors:
+  file_not_found:
+    code: "FS_001"
+    message: "File not found"
+    severity: "error"
+    resolution: "Verify file path and ensure file exists"
+    
+  directory_not_found:
+    code: "FS_002"
+    message: "Directory not found"
+    severity: "error"
+    resolution: "Create directory or verify path"
+    
+  permission_denied:
+    code: "FS_003"
+    message: "Permission denied"
+    severity: "error"
+    resolution: "Check file/directory permissions"
+    
+  io_error:
+    code: "FS_004"
+    message: "I/O operation failed"
+    severity: "error"
+    resolution: "Check disk space and file system health"
+
+# Error codes for YAML parsing
+yaml_errors:
+  parse_error:
+    code: "YAML_001"
+    message: "YAML parsing error"
+    severity: "error"
+    resolution: "Validate YAML syntax"
+    
+  missing_pyyaml:
+    code: "YAML_002"
+    message: "PyYAML library is not available"
+    severity: "error"
+    resolution: "Install PyYAML: pip install PyYAML>=6.0"
+    
+  invalid_structure:
+    code: "YAML_003"
+    message: "Invalid YAML structure"
+    severity: "error"
+    resolution: "Ensure YAML represents expected data structure"
+
+# Default error configuration
+defaults:
+  log_errors: true
+  raise_on_error: true
+  fallback_enabled: true
+  max_retries: 3
+  retry_delay_seconds: 1
