@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Test suite for intelligent audio analyzer."""
+"""Test suite for intelligent audio analyzer.
+
+Test Data Strategy:
+This test suite uses 1KB of zero bytes as mock audio data. While this doesn't
+represent realistic audio structure, it's sufficient for unit testing the
+analyzer's workflow, error handling, and interface contracts.
+
+For more robust testing:
+- Integration tests should use minimal valid WAV/MP3 file headers with test data
+- Mock the audio library's load function to return controlled numpy arrays
+- Use real audio fixtures for end-to-end validation
+
+The current approach prioritizes fast unit tests over format validation.
+"""
 
 import pytest
 from services.audio.analysis.intelligent_analyzer import (
@@ -9,6 +22,7 @@ from services.audio.analysis.intelligent_analyzer import (
 )
 
 # Mock binary audio data for testing (1KB of zeros)
+# Note: Not realistic audio format, but sufficient for workflow unit tests
 MOCK_AUDIO_DATA = b'\x00' * 1024
 
 

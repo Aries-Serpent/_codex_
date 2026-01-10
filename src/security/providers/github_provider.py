@@ -4,6 +4,17 @@ This module implements the SecretProvider interface for GitHub Personal
 Access Tokens (PATs) and GitHub Apps, supporting token rotation, validation,
 and scope management.
 
+**IMPORTANT**: Several methods in this module are stubs that must be implemented
+before production use:
+- `create_token()`: Raises NotImplementedError - must be wired to GitHub API
+- `validate_secret()`: Returns stub validation - needs actual API integration
+- `revoke_secret()`: Returns stub success - needs actual API call
+- `list_secrets()`: Returns empty list - needs actual API call
+
+These stubs are intentionally designed to fail safely. The `create_token()` method
+raises an error to prevent accidental use, while validation methods log warnings
+but allow development/testing to proceed.
+
 Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 """
 
@@ -164,6 +175,11 @@ class GitHubTokenProvider(TokenProvider):
             # Make API request to validate token
             # This is a stub - actual implementation would use GitHub API
             # Example: GET /user with token authentication
+            
+            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
+            # Justification: This is a static informational string with no dynamic data.
+            # No secrets, tokens, or sensitive information are logged. The log message
+            # is purely for debugging stub code execution flow.
             logger.info("Validating GitHub token")
             
             # Check expiration
@@ -307,6 +323,10 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # DELETE /user/tokens/{token_id}
             
+            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
+            # Justification: This is a static informational string with no dynamic data.
+            # No secrets, tokens, or sensitive information are logged. The log message
+            # is purely for debugging stub code execution flow.
             logger.info("Revoking GitHub token")
             
             # TODO: Actual API call
@@ -332,6 +352,10 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # GET /user/tokens
             
+            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
+            # Justification: This is a static informational string with no dynamic data.
+            # No secrets, tokens, or sensitive information are logged. The log message
+            # is purely for debugging stub code execution flow.
             logger.info("Listing GitHub tokens")
             
             # TODO: Actual API call

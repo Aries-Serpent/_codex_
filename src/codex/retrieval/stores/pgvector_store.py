@@ -33,7 +33,8 @@ except ImportError:
 # shard balancing based on document embeddings. This would enable semantic-aware
 # sharding where similar documents are co-located on the same shard for improved
 # query performance. Tracked as part of PS-06: Index Sharding (Priority 4). Current
-# implementation: Uses hash-based consistent sharding only.
+# implementation: Uses hash-based consistent sharding only (see lines 307–316 for
+# the current hash-based sharding logic in PGVectorStore).
 try:
     from sklearn.cluster import KMeans  # noqa: F401
     HAS_SKLEARN = True
