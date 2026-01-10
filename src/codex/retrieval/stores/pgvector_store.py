@@ -28,14 +28,18 @@ except ImportError:
     AsyncConnectionPool = None  # type: ignore
     logger.warning("psycopg3 not installed - PGVectorStore will be stub only")
 
-# Future: KMeans for centroid-based partitioning (not yet implemented)
+# Optional dependency: scikit-learn for future centroid-based partitioning
+# TODO: Implement KMeans clustering for intelligent shard balancing based on
+# document embeddings. This would enable semantic-aware sharding where similar
+# documents are co-located on the same shard for improved query performance.
+# Current implementation: Uses hash-based consistent sharding only.
 try:
     from sklearn.cluster import KMeans  # noqa: F401
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
     KMeans = None  # type: ignore
-    logger.warning("scikit-learn not installed - Centroid-based partitioning disabled")
+    logger.info("scikit-learn not installed - Centroid-based partitioning unavailable")
 
 
 @dataclass
@@ -296,16 +300,19 @@ class PGVectorStore:
                 shard_id = shard_mapper(doc['id'])
             else:
                 # Simple hash-based sharding using xxhash (faster than MD5)
-                # Note: Falls back to hash() which is NOT stable across Python
-                # sessions/processes. For production with multi-process sharding,
-                # ensure xxhash is installed or use a custom deterministic shard_mapper.
+                # For production with multi-process sharding, xxhash is required
+                # for deterministic routing. The MD5 fallback ensures determinism
+                # across Python sessions/processes.
                 try:
                     import xxhash
                     hash_val = xxhash.xxh64(doc['id'].encode()).intdigest()
                 except ImportError:
-                    # Fallback to built-in hash for non-cryptographic sharding
-                    # WARNING: hash() is not deterministic across Python sessions
-                    hash_val = hash(doc['id'])
+                    # Fallback to MD5 for deterministic sharding when xxhash unavailable
+                    import hashlib
+                    hash_val = int.from_bytes(
+                        hashlib.md5(doc['id'].encode()).digest()[:4], 
+                        'big'
+                    )
                 shard_id = hash_val % self.num_shards
             
             shard_groups[shard_id].append((

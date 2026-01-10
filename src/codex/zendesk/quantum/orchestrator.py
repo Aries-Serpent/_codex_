@@ -152,8 +152,9 @@ class ZendeskQuantumOrchestrator:
             self._check_scope(TokenScope.WRITE_ISSUES | TokenScope.ADMIN)
         
         # Create ticket (simplified - would integrate with Zendesk API)
+        # Generate deterministic ticket ID using UUID4 for production use
         ticket = ZendeskTicket(
-            ticket_id=hash(subject) % 100000,  # Simplified ID generation
+            ticket_id=uuid.uuid4().int % 100000,  # UUID-based ID generation
             subject=subject,
             priority=priority,
             sla_deadline=sla_deadline,

@@ -469,7 +469,7 @@ class SemanticDiffer:
                     ngram_range=ngram_range
                 )
                 self._embedding_available = True
-                logger.info("SemanticDiffer initialized with TF-IDF embeddings")
+                logger.info(f"SemanticDiffer initialized with TF-IDF embeddings (ngram_range={ngram_range})")
             except ImportError:
                 logger.warning(
                     "scikit-learn not available - semantic diffing will use "
@@ -510,17 +510,37 @@ class SemanticDiffer:
             return self._basic_similarity(text1, text2)
     
     def _basic_similarity(self, text1: str, text2: str) -> float:
-        """Basic text similarity using sequence matcher.
+        """Text similarity, preferring TF-IDF cosine similarity when available.
         
         Args:
             text1: First text
             text2: Second text
             
         Returns:
-            Similarity ratio (0.0 to 1.0)
+            Similarity score (0.0 to 1.0)
         """
-        matcher = difflib.SequenceMatcher(None, text1, text2)
-        return matcher.ratio()
+        # Prefer TF-IDF / cosine similarity if scikit-learn is available
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            from sklearn.metrics.pairwise import cosine_similarity
+
+            vectorizer = TfidfVectorizer()
+            tfidf_matrix = vectorizer.fit_transform([text1, text2])
+            # Compute cosine similarity between the two TF-IDF vectors
+            similarity_matrix = cosine_similarity(
+                tfidf_matrix[0:1],
+                tfidf_matrix[1:2],
+            )
+            return float(similarity_matrix[0, 0])
+        except ImportError:
+            # scikit-learn is not available; fall back to SequenceMatcher
+            matcher = difflib.SequenceMatcher(None, text1, text2)
+            return matcher.ratio()
+        except Exception as e:
+            # Any unexpected failure in TF-IDF computation: log and fall back
+            logger.error(f"TF-IDF similarity computation failed: {e}")
+            matcher = difflib.SequenceMatcher(None, text1, text2)
+            return matcher.ratio()
     
     def compute_semantic_diff(
         self,

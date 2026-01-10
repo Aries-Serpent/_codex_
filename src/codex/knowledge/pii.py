@@ -164,6 +164,8 @@ def scrub(
     # Credit card scrubbing with Luhn validation
     def mask_credit_card(m: re.Match) -> str:
         if not _luhn_check(m.group(0)):
+            # Note: Luhn validation failed - pattern matches but not a valid card number
+            # Consider logging at debug level for security audit: potential typo or test data
             return m.group(0)  # Not a valid card number
         flags.pii_credit_card = True
         flags.total_redactions += 1

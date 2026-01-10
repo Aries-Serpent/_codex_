@@ -232,12 +232,24 @@ class SecretProvider(ABC):
     
     @property
     def provider_name(self) -> str:
-        """Get human-readable provider name.
+        """Get human-readable provider name with proper acronym capitalization.
         
         Returns:
-            Provider name string
+            Provider name string with correct casing for brands/acronyms
         """
-        return self.provider_type.value.replace("_", " ").title()
+        raw_value = self.provider_type.value
+        # Explicit mappings preserve correct capitalization for acronyms/brands.
+        provider_name_overrides = {
+            "aws_secrets_manager": "AWS Secrets Manager",
+            "github": "GitHub",
+            "azure_key_vault": "Azure Key Vault",
+            "hashicorp_vault": "HashiCorp Vault",
+            "environment": "Environment",
+        }
+        return provider_name_overrides.get(
+            raw_value,
+            raw_value.replace("_", " ").title(),
+        )
     
     def __repr__(self) -> str:
         """String representation of provider."""

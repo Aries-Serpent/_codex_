@@ -153,8 +153,11 @@ class TokenScopeVerifier:
             logger.info(f"Token verification complete: {len(scopes)} scopes found")
             if not required_met:
                 logger.warning(f"Missing {len(missing_required)} required scopes")
+                # Debug-level logging for actual scope details (useful for troubleshooting)
+                logger.debug(f"Missing required scopes: {missing_required}")
             if not recommended_met:
                 logger.info(f"Missing {len(missing_recommended)} recommended scopes")
+                logger.debug(f"Missing recommended scopes: {missing_recommended}")
             
             return self.verification_results
             
