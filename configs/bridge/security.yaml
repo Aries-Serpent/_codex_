@@ -1,0 +1,131 @@
+# Bridge Security Configuration
+# PS-02 Enhancement: Distributed Bridge (TLS) - Priority 4
+#
+# This configuration file defines TLS/SSL settings for secure
+# cross-machine bridge communication with mutual authentication (mTLS).
+
+# Transport configuration
+transport:
+  # Transport type: "named_pipe" (default), "unix_socket", "tcp_tls"
+  type: "named_pipe"
+  
+  # Named pipe configuration (local only)
+  named_pipe:
+    path: "/tmp/bridge_codex_copilot_bridge"
+    permissions: 0o600
+  
+  # Unix socket configuration (local only)
+  unix_socket:
+    path: "/tmp/bridge_codex.sock"
+    permissions: 0o600
+  
+  # TCP with TLS configuration (distributed)
+  tcp_tls:
+    # Server bind address and port
+    host: "0.0.0.0"
+    port: 8443
+    
+    # Certificate paths (PEM format)
+    server_cert: "${BRIDGE_TLS_SERVER_CERT:-/etc/bridge/certs/server.crt}"
+    server_key: "${BRIDGE_TLS_SERVER_KEY:-/etc/bridge/certs/server.key}"
+    ca_cert: "${BRIDGE_TLS_CA_CERT:-/etc/bridge/certs/ca.crt}"
+    
+    # Client certificate (for connecting as client)
+    client_cert: "${BRIDGE_TLS_CLIENT_CERT:-/etc/bridge/certs/client.crt}"
+    client_key: "${BRIDGE_TLS_CLIENT_KEY:-/etc/bridge/certs/client.key}"
+    
+    # Require client certificates (mTLS)
+    require_client_cert: true
+    
+    # Verify server hostname (usually false for internal bridge)
+    check_hostname: false
+    
+    # Connection timeouts
+    connect_timeout: 10  # seconds
+    read_timeout: 30     # seconds
+    write_timeout: 30    # seconds
+
+# Security policies
+security:
+  # Enable authentication
+  authentication:
+    enabled: true
+    # Authentication token expiry (seconds)
+    token_expiry: 3600
+  
+  # Enable audit logging
+  audit:
+    enabled: true
+    log_file: "${BRIDGE_AUDIT_LOG:-/var/log/bridge/audit.log}"
+    
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    max_requests_per_minute: 1000
+    max_payload_size_mb: 100
+  
+  # IP allowlist (for TCP mode)
+  # Empty list = allow all
+  ip_allowlist: []
+  # Example:
+  # - "10.0.0.0/8"
+  # - "172.16.0.0/12"
+  # - "192.168.0.0/16"
+
+# Protocol settings
+protocol:
+  # Protocol version (1 = basic, 2 = enhanced with compression)
+  version: 2
+  
+  # Compression settings
+  compression:
+    enabled: true
+    threshold_kb: 100  # Compress payloads larger than this
+    min_savings: 0.1   # Only compress if 10%+ size reduction
+  
+  # Message integrity
+  integrity:
+    enabled: true
+    algorithm: "crc32"  # or "sha256" for stronger verification
+
+# Multi-client settings
+multi_client:
+  enabled: true
+  max_clients: 10
+  
+  # Routing strategy: "priority", "round_robin", "broadcast"
+  routing_strategy: "priority"
+  
+  # Client health checks
+  heartbeat_interval: 30  # seconds
+  heartbeat_timeout: 90   # seconds (3 missed heartbeats = dead)
+  
+  # Dead client cleanup
+  cleanup_interval: 60  # seconds
+
+# Monitoring and metrics
+monitoring:
+  enabled: true
+  
+  # Prometheus metrics endpoint (TCP mode only)
+  metrics_endpoint:
+    enabled: false
+    host: "127.0.0.1"
+    port: 9090
+  
+  # Performance logging
+  performance_logging:
+    enabled: true
+    log_slow_requests: true
+    slow_threshold_ms: 1000
+
+# Development/Testing settings
+development:
+  # Allow self-signed certificates
+  allow_self_signed: true
+  
+  # Verbose logging
+  debug: false
+  
+  # Skip TLS verification (NEVER use in production!)
+  skip_tls_verify: false
