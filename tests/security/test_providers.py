@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timedelta, UTC
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
