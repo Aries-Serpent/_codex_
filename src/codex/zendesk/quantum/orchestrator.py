@@ -123,8 +123,8 @@ class ZendeskQuantumOrchestrator:
             logger.warning("No scope validator set - skipping scope check")
             return
         
-        # Validate scopes
-        validator.require_scopes(required_scopes)
+        # Validate scopes (using singular method name per ScopeValidator API)
+        validator.require_scope(required_scopes)
     
     def create_ticket(
         self,

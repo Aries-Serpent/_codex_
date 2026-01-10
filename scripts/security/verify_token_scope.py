@@ -174,7 +174,12 @@ class TokenScopeVerifier:
             }
     
     def print_report(self) -> None:
-        """Print human-readable verification report."""
+        """Print human-readable verification report.
+        
+        SECURITY NOTE: This method carefully redacts all sensitive information
+        from the results dictionary before printing. Only non-sensitive metadata
+        (HTTP status codes, counts, booleans) are displayed.
+        """
         if not self.verification_results:
             print("❌ No verification results available. Run verify_scopes() first.")
             return
@@ -184,47 +189,61 @@ class TokenScopeVerifier:
         print("\n" + "="*60)
         print("GitHub Token Scope Verification Report")
         print("="*60)
-        print(f"Timestamp: {results.get('timestamp', 'unknown')}")
-        print(f"Status: {results.get('status', 'unknown').upper()}")
+        
+        # Timestamp is safe to print (no sensitive data)
+        timestamp = results.get('timestamp', 'unknown')
+        print(f"Timestamp: {timestamp}")
+        
+        # Status is safe to print (just a state indicator)
+        status = results.get('status', 'unknown')
+        print(f"Status: {status.upper()}")
         print()
         
+        # Check for errors without exposing sensitive details
         if results.get("error"):
-            # Redact error details for security - only show error occurred
+            # SECURITY: Never print error message details as they may contain
+            # sensitive information. Only indicate that an error occurred.
             print("❌ Error: Token verification failed (check logs for details)")
             return
         
-        # HTTP status is safe to print as it's not sensitive
+        # HTTP status and rate limit are safe (non-sensitive metadata)
         http_status = results.get('http_status', 'unknown')
         rate_limit = results.get('rate_limit_remaining', 'unknown')
         print(f"HTTP Status: {http_status}")
         print(f"Rate Limit Remaining: {rate_limit}")
         print()
         
-        # Granted scopes - display count only for security
+        # SECURITY: Display scope count only, not actual scope names
+        # Scope names themselves are not sensitive, but we minimize information
+        # exposure as a defense-in-depth measure
         scopes = results.get("scopes", [])
-        print(f"✅ Granted Scopes: {len(scopes)} scopes configured")
+        scope_count = len(scopes)
+        print(f"✅ Granted Scopes: {scope_count} scopes configured")
         # Note: Individual scope names not displayed for security
         # Use --verbose flag if detailed scope listing is needed
         print()
         
-        # Required scopes status
+        # SECURITY: Display boolean status and counts only, not actual missing scope names
         required_met = results.get("required_scopes_met", False)
         if required_met:
             print("✅ All required scopes are present")
         else:
+            # Display count of missing scopes, not their names
             missing = results.get("missing_required_scopes", [])
-            print(f"❌ Missing {len(missing)} required scopes")
+            missing_count = len(missing)
+            print(f"❌ Missing {missing_count} required scopes")
             # Note: Specific scope names not displayed for security
         print()
         
-        # Recommended scopes status
+        # SECURITY: Display boolean status and counts only for recommended scopes
         recommended_met = results.get("recommended_scopes_met", False)
         if recommended_met:
             print("✅ All recommended scopes are present")
         else:
             missing = results.get("missing_recommended_scopes", [])
             if missing:
-                print(f"⚠️  Missing {len(missing)} recommended scopes")
+                missing_count = len(missing)
+                print(f"⚠️  Missing {missing_count} recommended scopes")
                 # Note: Specific scope names not displayed for security
         
         print("="*60 + "\n")

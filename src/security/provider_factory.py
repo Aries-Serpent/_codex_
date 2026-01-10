@@ -134,14 +134,18 @@ class ProviderFactory:
             from security.providers.github_provider import GitHubTokenProvider
             available.append(ProviderType.GITHUB)
         except ImportError:
-            pass  # GitHub provider dependencies not available
+            # GitHub provider dependencies not available (e.g., requests library)
+            # This is expected in minimal installations; gracefully skip
+            pass
         
         # Check AWS
         try:
             from security.providers.aws_provider import AWSSecretsManagerProvider
             available.append(ProviderType.AWS_SECRETS_MANAGER)
         except ImportError:
-            pass  # AWS provider dependencies not available
+            # AWS provider dependencies not available (e.g., boto3 library)
+            # This is expected when AWS features are not needed; gracefully skip
+            pass
         
         # Environment always available
         available.append(ProviderType.ENVIRONMENT)

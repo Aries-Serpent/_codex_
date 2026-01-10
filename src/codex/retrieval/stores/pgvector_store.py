@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Check for optional dependencies
 try:
-    from psycopg_pool import AsyncConnectionPool  # noqa: F401
+    from psycopg_pool import AsyncConnectionPool
     HAS_PSYCOPG3 = True
 except ImportError:
     HAS_PSYCOPG3 = False

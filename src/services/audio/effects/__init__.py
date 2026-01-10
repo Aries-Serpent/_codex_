@@ -1,9 +1,9 @@
 """Audio effects modules."""
 
-from services.audio.effects.noise_reduction import (
+from .noise_reduction import (
     NoiseReducer,
     HumRemover,
-    ReverbReducer
+    ReverbReducer,
 )
 
 __all__ = ['NoiseReducer', 'HumRemover', 'ReverbReducer']
