@@ -28,20 +28,6 @@ from security.providers.base import (
 logger = logging.getLogger(__name__)
 
 
-def _redact_identifier(identifier: str) -> str:
-    """Redact sensitive identifier for logging.
-    
-    Args:
-        identifier: Token ID, name, or other identifier
-        
-    Returns:
-        Redacted version showing only first 4 characters
-    """
-    if not identifier or len(identifier) <= 4:
-        return "***"
-    return f"{identifier[:4]}***"
-
-
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
     
