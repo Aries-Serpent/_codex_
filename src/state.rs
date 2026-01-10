@@ -48,7 +48,7 @@ impl SwarmState {
     }
     
     /// Get the current count of registered agents
-    fn get_agent_count(&self) -> usize {
+    pub fn get_agent_count(&self) -> usize {
         self.agents.len()
     }
     
@@ -58,6 +58,7 @@ impl SwarmState {
     /// * `agent_id` - Unique identifier for the agent
     /// * `status` - New status as string ("idle", "working", "complete", "failed")
     /// * `message` - Optional message (required for "working" and "failed")
+    #[pyo3(signature = (agent_id, status, message=None))]
     fn set_agent_status(&self, agent_id: String, status: String, message: Option<String>) -> PyResult<()> {
         let new_status = match status.as_str() {
             "idle" => AgentStatus::Idle,
