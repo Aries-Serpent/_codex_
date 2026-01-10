@@ -301,18 +301,20 @@ class PGVectorStore:
             if shard_mapper:
                 shard_id = shard_mapper(doc['id'])
             else:
-                # Simple hash-based sharding using xxhash (faster than MD5)
+                # Simple hash-based sharding using xxhash (faster than SHA-256)
                 # For production with multi-process sharding, xxhash is required
-                # for deterministic routing. The MD5 fallback ensures determinism
-                # across Python sessions/processes.
+                # for deterministic routing. The SHA-256 fallback ensures determinism
+                # across Python sessions/processes when xxhash is unavailable.
                 try:
                     import xxhash
                     hash_val = xxhash.xxh64(doc['id'].encode()).intdigest()
                 except ImportError:
-                    # Fallback to MD5 for deterministic sharding when xxhash unavailable
+                    # Fallback to SHA-256 for deterministic sharding when xxhash unavailable
+                    # SHA-256 provides better collision resistance than MD5 while maintaining
+                    # deterministic behavior across sessions/processes.
                     import hashlib
                     hash_val = int.from_bytes(
-                        hashlib.md5(doc['id'].encode()).digest()[:8], 
+                        hashlib.sha256(doc['id'].encode()).digest()[:8], 
                         'big'
                     )
                 shard_id = hash_val % self.num_shards
