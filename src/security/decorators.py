@@ -225,17 +225,27 @@ try:
     ) -> List[str]:
         """FastAPI dependency to extract scopes from token.
         
-        This is a placeholder that should be customized to decode
-        your actual tokens (JWT, OAuth, etc.) and extract scopes.
+        **CRITICAL SECURITY WARNING**: This placeholder implementation MUST be
+        replaced with actual token validation before production deployment.
+        
+        The current implementation raises NotImplementedError to ensure fail-closed
+        behavior and prevent unintended access grants.
+        
+        Production implementations should:
+        1. Validate the token signature and expiration
+        2. Extract scopes/permissions from token payload
+        3. Return the actual scopes for authorization checks
+        
+        Example implementations are provided in the comments below.
         
         Args:
             credentials: Bearer token from request
             
         Returns:
-            List of scope strings
+            List of scope strings (never reached - raises error)
             
         Raises:
-            HTTPException: If token is invalid
+            NotImplementedError: Always raised to prevent production use
         """
         # Token validation happens here but we don't need to store it
         # The actual scope extraction would happen via JWT decode or OAuth introspection

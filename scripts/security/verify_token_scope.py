@@ -198,7 +198,9 @@ class TokenScopeVerifier:
         print()
         
         if results.get("error"):
-            # Redact error details for security - only show error occurred
+            # Security Practice: Redact error details in output to avoid information leakage
+            # Detailed error information is available in logs for authorized debugging
+            # For troubleshooting with full details, set environment variable DEBUG=1
             print("❌ Error: Token verification failed (check logs for details)")
             return
         
@@ -209,8 +211,9 @@ class TokenScopeVerifier:
         
         # Display scope count only (not names) for security
         print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")
-        # Note: Individual scope names not displayed for security
-        # Use --verbose flag if detailed scope listing is needed
+        # Security Practice: Scope names omitted from standard output to prevent
+        # information disclosure. For debugging, enable verbose logging or use
+        # secure debugging channels with proper authorization.
         print()
         
         # Required scopes status - use inline access

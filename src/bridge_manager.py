@@ -35,10 +35,13 @@ try:
         encode_message as v2_encode,
         decode_message as v2_decode,
         MultiClientBridge,
+        MAGIC_BYTES,  # Import magic bytes constant for consistency
     )
     HAS_PROTOCOL_V2 = True
 except ImportError:
     HAS_PROTOCOL_V2 = False
+    # Define fallback to avoid undefined variable errors
+    MAGIC_BYTES = b"CBv2"  # Match protocol v2 magic bytes
 
 # Import TLS configuration for distributed bridge
 try:
@@ -680,7 +683,8 @@ class BridgeManager:
                     return None
                 
                 # Auto-detect v2 protocol by magic bytes (regardless of settings)
-                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == b"CBv2":
+                # Note: Using imported MAGIC_BYTES constant to maintain single source of truth
+                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == MAGIC_BYTES:
                     payload, header = v2_decode(data)
                     json_str = payload.decode('utf-8')
                     logger.debug(f"Read v2 message (compressed={bool(header.flags & 1)})")

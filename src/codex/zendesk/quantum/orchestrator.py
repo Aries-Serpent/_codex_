@@ -3,6 +3,30 @@
 This module integrates scope-based authorization into the quantum orchestrator,
 ensuring all operations are properly authorized based on token scopes.
 
+**UUID-to-Integer Conversion Strategy**:
+The `create_ticket_with_scope_check()` method converts UUID ticket IDs to 128-bit
+integers to maintain compatibility with the quantum orchestrator's integer-based
+task tracking while preserving uniqueness guarantees.
+
+Design Decisions:
+- UUIDs provide globally unique identifiers without coordination
+- Integer conversion preserves uniqueness via UUID's 128-bit space
+- Maintains compatibility with existing integer-based APIs
+- Migration path: Systems expecting smaller IDs need adapter layer
+
+Trade-offs:
+- Pro: No collision risk, globally unique across distributed systems
+- Pro: Can generate IDs offline without database coordination
+- Con: 128-bit integers may exceed some system limits (e.g., 64-bit DBs)
+- Con: Human-unfriendly IDs in logs/UIs (consider display formatting)
+
+For systems with ID size constraints, consider:
+1. Mapping layer: UUID ↔ Sequential ID with database lookup
+2. Shorter hash: Use 64-bit hash of UUID (accept collision risk)
+3. ID prefixes: Store full UUID, use truncated version for display
+
+See .codex/architecture/uuid_ticket_id_strategy.md for detailed ADR.
+
 Part of PS-05 Enhancement: Scope Validation Integration - Priority 4
 """
 

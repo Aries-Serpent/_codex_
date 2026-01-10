@@ -47,6 +47,16 @@ class ConsistentHashRing:
     Implements consistent hashing with virtual nodes to prevent
     hotspots and ensure balanced distribution.
     
+    **Performance Note**: This class can optionally use xxhash for faster
+    hashing operations. If xxhash is not available, it falls back to MD5
+    from the standard library, which is deterministic but slower. For
+    production use with high throughput requirements, install xxhash:
+    
+        pip install xxhash
+    
+    The fallback ensures functionality without optional dependencies, but
+    xxhash is recommended for systems processing >10k documents/second.
+    
     Example:
         >>> ring = ConsistentHashRing(num_shards=4, virtual_nodes=150)
         >>> shard_id = ring.get_shard("document-12345")

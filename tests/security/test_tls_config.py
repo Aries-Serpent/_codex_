@@ -1,6 +1,12 @@
 """Tests for TLS configuration module.
 
 Tests the TLS/SSL context creation for distributed bridge protocol.
+
+Note on Test Pattern Consistency:
+This test suite uses the temp_cert_dir fixture (tempfile.TemporaryDirectory) for
+certificate management. While the tempfile module is also imported directly,
+the fixture approach is preferred for better test isolation and automatic cleanup.
+Consider refactoring any direct tempfile usage to use the fixture consistently.
 """
 
 import pytest
@@ -23,7 +29,11 @@ from security.tls_config import (
 
 @pytest.fixture
 def temp_cert_dir():
-    """Create temporary directory for test certificates."""
+    """Create temporary directory for test certificates.
+    
+    Preferred pattern for certificate testing. Use this fixture instead of
+    direct tempfile.TemporaryDirectory() calls for consistency.
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)
 
