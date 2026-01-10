@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from .utils import safe_model_load
+
 logger = logging.getLogger(__name__)
 
 
@@ -101,6 +103,8 @@ def embed_chunks(
     # Load model
     logger.info(f"Loading embedding model: {model_name}")
     model = SentenceTransformer(model_name, cache_folder=cache_dir)
+    # Apply safe model loading to handle meta device tensors
+    model = safe_model_load(model, device="cpu")
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
