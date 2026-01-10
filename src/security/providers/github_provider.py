@@ -28,20 +28,6 @@ from security.providers.base import (
 logger = logging.getLogger(__name__)
 
 
-def _redact_identifier(identifier: str) -> str:
-    """Redact sensitive identifier for logging.
-    
-    Args:
-        identifier: Token ID, name, or other identifier
-        
-    Returns:
-        Redacted version showing only first 4 characters
-    """
-    if not identifier or len(identifier) <= 4:
-        return "***"
-    return f"{identifier[:4]}***"
-
-
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
     
@@ -178,13 +164,13 @@ class GitHubTokenProvider(TokenProvider):
             # Make API request to validate token
             # This is a stub - actual implementation would use GitHub API
             # Example: GET /user with token authentication
-            logger.info(f"Validating GitHub token: {_redact_identifier(secret_id)}")
+            logger.info("Validating GitHub token")
             
             # Check expiration
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning(f"Token {_redact_identifier(secret_id)} has expired")
+                    logger.warning("GitHub token has expired")
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
@@ -298,7 +284,7 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # PATCH /user/tokens/{token_id}
             
-            logger.info(f"Updating GitHub token scopes: {_redact_identifier(secret_id)}")
+            logger.info("Updating GitHub token scopes")
             logger.debug(f"New scopes: {scopes}")
             
             # TODO: Actual API call
@@ -321,7 +307,7 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # DELETE /user/tokens/{token_id}
             
-            logger.info(f"Revoking GitHub token: {_redact_identifier(secret_id)}")
+            logger.info("Revoking GitHub token")
             
             # TODO: Actual API call
             return True

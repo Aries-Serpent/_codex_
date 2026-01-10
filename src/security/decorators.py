@@ -243,6 +243,26 @@ try:
         # This placeholder must not be used in production as it would
         # grant unintended access. Raise an error instead of returning
         # hardcoded scopes to ensure a fail-closed behavior.
+        #
+        # Example implementation for production:
+        # ```python
+        # import jwt
+        # from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+        # 
+        # security = HTTPBearer()
+        # credentials: HTTPAuthorizationCredentials = Depends(security)
+        # token = credentials.credentials
+        # 
+        # # For JWT tokens:
+        # payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        # return payload.get("scopes", [])
+        # 
+        # # For OAuth introspection:
+        # response = requests.post(INTROSPECTION_ENDPOINT, 
+        #                          data={"token": token},
+        #                          auth=(CLIENT_ID, CLIENT_SECRET))
+        # return response.json().get("scope", "").split()
+        # ```
         logger.error(
             "Token scope extraction is not implemented. "
             "Replace get_token_scopes with a real implementation before production."
