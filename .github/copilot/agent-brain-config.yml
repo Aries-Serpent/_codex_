@@ -356,3 +356,227 @@ metrics_tracking:
     - maximize_implementation_completeness
     - minimize_deferral_rate
     - maximize_test_coverage
+
+# =============================================================================
+# COGNITIVE BRAIN INTEGRATION (Added 2026-01-10)
+# =============================================================================
+
+cognitive_brain_v2:
+  enabled: true
+  version: "2.0.0"
+  description: "Cognitive Brain with autonomous authorization and toolkit integration"
+  
+  memory_system:
+    long_term: ".codex/cognitive_brain/"
+    working: ".codex/cache/"
+    patterns: ".codex/patterns/"
+    decisions: ".codex/decisions/"
+    meta: ".codex/meta/"
+  
+  cognitive_tools:
+    enabled: true
+    auto_initialize: true
+    tools:
+      - name: "cognitive_index_builder"
+        path: ".codex/tools/cognitive_index_builder.py"
+        type: "memory_system"
+        trigger: "on_task_start"
+        
+      - name: "context_retriever"
+        path: ".codex/tools/context_retriever.py"
+        type: "reasoning_engine"
+        trigger: "before_implementation"
+        
+      - name: "pattern_learner"
+        path: ".codex/tools/pattern_learner.py"
+        type: "learning_module"
+        trigger: "after_cycle"
+        
+      - name: "task_orchestrator"
+        path: ".codex/tools/task_orchestrator.py"
+        type: "planning_system"
+        trigger: "on_task_assign"
+        
+      - name: "autonomous_authorization"
+        path: ".codex/tools/autonomous_authorization.py"
+        type: "decision_engine"
+        trigger: "after_cycle"
+        
+      - name: "meta_analyzer"
+        path: ".codex/tools/meta_analyzer.py"
+        type: "self_reflection"
+        trigger: "after_3_cycles"
+  
+  autonomous_authorization:
+    enabled: true
+    mode: "quantum_deterministic"
+    framework: ".codex/AUTONOMOUS_AUTHORIZATION_FRAMEWORK.md"
+    
+    observables:
+      technical_readiness:
+        - tests_passing: required
+        - code_review_approved: required
+        - documentation_complete: required
+        - no_blocking_issues: required
+      
+      security_compliance:
+        - no_high_critical_vulns: required
+        - secrets_configured: required
+        - audit_trail_active: required
+        - codeql_clean: required
+      
+      quality_gates:
+        - code_coverage: ">= 80%"
+        - integration_tests_pass: required
+        - linting_clean: required
+      
+      policy_compliance:
+        - follows_codebase_policy: required
+        - human_grant_explicit: required
+        - token_access_confirmed: required
+        - rollback_plan_exists: required
+    
+    wave_function_collapse:
+      trigger: "all_observables_measured"
+      authorized_state: "all_criteria_met"
+      blocked_state: "any_criteria_failed"
+      
+    decision_recording:
+      enabled: true
+      path: ".codex/decisions/"
+      format: "json"
+  
+  context_management:
+    max_depth: 3
+    relevance_threshold: 0.7
+    cache_duration_hours: 24
+    
+    sources:
+      - codebase_index
+      - pattern_library
+      - decision_history
+      - documentation
+      - commit_history
+      - cognitive_brain_status
+    
+    priority_order:
+      1: related_entities
+      2: learned_patterns
+      3: past_decisions
+      4: architectural_constraints
+      5: security_requirements
+  
+  pattern_learning:
+    enabled: true
+    continuous: true
+    
+    categories:
+      - naming_conventions
+      - architectural_patterns
+      - coding_style
+      - error_handling
+      - testing_patterns
+      - security_patterns
+    
+    thresholds:
+      confidence: 0.7
+      min_frequency: 3
+      max_age_days: 90
+  
+  automation_integration:
+    unified_plan: ".codex/HUMAN_ADMIN_UNIFIED_ACTION_PLAN.md"
+    automation_analysis: ".codex/AUTOMATION_CAPABILITY_ANALYSIS.md"
+    implementation_planset: ".codex/AUTOMATION_IMPLEMENTATION_MASTER_PLANSET.md"
+    
+    automation_coverage:
+      total_actions: 13
+      fully_automated: 4
+      partially_automated: 5
+      human_only: 4
+      coverage_percentage: 69
+  
+  authorization_status:
+    full_access_granted: true
+    granted_by: "mbaetiong"
+    grant_date: "2026-01-10"
+    grant_reference: "comment #3732002618"
+    
+    tokens:
+      codex_master_key: "granted"
+      org_master_key: "granted"
+      api_access: "full"
+      cli_access: "full"
+      mcp_access: "full"
+  
+  continuation_protocol:
+    prompt_location: ".codex/COPILOT_CONTINUATION_PROMPT_COMPREHENSIVE.md"
+    operation_protocol: ".codex/cognitive_brain/AI_AGENT_AUTONOMOUS_OPERATION_PROTOCOL.md"
+    
+    session_continuity:
+      enabled: true
+      state_persistence: true
+      context_preservation: true
+      tool_state_recovery: true
+  
+  architecture_mapping:
+    comprehensive_map: ".codex/COGNITIVE_BRAIN_ARCHITECTURE_MAPPING.md"
+    diagrams_count: 14
+    mermaid_enabled: true
+  
+  monitoring:
+    enabled: true
+    
+    metrics:
+      - task_completion_rate
+      - authorization_success_rate
+      - pattern_learning_velocity
+      - context_relevance_score
+      - decision_confidence
+      - cycle_duration
+      - cognitive_health_score
+    
+    dashboards:
+      - cognitive_brain_health
+      - automation_coverage
+      - authorization_analytics
+      - learning_progress
+      - tool_utilization
+  
+  integration_points:
+    github_workflows: ".github/workflows/"
+    custom_agents: ".github/agents/"
+    automation_scripts: ".codex/scripts/"
+    reports: ".codex/reports/"
+
+# Agent behavior with Cognitive Brain
+cognitive_brain_behavior:
+  # Before starting any task
+  task_initialization:
+    - build_or_update_cognitive_index
+    - retrieve_relevant_context
+    - identify_applicable_patterns
+    - check_decision_history
+    - assess_authorization_status
+  
+  # During task execution
+  task_execution:
+    - maintain_context_awareness
+    - apply_learned_patterns
+    - record_intermediate_decisions
+    - validate_against_observables
+    - adjust_based_on_feedback
+  
+  # After completing cycle
+  cycle_completion:
+    - store_patterns_learned
+    - record_decision_outcome
+    - update_cognitive_index
+    - run_authorization_check
+    - perform_meta_analysis
+  
+  # Autonomous operation
+  autonomous_mode:
+    enabled: true
+    max_cycles_without_checkpoint: 12
+    authorization_checkpoints: [2, 5, 8, 10]
+    final_approval_required: true
