@@ -295,9 +295,13 @@ class PGVectorStore:
             if shard_mapper:
                 shard_id = shard_mapper(doc['id'])
             else:
-                # Simple hash-based sharding
-                import hashlib
-                hash_val = int(hashlib.md5(doc['id'].encode()).hexdigest(), 16)
+                # Simple hash-based sharding using xxhash (faster than MD5)
+                try:
+                    import xxhash
+                    hash_val = xxhash.xxh64(doc['id'].encode()).intdigest()
+                except ImportError:
+                    # Fallback to built-in hash for non-cryptographic sharding
+                    hash_val = hash(doc['id'])
                 shard_id = hash_val % self.num_shards
             
             shard_groups[shard_id].append((

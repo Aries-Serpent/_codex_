@@ -443,15 +443,18 @@ class SemanticDiffer:
         self,
         similarity_threshold: float = 0.98,
         use_embeddings: bool = True,
+        ngram_range: tuple = (1, 2),
     ):
         """Initialize semantic differ.
         
         Args:
             similarity_threshold: Cosine similarity threshold (0.98 = 98% similar)
             use_embeddings: Use embeddings for comparison (fallback to TF-IDF)
+            ngram_range: Range of n-grams to extract for TF-IDF (default: (1, 2))
         """
         self.similarity_threshold = similarity_threshold
         self.use_embeddings = use_embeddings
+        self.ngram_range = ngram_range
         
         # Try to import embedding libraries
         self._embedding_available = False
@@ -463,7 +466,7 @@ class SemanticDiffer:
                 self._vectorizer = TfidfVectorizer(
                     max_features=1000,
                     stop_words='english',
-                    ngram_range=(1, 2)
+                    ngram_range=ngram_range
                 )
                 self._embedding_available = True
                 logger.info("SemanticDiffer initialized with TF-IDF embeddings")

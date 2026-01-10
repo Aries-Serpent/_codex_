@@ -722,9 +722,9 @@ class TestSemanticDifferIntegration:
         
         # Line differ might show change
         line_differ = ContentDiffer(ignore_whitespace=False)
-        line_result = line_differ.diff(old, new, normalize=False)
+        content_diff_result = line_differ.diff(old, new, normalize=False)
         # Line-based diff detects formatting change
-        assert line_result.change_type != ChangeType.NO_CHANGE or line_result.semantic_similarity < 1.0
+        assert content_diff_result.change_type != ChangeType.NO_CHANGE or content_diff_result.semantic_similarity < 1.0
         
         # Semantic differ should recognize semantic equivalence
         semantic_differ = SemanticDiffer()
