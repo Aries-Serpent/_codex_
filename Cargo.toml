@@ -12,8 +12,8 @@ crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 
 [dependencies]
 # Python-Rust Interop
-pyo3 = { version = "0.20", features = ["extension-module", "abi3-py37", "auto-initialize"] }
-pyo3-async-runtimes = { version = "0.20", features = ["tokio-runtime"] }
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38", "auto-initialize"] }
+pyo3-async-runtimes = { version = "0.22", features = ["tokio-runtime"] }
 
 # Async Runtime & Parallelism
 tokio = { version = "1.36", features = ["full", "tracing"] }
@@ -39,3 +39,7 @@ pyo3-build-config = "0.20"
 opt-level = 3
 lto = true
 codegen-units = 1
+
+[tool.maturin]
+module-name = "codex_engine"
+python-source = "src"
