@@ -4,7 +4,7 @@
 **Created:** 2026-01-09  
 **Updated:** 2026-01-09  
 **Purpose:** Detailed research and implementation guidance for enhancement plansets  
-**Branch:** copilot/sub-pr-2765
+**Branch:** (not branch-specific; intended to apply after merge)
 
 ---
 
