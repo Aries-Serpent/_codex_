@@ -519,6 +519,11 @@ class SemanticDiffer:
         Returns:
             Similarity score (0.0 to 1.0)
         """
+        # For very short texts (< 50 chars), TF-IDF won't be effective - use SequenceMatcher
+        if len(text1) < 50 or len(text2) < 50:
+            matcher = difflib.SequenceMatcher(None, text1, text2)
+            return matcher.ratio()
+        
         # Prefer TF-IDF / cosine similarity if scikit-learn is available
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer

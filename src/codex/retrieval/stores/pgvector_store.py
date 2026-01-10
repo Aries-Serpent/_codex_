@@ -310,7 +310,7 @@ class PGVectorStore:
                     # Fallback to MD5 for deterministic sharding when xxhash unavailable
                     import hashlib
                     hash_val = int.from_bytes(
-                        hashlib.md5(doc['id'].encode()).digest()[:4], 
+                        hashlib.md5(doc['id'].encode()).digest()[:8], 
                         'big'
                     )
                 shard_id = hash_val % self.num_shards
