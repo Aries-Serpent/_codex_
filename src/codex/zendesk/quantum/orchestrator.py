@@ -155,6 +155,15 @@ class ZendeskQuantumOrchestrator:
         # Create ticket (simplified - would integrate with Zendesk API)
         # Generate unique ticket ID using UUID4's integer representation
         # This preserves UUID uniqueness while being compatible with integer ticket_id type
+        # 
+        # Design Decision: UUID-to-Integer Conversion
+        # - UUID4().int produces 128-bit integers, which may cause issues with systems
+        #   expecting smaller ticket IDs (e.g., traditional auto-increment integers)
+        # - Benefits: Guaranteed global uniqueness, distributed ID generation
+        # - Trade-offs: Larger database storage, potential UI display challenges
+        # - Migration Path: For existing integer IDs, maintain a mapping table or use
+        #   a hybrid approach (e.g., namespace UUIDs based on legacy IDs)
+        # TODO(PS-09): Document migration strategy for existing Zendesk integrations
         ticket_uuid = uuid.uuid4()
         ticket = ZendeskTicket(
             ticket_id=ticket_uuid.int,  # Full UUID as integer (128-bit)

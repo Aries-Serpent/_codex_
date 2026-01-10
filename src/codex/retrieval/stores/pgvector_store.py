@@ -29,10 +29,11 @@ except ImportError:
     logger.warning("psycopg3 not installed - PGVectorStore will be stub only")
 
 # Optional dependency: scikit-learn for future centroid-based partitioning
-# TODO: Implement KMeans clustering for intelligent shard balancing based on
-# document embeddings. This would enable semantic-aware sharding where similar
-# documents are co-located on the same shard for improved query performance.
-# Current implementation: Uses hash-based consistent sharding only.
+# TODO(PS-06, semantic-sharding): Implement KMeans clustering for intelligent
+# shard balancing based on document embeddings. This would enable semantic-aware
+# sharding where similar documents are co-located on the same shard for improved
+# query performance. Tracked as part of PS-06: Index Sharding (Priority 4). Current
+# implementation: Uses hash-based consistent sharding only.
 try:
     from sklearn.cluster import KMeans  # noqa: F401
     HAS_SKLEARN = True

@@ -92,7 +92,11 @@ class ConsistentHashRing:
         Returns:
             Hash value as integer
         """
-        # Try xxhash for speed (if available)
+        # Try xxhash for speed (if available).
+        # Note: xxhash is an optional performance dependency. It should be listed as an
+        # extra in packaging metadata (e.g., pyproject.toml / requirements) so users
+        # can install it explicitly for faster sharding, while this code continues
+        # to work correctly without it.
         try:
             import xxhash
             return xxhash.xxh64(key.encode()).intdigest()

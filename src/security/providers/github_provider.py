@@ -184,7 +184,7 @@ class GitHubTokenProvider(TokenProvider):
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning("Token has expired")
+                    logger.warning("GitHub token has expired")
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
