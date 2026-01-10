@@ -19,6 +19,11 @@ dist/
 .tox/
 .nox/
 
+# Rust build artifacts
+target/
+Cargo.lock
+*.pdb
+
 # IDEs
 .idea/
 .vscode/
