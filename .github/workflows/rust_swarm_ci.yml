@@ -53,7 +53,7 @@ jobs:
       
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: rust-test-results
           path: target/release/deps/*.log
@@ -73,7 +73,7 @@ jobs:
         run: cargo bench --bench swarm_benchmarks -- --output-format bencher | tee benchmark_results.txt
       
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: benchmark_results.txt
@@ -103,7 +103,7 @@ jobs:
           fail_ci_if_error: false
       
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage/
@@ -135,7 +135,7 @@ jobs:
           pytest tests/integration/ -v --cov=codex_swarm --cov-report=html --cov-report=term
       
       - name: Upload integration test results
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
           path: htmlcov/
@@ -151,7 +151,7 @@ jobs:
           fetch-depth: 0  # Fetch all history for comparison
       
       - name: Download benchmark results
-        uses: actions/download-artifact@v4.1.3
+        uses: actions/download-artifact@v4
         with:
           name: benchmark-results
       
@@ -208,7 +208,7 @@ jobs:
           cargo doc --no-deps --document-private-items --all-features
       
       - name: Upload documentation
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: rust-documentation
           path: target/doc/
@@ -242,7 +242,7 @@ jobs:
         run: maturin build --release
       
       - name: Upload wheel
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
           path: target/wheels/*.whl

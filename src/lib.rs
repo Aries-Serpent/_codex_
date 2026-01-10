@@ -47,7 +47,7 @@ use pyo3::prelude::*;
 
 /// Python module definition for codex_swarm
 #[pymodule]
-fn codex_swarm(_py: Python, m: &PyModule) -> PyResult<()> {
+fn codex_swarm(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<swarm_engine::PySwarmEngine>()?;
     m.add_class::<task_manager::PyTaskManager>()?;
     m.add_class::<compression::PyCompression>()?;
@@ -56,8 +56,6 @@ fn codex_swarm(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_library_loads() {
         // Basic smoke test
