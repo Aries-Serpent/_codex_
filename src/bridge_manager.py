@@ -684,7 +684,9 @@ class BridgeManager:
                 
                 # Auto-detect v2 protocol by magic bytes (regardless of settings)
                 # Note: Using imported MAGIC_BYTES constant to maintain single source of truth
-                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == MAGIC_BYTES:
+                # Dynamic length check makes this resilient to future protocol changes
+                magic_len = len(MAGIC_BYTES)
+                if HAS_PROTOCOL_V2 and len(data) >= magic_len and data[:magic_len] == MAGIC_BYTES:
                     payload, header = v2_decode(data)
                     json_str = payload.decode('utf-8')
                     logger.debug(f"Read v2 message (compressed={bool(header.flags & 1)})")
