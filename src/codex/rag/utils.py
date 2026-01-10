@@ -15,40 +15,80 @@ logger = logging.getLogger(__name__)
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely move model from meta device to target device.
-    
+
     This helper addresses the Torch meta tensor error that occurs when
     loading models in test environments. Models on the 'meta' device
     need to be properly moved to a real device before use.
-    
+
+    Handles both standard PyTorch models and SentenceTransformer models,
+    which wrap PyTorch modules internally and require checking the
+    underlying modules for meta tensors.
+
     Args:
-        model: The model to load
+        model: The model to load (PyTorch model or SentenceTransformer)
         device: Target device (default: 'cpu')
-    
+
     Returns:
         Model moved to the target device
-        
+
     Example:
         >>> from sentence_transformers import SentenceTransformer
         >>> model = SentenceTransformer('all-MiniLM-L6-v2')
         >>> model = safe_model_load(model, device='cpu')
     """
     try:
-        # Check if model has a device attribute and is on meta device
-        if hasattr(model, "device"):
-            # Use device.type for robust comparison across PyTorch versions
+        # Detect if model has meta tensors by checking its modules/parameters
+        has_meta_tensors = False
+
+        # For SentenceTransformer and other models with named_modules
+        if hasattr(model, "named_modules"):
+            # Check all modules for meta device parameters
+            for name, module in model.named_modules():
+                # Check parameters (recurse=False to avoid duplicates)
+                for param_name, param in module.named_parameters(recurse=False):
+                    if hasattr(param, "device") and param.device.type == "meta":
+                        has_meta_tensors = True
+                        logger.debug(
+                            f"Detected meta tensor in {name}.{param_name}, "
+                            f"will use to_empty() for safe loading"
+                        )
+                        break
+                if has_meta_tensors:
+                    break
+
+        # For simple PyTorch models with direct device attribute
+        elif hasattr(model, "device"):
             device_type = getattr(model.device, "type", None)
             if device_type == "meta":
-                # Use to_empty to move from meta device
-                if hasattr(model, "to_empty"):
-                    return model.to_empty(device=device)
-                # Fallback to regular .to() method
+                has_meta_tensors = True
+                logger.debug("Detected model on meta device")
+
+        # If meta tensors detected, use to_empty() for safe loading
+        if has_meta_tensors:
+            if hasattr(model, "to_empty"):
+                logger.info(f"Moving model from meta device to {device} using to_empty()")
+                return model.to_empty(device=device)
+            else:
+                # Fallback: try regular to() which may fail
+                logger.warning(
+                    f"Model has meta tensors but no to_empty() method, "
+                    f"attempting regular to({device})"
+                )
                 return model.to(device)
-        # If not on meta device, just move to target device
+
+        # No meta tensors, safe to use regular to() method
         if hasattr(model, "to"):
+            logger.debug(f"Moving model to {device} (no meta tensors detected)")
             return model.to(device)
+
+        # Model doesn't support device movement
         return model
+
     except Exception as e:
-        logger.warning(f"Could not safely load model to device {device}: {e}")
+        logger.warning(
+            f"Could not safely load model to device {device}: {e}. "
+            f"Returning model as-is."
+        )
         return model
 
 
@@ -56,11 +96,11 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
 class ProvenanceMetadata:
     """
     Comprehensive provenance tracking for RAG chunks and retrievals.
-    
+
     Tracks the origin, processing, and retrieval context of text chunks
     to support expanded context workflows (64k-512k tokens) with full
     auditability and traceability.
-    
+
     Attributes:
         source_file: Original source file path
         line_range: Tuple of (start_line, end_line) in source
@@ -70,7 +110,7 @@ class ProvenanceMetadata:
         retrieval_score: Similarity score from retrieval (if applicable)
         char_range: Optional character position range in source
         metadata: Additional custom metadata
-    
+
     Example:
         >>> prov = ProvenanceMetadata(
         ...     source_file=Path("docs/guide.md"),
@@ -89,7 +129,7 @@ class ProvenanceMetadata:
     retrieval_score: float
     char_range: Optional[Tuple[int, int]] = None
     metadata: Optional[dict] = None
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary for serialization."""
         return {
@@ -102,7 +142,7 @@ class ProvenanceMetadata:
             "char_range": self.char_range,
             "metadata": self.metadata or {},
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict) -> "ProvenanceMetadata":
         """Create from dictionary."""

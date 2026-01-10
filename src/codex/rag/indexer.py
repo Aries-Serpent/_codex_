@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from .utils import safe_model_load
+
 logger = logging.getLogger(__name__)
 
 
@@ -101,6 +103,8 @@ def embed_chunks(
     # Load model
     logger.info(f"Loading embedding model: {model_name}")
     model = SentenceTransformer(model_name, cache_folder=cache_dir)
+    # Apply safe model loading to handle meta device tensors
+    model = safe_model_load(model, device="cpu")
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
@@ -367,10 +371,10 @@ def build_index_from_files(
 # Multi-Tenant Index Management (Phase B)
 # ============================================================================
 
+import shutil
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
-import shutil
 
 
 class IndexOperation(Enum):
@@ -386,7 +390,7 @@ class IndexOperation(Enum):
 class TenantOperationResult:
     """
     Result of a tenant index operation.
-    
+
     Attributes:
         success: Whether operation completed successfully
         operation: Type of operation performed
@@ -412,10 +416,10 @@ def manage_tenant_indices(
 ) -> TenantOperationResult:
     """
     Manage tenant indices with operations: create, update, delete, merge, list.
-    
+
     This function supports multi-tenant RAG workflows by providing centralized
     index lifecycle management for expanded context scenarios (64k-512k tokens).
-    
+
     Args:
         tenant_id: Tenant identifier
         operation: Operation to perform ('create', 'update', 'delete', 'merge', 'list')
@@ -426,13 +430,13 @@ def manage_tenant_indices(
             - chunk_size: int for 'create' operation
             - overlap: int for 'create' operation
             - merge_name: str for 'merge' operation
-    
+
     Returns:
         TenantOperationResult with operation status and details
-    
+
     Raises:
         ValueError: If operation is invalid or parameters are missing
-    
+
     Example:
         >>> # Create new index for tenant
         >>> result = manage_tenant_indices(
@@ -444,7 +448,7 @@ def manage_tenant_indices(
         ... )
         >>> print(result.message)
         "Successfully created index 'docs' for tenant 'customer_a'"
-        
+
         >>> # Merge multiple indices
         >>> result = manage_tenant_indices(
         ...     tenant_id="customer_a",
@@ -463,9 +467,9 @@ def manage_tenant_indices(
             index_names=index_names,
             message=f"Invalid operation: {operation}. Must be one of: create, update, delete, merge, list",
         )
-    
+
     tenant_dir = Path(index_dir) / tenant_id
-    
+
     # CREATE: Build new index from files
     if op_enum == IndexOperation.CREATE:
         files = kwargs.get("files", [])
@@ -477,7 +481,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message="'create' operation requires 'files' parameter",
             )
-        
+
         created = []
         for index_name in index_names:
             try:
@@ -493,7 +497,7 @@ def manage_tenant_indices(
                 logger.info(f"Created index '{index_name}' at {index_path}")
             except Exception as e:
                 logger.error(f"Failed to create index '{index_name}': {e}")
-        
+
         if created:
             return TenantOperationResult(
                 success=True,
@@ -511,7 +515,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message=f"Failed to create any indices for tenant '{tenant_id}'",
             )
-    
+
     # UPDATE: Rebuild existing index with new data
     elif op_enum == IndexOperation.UPDATE:
         files = kwargs.get("files", [])
@@ -523,7 +527,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message="'update' operation requires 'files' parameter",
             )
-        
+
         updated = []
         for index_name in index_names:
             try:
@@ -532,7 +536,7 @@ def manage_tenant_indices(
                 if old_path.exists():
                     shutil.rmtree(old_path)
                     logger.info(f"Removed old index '{index_name}'")
-                
+
                 # Create new index
                 index_path = build_index_from_files(
                     files=files,
@@ -546,7 +550,7 @@ def manage_tenant_indices(
                 logger.info(f"Updated index '{index_name}' at {index_path}")
             except Exception as e:
                 logger.error(f"Failed to update index '{index_name}': {e}")
-        
+
         if updated:
             return TenantOperationResult(
                 success=True,
@@ -564,7 +568,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message=f"Failed to update any indices for tenant '{tenant_id}'",
             )
-    
+
     # DELETE: Remove indices
     elif op_enum == IndexOperation.DELETE:
         deleted = []
@@ -579,7 +583,7 @@ def manage_tenant_indices(
                     logger.warning(f"Index '{index_name}' not found for tenant '{tenant_id}'")
             except Exception as e:
                 logger.error(f"Failed to delete index '{index_name}': {e}")
-        
+
         if deleted:
             return TenantOperationResult(
                 success=True,
@@ -597,7 +601,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message=f"No indices deleted for tenant '{tenant_id}'",
             )
-    
+
     # MERGE: Combine multiple indices into one
     elif op_enum == IndexOperation.MERGE:
         merge_name = kwargs.get("merge_name")
@@ -609,33 +613,32 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message="'merge' operation requires 'merge_name' parameter",
             )
-        
+
         try:
-            import faiss
-            
+
             # Load all indices to merge
             all_embeddings = []
             all_chunks = []
             all_metadata = []
-            
+
             for index_name in index_names:
                 try:
                     index, chunks, metadata = load_index(index_name, tenant_id, index_dir)
-                    
+
                     # Extract embeddings from FAISS index
                     if index.ntotal > 0:
                         embeddings = np.zeros((index.ntotal, index.d), dtype=np.float32)
                         for i in range(index.ntotal):
                             embeddings[i] = index.reconstruct(i)
-                        
+
                         all_embeddings.append(embeddings)
                         all_chunks.extend([(c["start"], c["end"], c["text"]) for c in chunks])
                         all_metadata.append(metadata)
-                    
+
                     logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
                 except Exception as e:
                     logger.error(f"Failed to load index '{index_name}': {e}")
-            
+
             if not all_embeddings:
                 return TenantOperationResult(
                     success=False,
@@ -644,17 +647,17 @@ def manage_tenant_indices(
                     index_names=index_names,
                     message="No valid indices found to merge",
                 )
-            
+
             # Combine all embeddings
             combined_embeddings = np.vstack(all_embeddings)
-            
+
             # Create merged metadata
             merged_metadata = {
                 "merged_from": index_names,
                 "source_metadata": all_metadata,
                 "total_sources": len(index_names),
             }
-            
+
             # Persist merged index
             index_path = persist_index(
                 index_name=merge_name,
@@ -664,7 +667,7 @@ def manage_tenant_indices(
                 tenant_id=tenant_id,
                 index_dir=index_dir,
             )
-            
+
             return TenantOperationResult(
                 success=True,
                 operation=op_enum,
@@ -678,7 +681,7 @@ def manage_tenant_indices(
                     "index_path": str(index_path),
                 },
             )
-            
+
         except Exception as e:
             logger.error(f"Merge operation failed: {e}")
             return TenantOperationResult(
@@ -688,7 +691,7 @@ def manage_tenant_indices(
                 index_names=index_names,
                 message=f"Failed to merge indices: {str(e)}",
             )
-    
+
     # LIST: List all indices for tenant
     elif op_enum == IndexOperation.LIST:
         try:
@@ -701,7 +704,7 @@ def manage_tenant_indices(
                     message=f"No indices found for tenant '{tenant_id}' (tenant directory does not exist)",
                     details={"indices": []},
                 )
-            
+
             indices = []
             for item in tenant_dir.iterdir():
                 if item.is_dir() and (item / "index.faiss").exists():
@@ -723,7 +726,7 @@ def manage_tenant_indices(
                             "dimension": "unknown",
                             "created_at": "unknown",
                         })
-            
+
             return TenantOperationResult(
                 success=True,
                 operation=op_enum,
@@ -732,7 +735,7 @@ def manage_tenant_indices(
                 message=f"Found {len(indices)} index(es) for tenant '{tenant_id}'",
                 details={"indices": indices},
             )
-            
+
         except Exception as e:
             logger.error(f"List operation failed: {e}")
             return TenantOperationResult(
@@ -742,7 +745,7 @@ def manage_tenant_indices(
                 index_names=[],
                 message=f"Failed to list indices: {str(e)}",
             )
-    
+
     # Fallback for unknown operations
     return TenantOperationResult(
         success=False,
