@@ -1,33 +1,39 @@
 [package]
-name = "codex-swarm"
+name = "codex-swarm-engine"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.70"
+authors = ["Aries Serpent"]
+description = "Rust orchestration layer for Codex AI Agent Swarm"
+license = "MIT"
 
 [lib]
-name = "codex_swarm"
-crate-type = ["cdylib", "rlib"]
+name = "codex_engine"
+crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 
 [dependencies]
-pyo3 = { version = "0.22", features = ["extension-module", "abi3-py311"] }
-tokio = { version = "1.35", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-crossbeam = "0.8"
-parking_lot = "0.12"
-flate2 = "1.0"
-tracing = "0.1"
-tracing-subscriber = "0.3"
+# Python-Rust Interop
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38", "auto-initialize"] }
+pyo3-async-runtimes = { version = "0.22", features = ["tokio-runtime"] }
 
-[dev-dependencies]
-criterion = { version = "0.5", features = ["html_reports"] }
-rand = "0.8"
-proptest = "1.4"
-dhat = "0.3"
+# Async Runtime & Parallelism
+tokio = { version = "1.36", features = ["full", "tracing"] }
+rayon = "1.8.1"  # For CPU-bound data preprocessing
+dashmap = "5.5.3"  # Concurrent hash map for swarm state aggregation
 
-[[bench]]
-name = "swarm_benchmarks"
-harness = false
+# Data Serialization & Compression
+serde = { version = "1.0.197", features = ["derive"] }
+rmp-serde = "1.1.2"  # Binary serialization for agent state
+lz4 = "1.24.0"  # Fast compression for real-time agent streams
+zstd = { version = "0.13.0", features = ["zstdmt"] }  # High-ratio compression
+
+# System Interfaces & Communication
+crossbeam = "0.8.4"  # Multi-producer, multi-consumer channels
+anyhow = "1.0.80"  # Flexible error handling
+tracing = "0.1.40"  # High-performance instrumentation
+tracing-subscriber = "0.3.18"
+
+[build-dependencies]
+pyo3-build-config = "0.20"
 
 [profile.release]
 opt-level = 3
@@ -38,3 +44,7 @@ strip = true
 [profile.bench]
 opt-level = 3
 lto = true
+
+[tool.maturin]
+module-name = "codex_engine"
+python-source = "src"
