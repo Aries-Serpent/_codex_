@@ -267,38 +267,15 @@ class GitHubTokenProvider(TokenProvider):
             
         Returns:
             RotationResult with new token details
+            
+        Raises:
+            NotImplementedError: This is a stub that must be implemented
         """
-        try:
-            # This is a stub implementation; actual token creation must use the GitHub API.
-            # For fine-grained PATs: POST /user/tokens
-            # For classic PATs: Manual process or appropriate API flow when available.
-            # TODO: Replace mock token generation below with real GitHub API integration.
-            
-            logger.info(f"Creating GitHub token: {_redact_identifier(name)}")
-            
-            # TODO: Remove this mock token ID and use the ID/value returned by GitHub instead.
-            token_id = f"ghp_mock_{datetime.now(UTC).timestamp()}"
-            
-            return RotationResult(
-                success=True,
-                old_secret_id="",
-                new_secret_id=token_id,
-                new_secret_value="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                metadata={
-                    "name": name,
-                    "scopes": scopes,
-                    "expires_in_days": expires_in_days,
-                    "created_at": datetime.now(UTC).isoformat(),
-                }
-            )
-            
-        except Exception as e:
-            logger.error(f"Failed to create GitHub token: {e}")
-            return RotationResult(
-                success=False,
-                old_secret_id="",
-                error_message=str(e)
-            )
+        raise NotImplementedError(
+            "GitHub token creation is not implemented. This method is a stub and "
+            "must be wired to the GitHub API (for example, POST /user/tokens for "
+            "fine-grained PATs) before it can be used."
+        )
     
     def update_token_scopes(
         self,

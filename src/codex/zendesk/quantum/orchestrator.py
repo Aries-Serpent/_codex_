@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import contextvars
 import logging
+import uuid
 from typing import Any, Iterable, Optional
 
 from src.codex.zendesk.model.trigger import _ZendeskBaseModel
