@@ -400,3 +400,96 @@ class TestIndexerEdgeCases:
             
             assert index is not None
             assert len(loaded_chunks) == 0
+
+
+class TestManageTenantIndices:
+    """Tests for manage_tenant_indices function"""
+
+    def test_invalid_operation(self):
+        """Test with invalid operation"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="invalid_op",
+                index_names=["idx1"],
+                index_dir=tmpdir
+            )
+            assert not result.success
+            assert "Invalid operation" in result.message
+
+    def test_create_missing_files(self):
+        """Test CREATE operation without files parameter"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="create",
+                index_names=["idx1"],
+                index_dir=tmpdir
+            )
+            assert not result.success
+            assert "requires 'files' parameter" in result.message
+
+    def test_list_empty(self):
+        """Test LIST operation with no indices"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="list",
+                index_names=[],
+                index_dir=tmpdir
+            )
+            assert result.success
+            assert len(result.index_names) == 0
+
+    def test_delete_nonexistent(self):
+        """Test DELETE operation on non-existent index"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="delete",
+                index_names=["nonexistent"],
+                index_dir=tmpdir
+            )
+            assert not result.success
+
+    def test_merge_missing_param(self):
+        """Test MERGE operation without merge_name"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="merge",
+                index_names=["idx1", "idx2"],
+                index_dir=tmpdir
+            )
+            assert not result.success
+            assert "requires 'merge_name' parameter" in result.message
+
+    def test_update_missing_files(self):
+        """Test UPDATE operation without files parameter"""
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
+        from codex.rag.indexer import manage_tenant_indices
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = manage_tenant_indices(
+                tenant_id="test",
+                operation="update",
+                index_names=["idx1"],
+                index_dir=tmpdir
+            )
+            assert not result.success
+            assert "requires 'files' parameter" in result.message
