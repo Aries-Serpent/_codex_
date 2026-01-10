@@ -240,8 +240,12 @@ try:
         # Token validation happens here but we don't need to store it
         # The actual scope extraction would happen via JWT decode or OAuth introspection
         
-        # Placeholder implementation
-        logger.warning("Using placeholder token scope extraction")
+        # TODO: Implement proper token scope extraction
+        # - For JWT tokens: Decode and extract 'scope' claim
+        # - For OAuth2: Call introspection endpoint
+        # - Validate token signature and expiration
+        # This placeholder returns read-only access and must be replaced before production
+        logger.warning("Using placeholder token scope extraction - replace before production")
         return ["repo:read"]  # Default read-only
     
     async def scope_validator_dependency(

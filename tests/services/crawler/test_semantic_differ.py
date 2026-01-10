@@ -720,10 +720,10 @@ class TestSemanticDifferIntegration:
         old = "This is a test."
         new = "This   is   a   test."  # Extra spaces
         
-        # Line differ might show change
-        line_differ = ContentDiffer(ignore_whitespace=False)
-        content_diff_result = line_differ.diff(old, new, normalize=False)
-        # Line-based diff detects formatting change
+        # Content differ might show change
+        content_differ = ContentDiffer(ignore_whitespace=False)
+        content_diff_result = content_differ.diff(old, new, normalize=False)
+        # Content-based diff detects formatting change
         assert content_diff_result.change_type != ChangeType.NO_CHANGE or content_diff_result.semantic_similarity < 1.0
         
         # Semantic differ should recognize semantic equivalence
