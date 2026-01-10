@@ -372,7 +372,8 @@ class AWSSecretsManagerProvider(SecretProvider):
                         metadata = self.get_secret_metadata(secret["Name"])
                         secrets.append(metadata)
                     except Exception as e:
-                        logger.warning(f"Failed to get metadata for a secret: {e}")
+                        # Don't log secret names for security
+                        logger.warning(f"Failed to get metadata for a secret: {type(e).__name__}")
             
             return secrets
             

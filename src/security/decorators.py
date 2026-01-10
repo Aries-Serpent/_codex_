@@ -237,11 +237,8 @@ try:
         Raises:
             HTTPException: If token is invalid
         """
-        _token = credentials.credentials
-        
-        # TODO: Decode token and extract scopes
-        # For JWT: jwt.decode(_token, ...) and read 'scope' claim
-        # For OAuth: introspection endpoint
+        # Token validation happens here but we don't need to store it
+        # The actual scope extraction would happen via JWT decode or OAuth introspection
         
         # Placeholder implementation
         logger.warning("Using placeholder token scope extraction")

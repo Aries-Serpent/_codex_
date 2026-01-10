@@ -45,9 +45,12 @@ class TestChangeType:
         assert ChangeType.COMPLETE.value == "complete"
     
     def test_enum_comparison(self):
-        """Test enum comparison."""
+        """Test enum comparison and identity."""
         assert ChangeType.NO_CHANGE != ChangeType.MINOR
-        assert ChangeType.MINOR is ChangeType.MINOR
+        # Test enum identity
+        minor_1 = ChangeType.MINOR
+        minor_2 = ChangeType.MINOR
+        assert minor_1 is minor_2  # Enums are singletons
 
 
 class TestDiffSegment:
@@ -719,7 +722,9 @@ class TestSemanticDifferIntegration:
         
         # Line differ might show change
         line_differ = ContentDiffer(ignore_whitespace=False)
-        _line_result = line_differ.diff(old, new, normalize=False)
+        line_result = line_differ.diff(old, new, normalize=False)
+        # Line-based diff detects formatting change
+        assert line_result.change_type != ChangeType.NO_CHANGE or line_result.semantic_similarity < 1.0
         
         # Semantic differ should recognize semantic equivalence
         semantic_differ = SemanticDiffer()
