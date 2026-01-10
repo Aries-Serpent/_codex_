@@ -102,6 +102,8 @@ manifests/k8s/*/secret.yaml
 !.codex/schemas/*.json
 !.codex/scripts/
 !.codex/scripts/**
+!.codex/tools/
+!.codex/tools/**
 !.codex/copilot_bridge/
 !.codex/copilot_bridge/**
 !.codex/evidence/
@@ -110,6 +112,35 @@ manifests/k8s/*/secret.yaml
 !.codex/reports/**
 !.codex/sbom/
 !.codex/sbom/.gitkeep
+!.codex/plans/
+!.codex/plans/**
+!.codex/cognitive_brain/
+!.codex/cognitive_brain/**
+!.codex/patterns/
+!.codex/patterns/**
+!.codex/decisions/
+!.codex/decisions/**
+!.codex/meta/
+!.codex/meta/**
+!.codex/architecture/
+!.codex/architecture/**
+!.codex/prompts/
+!.codex/prompts/**
+# Allow all planning and continuation documents
+!.codex/*PLAN*.md
+!.codex/*PROMPT*.md
+!.codex/*SUMMARY*.md
+!.codex/*COMPLETE*.md
+!.codex/*AUTOMATION*.md
+!.codex/*AUTHORIZATION*.md
+!.codex/*TOOLKIT*.md
+!.codex/*HUMAN*.md
+!.codex/*ADMIN*.md
+!.codex/*AGENT*.md
+!.codex/*CONTINUATION*.md
+!.codex/*FOLLOWUP*.md
+!.codex/*NEXT*.md
+# Block validation artifacts but keep structure
 .codex/validation/
 
 # Test artifacts

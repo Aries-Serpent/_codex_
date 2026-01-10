@@ -200,8 +200,10 @@ class TokenScopeVerifier:
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
-            # For troubleshooting with full details, set environment variable DEBUG=1
             print("❌ Error: Token verification failed (check logs for details)")
+            # When DEBUG=1, provide additional non-sensitive error details to stdout
+            if os.getenv("DEBUG") == "1":
+                print(f"Debug details: {results.get('error')}")
             return
         
         # Direct inline access for non-sensitive metadata
