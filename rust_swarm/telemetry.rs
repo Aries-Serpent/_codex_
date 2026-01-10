@@ -277,12 +277,17 @@ mod tests {
     fn test_health_status() {
         let telemetry = Telemetry::new();
         
-        // Record many successes (should be healthy)
+        // Record successes with good latency
         for _ in 0..100 {
             telemetry.record_success(Duration::from_micros(100));
         }
         
+        // Update throughput and resources to meet all healthy criteria
+        telemetry.update_throughput(1000, Duration::from_secs(1)); // > 100 tasks/s
+        telemetry.update_resources(100, 10, 1024 * 1024); // Some agents and queue
+        
         let metrics = telemetry.snapshot();
+        // Should be healthy: low latency, high throughput, no errors
         assert_eq!(metrics.status, HealthStatus::Healthy);
     }
     

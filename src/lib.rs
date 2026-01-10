@@ -33,11 +33,15 @@ pub mod ffi_bridge;
 #[path = "../rust_swarm/metrics.rs"]
 pub mod metrics;
 
+#[path = "../rust_swarm/telemetry.rs"]
+pub mod telemetry;
+
 // Re-export main types
 pub use swarm_engine::SwarmEngine;
 pub use task_manager::{TaskManager, Task, TaskResult};
 pub use compression::Compression;
 pub use metrics::Metrics;
+pub use telemetry::{Telemetry, TelemetryMetrics, HealthStatus};
 
 use pyo3::prelude::*;
 
