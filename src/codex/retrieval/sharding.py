@@ -97,9 +97,8 @@ class ConsistentHashRing:
             import xxhash
             return xxhash.xxh64(key.encode()).intdigest()
         except ImportError:
-            # Fallback to hashlib MD5
-            hash_obj = hashlib.md5(key.encode())
-            return int.from_bytes(hash_obj.digest()[:8], 'big')
+            # Fallback to built-in hash() - faster than MD5 for non-cryptographic use
+            return hash(key)
     
     def _build_ring(self) -> None:
         """Build the consistent hash ring with virtual nodes."""

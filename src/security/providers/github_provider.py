@@ -255,13 +255,14 @@ class GitHubTokenProvider(TokenProvider):
             RotationResult with new token details
         """
         try:
-            # This is a stub - actual implementation would use GitHub API
+            # This is a stub implementation; actual token creation must use the GitHub API.
             # For fine-grained PATs: POST /user/tokens
-            # For classic PATs: Manual process
+            # For classic PATs: Manual process or appropriate API flow when available.
+            # TODO: Replace mock token generation below with real GitHub API integration.
             
             logger.info(f"Creating GitHub token: {name}")
             
-            # Generate mock token ID
+            # TODO: Remove this mock token ID and use the ID/value returned by GitHub instead.
             token_id = f"ghp_mock_{datetime.now(UTC).timestamp()}"
             
             return RotationResult(
