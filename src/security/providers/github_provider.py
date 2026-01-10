@@ -28,6 +28,20 @@ from security.providers.base import (
 logger = logging.getLogger(__name__)
 
 
+def _redact_identifier(identifier: str) -> str:
+    """Redact sensitive identifier for logging.
+    
+    Args:
+        identifier: Token ID, name, or other identifier
+        
+    Returns:
+        Redacted version showing only first 4 characters
+    """
+    if not identifier or len(identifier) <= 4:
+        return "***"
+    return f"{identifier[:4]}***"
+
+
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
     
@@ -164,13 +178,13 @@ class GitHubTokenProvider(TokenProvider):
             # Make API request to validate token
             # This is a stub - actual implementation would use GitHub API
             # Example: GET /user with token authentication
-            logger.info(f"Validating GitHub token: {secret_id}")
+            logger.info(f"Validating GitHub token: {_redact_identifier(secret_id)}")
             
             # Check expiration
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning(f"Token {secret_id} has expired")
+                    logger.warning(f"Token {_redact_identifier(secret_id)} has expired")
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
@@ -253,38 +267,15 @@ class GitHubTokenProvider(TokenProvider):
             
         Returns:
             RotationResult with new token details
+            
+        Raises:
+            NotImplementedError: This is a stub that must be implemented
         """
-        try:
-            # This is a stub implementation; actual token creation must use the GitHub API.
-            # For fine-grained PATs: POST /user/tokens
-            # For classic PATs: Manual process or appropriate API flow when available.
-            # TODO: Replace mock token generation below with real GitHub API integration.
-            
-            logger.info(f"Creating GitHub token: {name}")
-            
-            # TODO: Remove this mock token ID and use the ID/value returned by GitHub instead.
-            token_id = f"ghp_mock_{datetime.now(UTC).timestamp()}"
-            
-            return RotationResult(
-                success=True,
-                old_secret_id="",
-                new_secret_id=token_id,
-                new_secret_value="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                metadata={
-                    "name": name,
-                    "scopes": scopes,
-                    "expires_in_days": expires_in_days,
-                    "created_at": datetime.now(UTC).isoformat(),
-                }
-            )
-            
-        except Exception as e:
-            logger.error(f"Failed to create GitHub token: {e}")
-            return RotationResult(
-                success=False,
-                old_secret_id="",
-                error_message=str(e)
-            )
+        raise NotImplementedError(
+            "GitHub token creation is not implemented. This method is a stub and "
+            "must be wired to the GitHub API (for example, POST /user/tokens for "
+            "fine-grained PATs) before it can be used."
+        )
     
     def update_token_scopes(
         self,
@@ -307,7 +298,7 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # PATCH /user/tokens/{token_id}
             
-            logger.info(f"Updating GitHub token scopes: {secret_id}")
+            logger.info(f"Updating GitHub token scopes: {_redact_identifier(secret_id)}")
             logger.debug(f"New scopes: {scopes}")
             
             # TODO: Actual API call
@@ -330,7 +321,7 @@ class GitHubTokenProvider(TokenProvider):
             # This is a stub - actual implementation would use GitHub API
             # DELETE /user/tokens/{token_id}
             
-            logger.info(f"Revoking GitHub token: {secret_id}")
+            logger.info(f"Revoking GitHub token: {_redact_identifier(secret_id)}")
             
             # TODO: Actual API call
             return True

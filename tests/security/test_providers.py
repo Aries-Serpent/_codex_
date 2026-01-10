@@ -522,18 +522,16 @@ class TestGitHubTokenProvider:
         assert len(scopes) >= 0
     
     def test_create_token(self, github_config):
-        """Test creating new token."""
+        """Test creating new token raises NotImplementedError (stub implementation)."""
         provider = GitHubTokenProvider(github_config)
-        result = provider.create_token(
-            name="test-token",
-            scopes=["repo", "workflow"],
-            expires_in_days=90,
-        )
         
-        assert result.success is True
-        assert result.new_secret_id is not None
-        assert result.new_secret_value is not None
-        assert "ghp_" in result.new_secret_value
+        # This is a stub implementation that must raise NotImplementedError
+        with pytest.raises(NotImplementedError, match="GitHub token creation is not implemented"):
+            provider.create_token(
+                name="test-token",
+                scopes=["repo", "workflow"],
+                expires_in_days=90,
+            )
     
     def test_update_token_scopes(self, github_config):
         """Test updating token scopes."""

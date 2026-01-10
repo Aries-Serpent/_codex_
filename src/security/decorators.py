@@ -240,13 +240,17 @@ try:
         # Token validation happens here but we don't need to store it
         # The actual scope extraction would happen via JWT decode or OAuth introspection
         
-        # TODO: Implement proper token scope extraction
-        # - For JWT tokens: Decode and extract 'scope' claim
-        # - For OAuth2: Call introspection endpoint
-        # - Validate token signature and expiration
-        # This placeholder returns read-only access and must be replaced before production
-        logger.warning("Using placeholder token scope extraction - replace before production")
-        return ["repo:read"]  # Default read-only
+        # This placeholder must not be used in production as it would
+        # grant unintended access. Raise an error instead of returning
+        # hardcoded scopes to ensure a fail-closed behavior.
+        logger.error(
+            "Token scope extraction is not implemented. "
+            "Replace get_token_scopes with a real implementation before production."
+        )
+        raise NotImplementedError(
+            "Token scope extraction is not implemented. "
+            "Implement get_token_scopes to validate tokens and extract scopes."
+        )
     
     async def scope_validator_dependency(
         scopes: List[str] = Depends(get_token_scopes),

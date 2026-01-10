@@ -164,10 +164,3 @@ class IntelligentAudioAnalyzer:
         # Default fallback
         default_profile = self.profiles[0]
         return ProfileMatch(default_profile, 0.60, "Using default profile")
-
-
-if __name__ == "__main__":
-    # Test the analyzer
-    analyzer = IntelligentAudioAnalyzer()
-    test_path = Path("test_audio.mp3")
-    print(f"Analyzer initialized with {len(analyzer.profiles)} profiles")
