@@ -8,6 +8,9 @@ from services.audio.analysis.intelligent_analyzer import (
     ProfileMatch
 )
 
+# Mock binary audio data for testing (1KB of zeros)
+MOCK_AUDIO_DATA = b'\x00' * 1024
+
 
 class TestIntelligentAudioAnalyzer:
     """Test cases for IntelligentAudioAnalyzer."""
@@ -25,7 +28,7 @@ class TestIntelligentAudioAnalyzer:
         
         # Create a minimal binary file (not actual audio, but better than text)
         # In production, this would use a minimal valid WAV/MP3 or mock the audio library
-        test_file.write_bytes(b'\x00' * 1024)  # 1KB of zero bytes
+        test_file.write_bytes(MOCK_AUDIO_DATA)
         
         analysis = analyzer.analyze_file(test_file)
         
@@ -38,7 +41,7 @@ class TestIntelligentAudioAnalyzer:
         """Test profile selection."""
         analyzer = IntelligentAudioAnalyzer()
         test_file = tmp_path / "test.mp3"
-        test_file.write_bytes(b'\x00' * 1024)  # Mock binary audio file
+        test_file.write_bytes(MOCK_AUDIO_DATA)
         
         analysis = analyzer.analyze_file(test_file)
         profile_match = analyzer.select_profile(analysis)
@@ -51,7 +54,7 @@ class TestIntelligentAudioAnalyzer:
         """Test aggressive mode selection."""
         analyzer = IntelligentAudioAnalyzer()
         test_file = tmp_path / "test.mp3"
-        test_file.write_bytes(b'\x00' * 1024)  # Mock binary audio file
+        test_file.write_bytes(MOCK_AUDIO_DATA)
         
         analysis = analyzer.analyze_file(test_file)
         normal_match = analyzer.select_profile(analysis, aggressive=False)
