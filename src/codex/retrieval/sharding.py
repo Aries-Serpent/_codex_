@@ -111,10 +111,12 @@ class ConsistentHashRing:
             import xxhash
             return xxhash.xxh64(key.encode()).intdigest()
         except ImportError:
-            # Fallback to MD5 for deterministic hashing across sessions/processes
-            # Note: We avoid built-in hash() as it's randomized between Python runs
+            # Fallback to SHA-256 for deterministic hashing across sessions/processes.
+            # SHA-256 provides better collision resistance than MD5 while maintaining
+            # deterministic behavior. We avoid built-in hash() as it's randomized
+            # between Python runs for security reasons.
             import hashlib
-            return int.from_bytes(hashlib.md5(key.encode()).digest()[:8], 'big')
+            return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], 'big')
     
     def _build_ring(self) -> None:
         """Build the consistent hash ring with virtual nodes."""

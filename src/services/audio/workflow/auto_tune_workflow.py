@@ -50,14 +50,16 @@ class AutoTuneWorkflow:
         if not files:
             return WorkflowResult(success=False, error="No audio files found")
         
-        results = [FileProcessingResult(success=True, input_path=f, processing_time=2.0) 
+        # Stub implementation: processing_time set to 0.0 until real timing is implemented
+        # TODO(audio-workflow): Add actual audio processing with time.perf_counter() timing
+        results = [FileProcessingResult(success=True, input_path=f, processing_time=0.0) 
                    for f in files]
         
         return WorkflowResult(
             success=True,
             total_files=len(files),
             success_rate=1.0,
-            avg_improvement=8.5,
+            avg_improvement=8.5,  # Stub value
             total_time=sum(r.processing_time for r in results),
             output_dir=output_dir or str(Path(input_path).parent)
         )

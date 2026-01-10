@@ -236,7 +236,69 @@ try:
         2. Extract scopes/permissions from token payload
         3. Return the actual scopes for authorization checks
         
-        Example implementations are provided in the comments below.
+        Implementation Examples:
+        
+        **Option 1: JWT Token Validation (Recommended for stateless auth)**
+        
+        ```python
+        import jwt
+        from fastapi import Depends, HTTPException, status
+        from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+        
+        async def get_token_scopes(
+            credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+        ) -> List[str]:
+            try:
+                token = credentials.credentials
+                payload = jwt.decode(
+                    token,
+                    settings.JWT_SECRET_KEY,
+                    algorithms=[settings.JWT_ALGORITHM],
+                    audience=settings.JWT_AUDIENCE,
+                )
+                return payload.get("scopes", [])
+            except jwt.ExpiredSignatureError:
+                raise HTTPException(401, "Token expired")
+            except jwt.InvalidTokenError:
+                raise HTTPException(401, "Invalid token")
+        ```
+        
+        Configuration: JWT_SECRET_KEY, JWT_ALGORITHM (e.g., "HS256"), JWT_AUDIENCE
+        
+        **Option 2: OAuth Token Introspection (RFC 7662)**
+        
+        ```python
+        import httpx
+        from fastapi import Depends, HTTPException
+        
+        async def get_token_scopes(
+            credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+        ) -> List[str]:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    settings.OAUTH_INTROSPECTION_ENDPOINT,
+                    data={"token": credentials.credentials},
+                    auth=(settings.OAUTH_CLIENT_ID, settings.OAUTH_CLIENT_SECRET),
+                )
+                data = response.json()
+                if not data.get("active"):
+                    raise HTTPException(401, "Token not active")
+                return data.get("scope", "").split()
+        ```
+        
+        Configuration: OAUTH_INTROSPECTION_ENDPOINT, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
+        
+        **Testing with Mocks:**
+        
+        ```python
+        from unittest.mock import AsyncMock
+        
+        @pytest.mark.asyncio
+        async def test_endpoint(mocker):
+            mocker.patch("module.get_token_scopes", 
+                        new=AsyncMock(return_value=["read:data"]))
+            # Test protected endpoint...
+        ```
         
         Args:
             credentials: Bearer token from request
@@ -247,32 +309,9 @@ try:
         Raises:
             NotImplementedError: Always raised to prevent production use
         """
-        # Token validation happens here but we don't need to store it
-        # The actual scope extraction would happen via JWT decode or OAuth introspection
-        
         # This placeholder must not be used in production as it would
         # grant unintended access. Raise an error instead of returning
         # hardcoded scopes to ensure a fail-closed behavior.
-        #
-        # Example implementation for production:
-        # ```python
-        # import jwt
-        # from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-        # 
-        # security = HTTPBearer()
-        # credentials: HTTPAuthorizationCredentials = Depends(security)
-        # token = credentials.credentials
-        # 
-        # # For JWT tokens:
-        # payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        # return payload.get("scopes", [])
-        # 
-        # # For OAuth introspection:
-        # response = requests.post(INTROSPECTION_ENDPOINT, 
-        #                          data={"token": token},
-        #                          auth=(CLIENT_ID, CLIENT_SECRET))
-        # return response.json().get("scope", "").split()
-        # ```
         logger.error(
             "Token scope extraction is not implemented. "
             "Replace get_token_scopes with a real implementation before production."

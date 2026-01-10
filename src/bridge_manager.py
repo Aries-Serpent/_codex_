@@ -730,7 +730,7 @@ class BridgeManager:
                 data += chunk
                 
                 # Auto-detect v2 protocol by magic bytes
-                if not is_v2 and len(data) >= 14 and data[:4] == b"CBv2":
+                if not is_v2 and len(data) >= 14 and data[:4] == MAGIC_BYTES:
                     is_v2 = True
                     # Use ProtocolHeader for proper parsing
                     if HAS_PROTOCOL_V2:
@@ -750,7 +750,7 @@ class BridgeManager:
             
             # Parse message with auto-detected protocol
             if data:
-                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == b"CBv2":
+                if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == MAGIC_BYTES:
                     payload, header = v2_decode(data)
                     json_str = payload.decode('utf-8')
                 else:
