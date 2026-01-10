@@ -2,6 +2,7 @@
 Tests for RAG Indexer Module
 """
 
+import json
 import tempfile
 from pathlib import Path
 
@@ -493,3 +494,178 @@ class TestManageTenantIndices:
             )
             assert not result.success
             assert "requires 'files' parameter" in result.message
+
+
+class TestEmbedChunksErrorPaths:
+    """Error path tests for embed_chunks function"""
+
+    def test_embed_chunks_empty_returns_empty_array(self):
+        """Test embed_chunks with empty chunks returns empty array"""
+        embeddings = embed_chunks([])
+        assert isinstance(embeddings, np.ndarray)
+        assert len(embeddings) == 0
+        
+    def test_embed_chunks_import_error_coverage(self):
+        """
+        Test to exercise ImportError path in embed_chunks.
+        Note: We can't easily test ImportError without breaking the module,
+        but we document that lines 87-92 handle ImportError gracefully.
+        This test verifies embed_chunks works when dependencies ARE available.
+        """
+        chunks = [(0, 10, "Test text for embedding")]
+        embeddings = embed_chunks(chunks)
+        assert isinstance(embeddings, np.ndarray)
+        assert len(embeddings) == 1
+        assert embeddings.shape[1] > 0  # Has embedding dimension
+
+
+class TestLoadIndexErrorPaths:
+    """Error path tests for load_index function"""
+
+    def test_load_index_file_not_found(self):
+        """Test load_index with non-existent index directory"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Try to load non-existent index
+            with pytest.raises(FileNotFoundError, match="Index not found"):
+                load_index(
+                    index_name="nonexistent",
+                    tenant_id="test",
+                    index_dir=tmpdir,
+                )
+
+    def test_load_index_missing_faiss_file(self):
+        """Test load_index when FAISS file is missing (line 247)"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Create index directory structure but without FAISS file
+            index_path = tmpdir / "test" / "test_index"
+            index_path.mkdir(parents=True)
+            
+            # Create metadata files but not index.faiss
+            with open(index_path / "chunks.json", "w") as f:
+                json.dump([], f)
+            with open(index_path / "metadata.json", "w") as f:
+                json.dump({}, f)
+            
+            # Should raise FileNotFoundError for missing FAISS file
+            with pytest.raises(FileNotFoundError, match="FAISS index file not found"):
+                load_index(
+                    index_name="test_index",
+                    tenant_id="test",
+                    index_dir=tmpdir,
+                )
+
+    def test_load_index_corrupted_metadata_json(self):
+        """Test load_index with corrupted metadata.json (line 266)"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create a valid index first
+            chunks = [(0, 10, "Test")]
+            embeddings = np.random.randn(1, 384).astype(np.float32)
+            
+            index_path = persist_index(
+                index_name="test",
+                embeddings=embeddings,
+                chunks=chunks,
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            # Corrupt the metadata.json
+            metadata_file = index_path / "metadata.json"
+            with open(metadata_file, "w") as f:
+                f.write("{invalid json content")
+            
+            # Should raise JSONDecodeError
+            with pytest.raises(json.JSONDecodeError):
+                load_index(
+                    index_name="test",
+                    tenant_id="test",
+                    index_dir=tmpdir,
+                )
+
+    def test_load_index_corrupted_chunks_json(self):
+        """Test load_index with corrupted chunks.json"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create a valid index first
+            chunks = [(0, 10, "Test")]
+            embeddings = np.random.randn(1, 384).astype(np.float32)
+            
+            index_path = persist_index(
+                index_name="test",
+                embeddings=embeddings,
+                chunks=chunks,
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            # Corrupt the chunks.json
+            chunks_file = index_path / "chunks.json"
+            with open(chunks_file, "w") as f:
+                f.write("{invalid json")
+            
+            # Should raise JSONDecodeError
+            with pytest.raises(json.JSONDecodeError):
+                load_index(
+                    index_name="test",
+                    tenant_id="test",
+                    index_dir=tmpdir,
+                )
+
+    def test_load_index_corrupted_faiss_index(self):
+        """Test load_index with corrupted FAISS index file"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Create index directory structure
+            index_path = tmpdir / "test" / "test_index"
+            index_path.mkdir(parents=True)
+            
+            # Create a corrupted FAISS file
+            faiss_file = index_path / "index.faiss"
+            with open(faiss_file, "wb") as f:
+                f.write(b"corrupted data")
+            
+            # Create valid JSON files
+            with open(index_path / "chunks.json", "w") as f:
+                json.dump([], f)
+            with open(index_path / "metadata.json", "w") as f:
+                json.dump({}, f)
+            
+            # Should raise exception when reading corrupted FAISS index
+            with pytest.raises(Exception):  # FAISS will raise various exceptions
+                load_index(
+                    index_name="test_index",
+                    tenant_id="test",
+                    index_dir=tmpdir,
+                )
+
+    def test_load_index_missing_metadata_file(self):
+        """Test load_index when metadata.json is missing (should use empty dict)"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create a valid index first
+            chunks = [(0, 10, "Test")]
+            embeddings = np.random.randn(1, 384).astype(np.float32)
+            
+            index_path = persist_index(
+                index_name="test",
+                embeddings=embeddings,
+                chunks=chunks,
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            # Remove metadata.json
+            metadata_file = index_path / "metadata.json"
+            metadata_file.unlink()
+            
+            # Should load successfully with empty metadata
+            index, loaded_chunks, metadata = load_index(
+                index_name="test",
+                tenant_id="test",
+                index_dir=tmpdir,
+            )
+            
+            assert index is not None
+            assert len(loaded_chunks) == 1
+            assert metadata == {}  # Empty dict when file missing

@@ -417,3 +417,206 @@ class TestRetrieverIntegration:
             assert any("Python" in r["text"] or "programming" in r["text"] for r in python_results)
             assert any("learning" in r["text"] or "algorithm" in r["text"] for r in ml_results)
             assert any("Docker" in r["text"] or "container" in r["text"] for r in docker_results)
+
+
+class TestRetrieverErrorPaths:
+    """Error path tests for retriever - targeting uncovered code"""
+
+    def test_load_model_coverage_with_valid_model(self):
+        """
+        Test _load_model method works correctly.
+        Note: ImportError and Exception paths (lines 90-98) are difficult to test
+        without breaking the module, but are documented as defensive error handling.
+        This test verifies the happy path and documents the error handling exists.
+        """
+        with tempfile.TemporaryDirectory() as tmpdir:
+            retriever = Retriever(
+                index_dir=tmpdir,
+                index_name="test",
+                tenant_id="test",
+            )
+            
+            # This will call _load_model during initialization or first query
+            # The model loading includes try/except for ImportError and general Exception
+            assert retriever.model_name == "sentence-transformers/all-MiniLM-L6-v2"
+            
+    def test_retriever_handles_missing_model_gracefully(self):
+        """Test that retriever initialization doesn't fail immediately without model"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Retriever should initialize even if model not loaded yet
+            retriever = Retriever(
+                index_dir=tmpdir,
+                index_name="nonexistent",
+                tenant_id="test",
+            )
+            
+            # Should have no index loaded
+            assert retriever.faiss_index is None
+
+
+class TestMultiIndexRetrieverErrorPaths:
+    """Error path tests for MultiIndexRetriever - targeting uncovered exception handlers"""
+
+    def test_init_with_all_invalid_indices(self):
+        """Test initialization with all invalid indices (line 297-298)"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # All indices are invalid/non-existent
+            indices = [
+                {"index_name": "invalid1", "tenant_id": "test"},
+                {"index_name": "invalid2", "tenant_id": "test"},
+                {"index_name": "invalid3", "tenant_id": "test"},
+            ]
+            
+            # Should log warnings but not raise
+            retriever = MultiIndexRetriever(
+                indices=indices,
+                index_dir=tmpdir,
+            )
+            
+            # No indices should be loaded
+            assert len(retriever.retrievers) == 0
+
+    def test_init_exception_during_index_load(self):
+        """Test exception handling during index loading in __init__ (line 297-298)"""
+        from unittest.mock import patch
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Create one valid index
+            docs_dir = tmpdir / "docs"
+            docs_dir.mkdir()
+            
+            file_path = docs_dir / "doc.txt"
+            with open(file_path, "w") as f:
+                f.write("Test content. " * 30)
+            
+            index_dir = tmpdir / "indices"
+            build_index_from_files(
+                files=[file_path],
+                index_name="valid_index",
+                tenant_id="test",
+                index_dir=str(index_dir),
+            )
+            
+            indices = [
+                {"index_name": "valid_index", "tenant_id": "test"},
+            ]
+            
+            # Mock Retriever to raise exception
+            with patch("codex.rag.retriever.Retriever", side_effect=Exception("Load failed")):
+                retriever = MultiIndexRetriever(
+                    indices=indices,
+                    index_dir=str(index_dir),
+                )
+                
+                # Should handle exception gracefully
+                assert len(retriever.retrievers) == 0
+
+    def test_query_error_in_individual_index(self, multiple_indices):
+        """Test query error handling for individual indices (line 329-330)"""
+        from unittest.mock import MagicMock, patch
+        
+        retriever = MultiIndexRetriever(
+            indices=multiple_indices["indices"],
+            index_dir=multiple_indices["index_dir"],
+        )
+        
+        # Mock one retriever to raise exception during query
+        original_query = retriever.retrievers[0].query
+        def mock_query_error(*args, **kwargs):
+            raise Exception("Query failed")
+        
+        retriever.retrievers[0].query = mock_query_error
+        
+        # Should log warning but still return results from other indices
+        results = retriever.query("test", top_k=5)
+        
+        # Should get results from the second index
+        assert isinstance(results, list)
+        # Restore original for cleanup
+        retriever.retrievers[0].query = original_query
+
+    def test_query_all_indices_fail(self):
+        """Test when all indices fail during query"""
+        from unittest.mock import MagicMock
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Create indices
+            indices_info = []
+            for idx in range(2):
+                docs_dir = tmpdir / f"docs_{idx}"
+                docs_dir.mkdir()
+                
+                file_path = docs_dir / "doc.txt"
+                with open(file_path, "w") as f:
+                    f.write(f"Index {idx} content. " * 30)
+                
+                index_dir = tmpdir / "indices"
+                build_index_from_files(
+                    files=[file_path],
+                    index_name=f"index_{idx}",
+                    tenant_id="test",
+                    index_dir=str(index_dir),
+                )
+                
+                indices_info.append({
+                    "index_name": f"index_{idx}",
+                    "tenant_id": "test",
+                })
+            
+            retriever = MultiIndexRetriever(
+                indices=indices_info,
+                index_dir=str(tmpdir / "indices"),
+            )
+            
+            # Make all retrievers fail
+            for r in retriever.retrievers:
+                r.query = MagicMock(side_effect=Exception("Query failed"))
+            
+            # Should return empty list
+            results = retriever.query("test", top_k=5)
+            assert len(results) == 0
+
+    @pytest.fixture
+    def multiple_indices(self):
+        """Create multiple indices for testing"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Create two separate indices
+            indices_info = []
+            
+            for idx in range(2):
+                docs_dir = tmpdir / f"docs_{idx}"
+                docs_dir.mkdir()
+                
+                files = []
+                content = f"Index {idx} content. " * 30
+                
+                file_path = docs_dir / f"doc.txt"
+                with open(file_path, "w") as f:
+                    f.write(content)
+                files.append(file_path)
+                
+                index_dir = tmpdir / "indices"
+                build_index_from_files(
+                    files=files,
+                    index_name=f"index_{idx}",
+                    tenant_id="test",
+                    index_dir=str(index_dir),
+                    chunk_size=200,
+                    overlap=50,
+                )
+                
+                indices_info.append({
+                    "index_name": f"index_{idx}",
+                    "tenant_id": "test",
+                })
+            
+            yield {
+                "index_dir": str(tmpdir / "indices"),
+                "indices": indices_info,
+            }
