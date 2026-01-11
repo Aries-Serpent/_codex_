@@ -86,7 +86,7 @@ jobs:
       - name: Generate determinism report
         if: always()
         run: |
-          cat > determinism-report.md << 'EOFMARKER'
+          cat > determinism-report.md << 'EOF'
           # Determinism & Audit Validation Report
           
           ## Summary
@@ -103,7 +103,7 @@ jobs:
           - Ensure all random operations use fixed seeds in production
           - Use deterministic timestamps for reproducible results
           - Maintain comprehensive audit logging for critical operations
-          EOFMARKER
+          EOF
           
           cat determinism-report.md
       
