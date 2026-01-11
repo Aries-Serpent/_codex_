@@ -47,7 +47,8 @@ def _fetch(url: str, retries: int = 3, backoff: float = 0.8) -> bytes:
     """
     parsed = urllib.parse.urlparse(url)
     # Security: Only allow HTTPS to prevent file:// or other scheme attacks
-    if parsed.scheme != "https":
+    # RFC 3986: schemes are case-insensitive, so normalize to lowercase
+    if parsed.scheme.lower() != "https":
         raise ValueError(
             f"Only HTTPS URLs are allowed, got scheme {parsed.scheme!r} in {url!r}"
         )

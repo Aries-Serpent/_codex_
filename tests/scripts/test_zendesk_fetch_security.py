@@ -66,6 +66,19 @@ class TestURLValidation:
         mock_urlopen.assert_called_once()
 
     @patch("urllib.request.urlopen")
+    def test_accept_https_case_insensitive(self, mock_urlopen: Mock) -> None:
+        """Accept HTTPS URLs with mixed case schemes (RFC 3986 compliance)."""
+        mock_response = Mock()
+        mock_response.read.return_value = b"test content"
+        mock_response.__enter__ = Mock(return_value=mock_response)
+        mock_response.__exit__ = Mock(return_value=False)
+        mock_urlopen.return_value = mock_response
+
+        # RFC 3986: schemes are case-insensitive
+        result = _fetch("HTTPS://example.com/page")
+        assert result == b"test content"
+
+    @patch("urllib.request.urlopen")
     def test_retry_on_failure(self, mock_urlopen: Mock) -> None:
         """Test retry logic on network failures."""
         mock_urlopen.side_effect = [
@@ -79,16 +92,11 @@ class TestURLValidation:
 
         assert mock_urlopen.call_count == 3
 
-    def test_case_sensitive_scheme(self) -> None:
-        """Ensure scheme validation is case-insensitive per RFC 3986."""
-        # URL schemes should be case-insensitive, but our validation
-        # explicitly checks for lowercase "https"
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("HTTPS://example.com")
-
     def test_reject_mixed_case_file_scheme(self) -> None:
-        """Reject file:// with mixed case."""
+        """Reject file:// scheme regardless of case (RFC 3986 compliance)."""
         with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
             _fetch("FILE:///etc/passwd")
         with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
             _fetch("File:///etc/passwd")
+        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
+            _fetch("file:///etc/passwd")

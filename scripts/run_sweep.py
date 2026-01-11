@@ -143,7 +143,6 @@ def main() -> None:
                 metrics = _safe_yaml_load(metrics_path.read_text())
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 metrics = {}
         summary.append({"run_id": idx, **combo, **metrics})
 
