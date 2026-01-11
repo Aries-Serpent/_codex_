@@ -581,6 +581,9 @@ class CachedRetriever(Retriever):
                 logger.debug(f"Cache HIT for query: {q[:50]}...")
                 return cached_results
         else:
+            # Call get() to track the miss even if invalid/expired
+            self.query_cache.get(cache_key)
+            
             # If an expired entry exists, remove it to avoid false hits
             if cache_key in self.query_cache.cache:
                 try:
