@@ -574,28 +574,22 @@ class CachedRetriever(Retriever):
         # Create cache key
         cache_key = self._make_cache_key(q, top_k, min_score)
         
-        # If valid entry exists, return it and let LRUCache.get increment hits
+        # Check if valid cached entry exists
         if self._is_cache_valid(cache_key):
             cached_results = self.query_cache.get(cache_key)
             if cached_results is not None:
                 logger.debug(f"Cache HIT for query: {q[:50]}...")
                 return cached_results
-        else:
-            # Call get() to track the miss even if invalid/expired
-            self.query_cache.get(cache_key)
-            
-            # If an expired entry exists, remove it to avoid false hits
-            if cache_key in self.query_cache.cache:
-                try:
-                    del self.query_cache.cache[cache_key]
-                except KeyError:
-                    # Defensive: handle potential race conditions in concurrent scenarios
-                    pass
-                if cache_key in self.cache_timestamps:
-                    del self.cache_timestamps[cache_key]
         
-        # Cache miss - perform actual query
+        # Cache miss or expired - remove expired entry if exists
+        if cache_key in self.query_cache.cache:
+            del self.query_cache.cache[cache_key]
+            if cache_key in self.cache_timestamps:
+                del self.cache_timestamps[cache_key]
+        
+        # Cache miss - perform actual query and manually track miss
         logger.debug(f"Cache MISS for query: {q[:50]}...")
+        self.query_cache.misses += 1  # Explicit miss tracking
         results = self.query(q, top_k=top_k, min_score=min_score)
         
         # Cache results
