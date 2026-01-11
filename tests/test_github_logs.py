@@ -5,7 +5,7 @@ for fetching GitHub Actions logs.
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import datetime, timezone
 
 

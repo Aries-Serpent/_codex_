@@ -6,7 +6,6 @@ and automatically fixes issues found.
 """
 
 import sys
-import os
 import subprocess
 import logging
 from pathlib import Path
