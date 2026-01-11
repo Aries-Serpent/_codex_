@@ -2,10 +2,10 @@
 //!
 //! Provides low-latency task submission and result retrieval.
 
-use pyo3::prelude::*;
-use std::sync::Arc;
 use parking_lot::Mutex;
+use pyo3::prelude::*;
 use std::collections::VecDeque;
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 /// A task to be processed
@@ -56,7 +56,7 @@ impl TaskManager {
         };
 
         self.task_queue.lock().push_back(task.clone());
-        
+
         // Simulate processing
         let result = TaskResult {
             task_id: id,
@@ -83,7 +83,7 @@ impl TaskManager {
         };
 
         self.task_queue.lock().push_back(task.clone());
-        
+
         // Simulate processing
         let result = TaskResult {
             task_id: id,
@@ -152,9 +152,9 @@ impl PyTaskManager {
     }
 
     fn get_result(&self, timeout: f64) -> Option<(usize, bool, Vec<u8>)> {
-        self.manager.get_result(timeout).map(|r| {
-            (r.task_id, r.success, r.data)
-        })
+        self.manager
+            .get_result(timeout)
+            .map(|r| (r.task_id, r.success, r.data))
     }
 
     fn pending_count(&self) -> usize {
@@ -188,16 +188,16 @@ mod tests {
     #[test]
     fn test_task_latency() {
         let manager = TaskManager::new();
-        
+
         let start = Instant::now();
         for i in 0..1000 {
             manager.submit_task(&format!("task_{}", i));
         }
         let duration = start.elapsed();
-        
+
         let avg_latency = duration.as_micros() / 1000;
         println!("Average latency: {}μs", avg_latency);
-        
+
         // Should be < 1ms (1000μs) per task
         assert!(avg_latency < 1000, "Latency too high: {}μs", avg_latency);
     }
@@ -206,10 +206,10 @@ mod tests {
     fn test_result_retrieval() {
         let manager = TaskManager::new();
         manager.submit_task("test");
-        
+
         let result = manager.get_result(1.0);
         assert!(result.is_some());
-        
+
         let result = result.unwrap();
         assert!(result.success);
         assert_eq!(result.task_id, 0);
@@ -218,10 +218,10 @@ mod tests {
     #[test]
     fn test_concurrent_submission() {
         use std::thread;
-        
+
         let manager = Arc::new(TaskManager::new());
         let mut handles = vec![];
-        
+
         for _ in 0..10 {
             let manager = Arc::clone(&manager);
             let handle = thread::spawn(move || {
@@ -231,11 +231,11 @@ mod tests {
             });
             handles.push(handle);
         }
-        
+
         for handle in handles {
             handle.join().unwrap();
         }
-        
+
         // Should have processed 1000 tasks
         assert_eq!(manager.result_count(), 1000);
     }

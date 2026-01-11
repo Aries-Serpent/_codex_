@@ -2,8 +2,8 @@
 //!
 //! Tracks system performance and health metrics.
 
-use std::sync::Arc;
 use parking_lot::RwLock;
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 /// Metrics collector
@@ -102,7 +102,7 @@ mod tests {
     fn test_metrics_record_task() {
         let metrics = Metrics::new();
         metrics.record_task(Duration::from_micros(500));
-        
+
         assert_eq!(metrics.task_count(), 1);
         assert_eq!(metrics.avg_latency_us(), 500);
     }
@@ -111,18 +111,18 @@ mod tests {
     fn test_metrics_record_error() {
         let metrics = Metrics::new();
         metrics.record_error();
-        
+
         assert_eq!(metrics.error_count(), 1);
     }
 
     #[test]
     fn test_metrics_avg_latency() {
         let metrics = Metrics::new();
-        
+
         metrics.record_task(Duration::from_micros(100));
         metrics.record_task(Duration::from_micros(200));
         metrics.record_task(Duration::from_micros(300));
-        
+
         assert_eq!(metrics.task_count(), 3);
         assert_eq!(metrics.avg_latency_us(), 200);
     }
@@ -130,13 +130,13 @@ mod tests {
     #[test]
     fn test_metrics_throughput() {
         let metrics = Metrics::new();
-        
+
         std::thread::sleep(Duration::from_millis(100));
-        
+
         for _ in 0..1000 {
             metrics.record_task(Duration::from_micros(100));
         }
-        
+
         let throughput = metrics.throughput();
         println!("Throughput: {:.0} tasks/s", throughput);
         assert!(throughput > 0.0);
@@ -145,15 +145,15 @@ mod tests {
     #[test]
     fn test_metrics_error_rate() {
         let metrics = Metrics::new();
-        
+
         for _ in 0..90 {
             metrics.record_task(Duration::from_micros(100));
         }
-        
+
         for _ in 0..10 {
             metrics.record_error();
         }
-        
+
         let error_rate = metrics.error_rate();
         assert!((error_rate - 10.0).abs() < 0.1);
     }
@@ -161,15 +161,15 @@ mod tests {
     #[test]
     fn test_metrics_reset() {
         let metrics = Metrics::new();
-        
+
         metrics.record_task(Duration::from_micros(100));
         metrics.record_error();
-        
+
         assert_eq!(metrics.task_count(), 1);
         assert_eq!(metrics.error_count(), 1);
-        
+
         metrics.reset();
-        
+
         assert_eq!(metrics.task_count(), 0);
         assert_eq!(metrics.error_count(), 0);
     }

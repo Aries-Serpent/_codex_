@@ -2,9 +2,9 @@
 //!
 //! Provides 10x compression ratio for task data.
 
-use pyo3::prelude::*;
+use flate2::write::{GzDecoder, GzEncoder};
 use flate2::Compression as FlateCompression;
-use flate2::write::{GzEncoder, GzDecoder};
+use pyo3::prelude::*;
 use std::io::prelude::*;
 
 /// Compression engine with 10x ratio target
@@ -82,7 +82,7 @@ mod tests {
         let data = b"Hello, World!".to_vec();
         let compressed = Compression::compress(&data);
         let decompressed = Compression::decompress(&compressed);
-        
+
         assert_eq!(data, decompressed);
     }
 
@@ -91,10 +91,10 @@ mod tests {
         // Create highly compressible data
         let data = vec![b'A'; 100_000];
         let compressed = Compression::compress(&data);
-        
+
         let ratio = Compression::ratio(&data, &compressed);
         println!("Compression ratio: {:.2}x", ratio);
-        
+
         // Should achieve > 10x compression on repetitive data
         assert!(ratio > 10.0, "Compression ratio too low: {:.2}x", ratio);
     }
@@ -105,7 +105,7 @@ mod tests {
         let data = vec![0u8; 1_000_000];
         let compressed = Compression::compress(&data);
         let decompressed = Compression::decompress(&compressed);
-        
+
         assert_eq!(data, decompressed);
         assert!(compressed.len() < data.len());
     }
@@ -115,12 +115,12 @@ mod tests {
         // Simulate JSON task data
         let task_json = r#"{"id": 1, "type": "process", "data": "test"}"#;
         let data = task_json.repeat(1000).into_bytes();
-        
+
         let compressed = Compression::compress(&data);
         let decompressed = Compression::decompress(&compressed);
-        
+
         assert_eq!(data, decompressed);
-        
+
         let ratio = Compression::ratio(&data, &compressed);
         println!("JSON compression ratio: {:.2}x", ratio);
         assert!(ratio > 5.0, "JSON compression ratio too low: {:.2}x", ratio);
@@ -147,19 +147,22 @@ mod tests {
     #[test]
     fn test_compression_performance() {
         let data = vec![b'X'; 1_000_000]; // 1MB
-        
+
         let start = std::time::Instant::now();
         let compressed = Compression::compress(&data);
         let compress_time = start.elapsed();
-        
+
         let start = std::time::Instant::now();
         let _decompressed = Compression::decompress(&compressed);
         let decompress_time = start.elapsed();
-        
+
         println!("Compression time: {:?}", compress_time);
         println!("Decompression time: {:?}", decompress_time);
-        println!("Compression ratio: {:.2}x", Compression::ratio(&data, &compressed));
-        
+        println!(
+            "Compression ratio: {:.2}x",
+            Compression::ratio(&data, &compressed)
+        );
+
         // Should complete in reasonable time (< 100ms for 1MB)
         assert!(compress_time.as_millis() < 100, "Compression too slow");
         assert!(decompress_time.as_millis() < 100, "Decompression too slow");

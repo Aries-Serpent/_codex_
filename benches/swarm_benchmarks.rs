@@ -1,8 +1,8 @@
 // Swarm Benchmarks - Comprehensive Performance Testing
 // Phase 2: Performance Benchmarking
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use codex_swarm::{TaskManager, SwarmEngine, Compression};
+use codex_swarm::{Compression, SwarmEngine, TaskManager};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::time::Duration;
 
 /// Benchmark 1: Task Latency
@@ -10,22 +10,18 @@ use std::time::Duration;
 fn bench_task_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_latency");
     group.measurement_time(Duration::from_secs(10));
-    
+
     for size in [1, 10, 100, 1000].iter() {
-        group.bench_with_input(
-            BenchmarkId::from_parameter(size),
-            size,
-            |b, &size| {
-                let task_manager = TaskManager::new();
-                b.iter(|| {
-                    for i in 0..size {
-                        task_manager.submit_task(black_box(&format!("task_{}", i)));
-                    }
-                });
-            },
-        );
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
+            let task_manager = TaskManager::new();
+            b.iter(|| {
+                for i in 0..size {
+                    task_manager.submit_task(black_box(&format!("task_{}", i)));
+                }
+            });
+        });
     }
-    
+
     group.finish();
 }
 
@@ -35,15 +31,13 @@ fn bench_throughput(c: &mut Criterion) {
     let mut group = c.benchmark_group("throughput");
     group.measurement_time(Duration::from_secs(20));
     group.sample_size(50);
-    
+
     let swarm = SwarmEngine::new(1000); // 1000 agents
-    
+
     group.bench_function("10k_tasks", |b| {
-        b.iter(|| {
-            swarm.process_batch(black_box(10_000))
-        });
+        b.iter(|| swarm.process_batch(black_box(10_000)));
     });
-    
+
     group.finish();
 }
 
@@ -52,30 +46,26 @@ fn bench_throughput(c: &mut Criterion) {
 fn bench_compression(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression");
     group.measurement_time(Duration::from_secs(10));
-    
+
     // Create 1MB of compressible data
     let data_1mb: Vec<u8> = vec![b'A'; 1_000_000];
-    
+
     group.bench_function("compress_1mb", |b| {
-        b.iter(|| {
-            Compression::compress(black_box(&data_1mb))
-        });
+        b.iter(|| Compression::compress(black_box(&data_1mb)));
     });
-    
+
     group.bench_function("decompress_1mb", |b| {
         let compressed = Compression::compress(&data_1mb);
-        b.iter(|| {
-            Compression::decompress(black_box(&compressed))
-        });
+        b.iter(|| Compression::decompress(black_box(&compressed)));
     });
-    
+
     group.bench_function("compression_ratio_1mb", |b| {
         b.iter(|| {
             let compressed = Compression::compress(black_box(&data_1mb));
             Compression::ratio(&data_1mb, &compressed)
         });
     });
-    
+
     group.finish();
 }
 
@@ -85,20 +75,18 @@ fn bench_concurrent_agents(c: &mut Criterion) {
     let mut group = c.benchmark_group("concurrent_agents");
     group.measurement_time(Duration::from_secs(30));
     group.sample_size(20);
-    
+
     for agent_count in [100, 500, 1000].iter() {
         group.bench_with_input(
             BenchmarkId::from_parameter(agent_count),
             agent_count,
             |b, &count| {
                 let swarm = SwarmEngine::new(count);
-                b.iter(|| {
-                    swarm.execute_parallel(black_box(1000))
-                });
+                b.iter(|| swarm.execute_parallel(black_box(1000)));
             },
         );
     }
-    
+
     group.finish();
 }
 
@@ -106,22 +94,20 @@ fn bench_concurrent_agents(c: &mut Criterion) {
 /// Tests individual task manager operations
 fn bench_task_manager_ops(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_manager_ops");
-    
+
     let manager = TaskManager::new();
-    
+
     group.bench_function("submit_single_task", |b| {
-        b.iter(|| {
-            manager.submit_task(black_box("benchmark_task"))
-        });
+        b.iter(|| manager.submit_task(black_box("benchmark_task")));
     });
-    
+
     group.bench_function("submit_retrieve_cycle", |b| {
         b.iter(|| {
             let id = manager.submit_task(black_box("test"));
             manager.get_result(1.0)
         });
     });
-    
+
     group.finish();
 }
 
@@ -129,30 +115,28 @@ fn bench_task_manager_ops(c: &mut Criterion) {
 /// Tests compression on various data patterns
 fn bench_compression_patterns(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression_patterns");
-    
+
     // Highly compressible data (repetitive)
     let repetitive_data = vec![b'X'; 100_000];
-    
+
     // JSON-like structured data
-    let json_data = r#"{"id": 1, "type": "task", "data": "test"}"#
-        .repeat(2000)
-        .into_bytes();
-    
+    let json_data = r#"{"id": 1, "type": "task", "data": "test"}"#.repeat(2000).into_bytes();
+
     // Random data (low compression)
     let random_data: Vec<u8> = (0..100_000).map(|i| (i % 256) as u8).collect();
-    
+
     group.bench_function("compress_repetitive", |b| {
         b.iter(|| Compression::compress(black_box(&repetitive_data)));
     });
-    
+
     group.bench_function("compress_json", |b| {
         b.iter(|| Compression::compress(black_box(&json_data)));
     });
-    
+
     group.bench_function("compress_random", |b| {
         b.iter(|| Compression::compress(black_box(&random_data)));
     });
-    
+
     group.finish();
 }
 
@@ -161,14 +145,12 @@ fn bench_compression_patterns(c: &mut Criterion) {
 fn bench_e2e_workflow(c: &mut Criterion) {
     let mut group = c.benchmark_group("e2e_workflow");
     group.measurement_time(Duration::from_secs(15));
-    
+
     group.bench_function("complete_pipeline_100_tasks", |b| {
         let swarm = SwarmEngine::new(100);
-        b.iter(|| {
-            swarm.process_batch(black_box(100))
-        });
+        b.iter(|| swarm.process_batch(black_box(100)));
     });
-    
+
     group.finish();
 }
 

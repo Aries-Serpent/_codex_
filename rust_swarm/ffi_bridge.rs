@@ -2,9 +2,9 @@
 //!
 //! Provides safe FFI boundaries between Rust and Python.
 
+use parking_lot::RwLock;
 use pyo3::prelude::*;
 use std::sync::Arc;
-use parking_lot::RwLock;
 
 /// FFI bridge for safe Python-Rust communication
 pub struct FFIBridge {
@@ -66,22 +66,22 @@ mod tests {
     #[test]
     fn test_ffi_message_counting() {
         let bridge = FFIBridge::new();
-        
+
         // Directly increment message count for testing
         for _ in 0..100 {
             *bridge.message_count.write() += 1;
         }
-        
+
         assert_eq!(bridge.message_count(), 100);
     }
 
     #[test]
     fn test_ffi_thread_safety() {
         use std::thread;
-        
+
         let bridge = Arc::new(FFIBridge::new());
         let mut handles = vec![];
-        
+
         for _ in 0..10 {
             let bridge = Arc::clone(&bridge);
             let handle = thread::spawn(move || {
@@ -91,11 +91,11 @@ mod tests {
             });
             handles.push(handle);
         }
-        
+
         for handle in handles {
             handle.join().unwrap();
         }
-        
+
         assert_eq!(bridge.message_count(), 1000);
     }
 }

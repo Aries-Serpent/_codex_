@@ -2,10 +2,10 @@
 //!
 //! Manages a pool of concurrent agents for high-throughput task processing.
 
+use crossbeam::channel::{bounded, Receiver, Sender};
+use parking_lot::RwLock;
 use pyo3::prelude::*;
 use std::sync::Arc;
-use parking_lot::RwLock;
-use crossbeam::channel::{bounded, Sender, Receiver};
 use std::thread;
 
 /// Core swarm engine managing agent pools
@@ -123,8 +123,9 @@ impl PySwarmEngine {
     }
 
     fn process_tasks(&self, _tasks: Vec<PyObject>) -> Vec<PyObject> {
-        // Placeholder for actual implementation
-        vec![]
+        // TODO: Implement task processing for PySwarmEngine
+        // This method will integrate with the Rust SwarmEngine to process Python tasks
+        unimplemented!("process_tasks is not yet implemented")
     }
 }
 
@@ -157,11 +158,15 @@ mod tests {
         let start = std::time::Instant::now();
         let processed = swarm.process_batch(10000);
         let duration = start.elapsed();
-        
+
         assert_eq!(processed, 10000);
         let throughput = processed as f64 / duration.as_secs_f64();
         println!("Throughput: {:.0} tasks/s", throughput);
         // Should achieve > 5000 tasks/s
-        assert!(throughput > 5000.0, "Throughput too low: {:.0} tasks/s", throughput);
+        assert!(
+            throughput > 5000.0,
+            "Throughput too low: {:.0} tasks/s",
+            throughput
+        );
     }
 }

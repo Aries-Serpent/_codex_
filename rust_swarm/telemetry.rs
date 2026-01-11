@@ -3,8 +3,8 @@
 //!
 //! Provides comprehensive telemetry, logging, and monitoring capabilities.
 
-use std::sync::Arc;
 use parking_lot::RwLock;
+use std::sync::Arc;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 /// Telemetry collector for monitoring
@@ -20,7 +20,7 @@ pub struct TelemetryMetrics {
     pub total_tasks: u64,
     pub successful_tasks: u64,
     pub failed_tasks: u64,
-    
+
     // Latency metrics
     pub min_latency_us: u64,
     pub max_latency_us: u64,
@@ -28,16 +28,16 @@ pub struct TelemetryMetrics {
     pub p50_latency_us: u64,
     pub p95_latency_us: u64,
     pub p99_latency_us: u64,
-    
+
     // Throughput metrics
     pub tasks_per_second: f64,
     pub peak_throughput: f64,
-    
+
     // Resource metrics
     pub active_agents: usize,
     pub queue_depth: usize,
     pub memory_used_bytes: u64,
-    
+
     // Health status
     pub status: HealthStatus,
     pub last_update: u64,
@@ -59,36 +59,35 @@ impl Telemetry {
             start_time: Instant::now(),
         }
     }
-    
+
     /// Record successful task
     pub fn record_success(&self, latency: Duration) {
         let mut metrics = self.metrics.write();
         metrics.total_tasks += 1;
         metrics.successful_tasks += 1;
-        
+
         let latency_us = latency.as_micros() as u64;
         metrics.min_latency_us = metrics.min_latency_us.min(latency_us);
         metrics.max_latency_us = metrics.max_latency_us.max(latency_us);
-        
+
         // Update average
         let total = metrics.total_tasks;
-        metrics.avg_latency_us = 
-            (metrics.avg_latency_us * (total - 1) + latency_us) / total;
-        
+        metrics.avg_latency_us = (metrics.avg_latency_us * (total - 1) + latency_us) / total;
+
         self.update_health(&mut metrics);
         metrics.last_update = Self::current_timestamp();
     }
-    
+
     /// Record failed task
     pub fn record_failure(&self) {
         let mut metrics = self.metrics.write();
         metrics.total_tasks += 1;
         metrics.failed_tasks += 1;
-        
+
         self.update_health(&mut metrics);
         metrics.last_update = Self::current_timestamp();
     }
-    
+
     /// Update throughput metrics
     pub fn update_throughput(&self, tasks_processed: u64, duration: Duration) {
         let mut metrics = self.metrics.write();
@@ -96,17 +95,17 @@ impl Telemetry {
         metrics.tasks_per_second = throughput;
         metrics.peak_throughput = metrics.peak_throughput.max(throughput);
     }
-    
+
     /// Update resource metrics
     pub fn update_resources(&self, agents: usize, queue_depth: usize, memory: u64) {
         let mut metrics = self.metrics.write();
         metrics.active_agents = agents;
         metrics.queue_depth = queue_depth;
         metrics.memory_used_bytes = memory;
-        
+
         self.update_health(&mut metrics);
     }
-    
+
     /// Update health status based on metrics
     fn update_health(&self, metrics: &mut TelemetryMetrics) {
         let error_rate = if metrics.total_tasks > 0 {
@@ -114,11 +113,11 @@ impl Telemetry {
         } else {
             0.0
         };
-        
+
         let latency_ok = metrics.avg_latency_us < 10_000; // < 10ms
         let throughput_ok = metrics.tasks_per_second > 100.0;
         let error_rate_ok = error_rate < 5.0; // < 5% errors
-        
+
         metrics.status = if latency_ok && throughput_ok && error_rate_ok {
             HealthStatus::Healthy
         } else if latency_ok || throughput_ok {
@@ -127,16 +126,16 @@ impl Telemetry {
             HealthStatus::Unhealthy
         };
     }
-    
+
     /// Get current metrics snapshot
     pub fn snapshot(&self) -> TelemetryMetrics {
         self.metrics.read().clone()
     }
-    
+
     /// Export metrics in Prometheus format
     pub fn export_prometheus(&self) -> String {
         let metrics = self.metrics.read();
-        
+
         format!(
             "# HELP codex_swarm_tasks_total Total number of tasks processed\n\
              # TYPE codex_swarm_tasks_total counter\n\
@@ -193,7 +192,7 @@ impl Telemetry {
             }
         )
     }
-    
+
     /// Get current timestamp in seconds since epoch
     fn current_timestamp() -> u64 {
         SystemTime::now()
@@ -201,7 +200,7 @@ impl Telemetry {
             .unwrap()
             .as_secs()
     }
-    
+
     /// Get uptime in seconds
     pub fn uptime_seconds(&self) -> u64 {
         self.start_time.elapsed().as_secs()
@@ -240,65 +239,65 @@ impl Default for TelemetryMetrics {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_telemetry_creation() {
         let telemetry = Telemetry::new();
         let metrics = telemetry.snapshot();
-        
+
         assert_eq!(metrics.total_tasks, 0);
         assert_eq!(metrics.status, HealthStatus::Healthy);
     }
-    
+
     #[test]
     fn test_record_success() {
         let telemetry = Telemetry::new();
-        
+
         telemetry.record_success(Duration::from_micros(500));
-        
+
         let metrics = telemetry.snapshot();
         assert_eq!(metrics.total_tasks, 1);
         assert_eq!(metrics.successful_tasks, 1);
         assert_eq!(metrics.avg_latency_us, 500);
     }
-    
+
     #[test]
     fn test_record_failure() {
         let telemetry = Telemetry::new();
-        
+
         telemetry.record_failure();
-        
+
         let metrics = telemetry.snapshot();
         assert_eq!(metrics.total_tasks, 1);
         assert_eq!(metrics.failed_tasks, 1);
     }
-    
+
     #[test]
     fn test_health_status() {
         let telemetry = Telemetry::new();
-        
+
         // Record successes with good latency
         for _ in 0..100 {
             telemetry.record_success(Duration::from_micros(100));
         }
-        
+
         // Update throughput and resources to meet all healthy criteria
         telemetry.update_throughput(1000, Duration::from_secs(1)); // > 100 tasks/s
         telemetry.update_resources(100, 10, 1024 * 1024); // Some agents and queue
-        
+
         let metrics = telemetry.snapshot();
         // Should be healthy: low latency, high throughput, no errors
         assert_eq!(metrics.status, HealthStatus::Healthy);
     }
-    
+
     #[test]
     fn test_prometheus_export() {
         let telemetry = Telemetry::new();
-        
+
         telemetry.record_success(Duration::from_micros(500));
-        
+
         let prometheus = telemetry.export_prometheus();
-        
+
         assert!(prometheus.contains("codex_swarm_tasks_total"));
         assert!(prometheus.contains("codex_swarm_latency_microseconds"));
         assert!(prometheus.contains("codex_swarm_health"));

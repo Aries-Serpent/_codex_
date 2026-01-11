@@ -25,15 +25,17 @@ serde = { version = "1.0.197", features = ["derive"] }
 rmp-serde = "1.1.2"  # Binary serialization for agent state
 lz4 = "1.24.0"  # Fast compression for real-time agent streams
 zstd = { version = "0.13.0", features = ["zstdmt"] }  # High-ratio compression
+flate2 = "1.1"  # DEFLATE compression for Compression module
 
 # System Interfaces & Communication
 crossbeam = "0.8.4"  # Multi-producer, multi-consumer channels
+parking_lot = "0.12"  # Fast synchronization primitives
 anyhow = "1.0.80"  # Flexible error handling
 tracing = "0.1.40"  # High-performance instrumentation
 tracing-subscriber = "0.3.18"
 
 [build-dependencies]
-pyo3-build-config = "0.20"
+pyo3-build-config = "0.22"
 
 [profile.release]
 opt-level = 3

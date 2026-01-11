@@ -37,11 +37,11 @@ pub mod metrics;
 pub mod telemetry;
 
 // Re-export main types
-pub use swarm_engine::SwarmEngine;
-pub use task_manager::{TaskManager, Task, TaskResult};
 pub use compression::Compression;
 pub use metrics::Metrics;
-pub use telemetry::{Telemetry, TelemetryMetrics, HealthStatus};
+pub use swarm_engine::SwarmEngine;
+pub use task_manager::{Task, TaskManager, TaskResult};
+pub use telemetry::{HealthStatus, Telemetry, TelemetryMetrics};
 
 use pyo3::prelude::*;
 
