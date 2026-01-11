@@ -96,8 +96,8 @@ jobs:
             fi
           fi
           
-          # Don't fail the workflow if scan succeeded with warnings
-          exit 0
+          # Exit with actual code (continue-on-error prevents blocking)
+          exit ${EXIT_CODE:-0}
       
       - name: Upload SARIF results to GitHub Security
         if: always()
