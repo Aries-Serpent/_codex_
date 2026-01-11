@@ -586,6 +586,7 @@ class CachedRetriever(Retriever):
                 try:
                     del self.query_cache.cache[cache_key]
                 except KeyError:
+                    # Defensive: handle potential race conditions in concurrent scenarios
                     pass
                 if cache_key in self.cache_timestamps:
                     del self.cache_timestamps[cache_key]
