@@ -151,6 +151,8 @@ manifests/k8s/*/secret.yaml
 !.codex/*CONTINUATION*.md
 !.codex/*FOLLOWUP*.md
 !.codex/*NEXT*.md
+!.codex/*REPORT*.md
+!.codex/*ASSESSMENT*.md
 # Block validation artifacts but keep structure
 .codex/validation/
 
