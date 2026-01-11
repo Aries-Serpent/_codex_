@@ -14,6 +14,7 @@ import argparse
 import csv
 import itertools
 import json
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -67,6 +68,28 @@ def _expand(grid: dict[str, list[object]]) -> list[dict[str, object]]:
     return combos
 
 
+def _validate_override(key: str, value: object) -> None:
+    """Validate that override key and value are safe for subprocess.
+
+    Args:
+        key: Parameter name (e.g., 'train.seed')
+        value: Parameter value
+
+    Raises:
+        ValueError: If key or value contains unsafe characters
+    """
+    # Whitelist pattern: alphanumeric, dots, underscores, hyphens
+    if not isinstance(key, str):
+        raise ValueError(f"Override key must be string, got {type(key).__name__}")
+    if not re.match(r'^[a-zA-Z0-9._-]+$', key):
+        raise ValueError(f"Invalid override key: {key!r}")
+    # Value must be convertible to string and contain no shell metacharacters
+    str_value = str(value)
+    # Reject shell metacharacters: $, `, |, &, ;, <, >, (, ), etc.
+    if re.search(r'[`$|&;<>()\\]', str_value):
+        raise ValueError(f"Override value contains shell metacharacters: {str_value!r}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sweep-file", required=True, help="YAML defining sweep axes")
@@ -93,6 +116,9 @@ def main() -> None:
     summary = []
 
     for idx, combo in enumerate(combos):
+        # Validate all overrides before constructing command
+        for k, v in combo.items():
+            _validate_override(k, v)
         overrides = [f"{k}={v}" for k, v in combo.items()]
         run_dir = root / f"run_{idx:03d}"
         # Clear any leftover Hydra output from previous runs to avoid copying
@@ -100,7 +126,8 @@ def main() -> None:
         if CODEX_HY_OUT.exists():
             shutil.rmtree(CODEX_HY_OUT)
 
-        # Use list format for subprocess.run to prevent shell injection
+        # Use list format for subprocess.run to prevent shell injection.
+        # All overrides are validated to prevent command injection.
         cmd = ["python", "-m", "codex_ml.cli.main"] + overrides
         subprocess = __import__("subprocess")
         result = subprocess.run(cmd, check=False)
