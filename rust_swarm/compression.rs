@@ -12,17 +12,21 @@ pub struct Compression;
 
 impl Compression {
     /// Compress data
-    pub fn compress(data: &[u8]) -> Vec<u8> {
+    pub fn compress(data: &[u8]) -> PyResult<Vec<u8>> {
         let mut encoder = GzEncoder::new(Vec::new(), FlateCompression::best());
-        encoder.write_all(data).unwrap();
-        encoder.finish().unwrap()
+        encoder.write_all(data)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression write failed: {}", e)))?;
+        encoder.finish()
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression finish failed: {}", e)))
     }
 
     /// Decompress data
-    pub fn decompress(data: &[u8]) -> Vec<u8> {
+    pub fn decompress(data: &[u8]) -> PyResult<Vec<u8>> {
         let mut decoder = GzDecoder::new(Vec::new());
-        decoder.write_all(data).unwrap();
-        decoder.finish().unwrap()
+        decoder.write_all(data)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Decompression write failed: {}", e)))?;
+        decoder.finish()
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Decompression finish failed: {}", e)))
     }
 
     /// Calculate compression ratio
@@ -31,12 +35,12 @@ impl Compression {
     }
 
     /// Compress JSON-serialized tasks
-    pub fn compress_tasks(tasks: &[u8]) -> Vec<u8> {
+    pub fn compress_tasks(tasks: &[u8]) -> PyResult<Vec<u8>> {
         Self::compress(tasks)
     }
 
     /// Decompress JSON-serialized tasks
-    pub fn decompress_tasks(data: &[u8]) -> Vec<u8> {
+    pub fn decompress_tasks(data: &[u8]) -> PyResult<Vec<u8>> {
         Self::decompress(data)
     }
 }
@@ -48,22 +52,22 @@ pub struct PyCompression;
 #[pymethods]
 impl PyCompression {
     #[staticmethod]
-    fn compress(data: Vec<u8>) -> Vec<u8> {
+    fn compress(data: Vec<u8>) -> PyResult<Vec<u8>> {
         Compression::compress(&data)
     }
 
     #[staticmethod]
-    fn decompress(data: Vec<u8>) -> Vec<u8> {
+    fn decompress(data: Vec<u8>) -> PyResult<Vec<u8>> {
         Compression::decompress(&data)
     }
 
     #[staticmethod]
-    fn compress_tasks(tasks_json: Vec<u8>) -> Vec<u8> {
+    fn compress_tasks(tasks_json: Vec<u8>) -> PyResult<Vec<u8>> {
         Compression::compress_tasks(&tasks_json)
     }
 
     #[staticmethod]
-    fn decompress_tasks(data: Vec<u8>) -> Vec<u8> {
+    fn decompress_tasks(data: Vec<u8>) -> PyResult<Vec<u8>> {
         Compression::decompress_tasks(&data)
     }
 
@@ -80,8 +84,8 @@ mod tests {
     #[test]
     fn test_compression_basic() {
         let data = b"Hello, World!".to_vec();
-        let compressed = Compression::compress(&data);
-        let decompressed = Compression::decompress(&compressed);
+        let compressed = Compression::compress(&data).unwrap();
+        let decompressed = Compression::decompress(&compressed).unwrap();
 
         assert_eq!(data, decompressed);
     }
@@ -90,7 +94,7 @@ mod tests {
     fn test_compression_ratio() {
         // Create highly compressible data
         let data = vec![b'A'; 100_000];
-        let compressed = Compression::compress(&data);
+        let compressed = Compression::compress(&data).unwrap();
 
         let ratio = Compression::ratio(&data, &compressed);
         println!("Compression ratio: {:.2}x", ratio);
@@ -103,8 +107,8 @@ mod tests {
     fn test_compression_large_data() {
         // Test with 1MB of data
         let data = vec![0u8; 1_000_000];
-        let compressed = Compression::compress(&data);
-        let decompressed = Compression::decompress(&compressed);
+        let compressed = Compression::compress(&data).unwrap();
+        let decompressed = Compression::decompress(&compressed).unwrap();
 
         assert_eq!(data, decompressed);
         assert!(compressed.len() < data.len());
@@ -116,8 +120,8 @@ mod tests {
         let task_json = r#"{"id": 1, "type": "process", "data": "test"}"#;
         let data = task_json.repeat(1000).into_bytes();
 
-        let compressed = Compression::compress(&data);
-        let decompressed = Compression::decompress(&compressed);
+        let compressed = Compression::compress(&data).unwrap();
+        let decompressed = Compression::decompress(&compressed).unwrap();
 
         assert_eq!(data, decompressed);
 
@@ -138,8 +142,8 @@ mod tests {
         ];
 
         for data in test_cases {
-            let compressed = Compression::compress(&data);
-            let decompressed = Compression::decompress(&compressed);
+            let compressed = Compression::compress(&data).unwrap();
+            let decompressed = Compression::decompress(&compressed).unwrap();
             assert_eq!(data, decompressed, "Roundtrip failed for data");
         }
     }
@@ -150,11 +154,11 @@ mod tests {
         let data = vec![b'X'; 1_000_000]; // 1MB
 
         let start = std::time::Instant::now();
-        let compressed = Compression::compress(&data);
+        let compressed = Compression::compress(&data).unwrap();
         let compress_time = start.elapsed();
 
         let start = std::time::Instant::now();
-        let _decompressed = Compression::decompress(&compressed);
+        let _decompressed = Compression::decompress(&compressed).unwrap();
         let decompress_time = start.elapsed();
 
         println!("Compression time: {:?}", compress_time);

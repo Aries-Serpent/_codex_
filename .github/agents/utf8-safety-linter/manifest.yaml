@@ -1,0 +1,41 @@
+name: UTF-8 String Safety Linter
+version: 1.0.0
+description: Validates JavaScript/TypeScript/YAML string operations for UTF-8 safety
+created: 2026-01-11
+updated: 2026-01-11
+
+capabilities:
+  - detect_unsafe_truncation
+  - suggest_safe_alternatives
+  - validate_character_boundaries
+  - check_surrogate_pairs
+  - workflow_string_safety
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - click>=8.1.0
+    - PyYAML>=6.0
+    - esprima>=4.0.0
+
+entry_point: linter.py
+
+tools:
+  - bash
+  - node
+  - eslint
+
+task_types:
+  - scan_javascript
+  - scan_yaml_workflows
+  - generate_safe_patterns
+  - validate_truncation
+
+triggers:
+  file_patterns:
+    - "**/*.js"
+    - "**/*.ts"
+    - "**/.github/workflows/*.yml"
+  on_review: true
+  on_commit: true
