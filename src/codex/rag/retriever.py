@@ -403,7 +403,8 @@ class LRUCache:
             value: Value to cache
         """
         if key in self.cache:
-            # Update existing key
+            # Update existing key value and mark as most-recently-used
+            self.cache[key] = value
             self.cache.move_to_end(key)
         else:
             # Add new key
@@ -573,12 +574,21 @@ class CachedRetriever(Retriever):
         # Create cache key
         cache_key = self._make_cache_key(q, top_k, min_score)
         
-        # Check cache
+        # If valid entry exists, return it and let LRUCache.get increment hits
         if self._is_cache_valid(cache_key):
             cached_results = self.query_cache.get(cache_key)
             if cached_results is not None:
                 logger.debug(f"Cache HIT for query: {q[:50]}...")
                 return cached_results
+        else:
+            # If an expired entry exists, remove it to avoid false hits
+            if cache_key in self.query_cache.cache:
+                try:
+                    del self.query_cache.cache[cache_key]
+                except KeyError:
+                    pass
+                if cache_key in self.cache_timestamps:
+                    del self.cache_timestamps[cache_key]
         
         # Cache miss - perform actual query
         logger.debug(f"Cache MISS for query: {q[:50]}...")
