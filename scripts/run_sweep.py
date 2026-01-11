@@ -100,9 +100,10 @@ def main() -> None:
         if CODEX_HY_OUT.exists():
             shutil.rmtree(CODEX_HY_OUT)
 
-        cmd = ["python", "-m", "codex_ml.cli.main", *overrides]
+        # Pass overrides as list to prevent command injection (shell=False ensures safe execution)
+        cmd = ["python", "-m", "codex_ml.cli.main"] + overrides
         subprocess = __import__("subprocess")
-        result = subprocess.run(cmd, check=False)
+        result = subprocess.run(cmd, check=False, shell=False)
 
         run_dir.mkdir(parents=True, exist_ok=True)
         if result.returncode == 0 and CODEX_HY_OUT.exists():

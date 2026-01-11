@@ -12,14 +12,18 @@ fn bench_task_latency(c: &mut Criterion) {
     group.measurement_time(Duration::from_secs(10));
 
     for size in [1, 10, 100, 1000].iter() {
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b: &mut criterion::Bencher, &size| {
-            let task_manager = TaskManager::new();
-            b.iter(|| {
-                for i in 0..size {
-                    task_manager.submit_task(black_box(&format!("task_{}", i)));
-                }
-            });
-        });
+        group.bench_with_input(
+            BenchmarkId::from_parameter(size),
+            size,
+            |b: &mut criterion::Bencher, &size| {
+                let task_manager = TaskManager::new();
+                b.iter(|| {
+                    for i in 0..size {
+                        task_manager.submit_task(black_box(&format!("task_{}", i)));
+                    }
+                });
+            },
+        );
     }
 
     group.finish();
@@ -146,10 +150,13 @@ fn bench_e2e_workflow(c: &mut Criterion) {
     let mut group = c.benchmark_group("e2e_workflow");
     group.measurement_time(Duration::from_secs(15));
 
-    group.bench_function("complete_pipeline_100_tasks", |b: &mut criterion::Bencher| {
-        let swarm = SwarmEngine::new(100);
-        b.iter(|| swarm.process_batch(black_box(100)));
-    });
+    group.bench_function(
+        "complete_pipeline_100_tasks",
+        |b: &mut criterion::Bencher| {
+            let swarm = SwarmEngine::new(100);
+            b.iter(|| swarm.process_batch(black_box(100)));
+        },
+    );
 
     group.finish();
 }

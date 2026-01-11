@@ -171,7 +171,10 @@ mod tests {
             println!("⚠️  Compression slower than expected: {:?}", compress_time);
         }
         if decompress_time.as_millis() >= 100 {
-            println!("⚠️  Decompression slower than expected: {:?}", decompress_time);
+            println!(
+                "⚠️  Decompression slower than expected: {:?}",
+                decompress_time
+            );
         }
     }
 }

@@ -2,7 +2,6 @@
 Python integration tests for Serialization
 """
 
-import json
 import pytest
 import time
 
@@ -57,6 +56,7 @@ def test_serialization_round_trip():
 def test_serialization_size():
     """Test that MessagePack is compact."""
     try:
+        import json
         from codex_engine import AgentState, serialize_state
         
         state = AgentState("agent_1", ["memory"] * 1000)
@@ -82,6 +82,7 @@ def test_serialization_size():
 def test_serialization_performance():
     """Test that MessagePack is faster than JSON."""
     try:
+        import json
         from codex_engine import AgentState, serialize_state, deserialize_state
         
         state = AgentState("agent_1", ["item"] * 1000)
