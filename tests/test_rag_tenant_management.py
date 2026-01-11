@@ -269,7 +269,7 @@ class TestManageTenantIndices:
         assert merge_result.success is True
         assert merge_result.operation == IndexOperation.MERGE
         assert "Successfully merged" in merge_result.message
-        assert merge_result.details["merged_index"] == "all_content"
+        assert merge_result.details["merged_name"] == "all_content"
 
     def test_merge_operation_missing_merge_name(self, temp_index_dir, sample_files):
         """Test MERGE operation fails without merge_name"""
