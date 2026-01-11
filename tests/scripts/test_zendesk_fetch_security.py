@@ -17,30 +17,22 @@ from zendesk_docs_fetch import _fetch
 class TestURLValidation:
     """Test suite for _fetch URL security validation."""
 
-    def test_reject_file_scheme(self) -> None:
-        """Reject file:// URLs to prevent local file access."""
+    @pytest.mark.parametrize(
+        "url,description",
+        [
+            ("file:///etc/passwd", "file scheme lowercase"),
+            ("FILE:///etc/passwd", "file scheme uppercase"),
+            ("File:///etc/passwd", "file scheme mixed case"),
+            ("http://example.com/page", "http scheme"),
+            ("ftp://ftp.example.com/file", "ftp scheme"),
+            ("data:text/plain,Hello", "data scheme"),
+            ("javascript:alert(1)", "javascript scheme"),
+        ],
+    )
+    def test_reject_non_https_schemes(self, url: str, description: str) -> None:
+        """Reject any non-HTTPS URL schemes."""
         with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("file:///etc/passwd")
-
-    def test_reject_http_scheme(self) -> None:
-        """Reject HTTP URLs (only HTTPS allowed)."""
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("http://example.com/page")
-
-    def test_reject_ftp_scheme(self) -> None:
-        """Reject FTP URLs."""
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("ftp://ftp.example.com/file")
-
-    def test_reject_data_scheme(self) -> None:
-        """Reject data: URLs."""
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("data:text/plain,Hello")
-
-    def test_reject_javascript_scheme(self) -> None:
-        """Reject javascript: URLs."""
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("javascript:alert(1)")
+            _fetch(url)
 
     def test_reject_missing_hostname(self) -> None:
         """Reject URLs without valid hostname."""
@@ -91,12 +83,3 @@ class TestURLValidation:
             _fetch("https://example.com/page", retries=3, backoff=0.1)
 
         assert mock_urlopen.call_count == 3
-
-    def test_reject_mixed_case_file_scheme(self) -> None:
-        """Reject file:// scheme regardless of case (RFC 3986 compliance)."""
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("FILE:///etc/passwd")
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("File:///etc/passwd")
-        with pytest.raises(ValueError, match="Only HTTPS URLs are allowed"):
-            _fetch("file:///etc/passwd")
