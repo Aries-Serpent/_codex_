@@ -132,7 +132,22 @@ jobs:
                 
                 if (findingCount > 0) {
                   comment += `⚠️  Found **${findingCount}** potential security issues\n\n`;
-                  comment += '```\n' + results.slice(0, 2000) + '\n```\n\n';
+                  const MAX_PREVIEW_LENGTH = 2000;
+                  let preview = results;
+                  if (results.length > MAX_PREVIEW_LENGTH) {
+                    let safeCut = results.lastIndexOf('\n', MAX_PREVIEW_LENGTH);
+                    if (safeCut === -1) {
+                      safeCut = MAX_PREVIEW_LENGTH;
+                    }
+                    if (safeCut > 0) {
+                      const codeUnit = results.charCodeAt(safeCut - 1);
+                      if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
+                        safeCut -= 1;
+                      }
+                    }
+                    preview = results.slice(0, safeCut) + '\n... (truncated; see artifact for full results) ...';
+                  }
+                  comment += '```\n' + preview + '\n```\n\n';
                   comment += 'See the uploaded artifacts for full details.';
                 } else {
                   comment += '✅ No security issues found!\n';

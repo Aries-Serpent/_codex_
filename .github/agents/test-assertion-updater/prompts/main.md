@@ -85,6 +85,11 @@ result_names = [item["name"] if isinstance(item, dict) else item for item in res
 assert "expected_string" in result_names
 ```
 
+**Note**: This type of fix is appropriate when the API implementation has evolved to return richer data structures (e.g., dicts instead of strings) while maintaining backward compatibility. If the change represents a breaking API change that affects external consumers, consider:
+- Creating a new API version or endpoint
+- Providing a migration guide
+- Deprecating the old behavior with warnings before removing it
+
 ### 4. Validation Section
 ```markdown
 **Validation Strategy**: Property-based testing with Hypothesis
