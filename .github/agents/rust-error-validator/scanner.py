@@ -22,8 +22,12 @@ class RustErrorScanner:
                 if '.unwrap()' in line and '#[test]' not in '\n'.join(lines[max(0,i-5):i]):
                     severity = "high" if any(x in '\n'.join(lines[max(0,i-10):i]) 
                                            for x in ['#[pyfunction]', '#[pymethods]']) else "medium"
-                    findings.append(Finding(str(filepath), i, severity, 
-                                          f"unwrap() can panic - use PyResult or unwrap_or_else"))
+                    findings.append(Finding(
+                        str(filepath),
+                        i,
+                        severity,
+                        f"unwrap() can panic in code: {line.strip()} - use PyResult or unwrap_or_else",
+                    ))
         except Exception as e:
             click.echo(f"Error: {e}", err=True)
         return findings
