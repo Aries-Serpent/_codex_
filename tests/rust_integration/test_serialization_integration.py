@@ -4,7 +4,6 @@ Python integration tests for Serialization
 
 import pytest
 import time
-import json
 
 
 def test_agent_state_creation():

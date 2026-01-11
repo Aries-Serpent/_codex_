@@ -8,7 +8,6 @@ Profiles memory usage and validates < 50MB per 1000 agents.
 
 import sys
 import time
-import gc
 from pathlib import Path
 from typing import Tuple
 
