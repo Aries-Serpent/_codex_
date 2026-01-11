@@ -100,7 +100,8 @@ def main() -> None:
         if CODEX_HY_OUT.exists():
             shutil.rmtree(CODEX_HY_OUT)
 
-        cmd = ["python", "-m", "codex_ml.cli.main", *overrides]
+        # Use list format for subprocess.run to prevent shell injection
+        cmd = ["python", "-m", "codex_ml.cli.main"] + overrides
         subprocess = __import__("subprocess")
         result = subprocess.run(cmd, check=False)
 

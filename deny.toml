@@ -1,0 +1,36 @@
+# Cargo deny configuration
+# See https://embarkstudios.github.io/cargo-deny/
+
+[licenses]
+# Allow common open source licenses used by our dependencies
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "BSD-2-Clause",
+    "ISC",
+    "Unlicense",
+    "0BSD",
+]
+
+# Deny licenses that are not explicitly allowed
+unlicensed = "deny"
+copyleft = "deny"
+
+# Confidence threshold for license detection
+confidence-threshold = 0.8
+
+[advisories]
+# Enable vulnerability detection
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "deny"
+
+[bans]
+# Multiple versions of the same crate are allowed for now
+multiple-versions = "allow"
+
+[sources]
+# Only allow crates from crates.io
+unknown-registry = "deny"
+unknown-git = "deny"

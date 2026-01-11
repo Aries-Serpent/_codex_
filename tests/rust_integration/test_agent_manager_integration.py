@@ -96,6 +96,7 @@ def test_agent_manager_concurrent_access():
                     # Expected: manager may hit max_agents capacity (50)
                     # during concurrent spawning from multiple threads.
                     # This is intentional behavior to test concurrent access limits.
+                    # We catch and ignore this error to continue testing other agents.
                     pass
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
