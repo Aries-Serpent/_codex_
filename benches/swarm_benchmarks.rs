@@ -1,7 +1,7 @@
 // Swarm Benchmarks - Comprehensive Performance Testing
 // Phase 2: Performance Benchmarking
 
-use codex_swarm::{Compression, SwarmEngine, TaskManager};
+use codex_engine::{Compression, SwarmEngine, TaskManager};
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::time::Duration;
 
@@ -12,7 +12,7 @@ fn bench_task_latency(c: &mut Criterion) {
     group.measurement_time(Duration::from_secs(10));
 
     for size in [1, 10, 100, 1000].iter() {
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b: &mut criterion::Bencher, &size| {
             let task_manager = TaskManager::new();
             b.iter(|| {
                 for i in 0..size {
@@ -34,7 +34,7 @@ fn bench_throughput(c: &mut Criterion) {
 
     let swarm = SwarmEngine::new(1000); // 1000 agents
 
-    group.bench_function("10k_tasks", |b| {
+    group.bench_function("10k_tasks", |b: &mut criterion::Bencher| {
         b.iter(|| swarm.process_batch(black_box(10_000)));
     });
 
@@ -50,16 +50,16 @@ fn bench_compression(c: &mut Criterion) {
     // Create 1MB of compressible data
     let data_1mb: Vec<u8> = vec![b'A'; 1_000_000];
 
-    group.bench_function("compress_1mb", |b| {
+    group.bench_function("compress_1mb", |b: &mut criterion::Bencher| {
         b.iter(|| Compression::compress(black_box(&data_1mb)));
     });
 
-    group.bench_function("decompress_1mb", |b| {
+    group.bench_function("decompress_1mb", |b: &mut criterion::Bencher| {
         let compressed = Compression::compress(&data_1mb);
         b.iter(|| Compression::decompress(black_box(&compressed)));
     });
 
-    group.bench_function("compression_ratio_1mb", |b| {
+    group.bench_function("compression_ratio_1mb", |b: &mut criterion::Bencher| {
         b.iter(|| {
             let compressed = Compression::compress(black_box(&data_1mb));
             Compression::ratio(&data_1mb, &compressed)
@@ -80,7 +80,7 @@ fn bench_concurrent_agents(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::from_parameter(agent_count),
             agent_count,
-            |b, &count| {
+            |b: &mut criterion::Bencher, &count| {
                 let swarm = SwarmEngine::new(count);
                 b.iter(|| swarm.execute_parallel(black_box(1000)));
             },
@@ -97,13 +97,13 @@ fn bench_task_manager_ops(c: &mut Criterion) {
 
     let manager = TaskManager::new();
 
-    group.bench_function("submit_single_task", |b| {
+    group.bench_function("submit_single_task", |b: &mut criterion::Bencher| {
         b.iter(|| manager.submit_task(black_box("benchmark_task")));
     });
 
-    group.bench_function("submit_retrieve_cycle", |b| {
+    group.bench_function("submit_retrieve_cycle", |b: &mut criterion::Bencher| {
         b.iter(|| {
-            let id = manager.submit_task(black_box("test"));
+            let _id = manager.submit_task(black_box("test"));
             manager.get_result(1.0)
         });
     });
@@ -125,15 +125,15 @@ fn bench_compression_patterns(c: &mut Criterion) {
     // Random data (low compression)
     let random_data: Vec<u8> = (0..100_000).map(|i| (i % 256) as u8).collect();
 
-    group.bench_function("compress_repetitive", |b| {
+    group.bench_function("compress_repetitive", |b: &mut criterion::Bencher| {
         b.iter(|| Compression::compress(black_box(&repetitive_data)));
     });
 
-    group.bench_function("compress_json", |b| {
+    group.bench_function("compress_json", |b: &mut criterion::Bencher| {
         b.iter(|| Compression::compress(black_box(&json_data)));
     });
 
-    group.bench_function("compress_random", |b| {
+    group.bench_function("compress_random", |b: &mut criterion::Bencher| {
         b.iter(|| Compression::compress(black_box(&random_data)));
     });
 
@@ -146,7 +146,7 @@ fn bench_e2e_workflow(c: &mut Criterion) {
     let mut group = c.benchmark_group("e2e_workflow");
     group.measurement_time(Duration::from_secs(15));
 
-    group.bench_function("complete_pipeline_100_tasks", |b| {
+    group.bench_function("complete_pipeline_100_tasks", |b: &mut criterion::Bencher| {
         let swarm = SwarmEngine::new(100);
         b.iter(|| swarm.process_batch(black_box(100)));
     });

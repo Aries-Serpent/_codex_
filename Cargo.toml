@@ -37,6 +37,13 @@ tracing-subscriber = "0.3.18"
 [build-dependencies]
 pyo3-build-config = "0.22"
 
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "swarm_benchmarks"
+harness = false
+
 [profile.release]
 opt-level = 3
 lto = true
