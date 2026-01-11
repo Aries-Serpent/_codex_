@@ -69,12 +69,29 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                 logger.info(f"Moving model from meta device to {device} using to_empty()")
                 return model.to_empty(device=device)
             else:
-                # Fallback: try regular to() which may fail
+                # For models without to_empty, attempt reinitialization
                 logger.warning(
-                    f"Model has meta tensors but no to_empty() method, "
-                    f"attempting regular to({device})"
+                    f"Model has meta tensors but no to_empty() method. "
+                    f"Attempting to reinitialize model on {device}."
                 )
-                return model.to(device)
+                # Try to get model config and reinitialize
+                if hasattr(model, "_load_sbert_model"):
+                    # SentenceTransformer-specific reinitialization
+                    model_name_or_path = getattr(model, "model_name_or_path", None)
+                    if model_name_or_path:
+                        try:
+                            from sentence_transformers import SentenceTransformer
+                            logger.info(f"Reinitializing SentenceTransformer: {model_name_or_path}")
+                            return SentenceTransformer(model_name_or_path, device=device)
+                        except ImportError:
+                            logger.error("sentence_transformers not available for reinitialization")
+                
+                # Last resort: return as-is and log error
+                logger.error(
+                    f"Cannot safely move model from meta device. "
+                    f"Model will remain on meta device and may fail at inference time."
+                )
+                return model
 
         # No meta tensors, safe to use regular to() method
         if hasattr(model, "to"):
