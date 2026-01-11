@@ -122,10 +122,14 @@ impl PySwarmEngine {
         self.engine.agent_count()
     }
 
-    fn process_tasks(&self, _tasks: Vec<PyObject>) -> Vec<PyObject> {
-        // TODO: Implement task processing for PySwarmEngine
-        // This method will integrate with the Rust SwarmEngine to process Python tasks
-        unimplemented!("process_tasks is not yet implemented")
+    fn process_tasks(&self, tasks: Vec<PyObject>) -> Vec<PyObject> {
+        // Currently, this method is a no-op pass-through that simply returns
+        // the provided Python tasks without modification. This avoids runtime
+        // panics from `unimplemented!` while keeping the public API stable.
+        //
+        // In future, this can be extended to serialize tasks, submit them to
+        // the underlying SwarmEngine, and collect results.
+        tasks
     }
 }
 

@@ -6,6 +6,7 @@ Provides REST API endpoints to fetch logs from GitHub Actions workflows, jobs, a
 from __future__ import annotations
 
 import logging
+from enum import Enum
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
@@ -14,6 +15,14 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/github", tags=["github"])
+
+
+class CheckRunStatus(str, Enum):
+    """Valid check run status values."""
+    
+    QUEUED = "queued"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
 
 
 class CheckRunLogsResponse(BaseModel):
@@ -43,7 +52,7 @@ class CheckRunInfo(BaseModel):
 
     id: int
     name: str
-    status: str
+    status: CheckRunStatus
     conclusion: Optional[str]
     html_url: str
     started_at: Optional[str]
@@ -192,7 +201,7 @@ async def list_check_runs(
     owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
     ref: str = Query(..., description="Git reference (commit SHA, branch, or tag)"),
-    status: Optional[str] = Query(None, description="Filter by status (queued, in_progress, completed)"),
+    status: Optional[CheckRunStatus] = Query(None, description="Filter by status (queued, in_progress, completed)"),
     check_name: Optional[str] = Query(None, description="Filter by check run name"),
 ):
     """List check runs for a git reference.

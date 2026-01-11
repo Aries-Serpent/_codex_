@@ -215,7 +215,9 @@ The implementation is ready for cognitive brain integration:
 
 ## Conclusion
 
-The GitHub Actions Log Fetcher implementation is **COMPLETE** and **PRODUCTION-READY**. All three interfaces (MCP, CLI, API) are functional and tested. The solution directly addresses the requirement to fetch logs from the specified commit check run.
+The GitHub Actions Log Fetcher implementation is **COMPLETE** and **PRODUCTION-READY** for the log fetching functionality. All three interfaces (MCP, CLI, API) are functional and tested. The solution directly addresses the requirement to fetch logs from the specified commit check run.
+
+**Note:** The Rust SwarmEngine component (`rust_swarm/swarm_engine.rs`) includes a placeholder `process_tasks` method that currently returns tasks unmodified to maintain API stability. This component is available for future enhancement but is not required for the core log fetching functionality.
 
 ### Next Steps for User
 
