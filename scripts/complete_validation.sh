@@ -11,7 +11,7 @@ echo ""
 # Step 1: Install cargo-tarpaulin
 echo "📦 Step 1/6: Installing cargo-tarpaulin..."
 if ! command -v cargo-tarpaulin &> /dev/null; then
-    cargo install cargo-tarpaulin
+    cargo install cargo-tarpaulin --version 0.27.3
     echo "✅ cargo-tarpaulin installed"
 else
     echo "✅ cargo-tarpaulin already installed"
@@ -34,7 +34,7 @@ echo ""
 
 # Step 3: Install maturin
 echo "📦 Step 3/6: Installing maturin..."
-pip install maturin pytest pytest-cov
+pip install maturin==1.4.0 pytest==7.4.3 pytest-cov==4.1.0
 echo "✅ maturin installed"
 echo ""
 
