@@ -28,7 +28,6 @@ permissions:
   security-events: write
   pull-requests: write
   issues: write
-  actions: read
 
 jobs:
   semgrep:
