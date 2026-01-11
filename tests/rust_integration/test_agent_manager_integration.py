@@ -93,6 +93,8 @@ def test_agent_manager_concurrent_access():
                 try:
                     manager.spawn_agent(f"agent_{i}", "{}")
                 except RuntimeError:
+                    # Expected: manager may hit max_agents capacity (50)
+                    # during concurrent spawning from multiple threads
                     pass
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:

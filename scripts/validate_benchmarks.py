@@ -76,7 +76,6 @@ def validate_task_latency(results: Dict[str, Any]) -> Tuple[bool, str]:
         
         # Extract task count from benchmark name (e.g., "task_latency/1" -> 1)
         if "/" in bench_name:
-            task_count = bench_name.split("/")[1]
             avg_us_per_task = mean_us
             
             target_us = TARGETS["task_latency"]["1000_tasks_max_us"]

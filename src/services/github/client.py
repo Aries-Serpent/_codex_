@@ -697,9 +697,6 @@ class GitHubClient:
             NotFoundError: If check run or logs not found.
             GitHubAPIError: On other API errors.
         """
-        # First get the check run to extract the job ID if available
-        check_run = await self.get_check_run(owner, repo, check_run_id)
-        
         # Check runs don't have a direct logs endpoint, but if it's a GitHub Actions
         # check run, we need to find the associated job
         # For now, we'll try to get logs via the Actions job endpoint
