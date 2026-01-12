@@ -1,0 +1,44 @@
+name: PyO3 Integration Tester
+version: 1.0.0
+description: Validates Python-Rust bindings and generates integration tests
+created: 2026-01-11
+updated: 2026-01-11
+
+capabilities:
+  - parse_pyo3_bindings
+  - generate_python_tests
+  - validate_type_conversions
+  - test_error_handling
+  - performance_smoke_tests
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - click>=8.1.0
+    - pytest>=8.0.0
+    - jinja2>=3.1.0
+
+entry_point: tester.py
+
+tools:
+  - bash
+  - cargo
+  - pytest
+  - maturin
+
+task_types:
+  - parse_rust_bindings
+  - generate_test_suite
+  - validate_bindings
+  - run_integration_tests
+
+triggers:
+  file_patterns:
+    - "rust_swarm/**/*.rs"
+    - "examples/**/*.py"
+  on_change:
+    - "#[pyclass]"
+    - "#[pymethods]"
+    - "#[pyfunction]"
+  on_review: true
