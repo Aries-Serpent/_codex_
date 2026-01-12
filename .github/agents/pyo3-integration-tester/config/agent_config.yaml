@@ -1,0 +1,51 @@
+# PyO3 Integration Tester Configuration
+version: "1.0.0"
+agent_id: "pyo3-integration-tester"
+enabled: true
+
+# Module configuration
+module_name: "codex_swarm"  # Python module name for imports
+
+# Test generation settings
+test_types:
+  happy_path: true
+  type_validation: true
+  error_handling: true
+  performance: true
+  async: true
+
+# Performance testing
+performance_threshold_seconds: 1.0
+
+# Scanning settings
+recursive_scan: true
+file_patterns:
+  - "*.rs"
+
+# Output configuration
+output_dir: "tests/"
+overwrite_existing: false
+
+# Cognitive brain integration
+cognitive_brain:
+  enabled: true
+  metrics:
+    - "total_bindings_found"
+    - "tests_generated"
+    - "async_functions_detected"
+    - "error_handling_coverage"
+    - "scan_duration_ms"
+  
+  alerts:
+    bindings_without_tests_threshold: 5
+    low_error_handling_percentage: 50
+  
+  learning:
+    store_patterns: true
+    track_common_signatures: true
+
+# Integration settings
+integration:
+  github_actions: true
+  pytest_integration: true
+  coverage_tracking: true
