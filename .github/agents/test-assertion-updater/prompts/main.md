@@ -10,6 +10,8 @@ Analyze test failures caused by assertion mismatches (not bugs) and generate cor
 
 When code implementations evolve (better error messages, structured return values, etc.), tests often fail not because of bugs, but because assertions expect outdated formats. Your job is to identify these cases and fix them automatically.
 
+See `prompts/examples.md` for usage examples and `prompts/advanced.md` for advanced patterns.
+
 ## Decision Process
 
 ```mermaid
