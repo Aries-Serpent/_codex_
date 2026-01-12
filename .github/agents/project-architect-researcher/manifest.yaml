@@ -1,0 +1,87 @@
+name: Project Architect Researcher
+version: 1.0.0
+description: System project plan/task-manager architect with research capabilities, generates artifacts for NotebookLM/NotionLM integration
+created: 2026-01-11
+updated: 2026-01-11
+
+capabilities:
+  - project_architecture_design
+  - task_decomposition
+  - dependency_analysis
+  - research_synthesis
+  - timeline_estimation
+  - resource_allocation
+  - risk_assessment
+  - milestone_tracking
+  - plan_generation
+  - prompt_engineering
+  - cognitive_brain_integration
+  - notebooklm_artifact_generation
+  - notionlm_artifact_generation
+  - knowledge_graph_creation
+  - citation_management
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - click>=8.1.0
+    - PyYAML>=6.0
+    - jinja2>=3.1.0
+    - networkx>=3.0
+    - matplotlib>=3.8.0
+    - pydantic>=2.0.0
+    - markdown>=3.5.0
+
+entry_point: architect.py
+
+tools:
+  - bash
+  - git
+  - web_search
+  - semantic-search
+  - rag-index-manager
+
+artifact_formats:
+  - notebooklm_source
+  - notion_database
+  - markdown_wiki
+  - knowledge_graph
+  - interactive_timeline
+  - dependency_map
+
+task_types:
+  - generate_project_plan
+  - decompose_tasks
+  - research_requirements
+  - create_promptsets
+  - validate_dependencies
+  - estimate_timelines
+  - track_progress
+  - generate_reports
+  - export_notebooklm_sources
+  - export_notion_pages
+  - create_knowledge_artifacts
+
+triggers:
+  on_command:
+    - "plan project"
+    - "architect system"
+    - "research requirements"
+    - "generate planset"
+    - "export to notebooklm"
+    - "export to notion"
+  file_patterns:
+    - ".codex/plans/*.md"
+    - ".codex/projects/*.yaml"
+    - ".codex/artifacts/*.json"
+  on_milestone: true
+  on_phase_complete: true
+
+integration:
+  cognitive_brain: true
+  pda_loops: true
+  aftermath_tags: true
+  semantic_cache: true
+  notebooklm: true
+  notion_api: true

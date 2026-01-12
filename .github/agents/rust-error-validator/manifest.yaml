@@ -1,0 +1,42 @@
+name: Rust Error Handling Validator
+version: 1.0.0
+description: Validates Rust code for panic risks and suggests PyResult patterns for PyO3 bindings
+created: 2026-01-11
+updated: 2026-01-11
+
+capabilities:
+  - scan_unwrap_calls
+  - detect_panic_macros
+  - suggest_pyresult_patterns
+  - validate_error_propagation
+  - check_panic_boundaries
+  - pyo3_best_practices
+
+runtime:
+  python_version: "3.12"
+  base_image: "python:3.12-slim"
+  dependencies:
+    - tree-sitter>=0.20.0
+    - tree-sitter-rust>=0.20.0
+    - PyYAML>=6.0
+    - click>=8.1.0
+
+entry_point: scanner.py
+
+tools:
+  - bash
+  - cargo
+  - rustc
+  - tree-sitter
+
+task_types:
+  - scan_rust_code
+  - generate_fix_suggestions
+  - validate_pyo3_patterns
+  - check_error_boundaries
+
+triggers:
+  file_patterns:
+    - "**/*.rs"
+  on_review: true
+  on_commit: true
