@@ -76,7 +76,7 @@
 Standardize **10 Tier 2 agents** to same production-quality standards as Tier 1.
 
 ### Timeline
-**Estimated**: 2-3 weeks (10 agents, ~2 agents per session)
+**Estimated**: 2-3 Phases (10 agents, ~2 agents per session)
 
 ### Tier 2 Agents to Standardize (Priority Order)
 
@@ -116,7 +116,7 @@ Standardize **10 Tier 2 agents** to same production-quality standards as Tier 1.
    - **Dependencies**: ruff, mypy, black, isort
    - **Integration**: Pre-commit hooks, CI/CD
 
-#### Medium Priority (Week 3)
+#### Medium Priority (Phase 3)
 6. **performance-regression-detector**
    - **Purpose**: Detect performance regressions
    - **Complexity**: High
@@ -299,7 +299,7 @@ Use proven Tier 1 templates as foundation:
 **Review Schedule**:
 - Daily: Check for critical issues
 - Weekly: Comprehensive metrics review
-- Monthly: Performance optimization
+- per Part: Performance optimization
 
 ---
 
@@ -330,7 +330,7 @@ Weekly automated analysis:
 - Pattern recognition (similar failures)
 
 #### Continuous Improvement
-Monthly optimization:
+per Part optimization:
 - Agent algorithm refinement
 - Test coverage expansion
 - Documentation enhancement
@@ -359,7 +359,7 @@ Monthly optimization:
 - [ ] Average fix time <5 minutes
 - [ ] Zero production incidents
 - [ ] 95% uptime
-- [ ] First week metrics collected
+- [ ] First Phases metrics collected
 
 ### Cognitive Brain Goals
 - [ ] 25+ new patterns learned and stored
@@ -430,10 +430,10 @@ Apply this protocol for EVERY agent standardization:
 5. ❌ Forgetting cognitive brain sync (loses learnings)
 
 ### Time Management
-- **Per Agent**: 2-3 hours (template-based)
-- **Per Session**: 2-3 agents (4-8 hours)
+- **Per Agent**: 2-3 pre-commits (template-based)
+- **Per Session**: 2-3 agents (4-8 pre-commits)
 - **Per Week**: 4-5 agents (2 sessions)
-- **Total Phase 9**: 2-3 weeks (10 agents)
+- **Total Phase 9**: 2-3 Phases (10 agents)
 
 ---
 
@@ -474,7 +474,7 @@ Apply this protocol for EVERY agent standardization:
 **Mitigation**:
 - Documentation sync validator (Tier 2 agent)
 - Pre-commit hooks for docs
-- Monthly documentation reviews
+- per Part documentation reviews
 
 #### Risk 5: Cognitive Brain Overload
 **Likelihood**: Low  
@@ -530,7 +530,7 @@ Standardize 10 Tier 2 agents using proven templates:
 - Complete documentation (README, CHANGELOG, prompts)
 - 5-pass self-review protocol
 
-**Timeline**: 2-3 weeks (2-3 agents per session)
+**Timeline**: 2-3 Phases (2-3 agents per session)
 
 Begin with dependency-conflict-resolver. Use test-assertion-updater as template.
 ```
@@ -561,7 +561,7 @@ gh pr review 2782 --request-reviewer mbaetiong
 ### Phase 9 Metrics (Track Weekly)
 
 #### Agent Standardization
-- [ ] Agents completed this week: ___ / 10
+- [ ] Agents completed this Phases: ___ / 10
 - [ ] Cumulative agents: ___ / 15 (Tier 1 + Tier 2)
 - [ ] Average time per agent: ___ hours
 - [ ] Test pass rate: ___% (target: 100%)
