@@ -2,4 +2,4 @@ pytest>=7.2,<8
 requests>=2.31,<3
 jsonschema>=4.0,<5
 pre-commit>=3,<4
-nox>=2024.4.15,<2025
+nox>=2024.4.15,<2026
