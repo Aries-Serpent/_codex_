@@ -177,7 +177,8 @@ class NotebookLMAPI:
         response = requests.post(
             f"{self.base_url}/notebooks/{notebook_id}/audio-overview",
             headers=self.headers,
-            json=payload
+            json=payload,
+            timeout=30  # Audio generation may take longer
         )
         
         if response.status_code == 200:
@@ -211,7 +212,8 @@ class NotebookLMAPI:
         response = requests.post(
             f"{self.base_url}/notebooks/{notebook_id}/share",
             headers=self.headers,
-            json=payload
+            json=payload,
+            timeout=10
         )
         
         if response.status_code == 200:
@@ -241,7 +243,8 @@ class NotebookLMAPI:
         response = requests.post(
             f"{self.base_url}/notebooks/{notebook_id}/citations/enable",
             headers=self.headers,
-            json=payload
+            json=payload,
+            timeout=10
         )
         
         if response.status_code == 200:
@@ -268,7 +271,8 @@ class NotebookLMAPI:
         response = requests.post(
             f"{self.base_url}/notebooks/{notebook_id}/export",
             headers=self.headers,
-            json={"format": format}
+            json={"format": format},
+            timeout=60  # Export may take longer for large notebooks
         )
         
         if response.status_code == 200:
