@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
-from datetime import datetime, timezone
+from datetime import datetime
 import requests
 import os
 
@@ -73,8 +73,13 @@ class NotebookLMAPI:
     def _check_pro_status(self) -> bool:
         """Check if user has NotebookLM PRO subscription.
         
-        Returns False if API is not available or authentication fails.
-        Sets _api_available flag based on API accessibility.
+        Returns:
+            bool: True if user has PRO subscription and API is available,
+                  False if API is not available, authentication fails, or user
+                  does not have PRO subscription.
+        
+        Side effects:
+            Sets _api_available flag based on API accessibility.
         """
         if not self.api_key:
             click.echo("ℹ️  No API key provided. API features disabled.", err=True)
@@ -124,7 +129,7 @@ class NotebookLMAPI:
         payload = {
             "title": title,
             "description": description,
-            "created_at": datetime.now(timezone.utc).isoformat()
+            "created_at": datetime.now(datetime.timezone.utc).isoformat()
         }
         
         response = requests.post(
@@ -344,7 +349,7 @@ class ProjectArchitect:
                 }
                 for i, s in enumerate(sources, start=1)
             ],
-            "created": datetime.now(timezone.utc).isoformat()
+            "created": datetime.now(datetime.timezone.utc).isoformat()
         }
         (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
         
@@ -357,7 +362,7 @@ class ProjectArchitect:
 title: {project.get('name', 'Project')}
 type: project_documentation
 version: {project.get('version', '1.0.0')}
-last_updated: {datetime.now(timezone.utc).date().isoformat()}
+last_updated: {datetime.now(datetime.timezone.utc).date().isoformat()}
 ---
 
 # {project.get('name', 'Project')}

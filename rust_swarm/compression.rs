@@ -14,19 +14,32 @@ impl Compression {
     /// Compress data
     pub fn compress(data: &[u8]) -> PyResult<Vec<u8>> {
         let mut encoder = GzEncoder::new(Vec::new(), FlateCompression::best());
-        encoder.write_all(data)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression write failed: {}", e)))?;
-        encoder.finish()
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression finish failed: {}", e)))
+        encoder.write_all(data).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression write failed: {}", e))
+        })?;
+        encoder.finish().map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
+                "Compression finish failed: {}",
+                e
+            ))
+        })
     }
 
     /// Decompress data
     pub fn decompress(data: &[u8]) -> PyResult<Vec<u8>> {
         let mut decoder = GzDecoder::new(Vec::new());
-        decoder.write_all(data)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Decompression write failed: {}", e)))?;
-        decoder.finish()
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Decompression finish failed: {}", e)))
+        decoder.write_all(data).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
+                "Decompression write failed: {}",
+                e
+            ))
+        })?;
+        decoder.finish().map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
+                "Decompression finish failed: {}",
+                e
+            ))
+        })
     }
 
     /// Calculate compression ratio
