@@ -199,3 +199,76 @@ class ListArtifactsResponse(BaseModel):
 
     class Config:
         extra = "ignore"
+
+
+class CheckRunStatus(str, Enum):
+    """Check run status."""
+
+    QUEUED = "queued"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    WAITING = "waiting"
+    REQUESTED = "requested"
+    PENDING = "pending"
+
+
+class CheckRunConclusion(str, Enum):
+    """Check run conclusion."""
+
+    SUCCESS = "success"
+    FAILURE = "failure"
+    CANCELLED = "cancelled"
+    SKIPPED = "skipped"
+    TIMED_OUT = "timed_out"
+    ACTION_REQUIRED = "action_required"
+    NEUTRAL = "neutral"
+    STALE = "stale"
+
+
+class CheckRun(BaseModel):
+    """GitHub Check Run information."""
+
+    id: int
+    name: str
+    head_sha: str
+    status: CheckRunStatus
+    conclusion: Optional[CheckRunConclusion] = None
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    html_url: str
+    details_url: Optional[str] = None
+    external_id: Optional[str] = None
+    check_suite_id: Optional[int] = None
+    app: Optional[dict[str, Any]] = None
+
+    class Config:
+        extra = "ignore"
+
+    @property
+    def is_completed(self) -> bool:
+        """Check if run is completed."""
+        return self.status == CheckRunStatus.COMPLETED
+
+    @property
+    def is_successful(self) -> bool:
+        """Check if run completed successfully."""
+        return self.is_completed and self.conclusion == CheckRunConclusion.SUCCESS
+
+    @property
+    def is_failed(self) -> bool:
+        """Check if run failed."""
+        return self.is_completed and self.conclusion in (
+            CheckRunConclusion.FAILURE,
+            CheckRunConclusion.TIMED_OUT,
+            CheckRunConclusion.CANCELLED,
+        )
+
+
+class ListCheckRunsResponse(BaseModel):
+    """Response for list check runs."""
+
+    total_count: int
+    check_runs: list[CheckRun]
+
+    class Config:
+        extra = "ignore"

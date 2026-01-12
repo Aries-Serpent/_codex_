@@ -23,7 +23,11 @@ from .exceptions import (
 )
 from .types import (
     ArtifactInfo,
+    CheckRun,
+    CheckRunConclusion,
+    CheckRunStatus,
     ListArtifactsResponse,
+    ListCheckRunsResponse,
     ListWorkflowJobsResponse,
     ListWorkflowRunsResponse,
     RateLimitInfo,
@@ -609,6 +613,105 @@ class GitHubClient:
             return response.content
 
     # =========================================================================
+    # Check Run Operations
+    # =========================================================================
+
+    async def get_check_run(
+        self,
+        owner: str,
+        repo: str,
+        check_run_id: int,
+    ) -> CheckRun:
+        """Get check run by ID.
+
+        Args:
+            owner: Repository owner.
+            repo: Repository name.
+            check_run_id: Check run ID.
+
+        Returns:
+            Check run object.
+        """
+        data = await self._get(
+            f"/repos/{owner}/{repo}/check-runs/{check_run_id}"
+        )
+        return CheckRun(**data)
+
+    async def list_check_runs_for_ref(
+        self,
+        owner: str,
+        repo: str,
+        ref: str,
+        check_name: Optional[str] = None,
+        status: Optional[CheckRunStatus] = None,
+        per_page: int = 30,
+        page: int = 1,
+    ) -> list[CheckRun]:
+        """List check runs for a git reference.
+
+        Args:
+            owner: Repository owner.
+            repo: Repository name.
+            ref: Git reference (commit SHA, branch, or tag).
+            check_name: Filter by check run name.
+            status: Filter by status.
+            per_page: Results per page.
+            page: Page number.
+
+        Returns:
+            List of check runs.
+        """
+        params: dict[str, Any] = {"per_page": per_page, "page": page}
+        if check_name:
+            params["check_name"] = check_name
+        if status:
+            params["status"] = status.value
+
+        data = await self._get(
+            f"/repos/{owner}/{repo}/commits/{ref}/check-runs",
+            params=params,
+        )
+        response = ListCheckRunsResponse(**data)
+        return response.check_runs
+
+    async def get_check_run_logs(
+        self,
+        owner: str,
+        repo: str,
+        check_run_id: int,
+    ) -> str:
+        """Get check run logs.
+
+        Note: Check runs are associated with GitHub Actions jobs.
+        This method fetches the logs for the underlying job.
+
+        Args:
+            owner: Repository owner.
+            repo: Repository name.
+            check_run_id: Check run ID.
+
+        Returns:
+            Check run logs as string.
+
+        Raises:
+            NotFoundError: If check run or logs not found.
+            GitHubAPIError: On other API errors.
+        """
+        # Check runs don't have a direct logs endpoint, but if it's a GitHub Actions
+        # check run, we need to find the associated job
+        # For now, we'll try to get logs via the Actions job endpoint
+        # The check_run_id is often the same as the job_id for Actions
+        try:
+            return await self.get_job_logs(owner, repo, check_run_id)
+        except NotFoundError:
+            # If direct job lookup fails, we need to find the job via workflow runs
+            # This is a limitation of the GitHub API - check runs don't directly expose logs
+            raise NotFoundError(
+                "check run logs",
+                f"{check_run_id} (note: logs may only be available via associated workflow job)"
+            )
+
+    # =========================================================================
     # Rate Limit
     # =========================================================================
 
@@ -685,6 +788,15 @@ class GitHubClientSync:
 
     def download_artifact(self, *args: Any, **kwargs: Any) -> bytes:
         return self._run(self._async_client.download_artifact(*args, **kwargs))
+
+    def get_check_run(self, *args: Any, **kwargs: Any) -> CheckRun:
+        return self._run(self._async_client.get_check_run(*args, **kwargs))
+
+    def list_check_runs_for_ref(self, *args: Any, **kwargs: Any) -> list[CheckRun]:
+        return self._run(self._async_client.list_check_runs_for_ref(*args, **kwargs))
+
+    def get_check_run_logs(self, *args: Any, **kwargs: Any) -> str:
+        return self._run(self._async_client.get_check_run_logs(*args, **kwargs))
 
     def get_rate_limit(self, *args: Any, **kwargs: Any) -> RateLimitInfo:
         return self._run(self._async_client.get_rate_limit(*args, **kwargs))
