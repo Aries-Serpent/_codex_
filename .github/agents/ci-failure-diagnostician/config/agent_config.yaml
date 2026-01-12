@@ -1,0 +1,44 @@
+version: 1.0.0
+agent_name: ci-failure-diagnostician
+
+capabilities:
+  - root_cause_analysis
+  - dependency_conflict_detection
+  - pattern_correlation
+  - environment_debugging
+
+integration:
+  cognitive_brain: true
+  github_actions: true
+  aftermath: true
+  self_healing: true
+
+settings:
+  timeout_seconds: 300
+  max_retries: 3
+  log_level: INFO
+  max_log_lines: 10000
+  context_lines: 20
+  min_confidence: 60
+  cognitive_brain_enabled: true
+
+# Analysis thresholds
+thresholds:
+  high_confidence: 80
+  medium_confidence: 60
+  low_confidence: 40
+
+# Time estimates by root cause type
+time_estimates:
+  dependency_conflict: "20-30 minutes"
+  missing_dependency: "5-10 minutes"
+  runtime_error: "30-60 minutes"
+  build_error: "15-30 minutes"
+  test_failure: "20-40 minutes"
+  unknown: "60+ minutes"
+
+# Integration with self-healing
+self_healing_integration:
+  escalate_on_unknown: true
+  create_issue_on_failure: true
+  update_cognitive_brain: true
