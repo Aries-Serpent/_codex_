@@ -1,0 +1,84 @@
+agent_name: test-coverage-enforcer
+version: 1.0.0
+
+description: >
+  Enforces test coverage thresholds, identifies uncovered code paths, and automatically
+  generates missing tests to maintain quality standards.
+
+capabilities:
+  - coverage_tracking
+  - threshold_enforcement
+  - test_generation
+  - trend_analysis
+
+# Coverage thresholds (percentage)
+thresholds:
+  line: 80          # Minimum line coverage required
+  branch: 70        # Minimum branch coverage required
+  function: 85      # Minimum function coverage required
+
+# Test generation settings
+auto_generate_tests: false      # Automatically generate test templates for uncovered code
+fail_build_below_threshold: true  # Fail CI/CD builds when coverage is below threshold
+
+# Reporting options
+reporting:
+  formats:
+    - text
+    - json
+    - html
+  output_directory: .coverage_reports
+  include_trends: true
+
+# Cognitive Brain Integration
+cognitive_brain:
+  enabled: true
+  metrics:
+    - coverage_percentage     # Overall coverage percentage
+    - gap_count              # Number of coverage gaps found
+    - tests_generated        # Number of test templates generated
+    - enforcement_actions    # Actions taken during enforcement
+  reporting_interval: daily
+  storage:
+    type: sqlite
+    path: .codex/sessions/agent_metrics.db
+  alerts:
+    - type: coverage_drop
+      threshold: 5  # Alert if coverage drops by 5% or more
+    - type: critical_severity
+      immediate: true
+
+# File patterns to include/exclude
+patterns:
+  include:
+    - "src/**/*.py"
+    - "lib/**/*.py"
+  exclude:
+    - "**/__pycache__/**"
+    - "**/test_*.py"
+    - "**/*_test.py"
+    - "**/conftest.py"
+    - "**/.venv/**"
+    - "**/node_modules/**"
+
+# Priority calculation weights
+priority_weights:
+  coverage_level: 0.5    # Weight for current coverage level
+  function_complexity: 0.3  # Weight for function complexity
+  file_importance: 0.2   # Weight for file importance
+
+# Component reuse strategy (from test-coverage-monitor)
+component_reuse:
+  base_agent: test-coverage-monitor
+  reuse_percentage: 80
+  extensions:
+    - test-alignment-fixer  # For auto-test generation
+    - integration-test-runner  # For enforcement workflows
+
+# Advanced settings
+advanced:
+  parallel_analysis: true
+  cache_coverage_data: true
+  cache_ttl_seconds: 3600
+  max_suggestions_per_file: 10
+  min_confidence_threshold: 0.8

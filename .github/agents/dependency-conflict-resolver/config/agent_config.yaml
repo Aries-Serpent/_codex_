@@ -1,0 +1,121 @@
+agent_name: dependency-conflict-resolver
+version: 1.0.0
+
+capabilities:
+  - dependency_graph_analysis
+  - conflict_detection
+  - version_resolution
+  - multi_ecosystem_support
+  - vulnerability_integration
+  - circular_dependency_detection
+  - semantic_versioning
+  - resolution_strategies
+
+supported_ecosystems:
+  - python
+  - javascript
+  - rust
+  - go
+
+resolution_strategies:
+  default: conservative
+  options:
+    - conservative  # Minimal changes, prefer lower stable versions
+    - balanced      # Balance security, stability, and features
+    - aggressive    # Latest compatible versions
+
+conflict_detection:
+  check_transitive: true
+  max_depth: 10
+  ignore_dev_dependencies: false
+  detect_circular: true
+
+vulnerability_integration:
+  enabled: true
+  fail_on_high_severity: true
+  fail_on_critical_severity: true
+  check_transitive_vulnerabilities: true
+
+semantic_versioning:
+  strict_mode: false
+  allow_pre_releases: false
+  prefer_stable: true
+
+graph_analysis:
+  max_nodes: 10000
+  detect_cycles: true
+  calculate_depth: true
+  identify_critical_paths: true
+
+resolution_preferences:
+  prefer_locked_versions: true
+  update_only_necessary: true
+  batch_updates: false
+  create_backup: true
+
+output:
+  format: yaml
+  include_graph: true
+  include_plan: true
+  verbose: false
+
+cognitive_brain:
+  enabled: true
+  metrics:
+    - conflicts_detected
+    - conflicts_resolved
+    - ecosystems_analyzed
+    - resolution_strategy_success_rate
+    - vulnerability_fixes
+    - circular_dependencies_found
+  reporting_interval: daily
+  storage:
+    type: sqlite
+    path: .codex/sessions/agent_metrics.db
+  learning:
+    track_resolution_outcomes: true
+    adapt_strategy_selection: true
+    remember_project_preferences: true
+
+component_reuse:
+  base: dependency-vulnerability-scanner
+  reuse_percentage: 60
+  extensions:
+    - config-migration-assistant  # Version resolution logic
+    - semantic-search             # Dependency graph analysis
+
+integration:
+  ci_cd:
+    github_actions: true
+    gitlab_ci: false
+    jenkins: false
+  package_managers:
+    python:
+      - pip
+      - poetry
+      - pipenv
+    javascript:
+      - npm
+      - yarn
+      - pnpm
+    rust:
+      - cargo
+    go:
+      - go_mod
+
+thresholds:
+  max_conflicts_to_auto_resolve: 10
+  min_confidence_for_auto_apply: 0.8
+  max_resolution_time_seconds: 300
+
+notifications:
+  on_conflict_detected: false
+  on_resolution_complete: true
+  on_high_risk_resolution: true
+  on_validation_failure: true
+
+logging:
+  level: INFO
+  format: json
+  include_timestamps: true
+  log_file: .codex/logs/dependency-conflict-resolver.log
