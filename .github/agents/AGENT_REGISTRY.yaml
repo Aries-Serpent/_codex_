@@ -1,0 +1,356 @@
+version: 1.0.0
+last_updated: '2026-01-12T12:17:34Z'
+total_agents: 24
+agents:
+- id: ast-analysis-agent
+  name: Ast Analysis Agent
+  directory: .github/agents/ast-analysis-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: cache-logic-validator
+  name: Cache Logic Validator
+  directory: .github/agents/cache-logic-validator
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: ci-failure-diagnostician
+  name: Ci Failure Diagnostician
+  directory: .github/agents/ci-failure-diagnostician
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: ci-optimizer-agent
+  name: Ci Optimizer Agent
+  directory: .github/agents/ci-optimizer-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: ci-testing-agent
+  name: Ci Testing Agent
+  directory: .github/agents/ci-testing-agent
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: Specialized agent for debugging and fixing CI/CD pipeline issues, test
+    failures, and build problems
+  capabilities:
+  - ci_failure_diagnosis
+  - test_failure_analysis
+  - build_problem_resolution
+  - log_analysis
+  integration_points:
+  - github_actions
+  - cognitive_brain
+  - pytest
+  - cargo
+  priority: high
+- id: codex_reviewer
+  name: Codex_Reviewer
+  directory: .github/agents/codex_reviewer
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: false
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: cognitive-brain-agent
+  name: Cognitive Brain Agent
+  directory: .github/agents/cognitive-brain-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: compliance-checker-agent
+  name: Compliance Checker Agent
+  directory: .github/agents/compliance-checker-agent
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: false
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: dep-upgrade-agent
+  name: Dep Upgrade Agent
+  directory: .github/agents/dep-upgrade-agent
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: false
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: documentation-agent
+  name: Documentation Agent
+  directory: .github/agents/documentation-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: ecosystem-coordinator-agent
+  name: Ecosystem Coordinator Agent
+  directory: .github/agents/ecosystem-coordinator-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: emergent-intelligence-agent
+  name: Emergent Intelligence Agent
+  directory: .github/agents/emergent-intelligence-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: flaky-triage-agent
+  name: Flaky Triage Agent
+  directory: .github/agents/flaky-triage-agent
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: false
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: infra-linter-agent
+  name: Infra Linter Agent
+  directory: .github/agents/infra-linter-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: performance-monitor-agent
+  name: Performance Monitor Agent
+  directory: .github/agents/performance-monitor-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: project-architect-researcher
+  name: Project Architect Researcher
+  directory: .github/agents/project-architect-researcher
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: true
+  purpose: NotebookLM API integration for project research and architecture analysis
+  capabilities:
+  - api_integration
+  - research_synthesis
+  - architecture_design
+  - documentation_analysis
+  integration_points:
+  - notebooklm_api
+  - cognitive_brain
+  priority: high
+- id: pyo3-integration-tester
+  name: Pyo3 Integration Tester
+  directory: .github/agents/pyo3-integration-tester
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: true
+  purpose: Tests PyO3 Rust-Python integration and validates bindings
+  capabilities:
+  - pyo3_testing
+  - rust_python_bindings
+  - integration_validation
+  integration_points:
+  - pyo3
+  - pytest
+  - cargo
+  priority: high
+- id: reasoning-advisor-agent
+  name: Reasoning Advisor Agent
+  directory: .github/agents/reasoning-advisor-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: release-gate-agent
+  name: Release Gate Agent
+  directory: .github/agents/release-gate-agent
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: rust-error-validator
+  name: Rust Error Validator
+  directory: .github/agents/rust-error-validator
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  purpose: Scans Rust code for error handling issues and validates PyResult usage
+  capabilities:
+  - rust_error_detection
+  - unwrap_validation
+  - pyresult_checking
+  integration_points:
+  - cargo
+  - clippy
+  - cognitive_brain
+  priority: high
+- id: security-advisory-resolver
+  name: Security Advisory Resolver
+  directory: .github/agents/security-advisory-resolver
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: security-scan-agent
+  name: Security Scan Agent
+  directory: .github/agents/security-scan-agent
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: true
+  has_docs: false
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+- id: test-assertion-updater
+  name: Test Assertion Updater
+  directory: .github/agents/test-assertion-updater
+  status: active
+  maturity: production
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Fixes test alignment issues by updating tests to match API changes and
+    ensuring test assertions are correct
+  capabilities:
+  - test_alignment
+  - assertion_updates
+  - api_change_tracking
+  integration_points:
+  - pytest
+  - unittest
+  - cognitive_brain
+  priority: high
+- id: utf8-safety-linter
+  name: Utf8 Safety Linter
+  directory: .github/agents/utf8-safety-linter
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: true
+  purpose: ''
+  capabilities: []
+  integration_points: []
+  priority: medium
+standardization_status:
+  fully_compliant: 0
+  partially_compliant: 20
+  non_compliant: 4
+  target: 100%
+  deadline: '2026-01-26'

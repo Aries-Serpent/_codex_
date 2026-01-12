@@ -1,0 +1,22 @@
+version: 1.0.0
+agent_name: [agent-name]
+
+capabilities:
+  - [capability1]
+  - [capability2]
+  - [capability3]
+
+integration:
+  cognitive_brain: true
+  github_actions: false
+  aftermath: true
+
+settings:
+  timeout_seconds: 300
+  max_retries: 3
+  log_level: INFO
+  enable_caching: true
+  cache_ttl_seconds: 3600
+
+# Agent-specific settings
+# Add custom configuration below
