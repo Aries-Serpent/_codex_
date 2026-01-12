@@ -14,6 +14,7 @@ Tests cover:
 
 import pytest
 import json
+import re
 from pathlib import Path
 from datetime import datetime, timezone
 import tempfile
@@ -189,7 +190,6 @@ class TestMockDataGeneration:
         assert 'email' in data
         assert '@' in data['email']
         # Validate proper domain format (not just substring check)
-        import re
         email_pattern = r'^[^@]+@example\.com$'
         assert re.match(email_pattern, data['email']), f"Email {data['email']} doesn't match expected format"
     

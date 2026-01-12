@@ -419,9 +419,15 @@ class ServiceIntegrationTester:
         for cmd in suite.setup_commands:
             if verbose:
                 print(f"Setup: {cmd}")
-            # Convert string command to list to prevent shell injection
-            cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
-            subprocess.run(cmd_list, shell=False, capture_output=True)
+            try:
+                # Convert string command to list to prevent shell injection
+                cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
+                subprocess.run(cmd_list, shell=False, capture_output=True, check=True)
+            except subprocess.CalledProcessError as e:
+                if verbose:
+                    print(f"Setup command failed: {cmd}")
+                    print(f"Error: {e}")
+                # Continue with other setup commands
         
         all_results = []
         
@@ -443,9 +449,15 @@ class ServiceIntegrationTester:
             for cmd in suite.teardown_commands:
                 if verbose:
                     print(f"Teardown: {cmd}")
-                # Convert string command to list to prevent shell injection
-                cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
-                subprocess.run(cmd_list, shell=False, capture_output=True)
+                try:
+                    # Convert string command to list to prevent shell injection
+                    cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
+                    subprocess.run(cmd_list, shell=False, capture_output=True, check=True)
+                except subprocess.CalledProcessError as e:
+                    if verbose:
+                        print(f"Teardown command failed: {cmd}")
+                        print(f"Error: {e}")
+                    # Continue with other teardown commands
         
         # Determine overall success
         success = all(r.status == TestStatus.SUCCESS for r in all_results)
