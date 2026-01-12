@@ -12,7 +12,7 @@ defusedxml
 semgrep
 detect-secrets
 pre-commit==4.0.1
-nox==2025.5.1
+nox==2025.11.12
 yamllint
 jsonschema>=4.21
 shellcheck-py
