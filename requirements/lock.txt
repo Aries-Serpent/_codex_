@@ -1296,7 +1296,7 @@ xxhash==3.5.0
     # via
     #   datasets
     #   evaluate
-yarl==1.20.1
+yarl==1.22.0
     # via aiohttp
 zc-lockfile==4.0
     # via dvc
