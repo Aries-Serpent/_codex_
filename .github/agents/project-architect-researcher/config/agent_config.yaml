@@ -1,0 +1,35 @@
+# Project Architect Researcher Configuration
+version: "1.0.0"
+agent_id: "project-architect-researcher"
+enabled: true
+
+# Source file settings
+source_types:
+  - "markdown"
+  - "text"
+  - "json"
+  - "yaml"
+
+max_source_size_kb: 1024
+include_metadata: true
+
+# Export settings
+export_formats:
+  - "json"
+  - "markdown"
+  - "yaml"
+
+default_export_format: "json"
+
+# Cognitive brain integration
+cognitive_brain:
+  enabled: true
+  metrics:
+    - "total_artifacts_created"
+    - "total_sources_processed"
+    - "avg_artifact_size"
+    - "processing_duration_ms"
+  alerts:
+    large_artifact_threshold: 50
+  learning:
+    store_patterns: true
