@@ -19,9 +19,16 @@ class RustErrorScanner:
         try:
             lines = filepath.read_text().splitlines()
             for i, line in enumerate(lines, 1):
-                if '.unwrap()' in line and '#[test]' not in '\n'.join(lines[max(0,i-5):i]):
-                    severity = "high" if any(x in '\n'.join(lines[max(0,i-10):i]) 
-                                           for x in ['#[pyfunction]', '#[pymethods]']) else "medium"
+                context_start_5 = max(0, i - 5)
+                context_lines_5 = lines[context_start_5:i]
+                if '.unwrap()' in line and not any('#[test]' in l for l in context_lines_5):
+                    context_start_10 = max(0, i - 10)
+                    context_lines_10 = lines[context_start_10:i]
+                    severity = "high" if any(
+                        marker in l
+                        for l in context_lines_10
+                        for marker in ['#[pyfunction]', '#[pymethods]']
+                    ) else "medium"
                     findings.append(Finding(
                         str(filepath),
                         i,
