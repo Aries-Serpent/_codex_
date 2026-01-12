@@ -61,7 +61,7 @@ class NotebookLMAPI:
         # It can be overridden via the NOTEBOOKLM_API_BASE_URL environment variable.
         self.base_url = os.getenv(
             "NOTEBOOKLM_API_BASE_URL",
-            "https://notebooklm.google.com/api/v1",
+            "https://notebooklm.google.com/api/v1",  # NOTE: speculative placeholder URL; may not exist
         )
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
