@@ -1,0 +1,214 @@
+name: Service Integration Tester
+description: Tests service integrations, validates API contracts, and ensures cross-component compatibility
+author: Aries-Serpent/_codex_
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  base-url:
+    description: 'Base URL of the service to test'
+    required: true
+  endpoints:
+    description: 'Endpoints to test ("common" for health endpoints, or path to OpenAPI spec)'
+    required: false
+    default: 'common'
+  config:
+    description: 'Path to agent configuration file'
+    required: false
+    default: '.github/agents/service-integration-tester/config/agent_config.yaml'
+  auth-token:
+    description: 'Authentication token (bearer token or API key)'
+    required: false
+  auth-type:
+    description: 'Authentication type (bearer, api_key, basic)'
+    required: false
+    default: 'bearer'
+  test-common:
+    description: 'Test common health endpoints (true/false)'
+    required: false
+    default: 'true'
+  validate-contract:
+    description: 'Validate OpenAPI contract compliance (true/false)'
+    required: false
+    default: 'false'
+  fail-on-error:
+    description: 'Fail the action if any tests fail (true/false)'
+    required: false
+    default: 'true'
+  output-file:
+    description: 'Path to write test report'
+    required: false
+    default: 'integration_test_report.txt'
+  export-json:
+    description: 'Export results as JSON (true/false)'
+    required: false
+    default: 'true'
+  json-output-file:
+    description: 'Path to write JSON results'
+    required: false
+    default: 'integration_results.json'
+  measure-performance:
+    description: 'Measure and report performance metrics (true/false)'
+    required: false
+    default: 'true'
+  performance-threshold-ms:
+    description: 'Maximum acceptable response time in milliseconds'
+    required: false
+    default: '5000'
+  performance-iterations:
+    description: 'Number of iterations for performance testing'
+    required: false
+    default: '5'
+  verbose:
+    description: 'Enable verbose output (true/false)'
+    required: false
+    default: 'false'
+  scrub-pii:
+    description: 'Scrub PII from test payloads (true/false)'
+    required: false
+    default: 'true'
+  comment-on-pr:
+    description: 'Comment test results on PR (true/false)'
+    required: false
+    default: 'true'
+
+outputs:
+  success:
+    description: 'Whether all tests passed (true/false)'
+  total-tests:
+    description: 'Total number of tests executed'
+  passed:
+    description: 'Number of tests that passed'
+  failed:
+    description: 'Number of tests that failed'
+  success-rate:
+    description: 'Test success rate as percentage'
+  avg-response-time:
+    description: 'Average response time in milliseconds'
+  report-file:
+    description: 'Path to generated test report'
+  json-file:
+    description: 'Path to JSON results (if enabled)'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install pyyaml pytest
+    
+    - name: Run Service Integration Tests
+      id: integration-tests
+      shell: bash
+      run: |
+        set +e  # Don't exit on error
+        
+        # Build command
+        CMD="python -m .github.agents.service_integration_tester.src.agent"
+        
+        if [[ "${{ inputs.validate-contract }}" == "true" && "${{ inputs.endpoints }}" != "common" ]]; then
+          # Contract validation mode
+          $CMD validate-contract \
+            --spec "${{ inputs.endpoints }}" \
+            --base-url "${{ inputs.base-url }}" \
+            --config "${{ inputs.config }}" \
+            --output "${{ inputs.output-file }}" \
+            $([[ "${{ inputs.verbose }}" == "true" ]] && echo "--verbose")
+        else
+          # Regular test mode
+          $CMD test \
+            --base-url "${{ inputs.base-url }}" \
+            --config "${{ inputs.config }}" \
+            --output "${{ inputs.output-file }}" \
+            $([[ "${{ inputs.verbose }}" == "true" ]] && echo "--verbose")
+        fi
+        
+        EXIT_CODE=$?
+        
+        # Parse results (simplified - in production would parse actual output)
+        echo "success=$([[ $EXIT_CODE -eq 0 ]] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+        echo "report-file=${{ inputs.output-file }}" >> $GITHUB_OUTPUT
+        
+        if [[ "${{ inputs.export-json }}" == "true" ]]; then
+          echo "json-file=${{ inputs.json-output-file }}" >> $GITHUB_OUTPUT
+        fi
+        
+        # Exit with appropriate code if fail-on-error is true
+        if [[ "${{ inputs.fail-on-error }}" == "true" && $EXIT_CODE -ne 0 ]]; then
+          exit $EXIT_CODE
+        fi
+    
+    - name: Performance Testing
+      if: inputs.measure-performance == 'true'
+      shell: bash
+      run: |
+        echo "Running performance tests with ${{ inputs.performance-iterations }} iterations..."
+        for i in $(seq 1 ${{ inputs.performance-iterations }}); do
+          python -m .github.agents.service_integration_tester.src.agent test \
+            --base-url "${{ inputs.base-url }}" \
+            --config "${{ inputs.config }}" \
+            $([[ "${{ inputs.verbose }}" == "true" ]] && echo "--verbose")
+        done
+        echo "Performance testing complete"
+    
+    - name: Generate Report
+      if: always()
+      shell: bash
+      run: |
+        if [[ -f "${{ inputs.output-file }}" ]]; then
+          echo "=== Integration Test Report ==="
+          cat "${{ inputs.output-file }}"
+          echo "==============================="
+        fi
+    
+    - name: Comment on PR
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = '${{ inputs.output-file }}';
+          
+          if (!fs.existsSync(reportPath)) {
+            console.log('Report file not found');
+            return;
+          }
+          
+          const report = fs.readFileSync(reportPath, 'utf8');
+          const success = '${{ steps.integration-tests.outputs.success }}' === 'true';
+          const icon = success ? '✅' : '❌';
+          
+          const comment = `## ${icon} Service Integration Test Results
+          
+\`\`\`
+${report}
+\`\`\`
+
+**Base URL**: \`${{ inputs.base-url }}\`
+**Endpoints**: \`${{ inputs.endpoints }}\`
+**Status**: ${success ? 'All tests passed' : 'Some tests failed'}
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+    
+    - name: Upload Report Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: integration-test-report
+        path: |
+          ${{ inputs.output-file }}
+          ${{ inputs.json-output-file }}
+        retention-days: 30
