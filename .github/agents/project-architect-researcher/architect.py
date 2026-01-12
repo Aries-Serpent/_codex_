@@ -57,8 +57,12 @@ class NotebookLMAPI:
     
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('NOTEBOOKLM_API_KEY')
-        # NOTE: This base URL is speculative and may not exist
-        self.base_url = "https://notebooklm.google.com/api/v1"
+        # NOTE: This default base URL is speculative and may not exist.
+        # It can be overridden via the NOTEBOOKLM_API_BASE_URL environment variable.
+        self.base_url = os.getenv(
+            "NOTEBOOKLM_API_BASE_URL",
+            "https://notebooklm.google.com/api/v1",
+        )
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
