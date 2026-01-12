@@ -104,7 +104,7 @@ assert "expected_string" in result_names
 - Provide a migration guide with examples
 - Implement a deprecation period with warnings
 - Add a compatibility layer or adapter pattern
-- Deprecating the old behavior with warnings before removing it
+- Deprecate the old behavior with warnings before removing it
 
 ### 4. Validation Section
 ```markdown
