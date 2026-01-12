@@ -116,7 +116,7 @@ class NotebookLMAPI:
             NotebookLMAPIUnavailableError: If API is not available or creation fails
         """
         self._ensure_api_available()
-            
+        
         payload = {
             "title": title,
             "description": description,
@@ -144,7 +144,7 @@ class NotebookLMAPI:
             NotebookLMAPIUnavailableError: If API is not available or upload fails
         """
         self._ensure_api_available()
-            
+        
         payload = {
             "notebook_id": notebook_id,
             "title": source.title,
