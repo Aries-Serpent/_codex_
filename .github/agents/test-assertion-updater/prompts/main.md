@@ -10,6 +10,8 @@ Analyze test failures caused by assertion mismatches (not bugs) and generate cor
 
 When code implementations evolve (better error messages, structured return values, etc.), tests often fail not because of bugs, but because assertions expect outdated formats. Your job is to identify these cases and fix them automatically.
 
+See `prompts/examples.md` for usage examples and `prompts/advanced.md` for advanced patterns.
+
 ## Decision Process
 
 ```mermaid
@@ -85,10 +87,26 @@ result_names = [item["name"] if isinstance(item, dict) else item for item in res
 assert "expected_string" in result_names
 ```
 
-**Note**: This type of fix is appropriate when the API implementation has evolved to return richer data structures (e.g., dicts instead of strings) while maintaining backward compatibility. If the change represents a breaking API change that affects external consumers, consider:
-- Creating a new API version or endpoint
-- Providing a migration guide
-- Deprecating the old behavior with warnings before removing it
+**When to Apply This Fix vs. Address as Breaking Change**:
+
+✅ **Apply this fix when**:
+- The API change is an enhancement that adds fields while maintaining backward-compatible data
+- The new structure provides richer information without changing core semantics
+- Tests were overly strict (testing implementation details rather than behavior)
+- The change is internal to the project with no external API consumers
+
+❌ **Consider it a breaking change requiring different action when**:
+- External consumers depend on the specific return format
+- The change removes or renames fields that were part of the public contract
+- The new format is incompatible with documented behavior
+- Migration would require significant client code changes
+
+**Alternative actions for breaking changes**:
+- Create a new API version or endpoint (e.g., `/v2/resource`)
+- Provide a migration guide with examples
+- Implement a deprecation period with warnings
+- Add a compatibility layer or adapter pattern
+- Deprecate the old behavior with warnings before removing it
 
 ### 4. Validation Section
 ```markdown
