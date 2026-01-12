@@ -20,6 +20,7 @@ import re
 import json
 import hashlib
 import subprocess
+import shlex
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Set, Any
 from dataclasses import dataclass, field
@@ -418,7 +419,9 @@ class ServiceIntegrationTester:
         for cmd in suite.setup_commands:
             if verbose:
                 print(f"Setup: {cmd}")
-            subprocess.run(cmd, shell=True, capture_output=True)
+            # Convert string command to list to prevent shell injection
+            cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
+            subprocess.run(cmd_list, shell=False, capture_output=True)
         
         all_results = []
         
@@ -440,7 +443,9 @@ class ServiceIntegrationTester:
             for cmd in suite.teardown_commands:
                 if verbose:
                     print(f"Teardown: {cmd}")
-                subprocess.run(cmd, shell=True, capture_output=True)
+                # Convert string command to list to prevent shell injection
+                cmd_list = shlex.split(cmd) if isinstance(cmd, str) else cmd
+                subprocess.run(cmd_list, shell=False, capture_output=True)
         
         # Determine overall success
         success = all(r.status == TestStatus.SUCCESS for r in all_results)

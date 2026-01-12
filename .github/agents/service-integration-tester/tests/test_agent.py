@@ -188,7 +188,10 @@ class TestMockDataGeneration:
         
         assert 'email' in data
         assert '@' in data['email']
-        assert 'example.com' in data['email']
+        # Validate proper domain format (not just substring check)
+        import re
+        email_pattern = r'^[^@]+@example\.com$'
+        assert re.match(email_pattern, data['email']), f"Email {data['email']} doesn't match expected format"
     
     def test_generate_custom_schema_uuid(self):
         """Test generating UUID type mock data"""
