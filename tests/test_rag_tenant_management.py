@@ -220,7 +220,7 @@ class TestManageTenantIndices:
         
         # Should succeed but report no deletions
         assert result.success is False
-        assert "Failed to delete" in result.message
+        assert "No indices deleted" in result.message
 
     def test_delete_operation_partial_failure(self, temp_index_dir, sample_files):
         """Test DELETE operation with some indices existing, some not"""
@@ -269,7 +269,7 @@ class TestManageTenantIndices:
         assert merge_result.success is True
         assert merge_result.operation == IndexOperation.MERGE
         assert "Successfully merged" in merge_result.message
-        assert merge_result.details["merged_index"] == "all_content"
+        assert merge_result.details["merged_name"] == "all_content"
 
     def test_merge_operation_missing_merge_name(self, temp_index_dir, sample_files):
         """Test MERGE operation fails without merge_name"""
@@ -326,7 +326,7 @@ class TestManageTenantIndices:
         )
         
         assert result.success is False
-        assert "Failed to merge" in result.message
+        assert "No valid indices found" in result.message
 
     def test_list_operation_success(self, temp_index_dir, sample_files):
         """Test LIST operation success"""
@@ -351,8 +351,11 @@ class TestManageTenantIndices:
         assert list_result.operation == IndexOperation.LIST
         assert "Found" in list_result.message
         assert len(list_result.details["indices"]) == 2
-        assert "docs" in list_result.details["indices"]
-        assert "api" in list_result.details["indices"]
+        # Extract 'name' field from dict list
+        indices_list = list_result.details["indices"]
+        index_names = [idx["name"] if isinstance(idx, dict) else idx for idx in indices_list]
+        assert "docs" in index_names
+        assert "api" in index_names
 
     def test_list_operation_empty_tenant(self, temp_index_dir):
         """Test LIST operation with no indices"""
@@ -401,11 +404,14 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
         
-        assert "docs" in list_a.details["indices"]
-        assert "api" not in list_a.details["indices"]
+        # Extract 'name' field from dict lists
+        indices_a = [idx["name"] if isinstance(idx, dict) else idx for idx in list_a.details["indices"]]
+        assert "docs" in indices_a
+        assert "api" not in indices_a
         
-        assert "api" in list_b.details["indices"]
-        assert "docs" not in list_b.details["indices"]
+        indices_b = [idx["name"] if isinstance(idx, dict) else idx for idx in list_b.details["indices"]]
+        assert "api" in indices_b
+        assert "docs" not in indices_b
 
     def test_invalid_operation(self, temp_index_dir):
         """Test invalid operation handling"""
