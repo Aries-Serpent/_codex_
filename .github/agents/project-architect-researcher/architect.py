@@ -3,6 +3,11 @@
 Project Architect Researcher Agent
 Generates artifacts for NotebookLM, NotionLM, and AI knowledge platforms
 Includes NotebookLM API integration and PRO feature support
+
+NOTE: NotebookLM API integration is a reference implementation.
+As of January 2026, NotebookLM does not have a publicly documented API.
+This implementation serves as a template for future API integration when available.
+For current usage, sources are generated locally and can be uploaded manually.
 """
 import click
 import yaml
@@ -10,7 +15,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 import os
 
@@ -34,43 +39,76 @@ class NotebookLMNotebook:
     
 
 class NotebookLMAPI:
-    """NotebookLM API client with PRO features."""
+    """NotebookLM API client with PRO features.
+    
+    NOTE: This is a reference implementation. NotebookLM API endpoints
+    may not be publicly available. This code demonstrates the expected
+    integration pattern for when the API becomes available.
+    
+    For current usage, use the local export feature and upload manually
+    to https://notebooklm.google.com
+    """
     
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('NOTEBOOKLM_API_KEY')
+        # NOTE: This base URL is speculative and may not exist
         self.base_url = "https://notebooklm.google.com/api/v1"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
         self.pro_enabled = self._check_pro_status()
+        self._api_available = False  # Track if API is actually available
     
     def _check_pro_status(self) -> bool:
-        """Check if user has NotebookLM PRO subscription."""
+        """Check if user has NotebookLM PRO subscription.
+        
+        Returns False if API is not available or authentication fails.
+        """
+        if not self.api_key:
+            click.echo("ℹ️  No API key provided. API features disabled.", err=True)
+            return False
+            
         try:
             response = requests.get(
                 f"{self.base_url}/account/subscription",
-                headers=self.headers
+                headers=self.headers,
+                timeout=5
             )
             if response.status_code == 200:
+                self._api_available = True
                 data = response.json()
                 return data.get('subscription_tier') == 'pro'
-        except Exception as e:
-            click.echo(f"Warning: Could not verify PRO status: {e}", err=True)
+            elif response.status_code == 404:
+                click.echo("ℹ️  NotebookLM API not yet available. Use manual upload.", err=True)
+                return False
+        except requests.exceptions.RequestException as e:
+            click.echo(f"ℹ️  NotebookLM API not accessible: {e}. Use manual upload.", err=True)
         return False
     
     def create_notebook(self, title: str, description: str = "") -> str:
-        """Create a new NotebookLM notebook."""
+        """Create a new NotebookLM notebook.
+        
+        Raises:
+            Exception: If API is not available or creation fails
+        """
+        if not self._api_available:
+            raise Exception(
+                "NotebookLM API not available. Generate sources locally and "
+                "upload manually to https://notebooklm.google.com"
+            )
+            
         payload = {
             "title": title,
             "description": description,
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat()
         }
         
         response = requests.post(
             f"{self.base_url}/notebooks",
             headers=self.headers,
-            json=payload
+            json=payload,
+            timeout=10
         )
         
         if response.status_code == 201:
@@ -272,7 +310,7 @@ class ProjectArchitect:
                 }
                 for i, s in enumerate(sources, start=1)
             ],
-            "created": datetime.utcnow().isoformat()
+            "created": datetime.now(timezone.utc).isoformat()
         }
         (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
         
@@ -285,7 +323,7 @@ class ProjectArchitect:
 title: {project.get('name', 'Project')}
 type: project_documentation
 version: {project.get('version', '1.0.0')}
-last_updated: {datetime.utcnow().date().isoformat()}
+last_updated: {datetime.now(timezone.utc).date().isoformat()}
 ---
 
 # {project.get('name', 'Project')}
