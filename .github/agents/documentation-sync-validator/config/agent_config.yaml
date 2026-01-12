@@ -1,0 +1,77 @@
+version: 1.0.0
+agent_name: documentation-sync-validator
+description: Validates documentation synchronization with codebase, detects semantic drift, and ensures schema compliance
+
+capabilities:
+  - check_freshness
+  - validate_links
+  - detect_semantic_drift
+  - validate_schema
+
+# Configuration settings
+freshness_threshold_days: 90  # Docs older than this are considered stale
+semantic_drift_threshold: 0.7  # Similarity score below this indicates drift
+link_check_timeout: 10  # Timeout in seconds for external link checks
+
+# Component reuse information
+components:
+  base:
+    name: doc-freshness-checker
+    reuse_percentage: 75
+    features:
+      - freshness_detection
+      - content_aging_analysis
+  extensions:
+    - name: semantic-search
+      reuse_percentage: 20
+      features:
+        - vector_embeddings
+        - semantic_similarity
+    - name: config-validator
+      reuse_percentage: 15
+      features:
+        - schema_validation
+        - compliance_checking
+
+# Operational settings
+settings:
+  timeout_seconds: 300
+  max_retries: 3
+  log_level: INFO
+  enable_caching: true
+  cache_ttl_seconds: 3600
+
+# Cognitive brain integration
+cognitive_brain:
+  enabled: true
+  metrics:
+    - freshness_scores
+    - semantic_drift_measurements
+    - link_validation_results
+    - schema_compliance_rates
+  reporting_interval: daily
+  storage:
+    type: sqlite
+    path: .codex/sessions/agent_metrics.db
+
+# Quality gates
+quality_gates:
+  min_test_coverage: 90
+  max_security_issues: 0
+  min_documentation_score: 85
+
+# Alerting thresholds
+alerts:
+  stale_docs_threshold: 5  # Alert if more than 5 docs are stale
+  broken_links_threshold: 3  # Alert if more than 3 broken links
+  high_drift_threshold: 2  # Alert if 2+ docs have high semantic drift
+
+# Output formats
+output:
+  formats:
+    - text
+    - json
+    - markdown
+  default: text
+  include_suggestions: true
+  include_confidence: true
