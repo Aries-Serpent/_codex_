@@ -23,8 +23,8 @@ confidence-threshold = 0.8
 [advisories]
 # Enable vulnerability detection
 vulnerability = "deny"
-unmaintained = "warn"
 yanked = "deny"
+# Note: 'unmaintained' advisories should be handled via 'ignore' field with specific IDs if needed
 
 [bans]
 # Multiple versions of the same crate are allowed for now
