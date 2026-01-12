@@ -19,6 +19,12 @@ from datetime import datetime, timezone
 import requests
 import os
 
+
+class NotebookLMAPIUnavailableError(Exception):
+    """Raised when NotebookLM API is not available or accessible."""
+    pass
+
+
 @dataclass
 class NotebookLMSource:
     """Represents a NotebookLM source document."""
@@ -64,9 +70,11 @@ class NotebookLMAPI:
         """Check if user has NotebookLM PRO subscription.
         
         Returns False if API is not available or authentication fails.
+        Sets _api_available flag based on API accessibility.
         """
         if not self.api_key:
             click.echo("ℹ️  No API key provided. API features disabled.", err=True)
+            self._api_available = False
             return False
             
         try:
@@ -81,22 +89,33 @@ class NotebookLMAPI:
                 return data.get('subscription_tier') == 'pro'
             elif response.status_code == 404:
                 click.echo("ℹ️  NotebookLM API not yet available. Use manual upload.", err=True)
+                self._api_available = False
                 return False
         except requests.exceptions.RequestException as e:
             click.echo(f"ℹ️  NotebookLM API not accessible: {e}. Use manual upload.", err=True)
+        
+        self._api_available = False
         return False
+    
+    def _ensure_api_available(self) -> None:
+        """Ensure API is available before making requests.
+        
+        Raises:
+            NotebookLMAPIUnavailableError: If API is not available
+        """
+        if not self._api_available:
+            raise NotebookLMAPIUnavailableError(
+                "NotebookLM API not available. Generate sources locally and "
+                "upload manually to https://notebooklm.google.com"
+            )
     
     def create_notebook(self, title: str, description: str = "") -> str:
         """Create a new NotebookLM notebook.
         
         Raises:
-            Exception: If API is not available or creation fails
+            NotebookLMAPIUnavailableError: If API is not available or creation fails
         """
-        if not self._api_available:
-            raise Exception(
-                "NotebookLM API not available. Generate sources locally and "
-                "upload manually to https://notebooklm.google.com"
-            )
+        self._ensure_api_available()
             
         payload = {
             "title": title,
@@ -122,13 +141,9 @@ class NotebookLMAPI:
         """Upload a source to NotebookLM notebook.
         
         Raises:
-            Exception: If API is not available or upload fails
+            NotebookLMAPIUnavailableError: If API is not available or upload fails
         """
-        if not self._api_available:
-            raise Exception(
-                "NotebookLM API not available. Generate sources locally and "
-                "upload manually to https://notebooklm.google.com"
-            )
+        self._ensure_api_available()
             
         payload = {
             "notebook_id": notebook_id,
