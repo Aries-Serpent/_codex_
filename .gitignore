@@ -1,3 +1,9 @@
+# Rust / Cargo
+/target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -18,6 +24,11 @@ dist/
 .ruff_cache/
 .tox/
 .nox/
+
+# Rust build artifacts
+target/
+Cargo.lock
+*.pdb
 
 # IDEs
 .idea/
@@ -140,6 +151,8 @@ manifests/k8s/*/secret.yaml
 !.codex/*CONTINUATION*.md
 !.codex/*FOLLOWUP*.md
 !.codex/*NEXT*.md
+!.codex/*REPORT*.md
+!.codex/*ASSESSMENT*.md
 # Block validation artifacts but keep structure
 .codex/validation/
 
