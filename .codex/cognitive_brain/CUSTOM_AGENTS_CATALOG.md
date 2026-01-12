@@ -1,9 +1,15 @@
 # Custom GitHub Copilot Agents Catalog
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-01-10  
+**Version**: 1.1.0  
+**Last Updated**: 2026-01-11  
 **Purpose**: Comprehensive catalog of all available custom agents for GitHub Copilot task delegation  
 **Status**: 🟢 Active - Production Reference
+
+> **Update 2026-01-11**: Added 4 new production-ready agents:
+> - test-assertion-updater
+> - cache-logic-validator  
+> - security-advisory-resolver
+> - ci-failure-diagnostician
 
 ---
 
