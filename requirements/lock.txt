@@ -586,7 +586,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.0
+numpy==2.4.1
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -736,7 +736,7 @@ pathvalidate==3.3.1
     # via pytablewriter
 patsy==1.0.1
     # via statsmodels
-peft==0.18.0
+peft==0.18.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -780,7 +780,7 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-proto-plus==1.26.1
+proto-plus==1.27.0
     # via google-api-core
 protobuf==6.32.1
     # via
@@ -1296,7 +1296,7 @@ xxhash==3.5.0
     # via
     #   datasets
     #   evaluate
-yarl==1.20.1
+yarl==1.22.0
     # via aiohttp
 zc-lockfile==4.0
     # via dvc

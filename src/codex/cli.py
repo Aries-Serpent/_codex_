@@ -752,6 +752,13 @@ def _register_external_cli() -> None:
         "app",
         help_text="Offline release pack/verify/unpack.",
     )
+    _register_click_command(
+        cli,
+        "github-logs",
+        "codex.cli_github_logs",
+        "cli",
+        help_text="Fetch GitHub Actions logs via CLI.",
+    )
     _register_typer_app(
         cli,
         "knowledge",
