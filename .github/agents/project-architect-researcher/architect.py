@@ -57,8 +57,8 @@ class NotebookLMAPI:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        self.pro_enabled = self._check_pro_status()
         self._api_available = False  # Track if API is actually available
+        self.pro_enabled = self._check_pro_status()
     
     def _check_pro_status(self) -> bool:
         """Check if user has NotebookLM PRO subscription.
@@ -119,7 +119,17 @@ class NotebookLMAPI:
             raise Exception(f"Failed to create notebook: {response.text}")
     
     def upload_source(self, notebook_id: str, source: NotebookLMSource) -> str:
-        """Upload a source to NotebookLM notebook."""
+        """Upload a source to NotebookLM notebook.
+        
+        Raises:
+            Exception: If API is not available or upload fails
+        """
+        if not self._api_available:
+            raise Exception(
+                "NotebookLM API not available. Generate sources locally and "
+                "upload manually to https://notebooklm.google.com"
+            )
+            
         payload = {
             "notebook_id": notebook_id,
             "title": source.title,
@@ -131,7 +141,8 @@ class NotebookLMAPI:
         response = requests.post(
             f"{self.base_url}/notebooks/{notebook_id}/sources",
             headers=self.headers,
-            json=payload
+            json=payload,
+            timeout=10
         )
         
         if response.status_code == 201:
