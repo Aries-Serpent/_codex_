@@ -37,7 +37,7 @@ class CIFailureAnalyzer:
                 'fix': 'Run cargo fmt --all'
             },
             'python_linting': {
-                'regex': r'(ruff check|mypy).+error',
+                'regex': r'(ruff check|ruff.*error|mypy.*error)',
                 'fix_type': 'python_lint',
                 'confidence': 85,
                 'description': 'Python linting issue',
@@ -123,7 +123,7 @@ class CIFailureAnalyzer:
         
         if pattern['fix_type'] == 'rust_format':
             # Extract file names that need formatting
-            files = re.findall(r'Diff in (.+\.rs):', log)
+            files = re.findall(r'Diff in ([^\s:]+\.rs)', log)
             params['files'] = files
         
         elif pattern['fix_type'] == 'increase_timeout':
@@ -145,9 +145,9 @@ class CIFailureAnalyzer:
         
         elif pattern['fix_type'] == 'cargo_update':
             # Extract package name if available
-            match = re.search(r'failed to update.*`([^`]+)`', log)
+            match = re.search(r'(failed to update.*`([^`]+)`|package `([^`]+)`)', log)
             if match:
-                params['package'] = match.group(1)
+                params['package'] = match.group(2) or match.group(3)
         
         return params
 
