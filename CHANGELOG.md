@@ -15,6 +15,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-01-11
+
+### Fixed
+- Eliminated panic risks in `rust_swarm/telemetry.rs` and `rust_swarm/compression.rs` (#2782)
+- Implemented UTF-8 safe string truncation in Semgrep workflow (#2782)
+- Added runtime module check with graceful fallback in `examples/basic_usage.py` (#2782)
+
+### Added
+- **Rust Error Handling Validator**: Automated panic risk detection (#2797)
+- **UTF-8 String Safety Linter**: String truncation safety validation (#2797)
+- **PyO3 Integration Tester**: Auto-generates Python-Rust binding tests (#2797)
+- **Project Architect Researcher**: NotebookLM/NotionLM artifact generator with PRO features (#2797)
+
+### Improved
+- Enhanced error handling in Rust compression module with PyResult
+- Added timestamps to coverage documentation for progress tracking
+- Expanded test assertion updater guidance with API migration criteria
+
+### Security
+- Zero vulnerabilities detected (validated with CodeQL)
+- Eliminated 3 panic risks in Rust code
+- Implemented input validation in subprocess calls
+
+---
+
 ## [2.0.0] - 2026-01-03
 
 ### Added - Phase 8.7 Universal Intelligence

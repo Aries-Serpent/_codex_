@@ -1,0 +1,267 @@
+name: Rust-Python Hybrid Swarm CI/CD
+
+on:
+  push:
+    branches: [ main, develop, 'copilot/**' ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  rust_tests:
+    name: Rust Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Run cargo fmt
+        run: cargo fmt --all -- --check
+      
+      - name: Run cargo clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      
+      - name: Run unit tests
+        run: cargo test --lib --release --verbose
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-test-results
+          path: target/release/deps/*.log
+
+  rust_benchmarks:
+    name: Rust Benchmarks
+    runs-on: ubuntu-latest
+    needs: rust_tests
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Run benchmarks
+        run: cargo bench --bench swarm_benchmarks -- --output-format bencher | tee benchmark_results.txt
+      
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: benchmark_results.txt
+
+  code_coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: rust_tests
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Install tarpaulin
+        run: cargo install cargo-tarpaulin
+      
+      - name: Generate coverage
+        run: |
+          cargo tarpaulin --out Lcov --output-dir coverage --release --timeout 600
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+      
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  python_integration:
+    name: Python Integration Tests
+    runs-on: ubuntu-latest
+    needs: rust_tests
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Install maturin
+        run: pip install maturin pytest pytest-cov
+      
+      - name: Build Python extension
+        run: maturin develop --release
+      
+      - name: Run integration tests
+        run: |
+          pytest tests/integration/ -v --cov=codex_swarm --cov-report=html --cov-report=term
+      
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: htmlcov/
+
+  performance_regression:
+    name: Performance Regression Detection
+    runs-on: ubuntu-latest
+    needs: [rust_benchmarks]
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for comparison
+      
+      - name: Download benchmark results
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-results
+      
+      - name: Compare with baseline
+        run: |
+          python scripts/validate_benchmarks.py
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = fs.readFileSync('coverage/benchmark_validation_report.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📊 Benchmark Results\n\n\`\`\`\n${results}\n\`\`\``
+            });
+
+  security_audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Run cargo audit
+        run: |
+          cargo install cargo-audit
+          cargo audit
+      
+      - name: Run cargo deny
+        run: |
+          cargo install cargo-deny
+          cargo deny check
+
+  documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Build Rust docs
+        run: |
+          cargo doc --no-deps --document-private-items --all-features
+      
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-documentation
+          path: target/doc/
+
+  release:
+    name: Build Release
+    runs-on: ${{ matrix.os }}
+    needs: [rust_tests, python_integration, code_coverage]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.11', '3.12']
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Install maturin
+        run: pip install maturin
+      
+      - name: Build wheel
+        run: maturin build --release
+      
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: target/wheels/*.whl
+
+  status_check:
+    name: Overall Status
+    runs-on: ubuntu-latest
+    needs: [rust_tests, rust_benchmarks, code_coverage, python_integration, security_audit]
+    if: always()
+    
+    steps:
+      - name: Check all jobs
+        run: |
+          echo "All required jobs completed"
+          if [[ "${{ needs.rust_tests.result }}" != "success" ]]; then
+            echo "❌ Rust tests failed"
+            exit 1
+          fi
+          if [[ "${{ needs.code_coverage.result }}" != "success" ]]; then
+            echo "⚠️  Coverage check failed"
+          fi
+          echo "✅ All checks passed"
