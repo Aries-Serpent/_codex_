@@ -5,6 +5,9 @@ Copilot Agent can run this NOW with GITHUB_ACTIONS token
 
 User Authorization: mbaetiong granted FULL ACCESS (comment #3745423798)
 Capabilities: GitHub API, CLI, MCP access enabled
+
+SECURITY WARNING: This script handles sensitive credentials.
+Never log secret values or names in clear text.
 """
 
 import os
@@ -12,6 +15,9 @@ import sys
 import json
 import subprocess
 from pathlib import Path
+
+# WARNING: Do NOT log secret names or values in clear text.
+# Use redaction for any sensitive information.
 
 def check_environment():
     """Check if we have the necessary tokens and tools."""
@@ -174,10 +180,12 @@ def main():
     configured_count = 0
     for secret in secrets_to_check:
         if verify_secret_exists(secret):
-            print(f"✅ {secret}")
+            # Security: Don't log secret names - CodeQL alert #3340, #3341
+            print(f"✅ Secret configured")
             configured_count += 1
         else:
-            print(f"⏸️  {secret} - Not configured")
+            # Security: Don't log secret names - CodeQL alert #3340, #3341
+            print(f"⏸️  Secret not configured")
     
     print("")
     print(f"Progress: {configured_count}/{len(secrets_to_check)} secrets configured")
