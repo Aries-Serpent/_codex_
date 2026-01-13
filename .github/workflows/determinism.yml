@@ -58,13 +58,17 @@ jobs:
             timeout 120 python scripts/audit_pipeline.py --output audit_run1.json 2>&1 || echo "⚠️ First run failed or timed out"
             timeout 120 python scripts/audit_pipeline.py --output audit_run2.json 2>&1 || echo "⚠️ Second run failed or timed out"
             
-            if [ -f audit_run1.json ] && [ -f audit_run2.json ]; then
-              if diff audit_run1.json audit_run2.json > /dev/null 2>&1; then
-                echo "✅ Audit pipeline is deterministic"
-              else
-                echo "⚠️  Audit pipeline produced different results"
-                diff audit_run1.json audit_run2.json || true
-              fi
+            # If either run failed to produce output, fail the workflow to avoid false positives
+            if [ ! -f audit_run1.json ] || [ ! -f audit_run2.json ]; then
+              echo "❌ Audit pipeline did not complete successfully for both runs; failing determinism validation."
+              exit 1
+            fi
+            
+            if diff audit_run1.json audit_run2.json > /dev/null 2>&1; then
+              echo "✅ Audit pipeline is deterministic"
+            else
+              echo "⚠️  Audit pipeline produced different results"
+              diff audit_run1.json audit_run2.json || true
             fi
           fi
           

@@ -75,7 +75,12 @@ fn bench_compression(c: &mut Criterion) {
             if let Ok(compressed_data) = &compressed {
                 Compression::ratio(&data_1mb, compressed_data)
             } else {
-                0.0
+                // Log compression failure for debugging
+                if let Err(e) = &compressed {
+                    eprintln!("Compression failed in compression_ratio_1mb benchmark: {:?}", e);
+                }
+                // Return NaN to distinguish from valid compression ratios
+                f64::NAN
             }
         });
     });

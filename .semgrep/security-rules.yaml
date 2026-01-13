@@ -40,8 +40,7 @@ rules:
               from defusedxml import ElementTree
           except ImportError:
               ...
-      - pattern-not-inside: |
-          from defusedxml import ElementTree
+      - pattern-not: from defusedxml import ElementTree
     message: "Use defusedxml instead of xml.etree.ElementTree to prevent XXE attacks"
     severity: ERROR
     languages: [python]
@@ -206,6 +205,25 @@ rules:
               open($PATH, ...)
           - pattern: |
               $PATH = os.environ[...]
+              ...
+              open($PATH, ...)
+          # Multi-step taint flow patterns
+          - pattern: |
+              $TMP = request.$METHOD(...)
+              ...
+              $PATH = $TMP
+              ...
+              open($PATH, ...)
+          - pattern: |
+              $TMP = request.$METHOD(...)
+              ...
+              $PATH = os.path.join(..., $TMP, ...)
+              ...
+              open($PATH, ...)
+          - pattern: |
+              $TMP = request.$METHOD(...)
+              ...
+              $PATH = $TMP + ...
               ...
               open($PATH, ...)
       - pattern-not: open(os.path.abspath(...), ...)

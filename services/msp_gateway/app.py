@@ -53,16 +53,27 @@ def create_app() -> FastAPI:
         # Use explicit CORS_ORIGINS from environment
         cors_origins = [origin.strip() for origin in cors_origins_env.split(",")]
     elif os.getenv("ENVIRONMENT", "development") == "production":
-        # Production: Restrict to specific domains.
-        # ⚠️ IMPORTANT: These are placeholder domains that MUST be replaced before production deployment.
+        # Production: CORS must be explicitly configured and must not use placeholder domains.
+        # ⚠️ CRITICAL: The example.com domains below are placeholders and MUST NOT be used in production.
         # For production use, you MUST either:
         #   1. Set CORS_ORIGINS environment variable to your actual domains (recommended), OR
-        #   2. Replace example.com below with your real frontend/API domains
-        # Leaving these placeholder values will cause legitimate production requests to be rejected by CORS.
-        cors_origins = [
+        #   2. Replace example.com below with your real frontend/API domains in the codebase
+        # To prevent accidental deployment with insecure or incorrect CORS settings, the application
+        # will refuse to start in production if these placeholder domains are still configured.
+        placeholder_origins = [
             "https://example.com",
-            "https://api.example.com"
+            "https://api.example.com",
         ]
+        logger.critical(
+            "Refusing to start in production: CORS_ORIGINS not set and placeholder origins are still "
+            "configured: %s. Configure real production origins via the CORS_ORIGINS environment "
+            "variable or update the CORS configuration in services/msp_gateway/app.py.",
+            placeholder_origins,
+        )
+        raise RuntimeError(
+            "Invalid CORS configuration for production: CORS_ORIGINS is not set and placeholder "
+            "example.com domains are still configured. See log output for details."
+        )
     else:
         # Development/Local: Allow localhost only (binds to 127.0.0.1)
         # More secure than wildcard while still functional for local development
