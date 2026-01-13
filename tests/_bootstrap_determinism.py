@@ -23,6 +23,7 @@ random.seed(0)
 # Try to set NumPy seed if available
 try:
     import numpy as np
+
     np.random.seed(0)
     print("✓ NumPy determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
@@ -31,6 +32,7 @@ except ImportError:
 # Try to configure PyTorch determinism if available
 try:
     import torch
+
     torch.manual_seed(0)
     # Use deterministic algorithms where possible
     torch.use_deterministic_algorithms(True, warn_only=True)
@@ -49,6 +51,7 @@ except Exception as e:
 # Try to configure TensorFlow determinism if available
 try:
     import tensorflow as tf
+
     tf.random.set_seed(0)
     # Enable deterministic ops
     os.environ["TF_DETERMINISTIC_OPS"] = "1"

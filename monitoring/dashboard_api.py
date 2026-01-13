@@ -1,5 +1,6 @@
 """FastAPI dashboard for real-time CI/CD and security metrics."""
 
+import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
@@ -7,7 +8,6 @@ from typing import Any, Dict, List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-import json
 
 app = FastAPI(
     title="Codex Monitoring Dashboard",
@@ -55,13 +55,13 @@ async def get_ci_metrics() -> Dict[str, Any]:
     """Get current CI/CD metrics."""
     # In production, would query from InfluxDB or Prometheus
     metrics_dir = Path("metrics_data")
-    
+
     # Load latest CI metrics file
     ci_files = sorted(metrics_dir.glob("ci_*.json"), reverse=True)
     if ci_files:
         with open(ci_files[0], encoding="utf-8") as f:
             return json.load(f)
-    
+
     # Fallback mock data
     return {
         "timestamp": datetime.now().isoformat(),
@@ -78,13 +78,13 @@ async def get_ci_metrics() -> Dict[str, Any]:
 async def get_security_metrics() -> Dict[str, Any]:
     """Get current security metrics."""
     metrics_dir = Path("metrics_data")
-    
+
     # Load latest security metrics file
     sec_files = sorted(metrics_dir.glob("security_*.json"), reverse=True)
     if sec_files:
         with open(sec_files[0], encoding="utf-8") as f:
             return json.load(f)
-    
+
     # Fallback mock data
     return {
         "timestamp": datetime.now().isoformat(),
@@ -106,13 +106,13 @@ async def get_security_metrics() -> Dict[str, Any]:
 async def get_agent_metrics() -> Dict[str, Any]:
     """Get custom agent performance metrics."""
     metrics_dir = Path("metrics_data")
-    
+
     # Load latest agent metrics file
     agent_files = sorted(metrics_dir.glob("agents_*.json"), reverse=True)
     if agent_files:
         with open(agent_files[0], encoding="utf-8") as f:
             return json.load(f)
-    
+
     # Fallback mock data
     return {
         "timestamp": datetime.now().isoformat(),
@@ -278,7 +278,7 @@ async def dashboard_ui():
     </div>
 
     <div class="last-updated">
-        Last updated: <span id="last-update">--</span> | 
+        Last updated: <span id="last-update">--</span> |
         Auto-refresh: 30s
     </div>
 
@@ -288,45 +288,45 @@ async def dashboard_ui():
                 // Fetch CI metrics
                 const ciResponse = await fetch('/api/metrics/ci');
                 const ciData = await ciResponse.json();
-                
+
                 // Fetch security metrics
                 const secResponse = await fetch('/api/metrics/security');
                 const secData = await secResponse.json();
-                
+
                 // Fetch agent metrics
                 const agentResponse = await fetch('/api/metrics/agents');
                 const agentData = await agentResponse.json();
-                
+
                 // Update UI
                 document.getElementById('security-score').textContent = secData.security_score;
-                document.getElementById('vuln-count').textContent = 
+                document.getElementById('vuln-count').textContent =
                     `${secData.vulnerabilities_total} vulnerabilities`;
-                
-                document.getElementById('success-rate').textContent = 
+
+                document.getElementById('success-rate').textContent =
                     `${(ciData.workflow_success_rate * 100).toFixed(1)}%`;
-                document.getElementById('total-runs').textContent = 
+                document.getElementById('total-runs').textContent =
                     `${ciData.workflow_runs_total} total runs`;
-                
-                document.getElementById('avg-duration').textContent = 
+
+                document.getElementById('avg-duration').textContent =
                     `${Math.round(ciData.average_duration_seconds)}s`;
-                
-                document.getElementById('cache-hit').textContent = 
+
+                document.getElementById('cache-hit').textContent =
                     `${(ciData.cache_hit_rate * 100).toFixed(1)}%`;
-                
+
                 document.getElementById('ml-detections').textContent = agentData.ml_threat_detections;
                 document.getElementById('auto-fixes').textContent = agentData.auto_fixes_applied;
-                
-                document.getElementById('last-update').textContent = 
+
+                document.getElementById('last-update').textContent =
                     new Date().toLocaleTimeString();
-                
+
             } catch (error) {
                 console.error('Error fetching metrics:', error);
             }
         }
-        
+
         // Initial fetch
         fetchMetrics();
-        
+
         // Auto-refresh every 30 seconds
         setInterval(fetchMetrics, 30000);
     </script>
@@ -338,4 +338,5 @@ async def dashboard_ui():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

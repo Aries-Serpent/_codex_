@@ -60,7 +60,7 @@ def create_app() -> FastAPI:
         #   2. Replace example.com below with your real frontend/API domains in the codebase
         # To prevent accidental deployment with insecure or incorrect CORS settings, the application
         # will refuse to start in production if these placeholder domains are still configured.
-        
+
         # Allow override for testing/staging with explicit acknowledgment
         if os.getenv("CORS_ALLOW_PLACEHOLDER_OVERRIDE", "").lower() == "true":
             logger.warning(

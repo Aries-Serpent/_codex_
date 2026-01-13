@@ -7,7 +7,7 @@ including testing, review assignment, and rollback capabilities.
 
 import json
 import subprocess
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
