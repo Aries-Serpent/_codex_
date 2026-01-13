@@ -519,7 +519,7 @@ mistune==3.1.4
     # via
     #   great-expectations
     #   nbconvert
-mlflow==3.5.0rc0
+mlflow==3.5.0
     # via codex-ml (pyproject.toml)
 mlflow-skinny==3.5.0rc0
     # via mlflow
