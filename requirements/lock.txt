@@ -252,7 +252,7 @@ fastapi-cli==0.0.8
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.20.1
+filelock==3.20.3
     # via
     #   datasets
     #   huggingface-hub
@@ -1250,7 +1250,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-virtualenv==20.35.4
+virtualenv==20.36.1
     # via
     #   pre-commit
     #   ray
