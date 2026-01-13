@@ -266,7 +266,7 @@ class SecurityValidator:
                 try:
                     self.results["validations"][validation_name] = validator()
                 except Exception as e:
-                    print(f"❌ Error running {validation_name}: {e}")
+                    print(f"❌ Error running {validation_name}. See validation results for details.")
                     self.results["validations"][validation_name] = {
                         "status": "error",
                         "error": str(e)

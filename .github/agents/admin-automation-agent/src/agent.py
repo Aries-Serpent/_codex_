@@ -431,7 +431,7 @@ class AdminAutomationAgent:
             return result
             
         except Exception as e:
-            logger.error(f"❌ Task execution failed: {e}", exc_info=True)
+            logger.error("❌ Task execution failed. See results for details.", exc_info=True)
             self.results["success"] = False
             self.results["error"] = str(e)
             return {
@@ -513,7 +513,7 @@ def main():
     else:
         print("❌ Task failed")
         if result.get("error"):
-            print(f"Error: {result['error']}")
+            print("Error occurred")
         return 1
 
 
