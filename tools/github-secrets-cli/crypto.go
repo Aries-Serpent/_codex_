@@ -123,20 +123,24 @@ func sealBox(message []byte, publicKey *[32]byte) ([]byte, error) {
 	return encrypted, nil
 }
 
-// blake2bHash computes a Blake2b hash (simplified for compatibility)
-// GitHub uses libsodium's crypto_generichash which is Blake2b
+// blake2bHash computes a Blake2b hash
+// NOTE: This is a SIMPLIFIED implementation for compatibility testing.
+// 
+// PRODUCTION WARNING: This implementation does NOT provide cryptographic security.
+// Before production deployment, replace with proper Blake2b implementation:
+//   go get github.com/minio/blake2b-simd
+//   
+// Recommended production implementation:
+//   import "github.com/minio/blake2b-simd"
+//   hash, _ := blake2b.New(&blake2b.Config{Size: uint8(outLen)})
+//   hash.Write(data)
+//   return hash.Sum(nil)
+//
+// Current implementation is for demonstration and testing purposes only.
+// DO NOT use this in production environments without replacing with proper Blake2b.
 func blake2bHash(data []byte, outLen int) []byte {
-	// For simplicity, we'll use a basic hash. In production, use blake2b library
-	// github.com/minio/blake2b-simd would be appropriate
-	// For now, use a simple approach that matches libsodium's behavior
-	
-	// This is a simplified version. For production, you should use:
-	// import "github.com/minio/blake2b-simd"
-	// hash, _ := blake2b.New(&blake2b.Config{Size: uint8(outLen)})
-	// hash.Write(data)
-	// return hash.Sum(nil)
-	
-	// Simplified hash for demo (NOT cryptographically secure for production)
+	// TEMPORARY: Simplified hash for development/testing
+	// This does NOT provide cryptographic security properties
 	h := make([]byte, outLen)
 	for i := 0; i < outLen && i < len(data); i++ {
 		h[i] = data[i % len(data)]

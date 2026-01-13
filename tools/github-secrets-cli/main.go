@@ -17,6 +17,8 @@ const (
 )
 
 var (
+	// version is displayed with --version flag
+	// Update this for each release
 	version = "1.0.0"
 )
 
@@ -26,7 +28,7 @@ var rootCmd = &cobra.Command{
 	Short: "Manage GitHub secrets across different scopes",
 	Long: `A command-line tool for managing GitHub secrets across organization, repository, 
 environment, and Codespaces scopes with client-side encryption and secure authentication.`,
-	Version: "1.0.0",
+	Version: version,
 }
 
 func init() {
