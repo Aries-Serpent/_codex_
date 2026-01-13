@@ -103,8 +103,8 @@ ignore_test_code: true
             findings = validator.scan_file(test_file)
             assert isinstance(findings, list)
             
-            # Restore permissions
-            os.chmod(test_file, 0o644)
+            # Restore permissions (user read/write only for security)
+            os.chmod(test_file, 0o600)
         except (OSError, PermissionError):
             # Skip this test on Windows or if permissions can't be changed
             pytest.skip("Cannot test file permissions on this platform")
