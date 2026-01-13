@@ -1,0 +1,83 @@
+name: CI Diagnostic Agent
+version: 1.0.0
+description: Automated CI failure analysis and remediation agent
+
+capabilities:
+  - log_analysis
+  - failure_detection
+  - root_cause_identification
+  - auto_remediation
+  - report_generation
+
+triggers:
+  workflow_run:
+    - completed
+    - failed
+  issue_comment:
+    - created  # Trigger with "@copilot ci diagnostic"
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+failure_patterns:
+  import_error:
+    pattern: "ImportError: cannot import name '(\\w+)'"
+    severity: high
+    auto_fixable: true
+    remediation: "Check package exports in __init__.py"
+  
+  rust_compile_error:
+    pattern: "error\\[E(\\d+)\\]:"
+    severity: critical
+    auto_fixable: false
+    remediation: "Fix Rust compilation errors"
+  
+  timeout:
+    pattern: "Timeout after (\\d+) seconds"
+    severity: medium
+    auto_fixable: true
+    remediation: "Increase timeout or optimize test performance"
+  
+  disk_full:
+    pattern: "No space left on device"
+    severity: critical
+    auto_fixable: true
+    remediation: "Add disk cleanup step before heavy operations"
+  
+  cache_miss:
+    pattern: "cache.*not found"
+    severity: low
+    auto_fixable: true
+    remediation: "Clear caches and retry"
+  
+  dependency_error:
+    pattern: "Could not find.*requirement"
+    severity: high
+    auto_fixable: true
+    remediation: "Update requirements.txt or pyproject.toml"
+  
+  artifact_missing:
+    pattern: "Unable to find any artifacts|if-no-files-found"
+    severity: medium
+    auto_fixable: true
+    remediation: "Verify artifact generation step completed"
+
+auto_remediation:
+  enabled: true
+  max_attempts: 3
+  strategies:
+    - clear_cache
+    - increase_timeout
+    - disk_cleanup
+    - update_dependencies
+    - fix_imports
+
+reporting:
+  format: markdown
+  include_logs: true
+  max_log_lines: 100
+  post_to_pr: true
