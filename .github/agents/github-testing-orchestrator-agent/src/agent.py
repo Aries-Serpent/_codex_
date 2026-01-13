@@ -11,7 +11,7 @@ import os
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -32,7 +32,7 @@ class TestOrchestrator:
         self.results = {
             "agent": "github-testing-orchestrator-agent",
             "version": self.version,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             "suites": {},
             "overall_status": "not_run"
         }

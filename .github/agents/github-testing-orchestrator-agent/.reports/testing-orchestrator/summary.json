@@ -1,16 +1,17 @@
 {
   "agent": "github-testing-orchestrator-agent",
   "version": "1.0.0",
-  "timestamp": "2026-01-13T20:16:00.772707Z",
+  "timestamp": "2026-01-13T20:17:21.034514Z",
   "suites": {
-    "performance": {
+    "documentation": {
       "status": "passed",
-      "bundle_size_mb": 0.0,
-      "max_bundle_size_mb": 5,
-      "compression_ratio": 0.72,
-      "target_compression_ratio": 0.7,
-      "consolidation_time_seconds": 0,
-      "max_consolidation_time_seconds": 120
+      "docs_checked": 4,
+      "docs_found": 4,
+      "links_checked": 0,
+      "links_broken": 0,
+      "examples_tested": 0,
+      "examples_passed": 0,
+      "duration_seconds": 0
     }
   },
   "overall_status": "passed",

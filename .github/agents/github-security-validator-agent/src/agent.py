@@ -10,7 +10,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -31,7 +31,7 @@ class SecurityValidator:
         self.results = {
             "agent": "github-security-validator-agent",
             "version": self.version,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             "validations": {},
             "overall_status": "not_run",
             "recommendations": []
