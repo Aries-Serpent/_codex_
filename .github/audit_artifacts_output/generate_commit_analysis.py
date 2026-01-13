@@ -6,12 +6,16 @@ import subprocess
 import json
 import csv
 import sys
+import shlex
 from pathlib import Path
 
 
 def run_git(cmd):
+    """Run git command safely without shell=True to prevent command injection."""
+    # Split command string into list for safe execution
+    cmd_list = shlex.split(cmd)
     result = subprocess.run(
-        cmd, capture_output=True, text=True, shell=True, cwd="/home/runner/work/_codex_/_codex_"
+        cmd_list, capture_output=True, text=True, shell=False, cwd="/home/runner/work/_codex_/_codex_"
     )
     return result.stdout.strip()
 

@@ -1,0 +1,112 @@
+# Monitoring Dashboard Configuration
+
+dashboard:
+  name: Codex Monitoring Dashboard
+  version: 1.0.0
+  refresh_interval_seconds: 30
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  cors:
+    enabled: true
+    allowed_origins:
+      - http://localhost:3000
+      - http://localhost:8000
+    allowed_methods:
+      - GET
+    allow_credentials: false
+
+metrics:
+  collection:
+    interval_seconds: 30
+    retention_days: 90
+    
+  sources:
+    github:
+      workflows: true
+      security_alerts: true
+      dependabot: true
+      codeql: true
+    
+    agents:
+      ml_threat_detector: true
+      ci_diagnostic: true
+      cognitive_brain: true
+
+  storage:
+    type: json_files  # or influxdb, prometheus
+    directory: metrics_data
+    
+  # If using InfluxDB:
+  # influxdb:
+  #   url: http://localhost:8086
+  #   token: ${INFLUXDB_TOKEN}
+  #   org: codex
+  #   bucket: metrics
+
+ci_metrics:
+  - workflow_runs_total
+  - workflow_success_rate
+  - average_duration_seconds
+  - builds_per_day
+  - cache_hit_rate
+  - failed_workflows
+
+security_metrics:
+  - security_score
+  - vulnerabilities_total
+  - vulnerabilities_by_severity
+  - dependabot_alerts
+  - codeql_alerts
+  - last_security_scan
+
+agent_metrics:
+  - ml_threat_detections
+  - ci_diagnostic_runs
+  - auto_fixes_applied
+  - pattern_recognition_accuracy
+
+thresholds:
+  security_score:
+    critical: 70
+    warning: 85
+    healthy: 95
+  
+  ci_success_rate:
+    critical: 0.7
+    warning: 0.85
+    healthy: 0.95
+  
+  vulnerabilities:
+    critical: 10
+    warning: 5
+    healthy: 0
+
+alerts:
+  enabled: true
+  channels:
+    - github_issues
+    - pr_comments
+  
+  rules:
+    - name: Low Security Score
+      condition: security_score < 85
+      severity: warning
+    
+    - name: Critical Vulnerabilities
+      condition: vulnerabilities_total > 5
+      severity: critical
+    
+    - name: High CI Failure Rate
+      condition: workflow_success_rate < 0.8
+      severity: warning
+
+ui:
+  theme: gradient-purple
+  auto_refresh: true
+  show_trends: true
+  chart_types:
+    - line
+    - bar
+    - gauge

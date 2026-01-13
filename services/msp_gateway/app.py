@@ -4,6 +4,7 @@ Creates and configures the MSP Gateway application
 """
 
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -45,13 +46,64 @@ def create_app() -> FastAPI:
         redoc_url="/redoc" if not settings.offline else None,
     )
 
-    # Add CORS middleware (local mode: allow all origins)
+    # Environment-aware CORS configuration
+    # Security: Configure CORS origins based on environment to prevent unauthorized access
+    cors_origins_env = os.getenv("CORS_ORIGINS", "")
+    if cors_origins_env:
+        # Use explicit CORS_ORIGINS from environment
+        cors_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+    elif os.getenv("ENVIRONMENT", "development") == "production":
+        # Production: CORS must be explicitly configured and must not use placeholder domains.
+        # ⚠️ CRITICAL: The example.com domains below are placeholders and MUST NOT be used in production.
+        # For production use, you MUST either:
+        #   1. Set CORS_ORIGINS environment variable to your actual domains (recommended), OR
+        #   2. Replace example.com below with your real frontend/API domains in the codebase
+        # To prevent accidental deployment with insecure or incorrect CORS settings, the application
+        # will refuse to start in production if these placeholder domains are still configured.
+
+        # Allow override for testing/staging with explicit acknowledgment
+        if os.getenv("CORS_ALLOW_PLACEHOLDER_OVERRIDE", "").lower() == "true":
+            logger.warning(
+                "⚠️ SECURITY WARNING: Running in production with placeholder CORS origins override enabled. "
+                "This should ONLY be used in testing/staging environments, NEVER in true production."
+            )
+            placeholder_origins = [
+                "https://example.com",
+                "https://api.example.com",
+            ]
+            cors_origins = placeholder_origins
+        else:
+            placeholder_origins = [
+                "https://example.com",
+                "https://api.example.com",
+            ]
+            logger.critical(
+                "Refusing to start in production: CORS_ORIGINS not set and placeholder origins are still "
+                "configured: %s. Configure real production origins via the CORS_ORIGINS environment "
+                "variable or update the CORS configuration in services/msp_gateway/app.py. "
+                "For testing/staging only, set CORS_ALLOW_PLACEHOLDER_OVERRIDE=true to acknowledge the risk.",
+                placeholder_origins,
+            )
+            raise RuntimeError(
+                "Invalid CORS configuration for production: CORS_ORIGINS is not set and placeholder "
+                "example.com domains are still configured. See log output for details."
+            )
+    else:
+        # Development/Local: Allow localhost only (binds to 127.0.0.1)
+        # More secure than wildcard while still functional for local development
+        cors_origins = [
+            "http://localhost:3000",
+            "http://localhost:8080",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:8080"
+        ]
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=cors_origins,
+        allow_credentials=False,  # Disable credentials for security
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Content-Type", "Authorization", "X-Request-Id"],
     )
 
     # Add custom middleware. Starlette wraps middleware such that the most

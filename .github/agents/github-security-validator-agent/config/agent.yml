@@ -1,0 +1,58 @@
+agent:
+  name: github-security-validator-agent
+  version: 1.0.0
+  description: Validates security configurations, audit logging, and CodeQL suppressions
+  responsibilities:
+    - HA-OPT-002  # Organization audit logging
+    - HA-OPT-003  # CodeQL suppressions review
+
+validation:
+  audit_logging:
+    enabled: true
+    min_retention_days: 90
+    require_siem_streaming: false  # Optional for now
+    check_api_access: true
+    
+  codeql_suppressions:
+    enabled: true
+    max_age_days: 90
+    require_justification: true
+    patterns:
+      - "lgtm\\[.*\\]"
+      - "codeql\\[.*\\]"
+      - "CodeQL\\[.*\\]"
+    scan_directories:
+      - src
+      - tools
+      - services
+      - monitoring
+      
+  branch_protection:
+    enabled: true
+    protected_branches:
+      - main
+      - develop
+      - production
+    required_checks:
+      require_reviews: true
+      min_approvals: 1
+      dismiss_stale_reviews: true
+      require_code_owner_reviews: true
+      require_status_checks: true
+      
+  secret_scanning:
+    enabled: true
+    check_push_protection: true
+    check_validity: true
+    check_alerts: true
+
+reporting:
+  format: json
+  output_dir: .reports/security-validator
+  include_recommendations: true
+  create_issues: false  # Set to true to auto-create issues for violations
+  
+github:
+  api_base_url: https://api.github.com
+  default_org: Aries-Serpent
+  default_repo: Aries-Serpent/_codex_

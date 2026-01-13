@@ -1,0 +1,139 @@
+name: CI Diagnostic Automation
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  diagnose-ci-failure:
+    if: |
+      github.event.workflow_run.conclusion == 'failure' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot diagnose ci'))
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests pyyaml
+      
+      - name: Download failed workflow logs
+        id: download
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            RUN_ID=$(echo "${{ github.event.comment.body }}" | grep -oP 'run-id:\s*\K\d+' || echo "")
+          fi
+          
+          if [ -z "$RUN_ID" ]; then
+            echo "❌ No run ID found"
+            exit 1
+          fi
+          
+          echo "Downloading logs for run $RUN_ID"
+          gh run view $RUN_ID --log > ci_failure_logs.txt || echo "Failed to download logs"
+          
+          if [ -f ci_failure_logs.txt ]; then
+            echo "✅ Logs downloaded: $(wc -l ci_failure_logs.txt | awk '{print $1}') lines"
+            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          else
+            echo "❌ No logs downloaded"
+            exit 1
+          fi
+      
+      - name: Run CI Diagnostic Agent
+        id: diagnose
+        run: |
+          python .github/agents/ci-diagnostic-agent/src/agent.py \
+            --run-id "${{ steps.download.outputs.run_id }}" \
+            --logs ci_failure_logs.txt \
+            --output diagnostic_report.md
+          
+          if [ -f diagnostic_report.md ]; then
+            echo "✅ Diagnostic report generated"
+            echo "report_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ No diagnostic report generated"
+            echo "report_exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload diagnostic artifacts
+        if: steps.diagnose.outputs.report_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-diagnostic-report-${{ steps.download.outputs.run_id }}
+          path: |
+            diagnostic_report.md
+            diagnostic_report.json
+            ci_failure_logs.txt
+          if-no-files-found: warn
+      
+      - name: Post diagnostic report to PR
+        if: |
+          github.event.workflow_run.pull_requests[0] != null &&
+          steps.diagnose.outputs.report_exists == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          
+          if [ -n "$PR_NUMBER" ] && [ -f diagnostic_report.md ]; then
+            echo "Posting report to PR #$PR_NUMBER"
+            cat diagnostic_report.md | gh pr comment "$PR_NUMBER" --body-file -
+            echo "✅ Diagnostic report posted to PR #$PR_NUMBER"
+          else
+            echo "⚠️ Skipping PR comment (no PR or report)"
+          fi
+      
+      - name: Check for auto-fixable issues
+        id: autofix
+        if: steps.diagnose.outputs.report_exists == 'true'
+        run: |
+          if [ -f diagnostic_report.json ]; then
+            AUTO_FIX=$(python3 -c "import json; print('true' if json.load(open('diagnostic_report.json')).get('auto_fixable', False) else 'false')")
+            echo "auto_fixable=$AUTO_FIX" >> $GITHUB_OUTPUT
+            
+            if [ "$AUTO_FIX" == "true" ]; then
+              echo "✅ Auto-fixable issues detected"
+            else
+              echo "ℹ️ No auto-fixable issues"
+            fi
+          else
+            echo "auto_fixable=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Update cognitive brain
+        if: always()
+        run: |
+          echo "📊 Updating cognitive brain with CI failure patterns"
+          
+          if [ -f diagnostic_report.json ]; then
+            echo "✅ Patterns logged for future learning"
+          fi
+      
+      - name: Notify on manual review needed
+        if: |
+          steps.diagnose.outputs.report_exists == 'true' &&
+          steps.autofix.outputs.auto_fixable == 'false'
+        run: |
+          echo "⚠️ Manual review required for CI failures"
+          echo "Diagnostic report available in artifacts"

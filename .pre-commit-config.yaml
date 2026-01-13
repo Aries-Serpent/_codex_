@@ -39,6 +39,27 @@ repos:
 
   - repo: local
     hooks:
+      # Security checks - Command injection prevention
+      - id: check-shell-true
+        name: Check for subprocess shell=True (command injection risk)
+        entry: bash -c 'files=$(find . \( -path "./.git" -o -path "./tests" -o -path "./scripts" -o -path "./security/fix" -o -path "./security/validate" \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found shell=True in production code. Use shlex.split() and shell=False instead."; exit 1; else exit 0; fi'
+        language: system
+        pass_filenames: false
+        
+      # Security checks - Unsafe XML parsing
+      - id: check-unsafe-xml
+        name: Check for unsafe XML parsing (XXE vulnerability risk)
+        entry: bash -c 'files=$(grep -r "import xml.etree.ElementTree" --include="*.py" . | grep -v ".git" | grep -v "test_\|_test\.py" || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found unsafe XML parsing. Use defusedxml instead."; exit 1; else exit 0; fi'
+        language: system
+        pass_filenames: false
+        
+      # Security checks - Weak hash algorithms without explicit non-security flag
+      - id: check-weak-hash
+        name: Check for weak hash algorithms without usedforsecurity=False
+        entry: bash -c 'files=$(grep -r "hashlib\.md5\|hashlib\.sha1" --include="*.py" . | grep -v "usedforsecurity=False" | grep -v ".git" | grep -v "test_\|_test\.py" | grep -v "# nosec" || true); if [ -n "$files" ]; then echo "$files"; echo "WARNING: Found MD5/SHA1 without usedforsecurity=False. Add the parameter if not used for security."; fi'
+        language: system
+        pass_filenames: false
+        
       - id: pip-compile
         name: pip-compile (manual)
         entry: bash -c 'if [ -f requirements.in ]; then pip-compile requirements.in -o requirements.txt; fi'

@@ -1,0 +1,290 @@
+name: NotebookLM Live Sync
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/**'
+      - 'tools/**'
+      - 'monitoring/**'
+      - 'services/**'
+      - '.github/**'
+      - 'tests/**'
+      - '**.md'
+      - '**.py'
+      - '**.rs'
+      - 'Cargo.toml'
+      - 'pyproject.toml'
+  workflow_dispatch:
+    inputs:
+      force_sync:
+        description: 'Force full synchronization'
+        required: false
+        default: 'false'
+        type: boolean
+  schedule:
+    # Daily backup sync at 00:00 UTC
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  OUTPUT_FILE: codex-architecture-sync.xml
+  REPOMIX_VERSION: '0.1.11'
+
+jobs:
+  consolidate-and-sync:
+    name: Repository Consolidation & Drive Sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone for speed
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Cache Repomix Installation
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-${{ hashFiles('repomix.config.json') }}
+          restore-keys: |
+            ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-
+            ${{ runner.os }}-repomix-
+      
+      - name: Install Repomix
+        run: |
+          npm install -g repomix@${{ env.REPOMIX_VERSION }}
+          repomix --version
+      
+      - name: Generate Repository Consolidation
+        id: consolidate
+        run: |
+          echo "::group::Running Repomix Consolidation"
+          
+          # Run repomix with configuration
+          repomix --config repomix.config.json --verbose
+          
+          echo "::endgroup::"
+          
+          # Validate output exists
+          if [ ! -f "$OUTPUT_FILE" ]; then
+            echo "❌ Consolidation failed: Output file not created"
+            exit 1
+          fi
+          
+          # Calculate file size
+          FILE_SIZE=$(stat -c%s "$OUTPUT_FILE" 2>/dev/null || stat -f%z "$OUTPUT_FILE")
+          FILE_SIZE_MB=$(echo "scale=2; $FILE_SIZE / 1048576" | bc)
+          
+          echo "✅ Consolidation complete"
+          echo "📦 File size: ${FILE_SIZE_MB}MB"
+          echo "file_size_mb=${FILE_SIZE_MB}" >> $GITHUB_OUTPUT
+          echo "file_size_bytes=${FILE_SIZE}" >> $GITHUB_OUTPUT
+          
+          # Check if file size is within acceptable range
+          if (( $(echo "$FILE_SIZE_MB > 10" | bc -l) )); then
+            echo "⚠️ WARNING: File size exceeds 10MB, may need optimization"
+          fi
+          
+          # Validate XML structure
+          if command -v xmllint &> /dev/null; then
+            if xmllint --noout "$OUTPUT_FILE" 2>&1; then
+              echo "✅ XML is well-formed"
+            else
+              echo "❌ XML validation failed"
+              exit 1
+            fi
+          fi
+      
+      - name: Setup Python for Security Scanning
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Cache Security Tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.npm
+          key: ${{ runner.os }}-security-tools-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-security-tools-
+      
+      - name: Install Security Scanning Tools
+        run: |
+          echo "::group::Installing Secretlint"
+          npm install -g @secretlint/secretlint @secretlint/secretlint-rule-preset-recommend
+          secretlint --version
+          echo "::endgroup::"
+          
+          echo "::group::Installing detect-secrets"
+          pip install detect-secrets
+          detect-secrets --version
+          echo "::endgroup::"
+      
+      - name: Security Scan - Secretlint
+        id: secretlint
+        continue-on-error: true
+        run: |
+          echo "::group::Scanning with Secretlint"
+          
+          # Create secretlint config if not exists
+          if [ ! -f ".secretlintrc.json" ]; then
+            cat > .secretlintrc.json << 'EOF'
+{
+  "rules": [
+    {
+      "id": "@secretlint/secretlint-rule-preset-recommend"
+    }
+  ]
+}
+EOF
+          fi
+          
+          if npx secretlint "$OUTPUT_FILE"; then
+            echo "✅ No secrets detected by Secretlint"
+            echo "secrets_found=false" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Secretlint found potential secrets"
+            echo "secrets_found=true" >> $GITHUB_OUTPUT
+          fi
+          echo "::endgroup::"
+      
+      - name: Security Scan - detect-secrets
+        id: detect_secrets
+        run: |
+          echo "::group::Scanning with detect-secrets"
+          
+          # Initialize baseline if not exists
+          if [ ! -f ".secrets.baseline" ]; then
+            detect-secrets scan --baseline .secrets.baseline
+          fi
+          
+          # Scan the output file
+          if detect-secrets scan "$OUTPUT_FILE" --baseline .secrets.baseline; then
+            echo "✅ No secrets detected by detect-secrets"
+            echo "secrets_found=false" >> $GITHUB_OUTPUT
+          else
+            echo "❌ detect-secrets found secrets!"
+            echo "secrets_found=true" >> $GITHUB_OUTPUT
+            
+            # Show what was found (for debugging)
+            detect-secrets scan "$OUTPUT_FILE" --baseline .secrets.baseline || true
+            
+            exit 1
+          fi
+          echo "::endgroup::"
+      
+      - name: Fail if Secrets Detected
+        if: steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true'
+        run: |
+          echo "❌ SECURITY ALERT: Secrets detected in consolidation output!"
+          echo "Workflow terminated to prevent credential exposure."
+          echo ""
+          echo "Please review the security scan outputs above and:"
+          echo "1. Remove any exposed secrets from the codebase"
+          echo "2. Add patterns to .repomixignore"
+          echo "3. Update .secrets.baseline if false positive"
+          exit 1
+      
+      - name: Upload to Google Drive
+        id: drive_upload
+        uses: satackey/action-google-drive@v1
+        with:
+          skicka-tokencache-json: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          upload-from: ${{ env.OUTPUT_FILE }}
+          upload-to: /codex-sync/${{ env.OUTPUT_FILE }}
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          remove-outdated: true
+      
+      - name: Notify Sync Complete
+        if: success()
+        env:
+          WEBHOOK_URL: ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
+        run: |
+          if [ -n "$WEBHOOK_URL" ]; then
+            # Get commit info
+            COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
+            COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+            
+            # Send webhook notification
+            curl -X POST "$WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"status\": \"success\",
+                \"timestamp\": \"$(date -Iseconds)\",
+                \"file_size_mb\": \"${{ steps.consolidate.outputs.file_size_mb }}\",
+                \"file_size_bytes\": ${{ steps.consolidate.outputs.file_size_bytes }},
+                \"commit_sha\": \"${{ github.sha }}\",
+                \"commit_short_sha\": \"${GITHUB_SHA:0:7}\",
+                \"commit_message\": \"$COMMIT_MSG\",
+                \"commit_author\": \"$COMMIT_AUTHOR\",
+                \"branch\": \"${{ github.ref_name }}\",
+                \"repository\": \"${{ github.repository }}\",
+                \"workflow_url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+              }"
+            
+            if [ $? -eq 0 ]; then
+              echo "✅ Notification sent successfully"
+            else
+              echo "⚠️ Notification failed (non-blocking)"
+            fi
+          else
+            echo "ℹ️ Webhook URL not configured, skipping notification"
+            echo "To enable notifications, set NOTEBOOKLM_WEBHOOK_URL secret"
+          fi
+      
+      - name: Upload Artifact (Backup)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-sync-${{ github.sha }}
+          path: ${{ env.OUTPUT_FILE }}
+          retention-days: 7
+          compression-level: 9
+      
+      - name: Generate Job Summary
+        if: always()
+        run: |
+          echo "## 📊 NotebookLM Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Consolidation" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ steps.consolidate.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **File Size**: ${{ steps.consolidate.outputs.file_size_mb }}MB" >> $GITHUB_STEP_SUMMARY
+          echo "- **Output**: \`${{ env.OUTPUT_FILE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Security Scanning" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secretlint**: ${{ steps.secretlint.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **detect-secrets**: ${{ steps.detect_secrets.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets Found**: ${{ steps.detect_secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Google Drive Upload" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ steps.drive_upload.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Metadata" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp**: $(date -Iseconds)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow**: [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          
+          # Add next steps
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Verify file uploaded to Google Drive" >> $GITHUB_STEP_SUMMARY
+          echo "2. Check NotebookLM for source refresh (may take 5-10 minutes)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Test AI Architect queries for updated context" >> $GITHUB_STEP_SUMMARY

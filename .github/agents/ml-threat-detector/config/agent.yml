@@ -1,0 +1,113 @@
+# ML Threat Detector Agent Configuration
+
+agent:
+  name: ml-threat-detector
+  version: 1.0.0
+  description: Machine learning-based threat detection for security vulnerabilities
+  author: Copilot Agent System
+
+model:
+  type: ensemble
+  components:
+    - random_forest:
+        n_estimators: 100
+        max_depth: 20
+        min_samples_split: 5
+        random_state: 42
+    - gradient_boosting:
+        n_estimators: 100
+        max_depth: 5
+        learning_rate: 0.1
+        random_state: 42
+  
+  voting: soft
+  
+  thresholds:
+    critical: 0.8
+    high: 0.6
+    medium: 0.4
+    low: 0.0
+
+features:
+  count: 20
+  categories:
+    complexity:
+      - lines_of_code
+      - cyclomatic_complexity
+      - max_nesting_depth
+    
+    security_operations:
+      - subprocess_calls
+      - shell_true_usage
+      - eval_exec_calls
+      - file_operations
+      - network_operations
+      - crypto_operations
+      - pickle_usage
+    
+    data_handling:
+      - xml_parsing
+      - user_input_handling
+      - environment_var_access
+    
+    auth_authz:
+      - auth_operations
+      - permission_checks
+    
+    code_quality:
+      - import_count
+      - external_lib_count
+      - unsafe_pattern_count
+    
+    historical:
+      - file_change_frequency
+      - author_security_score
+
+training:
+  target_accuracy: 0.85
+  min_precision: 0.80
+  min_recall: 0.75
+  cross_validation_folds: 5
+  test_size: 0.2
+  random_state: 42
+
+data_collection:
+  github_api:
+    workflows:
+      days_back: 90
+      per_page: 100
+    alerts:
+      types:
+        - codeql
+        - dependabot
+        - secret_scanning
+
+patterns:
+  vulnerable:
+    - "shell=True"
+    - "eval("
+    - "exec("
+    - "pickle.loads"
+    - "yaml.load"
+    - "md5("
+    - "sha1("
+    - "os.system"
+    - "__import__"
+    - "compile("
+
+reporting:
+  formats:
+    - json
+    - markdown
+  fields:
+    - risk_score
+    - risk_level
+    - confidence
+    - features
+    - recommendations
+
+integration:
+  ci_workflow: ci-diagnostic-automation.yml
+  pr_comments: enabled
+  auto_review: enabled
+  cognitive_brain: enabled

@@ -1,0 +1,201 @@
+agent:
+  name: admin-automation-agent
+  version: 1.0.0
+  description: Automated repository administration and secret management
+  author: AI Agent Collective
+  created: 2026-01-13
+  
+  capabilities:
+    - secrets_management
+    - workflow_automation
+    - validation_testing
+    - health_monitoring
+    - external_integration
+    - cognitive_brain_tracking
+  
+  authentication:
+    github:
+      required: true
+      scopes:
+        - repo                 # Full repository access
+        - workflow             # Update workflows
+        - admin:repo_hook      # Manage webhooks
+        - read:org             # Read org membership
+      env_vars:
+        - GITHUB_TOKEN
+        - GH_TOKEN
+    
+    google:
+      required: false  # Only for Drive/Cloud integration
+      service_account: GDRIVE_SERVICE_ACCOUNT_JSON
+      oauth_client_id: GOOGLE_CLIENT_ID
+      oauth_client_secret: GOOGLE_CLIENT_SECRET
+  
+  permissions:
+    repository:
+      - write    # Create/modify files
+      - admin    # Manage settings
+    
+    actions:
+      - write    # Create workflows
+      - secrets  # Manage secrets
+    
+    workflows:
+      - dispatch # Trigger workflows
+      - cancel   # Cancel running workflows
+  
+  rate_limits:
+    github_api: 5000         # requests per hour
+    google_drive: 1000       # requests per 100 seconds
+    max_concurrent: 5        # concurrent operations
+  
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    initial_delay: 1         # seconds
+    max_delay: 60            # seconds
+  
+  timeouts:
+    api_request: 30          # seconds
+    workflow_run: 1800       # 30 minutes
+    validation_suite: 300    # 5 minutes
+  
+  logging:
+    level: INFO              # DEBUG, INFO, WARN, ERROR
+    format: json
+    destination: .codex/audit/admin-automation-agent/
+    rotation: daily
+    retention_days: 90
+  
+  validation:
+    run_before_execution: true
+    fail_on_validation_error: true
+    validation_suite: scripts/phase10/comprehensive_validation_suite.py
+    required_pass_rate: 75   # percentage
+  
+  cognitive_brain:
+    track_health: true
+    update_frequency: on_completion
+    health_file: COGNITIVE_BRAIN_STATUS_V3.md
+    metrics:
+      - automation_rate
+      - success_rate
+      - execution_time
+      - error_count
+      - secrets_managed
+      - workflows_optimized
+    
+    thresholds:
+      min_automation_rate: 70
+      min_success_rate: 90
+      max_execution_time: 600  # seconds
+      max_error_rate: 5        # percentage
+  
+  tasks:
+    setup_phase10:
+      description: "Complete Phase 10 Master Integration setup"
+      automation_rate: 74
+      estimated_duration: 600  # 10 minutes
+      required_credentials:
+        - GITHUB_TOKEN
+        - GDRIVE_SERVICE_ACCOUNT_JSON (optional)
+      steps:
+        - validate_environment
+        - generate_codex_master_key
+        - inject_secrets
+        - trigger_workflow
+        - validate_setup
+        - update_cognitive_brain
+    
+    rotate_secrets:
+      description: "Rotate repository secrets with backup"
+      automation_rate: 100
+      estimated_duration: 180  # 3 minutes
+      required_credentials:
+        - GITHUB_TOKEN
+      steps:
+        - backup_current_secrets
+        - generate_new_secrets
+        - update_secrets_api
+        - validate_new_secrets
+        - test_dependent_workflows
+        - create_audit_log
+    
+    health_check:
+      description: "Comprehensive repository health check"
+      automation_rate: 100
+      estimated_duration: 60   # 1 minute
+      required_credentials:
+        - GITHUB_TOKEN (optional)
+      steps:
+        - validate_configuration
+        - scan_security
+        - check_dependencies
+        - assess_cognitive_brain
+        - test_integration
+        - generate_report
+    
+    debug_workflow:
+      description: "Analyze and fix workflow failures"
+      automation_rate: 85
+      estimated_duration: 300  # 5 minutes
+      required_credentials:
+        - GITHUB_TOKEN
+      steps:
+        - fetch_workflow_logs
+        - parse_errors
+        - identify_root_cause
+        - suggest_fixes
+        - apply_automated_fixes
+        - retrigger_workflow
+  
+  notifications:
+    enabled: true
+    channels:
+      - github_issues     # Create issue on failure
+      - pr_comments       # Comment on PR
+      - webhook           # Custom webhook (if NOTEBOOKLM_WEBHOOK_URL set)
+    
+    on_success:
+      - update_pr_description
+      - create_audit_log
+    
+    on_failure:
+      - create_github_issue
+      - send_webhook
+      - update_status_check
+  
+  error_handling:
+    auto_retry: true
+    create_issue_on_failure: true
+    rollback_on_failure: true
+    preserve_audit_trail: true
+  
+  security:
+    never_log_secrets: true
+    encrypt_backups: true
+    validate_input: true
+    sanitize_output: true
+    audit_all_operations: true
+  
+  dependencies:
+    python: ">=3.9"
+    required_packages:
+      - requests>=2.31.0
+      - PyNaCl>=1.5.0
+      - PyYAML>=6.0
+      - click>=8.1.0
+    
+    optional_packages:
+      - detect-secrets>=1.4.0
+      - pip-audit>=2.6.0
+      - bandit>=1.7.0
+  
+  file_paths:
+    root: .github/agents/admin-automation-agent
+    config: config/agent.yml
+    source: src/
+    tests: tests/
+    examples: examples/
+    logs: .codex/audit/admin-automation-agent/
+    reports: .codex/validation/admin-automation-agent/
