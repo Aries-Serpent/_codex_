@@ -14,6 +14,12 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  # Enforce deterministic behavior
+  PYTHONHASHSEED: 0
+  PYTHONDONTWRITEBYTECODE: 1
+  RANDOM_SEED: 42
+
 jobs:
   determinism-check:
     runs-on: ubuntu-latest
@@ -33,15 +39,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,test]"
       
+      - name: Clear Python caches
+        run: |
+          find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+          find . -type f -name "*.pyc" -delete 2>/dev/null || true
+          rm -rf .pytest_cache
+          echo "✅ Python caches cleared"
+      
       - name: Run determinism validation
         run: |
           echo "=== Checking for deterministic behavior ==="
+          echo "PYTHONHASHSEED=$PYTHONHASHSEED"
+          echo "RANDOM_SEED=$RANDOM_SEED"
           
           # Check if audit pipeline produces consistent results
           if [ -f "scripts/audit_pipeline.py" ]; then
             echo "Running audit pipeline twice to check determinism..."
-            python scripts/audit_pipeline.py --output audit_run1.json || true
-            python scripts/audit_pipeline.py --output audit_run2.json || true
+            timeout 120 python scripts/audit_pipeline.py --output audit_run1.json 2>&1 || echo "⚠️ First run failed or timed out"
+            timeout 120 python scripts/audit_pipeline.py --output audit_run2.json 2>&1 || echo "⚠️ Second run failed or timed out"
             
             if [ -f audit_run1.json ] && [ -f audit_run2.json ]; then
               if diff audit_run1.json audit_run2.json > /dev/null 2>&1; then
