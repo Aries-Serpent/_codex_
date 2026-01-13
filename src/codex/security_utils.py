@@ -50,23 +50,15 @@ def redact_secret_name(secret_name: str) -> str:
         
     Example:
         >>> redact_secret_name("CODEX_MASTER_KEY")
-        'secret:CODEX_MASTER_KEY'
-        >>> redact_secret_name("GOOGLE_CLIENT_SECRET")
-        'secret:GOOGLE_CLIENT_SECRET'
+        'secret:[REDACTED]'
+        >>> redact_secret_name("CUSTOM_API_KEY")
+        'secret:[REDACTED]'
     """
     if not secret_name:
         return '[UNNAMED_SECRET]'
     
-    # For well-known configuration keys, we can use descriptive names
-    # that don't reveal implementation details
-    safe_prefixes = ['CODEX_', 'GITHUB_', 'GH_']
-    
-    # Check if this is a generally safe configuration name
-    if any(secret_name.startswith(prefix) for prefix in safe_prefixes):
-        return f"secret:{secret_name}"
-    
-    # For other secrets, provide minimal information
-    return f"secret:[TYPE_{secret_name.split('_')[0] if '_' in secret_name else 'CUSTOM'}]"
+    # Consistently redact all secret names to prevent information disclosure
+    return 'secret:[REDACTED]'
 
 
 def sanitize_log_message(message: str, redact_patterns: Optional[list] = None) -> str:

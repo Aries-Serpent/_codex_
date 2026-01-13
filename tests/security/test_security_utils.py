@@ -42,19 +42,19 @@ class TestRedactSecretName:
     """Test redaction of secret names."""
     
     def test_redact_codex_prefix(self):
-        """Test that CODEX_ prefixed secrets use descriptive format."""
+        """Test that all secrets are consistently redacted."""
         result = redact_secret_name("CODEX_MASTER_KEY")
-        assert result == "secret:CODEX_MASTER_KEY"
+        assert result == "secret:[REDACTED]"
     
     def test_redact_github_prefix(self):
-        """Test that GITHUB_ prefixed secrets use descriptive format."""
+        """Test that all secrets are consistently redacted."""
         result = redact_secret_name("GITHUB_TOKEN")
-        assert result == "secret:GITHUB_TOKEN"
+        assert result == "secret:[REDACTED]"
     
     def test_redact_custom_secret(self):
-        """Test that custom secrets are redacted with type only."""
+        """Test that custom secrets are redacted consistently."""
         result = redact_secret_name("CUSTOM_API_KEY")
-        assert result == "secret:[TYPE_CUSTOM]"
+        assert result == "secret:[REDACTED]"
     
     def test_redact_empty_name(self):
         """Test redaction of empty secret name."""

@@ -179,14 +179,16 @@ def main():
     ]
     
     configured_count = 0
-    for secret in secrets_to_check:
+    for idx, secret in enumerate(secrets_to_check, 1):
         if verify_secret_exists(secret):
             # Security: Don't log secret names - CodeQL alert #3340, #3341
-            print(f"✅ Secret configured")
+            # Use index for operational visibility
+            print(f"✅ Secret #{idx} configured")
             configured_count += 1
         else:
             # Security: Don't log secret names - CodeQL alert #3340, #3341
-            print(f"⏸️  Secret not configured")
+            # Use index for operational visibility
+            print(f"⏸️  Secret #{idx} not configured")
     
     print("")
     print(f"Progress: {configured_count}/{len(secrets_to_check)} secrets configured")
