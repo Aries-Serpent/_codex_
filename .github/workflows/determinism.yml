@@ -16,9 +16,16 @@ permissions:
 
 env:
   # Enforce deterministic behavior
-  PYTHONHASHSEED: 0
-  PYTHONDONTWRITEBYTECODE: 1
-  RANDOM_SEED: 42
+  PYTHONHASHSEED: "0"
+  PYTHONDONTWRITEBYTECODE: "1"
+  RANDOM_SEED: "42"
+  # Thread control for deterministic execution
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+  # ML framework determinism
+  TF_DETERMINISTIC_OPS: "1"
+  CUBLAS_WORKSPACE_CONFIG: ":4096:8"
 
 jobs:
   determinism-check:
@@ -72,6 +79,8 @@ jobs:
           echo "PYTHONHASHSEED=$PYTHONHASHSEED"
           echo "RANDOM_SEED=$RANDOM_SEED"
           
+          # Bootstrap determinism harness is now loaded via conftest.py
+          
           # Check if audit pipeline produces consistent results
           if [ -f "scripts/audit_pipeline.py" ]; then
             echo "Running audit pipeline twice to check determinism..."
@@ -90,6 +99,21 @@ jobs:
               echo "⚠️  Audit pipeline produced different results"
               diff audit_run1.json audit_run2.json || true
             fi
+          fi
+          
+          # Run pytest twice and compare outputs for determinism
+          echo "=== Running test suite twice to verify determinism ==="
+          pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee baseline_test.out || echo "⚠️ First test run had failures"
+          pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee second_test.out || echo "⚠️ Second test run had failures"
+          
+          # Compare test outputs (excluding timing information)
+          # Note: This is a basic comparison; may need refinement for timing-sensitive output
+          if diff baseline_test.out second_test.out > /dev/null 2>&1; then
+            echo "✅ Test suite produces deterministic output"
+          else
+            echo "⚠️  Test suite produced different outputs between runs"
+            echo "This may indicate non-deterministic behavior in tests"
+            diff baseline_test.out second_test.out || true
           fi
           
           # Check for random seeds in code
