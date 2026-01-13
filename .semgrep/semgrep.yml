@@ -48,12 +48,5 @@ paths:
     - "__pycache__/**"
     - ".pytest_cache/**"
 
-# Severity mapping for priority scoring
-# Used by scripts/security/score_alerts.py
-severity_weights:
-  critical: 4.0
-  high: 3.0
-  medium: 2.0
-  low: 1.0
-  warning: 0.5
-  note: 0.5
+# Note: Severity mapping for priority scoring moved to scripts/security/score_alerts.py
+# The severity_weights configuration is not a valid semgrep config key

@@ -43,9 +43,12 @@ pub use swarm_engine::SwarmEngine;
 pub use task_manager::{Task, TaskManager, TaskResult};
 pub use telemetry::{HealthStatus, Telemetry, TelemetryMetrics};
 
+// Only compile Python bindings when python feature is enabled
+#[cfg(feature = "python")]
 use pyo3::prelude::*;
 
 /// Python module definition for codex_swarm
+#[cfg(feature = "python")]
 #[pymodule]
 fn codex_swarm(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<swarm_engine::PySwarmEngine>()?;
