@@ -514,7 +514,8 @@ def main():
         print("=" * 60)
         print("\n⚠️  Store securely immediately!")
         if args.name:
-            logger.info(f"Setting as {args.name}...")
+            # Security: Don't log secret names
+            logger.info(f"Setting secret...")
             if args.method in ["api", "auto"]:
                 success = manager.set_secret_api(args.name, key)
                 if not success and args.method == "auto":

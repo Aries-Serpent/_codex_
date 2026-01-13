@@ -135,7 +135,8 @@ def main():
         print("Generating new CODEX_MASTER_KEY...")
         key = generate_codex_master_key()
         if key:
-            print(f"🔑 Generated 256-bit key: {key[:8]}...{key[-8:]}")
+            # Security: Don't log key values, even partial
+            print(f"🔑 Generated 256-bit key successfully")
             if inject_secret_via_cli("CODEX_MASTER_KEY", key):
                 print("✅ CODEX_MASTER_KEY configured successfully")
             else:
