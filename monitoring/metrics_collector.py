@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import requests
 
@@ -17,7 +17,7 @@ class MetricsCollector:
         self.token = token
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
@@ -65,10 +65,10 @@ class MetricsCollector:
         """Save metrics to JSON file."""
         filename = f"{metrics_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         filepath = self.output_dir / filename
-        
+
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(metrics, f, indent=2)
-        
+
         print(f"✅ Metrics saved to {filepath}")
 
     def collect_all(self) -> Dict[str, Any]:
@@ -99,7 +99,7 @@ class MetricsCollector:
                 runs = response.json().get("workflow_runs", [])
                 if not runs:
                     return 1.0
-                
+
                 successful = sum(1 for run in runs if run.get("conclusion") == "success")
                 return successful / len(runs)
         except Exception as e:
@@ -115,14 +115,14 @@ class MetricsCollector:
                 runs = response.json().get("workflow_runs", [])
                 if not runs:
                     return 0.0
-                
+
                 durations = []
                 for run in runs:
                     created = datetime.fromisoformat(run["created_at"].replace("Z", "+00:00"))
                     updated = datetime.fromisoformat(run["updated_at"].replace("Z", "+00:00"))
                     duration = (updated - created).total_seconds()
                     durations.append(duration)
-                
+
                 return sum(durations) / len(durations) if durations else 0.0
         except Exception as e:
             print(f"Warning: Could not calculate avg duration: {e}")
@@ -171,11 +171,11 @@ class MetricsCollector:
     def _calculate_security_score(self) -> int:
         """Calculate overall security score (0-100)."""
         vuln_count = self._get_vuln_count()
-        
+
         # Simple scoring: Start at 100, deduct points for vulnerabilities
         score = 100
         score -= min(vuln_count * 5, 50)  # Max 50 point deduction
-        
+
         return max(0, score)
 
     def _get_dependabot_count(self) -> int:
@@ -186,6 +186,8 @@ class MetricsCollector:
             if response.status_code == 200:
                 return len(response.json())
         except Exception:
+            # Silently fail if Dependabot API is unavailable or returns an error
+            # This is expected for repos without Dependabot enabled
             pass
         return 0
 
@@ -197,6 +199,8 @@ class MetricsCollector:
             if response.status_code == 200:
                 return len(response.json())
         except Exception:
+            # Silently fail if CodeQL API is unavailable or returns an error
+            # This is expected for repos without code scanning enabled
             pass
         return 0
 
@@ -204,12 +208,19 @@ class MetricsCollector:
         """Get timestamp of last security scan."""
         try:
             url = f"{self.base_url}/code-scanning/alerts"
-            response = requests.get(url, headers=self.headers, params={"per_page": 1, "sort": "created", "direction": "desc"}, timeout=10)
+            response = requests.get(
+                url,
+                headers=self.headers,
+                params={"per_page": 1, "sort": "created", "direction": "desc"},
+                timeout=10,
+            )
             if response.status_code == 200:
                 alerts = response.json()
                 if alerts:
                     return alerts[0].get("created_at", "")
         except Exception:
+            # Silently fail if code scanning API is unavailable or returns an error
+            # Return current time as fallback
             pass
         return datetime.now().isoformat()
 
@@ -222,34 +233,34 @@ class MetricsCollector:
 def main():
     """Main collection loop."""
     import sys
-    
+
     if len(sys.argv) < 3:
         print("Usage: python metrics_collector.py <repo> <token>")
         sys.exit(1)
-    
+
     collector = MetricsCollector(sys.argv[1], sys.argv[2])
-    
+
     print("Starting metrics collection (30s intervals)...")
-    
+
     try:
         while True:
             print(f"\n[{datetime.now()}] Collecting metrics...")
-            
+
             # Collect all metrics
             all_metrics = collector.collect_all()
-            
+
             # Save to files
             for metrics_type, metrics in all_metrics.items():
                 collector.save_metrics(metrics_type, metrics)
-            
+
             # Print summary
             print(f"CI Success Rate: {all_metrics['ci']['workflow_success_rate']:.1%}")
             print(f"Security Score: {all_metrics['security']['security_score']}/100")
             print(f"Total Vulnerabilities: {all_metrics['security']['vulnerabilities_total']}")
-            
+
             # Wait 30 seconds
             time.sleep(30)
-    
+
     except KeyboardInterrupt:
         print("\n✅ Metrics collection stopped")
 

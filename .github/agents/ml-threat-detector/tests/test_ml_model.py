@@ -1,7 +1,6 @@
 """Comprehensive test suite for ML Threat Detection model."""
 
 import pytest
-import numpy as np
 from pathlib import Path
 import sys
 

@@ -60,20 +60,34 @@ def create_app() -> FastAPI:
         #   2. Replace example.com below with your real frontend/API domains in the codebase
         # To prevent accidental deployment with insecure or incorrect CORS settings, the application
         # will refuse to start in production if these placeholder domains are still configured.
-        placeholder_origins = [
-            "https://example.com",
-            "https://api.example.com",
-        ]
-        logger.critical(
-            "Refusing to start in production: CORS_ORIGINS not set and placeholder origins are still "
-            "configured: %s. Configure real production origins via the CORS_ORIGINS environment "
-            "variable or update the CORS configuration in services/msp_gateway/app.py.",
-            placeholder_origins,
-        )
-        raise RuntimeError(
-            "Invalid CORS configuration for production: CORS_ORIGINS is not set and placeholder "
-            "example.com domains are still configured. See log output for details."
-        )
+
+        # Allow override for testing/staging with explicit acknowledgment
+        if os.getenv("CORS_ALLOW_PLACEHOLDER_OVERRIDE", "").lower() == "true":
+            logger.warning(
+                "⚠️ SECURITY WARNING: Running in production with placeholder CORS origins override enabled. "
+                "This should ONLY be used in testing/staging environments, NEVER in true production."
+            )
+            placeholder_origins = [
+                "https://example.com",
+                "https://api.example.com",
+            ]
+            cors_origins = placeholder_origins
+        else:
+            placeholder_origins = [
+                "https://example.com",
+                "https://api.example.com",
+            ]
+            logger.critical(
+                "Refusing to start in production: CORS_ORIGINS not set and placeholder origins are still "
+                "configured: %s. Configure real production origins via the CORS_ORIGINS environment "
+                "variable or update the CORS configuration in services/msp_gateway/app.py. "
+                "For testing/staging only, set CORS_ALLOW_PLACEHOLDER_OVERRIDE=true to acknowledge the risk.",
+                placeholder_origins,
+            )
+            raise RuntimeError(
+                "Invalid CORS configuration for production: CORS_ORIGINS is not set and placeholder "
+                "example.com domains are still configured. See log output for details."
+            )
     else:
         # Development/Local: Allow localhost only (binds to 127.0.0.1)
         # More secure than wildcard while still functional for local development

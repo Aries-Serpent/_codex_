@@ -10,7 +10,6 @@ Target: 85%+ accuracy on known failure types
 import pytest
 import json
 import sys
-import os
 from pathlib import Path
 
 # Add agent to path

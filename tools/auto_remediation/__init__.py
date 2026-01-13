@@ -7,9 +7,14 @@ for security vulnerabilities detected by the ML threat detector.
 
 __version__ = "1.0.0"
 
-from .fix_generator import FixContext, FixStrategy, GeneratedFix, IntelligentFixGenerator
+from .fix_generator import (
+    FixContext,
+    FixStrategy,
+    GeneratedFix,
+    IntelligentFixGenerator,
+)
 from .pr_generator import AutomatedPRGenerator, PRConfig, PRMetadata
-from .verifier import FixVerifier, PreFixSnapshot, PostFixSnapshot, VerificationResult
+from .verifier import FixVerifier, PostFixSnapshot, PreFixSnapshot, VerificationResult
 
 __all__ = [
     "FixContext",

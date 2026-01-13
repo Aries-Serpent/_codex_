@@ -171,7 +171,6 @@ class CIDiagnosticAgent:
         remediation = self.suggest_fixes(root_cause)
         auto_fixable = self.can_auto_fix(root_cause)
         
-        status = "analyzed"
         if not findings:
             status = "no_issues_detected"
         elif confidence > 0.8:
