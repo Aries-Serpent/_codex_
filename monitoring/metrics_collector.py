@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import requests
 
@@ -186,6 +186,8 @@ class MetricsCollector:
             if response.status_code == 200:
                 return len(response.json())
         except Exception:
+            # Silently fail if Dependabot API is unavailable or returns an error
+            # This is expected for repos without Dependabot enabled
             pass
         return 0
 
@@ -197,6 +199,8 @@ class MetricsCollector:
             if response.status_code == 200:
                 return len(response.json())
         except Exception:
+            # Silently fail if CodeQL API is unavailable or returns an error
+            # This is expected for repos without code scanning enabled
             pass
         return 0
 
@@ -210,6 +214,8 @@ class MetricsCollector:
                 if alerts:
                     return alerts[0].get("created_at", "")
         except Exception:
+            # Silently fail if code scanning API is unavailable or returns an error
+            # Return current time as fallback
             pass
         return datetime.now().isoformat()
 

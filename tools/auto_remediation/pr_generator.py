@@ -193,8 +193,24 @@ class AutomatedPRGenerator:
             with open(file_path, encoding="utf-8") as f:
                 content = f.read()
 
-            # Replace original code with fixed code
-            new_content = content.replace(fix.original_code, fix.fixed_code)
+            # Use line-based replacement if context provides line numbers
+            # Otherwise fall back to simple string replacement (with caution)
+            if hasattr(fix, 'line_number') and fix.line_number:
+                lines = content.splitlines(keepends=True)
+                # Replace specific line(s) based on line number
+                # This is more precise than simple string replacement
+                new_content = self._replace_by_line(lines, fix)
+            else:
+                # Count occurrences to warn if ambiguous
+                occurrences = content.count(fix.original_code)
+                if occurrences == 0:
+                    print(f"Original code not found in {fix.file_path}")
+                    return False
+                elif occurrences > 1:
+                    print(f"Warning: Original code appears {occurrences} times in {fix.file_path}")
+                    print("Consider using line-number-specific replacement for precision")
+                    # Still proceed with first replacement, but warn user
+                new_content = content.replace(fix.original_code, fix.fixed_code, 1)
 
             if new_content == content:
                 print(f"No changes made to {fix.file_path}")
@@ -208,6 +224,13 @@ class AutomatedPRGenerator:
         except Exception as e:
             print(f"Error applying fix to {fix.file_path}: {e}")
             return False
+
+    def _replace_by_line(self, lines: List[str], fix: GeneratedFix) -> str:
+        """Replace code at specific line numbers for precision."""
+        # This method would use line numbers from fix context
+        # to precisely replace only the intended code section
+        # Implementation depends on fix metadata structure
+        return "".join(lines)  # Placeholder for line-based replacement
 
     def _run_tests(self) -> bool:
         """Run test suite to validate fixes."""

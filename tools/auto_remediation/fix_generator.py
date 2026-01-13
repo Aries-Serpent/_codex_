@@ -370,8 +370,18 @@ def validate_input(data, max_length=1000):
             with open(file_path, encoding="utf-8") as f:
                 content = f.read()
 
-            # Replace original code with fixed code
-            new_content = content.replace(fix.original_code, fix.fixed_code)
+            # Use occurrence counting to detect ambiguous replacements
+            occurrences = content.count(fix.original_code)
+            if occurrences == 0:
+                print(f"Warning: Original code not found in {fix.file_path}")
+                return False
+            elif occurrences > 1:
+                print(f"Warning: Ambiguous replacement - code appears {occurrences} times in {fix.file_path}")
+                print("Consider using AST-based or line-number-specific replacement")
+                # Only replace first occurrence to avoid unintended changes
+                new_content = content.replace(fix.original_code, fix.fixed_code, 1)
+            else:
+                new_content = content.replace(fix.original_code, fix.fixed_code)
 
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
