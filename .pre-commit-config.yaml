@@ -42,14 +42,14 @@ repos:
       # Security checks - Command injection prevention
       - id: check-shell-true
         name: Check for subprocess shell=True (command injection risk)
-        entry: bash -c 'files=$(grep -r "shell=True" --include="*.py" . | grep -v "test\|script\|security/fix\|security/validate" | grep -v ".git" || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found shell=True in production code. Use shlex.split() and shell=False instead."; exit 1; fi'
+        entry: bash -c 'files=$(grep -r "shell=True" --include="*.py" . | grep -v "test\|script\|security/fix\|security/validate" | grep -v ".git" || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found shell=True in production code. Use shlex.split() and shell=False instead."; exit 1; else exit 0; fi'
         language: system
         pass_filenames: false
         
       # Security checks - Unsafe XML parsing
       - id: check-unsafe-xml
         name: Check for unsafe XML parsing (XXE vulnerability risk)
-        entry: bash -c 'files=$(grep -r "import xml.etree.ElementTree" --include="*.py" . | grep -v ".git" | grep -v "test_\|_test\.py" || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found unsafe XML parsing. Use defusedxml instead."; exit 1; fi'
+        entry: bash -c 'files=$(grep -r "import xml.etree.ElementTree" --include="*.py" . | grep -v ".git" | grep -v "test_\|_test\.py" || true); if [ -n "$files" ]; then echo "$files"; echo "ERROR: Found unsafe XML parsing. Use defusedxml instead."; exit 1; else exit 0; fi'
         language: system
         pass_filenames: false
         

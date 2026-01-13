@@ -53,10 +53,15 @@ def create_app() -> FastAPI:
         # Use explicit CORS_ORIGINS from environment
         cors_origins = [origin.strip() for origin in cors_origins_env.split(",")]
     elif os.getenv("ENVIRONMENT", "development") == "production":
-        # Production: Restrict to specific domains (configure these for your deployment)
+        # Production: Restrict to specific domains.
+        # ⚠️ IMPORTANT: These are placeholder domains that MUST be replaced before production deployment.
+        # For production use, you MUST either:
+        #   1. Set CORS_ORIGINS environment variable to your actual domains (recommended), OR
+        #   2. Replace example.com below with your real frontend/API domains
+        # Leaving these placeholder values will cause legitimate production requests to be rejected by CORS.
         cors_origins = [
-            "https://yourdomain.com",
-            "https://api.yourdomain.com"
+            "https://example.com",
+            "https://api.example.com"
         ]
     else:
         # Development/Local: Allow localhost only (binds to 127.0.0.1)

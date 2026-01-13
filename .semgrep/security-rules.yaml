@@ -30,9 +30,17 @@ rules:
   # XML Security
   - id: unsafe-xml-parsing
     patterns:
-      - pattern: import xml.etree.ElementTree
+      - pattern-either:
+          - pattern: import xml.etree.ElementTree
+          - pattern: import xml.etree.ElementTree as $VAR
+          - pattern: from xml.etree import ElementTree
+          - pattern: from xml.etree.ElementTree import $FUNC
       - pattern-not-inside: |
-          # Safe usage with defusedxml
+          try:
+              from defusedxml import ElementTree
+          except ImportError:
+              ...
+      - pattern-not-inside: |
           from defusedxml import ElementTree
     message: "Use defusedxml instead of xml.etree.ElementTree to prevent XXE attacks"
     severity: ERROR
@@ -40,14 +48,6 @@ rules:
     metadata:
       cwe: "CWE-611: Improper Restriction of XML External Entity Reference"
       owasp: "A04:2021 - Insecure Design"
-      
-  - id: unsafe-xml-parsing-as
-    pattern: import xml.etree.ElementTree as $VAR
-    message: "Use 'from defusedxml import ElementTree' instead to prevent XXE attacks"
-    severity: ERROR
-    languages: [python]
-    metadata:
-      cwe: "CWE-611"
 
   # Cryptographic Hash Security
   - id: weak-hash-without-flag
@@ -190,12 +190,28 @@ rules:
       owasp: "A03:2021 - Injection"
 
   # Path Traversal
-  - id: path-traversal
+  - id: path-traversal-user-input
     patterns:
-      - pattern: open($PATH, ...)
+      - pattern-either:
+          - pattern: open(request.args.get(...), ...)
+          - pattern: open(request.form.get(...), ...)
+          - pattern: open(request.GET[...], ...)
+          - pattern: open(request.POST[...], ...)
+          - pattern: open(request.FILES[...], ...)
+          - pattern: open(os.environ[...], ...)
+          - pattern: open(sys.argv[...], ...)
+          - pattern: |
+              $PATH = request.$METHOD(...)
+              ...
+              open($PATH, ...)
+          - pattern: |
+              $PATH = os.environ[...]
+              ...
+              open($PATH, ...)
       - pattern-not: open(os.path.abspath(...), ...)
-    message: "Potential path traversal vulnerability. Validate and normalize file paths"
-    severity: WARNING
+      - pattern-not: open(Path(...).resolve(), ...)
+    message: "Path traversal vulnerability: user input used in file path. Validate and normalize with os.path.abspath() or Path.resolve()"
+    severity: ERROR
     languages: [python]
     metadata:
       cwe: "CWE-22: Path Traversal"
