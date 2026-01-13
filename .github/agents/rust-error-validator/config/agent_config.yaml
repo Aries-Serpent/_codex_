@@ -1,0 +1,70 @@
+# Rust Error Validator Configuration
+version: "1.0.0"
+agent_id: "rust-error-validator"
+enabled: true
+
+# Detection settings
+check_unwrap: true
+check_expect: true
+check_panic: true
+ignore_test_code: true
+pyo3_strict_mode: true
+
+# Severity levels for different contexts
+severity_levels:
+  pyo3_unwrap: "high"        # unwrap in PyO3 functions/methods
+  public_unwrap: "high"      # unwrap in public API
+  private_unwrap: "medium"   # unwrap in private/internal code
+  test_unwrap: "low"         # unwrap in test code (if not ignored)
+  expect_call: "medium"      # expect() calls
+  explicit_panic: "high"     # panic!() macro usage
+
+# Pattern matching configuration
+patterns:
+  unwrap_pattern: '\\.unwrap\\(\\)'
+  expect_pattern: '\\.expect\\('
+  panic_pattern: 'panic!\\('
+  pyo3_function_marker: '#\\[pyfunction\\]'
+  pyo3_methods_marker: '#\\[pymethods\\]'
+  test_marker: '#\\[test\\]|#\\[cfg\\(test\\)\\]'
+
+# Context analysis
+context_lines:
+  before: 10      # Lines of context to check before finding
+  after: 2        # Lines of context to check after finding
+
+# Output configuration
+output:
+  format: "text"  # text or json
+  verbose: false
+  show_suggestions: true
+
+# Cognitive brain integration
+cognitive_brain:
+  enabled: true
+  metrics:
+    - "total_findings"
+    - "high_severity_count"
+    - "files_scanned"
+    - "scan_duration_ms"
+    - "suggestions_provided"
+  
+  alerts:
+    high_severity_threshold: 5
+    medium_severity_threshold: 20
+  
+  learning:
+    store_patterns: true
+    track_false_positives: true
+
+# Performance tuning
+performance:
+  max_file_size_mb: 10
+  timeout_seconds: 300
+  parallel_scanning: false
+
+# Integration settings
+integration:
+  github_actions: true
+  pr_comments: true
+  block_on_findings: false

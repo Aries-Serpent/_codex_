@@ -164,25 +164,44 @@ BEFORE making ANY changes, you MUST:
 
 For ALL future work and planning, use pre-commit/commit cycle terminology, NOT time-based terms.
 
-### ✅ CORRECT
+### Required Terminology Mapping
 
-- "6 pre-commit to commit cycles"
-- "Pre-commit 1-2: Outcome Analyzer"
-- "Pre-commit 3-4: Strategy Optimizer"
+**MUST use these standardized terms in ALL documentation:**
+
+| ❌ WRONG (Time-based) | ✅ CORRECT (Work-based) |
+|----------------------|------------------------|
+| Days | Steps |
+| Weeks | Phases |
+| Months | Part X of N |
+| Quarter | Session |
+| Hours | pre-commit/commit |
+
+### ✅ CORRECT Examples
+
+- "6 Steps to completion"
+- "Phase 1-2: Outcome Analyzer"
+- "Part 1 of 4: Strategy Implementation"
+- "Session 2: Agent Development"
+- "Pre-commit 1-2: Setup and Configuration"
 - "Review, verify, commit"
 
-### ❌ WRONG
+### ❌ WRONG Examples
 
-- "6 weeks"
-- "Week 1-2"
-- "Duration: 4 weeks"
-- "Jan 13 - Feb 23, 2026" (for future work)
+- "6 weeks" → use "6 Phases"
+- "Week 1-2" → use "Phase 1-2"
+- "Duration: 4 weeks" → use "Duration: 4 Phases"
+- "3 days" → use "3 Steps"
+- "2 hours" → use "2 pre-commits"
+- "Monthly review" → use "Part X of N review"
+- "Quarterly planning" → use "Session planning"
+- "Jan 13 - Feb 23, 2026" (for future work) → use "Phase 1-8"
 
 ### Exception
 
 Historical references MAY use actual dates:
 - "Completed: 2026-01-05" ✅
-- "Work finished in 3 days" ✅ (retrospective only)
+- "Work finished in 3 Steps" ✅ (retrospective, not future planning)
+- "Generated: 2026-01-12T16:30:00Z" ✅ (metadata/timestamp only)
 
 ### Rationale
 
@@ -190,6 +209,8 @@ Historical references MAY use actual dates:
 - Agent sessions vary in duration
 - Pre-commit cycles align with development workflow
 - More accurate for AI-assisted development
+- Consistent terminology across all documentation
+- Prevents timeline estimation errors
 
 ---
 

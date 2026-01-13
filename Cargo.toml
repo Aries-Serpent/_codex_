@@ -1,0 +1,65 @@
+[package]
+name = "codex-swarm-engine"
+version = "0.1.0"
+edition = "2021"
+authors = ["Aries Serpent"]
+description = "Rust orchestration layer for Codex AI Agent Swarm"
+license = "MIT"
+
+[lib]
+name = "codex_engine"
+crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
+
+[dependencies]
+# Python-Rust Interop
+# Note: extension-module feature prevents linking in tests, so we use optional
+pyo3 = { version = "0.24.1", features = ["abi3-py38"], optional = true }
+pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"], optional = true }
+
+# Async Runtime & Parallelism
+tokio = { version = "1.36", features = ["full", "tracing"] }
+rayon = "1.8.1"  # For CPU-bound data preprocessing
+dashmap = "5.5.3"  # Concurrent hash map for swarm state aggregation
+
+# Data Serialization & Compression
+serde = { version = "1.0.197", features = ["derive"] }
+rmp-serde = "1.1.2"  # Binary serialization for agent state
+lz4 = "1.24.0"  # Fast compression for real-time agent streams
+zstd = { version = "0.13.0", features = ["zstdmt"] }  # High-ratio compression
+flate2 = "1.1"  # DEFLATE compression for Compression module
+
+# System Interfaces & Communication
+crossbeam = "0.8.4"  # Multi-producer, multi-consumer channels
+parking_lot = "0.12"  # Fast synchronization primitives
+anyhow = "1.0.80"  # Flexible error handling
+tracing = "0.1.40"  # High-performance instrumentation
+tracing-subscriber = "0.3.18"
+
+[build-dependencies]
+pyo3-build-config = "0.24.1"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "swarm_benchmarks"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.bench]
+opt-level = 3
+lto = true
+
+[tool.maturin]
+module-name = "codex_engine"
+python-source = "src"
+
+[features]
+default = ["python"]
+python = ["pyo3", "pyo3-async-runtimes"]
+extension-module = ["pyo3/extension-module"]

@@ -23,24 +23,28 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       
-      # Cache disabled due to disk space constraints with large ML dependencies
+      # Cache sentence-transformers models (small, ~400MB, high value)
+      # This significantly reduces test time by avoiding model re-downloads
+      - name: Cache sentence-transformers models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/torch/sentence_transformers
+          key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-
+            ${{ runner.os }}-sentence-transformers-
+      
+      # Note: pip cache remains disabled due to disk space constraints with large ML dependencies
       # Caching pip packages consumes significant disk space (~3-5GB) when restoring
       # and compounds with build artifacts, causing "No space left on device" errors
       # during installation of torch, transformers, and other RAG dependencies.
-      # - name: Cache pip packages
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
       
       - name: Free disk space
         run: |
@@ -64,18 +68,34 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --no-cache-dir -e ".[rag,test]"
-          pip install --no-cache-dir pytest-cov pytest-xdist
+          pip install --no-cache-dir pytest-cov pytest-xdist pytest-timeout
+      
+      - name: Pre-download embedding models
+        run: |
+          python -c "
+          from sentence_transformers import SentenceTransformer
+          import os
+          cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
+          os.makedirs(cache_dir, exist_ok=True)
+          print('Pre-downloading sentence-transformers model...')
+          model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', cache_folder=cache_dir)
+          print(f'Model cached successfully to {cache_dir}')
+          "
       
       - name: Run RAG tests with coverage
         run: |
           pytest tests/test_rag_*.py \
+            --timeout=600 \
+            --timeout-method=thread \
             --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing \
             --cov-fail-under=90 \
             -v \
-            --tb=short
+            --tb=short \
+            -n auto \
+            --dist=loadfile
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

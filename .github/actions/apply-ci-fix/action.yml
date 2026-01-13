@@ -1,0 +1,306 @@
+name: 'Apply CI Fix'
+description: 'Applies automated fixes for detected CI failures based on failure analysis'
+author: 'CI Self-Healing System'
+
+inputs:
+  fix_type:
+    description: 'Type of fix to apply (rust_format, python_lint, increase_timeout, add_dependency, clear_cache)'
+    required: true
+  fix_params:
+    description: 'JSON string containing fix-specific parameters'
+    required: false
+    default: '{}'
+  repo_token:
+    description: 'GitHub token for API access'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  fix_applied:
+    description: 'Whether the fix was successfully applied'
+    value: ${{ steps.check_result.outputs.fix_applied }}
+  fix_details:
+    description: 'Details about the fix that was applied'
+    value: ${{ steps.check_result.outputs.fix_details }}
+  commit_sha:
+    description: 'Commit SHA if changes were committed'
+    value: ${{ steps.check_result.outputs.commit_sha }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Git
+      shell: bash
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Apply Rust Format Fix
+      if: ${{ inputs.fix_type == 'rust_format' }}
+      id: rust_format
+      shell: bash
+      run: |
+        echo "::group::Applying Rust format fix"
+
+        # Check if cargo is available
+        if ! command -v cargo &> /dev/null; then
+          echo "::error::cargo not found - cannot apply Rust format fix"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        # Apply formatting
+        echo "Running cargo fmt --all..."
+        if cargo fmt --all; then
+          echo "✅ Rust formatting applied successfully"
+
+          # Check if there are changes
+          if git diff --quiet; then
+            echo "ℹ️ No formatting changes needed"
+            echo "fix_applied=true" >> $GITHUB_OUTPUT
+            echo "fix_details=No formatting changes needed" >> $GITHUB_OUTPUT
+          else
+            # Stage and commit changes
+            git add -A
+            git commit -m "style: auto-format Rust code (self-healing) [skip ci]"
+            COMMIT_SHA=$(git rev-parse HEAD)
+            echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+            echo "fix_applied=true" >> $GITHUB_OUTPUT
+            echo "fix_details=Formatted Rust code and committed changes" >> $GITHUB_OUTPUT
+            echo "✅ Changes committed: $COMMIT_SHA"
+          fi
+        else
+          echo "::error::Rust formatting failed"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        echo "::endgroup::"
+
+    - name: Apply Python Lint Fix
+      if: ${{ inputs.fix_type == 'python_lint' }}
+      id: python_lint
+      shell: bash
+      run: |
+        echo "::group::Applying Python lint fix"
+
+        # Check if ruff is available
+        if ! command -v ruff &> /dev/null; then
+          echo "::warning::ruff not found - attempting to install"
+          pip install ruff --quiet || {
+            echo "::error::Failed to install ruff"
+            echo "fix_applied=false" >> $GITHUB_OUTPUT
+            exit 1
+          }
+        fi
+
+        # Apply linting fixes
+        echo "Running ruff check --fix ..."
+        if ruff check --fix .; then
+          echo "✅ Python linting fixes applied successfully"
+
+          # Check if there are changes
+          if git diff --quiet; then
+            echo "ℹ️ No linting changes needed"
+            echo "fix_applied=true" >> $GITHUB_OUTPUT
+            echo "fix_details=No linting changes needed" >> $GITHUB_OUTPUT
+          else
+            # Stage and commit changes
+            git add -A
+            git commit -m "style: auto-fix Python linting issues (self-healing) [skip ci]"
+            COMMIT_SHA=$(git rev-parse HEAD)
+            echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+            echo "fix_applied=true" >> $GITHUB_OUTPUT
+            echo "fix_details=Fixed Python linting issues and committed changes" >> $GITHUB_OUTPUT
+            echo "✅ Changes committed: $COMMIT_SHA"
+          fi
+        else
+          echo "::error::Python linting fixes failed"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        echo "::endgroup::"
+
+    - name: Apply Test Timeout Fix
+      if: ${{ inputs.fix_type == 'increase_timeout' }}
+      id: timeout_fix
+      shell: bash
+      env:
+        FIX_PARAMS: ${{ inputs.fix_params }}
+      run: |
+        echo "::group::Applying test timeout fix"
+
+        # Parse parameters
+        CURRENT_TIMEOUT=$(echo "$FIX_PARAMS" | jq -r '.current_timeout // 60')
+        SUGGESTED_TIMEOUT=$(echo "$FIX_PARAMS" | jq -r '.suggested_timeout // 120')
+
+        echo "Current timeout: ${CURRENT_TIMEOUT}s"
+        echo "Suggested timeout: ${SUGGESTED_TIMEOUT}s"
+
+        # Look for pytest.ini or pyproject.toml
+        if [ -f "pytest.ini" ]; then
+          echo "Updating pytest.ini timeout..."
+          sed -i "s/timeout = ${CURRENT_TIMEOUT}/timeout = ${SUGGESTED_TIMEOUT}/" pytest.ini
+          git add pytest.ini
+        elif [ -f "pyproject.toml" ]; then
+          echo "Updating pyproject.toml timeout..."
+          # Update timeout in pyproject.toml [tool.pytest.ini_options]
+          if grep -q "timeout = ${CURRENT_TIMEOUT}" pyproject.toml; then
+            sed -i "s/timeout = ${CURRENT_TIMEOUT}/timeout = ${SUGGESTED_TIMEOUT}/" pyproject.toml
+            git add pyproject.toml
+          else
+            echo "::warning::Could not find timeout configuration to update"
+          fi
+        else
+          echo "::warning::No pytest configuration file found"
+        fi
+
+        # Check if changes were made
+        if ! git diff --cached --quiet; then
+          git commit -m "ci: increase test timeout to ${SUGGESTED_TIMEOUT}s (self-healing) [skip ci]"
+          COMMIT_SHA=$(git rev-parse HEAD)
+          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+          echo "fix_applied=true" >> $GITHUB_OUTPUT
+          echo "fix_details=Increased timeout from ${CURRENT_TIMEOUT}s to ${SUGGESTED_TIMEOUT}s" >> $GITHUB_OUTPUT
+          echo "✅ Changes committed: $COMMIT_SHA"
+        else
+          echo "ℹ️ No timeout configuration found to update"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          echo "fix_details=No timeout configuration found" >> $GITHUB_OUTPUT
+        fi
+
+        echo "::endgroup::"
+
+    - name: Apply Dependency Fix
+      if: ${{ inputs.fix_type == 'add_dependency' }}
+      id: dependency_fix
+      shell: bash
+      env:
+        FIX_PARAMS: ${{ inputs.fix_params }}
+      run: |
+        echo "::group::Applying dependency fix"
+
+        # Parse missing module name
+        MISSING_MODULE=$(echo "$FIX_PARAMS" | jq -r '.missing_module // ""')
+
+        if [ -z "$MISSING_MODULE" ]; then
+          echo "::error::No missing module specified"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        echo "Adding missing dependency: $MISSING_MODULE"
+
+        # Add to requirements.txt
+        if [ -f "requirements.txt" ]; then
+          echo "Adding $MISSING_MODULE to requirements.txt..."
+          echo "$MISSING_MODULE" >> requirements.txt
+          sort -u requirements.txt -o requirements.txt
+          git add requirements.txt
+        elif [ -f "pyproject.toml" ]; then
+          echo "::warning::pyproject.toml found but automated editing not implemented"
+          echo "::warning::Please add $MISSING_MODULE manually to pyproject.toml"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          echo "fix_details=pyproject.toml requires manual edit" >> $GITHUB_OUTPUT
+          exit 0
+        else
+          echo "::error::No requirements file found"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        # Commit the change
+        git commit -m "deps: add missing dependency $MISSING_MODULE (self-healing) [skip ci]"
+        COMMIT_SHA=$(git rev-parse HEAD)
+        echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+        echo "fix_applied=true" >> $GITHUB_OUTPUT
+        echo "fix_details=Added dependency $MISSING_MODULE to requirements.txt" >> $GITHUB_OUTPUT
+        echo "✅ Changes committed: $COMMIT_SHA"
+
+        echo "::endgroup::"
+
+    - name: Apply Cache Clear Fix
+      if: ${{ inputs.fix_type == 'clear_cache' }}
+      id: cache_fix
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.repo_token }}
+      run: |
+        echo "::group::Applying cache clear fix"
+
+        # Check if gh CLI is available
+        if ! command -v gh &> /dev/null; then
+          echo "::warning::gh CLI not found - cannot clear cache automatically"
+          echo "fix_applied=false" >> $GITHUB_OUTPUT
+          echo "fix_details=gh CLI not available" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Clear all caches
+        echo "Clearing GitHub Actions caches..."
+        if gh cache delete --all 2>&1 | tee cache_delete.log; then
+          echo "✅ Caches cleared successfully"
+          echo "fix_applied=true" >> $GITHUB_OUTPUT
+          echo "fix_details=GitHub Actions caches cleared" >> $GITHUB_OUTPUT
+        else
+          # Check if error is due to no caches
+          if grep -q "no caches found" cache_delete.log; then
+            echo "ℹ️ No caches found to delete"
+            echo "fix_applied=true" >> $GITHUB_OUTPUT
+            echo "fix_details=No caches found to clear" >> $GITHUB_OUTPUT
+          else
+            echo "::warning::Cache clear failed, but continuing"
+            cat cache_delete.log
+            echo "fix_applied=false" >> $GITHUB_OUTPUT
+            echo "fix_details=Cache clear failed" >> $GITHUB_OUTPUT
+          fi
+        fi
+
+        rm -f cache_delete.log
+        echo "::endgroup::"
+
+    - name: Check Result and Set Outputs
+      id: check_result
+      shell: bash
+      run: |
+        # Aggregate results from all fix steps
+        FIX_TYPE="${{ inputs.fix_type }}"
+
+        case "$FIX_TYPE" in
+          rust_format)
+            echo "fix_applied=${{ steps.rust_format.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
+            echo "fix_details=${{ steps.rust_format.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${{ steps.rust_format.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            ;;
+          python_lint)
+            echo "fix_applied=${{ steps.python_lint.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
+            echo "fix_details=${{ steps.python_lint.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${{ steps.python_lint.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            ;;
+          increase_timeout)
+            echo "fix_applied=${{ steps.timeout_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
+            echo "fix_details=${{ steps.timeout_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${{ steps.timeout_fix.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            ;;
+          add_dependency)
+            echo "fix_applied=${{ steps.dependency_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
+            echo "fix_details=${{ steps.dependency_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "commit_sha=${{ steps.dependency_fix.outputs.commit_sha || '' }}" >> $GITHUB_OUTPUT
+            ;;
+          clear_cache)
+            echo "fix_applied=${{ steps.cache_fix.outputs.fix_applied || 'false' }}" >> $GITHUB_OUTPUT
+            echo "fix_details=${{ steps.cache_fix.outputs.fix_details || 'Unknown' }}" >> $GITHUB_OUTPUT
+            echo "commit_sha=" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "::error::Unknown fix type: $FIX_TYPE"
+            echo "fix_applied=false" >> $GITHUB_OUTPUT
+            echo "fix_details=Unknown fix type" >> $GITHUB_OUTPUT
+            echo "commit_sha=" >> $GITHUB_OUTPUT
+            ;;
+        esac
+
+branding:
+  icon: 'tool'
+  color: 'green'

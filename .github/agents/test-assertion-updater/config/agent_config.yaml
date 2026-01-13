@@ -1,0 +1,39 @@
+version: 1.0.0
+agent_name: test-assertion-updater
+
+capabilities:
+  - parse_failures
+  - analyze_code
+  - generate_fixes
+  - validate_fixes
+
+integration:
+  cognitive_brain: true
+  github_actions: true
+  aftermath: true
+
+settings:
+  timeout_seconds: 300
+  max_retries: 3
+  log_level: INFO
+  enable_caching: true
+  cache_ttl_seconds: 3600
+
+monitoring:
+  metrics:
+    - fixes_generated
+    - fixes_validated
+    - fixes_committed
+    - validation_failure_rate
+    - average_fix_time
+  
+  alerts:
+    - condition: validation_failure_rate > 0.3
+      action: disable_auto_commit
+      notify: maintainers
+
+security:
+  code_execution: sandboxed
+  file_access: test_files_only
+  network_access: none
+  secret_handling: never_access
