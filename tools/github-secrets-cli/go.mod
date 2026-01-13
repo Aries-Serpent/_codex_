@@ -1,6 +1,6 @@
 module github.com/Aries-Serpent/_codex_/tools/github-secrets-cli
 
-go 1.21
+go 1.23.0
 
 require (
 	github.com/spf13/cobra v1.8.0
