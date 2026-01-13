@@ -12,7 +12,7 @@ Enhanced features:
 """
 import json
 import sys
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Any, Optional
 
