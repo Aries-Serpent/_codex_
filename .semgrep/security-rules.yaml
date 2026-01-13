@@ -1,0 +1,201 @@
+rules:
+  # Command Injection Prevention
+  - id: subprocess-shell-injection
+    pattern: subprocess.run(..., shell=True, ...)
+    message: "Avoid shell=True in subprocess calls to prevent command injection. Use shlex.split() and shell=False instead."
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A03:2021 - Injection"
+      references:
+        - https://owasp.org/www-community/attacks/Command_Injection
+      
+  - id: subprocess-call-shell-injection
+    pattern: subprocess.call(..., shell=True, ...)
+    message: "Avoid shell=True in subprocess.call() to prevent command injection"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-78"
+      
+  - id: subprocess-popen-shell-injection
+    pattern: subprocess.Popen(..., shell=True, ...)
+    message: "Avoid shell=True in subprocess.Popen() to prevent command injection"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-78"
+
+  # XML Security
+  - id: unsafe-xml-parsing
+    patterns:
+      - pattern: import xml.etree.ElementTree
+      - pattern-not-inside: |
+          # Safe usage with defusedxml
+          from defusedxml import ElementTree
+    message: "Use defusedxml instead of xml.etree.ElementTree to prevent XXE attacks"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-611: Improper Restriction of XML External Entity Reference"
+      owasp: "A04:2021 - Insecure Design"
+      
+  - id: unsafe-xml-parsing-as
+    pattern: import xml.etree.ElementTree as $VAR
+    message: "Use 'from defusedxml import ElementTree' instead to prevent XXE attacks"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-611"
+
+  # Cryptographic Hash Security
+  - id: weak-hash-without-flag
+    patterns:
+      - pattern: hashlib.md5(...)
+      - pattern-not: hashlib.md5(..., usedforsecurity=False)
+      - pattern-not-inside: |
+          # nosec B324
+          ...
+    message: "MD5 for security purposes is weak. Use SHA-256 or add usedforsecurity=False if not used for security"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+      
+  - id: sha1-without-flag
+    patterns:
+      - pattern: hashlib.sha1(...)
+      - pattern-not: hashlib.sha1(..., usedforsecurity=False)
+      - pattern-not-inside: |
+          # nosec
+          ...
+    message: "SHA1 for security purposes is weak. Use SHA-256 or add usedforsecurity=False"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-327"
+
+  # Pickle Security
+  - id: unsafe-pickle-load
+    pattern: pickle.load(...)
+    message: "pickle.load() can execute arbitrary code. Use safe_pickle_load() from utils.safe_pickle instead"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      owasp: "A08:2021 - Software and Data Integrity Failures"
+      
+  - id: unsafe-pickle-loads
+    pattern: pickle.loads(...)
+    message: "pickle.loads() can execute arbitrary code. Use safe_pickle_load() or RestrictedUnpickler"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-502"
+
+  # File Permissions
+  - id: insecure-file-permissions
+    patterns:
+      - pattern: os.chmod($PATH, 0o644)
+      - pattern-inside: |
+          def $FUNC(...):
+            ...
+    message: "File permissions 0o644 allow world-readable access. Use 0o600 for sensitive files"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-732: Incorrect Permission Assignment for Critical Resource"
+      
+  - id: insecure-file-permissions-world-writable
+    pattern: os.chmod($PATH, 0o666)
+    message: "File permissions 0o666 allow world-writable access. This is a serious security risk"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-732"
+
+  # URL Security
+  - id: url-substring-check
+    patterns:
+      - pattern: $DOMAIN in $URL
+      - metavariable-pattern:
+          metavariable: $DOMAIN
+          pattern: '"..."'
+    message: "Substring check for domain validation can be bypassed. Use regex with word boundaries instead"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-20: Improper Input Validation"
+      
+  - id: urllib-urlopen-dynamic
+    patterns:
+      - pattern: urllib.request.urlopen($URL, ...)
+      - pattern-not: urllib.request.urlopen("https://...", ...)
+    message: "Dynamic URL in urllib.urlopen() may allow file:// scheme abuse. Validate URL scheme"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-918: Server-Side Request Forgery (SSRF)"
+
+  # CORS Security
+  - id: wildcard-cors
+    patterns:
+      - pattern: allow_origins=["*"]
+    message: "Wildcard CORS allows any origin. Use specific allowed origins instead"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-942: Overly Permissive Cross-domain Whitelist"
+      owasp: "A01:2021 - Broken Access Control"
+      
+  - id: cors-with-credentials-wildcard
+    patterns:
+      - pattern: |
+          CORSMiddleware(
+            ...,
+            allow_origins=["*"],
+            ...,
+            allow_credentials=True,
+            ...
+          )
+    message: "CRITICAL: CORS with wildcard origins and credentials enabled is a major security vulnerability"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-942"
+
+  # Environment Variable Injection
+  - id: env-in-subprocess
+    patterns:
+      - pattern: subprocess.run(..., env=os.environ, ...)
+    message: "Passing os.environ directly to subprocess can lead to environment variable injection. Filter to only needed variables"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-88: Argument Injection or Modification"
+
+  # SQL Injection (if applicable)
+  - id: sql-string-format
+    patterns:
+      - pattern: $CURSOR.execute(f"... {$VAR} ...")
+      - pattern-not-inside: |
+          # Safe query
+          ...
+    message: "SQL query with f-string may be vulnerable to SQL injection. Use parameterized queries"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 - Injection"
+
+  # Path Traversal
+  - id: path-traversal
+    patterns:
+      - pattern: open($PATH, ...)
+      - pattern-not: open(os.path.abspath(...), ...)
+    message: "Potential path traversal vulnerability. Validate and normalize file paths"
+    severity: WARNING
+    languages: [python]
+    metadata:
+      cwe: "CWE-22: Path Traversal"

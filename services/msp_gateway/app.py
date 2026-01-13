@@ -4,6 +4,7 @@ Creates and configures the MSP Gateway application
 """
 
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -45,13 +46,34 @@ def create_app() -> FastAPI:
         redoc_url="/redoc" if not settings.offline else None,
     )
 
-    # Add CORS middleware (local mode: allow all origins)
+    # Environment-aware CORS configuration
+    # Security: Configure CORS origins based on environment to prevent unauthorized access
+    cors_origins_env = os.getenv("CORS_ORIGINS", "")
+    if cors_origins_env:
+        # Use explicit CORS_ORIGINS from environment
+        cors_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+    elif os.getenv("ENVIRONMENT", "development") == "production":
+        # Production: Restrict to specific domains (configure these for your deployment)
+        cors_origins = [
+            "https://yourdomain.com",
+            "https://api.yourdomain.com"
+        ]
+    else:
+        # Development/Local: Allow localhost only (binds to 127.0.0.1)
+        # More secure than wildcard while still functional for local development
+        cors_origins = [
+            "http://localhost:3000",
+            "http://localhost:8080",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:8080"
+        ]
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=cors_origins,
+        allow_credentials=False,  # Disable credentials for security
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Content-Type", "Authorization", "X-Request-Id"],
     )
 
     # Add custom middleware. Starlette wraps middleware such that the most
