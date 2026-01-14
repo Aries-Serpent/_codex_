@@ -18,6 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          sudo docker rmi $(docker images -q) || true
+          echo "=== After cleanup ==="
+          df -h
+      
       - uses: actions/checkout@v4
       
       - name: Install Rust toolchain
@@ -100,6 +109,15 @@ jobs:
     needs: rust_tests
     
     steps:
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          sudo docker rmi $(docker images -q) || true
+          echo "=== After cleanup ==="
+          df -h
+      
       - uses: actions/checkout@v4
       
       - name: Install Rust toolchain
@@ -147,6 +165,15 @@ jobs:
     needs: rust_tests
     
     steps:
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          sudo docker rmi $(docker images -q) || true
+          echo "=== After cleanup ==="
+          df -h
+      
       - uses: actions/checkout@v4
       
       - name: Set up Python
