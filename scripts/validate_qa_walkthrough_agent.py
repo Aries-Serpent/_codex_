@@ -82,13 +82,21 @@ class QAWalkthroughValidator:
             return False
         
         try:
+            # Load YAML with proper handling of 'on' keyword
+            # PyYAML converts 'on:' to boolean True, so we handle both cases
             with open(workflow_file, 'r') as f:
-                config = yaml.safe_load(f)
+                content = f.read()
+                # Check if file contains 'on:' trigger definition
+                if '\non:' not in content and '\non :' not in content:
+                    self.errors.append("Workflow missing 'on:' triggers section")
+                    return False
+                
+                config = yaml.safe_load(content)
             
-            # Check workflow triggers (note: 'on' might be parsed as True in YAML)
+            # Get triggers - PyYAML parses 'on:' as boolean True
             triggers = config.get('on') or config.get(True)
             if not triggers:
-                self.errors.append("Workflow missing 'on' triggers")
+                self.errors.append("Workflow triggers not properly configured")
                 return False
             
             # Validate workflow_dispatch
@@ -160,7 +168,7 @@ class QAWalkthroughValidator:
                     [tool, arg],
                     capture_output=True,
                     text=True,
-                    timeout=5
+                    timeout=15  # Increased timeout for slower systems
                 )
                 if result.returncode != 0:
                     self.errors.append(f"Required tool not available: {tool}")
@@ -177,7 +185,7 @@ class QAWalkthroughValidator:
                     [tool, arg],
                     capture_output=True,
                     text=True,
-                    timeout=5
+                    timeout=15  # Increased timeout for slower systems
                 )
                 if result.returncode != 0:
                     self.warnings.append(f"Optional tool not available: {tool}")

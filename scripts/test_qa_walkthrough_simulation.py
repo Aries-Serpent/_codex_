@@ -14,7 +14,7 @@ import argparse
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Any
 
@@ -33,7 +33,7 @@ class QAWalkthroughSimulator:
     def __init__(self, target_dir: Path):
         self.target_dir = target_dir
         self.results: Dict[str, Any] = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "target": str(target_dir),
             "checks": {},
             "summary": {
@@ -65,11 +65,14 @@ class QAWalkthroughSimulator:
                 return result
             
             # Run bandit
+            # Note: B404 and B603 are skipped in this simulation context as they generate
+            # excessive false positives for legitimate subprocess usage in testing/automation.
+            # In production scans, review these warnings case-by-case.
             cmd = [
                 "bandit",
                 "-r", str(self.target_dir),
                 "-f", "json",
-                "--skip", "B404,B603",  # Skip import and subprocess warnings
+                "--skip", "B404,B603",
                 "--quiet"
             ]
             
