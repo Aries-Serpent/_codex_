@@ -4,6 +4,7 @@ Provides redaction and sanitization functions to prevent
 clear-text logging and storage of sensitive data.
 """
 
+import os
 import re
 from typing import Optional
 
@@ -35,8 +36,6 @@ def redact_sensitive_value(value: str, show_preview: bool = False) -> str:
         >>> redact_sensitive_value("my-secret-key-12345", show_preview=True)
         'my-s...[REDACTED]...2345'
     """
-    import os
-    
     if not value:
         return '[EMPTY]'
     

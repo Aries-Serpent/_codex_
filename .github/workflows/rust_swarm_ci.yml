@@ -201,7 +201,7 @@ jobs:
           
           # Verify the extension can be imported
           python -c "try:
-              import codex_engine
+              import codex_swarm
               print('✅ Extension imported successfully')
           except ImportError as e:
               print(f'⚠️ Import failed: {e}')

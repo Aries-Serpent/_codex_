@@ -57,7 +57,7 @@ class TestRedactSecretName:
     def test_redact_generic_secret_name(self):
         """Test redaction of generic secret name."""
         result = redact_secret_name("API_KEY")
-        assert result == 'secret_API_KEY'
+        assert result == '[REDACTED_SECRET_NAME]'
     
     def test_redact_sensitive_secret_name(self):
         """Test full redaction of sensitive secret names."""
@@ -74,12 +74,12 @@ class TestRedactSecretName:
     def test_redact_empty_secret_name(self):
         """Test redaction of empty secret name."""
         result = redact_secret_name("")
-        assert result == '[EMPTY]'
+        assert result == '[UNNAMED_SECRET]'
     
     def test_redact_none_secret_name(self):
         """Test redaction of None secret name."""
         result = redact_secret_name(None)
-        assert result == '[EMPTY]'
+        assert result == '[UNNAMED_SECRET]'
 
 
 class TestRedactDictWithSecretKeys:

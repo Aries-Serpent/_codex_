@@ -300,6 +300,9 @@ class QAWalkthroughSimulator:
             output = proc.stdout + proc.stderr
             
             # Look for test results
+            # NOTE: This parsing uses fragile string matching. For production use,
+            # consider using pytest's JSON output format (--json-report) for more
+            # reliable parsing that won't break with output format changes.
             for line in output.split('\n'):
                 if " passed" in line:
                     try:
