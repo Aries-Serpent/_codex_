@@ -243,7 +243,7 @@ This remediation aligns with:
 
 ## Conclusion
 
-All 22 high-severity CodeQL code scanning alerts for clear-text logging of sensitive information have been successfully remediated. The implementation includes:
+All 26 high-severity CodeQL code scanning alerts for clear-text logging of sensitive information have been successfully remediated. The implementation includes:
 
 - Comprehensive security utilities module
 - Consistent redaction policy across all secret types

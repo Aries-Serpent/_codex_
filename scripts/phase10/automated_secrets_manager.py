@@ -27,15 +27,6 @@ from datetime import datetime, UTC
 from pathlib import Path
 import logging
 
-# Import security utilities for consistent redaction
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
-try:
-    from codex.security_utils import safe_secret_reference
-except ImportError:
-    # Fallback if security_utils not available
-    def safe_secret_reference(operation=""):
-        return f"secret ({operation})" if operation else "secret"
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'

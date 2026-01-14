@@ -16,15 +16,6 @@ import json
 import subprocess
 from pathlib import Path
 
-# Import security utilities for consistent redaction
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
-try:
-    from codex.security_utils import safe_secret_reference
-except ImportError:
-    # Fallback if security_utils not available
-    def safe_secret_reference(operation=""):
-        return f"secret ({operation})" if operation else "secret"
-
 # WARNING: Do NOT log secret names or values in clear text.
 # Use redaction for any sensitive information.
 

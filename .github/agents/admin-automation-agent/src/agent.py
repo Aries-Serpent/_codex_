@@ -24,13 +24,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 # Import security utilities
 try:
-    from src.codex.security_utils import redact_dict_with_secret_keys, safe_secret_reference
+    from src.codex.security_utils import redact_dict_with_secret_keys
 except ImportError:
     # Fallback if security_utils not available
     def redact_dict_with_secret_keys(data):
         return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
-    def safe_secret_reference(operation=""):
-        return f"secret ({operation})" if operation else "secret"
 
 # Import existing automation scripts
 try:
