@@ -16,7 +16,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict
 
 # ANSI color codes
 GREEN = "\033[92m"
@@ -194,11 +194,6 @@ class QAWalkthroughSimulator:
         }
         
         try:
-            # Check if mypy config exists
-            mypy_config = self.target_dir / "mypy.ini"
-            if not mypy_config.exists():
-                mypy_config = self.target_dir / "setup.cfg"
-            
             # Run mypy on src directory
             src_dir = self.target_dir / "src"
             if not src_dir.exists():
@@ -294,18 +289,30 @@ class QAWalkthroughSimulator:
                     try:
                         result["tests_passed"] = int(line.split()[0])
                     except (ValueError, IndexError):
+                        # Ignore lines that do not match the expected "<int> passed" format
+                        pass
+                elif " failed" in line:
+                        # If the line format is unexpected, skip it and rely on defaults.
+                    except (ValueError, IndexError):
+                        # Ignore lines that do not match the expected "<int> passed" format
+                    except (ValueError, IndexError):
+                        # Best-effort parsing: ignore lines that don't match the expected format.
                         pass
                 elif " failed" in line:
                     try:
                         result["tests_failed"] = int(line.split()[0])
                         self.results["summary"]["high"] += result["tests_failed"]
                     except (ValueError, IndexError):
+                        # Best-effort parsing: ignore lines that don't match the expected format.
                         pass
                 elif " skipped" in line:
                     try:
                         result["tests_skipped"] = int(line.split()[0])
                     except (ValueError, IndexError):
-                        pass
+                        # Best-effort parsing: ignore lines that don't match the expected format.
+                        # Ignore lines that do not match the expected "<int> skipped" format
+                        # If the line format is unexpected, skip it and rely on defaults.
+                        continue
             
             total_tests = result["tests_passed"] + result["tests_failed"] + result["tests_skipped"]
             

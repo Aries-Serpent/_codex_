@@ -186,10 +186,10 @@ class TestSafeSecretReference:
         assert "PROD_DATABASE_PASSWORD" not in result
         assert "[REDACTED_SECRET_NAME]" in result
     
-    def test_safe_reference_with_count(self):
-        """Test safe reference with secret count."""
-        result = safe_secret_reference("GITHUB_TOKEN", count=5)
-        assert "5 secrets" in result or "count: 5" in result
+    def test_safe_reference_with_operation(self):
+        """Test safe reference with operation parameter."""
+        result = safe_secret_reference("verify", operation="check")
+        assert "verify" in result or "[REDACTED" in result
     
     def test_safe_reference_empty_name(self):
         """Test safe reference with empty name."""
