@@ -14,20 +14,28 @@ def redact_sensitive_value(value: str, show_preview: bool = False) -> str:
     
     Args:
         value: The sensitive value to redact
-        show_preview: If True, show first/last 4 chars (for debugging only)
+        show_preview: If True, show first/last 4 chars (DEVELOPMENT/DEBUG ONLY - DO NOT USE IN PRODUCTION)
         
     Returns:
         Redacted string safe for logging
         
+    Warning:
+        The show_preview parameter should NEVER be enabled in production environments.
+        It is intended solely for local development debugging. Using it in production
+        would leak partial sensitive data.
+        
     Example:
         >>> redact_sensitive_value("my-secret-key-12345")
         '[REDACTED]'
+        >>> # DEV ONLY - DO NOT USE IN PRODUCTION
         >>> redact_sensitive_value("my-secret-key-12345", show_preview=True)
         'my-s...[REDACTED]...2345'
     """
     if not value:
         return '[EMPTY]'
     
+    # Production safety: show_preview should never be True in production
+    # This parameter exists only for local development debugging
     if show_preview and len(value) > 8:
         return f"{value[:4]}...[REDACTED]...{value[-4:]}"
     
@@ -72,16 +80,30 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None) -
     Returns:
         Sanitized message safe for logging
         
+    Note:
+        Default patterns are designed to match known sensitive token formats.
+        The base64 pattern is intentionally conservative (40+ chars) to minimize
+        false positives while catching most tokens. Legitimate identifiers like
+        UUIDs and short hashes (typically <36 chars) are not matched.
+        
     Example:
         >>> sanitize_log_message("Token: abc123def456")
         'Token: [REDACTED]'
     """
     # Default patterns for common sensitive data
+    # Note: These patterns are tuned to balance security with false positive rate
     default_patterns = [
-        (r'([A-Za-z0-9+/]{40,})', '[REDACTED_TOKEN]'),  # Long base64-like strings
-        (r'(sk_[a-zA-Z0-9]{24,})', '[REDACTED_API_KEY]'),  # API keys
-        (r'(ghp_[a-zA-Z0-9]{36,})', '[REDACTED_GITHUB_TOKEN]'),  # GitHub tokens
-        (r'(gho_[a-zA-Z0-9]{36,})', '[REDACTED_OAUTH_TOKEN]'),  # OAuth tokens
+        # GitHub personal access tokens (ghp_*) - highly specific
+        (r'(ghp_[a-zA-Z0-9]{36,})', '[REDACTED_GITHUB_TOKEN]'),
+        # GitHub OAuth tokens (gho_*) - highly specific
+        (r'(gho_[a-zA-Z0-9]{36,})', '[REDACTED_OAUTH_TOKEN]'),
+        # Stripe/similar API keys (sk_live_*, sk_test_*) - highly specific
+        (r'(sk_(?:live|test)_[a-zA-Z0-9]{24,})', '[REDACTED_API_KEY]'),
+        # Generic sk_ prefixed keys
+        (r'(sk_[a-zA-Z0-9]{24,})', '[REDACTED_API_KEY]'),
+        # Long base64-like strings (40+ chars) - conservative threshold to avoid UUIDs/hashes
+        # This catches most tokens while avoiding legitimate 32-char identifiers
+        (r'([A-Za-z0-9+/]{40,}={0,2})', '[REDACTED_TOKEN]'),
     ]
     
     sanitized = message
@@ -120,12 +142,12 @@ def safe_secret_reference(operation: str = "") -> str:
     return "secret"
 
 
-def redact_dict_with_secret_keys(data: dict) -> dict:
+def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
     """
     Redact a dictionary that uses secret names as keys.
     
     Args:
-        data: Dictionary with potentially sensitive keys
+        data: Dictionary with potentially sensitive keys (can be None)
         
     Returns:
         Dictionary with redacted keys (indexed)

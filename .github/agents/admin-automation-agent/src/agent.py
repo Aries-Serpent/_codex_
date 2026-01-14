@@ -26,7 +26,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 try:
     from src.codex.security_utils import redact_dict_with_secret_keys
 except ImportError:
-    # Fallback if security_utils not available
+    # Fallback if security_utils not available.
+    # NOTE: This fallback mirrors the behavior of
+    # src.codex.security_utils.redact_dict_with_secret_keys and MUST be kept
+    # in sync with that implementation if it changes.
     def redact_dict_with_secret_keys(data):
         return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
 
