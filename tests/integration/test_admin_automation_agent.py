@@ -5,9 +5,8 @@ Tests the complete workflow of agent operations.
 
 import pytest
 import os
-import json
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import datetime, UTC
 
 # Import agent components

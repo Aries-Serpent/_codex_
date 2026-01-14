@@ -14,12 +14,11 @@ Usage:
     python scripts/validate_qa_walkthrough_agent.py
 """
 
-import os
 import sys
 import yaml
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List
 
 # ANSI color codes
 GREEN = "\033[92m"
