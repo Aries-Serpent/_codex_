@@ -77,7 +77,10 @@ fn bench_compression(c: &mut Criterion) {
             } else {
                 // Log compression failure for debugging
                 if let Err(e) = &compressed {
-                    eprintln!("Compression failed in compression_ratio_1mb benchmark: {:?}", e);
+                    eprintln!(
+                        "Compression failed in compression_ratio_1mb benchmark: {:?}",
+                        e
+                    );
                 }
                 // Return NaN to distinguish from valid compression ratios
                 f64::NAN
