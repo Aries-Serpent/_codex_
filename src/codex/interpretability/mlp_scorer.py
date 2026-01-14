@@ -86,7 +86,10 @@ class MLPScorer:
         self.model = model
         self.normalize = normalize
         self.epsilon = epsilon
-        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = torch.device(device)
         self.model.to(self.device)
         self.model.eval()
     
@@ -101,16 +104,17 @@ class MLPScorer:
             True if the layer is an MLP layer to analyze
         """
         name_lower = layer_name.lower()
-        
-        # Check if it contains MLP-related keywords
-        is_mlp_related = any(key in name_lower for key in ['mlp', 'ffn', 'intermediate', 'dense'])
-        
-        # Skip output projection layers (unless they're intermediate layers)
-        is_output_layer = 'output' in name_lower
-        is_intermediate_layer = 'intermediate' in name_lower
-        
-        # Include if it's MLP-related and either not an output layer or is an intermediate layer
-        return is_mlp_related and (not is_output_layer or is_intermediate_layer)
+        leaf_name = name_lower.split(".")[-1]
+
+        # Only hook the top-level MLP/FFN modules, not their internal linear layers.
+        if leaf_name in {"mlp", "ffn", "intermediate"}:
+            if leaf_name == "intermediate":
+                return True
+            return True
+        # Fallback to common naming for standalone blocks.
+        if leaf_name in {"dense", "feedforward"}:
+            return True
+        return False
         
     def extract_mlp_activations(
         self,

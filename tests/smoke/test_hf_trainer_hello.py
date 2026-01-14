@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
-
 datasets = pytest.importorskip("datasets")
+
+from codex_ml.utils.hf_pinning import load_from_pretrained
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
     AutoTokenizer,

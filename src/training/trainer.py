@@ -184,6 +184,12 @@ class Trainer:
         trainer_config: TrainerConfig | Mapping[str, Any] | None = None,
         checkpoint_config: CheckpointConfig | Mapping[str, Any] | None = None,
         device: str | None = None,
+        gradient_accumulation_steps: int | None = None,
+        checkpoint_dir: str | Path | None = None,
+        keep_best_k: int | None = None,
+        logging_config: LoggingConfig | Mapping[str, Any] | None = None,
+        metric_mode: str | None = None,
+        maximize_metric: bool | None = None,
     ) -> None:
         if torch is None or GradScaler is None or autocast is None:
             raise RuntimeError("torch is required for the extended trainer")
@@ -202,6 +208,24 @@ class Trainer:
             )
 
         cfg = resolved_config or TrainerConfig()
+
+        if gradient_accumulation_steps is not None:
+            cfg.gradient_accumulation_steps = int(gradient_accumulation_steps)
+
+        if logging_config is not None:
+            if isinstance(logging_config, LoggingConfig):
+                cfg.logging = logging_config
+            elif isinstance(logging_config, Mapping):
+                cfg.logging = LoggingConfig(**logging_config)
+            else:
+                raise TypeError("logging_config must be a LoggingConfig or mapping when provided")
+
+        if metric_mode is not None:
+            normalized_mode = metric_mode.lower()
+            if normalized_mode not in {"min", "max"}:
+                raise ValueError("metric_mode must be 'min' or 'max'")
+        else:
+            normalized_mode = None
 
         if cfg.seed is not None:
             try:
@@ -226,6 +250,15 @@ class Trainer:
                 raise TypeError(
                     "checkpoint_config must be a CheckpointConfig or mapping when provided"
                 )
+        elif checkpoint_dir is not None or keep_best_k is not None or normalized_mode is not None:
+            if checkpoint_dir is None:
+                raise TypeError("checkpoint_dir is required when configuring checkpoint options")
+            cfg.checkpoint = CheckpointConfig(
+                directory=str(checkpoint_dir),
+                keep_best_k=keep_best_k,
+                mode=normalized_mode,
+                maximize_metric=maximize_metric,
+            )
 
         if cfg.gradient_accumulation_steps < 1:
             raise ValueError("gradient_accumulation_steps must be >= 1")
@@ -289,6 +322,12 @@ class Trainer:
                 labels = labels.to(self.device)
             return inputs, labels
         raise TypeError("Unsupported batch type; expected mapping or (inputs, labels) tuple")
+
+    def _zero_grad(self) -> None:
+        try:
+            self.simple.optimizer.zero_grad(set_to_none=True)
+        except TypeError:
+            self.simple.optimizer.zero_grad()
 
     def _forward(self, inputs: Any) -> torch.Tensor:
         if isinstance(inputs, Mapping):
@@ -550,8 +589,10 @@ class Trainer:
                 aggregated[key] = float(sum(values) / len(values))
         return aggregated
 
-    def train(self) -> list[Mapping[str, float]]:
+    def train(self, *, epochs: int | None = None) -> list[Mapping[str, float]]:
         cfg = self.config
+        if epochs is not None:
+            cfg.epochs = int(epochs)
         grad_steps = cfg.gradient_accumulation_steps
         completed_epoch = max(0, self.state.epoch)
         start_epoch = completed_epoch + 1
@@ -570,13 +611,13 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history
+            return self.history[-1] if self.history else {}
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
             running_loss = 0.0
             num_batches = 0
-            self.simple.optimizer.zero_grad(set_to_none=True)
+            self._zero_grad()
 
             for step, batch in enumerate(self.train_loader, start=1):
                 inputs, labels = self._prepare_batch(batch)
@@ -598,7 +639,7 @@ class Trainer:
                         )
                     self.scaler.step(self.simple.optimizer)
                     self.scaler.update()
-                    self.simple.optimizer.zero_grad(set_to_none=True)
+                    self._zero_grad()
                     self.state.global_step += 1
 
                 if (
@@ -633,7 +674,7 @@ class Trainer:
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
-        return self.history
+        return self.history[-1] if self.history else {}
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)

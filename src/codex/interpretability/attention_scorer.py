@@ -90,7 +90,10 @@ class AttentionScorer:
         self.model = model
         self.normalize = normalize
         self.epsilon = epsilon
-        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = torch.device(device)
         self.model.to(self.device)
         self.model.eval()
 

@@ -21,7 +21,10 @@ from .provenance import _read_dvc_lock, collect_dvc_stage
 
 def _config_fingerprint(cfg: DictConfig) -> str:
     """Stable SHA256 of resolved config YAML (aligned with provenance)."""
-    yml = OmegaConf.to_yaml(cfg, resolve=True)
+    try:
+        yml = OmegaConf.to_yaml(cfg, resolve=True)
+    except Exception:
+        yml = OmegaConf.to_yaml(cfg, resolve=False)
     return hashlib.sha256(yml.encode("utf-8")).hexdigest()
 
 
@@ -91,7 +94,7 @@ def start_run_with_tags(
     if ds_hash:
         tags["dataset_hash"] = ds_hash
 
-    ml.set_experiment(name="hhg_logistics")
+    ml.set_experiment("hhg_logistics")
     ctx = ml.start_run(run_name=run_name)
 
     with contextlib.suppress(Exception):
@@ -102,7 +105,7 @@ def start_run_with_tags(
         section = getattr(cfg, sect, None)
         if section is None:
             continue
-        container = OmegaConf.to_container(section, resolve=True)
+        container = OmegaConf.to_container(section, resolve=False)
         if isinstance(container, dict):
             for key, value in container.items():
                 params[f"{sect}.{key}"] = value

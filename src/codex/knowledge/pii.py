@@ -17,11 +17,14 @@ Planset PS-04: Privacy-First Memory Implementation
 from __future__ import annotations
 
 import re
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 
+logger = logging.getLogger(__name__)
+
 # Email pattern (RFC 5322 compliant)
-_EMAIL = re.compile(r"([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})")
+_EMAIL = re.compile(r"([\w.+%\-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})", re.UNICODE)
 
 # Phone patterns (international formats)
 _PHONE = re.compile(r"(?:(?:\+?\d{1,3}[\s-]?)?(?:\(?\d{3}\)?[\s-]?)\d{3}[\s-]?\d{4})")
