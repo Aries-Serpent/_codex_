@@ -14,9 +14,9 @@ Usage:
     python scripts/validate_qa_walkthrough_agent.py
 """
 
+import subprocess
 import sys
 import yaml
-import subprocess
 from pathlib import Path
 from typing import List
 

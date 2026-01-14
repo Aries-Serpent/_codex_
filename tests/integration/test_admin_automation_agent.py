@@ -4,10 +4,9 @@ Tests the complete workflow of agent operations.
 """
 
 import pytest
-import os
 from pathlib import Path
 from unittest.mock import Mock, patch
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 # Import agent components
 import sys

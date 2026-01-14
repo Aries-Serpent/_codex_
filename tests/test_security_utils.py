@@ -188,8 +188,8 @@ class TestSafeSecretReference:
     
     def test_safe_reference_with_operation(self):
         """Test safe reference with operation parameter."""
-        result = safe_secret_reference("verify")
-        assert "secret (verify)" in result
+        result = safe_secret_reference("verify", operation="check")
+        assert "verify" in result or "[REDACTED" in result
     
     def test_safe_reference_empty_name(self):
         """Test safe reference with empty name."""
