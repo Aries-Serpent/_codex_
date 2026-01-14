@@ -269,15 +269,16 @@ class AdminAutomationAgent:
             }
         
         results = {}
+        results_list = []  # Use list instead of dict to avoid secret names as keys
         
-        for secret_name in secrets:
+        for idx, secret_name in enumerate(secrets):
             # Security: Don't log secret names - CodeQL alert #3322
-            logger.info(f"\n🔑 Rotating secret...")
+            logger.info(f"\n🔑 Rotating secret {idx + 1}/{len(secrets)}...")
             
             # Backup current secret (metadata only, never the value)
             if backup:
                 backup_info = {
-                    "secret": secret_name,
+                    "secret_index": idx,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "action": "rotation_backup"
                 }
@@ -289,7 +290,7 @@ class AdminAutomationAgent:
             else:
                 # Security: Don't log secret names - CodeQL alert #3323
                 logger.warning(f"  ⚠️  Secret requires manual value")
-                results[secret_name] = "manual_required"
+                results_list.append({"index": idx, "status": "manual_required"})
                 continue
             
             # Inject new secret
@@ -299,18 +300,21 @@ class AdminAutomationAgent:
                 logger.info("  ℹ️  API failed, trying CLI...")
                 success = self.secrets_manager.set_secret_cli(secret_name, new_value)
             
-            # Security: Don't log secret names - CodeQL alert #3327
-            results[secret_name] = "success" if success else "failed"
+            # Security: Use index instead of secret name as key - prevents name leakage
+            results_list.append({"index": idx, "status": "success" if success else "failed"})
         
-        all_success = all(v == "success" for v in results.values())
+        success_count = sum(1 for r in results_list if r.get("status") == "success")
+        all_success = success_count == len(secrets)
         
         self.log_task("rotate_secrets", "success" if all_success else "warning",
-                     f"Rotated {len([v for v in results.values() if v == 'success'])}/{len(secrets)} secrets")
+                     f"Rotated {success_count}/{len(secrets)} secrets")
         
-        # Security: Redact secret names from dict keys before returning
+        # Security: Return results using indices, not secret names
         return {
             "success": all_success,
-            "results": redact_dict_with_secret_keys(results)
+            "results": results_list,
+            "total": len(secrets),
+            "successful": success_count
         }
     
     # ====================================================================
