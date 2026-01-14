@@ -66,7 +66,7 @@ def redact_secret_name(secret_name: str) -> str:
         return '[UNNAMED_SECRET]'
     
     # Consistently redact all secret names to prevent information disclosure
-    return 'secret:[REDACTED]'
+    return "[REDACTED_SECRET_NAME]"
 
 
 def sanitize_log_message(message: str, redact_patterns: Optional[list] = None) -> str:

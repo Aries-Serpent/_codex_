@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import logging
 logger = logging.getLogger(__name__)
@@ -37,6 +38,10 @@ except Exception:  # pragma: no cover - allow execution without NVML bindings
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def import_module(name: str) -> Any:
+    return importlib.import_module(name)
 
 
 @dataclass(slots=True)
@@ -108,12 +113,64 @@ def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
         return None
 
 
-def init_tensorboard(log_dir: str | Path) -> SummaryWriter | None:
+def init_tensorboard(
+    enabled: bool | str | Path,
+    log_dir: str | Path | None = None,
+) -> SummaryWriter | None:
     """Compatibility wrapper returning a TensorBoard writer when available."""
 
-    # The legacy API exposed ``init_tensorboard`` directly; delegate to the new helper
-    # so external callers and older tests continue to function unchanged.
-    return _create_tensorboard_writer(log_dir)
+    if isinstance(enabled, (str, Path)):
+        log_dir = enabled
+        enabled_flag = True
+    else:
+        enabled_flag = bool(enabled)
+
+    if not enabled_flag:
+        return None
+    resolved_dir = log_dir or "runs"
+
+    if isinstance(enabled, bool):
+        try:
+            module = import_module("torch.utils.tensorboard")
+            writer = getattr(module, "SummaryWriter", None)
+        except ModuleNotFoundError:
+            writer = None
+        if writer is None:
+            LOGGER.warning(
+                "%s",
+                optional_dependency_error(
+                    "tensorboard",
+                    purpose="TensorBoard logging",
+                ),
+            )
+            return None
+        return writer(str(resolved_dir))
+
+    if SummaryWriter is None:
+        LOGGER.warning(
+            "%s",
+            optional_dependency_error(
+                "tensorboard",
+                purpose="TensorBoard logging",
+            ),
+        )
+        return None
+
+    return _create_tensorboard_writer(resolved_dir)
+
+
+class MLflowHandle:
+    def __init__(self, module: Any) -> None:
+        self._module = module
+
+    def log_metrics(self, metrics: Mapping[str, float], *, step: int | None = None) -> None:
+        self._module.log_metrics(metrics, step=step)
+
+    def log_params(self, params: Mapping[str, Any]) -> None:
+        self._module.log_params(params)
+
+    def end(self) -> None:
+        self._module.end_run()
 
 
 def _start_mlflow_run(config: LoggingConfig) -> bool:
@@ -160,13 +217,38 @@ def _create_fallback_writer(config: LoggingConfig) -> FallbackMetricsWriter | No
 
 
 def init_mlflow(
-    experiment_name: str,
+    enabled: bool | str,
+    run_name: str | None = None,
     *,
     tracking_uri: str | None = None,
     tags: Mapping[str, str] | None = None,
-) -> tuple[object | None, object | None]:
+    experiment: str | None = None,
+) -> object | tuple[object | None, object | None] | None:
     """Compatibility wrapper to initialise MLflow under the legacy API."""
 
+    if isinstance(enabled, bool):
+        if not enabled:
+            return None
+        resolved_run = run_name or "codex-run"
+        try:
+            module = import_module("mlflow")
+        except ModuleNotFoundError:
+            LOGGER.warning(
+                "%s",
+                optional_dependency_error(
+                    "mlflow",
+                    purpose="experiment tracking",
+                ),
+            )
+            return None
+        if tracking_uri:
+            module.set_tracking_uri(tracking_uri)
+        if experiment:
+            module.set_experiment(experiment)
+        module.start_run(run_name=resolved_run)
+        return MLflowHandle(module)
+
+    experiment_name = enabled
     if mlflow is None:
         LOGGER.warning(
             "%s",

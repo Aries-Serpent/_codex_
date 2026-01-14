@@ -18,9 +18,14 @@ if hasattr(hydra, "_CONFIG_STACK"):
     pytest.skip("Hydra extra stub active; CLI requires hydra-core", allow_module_level=True)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = str(PROJECT_ROOT / "src")
+PYTHONPATH = os.pathsep.join(
+    [SRC_PATH, os.environ.get("PYTHONPATH", "")] if os.environ.get("PYTHONPATH") else [SRC_PATH]
+)
 ENV = {
     **os.environ,
     "CODEX_ALLOW_MISSING_HYDRA_EXTRA": os.environ.get("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1"),
+    "PYTHONPATH": PYTHONPATH,
 }
 
 

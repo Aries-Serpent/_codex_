@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fe518490ea4924a031c615156ecacf8d71d4da1cbfd71ea321edfd24422058e3
-size 368
+{"timestamp":"2026-01-14T06:39:05Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-14-0637_qa-walkthrough.md","summary":"Authored repository-wide QA walkthrough master plan with coverage path to 100%."}
+{"timestamp":"2026-01-14T06:39:05Z","actor":"assistant","action":"created","path":".github/agents/qa-walkthrough-agent.md","summary":"Added QA walkthrough agent definition and activation guidance."}
+{"timestamp":"2026-01-14T06:39:05Z","actor":"assistant","action":"updated","path":"AGENTS.md","summary":"Registered QA Walkthrough Agent in Specialized Agents table."}
+{"timestamp":"2026-01-14T06:48:11Z","actor":"assistant","action":"updated","path":"requirements-test.txt","summary":"Added pytest-timeout, hydra-core, and mlflow to test dependencies for pytest environment readiness."}
+{"timestamp":"2026-01-14T06:48:11Z","actor":"assistant","action":"updated","path":".codex/plans/path_100_2026-01-14-0637_qa-walkthrough.md","summary":"Documented test environment remediation steps for pytest-timeout, hydra-core, and mlflow."}
+{"timestamp":"2026-01-14T07:46:31Z","actor":"assistant","action":"updated","path":"src/modeling.py","summary":"Refined model initialization helpers, dtype/device validation, and LoRA configuration handling for optional dependencies."}
+{"timestamp":"2026-01-14T07:46:31Z","actor":"assistant","action":"updated","path":"src/data/datasets.py","summary":"Hardened dataset loading and dataloader construction with compatibility shims and validation checks."}
+{"timestamp":"2026-01-14T07:46:31Z","actor":"assistant","action":"updated","path":"tests/","summary":"Aligned smoke/integration tests, configs, and documentation tooling with updated training/logging behavior."}

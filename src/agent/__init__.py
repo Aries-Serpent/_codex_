@@ -3,5 +3,7 @@
 from __future__ import annotations
 
 from .core import AgentConfig, AgentCore
+from .phase10 import Phase10Validator
+from .secrets import GitHubSecretsManager
 
-__all__ = ["AgentCore", "AgentConfig"]
+__all__ = ["AgentCore", "AgentConfig", "Phase10Validator", "GitHubSecretsManager"]

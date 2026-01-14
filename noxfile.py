@@ -50,6 +50,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import tomllib
 from datetime import datetime
 from pathlib import Path
 from typing import List
@@ -173,6 +174,18 @@ def _dependency_plan(session: nox.Session) -> None:
         json.dumps({"generated_at": _ts(), "entries": deps}, indent=2), encoding="utf-8"
     )
     session.log(f"[plan] wrote {out_file}")
+
+
+def _toml_fail_under_from_str(text: str) -> int | None:
+    try:
+        data = tomllib.loads(text)
+    except Exception:
+        return None
+    report = data.get("tool", {}).get("coverage", {}).get("report", {})
+    value = report.get("fail_under")
+    if isinstance(value, int):
+        return str(value)
+    return None
 
 
 def _size_heuristic(name: str) -> float:
