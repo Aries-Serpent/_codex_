@@ -293,18 +293,21 @@ class QAWalkthroughSimulator:
                         pass
                 elif " failed" in line:
                         # If the line format is unexpected, skip it and rely on defaults.
-                        continue
+                    except (ValueError, IndexError):
+                        # Ignore lines that do not match the expected "<int> passed" format
+                        pass
                 elif " failed" in line:
                     try:
                         result["tests_failed"] = int(line.split()[0])
                         self.results["summary"]["high"] += result["tests_failed"]
                     except (ValueError, IndexError):
-                        # If the line format is unexpected, skip it and rely on defaults.
-                        continue
+                        # Ignore lines that do not match the expected "<int> failed" format
+                        pass
                 elif " skipped" in line:
                     try:
                         result["tests_skipped"] = int(line.split()[0])
                     except (ValueError, IndexError):
+                        # Ignore lines that do not match the expected "<int> skipped" format
                         # If the line format is unexpected, skip it and rely on defaults.
                         continue
             
