@@ -167,7 +167,9 @@ class QAWalkthroughValidator:
                     [tool, arg],
                     capture_output=True,
                     text=True,
-                    timeout=15  # Increased timeout for slower systems
+                    timeout=15,  # Increased timeout for slower systems
+                    shell=False,  # Explicitly set shell=False for security
+                    check=False   # Don't raise on non-zero exit
                 )
                 if result.returncode != 0:
                     self.errors.append(f"Required tool not available: {tool}")
@@ -184,7 +186,9 @@ class QAWalkthroughValidator:
                     [tool, arg],
                     capture_output=True,
                     text=True,
-                    timeout=15  # Increased timeout for slower systems
+                    timeout=15,  # Increased timeout for slower systems
+                    shell=False,  # Explicitly set shell=False for security
+                    check=False   # Don't raise on non-zero exit
                 )
                 if result.returncode != 0:
                     self.warnings.append(f"Optional tool not available: {tool}")

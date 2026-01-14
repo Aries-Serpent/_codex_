@@ -31,6 +31,13 @@ class QAWalkthroughSimulator:
     """Simulates QA Walkthrough Agent analysis."""
     
     def __init__(self, target_dir: Path):
+        # Sanitize target_dir - resolve to absolute path and validate it exists
+        target_dir = target_dir.resolve()
+        if not target_dir.exists():
+            raise ValueError(f"Target directory does not exist: {target_dir}")
+        if not target_dir.is_dir():
+            raise ValueError(f"Target path is not a directory: {target_dir}")
+        
         self.target_dir = target_dir
         self.results: Dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -68,6 +75,7 @@ class QAWalkthroughSimulator:
             # Note: B404 and B603 are skipped in this simulation context as they generate
             # excessive false positives for legitimate subprocess usage in testing/automation.
             # In production scans, review these warnings case-by-case.
+            # Using list form with shell=False to prevent shell injection
             cmd = [
                 "bandit",
                 "-r", str(self.target_dir),
@@ -80,7 +88,9 @@ class QAWalkthroughSimulator:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=60
+                timeout=60,
+                shell=False,  # Explicitly set shell=False for security
+                check=False   # Don't raise on non-zero exit
             )
             
             if proc.stdout:
@@ -135,7 +145,7 @@ class QAWalkthroughSimulator:
             # Limit to first 10 files for simulation
             check_files = [str(f) for f in py_files[:10]]
             
-            # Run pylint
+            # Run pylint - using list form with shell=False to prevent shell injection
             cmd = [
                 "pylint",
                 "--output-format=json",
@@ -147,7 +157,9 @@ class QAWalkthroughSimulator:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=60
+                timeout=60,
+                shell=False,  # Explicitly set shell=False for security
+                check=False   # Don't raise on non-zero exit
             )
             
             if proc.stdout:
@@ -213,7 +225,9 @@ class QAWalkthroughSimulator:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=60
+                timeout=60,
+                shell=False,  # Explicitly set shell=False for security
+                check=False   # Don't raise on non-zero exit
             )
             
             if proc.stdout:
@@ -264,7 +278,7 @@ class QAWalkthroughSimulator:
                 print(f"  {YELLOW}No tests directory found{RESET}")
                 return result
             
-            # Run pytest with coverage
+            # Run pytest with coverage - using list form with shell=False
             cmd = [
                 "pytest",
                 str(tests_dir),
@@ -277,7 +291,9 @@ class QAWalkthroughSimulator:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=120,
+                shell=False,  # Explicitly set shell=False for security
+                check=False   # Don't raise on non-zero exit
             )
             
             # Parse output
@@ -292,27 +308,18 @@ class QAWalkthroughSimulator:
                         # Ignore lines that do not match the expected "<int> passed" format
                         pass
                 elif " failed" in line:
-                        # If the line format is unexpected, skip it and rely on defaults.
-                    except (ValueError, IndexError):
-                        # Ignore lines that do not match the expected "<int> passed" format
-                    except (ValueError, IndexError):
-                        # Best-effort parsing: ignore lines that don't match the expected format.
-                        pass
-                elif " failed" in line:
                     try:
                         result["tests_failed"] = int(line.split()[0])
                         self.results["summary"]["high"] += result["tests_failed"]
                     except (ValueError, IndexError):
-                        # Best-effort parsing: ignore lines that don't match the expected format.
+                        # Ignore lines that do not match the expected "<int> failed" format
                         pass
                 elif " skipped" in line:
                     try:
                         result["tests_skipped"] = int(line.split()[0])
                     except (ValueError, IndexError):
-                        # Best-effort parsing: ignore lines that don't match the expected format.
                         # Ignore lines that do not match the expected "<int> skipped" format
-                        # If the line format is unexpected, skip it and rely on defaults.
-                        continue
+                        pass
             
             total_tests = result["tests_passed"] + result["tests_failed"] + result["tests_skipped"]
             
