@@ -17,6 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Free disk space for CI
+        run: |
+          echo "=== Disk usage before cleanup ==="
+          df -h
+          
+          # Remove unnecessary packages to free space
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          
+          # Clean apt caches
+          sudo apt-get clean
+          
+          # Remove Docker images if present
+          docker rmi $(docker images -q) 2>/dev/null || true
+          
+          echo "=== Disk usage after cleanup ==="
+          df -h
+      
       - uses: actions/checkout@v6
       
       - name: Setup Python
