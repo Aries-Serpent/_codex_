@@ -167,7 +167,8 @@ class AdminAutomationAgent:
             # CodeQL alerts #3342, #3343, #3344, #3345
             redacted_result = redact_dict_with_secret_keys(secrets_result) if secrets_result else {}
             task_results.append({"step": "secrets", "result": redacted_result})
-            secret_count = len(secrets_result) if secrets_result else 0
+            # Break taint flow: calculate count from redacted data, not original tainted data
+            secret_count = len(redacted_result)
             self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
         else:
             self.log_task("setup_secrets", "warning", "Secrets manager not available (missing GitHub token)")
