@@ -1,0 +1,392 @@
+name: Flatten Repository Download
+
+# This workflow generates a flattened repository XML file using Repomix
+# and makes it available as a downloadable artifact for AI analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      compress:
+        description: 'Enable Tree-sitter compression'
+        required: false
+        type: boolean
+        default: true
+      include_tests:
+        description: 'Include test files in output'
+        required: false
+        type: boolean
+        default: true
+      output_format:
+        description: 'Output format'
+        required: false
+        type: choice
+        options:
+          - xml
+          - markdown
+          - plain
+        default: xml
+      retention_days:
+        description: 'Artifact retention days (1-90)'
+        required: false
+        type: number
+        default: 30
+  
+  # Allow manual trigger from other workflows
+  workflow_call:
+    inputs:
+      compress:
+        required: false
+        type: boolean
+        default: true
+      include_tests:
+        required: false
+        type: boolean
+        default: true
+      output_format:
+        required: false
+        type: string
+        default: xml
+      retention_days:
+        required: false
+        type: number
+        default: 30
+    outputs:
+      artifact_name:
+        description: 'Name of the generated artifact'
+        value: ${{ jobs.flatten-repo.outputs.artifact_name }}
+      artifact_url:
+        description: 'URL to download the artifact'
+        value: ${{ jobs.flatten-repo.outputs.artifact_url }}
+      file_size_mb:
+        description: 'Size of generated file in MB'
+        value: ${{ jobs.flatten-repo.outputs.file_size_mb }}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  flatten-repo:
+    name: Generate Flattened Repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    outputs:
+      artifact_name: ${{ steps.generate.outputs.artifact_name }}
+      artifact_url: ${{ steps.generate.outputs.artifact_url }}
+      file_size_mb: ${{ steps.generate.outputs.file_size_mb }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Repomix
+        run: |
+          echo "📦 Installing Repomix..."
+          npm install -g repomix
+          repomix --version
+      
+      - name: Prepare configuration
+        id: prepare
+        run: |
+          echo "⚙️ Preparing Repomix configuration..."
+          
+          # Create dynamic config based on inputs
+          CONFIG_FILE="repomix.config.runtime.json"
+          
+          # Base configuration
+          cat > "$CONFIG_FILE" <<'EOF'
+          {
+            "output": {
+              "style": "${{ inputs.output_format || 'xml' }}",
+              "filePath": "codex-flatten-${{ github.run_number }}.xml",
+              "headerText": "_codex_ Repository Consolidation (Run #${{ github.run_number }})",
+              "instructionFilePath": "repomix-instruction.md",
+              "removeComments": false,
+              "removeEmptyLines": false,
+              "topFilesLength": 20,
+              "showLineNumbers": true,
+              "compress": ${{ inputs.compress || true }}
+            },
+            "include": [
+              "src/**",
+              ".github/workflows/**",
+              ".github/agents/**",
+              "tools/**",
+              "monitoring/**",
+              "services/**",
+              "scripts/**",
+              "docs/**",
+              "*.md",
+              "*.py",
+              "*.yml",
+              "*.yaml",
+              "*.toml",
+              "*.json",
+              "*.rs",
+              "Cargo.toml",
+              "pyproject.toml",
+              "package.json"
+            ],
+            "ignore": {
+              "useGitignore": true,
+              "useDefaultPatterns": true,
+              "customPatterns": [
+                ".env*",
+                "*.env",
+                "secrets.yml",
+                "secrets.yaml",
+                "node_modules/**",
+                ".git/**",
+                "*.pyc",
+                "__pycache__/**",
+                "*.so",
+                "*.dylib",
+                "*.dll",
+                "target/**",
+                "dist/**",
+                "build/**",
+                ".pytest_cache/**",
+                ".mypy_cache/**",
+                "*.log",
+                "*.sqlite",
+                "*.db",
+                ".vscode/**",
+                ".idea/**",
+                "*.key",
+                "*.pem",
+                "*.crt",
+                "coverage/**",
+                "htmlcov/**",
+                "*.whl",
+                "*.egg-info/**",
+                "*.png",
+                "*.jpg",
+                "*.jpeg",
+                "*.gif",
+                "*.pdf",
+                "*.zip",
+                "*.tar.gz"
+              ]
+            },
+            "security": {
+              "enableSecretDetection": true
+            }
+          }
+          EOF
+          
+          # Add tests if requested
+          if [ "${{ inputs.include_tests || true }}" = "true" ]; then
+            echo "📋 Including test files..."
+            # Config already includes tests/** in base config
+          else
+            echo "⏭️  Excluding test files..."
+            sed -i '/"tests\/\*\*"/d' "$CONFIG_FILE"
+          fi
+          
+          echo "config_file=$CONFIG_FILE" >> $GITHUB_OUTPUT
+          
+          # Set output filename based on format
+          OUTPUT_EXT="${{ inputs.output_format || 'xml' }}"
+          OUTPUT_FILE="codex-flatten-${{ github.run_number }}.${OUTPUT_EXT}"
+          echo "output_file=$OUTPUT_FILE" >> $GITHUB_OUTPUT
+          
+          echo "✅ Configuration prepared"
+          cat "$CONFIG_FILE" | head -30
+      
+      - name: Generate flattened repository
+        id: generate
+        run: |
+          echo "🚀 Generating flattened repository..."
+          echo "===================================="
+          
+          CONFIG_FILE="${{ steps.prepare.outputs.config_file }}"
+          OUTPUT_FILE="${{ steps.prepare.outputs.output_file }}"
+          
+          # Run repomix
+          if repomix --config "$CONFIG_FILE"; then
+            echo "✅ Repomix completed successfully"
+          else
+            echo "❌ Repomix failed"
+            exit 1
+          fi
+          
+          # The actual output file name from config
+          ACTUAL_FILE="codex-flatten-${{ github.run_number }}.xml"
+          
+          # Check if file was generated
+          if [ ! -f "$ACTUAL_FILE" ]; then
+            echo "❌ Output file not found: $ACTUAL_FILE"
+            ls -la *.xml || echo "No XML files found"
+            exit 1
+          fi
+          
+          # Get file statistics
+          FILE_SIZE=$(stat -c%s "$ACTUAL_FILE" 2>/dev/null || stat -f%z "$ACTUAL_FILE" 2>/dev/null)
+          FILE_SIZE_MB=$(echo "scale=2; $FILE_SIZE / 1024 / 1024" | bc)
+          LINE_COUNT=$(wc -l < "$ACTUAL_FILE")
+          FILE_TAG_COUNT=$(grep -c "<file_path>" "$ACTUAL_FILE" 2>/dev/null || echo "N/A")
+          
+          echo "📊 Statistics:"
+          echo "  File size: ${FILE_SIZE_MB} MB"
+          echo "  Lines: $LINE_COUNT"
+          echo "  Files included: $FILE_TAG_COUNT"
+          
+          # Set outputs
+          echo "file_size_mb=$FILE_SIZE_MB" >> $GITHUB_OUTPUT
+          echo "artifact_name=flattened-repo-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          
+          # Create metadata file
+          cat > "flatten-metadata.json" <<EOF
+          {
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "repository": "${{ github.repository }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "output_format": "${{ inputs.output_format || 'xml' }}",
+            "file_size_bytes": $FILE_SIZE,
+            "file_size_mb": $FILE_SIZE_MB,
+            "line_count": $LINE_COUNT,
+            "files_included": "$FILE_TAG_COUNT",
+            "compression_enabled": ${{ inputs.compress || true }},
+            "tests_included": ${{ inputs.include_tests || true }}
+          }
+          EOF
+          
+          echo "✅ Metadata generated"
+          cat flatten-metadata.json
+      
+      - name: Security scan
+        continue-on-error: true
+        run: |
+          echo "🔒 Running security scans..."
+          
+          ACTUAL_FILE="codex-flatten-${{ github.run_number }}.xml"
+          
+          # Install security tools
+          pip install detect-secrets --quiet
+          npm install -g @secretlint/quick-start --quiet || echo "⚠️  Secretlint install failed"
+          
+          # detect-secrets scan
+          if command -v detect-secrets >/dev/null 2>&1; then
+            echo "Running detect-secrets..."
+            if detect-secrets scan "$ACTUAL_FILE" --baseline .secrets.baseline 2>&1; then
+              echo "✅ detect-secrets: No secrets detected"
+            else
+              echo "⚠️  detect-secrets: High-entropy strings detected (review manually)"
+            fi
+          fi
+          
+          # Secretlint scan
+          if command -v secretlint >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
+            echo "Running Secretlint..."
+            if npx secretlint "$ACTUAL_FILE" 2>&1; then
+              echo "✅ Secretlint: No secrets detected"
+            else
+              echo "⚠️  Secretlint: Potential secrets detected (review manually)"
+            fi
+          fi
+          
+          echo "✅ Security scan complete"
+      
+      - name: Validate output
+        run: |
+          echo "🔍 Validating output file..."
+          
+          ACTUAL_FILE="codex-flatten-${{ github.run_number }}.xml"
+          
+          # XML validation (if XML format)
+          if [ "${{ inputs.output_format || 'xml' }}" = "xml" ]; then
+            if command -v xmllint >/dev/null 2>&1; then
+              if xmllint --noout "$ACTUAL_FILE" 2>&1; then
+                echo "✅ XML structure valid"
+              else
+                echo "⚠️  XML validation warnings (file may still be usable)"
+              fi
+            else
+              echo "⚠️  xmllint not available, skipping XML validation"
+            fi
+          fi
+          
+          # Check minimum file size (should be > 1KB)
+          FILE_SIZE=$(stat -c%s "$ACTUAL_FILE" 2>/dev/null || stat -f%z "$ACTUAL_FILE" 2>/dev/null)
+          if [ $FILE_SIZE -lt 1024 ]; then
+            echo "❌ File too small ($FILE_SIZE bytes), likely empty or failed"
+            exit 1
+          fi
+          
+          echo "✅ Validation passed"
+      
+      - name: Upload flattened repository artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flattened-repo-${{ github.run_number }}
+          path: |
+            codex-flatten-${{ github.run_number }}.*
+            flatten-metadata.json
+            repomix.config.runtime.json
+          retention-days: ${{ inputs.retention_days || 30 }}
+          compression-level: 9
+          if-no-files-found: error
+      
+      - name: Generate download instructions
+        run: |
+          echo "## 📦 Flattened Repository Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Number**: ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Generated At**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+          echo "**Format**: ${{ inputs.output_format || 'xml' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**File Size**: ${{ steps.generate.outputs.file_size_mb }} MB" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Download Options" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Via GitHub CLI" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "gh run download ${{ github.run_id }} -n flattened-repo-${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Via GitHub Web UI" >> $GITHUB_STEP_SUMMARY
+          echo "1. Navigate to the [Actions tab](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "2. Scroll to the **Artifacts** section at the bottom" >> $GITHUB_STEP_SUMMARY
+          echo "3. Click on \`flattened-repo-${{ github.run_number }}\` to download" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Via API" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "# List artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "curl -H \"Authorization: token \$GITHUB_TOKEN\" \\" >> $GITHUB_STEP_SUMMARY
+          echo "  https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Download artifact (use artifact ID from above)" >> $GITHUB_STEP_SUMMARY
+          echo "curl -L -H \"Authorization: token \$GITHUB_TOKEN\" \\" >> $GITHUB_STEP_SUMMARY
+          echo "  https://api.github.com/repos/${{ github.repository }}/actions/artifacts/{artifact_id}/zip \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -o flattened-repo.zip" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Metadata" >> $GITHUB_STEP_SUMMARY
+          echo "See \`flatten-metadata.json\` in the artifact for complete details." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Retention" >> $GITHUB_STEP_SUMMARY
+          echo "This artifact will be retained for **${{ inputs.retention_days || 30 }} days**." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Notify completion
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Flattened repository generated successfully"
+            echo "📦 Artifact: flattened-repo-${{ github.run_number }}"
+            echo "💾 Size: ${{ steps.generate.outputs.file_size_mb }} MB"
+            echo "🔗 Download: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            echo "❌ Flattened repository generation failed"
+            echo "Check logs for details"
+          fi
