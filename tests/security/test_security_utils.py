@@ -8,7 +8,8 @@ from codex.security_utils import (
     redact_sensitive_value,
     redact_secret_name,
     sanitize_log_message,
-    safe_secret_reference
+    safe_secret_reference,
+    redact_dict_with_secret_keys
 )
 
 
@@ -97,18 +98,41 @@ class TestSafeSecretReference:
     
     def test_reference_without_operation(self):
         """Test basic secret reference."""
-        result = safe_secret_reference("MASTER_KEY")
+        result = safe_secret_reference()
         assert result == "secret"
     
     def test_reference_with_operation(self):
         """Test secret reference with operation."""
-        result = safe_secret_reference("MASTER_KEY", "verify")
+        result = safe_secret_reference("verify")
         assert result == "secret (verify)"
     
     def test_reference_set_operation(self):
         """Test secret reference for set operation."""
-        result = safe_secret_reference("API_TOKEN", "set")
+        result = safe_secret_reference("set")
         assert result == "secret (set)"
+
+
+class TestRedactDictWithSecretKeys:
+    """Test redaction of dictionaries with secret keys."""
+    
+    def test_redact_dict_basic(self):
+        """Test basic dictionary redaction."""
+        input_dict = {"SECRET_1": "value1", "SECRET_2": "value2"}
+        result = redact_dict_with_secret_keys(input_dict)
+        assert "secret_1" in result
+        assert "secret_2" in result
+        assert result["secret_1"] == "value1"
+        assert result["secret_2"] == "value2"
+    
+    def test_redact_empty_dict(self):
+        """Test redaction of empty dictionary."""
+        result = redact_dict_with_secret_keys({})
+        assert result == {}
+    
+    def test_redact_none(self):
+        """Test redaction of None."""
+        result = redact_dict_with_secret_keys(None)
+        assert result == {}
 
 
 def test_module_warning_comment():

@@ -22,6 +22,16 @@ from datetime import datetime, UTC
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
+# Import security utilities
+try:
+    from src.codex.security_utils import redact_dict_with_secret_keys, safe_secret_reference
+except ImportError:
+    # Fallback if security_utils not available
+    def redact_dict_with_secret_keys(data):
+        return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
+    def safe_secret_reference(operation=""):
+        return f"secret ({operation})" if operation else "secret"
+
 # Import existing automation scripts
 try:
     from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
@@ -155,9 +165,10 @@ class AdminAutomationAgent:
         if self.secrets_manager:
             logger.info("\n🔑 Step 2: Secret Management")
             secrets_result = self.secrets_manager.setup_phase10_secrets(force=False)
-            task_results.append({"step": "secrets", "result": secrets_result})
-            # Security: Don't log secrets_result dict - contains secret names as keys
+            # Security: Redact secret names from dict keys before storing
             # CodeQL alerts #3342, #3343, #3344, #3345
+            redacted_result = redact_dict_with_secret_keys(secrets_result) if secrets_result else {}
+            task_results.append({"step": "secrets", "result": redacted_result})
             secret_count = len(secrets_result) if secrets_result else 0
             self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
         else:
@@ -294,9 +305,10 @@ class AdminAutomationAgent:
         self.log_task("rotate_secrets", "success" if all_success else "warning",
                      f"Rotated {len([v for v in results.values() if v == 'success'])}/{len(secrets)} secrets")
         
+        # Security: Redact secret names from dict keys before returning
         return {
             "success": all_success,
-            "results": results
+            "results": redact_dict_with_secret_keys(results)
         }
     
     # ====================================================================

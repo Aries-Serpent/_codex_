@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Successfully remediated **22 high-severity CodeQL code scanning alerts** for clear-text logging and storage of sensitive information in the Aries-Serpent/_codex_ repository. All alerts have been addressed with comprehensive security hardening, consistent policies, and operational visibility maintained.
+Successfully remediated **26 high-severity CodeQL code scanning alerts** (22 original + 4 new discovered during remediation) for clear-text logging and storage of sensitive information in the Aries-Serpent/_codex_ repository. All alerts have been addressed with comprehensive security hardening, consistent policies, and operational visibility maintained.
 
 ---
 
@@ -21,8 +21,8 @@ Successfully remediated **22 high-severity CodeQL code scanning alerts** for cle
 |------|--------------|---------------------|
 | `scripts/phase10/execute_secrets_injection_now.py` | 2 | 1 |
 | `scripts/phase10/automated_secrets_manager.py` | 11 | 1 |
-| `.github/agents/admin-automation-agent/src/agent.py` | 9 | 0 |
-| **Total** | **22** | **2** |
+| `.github/agents/admin-automation-agent/src/agent.py` | 13 (9 original + 4 new) | 0 |
+| **Total** | **26** | **2** |
 
 ### Detailed Alert List
 
@@ -45,7 +45,8 @@ Successfully remediated **22 high-severity CodeQL code scanning alerts** for cle
 - **Alert #3339** (Line 542): Clear-text logging of secret names in list command
 - **Additional**: Line 517 - Secret name in generate-key action
 
-#### .github/agents/admin-automation-agent/src/agent.py
+#### .github/agents/admin-automation-agent/src/agent.py (13 alerts total)
+**Original 9 alerts:**
 - **Alert #3318** (Line 115): Clear-text logging of task name (success)
 - **Alert #3319** (Line 117): Clear-text logging of task name (error)
 - **Alert #3320** (Line 119): Clear-text logging of task name (warning)
@@ -55,6 +56,13 @@ Successfully remediated **22 high-severity CodeQL code scanning alerts** for cle
 - **Alert #3328** (Line 269): Clear-text logging of secret name (set_secret_api)
 - **Alert #3327** (Line 275): Clear-text logging of secret name (results)
 - **Alert #3325** (Line 382): Clear-text storage of sensitive path
+
+**New 4 alerts (discovered during remediation):**
+- **Alert #3342** (Line 120): Clear-text logging via log_task message parameter
+- **Alert #3343** (Line 123): Clear-text logging via log_task message parameter
+- **Alert #3344** (Line 126): Clear-text logging via log_task message parameter
+- **Alert #3345** (Line 129): Clear-text logging via log_task message parameter
+- **Root cause**: `secrets_result` dict with secret names as keys was stored in `task_results` and passed through `log_task`
 
 ---
 
@@ -70,9 +78,12 @@ Implemented comprehensive security utilities:
 - `redact_secret_name()` - Consistent redaction of all secret names
 - `sanitize_log_message()` - Pattern-based sanitization for common sensitive patterns
 - `safe_secret_reference()` - Generate safe references for logging
+- `redact_dict_with_secret_keys()` - Redact dictionaries with secret names as keys
 
 **Key Features**:
 - **Consistent policy**: All secret names redacted uniformly as `secret:[REDACTED]`
+- **Integrated**: Imported and used in all three fixed files
+- **Dictionary redaction**: Handles complex data structures with secret keys
 - **No exceptions**: Eliminates inconsistent security policies
 - **Reusable**: Centralized logic for all redaction needs
 - **Well-documented**: Clear examples and security warnings

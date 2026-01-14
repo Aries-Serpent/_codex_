@@ -5,7 +5,7 @@ clear-text logging and storage of sensitive data.
 """
 
 import re
-from typing import Any, Dict, Optional
+from typing import Optional
 
 
 def redact_sensitive_value(value: str, show_preview: bool = False) -> str:
@@ -96,7 +96,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None) -
     return sanitized
 
 
-def safe_secret_reference(secret_name: str, operation: str = "") -> str:
+def safe_secret_reference(operation: str = "") -> str:
     """
     Create a safe reference to a secret for logging purposes.
     
@@ -104,21 +104,40 @@ def safe_secret_reference(secret_name: str, operation: str = "") -> str:
     a secret is being used without revealing sensitive details.
     
     Args:
-        secret_name: Name of the secret
         operation: Optional operation being performed (e.g., 'set', 'verify')
         
     Returns:
         Safe reference string for logging
         
     Example:
-        >>> safe_secret_reference("MASTER_KEY", "verify")
+        >>> safe_secret_reference("verify")
         'secret (verify)'
-        >>> safe_secret_reference("API_TOKEN")
+        >>> safe_secret_reference()
         'secret'
     """
     if operation:
         return f"secret ({operation})"
     return "secret"
+
+
+def redact_dict_with_secret_keys(data: dict) -> dict:
+    """
+    Redact a dictionary that uses secret names as keys.
+    
+    Args:
+        data: Dictionary with potentially sensitive keys
+        
+    Returns:
+        Dictionary with redacted keys (indexed)
+        
+    Example:
+        >>> redact_dict_with_secret_keys({"SECRET_1": "value", "SECRET_2": "value"})
+        {"secret_1": "value", "secret_2": "value"}
+    """
+    if not data:
+        return {}
+    
+    return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())}
 
 
 # WARNING: Do NOT log secret names, values, or any sensitive credentials.
