@@ -60,13 +60,28 @@ fn bench_compression(c: &mut Criterion) {
 
     group.bench_function("decompress_1mb", |b: &mut criterion::Bencher| {
         let compressed = Compression::compress(&data_1mb);
-        b.iter(|| Compression::decompress(black_box(&compressed)));
+        b.iter(|| {
+            if let Ok(compressed_data) = &compressed {
+                Compression::decompress(black_box(compressed_data))
+            } else {
+                Ok(Vec::new())
+            }
+        });
     });
 
     group.bench_function("compression_ratio_1mb", |b: &mut criterion::Bencher| {
         b.iter(|| {
             let compressed = Compression::compress(black_box(&data_1mb));
-            Compression::ratio(&data_1mb, &compressed)
+            if let Ok(compressed_data) = &compressed {
+                Compression::ratio(&data_1mb, compressed_data)
+            } else {
+                // Log compression failure for debugging
+                if let Err(e) = &compressed {
+                    eprintln!("Compression failed in compression_ratio_1mb benchmark: {:?}", e);
+                }
+                // Return NaN to distinguish from valid compression ratios
+                f64::NAN
+            }
         });
     });
 

@@ -68,6 +68,7 @@ __all__ = [
     "Ingestor",
     "deterministic_shuffle",
     "detect_encoding",
+    "_detect_encoding",  # Backward compatibility alias
 ]
 
 # Expose deterministic_shuffle when available, otherwise provide a local fallback.
@@ -143,6 +144,10 @@ def detect_encoding(path: Union[str, Path]) -> str:
             continue
 
     return "utf-8"
+
+
+# Provide _detect_encoding as backward-compatible alias for code expecting the underscore version
+_detect_encoding = detect_encoding
 
 
 # Internal helper to normalise various historical read_text signatures.

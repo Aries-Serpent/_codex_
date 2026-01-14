@@ -1,0 +1,386 @@
+"""Comprehensive test suite for auto-remediation system."""
+
+import pytest
+from pathlib import Path
+import sys
+
+# Add tools to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "tools"))
+
+from auto_remediation.fix_generator import (
+    FixContext,
+    FixStrategy,
+    IntelligentFixGenerator,
+)
+from auto_remediation.verifier import FixVerifier
+
+
+class TestFixGenerator:
+    """Test intelligent fix generator."""
+
+    def setup_method(self):
+        self.generator = IntelligentFixGenerator()
+
+    def test_shell_injection_fix(self):
+        """Test fix for shell injection vulnerability."""
+        context = FixContext(
+            file_path="test.py",
+            code='subprocess.run("ls -la", shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10],
+            metadata={},
+        )
+
+        fix = self.generator.generate_fix(context)
+
+        assert fix is not None
+        assert fix.strategy == FixStrategy.SHELL_INJECTION
+        assert "shell=False" in fix.fixed_code
+        assert fix.confidence > 0.8
+        assert fix.validation_passed is True
+
+    def test_eval_exec_fix(self):
+        """Test fix for eval/exec vulnerability."""
+        context = FixContext(
+            file_path="test.py",
+            code='result = eval(user_input)',
+            vulnerability_type="eval_usage",
+            risk_score=0.90,
+            line_numbers=[15],
+            metadata={},
+        )
+
+        fix = self.generator.generate_fix(context)
+
+        assert fix is not None
+        assert fix.strategy == FixStrategy.EVAL_EXEC_REMOVAL
+        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code
+        assert fix.confidence > 0.7
+
+    def test_pickle_fix(self):
+        """Test fix for unsafe pickle usage."""
+        context = FixContext(
+            file_path="test.py",
+            code='data = pickle.loads(user_data)',
+            vulnerability_type="pickle_usage",
+            risk_score=0.80,
+            line_numbers=[20],
+            metadata={},
+        )
+
+        fix = self.generator.generate_fix(context)
+
+        assert fix is not None
+        assert fix.strategy == FixStrategy.PICKLE_SECURE
+        assert "json" in fix.fixed_code or "manual review" in fix.explanation.lower()
+
+    def test_weak_crypto_fix(self):
+        """Test fix for weak cryptography."""
+        context = FixContext(
+            file_path="test.py",
+            code='hash_value = hashlib.md5(data).hexdigest()',
+            vulnerability_type="weak_crypto_md5",
+            risk_score=0.70,
+            line_numbers=[25],
+            metadata={},
+        )
+
+        fix = self.generator.generate_fix(context)
+
+        assert fix is not None
+        assert fix.strategy == FixStrategy.WEAK_CRYPTO
+        assert "sha256" in fix.fixed_code
+        assert fix.confidence > 0.9
+
+    def test_xml_parser_fix(self):
+        """Test fix for XML parser vulnerability."""
+        context = FixContext(
+            file_path="test.py",
+            code='import xml.etree.ElementTree as ET\ntree = ET.parse(file)',
+            vulnerability_type="xml_parsing",
+            risk_score=0.85,
+            line_numbers=[30],
+            metadata={},
+        )
+
+        fix = self.generator.generate_fix(context)
+
+        assert fix is not None
+        assert fix.strategy == FixStrategy.XML_SECURE_PARSER
+        assert "defusedxml" in fix.fixed_code
+        assert fix.confidence > 0.8
+
+    def test_multiple_fixes_generation(self):
+        """Test generation of multiple fix options."""
+        context = FixContext(
+            file_path="test.py",
+            code='subprocess.run(cmd, shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10],
+            metadata={},
+        )
+
+        fixes = self.generator.generate_multiple_fixes(context)
+
+        assert len(fixes) > 0
+        assert all(f.validation_passed for f in fixes)
+        # Fixes should be sorted by confidence
+        if len(fixes) > 1:
+            assert fixes[0].confidence >= fixes[1].confidence
+
+    def test_syntax_validation(self):
+        """Test syntax validation of generated fixes."""
+        # Valid Python code
+        assert self.generator._validate_syntax("x = 1\nprint(x)") is True
+
+        # Invalid Python code
+        assert self.generator._validate_syntax("x = 1\nprint(x") is False
+
+    def test_strategy_selection(self):
+        """Test correct strategy selection."""
+        context = FixContext(
+            file_path="test.py",
+            code="",
+            vulnerability_type="shell_injection",
+            risk_score=0.8,
+            line_numbers=[],
+            metadata={},
+        )
+
+        strategy = self.generator._select_strategy(context)
+        assert strategy == FixStrategy.SHELL_INJECTION
+
+        context.vulnerability_type = "eval_usage"
+        strategy = self.generator._select_strategy(context)
+        assert strategy == FixStrategy.EVAL_EXEC_REMOVAL
+
+
+class TestFixVerifier:
+    """Test fix verification system."""
+
+    def setup_method(self):
+        self.verifier = FixVerifier(test_command="echo test")
+
+    def test_hash_calculation(self):
+        """Test content hash calculation."""
+        content1 = "test content"
+        content2 = "test content"
+        content3 = "different content"
+
+        hash1 = self.verifier._calculate_hash(content1)
+        hash2 = self.verifier._calculate_hash(content2)
+        hash3 = self.verifier._calculate_hash(content3)
+
+        assert hash1 == hash2
+        assert hash1 != hash3
+
+    def test_complexity_calculation(self):
+        """Test cyclomatic complexity calculation."""
+        simple_code = "x = 1\ny = 2"
+        complex_code = """
+if x > 0:
+    if y > 0:
+        for i in range(10):
+            while i > 0:
+                i -= 1
+"""
+
+        simple_complexity = self.verifier._calculate_complexity(simple_code)
+        complex_complexity = self.verifier._calculate_complexity(complex_code)
+
+        assert simple_complexity < complex_complexity
+        assert complex_complexity >= 4
+
+    def test_security_score_calculation(self):
+        """Test security score calculation."""
+        safe_code = "x = 1 + 2"
+        risky_code = 'subprocess.run("ls", shell=True)\neval(user_input)'
+
+        safe_score = self.verifier._calculate_security_score(safe_code)
+        risky_score = self.verifier._calculate_security_score(risky_code)
+
+        assert safe_score > risky_score
+        assert safe_score == 100.0
+        assert risky_score < 80.0
+
+    def test_diff_generation(self):
+        """Test unified diff generation."""
+        original = "line1\nline2\nline3"
+        fixed = "line1\nmodified line2\nline3"
+
+        diff = self.verifier.generate_diff(original, fixed)
+
+        assert "line1" in diff
+        assert "modified line2" in diff or "-line2" in diff
+
+    def test_improvements_detection(self):
+        """Test detection of improvements."""
+        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+
+        pre = PreFixSnapshot(
+            file_hash="hash1",
+            file_content="code",
+            test_results={"passed": False},
+            metrics={"security_score": 70.0, "complexity": 10},
+            timestamp="2026-01-01",
+        )
+
+        post = PostFixSnapshot(
+            file_hash="hash2",
+            file_content="fixed_code",
+            test_results={"passed": True},
+            metrics={"security_score": 90.0, "complexity": 8},
+            timestamp="2026-01-01",
+        )
+
+        improvements = self.verifier._detect_improvements(pre, post)
+
+        assert len(improvements) > 0
+        assert any("test" in imp.lower() for imp in improvements)
+        assert any("security" in imp.lower() for imp in improvements)
+
+    def test_regression_detection(self):
+        """Test detection of regressions."""
+        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+
+        pre = PreFixSnapshot(
+            file_hash="hash1",
+            file_content="code",
+            test_results={"passed": True},
+            metrics={"security_score": 90.0, "complexity": 5},
+            timestamp="2026-01-01",
+        )
+
+        post = PostFixSnapshot(
+            file_hash="hash2",
+            file_content="fixed_code",
+            test_results={"passed": False},
+            metrics={"security_score": 85.0, "complexity": 15},
+            timestamp="2026-01-01",
+        )
+
+        regressions = self.verifier._detect_regressions(pre, post)
+
+        assert len(regressions) > 0
+        assert any("test" in reg.lower() for reg in regressions)
+        assert any("complexity" in reg.lower() for reg in regressions)
+
+    def test_confidence_calculation(self):
+        """Test confidence score calculation."""
+        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+
+        # Good fix scenario
+        pre_good = PreFixSnapshot(
+            file_hash="hash1",
+            file_content="code",
+            test_results={"passed": True},
+            metrics={"security_score": 70.0},
+            timestamp="2026-01-01",
+        )
+
+        post_good = PostFixSnapshot(
+            file_hash="hash2",
+            file_content="fixed_code",
+            test_results={"passed": True},
+            metrics={"security_score": 90.0},
+            timestamp="2026-01-01",
+        )
+
+        confidence_good = self.verifier._calculate_confidence(pre_good, post_good, [])
+        assert confidence_good > 0.8
+
+        # Bad fix scenario
+        post_bad = PostFixSnapshot(
+            file_hash="hash2",
+            file_content="fixed_code",
+            test_results={"passed": False},
+            metrics={"security_score": 60.0},
+            timestamp="2026-01-01",
+        )
+
+        confidence_bad = self.verifier._calculate_confidence(pre_good, post_bad, ["regression"])
+        assert confidence_bad < 0.5
+
+    def test_success_rate_tracking(self):
+        """Test success rate calculation."""
+        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+
+        pre = PreFixSnapshot("hash", "code", {}, {}, "2026-01-01")
+        post = PostFixSnapshot("hash", "code", {}, {}, "2026-01-01")
+
+        # Add successful verification
+        result1 = VerificationResult(True, pre, post, [], [], 0.9, "success")
+        self.verifier.verification_history.append(result1)
+
+        # Add failed verification
+        result2 = VerificationResult(False, pre, post, ["error"], [], 0.3, "failed")
+        self.verifier.verification_history.append(result2)
+
+        success_rate = self.verifier.get_success_rate()
+        assert success_rate == 0.5
+
+
+class TestIntegration:
+    """Integration tests for auto-remediation system."""
+
+    def test_end_to_end_fix_workflow(self):
+        """Test complete workflow from detection to verification."""
+        # Generate fix
+        generator = IntelligentFixGenerator()
+        context = FixContext(
+            file_path="test.py",
+            code='subprocess.run("ls", shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10],
+            metadata={},
+        )
+
+        fix = generator.generate_fix(context)
+        assert fix is not None
+        assert fix.validation_passed
+
+        # Verify fix
+        verifier = FixVerifier(test_command="echo test")
+        result = verifier.verify_fix("test.py", fix.original_code, fix.fixed_code)
+
+        assert result is not None
+        assert result.confidence_score > 0
+
+    def test_80_percent_success_target(self):
+        """Test that success rate meets 80% target."""
+        generator = IntelligentFixGenerator()
+
+        test_cases = [
+            ('subprocess.run("ls", shell=True)', "shell_injection"),
+            ('eval(user_input)', "eval_usage"),
+            ('hashlib.md5(data)', "weak_crypto"),
+            ('pickle.loads(data)', "pickle_usage"),
+            ('xml.etree.ElementTree.parse(file)', "xml_parsing"),
+        ]
+
+        successful = 0
+        total = len(test_cases)
+
+        for code, vuln_type in test_cases:
+            context = FixContext(
+                file_path="test.py",
+                code=code,
+                vulnerability_type=vuln_type,
+                risk_score=0.8,
+                line_numbers=[1],
+                metadata={},
+            )
+
+            fix = generator.generate_fix(context)
+            if fix and fix.validation_passed:
+                successful += 1
+
+        success_rate = successful / total
+        assert success_rate >= 0.80, f"Success rate {success_rate:.1%} below 80% target"
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -42,12 +44,49 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# Environment-aware CORS configuration
+# Security: Configure CORS origins based on environment to prevent unauthorized access
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+if cors_origins_env:
+    # Use explicit CORS_ORIGINS from environment
+    cors_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+elif os.getenv("ENVIRONMENT", "development") == "production":
+    # Production: CORS must be explicitly configured and must not use placeholder domains.
+    # ⚠️ CRITICAL: The example.com domains below are placeholders and MUST NOT be used in production.
+    # For production use, you MUST either:
+    #   1. Set CORS_ORIGINS environment variable to your actual domains (recommended), OR
+    #   2. Replace example.com below with your real frontend/API domains in the codebase
+    # To prevent accidental deployment with insecure or incorrect CORS settings, the application
+    # will refuse to start in production if these placeholder domains are still configured.
+    placeholder_origins = [
+        "https://example.com",
+        "https://api.example.com",
+    ]
+    logger.critical(
+        "Refusing to start in production: CORS_ORIGINS not set and placeholder origins are still "
+        "configured: %s. Configure real production origins via the CORS_ORIGINS environment "
+        "variable or update the CORS configuration in services/ita/app/main.py.",
+        placeholder_origins,
+    )
+    raise RuntimeError(
+        "Invalid CORS configuration for production: CORS_ORIGINS is not set and placeholder "
+        "example.com domains are still configured. See log output for details."
+    )
+else:
+    # Development: Allow localhost only (more secure than wildcard)
+    cors_origins = [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8080"
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=cors_origins,
+    allow_credentials=False,  # Keep False for security (API key auth instead)
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type", "Authorization", "X-Request-Id"],
 )
 
 # MCP Error Handler - Unified error responses
