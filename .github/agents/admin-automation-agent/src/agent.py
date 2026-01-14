@@ -156,7 +156,10 @@ class AdminAutomationAgent:
             logger.info("\n🔑 Step 2: Secret Management")
             secrets_result = self.secrets_manager.setup_phase10_secrets(force=False)
             task_results.append({"step": "secrets", "result": secrets_result})
-            self.log_task("setup_secrets", "success", f"Secrets configured: {secrets_result}")
+            # Security: Don't log secrets_result dict - contains secret names as keys
+            # CodeQL alerts #3342, #3343, #3344, #3345
+            secret_count = len(secrets_result) if secrets_result else 0
+            self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
         else:
             self.log_task("setup_secrets", "warning", "Secrets manager not available (missing GitHub token)")
         
