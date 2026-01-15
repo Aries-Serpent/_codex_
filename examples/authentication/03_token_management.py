@@ -127,14 +127,14 @@ def main():
     print("\n🔐 Step 7: Create Multiple Sessions")
     print("-" * 60)
     
-    session2_token, session2_id = tokens.generate_session_token(
+    tokens.generate_session_token(
         user_id=user_id,
         mfa_verified=True,
         ip_address="192.168.1.101",
         user_agent="Mobile App"
     )
     
-    session3_token, session3_id = tokens.generate_session_token(
+    tokens.generate_session_token(
         user_id=user_id,
         mfa_verified=False,
         ip_address="192.168.1.102",

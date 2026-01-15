@@ -98,7 +98,7 @@ jobs:
           python -c "
           from src.codex.auth.oauth_manager import OAuthManager
           import hashlib
-          import secrets
+          import base64
           
           manager = OAuthManager()
           
@@ -107,7 +107,7 @@ jobs:
           challenge = manager._generate_code_challenge(verifier)
           
           # Verify it uses S256 method
-          expected = secrets.base64.urlsafe_b64encode(
+          expected = base64.urlsafe_b64encode(
               hashlib.sha256(verifier.encode()).digest()
           ).decode().rstrip('=')
           

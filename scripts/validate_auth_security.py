@@ -9,7 +9,6 @@ Note: This script assumes it's run from the project root or with PYTHONPATH set.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path (development convenience)
@@ -17,7 +16,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.codex.auth import OAuthManager, MFAProvider, TokenManager, TokenType
+from src.codex.auth import OAuthManager, MFAProvider, TokenManager
 import time
 
 
@@ -236,8 +235,8 @@ class SecurityValidator:
         )
         
         # Test 3: Revoke all user sessions
-        token3, session3 = self.tokens.generate_session_token("user1", True)
-        token4, session4 = self.tokens.generate_session_token("user1", False)
+        self.tokens.generate_session_token("user1", True)
+        self.tokens.generate_session_token("user1", False)
         
         count = self.tokens.revoke_all_user_tokens("user1")
         self.test(

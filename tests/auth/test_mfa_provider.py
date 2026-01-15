@@ -5,7 +5,6 @@ Comprehensive test suite for TOTP-based Multi-Factor Authentication.
 """
 
 import time
-from unittest.mock import patch
 
 import pytest
 
@@ -13,7 +12,6 @@ from src.codex.auth.mfa_provider import (
     MFAProvider,
     MFASecret,
     BackupCode,
-    MFAAttempt,
 )
 
 

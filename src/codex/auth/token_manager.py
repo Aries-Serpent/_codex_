@@ -10,11 +10,11 @@ Minimum Python version: 3.9+ (uses built-in generic types)
 import json
 import secrets
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Optional, Any, List, Set
 from enum import Enum
 
-from ..security_utils import redact_sensitive_value, sanitize_log_message
+from ..security_utils import sanitize_log_message
 
 
 class TokenType(Enum):
@@ -399,6 +399,8 @@ class TokenManager:
                 
                 return True
         except ValueError:
+            # Token is invalid or malformed; nothing to revoke
+            # This is expected for malformed tokens and not an error condition
             pass
         
         return False

@@ -4,7 +4,7 @@ This directory contains example scripts demonstrating the Codex authentication s
 
 ## Prerequisites
 
-1. Python 3.11 or higher
+1. Python 3.9 or higher
 2. Install dependencies: `pip install httpx`
 3. Set up environment variables (copy `.env.example` to `.env`)
 

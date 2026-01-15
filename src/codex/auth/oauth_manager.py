@@ -11,11 +11,11 @@ import secrets
 import time
 from dataclasses import dataclass
 from typing import Dict, Optional
-from urllib.parse import urlencode, parse_qs, urlparse
+from urllib.parse import urlencode
 
 import httpx
 
-from ..security_utils import redact_sensitive_value, sanitize_log_message
+from ..security_utils import sanitize_log_message
 
 
 @dataclass

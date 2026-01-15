@@ -22,8 +22,6 @@ from typing import List, Optional, Dict
 from base64 import b32encode
 from urllib.parse import quote
 
-from ..security_utils import redact_sensitive_value, sanitize_log_message
-
 
 @dataclass
 class MFASecret:

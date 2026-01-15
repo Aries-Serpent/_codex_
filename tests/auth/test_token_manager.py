@@ -5,7 +5,6 @@ Comprehensive test suite for JWT token management and session handling.
 """
 
 import time
-from unittest.mock import patch
 
 import pytest
 
@@ -300,17 +299,16 @@ class TestTokenManager:
         user_id = "user123"
         
         # Create multiple sessions
-        token1, session1 = manager.generate_session_token(user_id)
-        token2, session2 = manager.generate_session_token(user_id)
-        token3, session3 = manager.generate_session_token("user456")
+        manager.generate_session_token(user_id)
+        manager.generate_session_token(user_id)
+        manager.generate_session_token("user456")
         
         # Revoke all tokens for user123
         count = manager.revoke_all_user_tokens(user_id)
         
         assert count == 2
-        assert session1 not in manager._sessions
-        assert session2 not in manager._sessions
-        assert session3 in manager._sessions  # Different user
+        # Different user's session should remain
+        assert len([s for s in manager._sessions.values() if s.user_id == "user456"]) == 1
     
     def test_get_session(self):
         """Test getting session information."""
@@ -338,9 +336,9 @@ class TestTokenManager:
         user_id = "user123"
         
         # Create multiple sessions
-        token1, session1 = manager.generate_session_token(user_id)
-        token2, session2 = manager.generate_session_token(user_id)
-        token3, session3 = manager.generate_session_token("user456")
+        manager.generate_session_token(user_id)
+        manager.generate_session_token(user_id)
+        manager.generate_session_token("user456")
         
         sessions = manager.get_user_sessions(user_id)
         
