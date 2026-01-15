@@ -5,6 +5,15 @@ Example: Complete GitHub OAuth Authentication Flow
 This script demonstrates the complete OAuth2 authentication flow
 with GitHub using the Codex authentication system.
 
+⚠️  SECURITY WARNING - DEMONSTRATION ONLY:
+    This example shows partial tokens for educational purposes.
+    In production environments:
+    - NEVER log or display tokens (even partially)
+    - Store tokens in httpOnly cookies or secure storage
+    - Use encrypted channels for all token transmission
+    - Implement proper token lifecycle management
+    - Follow OWASP guidelines for OAuth security
+
 Usage:
     1. Set up environment variables (see .env.example)
     2. Run: python examples/authentication/01_oauth_flow.py

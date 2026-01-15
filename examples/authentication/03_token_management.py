@@ -5,6 +5,15 @@ Example: Token Management and Session Handling
 This script demonstrates generating, validating, and managing
 access tokens, refresh tokens, and sessions.
 
+⚠️  SECURITY WARNING - DEMONSTRATION ONLY:
+    This example displays partial tokens for educational purposes.
+    In production environments:
+    - NEVER log tokens to console, files, or logging systems
+    - Store tokens in httpOnly cookies or encrypted storage
+    - Use secure, encrypted channels for token transmission
+    - Implement proper token rotation and revocation
+    - Follow OWASP guidelines for session management
+
 Usage:
     python examples/authentication/03_token_management.py
 """
@@ -71,10 +80,12 @@ def main():
     
     refresh_token = tokens.generate_refresh_token(user_id)
     
-    print(f"✓ Refresh token generated")
-    print(f"  Token (first 40 chars): {refresh_token[:40]}...")
+    print(f"\n✓ Refresh token generated")
+    print(f"  Token length: {len(refresh_token)} characters")
+    print(f"  [DEMO] First 20 chars: {refresh_token[:20]}...")
     print(f"  Expiry: 7 days")
     print(f"  Use: Refresh expired access tokens")
+    print(f"\n⚠️  Production: Store refresh tokens securely!")
     
     # Step 4: Refresh Access Token
     print("\n🔐 Step 4: Refresh Access Token")
@@ -82,12 +93,14 @@ def main():
     
     try:
         new_access_token = tokens.refresh_access_token(refresh_token)
-        print(f"✓ Access token refreshed")
-        print(f"  New token (first 40 chars): {new_access_token[:40]}...")
+        print(f"\n✓ Access token refreshed")
+        print(f"  New token length: {len(new_access_token)} characters")
+        print(f"  [DEMO] First 20 chars: {new_access_token[:20]}...")
         
         # Validate new token
         new_claims = tokens.validate_token(new_access_token, TokenType.ACCESS)
         print(f"  User ID: {new_claims.sub}")
+        print(f"\n⚠️  Production: Secure token refresh critical for security!")
     except ValueError as e:
         print(f"✗ Refresh failed: {e}")
     
@@ -102,10 +115,12 @@ def main():
         user_agent="Mozilla/5.0 (Example Browser)"
     )
     
-    print(f"✓ Session created")
-    print(f"  Session ID: {session_id}")
-    print(f"  Token (first 40 chars): {session_token[:40]}...")
+    print(f"\n✓ Session created")
+    print(f"  Session ID: {session_id[:16]}...{session_id[-8:]}")
+    print(f"  Token length: {len(session_token)} characters")
+    print(f"  [DEMO] First 20 chars: {session_token[:20]}...")
     print(f"  Expiry: 30 days (with inactivity timeout)")
+    print(f"\n⚠️  Production: Sessions must be stored securely with encryption!")
     
     # Step 6: Get Session Information
     print("\n🔐 Step 6: Get Session Information")
