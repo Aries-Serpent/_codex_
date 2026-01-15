@@ -171,7 +171,7 @@ class AuthenticationDemo:
         if session:
             print(f"\n✓ Session details:")
             print(f"  User: {session.user_id}")
-            print(f"  MFA verified: {session.mfa_verified}")
+            print("  MFA status: [REDACTED]")
             print(f"  IP: {session.ip_address}")
             print(f"  Active: {session.is_active()}")
         
