@@ -66,7 +66,7 @@ class GitHubAuthManagerAgent:
             'mfa_users': len(self.mfa._totp_secrets),
             'status': 'healthy'
         }
-        print(f"✓ Monitoring: {metrics['active_sessions']} sessions, {metrics['mfa_users']} MFA users")
+        print("✓ Monitoring: auth system metrics collected")
         return metrics
     
     def run(self, action: str) -> dict:
