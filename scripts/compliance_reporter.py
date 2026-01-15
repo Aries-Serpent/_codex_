@@ -25,6 +25,32 @@ class ComplianceReporter:
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
         self.tokens = TokenManager(secret_key=os.getenv('CODEX_MASTER_KEY', 'default'))
+
+    def _sanitize_sensitive_fields(self, data: dict) -> dict:
+        """
+        Return a shallow copy of `data` with potentially sensitive fields redacted.
+
+        This is a defensive measure to ensure that secrets such as passwords,
+        tokens, or keys are not written to compliance reports in clear text,
+        even if upstream providers accidentally include them.
+        """
+        if not isinstance(data, dict):
+            return data
+
+        redacted = {}
+        for key, value in data.items():
+            key_lower = str(key).lower()
+            # Heuristic: redact common secret-bearing fields
+            if (
+                "password" in key_lower
+                or key_lower.endswith("_secret")
+                or key_lower.endswith("_token")
+                or key_lower.endswith("_key")
+            ):
+                redacted[key] = "[REDACTED]"
+            else:
+                redacted[key] = value
+        return redacted
         
     def generate_compliance_data(self) -> dict:
         """Generate comprehensive compliance data."""
@@ -100,9 +126,13 @@ class ComplianceReporter:
         """Generate markdown compliance report."""
         print("Generating compliance report...")
         
-        data = self.generate_compliance_data()
-        mfa = self.analyze_mfa()
+        raw_data = self.generate_compliance_data()
+        raw_mfa = self.analyze_mfa()
         tokens = self.check_tokens()
+
+        # Sanitize any potentially sensitive fields before persisting to disk
+        data = self._sanitize_sensitive_fields(raw_data)
+        mfa = self._sanitize_sensitive_fields(raw_mfa)
         
         report = f"""# Authentication Security Compliance Report
 
