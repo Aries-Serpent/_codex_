@@ -30,7 +30,21 @@ class ComplianceReporter:
         report_key = os.getenv('COMPLIANCE_REPORT_KEY')
         if not report_key:
             raise RuntimeError("COMPLIANCE_REPORT_KEY environment variable must be set for report encryption")
-        self.report_cipher = Fernet(report_key.encode('utf-8') if isinstance(report_key, str) else report_key)
+        if isinstance(report_key, str):
+            try:
+                report_key_bytes = report_key.encode("ascii")
+            except UnicodeEncodeError as exc:
+                raise RuntimeError(
+                    "COMPLIANCE_REPORT_KEY must contain only ASCII characters compatible with a Fernet key"
+                ) from exc
+        else:
+            report_key_bytes = report_key
+        try:
+            self.report_cipher = Fernet(report_key_bytes)
+        except (TypeError, ValueError) as exc:
+            raise RuntimeError(
+                "COMPLIANCE_REPORT_KEY is not a valid Fernet key. It must be a 32-byte URL-safe base64-encoded value."
+            ) from exc
 
     def _sanitize_sensitive_fields(self, data: dict) -> dict:
         """
