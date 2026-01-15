@@ -30,7 +30,7 @@ class GitHubUserProvisioner:
         
         # Generate MFA secret
         secret = self.mfa.generate_totp_secret(username)
-        _ = secret.get_provisioning_uri(email, issuer_name="Codex")  # URI generated but not logged for security
+        _ = secret.get_provisioning_uri(email)  # URI generated but not logged for security
         backup_codes = self.mfa.generate_backup_codes(username, count=10)
         
         # Create enrollment data

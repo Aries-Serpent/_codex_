@@ -38,14 +38,6 @@ def display_qr_instructions(uri: str, secret: str):
         but are intentionally not used or printed in this demonstration
         function. This avoids accidentally exposing sensitive values while
         still showing what a production function signature might look like.
-    
-    SECURITY WARNING: This is a demonstration script that displays sensitive
-
-    Note:
-        The ``uri`` and ``secret`` parameters are accepted for API completeness
-        but are intentionally not used or printed in this demonstration
-        function. This avoids accidentally exposing sensitive values while
-        still showing what a production function signature might look like.
 
     SECURITY WARNING: This is a demonstration script that displays sensitive
     TOTP secrets. In production, secrets should NEVER be logged or displayed

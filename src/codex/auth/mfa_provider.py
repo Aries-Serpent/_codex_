@@ -401,3 +401,12 @@ class MFAProvider:
             True if MFA is enabled
         """
         return user_id in self._secret_store
+    
+    def get_mfa_user_count(self) -> int:
+        """
+        Get the number of users with MFA enabled.
+        
+        Returns:
+            Count of users with MFA enabled
+        """
+        return len(self._secret_store)

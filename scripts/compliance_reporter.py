@@ -11,7 +11,7 @@ Usage:
 """
 
 import argparse, json, os, sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from cryptography.fernet import Fernet
 try:
     from github import Github
@@ -71,10 +71,8 @@ class ComplianceReporter:
             'compliance_score': 0
         }
         
-        # Count MFA-enabled users
-        # Note: Accessing internal state for counting purposes only
-        # In production, add a public method get_mfa_user_count() to MFAProvider
-        data['mfa_enabled_users'] = len(self.mfa._totp_secrets)
+        # Count MFA-enabled users using the public API
+        data['mfa_enabled_users'] = self.mfa.get_mfa_user_count()
         data['total_users'] = max(10, data['mfa_enabled_users'])  # Mock data
         
         # Token statistics (placeholder)
@@ -105,7 +103,7 @@ class ComplianceReporter:
         print("Analyzing MFA adoption...")
         
         analysis = {
-            'enabled': len(self.mfa._totp_secrets),
+            'enabled': self.mfa.get_mfa_user_count(),
             'disabled': 0,
             'adoption_rate': 0
         }
@@ -147,14 +145,10 @@ class ComplianceReporter:
 **Generated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
 
 ## Overall Compliance Score: {data['compliance_score']}%
-        encrypted_report = self.report_cipher.encrypt(report.encode('utf-8'))
-        with open(report_file, 'wb') as f:
-            f.write(encrypted_report)
 
-        with open('compliance_report_latest.md', 'wb') as f:
-            f.write(encrypted_report)
+### MFA Adoption
+
 - **Users with MFA**: {data['mfa_enabled_users']} / {data['total_users']}
-        print(f"✓ Report saved (encrypted): {report_file}")
 - **Status**: {'✅ Compliant' if mfa['adoption_rate'] >= 95 else '⚠️ Below target'}
 
 ## Token Lifecycle
@@ -178,13 +172,14 @@ Scheduled for: {(datetime.utcnow() + timedelta(days=7)).strftime('%Y-%m-%d')}
 """
         
         report_file = f'compliance_report_{datetime.utcnow().strftime("%Y%m%d")}.md'
-        with open(report_file, 'w') as f:
-            f.write(report)
+        encrypted_report = self.report_cipher.encrypt(report.encode('utf-8'))
+        with open(report_file, 'wb') as f:
+            f.write(encrypted_report)
+
+        with open('compliance_report_latest.md', 'wb') as f:
+            f.write(encrypted_report)
         
-        with open('compliance_report_latest.md', 'w') as f:
-            f.write(report)
-        
-        print(f"✓ Report saved: {report_file}")
+        print(f"✓ Report saved (encrypted): {report_file}")
         return report
 
 def main():
@@ -208,6 +203,5 @@ def main():
     else:
         reporter.generate_report()
 
-from datetime import timedelta
 if __name__ == '__main__':
     main()

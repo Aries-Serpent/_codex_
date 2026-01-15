@@ -54,7 +54,7 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
-                _ = secret.get_provisioning_uri(f"{username}@github", issuer_name="Codex")  # URI generated but not logged
+                _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 
                 results['enrolled'].append({
