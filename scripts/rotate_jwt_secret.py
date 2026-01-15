@@ -144,10 +144,10 @@ class JWTSecretRotator:
         # Record rotation
         self.record_rotation(new_secret, backup_file)
         
-        # Output for GitHub Actions
+        # Output for GitHub Actions (avoid writing sensitive secret values)
         if 'GITHUB_OUTPUT' in os.environ:
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                f.write(f"new_secret={new_secret}\n")
+                # Do not write the new secret to GITHUB_OUTPUT to prevent clear-text exposure
                 f.write(f"backup_file={backup_file}\n")
         
         return {
