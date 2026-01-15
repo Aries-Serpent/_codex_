@@ -152,7 +152,7 @@ class JWTSecretRotator:
         
         return {
             'status': 'success',
-            'new_secret': new_secret[:20] + '...',  # Truncated for logging
+            'message': 'JWT secret rotated successfully',  # No secret data logged
             'backup_file': backup_file,
             'timestamp': datetime.utcnow().isoformat()
         }
