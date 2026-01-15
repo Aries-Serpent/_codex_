@@ -130,11 +130,11 @@ class GitHubSecretsManager:
         for name in required_secrets:
             value = os.getenv(name)
             if not value:
-                print(f"✗ Missing secret: {name}")
+                print("✗ Missing required secret")
                 validations.append({'test': name, 'passed': False})
                 all_valid = False
             elif len(value) < 32:
-                print(f"✗ Secret too short: {name}")
+                print("✗ A required secret is too short")
                 validations.append({'test': name, 'passed': False})
                 all_valid = False
             else:
