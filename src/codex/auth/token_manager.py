@@ -3,13 +3,15 @@ Token Manager for Codex platform.
 
 Handles JWT token generation, validation, rotation, and session management
 with focus on security and GitHub integration.
+
+Minimum Python version: 3.9+ (uses built-in generic types)
 """
 
 import json
 import secrets
 import time
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Any, List
+from typing import Dict, Optional, Any, List, Set
 from enum import Enum
 
 from ..security_utils import redact_sensitive_value, sanitize_log_message
@@ -100,15 +102,29 @@ class TokenManager:
         Initialize token manager.
         
         Args:
-            secret_key: Secret key for signing tokens (generated if not provided)
+            secret_key: Secret key for signing tokens. 
+                       If None, generates a random key (NOT recommended for production).
+                       In production, ALWAYS provide an explicit secret key via 
+                       environment variable or secure configuration.
+        
+        Warning:
+            Auto-generated keys are only for development/testing.
+            Production deployments MUST provide an explicit secret_key to
+            prevent token invalidation across restarts.
         """
         if secret_key is None:
-            # Generate random secret (use secure storage in production)
+            # Generate random secret for development only
+            import warnings
+            warnings.warn(
+                "Auto-generating secret key. This is ONLY for development. "
+                "In production, ALWAYS provide an explicit secret_key.",
+                UserWarning
+            )
             secret_key = secrets.token_urlsafe(64)
         
         self._secret_key = secret_key
-        self._revoked_tokens: set[str] = set()  # Use Redis in production
-        self._sessions: dict[str, SessionInfo] = {}  # Use database in production
+        self._revoked_tokens: Set[str] = set()  # Use Redis in production
+        self._sessions: Dict[str, SessionInfo] = {}  # Use database in production
     
     def _encode_token(self, claims: TokenClaims) -> str:
         """

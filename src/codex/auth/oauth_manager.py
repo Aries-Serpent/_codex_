@@ -5,6 +5,7 @@ Implements OAuth2 authentication flows with focus on GitHub as the primary provi
 Supports PKCE for security, token refresh, and secure storage.
 """
 
+import base64
 import hashlib
 import secrets
 import time
@@ -128,7 +129,7 @@ class OAuthManager:
         """
         digest = hashlib.sha256(verifier.encode()).digest()
         # Base64 URL-safe encoding without padding
-        challenge = secrets.base64.urlsafe_b64encode(digest).decode().rstrip('=')
+        challenge = base64.urlsafe_b64encode(digest).decode().rstrip('=')
         return challenge
     
     def initiate_flow(self, config: Optional[OAuthConfig] = None) -> Dict[str, str]:

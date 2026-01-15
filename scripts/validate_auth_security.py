@@ -3,13 +3,18 @@
 Security Validation Script for Authentication Module
 
 Performs comprehensive security checks on the authentication system.
+
+Note: This script assumes it's run from the project root or with PYTHONPATH set.
+      For portable execution: PYTHONPATH=. python scripts/validate_auth_security.py
 """
 
 import sys
+import os
 from pathlib import Path
 
-# Add project root to path
-project_root = Path(__file__).parent.parent.parent
+# Add project root to path (development convenience)
+# In production, use proper package installation or PYTHONPATH
+project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.codex.auth import OAuthManager, MFAProvider, TokenManager, TokenType

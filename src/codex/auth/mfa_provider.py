@@ -3,6 +3,13 @@ Multi-Factor Authentication provider for Codex platform.
 
 Implements TOTP-based MFA compatible with authenticator apps,
 backup codes, and recovery mechanisms.
+
+Security Warning:
+    This implementation uses in-memory storage for demonstration purposes.
+    For production use, you MUST replace in-memory stores with:
+    - Encrypted database storage for secrets and backup codes
+    - Redis or similar for attempts and lockouts
+    - Proper encryption at rest for all sensitive data
 """
 
 import hashlib
@@ -11,7 +18,7 @@ import secrets
 import struct
 import time
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Dict
 from base64 import b32encode
 from urllib.parse import quote
 
@@ -83,11 +90,21 @@ class MFAProvider:
     LOCKOUT_DURATION = 900  # 15 minutes in seconds
     
     def __init__(self):
-        """Initialize MFA provider."""
-        self._secret_store: dict[str, MFASecret] = {}  # Use database in production
-        self._backup_codes: dict[str, List[BackupCode]] = {}  # Use database in production
-        self._attempts: dict[str, List[MFAAttempt]] = {}  # Use Redis in production
-        self._locked_users: dict[str, float] = {}  # Use Redis in production
+        """
+        Initialize MFA provider.
+        
+        Warning:
+            Uses in-memory storage for development/testing only.
+            Production deployments MUST use:
+            - Encrypted database for secrets and backup codes
+            - Redis/Memcached for attempts and lockouts
+            - Proper encryption at rest for all sensitive data
+        """
+        # DEVELOPMENT ONLY - Replace with encrypted database in production
+        self._secret_store: Dict[str, MFASecret] = {}
+        self._backup_codes: Dict[str, List[BackupCode]] = {}
+        self._attempts: Dict[str, List[MFAAttempt]] = {}
+        self._locked_users: Dict[str, float] = {}
     
     def generate_totp_secret(self, user_id: str, issuer: str = "Codex") -> MFASecret:
         """
