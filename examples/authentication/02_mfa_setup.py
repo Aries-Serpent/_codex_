@@ -46,18 +46,18 @@ def display_qr_instructions(uri: str, secret: str):
     
     print("\n📱 Option 1: Scan QR Code (Recommended)")
     print("-" * 60)
-    print("Use a QR code generator with this URL:")
-    # In production, generate QR code image and display securely
-    # This is demo-only - showing partial URI for educational purposes
-    print(f"\n[DEMO ONLY - SECRET VISIBLE]: {uri[:50]}...\n")
+    print("Use a QR code generator with your TOTP provisioning URL.")
+    # In production, generate QR code image and display securely.
+    # Do NOT log or print the provisioning URI, as it embeds the secret key.
+    print("\n[REDACTED] Provisioning URI generated (not displayed for security).\n")
     print("Or install qrcode library and generate QR code:")
     print("  pip install qrcode[pil]")
-    print("  # Then use qrcode.make(uri) to generate image")
+    print("  # Then use qrcode.make(uri) to generate image in a secure channel")
     
     print("\n✏️  Option 2: Manual Entry")
     print("-" * 60)
-    # In production, display this through secure authenticated portal only
-    print(f"  Secret Key: [DEMO ONLY] {secret[:8]}...{secret[-4:]}")
+    # In production, display this through secure authenticated portal only.
+    print("  Secret Key: [REDACTED - not displayed in logs or console]")
     print(f"  Account: user@example.com")
     print(f"  Type: Time-based")
     print(f"  Algorithm: SHA1")
