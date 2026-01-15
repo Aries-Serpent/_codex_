@@ -17,21 +17,19 @@ Environment Variables:
 """
 
 import argparse
-import base64
 import hashlib
 import json
 import os
 import secrets
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List
 
 try:
     from github import Github
-    from cryptography.fernet import Fernet
 except ImportError:
-    print("Error: Install dependencies: pip install PyGithub cryptography")
+    print("Error: Install dependencies: pip install PyGithub")
     sys.exit(1)
 
 
@@ -198,8 +196,6 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
-
-from datetime import timedelta
 
 if __name__ == '__main__':
     main()

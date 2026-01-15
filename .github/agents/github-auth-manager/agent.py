@@ -5,7 +5,6 @@ Automates GitHub authentication workflows.
 """
 
 import argparse, json, os, sys
-from datetime import datetime
 from pathlib import Path
 
 # Add parent paths for imports

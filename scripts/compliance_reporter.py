@@ -71,7 +71,9 @@ class ComplianceReporter:
             'compliance_score': 0
         }
         
-        # Count MFA-enabled users (placeholder)
+        # Count MFA-enabled users
+        # Note: Accessing internal state for counting purposes only
+        # In production, add a public method get_mfa_user_count() to MFAProvider
         data['mfa_enabled_users'] = len(self.mfa._totp_secrets)
         data['total_users'] = max(10, data['mfa_enabled_users'])  # Mock data
         

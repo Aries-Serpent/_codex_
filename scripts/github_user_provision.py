@@ -9,7 +9,7 @@ Usage:
 """
 
 import argparse, json, os, sys
-from datetime import datetime
+from datetime import datetime, timedelta
 try:
     from github import Github
     import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -30,7 +30,7 @@ class GitHubUserProvisioner:
         
         # Generate MFA secret
         secret = self.mfa.generate_totp_secret(username)
-        uri = secret.get_provisioning_uri(email, issuer_name="Codex")
+        _ = secret.get_provisioning_uri(email, issuer_name="Codex")  # URI generated but not logged for security
         backup_codes = self.mfa.generate_backup_codes(username, count=10)
         
         # Create enrollment data
@@ -84,6 +84,5 @@ def main():
     else:
         parser.print_help()
 
-from datetime import timedelta
 if __name__ == '__main__':
     main()

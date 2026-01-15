@@ -5,7 +5,6 @@ Optimizes GitHub Actions workflows for auth.
 """
 
 import argparse, json, os, sys
-from pathlib import Path
 
 try:
     from github import Github

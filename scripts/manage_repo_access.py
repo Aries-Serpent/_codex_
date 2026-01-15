@@ -25,8 +25,8 @@ class RepoAccessManager:
         
     def check_user_mfa(self, username: str) -> bool:
         """Check if user has MFA enabled."""
-        # Placeholder - in production, query auth system
-        return bool(self.mfa.get_totp_secret(username))
+        # Use the public method to check MFA status
+        return self.mfa.is_mfa_enabled(username)
     
     def enforce_mfa_access(self, repo_name: str) -> dict:
         """Enforce MFA requirement for repository access."""

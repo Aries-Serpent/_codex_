@@ -37,7 +37,8 @@ class MFAEnrollmentAutomator:
         unenrolled = []
         
         for collab in repo.get_collaborators():
-            if not self.mfa.get_totp_secret(collab.login):
+            # Check if user has MFA enabled
+            if not self.mfa.is_mfa_enabled(collab.login):
                 unenrolled.append(collab.login)
                 print(f"  • {collab.login}")
         
@@ -53,8 +54,8 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
-                uri = secret.get_provisioning_uri(f"{username}@github", issuer_name="Codex")
-                backup_codes = self.mfa.generate_backup_codes(username, count=10)
+                _ = secret.get_provisioning_uri(f"{username}@github", issuer_name="Codex")  # URI generated but not logged
+                _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 
                 results['enrolled'].append({
                     'username': username,
