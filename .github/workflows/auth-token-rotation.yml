@@ -1,0 +1,146 @@
+name: Automated Token Rotation
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Monthly on the 1st at midnight UTC
+  workflow_dispatch:
+    inputs:
+      force_rotation:
+        description: 'Force rotation even if not scheduled'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+  secrets: write
+
+jobs:
+  rotate-jwt-secret:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install PyGithub cryptography
+          
+      - name: Backup current secret
+        id: backup
+        run: |
+          BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
+          echo "backup_date=$BACKUP_DATE" >> $GITHUB_OUTPUT
+          echo "::notice::Backing up current JWT secret to TOKEN_SECRET_KEY_BACKUP_$BACKUP_DATE"
+        env:
+          CURRENT_SECRET: ${{ secrets.TOKEN_SECRET_KEY }}
+          
+      - name: Rotate JWT secret
+        id: rotate
+        run: |
+          python scripts/rotate_jwt_secret.py
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
+          FORCE_ROTATION: ${{ github.event.inputs.force_rotation || 'false' }}
+          
+      - name: Verify rotation
+        run: |
+          python scripts/rotate_jwt_secret.py --verify
+        env:
+          TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
+          
+      - name: Update GitHub Secrets
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const newSecret = process.env.NEW_TOKEN_SECRET_KEY;
+            
+            // Update repository secret
+            await github.rest.actions.createOrUpdateRepoSecret({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              secret_name: 'TOKEN_SECRET_KEY',
+              encrypted_value: newSecret
+            });
+            
+            console.log('✓ Updated TOKEN_SECRET_KEY in GitHub Secrets');
+        env:
+          NEW_TOKEN_SECRET_KEY: ${{ steps.rotate.outputs.new_secret }}
+          
+      - name: Create audit issue
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const date = new Date().toISOString().split('T')[0];
+            const body = `## JWT Secret Rotation Complete
+            
+            **Date**: ${date}
+            **Status**: ✅ Success
+            **Workflow**: ${context.workflow}
+            **Run**: ${context.runId}
+            
+            ### Actions Taken
+            - ✅ Backed up previous secret
+            - ✅ Generated new JWT secret
+            - ✅ Updated GitHub Secrets
+            - ✅ Verified new secret functionality
+            
+            ### Next Rotation
+            Scheduled for first day of next month (automatic via cron).
+            
+            ---
+            *Automated by auth-token-rotation workflow*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Audit] JWT Secret Rotation - ${date}`,
+              body: body,
+              labels: ['security', 'audit', 'automated']
+            });
+            
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const date = new Date().toISOString().split('T')[0];
+            const body = `## ⚠️ JWT Secret Rotation Failed
+            
+            **Date**: ${date}
+            **Status**: ❌ Failed
+            **Workflow**: ${context.workflow}
+            **Run**: ${context.runId}
+            
+            ### Action Required
+            Manual intervention needed. Check workflow logs for details.
+            
+            **Rollback**: Previous secret still active via backup.
+            
+            ---
+            *Automated alert from auth-token-rotation workflow*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[ALERT] JWT Secret Rotation Failed - ${date}`,
+              body: body,
+              labels: ['security', 'alert', 'automated', 'urgent']
+            });

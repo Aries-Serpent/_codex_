@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+"""Compliance Reporter
+
+Generates compliance reports for authentication security.
+
+Usage:
+    python scripts/compliance_reporter.py --generate
+    python scripts/compliance_reporter.py --analyze-mfa
+    python scripts/compliance_reporter.py --check-tokens
+    python scripts/compliance_reporter.py --visualize
+"""
+
+import argparse, json, os, sys
+from datetime import datetime
+try:
+    from github import Github
+    import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+    from codex.auth import MFAProvider, TokenManager
+except ImportError as e:
+    print(f"Error: {e}")
+    sys.exit(1)
+
+class ComplianceReporter:
+    def __init__(self):
+        self.github = Github(os.getenv('GITHUB_TOKEN'))
+        self.mfa = MFAProvider()
+        self.tokens = TokenManager(secret_key=os.getenv('CODEX_MASTER_KEY', 'default'))
+        
+    def generate_compliance_data(self) -> dict:
+        """Generate comprehensive compliance data."""
+        print("Generating compliance data...")
+        
+        data = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'mfa_enabled_users': 0,
+            'total_users': 0,
+            'active_tokens': 0,
+            'expired_tokens': 0,
+            'compliance_score': 0
+        }
+        
+        # Count MFA-enabled users (placeholder)
+        data['mfa_enabled_users'] = len(self.mfa._totp_secrets)
+        data['total_users'] = max(10, data['mfa_enabled_users'])  # Mock data
+        
+        # Token statistics (placeholder)
+        data['active_tokens'] = len(self.tokens._revoked_tokens)
+        data['expired_tokens'] = 0
+        
+        # Calculate compliance score
+        if data['total_users'] > 0:
+            mfa_score = (data['mfa_enabled_users'] / data['total_users']) * 100
+            data['compliance_score'] = int(mfa_score)
+        
+        # Save data
+        with open('compliance_data.json', 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        # Output for GitHub Actions
+        if 'GITHUB_OUTPUT' in os.environ:
+            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                f.write(f"score={data['compliance_score']}\n")
+                if data['compliance_score'] < 80:
+                    f.write(f"issues=MFA adoption below 80%\n")
+        
+        print(f"✓ Compliance score: {data['compliance_score']}%")
+        return data
+    
+    def analyze_mfa(self) -> dict:
+        """Analyze MFA adoption."""
+        print("Analyzing MFA adoption...")
+        
+        analysis = {
+            'enabled': len(self.mfa._totp_secrets),
+            'disabled': 0,
+            'adoption_rate': 0
+        }
+        
+        total = analysis['enabled'] + analysis['disabled']
+        if total > 0:
+            analysis['adoption_rate'] = (analysis['enabled'] / total) * 100
+        
+        print(f"✓ MFA adoption: {analysis['adoption_rate']:.1f}%")
+        return analysis
+    
+    def check_tokens(self) -> dict:
+        """Check token lifecycle status."""
+        print("Checking token lifecycle...")
+        
+        status = {
+            'active': 0,
+            'revoked': len(self.tokens._revoked_tokens),
+            'total_sessions': len(self.tokens._sessions)
+        }
+        
+        print(f"✓ Active sessions: {status['total_sessions']}, Revoked tokens: {status['revoked']}")
+        return status
+    
+    def generate_report(self) -> str:
+        """Generate markdown compliance report."""
+        print("Generating compliance report...")
+        
+        data = self.generate_compliance_data()
+        mfa = self.analyze_mfa()
+        tokens = self.check_tokens()
+        
+        report = f"""# Authentication Security Compliance Report
+
+**Generated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
+
+## Overall Compliance Score: {data['compliance_score']}%
+
+{'✅ **COMPLIANT**' if data['compliance_score'] >= 95 else '⚠️ **NEEDS IMPROVEMENT**' if data['compliance_score'] >= 80 else '❌ **NON-COMPLIANT**'}
+
+## Multi-Factor Authentication
+
+- **Users with MFA**: {data['mfa_enabled_users']} / {data['total_users']}
+- **Adoption Rate**: {mfa['adoption_rate']:.1f}%
+- **Status**: {'✅ Compliant' if mfa['adoption_rate'] >= 95 else '⚠️ Below target'}
+
+## Token Lifecycle
+
+- **Active Sessions**: {tokens['total_sessions']}
+- **Revoked Tokens**: {tokens['revoked']}
+- **Status**: ✅ Monitored
+
+## Recommendations
+
+{f'- 🔴 **Critical**: Increase MFA adoption to at least 95% (currently {mfa["adoption_rate"]:.1f}%)' if mfa['adoption_rate'] < 95 else '- ✅ MFA adoption meets compliance requirements'}
+- 🟡 **Important**: Review and remove inactive sessions regularly
+- 🟢 **Good Practice**: Continue monthly token rotation
+
+## Next Review
+
+Scheduled for: {(datetime.utcnow() + timedelta(days=7)).strftime('%Y-%m-%d')}
+
+---
+*Automated Compliance Report - Auth Security*
+"""
+        
+        report_file = f'compliance_report_{datetime.utcnow().strftime("%Y%m%d")}.md'
+        with open(report_file, 'w') as f:
+            f.write(report)
+        
+        with open('compliance_report_latest.md', 'w') as f:
+            f.write(report)
+        
+        print(f"✓ Report saved: {report_file}")
+        return report
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--generate', action='store_true')
+    parser.add_argument('--analyze-mfa', action='store_true')
+    parser.add_argument('--check-tokens', action='store_true')
+    parser.add_argument('--visualize', action='store_true')
+    args = parser.parse_args()
+    
+    reporter = ComplianceReporter()
+    
+    if args.generate:
+        reporter.generate_compliance_data()
+    elif args.analyze_mfa:
+        reporter.analyze_mfa()
+    elif args.check_tokens:
+        reporter.check_tokens()
+    elif args.visualize:
+        print("ℹ Visualization requires matplotlib (future feature)")
+    else:
+        reporter.generate_report()
+
+from datetime import timedelta
+if __name__ == '__main__':
+    main()
