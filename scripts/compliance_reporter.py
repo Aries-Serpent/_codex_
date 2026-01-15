@@ -12,6 +12,7 @@ Usage:
 
 import argparse, json, os, sys
 from datetime import datetime
+from cryptography.fernet import Fernet
 try:
     from github import Github
     import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -25,6 +26,11 @@ class ComplianceReporter:
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
         self.tokens = TokenManager(secret_key=os.getenv('CODEX_MASTER_KEY', 'default'))
+        # Encryption key for compliance reports; must be a valid Fernet key.
+        report_key = os.getenv('COMPLIANCE_REPORT_KEY')
+        if not report_key:
+            raise RuntimeError("COMPLIANCE_REPORT_KEY environment variable must be set for report encryption")
+        self.report_cipher = Fernet(report_key.encode('utf-8') if isinstance(report_key, str) else report_key)
 
     def _sanitize_sensitive_fields(self, data: dict) -> dict:
         """
@@ -139,13 +145,14 @@ class ComplianceReporter:
 **Generated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
 
 ## Overall Compliance Score: {data['compliance_score']}%
+        encrypted_report = self.report_cipher.encrypt(report.encode('utf-8'))
+        with open(report_file, 'wb') as f:
+            f.write(encrypted_report)
 
-{'✅ **COMPLIANT**' if data['compliance_score'] >= 95 else '⚠️ **NEEDS IMPROVEMENT**' if data['compliance_score'] >= 80 else '❌ **NON-COMPLIANT**'}
-
-## Multi-Factor Authentication
-
+        with open('compliance_report_latest.md', 'wb') as f:
+            f.write(encrypted_report)
 - **Users with MFA**: {data['mfa_enabled_users']} / {data['total_users']}
-- **Adoption Rate**: {mfa['adoption_rate']:.1f}%
+        print(f"✓ Report saved (encrypted): {report_file}")
 - **Status**: {'✅ Compliant' if mfa['adoption_rate'] >= 95 else '⚠️ Below target'}
 
 ## Token Lifecycle
