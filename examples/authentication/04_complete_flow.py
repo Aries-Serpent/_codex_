@@ -203,7 +203,7 @@ class AuthenticationDemo:
         
         print(f"\n✓ Step 2: MFA setup complete")
         print(f"  Secret generated: Yes")
-        print(f"  Backup codes: {mfa_data['remaining_codes']}")
+        print("  Backup codes: [redacted, generated successfully]")
         print(f"  ⚠️  Secret data secured (not logged in production)")
         
         # Step 3: Verify MFA
