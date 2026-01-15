@@ -138,7 +138,7 @@ class GitHubSecretsManager:
                 validations.append({'test': name, 'passed': False})
                 all_valid = False
             else:
-                print(f"✓ Valid secret: {name}")
+                print("✓ Secret passed validation")
                 validations.append({'test': name, 'passed': True})
         
         # Save validation results
