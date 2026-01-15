@@ -291,7 +291,7 @@ EOFreport
           fi
       
       - name: Comment on PR
-        if: github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != ''
+        if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != '' }}
         uses: actions/github-script@v7
         with:
           script: |
