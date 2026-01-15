@@ -14,7 +14,7 @@ Usage:
 """
 
 from src.codex.auth import OAuthManager, MFAProvider, TokenManager
-import time
+import time, sys
 
 
 class SecurityValidator:
