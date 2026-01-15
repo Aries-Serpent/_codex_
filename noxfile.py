@@ -179,7 +179,8 @@ def _dependency_plan(session: nox.Session) -> None:
 def _toml_fail_under_from_str(text: str) -> int | None:
     try:
         data = tomllib.loads(text)
-    except Exception:
+    except (tomllib.TOMLDecodeError, ValueError, KeyError) as e:
+        # Catch specific TOML parsing errors - don't hide unexpected exceptions
         return None
     report = data.get("tool", {}).get("coverage", {}).get("report", {})
     value = report.get("fail_under")

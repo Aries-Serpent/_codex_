@@ -167,7 +167,7 @@ class QAWalkthroughValidator:
                     [tool, arg],
                     capture_output=True,
                     text=True,
-                    timeout=15,  # Increased timeout for slower systems
+                    timeout=15,  # 15-second timeout to accommodate slower systems while preventing hangs
                     shell=False,  # Explicitly set shell=False for security
                     check=False   # Don't raise on non-zero exit
                 )

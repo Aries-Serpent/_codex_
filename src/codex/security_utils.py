@@ -9,12 +9,12 @@ import re
 from typing import Optional
 
 
-def redact_sensitive_value(value: str, show_preview: bool = False) -> str:
+def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> str:
     """
     Redact a sensitive value for safe logging.
     
     Args:
-        value: The sensitive value to redact
+        value: The sensitive value to redact (can be None)
         show_preview: If True, show first/last 4 chars (DEVELOPMENT/DEBUG ONLY - DO NOT USE IN PRODUCTION)
         
     Returns:

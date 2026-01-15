@@ -39,10 +39,6 @@ except Exception:  # pragma: no cover - allow graceful degradation when PEFT is 
 LOGGER = logging.getLogger(__name__)
 
 
-def import_module(name: str) -> Any:
-    return importlib.import_module(name)
-
-
 if torch is not None:
     _DTYPE_MAP: dict[str, torch.dtype] = {
         "fp32": torch.float32,
@@ -317,7 +313,7 @@ def apply_lora_if_configured(model: PreTrainedModel, cfg: LoraSettings) -> PreTr
     if not cfg.enabled:
         return model
     try:
-        peft_module = import_module("peft")
+        peft_module = importlib.import_module("peft")
     except ModuleNotFoundError as exc:  # pragma: no cover - optional dep guard
         raise RuntimeError("peft is required for LoRA support but is not installed") from exc
 

@@ -24,14 +24,26 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 # Import security utilities
 try:
-    from src.codex.security_utils import redact_dict_with_secret_keys
+    from src.codex.security_utils import redact_dict_with_secret_keys, sanitize_log_message
 except ImportError:
     # Fallback if security_utils not available.
-    # NOTE: This fallback mirrors the behavior of
-    # src.codex.security_utils.redact_dict_with_secret_keys and MUST be kept
-    # in sync with that implementation if it changes.
+    # NOTE: This fallback mirrors the behavior of src.codex.security_utils functions
+    # and MUST be kept in sync with those implementations if they change.
     def redact_dict_with_secret_keys(data):
         return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
+    
+    def sanitize_log_message(message: str) -> str:
+        """Fallback sanitization: redact common sensitive patterns."""
+        import re
+        patterns = [
+            (r'ghp_[A-Za-z0-9]{36,}', '[REDACTED_GITHUB_TOKEN]'),
+            (r'github_pat_[A-Za-z0-9_]{82}', '[REDACTED_GITHUB_PAT]'),
+            (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)', '[REDACTED]'),
+        ]
+        result = message
+        for pattern, replacement in patterns:
+            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+        return result
 
 # Import existing automation scripts
 try:
@@ -116,28 +128,33 @@ class AdminAutomationAgent:
         }
     
     def log_task(self, task: str, status: str, message: str, details: Optional[Dict] = None):
-        """Log task execution."""
+        """
+        Log task execution with automatic sanitization of sensitive information.
+        
+        Security: All messages are sanitized before logging to prevent clear-text
+        exposure of sensitive data (CodeQL alerts #3318, #3319, #3320, #3321, #3342, #3343, #3344, #3345).
+        """
+        # Security: Sanitize message before storing or logging to break taint flow
+        safe_message = sanitize_log_message(message)
+        
         task_result = {
             "task": task,
             "status": status,
-            "message": message,
+            "message": safe_message,  # Store sanitized version
             "details": details or {},
             "timestamp": datetime.now(UTC).isoformat()
         }
         self.results["tasks"].append(task_result)
         
+        # Log with sanitized message to prevent clear-text logging
         if status == "success":
-            # Security: Sanitize task names - CodeQL alert #3318
-            logger.info(f"✅ Task completed: {message}")
+            logger.info(f"✅ Task completed: {safe_message}")
         elif status == "error":
-            # Security: Sanitize task names - CodeQL alert #3319
-            logger.error(f"❌ Task error: {message}")
+            logger.error(f"❌ Task error: {safe_message}")
         elif status == "warning":
-            # Security: Sanitize task names - CodeQL alert #3320
-            logger.warning(f"⚠️  Task warning: {message}")
+            logger.warning(f"⚠️  Task warning: {safe_message}")
         else:
-            # Security: Sanitize task names - CodeQL alert #3321
-            logger.info(f"ℹ️  Task info: {message}")
+            logger.info(f"ℹ️  Task info: {safe_message}")
     
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
