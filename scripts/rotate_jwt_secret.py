@@ -291,8 +291,7 @@ class JWTSecretRotator:
         
         return {
             'status': 'success',
-            'backup_timestamp': backup_data['timestamp'],
-            'restored_secret': restored_secret[:20] + '...'
+            'backup_timestamp': backup_data['timestamp']
         }
 
 
