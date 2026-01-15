@@ -401,7 +401,8 @@ class TokenManager:
         except ValueError:
             # Token is invalid or malformed; nothing to revoke
             # This is expected for malformed tokens and not an error condition
-            pass
+            # Invalid or malformed token; treat as "nothing to revoke"
+            return False
         
         return False
     
