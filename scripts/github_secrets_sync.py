@@ -98,7 +98,7 @@ class GitHubSecretsManager:
                 
                 if self.repo:
                     self.repo.create_secret(name, new_value)
-                    print(f"✓ Rotated secret: {name}")
+                    print("✓ Rotated secret")
                     results['rotated'].append({'name': name, 'status': 'success'})
                 else:
                     print(f"⚠ Skipped {name} (no repo connection)")
