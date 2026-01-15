@@ -184,7 +184,7 @@ def _toml_fail_under_from_str(text: str) -> int | None:
     report = data.get("tool", {}).get("coverage", {}).get("report", {})
     value = report.get("fail_under")
     if isinstance(value, int):
-        return str(value)
+        return int(value)
     return None
 
 

@@ -3,6 +3,7 @@ Integration tests for admin automation agent.
 Tests the complete workflow of agent operations.
 """
 
+import os
 import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch

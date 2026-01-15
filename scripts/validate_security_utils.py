@@ -39,10 +39,10 @@ def test_redact_secret_name():
     print("Testing redact_secret_name...")
     
     result = redact_secret_name("API_KEY")
-    assert result == 'secret:[REDACTED]', f"Expected 'secret:[REDACTED]', got '{result}'"
+    assert result == '[REDACTED_SECRET_NAME]', f"Expected '[REDACTED_SECRET_NAME]', got '{result}'"
     
     result = redact_secret_name("PROD_DATABASE_PASSWORD")
-    assert result == 'secret:[REDACTED]', f"Expected 'secret:[REDACTED]', got '{result}'"
+    assert result == '[REDACTED_SECRET_NAME]', f"Expected '[REDACTED_SECRET_NAME]', got '{result}'"
     
     result = redact_secret_name("")
     assert result == '[UNNAMED_SECRET]', f"Expected '[UNNAMED_SECRET]', got '{result}'"

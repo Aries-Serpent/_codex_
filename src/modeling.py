@@ -175,10 +175,6 @@ class ModelInitConfig:
     bf16_require_capability: bool = False
 
 
-# Alias removed - use LoraSettings directly (PEP 8 naming convention)
-# LoRASettings = LoraSettings  # This assignment was unused and immediately redefined
-
-
 def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
     mapping = _normalise_mapping(config)
     model_name = _resolve_value(
