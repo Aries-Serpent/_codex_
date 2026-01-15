@@ -5,6 +5,15 @@ Example: Multi-Factor Authentication Setup and Verification
 This script demonstrates setting up TOTP-based MFA with backup codes
 and verifying authentication codes.
 
+⚠️  SECURITY WARNING - DEMONSTRATION ONLY:
+    This example displays sensitive secrets (TOTP keys, backup codes) to console
+    for educational purposes. In production environments:
+    - NEVER log or print secrets to console, logs, or files
+    - Display secrets only in secure, authenticated web portals
+    - Use encrypted channels (HTTPS, encrypted email) for secret transmission
+    - Implement secure secret storage with encryption at rest
+    - Follow OWASP guidelines for credential management
+
 Usage:
     python examples/authentication/02_mfa_setup.py
 """
@@ -21,27 +30,40 @@ from src.codex.auth.mfa_provider import MFAProvider
 
 
 def display_qr_instructions(uri: str, secret: str):
-    """Display instructions for QR code setup."""
+    """
+    Display instructions for QR code setup.
+    
+    SECURITY WARNING: This is a demonstration script that displays sensitive
+    TOTP secrets. In production, secrets should NEVER be logged or displayed
+    in plain text. Use secure channels to transmit secrets to users.
+    """
     print("\n" + "=" * 60)
     print("Setup Authenticator App")
     print("=" * 60)
     
+    print("\n⚠️  SECURITY WARNING: This demo displays sensitive secrets.")
+    print("    In production, use secure channels (encrypted email, secure portal).")
+    
     print("\n📱 Option 1: Scan QR Code (Recommended)")
     print("-" * 60)
     print("Use a QR code generator with this URL:")
-    print(f"\n{uri}\n")
+    # In production, generate QR code image and display securely
+    # This is demo-only - showing partial URI for educational purposes
+    print(f"\n[DEMO ONLY - SECRET VISIBLE]: {uri[:50]}...\n")
     print("Or install qrcode library and generate QR code:")
     print("  pip install qrcode[pil]")
     print("  # Then use qrcode.make(uri) to generate image")
     
     print("\n✏️  Option 2: Manual Entry")
     print("-" * 60)
-    print(f"  Secret Key: {secret}")
+    # In production, display this through secure authenticated portal only
+    print(f"  Secret Key: [DEMO ONLY] {secret[:8]}...{secret[-4:]}")
     print(f"  Account: user@example.com")
     print(f"  Type: Time-based")
     print(f"  Algorithm: SHA1")
     print(f"  Digits: 6")
     print(f"  Period: 30 seconds")
+    print("\n⚠️  Production: Never log or print secrets in plain text!")
 
 
 def main():

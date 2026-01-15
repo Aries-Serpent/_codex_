@@ -8,6 +8,15 @@ This script demonstrates a complete authentication flow combining:
 - Token Management
 - Session Handling
 
+⚠️  SECURITY WARNING - DEMONSTRATION ONLY:
+    This example displays sensitive data (tokens, secrets, session IDs) to console
+    for educational purposes. In production environments:
+    - NEVER log tokens, secrets, or sensitive session data
+    - Store tokens in httpOnly cookies or secure storage only
+    - Use encrypted channels for all sensitive data transmission
+    - Implement proper secret management (AWS KMS, HashiCorp Vault)
+    - Follow OWASP guidelines for authentication security
+
 Usage:
     1. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET
     2. Run: python examples/authentication/04_complete_flow.py
@@ -64,10 +73,17 @@ class AuthenticationDemo:
         }
     
     def setup_mfa(self, user_id: str) -> dict:
-        """Setup MFA for user."""
+        """
+        Setup MFA for user.
+        
+        SECURITY WARNING: This demo displays sensitive MFA secrets and backup codes.
+        In production, secrets must be transmitted through secure, authenticated channels only.
+        """
         print("\n" + "=" * 60)
         print("MULTI-FACTOR AUTHENTICATION SETUP")
         print("=" * 60)
+        
+        print("\n⚠️  DEMO MODE: Displaying sensitive secrets (never do this in production!)")
         
         # Generate TOTP secret
         secret = self.mfa.generate_totp_secret(user_id, issuer="Codex")
@@ -77,14 +93,22 @@ class AuthenticationDemo:
         
         print(f"\n✓ MFA secret generated")
         print(f"\n📱 Setup URL:")
-        print(f"{uri}")
+        # In production: Generate QR code image, display in secure authenticated portal
+        print(f"[DEMO ONLY - PARTIAL]: {uri[:60]}...")
         
         # Generate backup codes
         backup_codes = self.mfa.generate_backup_codes(user_id, count=10)
         
         print(f"\n📋 Backup Codes:")
+        # In production: Display once in secure authenticated portal, require acknowledgment
         for i, code in enumerate(backup_codes, 1):
-            print(f"  {i:2d}. {code}")
+            print(f"  {i:2d}. [DEMO] {code}")
+        
+        print("\n⚠️  Production Security Requirements:")
+        print("   - Display secrets only in authenticated, encrypted sessions")
+        print("   - Never log secrets to console, files, or logging systems")
+        print("   - Use secure delivery methods (encrypted email, secure portal)")
+        print("   - Require user acknowledgment before closing setup screen")
         
         return {
             'secret': secret.secret,
@@ -115,7 +139,12 @@ class AuthenticationDemo:
         return is_valid
     
     def create_session(self, user_id: str, mfa_verified: bool) -> dict:
-        """Create authenticated session."""
+        """
+        Create authenticated session.
+        
+        SECURITY WARNING: This demo displays token prefixes and session IDs.
+        In production, tokens should NEVER be logged. Use secure storage only.
+        """
         print("\n" + "=" * 60)
         print("SESSION CREATION")
         print("=" * 60)
@@ -131,10 +160,11 @@ class AuthenticationDemo:
         )
         
         print(f"\n✓ Tokens generated:")
-        print(f"  Access token: {access_token[:30]}...")
-        print(f"  Refresh token: {refresh_token[:30]}...")
-        print(f"  Session token: {session_token[:30]}...")
-        print(f"  Session ID: {session_id}")
+        # Production: NEVER log tokens. Store securely in httpOnly cookies or secure storage
+        print(f"  Access token: [REDACTED - {len(access_token)} chars]")
+        print(f"  Refresh token: [REDACTED - {len(refresh_token)} chars]")
+        print(f"  Session token: [REDACTED - {len(session_token)} chars]")
+        print(f"  Session ID: {session_id[:16]}...{session_id[-8:]}")
         
         # Get session info
         session = self.tokens.get_session(session_id)
@@ -144,6 +174,8 @@ class AuthenticationDemo:
             print(f"  MFA verified: {session.mfa_verified}")
             print(f"  IP: {session.ip_address}")
             print(f"  Active: {session.is_active()}")
+        
+        print("\n⚠️  Production: Never log tokens or sensitive session data!")
         
         return {
             'access_token': access_token,
@@ -172,6 +204,7 @@ class AuthenticationDemo:
         print(f"\n✓ Step 2: MFA setup complete")
         print(f"  Secret generated: Yes")
         print(f"  Backup codes: {mfa_data['remaining_codes']}")
+        print(f"  ⚠️  Secret data secured (not logged in production)")
         
         # Step 3: Verify MFA
         mfa_verified = self.verify_mfa(user_id, mfa_data['secret'])
