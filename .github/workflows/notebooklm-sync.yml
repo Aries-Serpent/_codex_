@@ -190,7 +190,7 @@ EOF
           echo "::endgroup::"
       
       - name: Fail if Secrets Detected
-        if: steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true'
+        if: ${{ steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true' }}
         run: |
           echo "❌ SECURITY ALERT: Secrets detected in consolidation output!"
           echo "Workflow terminated to prevent credential exposure."
@@ -213,7 +213,7 @@ EOF
           remove-outdated: true
       
       - name: Notify Sync Complete
-        if: success()
+        if: ${{ success() }}
         env:
           WEBHOOK_URL: ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
         run: |
@@ -250,7 +250,7 @@ EOF
           fi
       
       - name: Upload Artifact (Backup)
-        if: always()
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: codex-sync-${{ github.sha }}
@@ -259,7 +259,7 @@ EOF
           compression-level: 9
       
       - name: Generate Job Summary
-        if: always()
+        if: ${{ always() }}
         run: |
           echo "## 📊 NotebookLM Sync Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
