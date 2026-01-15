@@ -11,7 +11,7 @@ import json
 import secrets
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional, Any, List, Set
+from typing import Dict, Optional, Any, List, Set, Tuple
 from enum import Enum
 
 from ..security_utils import sanitize_log_message
@@ -276,7 +276,7 @@ class TokenManager:
     
     def generate_session_token(self, user_id: str, mfa_verified: bool = False,
                               ip_address: Optional[str] = None,
-                              user_agent: Optional[str] = None) -> tuple[str, str]:
+                              user_agent: Optional[str] = None) -> Tuple[str, str]:
         """
         Generate session token and create session.
         
@@ -399,9 +399,7 @@ class TokenManager:
                 
                 return True
         except ValueError:
-            # Token is invalid or malformed; nothing to revoke
-            # This is expected for malformed tokens and not an error condition
-            # Invalid or malformed token; treat as "nothing to revoke"
+            # Invalid or malformed token; nothing to revoke (not an error condition)
             return False
         
         return False

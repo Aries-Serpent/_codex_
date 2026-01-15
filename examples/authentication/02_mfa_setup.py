@@ -33,9 +33,17 @@ def display_qr_instructions(uri: str, secret: str):
     """
     Display instructions for QR code setup.
     
+    Note:
+        The ``uri`` and ``secret`` parameters are accepted for API completeness
+        but are intentionally not used or printed in this demonstration
+        function. This avoids accidentally exposing sensitive values while
+        still showing what a production function signature might look like.
+    
     SECURITY WARNING: This is a demonstration script that displays sensitive
     TOTP secrets. In production, secrets should NEVER be logged or displayed
-    in plain text. Use secure channels to transmit secrets to users.
+    in plain text. Use secure channels to transmit secrets to users, and use
+    the provisioning URI and secret only in secure flows (e.g., to generate
+    a QR code image rendered in an authenticated web UI).
     """
     print("\n" + "=" * 60)
     print("Setup Authenticator App")

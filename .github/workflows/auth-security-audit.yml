@@ -185,7 +185,7 @@ jobs:
             try {
               const bandit = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));
               comment += `### Bandit Scanner\n`;
-              comment += `- **Issues**: ${bandit.metrics._totals.length || 0}\n`;
+              comment += `- **Issues**: ${Object.keys(bandit.metrics._totals || {}).length}\n`;
               comment += `- **Severity High**: ${bandit.metrics._totals.SEVERITY?.HIGH || 0}\n`;
               comment += `- **Severity Medium**: ${bandit.metrics._totals.SEVERITY?.MEDIUM || 0}\n\n`;
             } catch (e) {
