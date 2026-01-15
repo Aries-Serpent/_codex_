@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import importlib
+import inspect
 import logging
 logger = logging.getLogger(__name__)
 import os
@@ -138,6 +140,10 @@ def _resolve_device(name: str | None) -> str:
     return name
 
 
+def resolve_dtype(name: str | None) -> torch.dtype:
+    return _resolve_dtype(name)
+
+
 @dataclass
 class LoraSettings:
     """Configuration for optional LoRA/PEFT adaptation."""
@@ -171,6 +177,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         mapping,
         "model_name",
         "name",
+        "model_name_or_path",
         "pretrained_model_name_or_path",
     )
     if not model_name:
@@ -302,12 +309,15 @@ def _ensure_bf16_capability(
     LOGGER.warning("%s; continuing but results may be undefined", message)
 
 
-def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
+def apply_lora_if_configured(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
     if not cfg.enabled:
         return model
-    if LoraConfig is None or get_peft_model is None:  # pragma: no cover - optional dep guard
-        raise RuntimeError("peft is required for LoRA support but is not installed")
-    lora_cfg = LoraConfig(
+    try:
+        peft_module = importlib.import_module("peft")
+    except ModuleNotFoundError as exc:  # pragma: no cover - optional dep guard
+        raise RuntimeError("peft is required for LoRA support but is not installed") from exc
+
+    lora_cfg = peft_module.LoraConfig(
         r=cfg.r,
         lora_alpha=cfg.alpha,
         lora_dropout=cfg.dropout,
@@ -315,15 +325,27 @@ def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
         bias=cfg.bias,
         task_type=cfg.task_type,
     )
-    return get_peft_model(model, lora_cfg)
+    return peft_module.get_peft_model(model, lora_cfg)
 
 
-def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
+def load_model(
+    config: Mapping[str, Any] | ModelInitConfig | str,
+    *,
+    dtype: str | None = None,
+    device: str | None = None,
+) -> PreTrainedModel:
     """Load a model and apply optional LoRA adapters based on configuration."""
 
     if AutoModelForCausalLM is None:  # pragma: no cover - transformers missing at runtime
         raise RuntimeError("transformers is required to load models")
-    coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)
+    if isinstance(config, str):
+        coerced = ModelInitConfig(
+            model_name=config,
+            dtype=dtype or "float32",
+            device=device or "auto",
+        )
+    else:
+        coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)
     _ensure_torch()
     dtype = _resolve_dtype(coerced.dtype)
     device = _resolve_device(coerced.device)
@@ -341,11 +363,19 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
         require_capability=coerced.bf16_require_capability,
     )
 
+    from_pretrained = AutoModelForCausalLM.from_pretrained
+    try:
+        sig = inspect.signature(from_pretrained)
+    except (TypeError, ValueError):  # pragma: no cover - signature may be unavailable
+        sig = None
+    if sig is not None and not any(
+        param.kind == inspect.Parameter.VAR_KEYWORD for param in sig.parameters.values()
+    ):
+        load_kwargs = {k: v for k, v in load_kwargs.items() if k in sig.parameters}
+
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:
-        model = AutoModelForCausalLM.from_pretrained(
-            coerced.model_name, **load_kwargs
-        )  # nosec B615
+        model = from_pretrained(coerced.model_name, **load_kwargs)  # nosec B615
     except OSError as exc:  # pragma: no cover - offline friendly error propagation
         raise RuntimeError(
             f"Unable to load model '{coerced.model_name}'. "
@@ -369,7 +399,7 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
             coerced.lora.dropout,
             list(coerced.lora.target_modules),
         )
-        model = _apply_lora(model, coerced.lora)
+        model = apply_lora_if_configured(model, coerced.lora)
 
     return model
 
@@ -382,6 +412,10 @@ def load_model_and_tokenizer(
     coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)
     model = load_model(coerced)
     tokenizer = load_tokenizer(coerced)
+    if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):
+        tokenizer.pad_token = tokenizer.eos_token
+    if hasattr(tokenizer, "padding_side"):
+        tokenizer.padding_side = "left"
     return model, tokenizer
 
 

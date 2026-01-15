@@ -16142,3 +16142,19 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 [2025-09-20T05:37:18Z] Generated exhaustive daily status update for 2025-09-20
 
 ```
+## QA Walkthrough Master Plan - 2026-01-14
+
+- Added repository-wide QA walkthrough master plan and coverage path to 100% in `.codex/plans/`.
+- Added QA Walkthrough Agent definition for executing audit plan.
+- Registered QA Walkthrough Agent in specialized agents list.
+
+## Test Environment Remediation - 2026-01-14
+
+- Added pytest-timeout, hydra-core, and mlflow to test dependencies in requirements-test.txt.
+- Updated QA walkthrough plan with explicit pytest environment setup guidance.
+
+## 2026-01-14 Updates
+
+- Updated training/modeling/logging/data helpers to improve optional dependency handling, dataset splits, and MLflow tag/parameter logging.
+- Added Phase 10 agent stubs and refreshed HHG logistics monitoring/data configs.
+- Adjusted smoke/integration tests and API doc build script for predictable CLI and documentation behavior.

@@ -182,7 +182,7 @@ def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:
     return cast(BatchTokenizer, batch_encode)
 
 
-def build_dataloaders(
+def _build_dataloaders_from_config(
     tokenizer: Any,
     config: DataConfig,
 ) -> tuple[TorchDataLoaderType, TorchDataLoaderType | None]:
@@ -247,12 +247,51 @@ def build_dataloaders(
     return train_loader, val_loader
 
 
+def build_dataloaders(
+    data_path_or_tokenizer: Any,
+    tokenizer_or_config: Any,
+    *,
+    batch_size: int = 8,
+    max_length: int = 128,
+    split_ratio: Sequence[float] = (0.8, 0.2),
+    shuffle: bool = True,
+    seed: int = 42,
+    num_workers: int = 0,
+    validation_path: str | None = None,
+) -> tuple[TorchDataLoaderType, TorchDataLoaderType | None]:
+    """Create train/validation dataloaders with a legacy-friendly signature."""
+
+    if isinstance(tokenizer_or_config, DataConfig):
+        tokenizer = data_path_or_tokenizer
+        return _build_dataloaders_from_config(tokenizer, tokenizer_or_config)
+
+    if isinstance(data_path_or_tokenizer, (str, Path)):
+        if len(split_ratio) != 2:
+            raise ValueError("split_ratio must contain train and validation fractions")
+        ratio_total = float(sum(split_ratio))
+        if not 0.99 <= ratio_total <= 1.01:
+            raise ValueError("split_ratio values must sum to 1.0")
+        config = DataConfig(
+            dataset_path=str(data_path_or_tokenizer),
+            validation_path=validation_path,
+            batch_size=int(batch_size),
+            split_ratio=split_ratio,
+            shuffle=shuffle,
+            max_length=int(max_length),
+            seed=int(seed),
+            num_workers=int(num_workers),
+        )
+        return _build_dataloaders_from_config(tokenizer_or_config, config)
+
+    raise TypeError("build_dataloaders expects (tokenizer, DataConfig) or (path, tokenizer)")
+
+
 def build_text_classification_dataloaders(
     tokenizer: Any, config: DataLoaderConfig
 ) -> tuple[TorchDataLoaderType, TorchDataLoaderType | None]:
     """Compat shim that accepts :class:`DataLoaderConfig` inputs."""
 
-    return build_dataloaders(tokenizer, config.to_data_config())
+    return _build_dataloaders_from_config(tokenizer, config.to_data_config())
 
 
 def load_text_classification_dataset(path: str | Path) -> TextClassificationDataset:

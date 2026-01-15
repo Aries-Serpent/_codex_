@@ -12,6 +12,9 @@ This tool allows Copilot Agents with FULL ACCESS to:
 **Security**: Requires GITHUB_TOKEN or GH_TOKEN with repo and workflow scopes
 **Created**: 2026-01-13 (Phase 10 automation)
 **User Authorization**: mbaetiong granted FULL ACCESS via comment #3745423798
+
+SECURITY WARNING: This script handles sensitive credentials.
+Never log secret values or names in clear text. Use redaction utilities.
 """
 
 import os
@@ -200,7 +203,8 @@ class GitHubSecretsManager:
             response = requests.put(url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
             
-            logger.info(f"✅ Secret '{secret_name}' set successfully via API")
+            # Security: Don't log secret names - CodeQL alert #3329
+            logger.info(f"✅ Secret set successfully via API")
             return True
             
         except requests.exceptions.RequestException as e:
@@ -250,7 +254,8 @@ class GitHubSecretsManager:
             stdout, stderr = process.communicate(input=secret_value)
             
             if process.returncode == 0:
-                logger.info(f"✅ Secret '{secret_name}' set successfully via gh CLI")
+                # Security: Don't log secret names - CodeQL alert #3330
+                logger.info(f"✅ Secret set successfully via gh CLI")
                 return True
             else:
                 logger.error(f"❌ Failed to set secret via gh CLI: {stderr}")
@@ -284,10 +289,12 @@ class GitHubSecretsManager:
                 }
                 response = requests.get(url, headers=headers, timeout=30)
                 if response.status_code == 200:
-                    logger.info(f"✅ Secret '{secret_name}' exists")
+                    # Security: Don't log secret names - CodeQL alert #3331
+                    logger.info(f"✅ Secret exists")
                     return True
                 elif response.status_code == 404:
-                    logger.info(f"ℹ️  Secret '{secret_name}' does not exist")
+                    # Security: Don't log secret names - CodeQL alert #3332
+                    logger.info(f"ℹ️  Secret does not exist")
                     return False
                 else:
                     logger.warning(f"⚠️  Unexpected status code: {response.status_code}")
@@ -305,9 +312,11 @@ class GitHubSecretsManager:
             )
             exists = secret_name in result.stdout
             if exists:
-                logger.info(f"✅ Secret '{secret_name}' exists (verified via CLI)")
+                # Security: Don't log secret names - CodeQL alert #3333
+                logger.info(f"✅ Secret exists (verified via CLI)")
             else:
-                logger.info(f"ℹ️  Secret '{secret_name}' does not exist (verified via CLI)")
+                # Security: Don't log secret names - CodeQL alert #3334
+                logger.info(f"ℹ️  Secret does not exist (verified via CLI)")
             return exists
         except Exception as e:
             logger.warning(f"⚠️  CLI verification failed: {e}")
@@ -375,10 +384,12 @@ class GitHubSecretsManager:
         # 1. CODEX_MASTER_KEY
         secret_name = "CODEX_MASTER_KEY"
         if not force and self.verify_secret_exists(secret_name):
-            logger.info(f"ℹ️  {secret_name} already exists (use --force to regenerate)")
+            # Security: Don't log secret names - CodeQL alert #3335
+            logger.info(f"ℹ️  Secret already exists (use --force to regenerate)")
             results[secret_name] = "skipped"
         else:
-            logger.info(f"🔑 Generating {secret_name}...")
+            # Security: Don't log secret names - CodeQL alert #3336
+            logger.info(f"🔑 Generating secret...")
             key = self.generate_secure_key(32)  # 256-bit
             
             # Try API first, fallback to CLI
@@ -399,10 +410,12 @@ class GitHubSecretsManager:
         
         for secret_name in google_secrets:
             if self.verify_secret_exists(secret_name):
-                logger.info(f"✅ {secret_name} already configured")
+                # Security: Don't log secret names - CodeQL alert #3337
+                logger.info(f"✅ Secret already configured")
                 results[secret_name] = "exists"
             else:
-                logger.warning(f"⚠️  {secret_name} requires manual configuration")
+                # Security: Don't log secret names - CodeQL alert #3338
+                logger.warning(f"⚠️  Secret requires manual configuration")
                 logger.warning(f"    See: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md")
                 results[secret_name] = "manual_required"
         
@@ -501,7 +514,8 @@ def main():
         print("=" * 60)
         print("\n⚠️  Store securely immediately!")
         if args.name:
-            logger.info(f"Setting as {args.name}...")
+            # Security: Don't log secret names
+            logger.info(f"Setting secret...")
             if args.method in ["api", "auto"]:
                 success = manager.set_secret_api(args.name, key)
                 if not success and args.method == "auto":
@@ -538,8 +552,9 @@ def main():
         secrets = manager.list_secrets()
         print(f"\n📋 Secrets in {args.owner}/{args.repo}:")
         print("=" * 60)
-        for secret in secrets:
-            print(f"  • {secret}")
+        # Security: Don't log secret names - CodeQL alert #3339
+        for i, secret in enumerate(secrets, 1):
+            print(f"  {i}. [Secret configured]")
         print(f"\nTotal: {len(secrets)} secrets")
         return 0
     

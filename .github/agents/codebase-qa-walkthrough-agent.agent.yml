@@ -1,0 +1,137 @@
+name: Codebase QA Walkthrough Agent
+description: Performs comprehensive QA walkthroughs of code changes, architecture reviews, and quality assurance testing
+version: 1.0.0
+agent_type: quality_assurance
+category: testing
+
+# Agent capabilities
+capabilities:
+  - code_review
+  - architecture_analysis
+  - test_coverage_analysis
+  - security_review
+  - performance_analysis
+  - documentation_review
+  - best_practices_validation
+
+# Trigger patterns
+triggers:
+  commands:
+    - "@copilot qa walkthrough"
+    - "@copilot qa review"
+    - "@copilot quality assurance"
+    - "@copilot qa check"
+  
+  labels:
+    - qa-review-requested
+    - needs-qa
+    - quality-check
+  
+  files:
+    patterns:
+      - "**/*.py"
+      - "**/*.rs"
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.java"
+      - "**/*.go"
+      - "**/*.yml"
+      - "**/*.yaml"
+
+# Configuration
+config:
+  review_depth: comprehensive
+  include_tests: true
+  check_security: true
+  check_performance: true
+  check_documentation: true
+  fail_on_critical: true
+  generate_report: true
+
+# Quality criteria
+quality_criteria:
+  code_quality:
+    - proper_error_handling
+    - type_safety
+    - null_safety
+    - resource_management
+    - code_organization
+  
+  security:
+    - no_hardcoded_secrets
+    - input_validation
+    - sql_injection_prevention
+    - xss_prevention
+    - secure_dependencies
+  
+  performance:
+    - algorithmic_efficiency
+    - memory_management
+    - database_query_optimization
+    - caching_strategy
+    - concurrent_execution
+  
+  testing:
+    - unit_test_coverage
+    - integration_test_coverage
+    - edge_case_handling
+    - error_scenario_testing
+    - mock_usage
+  
+  documentation:
+    - function_docstrings
+    - class_documentation
+    - readme_completeness
+    - api_documentation
+    - inline_comments
+
+# Output format
+output:
+  format: markdown
+  sections:
+    - executive_summary
+    - critical_issues
+    - warnings
+    - recommendations
+    - test_results
+    - coverage_report
+    - action_items
+  
+  include_code_snippets: true
+  include_metrics: true
+  include_diagrams: true
+
+# Integration
+integrations:
+  github:
+    create_review_comments: true
+    update_pr_description: false
+    add_labels: true
+    request_changes_on_critical: true
+  
+  tools:
+    - pylint
+    - mypy
+    - ruff
+    - bandit
+    - safety
+    - pytest
+    - coverage
+
+# Permissions
+permissions:
+  read:
+    - contents
+    - pull_requests
+    - issues
+  
+  write:
+    - pull_requests  # For review comments
+    - issues  # For creating issues
+
+# Metadata
+metadata:
+  author: admin-automation-agent
+  maintainer: mbaetiong
+  documentation: .github/agents/codebase-qa-walkthrough-agent/README.md
+  examples: .github/agents/codebase-qa-walkthrough-agent/examples/

@@ -118,8 +118,9 @@ class TestSecurityProperties:
 
         sanitized1 = html.escape(text)
         sanitized2 = html.escape(sanitized1)
-        # After first escape, no more escaping needed for same chars
-        assert "&" not in sanitized1 or sanitized1.count("&amp;") == sanitized2.count("&amp;")
+        # Escaping twice should not introduce unsafe raw characters
+        assert "<" not in sanitized2 and ">" not in sanitized2
+        assert len(sanitized2) >= len(sanitized1)
 
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=50)
@@ -180,7 +181,10 @@ class TestErrorHandlingProperties:
         """Exponential backoff should increase with retries."""
         delays = [base**i for i in range(retries)]
         for i in range(1, len(delays)):
-            assert delays[i] > delays[i - 1]
+            if base <= 1.0:
+                assert delays[i] >= delays[i - 1]
+            else:
+                assert delays[i] > delays[i - 1]
 
     @given(st.lists(st.booleans(), min_size=1, max_size=20))
     @settings(max_examples=30)

@@ -6,4 +6,7 @@ path: ${oc.env:DATA_DIR, data/processed}
 # Directory containing raw CSV inputs for the pipeline.
 raw_dir: ${oc.env:DATA_RAW_DIR, data/raw}
 # Processed data directory; defaults to the legacy `path` value.
-processed_dir: ${path}
+# NOTE: Uses fully-qualified ${data.path} reference (not ${path}) to maintain
+# correct scoping in Hydra's config composition hierarchy. This pattern should
+# be used consistently when referencing values from the same config group.
+processed_dir: ${data.path}

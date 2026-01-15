@@ -5,6 +5,9 @@ Copilot Agent can run this NOW with GITHUB_ACTIONS token
 
 User Authorization: mbaetiong granted FULL ACCESS (comment #3745423798)
 Capabilities: GitHub API, CLI, MCP access enabled
+
+SECURITY WARNING: This script handles sensitive credentials.
+Never log secret values or names in clear text.
 """
 
 import os
@@ -12,6 +15,9 @@ import sys
 import json
 import subprocess
 from pathlib import Path
+
+# WARNING: Do NOT log secret names or values in clear text.
+# Use redaction for any sensitive information.
 
 def check_environment():
     """Check if we have the necessary tokens and tools."""
@@ -129,7 +135,8 @@ def main():
         print("Generating new CODEX_MASTER_KEY...")
         key = generate_codex_master_key()
         if key:
-            print(f"🔑 Generated 256-bit key: {key[:8]}...{key[-8:]}")
+            # Security: Don't log key values, even partial
+            print(f"🔑 Generated 256-bit key successfully")
             if inject_secret_via_cli("CODEX_MASTER_KEY", key):
                 print("✅ CODEX_MASTER_KEY configured successfully")
             else:
@@ -172,12 +179,16 @@ def main():
     ]
     
     configured_count = 0
-    for secret in secrets_to_check:
+    for idx, secret in enumerate(secrets_to_check, 1):
         if verify_secret_exists(secret):
-            print(f"✅ {secret}")
+            # Security: Don't log secret names - CodeQL alert #3340, #3341
+            # Use index for operational visibility
+            print(f"✅ Secret #{idx} configured")
             configured_count += 1
         else:
-            print(f"⏸️  {secret} - Not configured")
+            # Security: Don't log secret names - CodeQL alert #3340, #3341
+            # Use index for operational visibility
+            print(f"⏸️  Secret #{idx} not configured")
     
     print("")
     print(f"Progress: {configured_count}/{len(secrets_to_check)} secrets configured")
