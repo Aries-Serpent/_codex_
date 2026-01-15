@@ -88,7 +88,7 @@ class GitHubSecretsManager:
     
     def rotate_secrets(self, secret_names: List[str]) -> Dict[str, str]:
         """Rotate specified secrets."""
-        print(f"Rotating secrets: {', '.join(secret_names)}")
+        print(f"Rotating {len(secret_names)} secrets...")
         
         results = {'rotated': [], 'failed': []}
         
