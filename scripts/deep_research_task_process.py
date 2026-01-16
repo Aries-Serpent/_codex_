@@ -27,10 +27,7 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-# Line length (E501) suppressed for documentation tables and command strings that exceed 88 chars
-# ruff: noqa: E501
-# NOTE: This file intentionally uses a file-level E501 suppression to keep long documentation
-#       tables and example commands readable.
+# ruff: noqa: E501  # Allow long documentation tables and example commands for readability.
 
 from __future__ import annotations
 
