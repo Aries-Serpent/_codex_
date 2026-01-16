@@ -1,0 +1,65 @@
+name: github-deployment-gatekeeper
+version: 1.0.0
+tier: 1
+description: Validates deployments and enforces quality gates
+
+triggers:
+  - deployment
+  - workflow_dispatch
+
+permissions:
+  contents: read
+  deployments: write
+  checks: write
+  issues: write
+
+environment_variables:
+  required:
+    - GITHUB_TOKEN
+    - DEPLOYMENT_ENV
+  optional:
+    - AUTO_ROLLBACK
+    - HEALTH_CHECK_INTERVAL
+
+gates:
+  security:
+    enabled: true
+    max_alerts: 0
+    required_checks:
+      - codeql
+      - dependency_review
+  quality:
+    enabled: true
+    min_coverage: 80
+    max_complexity: 15
+    required_checks:
+      - tests
+      - linting
+  performance:
+    enabled: true
+    max_response_time: 2000  # ms
+    min_throughput: 1000  # req/s
+
+rollback:
+  enabled: true
+  auto_rollback: true
+  health_check_interval: 60  # seconds
+  failure_threshold: 3
+
+monitoring:
+  duration: 300  # 5 minutes
+  metrics:
+    - error_rate
+    - response_time
+    - cpu_usage
+    - memory_usage
+
+outputs:
+  - type: deployment_status
+    state: success|failure
+  - type: issue
+    title: "Deployment {env} - {status} - {date}"
+    labels:
+      - deployment
+      - automated
+      - deployment-gatekeeper
