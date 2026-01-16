@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "timestamp": "2026-01-16T18:40:00.000000+00:00",
+    "timestamp": "2026-01-16T19:00:00.000000+00:00",
     "analysis_type": "coverage_update",
-    "session": "IP-001 Phase 1-7",
-    "phase7_update": "2026-01-16T18:40:00Z"
+    "session": "IP-001 Phase 1-8",
+    "phase8_update": "2026-01-16T19:00:00Z"
   },
   "coverage_update": {
     "before_session": {
@@ -14,16 +14,16 @@
     },
     "after_session": {
       "total_source_files": 714,
-      "files_with_tests": 240,
-      "estimated_coverage_percent": 56.8,
-      "files_without_tests": 474,
-      "tests_added": 850,
-      "modules_covered": 37
+      "files_with_tests": 242,
+      "estimated_coverage_percent": 58.5,
+      "files_without_tests": 472,
+      "tests_added": 875,
+      "modules_covered": 38
     },
     "improvement": {
-      "files_covered": 44,
-      "coverage_increase_percent": 29.35,
-      "tests_added": 850
+      "files_covered": 46,
+      "coverage_increase_percent": 31.05,
+      "tests_added": 875
     }
   },
   "newly_covered_modules": {
@@ -73,6 +73,9 @@
       {"path": "src/codex/logging/db_utils.py", "tests": 24},
       {"path": "agents/mental_mapping.py", "tests": 18},
       {"path": "agents/quantum_game_theory.py", "tests": 0, "note": "bug fix only"}
+    ],
+    "phase_8": [
+      {"path": "agents/self_healing.py", "tests": 13}
     ]
   },
   "bug_fixes": [
@@ -82,11 +85,11 @@
   "remaining_high_priority": [
     {"path": "training/train.py", "size": 7500, "priority": "high"},
     {"path": "agents/developer_orchestrator.py", "size": 6000, "priority": "high"},
-    {"path": "agents/knowledge_base_integrator.py", "size": 5000, "priority": "high"},
+    {"path": "agents/physics_integration.py", "size": 5500, "priority": "high"},
     {"path": "src/codex_ml/utils/repro.py", "size": 4500, "priority": "high"}
   ],
   "ip_status": {
-    "IP-001": {"status": "in_progress", "phase": 7, "tests_added": 850, "coverage_percent": 56.8},
+    "IP-001": {"status": "in_progress", "phase": 8, "tests_added": 875, "coverage_percent": 58.5},
     "IP-002": {"status": "complete", "phase": 0, "notes": "Audit complete, no action required"},
     "IP-003": {"status": "complete", "notes": "SECURITY.md enhanced with 137 security files"},
     "IP-004": {"status": "in_progress", "notes": "Production authentication tests added (45 tests)"},
