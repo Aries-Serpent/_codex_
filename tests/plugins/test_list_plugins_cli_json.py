@@ -1,3 +1,9 @@
+"""
+Test List Plugins Cli Json
+
+Test module for list plugins cli json.
+"""
+
 from __future__ import annotations
 
 import json

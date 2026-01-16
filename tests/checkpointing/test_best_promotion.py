@@ -1,3 +1,9 @@
+"""
+Test Best Promotion
+
+Test module for best promotion.
+"""
+
 import json
 import os
 

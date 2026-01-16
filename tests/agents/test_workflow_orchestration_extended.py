@@ -1,3 +1,9 @@
+"""
+Test Workflow Orchestration Extended
+
+Test module for workflow orchestration extended.
+"""
+
 #! /usr/bin/env python3
 """
 Test suite for agents/workflow_navigator.py

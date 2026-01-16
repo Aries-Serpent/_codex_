@@ -1,3 +1,9 @@
+"""
+Test Model Factory
+
+Test module for model factory.
+"""
+
 from codex_ml.modeling import model_factory
 
 

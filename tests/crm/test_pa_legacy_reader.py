@@ -1,3 +1,9 @@
+"""
+Test Pa Legacy Reader
+
+Test module for pa legacy reader.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Audit Diff Cli
+
+Test module for audit diff cli.
+"""
+
 from __future__ import annotations
 
 import subprocess

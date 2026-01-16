@@ -1,3 +1,9 @@
+"""
+Test Legacy Import Report
+
+Test module for legacy import report.
+"""
+
 import csv
 import subprocess
 from pathlib import Path

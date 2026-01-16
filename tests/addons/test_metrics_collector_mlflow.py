@@ -1,3 +1,9 @@
+"""
+Test Metrics Collector Mlflow
+
+Test module for metrics collector mlflow.
+"""
+
 from __future__ import annotations
 
 import os

@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Manifest
+
+Test module for checkpoint manifest.
+"""
+
 from __future__ import annotations
 
 import json

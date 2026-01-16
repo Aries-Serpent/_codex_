@@ -1,3 +1,9 @@
+"""
+Test Base Config
+
+Test module for base config.
+"""
+
 from pathlib import Path
 
 import pytest

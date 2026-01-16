@@ -1,3 +1,9 @@
+"""
+Test Logging Utils
+
+Test module for logging utils.
+"""
+
 import json
 from pathlib import Path
 

@@ -1,3 +1,9 @@
+"""
+Test Metric Plugin Loading
+
+Test module for metric plugin loading.
+"""
+
 #!/usr/bin/env python3
 """Test that metric plugin loading is non-fatal and built-ins remain available."""
 

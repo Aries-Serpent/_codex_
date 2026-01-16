@@ -1,3 +1,9 @@
+"""
+Test Mlflow Registry
+
+Test module for mlflow registry.
+"""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone

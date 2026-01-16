@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Schema And Compat
+
+Test module for checkpoint schema and compat.
+"""
+
 from __future__ import annotations
 
 import warnings

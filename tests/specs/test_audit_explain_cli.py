@@ -1,3 +1,9 @@
+"""
+Test Audit Explain Cli
+
+Test module for audit explain cli.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Pinecone Adapter
+
+Test module for pinecone adapter.
+"""
+
 # Unit tests for PineconeAdapter using monkeypatch to fake pinecone SDK.
 # Tests are import-safe and do not require provider credentials or network access.
 

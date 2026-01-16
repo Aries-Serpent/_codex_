@@ -1,3 +1,9 @@
+"""
+Test Status Audit
+
+Test module for status audit.
+"""
+
 #!/usr/bin/env python
 """
 Test suite for codex-status-audit command.

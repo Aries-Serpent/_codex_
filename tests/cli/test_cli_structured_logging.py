@@ -1,3 +1,9 @@
+"""
+Test Cli Structured Logging
+
+Test module for cli structured logging.
+"""
+
 from __future__ import annotations
 
 import subprocess

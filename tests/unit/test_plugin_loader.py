@@ -1,3 +1,9 @@
+"""
+Test Plugin Loader
+
+Test module for plugin loader.
+"""
+
 from __future__ import annotations
 
 import pytest

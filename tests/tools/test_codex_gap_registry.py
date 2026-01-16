@@ -1,3 +1,9 @@
+"""
+Test Codex Gap Registry
+
+Test module for codex gap registry.
+"""
+
 import textwrap
 from pathlib import Path
 

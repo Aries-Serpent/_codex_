@@ -1,3 +1,9 @@
+"""
+Test F1 Score
+
+Test module for f1 score.
+"""
+
 from __future__ import annotations
 
 import pytest

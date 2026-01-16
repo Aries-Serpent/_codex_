@@ -1,3 +1,9 @@
+"""
+Test Mid Epoch Naming
+
+Test module for mid epoch naming.
+"""
+
 from __future__ import annotations
 
 from codex_ml.utils.checkpoint_core import _epoch_dir_sort_key

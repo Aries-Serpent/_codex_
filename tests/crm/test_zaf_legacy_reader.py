@@ -1,3 +1,9 @@
+"""
+Test Zaf Legacy Reader
+
+Test module for zaf legacy reader.
+"""
+
 from __future__ import annotations
 
 import json

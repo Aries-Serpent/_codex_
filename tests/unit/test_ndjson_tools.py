@@ -1,3 +1,9 @@
+"""
+Test Ndjson Tools
+
+Test module for ndjson tools.
+"""
+
 from __future__ import annotations
 
 import csv

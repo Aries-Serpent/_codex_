@@ -1,3 +1,9 @@
+"""
+Test Selection Guard
+
+Test module for selection guard.
+"""
+
 import json
 from pathlib import Path
 

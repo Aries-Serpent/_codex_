@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Retention
+
+Test module for checkpoint retention.
+"""
+
 from __future__ import annotations
 
 import json

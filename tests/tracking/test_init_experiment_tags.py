@@ -1,3 +1,9 @@
+"""
+Test Init Experiment Tags
+
+Test module for init experiment tags.
+"""
+
 from pathlib import Path
 
 from codex_ml.tracking import init_experiment

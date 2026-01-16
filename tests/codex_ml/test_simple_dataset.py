@@ -1,3 +1,9 @@
+"""
+Test Simple Dataset
+
+Test module for simple dataset.
+"""
+
 from codex_ml.data.simple_dataset import Sample, SimpleDataset
 
 

@@ -1,3 +1,9 @@
+"""
+Test No Direct Atomic Write Usage
+
+Test module for no direct atomic write usage.
+"""
+
 from __future__ import annotations
 
 import re

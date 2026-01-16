@@ -1,3 +1,9 @@
+"""
+Test Api Rate Limit
+
+Test module for api rate limit.
+"""
+
 import importlib
 
 import pytest

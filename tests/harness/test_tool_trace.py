@@ -1,3 +1,9 @@
+"""
+Test Tool Trace
+
+Test module for tool trace.
+"""
+
 import json
 
 from codex_harness.tool_trace import ToolTraceLogger

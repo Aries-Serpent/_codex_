@@ -1,3 +1,9 @@
+"""
+Test Cli Train Command
+
+Test module for cli train command.
+"""
+
 import pytest
 
 pytest.importorskip("yaml")

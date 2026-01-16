@@ -1,3 +1,9 @@
+"""
+Test Pipeline Nodes
+
+Test module for pipeline nodes.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

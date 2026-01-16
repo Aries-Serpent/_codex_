@@ -1,3 +1,9 @@
+"""
+Test Perf Sampler
+
+Test module for perf sampler.
+"""
+
 from tools.perf.sampler import PerfSampler
 
 

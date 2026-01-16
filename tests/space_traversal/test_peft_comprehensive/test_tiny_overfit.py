@@ -1,3 +1,9 @@
+"""
+Test Tiny Overfit
+
+Test module for tiny overfit.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

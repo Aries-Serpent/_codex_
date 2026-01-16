@@ -1,3 +1,9 @@
+"""
+Test File Uri Normalization
+
+Test module for file uri normalization.
+"""
+
 from __future__ import annotations
 
 from codex_ml.tracking.guards import normalize_mlflow_uri

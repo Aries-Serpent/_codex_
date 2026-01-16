@@ -1,3 +1,9 @@
+"""
+Test Worker Checkpoint
+
+Test module for worker checkpoint.
+"""
+
 import json
 
 from src.workers.embedding_worker import run_worker

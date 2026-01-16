@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Wrapper
+
+Test module for tokenizer wrapper.
+"""
+
 from __future__ import annotations
 
 import pytest

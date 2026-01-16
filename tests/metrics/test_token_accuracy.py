@@ -1,3 +1,9 @@
+"""
+Test Token Accuracy
+
+Test module for token accuracy.
+"""
+
 from __future__ import annotations
 
 from codex_ml.metrics.metric_implementations import TokenAccuracy

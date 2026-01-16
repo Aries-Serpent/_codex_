@@ -1,3 +1,9 @@
+"""
+Test Actions Server Smoke
+
+Test module for actions server smoke.
+"""
+
 import json
 import os
 import subprocess

@@ -1,3 +1,9 @@
+"""
+Test Apply Config
+
+Test module for apply config.
+"""
+
 from __future__ import annotations
 
 import json

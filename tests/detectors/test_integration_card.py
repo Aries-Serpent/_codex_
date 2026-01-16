@@ -1,3 +1,9 @@
+"""
+Test Integration Card
+
+Test module for integration card.
+"""
+
 from __future__ import annotations
 
 from codex_ml.detectors.aggregate import scorecard

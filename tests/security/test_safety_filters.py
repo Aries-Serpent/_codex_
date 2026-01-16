@@ -1,3 +1,9 @@
+"""
+Test Safety Filters
+
+Test module for safety filters.
+"""
+
 from codex_ml.safety import SafetyConfig, sanitize_output, sanitize_prompt
 
 

@@ -1,3 +1,9 @@
+"""
+Test Hooks Manager
+
+Test module for hooks manager.
+"""
+
 from __future__ import annotations
 
 from common.hooks import BaseHook, HookManager

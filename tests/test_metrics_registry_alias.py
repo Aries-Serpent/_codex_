@@ -1,3 +1,9 @@
+"""
+Test Metrics Registry Alias
+
+Test module for metrics registry alias.
+"""
+
 import pytest
 
 pytest.importorskip("torch")  # noqa: F401

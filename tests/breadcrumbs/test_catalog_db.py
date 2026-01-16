@@ -1,3 +1,9 @@
+"""
+Test Catalog Db
+
+Test module for catalog db.
+"""
+
 import json
 import os
 from pathlib import Path

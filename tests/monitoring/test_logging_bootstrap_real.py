@@ -1,3 +1,9 @@
+"""
+Test Logging Bootstrap Real
+
+Test module for logging bootstrap real.
+"""
+
 from argparse import Namespace
 
 import pytest

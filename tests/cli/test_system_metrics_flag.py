@@ -1,3 +1,9 @@
+"""
+Test System Metrics Flag
+
+Test module for system metrics flag.
+"""
+
 from pathlib import Path
 
 from click.testing import CliRunner

@@ -1,3 +1,9 @@
+"""
+Test Ndjson Logger
+
+Test module for ndjson logger.
+"""
+
 import json
 from pathlib import Path
 

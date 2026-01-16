@@ -1,3 +1,9 @@
+"""
+Test Config Settings
+
+Test module for config settings.
+"""
+
 from codex_ml.config_schema import LoraSettings, TokenizerSettings, TrainingSettings
 
 

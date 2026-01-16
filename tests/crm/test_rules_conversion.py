@@ -1,3 +1,9 @@
+"""
+Test Rules Conversion
+
+Test module for rules conversion.
+"""
+
 from __future__ import annotations
 
 from codex_crm.convert import automation_to_d365, compute_fidelity, trigger_to_d365

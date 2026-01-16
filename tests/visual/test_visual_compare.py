@@ -1,3 +1,9 @@
+"""
+Test Visual Compare
+
+Test module for visual compare.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

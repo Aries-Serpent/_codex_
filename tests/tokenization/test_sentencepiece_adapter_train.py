@@ -1,3 +1,9 @@
+"""
+Test Sentencepiece Adapter Train
+
+Test module for sentencepiece adapter train.
+"""
+
 from __future__ import annotations
 
 import importlib

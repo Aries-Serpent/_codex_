@@ -1,3 +1,9 @@
+"""
+Test Minimal Distributed
+
+Test module for minimal distributed.
+"""
+
 from __future__ import annotations
 
 from codex_ml.distributed import (

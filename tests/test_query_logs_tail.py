@@ -1,3 +1,9 @@
+"""
+Test Query Logs Tail
+
+Test module for query logs tail.
+"""
+
 import json
 import os
 import sqlite3

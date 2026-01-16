@@ -1,3 +1,9 @@
+"""
+Test Tokenization Compat
+
+Test module for tokenization compat.
+"""
+
 from __future__ import annotations
 
 import importlib

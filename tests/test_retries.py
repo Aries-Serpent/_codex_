@@ -1,3 +1,9 @@
+"""
+Test Retries
+
+Test module for retries.
+"""
+
 from time import time
 
 import pytest

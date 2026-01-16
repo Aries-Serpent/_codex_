@@ -1,3 +1,9 @@
+"""
+Test Gates And Scorecard
+
+Test module for gates and scorecard.
+"""
+
 from pathlib import Path
 
 from codex_audit.gates import run_gates

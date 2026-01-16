@@ -1,3 +1,9 @@
+"""
+Test Cli Smoke
+
+Test module for cli smoke.
+"""
+
 import json
 from pathlib import Path
 

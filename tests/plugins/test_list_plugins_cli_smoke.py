@@ -1,3 +1,9 @@
+"""
+Test List Plugins Cli Smoke
+
+Test module for list plugins cli smoke.
+"""
+
 from __future__ import annotations
 
 import json

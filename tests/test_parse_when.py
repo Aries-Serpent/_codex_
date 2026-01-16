@@ -1,3 +1,9 @@
+"""
+Test Parse When
+
+Test module for parse when.
+"""
+
 from datetime import timezone
 
 from codex.logging.query_logs import parse_when

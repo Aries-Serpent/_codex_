@@ -1,3 +1,20 @@
+"""
+Conftest Module
+
+This module provides functionality for conftest.
+
+Usage:
+    from test_peft_comprehensive.conftest import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import importlib.util

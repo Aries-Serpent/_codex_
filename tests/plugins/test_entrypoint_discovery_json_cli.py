@@ -1,3 +1,9 @@
+"""
+Test Entrypoint Discovery Json Cli
+
+Test module for entrypoint discovery json cli.
+"""
+
 from __future__ import annotations
 
 import json

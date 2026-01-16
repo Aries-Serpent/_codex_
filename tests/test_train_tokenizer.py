@@ -1,3 +1,9 @@
+"""
+Test Train Tokenizer
+
+Test module for train tokenizer.
+"""
+
 from __future__ import annotations
 
 import sys

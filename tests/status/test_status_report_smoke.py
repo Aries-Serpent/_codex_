@@ -1,3 +1,9 @@
+"""
+Test Status Report Smoke
+
+Test module for status report smoke.
+"""
+
 from __future__ import annotations
 
 import subprocess

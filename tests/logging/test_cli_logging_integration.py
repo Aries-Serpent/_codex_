@@ -1,3 +1,9 @@
+"""
+Test Cli Logging Integration
+
+Test module for cli logging integration.
+"""
+
 import json
 from pathlib import Path
 

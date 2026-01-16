@@ -1,3 +1,9 @@
+"""
+Test Cli Simple
+
+Test module for cli simple.
+"""
+
 from __future__ import annotations
 
 import json

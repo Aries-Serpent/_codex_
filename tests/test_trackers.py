@@ -1,3 +1,9 @@
+"""
+Test Trackers
+
+Test module for trackers.
+"""
+
 #!/usr/bin/env python3
 """Tests for trackers utility - basic integration tests."""
 import os

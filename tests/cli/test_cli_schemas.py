@@ -1,3 +1,9 @@
+"""
+Test Cli Schemas
+
+Test module for cli schemas.
+"""
+
 from __future__ import annotations
 
 import json

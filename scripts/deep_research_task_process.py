@@ -28,7 +28,11 @@ Last Updated: 2026-01-16
 """
 
 
-# ruff: noqa
+# ruff: noqa: E501, F401, C901
+# Line length (E501): Documentation tables and command strings exceed 88 chars
+# Unused imports (F401): Some imports used dynamically or in optional code paths
+# Complexity (C901): Legacy script with complex orchestration functions
+# TODO: Refactor into smaller modules to remove blanket noqa and improve maintainability
 # Python Name: enhanced_repo_improv2.py
 # Script: ENHANCED Repository Improvement Tasks
 # Purpose: Perform repository improvement / bootstrap tasks:

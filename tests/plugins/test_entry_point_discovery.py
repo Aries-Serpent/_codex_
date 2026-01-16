@@ -1,3 +1,9 @@
+"""
+Test Entry Point Discovery
+
+Test module for entry point discovery.
+"""
+
 import types
 
 from codex_ml.plugins.registry import Registry

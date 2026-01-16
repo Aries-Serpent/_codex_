@@ -1,3 +1,9 @@
+"""
+Test Hydra Validation
+
+Test module for hydra validation.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate presence and basic integrity of configuration (Hydra/YAML) assets.

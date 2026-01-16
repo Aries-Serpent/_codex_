@@ -1,3 +1,9 @@
+"""
+Test Hydra Cli
+
+Test module for hydra cli.
+"""
+
 import os
 import subprocess
 import sys

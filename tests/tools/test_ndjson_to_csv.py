@@ -1,3 +1,9 @@
+"""
+Test Ndjson To Csv
+
+Test module for ndjson to csv.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Test Checksum Sha256
+
+Test module for checksum sha256.
+"""
+
 from __future__ import annotations
 
 import hashlib

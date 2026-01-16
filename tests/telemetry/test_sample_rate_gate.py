@@ -1,3 +1,9 @@
+"""
+Test Sample Rate Gate
+
+Test module for sample rate gate.
+"""
+
 # ruff: noqa: E402
 from pathlib import Path
 

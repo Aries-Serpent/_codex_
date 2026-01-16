@@ -1,3 +1,9 @@
+"""
+Test Registry
+
+Test module for registry.
+"""
+
 import sys
 import types
 from importlib.metadata import EntryPoint

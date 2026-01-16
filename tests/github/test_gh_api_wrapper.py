@@ -1,3 +1,9 @@
+"""
+Test Gh Api Wrapper
+
+Test module for gh api wrapper.
+"""
+
 from __future__ import annotations
 
 import os

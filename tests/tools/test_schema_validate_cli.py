@@ -1,3 +1,9 @@
+"""
+Test Schema Validate Cli
+
+Test module for schema validate cli.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

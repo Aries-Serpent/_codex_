@@ -1,3 +1,9 @@
+"""
+Test Metrics Registry
+
+Test module for metrics registry.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate metrics logging patterns (NDJSON/CSV) without external deps.

@@ -1,3 +1,9 @@
+"""
+Test Report Merge
+
+Test module for report merge.
+"""
+
 import json
 import subprocess
 import sys

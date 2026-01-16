@@ -1,3 +1,9 @@
+"""
+Test Load Latest
+
+Test module for load latest.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

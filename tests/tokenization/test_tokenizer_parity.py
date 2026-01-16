@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Parity
+
+Test module for tokenizer parity.
+"""
+
 import pytest
 
 try:

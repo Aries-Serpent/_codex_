@@ -1,3 +1,9 @@
+"""
+Test Env Check Cli
+
+Test module for env check cli.
+"""
+
 from pathlib import Path
 
 from codex_ml.cli import env_check

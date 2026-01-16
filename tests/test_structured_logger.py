@@ -1,3 +1,9 @@
+"""
+Test Structured Logger
+
+Test module for structured logger.
+"""
+
 from tools.logging.structured_logger import JsonLogger
 
 

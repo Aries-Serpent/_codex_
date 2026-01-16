@@ -1,3 +1,9 @@
+"""
+Test Regex Props
+
+Test module for regex props.
+"""
+
 from __future__ import annotations
 
 import time

@@ -1,3 +1,9 @@
+"""
+Test Offline Bootstrap
+
+Test module for offline bootstrap.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Test Mypy Type Coverage
+
+Test module for mypy type coverage.
+"""
+
 import shutil
 import subprocess
 from pathlib import Path

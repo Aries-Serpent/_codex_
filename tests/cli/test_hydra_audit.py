@@ -1,3 +1,9 @@
+"""
+Test Hydra Audit
+
+Test module for hydra audit.
+"""
+
 from __future__ import annotations
 
 import json

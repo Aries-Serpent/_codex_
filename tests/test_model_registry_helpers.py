@@ -1,3 +1,9 @@
+"""
+Test Model Registry Helpers
+
+Test module for model registry helpers.
+"""
+
 from __future__ import annotations
 
 import types

@@ -1,3 +1,9 @@
+"""
+Test Metrics Logging
+
+Test module for metrics logging.
+"""
+
 import json
 from pathlib import Path
 

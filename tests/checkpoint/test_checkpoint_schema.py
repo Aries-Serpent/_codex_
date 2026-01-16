@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Schema
+
+Test module for checkpoint schema.
+"""
+
 from __future__ import annotations
 
 import json

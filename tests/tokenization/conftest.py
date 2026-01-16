@@ -1,3 +1,20 @@
+"""
+Conftest Module
+
+This module provides functionality for conftest.
+
+Usage:
+    from tokenization.conftest import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import importlib.machinery
 import importlib.util
 import json

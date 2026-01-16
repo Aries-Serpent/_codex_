@@ -1,3 +1,9 @@
+"""
+Test Capability Contracts
+
+Test module for capability contracts.
+"""
+
 import json
 import tarfile
 from pathlib import Path

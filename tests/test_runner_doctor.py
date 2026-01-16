@@ -1,3 +1,9 @@
+"""
+Test Runner Doctor
+
+Test module for runner doctor.
+"""
+
 SAMPLE = {
     "runners": [
         {"id": 1, "name": "r1", "status": "online"},

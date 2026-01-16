@@ -1,3 +1,9 @@
+"""
+Test Codex Logging Json
+
+Test module for codex logging json.
+"""
+
 import logging
 import os
 

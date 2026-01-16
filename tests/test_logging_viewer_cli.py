@@ -1,3 +1,9 @@
+"""
+Test Logging Viewer Cli
+
+Test module for logging viewer cli.
+"""
+
 # -*- coding: utf-8 -*-
 import json
 import os

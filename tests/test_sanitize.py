@@ -1,3 +1,9 @@
+"""
+Test Sanitize
+
+Test module for sanitize.
+"""
+
 #!/usr/bin/env python3
 """Tests for sanitize utility."""
 from src.utils.sanitize import sanitize_prompt

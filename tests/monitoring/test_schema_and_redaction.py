@@ -1,3 +1,9 @@
+"""
+Test Schema And Redaction
+
+Test module for schema and redaction.
+"""
+
 from __future__ import annotations
 
 from codex_ml.monitoring.schema import LOG_VERSION, LogRecord

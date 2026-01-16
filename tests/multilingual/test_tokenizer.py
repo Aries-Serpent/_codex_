@@ -1,3 +1,9 @@
+"""
+Test Tokenizer
+
+Test module for tokenizer.
+"""
+
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
 
 

@@ -1,3 +1,9 @@
+"""
+Test Label Policy Lint
+
+Test module for label policy lint.
+"""
+
 import json
 import pathlib
 import subprocess

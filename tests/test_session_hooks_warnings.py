@@ -1,3 +1,9 @@
+"""
+Test Session Hooks Warnings
+
+Test module for session hooks warnings.
+"""
+
 import logging
 from pathlib import Path
 

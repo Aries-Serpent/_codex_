@@ -1,3 +1,9 @@
+"""
+Test Bleu Score
+
+Test module for bleu score.
+"""
+
 from __future__ import annotations
 
 from codex_ml.metrics.metric_implementations import BLEUScore

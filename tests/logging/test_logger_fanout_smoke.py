@@ -1,3 +1,9 @@
+"""
+Test Logger Fanout Smoke
+
+Test module for logger fanout smoke.
+"""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional

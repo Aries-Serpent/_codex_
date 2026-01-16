@@ -1,3 +1,9 @@
+"""
+Test Log Adapters
+
+Test module for log adapters.
+"""
+
 import sqlite3
 
 from src.codex.monkeypatch import log_adapters as la

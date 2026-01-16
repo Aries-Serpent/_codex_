@@ -1,3 +1,9 @@
+"""
+Test Build Kb
+
+Test module for build kb.
+"""
+
 from __future__ import annotations
 
 import json

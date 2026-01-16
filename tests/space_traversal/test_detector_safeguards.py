@@ -1,3 +1,9 @@
+"""
+Test Detector Safeguards
+
+Test module for detector safeguards.
+"""
+
 from __future__ import annotations
 
 import importlib.util

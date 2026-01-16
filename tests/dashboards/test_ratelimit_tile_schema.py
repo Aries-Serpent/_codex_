@@ -1,3 +1,9 @@
+"""
+Test Ratelimit Tile Schema
+
+Test module for ratelimit tile schema.
+"""
+
 import json
 import subprocess
 import sys

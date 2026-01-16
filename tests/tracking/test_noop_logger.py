@@ -1,3 +1,9 @@
+"""
+Test Noop Logger
+
+Test module for noop logger.
+"""
+
 from src.codex_ml.utils import experiment_tracking_mlflow as etm
 
 

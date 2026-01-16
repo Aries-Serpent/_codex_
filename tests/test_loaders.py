@@ -1,3 +1,9 @@
+"""
+Test Loaders
+
+Test module for loaders.
+"""
+
 # BEGIN: CODEX_DATA_TESTS
 import json
 from pathlib import Path

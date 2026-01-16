@@ -1,3 +1,9 @@
+"""
+Test Manifest
+
+Test module for manifest.
+"""
+
 from __future__ import annotations
 
 import json

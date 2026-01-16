@@ -1,3 +1,9 @@
+"""
+Test Conversion Fidelity
+
+Test module for conversion fidelity.
+"""
+
 from codex_crm.convert.rules import fidelity_score
 
 

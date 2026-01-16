@@ -1,3 +1,9 @@
+"""
+Test Registry Degradation
+
+Test module for registry degradation.
+"""
+
 from __future__ import annotations
 
 import importlib

@@ -1,3 +1,9 @@
+"""
+Test Logging Bootstrap Initialization
+
+Test module for logging bootstrap initialization.
+"""
+
 import argparse
 import types
 

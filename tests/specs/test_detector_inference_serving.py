@@ -1,3 +1,9 @@
+"""
+Test Detector Inference Serving
+
+Test module for detector inference serving.
+"""
+
 from __future__ import annotations
 
 from scripts.space_traversal.detectors.inference_serving import detect

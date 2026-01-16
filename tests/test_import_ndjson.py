@@ -1,3 +1,9 @@
+"""
+Test Import Ndjson
+
+Test module for import ndjson.
+"""
+
 import json
 import sqlite3
 from pathlib import Path

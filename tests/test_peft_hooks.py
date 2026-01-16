@@ -1,3 +1,9 @@
+"""
+Test Peft Hooks
+
+Test module for peft hooks.
+"""
+
 import importlib
 import sys
 import types

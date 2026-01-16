@@ -1,3 +1,9 @@
+"""
+Test No Hardcoded Secrets
+
+Test module for no hardcoded secrets.
+"""
+
 from __future__ import annotations
 
 import re

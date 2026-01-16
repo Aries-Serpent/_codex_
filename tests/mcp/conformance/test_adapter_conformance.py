@@ -1,3 +1,9 @@
+"""
+Test Adapter Conformance
+
+Test module for adapter conformance.
+"""
+
 # Conformance test scaffold for adapters.
 # This file is a lightweight conformance harness that can be parameterized
 # to run against any adapter implementation that implements BackendAdapter.

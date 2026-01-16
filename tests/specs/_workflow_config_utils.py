@@ -1,3 +1,20 @@
+"""
+ Workflow Config Utils Module
+
+This module provides functionality for  workflow config utils.
+
+Usage:
+    from specs._workflow_config_utils import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from contextlib import contextmanager

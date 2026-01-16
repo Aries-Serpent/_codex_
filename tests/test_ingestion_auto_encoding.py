@@ -1,3 +1,9 @@
+"""
+Test Ingestion Auto Encoding
+
+Test module for ingestion auto encoding.
+"""
+
 import sys
 from pathlib import Path
 

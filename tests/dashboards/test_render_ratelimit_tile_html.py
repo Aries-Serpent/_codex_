@@ -1,3 +1,9 @@
+"""
+Test Render Ratelimit Tile Html
+
+Test module for render ratelimit tile html.
+"""
+
 import json
 import subprocess
 import sys

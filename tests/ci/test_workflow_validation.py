@@ -1,3 +1,9 @@
+"""
+Test Workflow Validation
+
+Test module for workflow validation.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate local CI tooling presence (pre-commit); avoid enabling GH Actions.

@@ -1,3 +1,9 @@
+"""
+Test Hydra Structured Config
+
+Test module for hydra structured config.
+"""
+
 from __future__ import annotations
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Registry Programmatic
+
+Test module for registry programmatic.
+"""
+
 from __future__ import annotations
 
 from codex_ml.plugins import BasePlugin, registry

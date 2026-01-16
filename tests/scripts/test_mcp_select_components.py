@@ -1,3 +1,9 @@
+"""
+Test Mcp Select Components
+
+Test module for mcp select components.
+"""
+
 #! /usr/bin/env python3
 """
 Test suite for scripts/mcp/select_components.py

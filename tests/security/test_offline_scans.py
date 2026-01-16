@@ -1,3 +1,9 @@
+"""
+Test Offline Scans
+
+Test module for offline scans.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Mlflow Offline Guard
+
+Test module for mlflow offline guard.
+"""
+
 import os
 
 # ruff: noqa: E402 - pytest.importorskip must precede optional mlflow import.

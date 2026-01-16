@@ -1,3 +1,9 @@
+"""
+Test Registry Logger
+
+Test module for registry logger.
+"""
+
 from __future__ import annotations
 
 import json

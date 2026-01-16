@@ -1,3 +1,9 @@
+"""
+Test Pipeline
+
+Test module for pipeline.
+"""
+
 from codex_digest.pipeline import run_pipeline
 
 

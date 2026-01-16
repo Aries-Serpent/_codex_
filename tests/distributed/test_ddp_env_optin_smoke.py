@@ -1,3 +1,9 @@
+"""
+Test Ddp Env Optin Smoke
+
+Test module for ddp env optin smoke.
+"""
+
 from __future__ import annotations
 
 import pytest

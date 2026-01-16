@@ -1,3 +1,9 @@
+"""
+Test Core
+
+Test module for core.
+"""
+
 from __future__ import annotations
 
 from codex_ml.detectors.core import DetectorResult, clamp01

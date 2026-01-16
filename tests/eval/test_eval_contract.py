@@ -1,3 +1,9 @@
+"""
+Test Eval Contract
+
+Test module for eval contract.
+"""
+
 from __future__ import annotations
 
 from codex_ml.config.settings import EvalRow

@@ -84,11 +84,29 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
-                # NOTE: Provisioning URI and backup codes are intentionally not stored
-                # in this automation. In production, these must be securely delivered
-                # to users via an authenticated channel (e.g., encrypted email, SMS,
-                # or secure portal). This is a placeholder implementation that generates
-                # the credentials but does not persist or transmit them.
+                # IMPORTANT: MFA ENROLLMENT LIMITATION
+                # This automation generates TOTP secrets and backup codes but does NOT
+                # store or transmit them to users, making enrollment incomplete.
+                # 
+                # Current Behavior:
+                # - Provisioning URI generated but immediately discarded (not logged for security)
+                # - Backup codes generated but not persisted or delivered to users
+                # 
+                # Production Implementation Required:
+                # To make this enrollment functional, implement secure credential delivery:
+                # 1. Store encrypted credentials temporarily (use COMPLIANCE_REPORT_KEY or similar)
+                # 2. Deliver via authenticated secure channel:
+                #    - Option A: Encrypted email to verified user email
+                #    - Option B: SMS to registered phone number
+                #    - Option C: Secure web portal with user authentication
+                # 3. Require user acknowledgment of receipt
+                # 4. Delete temporary credentials after delivery confirmation
+                # 
+                # Security Considerations:
+                # - Never log provisioning URIs or backup codes in plain text
+                # - Use end-to-end encryption for credential transmission
+                # - Implement rate limiting to prevent abuse
+                # - Require MFA setup completion within 24-48 hours
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 

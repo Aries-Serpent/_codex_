@@ -1,3 +1,9 @@
+"""
+Test Error Handler
+
+Test module for error handler.
+"""
+
 import importlib
 import pytest
 

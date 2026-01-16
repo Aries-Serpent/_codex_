@@ -1,3 +1,9 @@
+"""
+Test Simple Cli Seeding
+
+Test module for simple cli seeding.
+"""
+
 from __future__ import annotations
 
 import random

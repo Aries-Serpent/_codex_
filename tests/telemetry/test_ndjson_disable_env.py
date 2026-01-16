@@ -1,3 +1,9 @@
+"""
+Test Ndjson Disable Env
+
+Test module for ndjson disable env.
+"""
+
 # ruff: noqa: E402
 from pathlib import Path
 
