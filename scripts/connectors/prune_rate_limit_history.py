@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Prune Rate Limit History
+
+Purpose:
+    Runs prune_rate_limit_history
+
+Usage:
+    python scripts/connectors/prune_rate_limit_history.py [options]
+    
+    Examples:
+    $ python scripts/connectors/prune_rate_limit_history.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

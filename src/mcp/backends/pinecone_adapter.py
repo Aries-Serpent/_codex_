@@ -1,3 +1,20 @@
+"""
+Pinecone Adapter Module
+
+This module provides functionality for pinecone adapter.
+
+Usage:
+    from backends.pinecone_adapter import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Pinecone adapter for MCP backend interface (skeleton + wiring to retries & metrics)
 from __future__ import annotations
 import importlib

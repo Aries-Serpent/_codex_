@@ -1,3 +1,20 @@
+"""
+Simple Module
+
+This module provides functionality for simple.
+
+Usage:
+    from reward_models.simple import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Any, Mapping, Optional

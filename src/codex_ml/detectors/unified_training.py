@@ -1,3 +1,20 @@
+"""
+Unified Training Module
+
+This module provides functionality for unified training.
+
+Usage:
+    from detectors.unified_training import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from .core import DetectorResult

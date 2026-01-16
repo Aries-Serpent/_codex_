@@ -1,3 +1,20 @@
+"""
+Logging Factory Module
+
+This module provides functionality for logging factory.
+
+Usage:
+    from utils.logging_factory import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

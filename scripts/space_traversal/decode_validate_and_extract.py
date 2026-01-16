@@ -1,3 +1,33 @@
+"""
+Decode Validate And Extract
+
+Purpose:
+    Validates decode_and_extract
+
+Usage:
+    python scripts/space_traversal/decode_validate_and_extract.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/decode_validate_and_extract.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

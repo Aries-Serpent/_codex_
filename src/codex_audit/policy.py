@@ -1,3 +1,20 @@
+"""
+Policy Module
+
+This module provides functionality for policy.
+
+Usage:
+    from codex_audit.policy import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,20 @@
+"""
+Choice Module
+
+This module provides functionality for choice.
+
+Usage:
+    from model.choice import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Any

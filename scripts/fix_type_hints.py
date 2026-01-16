@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Fix Type Hints
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/fix_type_hints.py [options]
+    
+    Examples:
+    $ python scripts/fix_type_hints.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Type Hints Fixer
 
 Automatically detects and fixes missing typing imports in Python files.

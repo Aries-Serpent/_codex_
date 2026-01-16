@@ -1,3 +1,20 @@
+"""
+Data Report Module
+
+This module provides functionality for data report.
+
+Usage:
+    from monitor.data_report import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import argparse

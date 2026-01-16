@@ -1,3 +1,20 @@
+"""
+Cli Module
+
+This module provides functionality for cli.
+
+Usage:
+    from tracking.cli import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_MLFLOW_CLI
 from __future__ import annotations
 

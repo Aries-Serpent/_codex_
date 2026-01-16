@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Mfa Enrollment Automation
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/mfa_enrollment_automation.py [options]
+    
+    Examples:
+    $ python scripts/mfa_enrollment_automation.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """MFA Enrollment Automation
 
 Automates bulk MFA enrollment for GitHub users.
@@ -54,6 +84,11 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
+                # NOTE: Provisioning URI and backup codes are intentionally not stored
+                # in this automation. In production, these must be securely delivered
+                # to users via an authenticated channel (e.g., encrypted email, SMS,
+                # or secure portal). This is a placeholder implementation that generates
+                # the credentials but does not persist or transmit them.
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 

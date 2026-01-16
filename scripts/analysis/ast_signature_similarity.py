@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Ast Signature Similarity
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/analysis/ast_signature_similarity.py [options]
+    
+    Examples:
+    $ python scripts/analysis/ast_signature_similarity.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 AST Signature Similarity Analysis Tool (P6)
 
 Computes AST-based uniqueness scores for each capability by analyzing

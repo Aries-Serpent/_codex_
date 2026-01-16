@@ -1,3 +1,20 @@
+"""
+Atomic Io Module
+
+This module provides functionality for atomic io.
+
+Usage:
+    from utils.atomic_io import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

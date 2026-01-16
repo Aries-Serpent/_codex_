@@ -1,3 +1,20 @@
+"""
+Mock Backend Module
+
+This module provides functionality for mock backend.
+
+Usage:
+    from backends.mock_backend import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Simple in-memory mock vector backend implementing BackendAdapter
 import math
 import threading

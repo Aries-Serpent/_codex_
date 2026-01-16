@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Refresh Requirements Lock
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/refresh_requirements_lock.py [options]
+    
+    Examples:
+    $ python scripts/refresh_requirements_lock.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Refresh requirements/lock.txt and validate dependency alignment.
 
 This utility compiles the repository lockfile according to the

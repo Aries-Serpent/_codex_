@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Memory Profile
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/memory_profile.py [options]
+    
+    Examples:
+    $ python scripts/memory_profile.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Memory Profiling Script for Rust-Python Hybrid Swarm
 Phase 3: Memory Profiling (Target: 82% Coverage)
 

@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Rollback Executor
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/deploy/rollback_executor.py [options]
+    
+    Examples:
+    $ python scripts/deploy/rollback_executor.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Automated Rollback Executor for AI Agents
 
 Executes rollback procedures for Phase 6 features with zero human intervention.

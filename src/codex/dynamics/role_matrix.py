@@ -1,3 +1,20 @@
+"""
+Role Matrix Module
+
+This module provides functionality for role matrix.
+
+Usage:
+    from dynamics.role_matrix import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from codex.dynamics.model.role import DynamicsRole

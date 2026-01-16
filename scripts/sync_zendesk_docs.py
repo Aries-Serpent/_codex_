@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Sync Zendesk Docs
+
+Purpose:
+    Synchronizes zendesk_docs
+
+Usage:
+    python scripts/sync_zendesk_docs.py [options]
+    
+    Examples:
+    $ python scripts/sync_zendesk_docs.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Curate the local Zendesk API documentation index."""
 from __future__ import annotations
 

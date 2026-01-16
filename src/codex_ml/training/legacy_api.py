@@ -1,3 +1,20 @@
+"""
+Legacy Api Module
+
+This module provides functionality for legacy api.
+
+Usage:
+    from training.legacy_api import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import contextlib

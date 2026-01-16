@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Render Monthly Html
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/status/render_monthly_html.py [options]
+    
+    Examples:
+    $ python scripts/status/render_monthly_html.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Render a monthly HTML report from a bundle JSON containing aggregated status reports.
 
 Usage:

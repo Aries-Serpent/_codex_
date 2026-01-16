@@ -1,3 +1,20 @@
+"""
+Mock Embedder Module
+
+This module provides functionality for mock embedder.
+
+Usage:
+    from embeddings.mock_embedder import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import hashlib
 from typing import Any
 

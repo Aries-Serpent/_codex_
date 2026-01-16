@@ -36,18 +36,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
           
       - name: Analyze MFA adoption
         run: |
           python scripts/compliance_reporter.py --analyze-mfa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
           
       - name: Check token lifecycle
         run: |
           python scripts/compliance_reporter.py --check-tokens
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
           
       - name: Generate visualizations
         run: |

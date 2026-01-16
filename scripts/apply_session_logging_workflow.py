@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Apply Session Logging Workflow
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/apply_session_logging_workflow.py [options]
+    
+    Examples:
+    $ python scripts/apply_session_logging_workflow.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 End-to-end workflow to add session logging context manager, helper, CLI query,
 tests, and docs to the _codex_ repository (branch 0B_base_).
 Respects the guardrail: DO NOT ACTIVATE ANY GitHub Actions files.

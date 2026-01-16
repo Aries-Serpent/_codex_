@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Validate Security Utils
+
+Purpose:
+    Validates security_utils
+
+Usage:
+    python scripts/validate_security_utils.py [options]
+    
+    Examples:
+    $ python scripts/validate_security_utils.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Simple validation script for security utilities.
 Tests core functionality without pytest dependency.
 """

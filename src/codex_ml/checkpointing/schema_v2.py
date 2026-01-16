@@ -1,3 +1,20 @@
+"""
+Schema V2 Module
+
+This module provides functionality for schema v2.
+
+Usage:
+    from checkpointing.schema_v2 import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import hashlib

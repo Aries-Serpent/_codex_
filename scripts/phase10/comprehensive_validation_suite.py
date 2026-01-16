@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Comprehensive Validation Suite
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/phase10/comprehensive_validation_suite.py [options]
+    
+    Examples:
+    $ python scripts/phase10/comprehensive_validation_suite.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Comprehensive Phase 10 Validation Test Suite
 Automated validation for NotebookLM integration and cognitive brain health
 

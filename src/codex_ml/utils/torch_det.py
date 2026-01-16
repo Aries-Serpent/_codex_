@@ -1,3 +1,20 @@
+"""
+Torch Det Module
+
+This module provides functionality for torch det.
+
+Usage:
+    from utils.torch_det import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import logging
 logger = logging.getLogger(__name__)
 def seed_worker(worker_id):

@@ -1,3 +1,20 @@
+"""
+Audit Pipeline Module
+
+This module provides functionality for audit pipeline.
+
+Usage:
+    from cli.audit_pipeline import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # src/codex_ml/cli/audit_pipeline.py
 from __future__ import annotations
 import logging

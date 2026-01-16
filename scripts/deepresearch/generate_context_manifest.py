@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Generate Context Manifest
+
+Purpose:
+    Generates context_manifest
+
+Usage:
+    python scripts/deepresearch/generate_context_manifest.py [options]
+    
+    Examples:
+    $ python scripts/deepresearch/generate_context_manifest.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import argparse

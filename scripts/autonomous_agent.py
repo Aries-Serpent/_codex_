@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Autonomous Agent
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/autonomous_agent.py [options]
+    
+    Examples:
+    $ python scripts/autonomous_agent.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 AI-Driven Autonomous Codebase Management System
 
 This module provides the foundation for achieving truly autonomous codebase

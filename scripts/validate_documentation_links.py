@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Validate Documentation Links
+
+Purpose:
+    Validates documentation_links
+
+Usage:
+    python scripts/validate_documentation_links.py [options]
+    
+    Examples:
+    $ python scripts/validate_documentation_links.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Documentation Link Validator
 
 Validates all internal markdown links point to existing files.

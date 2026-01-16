@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Allocate Tasks
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/allocate_tasks.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/allocate_tasks.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Task Allocation
 Part of Decision Engine - integrates with R16 (Task Decomposition)
 """

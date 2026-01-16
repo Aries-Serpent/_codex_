@@ -1,3 +1,20 @@
+"""
+Tb Writer Module
+
+This module provides functionality for tb writer.
+
+Usage:
+    from monitoring.tb_writer import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+List Shims
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/remediation/list_shims.py [options]
+    
+    Examples:
+    $ python scripts/remediation/list_shims.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 List shims & canonical module inventory.
 
 Scans specified roots (e.g., training/, src/training/) and emits a merged inventory YAML

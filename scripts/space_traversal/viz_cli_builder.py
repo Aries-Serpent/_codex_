@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Viz Cli Builder
+
+Purpose:
+    Builds viz_cli_builder
+
+Usage:
+    python scripts/space_traversal/viz_cli_builder.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/viz_cli_builder.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 CLI Command Builder HTML for v1.5.3
 
 Generates interactive HTML interface for building and previewing

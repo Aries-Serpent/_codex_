@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Build Solution
+
+Purpose:
+    Builds solution
+
+Usage:
+    python scripts/packaging/build_solution.py [options]
+    
+    Examples:
+    $ python scripts/packaging/build_solution.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Solution Packaging for Zendesk Quantum Workflows.
 
 This script packages the src/codex/zendesk/model schemas and src/codex/dynamics

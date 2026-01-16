@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Archive Files
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/archive_files.py [options]
+    
+    Examples:
+    $ python scripts/archive_files.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Archive Files to misc/repo-owner-review
 
 This script moves non-essential files to the misc/repo-owner-review folder

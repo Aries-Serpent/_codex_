@@ -1,3 +1,20 @@
+"""
+Base Module
+
+This module provides functionality for base.
+
+Usage:
+    from plugins.base import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

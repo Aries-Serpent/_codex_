@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Rotate Baselines
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/baseline/rotate_baselines.py [options]
+    
+    Examples:
+    $ python scripts/baseline/rotate_baselines.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 import shutil
 import logging
 logger = logging.getLogger(__name__)

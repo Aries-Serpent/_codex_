@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Collect Ci Data
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/collect_ci_data.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/collect_ci_data.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - CI/CD Data Collector
 Part of Perception Layer - collects GitHub Actions workflow run data
 """

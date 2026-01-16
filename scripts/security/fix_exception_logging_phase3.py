@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Fix Exception Logging Phase3
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/fix_exception_logging_phase3.py [options]
+    
+    Examples:
+    $ python scripts/security/fix_exception_logging_phase3.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Final comprehensive exception logging pass.
 Targets all remaining patterns to reach >70% coverage.
 """

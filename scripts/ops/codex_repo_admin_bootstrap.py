@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Codex Repo Admin Bootstrap
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/ops/codex_repo_admin_bootstrap.py [options]
+    
+    Examples:
+    $ python scripts/ops/codex_repo_admin_bootstrap.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Harden a GitHub repository without touching workflows."""
 
 from __future__ import annotations

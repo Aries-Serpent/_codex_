@@ -1,3 +1,20 @@
+"""
+Run Module
+
+This module provides functionality for run.
+
+Usage:
+    from server.run import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import argparse

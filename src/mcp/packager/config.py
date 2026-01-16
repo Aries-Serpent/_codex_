@@ -1,3 +1,20 @@
+"""
+Config Module
+
+This module provides functionality for config.
+
+Usage:
+    from packager.config import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

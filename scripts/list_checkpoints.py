@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+List Checkpoints
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/list_checkpoints.py [options]
+    
+    Examples:
+    $ python scripts/list_checkpoints.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Checkpoint management CLI for listing and cleaning checkpoints.
 
 Provides commands for:

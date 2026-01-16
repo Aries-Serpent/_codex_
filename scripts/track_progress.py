@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Track Progress
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/track_progress.py [options]
+    
+    Examples:
+    $ python scripts/track_progress.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Progress tracking script for High Maturity Achievement Plan.
 
 Monitors capability scores and provides actionable next steps.

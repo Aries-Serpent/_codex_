@@ -1,3 +1,20 @@
+"""
+Data Gate Module
+
+This module provides functionality for data gate.
+
+Usage:
+    from monitor.data_gate import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,20 @@
+"""
+Build Module
+
+This module provides functionality for build.
+
+Usage:
+    from knowledge.build import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import hashlib

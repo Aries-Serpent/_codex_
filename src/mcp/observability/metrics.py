@@ -1,3 +1,20 @@
+"""
+Metrics Module
+
+This module provides functionality for metrics.
+
+Usage:
+    from observability.metrics import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Minimal in-memory metrics facade. Replace with Prometheus/OTel exporter in later plans.
 import time
 

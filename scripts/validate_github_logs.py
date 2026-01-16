@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Validate Github Logs
+
+Purpose:
+    Validates github_logs
+
+Usage:
+    python scripts/validate_github_logs.py [options]
+    
+    Examples:
+    $ python scripts/validate_github_logs.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Self-healing validation and autonomous iteration script.
 
 Performs comprehensive validation of the GitHub Actions log fetcher implementation

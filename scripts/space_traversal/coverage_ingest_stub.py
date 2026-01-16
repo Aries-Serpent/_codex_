@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Coverage Ingest Stub
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/space_traversal/coverage_ingest_stub.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/coverage_ingest_stub.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Lightweight coverage ingest stub for tests.
 """
 from __future__ import annotations
