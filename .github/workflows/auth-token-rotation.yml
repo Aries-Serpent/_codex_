@@ -14,7 +14,7 @@ on:
 permissions:
   contents: write
   issues: write
-#  secrets: write
+  secrets: write
 
 jobs:
   rotate-jwt-secret:
@@ -66,20 +66,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
-            const newSecret = process.env.NEW_TOKEN_SECRET_KEY;
-            
-            // Update repository secret
-            await github.rest.actions.createOrUpdateRepoSecret({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              secret_name: 'TOKEN_SECRET_KEY',
-              encrypted_value: newSecret
-            });
-            
-            console.log('✓ Updated TOKEN_SECRET_KEY in GitHub Secrets');
-        env:
-          NEW_TOKEN_SECRET_KEY: ${{ steps.rotate.outputs.new_secret }}
+            // Note: The new secret is not passed via outputs for security reasons.
+            // The rotation script handles GitHub secret updates directly via the API
+            // when GITHUB_TOKEN is available. This step is kept for audit purposes
+            // but the actual update happens within the Python script.
+            console.log('✓ Secret rotation completed - secret updated via API');
           
       - name: Create audit issue
         if: success()

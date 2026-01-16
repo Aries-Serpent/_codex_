@@ -12,7 +12,7 @@ on:
       - 'services/**'
       - '.github/**'
       - 'tests/**'
-      - '**. md'
+      - '**.md'
       - '**.py'
       - '**.rs'
       - 'Cargo.toml'

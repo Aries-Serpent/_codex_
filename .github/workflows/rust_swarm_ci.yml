@@ -274,15 +274,15 @@ jobs:
               
               # Create a simple report indicating baseline establishment
               cat > coverage/benchmark_validation_report.txt << 'EOFreport'
-              📊 Benchmark Validation Report
-              =================================
-              
-              Status: Baseline Establishment
-              This is the first run or baseline files are missing.
-              Current benchmark results will serve as the baseline for future comparisons.
-              
-              Next runs will compare against this baseline to detect performance regressions.
-              EOFreport
+📊 Benchmark Validation Report
+=================================
+
+Status: Baseline Establishment
+This is the first run or baseline files are missing.
+Current benchmark results will serve as the baseline for future comparisons.
+
+Next runs will compare against this baseline to detect performance regressions.
+EOFreport
             }
           else
             echo "⚠️ scripts/validate_benchmarks.py not found"

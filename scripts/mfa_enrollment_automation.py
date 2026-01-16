@@ -54,6 +54,11 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
+                # NOTE: Provisioning URI and backup codes are intentionally not stored
+                # in this automation. In production, these must be securely delivered
+                # to users via an authenticated channel (e.g., encrypted email, SMS,
+                # or secure portal). This is a placeholder implementation that generates
+                # the credentials but does not persist or transmit them.
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 
