@@ -20,6 +20,22 @@ from click.testing import CliRunner
 import pytest
 
 
+def _get_cli_module():
+    """Helper to get the Click CLI module from sys.modules."""
+    import sys
+    from codex.cli import cli  # Ensure CLI is loaded
+    return sys.modules.get("codex._cli_click")
+
+
+@pytest.fixture
+def cli_module():
+    """Pytest fixture providing access to the Click CLI module."""
+    module = _get_cli_module()
+    if module is None:
+        pytest.skip("Click CLI module not loaded")
+    return module
+
+
 class TestCLIImports:
     """Tests for CLI module imports."""
 
@@ -39,61 +55,32 @@ class TestCLIImports:
         from codex.cli import repro_group
         assert repro_group is not None
 
-    def test_import_allowed_tasks(self) -> None:
-        # ALLOWED_TASKS is defined in src/codex/cli.py, loaded as codex._cli_click
-        import sys
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
-            assert isinstance(ALLOWED_TASKS, dict)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_import_allowed_tasks(self, cli_module) -> None:
+        ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
+        assert isinstance(ALLOWED_TASKS, dict)
 
-    def test_import_tools_dir(self) -> None:
-        # TOOLS_DIR is defined in src/codex/cli.py, loaded as codex._cli_click
-        import sys
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            TOOLS_DIR = getattr(cli_module, "TOOLS_DIR", None)
-            assert isinstance(TOOLS_DIR, Path)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_import_tools_dir(self, cli_module) -> None:
+        TOOLS_DIR = getattr(cli_module, "TOOLS_DIR", None)
+        assert isinstance(TOOLS_DIR, Path)
 
 
 class TestAllowedTasks:
     """Tests for ALLOWED_TASKS dictionary."""
 
-    def _get_allowed_tasks(self):
-        """Helper to get ALLOWED_TASKS from the loaded CLI module."""
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            return getattr(cli_module, "ALLOWED_TASKS", None)
-        return None
-
-    def test_contains_ingest(self) -> None:
-        ALLOWED_TASKS = self._get_allowed_tasks()
-        if ALLOWED_TASKS is None:
-            pytest.skip("Click CLI module not loaded")
+    def test_contains_ingest(self, cli_module) -> None:
+        ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
         assert "ingest" in ALLOWED_TASKS
 
-    def test_contains_ci(self) -> None:
-        ALLOWED_TASKS = self._get_allowed_tasks()
-        if ALLOWED_TASKS is None:
-            pytest.skip("Click CLI module not loaded")
+    def test_contains_ci(self, cli_module) -> None:
+        ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
         assert "ci" in ALLOWED_TASKS
 
-    def test_contains_pool_fix(self) -> None:
-        ALLOWED_TASKS = self._get_allowed_tasks()
-        if ALLOWED_TASKS is None:
-            pytest.skip("Click CLI module not loaded")
+    def test_contains_pool_fix(self, cli_module) -> None:
+        ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
         assert "pool-fix" in ALLOWED_TASKS
 
-    def test_task_has_callable_and_description(self) -> None:
-        ALLOWED_TASKS = self._get_allowed_tasks()
-        if ALLOWED_TASKS is None:
-            pytest.skip("Click CLI module not loaded")
+    def test_task_has_callable_and_description(self, cli_module) -> None:
+        ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
         for name, (func, desc) in ALLOWED_TASKS.items():
             assert callable(func), f"{name} function is not callable"
             assert isinstance(desc, str), f"{name} description is not a string"
@@ -380,62 +367,38 @@ class TestResumeCommand:
 class TestMissingCommand:
     """Tests for _missing_command function."""
 
-    def test_missing_command_creation(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _missing_command = getattr(cli_module, "_missing_command", None)
-            if _missing_command:
-                cmd = _missing_command("test", "Test message", "Test help")
-                assert isinstance(cmd, click.Command)
-                assert cmd.name == "test"
-            else:
-                pytest.skip("_missing_command not available")
+    def test_missing_command_creation(self, cli_module) -> None:
+        _missing_command = getattr(cli_module, "_missing_command", None)
+        if _missing_command:
+            cmd = _missing_command("test", "Test message", "Test help")
+            assert isinstance(cmd, click.Command)
+            assert cmd.name == "test"
         else:
-            pytest.skip("Click CLI module not loaded")
+            pytest.skip("_missing_command not available")
 
 
 class TestEmitGroupHelp:
     """Tests for _emit_group_help function."""
 
-    def test_emit_group_help_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _emit_group_help = getattr(cli_module, "_emit_group_help", None)
-            assert callable(_emit_group_help)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_emit_group_help_exists(self, cli_module) -> None:
+        _emit_group_help = getattr(cli_module, "_emit_group_help", None)
+        assert callable(_emit_group_help)
 
 
 class TestRegisterClickCommand:
     """Tests for _register_click_command function."""
 
-    def test_register_click_command_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _register_click_command = getattr(cli_module, "_register_click_command", None)
-            assert callable(_register_click_command)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_register_click_command_exists(self, cli_module) -> None:
+        _register_click_command = getattr(cli_module, "_register_click_command", None)
+        assert callable(_register_click_command)
 
 
 class TestRegisterTyperApp:
     """Tests for _register_typer_app function."""
 
-    def test_register_typer_app_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _register_typer_app = getattr(cli_module, "_register_typer_app", None)
-            assert callable(_register_typer_app)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_register_typer_app_exists(self, cli_module) -> None:
+        _register_typer_app = getattr(cli_module, "_register_typer_app", None)
+        assert callable(_register_typer_app)
 
 
 class TestCLIWithoutSubcommand:
@@ -463,43 +426,25 @@ class TestWorkflowScanCommand:
 class TestPrintTaskWhitelist:
     """Tests for _print_task_whitelist function."""
 
-    def test_print_task_whitelist_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _print_task_whitelist = getattr(cli_module, "_print_task_whitelist", None)
-            assert callable(_print_task_whitelist)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_print_task_whitelist_exists(self, cli_module) -> None:
+        _print_task_whitelist = getattr(cli_module, "_print_task_whitelist", None)
+        assert callable(_print_task_whitelist)
 
 
 class TestRunIngest:
     """Tests for _run_ingest function."""
 
-    def test_run_ingest_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _run_ingest = getattr(cli_module, "_run_ingest", None)
-            assert callable(_run_ingest)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_run_ingest_exists(self, cli_module) -> None:
+        _run_ingest = getattr(cli_module, "_run_ingest", None)
+        assert callable(_run_ingest)
 
 
 class TestRunCi:
     """Tests for _run_ci function."""
 
-    def test_run_ci_exists(self) -> None:
-        import sys
-        from codex.cli import cli  # Ensure CLI is loaded
-        cli_module = sys.modules.get("codex._cli_click")
-        if cli_module:
-            _run_ci = getattr(cli_module, "_run_ci", None)
-            assert callable(_run_ci)
-        else:
-            pytest.skip("Click CLI module not loaded")
+    def test_run_ci_exists(self, cli_module) -> None:
+        _run_ci = getattr(cli_module, "_run_ci", None)
+        assert callable(_run_ci)
 
 
 class TestFixPool:
