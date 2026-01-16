@@ -1,16 +1,10 @@
 """
-  Init   Module
+Visual Testing Package
 
-This module provides functionality for   init  .
+This package provides visual regression testing functionality.
 
 Usage:
-    from visual.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
+    from tests.visual import ...
 
 Author: Codex Team
 """
