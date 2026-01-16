@@ -52,13 +52,19 @@ The 200 tasks/s threshold was chosen to:
 
 For better regression detection, consider:
 
-1. **Environment-specific thresholds** via `cfg` attributes:
+1. **Environment-specific thresholds** via custom `cfg` feature flags:
    ```rust
-   #[cfg(ci_environment)]
+   // In Cargo.toml: Add feature flag
+   // [features]
+   // ci_environment = []
+   
+   #[cfg(feature = "ci_environment")]
    const THRESHOLD: f64 = 200.0;
    
-   #[cfg(not(ci_environment))]
+   #[cfg(not(feature = "ci_environment"))]
    const THRESHOLD: f64 = 2000.0;
+   
+   // Build with: cargo test --features ci_environment
    ```
 
 2. **Statistical baseline tracking**:
@@ -173,7 +179,7 @@ python scripts/analyze_performance_thresholds.py performance_data.txt
 | Date | Threshold | Environment | Rationale |
 |------|-----------|-------------|-----------|
 | 2024-01-15 | 5,000 tasks/s | Original implementation | Initial baseline from development machine |
-| 2026-01-16 | 200 tasks/s | GitHub Actions shared runners | Adjusted for CI stability after flaky test analysis |
+| 2024-01-16 | 200 tasks/s | GitHub Actions shared runners | Adjusted for CI stability after flaky test analysis |
 
 ## References
 

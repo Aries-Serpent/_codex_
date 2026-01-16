@@ -49,9 +49,9 @@ from pathlib import Path
 
 # Add src directory to path for development mode (if package not installed)
 # Proper usage: Install package with 'pip install -e .' to avoid this workaround
-_src_path = Path(__file__).parent.parent / 'src'
-if _src_path.exists() and str(_src_path) not in sys.path:
-    sys.path.insert(0, str(_src_path))
+SRC_PATH = Path(__file__).parent.parent / 'src'
+if SRC_PATH.exists() and str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
 
 try:
     from cryptography.fernet import Fernet

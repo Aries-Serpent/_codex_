@@ -168,7 +168,15 @@ class AuthenticationDemo:
         #    - Compliance reporting (access from which locations/devices)
         #
         # Example (Flask):
-        #   ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+        #   # Get real client IP from proxy headers (X-Forwarded-For)
+        #   x_forwarded_for = request.headers.get('X-Forwarded-For')
+        #   if x_forwarded_for:
+        #       # X-Forwarded-For can contain multiple IPs: "client, proxy1, proxy2"
+        #       # Take the first (leftmost) IP which is the original client
+        #       ip_address = x_forwarded_for.split(',')[0].strip()
+        #   else:
+        #       # Direct connection without proxy
+        #       ip_address = request.remote_addr
         #   user_agent = request.headers.get('User-Agent', 'Unknown')
         #
         # Example (FastAPI):
