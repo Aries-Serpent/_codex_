@@ -1,97 +1,123 @@
 {
-  "ticket_forms": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/",
-    "endpoints": [
-      "GET /api/v2/ticket_forms",
-      "GET /api/v2/ticket_forms/{ticket_form_id}",
-      "GET /api/v2/ticket_forms/show_many?ids={ids}"
-    ]
-  },
-  "apps": {
-    "doc": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
-    "endpoints": []
-  },
-  "macros": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/",
-    "endpoints": [
-      "GET /api/v2/macros"
-    ]
-  },
-  "routing": {
-    "docs": [
-      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
-      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/"
-    ],
-    "endpoints": [
-      "GET /api/v2/routing/attributes"
-    ]
-  },
-  "talk": {
-    "docs": [
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/"
-    ],
-    "endpoints": []
-  },
-  "ticket_fields": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/",
-    "endpoints": [
-      "GET /api/v2/ticket_fields",
-      "GET /api/v2/ticket_fields/{ticket_field_id}",
-      "GET /api/v2/ticket_fields/count",
-      "POST /api/v2/ticket_fields/{ticket_field_id}/options"
-    ]
-  },
-  "ticket_forms": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/",
-    "endpoints": [
-      "GET /api/v2/ticket_forms",
-      "GET /api/v2/ticket_forms/{ticket_form_id}",
-      "GET /api/v2/ticket_forms/show_many?ids={ids}"
-    ]
-  },
-  "triggers": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/",
-    "endpoints": []
-  },
-  "macros": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/",
-    "endpoints": [
-      "GET /api/v2/macros"
-    ]
-  },
-  "views": {
-    "doc": "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/",
-    "endpoints": [
-      "GET /api/v2/views"
-    ]
-  },
-  "webhooks": {
-    "doc": "https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/",
-    "endpoints": [
-      "POST /api/v2/webhooks"
-    ]
-  },
-  "talk": {
-    "docs": [
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
-      "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/"
-    ],
-    "endpoints": []
-  },
-  "routing": {
-    "docs": [
-      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
-      "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/"
-    ],
-    "endpoints": [
-      "GET /api/v2/routing/attributes"
-    ]
-  },
-  "apps": {
-    "doc": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
-    "endpoints": []
+  "version": "2.0",
+  "last_sync": "2026-01-16T12:32:56.537796+00:00",
+  "articles": {
+    "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/": {
+      "url": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
+      "section": "apps",
+      "bucket": "support_app_api",
+      "last_fetched": "2026-01-16T12:32:39.684581+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
+      "section": "routing",
+      "bucket": "skills",
+      "last_fetched": "2026-01-16T12:32:41.903174+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/",
+      "section": "routing",
+      "bucket": "skills",
+      "last_fetched": "2026-01-16T12:32:42.889318+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/": {
+      "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
+      "section": "talk",
+      "bucket": "ivrs",
+      "last_fetched": "2026-01-16T12:32:43.743532+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/": {
+      "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
+      "section": "talk",
+      "bucket": "ivrs",
+      "last_fetched": "2026-01-16T12:32:44.747011+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/": {
+      "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/",
+      "section": "talk",
+      "bucket": "ivrs",
+      "last_fetched": "2026-01-16T12:32:45.721620+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/",
+      "section": "ticketing",
+      "bucket": "fields",
+      "last_fetched": "2026-01-16T12:32:47.217052+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/",
+      "section": "ticketing",
+      "bucket": "forms",
+      "last_fetched": "2026-01-16T12:32:48.860697+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/groups/groups/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/groups/groups/",
+      "section": "ticketing",
+      "bucket": "groups",
+      "last_fetched": "2026-01-16T12:32:49.672423+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/",
+      "section": "ticketing",
+      "bucket": "macros",
+      "last_fetched": "2026-01-16T12:32:51.596903+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/",
+      "section": "ticketing",
+      "bucket": "triggers",
+      "last_fetched": "2026-01-16T12:32:53.300853+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/": {
+      "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/",
+      "section": "ticketing",
+      "bucket": "views",
+      "last_fetched": "2026-01-16T12:32:55.087353+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    },
+    "https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/": {
+      "url": "https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/",
+      "section": "webhooks",
+      "bucket": "webhooks",
+      "last_fetched": "2026-01-16T12:32:56.537744+00:00",
+      "last_modified": null,
+      "etag": null,
+      "content_hash": null
+    }
   }
 }
