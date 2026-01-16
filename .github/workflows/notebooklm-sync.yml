@@ -34,7 +34,7 @@ permissions:
 
 env:
   OUTPUT_FILE: codex-architecture-sync.xml
-  REPOMIX_VERSION: '0.1.11'
+  REPOMIX_VERSION: '1.11.1'
 
 jobs:
   consolidate-and-sync: 
