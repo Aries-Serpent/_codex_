@@ -137,6 +137,12 @@ manifests/k8s/*/secret.yaml
 !.codex/architecture/**
 !.codex/prompts/
 !.codex/prompts/**
+!.codex/qa_walkthrough/
+!.codex/qa_walkthrough/**
+!.codex/action_log.ndjson
+!.codex/change_log.md
+!.codex/results.md
+!.codex/QA_WALKTHROUGH_EXECUTION_REPORT.md
 # Allow all planning and continuation documents
 !.codex/*PLAN*.md
 !.codex/*PROMPT*.md
