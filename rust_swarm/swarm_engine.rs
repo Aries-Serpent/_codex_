@@ -166,25 +166,11 @@ mod tests {
         assert_eq!(processed, 10000);
         let throughput = processed as f64 / duration.as_secs_f64();
         println!("Throughput: {:.0} tasks/s", throughput);
-        // CI Environment Performance Threshold
-        // ======================================
-        // CI runs on shared, resource-constrained runners where throughput is inherently noisy.
-        // The original threshold (5000 tasks/s) was realistic on dedicated hardware but caused
-        // flaky failures in CI. This lower CI-specific threshold (200 tasks/s) is designed to:
-        //
-        // 1. Detect catastrophic performance regressions (>95% throughput loss)
-        // 2. Remain stable across different CI runner types (GitHub-hosted, self-hosted, etc.)
-        // 3. Account for CI runner variability (shared CPU, I/O contention, background processes)
-        //
-        // Expected performance ranges:
-        // - Developer workstations: 3,000-8,000 tasks/s
-        // - Production hardware: 5,000-10,000 tasks/s
-        // - CI environments: 200-2,000 tasks/s (highly variable)
-        //
-        // Future improvement: Consider cfg-based conditional thresholds:
-        // - #[cfg(not(ci))] => 2000+ tasks/s for local testing
-        // - #[cfg(ci)] => 200 tasks/s for CI stability
-        // Or implement a moving baseline that adapts to historical CI performance data.
+        // CI performance threshold:
+        // This lower bound (200 tasks/s) is intentionally conservative for noisy, shared CI
+        // runners and is meant to catch catastrophic regressions without causing flaky tests.
+        // For detailed rationale and expected ranges for different environments, see:
+        // docs/testing/PERFORMANCE_THRESHOLDS.md.
         assert!(
             throughput > 200.0,
             "Throughput too low: {:.0} tasks/s",
