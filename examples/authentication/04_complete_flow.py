@@ -150,13 +150,38 @@ class AuthenticationDemo:
         print("=" * 60)
         
         # Generate tokens
+        # PRODUCTION WARNING: The hardcoded IP address and user agent below are for
+        # demonstration purposes only. In a real production implementation:
+        #
+        # 1. Extract the actual client IP from the HTTP request headers:
+        #    - X-Forwarded-For (if behind proxy/load balancer)
+        #    - X-Real-IP (if behind reverse proxy)
+        #    - request.remote_addr (direct connection)
+        #
+        # 2. Extract the actual user agent from HTTP request headers:
+        #    - User-Agent header from the request
+        #
+        # 3. Use these real values for session security and audit trails:
+        #    - Session hijacking detection (IP change alerts)
+        #    - Device fingerprinting and anomaly detection
+        #    - Audit logs for security investigations
+        #    - Compliance reporting (access from which locations/devices)
+        #
+        # Example (Flask):
+        #   ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+        #   user_agent = request.headers.get('User-Agent', 'Unknown')
+        #
+        # Example (FastAPI):
+        #   ip_address = request.client.host
+        #   user_agent = request.headers.get('user-agent', 'Unknown')
+        #
         access_token = self.tokens.generate_access_token(user_id, scope="repo user")
         refresh_token = self.tokens.generate_refresh_token(user_id)
         session_token, session_id = self.tokens.generate_session_token(
             user_id=user_id,
             mfa_verified=mfa_verified,
-            ip_address="192.168.1.100",
-            user_agent="Demo Client"
+            ip_address="192.168.1.100",  # DEMO ONLY - Use real client IP in production
+            user_agent="Demo Client"      # DEMO ONLY - Use real user agent in production
         )
         
         print(f"\n✓ Tokens generated:")

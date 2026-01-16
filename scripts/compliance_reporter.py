@@ -45,13 +45,24 @@ import json
 import os
 import sys
 from datetime import datetime, timedelta
-from cryptography.fernet import Fernet
+from pathlib import Path
+
+# Add src directory to path for development mode (if package not installed)
+# Proper usage: Install package with 'pip install -e .' to avoid this workaround
+_src_path = Path(__file__).parent.parent / 'src'
+if _src_path.exists() and str(_src_path) not in sys.path:
+    sys.path.insert(0, str(_src_path))
+
 try:
+    from cryptography.fernet import Fernet
     from github import Github
-    import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     from codex.auth import MFAProvider, TokenManager
 except ImportError as e:
-    print(f"Error: {e}")
+    print(f"Error: Missing required dependencies: {e}", file=sys.stderr)
+    print("\nPlease install the package with:", file=sys.stderr)
+    print("  pip install -e .", file=sys.stderr)
+    print("\nOr install missing dependencies:", file=sys.stderr)
+    print("  pip install PyGithub cryptography", file=sys.stderr)
     sys.exit(1)
 
 class ComplianceReporter:

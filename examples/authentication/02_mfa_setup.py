@@ -106,9 +106,17 @@ def main():
     print(f"✓ Secret generated for user: {user_id}")
     
     # Step 2: Display setup instructions
-    # Note: In production, pass uri and secret through secure channel only
-    _ = secret.get_provisioning_uri("user@example.com")  # Generated but not exposed
-    display_qr_instructions()
+    # SECURITY NOTE: This is a demonstration example only.
+    # 
+    # In production implementations:
+    # 1. Generate the provisioning URI: uri = secret.get_provisioning_uri(user_email)
+    # 2. Transmit it through a secure channel (HTTPS, encrypted session, QR code over TLS)
+    # 3. Display the QR code to the user in a secure web interface
+    # 4. NEVER log, store, or transmit the provisioning URI/secret in plaintext
+    # 5. Immediately discard the URI after the user scans it
+    # 
+    # This example intentionally omits the actual URI to prevent accidental exposure:
+    display_qr_instructions()  # Shows generic setup instructions without actual secrets
     
     # Step 3: Verify setup
     print("\n🔐 Step 2: Verify Setup")
