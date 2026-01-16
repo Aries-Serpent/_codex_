@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-16T15:45:00.000000+00:00",
+    "analysis_type": "coverage_update",
+    "session": "IP-001 Phase 1 & 2"
+  },
+  "coverage_update": {
+    "before_session": {
+      "total_source_files": 714,
+      "files_with_tests": 196,
+      "estimated_coverage_percent": 27.45,
+      "files_without_tests": 518
+    },
+    "after_session": {
+      "total_source_files": 714,
+      "files_with_tests": 207,
+      "estimated_coverage_percent": 30.1,
+      "files_without_tests": 507,
+      "tests_added": 262,
+      "modules_covered": 11
+    },
+    "improvement": {
+      "files_covered": 11,
+      "coverage_increase_percent": 2.65,
+      "tests_added": 262
+    }
+  },
+  "newly_covered_modules": {
+    "phase_1": [
+      {"path": "src/codex_ml/metrics/classification.py", "tests": 32},
+      {"path": "src/codex_ml/metrics/streaming.py", "tests": 13},
+      {"path": "src/codex_ml/metrics/base.py", "tests": 10},
+      {"path": "src/codex_ml/metrics/reward.py", "tests": 24},
+      {"path": "src/codex_ml/metrics_base.py", "tests": 28},
+      {"path": "src/codex_ml/events/base.py", "tests": 25},
+      {"path": "agents/exceptions.py", "tests": 27},
+      {"path": "agents/agent_memory.py", "tests": 38}
+    ],
+    "phase_2": [
+      {"path": "src/codex_ml/hf_loader.py", "tests": 23},
+      {"path": "src/codex_ml/training.py", "tests": 14},
+      {"path": "src/codex_ml/ingest.py", "tests": 28}
+    ]
+  },
+  "remaining_high_priority": [
+    {"path": "src/codex_ml/eval/runner.py", "size": 34959, "priority": "high"},
+    {"path": "src/codex_ml/codex_structured_logging.py", "size": 13440, "priority": "high"},
+    {"path": "src/codex_ml/eval/datasets.py", "size": 9293, "priority": "high"},
+    {"path": "src/codex_ml/eval/fallback.py", "size": 3762, "priority": "high"},
+    {"path": "src/codex_ml/main.py", "size": 3236, "priority": "high"},
+    {"path": "src/codex_ml/codex_script.py", "size": 2650, "priority": "high"}
+  ],
+  "ip_status": {
+    "IP-001": {"status": "in_progress", "phase": 2, "tests_added": 262},
+    "IP-002": {"status": "approved", "phase": 0},
+    "IP-003": {"status": "existing", "notes": "SECURITY.md exists (387 lines)"},
+    "IP-004": {"status": "blocked", "dependency": "IP-003"},
+    "IP-005": {"status": "approved", "phase": 0}
+  }
+}
