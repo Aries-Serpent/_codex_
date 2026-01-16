@@ -102,10 +102,13 @@ class TestAmpDtypeMapping:
 
     @pytest.fixture
     def skip_without_torch(self) -> None:
-        """Skip test if torch not available."""
+        """Skip test if torch not available or is a stub."""
         try:
             import torch
-        except ImportError:
+            # Check if it's the real torch or a stub
+            if not hasattr(torch, 'float16') or not hasattr(torch, 'bfloat16'):
+                pytest.skip("torch is a stub, not the real library")
+        except (ImportError, AttributeError):
             pytest.skip("torch not installed")
 
     def test_bf16_mapping(self, skip_without_torch: None) -> None:
