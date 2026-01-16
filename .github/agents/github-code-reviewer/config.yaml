@@ -1,0 +1,66 @@
+name: github-code-reviewer
+version: 1.0.0
+tier: 2
+description: AI-powered code review with GitHub Copilot Pro+
+required_license: copilot-pro-plus
+
+triggers:
+  - pull_request_opened
+  - pull_request_synchronize
+  - workflow_dispatch
+
+permissions:
+  contents: read
+  pull_requests: write
+  checks: write
+
+environment_variables:
+  required:
+    - GITHUB_TOKEN
+    - COPILOT_API_TOKEN
+  optional:
+    - REVIEW_STRICTNESS  # strict, moderate, lenient
+
+analysis:
+  security: true
+  performance: true
+  style: true
+  best_practices: true
+  test_coverage: true
+
+thresholds:
+  max_critical_issues: 0
+  max_high_issues: 5
+  max_complexity: 15
+  min_test_coverage: 80
+
+categories:
+  security:
+    - code_injection
+    - sql_injection
+    - xss_vulnerabilities
+    - insecure_deserialization
+    - hardcoded_secrets
+  performance:
+    - nested_loops
+    - inefficient_algorithms
+    - memory_leaks
+    - blocking_operations
+  style:
+    - line_length
+    - naming_conventions
+    - code_formatting
+  best_practices:
+    - error_handling
+    - logging_usage
+    - documentation
+    - code_duplication
+
+outputs:
+  - type: review
+    path: pull_request_review
+  - type: check
+    name: "AI Code Review"
+    conclusion: success|failure
+  - type: comments
+    inline: true
