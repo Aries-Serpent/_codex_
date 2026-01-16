@@ -1,0 +1,153 @@
+"""
+Tests for codex.ast.graph module.
+
+This module contains tests for dependency graph and cycle detection.
+"""
+
+import pytest
+
+
+class TestDependencyGraph:
+    """Tests for DependencyGraph class."""
+
+    def test_init_empty(self):
+        """Test DependencyGraph initialization."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        
+        assert graph.nodes == set()
+        assert len(graph.edges) == 0
+
+    def test_add_node(self):
+        """Test adding a node."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_node("A")
+        
+        assert "A" in graph.nodes
+
+    def test_add_multiple_nodes(self):
+        """Test adding multiple nodes."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_node("A")
+        graph.add_node("B")
+        graph.add_node("C")
+        
+        assert len(graph.nodes) == 3
+
+    def test_add_edge(self):
+        """Test adding an edge."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_edge("A", "B")
+        
+        assert "A" in graph.nodes
+        assert "B" in graph.nodes
+        assert "B" in graph.edges["A"]
+
+    def test_add_edge_creates_nodes(self):
+        """Test adding edge creates nodes automatically."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_edge("X", "Y")
+        
+        assert "X" in graph.nodes
+        assert "Y" in graph.nodes
+
+    def test_detect_cycles_no_cycles(self):
+        """Test cycle detection with no cycles."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_edge("A", "B")
+        graph.add_edge("B", "C")
+        graph.add_edge("A", "C")
+        
+        cycles = graph.detect_cycles()
+        
+        assert cycles == []
+
+    def test_detect_cycles_simple_cycle(self):
+        """Test detecting a simple cycle."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_edge("A", "B")
+        graph.add_edge("B", "C")
+        graph.add_edge("C", "A")  # Creates cycle
+        
+        cycles = graph.detect_cycles()
+        
+        assert len(cycles) == 1
+        assert set(cycles[0]) == {"A", "B", "C"}
+
+    def test_detect_cycles_self_loop(self):
+        """Test detecting a self-loop cycle."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_edge("A", "A")  # Self-loop
+        
+        cycles = graph.detect_cycles()
+        
+        assert len(cycles) == 1
+        assert cycles[0] == ["A"]
+
+    def test_detect_cycles_multiple_cycles(self):
+        """Test detecting multiple independent cycles."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        # First cycle: A -> B -> A
+        graph.add_edge("A", "B")
+        graph.add_edge("B", "A")
+        # Second cycle: C -> D -> C
+        graph.add_edge("C", "D")
+        graph.add_edge("D", "C")
+        
+        cycles = graph.detect_cycles()
+        
+        assert len(cycles) == 2
+
+    def test_detect_cycles_empty_graph(self):
+        """Test cycle detection on empty graph."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        
+        cycles = graph.detect_cycles()
+        
+        assert cycles == []
+
+    def test_detect_cycles_single_node(self):
+        """Test cycle detection with single node no edges."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        graph.add_node("A")
+        
+        cycles = graph.detect_cycles()
+        
+        assert cycles == []
+
+    def test_complex_graph(self):
+        """Test with more complex graph structure."""
+        from codex.ast.graph import DependencyGraph
+        
+        graph = DependencyGraph()
+        # Linear chain with branch
+        graph.add_edge("A", "B")
+        graph.add_edge("B", "C")
+        graph.add_edge("C", "D")
+        graph.add_edge("A", "E")
+        graph.add_edge("E", "F")
+        
+        cycles = graph.detect_cycles()
+        
+        assert cycles == []  # No cycles in this structure

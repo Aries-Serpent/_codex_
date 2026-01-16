@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "timestamp": "2025-01-16T13:55:12.273528+00:00",
+    "scan_type": "legacy_modern_conflict_analysis"
+  },
+  "legacy_modules": [
+    {
+      "path": "scripts/archive_files.py",
+      "pattern": "archive",
+      "size": 10793
+    },
+    {
+      "path": "scripts/cognitive/archive_knowledge.py",
+      "pattern": "archive",
+      "size": 4535
+    },
+    {
+      "path": "tools/archive_manager/archive_manager.py",
+      "pattern": "archive",
+      "size": 32035
+    },
+    {
+      "path": "tests/archive/test_archive_plan_apply.py",
+      "pattern": "archive",
+      "size": 6878
+    },
+    {
+      "path": "tests/archive/test_archive_hygiene.py",
+      "pattern": "archive",
+      "size": 5158
+    },
+    {
+      "path": "tests/ops/test_archive_pr_checklist.py",
+      "pattern": "archive",
+      "size": 5379
+    },
+    {
+      "path": "tests/knowledge/test_archive_manifest_side_effects.py",
+      "pattern": "archive",
+      "size": 1389
+    },
+    {
+      "path": "tests/codex/test_cli_archive.py",
+      "pattern": "archive",
+      "size": 326
+    },
+    {
+      "path": "tests/archival/test_archive_integration.py",
+      "pattern": "archive",
+      "size": 7907
+    },
+    {
+      "path": "src/tools/archive_pr_checklist.py",
+      "pattern": "archive",
+      "size": 7329
+    },
+    {
+      "path": "src/codex/cli_archive.py",
+      "pattern": "archive",
+      "size": 13148
+    },
+    {
+      "path": "scripts/remediation/analyze_legacy_usage.py",
+      "pattern": "_legacy",
+      "size": 6199
+    },
+    {
+      "path": "tests/fixtures/zaf_legacy.py",
+      "pattern": "_legacy",
+      "size": 720
+    },
+    {
+      "path": "tests/crm/test_zaf_legacy_reader.py",
+      "pattern": "_legacy",
+      "size": 1166
+    },
+    {
+      "path": "tests/crm/test_pa_legacy_reader.py",
+      "pattern": "_legacy",
+      "size": 1819
+    },
+    {
+      "path": "tests/unit/test_zaf_legacy_reader.py",
+      "pattern": "_legacy",
+      "size": 2300
+    },
+    {
+      "path": "tests/validation/test_legacy_import_report.py",
+      "pattern": "_legacy",
+      "size": 823
+    }
+  ],
+  "modern_modules": [
+    {
+      "directory": "src/codex_ml",
+      "file_count": 446,
+      "exists": true
+    },
+    {
+      "directory": "src/codex",
+      "file_count": 229,
+      "exists": true
+    },
+    {
+      "directory": "agents",
+      "file_count": 35,
+      "exists": true
+    },
+    {
+      "directory": "src/services",
+      "file_count": 27,
+      "exists": true
+    }
+  ],
+  "conflicts": [
+    {
+      "type": "directory_duplication",
+      "legacy": "config_legacy",
+      "modern": "config",
+      "severity": "medium",
+      "recommendation": "Migrate config_legacy to config or remove"
+    },
+    {
+      "type": "directory_duplication",
+      "legacy": "yaml_legacy",
+      "modern": "configs",
+      "severity": "medium",
+      "recommendation": "Consolidate YAML configurations"
+    }
+  ],
+  "duplications": [],
+  "recommendations": []
+}

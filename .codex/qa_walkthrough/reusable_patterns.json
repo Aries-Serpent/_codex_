@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "timestamp": "2025-01-16T13:56:28.888419+00:00",
+    "version": "1.0.0"
+  },
+  "patterns": {
+    "plugin_architecture": {
+      "description": "Entry point-based plugin system",
+      "location": "pyproject.toml [project.entry-points]",
+      "example": "codex_ml.plugins",
+      "reusability": "high",
+      "documentation": "examples/plugins/"
+    },
+    "hydra_configuration": {
+      "description": "Hydra-based configuration management",
+      "location": "conf/, configs/",
+      "example": "conf/config.yaml",
+      "reusability": "high",
+      "documentation": "docs/configuration/"
+    },
+    "cli_entrypoints": {
+      "description": "Multiple CLI entry points using typer/click",
+      "location": "pyproject.toml [project.scripts]",
+      "example": "codex-train, codex-eval, codex-cli",
+      "reusability": "high",
+      "count": 30
+    },
+    "testing_framework": {
+      "description": "Pytest-based testing with hypothesis and fixtures",
+      "location": "tests/, conftest.py, pytest.ini",
+      "reusability": "high",
+      "features": [
+        "hypothesis",
+        "fixtures",
+        "markers",
+        "coverage"
+      ]
+    },
+    "security_scanning": {
+      "description": "Multi-tool security scanning (bandit, gitleaks, semgrep)",
+      "location": ".bandit.yaml, .gitleaks.toml, .semgrep/",
+      "reusability": "high",
+      "tools": [
+        "bandit",
+        "gitleaks",
+        "semgrep"
+      ]
+    }
+  }
+}

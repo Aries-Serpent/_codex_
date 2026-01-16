@@ -380,7 +380,95 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2025-12-22
+Last updated: 2026-01-16
+
+---
+
+## Security-Critical Files Inventory (QA Walkthrough)
+
+> **Source**: `.codex/qa_walkthrough/security_audit.json`  
+> **Total Files**: 137 security-critical files identified  
+> **Last Audit**: 2026-01-16
+
+### Categories
+
+#### Authentication & Authorization
+| File | Size | Purpose |
+|------|------|---------|
+| `tests/test_bridge_authentication.py` | 14,703 | Bridge auth tests |
+| `scripts/validate_auth_security.py` | 11,632 | Auth validation |
+| `scripts/rotate_jwt_secret.py` | 12,880 | JWT rotation |
+| `scripts/github_oauth_app_sync.py` | 3,213 | OAuth sync |
+
+#### Secrets Management
+| File | Size | Purpose |
+|------|------|---------|
+| `scripts/github_secrets_sync.py` | 7,537 | Secrets sync |
+| `scripts/decode_workflow_secrets.py` | 7,361 | Workflow secrets |
+| `tools/scan_secrets.py` | 8,110 | Secret scanning |
+| `tests/test_secrets_scanner.py` | 952 | Scanner tests |
+
+#### Security Auditing
+| File | Size | Purpose |
+|------|------|---------|
+| `scripts/security_audit.py` | 6,079 | Security audit |
+| `scripts/validate_security_utils.py` | 6,851 | Utils validation |
+| `benchmarks/security_benchmarks.py` | 7,002 | Security benchmarks |
+| `noxfile.security_additions.py` | 1,784 | Nox security |
+
+#### Tokenization Security
+| File | Size | Purpose |
+|------|------|---------|
+| `codex_digest/tokenizer.py` | 2,074 | Digest tokenizer |
+| `interfaces/tokenizer.py` | 430 | Tokenizer interface |
+| `tools/bench_tokenizer.py` | 2,433 | Tokenizer bench |
+| `tests/test_tokenization_roundtrip.py` | 2,859 | Roundtrip tests |
+
+### Security Tools Configured
+
+1. **Bandit** - Python security linter
+   - Config: `.bandit`
+   - Nox session: `nox -s security`
+
+2. **Gitleaks** - Secret detection
+   - Config: `.gitleaks.toml`
+   - Pre-commit hook enabled
+
+3. **Semgrep** - Static analysis
+   - Config: `.semgrep/`
+   - Custom rules for project patterns
+
+4. **Safety** - Dependency checking
+   - Integrated in CI pipeline
+   - Checks against PyUp.io database
+
+5. **Trivy** - Container scanning
+   - Dockerfile scanning enabled
+   - SBOM generation configured
+
+### Security Review Checklist
+
+For any PR touching security-critical files:
+
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation on all user inputs
+- [ ] Output encoding for any rendered content
+- [ ] Proper error handling without information disclosure
+- [ ] Authentication/authorization checks in place
+- [ ] Logging of security-relevant events
+- [ ] Rate limiting on authentication endpoints
+- [ ] CSRF protection on state-changing operations
+- [ ] Secure session management
+- [ ] Cryptographic operations use approved algorithms
+
+### Reporting New Vulnerabilities
+
+If you discover a new vulnerability in a security-critical file:
+
+1. **DO NOT** open a public issue
+2. Email security findings to the maintainers
+3. Include file path, description, and PoC if possible
+4. Allow 90 days for remediation before disclosure
 
 ---
 
