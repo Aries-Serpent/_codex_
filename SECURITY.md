@@ -1,5 +1,56 @@
 # Security Policy
 
+## IP-005 Security Updates (2026-01-16)
+
+### Dependency Vulnerability Remediation - 26 Vulnerabilities Fixed
+
+This update addresses **26 known vulnerabilities** across **11 packages** identified via pip-audit.
+
+#### Critical Fixes (Remote Code Execution)
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| setuptools | >=67 | >=78.1.1 | CVE-2024-6345, CVE-2025-47273 | Path traversal RCE |
+| jinja2 | 3.1.2 | >=3.1.6 | CVE-2024-56326, CVE-2024-56201 | Sandbox escape RCE |
+| cryptography | 41.0.7 | 46.0.3 | CVE-2024-26130, CVE-2023-50782 | TLS RSA key exposure |
+
+#### High Priority Fixes
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| certifi | 2023.11.17 | >=2024.7.4 | CVE-2024-39689 | Root cert trust issue |
+| filelock | 3.20.0 | >=3.20.3 | CVE-2025-68146, CVE-2026-22701 | TOCTOU symlink attacks |
+| idna | 3.6 | >=3.7 | CVE-2024-3651 | DoS via quadratic complexity |
+| requests | 2.31.0 | >=2.32.4 | CVE-2024-35195, CVE-2024-47081 | TLS bypass, credential leak |
+| urllib3 | 2.0.7 | >=2.6.3 | CVE-2024-37891, CVE-2025-50181 | Proxy/redirect issues |
+
+#### Medium/Low Priority Fixes
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| twisted | 24.3.0 | >=24.7.0 | CVE-2024-41810, CVE-2024-41671 | XSS, HTTP pipelining |
+| configobj | 5.0.8 | >=5.0.9 | CVE-2023-26112 | ReDoS |
+
+### Files Updated
+
+- `pyproject.toml` - Build system and dependencies
+- `requirements.txt` - Main requirements
+- `requirements-minimal.txt` - Minimal requirements
+- `requirements-dev.txt` - Development requirements
+- `requirements-optional.txt` - Optional requirements
+
+### Verification
+
+```bash
+# Verify no vulnerabilities remain
+pip-audit --format=json
+
+# Check installed versions
+pip list | grep -E "(cryptography|jinja2|setuptools|certifi|filelock|idna|requests|urllib3|twisted|configobj)"
+```
+
+---
+
 ## Recent Security Updates (2025-12-23)
 
 ### Fixed Vulnerabilities

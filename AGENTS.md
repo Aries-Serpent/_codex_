@@ -1,9 +1,10 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2025-12-28 - Workflow consolidation complete)  
+> **Status:** ✅ UP-TO-DATE (2026-01-16 - IP-005 Security Updates Complete)  
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Workflows:** 49 active (100% parity, 19 consolidated)
+> **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > 
 > **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  
 > security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)

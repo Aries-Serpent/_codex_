@@ -1,10 +1,71 @@
 # Production RAG Pipeline Implementation Planset
 
 **Created:** 2026-01-16  
-**Status:** 📋 Ready for Execution  
+**Updated:** 2026-01-16  
+**Status:** 🔄 IN PROGRESS - Phase 1 & 2 Complete  
 **Priority:** HIGH (Long-term production readiness)  
 **Agent Type:** AI Agent (fully autonomous execution)  
 **Policy Compliance:** AI Agency Policy v1.0.0
+
+---
+
+## Implementation Progress
+
+### ✅ Phase 1: Document Ingestion Pipeline (COMPLETE)
+
+**Implemented:**
+- `src/codex/rag/ingestion/validator.py` - Document validation (24 tests passing)
+- `src/codex/rag/ingestion/preprocessor.py` - Text preprocessing (26 tests passing)
+- `src/codex/rag/ingestion/chunker.py` - Chunking strategies (26 tests passing)
+- `src/codex/rag/ingestion/pipeline.py` - Batch ingestion (28 tests passing)
+- `tests/rag/ingestion/` - Comprehensive test suite (104 tests total)
+
+**Features:**
+- Document format detection (TXT, MD, HTML, PDF, JSON, YAML, CSV, XML, DOCX)
+- Content validation with size limits and malicious content detection
+- Unicode normalization and text preprocessing
+- Multiple chunking strategies (fixed-size, sentence, paragraph, sliding window)
+- Batch processing with parallel execution
+- Error recovery with retry logic
+- Deduplication support
+- Progress callbacks
+
+### ✅ Phase 2: Query Optimization (COMPLETE)
+
+**Implemented:**
+- `src/codex/retrieval/reranker.py` - Re-ranking with multiple strategies (18 tests passing)
+- `src/codex/retrieval/query_rewriter.py` - Query rewriting and expansion (29 tests passing)
+- `src/codex/rag/cache/query_cache.py` - LRU query result cache (27 tests passing)
+- `src/codex/rag/cache/embedding_cache.py` - Embedding vector cache (20 tests passing)
+- `src/codex/rag/cache/distributed_cache.py` - Distributed cache with Redis support (22 tests passing)
+- `tests/retrieval/test_reranker.py` - Re-ranker test suite
+- `tests/retrieval/test_query_rewriter.py` - Query rewriter test suite
+- `tests/rag/cache/` - Cache test suite (69 tests total)
+
+**Features:**
+- **Re-ranking Strategies:**
+  - Score fusion (weighted sum, reciprocal rank, max)
+  - MMR (Maximal Marginal Relevance) for diversity
+  - Cross-encoder re-ranking (neural)
+  - Hybrid strategy (fusion + MMR)
+- **Query Optimization:**
+  - Query normalization
+  - Query expansion with synonyms
+  - Query decomposition into sub-queries
+  - Hybrid query generation (sparse + dense)
+  - Multi-query variants for improved recall
+- **Caching:**
+  - LRU eviction with TTL expiration
+  - Thread-safe operations
+  - Embedding-specific cache with float16 optimization
+  - Distributed cache with Redis backend
+  - Cache warming and statistics
+
+### ⏳ Phase 3: Production Features (PENDING)
+
+Requires Human Admin tasks:
+- Infrastructure provisioning
+- Secrets management
 
 ---
 
@@ -22,12 +83,14 @@ This planset provides end-to-end implementation guidance for building a producti
 - `tests/retrieval/` - Comprehensive test suite (70+ tests)
 - `configs/rag_config.yaml` - Configuration templates
 
-**Missing Production Features (⏳):**
-- Vector store high availability and failover
-- Document ingestion pipeline with validation
+**New Production Features (✅ Phase 1):**
+- `src/codex/rag/ingestion/` - Complete ingestion pipeline with validation, preprocessing, and chunking
+- 104 new tests covering all ingestion components
+
+**Remaining Production Features (⏳ Phase 2-3):**
 - Query optimization and caching at scale
+- Vector store high availability and failover
 - Monitoring and observability
-- Error recovery and retry logic
 - Multi-tenancy and rate limiting
 - Security and access control
 - Production deployment configuration
