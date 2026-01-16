@@ -1,3 +1,20 @@
+"""
+Versioning Module
+
+This module provides functionality for versioning.
+
+Usage:
+    from codex.versioning import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

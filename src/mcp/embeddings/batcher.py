@@ -1,3 +1,20 @@
+"""
+Batcher Module
+
+This module provides functionality for batcher.
+
+Usage:
+    from embeddings.batcher import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from typing import Iterable, Any, Generator
 import hashlib
 import json

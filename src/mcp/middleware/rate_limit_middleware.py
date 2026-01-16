@@ -1,3 +1,20 @@
+"""
+Rate Limit Middleware Module
+
+This module provides functionality for rate limit middleware.
+
+Usage:
+    from middleware.rate_limit_middleware import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request

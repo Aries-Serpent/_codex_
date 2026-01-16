@@ -1,3 +1,20 @@
+"""
+Load Module
+
+This module provides functionality for load.
+
+Usage:
+    from mapping.load import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

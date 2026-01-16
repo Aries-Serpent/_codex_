@@ -1,3 +1,20 @@
+"""
+Jsonrpc Adapter Module
+
+This module provides functionality for jsonrpc adapter.
+
+Usage:
+    from server.jsonrpc_adapter import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import asyncio

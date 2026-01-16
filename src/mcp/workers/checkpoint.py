@@ -1,3 +1,20 @@
+"""
+Checkpoint Module
+
+This module provides functionality for checkpoint.
+
+Usage:
+    from workers.checkpoint import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Simple file-based checkpoint helper. Stores processed ids/checksums per input file.
 import json
 import logging

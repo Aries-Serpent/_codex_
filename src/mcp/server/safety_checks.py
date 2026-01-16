@@ -1,3 +1,20 @@
+"""
+Safety Checks Module
+
+This module provides functionality for safety checks.
+
+Usage:
+    from server.safety_checks import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import os
 
