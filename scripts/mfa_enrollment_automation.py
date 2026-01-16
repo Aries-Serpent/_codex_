@@ -107,6 +107,17 @@ class MFAEnrollmentAutomator:
                 # - Use end-to-end encryption for credential transmission
                 # - Implement rate limiting to prevent abuse
                 # - Require MFA setup completion within 24-48 hours
+                
+                # IMPLEMENTATION NOTE: Credential Delivery Pending
+                # ================================================
+                # The provisioning URI and backup codes are generated below but intentionally
+                # NOT delivered to users in this demonstration script. This is INCOMPLETE by design
+                # until a secure credential delivery mechanism is implemented.
+                # 
+                # Current State: Users are enrolled in MFA but do NOT receive setup credentials
+                # Required Action: Implement ONE of the secure delivery options above before production use
+                # 
+                # DO NOT use this script in production without implementing secure credential delivery.
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 

@@ -86,7 +86,12 @@ class ComplianceReporter:
         """
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
-        self.tokens = TokenManager(secret_key=os.getenv('CODEX_MASTER_KEY', 'default'))
+        master_key = os.getenv('CODEX_MASTER_KEY')
+        if not master_key:
+            raise RuntimeError(
+                "CODEX_MASTER_KEY environment variable must be set for token management operations"
+            )
+        self.tokens = TokenManager(secret_key=master_key)
         # Encryption key for compliance reports; must be a valid Fernet key.
         report_key = os.getenv('COMPLIANCE_REPORT_KEY')
         if not report_key:
