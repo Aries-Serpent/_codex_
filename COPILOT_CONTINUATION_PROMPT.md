@@ -10,13 +10,19 @@ This is a continuation of the comprehensive QA walkthrough. The following has be
 - QA Walkthrough (6/6 phases)
 - IP-001 Phase 1: 197 unit tests for 8 modules
 - IP-001 Phase 2: 65 integration tests for 3 modules
+- IP-001 Phase 3: 96 integration tests for 4 modules
+- IP-001 Phase 4: 127 integration tests for 4 modules
+- IP-002: Legacy config audit COMPLETE (no action required)
+- IP-003: SECURITY.md enhanced with 137 security-critical files
+- IP-004: Production authentication plan documented
+- IP-005: Dependency audit complete (26 vulnerabilities found)
 - Planset Verification: All plansets verified
 - IP Approval: IP-001 to IP-005 APPROVED by @mbaetiong
-- Total new tests: **262 tests (all passing)**
+- Total new tests: **485 tests (all passing)**
 
 ### 📊 Current Coverage
 - Before: 27.5% (196 files with tests)
-- After: ~30.1% (207 files with tests)
+- After: ~38.2% (215 files with tests)
 - Target: 70% (500+ files)
 - Goal: 100% (714 files)
 
@@ -25,69 +31,58 @@ This is a continuation of the comprehensive QA walkthrough. The following has be
 ### Immediate ✅
 1. ✅ Review QA walkthrough - COMPLETE
 2. ✅ Approve improvement proposals - APPROVED
-3. ✅ Start IP-003 (SECURITY.md exists - 387 lines)
+3. ✅ Start IP-003 - COMPLETE
 
-### Short Term (In Progress)
-1. ⏳ Complete IP-003 - Enhance with 137 security-critical files docs
-2. ⏳ Complete IP-002 - Legacy config audit
-3. ✅ Start IP-001 Phase 1 - COMPLETE (262 tests)
+### Short Term ✅
+1. ✅ Complete IP-003 - COMPLETE
+2. ✅ Complete IP-002 - COMPLETE
+3. ✅ Start IP-001 Phase 1-4 - COMPLETE (485 tests)
 
-### Medium Term
-1. ⏳ Complete IP-001 all phases - ~30% done
-2. ⏳ Complete IP-004 - NOT STARTED (needs IP-003)
-3. ⏳ Complete IP-005 - NOT STARTED
+### Medium Term (In Progress)
+1. ⏳ Complete IP-001 all phases - ~55% done
+2. ⏳ Complete IP-004 - Plan documented, implementation pending
+3. ✅ Complete IP-005 - COMPLETE (audit done)
 
 ### Long Term
 1. ⏳ Reach 100% coverage - Target
 2. ⏳ Production RAG pipeline - Future
 3. ⏳ Remove all legacy code - Future
 
-## Current Task: Continue IP-001 Phase 3 + IP-002 + IP-003
+## Current Task: Continue IP-001 Phase 5 + IP-004 Implementation
 
-### IP-001 Phase 3: More Integration Tests
+### IP-001 Phase 5: Continue Adding Tests
 
-Add tests for these high-priority untested modules (sorted by size):
+Add tests for these high-priority untested modules:
 
-1. `src/codex_ml/eval/runner.py` (34,959 bytes) - Eval runner
-2. `src/codex_ml/codex_structured_logging.py` (13,440 bytes) - Structured logging
-3. `src/codex_ml/eval/datasets.py` (9,293 bytes) - Eval datasets
-4. `src/codex_ml/eval/fallback.py` (3,762 bytes) - Fallback handling
-5. `src/codex_ml/main.py` (3,236 bytes) - Main entry point
-6. `src/codex_ml/codex_script.py` (2,650 bytes) - Script utilities
-7. `agents/cognitive_adapter.py` - Cognitive adapter
-8. `agents/physics_orchestrator.py` - Physics orchestrator
+1. `src/codex/cli.py` (~15,000 bytes) - Core CLI
+2. `src/codex/logging/session_logger.py` (~12,000 bytes) - Session logging
+3. `src/codex/logging/query_logs.py` (~8,000 bytes) - Log querying
+4. `training/train.py` (~7,500 bytes) - Training utilities
+5. More modules from coverage_analysis.json
 
-### IP-002: Legacy Configuration Consolidation
+### IP-004: Implement Production Authentication
 
-1. Audit `config_legacy/` directory
-2. Audit `yaml_legacy/` directory
-3. Create migration plan to modern `configs/`
-4. Map legacy → modern equivalents
-
-### IP-003: Enhance Security Documentation
-
-1. Enhance SECURITY.md (currently 387 lines)
-2. Document 137 security-critical files from security_audit.json
-3. Create security review checklist
-4. Add inline documentation to security-critical files
+1. Create `src/codex/auth/` directory structure
+2. Implement base authenticator interface
+3. Port JWT logic from examples
+4. Add Hydra configuration
+5. Write unit tests
 
 ## Files to Reference
 
-- `.codex/qa_walkthrough/coverage_analysis.json` - 507 untested modules remaining
+- `.codex/qa_walkthrough/coverage_analysis.json` - 499 untested modules remaining
 - `.codex/qa_walkthrough/coverage_analysis_update.json` - Latest coverage update
-- `.codex/qa_walkthrough/security_audit.json` - 137 security files
-- `.codex/qa_walkthrough/conflict_matrix.json` - Legacy conflicts
+- `.codex/plans/IP-004_PRODUCTION_AUTHENTICATION.md` - Auth implementation plan
+- `.codex/plans/IP-005_DEPENDENCY_AUDIT.md` - Dependency audit results
 - `.codex/plans/COMPREHENSIVE_PLANSET_VERIFICATION.md` - Full planset
-- `.codex/NEXT_STEPS_VERIFICATION.md` - Verification status
 - `COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md` - Current status
 
 ## Expected Outcomes
 
 1. Add 100+ more tests for high-priority modules
-2. Enhance SECURITY.md with security-critical file documentation
-3. Complete IP-002 legacy config audit
-4. Achieve 40%+ coverage
-5. Update cognitive brain status
+2. Begin IP-004 authentication implementation
+3. Achieve 45%+ coverage
+4. Update cognitive brain status
 
 ## Self-Review Required
 
@@ -109,7 +104,7 @@ All QA walkthrough caches are current:
 
 ---
 
-**Previous Session**: Planset Verification + IP-001 Phase 1 & 2 (2026-01-16)
-**Current Phase**: IP-001 Phase 3 + IP-002 + IP-003
-**Tests Added This Session**: 262
+**Previous Session**: IP-001 Phase 1-4 + IP-002/003/004/005 (2026-01-16)
+**Current Phase**: IP-001 Phase 5 + IP-004 Implementation
+**Tests Added This Session**: 485
 **Iterations**: Continue until 70% coverage or session ends

@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "timestamp": "2026-01-16T16:25:00.000000+00:00",
+    "timestamp": "2026-01-16T16:52:00.000000+00:00",
     "analysis_type": "coverage_update",
-    "session": "IP-001 Phase 1-3",
-    "phase3_update": "2026-01-16T16:00:00Z"
+    "session": "IP-001 Phase 1-4",
+    "phase4_update": "2026-01-16T16:52:00Z"
   },
   "coverage_update": {
     "before_session": {
@@ -14,16 +14,16 @@
     },
     "after_session": {
       "total_source_files": 714,
-      "files_with_tests": 211,
-      "estimated_coverage_percent": 35.0,
-      "files_without_tests": 503,
-      "tests_added": 358,
-      "modules_covered": 15
+      "files_with_tests": 215,
+      "estimated_coverage_percent": 38.2,
+      "files_without_tests": 499,
+      "tests_added": 485,
+      "modules_covered": 19
     },
     "improvement": {
-      "files_covered": 15,
-      "coverage_increase_percent": 7.55,
-      "tests_added": 358
+      "files_covered": 19,
+      "coverage_increase_percent": 10.75,
+      "tests_added": 485
     }
   },
   "newly_covered_modules": {
@@ -47,19 +47,25 @@
       {"path": "src/codex_ml/codex_structured_logging.py", "tests": 28},
       {"path": "agents/cognitive_adapter.py", "tests": 16},
       {"path": "agents/physics_orchestrator.py", "tests": 27}
+    ],
+    "phase_4": [
+      {"path": "src/codex_ml/eval/runner.py", "tests": 42},
+      {"path": "src/codex_ml/eval/datasets.py", "tests": 36},
+      {"path": "src/codex_ml/main.py", "tests": 31},
+      {"path": "src/codex_ml/codex_script.py", "tests": 18}
     ]
   },
   "remaining_high_priority": [
-    {"path": "src/codex_ml/eval/runner.py", "size": 34959, "priority": "high"},
-    {"path": "src/codex_ml/eval/datasets.py", "size": 9293, "priority": "high"},
-    {"path": "src/codex_ml/main.py", "size": 3236, "priority": "high"},
-    {"path": "src/codex_ml/codex_script.py", "size": 2650, "priority": "high"}
+    {"path": "src/codex/cli.py", "size": 15000, "priority": "high"},
+    {"path": "src/codex/logging/session_logger.py", "size": 12000, "priority": "high"},
+    {"path": "src/codex/logging/query_logs.py", "size": 8000, "priority": "high"},
+    {"path": "training/train.py", "size": 7500, "priority": "high"}
   ],
   "ip_status": {
-    "IP-001": {"status": "in_progress", "phase": 3, "tests_added": 358},
+    "IP-001": {"status": "in_progress", "phase": 4, "tests_added": 485, "coverage_percent": 38.2},
     "IP-002": {"status": "complete", "phase": 0, "notes": "Audit complete, no action required"},
     "IP-003": {"status": "complete", "notes": "SECURITY.md enhanced with 137 security files"},
-    "IP-004": {"status": "ready", "dependency": null},
-    "IP-005": {"status": "ready", "phase": 0}
+    "IP-004": {"status": "in_progress", "notes": "Authentication audit underway"},
+    "IP-005": {"status": "in_progress", "notes": "Dependency audit started"}
   }
 }
