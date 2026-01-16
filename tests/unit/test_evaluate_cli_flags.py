@@ -1,3 +1,9 @@
+"""
+Test Evaluate Cli Flags
+
+Test module for evaluate cli flags.
+"""
+
 from __future__ import annotations
 
 import json

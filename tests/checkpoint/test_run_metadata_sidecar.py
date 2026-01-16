@@ -1,3 +1,9 @@
+"""
+Test Run Metadata Sidecar
+
+Test module for run metadata sidecar.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Metrics Correctness
+
+Test module for metrics correctness.
+"""
+
 import pytest
 
 from codex_ml.eval import metrics as M

@@ -1,3 +1,9 @@
+"""
+Test Duplication Tool
+
+Test module for duplication tool.
+"""
+
 from pathlib import Path
 
 from codex.analysis.duplication import analyze_duplication

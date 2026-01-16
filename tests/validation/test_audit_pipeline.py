@@ -1,3 +1,9 @@
+"""
+Test Audit Pipeline
+
+Test module for audit pipeline.
+"""
+
 import json
 import subprocess
 import pytest

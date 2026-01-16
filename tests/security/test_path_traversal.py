@@ -1,3 +1,9 @@
+"""
+Test Path Traversal
+
+Test module for path traversal.
+"""
+
 import pytest
 
 from src.security import SecurityError, validate_input

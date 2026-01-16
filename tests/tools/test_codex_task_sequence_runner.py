@@ -1,3 +1,9 @@
+"""
+Test Codex Task Sequence Runner
+
+Test module for codex task sequence runner.
+"""
+
 import textwrap
 from pathlib import Path
 

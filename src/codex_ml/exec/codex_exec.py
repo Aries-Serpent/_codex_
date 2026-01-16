@@ -1,3 +1,20 @@
+"""
+Codex Exec Module
+
+This module provides functionality for codex exec.
+
+Usage:
+    from exec.codex_exec import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 """Unified Codex executor for local orchestration."""

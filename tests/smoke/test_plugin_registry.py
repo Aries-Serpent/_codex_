@@ -1,3 +1,9 @@
+"""
+Test Plugin Registry
+
+Test module for plugin registry.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

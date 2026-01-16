@@ -1,3 +1,9 @@
+"""
+Test Query Logs
+
+Test module for query logs.
+"""
+
 import importlib
 import pytest
 

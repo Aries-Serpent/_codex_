@@ -1,3 +1,9 @@
+"""
+Test Golden Harness Status
+
+Test module for golden harness status.
+"""
+
 import json
 from pathlib import Path
 

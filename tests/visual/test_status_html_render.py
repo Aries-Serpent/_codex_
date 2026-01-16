@@ -1,3 +1,9 @@
+"""
+Test Status Html Render
+
+Test module for status html render.
+"""
+
 import json
 import subprocess
 import sys

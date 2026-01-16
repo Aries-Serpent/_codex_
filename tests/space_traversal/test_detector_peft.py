@@ -1,3 +1,9 @@
+"""
+Test Detector Peft
+
+Test module for detector peft.
+"""
+
 from __future__ import annotations
 
 import importlib.util

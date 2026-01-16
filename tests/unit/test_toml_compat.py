@@ -1,3 +1,9 @@
+"""
+Test Toml Compat
+
+Test module for toml compat.
+"""
+
 import io
 
 from src.codex_ml.utils.toml_compat import load, loads

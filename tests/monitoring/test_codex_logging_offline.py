@@ -1,3 +1,9 @@
+"""
+Test Codex Logging Offline
+
+Test module for codex logging offline.
+"""
+
 import argparse
 import types
 

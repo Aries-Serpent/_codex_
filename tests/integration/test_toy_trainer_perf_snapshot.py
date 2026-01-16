@@ -1,3 +1,9 @@
+"""
+Test Toy Trainer Perf Snapshot
+
+Test module for toy trainer perf snapshot.
+"""
+
 import json
 import subprocess
 import sys

@@ -1,3 +1,9 @@
+"""
+Test Prompt And Errors
+
+Test module for prompt and errors.
+"""
+
 from pathlib import Path
 
 from codex_audit.errors import (

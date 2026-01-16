@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Zendesk Docs Catalog
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/zendesk_docs_catalog.py [options]
+    
+    Examples:
+    $ python scripts/zendesk_docs_catalog.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Render a Markdown catalog from captured Zendesk docs."""
 from __future__ import annotations
 

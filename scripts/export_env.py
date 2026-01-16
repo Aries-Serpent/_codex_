@@ -1,17 +1,45 @@
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
-"""Dump environment variables and version info in JSON."""
+"""
+Export Env
 
+Purpose:
+    Dump environment variables and version info in JSON.
+
+Usage:
+    python scripts/export_env.py [options]
+    
+    Examples:
+    $ python scripts/export_env.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+from __future__ import annotations
 
 import json
+import logging
 import os
 import platform
 import subprocess
 import sys
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+
+logger = logging.getLogger(__name__)
 
 
 def _log_error(step: str, err: Exception, ctx: str) -> None:

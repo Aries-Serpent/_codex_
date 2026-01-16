@@ -1,3 +1,20 @@
+"""
+Example Plugin Module
+
+This module provides functionality for example plugin.
+
+Usage:
+    from plugins.example_plugin import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Any

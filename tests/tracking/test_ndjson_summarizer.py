@@ -1,3 +1,9 @@
+"""
+Test Ndjson Summarizer
+
+Test module for ndjson summarizer.
+"""
+
 import csv
 from pathlib import Path
 

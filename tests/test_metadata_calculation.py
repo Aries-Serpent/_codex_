@@ -1,3 +1,9 @@
+"""
+Test Metadata Calculation
+
+Test module for metadata calculation.
+"""
+
 #!/usr/bin/env python3
 """
 Property-Based Tests for Metadata Calculations

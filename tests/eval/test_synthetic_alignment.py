@@ -1,3 +1,9 @@
+"""
+Test Synthetic Alignment
+
+Test module for synthetic alignment.
+"""
+
 from __future__ import annotations
 
 import pytest

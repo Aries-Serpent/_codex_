@@ -1,3 +1,20 @@
+"""
+Hf Embedder Module
+
+This module provides functionality for hf embedder.
+
+Usage:
+    from embeddings.hf_embedder import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import importlib
 import importlib.util
 import logging

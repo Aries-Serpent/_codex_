@@ -1,3 +1,9 @@
+"""
+Test Gradient Accumulation Tail Flush
+
+Test module for gradient accumulation tail flush.
+"""
+
 from __future__ import annotations
 
 import types

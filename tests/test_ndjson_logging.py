@@ -1,3 +1,9 @@
+"""
+Test Ndjson Logging
+
+Test module for ndjson logging.
+"""
+
 from codex_ml import train_loop
 
 

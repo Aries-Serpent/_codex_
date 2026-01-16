@@ -1,3 +1,20 @@
+"""
+Tracking Decide Module
+
+This module provides functionality for tracking decide.
+
+Usage:
+    from cli.tracking_decide import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

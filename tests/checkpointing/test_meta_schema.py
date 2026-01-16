@@ -1,3 +1,9 @@
+"""
+Test Meta Schema
+
+Test module for meta schema.
+"""
+
 from __future__ import annotations
 
 import json

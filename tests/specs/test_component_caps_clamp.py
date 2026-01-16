@@ -1,3 +1,9 @@
+"""
+Test Component Caps Clamp
+
+Test module for component caps clamp.
+"""
+
 from __future__ import annotations
 
 import json

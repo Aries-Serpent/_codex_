@@ -1,3 +1,9 @@
+"""
+Test Container Smoke
+
+Test module for container smoke.
+"""
+
 import os
 import shutil
 import subprocess

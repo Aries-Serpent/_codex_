@@ -1,3 +1,9 @@
+"""
+Test Batcher
+
+Test module for batcher.
+"""
+
 from src.mcp.embeddings.batcher import batch_iterable, compute_checksum
 
 

@@ -1,3 +1,9 @@
+"""
+Test App Token
+
+Test module for app token.
+"""
+
 from __future__ import annotations
 
 import shutil

@@ -1,3 +1,9 @@
+"""
+Test Registry
+
+Test module for registry.
+"""
+
 import pytest
 
 from codex_ml.connectors.base import Connector

@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Update From Ast
+
+Purpose:
+    Updates from_ast
+
+Usage:
+    python scripts/maturity/update_from_ast.py [options]
+    
+    Examples:
+    $ python scripts/maturity/update_from_ast.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Update maturity documentation from AST analysis.
 Compares current codebase against baseline to detect regressions.
 """

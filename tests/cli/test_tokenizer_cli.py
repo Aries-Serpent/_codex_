@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Cli
+
+Test module for tokenizer cli.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Select And Compress
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/archive/select_and_compress.py [options]
+    
+    Examples:
+    $ python scripts/archive/select_and_compress.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Archive & Pointer (P2) with Knob Normalization

@@ -1,3 +1,20 @@
+"""
+Jsonl Module
+
+This module provides functionality for jsonl.
+
+Usage:
+    from loaders.jsonl import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

@@ -1,3 +1,9 @@
+"""
+Test Precommit Config Exists
+
+Test module for precommit config exists.
+"""
+
 import pathlib
 
 

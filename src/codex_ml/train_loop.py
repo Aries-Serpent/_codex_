@@ -1,3 +1,20 @@
+"""
+Train Loop Module
+
+This module provides functionality for train loop.
+
+Usage:
+    from codex_ml.train_loop import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # PATCH: Added CUDNN determinism helper, checkpoint SHA256 hashing, config snapshot,
 # retention policy execution, & metadata enhancements.
 #

@@ -1,3 +1,9 @@
+"""
+Test Noxfile Parse
+
+Test module for noxfile parse.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

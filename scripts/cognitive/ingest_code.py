@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Ingest Code
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/ingest_code.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/ingest_code.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Code Ingestion Module
 Part of Perception Layer - ingests and analyzes new code submissions
 """

@@ -1,3 +1,20 @@
+"""
+Sharding Module
+
+This module provides functionality for sharding.
+
+Usage:
+    from data.sharding import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_DATA_SHARD
 from __future__ import annotations
 

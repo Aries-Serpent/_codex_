@@ -1,3 +1,9 @@
+"""
+Test Health
+
+Test module for health.
+"""
+
 #!/usr/bin/env python3
 """Tests for health check endpoints."""
 import sys

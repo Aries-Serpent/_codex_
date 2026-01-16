@@ -1,3 +1,9 @@
+"""
+Test Train Tokenizer Streaming
+
+Test module for train tokenizer streaming.
+"""
+
 from __future__ import annotations
 
 import json

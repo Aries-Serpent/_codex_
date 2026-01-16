@@ -26,6 +26,7 @@ import json
 import logging
 import re
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass
@@ -170,6 +171,10 @@ class ZendeskKnowledgeSyncService:
         
         Returns:
             Tuple of (content bytes, response headers dict)
+            
+        Raises:
+            urllib.error.HTTPError: If the URL returns a 404 (not retried)
+            RuntimeError: If other network errors persist after retries
         """
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme not in {"https"}:
@@ -188,6 +193,16 @@ class ZendeskKnowledgeSyncService:
                     content = response.read()
                     headers = dict(response.headers)
                     return content, headers
+            except urllib.error.HTTPError as exc:
+                # 404 errors indicate the page no longer exists - don't retry
+                if exc.code == 404:
+                    logger.warning(f"Article not found (404): {url}")
+                    raise
+                # For other HTTP errors, retry
+                last_exc = exc
+                logger.warning(f"Fetch attempt {attempt + 1}/{self.retries} failed for {url}: {exc}")
+                if attempt < self.retries - 1:
+                    time.sleep(self.backoff * (2**attempt))
             except Exception as exc:  # pragma: no cover - network failures
                 last_exc = exc
                 logger.warning(f"Fetch attempt {attempt + 1}/{self.retries} failed for {url}: {exc}")
@@ -274,6 +289,7 @@ class ZendeskKnowledgeSyncService:
         updated = 0
         failed = 0
         skipped = 0
+        missing_articles = []  # Track 404 articles for reporting
         
         # Process all articles
         for section, buckets in manifest.items():
@@ -331,6 +347,15 @@ class ZendeskKnowledgeSyncService:
                         )
                         updated += 1
                         
+                    except urllib.error.HTTPError as e:
+                        # Handle 404 as a warning, not a failure
+                        if e.code == 404:
+                            logger.warning(f"Article not found (404), skipping: {url}")
+                            missing_articles.append({"url": url, "section": section, "bucket": bucket})
+                            skipped += 1
+                        else:
+                            logger.error(f"HTTP error {e.code} syncing {url}: {e}")
+                            failed += 1
                     except Exception as e:
                         logger.error(f"Failed to sync {url}: {e}")
                         failed += 1
@@ -359,6 +384,13 @@ class ZendeskKnowledgeSyncService:
             f"{result.checked} checked, {result.updated} updated, "
             f"{result.failed} failed, {result.skipped} skipped"
         )
+        
+        # Log missing articles for reporting
+        if missing_articles:
+            logger.warning(
+                f"Found {len(missing_articles)} missing/stale articles (404):\n" +
+                "\n".join(f"  - {a['section']}/{a['bucket']}: {a['url']}" for a in missing_articles)
+            )
         
         return result
     
@@ -415,6 +447,7 @@ class ZendeskKnowledgeSyncService:
         updated = 0
         failed = 0
         skipped = 0
+        missing_articles = []  # Track 404 articles for reporting
         
         # Build pagination URL for Zendesk Help Center Articles API
         # https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/
@@ -504,6 +537,16 @@ class ZendeskKnowledgeSyncService:
                 api_url = data.get("next_page")
                 page_num += 1
                 
+            except urllib.error.HTTPError as e:
+                # Handle 404 as a warning for incremental sync
+                if e.code == 404:
+                    logger.warning(f"API endpoint not found (404): {paginated_url}")
+                    missing_articles.append({"url": paginated_url, "page": page_num})
+                    break
+                else:
+                    logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
+                    failed += len(articles) if 'articles' in locals() else 0
+                    break
             except Exception as e:
                 logger.error(f"Failed to fetch page {page_num}: {e}")
                 failed += len(articles) if 'articles' in locals() else 0
@@ -532,6 +575,13 @@ class ZendeskKnowledgeSyncService:
             f"Incremental sync complete: {result.updated} articles updated "
             f"({result.failed} failed)"
         )
+        
+        # Log missing articles/endpoints for reporting
+        if missing_articles:
+            logger.warning(
+                f"Found {len(missing_articles)} missing endpoints (404):\n" +
+                "\n".join(f"  - Page {a.get('page', 'N/A')}: {a['url']}" for a in missing_articles)
+            )
         
         return result
     

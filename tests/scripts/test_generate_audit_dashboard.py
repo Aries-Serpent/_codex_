@@ -1,3 +1,9 @@
+"""
+Test Generate Audit Dashboard
+
+Test module for generate audit dashboard.
+"""
+
 #!/usr/bin/env python3
 """
 Tests for generate_audit_dashboard.py script.

@@ -1,3 +1,9 @@
+"""
+Test Evaluation Cli
+
+Test module for evaluation cli.
+"""
+
 from __future__ import annotations
 
 import json

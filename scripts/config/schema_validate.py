@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Schema Validate
+
+Purpose:
+    Validates schema_validate
+
+Usage:
+    python scripts/config/schema_validate.py [options]
+    
+    Examples:
+    $ python scripts/config/schema_validate.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Schema Validation (P4)

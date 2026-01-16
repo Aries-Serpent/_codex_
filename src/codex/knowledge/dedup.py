@@ -1,3 +1,20 @@
+"""
+Dedup Module
+
+This module provides functionality for dedup.
+
+Usage:
+    from knowledge.dedup import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import re

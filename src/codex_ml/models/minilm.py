@@ -1,3 +1,20 @@
+"""
+Minilm Module
+
+This module provides functionality for minilm.
+
+Usage:
+    from models.minilm import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 """A tiny Transformer language model used for tests."""

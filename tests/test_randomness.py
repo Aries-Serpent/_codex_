@@ -1,3 +1,9 @@
+"""
+Test Randomness
+
+Test module for randomness.
+"""
+
 #!/usr/bin/env python3
 """Tests for common.randomness module."""
 import os

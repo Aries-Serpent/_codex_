@@ -1,3 +1,9 @@
+"""
+Test Training Arguments Flags
+
+Test module for training arguments flags.
+"""
+
 from pathlib import Path
 
 import pytest

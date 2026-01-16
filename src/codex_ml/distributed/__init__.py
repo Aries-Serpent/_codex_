@@ -1,3 +1,20 @@
+"""
+  Init   Module
+
+This module provides functionality for   init  .
+
+Usage:
+    from distributed.__init__ import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from .minimal import (
     barrier,
     cleanup,

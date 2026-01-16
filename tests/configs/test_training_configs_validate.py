@@ -1,3 +1,9 @@
+"""
+Test Training Configs Validate
+
+Test module for training configs validate.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

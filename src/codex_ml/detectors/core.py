@@ -1,3 +1,20 @@
+"""
+Core Module
+
+This module provides functionality for core.
+
+Usage:
+    from detectors.core import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

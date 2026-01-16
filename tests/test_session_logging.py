@@ -1,3 +1,9 @@
+"""
+Test Session Logging
+
+Test module for session logging.
+"""
+
 import importlib
 import json
 import logging

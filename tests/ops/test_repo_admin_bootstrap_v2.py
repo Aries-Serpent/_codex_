@@ -1,3 +1,9 @@
+"""
+Test Repo Admin Bootstrap V2
+
+Test module for repo admin bootstrap v2.
+"""
+
 from __future__ import annotations
 
 import json

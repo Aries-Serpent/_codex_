@@ -1,3 +1,9 @@
+"""
+Test Pyproject Scripts Present
+
+Test module for pyproject scripts present.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

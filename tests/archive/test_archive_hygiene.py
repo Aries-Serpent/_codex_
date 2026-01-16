@@ -1,3 +1,9 @@
+"""
+Test Archive Hygiene
+
+Test module for archive hygiene.
+"""
+
 from __future__ import annotations
 
 import json

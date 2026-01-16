@@ -1,3 +1,20 @@
+"""
+Hf Loader Module
+
+This module provides functionality for hf loader.
+
+Usage:
+    from codex_ml.hf_loader import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import logging
 import os
 from pathlib import Path

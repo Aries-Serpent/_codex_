@@ -1,3 +1,20 @@
+"""
+Github Client Module
+
+This module provides functionality for github client.
+
+Usage:
+    from codex_bridge.github_client import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

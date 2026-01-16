@@ -1,3 +1,9 @@
+"""
+Test Docs Score Synonyms
+
+Test module for docs score synonyms.
+"""
+
 from __future__ import annotations
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Main
+
+Test module for main.
+"""
+
 import importlib
 import pytest
 

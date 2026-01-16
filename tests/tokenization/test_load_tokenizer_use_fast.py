@@ -1,3 +1,9 @@
+"""
+Test Load Tokenizer Use Fast
+
+Test module for load tokenizer use fast.
+"""
+
 import sys
 from pathlib import Path
 from types import SimpleNamespace

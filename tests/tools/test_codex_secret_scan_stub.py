@@ -1,3 +1,9 @@
+"""
+Test Codex Secret Scan Stub
+
+Test module for codex secret scan stub.
+"""
+
 from pathlib import Path
 import json
 

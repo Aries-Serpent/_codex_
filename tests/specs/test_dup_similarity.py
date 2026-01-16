@@ -1,3 +1,9 @@
+"""
+Test Dup Similarity
+
+Test module for dup similarity.
+"""
+
 from __future__ import annotations
 
 import json

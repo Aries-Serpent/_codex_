@@ -1,3 +1,9 @@
+"""
+Test Code Quality Pipeline
+
+Test module for code quality pipeline.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Verify code quality tooling presence; skip gracefully if not installed.

@@ -1,3 +1,9 @@
+"""
+Test Encryption
+
+Test module for encryption.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate AES-256-GCM encryption utilities if cryptography available.

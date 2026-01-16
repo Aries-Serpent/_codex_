@@ -1,3 +1,9 @@
+"""
+Test Tracking Writers Offline
+
+Test module for tracking writers offline.
+"""
+
 import builtins
 import json
 import sys

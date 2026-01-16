@@ -1,3 +1,9 @@
+"""
+Test Api Infer
+
+Test module for api infer.
+"""
+
 import pytest
 
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")

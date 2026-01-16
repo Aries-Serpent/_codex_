@@ -1,3 +1,20 @@
+"""
+Detectors Module
+
+This module provides functionality for detectors.
+
+Usage:
+    from cli.detectors import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import json

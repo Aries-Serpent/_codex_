@@ -1,3 +1,9 @@
+"""
+Test Cli Hydra Entry Smoke
+
+Test module for cli hydra entry smoke.
+"""
+
 from __future__ import annotations
 
 import json

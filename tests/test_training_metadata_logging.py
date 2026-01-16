@@ -1,3 +1,9 @@
+"""
+Test Training Metadata Logging
+
+Test module for training metadata logging.
+"""
+
 from __future__ import annotations
 
 import builtins

@@ -1,3 +1,9 @@
+"""
+Test Codex Audit Orchestrator
+
+Test module for codex audit orchestrator.
+"""
+
 from __future__ import annotations
 
 import json

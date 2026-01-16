@@ -1,3 +1,20 @@
+"""
+Cli Module
+
+This module provides functionality for cli.
+
+Usage:
+    from packager.cli import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import argparse

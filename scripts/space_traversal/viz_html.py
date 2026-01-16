@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Viz Html
+
+Purpose:
+    [To be documented - Viz Html]
+
+Usage:
+    python scripts/space_traversal/viz_html.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/viz_html.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 HTML visualization dashboard for v1.5.2
 
 Generates interactive HTML dashboards for audit trend visualization.

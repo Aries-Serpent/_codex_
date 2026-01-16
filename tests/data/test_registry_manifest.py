@@ -1,3 +1,9 @@
+"""
+Test Registry Manifest
+
+Test module for registry manifest.
+"""
+
 import hashlib
 import json
 from pathlib import Path

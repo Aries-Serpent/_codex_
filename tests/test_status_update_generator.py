@@ -1,3 +1,9 @@
+"""
+Test Status Update Generator
+
+Test module for status update generator.
+"""
+
 #!/usr/bin/env python3
 """
 Test suite for the status update generator.

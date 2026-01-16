@@ -1,3 +1,20 @@
+"""
+Dedupe Module
+
+This module provides functionality for dedupe.
+
+Usage:
+    from embeddings.dedupe import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from typing import Any
 import hashlib
 import json

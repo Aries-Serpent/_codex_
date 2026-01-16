@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Copy Ideal Versions
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/copy_ideal_versions.py [options]
+    
+    Examples:
+    $ python scripts/security/copy_ideal_versions.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Alternative Merge Strategy: Copy Files from Ideal Commit
 
 Instead of resolving merge conflicts, this script copies the corrected versions

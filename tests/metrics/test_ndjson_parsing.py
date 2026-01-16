@@ -1,3 +1,9 @@
+"""
+Test Ndjson Parsing
+
+Test module for ndjson parsing.
+"""
+
 from __future__ import annotations
 
 import json

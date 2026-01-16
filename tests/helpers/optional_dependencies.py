@@ -1,3 +1,20 @@
+"""
+Optional Dependencies Module
+
+This module provides functionality for optional dependencies.
+
+Usage:
+    from helpers.optional_dependencies import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Any

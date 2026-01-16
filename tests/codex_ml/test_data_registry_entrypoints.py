@@ -1,3 +1,9 @@
+"""
+Test Data Registry Entrypoints
+
+Test module for data registry entrypoints.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,3 +1,9 @@
+"""
+Test Metrics
+
+Test module for metrics.
+"""
+
 from src.mcp.observability.metrics import Timer, increment, snapshot, _counters, _timers
 
 

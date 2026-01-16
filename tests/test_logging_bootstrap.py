@@ -1,3 +1,9 @@
+"""
+Test Logging Bootstrap
+
+Test module for logging bootstrap.
+"""
+
 from types import SimpleNamespace
 
 from codex_ml.monitoring import codex_logging

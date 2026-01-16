@@ -1,3 +1,9 @@
+"""
+Test Docs Examples Paths
+
+Test module for docs examples paths.
+"""
+
 from pathlib import Path
 
 import pytest

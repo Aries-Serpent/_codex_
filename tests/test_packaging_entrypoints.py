@@ -1,3 +1,9 @@
+"""
+Test Packaging Entrypoints
+
+Test module for packaging entrypoints.
+"""
+
 from __future__ import annotations
 
 from importlib import import_module

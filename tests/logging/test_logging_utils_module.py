@@ -1,3 +1,9 @@
+"""
+Test Logging Utils Module
+
+Test module for logging utils module.
+"""
+
 import sys
 from pathlib import Path
 

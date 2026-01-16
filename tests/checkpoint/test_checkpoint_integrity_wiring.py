@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Integrity Wiring
+
+Test module for checkpoint integrity wiring.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

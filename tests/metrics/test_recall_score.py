@@ -1,3 +1,9 @@
+"""
+Test Recall Score
+
+Test module for recall score.
+"""
+
 from __future__ import annotations
 
 from codex_ml.metrics.metric_implementations import RecallScore

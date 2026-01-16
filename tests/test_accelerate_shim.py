@@ -1,3 +1,9 @@
+"""
+Test Accelerate Shim
+
+Test module for accelerate shim.
+"""
+
 import importlib
 import sys
 

@@ -1,3 +1,9 @@
+"""
+Test Retry
+
+Test module for retry.
+"""
+
 from __future__ import annotations
 
 from collections import deque

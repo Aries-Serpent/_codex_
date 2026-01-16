@@ -1,3 +1,9 @@
+"""
+Test Query Logs Build Query
+
+Test module for query logs build query.
+"""
+
 # Test: build_query column & timestamp inference
 # > Generated: 2025-08-19T22:41:08Z | Author: mbaetiong
 """

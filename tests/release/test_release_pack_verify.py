@@ -1,3 +1,9 @@
+"""
+Test Release Pack Verify
+
+Test module for release pack verify.
+"""
+
 from __future__ import annotations
 
 import json

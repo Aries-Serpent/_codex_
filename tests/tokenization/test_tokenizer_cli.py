@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Cli
+
+Test module for tokenizer cli.
+"""
+
 import types
 from pathlib import Path
 

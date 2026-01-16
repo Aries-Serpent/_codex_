@@ -1,3 +1,9 @@
+"""
+Test Codex Logging Cfg
+
+Test module for codex logging cfg.
+"""
+
 import argparse
 import types
 

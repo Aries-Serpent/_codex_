@@ -1,3 +1,9 @@
+"""
+Test Sentencepiece Adapter Prefix
+
+Test module for sentencepiece adapter prefix.
+"""
+
 import importlib.util
 from pathlib import Path
 

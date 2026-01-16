@@ -1,3 +1,20 @@
+"""
+Migrate Data Module
+
+This module provides functionality for migrate data.
+
+Usage:
+    from cli.migrate_data import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

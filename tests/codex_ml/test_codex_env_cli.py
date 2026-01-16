@@ -1,3 +1,9 @@
+"""
+Test Codex Env Cli
+
+Test module for codex env cli.
+"""
+
 from pathlib import Path
 
 from codex_ml.cli import codex_env

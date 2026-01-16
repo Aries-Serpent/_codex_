@@ -1,3 +1,9 @@
+"""
+Test Symbolic Pipeline
+
+Test module for symbolic pipeline.
+"""
+
 import math
 
 import pytest

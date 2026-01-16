@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Print Env Info
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/env/print_env_info.py [options]
+    
+    Examples:
+    $ python scripts/env/print_env_info.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Print environment details for reproducibility."""
 
 from __future__ import annotations

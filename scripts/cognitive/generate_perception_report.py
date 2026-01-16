@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Generate Perception Report
+
+Purpose:
+    Generates perception_report
+
+Usage:
+    python scripts/cognitive/generate_perception_report.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/generate_perception_report.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Perception Report Generator
 Generates human-readable reports from perception data
 """

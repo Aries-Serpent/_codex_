@@ -1,0 +1,64 @@
+name: github-test-orchestrator
+version: 1.0.0
+tier: 1
+description: Coordinates test execution with intelligent selection and flaky test detection
+
+triggers:
+  - pull_request
+  - push
+  - workflow_dispatch
+
+permissions:
+  contents: read
+  checks: write
+  issues: write
+  pull_requests: write
+
+environment_variables:
+  required:
+    - GITHUB_TOKEN
+  optional:
+    - TEST_PARALLELISM
+    - COVERAGE_MINIMUM
+
+test_suites:
+  unit:
+    command: "pytest tests/unit -v --tb=short"
+    timeout: 300
+    required: true
+  integration:
+    command: "pytest tests/integration -v --tb=short"
+    timeout: 900
+    required: true
+  e2e:
+    command: "pytest tests/e2e -v --tb=short"
+    timeout: 1800
+    required: false
+  rust:
+    command: "cargo test --release --locked"
+    timeout: 600
+    required: true
+
+flaky_detection:
+  enabled: true
+  retry_count: 3
+  failure_threshold: 0.2
+
+coverage:
+  minimum: 80
+  report_format:
+    - html
+    - json
+
+outputs:
+  - type: check
+    name: "Test Execution"
+    conclusion: success|failure
+  - type: issue
+    title: "Test Report - {date}"
+    labels:
+      - testing
+      - automated
+      - test-orchestrator
+  - type: coverage_report
+    path: coverage/index.html

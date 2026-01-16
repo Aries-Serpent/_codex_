@@ -1,3 +1,9 @@
+"""
+Test App Token Cli
+
+Test module for app token cli.
+"""
+
 from __future__ import annotations
 
 import os

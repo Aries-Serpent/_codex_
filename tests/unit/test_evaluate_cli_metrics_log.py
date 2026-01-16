@@ -1,3 +1,9 @@
+"""
+Test Evaluate Cli Metrics Log
+
+Test module for evaluate cli metrics log.
+"""
+
 from __future__ import annotations
 
 import json

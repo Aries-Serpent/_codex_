@@ -1,3 +1,20 @@
+"""
+Ingest Module
+
+This module provides functionality for ingest.
+
+Usage:
+    from pipeline_nodes.ingest import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import csv

@@ -1,3 +1,9 @@
+"""
+Test Training Config Yaml
+
+Test module for training config yaml.
+"""
+
 from pathlib import Path
 
 import pytest

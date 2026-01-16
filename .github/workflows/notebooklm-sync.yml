@@ -2,7 +2,7 @@ name: NotebookLM Live Sync
 
 on:
   push:
-    branches:
+    branches: 
       - main
       - develop
     paths:
@@ -19,7 +19,7 @@ on:
       - 'pyproject.toml'
   workflow_dispatch:
     inputs:
-      force_sync:
+      force_sync: 
         description: 'Force full synchronization'
         required: false
         default: 'false'
@@ -37,13 +37,13 @@ env:
   REPOMIX_VERSION: '0.1.11'
 
 jobs:
-  consolidate-and-sync:
+  consolidate-and-sync: 
     name: Repository Consolidation & Drive Sync
-    runs-on: ubuntu-latest
+    runs-on:  ubuntu-latest
     timeout-minutes: 15
     
     steps:
-      - name: Checkout Repository
+      - name:  Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1  # Shallow clone for speed
@@ -54,12 +54,12 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
-      - name: Cache Repomix Installation
+      - name:  Cache Repomix Installation
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-${{ hashFiles('repomix.config.json') }}
-          restore-keys: |
+          key: ${{ runner. os }}-repomix-${{ env.REPOMIX_VERSION }}-${{ hashFiles('repomix.config. json') }}
+          restore-keys:  |
             ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-
             ${{ runner.os }}-repomix-
       
@@ -69,7 +69,7 @@ jobs:
           repomix --version
       
       - name: Generate Repository Consolidation
-        id: consolidate
+        id:  consolidate
         run: |
           echo "::group::Running Repomix Consolidation"
           
@@ -116,7 +116,7 @@ jobs:
       
       - name: Cache Security Tools
         uses: actions/cache@v4
-        with:
+        with: 
           path: |
             ~/.cache/pip
             ~/.npm
@@ -134,25 +134,28 @@ jobs:
           echo "::group::Installing detect-secrets"
           pip install detect-secrets
           detect-secrets --version
-          echo "::endgroup::"
+          echo ":: endgroup::"
       
       - name: Security Scan - Secretlint
         id: secretlint
         continue-on-error: true
         run: |
-          echo "::group::Scanning with Secretlint"
+          echo ":: group:: Scanning with Secretlint"
           
           # Create secretlint config if not exists
           if [ ! -f ".secretlintrc.json" ]; then
-            cat > .secretlintrc.json << 'EOF'
-{
-  "rules": [
-    {
-      "id": "@secretlint/secretlint-rule-preset-recommend"
-    }
-  ]
-}
-EOF
+            # Use Python to reliably generate the JSON file (avoids heredoc indentation/quoting issues)
+            python - <<'PY' > .secretlintrc.json
+          import json
+          config = {
+            "rules": [
+              {
+                "id": "@secretlint/secretlint-rule-preset-recommend"
+              }
+            ]
+          }
+          print(json.dumps(config, indent=2))
+          PY
           fi
           
           if npx secretlint "$OUTPUT_FILE"; then
@@ -165,7 +168,7 @@ EOF
           echo "::endgroup::"
       
       - name: Security Scan - detect-secrets
-        id: detect_secrets
+        id:  detect_secrets
         run: |
           echo "::group::Scanning with detect-secrets"
           
@@ -183,14 +186,14 @@ EOF
             echo "secrets_found=true" >> $GITHUB_OUTPUT
             
             # Show what was found (for debugging)
-            detect-secrets scan "$OUTPUT_FILE" --baseline .secrets.baseline || true
+            detect-secrets scan "$OUTPUT_FILE" --baseline . secrets.baseline || true
             
             exit 1
           fi
           echo "::endgroup::"
       
-      - name: Fail if Secrets Detected
-        if: steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true'
+      - name:  Fail if Secrets Detected
+        if: ${{ steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs. secrets_found == 'true' }}
         run: |
           echo "❌ SECURITY ALERT: Secrets detected in consolidation output!"
           echo "Workflow terminated to prevent credential exposure."
@@ -198,7 +201,7 @@ EOF
           echo "Please review the security scan outputs above and:"
           echo "1. Remove any exposed secrets from the codebase"
           echo "2. Add patterns to .repomixignore"
-          echo "3. Update .secrets.baseline if false positive"
+          echo "3. Update . secrets.baseline if false positive"
           exit 1
       
       - name: Upload to Google Drive
@@ -206,38 +209,60 @@ EOF
         uses: satackey/action-google-drive@v1
         with:
           skicka-tokencache-json: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
-          upload-from: ${{ env.OUTPUT_FILE }}
+          upload-from:  ${{ env.OUTPUT_FILE }}
           upload-to: /codex-sync/${{ env.OUTPUT_FILE }}
-          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-id: ${{ secrets. GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          remove-outdated: true
+          remove-outdated:  true
       
-      - name: Notify Sync Complete
-        if: success()
+      - name:  Notify Sync Complete
+        if: ${{ success() }}
         env:
-          WEBHOOK_URL: ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
+          WEBHOOK_URL:  ${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}
         run: |
           if [ -n "$WEBHOOK_URL" ]; then
             # Get commit info
             COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
             COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
             
+            # Prepare environment values (note: GitHub expressions are expanded before the run step)
+            export FILE_SIZE_MB="${{ steps.consolidate.outputs.file_size_mb }}"
+            export FILE_SIZE_BYTES="${{ steps.consolidate.outputs. file_size_bytes }}"
+            export GITHUB_SHORT_SHA="${GITHUB_SHA:0:7}"
+            export TIMESTAMP="$(date -Iseconds)"
+            export GITHUB_REF_NAME="${{ github.ref_name }}"
+            export WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github. run_id }}"
+            
+            # Build JSON payload safely using Python to avoid quoting issues
+            PAYLOAD=$(python - <<'PY'
+          import json, os
+          def to_int(v):
+              try: 
+                  return int(v)
+              except: 
+                  return None
+          
+          payload = {
+            "status": "success",
+            "timestamp": os.environ.get("TIMESTAMP"),
+            "file_size_mb": os.environ.get("FILE_SIZE_MB"),
+            "file_size_bytes": to_int(os.environ.get("FILE_SIZE_BYTES")),
+            "commit_sha": os.environ.get("GITHUB_SHA"),
+            "commit_short_sha": os.environ.get("GITHUB_SHORT_SHA"),
+            "commit_message": os.environ.get("COMMIT_MSG"),
+            "commit_author": os.environ.get("COMMIT_AUTHOR"),
+            "branch": os.environ.get("GITHUB_REF_NAME"),
+            "repository": os.environ.get("GITHUB_REPOSITORY"),
+            "workflow_url": os.environ. get("WORKFLOW_URL")
+          }
+          print(json.dumps(payload))
+          PY
+          )
+            
             # Send webhook notification
-            curl -X POST "$WEBHOOK_URL" \
+            curl -s -X POST "$WEBHOOK_URL" \
               -H "Content-Type: application/json" \
-              -d "{
-                \"status\": \"success\",
-                \"timestamp\": \"$(date -Iseconds)\",
-                \"file_size_mb\": \"${{ steps.consolidate.outputs.file_size_mb }}\",
-                \"file_size_bytes\": ${{ steps.consolidate.outputs.file_size_bytes }},
-                \"commit_sha\": \"${{ github.sha }}\",
-                \"commit_short_sha\": \"${GITHUB_SHA:0:7}\",
-                \"commit_message\": \"$COMMIT_MSG\",
-                \"commit_author\": \"$COMMIT_AUTHOR\",
-                \"branch\": \"${{ github.ref_name }}\",
-                \"repository\": \"${{ github.repository }}\",
-                \"workflow_url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-              }"
+              -d "$PAYLOAD"
             
             if [ $? -eq 0 ]; then
               echo "✅ Notification sent successfully"
@@ -250,28 +275,28 @@ EOF
           fi
       
       - name: Upload Artifact (Backup)
-        if: always()
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: codex-sync-${{ github.sha }}
+          name: codex-sync-${{ github. sha }}
           path: ${{ env.OUTPUT_FILE }}
           retention-days: 7
           compression-level: 9
       
       - name: Generate Job Summary
-        if: always()
+        if: ${{ always() }}
         run: |
           echo "## 📊 NotebookLM Sync Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Consolidation" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: ${{ steps.consolidate.outcome }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **File Size**: ${{ steps.consolidate.outputs.file_size_mb }}MB" >> $GITHUB_STEP_SUMMARY
+          echo "- **File Size**:  ${{ steps.consolidate.outputs.file_size_mb }}MB" >> $GITHUB_STEP_SUMMARY
           echo "- **Output**: \`${{ env.OUTPUT_FILE }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Security Scanning" >> $GITHUB_STEP_SUMMARY
           echo "- **Secretlint**: ${{ steps.secretlint.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "- **detect-secrets**: ${{ steps.detect_secrets.outcome }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Secrets Found**: ${{ steps.detect_secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Secrets Found**: ${{ steps. detect_secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Google Drive Upload" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: ${{ steps.drive_upload.outcome }}" >> $GITHUB_STEP_SUMMARY

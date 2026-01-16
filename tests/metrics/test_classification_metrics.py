@@ -1,3 +1,9 @@
+"""
+Test Classification Metrics
+
+Test module for classification metrics.
+"""
+
 from __future__ import annotations
 
 import pytest

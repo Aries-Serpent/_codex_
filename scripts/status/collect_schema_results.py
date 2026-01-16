@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Collect Schema Results
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/status/collect_schema_results.py [options]
+    
+    Examples:
+    $ python scripts/status/collect_schema_results.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Run schema validations and emit a consolidated results JSON for merging into status.
 
 Output:

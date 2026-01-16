@@ -1,3 +1,9 @@
+"""
+Test Config Validate Cli
+
+Test module for config validate cli.
+"""
+
 from pathlib import Path
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Metrics Validate Tail Badge
+
+Test module for metrics validate tail badge.
+"""
+
 from __future__ import annotations
 
 import json

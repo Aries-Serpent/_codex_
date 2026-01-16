@@ -1,3 +1,9 @@
+"""
+Test Make Splits
+
+Test module for make splits.
+"""
+
 from __future__ import annotations
 
 import json

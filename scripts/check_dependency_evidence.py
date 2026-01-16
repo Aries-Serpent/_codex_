@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Check Dependency Evidence
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/check_dependency_evidence.py [options]
+    
+    Examples:
+    $ python scripts/check_dependency_evidence.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 check_dependency_evidence.py — Minimal schema validation for dependency_ops.jsonl
 
 Validates that each non-empty JSON line contains required keys:

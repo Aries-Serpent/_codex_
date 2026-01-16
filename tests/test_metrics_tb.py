@@ -1,3 +1,9 @@
+"""
+Test Metrics Tb
+
+Test module for metrics tb.
+"""
+
 import pytest
 
 pytest.importorskip("omegaconf")

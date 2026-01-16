@@ -1,3 +1,9 @@
+"""
+Test Cli Offline Bootstrap
+
+Test module for cli offline bootstrap.
+"""
+
 from __future__ import annotations
 
 import json

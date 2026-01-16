@@ -1,4 +1,36 @@
-# ruff: noqa
+"""
+Deep Research Task Process
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/deep_research_task_process.py [options]
+    
+    Examples:
+    $ python scripts/deep_research_task_process.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+# ruff: noqa: E501  # Allow long documentation tables and example commands for readability.
+
+from __future__ import annotations
+
 # Python Name: enhanced_repo_improv2.py
 # Script: ENHANCED Repository Improvement Tasks
 # Purpose: Perform repository improvement / bootstrap tasks:
@@ -62,8 +94,6 @@ NOTE:
 The unified CI workflow triggers only via workflow_dispatch (and PR events if configured) to
 avoid unintended activation in forked contexts.
 """
-
-from __future__ import annotations
 
 import hashlib
 import json

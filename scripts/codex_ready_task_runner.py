@@ -1,3 +1,33 @@
+"""
+Codex Ready Task Runner
+
+Purpose:
+    Runs codex_ready_task_runner
+
+Usage:
+    python scripts/codex_ready_task_runner.py [options]
+    
+    Examples:
+    $ python scripts/codex_ready_task_runner.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

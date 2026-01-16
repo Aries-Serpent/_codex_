@@ -1,3 +1,20 @@
+"""
+Aggregate Module
+
+This module provides functionality for aggregate.
+
+Usage:
+    from detectors.aggregate import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Any, Iterable

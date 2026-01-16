@@ -1,3 +1,9 @@
+"""
+Test Registry Documentation
+
+Test module for registry documentation.
+"""
+
 from __future__ import annotations
 
 import codex_ml.registry as registry_facade

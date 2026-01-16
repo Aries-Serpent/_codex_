@@ -1,3 +1,33 @@
+"""
+Example V2
+
+Purpose:
+    [To be documented - Example V2]
+
+Usage:
+    python scripts/space_traversal/detectors/example_v2.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/detectors/example_v2.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 def detect_v2(file_index: dict) -> dict:
     """
     Example detect_v2 demonstrating evidence ranges & confidence.

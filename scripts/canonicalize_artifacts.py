@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Canonicalize Artifacts
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/canonicalize_artifacts.py [options]
+    
+    Examples:
+    $ python scripts/canonicalize_artifacts.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 import argparse
 import logging
 logger = logging.getLogger(__name__)

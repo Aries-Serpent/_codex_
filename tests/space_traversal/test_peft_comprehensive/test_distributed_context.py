@@ -1,3 +1,9 @@
+"""
+Test Distributed Context
+
+Test module for distributed context.
+"""
+
 from codex_ml.training.unified_training import distributed_context
 
 

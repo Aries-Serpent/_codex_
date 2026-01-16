@@ -1,3 +1,20 @@
+"""
+Metric Implementations Module
+
+This module provides functionality for metric implementations.
+
+Usage:
+    from metrics.metric_implementations import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

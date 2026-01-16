@@ -1,3 +1,9 @@
+"""
+Test Registry Determinism
+
+Test module for registry determinism.
+"""
+
 from codex_ml.metrics.registry import get_metric
 
 

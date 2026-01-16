@@ -1,3 +1,9 @@
+"""
+Test Prompt Sanitizer
+
+Test module for prompt sanitizer.
+"""
+
 #!/usr/bin/env python3
 """Tests for PromptSanitizer."""
 import pytest

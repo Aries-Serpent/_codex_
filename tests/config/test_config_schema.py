@@ -1,3 +1,9 @@
+"""
+Test Config Schema
+
+Test module for config schema.
+"""
+
 from __future__ import annotations
 
 import dataclasses

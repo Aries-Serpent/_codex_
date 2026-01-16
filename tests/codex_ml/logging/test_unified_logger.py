@@ -1,3 +1,9 @@
+"""
+Test Unified Logger
+
+Test module for unified logger.
+"""
+
 from codex_ml.logging.unified_logger import LoggerBackend, get_logger_registry
 
 

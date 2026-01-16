@@ -1,3 +1,9 @@
+"""
+Test Audit Parity
+
+Test module for audit parity.
+"""
+
 #!/usr/bin/env python3
 """
 Integration parity test for PR #2263

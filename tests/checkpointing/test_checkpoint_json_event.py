@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Json Event
+
+Test module for checkpoint json event.
+"""
+
 import json
 from pathlib import Path
 

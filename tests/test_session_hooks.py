@@ -1,3 +1,9 @@
+"""
+Test Session Hooks
+
+Test module for session hooks.
+"""
+
 import json
 import os
 import pathlib

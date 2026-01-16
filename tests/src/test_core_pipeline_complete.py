@@ -1,3 +1,9 @@
+"""
+Test Core Pipeline Complete
+
+Test module for core pipeline complete.
+"""
+
 #! /usr/bin/env python3
 """
 Test suite for core pipeline: code ingestion, AST transformation, RAG retrieval, configuration, error paths

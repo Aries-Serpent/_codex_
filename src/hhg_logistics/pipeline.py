@@ -1,3 +1,20 @@
+"""
+Pipeline Module
+
+This module provides functionality for pipeline.
+
+Usage:
+    from hhg_logistics.pipeline import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

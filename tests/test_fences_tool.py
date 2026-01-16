@@ -1,3 +1,9 @@
+"""
+Test Fences Tool
+
+Test module for fences tool.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

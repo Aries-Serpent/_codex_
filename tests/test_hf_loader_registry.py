@@ -1,3 +1,9 @@
+"""
+Test Hf Loader Registry
+
+Test module for hf loader registry.
+"""
+
 from __future__ import annotations
 
 import pytest

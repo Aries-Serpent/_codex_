@@ -1,3 +1,9 @@
+"""
+Test Model Registry Invalid
+
+Test module for model registry invalid.
+"""
+
 from __future__ import annotations
 
 import pytest

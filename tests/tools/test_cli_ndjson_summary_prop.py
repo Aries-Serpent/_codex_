@@ -1,3 +1,9 @@
+"""
+Test Cli Ndjson Summary Prop
+
+Test module for cli ndjson summary prop.
+"""
+
 from __future__ import annotations
 
 import json

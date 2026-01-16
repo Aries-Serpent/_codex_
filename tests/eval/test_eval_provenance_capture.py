@@ -1,3 +1,9 @@
+"""
+Test Eval Provenance Capture
+
+Test module for eval provenance capture.
+"""
+
 #!/usr/bin/env python3
 """Test that evaluation runner captures complete provenance including git commit and seed."""
 

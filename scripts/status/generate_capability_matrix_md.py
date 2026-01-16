@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Generate Capability Matrix Md
+
+Purpose:
+    Generates capability_matrix_md
+
+Usage:
+    python scripts/status/generate_capability_matrix_md.py [options]
+    
+    Examples:
+    $ python scripts/status/generate_capability_matrix_md.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import json

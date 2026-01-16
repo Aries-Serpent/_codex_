@@ -1,3 +1,9 @@
+"""
+Test Extended Metrics
+
+Test module for extended metrics.
+"""
+
 from codex_ml.metrics.evaluator import batch_metrics
 
 

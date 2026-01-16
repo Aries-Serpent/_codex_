@@ -1,3 +1,9 @@
+"""
+Test External Search
+
+Test module for external search.
+"""
+
 from __future__ import annotations
 
 import json

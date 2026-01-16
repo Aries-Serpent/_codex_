@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Activate Brain
+
+Purpose:
+    [To be documented - Activate Brain]
+
+Usage:
+    python scripts/agent/activate_brain.py [options]
+    
+    Examples:
+    $ python scripts/agent/activate_brain.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Activate _Codex_ brain mode for Copilot Agent.
 Prepares environment and context for autonomous operation.
 """

@@ -1,3 +1,20 @@
+"""
+Note V2 Module
+
+This module provides functionality for note v2.
+
+Usage:
+    from ingestion.Note_v2 import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Note_v2.py
 
 import streamlit as st

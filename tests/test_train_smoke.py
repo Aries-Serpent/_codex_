@@ -1,3 +1,9 @@
+"""
+Test Train Smoke
+
+Test module for train smoke.
+"""
+
 import math
 
 import pytest

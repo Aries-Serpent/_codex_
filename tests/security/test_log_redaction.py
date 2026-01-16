@@ -1,3 +1,9 @@
+"""
+Test Log Redaction
+
+Test module for log redaction.
+"""
+
 import importlib
 import json
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Test Inference Stub
+
+Test module for inference stub.
+"""
+
 import pytest
 
 from codex_ml.serving.inference_server import ModelConfig, create_app

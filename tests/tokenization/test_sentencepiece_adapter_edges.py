@@ -1,3 +1,9 @@
+"""
+Test Sentencepiece Adapter Edges
+
+Test module for sentencepiece adapter edges.
+"""
+
 #!/usr/bin/env python3
 """Edge-case tests for SentencePieceAdapter using a vendored tiny model."""
 

@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Validate Outcomes
+
+Purpose:
+    Validates outcomes
+
+Usage:
+    python scripts/cognitive/validate_outcomes.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/validate_outcomes.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Outcome Validator
 Validates execution outcomes against expectations
 """

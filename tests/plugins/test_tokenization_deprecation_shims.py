@@ -1,3 +1,9 @@
+"""
+Test Tokenization Deprecation Shims
+
+Test module for tokenization deprecation shims.
+"""
+
 from __future__ import annotations
 
 import importlib

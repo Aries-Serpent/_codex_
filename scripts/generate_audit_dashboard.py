@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Generate Audit Dashboard
+
+Purpose:
+    Generates audit_dashboard
+
+Usage:
+    python scripts/generate_audit_dashboard.py [options]
+    
+    Examples:
+    $ python scripts/generate_audit_dashboard.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Generate an index.html dashboard for audit artifacts.
 
 This script scans audit_artifacts/, reports/, and audit_run_manifest.json

@@ -1,3 +1,20 @@
+"""
+Text Module
+
+This module provides functionality for text.
+
+Usage:
+    from metrics.text import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import math

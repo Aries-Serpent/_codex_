@@ -1,3 +1,9 @@
+"""
+Test Example Plugin
+
+Test module for example plugin.
+"""
+
 import importlib
 import pytest
 

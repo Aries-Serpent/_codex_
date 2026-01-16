@@ -1,3 +1,9 @@
+"""
+Test Metric Registry Registration
+
+Test module for metric registry registration.
+"""
+
 from __future__ import annotations
 
 import pytest

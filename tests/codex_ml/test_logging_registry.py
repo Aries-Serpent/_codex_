@@ -1,3 +1,9 @@
+"""
+Test Logging Registry
+
+Test module for logging registry.
+"""
+
 from codex_ml.logging import registry
 
 

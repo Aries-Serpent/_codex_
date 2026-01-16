@@ -1,3 +1,20 @@
+"""
+Csv Ingestor Module
+
+This module provides functionality for csv ingestor.
+
+Usage:
+    from ingestion.csv_ingestor import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import csv

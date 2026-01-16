@@ -1,3 +1,9 @@
+"""
+Test Json Report
+
+Test module for json report.
+"""
+
 from codex_utils.json_report import generate_report
 
 

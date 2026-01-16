@@ -1,5 +1,35 @@
 #! /usr/bin/env python3
 """
+Check Doc Links
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/maintenance/check_doc_links.py [options]
+    
+    Examples:
+    $ python scripts/maintenance/check_doc_links.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Documentation Link Checker
 
 Scans all Markdown files for broken internal links and suggests fixes.

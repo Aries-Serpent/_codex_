@@ -1,3 +1,9 @@
+"""
+Test Solution Xml
+
+Test module for solution xml.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

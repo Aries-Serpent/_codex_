@@ -1,3 +1,9 @@
+"""
+Test Detectors Cli
+
+Test module for detectors cli.
+"""
+
 from __future__ import annotations
 
 import importlib

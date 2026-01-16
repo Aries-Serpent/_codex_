@@ -1,3 +1,9 @@
+"""
+Test Training Callbacks
+
+Test module for training callbacks.
+"""
+
 # BEGIN: CODEX_TEST_TRAINING_CALLBACKS
 from codex_ml.training.callbacks import EarlyStopping
 

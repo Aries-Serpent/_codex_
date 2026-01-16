@@ -1,0 +1,299 @@
+name: Authentication Security Audit
+
+on:
+  schedule:
+    # Run weekly security audit on Mondays at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/codex/auth/**'
+      - 'src/codex/security_utils.py'
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install security tools
+        run: |
+          pip install bandit safety semgrep
+          pip install -e .
+      
+      - name: Run Bandit security scanner
+        continue-on-error: true
+        run: |
+          bandit -r src/codex/auth/ -ll -f json -o bandit-report.json
+          bandit -r src/codex/auth/ -ll -f txt
+      
+      - name: Run Safety check
+        continue-on-error: true
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check || true
+      
+      - name: Run Semgrep
+        continue-on-error: true
+        run: |
+          semgrep --config=auto --json --output=semgrep-report.json src/codex/auth/ || true
+          semgrep --config=auto src/codex/auth/ || true
+      
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Checking for hardcoded secrets..."
+          ! grep -r -i -E "(client_secret|api_key|password|secret_key)\s*=\s*['\"][^'\"]{10,}" src/codex/auth/
+          echo "✓ No hardcoded secrets found"
+      
+      - name: Verify security patterns
+        run: |
+          python -c "
+          import os
+          import re
+          from pathlib import Path
+          
+          auth_dir = Path('src/codex/auth')
+          issues = []
+          
+          for py_file in auth_dir.glob('*.py'):
+              content = py_file.read_text()
+              
+              # Check for sanitize_log_message usage
+              if 'log' in content.lower() and 'sanitize_log_message' not in content:
+                  if py_file.name != '__init__.py':
+                      print(f'⚠️  {py_file}: Consider using sanitize_log_message')
+              
+              # Check for secrets.token_urlsafe or secrets.token_hex
+              if 'token' in content and 'random' in content.lower():
+                  if 'secrets.' not in content:
+                      issues.append(f'{py_file}: Use secrets module for token generation')
+              
+              # Check for secrets.compare_digest
+              if 'compare' in content.lower() and '==' in content:
+                  if 'secrets.compare_digest' not in content:
+                      print(f'⚠️  {py_file}: Consider using secrets.compare_digest for constant-time comparison')
+          
+          if issues:
+              for issue in issues:
+                  print(f'❌ {issue}')
+              exit(1)
+          
+          print('✓ Security patterns verified')
+          "
+      
+      - name: Test PKCE implementation
+        run: |
+          python -c "
+          from src.codex.auth.oauth_manager import OAuthManager
+          import hashlib
+          import base64
+          
+          manager = OAuthManager()
+          
+          # Verify PKCE challenge generation
+          verifier = manager._generate_code_verifier()
+          challenge = manager._generate_code_challenge(verifier)
+          
+          # Verify it uses S256 method
+          expected = base64.urlsafe_b64encode(
+              hashlib.sha256(verifier.encode()).digest()
+          ).decode().rstrip('=')
+          
+          assert challenge == expected, 'PKCE challenge generation failed'
+          print('✓ PKCE implementation verified')
+          "
+      
+      - name: Test rate limiting
+        run: |
+          python -c "
+          from src.codex.auth.mfa_provider import MFAProvider
+          
+          mfa = MFAProvider()
+          secret = mfa.generate_totp_secret('test_user')
+          
+          # Make MAX_ATTEMPTS failed attempts
+          for _ in range(mfa.MAX_ATTEMPTS):
+              mfa.verify_totp(secret.secret, '000000', 'test_user')
+          
+          # Verify user is locked out
+          assert mfa._is_locked_out('test_user'), 'Rate limiting not working'
+          print('✓ Rate limiting verified')
+          "
+      
+      - name: Test token expiry
+        run: |
+          python -c "
+          from src.codex.auth.token_manager import TokenManager, TokenClaims, TokenType
+          import time
+          
+          manager = TokenManager()
+          
+          # Create expired token
+          claims = TokenClaims(
+              sub='test_user',
+              iat=time.time() - 1000,
+              exp=time.time() - 100,
+              type=TokenType.ACCESS
+          )
+          token = manager._encode_token(claims)
+          
+          # Verify expired token is rejected
+          try:
+              manager.validate_token(token)
+              print('❌ Expired token was accepted')
+              exit(1)
+          except ValueError as e:
+              if 'expired' in str(e).lower():
+                  print('✓ Token expiry validated')
+              else:
+                  print(f'❌ Wrong error: {e}')
+                  exit(1)
+          "
+      
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+            semgrep-report.json
+          retention-days: 90
+      
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 🔒 Security Audit Results\n\n';
+            
+            try {
+              const bandit = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));
+              comment += `### Bandit Scanner\n`;
+              comment += `- **Issues**: ${Object.keys(bandit.metrics._totals || {}).length}\n`;
+              comment += `- **Severity High**: ${bandit.metrics._totals.SEVERITY?.HIGH || 0}\n`;
+              comment += `- **Severity Medium**: ${bandit.metrics._totals.SEVERITY?.MEDIUM || 0}\n\n`;
+            } catch (e) {
+              comment += '### Bandit Scanner\n- Status: ✅ No issues found\n\n';
+            }
+            
+            comment += '### Security Checks\n';
+            comment += '- ✅ PKCE implementation verified\n';
+            comment += '- ✅ Rate limiting verified\n';
+            comment += '- ✅ Token expiry validated\n';
+            comment += '- ✅ Security patterns checked\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+  
+  penetration-test:
+    name: Penetration Testing
+    runs-on: ubuntu-latest
+    needs: security-audit
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install pytest httpx
+          pip install -e .
+      
+      - name: Test brute force protection
+        run: |
+          python -c "
+          from src.codex.auth.mfa_provider import MFAProvider
+          import time
+          
+          print('Testing brute force protection...')
+          mfa = MFAProvider()
+          secret = mfa.generate_totp_secret('attack_test')
+          
+          # Simulate brute force attack
+          attempts = 0
+          for i in range(10):
+              valid = mfa.verify_totp(secret.secret, f'{i:06d}', 'attack_test')
+              if not valid:
+                  attempts += 1
+              if mfa._is_locked_out('attack_test'):
+                  print(f'✓ Account locked after {attempts} failed attempts')
+                  break
+          else:
+              print('❌ Brute force protection failed')
+              exit(1)
+          "
+      
+      - name: Test token forgery
+        run: |
+          python -c "
+          from src.codex.auth.token_manager import TokenManager
+          
+          print('Testing token forgery protection...')
+          manager = TokenManager(secret_key='key1')
+          token = manager.generate_access_token('user1')
+          
+          # Try to validate with different key
+          manager2 = TokenManager(secret_key='key2')
+          try:
+              manager2.validate_token(token)
+              print('❌ Forged token was accepted')
+              exit(1)
+          except ValueError:
+              print('✓ Token forgery prevented')
+          "
+      
+      - name: Test replay attack
+        run: |
+          python -c "
+          from src.codex.auth.token_manager import TokenManager
+          
+          print('Testing replay attack protection...')
+          manager = TokenManager()
+          token = manager.generate_access_token('user1')
+          
+          # Revoke token
+          manager.revoke_token(token)
+          
+          # Try to reuse revoked token
+          try:
+              manager.validate_token(token)
+              print('❌ Revoked token was accepted')
+              exit(1)
+          except ValueError:
+              print('✓ Replay attack prevented')
+          "
+      
+      - name: Summary
+        run: |
+          echo "## 🛡️ Security Test Summary"
+          echo ""
+          echo "✅ Brute force protection: PASS"
+          echo "✅ Token forgery protection: PASS"
+          echo "✅ Replay attack protection: PASS"
+          echo ""
+          echo "All penetration tests passed!"

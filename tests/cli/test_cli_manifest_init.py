@@ -1,3 +1,9 @@
+"""
+Test Cli Manifest Init
+
+Test module for cli manifest init.
+"""
+
 from __future__ import annotations
 
 import json

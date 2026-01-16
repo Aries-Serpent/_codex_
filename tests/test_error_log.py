@@ -1,3 +1,9 @@
+"""
+Test Error Log
+
+Test module for error log.
+"""
+
 import time
 
 

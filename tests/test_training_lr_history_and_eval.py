@@ -1,3 +1,9 @@
+"""
+Test Training Lr History And Eval
+
+Test module for training lr history and eval.
+"""
+
 import pytest
 
 torch = pytest.importorskip("torch", reason="Requires torch for optimizer / scheduler tests")

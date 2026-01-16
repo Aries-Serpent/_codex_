@@ -1,3 +1,20 @@
+"""
+Logging Wandb Module
+
+This module provides functionality for logging wandb.
+
+Usage:
+    from utils.logging_wandb import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

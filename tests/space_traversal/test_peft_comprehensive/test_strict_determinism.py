@@ -1,3 +1,9 @@
+"""
+Test Strict Determinism
+
+Test module for strict determinism.
+"""
+
 import types
 
 import pytest

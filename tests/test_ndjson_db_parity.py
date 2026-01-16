@@ -1,3 +1,9 @@
+"""
+Test Ndjson Db Parity
+
+Test module for ndjson db parity.
+"""
+
 import json
 from datetime import datetime, UTC
 

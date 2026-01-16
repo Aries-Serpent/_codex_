@@ -1,3 +1,9 @@
+"""
+Test Canonical Json
+
+Test module for canonical json.
+"""
+
 from __future__ import annotations
 
 import json

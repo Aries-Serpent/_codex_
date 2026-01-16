@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Verify Token Scope
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/verify_token_scope.py [options]
+    
+    Examples:
+    $ python scripts/security/verify_token_scope.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Safe GitHub Token Scope Verification (PS-05)
 
 This module provides SECURE token verification without decoding or logging tokens.

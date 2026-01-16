@@ -1,3 +1,20 @@
+"""
+Chunking Module
+
+This module provides functionality for chunking.
+
+Usage:
+    from embeddings.chunking import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Simple heuristic chunker (character-based) with overlap to approximate token chunking.
 from typing import Iterable
 

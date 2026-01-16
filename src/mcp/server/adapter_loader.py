@@ -1,3 +1,20 @@
+"""
+Adapter Loader Module
+
+This module provides functionality for adapter loader.
+
+Usage:
+    from server.adapter_loader import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

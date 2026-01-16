@@ -1,3 +1,9 @@
+"""
+Test Interfaces Hf Tokenizer
+
+Test module for interfaces hf tokenizer.
+"""
+
 from __future__ import annotations
 
 import pytest

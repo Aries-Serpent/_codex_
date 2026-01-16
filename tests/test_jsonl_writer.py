@@ -1,3 +1,9 @@
+"""
+Test Jsonl Writer
+
+Test module for jsonl writer.
+"""
+
 from __future__ import annotations
 
 import json

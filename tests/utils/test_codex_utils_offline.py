@@ -1,3 +1,9 @@
+"""
+Test Codex Utils Offline
+
+Test module for codex utils offline.
+"""
+
 import json
 import os
 import types

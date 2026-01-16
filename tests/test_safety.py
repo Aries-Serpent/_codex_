@@ -1,3 +1,9 @@
+"""
+Test Safety
+
+Test module for safety.
+"""
+
 # BEGIN: CODEX_SAFETY_TESTS
 import importlib.util
 import json

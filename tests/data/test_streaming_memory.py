@@ -1,3 +1,9 @@
+"""
+Test Streaming Memory
+
+Test module for streaming memory.
+"""
+
 import resource
 
 from src.training.streaming import stream_texts

@@ -1,3 +1,9 @@
+"""
+Test Server Smoke
+
+Test module for server smoke.
+"""
+
 import pytest
 
 fastapi = pytest.importorskip("fastapi")

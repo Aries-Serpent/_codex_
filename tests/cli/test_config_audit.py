@@ -1,3 +1,9 @@
+"""
+Test Config Audit
+
+Test module for config audit.
+"""
+
 import json
 import subprocess
 import sys

@@ -1,0 +1,134 @@
+name: Automated MFA Enrollment
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Weekly on Monday at 9 AM UTC
+  workflow_dispatch:
+    inputs:
+      user_list:
+        description: 'Comma-separated list of GitHub usernames to enroll'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  enroll-users:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install PyGithub qrcode[pil]
+          
+      - name: Detect unenrolled users
+        id: detect
+        run: |
+          python scripts/mfa_enrollment_automation.py --detect
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          
+      - name: Generate MFA secrets
+        id: generate
+        run: |
+          if [ -n "${{ github.event.inputs.user_list }}" ]; then
+            python scripts/mfa_enrollment_automation.py --users "${{ github.event.inputs.user_list }}"
+          else
+            python scripts/mfa_enrollment_automation.py --auto
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          
+      - name: Send enrollment notifications
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const enrollmentData = JSON.parse(fs.readFileSync('enrollment_results.json', 'utf8'));
+            
+            for (const user of enrollmentData.users) {
+              const body = `## 🔐 MFA Enrollment Required
+              
+              Hello @${user.username},
+              
+              As part of our security enhancement initiative, Multi-Factor Authentication (MFA) is now required for all users.
+              
+              ### Setup Instructions
+              
+              1. **Download an authenticator app** (if you haven't already):
+                 - GitHub Mobile (recommended)
+                 - Google Authenticator
+                 - Microsoft Authenticator
+                 - Authy
+              
+              2. **Scan the QR code** sent to your email
+              3. **Enter the 6-digit code** to verify setup
+              4. **Save backup codes** in a secure location
+              
+              ### Enrollment Link
+              
+              Visit: ${user.enrollment_url}
+              
+              **Deadline**: ${enrollmentData.deadline}
+              
+              ### Need Help?
+              
+              Reply to this issue or contact the security team.
+              
+              ---
+              *Automated by auth-mfa-enrollment workflow*`;
+              
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Action Required] MFA Enrollment - @${user.username}`,
+                body: body,
+                labels: ['security', 'mfa', 'action-required'],
+                assignees: [user.username]
+              });
+            }
+            
+      - name: Generate enrollment report
+        run: |
+          python scripts/mfa_enrollment_automation.py --report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload enrollment report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mfa-enrollment-report
+          path: mfa_enrollment_report_*.md
+          retention-days: 90
+          
+      - name: Post summary
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('mfa_enrollment_report_latest.md', 'utf8');
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Report] MFA Enrollment Summary - ${new Date().toISOString().split('T')[0]}`,
+              body: report,
+              labels: ['security', 'mfa', 'report']
+            });

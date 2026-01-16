@@ -1,3 +1,20 @@
+"""
+Auth Module
+
+This module provides functionality for auth.
+
+Usage:
+    from middleware.auth import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request

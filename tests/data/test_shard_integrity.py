@@ -1,3 +1,9 @@
+"""
+Test Shard Integrity
+
+Test module for shard integrity.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

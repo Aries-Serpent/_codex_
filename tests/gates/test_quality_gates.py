@@ -1,3 +1,9 @@
+"""
+Test Quality Gates
+
+Test module for quality gates.
+"""
+
 import os
 import random
 import sys

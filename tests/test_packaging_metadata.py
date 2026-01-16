@@ -1,3 +1,9 @@
+"""
+Test Packaging Metadata
+
+Test module for packaging metadata.
+"""
+
 from __future__ import annotations
 
 import re

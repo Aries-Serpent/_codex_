@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Fix Try Except Pass
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/fix_try_except_pass.py [options]
+    
+    Examples:
+    $ python scripts/security/fix_try_except_pass.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Automated fix for try-except-pass patterns.
 Adds logging to all silent exception handlers.
 """

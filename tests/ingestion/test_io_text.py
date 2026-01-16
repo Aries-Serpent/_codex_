@@ -1,3 +1,9 @@
+"""
+Test Io Text
+
+Test module for io text.
+"""
+
 from __future__ import annotations
 
 import sys

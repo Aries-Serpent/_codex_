@@ -1,3 +1,9 @@
+"""
+Test Infer Cli Lora
+
+Test module for infer cli lora.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

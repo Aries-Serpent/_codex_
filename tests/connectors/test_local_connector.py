@@ -1,3 +1,9 @@
+"""
+Test Local Connector
+
+Test module for local connector.
+"""
+
 import pytest
 
 from codex_ml.connectors.base import ConnectorError, LocalConnector

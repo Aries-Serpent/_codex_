@@ -1,3 +1,9 @@
+"""
+Test Codex Cli
+
+Test module for codex cli.
+"""
+
 from __future__ import annotations
 
 from click.testing import CliRunner

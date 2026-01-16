@@ -1,3 +1,9 @@
+"""
+Test Deprecation
+
+Test module for deprecation.
+"""
+
 from __future__ import annotations
 
 import warnings

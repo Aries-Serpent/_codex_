@@ -1,3 +1,9 @@
+"""
+Test Hf Factory Compat
+
+Test module for hf factory compat.
+"""
+
 import pytest
 
 from codex_ml.utils.hf_pinning import load_from_pretrained

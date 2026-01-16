@@ -1,3 +1,9 @@
+"""
+Test Mcp Package Flatten
+
+Test module for mcp package flatten.
+"""
+
 #! /usr/bin/env python3
 """
 Test suite for scripts/mcp/package_flatten.sh

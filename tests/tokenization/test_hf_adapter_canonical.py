@@ -1,3 +1,9 @@
+"""
+Test Hf Adapter Canonical
+
+Test module for hf adapter canonical.
+"""
+
 from __future__ import annotations
 
 

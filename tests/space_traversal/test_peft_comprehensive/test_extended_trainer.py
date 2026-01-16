@@ -1,3 +1,9 @@
+"""
+Test Extended Trainer
+
+Test module for extended trainer.
+"""
+
 # isort: skip_file
 
 from __future__ import annotations

@@ -1,3 +1,9 @@
+"""
+Test Pa Reader
+
+Test module for pa reader.
+"""
+
 from codex_crm.pa_legacy.reader import to_template
 
 
