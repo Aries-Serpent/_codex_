@@ -169,8 +169,8 @@ mod tests {
         // CI performance threshold:
         // This lower bound (200 tasks/s) is intentionally conservative for noisy, shared CI
         // runners and is meant to catch catastrophic regressions without causing flaky tests.
-        // For detailed rationale and expected ranges for different environments, see:
-        // docs/testing/PERFORMANCE_THRESHOLDS.md.
+        // In practice, local development and production environments are expected to exceed
+        // this by a wide margin; CI only needs a stable, non-flaky lower bound signal.
         assert!(
             throughput > 200.0,
             "Throughput too low: {:.0} tasks/s",
