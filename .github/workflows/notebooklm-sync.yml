@@ -1,3 +1,5 @@
+# [Workflow]: NotebookLM Live Sync
+# > Generated: 2026-01-15T00:00:00Z | Author: mbaetiong
 name: NotebookLM Live Sync
 
 on:
@@ -222,22 +224,44 @@ EOF
             COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
             COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
             
+            # Prepare environment values (note: GitHub expressions are expanded before the run step)
+            export FILE_SIZE_MB="${{ steps.consolidate.outputs.file_size_mb }}"
+            export FILE_SIZE_BYTES="${{ steps.consolidate.outputs.file_size_bytes }}"
+            export GITHUB_SHORT_SHA="${GITHUB_SHA:0:7}"
+            export TIMESTAMP="$(date -Iseconds)"
+            export GITHUB_REF_NAME="${{ github.ref_name }}"
+            export WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            
+            # Build JSON payload safely using Python to avoid quoting issues
+            PAYLOAD=$(python - <<PY
+import json, os
+def to_int(v):
+    try:
+        return int(v)
+    except:
+        return None
+
+payload = {
+  "status": "success",
+  "timestamp": os.environ.get("TIMESTAMP"),
+  "file_size_mb": os.environ.get("FILE_SIZE_MB"),
+  "file_size_bytes": to_int(os.environ.get("FILE_SIZE_BYTES")),
+  "commit_sha": os.environ.get("GITHUB_SHA"),
+  "commit_short_sha": os.environ.get("GITHUB_SHORT_SHA"),
+  "commit_message": os.environ.get("COMMIT_MSG"),
+  "commit_author": os.environ.get("COMMIT_AUTHOR"),
+  "branch": os.environ.get("GITHUB_REF_NAME"),
+  "repository": os.environ.get("GITHUB_REPOSITORY"),
+  "workflow_url": os.environ.get("WORKFLOW_URL")
+}
+print(json.dumps(payload))
+PY
+)
+            
             # Send webhook notification
-            curl -X POST "$WEBHOOK_URL" \
+            curl -s -X POST "$WEBHOOK_URL" \
               -H "Content-Type: application/json" \
-              -d "{
-                \"status\": \"success\",
-                \"timestamp\": \"$(date -Iseconds)\",
-                \"file_size_mb\": \"${{ steps.consolidate.outputs.file_size_mb }}\",
-                \"file_size_bytes\": ${{ steps.consolidate.outputs.file_size_bytes }},
-                \"commit_sha\": \"${{ github.sha }}\",
-                \"commit_short_sha\": \"${GITHUB_SHA:0:7}\",
-                \"commit_message\": \"$COMMIT_MSG\",
-                \"commit_author\": \"$COMMIT_AUTHOR\",
-                \"branch\": \"${{ github.ref_name }}\",
-                \"repository\": \"${{ github.repository }}\",
-                \"workflow_url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-              }"
+              -d "$PAYLOAD"
             
             if [ $? -eq 0 ]; then
               echo "✅ Notification sent successfully"
