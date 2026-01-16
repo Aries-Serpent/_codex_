@@ -2,7 +2,7 @@
 
 **Created:** 2026-01-16  
 **Updated:** 2026-01-16  
-**Status:** 🔄 IN PROGRESS - Phase 1 Complete  
+**Status:** 🔄 IN PROGRESS - Phase 1 & 2 Complete  
 **Priority:** HIGH (Long-term production readiness)  
 **Agent Type:** AI Agent (fully autonomous execution)  
 **Policy Compliance:** AI Agency Policy v1.0.0
@@ -30,12 +30,36 @@
 - Deduplication support
 - Progress callbacks
 
-### ⏳ Phase 2: Query Optimization (PENDING)
+### ✅ Phase 2: Query Optimization (COMPLETE)
 
-- Enhance `src/codex/retrieval/optimizations.py`
-- Create `src/codex/retrieval/reranker.py`
-- Create `src/codex/retrieval/query_rewriter.py`
-- Create `src/codex/rag/cache/` modules
+**Implemented:**
+- `src/codex/retrieval/reranker.py` - Re-ranking with multiple strategies (18 tests passing)
+- `src/codex/retrieval/query_rewriter.py` - Query rewriting and expansion (29 tests passing)
+- `src/codex/rag/cache/query_cache.py` - LRU query result cache (27 tests passing)
+- `src/codex/rag/cache/embedding_cache.py` - Embedding vector cache (20 tests passing)
+- `src/codex/rag/cache/distributed_cache.py` - Distributed cache with Redis support (22 tests passing)
+- `tests/retrieval/test_reranker.py` - Re-ranker test suite
+- `tests/retrieval/test_query_rewriter.py` - Query rewriter test suite
+- `tests/rag/cache/` - Cache test suite (69 tests total)
+
+**Features:**
+- **Re-ranking Strategies:**
+  - Score fusion (weighted sum, reciprocal rank, max)
+  - MMR (Maximal Marginal Relevance) for diversity
+  - Cross-encoder re-ranking (neural)
+  - Hybrid strategy (fusion + MMR)
+- **Query Optimization:**
+  - Query normalization
+  - Query expansion with synonyms
+  - Query decomposition into sub-queries
+  - Hybrid query generation (sparse + dense)
+  - Multi-query variants for improved recall
+- **Caching:**
+  - LRU eviction with TTL expiration
+  - Thread-safe operations
+  - Embedding-specific cache with float16 optimization
+  - Distributed cache with Redis backend
+  - Cache warming and statistics
 
 ### ⏳ Phase 3: Production Features (PENDING)
 
