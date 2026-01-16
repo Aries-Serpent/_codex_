@@ -1,5 +1,3 @@
-# [Workflow]: NotebookLM Live Sync
-# > Generated: 2026-01-15T00:00:00Z | Author: mbaetiong
 name: NotebookLM Live Sync
 
 on:
@@ -146,15 +144,18 @@ jobs:
           
           # Create secretlint config if not exists
           if [ ! -f ".secretlintrc.json" ]; then
-            cat > .secretlintrc.json << 'EOF'
-{
+            # Use Python to reliably generate the JSON file (avoids heredoc indentation/quoting issues)
+            python - <<'PY' > .secretlintrc.json
+import json
+config = {
   "rules": [
     {
       "id": "@secretlint/secretlint-rule-preset-recommend"
     }
   ]
 }
-EOF
+print(json.dumps(config, indent=2))
+PY
           fi
           
           if npx secretlint "$OUTPUT_FILE"; then
