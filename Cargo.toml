@@ -18,6 +18,18 @@ crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 # - For 'cargo test', we compile without 'extension-module' to allow standard Rust linking
 # - This approach enables both Python extension builds (via maturin) and native Rust tests
 # - The abi3-py38 feature ensures compatibility with Python 3.8+
+#
+# IMPORTANT CI/CD REQUIREMENTS:
+# - ALL Python extension builds MUST use maturin (not cargo directly)
+# - CI workflow (.github/workflows/rust_swarm_ci.yml) correctly uses maturin
+# - Local builds: Use 'maturin develop' or 'maturin build' commands
+# - Do NOT use 'cargo build' for Python extensions as it will not add 'extension-module'
+# - Test workflow validates this configuration is working correctly
+#
+# Verification:
+# - Rust-only tests: 'cargo test' (no extension-module feature)
+# - Python integration: 'maturin develop' (adds extension-module automatically)
+# - Both modes tested in CI to ensure compatibility
 pyo3 = { version = "0.24.1", features = ["abi3-py38"] }
 pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 
