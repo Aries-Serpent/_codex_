@@ -191,5 +191,5 @@ python scripts/analyze_performance_thresholds.py performance_data.txt
 
 For questions about performance thresholds:
 - **Owner**: @mbaetiong
-- **Last Updated**: 2026-01-16
+- **Last Updated**: 2024-01-16
 - **Document Version**: 1.0

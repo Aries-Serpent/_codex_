@@ -169,14 +169,24 @@ class AuthenticationDemo:
         #
         # Example (Flask):
         #   # Get real client IP from proxy headers (X-Forwarded-For)
+        #   # SECURITY: Validate proxy chain to prevent IP spoofing
         #   x_forwarded_for = request.headers.get('X-Forwarded-For')
         #   if x_forwarded_for:
         #       # X-Forwarded-For can contain multiple IPs: "client, proxy1, proxy2"
         #       # Take the first (leftmost) IP which is the original client
+        #       # IMPORTANT: Only trust this header if your app is behind a trusted proxy
+        #       # Consider validating against a whitelist of trusted proxy IPs
+        #       # or using request.access_route which Flask validates automatically
         #       ip_address = x_forwarded_for.split(',')[0].strip()
         #   else:
         #       # Direct connection without proxy
         #       ip_address = request.remote_addr
+        #   
+        #   # Safer alternative using Flask's built-in proxy validation:
+        #   # from werkzeug.middleware.proxy_fix import ProxyFix
+        #   # app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+        #   # ip_address = request.remote_addr  # Will be the real client IP
+        #   
         #   user_agent = request.headers.get('User-Agent', 'Unknown')
         #
         # Example (FastAPI):
