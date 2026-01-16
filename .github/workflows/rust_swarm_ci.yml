@@ -201,14 +201,14 @@ jobs:
           
           # Verify the extension can be imported using a heredoc to avoid quoting issues
           python - <<'PY'
-try:
-    import codex_swarm
-    print("✅ Extension imported successfully")
-except ImportError as e:
-    print(f"⚠️ Import failed: {e}")
-    print("This is expected if Python bindings are not configured")
-    raise SystemExit(0)
-PY
+          try:
+              import codex_swarm
+              print("✅ Extension imported successfully")
+          except ImportError as e:
+              print(f"⚠️ Import failed: {e}")
+              print("This is expected if Python bindings are not configured")
+              raise SystemExit(0)
+          PY
       
       - name: Run integration tests
         run: |
@@ -274,15 +274,15 @@ PY
               
               # Create a simple report indicating baseline establishment
               cat > coverage/benchmark_validation_report.txt << 'EOFreport'
-📊 Benchmark Validation Report
-=================================
-
-Status: Baseline Establishment
-This is the first run or baseline files are missing.
-Current benchmark results will serve as the baseline for future comparisons.
-
-Next runs will compare against this baseline to detect performance regressions.
-EOFreport
+              📊 Benchmark Validation Report
+              =================================
+              
+              Status: Baseline Establishment
+              This is the first run or baseline files are missing.
+              Current benchmark results will serve as the baseline for future comparisons.
+              
+              Next runs will compare against this baseline to detect performance regressions.
+              EOFreport
             }
           else
             echo "⚠️ scripts/validate_benchmarks.py not found"
