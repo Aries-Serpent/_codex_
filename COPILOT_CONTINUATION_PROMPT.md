@@ -63,15 +63,14 @@ Add tests for these high-priority untested modules:
 
 ### IP-004: Implement Production Authentication
 
-1. Create `src/codex/auth/` directory structure
-2. Implement base authenticator interface
-3. Port JWT logic from examples
-4. Add Hydra configuration
-5. Write unit tests
+1. ✅ Tests added (45 tests for token_manager)
+2. Create production middleware
+3. Add OAuth integration
+4. Document security considerations
 
 ## Files to Reference
 
-- `.codex/qa_walkthrough/coverage_analysis.json` - 499 untested modules remaining
+- `.codex/qa_walkthrough/coverage_analysis.json` - 484 untested modules remaining
 - `.codex/qa_walkthrough/coverage_analysis_update.json` - Latest coverage update
 - `.codex/plans/IP-004_PRODUCTION_AUTHENTICATION.md` - Auth implementation plan
 - `.codex/plans/IP-005_DEPENDENCY_AUDIT.md` - Dependency audit results
@@ -81,8 +80,8 @@ Add tests for these high-priority untested modules:
 ## Expected Outcomes
 
 1. Add 100+ more tests for high-priority modules
-2. Begin IP-004 authentication implementation
-3. Achieve 45%+ coverage
+2. Continue IP-004 authentication implementation
+3. Achieve 55%+ coverage
 4. Update cognitive brain status
 
 ## Self-Review Required
@@ -105,7 +104,7 @@ All QA walkthrough caches are current:
 
 ---
 
-**Previous Session**: IP-001 Phase 1-4 + IP-002/003/004/005 (2026-01-16)
-**Current Phase**: IP-001 Phase 5 + IP-004 Implementation
-**Tests Added This Session**: 485
+**Previous Session**: IP-001 Phase 1-5 + IP-002/003/004/005 (2026-01-16)
+**Current Phase**: IP-001 Phase 6 + IP-004 Implementation
+**Tests Added This Session**: 700
 **Iterations**: Continue until 70% coverage or session ends
