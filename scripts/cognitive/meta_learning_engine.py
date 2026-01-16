@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Meta Learning Engine
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/meta_learning_engine.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/meta_learning_engine.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Meta-Learning Engine for Cognitive Brain - Phase 2 Implementation
 
 Enables cross-agent knowledge transfer, shared memory, and pattern reuse optimization

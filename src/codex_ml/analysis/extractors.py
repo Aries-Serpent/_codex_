@@ -1,3 +1,20 @@
+"""
+Extractors Module
+
+This module provides functionality for extractors.
+
+Usage:
+    from analysis.extractors import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # src/codex_ml/analysis/extractors.py
 from __future__ import annotations
 import logging

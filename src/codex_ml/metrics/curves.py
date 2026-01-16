@@ -1,3 +1,20 @@
+"""
+Curves Module
+
+This module provides functionality for curves.
+
+Usage:
+    from metrics.curves import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_METRIC_CURVES
 from __future__ import annotations
 

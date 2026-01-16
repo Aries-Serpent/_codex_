@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Monitor Execution
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/monitor_execution.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/monitor_execution.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Execution Monitor
 Monitors real-time execution status across all agents
 """

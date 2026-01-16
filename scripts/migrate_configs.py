@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Migrate Configs
+
+Purpose:
+    Migration script for configs
+
+Usage:
+    python scripts/migrate_configs.py [options]
+    
+    Examples:
+    $ python scripts/migrate_configs.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Migrate legacy config directories to unified structure.
 
 Usage:

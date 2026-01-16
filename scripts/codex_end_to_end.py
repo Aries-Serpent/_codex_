@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Codex End To End
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/codex_end_to_end.py [options]
+    
+    Examples:
+    $ python scripts/codex_end_to_end.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Minimal end-to-end logging demonstration.
 
 This script simulates a small chat session. It writes start, user, assistant

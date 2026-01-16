@@ -1,3 +1,20 @@
+"""
+Denylist Module
+
+This module provides functionality for denylist.
+
+Usage:
+    from security.denylist import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import re

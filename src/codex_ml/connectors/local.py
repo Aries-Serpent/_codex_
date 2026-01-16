@@ -1,3 +1,20 @@
+"""
+Local Module
+
+This module provides functionality for local.
+
+Usage:
+    from connectors.local import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import asyncio

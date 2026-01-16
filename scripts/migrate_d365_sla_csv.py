@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Migrate D365 Sla Csv
+
+Purpose:
+    Migration script for d365_sla_csv
+
+Usage:
+    python scripts/migrate_d365_sla_csv.py [options]
+    
+    Examples:
+    $ python scripts/migrate_d365_sla_csv.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Migrate legacy D365 SLA configuration from CSV to versioned Policy Objects.
 
 This script converts configs/deployment/d365/slas.csv into a structured

@@ -1,3 +1,20 @@
+"""
+Activations Module
+
+This module provides functionality for activations.
+
+Usage:
+    from models.activations import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_ACTIVATIONS
 from __future__ import annotations
 import logging

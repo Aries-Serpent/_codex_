@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Inference Pipeline
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/inference_pipeline.py [options]
+    
+    Examples:
+    $ python scripts/inference_pipeline.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Deterministic Inference Pipeline Runner (v1.0.2)
 
 Production hardening:

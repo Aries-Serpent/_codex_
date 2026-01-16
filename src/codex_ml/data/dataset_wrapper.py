@@ -1,3 +1,20 @@
+"""
+Dataset Wrapper Module
+
+This module provides functionality for dataset wrapper.
+
+Usage:
+    from data.dataset_wrapper import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

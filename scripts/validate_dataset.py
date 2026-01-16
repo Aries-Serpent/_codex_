@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Validate Dataset
+
+Purpose:
+    Validates dataset
+
+Usage:
+    python scripts/validate_dataset.py [options]
+    
+    Examples:
+    $ python scripts/validate_dataset.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """CLI to validate dataset manifest files."""
 
 from __future__ import annotations

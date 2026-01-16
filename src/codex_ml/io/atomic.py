@@ -1,3 +1,20 @@
+"""
+Atomic Module
+
+This module provides functionality for atomic.
+
+Usage:
+    from io.atomic import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

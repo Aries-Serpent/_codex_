@@ -1,3 +1,33 @@
+"""
+Export Env Info
+
+Purpose:
+    [To be documented - Export Env Info]
+
+Usage:
+    python scripts/export_env_info.py [options]
+    
+    Examples:
+    $ python scripts/export_env_info.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 import logging
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python3

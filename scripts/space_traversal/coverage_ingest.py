@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Coverage Ingest
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/space_traversal/coverage_ingest.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/coverage_ingest.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)

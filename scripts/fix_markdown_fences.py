@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Fix Markdown Fences
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/fix_markdown_fences.py [options]
+    
+    Examples:
+    $ python scripts/fix_markdown_fences.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import argparse

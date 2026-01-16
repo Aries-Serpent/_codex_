@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Probe Env
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/agent/probe_env.py [options]
+    
+    Examples:
+    $ python scripts/agent/probe_env.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 import json
 import logging
 logger = logging.getLogger(__name__)

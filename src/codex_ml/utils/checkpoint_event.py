@@ -1,3 +1,20 @@
+"""
+Checkpoint Event Module
+
+This module provides functionality for checkpoint event.
+
+Usage:
+    from utils.checkpoint_event import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

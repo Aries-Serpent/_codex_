@@ -1,3 +1,20 @@
+"""
+Errors Module
+
+This module provides functionality for errors.
+
+Usage:
+    from utils.errors import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import json
 import time
 from pathlib import Path

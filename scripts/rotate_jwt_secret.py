@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Rotate Jwt Secret
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/rotate_jwt_secret.py [options]
+    
+    Examples:
+    $ python scripts/rotate_jwt_secret.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 JWT Secret Rotation Script
 
 Rotates the JWT signing secret used for token generation with backup,

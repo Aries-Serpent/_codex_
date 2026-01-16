@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Build Integrity Chain
+
+Purpose:
+    Builds integrity_chain
+
+Usage:
+    python scripts/audit/build_integrity_chain.py [options]
+    
+    Examples:
+    $ python scripts/audit/build_integrity_chain.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Build Audit Integrity Chain artifacts and a manifest with SHA256 hashes.

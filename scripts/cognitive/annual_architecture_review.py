@@ -1,6 +1,36 @@
 #!/usr/bin/env python3
 """
 Annual Architecture Review
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/annual_architecture_review.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/annual_architecture_review.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
+Annual Architecture Review
 Comprehensive system health assessment and technology stack evaluation
 """
 

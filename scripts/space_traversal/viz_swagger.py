@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Viz Swagger
+
+Purpose:
+    [To be documented - Viz Swagger]
+
+Usage:
+    python scripts/space_traversal/viz_swagger.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/viz_swagger.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Swagger/OpenAPI-style Documentation for Audit CLI v1.5.4
 
 Generates interactive API documentation with:

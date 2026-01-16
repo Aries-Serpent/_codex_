@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Convert Print To Logger
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/convert_print_to_logger.py [options]
+    
+    Examples:
+    $ python scripts/convert_print_to_logger.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Print to Logger Converter
 
 AST-based refactoring tool to convert print() calls to appropriate logger calls.

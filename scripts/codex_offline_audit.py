@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Codex Offline Audit
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/codex_offline_audit.py [options]
+    
+    Examples:
+    $ python scripts/codex_offline_audit.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Offline Codex repository audit orchestrator.
 
 This script executes a deterministic, offline audit pipeline composed of eight

@@ -1,3 +1,20 @@
+"""
+Ndjson Tools Module
+
+This module provides functionality for ndjson tools.
+
+Usage:
+    from common.ndjson_tools import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import csv

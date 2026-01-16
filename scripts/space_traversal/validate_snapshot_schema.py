@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Validate Snapshot Schema
+
+Purpose:
+    Validates snapshot_schema
+
+Usage:
+    python scripts/space_traversal/validate_snapshot_schema.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/validate_snapshot_schema.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Validate a decoded validator snapshot against a permissive schema or perform lightweight checks.

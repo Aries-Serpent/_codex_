@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Performance Optimizer
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/benchmarks/performance_optimizer.py [options]
+    
+    Examples:
+    $ python scripts/benchmarks/performance_optimizer.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Automated Performance Optimization Benchmarking
 
 Agent-driven performance benchmarking for MLOps features.

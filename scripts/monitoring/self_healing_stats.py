@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Self Healing Stats
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/monitoring/self_healing_stats.py [options]
+    
+    Examples:
+    $ python scripts/monitoring/self_healing_stats.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Self-Healing CI Statistics and Monitoring
 
 Displays metrics and success rates for the self-healing CI system.

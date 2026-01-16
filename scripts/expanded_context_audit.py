@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Expanded Context Audit
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/expanded_context_audit.py [options]
+    
+    Examples:
+    $ python scripts/expanded_context_audit.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Expanded Context Audit Scanner
 Scans the repository for expanded-context workflow features including:
 - RAG (Retrieval-Augmented Generation)

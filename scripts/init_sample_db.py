@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Init Sample Db
+
+Purpose:
+    Initializes sample_db
+
+Usage:
+    python scripts/init_sample_db.py [options]
+    
+    Examples:
+    $ python scripts/init_sample_db.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Initialize a sample `session_events` table for development.
 
 This script creates a `session_events` table alongside existing Codex logging

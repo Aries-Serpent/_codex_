@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Audit Runner
+
+Purpose:
+    Runs audit_runner
+
+Usage:
+    python scripts/space_traversal/audit_runner.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/audit_runner.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Audit Runner - Orchestrates security audits across the codebase
 """
 

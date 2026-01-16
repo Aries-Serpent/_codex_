@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Initialize Feature Store
+
+Purpose:
+    Initializes initialize_feature_store
+
+Usage:
+    python scripts/initialize_feature_store.py [options]
+    
+    Examples:
+    $ python scripts/initialize_feature_store.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Feature Store Initialization Script for Phase 6.2
 
 This script initializes the production feature store and registers

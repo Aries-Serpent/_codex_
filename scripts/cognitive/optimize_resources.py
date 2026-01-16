@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Optimize Resources
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/optimize_resources.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/optimize_resources.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Resource Optimization
 Part of Decision Engine - integrates with R12 (Linear Programming)
 """

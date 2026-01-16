@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Scan Secrets Runtime
+
+Purpose:
+    Runs scan_secrets_runtime
+
+Usage:
+    python scripts/security/scan_secrets_runtime.py [options]
+    
+    Examples:
+    $ python scripts/security/scan_secrets_runtime.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Verify Dependency Hygiene
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/verify_dependency_hygiene.py [options]
+    
+    Examples:
+    $ python scripts/verify_dependency_hygiene.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 verify_dependency_hygiene.py — Summarize dependency evidence and assert vendor hygiene
 
 - Prints counts per 'action' in dependency_ops.jsonl

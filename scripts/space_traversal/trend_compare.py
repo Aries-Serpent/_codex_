@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Trend Compare
+
+Purpose:
+    [To be documented - Trend Compare]
+
+Usage:
+    python scripts/space_traversal/trend_compare.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/trend_compare.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Historical comparison utilities for v1.5.1
 
 Provides detailed comparison between audit runs with component-level analysis.

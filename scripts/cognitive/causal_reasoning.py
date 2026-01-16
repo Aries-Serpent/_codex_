@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Causal Reasoning
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/causal_reasoning.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/causal_reasoning.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Causal Reasoning Module
 Part of Decision Engine - integrates with R13 (DoWhy framework)
 """

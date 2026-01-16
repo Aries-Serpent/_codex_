@@ -1,3 +1,20 @@
+"""
+Functional Training Module
+
+This module provides functionality for functional training.
+
+Usage:
+    from training.functional_training import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import argparse

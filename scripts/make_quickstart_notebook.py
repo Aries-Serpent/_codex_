@@ -1,3 +1,33 @@
+"""
+Make Quickstart Notebook
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/make_quickstart_notebook.py [options]
+    
+    Examples:
+    $ python scripts/make_quickstart_notebook.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import nbformat as nbf

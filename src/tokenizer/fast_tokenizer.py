@@ -1,3 +1,20 @@
+"""
+Fast Tokenizer Module
+
+This module provides functionality for fast tokenizer.
+
+Usage:
+    from tokenizer.fast_tokenizer import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

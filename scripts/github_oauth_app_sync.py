@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Github Oauth App Sync
+
+Purpose:
+    Synchronizes github_oauth_app_sync
+
+Usage:
+    python scripts/github_oauth_app_sync.py [options]
+    
+    Examples:
+    $ python scripts/github_oauth_app_sync.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """GitHub OAuth App Sync
 
 Validates and syncs OAuth app configuration.

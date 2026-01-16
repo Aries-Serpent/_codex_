@@ -1,3 +1,20 @@
+"""
+Sandbox Module
+
+This module provides functionality for sandbox.
+
+Usage:
+    from safety.sandbox import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_SANDBOX
 from __future__ import annotations
 

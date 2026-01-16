@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Organize Repository
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/organize_repository.py [options]
+    
+    Examples:
+    $ python scripts/organize_repository.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Repository Organization and Archival Script
 Organizes root directory markdown files and creates AI-queryable archive
 """

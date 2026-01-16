@@ -1,3 +1,20 @@
+"""
+  Init   Module
+
+This module provides functionality for   init  .
+
+Usage:
+    from interfaces.__init__ import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_IFACE_INIT
 __all__ = [
     "TokenizerAdapter",

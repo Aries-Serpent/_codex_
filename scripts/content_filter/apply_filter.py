@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Apply Filter
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/content_filter/apply_filter.py [options]
+    
+    Examples:
+    $ python scripts/content_filter/apply_filter.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Content Filter (P2 Full Implementation with Knob Normalization)

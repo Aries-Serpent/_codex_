@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Export Env Json
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/env/export_env_json.py [options]
+    
+    Examples:
+    $ python scripts/env/export_env_json.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Dump environment summary to a JSON file (default: env.json)."""
 
 import json

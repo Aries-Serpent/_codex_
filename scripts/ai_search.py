@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Ai Search
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/ai_search.py [options]
+    
+    Examples:
+    $ python scripts/ai_search.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """AI-optimized repository search interface.
 
 This module provides efficient search capabilities across the multi-layered

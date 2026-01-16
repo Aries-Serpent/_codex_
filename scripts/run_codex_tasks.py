@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Run Codex Tasks
+
+Purpose:
+    Runs codex_tasks
+
+Usage:
+    python scripts/run_codex_tasks.py [options]
+    
+    Examples:
+    $ python scripts/run_codex_tasks.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 General maintenance script for executing Codex tasks across multiple capabilities.
 
 This script performs a sequence of generic operations useful across the

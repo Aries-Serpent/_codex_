@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Mfa Enrollment Automation
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/mfa_enrollment_automation.py [options]
+    
+    Examples:
+    $ python scripts/mfa_enrollment_automation.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """MFA Enrollment Automation
 
 Automates bulk MFA enrollment for GitHub users.

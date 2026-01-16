@@ -1,3 +1,20 @@
+"""
+Hf Revision Module
+
+This module provides functionality for hf revision.
+
+Usage:
+    from utils.hf_revision import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

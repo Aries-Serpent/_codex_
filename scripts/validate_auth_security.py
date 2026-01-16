@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Validate Auth Security
+
+Purpose:
+    Validates auth_security
+
+Usage:
+    python scripts/validate_auth_security.py [options]
+    
+    Examples:
+    $ python scripts/validate_auth_security.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Security Validation Script for Authentication Module
 
 Performs comprehensive security checks on the authentication system.
