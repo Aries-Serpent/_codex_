@@ -1,3 +1,20 @@
+"""
+Cli Runner Module
+
+This module provides functionality for cli runner.
+
+Usage:
+    from utils.cli_runner import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import os
 import subprocess
 import sys
