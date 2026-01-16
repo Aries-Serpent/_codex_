@@ -1,3 +1,9 @@
+"""
+Test Train Tokenizer Smoke
+
+Test module for train tokenizer smoke.
+"""
+
 import json
 
 from tokenizers import Tokenizer

@@ -1,3 +1,20 @@
+"""
+Cli Release Module
+
+This module provides functionality for cli release.
+
+Usage:
+    from codex.cli_release import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import json

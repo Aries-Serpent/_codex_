@@ -2,6 +2,36 @@
 """
 Dependency Analyzer
 
+Purpose:
+    Analyzes dependency_analyzer
+
+Usage:
+    python scripts/dependency_analyzer.py [options]
+    
+    Examples:
+    $ python scripts/dependency_analyzer.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
+Dependency Analyzer
+
 AST-based analysis tool to verify file dependencies and safe removal.
 
 Features:

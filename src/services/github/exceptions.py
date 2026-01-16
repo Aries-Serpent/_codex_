@@ -1,3 +1,20 @@
+"""
+Exceptions Module
+
+This module provides functionality for exceptions.
+
+Usage:
+    from github.exceptions import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import logging
 logger = logging.getLogger(__name__)
 """GitHub API exceptions."""

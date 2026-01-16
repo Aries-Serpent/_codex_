@@ -1,3 +1,9 @@
+"""
+Test Artifacts Hash
+
+Test module for artifacts hash.
+"""
+
 from pathlib import Path
 
 import pytest

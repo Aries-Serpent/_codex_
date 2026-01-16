@@ -1,3 +1,9 @@
+"""
+Test Consolidation Flow
+
+Test module for consolidation flow.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Import Ndjson Dedup
+
+Test module for import ndjson dedup.
+"""
+
 import sqlite3
 
 from src.codex.logging import import_ndjson, session_hooks

@@ -1,6 +1,36 @@
 #!/usr/bin/env python
 """
 Validate Template Hash
+
+Purpose:
+    Validates template_hash
+
+Usage:
+    python scripts/space_traversal/validate_template_hash.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/validate_template_hash.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
+Validate Template Hash
 Computes concatenated Jinja template hash and compares with manifest's template_hash.
 Warns on mismatch (non-blocking).
 """

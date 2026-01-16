@@ -1,3 +1,9 @@
+"""
+Test Session Logger Wal
+
+Test module for session logger wal.
+"""
+
 import sqlite3
 
 import pytest

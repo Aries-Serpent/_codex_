@@ -1,3 +1,9 @@
+"""
+Test Mlflow Offline
+
+Test module for mlflow offline.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate MLflow offline logging behavior if mlflow is installed.

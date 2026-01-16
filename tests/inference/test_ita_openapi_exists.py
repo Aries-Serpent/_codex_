@@ -1,3 +1,9 @@
+"""
+Test Ita Openapi Exists
+
+Test module for ita openapi exists.
+"""
+
 from __future__ import annotations
 
 import pathlib

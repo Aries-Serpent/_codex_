@@ -1,3 +1,9 @@
+"""
+Test Codex Sequence Validations
+
+Test module for codex sequence validations.
+"""
+
 from __future__ import annotations
 
 import os

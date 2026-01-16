@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Viz Ascii
+
+Purpose:
+    [To be documented - Viz Ascii]
+
+Usage:
+    python scripts/space_traversal/viz_ascii.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/viz_ascii.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 ASCII visualization for terminal output.
 
 Provides text-based visualizations for audit trend data.

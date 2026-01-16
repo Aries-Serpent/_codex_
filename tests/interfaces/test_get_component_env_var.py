@@ -1,3 +1,9 @@
+"""
+Test Get Component Env Var
+
+Test module for get component env var.
+"""
+
 from codex_ml.interfaces.registry import get_component
 
 

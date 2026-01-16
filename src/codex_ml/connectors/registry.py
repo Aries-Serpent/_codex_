@@ -1,3 +1,20 @@
+"""
+Registry Module
+
+This module provides functionality for registry.
+
+Usage:
+    from connectors.registry import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from typing import Type

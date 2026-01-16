@@ -1,3 +1,9 @@
+"""
+Test Atomicity And Resume
+
+Test module for atomicity and resume.
+"""
+
 import os
 
 import pytest

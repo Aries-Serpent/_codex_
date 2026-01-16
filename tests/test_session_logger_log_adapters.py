@@ -1,3 +1,9 @@
+"""
+Test Session Logger Log Adapters
+
+Test module for session logger log adapters.
+"""
+
 import importlib
 import json
 import sqlite3

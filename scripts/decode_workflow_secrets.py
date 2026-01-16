@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Decode Workflow Secrets
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/decode_workflow_secrets.py [options]
+    
+    Examples:
+    $ python scripts/decode_workflow_secrets.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Workflow Secret Decoder
 
 Authorized utility to decode tokenized secret names from WORKFLOW_INVENTORY.yaml.

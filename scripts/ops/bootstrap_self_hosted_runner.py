@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Bootstrap Self Hosted Runner
+
+Purpose:
+    Runs bootstrap_self_hosted_runner
+
+Usage:
+    python scripts/ops/bootstrap_self_hosted_runner.py [options]
+    
+    Examples:
+    $ python scripts/ops/bootstrap_self_hosted_runner.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import argparse

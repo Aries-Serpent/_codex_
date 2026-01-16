@@ -1,3 +1,9 @@
+"""
+Test Intelligent Analyzer
+
+Test module for intelligent analyzer.
+"""
+
 #!/usr/bin/env python3
 """Test suite for intelligent audio analyzer.
 

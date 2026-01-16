@@ -1,3 +1,9 @@
+"""
+Test Compaction
+
+Test module for compaction.
+"""
+
 from pathlib import Path
 
 import pytest

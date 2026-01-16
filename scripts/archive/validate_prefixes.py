@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Validate Prefixes
+
+Purpose:
+    Validates prefixes
+
+Usage:
+    python scripts/archive/validate_prefixes.py [options]
+    
+    Examples:
+    $ python scripts/archive/validate_prefixes.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Prefix Enforcement Validator (BUNDLE_PREFIX_MODE)
 
 Purpose:

@@ -1,3 +1,33 @@
+"""
+Mcp Schema Validation
+
+Purpose:
+    [To be documented - Mcp Schema Validation]
+
+Usage:
+    python scripts/space_traversal/detectors/mcp_schema_validation.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/detectors/mcp_schema_validation.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)

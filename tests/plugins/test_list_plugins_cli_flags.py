@@ -1,3 +1,9 @@
+"""
+Test List Plugins Cli Flags
+
+Test module for list plugins cli flags.
+"""
+
 from __future__ import annotations
 
 import subprocess

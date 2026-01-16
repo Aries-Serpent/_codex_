@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Rotate Jwt Secret
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/rotate_jwt_secret.py [options]
+    
+    Examples:
+    $ python scripts/rotate_jwt_secret.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 JWT Secret Rotation Script
 
 Rotates the JWT signing secret used for token generation with backup,
@@ -147,7 +177,11 @@ class JWTSecretRotator:
         # Output for GitHub Actions (avoid writing sensitive secret values)
         if 'GITHUB_OUTPUT' in os.environ:
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                # Do not write the new secret to GITHUB_OUTPUT to prevent clear-text exposure
+                # SECURITY: Do not write the new secret to GITHUB_OUTPUT to prevent clear-text exposure
+                # The workflow in .github/workflows/auth-token-rotation.yml is designed to handle
+                # secret rotation internally via the GitHub API (see update_github_secret method).
+                # The workflow's "Update GitHub Secrets" step documents this intentional design.
+                # Only non-sensitive outputs (like backup file path) are written here.
                 f.write(f"backup_file={backup_file}\n")
         
         return {

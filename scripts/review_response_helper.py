@@ -2,6 +2,36 @@
 """
 Review Response Helper
 
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/review_response_helper.py [options]
+    
+    Examples:
+    $ python scripts/review_response_helper.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
+Review Response Helper
+
 Automates the process of responding to code review comments by:
 - Parsing review comments from structured input
 - Creating fix checklist

@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Build Ratelimit Tile
+
+Purpose:
+    Builds ratelimit_tile
+
+Usage:
+    python scripts/dashboards/build_ratelimit_tile.py [options]
+    
+    Examples:
+    $ python scripts/dashboards/build_ratelimit_tile.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

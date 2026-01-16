@@ -1,3 +1,9 @@
+"""
+Test Session Query Smoke
+
+Test module for session query smoke.
+"""
+
 import importlib
 import json
 import os

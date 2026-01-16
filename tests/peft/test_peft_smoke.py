@@ -1,3 +1,9 @@
+"""
+Test Peft Smoke
+
+Test module for peft smoke.
+"""
+
 from __future__ import annotations
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Metrics Perplexity
+
+Test module for metrics perplexity.
+"""
+
 import math
 from types import SimpleNamespace
 

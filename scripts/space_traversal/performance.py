@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Performance
+
+Purpose:
+    [To be documented - Performance]
+
+Usage:
+    python scripts/space_traversal/performance.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/performance.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Performance optimizations for v1.5.5
 
 Provides performance utilities for audit pipeline operations.

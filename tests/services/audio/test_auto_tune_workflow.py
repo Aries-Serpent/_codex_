@@ -1,3 +1,9 @@
+"""
+Test Auto Tune Workflow
+
+Test module for auto tune workflow.
+"""
+
 #!/usr/bin/env python3
 """Test suite for auto-tune workflow."""
 

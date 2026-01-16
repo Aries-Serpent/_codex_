@@ -1,3 +1,20 @@
+"""
+Logging Config Module
+
+This module provides functionality for logging config.
+
+Usage:
+    from src.logging_config import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import logging
 from logging.handlers import RotatingFileHandler
 

@@ -1,3 +1,9 @@
+"""
+Test Template Discovery
+
+Test module for template discovery.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

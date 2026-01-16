@@ -1,3 +1,9 @@
+"""
+Test Factory Vs Class
+
+Test module for factory vs class.
+"""
+
 from codex_ml.plugins.registry import Registry
 
 

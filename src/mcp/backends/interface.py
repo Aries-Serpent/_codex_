@@ -1,3 +1,20 @@
+"""
+Interface Module
+
+This module provides functionality for interface.
+
+Usage:
+    from backends.interface import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Adapter interface for MCP vector backends
 # Minimal typed abstract base class used by adapters and tests.
 from __future__ import annotations

@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Github Secrets Sync
+
+Purpose:
+    Synchronizes github_secrets_sync
+
+Usage:
+    python scripts/github_secrets_sync.py [options]
+    
+    Examples:
+    $ python scripts/github_secrets_sync.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 GitHub Secrets Sync Script
 
 Syncs authentication tokens to GitHub Secrets with encryption, validation,

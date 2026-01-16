@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Generate Sbom
+
+Purpose:
+    Generates sbom
+
+Usage:
+    python scripts/security/generate_sbom.py [options]
+    
+    Examples:
+    $ python scripts/security/generate_sbom.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

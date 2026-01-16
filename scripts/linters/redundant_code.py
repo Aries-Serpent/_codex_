@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Redundant Code
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/linters/redundant_code.py [options]
+    
+    Examples:
+    $ python scripts/linters/redundant_code.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Redundant Code Detector
 
 AST-based linter to detect and optionally fix redundant code patterns.

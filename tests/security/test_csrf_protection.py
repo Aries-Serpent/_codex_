@@ -1,3 +1,9 @@
+"""
+Test Csrf Protection
+
+Test module for csrf protection.
+"""
+
 import pytest
 
 from src.security import SecurityError, verify_csrf_token

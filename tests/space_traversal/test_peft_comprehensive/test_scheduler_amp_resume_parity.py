@@ -1,3 +1,9 @@
+"""
+Test Scheduler Amp Resume Parity
+
+Test module for scheduler amp resume parity.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

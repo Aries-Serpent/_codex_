@@ -1,3 +1,9 @@
+"""
+Test Smt Policy
+
+Test module for smt policy.
+"""
+
 from __future__ import annotations
 
 import pytest

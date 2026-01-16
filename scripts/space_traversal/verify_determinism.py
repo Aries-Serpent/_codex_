@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Verify Determinism
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/space_traversal/verify_determinism.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/verify_determinism.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Determinism Verifier
 Runs the audit pipeline multiple times and compares artifacts ignoring timestamp fields.
 Exits non-zero on mismatch.

@@ -1,3 +1,9 @@
+"""
+Test Sentencepiece Tokenizer
+
+Test module for sentencepiece tokenizer.
+"""
+
 #!/usr/bin/env python3
 """Tests for the SentencePieceTokenizer adapter."""
 

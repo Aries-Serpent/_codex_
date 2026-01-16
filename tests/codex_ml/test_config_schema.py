@@ -1,3 +1,9 @@
+"""
+Test Config Schema
+
+Test module for config schema.
+"""
+
 from codex_ml.config import schema
 
 

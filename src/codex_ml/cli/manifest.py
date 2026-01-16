@@ -1,3 +1,20 @@
+"""
+Manifest Module
+
+This module provides functionality for manifest.
+
+Usage:
+    from cli.manifest import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import json

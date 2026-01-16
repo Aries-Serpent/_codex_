@@ -1,3 +1,9 @@
+"""
+Test Models Registry Api
+
+Test module for models registry api.
+"""
+
 import pytest
 
 from codex_ml.models.registry import get_model

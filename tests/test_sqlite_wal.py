@@ -1,3 +1,9 @@
+"""
+Test Sqlite Wal
+
+Test module for sqlite wal.
+"""
+
 import sqlite3
 import threading
 import time

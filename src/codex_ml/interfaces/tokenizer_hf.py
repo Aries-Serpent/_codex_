@@ -1,3 +1,20 @@
+"""
+Tokenizer Hf Module
+
+This module provides functionality for tokenizer hf.
+
+Usage:
+    from interfaces.tokenizer_hf import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

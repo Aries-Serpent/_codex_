@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Execute Secrets Injection Now
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/phase10/execute_secrets_injection_now.py [options]
+    
+    Examples:
+    $ python scripts/phase10/execute_secrets_injection_now.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 IMMEDIATE EXECUTION: Automated Phase 10 Secrets Injection
 Copilot Agent can run this NOW with GITHUB_ACTIONS token
 

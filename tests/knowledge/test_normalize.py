@@ -1,3 +1,9 @@
+"""
+Test Normalize
+
+Test module for normalize.
+"""
+
 from __future__ import annotations
 
 from codex.knowledge.normalize import html_to_markdown

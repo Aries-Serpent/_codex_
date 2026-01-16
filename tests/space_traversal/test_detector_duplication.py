@@ -1,3 +1,9 @@
+"""
+Test Detector Duplication
+
+Test module for detector duplication.
+"""
+
 from __future__ import annotations
 
 import importlib.util

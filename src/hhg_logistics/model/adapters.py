@@ -1,3 +1,20 @@
+"""
+Adapters Module
+
+This module provides functionality for adapters.
+
+Usage:
+    from model.adapters import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

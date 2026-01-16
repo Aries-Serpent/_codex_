@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Generate Capability Report
+
+Purpose:
+    Generates capability_report
+
+Usage:
+    python scripts/generate_capability_report.py [options]
+    
+    Examples:
+    $ python scripts/generate_capability_report.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Generate capability summary report.
 
 Reads capabilities_scored.json and produces a concise markdown summary

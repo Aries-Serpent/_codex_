@@ -1,3 +1,9 @@
+"""
+Test Cli Normalization
+
+Test module for cli normalization.
+"""
+
 from __future__ import annotations
 
 import argparse

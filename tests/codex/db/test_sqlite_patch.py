@@ -1,3 +1,9 @@
+"""
+Test Sqlite Patch
+
+Test module for sqlite patch.
+"""
+
 import importlib
 import pytest
 

@@ -1,5 +1,35 @@
 #!/usr/bin/env python
 """
+Classify Severity
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/classify_severity.py [options]
+    
+    Examples:
+    $ python scripts/security/classify_severity.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Security Severity Classification (P5)
 
 Reads secret_entropy_report.json and classifies each finding into Low / Medium / High

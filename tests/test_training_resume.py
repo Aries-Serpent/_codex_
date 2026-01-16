@@ -1,3 +1,9 @@
+"""
+Test Training Resume
+
+Test module for training resume.
+"""
+
 import pytest
 
 from codex_ml.training import run_functional_training

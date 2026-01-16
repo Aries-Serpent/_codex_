@@ -1,3 +1,33 @@
+"""
+Run Codex Workflow
+
+Purpose:
+    Runs codex_workflow
+
+Usage:
+    python scripts/run_codex_workflow.py [options]
+    
+    Examples:
+    $ python scripts/run_codex_workflow.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 import argparse

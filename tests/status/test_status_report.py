@@ -1,3 +1,9 @@
+"""
+Test Status Report
+
+Test module for status report.
+"""
+
 from __future__ import annotations
 
 import subprocess

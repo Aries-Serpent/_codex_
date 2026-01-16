@@ -1,3 +1,20 @@
+"""
+Interface Module
+
+This module provides functionality for interface.
+
+Usage:
+    from embeddings.interface import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Adapter interface for embedders
 from __future__ import annotations
 import logging

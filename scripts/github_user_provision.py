@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Github User Provision
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/github_user_provision.py [options]
+    
+    Examples:
+    $ python scripts/github_user_provision.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """GitHub User Provisioning with MFA
 
 Automates user provisioning, OAuth setup, and MFA enrollment via GitHub API.

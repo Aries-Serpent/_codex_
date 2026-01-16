@@ -1,3 +1,20 @@
+"""
+Bench Module
+
+This module provides functionality for bench.
+
+Usage:
+    from perf.bench import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
 import logging

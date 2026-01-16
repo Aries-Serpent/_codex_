@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Compliance Reporter
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/compliance_reporter.py [options]
+    
+    Examples:
+    $ python scripts/compliance_reporter.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Compliance Reporter
 
 Generates compliance reports for authentication security.
@@ -10,7 +40,10 @@ Usage:
     python scripts/compliance_reporter.py --visualize
 """
 
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from datetime import datetime, timedelta
 from cryptography.fernet import Fernet
 try:
@@ -23,9 +56,42 @@ except ImportError as e:
 
 class ComplianceReporter:
     def __init__(self):
+        """Initialize the Compliance Reporter with required authentication and encryption.
+        
+        This constructor sets up the necessary clients and encryption keys for generating
+        compliance reports on authentication security practices.
+        
+        Environment Variables Required:
+            GITHUB_TOKEN: GitHub personal access token for API access (required for GitHub operations)
+            CODEX_MASTER_KEY: Master encryption key for token management operations (used by TokenManager)
+            COMPLIANCE_REPORT_KEY: Fernet encryption key for securing compliance report data (required)
+                - Must be a valid 32-byte URL-safe base64-encoded Fernet key
+                - Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+                - Used to encrypt sensitive compliance data before storage/transmission
+        
+        Key Differences:
+            - CODEX_MASTER_KEY: Used by TokenManager for encrypting/decrypting authentication tokens
+            - COMPLIANCE_REPORT_KEY: Used by this reporter to encrypt compliance report data containing
+              sensitive security information (MFA status, token lifecycle data, etc.)
+        
+        Raises:
+            RuntimeError: If COMPLIANCE_REPORT_KEY is missing, not ASCII-encodable, or not a valid Fernet key
+            ImportError: If required dependencies (PyGithub, cryptography) are not installed
+        
+        Attributes:
+            github (Github): Authenticated GitHub API client
+            mfa (MFAProvider): Multi-factor authentication provider
+            tokens (TokenManager): Token lifecycle manager
+            report_cipher (Fernet): Encryption cipher for compliance report data
+        """
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
-        self.tokens = TokenManager(secret_key=os.getenv('CODEX_MASTER_KEY', 'default'))
+        master_key = os.getenv('CODEX_MASTER_KEY')
+        if not master_key:
+            raise RuntimeError(
+                "CODEX_MASTER_KEY environment variable must be set for token management operations"
+            )
+        self.tokens = TokenManager(secret_key=master_key)
         # Encryption key for compliance reports; must be a valid Fernet key.
         report_key = os.getenv('COMPLIANCE_REPORT_KEY')
         if not report_key:

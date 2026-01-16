@@ -1,3 +1,20 @@
+"""
+Retries Module
+
+This module provides functionality for retries.
+
+Usage:
+    from mcp.retries import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # Minimal retry / backoff helper (exponential backoff with jitter)
 import functools
 import logging

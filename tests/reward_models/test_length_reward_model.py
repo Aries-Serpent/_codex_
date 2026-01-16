@@ -1,3 +1,9 @@
+"""
+Test Length Reward Model
+
+Test module for length reward model.
+"""
+
 from codex_ml.reward_models import LengthRewardModel
 
 

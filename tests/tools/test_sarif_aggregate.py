@@ -1,3 +1,9 @@
+"""
+Test Sarif Aggregate
+
+Test module for sarif aggregate.
+"""
+
 import json
 import subprocess
 import sys

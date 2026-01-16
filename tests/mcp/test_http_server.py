@@ -1,3 +1,9 @@
+"""
+Test Http Server
+
+Test module for http server.
+"""
+
 import os
 
 from fastapi.testclient import TestClient

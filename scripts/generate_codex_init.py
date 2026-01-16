@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Generate Codex Init
+
+Purpose:
+    Generates codex_init
+
+Usage:
+    python scripts/generate_codex_init.py [options]
+    
+    Examples:
+    $ python scripts/generate_codex_init.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Generate __init__.py files for codex packages.
 
 This script automatically generates __init__.py files with proper exports

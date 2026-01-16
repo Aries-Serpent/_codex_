@@ -1,3 +1,20 @@
+"""
+System Metrics Module
+
+This module provides functionality for system metrics.
+
+Usage:
+    from callbacks.system_metrics import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

@@ -1,3 +1,20 @@
+"""
+Registry Module
+
+This module provides functionality for registry.
+
+Usage:
+    from codex_ml.registry import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from typing import Callable
 
 _REG: dict[str, Callable] = {}

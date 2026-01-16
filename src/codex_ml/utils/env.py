@@ -1,3 +1,20 @@
+"""
+Env Module
+
+This module provides functionality for env.
+
+Usage:
+    from utils.env import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

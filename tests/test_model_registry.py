@@ -1,3 +1,9 @@
+"""
+Test Model Registry
+
+Test module for model registry.
+"""
+
 from __future__ import annotations
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Prometheus Metrics
+
+Test module for prometheus metrics.
+"""
+
 #!/usr/bin/env python3
 """Tests for Prometheus metrics collection."""
 import sys

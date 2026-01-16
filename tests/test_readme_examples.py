@@ -1,3 +1,9 @@
+"""
+Test Readme Examples
+
+Test module for readme examples.
+"""
+
 import pathlib
 import re
 import sqlite3

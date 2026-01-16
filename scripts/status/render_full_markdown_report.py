@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Render Full Markdown Report
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/status/render_full_markdown_report.py [options]
+    
+    Examples:
+    $ python scripts/status/render_full_markdown_report.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Render a full Markdown report from a v1.2 status JSON.
 
 Usage:

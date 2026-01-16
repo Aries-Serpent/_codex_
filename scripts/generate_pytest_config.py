@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Generate Pytest Config
+
+Purpose:
+    Test script for generate_pyconfig
+
+Usage:
+    python scripts/generate_pytest_config.py [options]
+    
+    Examples:
+    $ python scripts/generate_pytest_config.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Generate pytest.ini with discovered markers including chaos markers.
 
 This script scans the repository for pytest markers and updates pytest.ini

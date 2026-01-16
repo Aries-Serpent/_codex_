@@ -1,3 +1,9 @@
+"""
+Test Ndjson Logger Core
+
+Test module for ndjson logger core.
+"""
+
 import json
 import time
 

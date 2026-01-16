@@ -1,3 +1,9 @@
+"""
+Test Offline Repo Auditor
+
+Test module for offline repo auditor.
+"""
+
 # [Test]: Offline Auditor Sanity
 # > Generated: 2025-08-26 20:36:12 | Author: mbaetiong
 

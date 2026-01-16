@@ -1,3 +1,9 @@
+"""
+Test Tracking Bootstrap Cli
+
+Test module for tracking bootstrap cli.
+"""
+
 import json
 import subprocess
 import sys

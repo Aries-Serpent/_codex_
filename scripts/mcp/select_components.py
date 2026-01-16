@@ -1,5 +1,35 @@
 #! /usr/bin/env python3
 """
+Select Components
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/mcp/select_components.py [options]
+    
+    Examples:
+    $ python scripts/mcp/select_components.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Component Selection Tool for ChatGPT Project Packaging
 Filters repository files by topic or custom glob patterns
 """

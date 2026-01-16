@@ -1,3 +1,9 @@
+"""
+Test Split
+
+Test module for split.
+"""
+
 from __future__ import annotations
 
 import pytest

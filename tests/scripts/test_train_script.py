@@ -1,3 +1,9 @@
+"""
+Test Train Script
+
+Test module for train script.
+"""
+
 from __future__ import annotations
 
 import json

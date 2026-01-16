@@ -1,3 +1,20 @@
+"""
+Prepare Module
+
+This module provides functionality for prepare.
+
+Usage:
+    from data.prepare import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import argparse

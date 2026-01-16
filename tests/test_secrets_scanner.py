@@ -1,3 +1,9 @@
+"""
+Test Secrets Scanner
+
+Test module for secrets scanner.
+"""
+
 from __future__ import annotations
 
 import zipfile

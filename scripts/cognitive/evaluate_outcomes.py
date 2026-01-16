@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Evaluate Outcomes
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/evaluate_outcomes.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/evaluate_outcomes.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Outcome Evaluator
 Part of AfterMath - evaluates execution outcomes
 """

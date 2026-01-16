@@ -1,3 +1,9 @@
+"""
+Test Git Tag Decode
+
+Test module for git tag decode.
+"""
+
 import locale
 
 from codex_ml.tracking.git_tag import _decode

@@ -1,3 +1,9 @@
+"""
+Test Registry Entries
+
+Test module for registry entries.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

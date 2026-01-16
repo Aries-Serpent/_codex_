@@ -1,3 +1,9 @@
+"""
+Test Subcommands
+
+Test module for subcommands.
+"""
+
 from click.testing import CliRunner
 
 from codex_ml.cli.codex_cli import codex

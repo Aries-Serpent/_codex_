@@ -1,3 +1,9 @@
+"""
+Test Mlflow Utils Noop
+
+Test module for mlflow utils noop.
+"""
+
 # BEGIN: CODEX_SMOKE_MLFLOW_NOOP
 
 import pytest

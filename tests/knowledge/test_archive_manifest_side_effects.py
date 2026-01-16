@@ -1,3 +1,9 @@
+"""
+Test Archive Manifest Side Effects
+
+Test module for archive manifest side effects.
+"""
+
 from __future__ import annotations
 
 import json

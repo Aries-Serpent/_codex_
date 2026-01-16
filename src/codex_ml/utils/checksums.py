@@ -1,3 +1,20 @@
+"""
+Checksums Module
+
+This module provides functionality for checksums.
+
+Usage:
+    from utils.checksums import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_CHECKSUMS
 from __future__ import annotations
 

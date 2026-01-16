@@ -1,3 +1,9 @@
+"""
+Test Template Structure
+
+Test module for template structure.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

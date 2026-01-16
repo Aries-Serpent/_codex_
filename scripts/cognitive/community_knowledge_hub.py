@@ -1,6 +1,36 @@
 #!/usr/bin/env python3
 """
 Community Knowledge Hub
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/community_knowledge_hub.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/community_knowledge_hub.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
+Community Knowledge Hub
 Pattern contribution system with peer review and public library
 """
 

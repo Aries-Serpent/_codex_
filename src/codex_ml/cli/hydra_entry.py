@@ -1,3 +1,20 @@
+"""
+Hydra Entry Module
+
+This module provides functionality for hydra entry.
+
+Usage:
+    from cli.hydra_entry import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

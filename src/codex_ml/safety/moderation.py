@@ -1,3 +1,20 @@
+"""
+Moderation Module
+
+This module provides functionality for moderation.
+
+Usage:
+    from safety.moderation import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import importlib

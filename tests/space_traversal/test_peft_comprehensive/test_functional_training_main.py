@@ -1,3 +1,9 @@
+"""
+Test Functional Training Main
+
+Test module for functional training main.
+"""
+
 import sys
 import types
 from pathlib import Path

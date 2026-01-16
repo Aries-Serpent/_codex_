@@ -1,3 +1,9 @@
+"""
+Test Train Cli
+
+Test module for train cli.
+"""
+
 import pathlib
 
 import pytest

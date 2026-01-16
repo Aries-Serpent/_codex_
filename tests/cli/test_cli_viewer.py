@@ -1,3 +1,9 @@
+"""
+Test Cli Viewer
+
+Test module for cli viewer.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

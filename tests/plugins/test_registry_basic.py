@@ -1,3 +1,9 @@
+"""
+Test Registry Basic
+
+Test module for registry basic.
+"""
+
 from codex_ml.plugins.registry import Registry
 
 

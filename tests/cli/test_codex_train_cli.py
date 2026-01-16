@@ -1,3 +1,9 @@
+"""
+Test Codex Train Cli
+
+Test module for codex train cli.
+"""
+
 from collections.abc import Mapping
 
 from click.testing import CliRunner

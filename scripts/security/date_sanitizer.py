@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Date Sanitizer
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/security/date_sanitizer.py [options]
+    
+    Examples:
+    $ python scripts/security/date_sanitizer.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Date Sanitization Policy Enforcer
 
 This module provides smart date pattern detection and replacement for documentation.

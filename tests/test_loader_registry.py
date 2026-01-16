@@ -1,3 +1,9 @@
+"""
+Test Loader Registry
+
+Test module for loader registry.
+"""
+
 from __future__ import annotations
 
 import pytest

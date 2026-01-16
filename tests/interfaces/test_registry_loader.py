@@ -1,3 +1,9 @@
+"""
+Test Registry Loader
+
+Test module for registry loader.
+"""
+
 import os
 import sys
 

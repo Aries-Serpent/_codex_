@@ -1,3 +1,9 @@
+"""
+Test Flow To Mermaid Smoke
+
+Test module for flow to mermaid smoke.
+"""
+
 from __future__ import annotations
 
 from codex.diagram.flows import flow_to_mermaid

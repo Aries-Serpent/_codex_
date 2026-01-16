@@ -1,3 +1,9 @@
+"""
+Test Error Logging
+
+Test module for error logging.
+"""
+
 #!/usr/bin/env python3
 """Tests for error_logging utility."""
 import tempfile

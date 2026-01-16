@@ -1,3 +1,9 @@
+"""
+Test Codex Model Dtype
+
+Test module for codex model dtype.
+"""
+
 import pytest
 
 torch = pytest.importorskip("torch")

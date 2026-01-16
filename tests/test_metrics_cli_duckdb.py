@@ -1,3 +1,9 @@
+"""
+Test Metrics Cli Duckdb
+
+Test module for metrics cli duckdb.
+"""
+
 from __future__ import annotations
 
 import sys

@@ -1,3 +1,9 @@
+"""
+Test System Snapshot
+
+Test module for system snapshot.
+"""
+
 from __future__ import annotations
 
 from types import SimpleNamespace

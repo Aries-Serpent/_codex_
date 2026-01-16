@@ -1,3 +1,9 @@
+"""
+Test List Plugins Degrade
+
+Test module for list plugins degrade.
+"""
+
 from __future__ import annotations
 
 import json

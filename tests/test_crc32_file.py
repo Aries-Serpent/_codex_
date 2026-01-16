@@ -1,3 +1,9 @@
+"""
+Test Crc32 File
+
+Test module for crc32 file.
+"""
+
 from __future__ import annotations
 
 import zlib

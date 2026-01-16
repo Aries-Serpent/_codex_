@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Sync Issues To Report
+
+Purpose:
+    Synchronizes issues_to_report
+
+Usage:
+    python scripts/automation/sync_issues_to_report.py [options]
+    
+    Examples:
+    $ python scripts/automation/sync_issues_to_report.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Stub: Sync issues/PRs into a status report JSON (offline-friendly placeholder).
 
 Notes:

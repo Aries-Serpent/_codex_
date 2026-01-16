@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Prepare Repo Status Prompt
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/prepare_repo_status_prompt.py [options]
+    
+    Examples:
+    $ python scripts/prepare_repo_status_prompt.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 
 from pathlib import Path

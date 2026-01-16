@@ -1,3 +1,9 @@
+"""
+Test Perplexity
+
+Test module for perplexity.
+"""
+
 import importlib
 import pytest
 

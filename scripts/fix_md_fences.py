@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Fix Md Fences
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/fix_md_fences.py [options]
+    
+    Examples:
+    $ python scripts/fix_md_fences.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Fix common Markdown fence issues repo-wide:
  - Add a language (default: 'text') to bare ``` fences.
  - Ensure closing fences do NOT include a language.

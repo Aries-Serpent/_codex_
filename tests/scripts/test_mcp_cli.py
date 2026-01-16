@@ -1,3 +1,9 @@
+"""
+Test Mcp Cli
+
+Test module for mcp cli.
+"""
+
 #! /usr/bin/env python3
 """
 Test suite for scripts/mcp/mcp-package CLI

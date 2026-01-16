@@ -1,3 +1,9 @@
+"""
+Test Semgrep Rules
+
+Test module for semgrep rules.
+"""
+
 import os
 import shutil
 import subprocess

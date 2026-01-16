@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Validate Coverage Gates
+
+Purpose:
+    Validates coverage_gates
+
+Usage:
+    python scripts/validate_coverage_gates.py [options]
+    
+    Examples:
+    $ python scripts/validate_coverage_gates.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Validate 3.5% coverage gate enforcement across all test contexts.
 
 This script ensures ``--cov-fail-under=3.5`` is present in the key surfaces that

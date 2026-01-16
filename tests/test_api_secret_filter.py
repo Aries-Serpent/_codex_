@@ -1,3 +1,9 @@
+"""
+Test Api Secret Filter
+
+Test module for api secret filter.
+"""
+
 import pytest
 
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")

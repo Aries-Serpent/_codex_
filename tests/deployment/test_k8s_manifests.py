@@ -1,3 +1,9 @@
+"""
+Test K8S Manifests
+
+Test module for k8s manifests.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate Kubernetes manifests if present; offline & deterministic.

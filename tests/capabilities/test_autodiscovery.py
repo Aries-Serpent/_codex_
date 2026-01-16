@@ -1,3 +1,9 @@
+"""
+Test Autodiscovery
+
+Test module for autodiscovery.
+"""
+
 import json
 import subprocess
 import sys

@@ -1,3 +1,9 @@
+"""
+Test Pipeline Validation
+
+Test module for pipeline validation.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate basic data pipeline assets (presence, simple schema checks).

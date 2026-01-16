@@ -1,3 +1,20 @@
+"""
+  Init   Module
+
+This module provides functionality for   init  .
+
+Usage:
+    from safety.__init__ import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # BEGIN: CODEX_SAFETY_INIT
 from .filters import SafetyFilters, SafetyViolation
 import logging

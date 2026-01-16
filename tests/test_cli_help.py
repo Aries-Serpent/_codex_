@@ -1,3 +1,9 @@
+"""
+Test Cli Help
+
+Test module for cli help.
+"""
+
 import os
 import subprocess
 import sys

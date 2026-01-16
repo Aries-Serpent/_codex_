@@ -1,3 +1,20 @@
+"""
+Metrics Module
+
+This module provides functionality for metrics.
+
+Usage:
+    from analysis.metrics import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # src/codex_ml/analysis/metrics.py
 from __future__ import annotations
 import logging

@@ -1,3 +1,9 @@
+"""
+Test Sql Identifier Safety
+
+Test module for sql identifier safety.
+"""
+
 from __future__ import annotations
 
 import pytest

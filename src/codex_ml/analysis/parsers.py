@@ -1,3 +1,20 @@
+"""
+Parsers Module
+
+This module provides functionality for parsers.
+
+Usage:
+    from analysis.parsers import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 # src/codex_ml/analysis/parsers.py
 # Tiered parsing: ast -> libcst -> parso -> degraded metrics-only
 from __future__ import annotations

@@ -1,3 +1,9 @@
+"""
+Test Rate Limiting
+
+Test module for rate limiting.
+"""
+
 import pytest
 
 from src.security import SecurityError, rate_limiter

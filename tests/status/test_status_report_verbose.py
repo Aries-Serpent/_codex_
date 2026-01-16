@@ -1,3 +1,9 @@
+"""
+Test Status Report Verbose
+
+Test module for status report verbose.
+"""
+
 from __future__ import annotations
 
 import subprocess

@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Generate Baseline
+
+Purpose:
+    Generates baseline
+
+Usage:
+    python scripts/space_traversal/generate_baseline.py [options]
+    
+    Examples:
+    $ python scripts/space_traversal/generate_baseline.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 import logging
 logger = logging.getLogger(__name__)
 Generate baseline file from decoded Phase-A snapshot input.

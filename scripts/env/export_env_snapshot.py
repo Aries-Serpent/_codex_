@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Export Env Snapshot
+
+Purpose:
+    Main execution script
+
+Usage:
+    python scripts/env/export_env_snapshot.py [options]
+    
+    Examples:
+    $ python scripts/env/export_env_snapshot.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Write environment metadata and variables to JSON."""
 from __future__ import annotations
 

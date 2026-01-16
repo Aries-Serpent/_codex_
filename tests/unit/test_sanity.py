@@ -1,3 +1,9 @@
+"""
+Test Sanity
+
+Test module for sanity.
+"""
+
 def test_sanity():
     # Minimal gating test to validate setup
     assert 1 + 1 == 2

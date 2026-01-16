@@ -1,3 +1,9 @@
+"""
+Test Validate Configs Cli
+
+Test module for validate configs cli.
+"""
+
 from __future__ import annotations
 
 import json

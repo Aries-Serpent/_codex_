@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Detect Patterns
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/detect_patterns.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/detect_patterns.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 Cognitive Brain - Pattern Detection
 Part of Perception Layer - integrates with Agent 1 for pattern recognition
 """

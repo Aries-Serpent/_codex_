@@ -1,3 +1,9 @@
+"""
+Test Toy Trainer
+
+Test module for toy trainer.
+"""
+
 import subprocess
 import sys
 

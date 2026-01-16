@@ -1,3 +1,9 @@
+"""
+Test Structured Logging
+
+Test module for structured logging.
+"""
+
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate structured (NDJSON) logging write/read locally.

@@ -1,3 +1,9 @@
+"""
+Test Entry Point Collision
+
+Test module for entry point collision.
+"""
+
 import types
 import warnings
 

@@ -1,3 +1,9 @@
+"""
+Test Gradient Accumulation Equivalence
+
+Test module for gradient accumulation equivalence.
+"""
+
 from __future__ import annotations
 
 import types

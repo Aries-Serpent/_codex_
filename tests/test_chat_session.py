@@ -1,3 +1,9 @@
+"""
+Test Chat Session
+
+Test module for chat session.
+"""
+
 import importlib.util
 import os
 import pathlib

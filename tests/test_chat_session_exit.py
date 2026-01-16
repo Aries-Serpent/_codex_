@@ -1,3 +1,9 @@
+"""
+Test Chat Session Exit
+
+Test module for chat session exit.
+"""
+
 import os
 
 import pytest

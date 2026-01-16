@@ -1,3 +1,20 @@
+"""
+Performance Module
+
+This module provides functionality for performance.
+
+Usage:
+    from batching.performance import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import time

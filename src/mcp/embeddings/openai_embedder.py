@@ -1,3 +1,20 @@
+"""
+Openai Embedder Module
+
+This module provides functionality for openai embedder.
+
+Usage:
+    from embeddings.openai_embedder import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 import importlib
 import importlib.util
 import logging

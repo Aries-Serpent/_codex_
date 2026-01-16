@@ -1,3 +1,20 @@
+"""
+Train Module
+
+This module provides functionality for train.
+
+Usage:
+    from hhg_logistics.train import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 import logging

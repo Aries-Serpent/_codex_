@@ -1,3 +1,9 @@
+"""
+Test Eval Cli
+
+Test module for eval cli.
+"""
+
 from __future__ import annotations
 
 import subprocess

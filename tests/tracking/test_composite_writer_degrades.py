@@ -1,3 +1,9 @@
+"""
+Test Composite Writer Degrades
+
+Test module for composite writer degrades.
+"""
+
 import json
 import time
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Test Conversation Logger
+
+Test module for conversation logger.
+"""
+
 import sqlite3
 
 from src.codex.logging.conversation_logger import (

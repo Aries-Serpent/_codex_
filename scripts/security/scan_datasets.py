@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+Scan Datasets
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/security/scan_datasets.py [options]
+    
+    Examples:
+    $ python scripts/security/scan_datasets.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 from __future__ import annotations
 import argparse
 import json

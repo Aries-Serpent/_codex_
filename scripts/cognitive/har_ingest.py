@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 """
+Har Ingest
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/cognitive/har_ingest.py [options]
+    
+    Examples:
+    $ python scripts/cognitive/har_ingest.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
+"""
 HAR Ingestion Script for Cognitive Brain
 Ingested from external source and integrated into cognitive perception layer
 """

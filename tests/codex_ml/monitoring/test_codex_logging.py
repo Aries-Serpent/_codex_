@@ -1,3 +1,9 @@
+"""
+Test Codex Logging
+
+Test module for codex logging.
+"""
+
 import importlib
 import pytest
 

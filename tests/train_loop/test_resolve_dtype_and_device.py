@@ -1,3 +1,9 @@
+"""
+Test Resolve Dtype And Device
+
+Test module for resolve dtype and device.
+"""
+
 import importlib
 
 

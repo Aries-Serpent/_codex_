@@ -199,14 +199,16 @@ jobs:
             pip install target/wheels/*.whl
           }
           
-          # Verify the extension can be imported
-          python -c "try:
+          # Verify the extension can be imported using a heredoc to avoid quoting issues
+          python - <<'PY'
+          try:
               import codex_swarm
-              print('✅ Extension imported successfully')
+              print("✅ Extension imported successfully")
           except ImportError as e:
-              print(f'⚠️ Import failed: {e}')
-              print('This is expected if Python bindings are not configured')
-              exit(0)"
+              print(f"⚠️ Import failed: {e}")
+              print("This is expected if Python bindings are not configured")
+              raise SystemExit(0)
+          PY
       
       - name: Run integration tests
         run: |
@@ -291,7 +293,7 @@ EOFreport
           fi
       
       - name: Comment on PR
-        if: github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != ''
+        if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != '' }}
         uses: actions/github-script@v7
         with:
           script: |

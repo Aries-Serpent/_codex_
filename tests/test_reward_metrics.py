@@ -1,3 +1,9 @@
+"""
+Test Reward Metrics
+
+Test module for reward metrics.
+"""
+
 import pytest
 
 from codex_ml.metrics.reward import reward_mean, reward_success_rate

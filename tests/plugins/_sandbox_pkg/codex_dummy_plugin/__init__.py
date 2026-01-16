@@ -1,5 +1,11 @@
+"""
+Codex Dummy Plugin Package
+
+This package provides codex dummy plugin functionality.
+"""
+
+
 class DummyModel:
-    """Minimal object to prove entry-point discovery works."""
 
     def __init__(self) -> None:
         self.name = "dummy"

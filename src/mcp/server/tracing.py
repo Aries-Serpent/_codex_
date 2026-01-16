@@ -1,3 +1,20 @@
+"""
+Tracing Module
+
+This module provides functionality for tracing.
+
+Usage:
+    from server.tracing import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import importlib
 import importlib.util

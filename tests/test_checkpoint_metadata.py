@@ -1,3 +1,9 @@
+"""
+Test Checkpoint Metadata
+
+Test module for checkpoint metadata.
+"""
+
 import subprocess
 from pathlib import Path
 

@@ -1,3 +1,9 @@
+"""
+Test Data Registry
+
+Test module for data registry.
+"""
+
 from importlib import metadata
 
 import pytest

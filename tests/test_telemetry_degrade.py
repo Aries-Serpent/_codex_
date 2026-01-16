@@ -1,3 +1,9 @@
+"""
+Test Telemetry Degrade
+
+Test module for telemetry degrade.
+"""
+
 from codex_ml.monitoring.codex_logging import init_telemetry
 
 

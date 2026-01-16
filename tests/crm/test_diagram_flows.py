@@ -1,3 +1,9 @@
+"""
+Test Diagram Flows
+
+Test module for diagram flows.
+"""
+
 from __future__ import annotations
 
 import pytest

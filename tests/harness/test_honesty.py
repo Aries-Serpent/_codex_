@@ -1,3 +1,9 @@
+"""
+Test Honesty
+
+Test module for honesty.
+"""
+
 import json
 
 from codex_harness.honesty import HonestyRecorder

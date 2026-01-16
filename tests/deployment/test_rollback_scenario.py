@@ -1,3 +1,9 @@
+"""
+Test Rollback Scenario
+
+Test module for rollback scenario.
+"""
+
 import subprocess
 
 

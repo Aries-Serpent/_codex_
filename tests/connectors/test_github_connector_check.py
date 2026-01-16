@@ -1,3 +1,9 @@
+"""
+Test Github Connector Check
+
+Test module for github connector check.
+"""
+
 import subprocess
 import sys
 

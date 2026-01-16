@@ -1,3 +1,9 @@
+"""
+Test Db Utils
+
+Test module for db utils.
+"""
+
 # Auto-generated tests for db_utils.py
 import sqlite3
 

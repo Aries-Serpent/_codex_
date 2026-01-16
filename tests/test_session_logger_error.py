@@ -1,3 +1,9 @@
+"""
+Test Session Logger Error
+
+Test module for session logger error.
+"""
+
 import json
 import os
 from datetime import datetime, timedelta

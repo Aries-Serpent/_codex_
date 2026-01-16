@@ -1,3 +1,9 @@
+"""
+Test Cli
+
+Test module for cli.
+"""
+
 import importlib
 import os
 import subprocess

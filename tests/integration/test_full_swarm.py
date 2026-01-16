@@ -1,3 +1,9 @@
+"""
+Test Full Swarm
+
+Test module for full swarm.
+"""
+
 # Rust-Python Hybrid Swarm Integration Tests
 # Phase 4: Full Integration Testing
 

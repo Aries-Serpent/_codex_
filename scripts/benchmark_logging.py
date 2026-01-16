@@ -1,3 +1,33 @@
+"""
+Benchmark Logging
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/benchmark_logging.py [options]
+    
+    Examples:
+    $ python scripts/benchmark_logging.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 import argparse
 import os
 import sqlite3

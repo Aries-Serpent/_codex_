@@ -1,3 +1,9 @@
+"""
+Test Telemetry Event Schema
+
+Test module for telemetry event schema.
+"""
+
 # ruff: noqa: E402
 import json
 from pathlib import Path

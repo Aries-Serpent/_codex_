@@ -1,3 +1,9 @@
+"""
+Test Codex Yaml Gap Check
+
+Test module for codex yaml gap check.
+"""
+
 import textwrap
 from pathlib import Path
 

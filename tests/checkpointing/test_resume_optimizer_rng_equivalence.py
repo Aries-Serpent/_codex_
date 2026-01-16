@@ -1,3 +1,9 @@
+"""
+Test Resume Optimizer Rng Equivalence
+
+Test module for resume optimizer rng equivalence.
+"""
+
 from __future__ import annotations
 
 import random

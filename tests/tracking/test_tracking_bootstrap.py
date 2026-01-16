@@ -1,3 +1,9 @@
+"""
+Test Tracking Bootstrap
+
+Test module for tracking bootstrap.
+"""
+
 from __future__ import annotations
 
 import os

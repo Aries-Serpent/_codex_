@@ -1,3 +1,9 @@
+"""
+Test Offline Ndjson Logger
+
+Test module for offline ndjson logger.
+"""
+
 from __future__ import annotations
 
 import json

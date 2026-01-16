@@ -1,3 +1,9 @@
+"""
+Test Registry Validation
+
+Test module for registry validation.
+"""
+
 import warnings
 
 import pytest

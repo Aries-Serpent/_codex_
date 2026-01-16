@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Run Capability Audit
+
+Purpose:
+    Runs capability_audit
+
+Usage:
+    python scripts/run_capability_audit.py [options]
+    
+    Examples:
+    $ python scripts/run_capability_audit.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """Capability Audit Runner Script.
 
 Run regular audits to maintain 99%+ scores across all capabilities.

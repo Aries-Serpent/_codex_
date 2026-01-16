@@ -1,3 +1,20 @@
+"""
+File Ingestor Module
+
+This module provides functionality for file ingestor.
+
+Usage:
+    from ingestion.file_ingestor import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

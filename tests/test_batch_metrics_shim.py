@@ -1,3 +1,9 @@
+"""
+Test Batch Metrics Shim
+
+Test module for batch metrics shim.
+"""
+
 from __future__ import annotations
 
 import types

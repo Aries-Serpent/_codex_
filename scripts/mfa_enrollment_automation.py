@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+"""
+Mfa Enrollment Automation
+
+Purpose:
+    Command-line utility (see argument parser for details)
+
+Usage:
+    python scripts/mfa_enrollment_automation.py [options]
+    
+    Examples:
+    $ python scripts/mfa_enrollment_automation.py --help
+
+Arguments:
+    [To be documented]
+
+Environment Variables:
+    [To be documented]
+
+Dependencies:
+    [To be documented]
+
+Exit Codes:
+    0: Success
+    1: Error
+
+Author: Codex Team
+Last Updated: 2026-01-16
+"""
+
+
 """MFA Enrollment Automation
 
 Automates bulk MFA enrollment for GitHub users.
@@ -54,6 +84,40 @@ class MFAEnrollmentAutomator:
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
+                # IMPORTANT: MFA ENROLLMENT LIMITATION
+                # This automation generates TOTP secrets and backup codes but does NOT
+                # store or transmit them to users, making enrollment incomplete.
+                # 
+                # Current Behavior:
+                # - Provisioning URI generated but immediately discarded (not logged for security)
+                # - Backup codes generated but not persisted or delivered to users
+                # 
+                # Production Implementation Required:
+                # To make this enrollment functional, implement secure credential delivery:
+                # 1. Store encrypted credentials temporarily (use COMPLIANCE_REPORT_KEY or similar)
+                # 2. Deliver via authenticated secure channel:
+                #    - Option A: Encrypted email to verified user email
+                #    - Option B: SMS to registered phone number
+                #    - Option C: Secure web portal with user authentication
+                # 3. Require user acknowledgment of receipt
+                # 4. Delete temporary credentials after delivery confirmation
+                # 
+                # Security Considerations:
+                # - Never log provisioning URIs or backup codes in plain text
+                # - Use end-to-end encryption for credential transmission
+                # - Implement rate limiting to prevent abuse
+                # - Require MFA setup completion within 24-48 hours
+                
+                # IMPLEMENTATION NOTE: Credential Delivery Pending
+                # ================================================
+                # The provisioning URI and backup codes are generated below but intentionally
+                # NOT delivered to users in this demonstration script. This is INCOMPLETE by design
+                # until a secure credential delivery mechanism is implemented.
+                # 
+                # Current State: Users are enrolled in MFA but do NOT receive setup credentials
+                # Required Action: Implement ONE of the secure delivery options above before production use
+                # 
+                # DO NOT use this script in production without implementing secure credential delivery.
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
                 

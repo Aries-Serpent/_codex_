@@ -1,3 +1,9 @@
+"""
+Test Codex Evaluator
+
+Test module for codex evaluator.
+"""
+
 import json
 
 import pytest

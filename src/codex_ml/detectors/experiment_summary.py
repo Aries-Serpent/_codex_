@@ -1,3 +1,20 @@
+"""
+Experiment Summary Module
+
+This module provides functionality for experiment summary.
+
+Usage:
+    from detectors.experiment_summary import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)

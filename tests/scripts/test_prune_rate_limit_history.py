@@ -1,3 +1,9 @@
+"""
+Test Prune Rate Limit History
+
+Test module for prune rate limit history.
+"""
+
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone

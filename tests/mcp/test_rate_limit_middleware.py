@@ -1,3 +1,9 @@
+"""
+Test Rate Limit Middleware
+
+Test module for rate limit middleware.
+"""
+
 import time
 
 import pytest
