@@ -108,7 +108,6 @@ def main():
     # Step 2: Display setup instructions
     # Note: In production, pass uri and secret through secure channel only
     _ = secret.get_provisioning_uri("user@example.com")  # Generated but not exposed
-    _ = secret.secret  # Stored securely, not displayed
     display_qr_instructions()
     
     # Step 3: Verify setup
