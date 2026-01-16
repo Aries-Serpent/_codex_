@@ -124,10 +124,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-security-tools-
       
+      - name: Configure NPM Authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          echo "NPM authentication configured"
+        env:
+          NPM_TOKEN: ${{ secrets.npm_token }}
+      
       - name: Install Security Scanning Tools
         run: |
           echo "::group::Installing Secretlint"
-          npm install -g @secretlint/secretlint @secretlint/secretlint-rule-preset-recommend
+          npm install -g secretlint @secretlint/secretlint-rule-preset-recommend
           secretlint --version
           echo "::endgroup::"
           
