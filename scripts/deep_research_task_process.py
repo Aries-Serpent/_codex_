@@ -29,7 +29,8 @@ Last Updated: 2026-01-16
 
 # Line length (E501) suppressed for documentation tables and command strings that exceed 88 chars
 # ruff: noqa: E501
-# TODO: Refactor into smaller modules to eliminate need for blanket line-length exceptions
+# NOTE: This file intentionally uses a file-level E501 suppression to keep long documentation
+#       tables and example commands readable.
 
 from __future__ import annotations
 
