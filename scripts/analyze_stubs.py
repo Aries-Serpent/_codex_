@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 """
 Analyze Stubs
 
 Purpose:
-    Analyzes stubs
+    Simple stub scanner for generating stub analysis report.
 
 Usage:
     python scripts/analyze_stubs.py [options]
@@ -27,13 +28,11 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
 import logging
-logger = logging.getLogger(__name__)
-#!/usr/bin/env python3
-"""Simple stub scanner for generating stub analysis report."""
 import re
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def scan_for_stubs(source_dirs):

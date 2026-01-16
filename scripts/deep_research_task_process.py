@@ -27,12 +27,12 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+# Line length (E501) suppressed for documentation tables and command strings that exceed 88 chars
+# ruff: noqa: E501
+# TODO: Refactor into smaller modules to eliminate need for blanket line-length exceptions
 
-# ruff: noqa: E501, F401, C901
-# Line length (E501): Documentation tables and command strings exceed 88 chars
-# Unused imports (F401): Some imports used dynamically or in optional code paths
-# Complexity (C901): Legacy script with complex orchestration functions
-# TODO: Refactor into smaller modules to remove blanket noqa and improve maintainability
+from __future__ import annotations
+
 # Python Name: enhanced_repo_improv2.py
 # Script: ENHANCED Repository Improvement Tasks
 # Purpose: Perform repository improvement / bootstrap tasks:
@@ -96,8 +96,6 @@ NOTE:
 The unified CI workflow triggers only via workflow_dispatch (and PR events if configured) to
 avoid unintended activation in forked contexts.
 """
-
-from __future__ import annotations
 
 import hashlib
 import json
