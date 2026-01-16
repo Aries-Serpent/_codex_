@@ -16,6 +16,16 @@ and verifying authentication codes.
 
 Usage:
     python examples/authentication/02_mfa_setup.py
+
+Testing:
+    This example script lacks integration test coverage. To add tests:
+    1. Create tests/integration/test_mfa_examples.py
+    2. Test MFA enrollment flow with mock users
+    3. Verify TOTP generation and validation
+    4. Test backup code functionality
+    5. Ensure rate limiting works correctly
+    
+    See tests/test_auth/ for unit test examples of the underlying MFA components.
 """
 
 import sys
