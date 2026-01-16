@@ -199,14 +199,16 @@ jobs:
             pip install target/wheels/*.whl
           }
           
-          # Verify the extension can be imported
-          python -c "try:
-              import codex_swarm
-              print('✅ Extension imported successfully')
-          except ImportError as e:
-              print(f'⚠️ Import failed: {e}')
-              print('This is expected if Python bindings are not configured')
-              exit(0)"
+          # Verify the extension can be imported using a heredoc to avoid quoting issues
+          python - <<'PY'
+try:
+    import codex_swarm
+    print("✅ Extension imported successfully")
+except ImportError as e:
+    print(f"⚠️ Import failed: {e}")
+    print("This is expected if Python bindings are not configured")
+    raise SystemExit(0)
+PY
       
       - name: Run integration tests
         run: |
