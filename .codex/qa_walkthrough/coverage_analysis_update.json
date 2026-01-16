@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "timestamp": "2026-01-16T17:45:00.000000+00:00",
+    "timestamp": "2026-01-16T18:20:00.000000+00:00",
     "analysis_type": "coverage_update",
-    "session": "IP-001 Phase 1-5",
-    "phase5_update": "2026-01-16T17:45:00Z"
+    "session": "IP-001 Phase 1-6",
+    "phase6_update": "2026-01-16T18:20:00Z"
   },
   "coverage_update": {
     "before_session": {
@@ -14,16 +14,16 @@
     },
     "after_session": {
       "total_source_files": 714,
-      "files_with_tests": 230,
-      "estimated_coverage_percent": 48.2,
-      "files_without_tests": 484,
-      "tests_added": 700,
-      "modules_covered": 28
+      "files_with_tests": 235,
+      "estimated_coverage_percent": 52.4,
+      "files_without_tests": 479,
+      "tests_added": 775,
+      "modules_covered": 33
     },
     "improvement": {
-      "files_covered": 34,
-      "coverage_increase_percent": 20.75,
-      "tests_added": 700
+      "files_covered": 39,
+      "coverage_increase_percent": 24.95,
+      "tests_added": 775
     }
   },
   "newly_covered_modules": {
@@ -61,16 +61,23 @@
       {"path": "src/codex/logging/db_manager.py", "tests": 23},
       {"path": "src/codex/logging/error_handler.py", "tests": 24},
       {"path": "src/codex/logging/viewer.py", "tests": 29}
+    ],
+    "phase_6": [
+      {"path": "src/codex/logging/query_logs.py", "tests": 31},
+      {"path": "src/codex/config/env_vars.py", "tests": 23},
+      {"path": "src/codex/db/sqlite_patch.py", "tests": 21},
+      {"path": "src/training/seed.py", "tests": 7},
+      {"path": "src/training/cache.py", "tests": 20}
     ]
   },
   "remaining_high_priority": [
-    {"path": "src/codex/logging/query_logs.py", "size": 8000, "priority": "high"},
     {"path": "training/train.py", "size": 7500, "priority": "high"},
-    {"path": "src/codex/config/env_vars.py", "size": 6000, "priority": "high"},
-    {"path": "src/codex/db/sqlite_patch.py", "size": 5500, "priority": "high"}
+    {"path": "src/codex/logging/db_utils.py", "size": 5000, "priority": "high"},
+    {"path": "src/codex_ml/utils/repro.py", "size": 4500, "priority": "high"},
+    {"path": "agents/base_agent.py", "size": 4000, "priority": "high"}
   ],
   "ip_status": {
-    "IP-001": {"status": "in_progress", "phase": 5, "tests_added": 700, "coverage_percent": 48.2},
+    "IP-001": {"status": "in_progress", "phase": 6, "tests_added": 775, "coverage_percent": 52.4},
     "IP-002": {"status": "complete", "phase": 0, "notes": "Audit complete, no action required"},
     "IP-003": {"status": "complete", "notes": "SECURITY.md enhanced with 137 security files"},
     "IP-004": {"status": "in_progress", "notes": "Production authentication tests added (45 tests)"},
