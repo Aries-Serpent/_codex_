@@ -12,7 +12,9 @@ crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 
 [dependencies]
 # Python-Rust Interop
-pyo3 = { version = "0.24.1", features = ["abi3-py38", "extension-module"] }
+# Note: extension-module feature is added by maturin automatically during build
+# For testing, we compile without it to allow linking
+pyo3 = { version = "0.24.1", features = ["abi3-py38"] }
 pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 
 # Async Runtime & Parallelism
@@ -59,6 +61,5 @@ module-name = "codex_engine"
 python-source = "src"
 
 [features]
-default = ["python"]
-python = ["pyo3", "pyo3-async-runtimes"]
-extension-module = ["pyo3/extension-module"]
+default = []
+# extension-module feature will be enabled by maturin during Python builds
