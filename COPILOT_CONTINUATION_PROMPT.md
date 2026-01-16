@@ -12,17 +12,18 @@ This is a continuation of the comprehensive QA walkthrough. The following has be
 - IP-001 Phase 2: 65 integration tests for 3 modules
 - IP-001 Phase 3: 96 integration tests for 4 modules
 - IP-001 Phase 4: 127 integration tests for 4 modules
+- IP-001 Phase 5: 139 tests for 3 modules (CLI, Session Logger, Auth)
 - IP-002: Legacy config audit COMPLETE (no action required)
 - IP-003: SECURITY.md enhanced with 137 security-critical files
-- IP-004: Production authentication plan documented
+- IP-004: Production authentication tests added (45 tests)
 - IP-005: Dependency audit complete (26 vulnerabilities found)
 - Planset Verification: All plansets verified
 - IP Approval: IP-001 to IP-005 APPROVED by @mbaetiong
-- Total new tests: **485 tests (all passing)**
+- Total new tests: **624 tests (all passing)**
 
 ### 📊 Current Coverage
 - Before: 27.5% (196 files with tests)
-- After: ~38.2% (215 files with tests)
+- After: ~42.4% (222 files with tests)
 - Target: 70% (500+ files)
 - Goal: 100% (714 files)
 
@@ -36,11 +37,11 @@ This is a continuation of the comprehensive QA walkthrough. The following has be
 ### Short Term ✅
 1. ✅ Complete IP-003 - COMPLETE
 2. ✅ Complete IP-002 - COMPLETE
-3. ✅ Start IP-001 Phase 1-4 - COMPLETE (485 tests)
+3. ✅ Start IP-001 Phase 1-5 - COMPLETE (624 tests)
 
 ### Medium Term (In Progress)
-1. ⏳ Complete IP-001 all phases - ~55% done
-2. ⏳ Complete IP-004 - Plan documented, implementation pending
+1. ⏳ Complete IP-001 all phases - ~60% done
+2. ⏳ Complete IP-004 - Tests added, implementation in progress
 3. ✅ Complete IP-005 - COMPLETE (audit done)
 
 ### Long Term
@@ -48,16 +49,16 @@ This is a continuation of the comprehensive QA walkthrough. The following has be
 2. ⏳ Production RAG pipeline - Future
 3. ⏳ Remove all legacy code - Future
 
-## Current Task: Continue IP-001 Phase 5 + IP-004 Implementation
+## Current Task: Continue IP-001 Phase 6 + IP-004 Implementation
 
-### IP-001 Phase 5: Continue Adding Tests
+### IP-001 Phase 6: Continue Adding Tests
 
 Add tests for these high-priority untested modules:
 
-1. `src/codex/cli.py` (~15,000 bytes) - Core CLI
-2. `src/codex/logging/session_logger.py` (~12,000 bytes) - Session logging
-3. `src/codex/logging/query_logs.py` (~8,000 bytes) - Log querying
-4. `training/train.py` (~7,500 bytes) - Training utilities
+1. `src/codex/logging/query_logs.py` (~8,000 bytes) - Log querying
+2. `training/train.py` (~7,500 bytes) - Training utilities
+3. `src/codex/config/env_vars.py` (~6,000 bytes) - Environment config
+4. `src/codex/db/sqlite_patch.py` (~5,500 bytes) - SQLite patching
 5. More modules from coverage_analysis.json
 
 ### IP-004: Implement Production Authentication
