@@ -126,7 +126,7 @@ jobs:
       
       - name: Configure NPM Authentication
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
           echo "NPM authentication configured"
         env:
           NPM_TOKEN: ${{ secrets.npm_token }}
