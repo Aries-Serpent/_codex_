@@ -1,3 +1,9 @@
+"""
+Test Codeowners Validation
+
+Test module for codeowners validation.
+"""
+
 from __future__ import annotations
 
 from src.tools.codeowners_validate import (

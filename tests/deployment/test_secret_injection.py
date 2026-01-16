@@ -1,3 +1,9 @@
+"""
+Test Secret Injection
+
+Test module for secret injection.
+"""
+
 from pathlib import Path
 
 

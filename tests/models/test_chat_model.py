@@ -1,3 +1,9 @@
+"""
+Test Chat Model
+
+Test module for chat model.
+"""
+
 from __future__ import annotations
 
 import importlib.util

@@ -1,3 +1,9 @@
+"""
+Test Verify Conflicts
+
+Test module for verify conflicts.
+"""
+
 #!/usr/bin/env python
 """
 Tests for scripts/remediation/verify_conflicts.py

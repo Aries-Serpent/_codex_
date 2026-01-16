@@ -1,3 +1,9 @@
+"""
+Test Training Config Module
+
+Test module for training config module.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

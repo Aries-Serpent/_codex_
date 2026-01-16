@@ -1,3 +1,9 @@
+"""
+Test Model Registry
+
+Test module for model registry.
+"""
+
 from codex_ml.models import minilm
 from codex_ml.models.registry import get_model
 

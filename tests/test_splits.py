@@ -1,3 +1,9 @@
+"""
+Test Splits
+
+Test module for splits.
+"""
+
 import math
 
 import pytest

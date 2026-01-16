@@ -1,3 +1,9 @@
+"""
+Test Sqlite Pool
+
+Test module for sqlite pool.
+"""
+
 import sqlite3
 import threading
 

@@ -1,3 +1,9 @@
+"""
+Test Logging Config
+
+Test module for logging config.
+"""
+
 #!/usr/bin/env python3
 """Tests for codex.logging.config module."""
 from pathlib import Path

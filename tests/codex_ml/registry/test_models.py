@@ -1,3 +1,9 @@
+"""
+Test Models
+
+Test module for models.
+"""
+
 from codex_ml.registry import models
 
 

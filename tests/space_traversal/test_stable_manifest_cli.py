@@ -1,3 +1,9 @@
+"""
+Test Stable Manifest Cli
+
+Test module for stable manifest cli.
+"""
+
 import json
 import subprocess
 import sys

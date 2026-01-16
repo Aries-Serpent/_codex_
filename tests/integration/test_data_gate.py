@@ -1,3 +1,9 @@
+"""
+Test Data Gate
+
+Test module for data gate.
+"""
+
 from __future__ import annotations
 
 import csv

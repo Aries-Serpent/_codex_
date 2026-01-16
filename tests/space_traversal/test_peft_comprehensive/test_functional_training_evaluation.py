@@ -1,3 +1,9 @@
+"""
+Test Functional Training Evaluation
+
+Test module for functional training evaluation.
+"""
+
 from __future__ import annotations
 
 import types

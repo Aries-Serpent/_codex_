@@ -1,3 +1,9 @@
+"""
+Test Zaf Reader
+
+Test module for zaf reader.
+"""
+
 from codex_crm.zaf_legacy.reader import _normalise_manifest
 
 

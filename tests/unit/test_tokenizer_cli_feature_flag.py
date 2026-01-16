@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Cli Feature Flag
+
+Test module for tokenizer cli feature flag.
+"""
+
 from __future__ import annotations
 
 import json

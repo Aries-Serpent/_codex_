@@ -1,3 +1,9 @@
+"""
+Test System Metrics
+
+Test module for system metrics.
+"""
+
 from __future__ import annotations
 
 import types

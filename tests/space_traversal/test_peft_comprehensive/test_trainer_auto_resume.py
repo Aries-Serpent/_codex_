@@ -1,3 +1,9 @@
+"""
+Test Trainer Auto Resume
+
+Test module for trainer auto resume.
+"""
+
 import pytest
 
 from src.training.checkpointing import save_checkpoint

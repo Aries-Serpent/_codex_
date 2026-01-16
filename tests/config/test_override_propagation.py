@@ -1,3 +1,9 @@
+"""
+Test Override Propagation
+
+Test module for override propagation.
+"""
+
 from __future__ import annotations
 
 import os

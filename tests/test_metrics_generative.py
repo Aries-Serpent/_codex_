@@ -1,3 +1,9 @@
+"""
+Test Metrics Generative
+
+Test module for metrics generative.
+"""
+
 #!/usr/bin/env python3
 """Tests for optional generative metrics (BLEU, ROUGE-L) behavior."""
 

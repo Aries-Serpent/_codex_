@@ -1,3 +1,9 @@
+"""
+Test Trainer Extended
+
+Test module for trainer extended.
+"""
+
 from __future__ import annotations
 
 import importlib

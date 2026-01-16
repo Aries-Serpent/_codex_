@@ -1,3 +1,9 @@
+"""
+Test Tokenizer Encode Decode
+
+Test module for tokenizer encode decode.
+"""
+
 from codex_ml.tokenization.offline_vocab import TinyVocabTokenizer
 
 

@@ -1,3 +1,9 @@
+"""
+Test Secret Rotation
+
+Test module for secret rotation.
+"""
+
 import pytest
 
 from src.security import (

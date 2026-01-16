@@ -1,3 +1,9 @@
+"""
+Test Async Writer Rotation
+
+Test module for async writer rotation.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Dedup
+
+Test module for dedup.
+"""
+
 from __future__ import annotations
 
 from codex.knowledge.dedup import dedup_records, hamming, simhash

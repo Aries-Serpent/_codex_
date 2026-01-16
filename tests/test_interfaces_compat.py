@@ -1,3 +1,9 @@
+"""
+Test Interfaces Compat
+
+Test module for interfaces compat.
+"""
+
 # BEGIN: CODEX_IFACE_TESTS
 import importlib
 import json

@@ -1,3 +1,9 @@
+"""
+Test Facade
+
+Test module for facade.
+"""
+
 # Basic façade tests using FastAPI TestClient and the default (mock) adapter
 import importlib
 from fastapi.testclient import TestClient

@@ -1,3 +1,9 @@
+"""
+Test Peft Optional
+
+Test module for peft optional.
+"""
+
 def test_apply_lora_if_available_identity_without_peft():
     from codex_ml.models.utils.peft import apply_lora_if_available
 

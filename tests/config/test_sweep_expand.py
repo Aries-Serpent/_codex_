@@ -1,3 +1,9 @@
+"""
+Test Sweep Expand
+
+Test module for sweep expand.
+"""
+
 from __future__ import annotations
 
 import os

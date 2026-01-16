@@ -1,3 +1,9 @@
+"""
+Test Adapter
+
+Test module for adapter.
+"""
+
 from codex_ml.tokenization.adapter import HFTokenizerAdapter, WhitespaceTokenizer
 
 

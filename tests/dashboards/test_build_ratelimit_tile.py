@@ -1,3 +1,9 @@
+"""
+Test Build Ratelimit Tile
+
+Test module for build ratelimit tile.
+"""
+
 import json
 import subprocess
 import sys

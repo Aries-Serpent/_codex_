@@ -1,3 +1,9 @@
+"""
+Test Metrics Token Accuracy
+
+Test module for metrics token accuracy.
+"""
+
 from types import SimpleNamespace
 
 import pytest

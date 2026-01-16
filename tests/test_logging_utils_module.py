@@ -1,3 +1,9 @@
+"""
+Test Logging Utils Module
+
+Test module for logging utils module.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

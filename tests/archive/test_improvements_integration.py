@@ -1,3 +1,9 @@
+"""
+Test Improvements Integration
+
+Test module for improvements integration.
+"""
+
 from __future__ import annotations
 
 import json

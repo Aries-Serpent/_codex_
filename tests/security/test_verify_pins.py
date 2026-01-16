@@ -1,3 +1,9 @@
+"""
+Test Verify Pins
+
+Test module for verify pins.
+"""
+
 import subprocess
 import sys
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Test Cli Entrypoint
+
+Test module for cli entrypoint.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

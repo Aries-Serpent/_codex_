@@ -1,3 +1,9 @@
+"""
+Test Unified Training
+
+Test module for unified training.
+"""
+
 from __future__ import annotations
 
 from codex_ml.detectors.unified_training import detector_unified_training

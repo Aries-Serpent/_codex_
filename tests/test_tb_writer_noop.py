@@ -1,3 +1,9 @@
+"""
+Test Tb Writer Noop
+
+Test module for tb writer noop.
+"""
+
 from __future__ import annotations
 
 import builtins

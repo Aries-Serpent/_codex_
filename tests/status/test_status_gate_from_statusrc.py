@@ -1,3 +1,9 @@
+"""
+Test Status Gate From Statusrc
+
+Test module for status gate from statusrc.
+"""
+
 import json
 import subprocess
 import sys

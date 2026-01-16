@@ -1,3 +1,9 @@
+"""
+Test System Metrics Sampler
+
+Test module for system metrics sampler.
+"""
+
 from __future__ import annotations
 
 import threading

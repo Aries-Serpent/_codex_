@@ -1,3 +1,9 @@
+"""
+Test Offline Decision
+
+Test module for offline decision.
+"""
+
 from __future__ import annotations
 
 from codex_ml.tracking.offline import decide_offline

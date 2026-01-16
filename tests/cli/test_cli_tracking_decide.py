@@ -1,3 +1,9 @@
+"""
+Test Cli Tracking Decide
+
+Test module for cli tracking decide.
+"""
+
 from __future__ import annotations
 
 import json

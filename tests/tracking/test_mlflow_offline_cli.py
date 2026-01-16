@@ -1,3 +1,9 @@
+"""
+Test Mlflow Offline Cli
+
+Test module for mlflow offline cli.
+"""
+
 import importlib
 import json
 import sys

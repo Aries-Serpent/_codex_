@@ -1,3 +1,9 @@
+"""
+Test Base
+
+Test module for base.
+"""
+
 import pytest
 
 from codex_ml.registry.base import (

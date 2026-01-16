@@ -1,3 +1,9 @@
+"""
+Test Nox Tests Delegation
+
+Test module for nox tests delegation.
+"""
+
 import importlib
 
 import pytest

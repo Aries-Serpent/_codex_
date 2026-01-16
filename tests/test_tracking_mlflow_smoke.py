@@ -1,3 +1,9 @@
+"""
+Test Tracking Mlflow Smoke
+
+Test module for tracking mlflow smoke.
+"""
+
 from pathlib import Path
 
 import pytest

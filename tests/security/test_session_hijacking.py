@@ -1,3 +1,9 @@
+"""
+Test Session Hijacking
+
+Test module for session hijacking.
+"""
+
 import pytest
 
 from src.security import SecurityError, verify_session_integrity

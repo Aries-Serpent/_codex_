@@ -1,3 +1,9 @@
+"""
+Test Run Functional Training Resume
+
+Test module for run functional training resume.
+"""
+
 from __future__ import annotations
 
 import random

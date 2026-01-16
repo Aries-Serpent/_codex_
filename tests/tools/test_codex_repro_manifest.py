@@ -1,3 +1,9 @@
+"""
+Test Codex Repro Manifest
+
+Test module for codex repro manifest.
+"""
+
 from pathlib import Path
 import json
 import yaml

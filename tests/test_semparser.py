@@ -1,3 +1,9 @@
+"""
+Test Semparser
+
+Test module for semparser.
+"""
+
 from codex_digest.semparser import SemParser
 
 

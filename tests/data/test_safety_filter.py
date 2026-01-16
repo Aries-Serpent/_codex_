@@ -1,3 +1,9 @@
+"""
+Test Safety Filter
+
+Test module for safety filter.
+"""
+
 import pytest
 
 pytest.importorskip("omegaconf")

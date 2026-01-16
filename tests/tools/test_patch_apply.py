@@ -1,3 +1,9 @@
+"""
+Test Patch Apply
+
+Test module for patch apply.
+"""
+
 import subprocess
 import sys
 

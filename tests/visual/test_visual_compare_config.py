@@ -1,3 +1,9 @@
+"""
+Test Visual Compare Config
+
+Test module for visual compare config.
+"""
+
 import json
 import subprocess
 import sys

@@ -1,3 +1,9 @@
+"""
+Test Split Indices
+
+Test module for split indices.
+"""
+
 from codex_ml.data import split_indices
 
 

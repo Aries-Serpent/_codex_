@@ -1,3 +1,9 @@
+"""
+Test Github Client
+
+Test module for github client.
+"""
+
 from src.codex_bridge.github_client import list_branches
 
 

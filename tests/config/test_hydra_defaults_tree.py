@@ -1,3 +1,9 @@
+"""
+Test Hydra Defaults Tree
+
+Test module for hydra defaults tree.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

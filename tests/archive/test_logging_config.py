@@ -1,3 +1,9 @@
+"""
+Test Logging Config
+
+Test module for logging config.
+"""
+
 from __future__ import annotations
 
 import io

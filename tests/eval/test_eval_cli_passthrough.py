@@ -1,3 +1,9 @@
+"""
+Test Eval Cli Passthrough
+
+Test module for eval cli passthrough.
+"""
+
 from __future__ import annotations
 
 import sys

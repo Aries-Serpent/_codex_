@@ -1,3 +1,9 @@
+"""
+Test Static Code Analysis Step
+
+Test module for static code analysis step.
+"""
+
 import json
 from pathlib import Path
 

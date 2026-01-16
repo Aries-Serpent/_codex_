@@ -1,3 +1,9 @@
+"""
+Test Prepare Split
+
+Test module for prepare split.
+"""
+
 from __future__ import annotations
 
 from hhg_logistics.data.prepare import _split_rows

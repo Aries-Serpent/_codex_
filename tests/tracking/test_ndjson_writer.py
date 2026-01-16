@@ -1,3 +1,9 @@
+"""
+Test Ndjson Writer
+
+Test module for ndjson writer.
+"""
+
 import json
 from pathlib import Path
 

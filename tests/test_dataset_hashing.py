@@ -1,3 +1,9 @@
+"""
+Test Dataset Hashing
+
+Test module for dataset hashing.
+"""
+
 from pathlib import Path
 
 from src.training.datasets import cache_texts, compute_dataset_hash

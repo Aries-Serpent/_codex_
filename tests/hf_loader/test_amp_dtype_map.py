@@ -1,3 +1,9 @@
+"""
+Test Amp Dtype Map
+
+Test module for amp dtype map.
+"""
+
 import importlib
 
 

@@ -1,3 +1,9 @@
+"""
+Test Resume And Retention
+
+Test module for resume and retention.
+"""
+
 from __future__ import annotations
 
 import json

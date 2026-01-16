@@ -1,3 +1,9 @@
+"""
+Test Hf Trainer Hello
+
+Test module for hf trainer hello.
+"""
+
 # BEGIN: CODEX_SMOKE_TRAINER
 import tempfile
 from pathlib import Path

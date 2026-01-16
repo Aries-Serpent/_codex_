@@ -1,3 +1,9 @@
+"""
+Test Minimal Train Cli
+
+Test module for minimal train cli.
+"""
+
 from codex_ml.cli import minimal_train
 
 

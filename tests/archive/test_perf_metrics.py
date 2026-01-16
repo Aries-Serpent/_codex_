@@ -1,3 +1,9 @@
+"""
+Test Perf Metrics
+
+Test module for perf metrics.
+"""
+
 from __future__ import annotations
 
 import time

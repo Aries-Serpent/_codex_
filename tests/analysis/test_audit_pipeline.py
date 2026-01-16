@@ -1,3 +1,9 @@
+"""
+Test Audit Pipeline
+
+Test module for audit pipeline.
+"""
+
 from pathlib import Path
 
 from codex_ml.analysis.parsers import parse_tiered

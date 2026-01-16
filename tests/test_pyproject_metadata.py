@@ -1,3 +1,9 @@
+"""
+Test Pyproject Metadata
+
+Test module for pyproject metadata.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

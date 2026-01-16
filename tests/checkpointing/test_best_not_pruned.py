@@ -1,3 +1,9 @@
+"""
+Test Best Not Pruned
+
+Test module for best not pruned.
+"""
+
 import os
 
 from src.training.checkpoint_manager import CheckpointManager

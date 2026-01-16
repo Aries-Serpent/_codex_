@@ -1,3 +1,9 @@
+"""
+Test Validate Config
+
+Test module for validate config.
+"""
+
 from __future__ import annotations
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Pipeline Smoke
+
+Test module for pipeline smoke.
+"""
+
 import pytest
 
 from codex_ml.config import (

@@ -1,3 +1,9 @@
+"""
+Test Content Filters
+
+Test module for content filters.
+"""
+
 from src.security import (
     detect_malware_patterns,
     detect_personal_data,

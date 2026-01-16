@@ -1,3 +1,9 @@
+"""
+Test Stub Text
+
+Test module for stub text.
+"""
+
 from __future__ import annotations
 
 from codex.archive.stub import make_stub_text

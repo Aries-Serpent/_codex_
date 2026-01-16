@@ -1,3 +1,9 @@
+"""
+Test Policy Mapping
+
+Test module for policy mapping.
+"""
+
 from pathlib import Path
 
 from codex_audit.policy import RA_RULES, build_policy_mapping, write_policy_mapping

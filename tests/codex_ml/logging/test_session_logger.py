@@ -1,3 +1,9 @@
+"""
+Test Session Logger
+
+Test module for session logger.
+"""
+
 from __future__ import annotations
 
 import json

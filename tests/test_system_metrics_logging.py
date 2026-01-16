@@ -1,3 +1,9 @@
+"""
+Test System Metrics Logging
+
+Test module for system metrics logging.
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,9 @@
+"""
+Test Unified Training Warnings
+
+Test module for unified training warnings.
+"""
+
 import warnings
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Search Providers
+
+Test module for search providers.
+"""
+
 import shutil
 from pathlib import Path
 

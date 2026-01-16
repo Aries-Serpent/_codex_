@@ -1,3 +1,9 @@
+"""
+Test Metrics Sinks
+
+Test module for metrics sinks.
+"""
+
 import json
 from pathlib import Path
 

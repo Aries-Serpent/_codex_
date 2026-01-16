@@ -1,3 +1,9 @@
+"""
+Test Split Manifest
+
+Test module for split manifest.
+"""
+
 import json
 from pathlib import Path
 

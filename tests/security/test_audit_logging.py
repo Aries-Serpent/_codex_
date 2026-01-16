@@ -1,3 +1,9 @@
+"""
+Test Audit Logging
+
+Test module for audit logging.
+"""
+
 import logging
 
 import pytest

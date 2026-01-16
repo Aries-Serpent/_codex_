@@ -1,3 +1,9 @@
+"""
+Test Activations
+
+Test module for activations.
+"""
+
 # BEGIN: CODEX_TEST_ACT
 from codex_ml.models.activations import get_activation
 

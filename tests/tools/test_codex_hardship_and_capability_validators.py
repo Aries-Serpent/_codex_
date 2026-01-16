@@ -1,3 +1,9 @@
+"""
+Test Codex Hardship And Capability Validators
+
+Test module for codex hardship and capability validators.
+"""
+
 from pathlib import Path
 
 import yaml

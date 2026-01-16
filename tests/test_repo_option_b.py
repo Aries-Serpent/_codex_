@@ -1,3 +1,9 @@
+"""
+Test Repo Option B
+
+Test module for repo option b.
+"""
+
 import pytest
 
 pytest.importorskip("duckdb")

@@ -1,3 +1,9 @@
+"""
+Test Resume Training
+
+Test module for resume training.
+"""
+
 import json
 
 import pytest

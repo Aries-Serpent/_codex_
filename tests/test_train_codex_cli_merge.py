@@ -1,3 +1,9 @@
+"""
+Test Train Codex Cli Merge
+
+Test module for train codex cli merge.
+"""
+
 import argparse
 
 import pytest

@@ -1,3 +1,9 @@
+"""
+Test Registry Basic
+
+Test module for registry basic.
+"""
+
 from __future__ import annotations
 
 from common.registry import Registry

@@ -1,3 +1,9 @@
+"""
+Test Aggregate
+
+Test module for aggregate.
+"""
+
 from __future__ import annotations
 
 from codex_ml.detectors.aggregate import scorecard

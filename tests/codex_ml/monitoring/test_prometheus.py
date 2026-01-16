@@ -1,3 +1,9 @@
+"""
+Test Prometheus
+
+Test module for prometheus.
+"""
+
 import importlib
 import pytest
 

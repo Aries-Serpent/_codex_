@@ -1,3 +1,9 @@
+"""
+Test Apply Stubs
+
+Test module for apply stubs.
+"""
+
 from __future__ import annotations
 
 import json

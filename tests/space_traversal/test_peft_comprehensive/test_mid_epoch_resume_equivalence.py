@@ -1,3 +1,9 @@
+"""
+Test Mid Epoch Resume Equivalence
+
+Test module for mid epoch resume equivalence.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

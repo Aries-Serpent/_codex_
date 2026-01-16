@@ -1,3 +1,9 @@
+"""
+Test Config Compose
+
+Test module for config compose.
+"""
+
 import os
 from pathlib import Path
 

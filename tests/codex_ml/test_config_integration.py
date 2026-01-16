@@ -1,3 +1,9 @@
+"""
+Test Config Integration
+
+Test module for config integration.
+"""
+
 from pathlib import Path
 import yaml
 

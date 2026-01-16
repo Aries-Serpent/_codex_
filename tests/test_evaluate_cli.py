@@ -1,3 +1,9 @@
+"""
+Test Evaluate Cli
+
+Test module for evaluate cli.
+"""
+
 import json
 import os
 import subprocess

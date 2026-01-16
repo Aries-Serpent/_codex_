@@ -1,3 +1,9 @@
+"""
+Test Eval Minimal Cli
+
+Test module for eval minimal cli.
+"""
+
 from pathlib import Path
 
 from codex_ml.cli import eval_minimal

@@ -1,3 +1,9 @@
+"""
+Test Entry Point Loader Function
+
+Test module for entry point loader function.
+"""
+
 from __future__ import annotations
 
 from codex_ml import plugins

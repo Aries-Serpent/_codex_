@@ -1,3 +1,9 @@
+"""
+Test Run Functional Training Tokenizer
+
+Test module for run functional training tokenizer.
+"""
+
 import pytest
 
 py = pytest

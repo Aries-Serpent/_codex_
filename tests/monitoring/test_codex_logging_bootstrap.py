@@ -1,3 +1,9 @@
+"""
+Test Codex Logging Bootstrap
+
+Test module for codex logging bootstrap.
+"""
+
 from types import SimpleNamespace
 
 import pytest

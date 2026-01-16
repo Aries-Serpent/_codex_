@@ -1,3 +1,9 @@
+"""
+Test Metric Curves
+
+Test module for metric curves.
+"""
+
 # BEGIN: CODEX_TEST_CURVES
 from pathlib import Path
 

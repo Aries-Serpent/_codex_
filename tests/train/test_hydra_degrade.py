@@ -1,3 +1,9 @@
+"""
+Test Hydra Degrade
+
+Test module for hydra degrade.
+"""
+
 from __future__ import annotations
 
 import codex_ml.cli.hydra_main as hydra_main

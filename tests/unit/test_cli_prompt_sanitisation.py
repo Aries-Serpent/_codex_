@@ -1,3 +1,9 @@
+"""
+Test Cli Prompt Sanitisation
+
+Test module for cli prompt sanitisation.
+"""
+
 from __future__ import annotations
 
 import os

@@ -1,3 +1,9 @@
+"""
+Test Honesty Suites
+
+Test module for honesty suites.
+"""
+
 import pytest
 
 from codex_regression.honesty import (

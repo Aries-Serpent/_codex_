@@ -1,3 +1,9 @@
+"""
+Test Data Report
+
+Test module for data report.
+"""
+
 from __future__ import annotations
 
 import csv

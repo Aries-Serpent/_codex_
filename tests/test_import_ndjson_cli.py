@@ -1,3 +1,9 @@
+"""
+Test Import Ndjson Cli
+
+Test module for import ndjson cli.
+"""
+
 import json
 import os
 import shutil

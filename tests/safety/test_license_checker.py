@@ -1,3 +1,9 @@
+"""
+Test License Checker
+
+Test module for license checker.
+"""
+
 import json
 import shutil
 import subprocess

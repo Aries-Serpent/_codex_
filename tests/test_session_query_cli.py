@@ -1,3 +1,9 @@
+"""
+Test Session Query Cli
+
+Test module for session query cli.
+"""
+
 import os
 import sqlite3
 import subprocess

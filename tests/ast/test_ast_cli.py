@@ -1,3 +1,9 @@
+"""
+Test Ast Cli
+
+Test module for ast cli.
+"""
+
 from pathlib import Path
 
 from codex.ast.cli import app

@@ -1,3 +1,9 @@
+"""
+Test Local Ci Script
+
+Test module for local ci script.
+"""
+
 from __future__ import annotations
 
 import importlib.util

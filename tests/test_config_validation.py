@@ -1,3 +1,9 @@
+"""
+Test Config Validation
+
+Test module for config validation.
+"""
+
 from __future__ import annotations
 
 import textwrap

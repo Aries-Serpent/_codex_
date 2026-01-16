@@ -1,3 +1,9 @@
+"""
+Test Hydra Main Exit Path
+
+Test module for hydra main exit path.
+"""
+
 from __future__ import annotations
 
 import subprocess

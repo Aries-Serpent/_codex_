@@ -1,3 +1,9 @@
+"""
+Test File Logger
+
+Test module for file logger.
+"""
+
 from __future__ import annotations
 
 import json

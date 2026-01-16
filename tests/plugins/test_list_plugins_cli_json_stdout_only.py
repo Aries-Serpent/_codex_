@@ -1,3 +1,9 @@
+"""
+Test List Plugins Cli Json Stdout Only
+
+Test module for list plugins cli json stdout only.
+"""
+
 from __future__ import annotations
 
 import json

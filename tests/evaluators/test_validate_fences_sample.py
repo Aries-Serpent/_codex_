@@ -1,3 +1,9 @@
+"""
+Test Validate Fences Sample
+
+Test module for validate fences sample.
+"""
+
 from pathlib import Path
 
 import tools.validate_fences as vf

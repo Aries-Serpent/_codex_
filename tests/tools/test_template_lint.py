@@ -1,3 +1,9 @@
+"""
+Test Template Lint
+
+Test module for template lint.
+"""
+
 import subprocess
 import sys
 

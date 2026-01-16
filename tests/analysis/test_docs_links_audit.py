@@ -1,3 +1,9 @@
+"""
+Test Docs Links Audit
+
+Test module for docs links audit.
+"""
+
 from __future__ import annotations
 
 import json
