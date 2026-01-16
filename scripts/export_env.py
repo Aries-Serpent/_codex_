@@ -34,12 +34,12 @@ import json
 import logging
 import os
 import platform
-
-logger = logging.getLogger(__name__)
 import subprocess
 import sys
 
 from codex_ml.monitoring.codex_logging import _codex_sample_system
+
+logger = logging.getLogger(__name__)
 
 
 def _log_error(step: str, err: Exception, ctx: str) -> None:
