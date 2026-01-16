@@ -39,18 +39,18 @@ sys.path.insert(0, str(project_root))
 from src.codex.auth.mfa_provider import MFAProvider
 
 
-def display_qr_instructions(uri: str, secret: str):
+def display_qr_instructions():
     """
     Display instructions for QR code setup.
     
     Note:
-        The ``uri`` and ``secret`` parameters are accepted for API completeness
-        but are intentionally not used or printed in this demonstration
-        function. This avoids accidentally exposing sensitive values while
-        still showing what a production function signature might look like.
+        This demonstration function intentionally does not accept sensitive parameters
+        (provisioning URI or secret) to avoid accidental exposure. In production,
+        these values should be transmitted through secure channels only (encrypted
+        email, authenticated web portal, secure QR code generation service).
 
-    SECURITY WARNING: This is a demonstration script that displays sensitive
-    TOTP secrets. In production, secrets should NEVER be logged or displayed
+    SECURITY WARNING: This is a demonstration script that shows the setup flow.
+    In production, provisioning URIs and secrets should NEVER be logged or displayed
     in plain text. Use secure channels to transmit secrets to users, and use
     the provisioning URI and secret only in secure flows (e.g., to generate
     a QR code image rendered in an authenticated web UI).
@@ -106,8 +106,10 @@ def main():
     print(f"✓ Secret generated for user: {user_id}")
     
     # Step 2: Display setup instructions
-    uri = secret.get_provisioning_uri("user@example.com")
-    display_qr_instructions(uri, secret.secret)
+    # Note: In production, pass uri and secret through secure channel only
+    _ = secret.get_provisioning_uri("user@example.com")  # Generated but not exposed
+    _ = secret.secret  # Stored securely, not displayed
+    display_qr_instructions()
     
     # Step 3: Verify setup
     print("\n🔐 Step 2: Verify Setup")

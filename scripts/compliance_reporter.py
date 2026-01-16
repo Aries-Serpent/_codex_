@@ -40,7 +40,10 @@ Usage:
     python scripts/compliance_reporter.py --visualize
 """
 
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from datetime import datetime, timedelta
 from cryptography.fernet import Fernet
 try:

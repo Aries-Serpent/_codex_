@@ -12,8 +12,12 @@ crate-type = ["cdylib", "rlib"]  # cdylib for Python import; rlib for Rust tests
 
 [dependencies]
 # Python-Rust Interop
-# Note: extension-module feature is added by maturin automatically during build
-# For testing, we compile without it to allow linking
+# PyO3 Configuration Notes:
+# - The 'extension-module' feature is intentionally NOT specified here
+# - During builds, maturin automatically adds 'extension-module' to create Python extensions
+# - For 'cargo test', we compile without 'extension-module' to allow standard Rust linking
+# - This approach enables both Python extension builds (via maturin) and native Rust tests
+# - The abi3-py38 feature ensures compatibility with Python 3.8+
 pyo3 = { version = "0.24.1", features = ["abi3-py38"] }
 pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 

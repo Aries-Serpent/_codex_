@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 """
 Export Env Info
 
 Purpose:
-    [To be documented - Export Env Info]
+    Export environment and version info as JSON.
 
 Usage:
     python scripts/export_env_info.py [options]
@@ -27,16 +28,14 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-import logging
-logger = logging.getLogger(__name__)
-#!/usr/bin/env python3
-"""Export environment and version info as JSON."""
 import json
+import logging
 import os
 import platform
 import sys
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 info: dict[str, Any] = {
     "python": sys.version.split()[0],

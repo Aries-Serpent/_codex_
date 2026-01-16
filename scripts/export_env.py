@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 """
 Export Env
 
 Purpose:
-    Main execution script
+    Dump environment variables and version info in JSON.
 
 Usage:
     python scripts/export_env.py [options]
@@ -27,17 +28,14 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
 from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
-#!/usr/bin/env python3
-"""Dump environment variables and version info in JSON."""
-
 
 import json
+import logging
 import os
 import platform
+
+logger = logging.getLogger(__name__)
 import subprocess
 import sys
 
