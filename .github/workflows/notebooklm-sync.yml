@@ -1,22 +1,39 @@
-name: NotebookLM Live Sync
+# ==============================================================================
+# NotebookLM Live Sync Workflow - DEFERRED (Google Drive Integration)
+# ==============================================================================
+#
+# STATUS: DISABLED - Automated triggers commented out
+#
+# REASON FOR DEFERRAL:
+# - Google Drive upload functionality requires Google Cloud OAuth2 setup
+# - Required secrets (GDRIVE_SERVICE_ACCOUNT_JSON, GOOGLE_CLIENT_ID, 
+#   GOOGLE_CLIENT_SECRET) are not yet configured
+# - Current workflow fails with: "oauth2: cannot fetch token: 400 Bad Request"
+# - The satackey/action-google-drive@v1 action attempts interactive OAuth flow
+#   which is incompatible with headless CI environments
+#
+# AI AGENCY POLICY COMPLIANCE:
+# - This is a HUMAN DEFERRAL (ALLOWED per policy)
+# - AI agents CAN implement technical code (Phases 3-8 in deferred doc)
+# - AI agents CANNOT complete external prerequisites (Google account, billing)
+# - Physical limitation, not capability limitation = valid deferral
+#
+# FUTURE IMPLEMENTATION:
+# - See: docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md for complete checklist
+# - Follow phases: Google Cloud setup → GitHub Secrets → CI Auth Fix → 
+#   NotebookLM integration → Re-enable workflow
+#
+# MANUAL RUNS:
+# - This workflow can still be triggered manually via workflow_dispatch
+# - All steps remain intact for future re-enablement
+# - Security scanning and artifact generation will work without Drive upload
+#
+# ==============================================================================
+
+name: NotebookLM Live Sync (DEFERRED)
 
 on:
-  push:
-    branches: 
-      - main
-      - develop
-    paths:
-      - 'src/**'
-      - 'tools/**'
-      - 'monitoring/**'
-      - 'services/**'
-      - '.github/**'
-      - 'tests/**'
-      - '**.md'
-      - '**.py'
-      - '**.rs'
-      - 'Cargo.toml'
-      - 'pyproject.toml'
+  # Manual trigger only - use GitHub Actions UI or gh CLI
   workflow_dispatch:
     inputs:
       force_sync: 
@@ -24,9 +41,30 @@ on:
         required: false
         default: 'false'
         type: boolean
-  schedule:
-    # Daily backup sync at 00:00 UTC
-    - cron: '0 0 * * *'
+  
+  # Automated triggers DISABLED until Google Drive integration is implemented
+  # Uncomment the sections below after completing setup in docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md
+  #
+  # push:
+  #   branches: 
+  #     - main
+  #     - develop
+  #   paths:
+  #     - 'src/**'
+  #     - 'tools/**'
+  #     - 'monitoring/**'
+  #     - 'services/**'
+  #     - '.github/**'
+  #     - 'tests/**'
+  #     - '**.md'
+  #     - '**.py'
+  #     - '**.rs'
+  #     - 'Cargo.toml'
+  #     - 'pyproject.toml'
+  #
+  # schedule:
+  #   # Daily backup sync at 00:00 UTC
+  #   - cron: '0 0 * * *'
 
 permissions:
   contents: read
@@ -38,8 +76,8 @@ env:
 
 jobs:
   consolidate-and-sync: 
-    name: Repository Consolidation & Drive Sync
-    runs-on:  ubuntu-latest
+    name: Repository Consolidation & Drive Sync (HUMAN DEFERRAL)
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     
     steps:
@@ -199,8 +237,8 @@ jobs:
           fi
           echo "::endgroup::"
       
-      - name:  Fail if Secrets Detected
-        if: ${{ steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs. secrets_found == 'true' }}
+      - name: Fail if Secrets Detected
+        if: ${{ steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true' }}
         run: |
           echo "❌ SECURITY ALERT: Secrets detected in consolidation output!"
           echo "Workflow terminated to prevent credential exposure."
@@ -208,8 +246,25 @@ jobs:
           echo "Please review the security scan outputs above and:"
           echo "1. Remove any exposed secrets from the codebase"
           echo "2. Add patterns to .repomixignore"
-          echo "3. Update . secrets.baseline if false positive"
+          echo "3. Update .secrets.baseline if false positive"
           exit 1
+      
+      # ==============================================================================
+      # Google Drive Upload - HUMAN DEFERRAL (Policy Compliant)
+      # ==============================================================================
+      # This step is preserved for future re-enablement but will fail without setup.
+      # 
+      # AI AGENCY POLICY COMPLIANCE:
+      #   ✅ ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)
+      #   ❌ NOT ALLOWED: AI Agent Deferral (AI agents avoiding technical work)
+      # 
+      # Classification: HUMAN DEFERRAL
+      #   - AI agents CAN implement the technical integration (code, testing, deployment)
+      #   - Humans MUST complete Google Cloud project setup first (account, billing, OAuth)
+      #   - Physical limitation (no Google account access), not capability limitation
+      # 
+      # See: docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md
+      # ==============================================================================
       
       - name: Upload to Google Drive
         id: drive_upload
@@ -316,7 +371,15 @@ jobs:
           
           # Add next steps
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
-          echo "1. Verify file uploaded to Google Drive" >> $GITHUB_STEP_SUMMARY
-          echo "2. Check NotebookLM for source refresh (may take 5-10 minutes)" >> $GITHUB_STEP_SUMMARY
-          echo "3. Test AI Architect queries for updated context" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ HUMAN DEFERRAL STATUS" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow Mode**: Manual dispatch only (automated triggers disabled)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Drive Upload**: Will fail without Google Cloud setup" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deferral Type**: HUMAN DEFERRAL (external prerequisites required)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action Required**: See [Google Drive Future Scope](../../docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps (When Re-enabled)" >> $GITHUB_STEP_SUMMARY
+          echo "1. Complete Phases 1-2 in deferred scope doc (human admin required)" >> $GITHUB_STEP_SUMMARY
+          echo "2. AI agents can implement Phases 3-8 (technical integration)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Verify file uploaded to Google Drive" >> $GITHUB_STEP_SUMMARY
+          echo "4. Check NotebookLM for source refresh (may take 5-10 minutes)" >> $GITHUB_STEP_SUMMARY
+          echo "5. Test AI Architect queries for updated context" >> $GITHUB_STEP_SUMMARY
