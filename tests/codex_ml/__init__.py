@@ -1,17 +1,7 @@
 """
-  Init   Module
+Codex Ml Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from codex_ml.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides codex ml functionality.
 """
+
 

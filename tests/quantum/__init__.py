@@ -1,17 +1,7 @@
 """
-  Init   Module
+Quantum Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from quantum.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides quantum functionality.
 """
+
 

@@ -1,22 +1,11 @@
 """
-  Init   Module
+Codex Dummy Plugin Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from codex_dummy_plugin.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides codex dummy plugin functionality.
 """
 
+
 class DummyModel:
-    """Minimal object to prove entry-point discovery works."""
 
     def __init__(self) -> None:
         self.name = "dummy"

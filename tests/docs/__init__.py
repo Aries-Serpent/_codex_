@@ -1,17 +1,7 @@
 """
-  Init   Module
+Docs Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from docs.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides docs functionality.
 """
+
 

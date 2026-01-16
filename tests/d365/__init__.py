@@ -1,17 +1,7 @@
 """
-  Init   Module
+D365 Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from d365.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides d365 functionality.
 """
+
 

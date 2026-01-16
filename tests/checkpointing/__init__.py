@@ -1,18 +1,8 @@
 """
-  Init   Module
+Checkpointing Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from checkpointing.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides checkpointing functionality.
 """
+
 
 # Package marker for pytest import stability

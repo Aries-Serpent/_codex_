@@ -1,17 +1,7 @@
 """
-  Init   Module
+Workflow Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from workflow.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides workflow functionality.
 """
+
 

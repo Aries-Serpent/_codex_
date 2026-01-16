@@ -1,17 +1,7 @@
 """
-  Init   Module
+Typer Cli Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from typer_cli.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides typer cli functionality.
 """
+
 

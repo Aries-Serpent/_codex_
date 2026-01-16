@@ -1,17 +1,7 @@
 """
-  Init   Module
+Interfaces Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from interfaces.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides interfaces functionality.
 """
+
 

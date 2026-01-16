@@ -1,17 +1,7 @@
 """
-  Init   Module
+Harness Package
 
-This module provides functionality for   init  .
-
-Usage:
-    from harness.__init__ import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
+This package provides harness functionality.
 """
+
 
