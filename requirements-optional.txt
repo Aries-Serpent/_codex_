@@ -19,7 +19,7 @@ accelerate>=0.20.0
 torch-distributed>=2.0.0  # Usually bundled with pytorch
 
 # Advanced model features
-transformers>=4.30.0
+transformers>=4.48.0  # Security: Updated from 4.30.0 to fix deserialization vulnerabilities
 sentencepiece>=0.1.99
 
 # Vector stores (stubbed - see docs/data/VectorStores.md)
@@ -29,3 +29,7 @@ sentencepiece>=0.1.99
 # Monitoring and tracking
 tensorboard>=2.13.0
 wandb>=0.15.0
+
+# Security: IP-005 dependency updates
+twisted>=24.7.0  # Security: Fixes CVE-2024-41810, CVE-2024-41671 (XSS in redirectTo, HTTP pipelining)
+configobj>=5.0.9  # Security: Fixes CVE-2023-26112 (ReDoS)
