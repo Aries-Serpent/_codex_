@@ -503,6 +503,20 @@ If issues encountered:
 
 ## Task 2: Develop GitHub Action for Live Sync
 
+> **⚠️ HUMAN DEFERRAL NOTICE (2026-01-16)**:  
+> Google Drive integration has been **DEFERRED to future scope** pending external setup.  
+> Status: Workflow created but automated triggers disabled (manual dispatch only).  
+> Reference: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md)  
+> 
+> **AI Agency Policy Compliance**:
+> - ✅ ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)
+> - ❌ NOT ALLOWED: AI Agent Deferral (AI agents avoiding technical work)
+> - This deferral is VALID: Physical limitation (no Google account access), not capability limitation
+> 
+> **Implementation Plan**:
+> - Human Admin: Complete Phases 1-2 (Google Cloud setup, GitHub Secrets)
+> - AI Agents: Can implement Phases 3-8 (technical integration - NO deferrals)
+
 ### Objective
 Automate repository consolidation and Google Drive synchronization on every commit.
 
