@@ -1,4 +1,4 @@
-# Model Registry Module
+# Patchset 02 - Copilot Workflow Agent
 
 **Status**: Stub document  
 **Created**: 2026-01-17  
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Documentation for the model registry module.
+Patchset documentation for the copilot workflow agent.
 
 ---
 

@@ -275,7 +275,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 - [Codebase Dashboard](CODEBASE_DASHBOARD.md) - Live status & next steps
 - [Roadmap](../ROADMAP.md) - Feature roadmap & iterations
 - [Architecture](../ARCHITECTURE.md) - Detailed architecture
-- [Contributing](./CONTRIBUTING.md) - Contribution guide
+- [Contributing](../CONTRIBUTING.md) - Contribution guide
 - [Admin Guide](../ADMIN_IMPLEMENTATION_GUIDE.md) - Admin setup
 
 ---

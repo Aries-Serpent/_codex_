@@ -324,8 +324,8 @@ If issues persist after trying these solutions:
 ## Related Documentation
 
 - [API Build Validation Guide](../validation/API_Docs_Build_Validation.md)
-- [API Documentation Guide](../api/README.md)
-- [Build Script Documentation](../api/README.md#building-api-documentation)
+- [API Documentation Guide](../api/index.md)
+- [Build Script Documentation](../api/index.md#building-api-documentation)
 
 ## Quick Reference
 

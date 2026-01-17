@@ -6,7 +6,7 @@
 
 ---
 
-See [Security Documentation](./SECURITY.md) for secrets management.
+See [Security Documentation](../SECURITY.md) for secrets management.
 
 ---
 

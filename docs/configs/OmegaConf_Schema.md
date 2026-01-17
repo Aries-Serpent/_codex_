@@ -153,4 +153,4 @@ yamllint configs/train/example.yaml
 
 - [Hydra Documentation](https://hydra.cc/)
 - [OmegaConf Documentation](https://omegaconf.readthedocs.io/)
-- [Config Groups Discovery](list_groups.py)
+- [Config Groups Discovery](https://github.com/Aries-Serpent/_codex_/blob/main/configs/list_groups.py)

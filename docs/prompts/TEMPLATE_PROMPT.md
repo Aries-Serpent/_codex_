@@ -170,7 +170,7 @@ Before concluding, perform 5-pass self-review:
 
 **Documentation**:
 - Related Guide: `../path/to/guide.md` (placeholder) - Description
-- [API Reference](../api/README.md) - Description
+- [API Reference](../api/index.md) - Description
 
 **Other Prompts**:
 - Related Prompt 1 (placeholder) - When to use
