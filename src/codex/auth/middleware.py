@@ -16,7 +16,10 @@ Usage:
         return {"user": request.state.user}
 """
 
+import hmac
+import hashlib
 import logging
+import os
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -63,11 +66,54 @@ class AuthResult:
 
 
 class APIKeyValidator:
-    """API key validation with secure hashing."""
+    """API key validation with secure HMAC-SHA256 hashing."""
     
-    def __init__(self):
-        """Initialize API key validator."""
+    def __init__(self, secret_key: Optional[str] = None):
+        """
+        Initialize API key validator.
+        
+        Args:
+            secret_key: Secret key for HMAC hashing. If not provided, reads from environment.
+        
+        Raises:
+            ValueError: If AUTH_SECRET_KEY is not set in production environment.
+        """
         self._keys: Dict[str, Dict[str, Any]] = {}  # hash -> key_info
+        
+        # Get secret key from parameter, environment, or raise error in production
+        if secret_key:
+            self._secret_key = secret_key
+        else:
+            self._secret_key = os.environ.get("AUTH_SECRET_KEY")
+            if not self._secret_key:
+                # Allow development with warning
+                if os.environ.get("CODEX_ENV") != "production":
+                    logger.warning(
+                        "AUTH_SECRET_KEY not set. Using development fallback. "
+                        "Set AUTH_SECRET_KEY environment variable in production."
+                    )
+                    self._secret_key = "codex-dev-secret-key-change-in-production"
+                else:
+                    raise ValueError(
+                        "AUTH_SECRET_KEY environment variable must be set in production. "
+                        "Generate a secure random key: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+                    )
+    
+    def _compute_hmac(self, api_key: str) -> str:
+        """
+        Compute HMAC-SHA256 hash of an API key.
+        
+        Args:
+            api_key: The API key to hash
+        
+        Returns:
+            HMAC-SHA256 hash as hexadecimal string
+        """
+        return hmac.new(
+            self._secret_key.encode(),
+            api_key.encode(),
+            hashlib.sha256
+        ).hexdigest()
     
     def register_key(self, key_hash: str, user_id: str, scopes: Optional[List[str]] = None,
                     name: str = "default") -> None:
@@ -75,7 +121,7 @@ class APIKeyValidator:
         Register an API key.
         
         Args:
-            key_hash: Hashed API key (use bcrypt or argon2)
+            key_hash: Hashed API key (use hash_api_key() method to generate)
             user_id: Associated user ID
             scopes: Allowed scopes for this key
             name: Key name for identification
@@ -90,7 +136,7 @@ class APIKeyValidator:
     
     def validate_key(self, api_key: str) -> Optional[Dict[str, Any]]:
         """
-        Validate an API key.
+        Validate an API key using secure HMAC-SHA256 hashing.
         
         Args:
             api_key: The API key to validate
@@ -98,10 +144,7 @@ class APIKeyValidator:
         Returns:
             Key info dict if valid, None otherwise
         """
-        import hashlib
-        
-        # Hash the provided key and check against stored hashes
-        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        key_hash = self._compute_hmac(api_key)
         
         if key_hash in self._keys:
             key_info = self._keys[key_hash]
@@ -109,6 +152,20 @@ class APIKeyValidator:
             return key_info
         
         return None
+    
+    def hash_api_key(self, api_key: str) -> str:
+        """
+        Hash an API key using HMAC-SHA256.
+        
+        Use this method when registering API keys to get the secure hash.
+        
+        Args:
+            api_key: The API key to hash
+        
+        Returns:
+            HMAC-SHA256 hash of the API key
+        """
+        return self._compute_hmac(api_key)
     
     def revoke_key(self, key_hash: str) -> bool:
         """

@@ -85,10 +85,9 @@ class TestAPIKeyValidator:
         """Test registering and validating an API key."""
         validator = APIKeyValidator()
         
-        # Register a key (normally you'd hash it properly)
-        import hashlib
+        # Register a key using secure HMAC-SHA256 hashing
         api_key = "test-api-key-123"
-        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        key_hash = validator.hash_api_key(api_key)
         
         validator.register_key(
             key_hash=key_hash,
@@ -113,9 +112,9 @@ class TestAPIKeyValidator:
         """Test revoking an API key."""
         validator = APIKeyValidator()
         
-        import hashlib
+        # Use secure HMAC-SHA256 hashing
         api_key = "test-key"
-        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        key_hash = validator.hash_api_key(api_key)
         
         validator.register_key(key_hash, "user123")
         
@@ -239,9 +238,8 @@ class TestAuthMiddleware:
     
     def test_authenticate_api_key_success(self, middleware):
         """Test successful API key authentication."""
-        import hashlib
         api_key = "valid-api-key"
-        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        key_hash = middleware.api_key_validator.hash_api_key(api_key)
         
         middleware.api_key_validator.register_key(
             key_hash=key_hash,
