@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "timestamp": "2025-01-16T13:56:28.888435+00:00",
+    "version": "1.0.0"
+  },
+  "capabilities": {
+    "ml_training": {
+      "status": "active",
+      "entry_points": [
+        "codex-train",
+        "codex-ml"
+      ],
+      "dependencies": [
+        "torch",
+        "transformers",
+        "accelerate"
+      ],
+      "location": "src/codex_ml/",
+      "tests": "tests/codex_ml/"
+    },
+    "ml_evaluation": {
+      "status": "active",
+      "entry_points": [
+        "codex-eval"
+      ],
+      "dependencies": [
+        "lm-eval",
+        "datasets"
+      ],
+      "location": "src/codex_ml/",
+      "tests": "tests/codex_ml/"
+    },
+    "configuration_management": {
+      "status": "active",
+      "framework": "hydra",
+      "location": "conf/, configs/",
+      "tests": "tests/integration/"
+    },
+    "plugin_system": {
+      "status": "active",
+      "entry_points": [
+        "codex-list-plugins"
+      ],
+      "location": "src/codex_ml/plugins/",
+      "examples": "examples/plugins/"
+    },
+    "ast_analysis": {
+      "status": "active",
+      "entry_points": [
+        "codex-ast",
+        "codex-analyze"
+      ],
+      "dependencies": [
+        "libcst",
+        "radon",
+        "parso"
+      ],
+      "location": "src/codex/ast/"
+    },
+    "authentication": {
+      "status": "partial",
+      "location": "examples/authentication/",
+      "coverage": "examples_only",
+      "production_ready": false
+    },
+    "rag_pipeline": {
+      "status": "partial",
+      "dependencies": [
+        "sentence-transformers",
+        "faiss-cpu"
+      ],
+      "location": "examples/",
+      "production_ready": false
+    }
+  }
+}

@@ -1,5 +1,5 @@
 pytest>=7.2,<8
-requests>=2.31,<3
+requests>=2.32.4,<3  # Security: Updated from 2.31 to fix CVE-2024-35195, CVE-2024-47081
 jsonschema>=4.0,<5
 pre-commit>=3,<4
 nox>=2024.4.15,<2026

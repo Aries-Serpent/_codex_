@@ -29,6 +29,35 @@ try:
 except ImportError:
     _expanded_context_available = False
 
+# Ingestion pipeline components
+try:
+    from .ingestion import (
+        # Validator
+        DocumentValidator,
+        DocumentFormat,
+        ValidationResult,
+        validate_document,
+        # Preprocessor
+        DocumentPreprocessor,
+        PreprocessingConfig,
+        preprocess_text,
+        normalize_text,
+        # Chunker
+        Chunker,
+        ChunkingStrategy,
+        ChunkingConfig,
+        Chunk,
+        chunk_document,
+        # Pipeline
+        IngestionPipeline,
+        IngestionConfig,
+        IngestionResult,
+        BatchIngestionResult,
+    )
+    _ingestion_available = True
+except ImportError:
+    _ingestion_available = False
+
 __all__ = [
     "build_prompt",
     "PromptTemplate",
@@ -69,5 +98,32 @@ if _expanded_context_available:
             "reset_metrics",
             "MetricDataPoint",
             "MetricsConfig",
+        ]
+    )
+
+if _ingestion_available:
+    __all__.extend(
+        [
+            # Validator
+            "DocumentValidator",
+            "DocumentFormat",
+            "ValidationResult",
+            "validate_document",
+            # Preprocessor
+            "DocumentPreprocessor",
+            "PreprocessingConfig",
+            "preprocess_text",
+            "normalize_text",
+            # Chunker
+            "Chunker",
+            "ChunkingStrategy",
+            "ChunkingConfig",
+            "Chunk",
+            "chunk_document",
+            # Pipeline
+            "IngestionPipeline",
+            "IngestionConfig",
+            "IngestionResult",
+            "BatchIngestionResult",
         ]
     )

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<codebase repository="_codex_" timestamp="2025-01-16T13:54:27.108038+00:00">
+  <metadata>
+    <scan_type>qa_walkthrough</scan_type>
+    <version>1.0.0</version>
+  </metadata>
+  <directories>
+    <directory name="src">
+      <python_files>1013</python_files>
+      <subdirectories>39</subdirectories>
+    </directory>
+    <directory name="tests">
+      <python_files>1689</python_files>
+      <subdirectories>139</subdirectories>
+    </directory>
+    <directory name="scripts">
+      <python_files>331</python_files>
+      <subdirectories>43</subdirectories>
+    </directory>
+    <directory name="docs">
+      <python_files>2</python_files>
+      <subdirectories>112</subdirectories>
+    </directory>
+    <directory name=".codex">
+      <python_files>14</python_files>
+      <subdirectories>30</subdirectories>
+    </directory>
+    <directory name=".github">
+      <python_files>253</python_files>
+      <subdirectories>31</subdirectories>
+    </directory>
+    <directory name="examples">
+      <python_files>36</python_files>
+      <subdirectories>8</subdirectories>
+    </directory>
+    <directory name="agents">
+      <python_files>35</python_files>
+      <subdirectories>4</subdirectories>
+    </directory>
+    <directory name="tools">
+      <python_files>260</python_files>
+      <subdirectories>25</subdirectories>
+    </directory>
+  </directories>
+  <configuration_files>
+    <file name="pyproject.toml" exists="true" />
+    <file name="pytest.ini" exists="true" />
+    <file name="setup.cfg" exists="true" />
+    <file name="noxfile.py" exists="true" />
+  </configuration_files>
+  <statistics>
+    <total_python_files>3833</total_python_files>
+    <test_files>1839</test_files>
+  </statistics>
+</codebase>
