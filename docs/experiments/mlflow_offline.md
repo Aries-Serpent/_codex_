@@ -15,7 +15,7 @@ the machine:
 mlflow ui --backend-store-uri file:./runs/mlflow
 ```text
 For a higher-level summary, run
-[`examples/mlflow_offline.py`](../../examples/mlflow_offline.py) against a run
+[`examples/mlflow_offline.py`](https://github.com/Aries-Serpent/_codex_/blob/main/examples/mlflow_offline.py) against a run
 directory.  The helper prints the MLflow command above and highlights the most
 recent metrics.
 

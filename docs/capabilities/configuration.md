@@ -111,6 +111,6 @@ config.override("inference.timeout_seconds", 60)
 
 ## See Also
 
-- [Environment Setup](./setup/environment.md)
-- [Secrets Management](./security/secrets.md)
-- [Deployment Guide](./deployment/deploy_pipeline.md)
+- [Environment Setup](../setup/environment.md)
+- [Secrets Management](../security/secrets.md)
+- [Deployment Guide](../deployment/deploy_pipeline.md)

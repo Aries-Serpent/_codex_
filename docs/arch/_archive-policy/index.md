@@ -27,7 +27,7 @@ work; the canonical policy above is the single source of truth.
 ## Related Artifacts
 
 - ADR: [Root Docs Cleanup](../adr-2025-10-17-root-docs-cleanup.md)
-- Evidence log: [Archive operations](../../../.codex/evidence/archive_ops.jsonl)
+- Evidence log: [Archive operations](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/evidence/archive_ops.jsonl)
 - Branch protection requirements: [Archive PR checklist](../../policies/branch-protection-checklist.md)
 - Runbook: [Codex archive workflow](../../guides/codex_archive_runbook.md)
 

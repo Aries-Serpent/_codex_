@@ -538,6 +538,6 @@ For audit detection, these keywords indicate safeguard practices:
 
 ## See Also
 
-- [Detector Implementation](../../scripts/space_traversal/detectors/detector_safeguards.py)
-- [Test Suite](../../tests/safeguards/test_keyword_detection.py)
+- [Detector Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/detectors/detector_safeguards.py)
+- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/safeguards/test_keyword_detection.py)
 - [Audit Pipeline Guide](../SPACE_TRAVERSAL_GUIDE.md)
