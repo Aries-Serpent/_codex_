@@ -31,6 +31,26 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+
+def _ensure_subpath(base: Path, candidate: Path) -> Path:
+    """
+    Resolve *candidate* against the filesystem and ensure it is located under *base*.
+
+    Raises HTTPException(400) if the resolved path escapes the base directory.
+    """
+    try:
+        base_resolved = base.resolve(strict=False)
+        candidate_resolved = candidate.resolve(strict=False)
+    except RuntimeError:
+        # Fallback in pathological resolution cases
+        raise HTTPException(status_code=400, detail="Invalid path")
+
+    # Require that the candidate is the base or a descendant of it.
+    if candidate_resolved == base_resolved or base_resolved in candidate_resolved.parents:
+        return candidate_resolved
+
+    raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
+
 # Add rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -271,8 +291,26 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
         import json
         from pathlib import Path
         
-        index_dir = Path(index_dir) if index_dir else Path.home() / ".codex" / "rag_indices"
-        tenant_dir = index_dir / tenant_id
+        # Basic tenant_id validation to avoid traversal or weird characters.
+        # Allow simple identifiers composed of letters, digits, underscore and dash.
+        if not tenant_id.replace("-", "").replace("_", "").isalnum():
+            raise HTTPException(status_code=400, detail="Invalid tenant_id")
+
+        # Establish a fixed root directory for all indices
+        base_index_root = Path.home() / ".codex" / "rag_indices"
+
+        # If index_dir is provided, treat it only as a subdirectory name under the base root,
+        # not as an arbitrary filesystem path.
+        if index_dir:
+            # Prevent path separators in index_dir to keep it a single path segment.
+            if any(sep in index_dir for sep in ("/", "\\")):
+                raise HTTPException(status_code=400, detail="Invalid index_dir")
+            requested_root = base_index_root / index_dir
+        else:
+            requested_root = base_index_root
+
+        safe_index_root = _ensure_subpath(base_index_root, requested_root)
+        tenant_dir = _ensure_subpath(safe_index_root, safe_index_root / tenant_id)
         
         if not tenant_dir.exists():
             return ListIndicesResponse(indices=[], count=0)
