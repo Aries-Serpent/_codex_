@@ -2,6 +2,56 @@
 
 This composite action provides a **three-tier caching system** for Python pip packages across all workflows, optimizing for different usage patterns and retention needs.
 
+## Prerequisites
+
+⚠️ **Important**: This action requires **PyYAML** to be installed before use.
+
+The action executes Python code during cache key generation that imports the `yaml` module. If PyYAML is not installed when the action runs, you will encounter:
+
+```
+ModuleNotFoundError: No module named 'yaml'
+```
+
+### Correct Usage Pattern
+
+```yaml
+steps:
+  # 1. Setup Python (standard action)
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: '3.11'
+  
+  # 2. Install dependencies (including PyYAML)
+  - name: Install Dependencies
+    run: |
+      pip install pyyaml --quiet
+      # Install other dependencies as needed
+  
+  # 3. Use this action for caching
+  - name: Setup Cached Environment
+    uses: ./.github/actions/setup-python-cached
+    with:
+      python-version: '3.11'
+      cache-tier: 'common'
+```
+
+### ❌ Incorrect Usage Pattern
+
+```yaml
+# ❌ DON'T DO THIS - Will fail with ModuleNotFoundError
+steps:
+  - name: Setup Python with Cache
+    uses: ./.github/actions/setup-python-cached  # PyYAML not installed yet!
+    with:
+      python-version: '3.11'
+  
+  - name: Install Dependencies
+    run: pip install pyyaml  # Too late!
+```
+
+**Why this fails**: The custom action's cache key generation (lines 44-90 in `action.yml`) runs before the dependency installation step, causing the `ModuleNotFoundError`.
+
 ## Cache Tiers
 
 ### 🟢 LIVE Tier (Permanent, High Priority)
@@ -34,13 +84,27 @@ This composite action provides a **three-tier caching system** for Python pip pa
 
 ## Usage
 
-### Basic Usage
+### Basic Usage (with Prerequisites)
+
 ```yaml
-- name: Setup Python with Tiered Cache
-  uses: ./.github/actions/setup-python-cached
-  with:
-    python-version: '3.11'
-    cache-tier: 'live'  # or 'common' or 'ephemeral'
+steps:
+  # Step 1: Setup Python (standard action)
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: '3.11'
+  
+  # Step 2: Install dependencies (including PyYAML)
+  - name: Install Dependencies
+    run: |
+      pip install pyyaml --quiet
+  
+  # Step 3: Use tiered caching
+  - name: Setup Python with Tiered Cache
+    uses: ./.github/actions/setup-python-cached
+    with:
+      python-version: '3.11'
+      cache-tier: 'live'  # or 'common' or 'ephemeral'
 ```
 
 ### Complete Example
@@ -51,6 +115,18 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       
+      # Step 1: Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      # Step 2: Install dependencies (including PyYAML)
+      - name: Install Dependencies
+        run: |
+          pip install pyyaml --quiet
+      
+      # Step 3: Setup cached environment
       - name: Setup Python with Live Cache
         uses: ./.github/actions/setup-python-cached
         with:
@@ -58,7 +134,8 @@ jobs:
           cache-tier: 'live'
           architecture: 'x64'
       
-      - name: Install dependencies
+      # Step 4: Install project dependencies
+      - name: Install project dependencies
         run: |
           pip install -r requirements.txt
           pip install -e .
@@ -132,15 +209,21 @@ Each workflow run logs cache statistics:
 
 ### From setup-python with built-in cache:
 ```diff
-- - name: Set up Python
--   uses: actions/setup-python@v6
--   with:
--     python-version: '3.11'
++ # Step 1: Setup Python
+  - name: Set up Python
+    uses: actions/setup-python@v6
+    with:
+      python-version: '3.11'
 -     cache: 'pip'
 -     cache-dependency-path: |
 -       requirements*.txt
 -       pyproject.toml
 
++ # Step 2: Install PyYAML
++ - name: Install PyYAML
++   run: pip install pyyaml --quiet
++
++ # Step 3: Setup tiered cache
 + - name: Setup Python with Tiered Cache
 +   uses: ./.github/actions/setup-python-cached
 +   with:
@@ -150,15 +233,18 @@ Each workflow run logs cache statistics:
 
 ### From manual actions/cache:
 ```diff
-- - uses: actions/setup-python@v6
--   with:
--     python-version: '3.11'
-- 
+  - uses: actions/setup-python@v6
+    with:
+      python-version: '3.11'
+
 - - uses: actions/cache@v4
 -   with:
 -     path: ~/.cache/pip
 -     key: pip-${{ runner.os }}-${{ hashFiles('requirements*.txt') }}
 
++ - name: Install PyYAML
++   run: pip install pyyaml --quiet
++
 + - name: Setup Python with Tiered Cache
 +   uses: ./.github/actions/setup-python-cached
 +   with:
@@ -167,6 +253,43 @@ Each workflow run logs cache statistics:
 ```
 
 ## Troubleshooting
+
+### ModuleNotFoundError: No module named 'yaml'
+
+**Problem**: The action fails with `ModuleNotFoundError: No module named 'yaml'`
+
+**Cause**: The action's cache key generation step requires PyYAML, but it wasn't installed before the action ran.
+
+**Solution**: Ensure PyYAML is installed **before** using this action:
+
+```yaml
+# ✅ CORRECT ORDER
+- name: Setup Python
+  uses: actions/setup-python@v5
+  with:
+    python-version: '3.11'
+
+- name: Install PyYAML
+  run: pip install pyyaml --quiet
+
+- name: Setup Cached Environment
+  uses: ./.github/actions/setup-python-cached
+  with:
+    python-version: '3.11'
+    cache-tier: 'common'
+```
+
+**Alternative**: If your workflow already installs dependencies, just ensure PyYAML is included:
+
+```yaml
+- name: Install Dependencies
+  run: |
+    pip install pyyaml click requests --quiet
+```
+
+**Root Cause**: Lines 44-90 in `action.yml` execute Python code that imports `yaml` module to generate cache keys based on dependency file hashes.
+
+---
 
 ### Cache not hitting
 1. Check if dependencies changed (new hash generated)
