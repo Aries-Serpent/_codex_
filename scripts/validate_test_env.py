@@ -19,7 +19,9 @@ def check_plugin(name: str, import_name: str) -> Tuple[bool, str]:
         import_name: Python import name for the plugin
     
     Returns:
-        Tuple of (success: bool, message: str)
+        Tuple of (success: bool, message: str) where message contains
+        status information and version details for display purposes.
+        Success is True if plugin is importable, False otherwise.
     """
     try:
         module = __import__(import_name)
@@ -33,11 +35,17 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
     """
     Check if pytest accepts specific command-line arguments.
     
+    Validates pytest command-line argument support by checking the help output
+    (pytest --help) to see if the specified arguments are listed. Does not
+    actually execute tests with the arguments.
+    
     Args:
-        args: List of pytest arguments to test
+        args: List of pytest arguments to test (e.g., ['-n', '--reruns'])
     
     Returns:
-        Tuple of (success: bool, message: str)
+        Tuple of (success: bool, message: str) where message contains
+        status information about argument support for display purposes.
+        Success is True if all arguments are supported, False otherwise.
     """
     import subprocess
     
