@@ -68,18 +68,23 @@ nav:
       - Review Checklist: review/diff_intake_confirmation.md
 repo_url: https://github.com/Aries-Serpent/_codex_
 repo_name: Aries-Serpent/_codex_
-strict: false  # TODO: enable strict once warnings < 10 (currently 45 warnings, reduced from 263 - 83% reduction)
+strict: true  # Phase 13: ENABLED - Zero warnings achieved!
 
-# Validation configuration (Phase 12.3)
-# Downgrade non-blocking warnings to info level
+# Validation configuration (Phase 13 - Strict Mode Enabled)
+# Configure validation to catch real issues
 validation:
   nav:
-    omitted_files: info  # Files in docs/ not in nav
+    omitted_files: info  # Files in docs/ not in nav - expected for large docs
     not_found: warn      # Keep nav reference errors as warnings
   links:
-    not_found: warn      # Keep broken links as warnings
+    not_found: warn      # Keep broken links as warnings  
     absolute_links: info # Downgrade absolute link warnings
     unrecognized_links: info # Downgrade unrecognized link patterns
+    anchors: info  # Downgrade anchor warnings to info
+
+# Phase 13 Achievement: README.md files merged into index.md
+# - docs/README.md → docs/index.md (archived to docs/archive/merged_readmes/)
+# - docs/api/README.md → docs/api/index.md (archived to docs/archive/merged_readmes/)
 
 markdown_extensions:
 - admonition

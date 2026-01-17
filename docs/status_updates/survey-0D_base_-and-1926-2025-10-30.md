@@ -2112,7 +2112,7 @@ This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
 toward `main`. A dry-run configuration is provided at
-[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
+[`configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml).
 Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
@@ -2201,7 +2201,7 @@ hands-on guides that keep bespoke model hosting disciplined.
 
 ### Reasoning Pod Deployment
 Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and
-[`../configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance.
+[`https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance.
 These assets are designed for offline validation and do not require hosted services.
 
 ## 🚀 Quick links for reasoning teams
@@ -2843,7 +2843,7 @@ This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
 toward `main`. A dry-run configuration is provided at
-[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
+[`configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml).
 Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines

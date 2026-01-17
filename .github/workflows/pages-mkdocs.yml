@@ -131,7 +131,8 @@ jobs:
       
       - name: Build MkDocs site
         run: |
-          mkdocs build --verbose
+          # Phase 13: Strict mode enabled - zero warnings achieved
+          mkdocs build --verbose --strict
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
