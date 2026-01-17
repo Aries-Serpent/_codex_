@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Test Infrastructure**: Added missing pytest plugins to fix CI test failures
+  - Added `pytest-xdist>=3.3` to enable parallel test execution with `-n auto` flag
+  - Added `pytest-rerunfailures>=12.0` to support `--reruns` and `--reruns-delay` flags  
+  - Updated both `requirements-test.txt` (pinned versions) and `pyproject.toml` (minimum versions)
+  - Fixed plugin installation order in CI workflow to install plugins before editable package
+  - Added `scripts/validate_test_env.py` to validate pytest environment before running tests
+  - Created `docs/TESTING.md` with comprehensive testing documentation
+  - Resolves issue where all test workers crashed immediately, preventing test execution
+
 ### Security - IP-005 Dependency Updates (2026-01-16)
 
 **26 vulnerabilities addressed across 11 packages:**
