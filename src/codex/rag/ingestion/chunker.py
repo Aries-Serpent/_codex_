@@ -1,0 +1,487 @@
+"""
+Document Chunking Module
+
+Provides configurable chunking strategies for RAG ingestion:
+- Fixed-size chunking with configurable overlap
+- Semantic chunking (sentence/paragraph boundaries)
+- Hierarchical chunking (document structure aware)
+- Sliding window chunking
+"""
+
+import hashlib
+import logging
+import re
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Callable, Iterator, Optional, Sequence
+
+logger = logging.getLogger(__name__)
+
+
+class ChunkingStrategy(Enum):
+    """Available chunking strategies."""
+    
+    FIXED_SIZE = "fixed_size"
+    SENTENCE = "sentence"
+    PARAGRAPH = "paragraph"
+    SEMANTIC = "semantic"
+    SLIDING_WINDOW = "sliding_window"
+    HIERARCHICAL = "hierarchical"
+
+
+@dataclass
+class ChunkingConfig:
+    """Configuration for document chunking."""
+    
+    strategy: ChunkingStrategy = ChunkingStrategy.FIXED_SIZE
+    
+    # Size parameters
+    chunk_size: int = 1000  # Target chunk size in characters
+    chunk_overlap: int = 100  # Overlap between consecutive chunks
+    min_chunk_size: int = 100  # Minimum chunk size
+    max_chunk_size: int = 2000  # Maximum chunk size
+    
+    # Sentence-based parameters
+    sentence_delimiters: str = ".!?。！？"
+    respect_sentence_boundaries: bool = True
+    
+    # Paragraph-based parameters
+    paragraph_separator: str = "\n\n"
+    
+    # Sliding window parameters
+    window_step: int = 500  # Step size for sliding window
+    
+    # Hierarchical parameters
+    include_headers_in_chunks: bool = True
+    header_patterns: list[str] = field(
+        default_factory=lambda: [r"^#{1,6}\s+", r"^<h[1-6][^>]*>"]
+    )
+    
+    # Metadata
+    include_position_info: bool = True
+    compute_chunk_hash: bool = True
+
+
+@dataclass
+class Chunk:
+    """Represents a document chunk."""
+    
+    text: str
+    index: int  # Chunk index in document
+    start_pos: int  # Character position in original document
+    end_pos: int  # End position in original document
+    chunk_hash: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+    
+    @property
+    def length(self) -> int:
+        """Get chunk length in characters."""
+        return len(self.text)
+    
+    def to_dict(self) -> dict[str, Any]:
+        """Convert chunk to dictionary."""
+        return {
+            "text": self.text,
+            "index": self.index,
+            "start_pos": self.start_pos,
+            "end_pos": self.end_pos,
+            "length": self.length,
+            "hash": self.chunk_hash,
+            "metadata": self.metadata,
+        }
+
+
+class BaseChunker(ABC):
+    """Base class for chunking strategies."""
+    
+    def __init__(self, config: ChunkingConfig):
+        self.config = config
+    
+    @abstractmethod
+    def chunk(self, text: str) -> list[Chunk]:
+        """Split text into chunks."""
+        pass
+    
+    def _compute_hash(self, text: str) -> str:
+        """Compute hash for chunk content."""
+        # Use 16 characters (64 bits) for reasonable collision resistance
+        # while keeping the hash compact for storage
+        return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+    
+    def _create_chunk(
+        self,
+        text: str,
+        index: int,
+        start_pos: int,
+        end_pos: int,
+        **metadata: Any,
+    ) -> Chunk:
+        """Create a Chunk object."""
+        chunk_hash = ""
+        if self.config.compute_chunk_hash:
+            chunk_hash = self._compute_hash(text)
+        
+        return Chunk(
+            text=text,
+            index=index,
+            start_pos=start_pos,
+            end_pos=end_pos,
+            chunk_hash=chunk_hash,
+            metadata=metadata,
+        )
+
+
+class FixedSizeChunker(BaseChunker):
+    """
+    Fixed-size chunking with overlap.
+    
+    Splits text into chunks of approximately equal size,
+    respecting sentence boundaries when possible.
+    """
+    
+    def chunk(self, text: str) -> list[Chunk]:
+        if not text:
+            return []
+        
+        text = text.strip()
+        if not text:
+            return []
+        
+        # If text is shorter than min_chunk_size, return as single chunk
+        if len(text) < self.config.min_chunk_size:
+            return [self._create_chunk(
+                text=text,
+                index=0,
+                start_pos=0,
+                end_pos=len(text),
+                strategy="fixed_size",
+            )]
+        
+        chunks = []
+        start = 0
+        index = 0
+        text_len = len(text)
+        
+        while start < text_len:
+            # Calculate end position
+            end = min(start + self.config.chunk_size, text_len)
+            
+            # Try to find a good break point
+            if end < text_len and self.config.respect_sentence_boundaries:
+                end = self._find_break_point(text, start, end)
+            
+            # Extract chunk text
+            chunk_text = text[start:end].strip()
+            
+            # Only add non-empty chunks that meet minimum size
+            if chunk_text and len(chunk_text) >= self.config.min_chunk_size:
+                chunk = self._create_chunk(
+                    text=chunk_text,
+                    index=index,
+                    start_pos=start,
+                    end_pos=end,
+                    strategy="fixed_size",
+                )
+                chunks.append(chunk)
+                index += 1
+            
+            # Move to next chunk with overlap
+            if end >= text_len:
+                break
+            start = end - self.config.chunk_overlap
+            if start >= end:  # Prevent infinite loop
+                start = end
+        
+        logger.debug(f"Created {len(chunks)} fixed-size chunks")
+        return chunks
+    
+    def _find_break_point(self, text: str, start: int, end: int) -> int:
+        """Find a good break point near the end position."""
+        # Search in the last portion of the chunk
+        search_start = max(start, end - self.config.chunk_size // 4)
+        
+        # Look for sentence endings
+        best_pos = end
+        for delimiter in [". ", ".\n", "! ", "!\n", "? ", "?\n"]:
+            pos = text.rfind(delimiter, search_start, end)
+            if pos != -1 and pos + len(delimiter) <= end:
+                candidate = pos + len(delimiter)
+                if candidate > best_pos - (end - search_start):
+                    best_pos = candidate
+        
+        return best_pos
+
+
+class SentenceChunker(BaseChunker):
+    """
+    Sentence-based chunking.
+    
+    Groups complete sentences until reaching target size.
+    """
+    
+    SENTENCE_PATTERN = re.compile(
+        r'(?<=[.!?。！？])\s+(?=[A-Z\u4e00-\u9fff])|(?<=[.!?。！？])(?=\s*$)',
+        re.MULTILINE
+    )
+    
+    def chunk(self, text: str) -> list[Chunk]:
+        if not text:
+            return []
+        
+        # Split into sentences
+        sentences = self._split_sentences(text)
+        
+        chunks = []
+        current_chunk_text = ""
+        current_start = 0
+        chunk_start = 0
+        index = 0
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if not sentence:
+                current_start += len(sentence) + 1
+                continue
+            
+            # Check if adding this sentence exceeds max size
+            potential_text = (current_chunk_text + " " + sentence).strip()
+            
+            if len(potential_text) > self.config.max_chunk_size and current_chunk_text:
+                # Save current chunk
+                chunk = self._create_chunk(
+                    text=current_chunk_text,
+                    index=index,
+                    start_pos=chunk_start,
+                    end_pos=current_start,
+                    strategy="sentence",
+                    sentence_count=current_chunk_text.count(". ") + 1,
+                )
+                chunks.append(chunk)
+                index += 1
+                
+                # Start new chunk
+                current_chunk_text = sentence
+                chunk_start = current_start
+            else:
+                current_chunk_text = potential_text
+            
+            current_start += len(sentence) + 1
+        
+        # Add final chunk
+        if current_chunk_text.strip():
+            chunk = self._create_chunk(
+                text=current_chunk_text.strip(),
+                index=index,
+                start_pos=chunk_start,
+                end_pos=len(text),
+                strategy="sentence",
+            )
+            chunks.append(chunk)
+        
+        logger.debug(f"Created {len(chunks)} sentence-based chunks")
+        return chunks
+    
+    def _split_sentences(self, text: str) -> list[str]:
+        """Split text into sentences."""
+        # Simple sentence splitting
+        sentences = self.SENTENCE_PATTERN.split(text)
+        return [s for s in sentences if s.strip()]
+
+
+class ParagraphChunker(BaseChunker):
+    """
+    Paragraph-based chunking.
+    
+    Groups complete paragraphs until reaching target size.
+    """
+    
+    def chunk(self, text: str) -> list[Chunk]:
+        if not text:
+            return []
+        
+        # Split into paragraphs
+        paragraphs = text.split(self.config.paragraph_separator)
+        
+        chunks = []
+        current_chunk_text = ""
+        current_start = 0
+        chunk_start = 0
+        index = 0
+        
+        for para in paragraphs:
+            para = para.strip()
+            if not para:
+                current_start += len(self.config.paragraph_separator)
+                continue
+            
+            # Check if adding this paragraph exceeds max size
+            potential_text = (
+                current_chunk_text + self.config.paragraph_separator + para
+            ).strip()
+            
+            if len(potential_text) > self.config.max_chunk_size and current_chunk_text:
+                # Save current chunk
+                chunk = self._create_chunk(
+                    text=current_chunk_text,
+                    index=index,
+                    start_pos=chunk_start,
+                    end_pos=current_start,
+                    strategy="paragraph",
+                )
+                chunks.append(chunk)
+                index += 1
+                
+                # Start new chunk
+                current_chunk_text = para
+                chunk_start = current_start
+            else:
+                current_chunk_text = potential_text
+            
+            current_start += len(para) + len(self.config.paragraph_separator)
+        
+        # Add final chunk
+        if current_chunk_text.strip():
+            chunk = self._create_chunk(
+                text=current_chunk_text.strip(),
+                index=index,
+                start_pos=chunk_start,
+                end_pos=len(text),
+                strategy="paragraph",
+            )
+            chunks.append(chunk)
+        
+        logger.debug(f"Created {len(chunks)} paragraph-based chunks")
+        return chunks
+
+
+class SlidingWindowChunker(BaseChunker):
+    """
+    Sliding window chunking.
+    
+    Creates overlapping chunks using a sliding window approach.
+    """
+    
+    def chunk(self, text: str) -> list[Chunk]:
+        if not text:
+            return []
+        
+        chunks = []
+        text_len = len(text)
+        index = 0
+        pos = 0
+        
+        while pos < text_len:
+            end = min(pos + self.config.chunk_size, text_len)
+            chunk_text = text[pos:end].strip()
+            
+            if chunk_text and len(chunk_text) >= self.config.min_chunk_size:
+                chunk = self._create_chunk(
+                    text=chunk_text,
+                    index=index,
+                    start_pos=pos,
+                    end_pos=end,
+                    strategy="sliding_window",
+                )
+                chunks.append(chunk)
+                index += 1
+            
+            pos += self.config.window_step
+            if pos >= end and pos < text_len:
+                pos = end  # Prevent gaps
+        
+        logger.debug(f"Created {len(chunks)} sliding window chunks")
+        return chunks
+
+
+class Chunker:
+    """
+    Main chunker class that dispatches to appropriate strategy.
+    
+    Example:
+        config = ChunkingConfig(
+            strategy=ChunkingStrategy.SENTENCE,
+            chunk_size=500,
+        )
+        chunker = Chunker(config)
+        chunks = chunker.chunk(document_text)
+    """
+    
+    STRATEGY_MAP = {
+        ChunkingStrategy.FIXED_SIZE: FixedSizeChunker,
+        ChunkingStrategy.SENTENCE: SentenceChunker,
+        ChunkingStrategy.PARAGRAPH: ParagraphChunker,
+        ChunkingStrategy.SLIDING_WINDOW: SlidingWindowChunker,
+    }
+    
+    def __init__(self, config: Optional[ChunkingConfig] = None):
+        """Initialize chunker with configuration."""
+        self.config = config or ChunkingConfig()
+        
+        # Get appropriate chunker class
+        chunker_class = self.STRATEGY_MAP.get(
+            self.config.strategy,
+            FixedSizeChunker
+        )
+        self._chunker = chunker_class(self.config)
+    
+    def chunk(self, text: str) -> list[Chunk]:
+        """
+        Split document text into chunks.
+        
+        Args:
+            text: Document text to chunk
+            
+        Returns:
+            List of Chunk objects
+        """
+        if not text or not text.strip():
+            return []
+        
+        chunks = self._chunker.chunk(text)
+        
+        logger.info(
+            f"Chunked document: {len(text)} chars -> {len(chunks)} chunks "
+            f"(strategy: {self.config.strategy.value})"
+        )
+        
+        return chunks
+    
+    def chunk_batch(self, texts: Sequence[str]) -> list[list[Chunk]]:
+        """
+        Chunk multiple documents.
+        
+        Args:
+            texts: List of document texts
+            
+        Returns:
+            List of chunk lists (one per document)
+        """
+        return [self.chunk(text) for text in texts]
+
+
+def chunk_document(
+    text: str,
+    strategy: ChunkingStrategy = ChunkingStrategy.FIXED_SIZE,
+    chunk_size: int = 1000,
+    chunk_overlap: int = 100,
+) -> list[Chunk]:
+    """
+    Convenience function to chunk a document.
+    
+    Args:
+        text: Document text to chunk
+        strategy: Chunking strategy to use
+        chunk_size: Target chunk size
+        chunk_overlap: Overlap between chunks
+        
+    Returns:
+        List of Chunk objects
+    """
+    config = ChunkingConfig(
+        strategy=strategy,
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+    )
+    chunker = Chunker(config)
+    return chunker.chunk(text)

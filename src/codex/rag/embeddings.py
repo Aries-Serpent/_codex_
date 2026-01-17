@@ -365,48 +365,154 @@ class CachedEmbeddingProvider:
 
 
 def create_embedding_provider(
-    provider_type: str = "local",
+    provider_type: str = "auto",
     model_name: Optional[str] = None,
     use_cache: bool = True,
     cache_dir: str = ".codex/embeddings_cache",
     **kwargs,
 ) -> EmbeddingProvider:
     """
-    Factory function to create embedding providers.
-
+    Factory function to create embedding providers with intelligent auto-fallback.
+    
     Args:
-        provider_type: Type of provider ('local' or 'openai')
+        provider_type: Type of provider ('auto', 'local', 'ollama', 'llamacpp', 
+                      'gpt4all', 'tfidf', or 'openai')
+                      'auto' tries best available provider
         model_name: Model name (uses defaults if not provided)
         use_cache: Whether to wrap provider with caching layer
         cache_dir: Cache directory
         **kwargs: Additional provider-specific arguments
-
+    
     Returns:
         Embedding provider (optionally wrapped with caching)
+        
+    Provider Types:
+        - 'auto': Intelligent selection (sentence-transformers → Ollama → llama.cpp → GPT4All → TF-IDF)
+        - 'local': sentence-transformers (requires model download)
+        - 'ollama': Ollama server (requires running Ollama)
+        - 'llamacpp': llama.cpp (requires GGUF model file)
+        - 'gpt4all': GPT4All (requires gpt4all package)
+        - 'tfidf': TF-IDF (offline-capable, no setup)
+        - 'openai': OpenAI API (requires API key)
     """
-    # Create base provider
-    if provider_type == "local":
+    # Auto-fallback logic with intelligent provider selection
+    if provider_type == "auto":
+        logger.info("Auto-selecting embedding provider...")
+        
+        # Priority 1: Try sentence-transformers (best quality, requires internet for first download)
+        try:
+            logger.info("Attempting sentence-transformers provider")
+            model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
+            provider = LocalSentenceTransformerProvider(
+                model_name=model_name_st, **kwargs
+            )
+            logger.info("✓ Using sentence-transformers provider")
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
+        except Exception as e:
+            logger.debug(f"sentence-transformers unavailable: {e}")
+        
+        # Priority 2: Try Ollama (good quality, local server)
+        try:
+            from .providers.ollama_provider import OllamaEmbeddingProvider
+            logger.info("Attempting Ollama provider")
+            model_name_ollama = model_name or "nomic-embed-text"
+            provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)
+            if provider._check_health():
+                logger.info("✓ Using Ollama provider")
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            else:
+                logger.debug("Ollama server not running")
+        except Exception as e:
+            logger.debug(f"Ollama unavailable: {e}")
+        
+        # Priority 3: Try llama.cpp (excellent performance, requires model file)
+        if "model_path" in kwargs:
+            try:
+                from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+                logger.info("Attempting llama.cpp provider")
+                provider = LlamaCppEmbeddingProvider(**kwargs)
+                logger.info("✓ Using llama.cpp provider")
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            except Exception as e:
+                logger.debug(f"llama.cpp unavailable: {e}")
+        
+        # Priority 4: Try GPT4All (easy setup, good quality)
+        try:
+            from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+            logger.info("Attempting GPT4All provider")
+            model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
+            provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)
+            logger.info("✓ Using GPT4All provider")
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
+        except Exception as e:
+            logger.debug(f"GPT4All unavailable: {e}")
+        
+        # Priority 5: Fall back to TF-IDF (always works, offline)
+        logger.info("Falling back to TF-IDF provider (offline-capable)")
+        max_features = kwargs.get("max_features", 384)
+        provider = TfidfEmbeddingProvider(max_features=max_features)
+        logger.info("✓ Using TF-IDF provider")
+    
+    # Explicit provider selection
+    elif provider_type == "local":
         model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
         provider = LocalSentenceTransformerProvider(model_name=model_name, **kwargs)
-
+    
+    elif provider_type == "ollama":
+        from .providers.ollama_provider import OllamaEmbeddingProvider
+        model_name = model_name or "nomic-embed-text"
+        provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)
+    
+    elif provider_type == "llamacpp":
+        from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+        if "model_path" not in kwargs:
+            raise ValueError("llama.cpp provider requires 'model_path' parameter")
+        provider = LlamaCppEmbeddingProvider(**kwargs)
+    
+    elif provider_type == "gpt4all":
+        from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+        model_name = model_name or "nomic-embed-text-v1.5"
+        provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)
+    
+    elif provider_type == "tfidf":
+        max_features = kwargs.get("max_features", 384)
+        provider = TfidfEmbeddingProvider(max_features=max_features)
+    
     elif provider_type == "openai":
         # Check if API key is available
-        if not os.environ.get("OPENAI_API_KEY") and "api_key" not in kwargs:
+        api_key = (
+            kwargs.get("api_key") 
+            or os.environ.get("RAG_OPENAI_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+        )
+        if not api_key:
             logger.error(
-                "OpenAI provider requested but OPENAI_API_KEY not found. "
-                "Set the environment variable or pass api_key parameter. "
-                "Use provider_type='local' for local embeddings instead."
+                "OpenAI provider requested but no API key found. "
+                "Set RAG_OPENAI_KEY or OPENAI_API_KEY environment variable, "
+                "or pass api_key parameter. "
+                "Use provider_type='auto' for offline alternatives."
             )
             raise ValueError(
                 "OpenAI API key required for provider_type='openai'. "
-                "Use provider_type='local' or set OPENAI_API_KEY."
+                "Use provider_type='auto' or set API key."
             )
-        else:
-            model_name = model_name or "text-embedding-3-small"
-            provider = OpenAIEmbeddingProvider(model_name=model_name, **kwargs)
-
+        model_name = model_name or "text-embedding-3-small"
+        provider = OpenAIEmbeddingProvider(model_name=model_name, api_key=api_key)
+    
     else:
-        raise ValueError(f"Unknown provider type: {provider_type}")
+        raise ValueError(
+            f"Unknown provider type: {provider_type}. "
+            f"Choose from: auto, local, ollama, llamacpp, gpt4all, tfidf, openai"
+        )
+
 
     # Wrap with caching if requested
     if use_cache:
@@ -414,3 +520,109 @@ def create_embedding_provider(
 
     logger.info(f"Created embedding provider: {provider.__class__.__name__}")
     return provider
+
+
+class TfidfEmbeddingProvider:
+    """
+    TF-IDF based embedding provider (offline-capable).
+    
+    Uses scikit-learn's TfidfVectorizer for embeddings.
+    Lower quality than transformers but works offline with zero setup.
+    Ideal for development, testing, and offline scenarios.
+    
+    **Advantages:**
+    - Zero external dependencies (uses scikit-learn)
+    - Always works offline
+    - Fast initialization
+    - Deterministic results
+    
+    **Limitations:**
+    - Lower semantic quality than transformers
+    - Requires fitting on corpus
+    - No cross-lingual capabilities
+    
+    **Use Cases:**
+    - Development and testing
+    - Offline/air-gapped environments
+    - CI/CD pipelines
+    - Quick prototyping
+    """
+    
+    def __init__(self, max_features: int = 384):
+        """
+        Initialize TF-IDF provider.
+        
+        Args:
+            max_features: Maximum number of features (embedding dimension)
+                         Default 384 matches all-MiniLM-L6-v2 dimension
+        """
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+        except ImportError:
+            logger.error(
+                "scikit-learn not installed. "
+                "Install with: pip install scikit-learn"
+            )
+            raise
+        
+        self.max_features = max_features
+        self.vectorizer = TfidfVectorizer(
+            max_features=max_features,
+            stop_words='english',
+            ngram_range=(1, 2),  # Unigrams and bigrams for better context
+            min_df=1,  # Minimum document frequency
+            max_df=0.95,  # Maximum document frequency (filter common words)
+        )
+        self.is_fitted = False
+        logger.info(
+            f"Initialized TF-IDF provider (dimension={max_features}, "
+            f"offline-capable=True)"
+        )
+    
+    def encode(self, texts: List[str], **kwargs) -> np.ndarray:
+        """
+        Encode texts using TF-IDF.
+        
+        Args:
+            texts: List of texts to encode
+            **kwargs: Ignored (for compatibility with other providers)
+            
+        Returns:
+            numpy array of embeddings (shape: [num_texts, max_features])
+            
+        Note:
+            First call fits the vectorizer on the input texts.
+            Subsequent calls use the same vocabulary.
+        """
+        if not texts:
+            return np.array([])
+        
+        # Fit on first call
+        if not self.is_fitted:
+            logger.info(f"Fitting TF-IDF vectorizer on {len(texts)} texts")
+            try:
+                self.vectorizer.fit(texts)
+                self.is_fitted = True
+                logger.info(
+                    f"TF-IDF vectorizer fitted. "
+                    f"Vocabulary size: {len(self.vectorizer.vocabulary_)}"
+                )
+            except Exception as e:
+                logger.error(f"Error fitting TF-IDF vectorizer: {e}")
+                raise
+        
+        # Transform texts to embeddings
+        try:
+            embeddings = self.vectorizer.transform(texts).toarray()
+            logger.debug(
+                f"Encoded {len(texts)} texts to shape {embeddings.shape} "
+                f"(TF-IDF)"
+            )
+            return embeddings
+        except Exception as e:
+            logger.error(f"Error transforming texts with TF-IDF: {e}")
+            raise
+    
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+        return self.max_features

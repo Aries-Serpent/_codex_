@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=67", "wheel"]
+requires = ["setuptools>=78.1.1", "wheel"]  # Security: Updated from 67 to fix CVE-2024-6345, CVE-2025-47273 (RCE)
 build-backend = "setuptools.build_meta"
 
 # Rust extension module configuration (optional, for future migration)
@@ -53,6 +53,13 @@ dependencies = [
   "libcst>=1.0.0",
   "radon>=6.0.0",
   "parso>=0.8.0",
+  # Security: IP-005 dependency updates - addressing 26 known vulnerabilities
+  "jinja2>=3.1.6",  # Security: Fixes CVE-2024-56326, CVE-2024-56201 (RCE via sandbox escape)
+  "certifi>=2024.7.4",  # Security: Fixes CVE-2024-39689 (root cert trust issue)
+  "filelock>=3.20.3",  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
+  "idna>=3.7",  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)
+  "urllib3>=2.6.3",  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)
+  "requests>=2.32.4",  # Security: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass, credential leak)
 ]
 
 # Version may be injected by CI or read dynamically.
@@ -82,8 +89,10 @@ hydra = [
 dev = [
   "pytest>=7.4",
   "pytest-cov>=4.1",
+  "pytest-xdist>=3.3",
   "pytest-randomly>=3.15",
   "pytest-timeout>=2.1",
+  "pytest-rerunfailures>=12.0",
   "pytest-split>=0.8",  # For test sharding in CI
   "hypothesis>=6.100",
   "ruff>=0.4",
@@ -120,7 +129,7 @@ ml = [
   "accelerate>=0.31,<2",
 ]
 monitoring = ["prometheus-client>=0.14", "psutil>=5.9", "pynvml>=11.5"]
-ops = ["requests>=2.31", "PyJWT>=2.8"]
+ops = ["requests>=2.32.4", "PyJWT>=2.8"]  # Security: Updated from 2.31 to fix CVE-2024-35195, CVE-2024-47081
 perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.22.4,<4"]  # Security: updated from 2.0
 sharding = ["xxhash>=3.0.0"]  # Optional: 10-100x faster hashing for index sharding (PS-06)
 plugins = ["importlib-metadata; python_version < '3.10'"]
@@ -147,6 +156,9 @@ test = [
   "PyYAML>=6.0",
   "pytest>=7.0",
   "pytest-cov>=4.0",
+  "pytest-xdist>=3.3",
+  "pytest-timeout>=2.1",
+  "pytest-rerunfailures>=12.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
   "packaging>=21.0",  # Required for packaging.version.parse() in integration tests

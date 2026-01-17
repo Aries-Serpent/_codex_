@@ -1,5 +1,56 @@
 # Security Policy
 
+## IP-005 Security Updates (2026-01-16)
+
+### Dependency Vulnerability Remediation - 26 Vulnerabilities Fixed
+
+This update addresses **26 known vulnerabilities** across **11 packages** identified via pip-audit.
+
+#### Critical Fixes (Remote Code Execution)
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| setuptools | >=67 | >=78.1.1 | CVE-2024-6345, CVE-2025-47273 | Path traversal RCE |
+| jinja2 | 3.1.2 | >=3.1.6 | CVE-2024-56326, CVE-2024-56201 | Sandbox escape RCE |
+| cryptography | 41.0.7 | 46.0.3 | CVE-2024-26130, CVE-2023-50782 | TLS RSA key exposure |
+
+#### High Priority Fixes
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| certifi | 2023.11.17 | >=2024.7.4 | CVE-2024-39689 | Root cert trust issue |
+| filelock | 3.20.0 | >=3.20.3 | CVE-2025-68146, CVE-2026-22701 | TOCTOU symlink attacks |
+| idna | 3.6 | >=3.7 | CVE-2024-3651 | DoS via quadratic complexity |
+| requests | 2.31.0 | >=2.32.4 | CVE-2024-35195, CVE-2024-47081 | TLS bypass, credential leak |
+| urllib3 | 2.0.7 | >=2.6.3 | CVE-2024-37891, CVE-2025-50181 | Proxy/redirect issues |
+
+#### Medium/Low Priority Fixes
+
+| Package | Old Version | New Version | CVEs Fixed | Impact |
+|---------|-------------|-------------|------------|--------|
+| twisted | 24.3.0 | >=24.7.0 | CVE-2024-41810, CVE-2024-41671 | XSS, HTTP pipelining |
+| configobj | 5.0.8 | >=5.0.9 | CVE-2023-26112 | ReDoS |
+
+### Files Updated
+
+- `pyproject.toml` - Build system and dependencies
+- `requirements.txt` - Main requirements
+- `requirements-minimal.txt` - Minimal requirements
+- `requirements-dev.txt` - Development requirements
+- `requirements-optional.txt` - Optional requirements
+
+### Verification
+
+```bash
+# Verify no vulnerabilities remain
+pip-audit --format=json
+
+# Check installed versions
+pip list | grep -E "(cryptography|jinja2|setuptools|certifi|filelock|idna|requests|urllib3|twisted|configobj)"
+```
+
+---
+
 ## Recent Security Updates (2025-12-23)
 
 ### Fixed Vulnerabilities
@@ -380,7 +431,95 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2025-12-22
+Last updated: 2026-01-16
+
+---
+
+## Security-Critical Files Inventory (QA Walkthrough)
+
+> **Source**: `.codex/qa_walkthrough/security_audit.json`  
+> **Total Files**: 137 security-critical files identified  
+> **Last Audit**: 2026-01-16
+
+### Categories
+
+#### Authentication & Authorization
+| File | Size | Purpose |
+|------|------|---------|
+| `tests/test_bridge_authentication.py` | 14,703 | Bridge auth tests |
+| `scripts/validate_auth_security.py` | 11,632 | Auth validation |
+| `scripts/rotate_jwt_secret.py` | 12,880 | JWT rotation |
+| `scripts/github_oauth_app_sync.py` | 3,213 | OAuth sync |
+
+#### Secrets Management
+| File | Size | Purpose |
+|------|------|---------|
+| `scripts/github_secrets_sync.py` | 7,537 | Secrets sync |
+| `scripts/decode_workflow_secrets.py` | 7,361 | Workflow secrets |
+| `tools/scan_secrets.py` | 8,110 | Secret scanning |
+| `tests/test_secrets_scanner.py` | 952 | Scanner tests |
+
+#### Security Auditing
+| File | Size | Purpose |
+|------|------|---------|
+| `scripts/security_audit.py` | 6,079 | Security audit |
+| `scripts/validate_security_utils.py` | 6,851 | Utils validation |
+| `benchmarks/security_benchmarks.py` | 7,002 | Security benchmarks |
+| `noxfile.security_additions.py` | 1,784 | Nox security |
+
+#### Tokenization Security
+| File | Size | Purpose |
+|------|------|---------|
+| `codex_digest/tokenizer.py` | 2,074 | Digest tokenizer |
+| `interfaces/tokenizer.py` | 430 | Tokenizer interface |
+| `tools/bench_tokenizer.py` | 2,433 | Tokenizer bench |
+| `tests/test_tokenization_roundtrip.py` | 2,859 | Roundtrip tests |
+
+### Security Tools Configured
+
+1. **Bandit** - Python security linter
+   - Config: `.bandit`
+   - Nox session: `nox -s security`
+
+2. **Gitleaks** - Secret detection
+   - Config: `.gitleaks.toml`
+   - Pre-commit hook enabled
+
+3. **Semgrep** - Static analysis
+   - Config: `.semgrep/`
+   - Custom rules for project patterns
+
+4. **Safety** - Dependency checking
+   - Integrated in CI pipeline
+   - Checks against PyUp.io database
+
+5. **Trivy** - Container scanning
+   - Dockerfile scanning enabled
+   - SBOM generation configured
+
+### Security Review Checklist
+
+For any PR touching security-critical files:
+
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation on all user inputs
+- [ ] Output encoding for any rendered content
+- [ ] Proper error handling without information disclosure
+- [ ] Authentication/authorization checks in place
+- [ ] Logging of security-relevant events
+- [ ] Rate limiting on authentication endpoints
+- [ ] CSRF protection on state-changing operations
+- [ ] Secure session management
+- [ ] Cryptographic operations use approved algorithms
+
+### Reporting New Vulnerabilities
+
+If you discover a new vulnerability in a security-critical file:
+
+1. **DO NOT** open a public issue
+2. Email security findings to the maintainers
+3. Include file path, description, and PoC if possible
+4. Allow 90 days for remediation before disclosure
 
 ---
 

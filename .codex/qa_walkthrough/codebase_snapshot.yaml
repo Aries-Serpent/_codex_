@@ -1,0 +1,65 @@
+codebase_snapshot:
+  metadata:
+    timestamp: '2025-01-16T13:54:12.696060+00:00'
+    repository: _codex_
+    scan_version: 1.0.0
+  directories:
+    src:
+      exists: true
+      python_files: 1013
+      subdirectories: 39
+    tests:
+      exists: true
+      python_files: 1689
+      subdirectories: 139
+    scripts:
+      exists: true
+      python_files: 331
+      subdirectories: 43
+    docs:
+      exists: true
+      python_files: 2
+      subdirectories: 112
+    .codex:
+      exists: true
+      python_files: 14
+      subdirectories: 30
+    .github:
+      exists: true
+      python_files: 253
+      subdirectories: 31
+    examples:
+      exists: true
+      python_files: 36
+      subdirectories: 8
+    agents:
+      exists: true
+      python_files: 35
+      subdirectories: 4
+    tools:
+      exists: true
+      python_files: 260
+      subdirectories: 25
+  key_files:
+    pyproject.toml:
+      exists: true
+      size: 12380
+    pytest.ini:
+      exists: true
+      size: 1839
+    setup.cfg:
+      exists: true
+      size: 179
+    noxfile.py:
+      exists: true
+      size: 24503
+    conftest.py:
+      exists: true
+      size: 8869
+  dependencies:
+    pyproject_toml: present
+    requirements_files: 9
+  testing:
+    test_files: 1641
+    pytest_ini: true
+    conftest: true

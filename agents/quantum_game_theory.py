@@ -29,6 +29,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional, Union
 
+# Initialize logger before use in exception handlers
+logger = logging.getLogger(__name__)
+
 # Optional numpy import with graceful fallback
 try:
     import numpy as np

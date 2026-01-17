@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Test Infrastructure**: Added missing pytest plugins to fix CI test failures
+  - Added `pytest-xdist>=3.3` to enable parallel test execution with `-n auto` flag
+  - Added `pytest-rerunfailures>=12.0` to support `--reruns` and `--reruns-delay` flags  
+  - Updated both `requirements-test.txt` (pinned versions) and `pyproject.toml` (minimum versions)
+  - Fixed plugin installation order in CI workflow to install plugins before editable package
+  - Added `scripts/validate_test_env.py` to validate pytest environment before running tests
+  - Created `docs/TESTING.md` with comprehensive testing documentation
+  - Resolves issue where all test workers crashed immediately, preventing test execution
+
+### Security - IP-005 Dependency Updates (2026-01-16)
+
+**26 vulnerabilities addressed across 11 packages:**
+
+#### Critical Fixes (Remote Code Execution)
+- **setuptools** >=67 → >=78.1.1: Fixes CVE-2024-6345, CVE-2025-47273 (path traversal RCE)
+- **jinja2** 3.1.2 → >=3.1.6: Fixes CVE-2024-56326, CVE-2024-56201 (sandbox escape RCE)
+- **cryptography** 41.0.7 → 46.0.3: Already updated, fixes CVE-2024-26130, CVE-2023-50782
+
+#### High Priority Fixes
+- **certifi** → >=2024.7.4: Fixes CVE-2024-39689 (root cert trust issue)
+- **filelock** → >=3.20.3: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)
+- **idna** → >=3.7: Fixes CVE-2024-3651 (DoS via quadratic complexity)
+- **requests** 2.31.0 → >=2.32.4: Fixes CVE-2024-35195, CVE-2024-47081 (TLS bypass)
+- **urllib3** 2.0.7 → >=2.6.3: Fixes CVE-2024-37891, CVE-2025-50181 (proxy issues)
+
+#### Medium Priority Fixes
+- **twisted** 24.3.0 → >=24.7.0: Fixes CVE-2024-41810, CVE-2024-41671 (XSS, HTTP pipelining)
+- **configobj** 5.0.8 → >=5.0.9: Fixes CVE-2023-26112 (ReDoS)
+
 ### Planned
 - OpenTelemetry integration for distributed tracing
 - Plugin architecture for custom adapters
