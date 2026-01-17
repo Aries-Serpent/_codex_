@@ -71,7 +71,7 @@ except ImportError:
 try:
     from cryptography.fernet import Fernet
     from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 except ImportError:
     print("Error: cryptography not installed. Run: pip install cryptography")
     sys.exit(1)
@@ -97,8 +97,8 @@ class JWTSecretRotator:
         return secrets.token_urlsafe(length)
     
     def derive_encryption_key(self, password: str, salt: bytes) -> bytes:
-        """Derive encryption key from master key using PBKDF2."""
-        kdf = PBKDF2(
+        """Derive encryption key from master key using PBKDF2HMAC."""
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,

@@ -10,6 +10,7 @@ on:
     - cron: '0 9 * * *'
 
 permissions:
+  contents: read
   security-events: read
   issues: write
   pull-requests: write
