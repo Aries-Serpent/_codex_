@@ -372,11 +372,12 @@ def create_embedding_provider(
     **kwargs,
 ) -> EmbeddingProvider:
     """
-    Factory function to create embedding providers with auto-fallback.
+    Factory function to create embedding providers with intelligent auto-fallback.
     
     Args:
-        provider_type: Type of provider ('auto', 'local', 'tfidf', or 'openai')
-                      'auto' tries 'local' first, falls back to 'tfidf'
+        provider_type: Type of provider ('auto', 'local', 'ollama', 'llamacpp', 
+                      'gpt4all', 'tfidf', or 'openai')
+                      'auto' tries best available provider
         model_name: Model name (uses defaults if not provided)
         use_cache: Whether to wrap provider with caching layer
         cache_dir: Cache directory
@@ -386,36 +387,100 @@ def create_embedding_provider(
         Embedding provider (optionally wrapped with caching)
         
     Provider Types:
-        - 'auto': Tries sentence-transformers, falls back to TF-IDF (recommended)
+        - 'auto': Intelligent selection (sentence-transformers → Ollama → llama.cpp → GPT4All → TF-IDF)
         - 'local': sentence-transformers (requires model download)
+        - 'ollama': Ollama server (requires running Ollama)
+        - 'llamacpp': llama.cpp (requires GGUF model file)
+        - 'gpt4all': GPT4All (requires gpt4all package)
         - 'tfidf': TF-IDF (offline-capable, no setup)
         - 'openai': OpenAI API (requires API key)
     """
-    # Auto-fallback logic
+    # Auto-fallback logic with intelligent provider selection
     if provider_type == "auto":
         logger.info("Auto-selecting embedding provider...")
+        
+        # Priority 1: Try sentence-transformers (best quality, requires internet for first download)
         try:
-            # Try sentence-transformers first
             logger.info("Attempting sentence-transformers provider")
-            model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
+            model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
             provider = LocalSentenceTransformerProvider(
-                model_name=model_name, **kwargs
+                model_name=model_name_st, **kwargs
             )
             logger.info("✓ Using sentence-transformers provider")
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
         except Exception as e:
-            # Fall back to TF-IDF
-            logger.warning(
-                f"Failed to load sentence-transformers: {e}"
-            )
-            logger.info("Falling back to TF-IDF provider (offline-capable)")
-            max_features = kwargs.get("max_features", 384)
-            provider = TfidfEmbeddingProvider(max_features=max_features)
-            logger.info("✓ Using TF-IDF provider")
+            logger.debug(f"sentence-transformers unavailable: {e}")
+        
+        # Priority 2: Try Ollama (good quality, local server)
+        try:
+            from .providers.ollama_provider import OllamaEmbeddingProvider
+            logger.info("Attempting Ollama provider")
+            model_name_ollama = model_name or "nomic-embed-text"
+            provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)
+            if provider._check_health():
+                logger.info("✓ Using Ollama provider")
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            else:
+                logger.debug("Ollama server not running")
+        except Exception as e:
+            logger.debug(f"Ollama unavailable: {e}")
+        
+        # Priority 3: Try llama.cpp (excellent performance, requires model file)
+        if "model_path" in kwargs:
+            try:
+                from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+                logger.info("Attempting llama.cpp provider")
+                provider = LlamaCppEmbeddingProvider(**kwargs)
+                logger.info("✓ Using llama.cpp provider")
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            except Exception as e:
+                logger.debug(f"llama.cpp unavailable: {e}")
+        
+        # Priority 4: Try GPT4All (easy setup, good quality)
+        try:
+            from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+            logger.info("Attempting GPT4All provider")
+            model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
+            provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)
+            logger.info("✓ Using GPT4All provider")
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
+        except Exception as e:
+            logger.debug(f"GPT4All unavailable: {e}")
+        
+        # Priority 5: Fall back to TF-IDF (always works, offline)
+        logger.info("Falling back to TF-IDF provider (offline-capable)")
+        max_features = kwargs.get("max_features", 384)
+        provider = TfidfEmbeddingProvider(max_features=max_features)
+        logger.info("✓ Using TF-IDF provider")
     
     # Explicit provider selection
     elif provider_type == "local":
         model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
         provider = LocalSentenceTransformerProvider(model_name=model_name, **kwargs)
+    
+    elif provider_type == "ollama":
+        from .providers.ollama_provider import OllamaEmbeddingProvider
+        model_name = model_name or "nomic-embed-text"
+        provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)
+    
+    elif provider_type == "llamacpp":
+        from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+        if "model_path" not in kwargs:
+            raise ValueError("llama.cpp provider requires 'model_path' parameter")
+        provider = LlamaCppEmbeddingProvider(**kwargs)
+    
+    elif provider_type == "gpt4all":
+        from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+        model_name = model_name or "nomic-embed-text-v1.5"
+        provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)
     
     elif provider_type == "tfidf":
         max_features = kwargs.get("max_features", 384)
@@ -445,7 +510,7 @@ def create_embedding_provider(
     else:
         raise ValueError(
             f"Unknown provider type: {provider_type}. "
-            f"Choose from: auto, local, tfidf, openai"
+            f"Choose from: auto, local, ollama, llamacpp, gpt4all, tfidf, openai"
         )
 
 
