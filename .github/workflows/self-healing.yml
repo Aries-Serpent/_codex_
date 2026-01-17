@@ -50,14 +50,19 @@ jobs:
           fetch-depth: 0
       
       - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache-tier: 'common'
       
       - name: Install Dependencies
         run: |
           pip install click pyyaml --quiet
+      
+      - name: Setup Cached Environment
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.11'
+          cache-tier: 'common'
       
       - name: Get Workflow Run ID
         id: get_run_id
@@ -267,6 +272,15 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          pip install pyyaml --quiet
+      
+      - name: Setup Cached Environment
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
