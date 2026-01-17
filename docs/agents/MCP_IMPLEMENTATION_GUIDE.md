@@ -261,6 +261,6 @@ Before completing any MCP implementation:
 
 ## Related Resources
 
-- [Copilot MCP Integration Guide](../../.github/Copilot_MCP_Integration.md)
+- [Copilot MCP Integration Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.github/Copilot_MCP_Integration.md)
 - [Operational Runbook](../plans/operational_runbook.md)
 - [Plan Status Dashboard](../plans/PLAN_STATUS_DASHBOARD.md)

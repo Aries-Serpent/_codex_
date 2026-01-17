@@ -382,9 +382,9 @@ pip install rouge-score
 
 ## Related Documentation
 
-- [Evaluation Guide](evaluation/README.md) - End-to-end evaluation workflows
+- [Evaluation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/evaluation/README.md) - End-to-end evaluation workflows
 - [Plugin API](plugins/Plugin_API_Broader.md) - Custom metric registration
-- [Testing Guide](../tests/README.md) - Testing metrics with optional dependencies
+- [Testing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing metrics with optional dependencies
 
 ## References
 

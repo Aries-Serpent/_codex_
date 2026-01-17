@@ -38,7 +38,7 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [agents/README.md](../agents/README.md) | Agent architecture overview | Developers |
+| [agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) | Agent architecture overview | Developers |
 | [agents/MCP_IMPLEMENTATION_GUIDE.md](agents/MCP_IMPLEMENTATION_GUIDE.md) | MCP integration for agents | Developers |
 | [AGENT_CONTINUATION_PROMPT.md](plans/AGENT_CONTINUATION_PROMPT.md) | Continuation protocol | AI Agents |
 | [ADVANCED_PHYSICS_GUIDE.md](ADVANCED_PHYSICS_GUIDE.md) | Physics-based orchestration | ML Engineers |
@@ -186,7 +186,7 @@ Each topic has **one canonical document**. All other references should link to i
 | **MCP Packaging** | [mcp/PACKAGING_GUIDE.md](mcp/PACKAGING_GUIDE.md) |
 | **Testing** | [guides/TESTING_GUIDE.md](guides/TESTING_GUIDE.md) |
 | **Code Style** | [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md) |
-| **Agent System** | [agents/README.md](../agents/README.md) |
+| **Agent System** | [agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) |
 | **Operations** | [runbooks/](runbooks/) |
 
 ### Document Metadata

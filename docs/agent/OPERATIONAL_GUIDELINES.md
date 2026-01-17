@@ -472,7 +472,7 @@ When approaching limits:
 ## Support & Resources
 
 ### Documentation
-- [Genesis Setup Guide](./admin/GENESIS_SETUP_GUIDE.md)
+- [Genesis Setup Guide](../admin/GENESIS_SETUP_GUIDE.md)
 - [Autonomous Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/AUTONOMOUS_AGENT_README.md)
 - [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)
 

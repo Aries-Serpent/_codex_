@@ -428,8 +428,8 @@ class TestGenesisWorkflow:
 
 ### Documentation
 - [Phase 1 Implementation Summary](/tmp/IMPLEMENTATION_SUMMARY.md)
-- [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
-- [Agent Operational Guidelines](./agent/OPERATIONAL_GUIDELINES.md)
+- [Genesis Setup Guide](./GENESIS_SETUP_GUIDE.md)
+- [Agent Operational Guidelines](../agent/OPERATIONAL_GUIDELINES.md)
 
 ### External Resources
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)

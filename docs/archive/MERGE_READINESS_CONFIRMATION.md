@@ -278,9 +278,9 @@ Create issues/PRs for:
 ## 📧 Contact
 
 For questions or clarifications:
-- Review the detailed [BRANCH_VERIFICATION_REPORT.md](BRANCH_VERIFICATION_REPORT.md)
+- Review the detailed [BRANCH_VERIFICATION_REPORT.md](./BRANCH_VERIFICATION_REPORT.md)
 - Contact repository maintainers
-- Refer to [AGENTS.md](AGENTS.md) for repository guidelines
+- Refer to [AGENTS.md](../agents.md) for repository guidelines
 
 ---
 
