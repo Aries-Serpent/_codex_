@@ -669,5 +669,153 @@ def metrics(
         raise typer.Exit(1)
 
 
+@app.command()
+def benchmark(
+    benchmark_type: str = typer.Option(
+        "all",
+        "--type",
+        "-t",
+        help="Benchmark type: embedding, indexing, retrieval, e2e, all"
+    ),
+    corpus_size: Optional[int] = typer.Option(
+        None,
+        "--corpus-size",
+        "-c",
+        help="Corpus size for benchmarks (defaults vary by type)"
+    ),
+    runs: int = typer.Option(
+        5,
+        "--runs",
+        "-r",
+        help="Number of runs per benchmark"
+    ),
+    output: Optional[str] = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output file for results (JSON or CSV)"
+    ),
+    baseline: Optional[str] = typer.Option(
+        None,
+        "--baseline",
+        "-b",
+        help="Baseline JSON file for regression detection"
+    ),
+    threshold: float = typer.Option(
+        10.0,
+        "--threshold",
+        help="Regression threshold percentage"
+    ),
+):
+    """
+    Run performance benchmarks on RAG pipeline.
+    
+    Benchmark types:
+    - embedding: Test embedding provider latency and throughput
+    - indexing: Test indexing performance with various corpus sizes
+    - retrieval: Test query latency and accuracy
+    - e2e: Test complete end-to-end pipeline
+    - all: Run all benchmarks
+    """
+    try:
+        from codex.rag.benchmarks import (
+            benchmark_embedding_providers,
+            benchmark_indexing,
+            benchmark_retrieval,
+            benchmark_e2e_pipeline
+        )
+        
+        console.print(f"[bold blue]🔬 Running {benchmark_type} benchmarks...[/bold blue]")
+        
+        results = []
+        
+        if benchmark_type in ["embedding", "all"]:
+            console.print("[cyan]→ Benchmarking embedding providers...[/cyan]")
+            result = benchmark_embedding_providers(runs=runs)
+            results.extend(result["results"])
+        
+        if benchmark_type in ["indexing", "all"]:
+            console.print("[cyan]→ Benchmarking indexing performance...[/cyan]")
+            corpus_sizes = [corpus_size] if corpus_size else [100, 1000, 10000]
+            result = benchmark_indexing(corpus_sizes=corpus_sizes, runs=runs)
+            results.extend(result["results"])
+        
+        if benchmark_type in ["retrieval", "all"]:
+            console.print("[cyan]→ Benchmarking retrieval performance...[/cyan]")
+            index_sizes = [corpus_size] if corpus_size else [100, 1000, 10000]
+            result = benchmark_retrieval(index_sizes=index_sizes, runs=runs)
+            results.extend(result["results"])
+        
+        if benchmark_type in ["e2e", "all"]:
+            console.print("[cyan]→ Benchmarking end-to-end pipeline...[/cyan]")
+            corpus_sizes = [corpus_size] if corpus_size else [100, 1000]
+            result = benchmark_e2e_pipeline(corpus_sizes=corpus_sizes, runs=runs)
+            results.extend(result["results"])
+        
+        # Display summary table
+        table = Table(title="Benchmark Results")
+        table.add_column("Benchmark", style="cyan")
+        table.add_column("Duration (ms)", justify="right")
+        table.add_column("Memory (MB)", justify="right")
+        table.add_column("Status", justify="center")
+        
+        for r in results:
+            status = "✅" if r["success"] else "❌"
+            table.add_row(
+                r["name"],
+                f"{r['duration_ms']:.2f}",
+                f"{r['memory_mb']:.2f}",
+                status
+            )
+        
+        console.print(table)
+        
+        # Export results
+        if output:
+            import json
+            output_path = Path(output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            if output.endswith('.json'):
+                with open(output, 'w') as f:
+                    json.dump({"results": results}, f, indent=2)
+                console.print(f"[green]✅ Results exported to {output}[/green]")
+            elif output.endswith('.csv'):
+                import csv
+                with open(output, 'w', newline='') as f:
+                    if results:
+                        writer = csv.DictWriter(f, fieldnames=results[0].keys())
+                        writer.writeheader()
+                        writer.writerows(results)
+                console.print(f"[green]✅ Results exported to {output}[/green]")
+        
+        # Check for regressions
+        if baseline:
+            from codex.rag.benchmarks.runner import BenchmarkRunner
+            runner = BenchmarkRunner()
+            runner.results = [type('obj', (), r) for r in results]
+            
+            comparison = runner.compare_with_baseline(baseline, threshold)
+            
+            if comparison["has_regressions"]:
+                console.print("\n[red]⚠️  Performance regressions detected:[/red]")
+                for reg in comparison["regressions"]:
+                    console.print(
+                        f"  • {reg['name']}: "
+                        f"{reg['duration_change_percent']:.1f}% slower"
+                    )
+                raise typer.Exit(1)
+            else:
+                console.print("\n[green]✅ No performance regressions detected[/green]")
+    
+    except ImportError as e:
+        console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"[red]❌ Benchmark failed: {e}[/red]")
+        logger.exception("Benchmark error")
+        raise typer.Exit(1)
+
+
 if __name__ == "__main__":
     app()
