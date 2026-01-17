@@ -167,7 +167,7 @@ echo "✓ API docs validation passed"
 
 ## Related Documentation
 
-- [API Documentation Guide](./api/index.md)
+- [API Documentation Guide](../api/index.md)
 - [Troubleshooting Guide](../troubleshooting/API_Docs_Troubleshooting.md)
 - [Build Script](https://github.com/Aries-Serpent/_codex_/blob/main/tools/build_api_docs.py)
 - [Validator Script](https://github.com/Aries-Serpent/_codex_/blob/main/tools/validate_api_docs.py)
