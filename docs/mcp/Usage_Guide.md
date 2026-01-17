@@ -1,4 +1,4 @@
-# MCP FAQ
+# MCP Usage Guide
 
 **Status**: Stub document - To be expanded  
 **Created**: 2026-01-17  
@@ -8,12 +8,11 @@
 
 ## Overview
 
-Frequently asked questions about the Model Context Protocol (MCP) integration.
+Guide for using the Model Context Protocol (MCP) integration.
 
 ## Related Documentation
 
 - [MCP Capabilities Reference](./MCP_CAPABILITIES_REFERENCE.md)
-- [MCP Implementation Summary](./MCP_IMPLEMENTATION_SUMMARY.md)
 
 ---
 

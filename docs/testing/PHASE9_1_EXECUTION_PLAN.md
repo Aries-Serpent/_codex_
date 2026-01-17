@@ -295,8 +295,8 @@ def test_end_to_end_workflow():
 
 - [Coverage 100% Roadmap](COVERAGE_100_ROADMAP.md)
 - [Testing Guide](../guides/TESTING_GUIDE.md)
-- [Agent README](../../agents/README.md)
-- [MCP System README](../../scripts/mcp/README.md)
+- [Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)
+- [MCP System README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md)
 
 ---
 

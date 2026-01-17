@@ -706,10 +706,10 @@
 ## 📚 REFERENCES
 
 - [Contributing Guidelines](CONTRIBUTING.md)
-- [Code Style Guide](docs/CODE_STYLE.md)
-- [Testing Guidelines](docs/TESTING.md)
+- [Code Style Guide](./guides/code_style_guide.md)
+- [Testing Guidelines](./CONTRIBUTING.md#testing)
 - [Security Policy](SECURITY.md)
-- [Archival Policy](AGENTS.md)
+- [Archival Policy](./agents.md)
 
 ---
 

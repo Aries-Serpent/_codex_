@@ -68,7 +68,19 @@ nav:
       - Review Checklist: review/diff_intake_confirmation.md
 repo_url: https://github.com/Aries-Serpent/_codex_
 repo_name: Aries-Serpent/_codex_
-strict: false  # TODO: enable strict once nav paths are verified
+strict: false  # TODO: enable strict once nav paths are verified (currently 149 warnings, target < 10)
+
+# Validation configuration (Phase 12.3)
+# Downgrade non-blocking warnings to info level
+validation:
+  nav:
+    omitted_files: info  # Files in docs/ not in nav
+    not_found: warn      # Keep nav reference errors as warnings
+  links:
+    not_found: warn      # Keep broken links as warnings
+    absolute_links: info # Downgrade absolute link warnings
+    unrecognized_links: info # Downgrade unrecognized link patterns
+
 markdown_extensions:
 - admonition
 - tables
