@@ -186,7 +186,7 @@ The project uses `.github/workflows/test-comprehensive.yml` for CI testing with 
 
 ### Coverage Requirements
 
-- **Current coverage**: ~27.5%
+- **Current coverage**: ~27.5% (as of 2026-01, subject to change)
 - **Target coverage**: 70%
 - Coverage reports are generated in XML (for CI) and HTML (for review)
 

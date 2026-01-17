@@ -6,6 +6,7 @@ This script checks that all required pytest plugins are installed and
 accessible before running the test suite.
 """
 
+import subprocess
 import sys
 from typing import List, Tuple
 
@@ -47,7 +48,7 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
         status information about argument support for display purposes.
         Success is True if all arguments are supported, False otherwise.
     """
-    import subprocess
+    import re
     
     try:
         result = subprocess.run(
@@ -61,7 +62,18 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
             return False, f"✗ pytest --help failed with code {result.returncode}"
         
         help_text = result.stdout
-        missing_args = [arg for arg in args if arg not in help_text]
+        missing_args = []
+        
+        # Use regex to match arguments more precisely
+        # Match as option in help text (with space/comma/equals after it)
+        for arg in args:
+            # Escape special regex chars
+            escaped_arg = re.escape(arg)
+            # Match: arg followed by space, comma, equals, or [ (for optional args)
+            # This prevents matching substrings while being flexible enough
+            pattern = re.compile(escaped_arg + r'[\s,=\[]', re.MULTILINE)
+            if not pattern.search(help_text):
+                missing_args.append(arg)
         
         if missing_args:
             return False, f"✗ pytest missing support for: {', '.join(missing_args)}"
