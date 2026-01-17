@@ -160,7 +160,6 @@ def build(
                 tenant_id=tenant_id,
                 chunk_size=chunk_size,
                 overlap=overlap,
-                model_profile={"model_name": model_name},
             )
             
             progress.update(task, completed=True)
