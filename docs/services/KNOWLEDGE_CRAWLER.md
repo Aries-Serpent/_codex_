@@ -114,10 +114,10 @@ pytest tests/services/test_zendesk_sync.py -v
 
 ## References
 
-- [Service Implementation](../src/services/crawler/zendesk_sync.py)
-- [Test Suite](../tests/services/test_zendesk_sync.py)
-- [Configuration](../configs/services/zendesk_crawler.yaml)
-- [PS-06 Planset](.github/plans/PLANSET_06_KNOWLEDGE_CRAWLER.md)
+- [Service Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/src/services/crawler/zendesk_sync.py)
+- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/services/test_zendesk_sync.py)
+- [Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/configs/services/zendesk_crawler.yaml)
+- [PS-06 Planset](https://github.com/Aries-Serpent/_codex_/blob/main/.github/plans/PLANSET_06_KNOWLEDGE_CRAWLER.md)
 
 ---
 

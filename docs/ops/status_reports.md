@@ -26,9 +26,9 @@ python tools/generate_status_update.py
 - **Questions & Decisions**: Tracking open questions and architectural decisions
 
 ### See also
-- **[tools/README_status_update.md](../../tools/README_status_update.md)** - Complete usage guide
-- **[schemas/codex_status_update.schema.json](../../schemas/codex_status_update.schema.json)** - JSON Schema v1.2
-- **[tests/test_status_update_generator.py](../../tests/test_status_update_generator.py)** - Test suite
+- **[tools/README_status_update.md](https://github.com/Aries-Serpent/_codex_/blob/main/tools/README_status_update.md)** - Complete usage guide
+- **[schemas/codex_status_update.schema.json](https://github.com/Aries-Serpent/_codex_/blob/main/schemas/codex_status_update.schema.json)** - JSON Schema v1.2
+- **[tests/test_status_update_generator.py](https://github.com/Aries-Serpent/_codex_/blob/main/tests/test_status_update_generator.py)** - Test suite
 
 ---
 

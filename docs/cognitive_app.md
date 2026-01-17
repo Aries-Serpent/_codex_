@@ -8,9 +8,9 @@ The Cognitive Codex App is a quantum-enhanced code generation platform with real
 
 - **Live Application:** [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/)
 - **Source Code:** [`/cognitive_app`](../../cognitive_app/)
-- **Integration Guide:** [cognitive_app/README_INTEGRATION.md](../../cognitive_app/README_INTEGRATION.md)
-- **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](../../cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
-- **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](../../cognitive_app/IMPLEMENTATION_STATUS.md)
+- **Integration Guide:** [cognitive_app/README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
+- **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
+- **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md)
 
 ## Features
 
@@ -214,17 +214,17 @@ VITE_CODEX_KEY=demo-key               # API key
 
 ## Documentation
 
-- **Integration Guide:** [README_INTEGRATION.md](../../cognitive_app/README_INTEGRATION.md)
-- **Master Plan:** [CODEX_INTEGRATION_MASTER_PLAN.md](../../cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) - Complete backend API specification
-- **Implementation Status:** [IMPLEMENTATION_STATUS.md](../../cognitive_app/IMPLEMENTATION_STATUS.md) - Detailed progress tracking
-- **Product Requirements:** [PRD.md](../../cognitive_app/PRD.md)
-- **Component README:** [src/components/quantum/README.md](../../cognitive_app/src/components/quantum/README.md)
+- **Integration Guide:** [README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
+- **Master Plan:** [CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) - Complete backend API specification
+- **Implementation Status:** [IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md) - Detailed progress tracking
+- **Product Requirements:** [PRD.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/PRD.md)
+- **Component README:** [src/components/quantum/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/src/components/quantum/README.md)
 
 ## Support
 
 For issues or questions:
-1. Check [IMPLEMENTATION_STATUS.md](../../cognitive_app/IMPLEMENTATION_STATUS.md) for known gaps
-2. Review [CODEX_INTEGRATION_MASTER_PLAN.md](../../cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) for architecture
+1. Check [IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md) for known gaps
+2. Review [CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) for architecture
 3. Consult component documentation in source files
 4. Open an issue in the repository
 

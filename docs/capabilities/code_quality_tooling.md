@@ -1,6 +1,6 @@
 # Code Quality Tooling
 
-> **Navigation**: [📖 Main README](../../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](../../.github/docs/GH_CLI_Resolution_Copilot.md)
+> **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview
 
@@ -435,8 +435,8 @@ git commit -m "feat: add new feature"
 - [pytest Documentation](https://docs.pytest.org/)
 - [pre-commit Documentation](https://pre-commit.com/)
 - [nox Documentation](https://nox.thea.codes/)
-- [Code Quality Workflow](../../.github/workflows/code-quality.yml)
-- [Project Configuration](../../pyproject.toml)
+- [Code Quality Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/code-quality.yml)
+- [Project Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)
 
 ---
 

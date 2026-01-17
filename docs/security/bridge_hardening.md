@@ -188,9 +188,9 @@ See `tests/integration/test_bridge_security.py` for security validation tests:
 
 ## References
 
-- [STRIDE Threat Model](../../../STRIDE.md)
-- [SECURITY.md](../../SECURITY.md)
-- [Bridge Manager Implementation](../../../src/bridge_manager.py)
+- [STRIDE Threat Model](https://github.com/Aries-Serpent/_codex_/blob/main/STRIDE.md)
+- [SECURITY.md](../SECURITY.md)
+- [Bridge Manager Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/src/bridge_manager.py)
 
 ## Compliance
 

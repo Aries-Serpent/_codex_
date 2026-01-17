@@ -170,15 +170,15 @@ Before concluding, perform 5-pass self-review:
 
 **Documentation**:
 - [Related Guide](../path/to/guide.md) - Description
-- [API Reference](../api/reference.md) - Description
+- [API Reference](../api/README.md) - Description
 
 **Other Prompts**:
-- [Related Prompt 1](related_prompt_1.md) - When to use
-- [Related Prompt 2](related_prompt_2.md) - When to use
+- Related Prompt 1 (placeholder) - When to use
+- Related Prompt 2 (placeholder) - When to use
 
 **Tools**:
-- [Tool 1](../../scripts/tool1.py) - Description
-- [Tool 2](../../scripts/tool2.sh) - Description
+- `scripts/tool1.py` (placeholder) - Description
+- `scripts/tool2.sh` (placeholder) - Description
 
 ---
 

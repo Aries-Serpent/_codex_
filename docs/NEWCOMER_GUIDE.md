@@ -332,11 +332,11 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 
 ### Key Zendesk Resources
 
-- [Zendesk Admin Workflow](docs/runbooks/zendesk_admin_workflow.md)
-- [End-to-End Support Workflows Plan](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
-- [AI Agent App Builder Guide](docs/zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
+- [Zendesk Admin Workflow](./runbooks/zendesk_admin_workflow.md)
+- [End-to-End Support Workflows Plan](./runbooks/zendesk_e2e_support_workflows_plan.md)
+- [AI Agent App Builder Guide](./zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
 - [Workflow Diagrams](docs/zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
-- [Zendesk First Cycle Verification](docs/checklists/zendesk_first_cycle_verification.md)
+- [Zendesk First Cycle Verification](./checklists/zendesk_first_cycle_verification.md)
 - [Zendesk API Reference](docs/zendesk_api_reference.md)
 
 ## Testing and Quality
@@ -374,7 +374,7 @@ All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results
 
-See [`tests/README.md`](../tests/README.md) for comprehensive testing instructions.
+See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) for comprehensive testing instructions.
 
 ### Code Quality Tools
 
@@ -407,10 +407,10 @@ Before committing:
 
 ### Documentation Resources
 
-1. **Start here**: [docs/README_ROOT.md](docs/README_ROOT.md)
+1. **Start here**: [docs/README_ROOT.md](./index.md)
 2. **Architecture**: [./ARCHITECTURE.md](./ARCHITECTURE.md)
 3. **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
-4. **Changelog**: [docs/CHANGELOG.md](docs/CHANGELOG.md)
+4. **Changelog**: [docs/CHANGELOG.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGELOG.md)
 5. **CLI Reference**: [./CLI.md](./CLI.md)
 
 ### Troubleshooting
@@ -425,7 +425,7 @@ Common issues and solutions:
 | Test failures | Check if optional deps installed or mocked |
 | Database lock errors | Set `CODEX_SQLITE_POOL=1` |
 
-See [docs/troubleshooting.md](docs/troubleshooting.md) for more.
+See [docs/troubleshooting.md](./troubleshooting.md) for more.
 
 ### Environment Variables
 
@@ -451,25 +451,25 @@ See `.github/copilot-instructions.md` for complete list.
 
 ### For ML Engineers
 
-1. Review [docs/guides/reasoning_overview.md](docs/guides/reasoning_overview.md)
-2. Explore [docs/examples/lora_quickstart.md](docs/examples/lora_quickstart.md)
-3. Study [docs/examples/training-configs.md](docs/examples/training-configs.md)
-4. Read [docs/resume_cookbook.md](docs/resume_cookbook.md)
-5. Check [docs/plugins.md](docs/plugins.md)
+1. Review [docs/guides/reasoning_overview.md](./guides/reasoning_overview.md)
+2. Explore [docs/examples/lora_quickstart.md](./examples/lora_quickstart.md)
+3. Study [docs/examples/training-configs.md](./examples/training-configs.md)
+4. Read [docs/resume_cookbook.md](./resume_cookbook.md)
+5. Check [docs/plugins.md](./plugins.md)
 
 ### For Support/DevOps Engineers
 
 1. Start with [./zendesk/ZENDESK_NEWCOMER_GUIDE.md](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 2. If available in your checkout, run `examples/zendesk/quickstart.sh` for interactive setup
 3. Review [./zendesk/WORKFLOW_DIAGRAMS.md](./zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
-4. Study [docs/runbooks/zendesk_admin_workflow.md](docs/runbooks/zendesk_admin_workflow.md)
-5. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
+4. Study [docs/runbooks/zendesk_admin_workflow.md](./runbooks/zendesk_admin_workflow.md)
+5. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](./runbooks/zendesk_e2e_support_workflows_plan.md)
 6. Practice with examples in `examples/zendesk/`
-7. Review [docs/checklists/zendesk_first_cycle_verification.md](docs/checklists/zendesk_first_cycle_verification.md)
+7. Review [docs/checklists/zendesk_first_cycle_verification.md](./checklists/zendesk_first_cycle_verification.md)
 
 ### For Zendesk App Developers
 
-1. Read [docs/zendesk/AI_AGENT_APP_BUILDER.md](docs/zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical model
+1. Read [docs/zendesk/AI_AGENT_APP_BUILDER.md](./zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical model
 2. Understand location manifold and capacity fields ($\mathcal{L}$, $\mathbf{s}(\ell)$)
 3. Learn capability spectrum ($\phi_d$ for each dimension)
 4. Study security constraints and forbidden operations ($\mathcal{F}$)
@@ -481,9 +481,9 @@ See `.github/copilot-instructions.md` for complete list.
 
 1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 2. Review [docs/templates/README.md](templates/README.md) for workflow templates
-3. Study [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)
-4. Check [docs/How_We_Release.md](docs/How_We_Release.md)
-5. Explore [noxfile.py](noxfile.py) for automation tasks
+3. Study [docs/QUALITY_GATES.md](./QUALITY_GATES.md)
+4. Check [docs/How_We_Release.md](./How_We_Release.md)
+5. Explore [noxfile.py](https://github.com/Aries-Serpent/_codex_/blob/main/noxfile.py) for automation tasks
 
 ### Learning Paths
 
