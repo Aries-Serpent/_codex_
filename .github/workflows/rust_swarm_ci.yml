@@ -240,7 +240,7 @@ jobs:
           fetch-depth: 0  # Fetch all history for comparison
       
       - name: Download benchmark results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: benchmark-results
       
@@ -273,16 +273,16 @@ jobs:
               echo "Storing current results as baseline for future comparison"
               
               # Create a simple report indicating baseline establishment
-              cat > coverage/benchmark_validation_report.txt << 'EOFreport'
-📊 Benchmark Validation Report
-=================================
-
-Status: Baseline Establishment
-This is the first run or baseline files are missing.
-Current benchmark results will serve as the baseline for future comparisons.
-
-Next runs will compare against this baseline to detect performance regressions.
-EOFreport
+              {
+                echo "Benchmark Validation Report"
+                echo "================================="
+                echo ""
+                echo "Status: Baseline Establishment"
+                echo "This is the first run or baseline files are missing."
+                echo "Current benchmark results will serve as the baseline for future comparisons."
+                echo ""
+                echo "Next runs will compare against this baseline to detect performance regressions."
+              } > coverage/benchmark_validation_report.txt
             }
           else
             echo "⚠️ scripts/validate_benchmarks.py not found"
