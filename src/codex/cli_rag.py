@@ -515,8 +515,8 @@ def merge(
         if result.success:
             console.print(f"\n[green]✅ Indices merged successfully![/green]")
             console.print(f"[dim]   Target: {target_index}[/dim]")
-            if result.chunks_count:
-                console.print(f"[dim]   Total chunks: {result.chunks_count}[/dim]")
+            if result.details and "chunks_count" in result.details:
+                console.print(f"[dim]   Total chunks: {result.details['chunks_count']}[/dim]")
         else:
             console.print(f"[red]❌ Merge failed: {result.message}[/red]")
             raise typer.Exit(1)
