@@ -65,9 +65,17 @@ class AuthResult:
 class APIKeyValidator:
     """API key validation with secure hashing."""
     
-    def __init__(self):
-        """Initialize API key validator."""
+    def __init__(self, secret_key: Optional[str] = None):
+        """
+        Initialize API key validator.
+        
+        Args:
+            secret_key: Secret key for HMAC hashing. If not provided, reads from environment.
+        """
+        import os
         self._keys: Dict[str, Dict[str, Any]] = {}  # hash -> key_info
+        # Use provided secret key or get from environment with secure fallback
+        self._secret_key = secret_key or os.environ.get("AUTH_SECRET_KEY", "codex-dev-secret-key-change-in-production")
     
     def register_key(self, key_hash: str, user_id: str, scopes: Optional[List[str]] = None,
                     name: str = "default") -> None:
@@ -75,7 +83,7 @@ class APIKeyValidator:
         Register an API key.
         
         Args:
-            key_hash: Hashed API key (use bcrypt or argon2)
+            key_hash: Hashed API key (use HMAC-SHA256 with secret key)
             user_id: Associated user ID
             scopes: Allowed scopes for this key
             name: Key name for identification
@@ -90,7 +98,7 @@ class APIKeyValidator:
     
     def validate_key(self, api_key: str) -> Optional[Dict[str, Any]]:
         """
-        Validate an API key.
+        Validate an API key using secure HMAC-SHA256 hashing.
         
         Args:
             api_key: The API key to validate
@@ -98,10 +106,15 @@ class APIKeyValidator:
         Returns:
             Key info dict if valid, None otherwise
         """
+        import hmac
         import hashlib
         
-        # Hash the provided key and check against stored hashes
-        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+        # Hash the provided key using HMAC-SHA256 with secret key
+        key_hash = hmac.new(
+            self._secret_key.encode(),
+            api_key.encode(),
+            hashlib.sha256
+        ).hexdigest()
         
         if key_hash in self._keys:
             key_info = self._keys[key_hash]
@@ -109,6 +122,27 @@ class APIKeyValidator:
             return key_info
         
         return None
+    
+    def hash_api_key(self, api_key: str) -> str:
+        """
+        Hash an API key using HMAC-SHA256.
+        
+        Use this method when registering API keys to get the secure hash.
+        
+        Args:
+            api_key: The API key to hash
+        
+        Returns:
+            HMAC-SHA256 hash of the API key
+        """
+        import hmac
+        import hashlib
+        
+        return hmac.new(
+            self._secret_key.encode(),
+            api_key.encode(),
+            hashlib.sha256
+        ).hexdigest()
     
     def revoke_key(self, key_hash: str) -> bool:
         """
