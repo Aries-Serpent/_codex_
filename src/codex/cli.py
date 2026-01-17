@@ -768,6 +768,13 @@ def _register_external_cli() -> None:
     )
     _register_typer_app(
         cli,
+        "rag",
+        "codex.cli_rag",
+        "app",
+        help_text="RAG index management and semantic search.",
+    )
+    _register_typer_app(
+        cli,
         "validate",
         "codex_ml.cli.validate",
         "app",

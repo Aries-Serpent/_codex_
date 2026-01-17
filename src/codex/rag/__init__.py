@@ -9,6 +9,7 @@ try:
         CachedEmbeddingProvider,
         LocalSentenceTransformerProvider,
         OpenAIEmbeddingProvider,
+        TfidfEmbeddingProvider,
         create_embedding_provider,
     )
     from .indexer import (
@@ -74,6 +75,7 @@ if _expanded_context_available:
             "CachedEmbeddingProvider",
             "LocalSentenceTransformerProvider",
             "OpenAIEmbeddingProvider",
+            "TfidfEmbeddingProvider",
             "create_embedding_provider",
             # Indexer
             "chunk_text",
