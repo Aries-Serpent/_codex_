@@ -122,10 +122,7 @@ jobs:
           
           # Check if triggered by comment
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
-            COMMENT_BODY=$(cat <<'EOF'
-${{ github.event.comment.body }}
-EOF
-            )
+            COMMENT_BODY='${{ github.event.comment.body }}'
             
             # Check for QA trigger phrases
             if echo "$COMMENT_BODY" | grep -qiE "@copilot qa (walkthrough|review|check)|@copilot quality assurance"; then
