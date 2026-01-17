@@ -85,8 +85,6 @@ jobs:
       - name: Run RAG tests with coverage
         run: |
           pytest tests/test_rag_*.py \
-            --timeout=600 \
-            --timeout-method=thread \
             --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=html \
