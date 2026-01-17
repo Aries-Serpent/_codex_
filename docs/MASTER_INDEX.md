@@ -12,7 +12,7 @@
 
 ### Quick Start
 - **New Users**: Start with [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
-- **Contributors**: See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributors**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
 - **Developers**: Check [Dev Guide](dev/CODE_STYLE_GUIDE.md)
 - **Operations**: Visit [Runbooks](runbooks/)
 
@@ -214,7 +214,7 @@ Obsolete docs moved to [archive/](archive/) with redirect notice.
 
 ## 🤝 Contributing to Documentation
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on:
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on:
 - Writing clear, concise documentation
 - Maintaining consistency
 - Adding new documentation

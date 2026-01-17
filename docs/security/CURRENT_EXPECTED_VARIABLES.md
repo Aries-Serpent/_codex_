@@ -218,7 +218,7 @@ All variables listed are compatible with:
 - **Token Setup**: [`docs/admin/security/ADMIN_TOKEN_SETUP.md`](../admin/security/ADMIN_TOKEN_SETUP.md)
 - **Encryption Tool**: [`scripts/security/token_encryption_tool.py`](../../scripts/security/token_encryption_tool.py)
 - **Decoder Module**: [`scripts/security/copilot_token_decoder.py`](../../scripts/security/copilot_token_decoder.py)
-- **Security Policy**: [`SECURITY.md`](../../SECURITY.md)
+- **Security Policy**: [`SECURITY.md`](.././SECURITY.md)
 - **Secrets Configuration**: [`.github/agents/SECRETS_CONFIGURATION.md`](../.github/agents/SECRETS_CONFIGURATION.md)
 - **Token Review**: [`docs/security/token_encryption_tool_review_2026-01-01.md`](token_encryption_tool_review_2026-01-01.md)
 

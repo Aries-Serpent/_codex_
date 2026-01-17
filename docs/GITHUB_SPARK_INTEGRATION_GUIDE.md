@@ -1589,7 +1589,7 @@ pip install mangum
 - **[Codebase Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
 - **[Codebase Dashboard](system/CODEBASE_DASHBOARD.md)** - Live metrics
 - **[Repository README](../README.md)** - Complete project documentation
-- **[AGENTS.md](../AGENTS.md)** - Autonomous agent system
+- **[AGENTS.md](./agents.md)** - Autonomous agent system
 - **[MCP Quick Start](mcp/QUICK_START.md)** - Package system guide
 - **[Advanced Physics Guide](ADVANCED_PHYSICS_GUIDE.md)** - 6 physics paradigms
 
@@ -1611,7 +1611,7 @@ pip install mangum
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/Aries-Serpent/_codex_/issues)
 - **Discussions**: [Ask questions](https://github.com/Aries-Serpent/_codex_/discussions)
-- **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing**: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 

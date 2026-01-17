@@ -1312,8 +1312,8 @@ Estimated time: 25 minutes
 ## 📚 Additional Resources
 
 - [Agent Implementation Details](./main.py)
-- [Security Best Practices](../SECURITY.md)
-- [Contributing Guidelines](../CONTRIBUTING.md)
+- [Security Best Practices](./SECURITY.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
 ```
 
 ---
@@ -1419,9 +1419,9 @@ Estimated time: 25 minutes
 ## 📚 Additional Documentation
 
 ### Related Documents
-- [Agents Architecture](../AGENTS.md)
-- [Security Guidelines](../SECURITY.md)
-- [Contributing Guidelines](../CONTRIBUTING.md)
+- [Agents Architecture](./agents.md)
+- [Security Guidelines](./SECURITY.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code Review Standards](../../docs/CODE_REVIEW_STANDARDS.md)
 
 ### External Resources

@@ -294,7 +294,7 @@ python scripts/security_audit.py
 
 ## 📚 References
 
-- [SECURITY.md](../SECURITY.md) - Main security policy
+- [SECURITY.md](./SECURITY.md) - Main security policy
 - [SECURITY_SCAN_REPORT.md](./SECURITY_SCAN_REPORT.md) - 25 code scanning findings
 - [SECURITY_REMEDIATION_SUMMARY.md](./SECURITY_REMEDIATION_SUMMARY.md) - Remediation details
 - [PYTORCH_MIGRATION_GUIDE.md](./PYTORCH_MIGRATION_GUIDE.md) - torch.load() migration

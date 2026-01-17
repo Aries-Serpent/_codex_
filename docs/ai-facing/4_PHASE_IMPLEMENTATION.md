@@ -379,7 +379,7 @@ All modules implement defensive programming:
 
 ## Related Documentation
 
-- [AGENTS.md](../../AGENTS.md) - Agent operations playbook
+- [AGENTS.md](.././agents.md) - Agent operations playbook
 - [MCP Developer Guide](../mcp/MCP_DEVELOPER_GUIDE.md) - MCP integration details
 - [Security Guide](../mcp/MCP_SECURITY_GUIDE.md) - Security best practices
 - [Tools Reference](../reference/tools.md) - Tool registry documentation

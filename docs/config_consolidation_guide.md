@@ -244,4 +244,4 @@ ls -la configs/base configs/production configs/development configs/experiments c
 
 - [Hydra Documentation](https://hydra.cc/)
 - [OmegaConf Documentation](https://omegaconf.readthedocs.io/)
-- [AGENTS.md](../AGENTS.md) - Repository conventions
+- [AGENTS.md](./agents.md) - Repository conventions

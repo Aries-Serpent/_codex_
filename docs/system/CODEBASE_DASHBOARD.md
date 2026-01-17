@@ -405,7 +405,7 @@ None active. All blockers resolved or have mitigation plans.
 ### Documentation
 - [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) - Architecture overview
 - [Roadmap](../ROADMAP.md) - Feature roadmap (coming soon)
-- [Contributing](../CONTRIBUTING.md) - Contribution guide
+- [Contributing](./CONTRIBUTING.md) - Contribution guide
 - [Architecture](../ARCHITECTURE.md) - Detailed architecture
 - [MCP Quick Start](../mcp/QUICK_START.md) - ChatGPT packaging
 
@@ -558,7 +558,7 @@ nox -s lint type format
 
 **Questions?** Check [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) for architecture details.
 
-**Want to contribute?** See [Contributing Guide](../CONTRIBUTING.md).
+**Want to contribute?** See [Contributing Guide](./CONTRIBUTING.md).
 
 **Need status?** This dashboard is your source of truth.
 

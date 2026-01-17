@@ -7,7 +7,7 @@ nav:
   - README: README_ROOT.md
   - Getting Started: getting-started.md
   - API Reference:
-      - Overview: api/README.md
+      - Overview: api/index.md
   - Guides:
       - Contributing: CONTRIBUTING.md
       - Code Style: guides/code_style_guide.md
@@ -52,7 +52,7 @@ nav:
       - DuckDB Option: database/duckdb_option.md
       - Datasette Option: database/datasette_option.md
   - Templates:
-      - Verification Checklist: templates/verification.md
+      - Overview: templates/README.md
   - Examples:
       - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.py
   - Ops:

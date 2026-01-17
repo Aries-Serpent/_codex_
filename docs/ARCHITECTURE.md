@@ -364,7 +364,7 @@ graph LR
 - **Dependency Scanning**: Automated vulnerability scanning via Dependabot
 - **Code Analysis**: Bandit for Python security issues
 
-See [SECURITY.md](../SECURITY.md) for vulnerability reporting.
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 
 ### Scalability
 

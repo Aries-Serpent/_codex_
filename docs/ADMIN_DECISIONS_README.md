@@ -207,7 +207,7 @@ Found an issue or have suggestions?
 
 ## 📚 Related Documentation
 
-- **[AGENTS.md](../AGENTS.md)** - Repository operations playbook
+- **[AGENTS.md](./agents.md)** - Repository operations playbook
 - **[ADVANCED_PHYSICS_GUIDE.md](./ADVANCED_PHYSICS_GUIDE.md)** - Physics paradigms integration
 - **[ADMIN_IMPLEMENTATION_GUIDE.md](./ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup guide
 - **[ADMIN_FAQ.md](./ADMIN_FAQ.md)** - Frequently asked questions

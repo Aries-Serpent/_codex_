@@ -24,9 +24,9 @@
 | Document | Purpose | Last Updated | Status |
 |----------|---------|--------------|--------|
 | [README.md](../README.md) | Project overview | Current | ✅ Active |
-| [AGENTS.md](../AGENTS.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
-| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines | Current | ✅ Active |
-| [SECURITY.md](../SECURITY.md) | Security policy | Current | ✅ Active |
+| [AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | Current | ✅ Active |
+| [SECURITY.md](./SECURITY.md) | Security policy | Current | ✅ Active |
 | [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community standards | Current | ✅ Active |
 | [GOVERNANCE.md](../GOVERNANCE.md) | Governance model | Current | ✅ Active |
 
@@ -126,7 +126,7 @@
 
 | Guide | Purpose | Updated |
 |-------|---------|---------|
-| [AGENTS.md](../AGENTS.md) | Comprehensive agent guide | 2025-12-10 |
+| [AGENTS.md](./agents.md) | Comprehensive agent guide | 2025-12-10 |
 | [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | Current |
 | [agents/prompts/README.md](../agents/prompts/README.md) | Prompts library | 2025-12-11 |
 
@@ -167,7 +167,7 @@
 | Document | Focus | Diagrams |
 |----------|-------|----------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | System architecture | Yes |
-| [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity | No |
+| [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity | No |
 | [T1_SOLUTION.md](../T1_SOLUTION.md) | T1 solution design | No |
 
 ### Implementation Plans
@@ -258,24 +258,24 @@
 **I want to...**
 
 - **Contribute code**: Start with [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
-- **Use AI Agents**: See [AGENTS.md](../AGENTS.md) and [agents/prompts/](../agents/prompts/)
+- **Use AI Agents**: See [AGENTS.md](./agents.md) and [agents/prompts/](../agents/prompts/)
 - **Understand architecture**: Read [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md)
 - **Debug issues**: Check [agents/prompts/debugging/](../agents/prompts/debugging/)
 - **Deploy the system**: See [deploy/](../deploy/) and [Dockerfile*](../Dockerfile)
 - **Run tests**: See [tests/](../tests/) and [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
-- **Understand MLOps**: Read [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)
-- **Report security issues**: Follow [SECURITY.md](../SECURITY.md)
+- **Understand MLOps**: Read [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md)
+- **Report security issues**: Follow [SECURITY.md](./SECURITY.md)
 
 ### By Audience
 
 **I am a...**
 
-- **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](../CONTRIBUTING.md)
-- **AI Agent**: [AGENTS.md](../AGENTS.md), [agents/prompts/](../agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md)
+- **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **AI Agent**: [AGENTS.md](./agents.md), [agents/prompts/](../agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md)
 - **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md)
 - **DevOps Engineer**: [deploy/](../deploy/), [.github/workflows/](../.github/workflows/), [docker-compose.yml](../docker-compose.yml)
-- **Security Researcher**: [SECURITY.md](../SECURITY.md), [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md)
-- **ML Engineer**: [training/](../training/), [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)
+- **Security Researcher**: [SECURITY.md](./SECURITY.md), [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md)
+- **ML Engineer**: [training/](../training/), [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md)
 
 ---
 

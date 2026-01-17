@@ -140,15 +140,15 @@ _... and 41 more files_
 
 ### agents/prompts/debugging/resolve-merge-conflicts.md
 
-- `[Codex contribution guidelines](../../CONTRIBUTING.md)` → Possible: ../../_codex_/docs/dev/CONTRIBUTING.md
+- `[Codex contribution guidelines](.././CONTRIBUTING.md)` → Possible: ../../_codex_/docs/dev/CONTRIBUTING.md
 
 ### agents/prompts/debugging/security-remediation.md
 
-- `[Codex Security Policy](../../SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
+- `[Codex Security Policy](.././SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
 
 ### agents/prompts/debugging/test-failure-debugging.md
 
-- `[Codex testing conventions](../../AGENTS.md#testing)` → No suggestion
+- `[Codex testing conventions](.././agents.md#testing)` → No suggestion
 
 ### configs/CONFIGURATION_STRUCTURE.md
 
@@ -171,11 +171,11 @@ _... and 41 more files_
 
 ### docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md
 
-- `[Security Best Practices](../../SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
-- `[Contributing Guidelines](../../CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
-- `[Agents Architecture](../../AGENTS.md)` → Possible: ../../_codex_/_codex_/AGENTS.md
-- `[Security Guidelines](../../SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
-- `[Contributing Guidelines](../../CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
+- `[Security Best Practices](.././SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
+- `[Contributing Guidelines](.././CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
+- `[Agents Architecture](.././agents.md)` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `[Security Guidelines](.././SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
+- `[Contributing Guidelines](.././CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
   _... and 1 more_
 
 _... and 27 more files_

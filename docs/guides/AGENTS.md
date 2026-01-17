@@ -37,7 +37,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-**See**: [Main AGENTS.md](../../AGENTS.md) | [Security Module Docs](../../src/codex/security/)
+**See**: [Main AGENTS.md](.././agents.md) | [Security Module Docs](../../src/codex/security/)
 
 ---
 
