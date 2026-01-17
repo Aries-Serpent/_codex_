@@ -300,7 +300,7 @@ git commit -m "docs: Add new prompt for [purpose]"
 
 ## 🤝 Contributing
 
-See [Contributing Guide](.././CONTRIBUTING.md) for:
+See [Contributing Guide](../CONTRIBUTING.md) for:
 - How to propose new prompts
 - Prompt review process
 - Quality standards

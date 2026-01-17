@@ -335,7 +335,7 @@ Context:
 - [Dashboard](../system/CODEBASE_DASHBOARD.md) - Status
 - [Roadmap](../ROADMAP.md) - Planning
 - [Master Index](../MASTER_INDEX.md) - Documentation hub
-- [CONTRIBUTING.md](.././CONTRIBUTING.md) - Contribution guide
+- [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guide
 
 ---
 

@@ -189,7 +189,7 @@ See `tests/integration/test_bridge_security.py` for security validation tests:
 ## References
 
 - [STRIDE Threat Model](../../../STRIDE.md)
-- [SECURITY.md](../.././SECURITY.md)
+- [SECURITY.md](../../SECURITY.md)
 - [Bridge Manager Implementation](../../../src/bridge_manager.py)
 
 ## Compliance

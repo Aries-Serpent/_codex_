@@ -97,6 +97,5 @@ See Hydra's docs for background on defaults lists and composition order.
 
 ## Related Documentation
 
-- [Main AGENTS.md](./agents.md) - Comprehensive operations playbook
 - [CTEP Protocol](/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
 - [CHANGELOG](CHANGELOG.md) - Version history

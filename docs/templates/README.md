@@ -48,7 +48,7 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 
 | Template | Key References |
 | --- | --- |
-| Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`AGENTS.md`](.././agents.md) |
+| Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`AGENTS.md`](../agents.md) |
 | Python File Relocation | [`sitecustomize.py`](../../sitecustomize.py), [`conftest.py`](../../conftest.py), [`tests/`](../../tests/) |
 | CLI Hardening | [`src/cli/`](../../src/cli/), [`tests/cli/`](../../tests/cli/), [`pyproject.toml`](../../pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](../../tests/conftest.py) |
