@@ -92,8 +92,8 @@ All prompts should follow this standard format:
 
 ## 📚 Related
 
-- [Related Prompt](other_prompt.md)
-- [Documentation](../path/to/doc.md)
+- [Related Prompt`other_prompt.md` (placeholder)
+- [Documentation`../path/to/doc.md` (placeholder)
 
 ---
 

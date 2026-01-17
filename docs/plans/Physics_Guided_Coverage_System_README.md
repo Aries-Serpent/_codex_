@@ -349,7 +349,7 @@ tools/
 - [Table 3: Multi-Orchestrator Patterns](./Physics_Equations_Multi_Orchestrator_Patterns.md) - 60 equations
 - [Table 4: Coverage Uplift Paths](./Physics_Equations_Coverage_Uplift_Paths.md) - 53 equations
 - [User Guide](./Coverage_Physics_Toolkit_UserGuide.md) - Complete usage documentation
-- [Toolkit Source](../../tools/coverage_physics_toolkit.py) - Implementation
+- [Toolkit Source](https://github.com/Aries-Serpent/_codex_/blob/main/tools/coverage_physics_toolkit.py) - Implementation
 
 ---
 

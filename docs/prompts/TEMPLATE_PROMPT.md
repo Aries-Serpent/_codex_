@@ -169,7 +169,7 @@ Before concluding, perform 5-pass self-review:
 ## 📚 Related Resources
 
 **Documentation**:
-- [Related Guide](../path/to/guide.md) - Description
+- [Related Guide`../path/to/guide.md` (placeholder) - Description
 - [API Reference](../api/README.md) - Description
 
 **Other Prompts**:

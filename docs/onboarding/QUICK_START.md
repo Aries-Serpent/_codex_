@@ -179,8 +179,8 @@ for issue in report.issues:
 | Document | Purpose |
 |----------|---------|
 | [AGENTS.md](../agents.md) | Agent development guide |
-| [ARCHITECTURE_BLUEPRINT.md](../../ARCHITECTURE_BLUEPRINT.md) | System architecture |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines |
+| [ARCHITECTURE_BLUEPRINT.md](../ARCHITECTURE_BLUEPRINT.md) | System architecture |
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines |
 | [API_REFERENCE.md](../API_REFERENCE.md) | API documentation |
 | [INCIDENT_RESPONSE.md](../operations/INCIDENT_RESPONSE.md) | Incident procedures |
 

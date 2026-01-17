@@ -508,7 +508,7 @@ This dataset includes [capability name] methodology. When working with this:
 
 ## Related Documentation
 
-- [MCP Package System README](../../scripts/mcp/README.md)
+- [MCP Package System README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md)
 - [Packaging Guide](PACKAGING_GUIDE.md)
 - [System Prompt Template](ChatGPT_Project_SYSTEM_PROMPT.md)
-- [Agent Architecture Documentation](../../agents/README.md)
+- [Agent Architecture Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)

@@ -575,7 +575,7 @@ manager.sandbox.enable_plugin(plugin_name)
 
 ## Support
 
-- **Documentation:** [docs/](./README_ROOT.md)
+- **Documentation:** [docs/](../README_ROOT.md)
 - **Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - **Architecture:** [Architecture Docs](../architecture/)
 

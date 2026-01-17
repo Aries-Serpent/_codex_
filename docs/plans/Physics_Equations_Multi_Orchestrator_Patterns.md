@@ -267,5 +267,5 @@ class TestCrossModuleIntegration:
 - [Table 1: Time Constraints](./Physics_Equations_Time_Constraints_Plan_Prompts.md)
 - [Table 2: Import Monitoring](./Physics_Equations_Monitor_Behavior_Plan_Prompts.md)
 - [Table 4: Coverage Uplift Paths](./Physics_Equations_Coverage_Uplift_Paths.md)
-- [Coverage Physics Toolkit](../../tools/coverage_physics_toolkit.py)
+- [Coverage Physics Toolkit](https://github.com/Aries-Serpent/_codex_/blob/main/tools/coverage_physics_toolkit.py)
 - [User Guide](./Coverage_Physics_Toolkit_UserGuide.md)
