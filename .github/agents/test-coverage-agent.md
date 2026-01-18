@@ -85,7 +85,12 @@ coverage:
   exclude_patterns:
     - "tests/*"
     - "*.pyi"
-    - "__init__.py"
+    # Only exclude empty __init__.py files, not those with logic
+    - "__init__.py"  # Consider content-based exclusion below
+  content_based_exclusions:
+    # Exclude __init__.py only if it contains only imports or is empty
+    - pattern: "__init__.py"
+      condition: "line_count < 10 and no_function_definitions"
 
 priority:
   critical_paths:

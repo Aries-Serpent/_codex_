@@ -255,11 +255,56 @@ Use these markers to categorize tests:
 
 ### Do
 
-- Write descriptive test names
-- Use fixtures for setup/teardown
-- Mock external dependencies
-- Test edge cases and error conditions
+- Write descriptive test names that explain the scenario
+- Use fixtures for setup/teardown to maintain test isolation
+- Mock external dependencies (APIs, databases, file systems)
+- Test edge cases and error conditions explicitly
 - Use parametrized tests for multiple inputs
+- Keep assertions granular - one logical assertion per test when possible
+- Use clear assertion messages for debugging
+- Manage test data in fixtures, not inline
+- Clean up resources in teardown (or use context managers)
+- Document complex test scenarios with docstrings
+
+### Test Isolation
+
+- Each test should be independent and runnable alone
+- Don't rely on side effects from other tests
+- Use fresh fixtures for each test
+- Reset global state if modified
+
+### Assertion Granularity
+
+```python
+# Good: Granular assertions with messages
+def test_user_creation():
+    user = create_user(name="test", email="test@example.com")
+    assert user is not None, "User should be created"
+    assert user.name == "test", f"Expected name 'test', got '{user.name}'"
+    assert user.email == "test@example.com"
+
+# Avoid: Compound assertions that obscure failure cause
+def test_user_creation_bad():
+    user = create_user(name="test", email="test@example.com")
+    assert user and user.name == "test" and user.email == "test@example.com"
+```
+
+### Test Data Management
+
+```python
+# Good: Test data in fixtures
+@pytest.fixture
+def sample_user_data():
+    return {"name": "test", "email": "test@example.com"}
+
+def test_create_user(sample_user_data):
+    user = create_user(**sample_user_data)
+    assert user.name == sample_user_data["name"]
+
+# Avoid: Inline test data
+def test_create_user_bad():
+    user = create_user(name="test", email="test@example.com")  # Duplicated data
+```
 
 ### Don't
 

@@ -67,8 +67,16 @@ class TestCLIHelp:
             text=True,
             check=False,
         )
-        # Most CLIs exit 0 on --help
-        assert result.returncode == 0 or "Usage:" in result.stdout or "usage:" in result.stdout
+        # Verify help output
+        output = result.stdout + result.stderr
+        has_usage = "Usage:" in output or "usage:" in output
+        
+        if result.returncode != 0 and not has_usage:
+            pytest.fail(
+                f"Help command failed: exit={result.returncode}, "
+                f"stdout={result.stdout[:200]}, stderr={result.stderr[:200]}"
+            )
+        assert result.returncode == 0 or has_usage, "Help should succeed or show usage"
 
     @pytest.mark.smoke
     def test_version_displays_version_string(self) -> None:

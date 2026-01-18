@@ -20,11 +20,20 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Conditional imports for optional dependencies
-try:
-    import torch
-    TORCH_AVAILABLE = True
-except ImportError:
-    TORCH_AVAILABLE = False
+def _check_torch_available() -> bool:
+    """Check if PyTorch is installed and functional."""
+    try:
+        import torch
+        # Verify torch is actually functional, not just importable
+        if not hasattr(torch, 'tensor'):
+            return False
+        # Try to create a simple tensor to verify functionality
+        _ = torch.zeros(1)
+        return True
+    except Exception:
+        return False
+
+TORCH_AVAILABLE = _check_torch_available()
 
 # Module under test - update these imports
 # from codex_ml.training import unified_training
