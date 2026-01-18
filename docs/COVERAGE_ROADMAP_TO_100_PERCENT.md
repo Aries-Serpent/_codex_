@@ -481,13 +481,13 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 **CLI Tests (55+ tests):**
 - [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py` ✅ CREATED
 - [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py` ✅ CREATED
-- [ ] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py`
-- [ ] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py`
+- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py` ✅ CREATED
+- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py` ✅ CREATED
 
 **Data Tests (60+ tests):**
 - [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py` ✅ CREATED
 - [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py` ✅ CREATED
-- [ ] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py`
+- [x] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py` ✅ CREATED
 
 **Training Tests (65+ tests):**
 - [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py` ✅ CREATED
@@ -497,10 +497,10 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 **Phase 14.1 Progress Summary:**
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| CLI Tests | 55+ | 40+ | 73% |
-| Data Tests | 60+ | 50+ | 83% |
+| CLI Tests | 55+ | 60+ | ✅ 100% |
+| Data Tests | 60+ | 65+ | ✅ 100% |
 | Training Tests | 65+ | 50+ | 77% |
-| **Total** | **180+** | **140+** | **78%** |
+| **Total** | **180+** | **175+** | **97%** |
 
 **Owner:** Phase 14 implementation team  
 **Review Cadence:** Weekly coverage review

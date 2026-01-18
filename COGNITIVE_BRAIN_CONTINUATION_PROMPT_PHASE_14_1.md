@@ -14,17 +14,17 @@
 ### Pre-commit 1: CLI Tests ✅ COMPLETE
 - [x] `tests/cli/test_main_coverage.py` - 25 tests created
 - [x] `tests/cli/test_train_coverage.py` - 15+ tests created
-- [ ] `tests/cli/test_metrics_coverage.py` - Pending
-- [ ] `tests/cli/test_hydra_coverage.py` - Pending
+- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests created
+- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests created
 
-### Pre-commit 2: Data Tests ✅ MOSTLY COMPLETE
+### Pre-commit 2: Data Tests ✅ COMPLETE
 - [x] `tests/data/test_loader_coverage.py` - 30 tests created
 - [x] `tests/data/test_validation_coverage.py` - 20+ tests created
-- [ ] `tests/data/test_split_coverage.py` - Pending
+- [x] `tests/data/test_split_coverage.py` - 15+ tests created
 
 ### Pre-commit 3: Training Tests ✅ MOSTLY COMPLETE
 - [x] `tests/training/test_unified_coverage.py` - 35 tests created
-- [ ] `tests/training/test_legacy_coverage.py` - Pending
+- [ ] `tests/training/test_legacy_coverage.py` - Pending (20 tests)
 - [x] `tests/training/test_strategies_coverage.py` - 15+ tests created
 
 ### Tests Created This Session
@@ -32,11 +32,14 @@
 |------|------------|--------|
 | `tests/cli/test_main_coverage.py` | 25+ | ✅ Created |
 | `tests/cli/test_train_coverage.py` | 15+ | ✅ Created |
+| `tests/cli/test_metrics_coverage.py` | 10+ | ✅ Created |
+| `tests/cli/test_hydra_coverage.py` | 10+ | ✅ Created |
 | `tests/data/test_loader_coverage.py` | 30+ | ✅ Created |
 | `tests/data/test_validation_coverage.py` | 20+ | ✅ Created |
+| `tests/data/test_split_coverage.py` | 15+ | ✅ Created |
 | `tests/training/test_unified_coverage.py` | 35+ | ✅ Created |
 | `tests/training/test_strategies_coverage.py` | 15+ | ✅ Created |
-| **Total** | **140+** | ✅ |
+| **Total** | **175+** | ✅ |
 
 ---
 
