@@ -125,6 +125,8 @@ manifests/k8s/*/secret.yaml
 !.codex/sbom/.gitkeep
 !.codex/plans/
 !.codex/plans/**
+!.codex/agents/
+!.codex/agents/**
 !.codex/cognitive_brain/
 !.codex/cognitive_brain/**
 !.codex/patterns/
@@ -159,6 +161,9 @@ manifests/k8s/*/secret.yaml
 !.codex/*NEXT*.md
 !.codex/*REPORT*.md
 !.codex/*ASSESSMENT*.md
+!.codex/*ROOT_CAUSE*.md
+!.codex/*ANALYSIS*.md
+!.codex/*VERIFICATION*.md
 # Block validation artifacts but keep structure
 .codex/validation/
 
