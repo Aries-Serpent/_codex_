@@ -245,7 +245,7 @@ class TestDocstringCoverage:
         
         if functions_checked > 0:
             coverage = functions_with_docs / functions_checked
-            # Target: at least 50% docstring coverage
+            # Target: at least 30% docstring coverage (baseline)
             assert coverage >= 0.3, (
                 f"Public function docstring coverage {coverage:.0%} < 30%"
             )

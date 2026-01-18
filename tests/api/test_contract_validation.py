@@ -161,9 +161,13 @@ class TestRequestResponseContracts:
         for py_file in SRC_DIR.rglob("*.py"):
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
-                # Find endpoint decorators
-                pattern = r"@(app|router)\.(get|post|put|delete|patch)\s*\([^)]*\)\s*\n(?:@\w+[^)]*\)\s*\n)*\s*(?:async\s+)?def\s+(\w+)"
-                matches = re.findall(pattern, content)
+                # Find endpoint decorators with function definitions
+                # Pattern matches: @app.get/post/etc followed by optional decorators, then def
+                endpoint_pattern = (
+                    r"@(app|router)\.(get|post|put|delete|patch)\s*\([^)]*\)\s*\n"
+                    r"(?:@\w+[^)]*\)\s*\n)*\s*(?:async\s+)?def\s+(\w+)"
+                )
+                matches = re.findall(endpoint_pattern, content)
                 for match in matches:
                     handlers.append((py_file, match[2]))
             except (UnicodeDecodeError, OSError):

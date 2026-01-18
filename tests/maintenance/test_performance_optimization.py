@@ -180,7 +180,8 @@ class TestTestCaching:
             except (UnicodeDecodeError, OSError):
                 continue
         
-        # Just track, don't fail
+        # Track heavy import ratio for monitoring (informational only)
         if total_files > 0:
-            ratio = files_with_heavy / total_files
-            # Log ratio
+            heavy_import_ratio = files_with_heavy / total_files
+            # Heavy imports are acceptable but should be monitored
+            # This test passes but logs the ratio for awareness
