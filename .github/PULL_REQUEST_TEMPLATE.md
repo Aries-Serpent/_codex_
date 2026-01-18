@@ -3,7 +3,7 @@
 > **Version:** 2.1.0  
 > **Updated:** 2026-01-18  
 > **Repository:** Aries-Serpent/_codex_  
-> **Status:** 🏆 Level 4 MLOps Certified | 960+ Tests | 85% Coverage Threshold
+> **Status:** 🏆 Level 4 MLOps Certified | 1225+ Tests | 90% Coverage Threshold
 
 ---
 
@@ -14,8 +14,8 @@
 **📋 Follow-Up Prompt**: See `COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_*.md` for active prompts
 
 ### Quick Reference
-- **Test Count:** 960+ (Phase 14-16 complete)
-- **Coverage Threshold:** 85% (pyproject.toml)
+- **Test Count:** 1225+ (Phase 14-17 complete)
+- **Coverage Threshold:** 90% (pyproject.toml)
 - **Python Versions:** 3.11, 3.12
 
 ---
