@@ -78,4 +78,6 @@ python-source = "src"
 
 [features]
 default = []
+# Python bindings feature - controls compilation of PyO3 Python module bindings
+python = []
 # extension-module feature will be enabled by maturin during Python builds
