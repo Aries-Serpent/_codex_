@@ -86,13 +86,22 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           # Install pytest plugins first to ensure they're available before editable install
-          pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures pytest-randomly
+          # Version pinning for reproducible builds
+          pip install \
+            pytest==9.0.2 \
+            pytest-cov==7.0.0 \
+            pytest-xdist==3.8.0 \
+            pytest-timeout==2.3.1 \
+            pytest-rerunfailures==14.0 \
+            pytest-randomly==3.16.0
           pip install -e ".[test]" || pip install -e .
 
       - name: Verify pytest plugins
+        id: validate_plugins
         run: |
           python scripts/validate_test_env.py
-        continue-on-error: true  # Don't fail build on validation issues
+        # Note: continue-on-error removed to fail fast on plugin issues
+        # If this step fails, fix the plugin installation rather than masking the error
 
       - name: Install optional RAG dependencies
         continue-on-error: true

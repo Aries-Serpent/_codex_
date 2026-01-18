@@ -438,12 +438,14 @@ precision = 2
 # Current measured coverage: 2.87% (CI) / 27.5% (local)
 # Target coverage: 100% (see docs/COVERAGE_ROADMAP_TO_100_PERCENT.md)
 # The gap is due to xdist worker crashes and test discovery issues.
-# This will be incrementally raised as coverage improves per plansets:
-# - Phase 14.1: 30% target
-# - Phase 14.2: 50% target
-# - Phase 14.3: 70% target
-# - Phase 14.4: 85% target
-# - Phase 15+: 100% target
+#
+# TODO: Restore threshold incrementally as coverage improves:
+# - Phase 14.1: Raise to 30% (target: 2026-02-01)
+# - Phase 14.2: Raise to 50% (target: 2026-02-15)
+# - Phase 14.3: Raise to 70% (target: 2026-03-01)
+# - Phase 14.4: Raise to 85% (target: 2026-03-15)
+# - Phase 15+: Raise to 100% (target: 2026-04-01)
+# Owner: @mbaetiong
 fail_under = 0
 exclude_lines = [
     "pragma: no cover",
