@@ -1,9 +1,9 @@
 # Pull Request Template
 
-> **Version:** 2.0.0  
+> **Version:** 2.1.0  
 > **Updated:** 2026-01-18  
 > **Repository:** Aries-Serpent/_codex_  
-> **Status:** 🏆 Level 4 MLOps Certified | 800+ Tests | 85% Coverage Threshold
+> **Status:** 🏆 Level 4 MLOps Certified | 960+ Tests | 85% Coverage Threshold
 
 ---
 
@@ -14,7 +14,7 @@
 **📋 Follow-Up Prompt**: See `COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_*.md` for active prompts
 
 ### Quick Reference
-- **Test Count:** 800+ (Phase 14-15 complete, Phase 16 in progress)
+- **Test Count:** 960+ (Phase 14-16 complete)
 - **Coverage Threshold:** 85% (pyproject.toml)
 - **Python Versions:** 3.11, 3.12
 
@@ -28,6 +28,49 @@
 - [ ] **Offline Mode Confirmation** (`OFFLINE_MODE_CONFIRM`) - I confirm all audit and test operations run in strict offline mode
 - [ ] **Security Review** - I confirm no secrets, API keys, or sensitive data are committed
 - [ ] **Test Validation** - I confirm tests pass locally (`pytest`)
+
+---
+
+## 📝 Commit Message Checklist
+
+**Each commit message MUST include:**
+
+- [ ] **What Was Done** - Clear description of completed work in this commit
+- [ ] **What's Next** - Brief note on remaining work or next steps
+- [ ] **Phase/Task Reference** - Reference to the phase or task being worked on
+
+### Commit Message Format
+
+```
+<type>: <short description>
+
+**Done:**
+- [x] Completed item 1
+- [x] Completed item 2
+
+**Next:**
+- [ ] Pending item 1
+- [ ] Pending item 2
+
+Phase: <phase number> | Status: <percentage>%
+```
+
+### Example Commit Message
+
+```
+feat: Add Phase 16.0 documentation tests
+
+**Done:**
+- [x] Created tests/docs/test_doc_validation.py (20+ tests)
+- [x] Created tests/docs/test_api_docs.py (15+ tests)
+- [x] Updated PR template to v2.0
+
+**Next:**
+- [ ] Create API contract tests (Phase 16.1)
+- [ ] Create E2E workflow tests (Phase 16.2)
+
+Phase: 16.0 | Status: 100%
+```
 
 ---
 
@@ -54,7 +97,7 @@ _List the key changes:_
 ## 📋 Configuration (Opt-In)
 
 ### Testing Options
-- [ ] **Run Full Test Suite** - Execute all 800+ tests
+- [ ] **Run Full Test Suite** - Execute all 960+ tests
 - [ ] **Coverage Report** - Generate coverage report with `--cov`
 - [ ] **Performance Benchmarks** - Run benchmark tests in `tests/perf/`
 
