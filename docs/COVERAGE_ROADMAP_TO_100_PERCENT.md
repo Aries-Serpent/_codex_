@@ -491,7 +491,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 **Training Tests (65+ tests):**
 - [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py` ✅ CREATED
-- [ ] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py`
+- [x] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py` ✅ CREATED
 - [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py` ✅ CREATED
 
 **Phase 14.1 Progress Summary:**
@@ -499,8 +499,27 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 |----------|--------|---------|---|
 | CLI Tests | 55+ | 60+ | ✅ 100% |
 | Data Tests | 60+ | 65+ | ✅ 100% |
-| Training Tests | 65+ | 50+ | 77% |
-| **Total** | **180+** | **175+** | **97%** |
+| Training Tests | 65+ | 70+ | ✅ 100% |
+| **Total** | **180+** | **195+** | ✅ 100% |
+
+---
+
+## Phase 14.2: Security Hardening - 🚧 IN PROGRESS
+
+**Security Tests Progress:**
+| Category | Target | Created | % |
+|----------|--------|---------|---|
+| CVE Monitor Tests | 15+ | 20+ | ✅ 100% |
+| Denylist Tests | 15+ | 20+ | ✅ 100% |
+| Sanitizers Tests | 20+ | 25+ | ✅ 100% |
+| Moderation Tests | 20+ | 25+ | ✅ 100% |
+| **Total** | **70+** | **90+** | ✅ 100% |
+
+**Files Created:**
+- [x] `tests/security/test_cve_monitor_coverage.py` - 20+ tests
+- [x] `tests/security/test_denylist_coverage.py` - 20+ tests
+- [x] `tests/safety/test_sanitizers_coverage.py` - 25+ tests
+- [x] `tests/safety/test_moderation_coverage.py` - 25+ tests
 
 **Owner:** Phase 14 implementation team  
 **Review Cadence:** Weekly coverage review
