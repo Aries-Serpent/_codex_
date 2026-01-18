@@ -67,9 +67,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Install pytest plugins FIRST to ensure proper registration with xdist workers
-          pip install --no-cache-dir pytest-cov pytest-xdist pytest-timeout
+          # Install package first, then reinstall pytest plugins to ensure proper registration
+          # This ensures plugins are available in xdist worker processes
           pip install --no-cache-dir -e ".[rag,test]"
+          # Force reinstall pytest plugins to ensure they're properly registered
+          pip install --no-cache-dir --force-reinstall pytest-cov pytest-xdist pytest-timeout
+          # Verify plugins are installed and discoverable
+          python -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
 
       - name: Pre-download embedding models
         run: |
@@ -86,7 +90,8 @@ jobs:
       - name: Run RAG tests with coverage
         run: |
           # Note: --timeout and --timeout-method are already configured in pytest.ini
-          pytest tests/test_rag_*.py \
+          # Use python -m pytest to ensure proper module resolution in xdist workers
+          python -m pytest tests/test_rag_*.py \
             --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=html \
