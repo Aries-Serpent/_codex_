@@ -67,11 +67,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Install package first, then reinstall pytest plugins to ensure proper registration
-          # This ensures plugins are available in xdist worker processes
+          # Install pytest and all plugins FIRST before any other packages
+          # This ensures they're available in xdist worker processes
+          pip install --no-cache-dir pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures pytest-randomly
+          # Now install the main package with dependencies
           pip install --no-cache-dir -e ".[rag,test]"
-          # Force reinstall pytest plugins to ensure they're properly registered
-          pip install --no-cache-dir --force-reinstall pytest-cov pytest-xdist pytest-timeout
           # Verify plugins are installed and discoverable
           python -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
 
