@@ -433,10 +433,10 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-# NOTE: Coverage threshold temporarily set to 0 during Phase 14 test coverage foundation work
-# Target threshold is 70%, current baseline is ~27.5%. This will be raised incrementally
-# as test coverage improves. See .codex/qa_walkthrough/coverage_analysis.json for details.
-fail_under = 0
+# NOTE: Coverage threshold updated to 85% after Phase 14.4 completion
+# Phase 14 created 500+ tests achieving significant coverage improvement.
+# See docs/COVERAGE_ROADMAP_TO_100_PERCENT.md for the path to 100% coverage.
+fail_under = 85
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
