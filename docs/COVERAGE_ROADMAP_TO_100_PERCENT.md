@@ -480,27 +480,27 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 **CLI Tests (55+ tests):**
 - [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py` ✅ CREATED
-- [ ] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py`
+- [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py` ✅ CREATED
 - [ ] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py`
 - [ ] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py`
 
 **Data Tests (60+ tests):**
 - [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py` ✅ CREATED
-- [ ] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py`
+- [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py` ✅ CREATED
 - [ ] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py`
 
 **Training Tests (65+ tests):**
 - [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py` ✅ CREATED
 - [ ] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py`
-- [ ] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py`
+- [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py` ✅ CREATED
 
 **Phase 14.1 Progress Summary:**
-| Category | Target | Created | Remaining |
-|----------|--------|---------|-----------|
-| CLI Tests | 55+ | 25+ | 30 |
-| Data Tests | 60+ | 30+ | 30 |
-| Training Tests | 65+ | 35+ | 30 |
-| **Total** | **180+** | **90+** | **90** |
+| Category | Target | Created | % |
+|----------|--------|---------|---|
+| CLI Tests | 55+ | 40+ | 73% |
+| Data Tests | 60+ | 50+ | 83% |
+| Training Tests | 65+ | 50+ | 77% |
+| **Total** | **180+** | **140+** | **78%** |
 
 **Owner:** Phase 14 implementation team  
 **Review Cadence:** Weekly coverage review
