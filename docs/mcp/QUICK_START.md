@@ -308,7 +308,7 @@ Always check manifest and file count before uploading to ChatGPT.
 
 ### Get Help
 
-- Check [scripts/mcp/README.md](../../scripts/mcp/README.md) for system overview
+- Check [scripts/mcp/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md) for system overview
 - Review test results in `.github/tmp/package_test_results.md`
 - See examples in [PACKAGING_GUIDE.md](PACKAGING_GUIDE.md)
 

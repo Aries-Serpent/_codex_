@@ -538,8 +538,8 @@ pytest tests/integration/test_physics_inspired_rag.py
 
 - [Quantum Retrieval Physics Principles](../ai-facing/QUANTUM_RETRIEVAL_PHYSICS.md)
 - [Quantum RAG Integration Guide](../ai-facing/QUANTUM_RAG_INTEGRATION.md)
-- [Agent Memory Documentation](../../agents/agent_memory.py)
-- [MCP Metrics Documentation](../../src/mcp/metrics/mcp_metrics.py)
+- [Agent Memory Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/agents/agent_memory.py)
+- [MCP Metrics Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/src/mcp/metrics/mcp_metrics.py)
 
 ---
 

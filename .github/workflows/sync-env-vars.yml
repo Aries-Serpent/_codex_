@@ -11,7 +11,7 @@ on:
       - 'src/cognitive_brain/quantum/topology_manager.py'
       - 'src/codex_ml/data/validation.py'
       - '.github/scripts/env_var_converter.py'
-  
+
   workflow_dispatch:
     inputs:
       environment:
@@ -33,17 +33,17 @@ jobs:
   sync-env-vars:
     name: Sync Environment Variables
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
       id-token: write  # For GitHub API access
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for git describe
-      
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

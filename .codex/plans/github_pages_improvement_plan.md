@@ -2,8 +2,25 @@
 
 **Site**: https://aries-serpent.github.io/_codex_/  
 **Created**: 2026-01-04  
-**Status**: READY FOR EXECUTION  
-**Priority**: HIGH
+**Updated**: 2026-01-17  
+**Status**: PARTIALLY COMPLETE (Phase 11.X done)  
+**Priority**: MEDIUM (reduced from HIGH after Phase 11.X)
+
+---
+
+## Recent Progress (Phase 11.X - 2026-01-17)
+
+### ✅ Completed
+- Fixed MkDocs nav configuration (2 issues)
+- Fixed ~40 broken link patterns across docs
+- Created `docs/mkdocs_warnings_analysis.md` - 263 warnings analyzed
+- Created `docs/mkdocs_fix_plan.md` - Prioritized fix batches
+- MkDocs build succeeds without errors
+
+### ⏸️ Deferred
+- Full 80% warning reduction (263 cross-directory warnings remain)
+- MkDocs strict mode enablement (requires < 10 warnings)
+- CSS/layout fixes (see below)
 
 ---
 

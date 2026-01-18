@@ -554,7 +554,7 @@ def test_plugin_discovery():
 
 ## Related Documentation
 
-- [API Documentation](../api/README.md) - Auto-generated API reference
+- [API Documentation](../api/index.md) - Auto-generated API reference
 - [Metrics Guide](../guides/metrics.md) - Implementing custom metrics
 - [Examples](../../examples/plugins/) - Example plugin implementations
 

@@ -410,15 +410,15 @@ None active. All blockers resolved or have mitigation plans.
 - [MCP Quick Start](../mcp/QUICK_START.md) - ChatGPT packaging
 
 ### Key Components
-- [Codex Pipeline](../../src/codex/README.md) - Code ingestion (coming soon)
-- [Agent System](../../agents/README.md) - Autonomous agents (coming soon)
-- [MCP System](../../scripts/mcp/README.md) - ChatGPT packaging
-- [Test Suite](../../tests/README.md) - Testing infrastructure
+- [Codex Pipeline](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/README.md) - Code ingestion (coming soon)
+- [Agent System](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) - Autonomous agents (coming soon)
+- [MCP System](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md) - ChatGPT packaging
+- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing infrastructure
 
 ### Workflows
 - [CI/CD Workflows](../../.github/workflows/) - All workflows
-- [MCP Workflow](../../.github/workflows/build-chatgpt-package.yml) - Packaging
-- [Security Workflow](../../.github/workflows/scan-secrets-variables.yml) - Secrets scan
+- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml) - Packaging
+- [Security Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/scan-secrets-variables.yml) - Secrets scan
 
 ### Tools & Commands
 ```bash

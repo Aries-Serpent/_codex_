@@ -648,5 +648,5 @@ features = store.materialize_features("expensive_group", inputs)
 ## See Also
 
 - [Feature Store API Reference](./feature_store.md)
-- [Feature Monitoring](../src/codex_ml/features/monitoring.py)
+- [Feature Monitoring](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_ml/features/monitoring.py)
 - [Training Pipeline](../training/)

@@ -1311,9 +1311,9 @@ Estimated time: 25 minutes
 
 ## 📚 Additional Resources
 
-- [Agent Implementation Details](./main.py)
-- [Security Best Practices](../SECURITY.md)
-- [Contributing Guidelines](../CONTRIBUTING.md)
+- [Agent Implementation Details](https://github.com/Aries-Serpent/_codex_/blob/main/main.py)
+- [Security Best Practices](./SECURITY.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
 ```
 
 ---
@@ -1419,10 +1419,10 @@ Estimated time: 25 minutes
 ## 📚 Additional Documentation
 
 ### Related Documents
-- [Agents Architecture](../AGENTS.md)
-- [Security Guidelines](../SECURITY.md)
-- [Contributing Guidelines](../CONTRIBUTING.md)
-- [Code Review Standards](../../docs/CODE_REVIEW_STANDARDS.md)
+- [Agents Architecture](./agents.md)
+- [Security Guidelines](./SECURITY.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Code Review Standards](./CODE_REVIEW_STANDARDS.md)
 
 ### External Resources
 - [GitHub Apps Documentation](https://docs.github.com/en/apps)

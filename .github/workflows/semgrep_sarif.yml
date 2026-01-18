@@ -34,7 +34,7 @@ jobs:
     name: Semgrep SAST
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -44,18 +44,18 @@ jobs:
         with:
           python-version: 3.11
           cache-tier: 'live'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install semgrep
-      
+
       - name: Run Semgrep scan
         id: semgrep
         continue-on-error: true
         run: |
           echo "Running Semgrep security scan..."
-          
+
           # Run semgrep with fallback configurations
           # Try primary configs first, fall back to auto if they fail
           semgrep scan \
@@ -73,9 +73,9 @@ jobs:
                 --verbose \
                 2>&1 | tee semgrep-scan-fallback.log
             }
-          
+
           EXIT_CODE=$?
-          
+
           # Also generate human-readable output
           if [ -f semgrep-results.sarif ]; then
             semgrep scan \
@@ -88,23 +88,23 @@ jobs:
                 --text \
                 --output=semgrep-results.txt \
                 2>&1 || true
-            
+
             if [ -f semgrep-results.txt ]; then
               echo "=== Semgrep Results ==="
               cat semgrep-results.txt
             fi
           fi
-          
+
           # Exit with actual code (continue-on-error prevents blocking)
           exit ${EXIT_CODE:-0}
-      
+
       - name: Upload SARIF results to GitHub Security
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep-results.sarif
           category: semgrep
-      
+
       - name: Upload Semgrep results as artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -114,7 +114,7 @@ jobs:
             semgrep-results.sarif
             semgrep-results.txt
           retention-days: 30
-      
+
       - name: Comment on PR with findings
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
@@ -122,13 +122,13 @@ jobs:
           script: |
             const fs = require('fs');
             let comment = '## 🔍 Semgrep Security Scan Results\n\n';
-            
+
             try {
               if (fs.existsSync('semgrep-results.txt')) {
                 const results = fs.readFileSync('semgrep-results.txt', 'utf8');
                 const lines = results.split('\n');
                 const findingCount = lines.filter(l => l.includes('✗')).length;
-                
+
                 if (findingCount > 0) {
                   comment += `⚠️  Found **${findingCount}** potential security issues\n\n`;
                   const MAX_PREVIEW_LENGTH = 2000;
@@ -157,7 +157,7 @@ jobs:
             } catch (error) {
               comment += '⚠️  Could not read scan results\n';
             }
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

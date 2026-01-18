@@ -29,11 +29,11 @@ jobs:
     name: Analyze Failed Run
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

@@ -713,5 +713,5 @@ print(f"Server supports: {MCP_VERSIONS}")
 - Usage Guide <!-- TODO: docs/Usage_Guide.md to be created -->
 - Traversal Workflow <!-- TODO: docs/Traversal_Workflow.md to be created -->
 - Test Examples <!-- TODO: tests/mcp/ directory to be created with examples -->
-- [MCP Server Implementation](mcp/server/server.py)
-- [Tool Registry](mcp/registry.py)
+- [MCP Server Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/server/server.py)
+- [Tool Registry](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/registry.py)

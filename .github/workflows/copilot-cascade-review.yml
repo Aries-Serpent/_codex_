@@ -11,35 +11,35 @@ jobs:
     # Only run on PRs or when @cascade-review is mentioned
     if: |
       github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && 
+      (github.event_name == 'issue_comment' &&
        contains(github.event.comment.body, '@cascade-review'))
-    
+
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     permissions:
       contents: read
       pull-requests: write
       issues: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Setup Node.js 22
         uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'npm'
-      
+
       - name: Install Copilot CLI (if available)
         continue-on-error: true
         run: |
           npm install -g @github/copilot@prerelease || echo "CLI installation skipped"
           copilot --version || echo "CLI not available - will use fallback mode"
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

@@ -16,7 +16,7 @@ jobs:
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Free disk space
         run: |
@@ -26,42 +26,42 @@ jobs:
           sudo docker rmi $(docker images -q) || true
           echo "=== After cleanup ==="
           df -h
-      
+
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           components: rustfmt, clippy
-      
+
       - name: Cache cargo registry
         uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-      
+
       - name: Cache cargo index
         uses: actions/cache@v4
         with:
           path: ~/.cargo/git
           key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-      
+
       - name: Cache cargo build
         uses: actions/cache@v4
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-      
+
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
-      
+
       - name: Run cargo clippy
         run: cargo clippy --all-targets --all-features --locked -- -D warnings
-      
+
       - name: Run unit tests
         run: cargo test --lib --release --locked --verbose
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -73,18 +73,18 @@ jobs:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
     needs: rust_tests
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Run benchmarks
         run: |
           # Run benchmarks and capture output
           cargo bench --bench swarm_benchmarks -- --output-format bencher | tee benchmark_results.txt
-          
+
           # Verify Criterion results exist
           if [ -d "target/criterion" ]; then
             echo "✅ Criterion results generated"
@@ -93,7 +93,7 @@ jobs:
             echo "⚠️ Warning: No Criterion results found in target/criterion"
             mkdir -p target/criterion
           fi
-      
+
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
@@ -107,7 +107,7 @@ jobs:
     name: Code Coverage
     runs-on: ubuntu-latest
     needs: rust_tests
-    
+
     steps:
       - name: Free disk space
         run: |
@@ -117,20 +117,20 @@ jobs:
           sudo docker rmi $(docker images -q) || true
           echo "=== After cleanup ==="
           df -h
-      
+
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
-      
+
       - name: Generate coverage
         run: |
           mkdir -p coverage
           cargo tarpaulin --out Lcov --out Xml --output-dir coverage --release --timeout 600
-          
+
           # Verify coverage files were created
           if [ -f coverage/lcov.info ]; then
             echo "✅ Coverage generated: lcov.info"
@@ -138,20 +138,20 @@ jobs:
           else
             echo "⚠️ Warning: lcov.info not generated"
           fi
-          
+
           if [ -f coverage/cobertura.xml ]; then
-            echo "✅ Coverage generated: cobertura.xml"  
+            echo "✅ Coverage generated: cobertura.xml"
             ls -lh coverage/cobertura.xml
           else
             echo "⚠️ Warning: cobertura.xml not generated"
           fi
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: false
-      
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -163,7 +163,7 @@ jobs:
     name: Python Integration Tests
     runs-on: ubuntu-latest
     needs: rust_tests
-    
+
     steps:
       - name: Free disk space
         run: |
@@ -173,22 +173,22 @@ jobs:
           sudo docker rmi $(docker images -q) || true
           echo "=== After cleanup ==="
           df -h
-      
+
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Install maturin and dependencies
         run: |
           python -m pip install --upgrade pip
           pip install maturin pytest pytest-cov setuptools wheel virtualenv
-      
+
       - name: Build Python extension with maturin
         run: |
           # Build and install the extension in development mode
@@ -198,7 +198,7 @@ jobs:
             maturin build --release --features python
             pip install target/wheels/*.whl
           }
-          
+
           # Verify the extension can be imported using a heredoc to avoid quoting issues
           python - <<'PY'
           try:
@@ -209,7 +209,7 @@ jobs:
               print("This is expected if Python bindings are not configured")
               raise SystemExit(0)
           PY
-      
+
       - name: Run integration tests
         run: |
           # Check if integration tests exist
@@ -220,7 +220,7 @@ jobs:
             echo "Creating placeholder for future tests"
             mkdir -p tests/integration
           fi
-      
+
       - name: Upload integration test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -233,22 +233,22 @@ jobs:
     name: Performance Regression Detection
     runs-on: ubuntu-latest
     needs: [rust_benchmarks]
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for comparison
-      
+
       - name: Download benchmark results
         uses: actions/download-artifact@v4.1.3
         with:
           name: benchmark-results
-      
+
       - name: Verify benchmark results exist
         run: |
           echo "=== Downloaded benchmark artifacts ==="
           ls -lah
-          
+
           if [ -f "benchmark_results.txt" ]; then
             echo "✅ Found benchmark_results.txt"
             head -10 benchmark_results.txt
@@ -258,12 +258,12 @@ jobs:
             find . -name "*.txt" -o -name "*.json"
             exit 1
           fi
-      
+
       - name: Compare with baseline
         run: |
           # Create coverage directory for report output
           mkdir -p coverage
-          
+
           # Check if comparison script exists
           if [ -f "scripts/validate_benchmarks.py" ]; then
             echo "Running benchmark validation..."
@@ -271,7 +271,7 @@ jobs:
               echo "⚠️ Benchmark validation failed or no baseline exists"
               echo "This is expected for first run or when benchmarks change"
               echo "Storing current results as baseline for future comparison"
-              
+
               # Create a simple report indicating baseline establishment
               {
                 echo "Benchmark Validation Report"
@@ -291,7 +291,7 @@ jobs:
             mkdir -p coverage
             echo "Benchmark validation skipped - validation script not found" > coverage/benchmark_validation_report.txt
           fi
-      
+
       - name: Comment on PR
         if: ${{ github.event_name == 'pull_request' && hashFiles('coverage/benchmark_validation_report.txt') != '' }}
         uses: actions/github-script@v7
@@ -309,18 +309,18 @@ jobs:
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Run cargo audit
         uses: rustsec/audit-check@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Run cargo deny (if available)
         continue-on-error: true
         run: |
@@ -332,17 +332,17 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Build Rust docs
         run: |
           cargo doc --no-deps --document-private-items --all-features
-      
+
       - name: Upload documentation
         uses: actions/upload-artifact@v4
         with:
@@ -354,29 +354,29 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [rust_tests, python_integration, code_coverage]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.11', '3.12']
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
-      
+
       - name: Install maturin
         run: pip install maturin
-      
+
       - name: Build wheel
         run: maturin build --release
-      
+
       - name: Upload wheel
         uses: actions/upload-artifact@v4
         with:
@@ -388,7 +388,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [rust_tests, rust_benchmarks, code_coverage, python_integration, security_audit]
     if: always()
-    
+
     steps:
       - name: Check all jobs
         run: |

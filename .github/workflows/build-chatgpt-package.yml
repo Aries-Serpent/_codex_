@@ -35,11 +35,11 @@ jobs:
     name: Package Repository Subset
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

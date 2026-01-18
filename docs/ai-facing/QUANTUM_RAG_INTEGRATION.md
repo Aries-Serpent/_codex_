@@ -658,9 +658,9 @@ final_results = quantum_retriever.retrieve_from_chunks(
 
 - [Quantum Retrieval Physics Principles](QUANTUM_RETRIEVAL_PHYSICS.md)
 - [RAG Pipelines API](../api/rag_pipelines.md)
-- [Agent Memory System](../../agents/agent_memory.py)
-- [MCP Metrics](../../src/mcp/metrics/mcp_metrics.py)
-- [Quantum Game Theory](../../agents/quantum_game_theory.py)
+- [Agent Memory System](https://github.com/Aries-Serpent/_codex_/blob/main/agents/agent_memory.py)
+- [MCP Metrics](https://github.com/Aries-Serpent/_codex_/blob/main/src/mcp/metrics/mcp_metrics.py)
+- [Quantum Game Theory](https://github.com/Aries-Serpent/_codex_/blob/main/agents/quantum_game_theory.py)
 
 ---
 

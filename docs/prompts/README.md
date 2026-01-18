@@ -92,8 +92,8 @@ All prompts should follow this standard format:
 
 ## 📚 Related
 
-- [Related Prompt](other_prompt.md)
-- [Documentation](../path/to/doc.md)
+- Related Prompt: `other_prompt.md` (placeholder)
+- Documentation: `../path/to/doc.md` (placeholder)
 
 ---
 
@@ -300,7 +300,7 @@ git commit -m "docs: Add new prompt for [purpose]"
 
 ## 🤝 Contributing
 
-See [Contributing Guide](../../CONTRIBUTING.md) for:
+See [Contributing Guide](../CONTRIBUTING.md) for:
 - How to propose new prompts
 - Prompt review process
 - Quality standards

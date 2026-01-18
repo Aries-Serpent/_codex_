@@ -1,6 +1,6 @@
 # Model Checkpointing
 
-> **Navigation**: [📖 Main README](../../README.md#-capabilities-documentation) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔍 Code Quality](code_quality_tooling.md)
+> **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔍 Code Quality](code_quality_tooling.md)
 
 ## Overview
 

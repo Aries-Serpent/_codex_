@@ -6,12 +6,12 @@ on:
     branches: ["main", "0D_base_"]
   push:
     branches: ["main", "0D_base_"]
-  
+
   # Scheduled security scans
   schedule:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
-  
+
   # Manual trigger
   workflow_dispatch:
     inputs:
@@ -39,7 +39,7 @@ jobs:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
     if: inputs.scan_type == 'all' || inputs.scan_type == 'dependencies' || inputs.scan_type == ''
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

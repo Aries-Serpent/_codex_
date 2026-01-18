@@ -20,16 +20,16 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads
       - name: Cache sentence-transformers models
@@ -40,12 +40,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-
             ${{ runner.os }}-sentence-transformers-
-      
+
       # Note: pip cache remains disabled due to disk space constraints with large ML dependencies
       # Caching pip packages consumes significant disk space (~3-5GB) when restoring
       # and compounds with build artifacts, causing "No space left on device" errors
       # during installation of torch, transformers, and other RAG dependencies.
-      
+
       - name: Free disk space
         run: |
           echo "=== Disk space BEFORE cleanup ==="
@@ -63,13 +63,13 @@ jobs:
           echo ""
           echo "=== Disk space AFTER cleanup ==="
           df -h
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install --no-cache-dir -e ".[rag,test]"
           pip install --no-cache-dir pytest-cov pytest-xdist pytest-timeout
-      
+
       - name: Pre-download embedding models
         run: |
           python -c "
@@ -81,7 +81,7 @@ jobs:
           model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', cache_folder=cache_dir)
           print(f'Model cached successfully to {cache_dir}')
           "
-      
+
       - name: Run RAG tests with coverage
         run: |
           pytest tests/test_rag_*.py \
@@ -94,14 +94,14 @@ jobs:
             --tb=short \
             -n auto \
             --dist=loadfile
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
           flags: rag-modules
           name: rag-coverage-${{ matrix.python-version }}
-      
+
       - name: Upload HTML coverage report
         uses: actions/upload-artifact@v4
         if: always()
@@ -109,7 +109,7 @@ jobs:
           name: coverage-report-${{ matrix.python-version }}
           path: htmlcov/
           retention-days: 30
-      
+
       - name: Check coverage threshold
         run: |
           COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); root = tree.getroot(); print(float(root.attrib['line-rate']) * 100)")
@@ -119,13 +119,13 @@ jobs:
             exit 1
           fi
           echo "✅ Coverage ${COVERAGE}% meets threshold"
-      
+
       - name: Security scan
         run: |
           pip install bandit
           bandit -r src/codex/rag/ -f txt -o bandit-report.txt || true
           cat bandit-report.txt
-      
+
       - name: Upload security report
         uses: actions/upload-artifact@v4
         if: always()

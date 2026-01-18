@@ -27,7 +27,7 @@ on:
           - report_publish.yml
           - duplicate-detection-weekly.yml
           - post-merge-validation.yml
-      
+
       restore_source:
         description: 'Restore from'
         required: true
@@ -36,12 +36,12 @@ on:
           - backup-latest
           - backup-date
           - archive-disabled
-      
+
       backup_date:
         description: 'Backup date (YYYY-MM-DD) if restore_source=backup-date'
         required: false
         type: string
-      
+
       enable_immediately:
         description: 'Enable workflow after restoration'
         required: true
@@ -59,20 +59,20 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Validate inputs
         id: validate
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs.restore_source }}"
           DATE="${{ github.event.inputs.backup_date }}"
-          
+
           echo "=== Restoration Request ==="
           echo "Workflow: $WORKFLOW"
           echo "Source: $SOURCE"
           echo "Date: $DATE"
           echo "Enable immediately: ${{ github.event.inputs.enable_immediately }}"
-          
+
           # Validate backup date format if provided
           if [ "$SOURCE" = "backup-date" ] && [ -n "$DATE" ]; then
             if ! [[ "$DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
@@ -80,18 +80,18 @@ jobs:
               exit 1
             fi
           fi
-          
+
           echo "✅ Inputs validated"
-      
+
       - name: Locate source file
         id: locate
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs.restore_source }}"
           DATE="${{ github.event.inputs.backup_date }}"
-          
+
           SOURCE_FILE=""
-          
+
           case "$SOURCE" in
             "backup-latest")
               # Find most recent backup
@@ -105,34 +105,34 @@ jobs:
               SOURCE_FILE=".github/workflow-archive/disabled/$WORKFLOW"
               ;;
           esac
-          
+
           if [ ! -f "$SOURCE_FILE" ]; then
             echo "❌ Source file not found: $SOURCE_FILE"
             echo "Available files in source:"
             ls -la "$(dirname "$SOURCE_FILE")" 2>/dev/null || echo "Directory does not exist"
             exit 1
           fi
-          
+
           echo "source_file=$SOURCE_FILE" >> $GITHUB_OUTPUT
           echo "✅ Source located: $SOURCE_FILE"
-      
+
       - name: Restore workflow file
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE_FILE="${{ steps.locate.outputs.source_file }}"
           DEST_FILE=".github/workflows/$WORKFLOW"
-          
+
           echo "Restoring: $SOURCE_FILE → $DEST_FILE"
-          
+
           # Check if workflow already exists
           if [ -f "$DEST_FILE" ]; then
             echo "⚠️ Workflow already exists. Creating backup before overwrite..."
             cp "$DEST_FILE" "$DEST_FILE.backup-$(date +%Y%m%d%H%M%S)"
           fi
-          
+
           # Copy workflow file
           cp "$SOURCE_FILE" "$DEST_FILE"
-          
+
           # If not enabling immediately, add disabled comment header
           if [ "${{ github.event.inputs.enable_immediately }}" = "false" ]; then
             echo "Adding disabled notice header..."
@@ -145,14 +145,14 @@ jobs:
             cat /tmp/header.txt "$DEST_FILE" > /tmp/workflow_with_header.yml
             mv /tmp/workflow_with_header.yml "$DEST_FILE"
           fi
-          
+
           echo "✅ Workflow restored"
-      
+
       - name: Update inventory
         run: |
           python3 scripts/catalog_workflows.py
           echo "✅ Inventory updated"
-      
+
       - name: Create restoration report
         run: |
           # Build the restoration report using shell logic to avoid embedding complex GitHub expressions
@@ -204,33 +204,33 @@ jobs:
           REPORT_FINAL
 
           cat /tmp/restoration-report.md
-      
+
       - name: Commit changes
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git add .github/workflows/"$WORKFLOW"
           git add .github/workflow-archive/WORKFLOW_INVENTORY.yaml
           git add .github/workflow-archive/INVENTORY_SUMMARY.md
-          
+
           STATUS="${{ github.event.inputs.enable_immediately == 'true' && 'enabled' || 'disabled' }}"
-          
+
           git commit -m "restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source }} ($STATUS)
 
           Workflow restored via automated restoration tool.
-          
+
           - Source: ${{ steps.locate.outputs.source_file }}
           - Status: $STATUS
           - Triggered by: @${{ github.actor }}
           - Restore method: ${{ github.event.inputs.restore_source }}
-          
+
           Ref: workflow-restore-${{ github.run_id }}"
-          
+
           git push
-      
+
       - name: Summary
         run: |
           echo "✅ Workflow restoration complete!"

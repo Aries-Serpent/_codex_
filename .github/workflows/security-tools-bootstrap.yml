@@ -18,13 +18,13 @@ permissions:
 jobs:
   bootstrap-tools:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

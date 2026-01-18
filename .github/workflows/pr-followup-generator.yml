@@ -17,13 +17,13 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

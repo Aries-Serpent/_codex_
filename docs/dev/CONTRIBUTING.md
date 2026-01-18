@@ -27,7 +27,7 @@
 Installed hooks enforce formatting, linting, typing, secret scanning, and quick pytest runs. Use `pre-commit run --all-files` before pushing large changes.
 
 ## Code Style
-Refer to [guides/CODE_STYLE_GUIDE.md](guides/CODE_STYLE_GUIDE.md) for formatting and review expectations.
+Refer to [guides/CODE_STYLE_GUIDE.md](../guides/code_style_guide.md) for formatting and review expectations.
 
 ## Reporting Issues
 - File issues in the repository tracker with reproduction steps.

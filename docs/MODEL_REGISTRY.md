@@ -1,6 +1,6 @@
 # Model registry
 
-See [docs/modules/model_registry.md](docs/modules/model_registry.md) for the full list of supported models and LoRA settings.
+See [docs/modules/model_registry.md](./modules/model_registry.md) for the full list of supported models and LoRA settings.
 
 ## LoRA validation summary
 - `dtype` values are validated; unsupported dtypes raise errors (or warnings when strict mode is disabled).

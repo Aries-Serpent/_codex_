@@ -68,7 +68,7 @@ All pull requests automatically run tests via `.github/workflows/ci-pytest.yml`:
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results
 
-See [`tests/README.md`](../tests/README.md) and [`docs/guides/TESTING_GUIDE.md`](guides/TESTING_GUIDE.md) for detailed testing instructions.
+See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) and [`docs/guides/TESTING_GUIDE.md`](guides/TESTING_GUIDE.md) for detailed testing instructions.
 
 ### Guarded experiment tracking
 

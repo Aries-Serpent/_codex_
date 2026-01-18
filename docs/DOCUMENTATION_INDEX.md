@@ -23,12 +23,12 @@
 
 | Document | Purpose | Last Updated | Status |
 |----------|---------|--------------|--------|
-| [README.md](../README.md) | Project overview | Current | ✅ Active |
-| [AGENTS.md](../AGENTS.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
-| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines | Current | ✅ Active |
-| [SECURITY.md](../SECURITY.md) | Security policy | Current | ✅ Active |
-| [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community standards | Current | ✅ Active |
-| [GOVERNANCE.md](../GOVERNANCE.md) | Governance model | Current | ✅ Active |
+| [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project overview | Current | ✅ Active |
+| [AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | Current | ✅ Active |
+| [SECURITY.md](./SECURITY.md) | Security policy | Current | ✅ Active |
+| [CODE_OF_CONDUCT.md](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md) | Community standards | Current | ✅ Active |
+| [GOVERNANCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Governance model | Current | ✅ Active |
 
 ### Recent Additions (2025-12-11)
 
@@ -43,16 +43,16 @@
 
 | Document | Size | Category |
 |----------|------|----------|
-| [agents/prompts/debugging/test-failure-debugging.md](../agents/prompts/debugging/test-failure-debugging.md) | 4.8KB | Debugging |
-| [agents/prompts/debugging/resolve-merge-conflicts.md](../agents/prompts/debugging/resolve-merge-conflicts.md) | 6.3KB | Debugging |
-| [agents/prompts/debugging/performance-optimization.md](../agents/prompts/debugging/performance-optimization.md) | 7.0KB | Debugging |
-| [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md) | 8.6KB | Debugging |
-| [agents/prompts/audit/run-full-audit.md](../agents/prompts/audit/run-full-audit.md) | - | Audit |
-| [agents/prompts/audit/check-regressions.md](../agents/prompts/audit/check-regressions.md) | - | Audit |
-| [agents/prompts/deployment/pre-release-deployment.md](../agents/prompts/deployment/pre-release-deployment.md) | - | Deployment |
-| [agents/prompts/documentation/generate-wiki.md](../agents/prompts/documentation/generate-wiki.md) | - | Documentation |
-| [agents/prompts/organization/repository-cleanup.md](../agents/prompts/organization/repository-cleanup.md) | - | Organization |
-| [agents/prompts/self-healing/feedback-loop.md](../agents/prompts/self-healing/feedback-loop.md) | - | Self-Healing |
+| [agents/prompts/debugging/test-failure-debugging.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/test-failure-debugging.md) | 4.8KB | Debugging |
+| [agents/prompts/debugging/resolve-merge-conflicts.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/resolve-merge-conflicts.md) | 6.3KB | Debugging |
+| [agents/prompts/debugging/performance-optimization.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/performance-optimization.md) | 7.0KB | Debugging |
+| [agents/prompts/debugging/security-remediation.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/security-remediation.md) | 8.6KB | Debugging |
+| [agents/prompts/audit/run-full-audit.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/audit/run-full-audit.md) | - | Audit |
+| [agents/prompts/audit/check-regressions.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/audit/check-regressions.md) | - | Audit |
+| [agents/prompts/deployment/pre-release-deployment.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/deployment/pre-release-deployment.md) | - | Deployment |
+| [agents/prompts/documentation/generate-wiki.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/documentation/generate-wiki.md) | - | Documentation |
+| [agents/prompts/organization/repository-cleanup.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/organization/repository-cleanup.md) | - | Organization |
+| [agents/prompts/self-healing/feedback-loop.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/self-healing/feedback-loop.md) | - | Self-Healing |
 
 ---
 
@@ -72,7 +72,7 @@
 | Gap Analyses | 5+ | GAP_REMEDIATION_STATUS.md, MLOPS_GAP_ANALYSIS_AND_ROADMAP.md |
 | Achievement Reports | 5+ | ACHIEVEMENT_99_PERCENT.md, FINAL_STATUS_100_PERCENT.md |
 
-**Full Index**: See [workbench/INDEX.md](../workbench/INDEX.md)
+**Full Index**: See [workbench/INDEX.md](https://github.com/Aries-Serpent/_codex_/blob/main/workbench/INDEX.md)
 
 ### Removed Documents (archive/removed/)
 
@@ -92,23 +92,23 @@
 | Document | Purpose | Diagrams |
 |----------|---------|----------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | Comprehensive architecture reference | Yes (Mermaid) |
-| [agents/prompts/ARCHITECTURE.md](../agents/prompts/ARCHITECTURE.md) | System architecture diagrams | Yes (Mermaid) |
-| [agents/ORCHESTRATION.md](../agents/ORCHESTRATION.md) | Physics-inspired orchestration | Yes |
+| [agents/prompts/ARCHITECTURE.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/ARCHITECTURE.md) | System architecture diagrams | Yes (Mermaid) |
+| [agents/ORCHESTRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/ORCHESTRATION.md) | Physics-inspired orchestration | Yes |
 
 ### API Documentation
 
 | Document | Purpose |
 |----------|---------|
-| [agents/prompts/API_MODEL.md](../agents/prompts/API_MODEL.md) | API model documentation |
-| [agents/codex_client/README.md](../agents/codex_client/README.md) | Codex client API |
+| [agents/prompts/API_MODEL.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/API_MODEL.md) | API model documentation |
+| [agents/codex_client/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/codex_client/README.md) | Codex client API |
 
 ### Configuration
 
 | Document | Purpose |
 |----------|---------|
-| [.codex/README.md](../.codex/README.md) | Codex environment setup |
-| [training/config.py](../training/config.py) | Training configuration (code) |
-| [pyproject.toml](../pyproject.toml) | Project configuration |
+| [.codex/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/README.md) | Codex environment setup |
+| [training/config.py](https://github.com/Aries-Serpent/_codex_/blob/main/training/config.py) | Training configuration (code) |
+| [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) | Project configuration |
 
 ---
 
@@ -120,23 +120,23 @@
 |-------|----------|---------|
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | New contributors | 2025-12-11 |
 | [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
-| [USAGE_GUIDE.md](../USAGE_GUIDE.md) | End users | Current |
+| [USAGE_GUIDE.md](https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md) | End users | Current |
 
 ### Agent Guides
 
 | Guide | Purpose | Updated |
 |-------|---------|---------|
-| [AGENTS.md](../AGENTS.md) | Comprehensive agent guide | 2025-12-10 |
-| [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | Current |
-| [agents/prompts/README.md](../agents/prompts/README.md) | Prompts library | 2025-12-11 |
+| [AGENTS.md](./agents.md) | Comprehensive agent guide | 2025-12-10 |
+| [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | Current |
+| [agents/prompts/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/README.md) | Prompts library | 2025-12-11 |
 
 ### Integration Guides
 
 | Guide | Focus |
 |-------|-------|
 | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) | HAR file integration |
-| [COPILOT_PROMPT_100_PERCENT.md](../COPILOT_PROMPT_100_PERCENT.md) | Copilot integration |
-| [MCP_100_PERCENT_ROADMAP.md](../MCP_100_PERCENT_ROADMAP.md) | MCP integration roadmap |
+| [COPILOT_PROMPT_100_PERCENT.md](https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md) | Copilot integration |
+| [MCP_100_PERCENT_ROADMAP.md](https://github.com/Aries-Serpent/_codex_/blob/main/MCP_100_PERCENT_ROADMAP.md) | MCP integration roadmap |
 
 ---
 
@@ -148,15 +148,15 @@
 |--------|---------|------|
 | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
 | [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
-| [codex_gap_registry.yaml](../codex_gap_registry.yaml) | Gap tracking (YAML) | 2025-12-11 |
+| [codex_gap_registry.yaml](https://github.com/Aries-Serpent/_codex_/blob/main/codex_gap_registry.yaml) | Gap tracking (YAML) | 2025-12-11 |
 
 ### Audit Reports
 
 | Report | Focus | Location |
 |--------|-------|----------|
-| Audit Artifacts | Capability tracking | [audit_artifacts/](../audit_artifacts/) |
-| Reports | Generated reports | [reports/](../reports/) |
-| Stub Analysis | Code stubs | [reports/stub_analysis.md](../reports/stub_analysis.md) |
+| Audit Artifacts | Capability tracking | [audit_artifacts/](https://github.com/Aries-Serpent/_codex_/tree/main/audit_artifacts/) |
+| Reports | Generated reports | [reports/](https://github.com/Aries-Serpent/_codex_/tree/main/reports/) |
+| Stub Analysis | Code stubs | [reports/stub_analysis.md](https://github.com/Aries-Serpent/_codex_/blob/main/reports/stub_analysis.md) |
 
 ---
 
@@ -167,15 +167,15 @@
 | Document | Focus | Diagrams |
 |----------|-------|----------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | System architecture | Yes |
-| [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity | No |
-| [T1_SOLUTION.md](../T1_SOLUTION.md) | T1 solution design | No |
+| [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity | No |
+| [T1_SOLUTION.md](https://github.com/Aries-Serpent/_codex_/blob/main/T1_SOLUTION.md) | T1 solution design | No |
 
 ### Implementation Plans
 
 | Plan | Status | Location |
 |------|--------|----------|
 | HAR Integration | Planned | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) |
-| MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](../MCP_100_PERCENT_ROADMAP.md) |
+| MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](https://github.com/Aries-Serpent/_codex_/blob/main/MCP_100_PERCENT_ROADMAP.md) |
 | Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) |
 
 ---
@@ -258,24 +258,24 @@
 **I want to...**
 
 - **Contribute code**: Start with [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
-- **Use AI Agents**: See [AGENTS.md](../AGENTS.md) and [agents/prompts/](../agents/prompts/)
+- **Use AI Agents**: See [AGENTS.md](./agents.md) and [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/)
 - **Understand architecture**: Read [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md)
-- **Debug issues**: Check [agents/prompts/debugging/](../agents/prompts/debugging/)
-- **Deploy the system**: See [deploy/](../deploy/) and [Dockerfile*](../Dockerfile)
-- **Run tests**: See [tests/](../tests/) and [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
-- **Understand MLOps**: Read [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)
-- **Report security issues**: Follow [SECURITY.md](../SECURITY.md)
+- **Debug issues**: Check [agents/prompts/debugging/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/debugging/)
+- **Deploy the system**: See [deploy/](https://github.com/Aries-Serpent/_codex_/tree/main/deploy/) and [Dockerfile*](https://github.com/Aries-Serpent/_codex_/blob/main/Dockerfile)
+- **Run tests**: See [tests/](https://github.com/Aries-Serpent/_codex_/tree/main/tests/) and [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
+- **Understand MLOps**: Read [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md)
+- **Report security issues**: Follow [SECURITY.md](./SECURITY.md)
 
 ### By Audience
 
 **I am a...**
 
-- **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](../CONTRIBUTING.md)
-- **AI Agent**: [AGENTS.md](../AGENTS.md), [agents/prompts/](../agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](../agents/TOKENIZED_WORKFLOWS.md)
+- **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **AI Agent**: [AGENTS.md](./agents.md), [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md)
 - **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md)
-- **DevOps Engineer**: [deploy/](../deploy/), [.github/workflows/](../.github/workflows/), [docker-compose.yml](../docker-compose.yml)
-- **Security Researcher**: [SECURITY.md](../SECURITY.md), [agents/prompts/debugging/security-remediation.md](../agents/prompts/debugging/security-remediation.md)
-- **ML Engineer**: [training/](../training/), [LEVEL_4_MLOPS_ASSESSMENT.md](../LEVEL_4_MLOPS_ASSESSMENT.md)
+- **DevOps Engineer**: [deploy/](https://github.com/Aries-Serpent/_codex_/tree/main/deploy/), [.github/workflows/](https://github.com/Aries-Serpent/_codex_/tree/main/.github/workflows/), [docker-compose.yml](https://github.com/Aries-Serpent/_codex_/blob/main/docker-compose.yml)
+- **Security Researcher**: [SECURITY.md](./SECURITY.md), [agents/prompts/debugging/security-remediation.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/security-remediation.md)
+- **ML Engineer**: [training/](https://github.com/Aries-Serpent/_codex_/tree/main/training/), [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md)
 
 ---
 

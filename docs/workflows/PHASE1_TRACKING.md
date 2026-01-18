@@ -266,7 +266,7 @@ After successful completion:
 ## Related Documents
 
 - [Workflow Consolidation Plan](../workflows/CONSOLIDATION_PLAN.md)
-- [Gap Analysis](../../GAP_ANALYSIS.md)
+- [Gap Analysis](https://github.com/Aries-Serpent/_codex_/blob/main/GAP_ANALYSIS.md)
 - [GitHub Workflows Directory](../../.github/workflows/)
 
 ## AI Assistant Sign-off

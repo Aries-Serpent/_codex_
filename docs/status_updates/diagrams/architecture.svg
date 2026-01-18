@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+  <rect width="400" height="200" fill="#f0f0f0"/>
+  <text x="200" y="100" text-anchor="middle" font-family="Arial" font-size="16">
+    Architecture Diagram Placeholder
+  </text>
+  <text x="200" y="130" text-anchor="middle" font-family="Arial" font-size="12" fill="#666">
+    Status: Archived Survey Reference
+  </text>
+</svg>

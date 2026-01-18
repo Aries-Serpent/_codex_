@@ -127,7 +127,7 @@ For complete security hardening, consider addressing the code scanning findings:
 
 ## 📚 References
 
-- [SECURITY.md](../SECURITY.md) - Main security policy
+- [SECURITY.md](./SECURITY.md) - Main security policy
 - [SECURITY_SCAN_REPORT.md](./SECURITY_SCAN_REPORT.md) - Code scanning findings
 - [GitHub Security Advisories](https://github.com/Aries-Serpent/_codex_/security/advisories)
 

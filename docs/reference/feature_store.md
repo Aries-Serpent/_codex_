@@ -538,5 +538,5 @@ metadata = FeatureMetadata(
 ## See Also
 
 - [Feature Engineering Guide](./feature_engineering.md) - Best practices and patterns
-- [Feature Store Monitoring](../src/codex_ml/features/monitoring.py) - Health checks and alerts
+- [Feature Store Monitoring](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_ml/features/monitoring.py) - Health checks and alerts
 - [Training Pipeline Integration](../training/) - Using features in training

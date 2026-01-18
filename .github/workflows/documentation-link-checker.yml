@@ -33,11 +33,11 @@ jobs:
         id: checksum
         run: |
           echo "🔍 Computing checksum of documentation files..."
-          
+
           # NOTE: This is Phase 1 aggregate caching (all-or-nothing approach).
           # For granular per-folder/per-file caching (Phase 2-3), see:
           # .codex/WORKFLOW_CACHING_IMPLEMENTATION_PLAN.md
-          
+
           # Find all markdown files to check
           MD_FILES=$(find . -name "*.md" \
             -not -path "./node_modules/*" \
@@ -46,7 +46,7 @@ jobs:
             -not -path "./archive/*" \
             -not -path "./cognitive_app/node_modules/*" \
             | sort)
-          
+
           # Create sorted list of file paths + content hashes
           CHECKSUM_INPUT=""
           for file in $MD_FILES; do
@@ -55,12 +55,12 @@ jobs:
               CHECKSUM_INPUT="${CHECKSUM_INPUT}${file}:${FILE_HASH}\n"
             fi
           done
-          
+
           # Compute aggregate checksum
           AGGREGATE_CHECKSUM=$(echo -e "$CHECKSUM_INPUT" | sha1sum | cut -d' ' -f1)
           echo "aggregate_checksum=$AGGREGATE_CHECKSUM" >> $GITHUB_OUTPUT
           echo "✅ Aggregate checksum: $AGGREGATE_CHECKSUM"
-          
+
           # Store file list for later use
           echo "$MD_FILES" > /tmp/md_files.txt
 
@@ -79,7 +79,7 @@ jobs:
           if [ -f .link-check-success ]; then
             CACHED_CHECKSUM=$(cat .link-check-success)
             CURRENT_CHECKSUM="${{ steps.checksum.outputs.aggregate_checksum }}"
-            
+
             if [ "$CACHED_CHECKSUM" = "$CURRENT_CHECKSUM" ]; then
               echo "✅ Documentation unchanged since last successful check"
               echo "skip=true" >> $GITHUB_OUTPUT
@@ -117,7 +117,7 @@ jobs:
         if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "🔍 Checking links in documentation files..."
-          
+
           # Find all markdown files
           find . -name "*.md" \
             -not -path "./node_modules/*" \
@@ -133,7 +133,7 @@ jobs:
         if: steps.skip_check.outputs.skip != 'true'
         run: |
           echo "🔍 Checking critical Genesis documentation..."
-          
+
           CRITICAL_FILES=(
             "docs/admin/GENESIS_SETUP_GUIDE.md"
             "docs/agent/OPERATIONAL_GUIDELINES.md"
@@ -141,7 +141,7 @@ jobs:
             "README.md"
             ".codex/guardrails.md"
           )
-          
+
           FAILED=0
           for file in "${CRITICAL_FILES[@]}"; do
             if [ -f "$file" ]; then
@@ -156,7 +156,7 @@ jobs:
               echo "⚠️  $file not found"
             fi
           done
-          
+
           if [ $FAILED -gt 0 ]; then
             echo "❌ $FAILED critical file(s) have broken links"
             exit 1

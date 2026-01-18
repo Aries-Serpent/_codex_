@@ -80,4 +80,4 @@ Or use the continuation prompts:
 
 - [CTEP Protocol](/.github/docs/Copilot_Task_Execution_Protocol.md)
 - [Workflow Files](/.github/workflows/)
-- [AGENTS.md](../../AGENTS.md)
+- [AGENTS.md](../../agents.md)

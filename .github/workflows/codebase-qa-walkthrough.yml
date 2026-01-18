@@ -15,47 +15,47 @@ on:
           - standard
           - comprehensive
         default: standard
-      
+
       target_ref:
         description: 'Git ref to review (branch, tag, or commit SHA)'
         required: false
         type: string
         default: ''
-      
+
       pr_number:
         description: 'Pull request number to review (optional)'
         required: false
         type: number
-      
+
       focus_areas:
         description: 'Focus areas (comma-separated: security,performance,testing,documentation)'
         required: false
         type: string
         default: 'security,performance,testing,documentation'
-      
+
       fail_on_critical:
         description: 'Fail workflow if critical issues found'
         required: false
         type: boolean
         default: true
-      
+
       post_comment:
         description: 'Post results as PR/Issue comment'
         required: false
         type: boolean
         default: true
-  
+
   # Trigger on PR events
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
       - develop
-  
+
   # Trigger on issue comments
   issue_comment:
     types: [created]
-  
+
   # Allow other workflows to call this
   workflow_call:
     inputs:
@@ -111,7 +111,7 @@ jobs:
       should_run: ${{ steps.check.outputs.should_run }}
       review_depth: ${{ steps.check.outputs.review_depth }}
       pr_number: ${{ steps.check.outputs.pr_number }}
-    
+
     steps:
       - name: Check trigger conditions
         id: check
@@ -119,22 +119,22 @@ jobs:
           SHOULD_RUN="true"
           REVIEW_DEPTH="${{ inputs.review_depth || 'standard' }}"
           PR_NUMBER="${{ inputs.pr_number || github.event.pull_request.number || '' }}"
-          
+
           # Check if triggered by comment
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             COMMENT_BODY='${{ github.event.comment.body }}'
-            
+
             # Check for QA trigger phrases
             if echo "$COMMENT_BODY" | grep -qiE "@copilot qa (walkthrough|review|check)|@copilot quality assurance"; then
               echo "✅ Triggered by comment with QA command"
-              
+
               # Extract review depth from comment if specified
               if echo "$COMMENT_BODY" | grep -qi "quick"; then
                 REVIEW_DEPTH="quick"
               elif echo "$COMMENT_BODY" | grep -qi "comprehensive"; then
                 REVIEW_DEPTH="comprehensive"
               fi
-              
+
               # Get PR number from issue if it's a PR
               if [ "${{ github.event.issue.pull_request }}" != "" ]; then
                 PR_NUMBER="${{ github.event.issue.number }}"
@@ -144,51 +144,51 @@ jobs:
               SHOULD_RUN="false"
             fi
           fi
-          
+
           echo "should_run=$SHOULD_RUN" >> $GITHUB_OUTPUT
           echo "review_depth=$REVIEW_DEPTH" >> $GITHUB_OUTPUT
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          
+
           echo "Should run: $SHOULD_RUN"
           echo "Review depth: $REVIEW_DEPTH"
           echo "PR number: $PR_NUMBER"
-  
+
   qa-analysis:
     name: QA Analysis (${{ needs.check-trigger.outputs.review_depth }})
     needs: check-trigger
     if: needs.check-trigger.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    
+
     outputs:
       critical_issues: ${{ steps.analyze.outputs.critical_issues }}
       warnings: ${{ steps.analyze.outputs.warnings }}
       overall_score: ${{ steps.analyze.outputs.overall_score }}
       report_url: ${{ steps.upload-report.outputs.artifact-url }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.target_ref || github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0  # Full history for better analysis
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install analysis tools
         run: |
           echo "📦 Installing analysis tools..."
-          
+
           # Python tools
           pip install --quiet \
             pylint \
@@ -200,7 +200,7 @@ jobs:
             radon \
             coverage \
             pytest
-          
+
           # JavaScript/TypeScript tools (if needed)
           if [ -f "package.json" ]; then
             npm install -g \
@@ -208,18 +208,18 @@ jobs:
               prettier \
               jest
           fi
-          
+
           # Security scanning tools
           pip install --quiet detect-secrets
           npm install -g @secretlint/quick-start || true
-          
+
           echo "✅ Tools installed"
-      
+
       - name: Get changed files
         id: changed-files
         run: |
           echo "🔍 Detecting changed files..."
-          
+
           if [ -n "${{ needs.check-trigger.outputs.pr_number }}" ]; then
             # Get files changed in PR
             gh pr view ${{ needs.check-trigger.outputs.pr_number }} \
@@ -231,15 +231,15 @@ jobs:
             # Get recent changes (last commit)
             git diff --name-only HEAD~1 HEAD > changed_files.txt
           fi
-          
+
           FILE_COUNT=$(wc -l < changed_files.txt)
           echo "Files changed: $FILE_COUNT"
           echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
-          
+
           cat changed_files.txt
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: Run security analysis
         id: security
         if: contains(inputs.focus_areas || 'security,performance,testing,documentation', 'security')
@@ -247,74 +247,74 @@ jobs:
         run: |
           echo "🔒 Running security analysis..."
           mkdir -p reports
-          
+
           # Bandit (Python security)
           if ls *.py 2>/dev/null || [ -d "src" ]; then
             echo "Running Bandit..."
             bandit -r . -f json -o reports/bandit-report.json || true
             bandit -r . -f txt > reports/bandit-report.txt || true
           fi
-          
+
           # Safety (dependency vulnerabilities)
           if [ -f "requirements.txt" ]; then
             echo "Running Safety..."
             safety check --json --output reports/safety-report.json || true
             safety check --output reports/safety-report.txt || true
           fi
-          
+
           # detect-secrets
           echo "Running detect-secrets..."
           detect-secrets scan --baseline .secrets.baseline > reports/secrets-scan.json || true
-          
+
           # Count critical security issues
           CRITICAL_SECURITY=0
           if [ -f "reports/bandit-report.json" ]; then
             CRITICAL_SECURITY=$(jq '[.results[] | select(.issue_severity == "HIGH" or .issue_severity == "CRITICAL")] | length' reports/bandit-report.json || echo "0")
           fi
-          
+
           echo "critical_security_issues=$CRITICAL_SECURITY" >> $GITHUB_OUTPUT
           echo "Critical security issues: $CRITICAL_SECURITY"
-      
+
       - name: Run code quality analysis
         id: quality
         continue-on-error: true
         run: |
           echo "📊 Running code quality analysis..."
-          
+
           # Pylint (Python)
           if ls *.py 2>/dev/null || [ -d "src" ]; then
             echo "Running Pylint..."
             pylint --output-format=json --recursive=y . > reports/pylint-report.json || true
             pylint --recursive=y . > reports/pylint-report.txt || true
           fi
-          
+
           # Ruff (Python fast linter)
           if ls *.py 2>/dev/null || [ -d "src" ]; then
             echo "Running Ruff..."
             ruff check --output-format=json . > reports/ruff-report.json || true
             ruff check . > reports/ruff-report.txt || true
           fi
-          
+
           # Radon (complexity)
           if ls *.py 2>/dev/null || [ -d "src" ]; then
             echo "Running Radon..."
             radon cc -a -s . > reports/complexity-report.txt || true
             radon mi -s . > reports/maintainability-report.txt || true
           fi
-          
+
           # MyPy (type checking)
           if ls *.py 2>/dev/null || [ -d "src" ]; then
             echo "Running MyPy..."
             mypy --install-types --non-interactive . > reports/mypy-report.txt 2>&1 || true
           fi
-      
+
       - name: Run test coverage analysis
         id: coverage
         if: contains(inputs.focus_areas || 'security,performance,testing,documentation', 'testing')
         continue-on-error: true
         run: |
           echo "🧪 Running test coverage analysis..."
-          
+
           # Python coverage
           if [ -f "pytest.ini" ] || [ -d "tests" ]; then
             echo "Running pytest with coverage..."
@@ -322,7 +322,7 @@ jobs:
             coverage report > reports/coverage-report.txt || true
             coverage json -o reports/coverage-report.json || true
             coverage html -d reports/coverage-html || true
-            
+
             # Extract coverage percentage
             COVERAGE_PCT=$(coverage report | grep "TOTAL" | awk '{print $NF}' | sed 's/%//' || echo "0")
             echo "coverage_percentage=$COVERAGE_PCT" >> $GITHUB_OUTPUT
@@ -331,78 +331,78 @@ jobs:
             echo "No tests found"
             echo "coverage_percentage=0" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Run performance analysis
         id: performance
         if: contains(inputs.focus_areas || 'security,performance,testing,documentation', 'performance')
         continue-on-error: true
         run: |
           echo "⚡ Running performance analysis..."
-          
+
           # Analyze algorithmic complexity
           if [ -d "src" ]; then
             echo "Analyzing complexity..."
             radon cc -a -j src/ > reports/complexity-json.json || true
-            
+
             # Find high complexity functions
             HIGH_COMPLEXITY=$(radon cc -n C -s src/ | wc -l || echo "0")
             echo "high_complexity_functions=$HIGH_COMPLEXITY" >> $GITHUB_OUTPUT
             echo "High complexity functions: $HIGH_COMPLEXITY"
           fi
-      
+
       - name: Analyze results and generate report
         id: analyze
         run: |
           echo "📝 Generating QA report..."
-          
+
           # Create comprehensive report
           cat > reports/qa-report.md <<'EOF'
           # QA Walkthrough Report
-          
+
           **Generated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)
           **Review Depth**: ${{ needs.check-trigger.outputs.review_depth }}
           **Trigger**: ${{ github.event_name }}
           **Repository**: ${{ github.repository }}
           **Ref**: ${{ github.ref }}
-          
+
           ---
-          
+
           ## Executive Summary
-          
+
           EOF
-          
+
           # Calculate overall metrics
           CRITICAL_ISSUES=0
           WARNINGS=0
           OVERALL_SCORE=100
-          
+
           # Security issues
           if [ -f "reports/bandit-report.json" ]; then
             SECURITY_CRITICAL=$(jq '[.results[] | select(.issue_severity == "HIGH" or .issue_severity == "CRITICAL")] | length' reports/bandit-report.json || echo "0")
             SECURITY_WARNINGS=$(jq '[.results[] | select(.issue_severity == "MEDIUM")] | length' reports/bandit-report.json || echo "0")
             CRITICAL_ISSUES=$((CRITICAL_ISSUES + SECURITY_CRITICAL))
             WARNINGS=$((WARNINGS + SECURITY_WARNINGS))
-            
+
             cat >> reports/qa-report.md <<EOF
           ### Security Analysis
           - Critical Issues: $SECURITY_CRITICAL
           - Warnings: $SECURITY_WARNINGS
-          
+
           EOF
           fi
-          
+
           # Code quality issues
           if [ -f "reports/ruff-report.json" ]; then
             QUALITY_ISSUES=$(jq 'length' reports/ruff-report.json || echo "0")
             WARNINGS=$((WARNINGS + QUALITY_ISSUES))
-            
+
             cat >> reports/qa-report.md <<EOF
           ### Code Quality
           - Issues Found: $QUALITY_ISSUES
-          
+
           EOF
           fi
-          
+
           # Test coverage
           COVERAGE_PCT="${{ steps.coverage.outputs.coverage_percentage || '0' }}"
           if [ -n "$COVERAGE_PCT" ] && [ "$COVERAGE_PCT" != "0" ]; then
@@ -411,48 +411,48 @@ jobs:
           - Coverage: ${COVERAGE_PCT}%
           - Target: 80%
           - Status: $([ $(echo "$COVERAGE_PCT >= 80" | bc -l) -eq 1 ] && echo "✅ Met" || echo "⚠️ Below target")
-          
+
           EOF
-            
+
             # Penalize low coverage
             if [ $(echo "$COVERAGE_PCT < 80" | bc -l) -eq 1 ]; then
               COVERAGE_PENALTY=$(echo "scale=0; (80 - $COVERAGE_PCT) / 2" | bc)
               OVERALL_SCORE=$((OVERALL_SCORE - COVERAGE_PENALTY))
             fi
           fi
-          
+
           # Calculate overall score
           OVERALL_SCORE=$((OVERALL_SCORE - (CRITICAL_ISSUES * 20) - (WARNINGS * 5)))
           if [ $OVERALL_SCORE -lt 0 ]; then
             OVERALL_SCORE=0
           fi
-          
+
           # Add summary
           cat >> reports/qa-report.md <<EOF
-          
+
           ---
-          
+
           ## Overall Assessment
-          
+
           **Quality Score**: ${OVERALL_SCORE}/100
           **Critical Issues**: $CRITICAL_ISSUES
           **Warnings**: $WARNINGS
           **Test Coverage**: ${COVERAGE_PCT}%
-          
+
           **Status**: $([ $CRITICAL_ISSUES -eq 0 ] && echo "✅ Ready for Review" || echo "🔴 Critical Issues Found")
-          
+
           ---
-          
+
           ## Detailed Reports
-          
+
           See artifact downloads for complete analysis reports:
           - Security analysis (Bandit, Safety, detect-secrets)
           - Code quality analysis (Pylint, Ruff, MyPy)
           - Test coverage report (HTML)
           - Complexity analysis (Radon)
-          
+
           EOF
-          
+
           # Append detailed findings if available
           if [ -f "reports/bandit-report.txt" ]; then
             echo "" >> reports/qa-report.md
@@ -461,7 +461,7 @@ jobs:
             head -100 reports/bandit-report.txt >> reports/qa-report.md
             echo '```' >> reports/qa-report.md
           fi
-          
+
           if [ -f "reports/ruff-report.txt" ]; then
             echo "" >> reports/qa-report.md
             echo "### Code Quality Issues (Ruff)" >> reports/qa-report.md
@@ -469,15 +469,15 @@ jobs:
             head -50 reports/ruff-report.txt >> reports/qa-report.md
             echo '```' >> reports/qa-report.md
           fi
-          
+
           # Set outputs
           echo "critical_issues=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
           echo "warnings=$WARNINGS" >> $GITHUB_OUTPUT
           echo "overall_score=$OVERALL_SCORE" >> $GITHUB_OUTPUT
-          
+
           # Display summary
           cat reports/qa-report.md
-      
+
       - name: Upload QA reports
         id: upload-report
         uses: actions/upload-artifact@v4
@@ -486,7 +486,7 @@ jobs:
           path: reports/
           retention-days: 30
           compression-level: 9
-      
+
       - name: Post comment on PR/Issue
         if: |
           (inputs.post_comment == true || inputs.post_comment == '') &&
@@ -498,40 +498,40 @@ jobs:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('reports/qa-report.md', 'utf8');
-            
+
             const comment = `## 🔍 QA Walkthrough Results
-            
+
             ${report}
-            
+
             ---
-            
+
             <details>
             <summary>📊 Detailed Metrics</summary>
-            
+
             - **Critical Issues**: ${{ steps.analyze.outputs.critical_issues }}
             - **Warnings**: ${{ steps.analyze.outputs.warnings }}
             - **Overall Score**: ${{ steps.analyze.outputs.overall_score }}/100
             - **Test Coverage**: ${{ steps.coverage.outputs.coverage_percentage }}%
             - **Review Depth**: ${{ needs.check-trigger.outputs.review_depth }}
-            
+
             </details>
-            
+
             <details>
             <summary>⬇️ Download Full Reports</summary>
-            
+
             Download the complete QA analysis from the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-            
+
             Included reports:
             - 🔒 Security analysis (Bandit, Safety)
             - 📊 Code quality (Pylint, Ruff)
             - 🧪 Test coverage (HTML report)
             - 📈 Complexity analysis
-            
+
             </details>
-            
+
             *Generated by [Codebase QA Walkthrough Agent](/.github/agents/codebase-qa-walkthrough-agent/)*
             `;
-            
+
             // Post comment
             if (context.eventName === 'pull_request') {
               await github.rest.issues.createComment({
@@ -548,15 +548,15 @@ jobs:
                 body: comment
               });
             }
-      
+
       - name: Generate step summary
         if: always()
         run: |
           cat >> $GITHUB_STEP_SUMMARY <<'EOF'
           # QA Walkthrough Summary
-          
+
           ## Results
-          
+
           | Metric | Value |
           |--------|-------|
           | Overall Score | ${{ steps.analyze.outputs.overall_score }}/100 |
@@ -564,17 +564,17 @@ jobs:
           | Warnings | ${{ steps.analyze.outputs.warnings }} |
           | Test Coverage | ${{ steps.coverage.outputs.coverage_percentage }}% |
           | Files Analyzed | ${{ steps.changed-files.outputs.file_count }} |
-          
+
           ## Status
-          
+
           ${{ steps.analyze.outputs.critical_issues == '0' && '✅ No critical issues found' || '🔴 Critical issues require attention' }}
-          
+
           ## Download Reports
-          
+
           Full analysis reports are available in the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-          
+
           EOF
-      
+
       - name: Fail on critical issues
         if: |
           (inputs.fail_on_critical == true || inputs.fail_on_critical == '') &&

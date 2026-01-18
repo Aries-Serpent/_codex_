@@ -35,32 +35,32 @@ jobs:
       - name: Install core dependencies
         run: |
           echo "🔥 Warming up LIVE cache for Python ${{ matrix.python-version }}"
-          
+
           # Install all common dependencies to warm the cache
           pip install --upgrade pip wheel setuptools
-          
+
           # Install from all requirements files
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt || true
           fi
-          
+
           if [ -f requirements-test.txt ]; then
             pip install -r requirements-test.txt || true
           fi
-          
+
           if [ -f requirements-dev.txt ]; then
             pip install -r requirements-dev.txt || true
           fi
-          
+
           if [ -f requirements-minimal.txt ]; then
             pip install -r requirements-minimal.txt || true
           fi
-          
+
           # Install project in editable mode
           if [ -f pyproject.toml ] || [ -f setup.py ]; then
             pip install -e . || pip install . || true
           fi
-          
+
           echo "✅ Cache warmed successfully"
 
       - name: Verify installations
@@ -69,7 +69,7 @@ jobs:
           pip list --format=columns | head -20
           echo "..."
           echo "Total packages: $(pip list | wc -l)"
-          
+
           echo ""
           echo "💾 Cache size:"
           du -sh $(pip cache dir)
@@ -83,10 +83,10 @@ jobs:
           Python Version: ${{ matrix.python-version }}
           Cache Tier: LIVE (permanent retention)
           Cache Key: live-pip-Linux-py${{ matrix.python-version }}-*
-          
+
           This cache is now available to ALL workflows using the
           LIVE tier with Python ${{ matrix.python-version }}.
-          
+
           Workflows using this cache:
             - audit-improvement-pipeline.yml
             - code-quality.yml

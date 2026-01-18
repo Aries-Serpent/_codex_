@@ -97,7 +97,7 @@ Every operation generates evidence:
 
 1. **Zendesk Account**: Admin access to at least one Zendesk instance
 2. **API Credentials**: Generate an API token in Zendesk Admin
-3. **_codex_ Installation**: Complete the main installation (see [NEWCOMER_GUIDE.md](../../NEWCOMER_GUIDE.md))
+3. **_codex_ Installation**: Complete the main installation (see [NEWCOMER_GUIDE.md](../NEWCOMER_GUIDE.md))
 
 ### Environment Setup
 

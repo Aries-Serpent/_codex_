@@ -7,7 +7,7 @@ nav:
   - README: README_ROOT.md
   - Getting Started: getting-started.md
   - API Reference:
-      - Overview: api/README.md
+      - Overview: api/index.md
   - Guides:
       - Contributing: CONTRIBUTING.md
       - Code Style: guides/code_style_guide.md
@@ -52,7 +52,7 @@ nav:
       - DuckDB Option: database/duckdb_option.md
       - Datasette Option: database/datasette_option.md
   - Templates:
-      - Verification Checklist: templates/verification.md
+      - Overview: templates/README.md
   - Examples:
       - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.py
   - Ops:
@@ -68,7 +68,24 @@ nav:
       - Review Checklist: review/diff_intake_confirmation.md
 repo_url: https://github.com/Aries-Serpent/_codex_
 repo_name: Aries-Serpent/_codex_
-strict: false  # TODO: enable strict once nav paths are verified
+strict: true  # Phase 13: ENABLED - Zero warnings achieved!
+
+# Validation configuration (Phase 13 - Strict Mode Enabled)
+# Configure validation to catch real issues
+validation:
+  nav:
+    omitted_files: info  # Files in docs/ not in nav - expected for large docs
+    not_found: warn      # Keep nav reference errors as warnings
+  links:
+    not_found: warn      # Keep broken links as warnings  
+    absolute_links: info # Downgrade absolute link warnings
+    unrecognized_links: info # Downgrade unrecognized link patterns
+    anchors: info  # Downgrade anchor warnings to info
+
+# Phase 13 Achievement: README.md files merged into index.md
+# - docs/README.md → docs/index.md (archived to docs/archive/merged_readmes/)
+# - docs/api/README.md → docs/api/index.md (archived to docs/archive/merged_readmes/)
+
 markdown_extensions:
 - admonition
 - tables

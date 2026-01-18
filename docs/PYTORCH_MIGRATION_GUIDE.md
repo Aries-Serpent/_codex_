@@ -157,5 +157,5 @@ If you encounter issues during migration:
 
 - [CVE-2024-XXXXX](https://github.com/Aries-Serpent/_codex_/security)
 - [PyTorch Security Advisory](https://pytorch.org/docs/stable/generated/torch.load.html)
-- [utils/safe_torch_loader.py](../utils/safe_torch_loader.py)
-- [SECURITY.md](../SECURITY.md)
+- [utils/safe_torch_loader.py](https://github.com/Aries-Serpent/_codex_/blob/main/utils/safe_torch_loader.py)
+- [SECURITY.md](./SECURITY.md)

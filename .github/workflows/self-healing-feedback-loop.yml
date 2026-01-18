@@ -24,13 +24,13 @@ jobs:
     outputs:
       gaps_found: ${{ steps.analyze.outputs.gaps_found }}
       feedback_count: ${{ steps.analyze.outputs.feedback_count }}
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:

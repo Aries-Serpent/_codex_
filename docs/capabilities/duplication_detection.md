@@ -393,6 +393,6 @@ For audit detection, the following keywords are used:
 
 ## See Also
 
-- [Token Similarity Documentation](../../scripts/space_traversal/README.md)
+- [Token Similarity Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/README.md)
 - [Audit Pipeline Guide](../SPACE_TRAVERSAL_GUIDE.md)
 - [Capability Scoring Guide](../templates/status/capability_scoring_guide_v1.2.md)

@@ -441,4 +441,4 @@ retriever.quantum_scorer = scorer
 **Related Documents:**
 - [Quantum RAG Integration Guide](QUANTUM_RAG_INTEGRATION.md)
 - [RAG Pipelines API Documentation](../api/rag_pipelines.md)
-- [Advanced Physics Calculators](../../agents/advanced_physics_calculators.py)
+- [Advanced Physics Calculators](https://github.com/Aries-Serpent/_codex_/blob/main/agents/advanced_physics_calculators.py)

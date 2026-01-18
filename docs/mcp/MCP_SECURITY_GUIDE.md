@@ -572,7 +572,7 @@ python scripts/space_traversal/audit_runner.py explain mcp-authz-authn
 - [MCP Capabilities Reference](MCP_CAPABILITIES_REFERENCE.md)
 - [MCP Developer Guide](MCP_DEVELOPER_GUIDE.md)
 - [MCP Implementation Summary](MCP_IMPLEMENTATION_SUMMARY.md)
-- [Audit Runner Documentation](scripts/space_traversal/README.md)
+- [Audit Runner Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/README.md)
 
 ## Security Contact
 
