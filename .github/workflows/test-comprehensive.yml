@@ -183,6 +183,6 @@ jobs:
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Matrix: Python 3.9, 3.10, 3.11, 3.12" >> $GITHUB_STEP_SUMMARY
+          echo "- Matrix: Python 3.11, 3.12" >> $GITHUB_STEP_SUMMARY
           echo "- Caching: pip + models + pytest" >> $GITHUB_STEP_SUMMARY
           echo "- Coverage: Uploaded to Codecov" >> $GITHUB_STEP_SUMMARY
