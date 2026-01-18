@@ -66,21 +66,21 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          # Install pytest and all plugins FIRST before any other packages
-          # This ensures they're available in xdist worker processes
-          # Version pinning for reproducible builds
-          pip install --no-cache-dir \
+          python -m pip install --upgrade pip setuptools wheel
+          # Install the main package FIRST (may install older plugin versions)
+          pip install --no-cache-dir -e ".[rag,test]"
+          # Then force reinstall pytest plugins with pinned versions
+          # This ensures xdist workers have correct versions at consistent paths
+          pip install --no-cache-dir --force-reinstall \
             pytest==9.0.2 \
             pytest-cov==7.0.0 \
             pytest-xdist==3.8.0 \
             pytest-timeout==2.3.1 \
             pytest-rerunfailures==14.0 \
             pytest-randomly==3.16.0
-          # Now install the main package with dependencies
-          pip install --no-cache-dir -e ".[rag,test]"
           # Verify plugins are installed and discoverable
           python -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
+          python -m pytest --version
 
       - name: Pre-download embedding models
         run: |

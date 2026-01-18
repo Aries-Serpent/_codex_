@@ -283,6 +283,10 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
             # This will raise OSError when trying to make HTTP requests
             result = my_function_that_calls_api()
             assert result.fallback_used is True
+    
+    In this example, ``my_function_that_calls_api`` and ``result.fallback_used``
+    are illustrative placeholders; replace them with your own code and result
+    attributes that should be exercised under offline conditions.
     """
     try:
         import urllib.request
