@@ -101,19 +101,21 @@ class APIKeyValidator:
     
     def _compute_hmac(self, api_key: str) -> str:
         """
-        Compute HMAC-SHA256 hash of an API key.
+        Compute a computationally expensive hash of an API key.
         
         Args:
             api_key: The API key to hash
         
         Returns:
-            HMAC-SHA256 hash as hexadecimal string
+            PBKDF2-HMAC-SHA256 hash as hexadecimal string
         """
-        return hmac.new(
-            self._secret_key.encode(),
+        derived_key = hashlib.pbkdf2_hmac(
+            "sha256",
             api_key.encode(),
-            hashlib.sha256
-        ).hexdigest()
+            self._secret_key.encode(),
+            100_000,
+        )
+        return derived_key.hex()
     
     def register_key(self, key_hash: str, user_id: str, scopes: Optional[List[str]] = None,
                     name: str = "default") -> None:
