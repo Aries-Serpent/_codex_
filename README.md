@@ -1,8 +1,8 @@
 # `_codex_`
 > 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
 
-![Tests](https://img.shields.io/badge/tests-1700%2B%20total%20%7C%20100%25%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-72%25-yellow)
+![Tests](https://img.shields.io/badge/tests-1300%2B%20total%20%7C%20Phase%2014--18%20Complete-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-90%25%20threshold-brightgreen)
 ![Security](https://img.shields.io/badge/security-IP--005%20Complete%20%7C%2026%20CVEs%20Fixed-brightgreen)
 ![Production](https://img.shields.io/badge/production-ready-brightgreen)
 
