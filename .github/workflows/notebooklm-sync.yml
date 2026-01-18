@@ -6,7 +6,7 @@
 #
 # REASON FOR DEFERRAL:
 # - Google Drive upload functionality requires Google Cloud OAuth2 setup
-# - Required secrets (GDRIVE_SERVICE_ACCOUNT_JSON, GOOGLE_CLIENT_ID, 
+# - Required secrets (GDRIVE_SERVICE_ACCOUNT_JSON, GOOGLE_CLIENT_ID,
 #   GOOGLE_CLIENT_SECRET) are not yet configured
 # - Current workflow fails with: "oauth2: cannot fetch token: 400 Bad Request"
 # - The satackey/action-google-drive@v1 action attempts interactive OAuth flow
@@ -20,7 +20,7 @@
 #
 # FUTURE IMPLEMENTATION:
 # - See: docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md for complete checklist
-# - Follow phases: Google Cloud setup → GitHub Secrets → CI Auth Fix → 
+# - Follow phases: Google Cloud setup → GitHub Secrets → CI Auth Fix →
 #   NotebookLM integration → Re-enable workflow
 #
 # MANUAL RUNS:
@@ -36,17 +36,17 @@ on:
   # Manual trigger only - use GitHub Actions UI or gh CLI
   workflow_dispatch:
     inputs:
-      force_sync: 
+      force_sync:
         description: 'Force full synchronization'
         required: false
         default: 'false'
         type: boolean
-  
+
   # Automated triggers DISABLED until Google Drive integration is implemented
   # Uncomment the sections below after completing setup in docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md
   #
   # push:
-  #   branches: 
+  #   branches:
   #     - main
   #     - develop
   #   paths:
@@ -75,23 +75,23 @@ env:
   REPOMIX_VERSION: '1.11.1'
 
 jobs:
-  consolidate-and-sync: 
+  consolidate-and-sync:
     name: Repository Consolidation & Drive Sync (HUMAN DEFERRAL)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name:  Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1  # Shallow clone for speed
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name:  Cache Repomix Installation
         uses: actions/cache@v4
         with:
@@ -100,42 +100,42 @@ jobs:
           restore-keys:  |
             ${{ runner.os }}-repomix-${{ env.REPOMIX_VERSION }}-
             ${{ runner.os }}-repomix-
-      
+
       - name: Install Repomix
         run: |
           npm install -g repomix@${{ env.REPOMIX_VERSION }}
           repomix --version
-      
+
       - name: Generate Repository Consolidation
         id:  consolidate
         run: |
           echo "::group::Running Repomix Consolidation"
-          
+
           # Run repomix with configuration
           repomix --config repomix.config.json --verbose
-          
+
           echo "::endgroup::"
-          
+
           # Validate output exists
           if [ ! -f "$OUTPUT_FILE" ]; then
             echo "❌ Consolidation failed: Output file not created"
             exit 1
           fi
-          
+
           # Calculate file size
           FILE_SIZE=$(stat -c%s "$OUTPUT_FILE" 2>/dev/null || stat -f%z "$OUTPUT_FILE")
           FILE_SIZE_MB=$(echo "scale=2; $FILE_SIZE / 1048576" | bc)
-          
+
           echo "✅ Consolidation complete"
           echo "📦 File size: ${FILE_SIZE_MB}MB"
           echo "file_size_mb=${FILE_SIZE_MB}" >> $GITHUB_OUTPUT
           echo "file_size_bytes=${FILE_SIZE}" >> $GITHUB_OUTPUT
-          
+
           # Check if file size is within acceptable range
           if (( $(echo "$FILE_SIZE_MB > 10" | bc -l) )); then
             echo "⚠️ WARNING: File size exceeds 10MB, may need optimization"
           fi
-          
+
           # Validate XML structure
           if command -v xmllint &> /dev/null; then
             if xmllint --noout "$OUTPUT_FILE" 2>&1; then
@@ -145,48 +145,48 @@ jobs:
               exit 1
             fi
           fi
-      
+
       - name: Setup Python for Security Scanning
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Cache Security Tools
         uses: actions/cache@v4
-        with: 
+        with:
           path: |
             ~/.cache/pip
             ~/.npm
           key: ${{ runner.os }}-security-tools-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-security-tools-
-      
+
       - name: Configure NPM Authentication
         run: |
           npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
           echo "NPM authentication configured"
         env:
           NPM_TOKEN: ${{ secrets.npm_token }}
-      
+
       - name: Install Security Scanning Tools
         run: |
           echo "::group::Installing Secretlint"
           npm install -g secretlint @secretlint/secretlint-rule-preset-recommend
           secretlint --version
           echo "::endgroup::"
-          
+
           echo "::group::Installing detect-secrets"
           pip install detect-secrets
           detect-secrets --version
           echo ":: endgroup::"
-      
+
       - name: Security Scan - Secretlint
         id: secretlint
         continue-on-error: true
         run: |
           echo ":: group:: Scanning with Secretlint"
-          
+
           # Create secretlint config if not exists
           if [ ! -f ".secretlintrc.json" ]; then
             # Use Python to reliably generate the JSON file (avoids heredoc indentation/quoting issues)
@@ -202,7 +202,7 @@ jobs:
           print(json.dumps(config, indent=2))
           PY
           fi
-          
+
           if npx secretlint "$OUTPUT_FILE"; then
             echo "✅ No secrets detected by Secretlint"
             echo "secrets_found=false" >> $GITHUB_OUTPUT
@@ -211,17 +211,17 @@ jobs:
             echo "secrets_found=true" >> $GITHUB_OUTPUT
           fi
           echo "::endgroup::"
-      
+
       - name: Security Scan - detect-secrets
         id:  detect_secrets
         run: |
           echo "::group::Scanning with detect-secrets"
-          
+
           # Initialize baseline if not exists
           if [ ! -f ".secrets.baseline" ]; then
             detect-secrets scan --baseline .secrets.baseline
           fi
-          
+
           # Scan the output file
           if detect-secrets scan "$OUTPUT_FILE" --baseline .secrets.baseline; then
             echo "✅ No secrets detected by detect-secrets"
@@ -229,14 +229,14 @@ jobs:
           else
             echo "❌ detect-secrets found secrets!"
             echo "secrets_found=true" >> $GITHUB_OUTPUT
-            
+
             # Show what was found (for debugging)
             detect-secrets scan "$OUTPUT_FILE" --baseline . secrets.baseline || true
-            
+
             exit 1
           fi
           echo "::endgroup::"
-      
+
       - name: Fail if Secrets Detected
         if: ${{ steps.secretlint.outputs.secrets_found == 'true' || steps.detect_secrets.outputs.secrets_found == 'true' }}
         run: |
@@ -248,24 +248,24 @@ jobs:
           echo "2. Add patterns to .repomixignore"
           echo "3. Update .secrets.baseline if false positive"
           exit 1
-      
+
       # ==============================================================================
       # Google Drive Upload - HUMAN DEFERRAL (Policy Compliant)
       # ==============================================================================
       # This step is preserved for future re-enablement but will fail without setup.
-      # 
+      #
       # AI AGENCY POLICY COMPLIANCE:
       #   ✅ ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)
       #   ❌ NOT ALLOWED: AI Agent Deferral (AI agents avoiding technical work)
-      # 
+      #
       # Classification: HUMAN DEFERRAL
       #   - AI agents CAN implement the technical integration (code, testing, deployment)
       #   - Humans MUST complete Google Cloud project setup first (account, billing, OAuth)
       #   - Physical limitation (no Google account access), not capability limitation
-      # 
+      #
       # See: docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md
       # ==============================================================================
-      
+
       - name: Upload to Google Drive
         id: drive_upload
         uses: satackey/action-google-drive@v1
@@ -276,7 +276,7 @@ jobs:
           google-client-id: ${{ secrets. GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           remove-outdated:  true
-      
+
       - name:  Notify Sync Complete
         if: ${{ success() }}
         env:
@@ -286,7 +286,7 @@ jobs:
             # Get commit info
             COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
             COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
-            
+
             # Prepare environment values (note: GitHub expressions are expanded before the run step)
             export FILE_SIZE_MB="${{ steps.consolidate.outputs.file_size_mb }}"
             export FILE_SIZE_BYTES="${{ steps.consolidate.outputs. file_size_bytes }}"
@@ -294,16 +294,16 @@ jobs:
             export TIMESTAMP="$(date -Iseconds)"
             export GITHUB_REF_NAME="${{ github.ref_name }}"
             export WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github. run_id }}"
-            
+
             # Build JSON payload safely using Python to avoid quoting issues
             PAYLOAD=$(python - <<'PY'
           import json, os
           def to_int(v):
-              try: 
+              try:
                   return int(v)
-              except: 
+              except:
                   return None
-          
+
           payload = {
             "status": "success",
             "timestamp": os.environ.get("TIMESTAMP"),
@@ -320,12 +320,12 @@ jobs:
           print(json.dumps(payload))
           PY
           )
-            
+
             # Send webhook notification
             curl -s -X POST "$WEBHOOK_URL" \
               -H "Content-Type: application/json" \
               -d "$PAYLOAD"
-            
+
             if [ $? -eq 0 ]; then
               echo "✅ Notification sent successfully"
             else
@@ -335,7 +335,7 @@ jobs:
             echo "ℹ️ Webhook URL not configured, skipping notification"
             echo "To enable notifications, set NOTEBOOKLM_WEBHOOK_URL secret"
           fi
-      
+
       - name: Upload Artifact (Backup)
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -344,7 +344,7 @@ jobs:
           path: ${{ env.OUTPUT_FILE }}
           retention-days: 7
           compression-level: 9
-      
+
       - name: Generate Job Summary
         if: ${{ always() }}
         run: |
@@ -368,7 +368,7 @@ jobs:
           echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Timestamp**: $(date -Iseconds)" >> $GITHUB_STEP_SUMMARY
           echo "- **Workflow**: [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          
+
           # Add next steps
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### ⚠️ HUMAN DEFERRAL STATUS" >> $GITHUB_STEP_SUMMARY

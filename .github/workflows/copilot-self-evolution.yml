@@ -30,11 +30,11 @@ jobs:
   test-integrated-system:
     name: Test Integrated System
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

@@ -25,17 +25,17 @@ jobs:
   token-audit:
     name: Security Token Audit
     runs-on: ubuntu-latest
-    
+
     outputs:
       rotation-needed: ${{ steps.audit.outputs.rotation_needed }}
       audit-status: ${{ steps.audit.outputs.status }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-      
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

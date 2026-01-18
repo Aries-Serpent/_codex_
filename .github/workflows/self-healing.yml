@@ -4,7 +4,7 @@ name: Self-Healing CI/CD
 
 on:
   workflow_run:
-    workflows: 
+    workflows:
       - "CI"
       - "RAG Module Tests"
       - "Rust-Python Hybrid Swarm CI/CD"
@@ -42,28 +42,28 @@ jobs:
       failure_description: ${{ steps.analyze.outputs.failure_description }}
       fix_description: ${{ steps.analyze.outputs.fix_description }}
       workflow_run_id: ${{ steps.get_run_id.outputs.run_id }}
-      
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install Dependencies
         run: |
           pip install click pyyaml --quiet
-      
+
       - name: Setup Cached Environment
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
           cache-tier: 'common'
-      
+
       - name: Get Workflow Run ID
         id: get_run_id
         env:
@@ -74,7 +74,7 @@ jobs:
           else
             echo "run_id=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Download Failure Logs
         id: download_logs
         env:
@@ -83,7 +83,7 @@ jobs:
         run: |
           echo "Downloading logs for run $RUN_ID..."
           gh run view "$RUN_ID" --log > failure_logs.txt 2>&1 || true
-          
+
           if [ -s failure_logs.txt ]; then
             echo "✅ Logs downloaded successfully"
             echo "log_size=$(wc -l < failure_logs.txt)"
@@ -92,17 +92,17 @@ jobs:
             echo "::warning::No logs available or download failed"
             echo "logs_available=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Analyze Failure
         id: analyze
         if: steps.download_logs.outputs.logs_available == 'true'
         run: |
           echo "::group::Analyzing failure logs"
-          
+
           python .github/agents/ci-testing-agent/src/analyzer.py \
             --log-file failure_logs.txt \
             --output-json analysis.json
-          
+
           # Extract analysis results
           FIX_AVAILABLE=$(jq -r '.fix_available' analysis.json)
           FIX_TYPE=$(jq -r '.fix_type' analysis.json)
@@ -110,24 +110,24 @@ jobs:
           CONFIDENCE=$(jq -r '.confidence' analysis.json)
           FAILURE_DESC=$(jq -r '.failure_description' analysis.json)
           FIX_DESC=$(jq -r '.fix_description' analysis.json)
-          
+
           echo "fix_available=$FIX_AVAILABLE" >> $GITHUB_OUTPUT
           echo "fix_type=$FIX_TYPE" >> $GITHUB_OUTPUT
           echo "fix_params=$FIX_PARAMS" >> $GITHUB_OUTPUT
           echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
           echo "failure_description=$FAILURE_DESC" >> $GITHUB_OUTPUT
           echo "fix_description=$FIX_DESC" >> $GITHUB_OUTPUT
-          
+
           echo "::notice::Analysis complete: $FAILURE_DESC (confidence: $CONFIDENCE%)"
-          
+
           if [ "$FIX_AVAILABLE" = "true" ]; then
             echo "::notice::🔧 Automated fix available: $FIX_DESC"
           else
             echo "::warning::⚠️ No automated fix available - manual intervention required"
           fi
-          
+
           echo "::endgroup::"
-      
+
       - name: Upload Analysis Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -143,33 +143,33 @@ jobs:
     needs: detect-and-analyze
     runs-on: ubuntu-latest
     if: |
-      needs.detect-and-analyze.outputs.fix_available == 'true' && 
+      needs.detect-and-analyze.outputs.fix_available == 'true' &&
       (needs.detect-and-analyze.outputs.confidence >= 70 || inputs.force_fix == true)
     outputs:
       fix_applied: ${{ steps.apply.outputs.fix_applied }}
       fix_details: ${{ steps.apply.outputs.fix_details }}
       commit_sha: ${{ steps.apply.outputs.commit_sha }}
-      
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Python
         if: contains(needs.detect-and-analyze.outputs.fix_type, 'python')
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
           cache-tier: 'common'
-      
+
       - name: Setup Rust
         if: contains(needs.detect-and-analyze.outputs.fix_type, 'rust')
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-      
+
       - name: Apply Fix
         id: apply
         uses: ./.github/actions/apply-ci-fix
@@ -177,7 +177,7 @@ jobs:
           fix_type: ${{ needs.detect-and-analyze.outputs.fix_type }}
           fix_params: ${{ needs.detect-and-analyze.outputs.fix_params }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Push Changes
         if: steps.apply.outputs.commit_sha != ''
         run: |
@@ -193,14 +193,14 @@ jobs:
     needs: [detect-and-analyze, apply-fix]
     runs-on: ubuntu-latest
     if: needs.apply-fix.outputs.fix_applied == 'true' && needs.apply-fix.outputs.commit_sha != ''
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           ref: self-healing/${{ github.run_id }}
           fetch-depth: 0
-      
+
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v5
@@ -211,28 +211,28 @@ jobs:
           title: '🤖 Self-Healing: Fix ${{ needs.detect-and-analyze.outputs.failure_description }}'
           body: |
             ## 🤖 Automated Self-Healing Fix
-            
+
             This PR was automatically created by the CI self-healing system.
-            
+
             ### 📊 Analysis Results
             - **Failure Type**: ${{ needs.detect-and-analyze.outputs.failure_description }}
             - **Fix Applied**: ${{ needs.detect-and-analyze.outputs.fix_description }}
             - **Confidence**: ${{ needs.detect-and-analyze.outputs.confidence }}%
             - **Fix Details**: ${{ needs.apply-fix.outputs.fix_details }}
-            
+
             ### 🔗 Related Information
             - **Failed Workflow Run**: ${{ github.event.workflow_run.html_url }}
             - **Self-Healing Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             - **Commit**: ${{ needs.apply-fix.outputs.commit_sha }}
-            
+
             ### ✅ Validation
             - [ ] Review the changes
             - [ ] Verify CI passes
             - [ ] Merge if approved
-            
+
             ### 🧠 Cognitive Brain Integration
             This fix will be recorded in the cognitive brain learning system for future pattern recognition and improvement.
-            
+
             ---
             *Generated by Self-Healing CI System - [Learn More](.github/actions/apply-ci-fix/README.md)*
           labels: |
@@ -240,7 +240,7 @@ jobs:
             automated
             ci-fix
           draft: false
-      
+
       - name: Comment on PR
         if: steps.create_pr.outputs.pull-request-number != ''
         env:
@@ -248,17 +248,17 @@ jobs:
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           gh pr comment "$PR_NUMBER" --body "### 🤖 Self-Healing Fix Applied
-          
+
           ✅ **Status**: Fix successfully applied and committed
-          
+
           **Confidence Level**: ${{ needs.detect-and-analyze.outputs.confidence }}%
           ${{ needs.detect-and-analyze.outputs.confidence >= 90 && '🟢 High confidence - likely safe to merge' || needs.detect-and-analyze.outputs.confidence >= 70 && '🟡 Medium confidence - review recommended' || '🔴 Low confidence - manual review required' }}
-          
+
           **Next Steps**:
           1. Review the changes in this PR
           2. Verify that CI checks pass
           3. Merge if everything looks good
-          
+
           The cognitive brain will learn from the outcome of this fix."
 
   update-cognitive-brain:
@@ -266,26 +266,26 @@ jobs:
     needs: [detect-and-analyze, apply-fix, create-pr]
     runs-on: ubuntu-latest
     if: always() && needs.detect-and-analyze.result == 'success'
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install Dependencies
         run: |
           pip install pyyaml --quiet
-      
+
       - name: Setup Cached Environment
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
           cache-tier: 'common'
-      
+
       - name: Record Self-Healing Attempt
         env:
           OUTCOME: ${{ needs.apply-fix.outputs.fix_applied == 'true' && 'success' || 'failure' }}
@@ -293,7 +293,7 @@ jobs:
           CONFIDENCE: ${{ needs.detect-and-analyze.outputs.confidence }}
         run: |
           mkdir -p .codex/self_healing
-          
+
           # Create log entry
           cat > .codex/self_healing/attempt_${{ github.run_id }}.yaml << EOF
           timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -309,26 +309,26 @@ jobs:
           commit_sha: ${{ needs.apply-fix.outputs.commit_sha || 'N/A' }}
           pr_created: ${{ needs.create-pr.result == 'success' }}
           EOF
-          
+
           echo "✅ Self-healing attempt recorded"
           cat .codex/self_healing/attempt_${{ github.run_id }}.yaml
-      
+
       - name: Update Success Rate Metrics
         run: |
           # Calculate success rate for this fix type
           mkdir -p .codex/metrics
-          
+
           python -c "
           import yaml
           import glob
           from pathlib import Path
-          
+
           # Load all attempts
           attempts = []
           for file in glob.glob('.codex/self_healing/attempt_*.yaml'):
               with open(file) as f:
                   attempts.append(yaml.safe_load(f))
-          
+
           # Calculate metrics by fix type
           metrics = {}
           for attempt in attempts:
@@ -338,7 +338,7 @@ jobs:
               metrics[fix_type]['total'] += 1
               if attempt.get('outcome') == 'success':
                   metrics[fix_type]['success'] += 1
-          
+
           # Save metrics
           with open('.codex/metrics/self_healing_metrics.yaml', 'w') as f:
               yaml.dump({
@@ -346,10 +346,10 @@ jobs:
                   'total_attempts': len(attempts),
                   'by_fix_type': metrics
               }, f)
-          
+
           print('✅ Metrics updated')
           "
-      
+
       - name: Generate Summary
         run: |
           echo "## 🤖 Self-Healing CI Summary" >> $GITHUB_STEP_SUMMARY
@@ -370,7 +370,7 @@ jobs:
     if: |
       needs.detect-and-analyze.outputs.fix_available != 'true' ||
       needs.detect-and-analyze.outputs.confidence < 70
-    
+
     steps:
       - name: Create Issue for Manual Intervention
         uses: actions/github-script@v7
@@ -381,26 +381,26 @@ jobs:
               repo: context.repo.repo,
               title: '🔴 CI Failure Requires Manual Intervention',
               body: `## CI Failure Analysis
-              
+
               The self-healing system detected a CI failure but cannot automatically fix it.
-              
+
               ### Analysis Results
               - **Failure Type**: ${{ needs.detect-and-analyze.outputs.failure_description }}
               - **Confidence**: ${{ needs.detect-and-analyze.outputs.confidence }}%
               - **Auto-Fix Available**: ${{ needs.detect-and-analyze.outputs.fix_available }}
-              
+
               ### Recommended Action
               ${{ needs.detect-and-analyze.outputs.fix_description }}
-              
+
               ### Failed Workflow Run
               ${{ github.event.workflow_run.html_url }}
-              
+
               ### Self-Healing Analysis Run
               ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-              
+
               ---
               *This issue was automatically created by the Self-Healing CI system.*`,
               labels: ['ci-failure', 'needs-investigation', 'manual-intervention']
             });
-            
+
             console.log(`Created issue #${issue.data.number}`);

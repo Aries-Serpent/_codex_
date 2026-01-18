@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.11'
           cache-tier: 'live'
-      
+
       - name: Install nox and deps
         run: |
           python -m pip install --upgrade pip

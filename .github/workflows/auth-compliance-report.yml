@@ -13,22 +13,22 @@ jobs:
   generate-compliance-report:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .
           pip install PyGithub matplotlib pandas
-          
+
       - name: Generate compliance data
         id: compliance
         run: |
@@ -37,25 +37,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
-          
+
       - name: Analyze MFA adoption
         run: |
           python scripts/compliance_reporter.py --analyze-mfa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
-          
+
       - name: Check token lifecycle
         run: |
           python scripts/compliance_reporter.py --check-tokens
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           COMPLIANCE_REPORT_KEY: ${{ secrets.COMPLIANCE_REPORT_KEY }}
-          
+
       - name: Generate visualizations
         run: |
           python scripts/compliance_reporter.py --visualize
-          
+
       - name: Upload report artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -64,7 +64,7 @@ jobs:
             compliance_report_*.md
             compliance_*.png
           retention-days: 90
-          
+
       - name: Post compliance report
         uses: actions/github-script@v7
         with:
@@ -73,13 +73,13 @@ jobs:
             const fs = require('fs');
             const report = fs.readFileSync('compliance_report_latest.md', 'utf8');
             const complianceData = JSON.parse(fs.readFileSync('compliance_data.json', 'utf8'));
-            
+
             let status = '✅';
             if (complianceData.compliance_score < 80) status = '❌';
             else if (complianceData.compliance_score < 95) status = '⚠️';
-            
+
             const title = `[Compliance] Auth Security Report - ${new Date().toISOString().split('T')[0]} ${status}`;
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -87,7 +87,7 @@ jobs:
               body: report,
               labels: ['security', 'compliance', 'report']
             });
-            
+
       - name: Alert on low compliance
         if: steps.compliance.outputs.score < '80'
         uses: actions/github-script@v7
@@ -95,19 +95,19 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const body = `## ⚠️ Low Compliance Score Alert
-            
+
             **Compliance Score**: ${{ steps.compliance.outputs.score }}%
             **Threshold**: 80%
-            
+
             ### Action Required
             Review the compliance report and take corrective actions.
-            
+
             ### Key Issues
             ${{ steps.compliance.outputs.issues }}
-            
+
             ---
             *Automated alert from auth-compliance-report workflow*`;
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

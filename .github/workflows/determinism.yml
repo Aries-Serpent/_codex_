@@ -30,69 +30,69 @@ env:
 jobs:
   determinism-check:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      
+
       - name: Free disk space for CI
         run: |
           echo "=== Disk usage before cleanup ==="
           df -h
-          
+
           # Remove unnecessary packages to free space
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          
+
           # Clean apt caches
           sudo apt-get clean
-          
+
           # Remove Docker images if present
           docker rmi $(docker images -q) 2>/dev/null || true
-          
+
           echo "=== Disk usage after cleanup ==="
           df -h
-      
+
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.11
           cache-tier: 'live'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev,test]"
-      
+
       - name: Clear Python caches
         run: |
           find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
           find . -type f -name "*.pyc" -delete 2>/dev/null || true
           rm -rf .pytest_cache
           echo "✅ Python caches cleared"
-      
+
       - name: Run determinism validation
         run: |
           echo "=== Checking for deterministic behavior ==="
           echo "PYTHONHASHSEED=$PYTHONHASHSEED"
           echo "RANDOM_SEED=$RANDOM_SEED"
-          
+
           # Bootstrap determinism harness is now loaded via conftest.py
-          
+
           # Check if audit pipeline produces consistent results
           if [ -f "scripts/audit_pipeline.py" ]; then
             echo "Running audit pipeline twice to check determinism..."
             timeout 120 python scripts/audit_pipeline.py --out audit_run1.json 2>&1 || echo "⚠️ First run failed or timed out"
             timeout 120 python scripts/audit_pipeline.py --out audit_run2.json 2>&1 || echo "⚠️ Second run failed or timed out"
-            
+
             # If either run failed to produce output, fail the workflow to avoid false positives
             if [ ! -f audit_run1.json ] || [ ! -f audit_run2.json ]; then
               echo "❌ Audit pipeline did not complete successfully for both runs; failing determinism validation."
               exit 1
             fi
-            
+
             if diff audit_run1.json audit_run2.json > /dev/null 2>&1; then
               echo "✅ Audit pipeline is deterministic"
             else
@@ -100,12 +100,12 @@ jobs:
               diff audit_run1.json audit_run2.json || true
             fi
           fi
-          
+
           # Run pytest twice and compare outputs for determinism
           echo "=== Running test suite twice to verify determinism ==="
           pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee baseline_test.out || echo "⚠️ First test run had failures"
           pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee second_test.out || echo "⚠️ Second test run had failures"
-          
+
           # Compare test outputs (excluding timing information)
           # Note: This is a basic comparison; may need refinement for timing-sensitive output
           if diff baseline_test.out second_test.out > /dev/null 2>&1; then
@@ -115,7 +115,7 @@ jobs:
             echo "This may indicate non-deterministic behavior in tests"
             diff baseline_test.out second_test.out || true
           fi
-          
+
           # Check for random seeds in code
           echo "=== Checking for random seeds ==="
           if grep -r "random\|seed\|numpy.random" src/ --include="*.py" | grep -v "random_state\|seed=" | grep -v "#"; then
@@ -123,7 +123,7 @@ jobs:
           else
             echo "✅ No obvious random usage without seeds found"
           fi
-          
+
           # Check for timestamp dependencies
           echo "=== Checking for timestamp dependencies ==="
           if grep -r "datetime.now()\|time.time()" src/ --include="*.py" | grep -v "#" | grep -v "log\|timestamp"; then
@@ -131,45 +131,45 @@ jobs:
           else
             echo "✅ No problematic timestamp usage found"
           fi
-      
+
       - name: Validate audit trails
         run: |
           echo "=== Validating audit trail completeness ==="
-          
+
           # Check for audit logging in critical paths
           AUDIT_COUNT=$(grep -r "audit\|log" src/ --include="*.py" | wc -l)
           echo "Found $AUDIT_COUNT audit/log references"
-          
+
           if [ "$AUDIT_COUNT" -lt "10" ]; then
             echo "⚠️  Limited audit trail coverage - consider adding more logging"
           else
             echo "✅ Audit trail coverage looks good"
           fi
-      
+
       - name: Generate determinism report
         if: always()
         run: |
           cat > determinism-report.md << 'EOF'
           # Determinism & Audit Validation Report
-          
+
           ## Summary
           This workflow validates that code changes maintain deterministic behavior
           and proper audit trail coverage.
-          
+
           ## Checks Performed
           1. ✅ Audit pipeline determinism
           2. ✅ Random seed usage
-          3. ✅ Timestamp dependencies  
+          3. ✅ Timestamp dependencies
           4. ✅ Audit trail coverage
-          
+
           ## Recommendations
           - Ensure all random operations use fixed seeds in production
           - Use deterministic timestamps for reproducible results
           - Maintain comprehensive audit logging for critical operations
           EOF
-          
+
           cat determinism-report.md
-      
+
       - name: Upload determinism report
         if: always()
         uses: actions/upload-artifact@v4

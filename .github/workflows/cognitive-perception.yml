@@ -16,13 +16,13 @@ jobs:
       contents: read
       pull-requests: read
       actions: read
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for git analysis
-      
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

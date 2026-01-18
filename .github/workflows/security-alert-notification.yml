@@ -19,11 +19,11 @@ jobs:
   check-security-alerts:
     runs-on: ubuntu-latest
     name: Check and notify on security alerts
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Get Dependabot alerts
         id: get-alerts
         uses: actions/github-script@v8
@@ -38,13 +38,13 @@ jobs:
               direction: 'desc',
               per_page: 100
             });
-            
+
             // Filter alerts created in last 24 hours
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-            const newAlerts = alerts.filter(alert => 
+            const newAlerts = alerts.filter(alert =>
               new Date(alert.created_at) > oneDayAgo
             );
-            
+
             // Group by severity
             const groupedAlerts = {
               critical: [],
@@ -52,14 +52,14 @@ jobs:
               moderate: [],
               low: []
             };
-            
+
             newAlerts.forEach(alert => {
               const severity = alert.security_advisory.severity.toLowerCase();
               if (groupedAlerts[severity]) {
                 groupedAlerts[severity].push(alert);
               }
             });
-            
+
             core.setOutput('alert-count', newAlerts.length);
             core.setOutput('critical-count', groupedAlerts.critical.length);
             core.setOutput('high-count', groupedAlerts.high.length);
@@ -67,12 +67,12 @@ jobs:
             core.setOutput('low-count', groupedAlerts.low.length);
             core.setOutput('alerts', JSON.stringify(newAlerts));
             core.setOutput('has-alerts', newAlerts.length > 0);
-            
+
             return {
               count: newAlerts.length,
               alerts: newAlerts
             };
-      
+
       - name: Create security summary
         id: create-summary
         if: steps.get-alerts.outputs.has-alerts == 'true'
@@ -81,10 +81,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const alerts = JSON.parse('${{ steps.get-alerts.outputs.alerts }}');
-            
+
             let summary = '## 🚨 New Security Alerts Detected\n\n';
             summary += `**Total New Alerts:** ${alerts.length}\n\n`;
-            
+
             // Summary table
             summary += '| Severity | Count |\n';
             summary += '|----------|-------|\n';
@@ -92,7 +92,7 @@ jobs:
             summary += `| High | ${{ steps.get-alerts.outputs.high-count }} |\n`;
             summary += `| Moderate | ${{ steps.get-alerts.outputs.moderate-count }} |\n`;
             summary += `| Low | ${{ steps.get-alerts.outputs.low-count }} |\n\n`;
-            
+
             // Group and display alerts
             const severityGroups = {
               'critical': { emoji: '🔴', alerts: [] },
@@ -100,19 +100,19 @@ jobs:
               'moderate': { emoji: '🟡', alerts: [] },
               'low': { emoji: '🔵', alerts: [] }
             };
-            
+
             alerts.forEach(alert => {
               const severity = alert.security_advisory.severity.toLowerCase();
               if (severityGroups[severity]) {
                 severityGroups[severity].alerts.push(alert);
               }
             });
-            
+
             // Add alert details by severity
             for (const [severity, group] of Object.entries(severityGroups)) {
               if (group.alerts.length > 0) {
                 summary += `### ${group.emoji} ${severity.charAt(0).toUpperCase() + severity.slice(1)} Severity\n\n`;
-                
+
                 group.alerts.forEach(alert => {
                   const advisory = alert.security_advisory;
                   summary += `#### Alert #${alert.number}: ${advisory.summary}\n`;
@@ -128,7 +128,7 @@ jobs:
                 });
               }
             }
-            
+
             summary += '\n---\n\n';
             summary += '### 📋 Next Steps\n\n';
             summary += '1. **Critical/High Alerts:** Address within 48 hours\n';
@@ -139,10 +139,10 @@ jobs:
             summary += '- If patched: Dismiss alert and document in `reports/security_audit.md`\n';
             summary += '- If not patched: Create PR to update dependency\n\n';
             summary += `**View All Alerts:** https://github.com/${context.repo.owner}/${context.repo.repo}/security/dependabot\n`;
-            
+
             core.setOutput('summary', summary);
             return summary;
-      
+
       - name: Create GitHub Issue for new alerts
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
         uses: actions/github-script@v8
@@ -152,11 +152,11 @@ jobs:
             const summary = `${{ steps.create-summary.outputs.summary }}`;
             const criticalCount = parseInt('${{ steps.get-alerts.outputs.critical-count }}');
             const highCount = parseInt('${{ steps.get-alerts.outputs.high-count }}');
-            
+
             // Only create issue for critical/high severity alerts
             if (criticalCount > 0 || highCount > 0) {
               const title = `🚨 Security Alert: ${criticalCount} Critical, ${highCount} High Severity Vulnerabilities Detected`;
-              
+
               // Check if similar issue already exists
               const { data: existingIssues } = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
@@ -165,13 +165,13 @@ jobs:
                 labels: 'security,dependabot',
                 per_page: 10
               });
-              
+
               // Don't create duplicate if issue already exists from today
               const today = new Date().toISOString().split('T')[0];
-              const existingToday = existingIssues.find(issue => 
+              const existingToday = existingIssues.find(issue =>
                 issue.created_at.startsWith(today)
               );
-              
+
               if (!existingToday) {
                 await github.rest.issues.create({
                   owner: context.repo.owner,
@@ -180,13 +180,13 @@ jobs:
                   body: summary,
                   labels: ['security', 'dependabot', 'high-priority']
                 });
-                
+
                 core.info('Created security alert issue');
               } else {
                 core.info('Security issue already exists for today, skipping creation');
               }
             }
-      
+
       - name: Add workflow summary
         if: always()
         run: |
@@ -198,7 +198,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Last Check:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
           fi
-      
+
       - name: Send notification (optional - requires configuration)
         if: steps.get-alerts.outputs.has-alerts == 'true' && steps.get-alerts.outputs.critical-count > 0
         run: |

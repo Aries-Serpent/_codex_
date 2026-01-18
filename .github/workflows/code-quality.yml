@@ -14,13 +14,13 @@ jobs:
   code-smells-observation:
     name: Code Smell Detection (Observation Mode)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Need full history for baseline comparison
-      
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
