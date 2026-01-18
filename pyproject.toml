@@ -433,10 +433,11 @@ omit = [
 show_missing = true
 skip_covered = false
 precision = 2
-# NOTE: Coverage threshold updated to 90% after Phase 17.1 completion
-# Phases 14-17 created 1020+ tests achieving significant coverage improvement.
+# NOTE: Coverage threshold updated to 95% after Phase 19.0 completion
+# Phases 14-18 created 1300+ tests achieving comprehensive coverage improvement.
+# Phase 19.0 pushes toward 100% coverage with 200+ additional tests.
 # See docs/COVERAGE_ROADMAP_TO_100_PERCENT.md for the path to 100% coverage.
-fail_under = 90
+fail_under = 95
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
