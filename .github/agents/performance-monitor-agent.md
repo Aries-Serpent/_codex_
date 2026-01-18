@@ -290,27 +290,48 @@ RAG Query Latency (ms) - Last 7 Days
 ## Regression Detection Algorithm
 
 ```python
-def detect_regression(baseline, current, threshold=0.10, alpha=0.05):
+from typing import Sequence
+
+import numpy as np
+from scipy import stats
+
+
+def detect_regression(
+    baseline: Sequence[float],
+    current: Sequence[float],
+    threshold: float = 0.10,
+    alpha: float = 0.05,
+) -> bool:
     """
     Detect performance regression using statistical testing.
     
-    1. Calculate mean and std for both samples
-    2. Perform Welch's t-test
-    3. Check if p-value < alpha (significant difference)
-    4. Check if change > threshold (meaningful regression)
-    5. Return regression if both conditions met
+    Args:
+        baseline: Historical performance measurements (e.g., latencies in ms)
+        current: Current performance measurements to compare
+        threshold: Minimum percentage change to consider a regression (default: 10%)
+        alpha: Significance level for statistical test (default: 0.05)
+    
+    Returns:
+        bool: True if a statistically significant regression is detected
+    
+    Algorithm:
+        1. Calculate mean and std for both samples
+        2. Perform Welch's t-test (handles unequal variances)
+        3. Check if p-value < alpha (statistically significant difference)
+        4. Check if change > threshold (meaningful regression magnitude)
+        5. Return True only if both conditions are met
     """
-    from scipy import stats
+    baseline_mean: float = np.mean(baseline)
+    current_mean: float = np.mean(current)
     
-    baseline_mean = np.mean(baseline)
-    current_mean = np.mean(current)
+    # Calculate relative change (positive = regression/slower)
+    change: float = (current_mean - baseline_mean) / baseline_mean
     
-    change = (current_mean - baseline_mean) / baseline_mean
-    
+    # Welch's t-test for unequal variances
     _, p_value = stats.ttest_ind(baseline, current, equal_var=False)
     
-    is_significant = p_value < alpha
-    exceeds_threshold = change > threshold
+    is_significant: bool = p_value < alpha
+    exceeds_threshold: bool = change > threshold
     
     return is_significant and exceeds_threshold
 ```

@@ -268,8 +268,21 @@ def capture_logs(tmp_path: Path) -> Generator[Path, None, None]:
 def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
     """Simulate offline mode by blocking HTTP/HTTPS requests.
     
-    Uses targeted patching of urllib and requests instead of blocking
-    all sockets, which could interfere with other test functionality.
+    This fixture uses targeted patching of urllib and requests libraries
+    instead of blocking all sockets at the OS level. This approach:
+    
+    - Allows local IPC and database connections to still work
+    - Permits pytest's internal communication and plugin functionality
+    - Blocks only HTTP/HTTPS requests to external services
+    
+    Use this fixture when testing code that should gracefully handle
+    network failures or when ensuring no external API calls are made.
+    
+    Example:
+        def test_handles_network_failure(offline_mode):
+            # This will raise OSError when trying to make HTTP requests
+            result = my_function_that_calls_api()
+            assert result.fallback_used is True
     """
     try:
         import urllib.request
@@ -330,8 +343,21 @@ def sample_jwt_token() -> str:
 def malicious_inputs() -> dict[str, list[str]]:
     """Return a categorized dictionary of malicious inputs for security testing.
     
+    ⚠️ SECURITY WARNING: This fixture contains actual attack vectors for testing
+    security controls. These inputs should NEVER be used in production code
+    or sent to real systems. They are intended only for:
+    - Unit testing input sanitization functions
+    - Validating security filters and validators
+    - Verifying proper escaping and encoding
+    
     Categories include SQL injection, XSS, path traversal, NoSQL injection,
     XXE, SSRF, and other common attack vectors.
+    
+    Example:
+        def test_sanitizer_blocks_sql_injection(malicious_inputs):
+            for payload in malicious_inputs["sql_injection"]:
+                result = sanitize_input(payload)
+                assert "DROP" not in result
     """
     return {
         "sql_injection": [

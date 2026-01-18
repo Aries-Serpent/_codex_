@@ -21,14 +21,34 @@ import pytest
 
 # Conditional imports for optional dependencies
 def _check_torch_available() -> bool:
-    """Check if PyTorch is installed and functional."""
+    """Check if PyTorch is installed and functional.
+    
+    This function performs a comprehensive check to ensure PyTorch is not just
+    importable but actually functional. It verifies:
+    1. The torch module can be imported
+    2. Core tensor functionality exists (torch.tensor, torch.zeros)
+    3. A simple tensor operation can be executed
+    
+    Returns:
+        bool: True if PyTorch is fully functional, False otherwise.
+    """
     try:
         import torch
-        # Verify torch is actually functional, not just importable
-        if not hasattr(torch, 'tensor'):
+        
+        # Verify core tensor functionality exists
+        required_attrs = ('tensor', 'zeros', 'ones', 'empty', 'Tensor')
+        for attr in required_attrs:
+            if not hasattr(torch, attr):
+                return False
+        
+        # Verify neural network module exists
+        if not hasattr(torch, 'nn') or not hasattr(torch.nn, 'Module'):
             return False
-        # Try to create a simple tensor to verify functionality
-        _ = torch.zeros(1)
+        
+        # Try to create and manipulate a simple tensor to verify functionality
+        test_tensor = torch.zeros(1)
+        _ = test_tensor + 1  # Basic operation
+        
         return True
     except Exception:
         return False
