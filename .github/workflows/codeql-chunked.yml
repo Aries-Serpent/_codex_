@@ -161,11 +161,22 @@ jobs:
           output: sarif-results
           upload: false
 
+      - name: Rename SARIF to unique name
+        run: |
+          # Rename the SARIF file to include chunk name to avoid conflicts when merging
+          for f in sarif-results/*.sarif; do
+            if [ -f "$f" ]; then
+              mv "$f" "sarif-results/${{ matrix.chunk.name }}.sarif"
+              echo "Renamed $f to sarif-results/${{ matrix.chunk.name }}.sarif"
+            fi
+          done
+          ls -la sarif-results/
+
       - name: Upload Chunk SARIF
         uses: actions/upload-artifact@v4
         with:
           name: sarif-${{ matrix.chunk.name }}
-          path: sarif-results/*.sarif
+          path: sarif-results/${{ matrix.chunk.name }}.sarif
           retention-days: 7
 
   # Job 3: Merge all SARIF results

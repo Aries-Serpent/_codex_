@@ -195,7 +195,8 @@ jobs:
           # Skip virtualenv creation - install into system Python
           maturin develop --release --skip-install || {
             echo "⚠️ Maturin develop failed, trying alternative build method"
-            maturin build --release --features python
+            # Use extension-module feature to avoid linking libpython
+            maturin build --release --features extension-module
             pip install target/wheels/*.whl
           }
 
