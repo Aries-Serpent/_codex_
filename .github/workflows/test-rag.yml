@@ -1,14 +1,14 @@
 name: RAG Module Tests
 
-on:
+"on":
   push:
-    branches: [ main, develop, copilot/** ]
+    branches: [main, develop, copilot/**]
     paths:
       - 'src/codex/rag/**'
       - 'tests/test_rag_**'
       - 'pyproject.toml'
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
       - 'src/codex/rag/**'
       - 'tests/test_rag_**'
@@ -119,7 +119,13 @@ jobs:
 
       - name: Check coverage threshold
         run: |
-          COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); root = tree.getroot(); print(float(root.attrib['line-rate']) * 100)")
+          # Parse coverage from XML report
+          COVERAGE=$(python -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('coverage.xml')
+          root = tree.getroot()
+          print(float(root.attrib['line-rate']) * 100)
+          ")
           echo "Coverage: ${COVERAGE}%"
           # Temporarily lowered to 0% during Phase 14 foundation work (baseline is ~27.5%)
           # TODO: Restore to 90% threshold after Phase 14 completes
