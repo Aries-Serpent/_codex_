@@ -44,19 +44,19 @@ This document provides a comprehensive, actionable promptset and planset to achi
 1. **O1: Achieve 100% Test Coverage**
    - **Current**: 27.5% (196/714 modules with tests)
    - **Target**: 100% (714/714 modules with comprehensive tests)
-   - **Timeline**: 12 weeks
+   - **Timeline**: 12 phases
    - **Owner**: test-coverage-guardian agent + Copilot
 
 2. **O2: Achieve 100% Documentation Coverage**
    - **Current**: ~65% (estimated from gaps analysis)
    - **Target**: 100% (all public APIs, modules, workflows documented)
-   - **Timeline**: 8 weeks
+   - **Timeline**: 8 phases
    - **Owner**: documentation-quality-agent + Copilot
 
 3. **O3: Achieve 100% Plan Coverage**
    - **Current**: ~80% (major features planned)
    - **Target**: 100% (all features have detailed plans)
-   - **Timeline**: 4 weeks
+   - **Timeline**: 4 phases
    - **Owner**: Copilot
 
 ### Secondary Objectives
@@ -113,7 +113,7 @@ This document provides a comprehensive, actionable promptset and planset to achi
 
 ## Master Execution Plan
 
-### Phase 1: Foundation & Infrastructure (Weeks 1-2)
+### Phase 1: Foundation & Infrastructure (Phase 1-2)
 
 **Goal**: Establish tooling, baselines, and automation for coverage tracking
 
@@ -147,7 +147,7 @@ This document provides a comprehensive, actionable promptset and planset to achi
 
 ---
 
-### Phase 2: Test Coverage Push - Foundation (Weeks 3-5)
+### Phase 2: Test Coverage Push - Foundation (Phase 3-5)
 
 **Goal**: Increase test coverage from 27.5% to 50%
 
@@ -165,17 +165,17 @@ This document provides a comprehensive, actionable promptset and planset to achi
 
 **Promptset**:
 ```
-Phase 2.1: Core ML Training Tests (Week 3)
+Phase 2.1: Core ML Training Tests (Phase 3)
 - Target: src/codex_ml/training/*.py
 - Add 80+ tests covering training loops, strategies, distributed training
 - Use test-coverage-guardian agent for guidance
 
-Phase 2.2: CLI & Data Tests (Week 4)
+Phase 2.2: CLI & Data Tests (Phase 4)
 - Target: src/codex_ml/cli/*.py, src/codex_ml/data/*.py
 - Add 120+ tests covering CLI commands and data loaders
 - Use test-coverage-guardian agent for test generation
 
-Phase 2.3: RAG System Tests (Week 5)
+Phase 2.3: RAG System Tests (Phase 5)
 - Target: src/codex/rag/*.py
 - Add 100+ tests covering embeddings, indexing, retrieval
 - Use rag-index-manager agent for RAG-specific tests
@@ -188,7 +188,7 @@ Phase 2.3: RAG System Tests (Week 5)
 
 ---
 
-### Phase 3: Test Coverage Push - Advanced (Weeks 6-9)
+### Phase 3: Test Coverage Push - Advanced (Phase 6-9)
 
 **Goal**: Increase test coverage from 50% to 85%
 
@@ -200,17 +200,17 @@ Phase 2.3: RAG System Tests (Week 5)
 
 **Promptset**:
 ```
-Phase 3.1: Agent Framework Tests (Week 6)
+Phase 3.1: Agent Framework Tests (Phase 6)
 - Target: agents/*.py
 - Add 120+ tests for agent lifecycle, memory, orchestration
 - Use ci-testing-agent for CI integration
 
-Phase 3.2: Security Tests (Week 7)
+Phase 3.2: Security Tests (Phase 7)
 - Target: src/codex_ml/security/, src/codex_ml/safety/
 - Add 90+ tests for CVE monitoring, sanitization, moderation
 - Use dependency-vulnerability-scanner for security test guidance
 
-Phase 3.3: Integration & E2E Tests (Weeks 8-9)
+Phase 3.3: Integration & E2E Tests (Phase 8-9)
 - Target: Cross-module workflows
 - Add 150+ integration and E2E tests
 - Use integration-test-runner agent
@@ -223,7 +223,7 @@ Phase 3.3: Integration & E2E Tests (Weeks 8-9)
 
 ---
 
-### Phase 4: Test Coverage Final Push (Weeks 10-12)
+### Phase 4: Test Coverage Final Push (Phase 10-12)
 
 **Goal**: Achieve 100% test coverage
 
@@ -235,17 +235,17 @@ Phase 3.3: Integration & E2E Tests (Weeks 8-9)
 
 **Promptset**:
 ```
-Phase 4.1: Branch Coverage Analysis (Week 10)
+Phase 4.1: Branch Coverage Analysis (Phase 10)
 - Run pytest --cov --cov-branch to identify gaps
 - Add 100+ tests for uncovered branches
 - Use test-alignment-fixer for branch coverage
 
-Phase 4.2: Edge Cases & Error Handling (Week 11)
+Phase 4.2: Edge Cases & Error Handling (Phase 11)
 - Target all exception handlers and error paths
 - Add 80+ tests for edge cases
 - Use property-based testing (Hypothesis)
 
-Phase 4.3: Final Gap Closure (Week 12)
+Phase 4.3: Final Gap Closure (Phase 12)
 - Address remaining coverage gaps
 - Add 60+ tests to reach 100%
 - Use test-coverage-monitor for final validation
@@ -258,7 +258,7 @@ Phase 4.3: Final Gap Closure (Week 12)
 
 ---
 
-### Phase 5: Documentation Coverage (Weeks 3-10, Parallel)
+### Phase 5: Documentation Coverage (Phase 3-10, Parallel)
 
 **Goal**: Achieve 100% documentation coverage
 
@@ -270,22 +270,22 @@ Phase 4.3: Final Gap Closure (Week 12)
 
 **Promptset**:
 ```
-Phase 5.1: Public API Documentation (Weeks 3-4)
+Phase 5.1: Public API Documentation (Phase 3-4)
 - Document all public functions, classes, methods
 - Add examples and usage patterns
 - Use documentation-quality-agent for validation
 
-Phase 5.2: Module & Package Documentation (Weeks 5-7)
+Phase 5.2: Module & Package Documentation (Phase 5-7)
 - Add comprehensive docstrings to all modules
 - Create package-level README files
 - Use doc-freshness-checker to validate
 
-Phase 5.3: User-Facing Documentation (Weeks 8-9)
+Phase 5.3: User-Facing Documentation (Phase 8-9)
 - Complete CLI command documentation
 - Add workflow guides and tutorials
 - Create troubleshooting guides
 
-Phase 5.4: Architecture & Design Documentation (Week 10)
+Phase 5.4: Architecture & Design Documentation (Phase 10)
 - Update architecture diagrams
 - Document design decisions (ADRs)
 - Create deployment guides
@@ -299,7 +299,7 @@ Phase 5.4: Architecture & Design Documentation (Week 10)
 
 ---
 
-### Phase 6: Plan Coverage (Weeks 3-6, Parallel)
+### Phase 6: Plan Coverage (Phase 3-6, Parallel)
 
 **Goal**: Achieve 100% plan coverage
 
@@ -310,7 +310,7 @@ Phase 5.4: Architecture & Design Documentation (Week 10)
 
 **Promptset**:
 ```
-Phase 6.1: Feature Inventory (Week 3)
+Phase 6.1: Feature Inventory (Phase 3)
 - Complete inventory of all features
 - Identify features without plans
 - Prioritize planning work
@@ -320,7 +320,7 @@ Phase 6.2: Core Feature Plans (Weeks 4-5)
 - Create plans for CLI tools (30% gap)
 - Create plans for deployment features (40% gap)
 
-Phase 6.3: Advanced Feature Plans (Week 6)
+Phase 6.3: Advanced Feature Plans (Phase 6)
 - Create plans for RAG enhancements (10% gap)
 - Create plans for agent features (15% gap)
 - Create plans for monitoring features (15% gap)
@@ -386,7 +386,7 @@ Phase 6.3: Advanced Feature Plans (Week 6)
 **Context**:
 - Target: `src/codex_ml/training/*.py` (18 files, currently 2 tested)
 - Goal: Add 80+ tests to achieve 60%+ coverage
-- Timeline: Week 3
+- Timeline: Phase 3
 
 **Prompt for test-coverage-guardian**:
 ```
@@ -438,7 +438,7 @@ Output:
 **Context**:
 - Target: `src/codex_ml/cli/*.py` (25 files) + `src/codex_ml/data/*.py` (18 files)
 - Goal: Add 120+ tests
-- Timeline: Week 4
+- Timeline: Phase 4
 
 **Prompt for test-coverage-guardian**:
 ```
@@ -486,7 +486,7 @@ Output:
 **Context**:
 - Target: `src/codex/rag/*.py` (24 files, 4 tested)
 - Goal: Add 100+ tests
-- Timeline: Week 5
+- Timeline: Phase 5
 
 **Prompt for rag-index-manager + test-coverage-guardian**:
 ```
@@ -542,7 +542,7 @@ Output:
 **Context**:
 - Target: `agents/*.py` (33 files, 15 tested)
 - Goal: Add 120+ tests
-- Timeline: Week 6
+- Timeline: Phase 6
 
 **Prompt for test-coverage-guardian**:
 ```
@@ -598,7 +598,7 @@ Output:
 **Context**:
 - Target: All public APIs (40% gap)
 - Goal: Document all public functions, classes, methods
-- Timeline: Weeks 3-4
+- Timeline: Phase 3-4
 
 **Prompt for documentation-quality-agent**:
 ```
@@ -863,9 +863,9 @@ Data structures and schemas.
 
 ## Timeline
 - Week 1-2: Phase 1
-- Week 3-4: Phase 2
-- Week 5: Testing and validation
-- Week 6: Deployment
+- Phase 3-4: Phase 2
+- Phase 5: Testing and validation
+- Phase 6: Deployment
 
 ## References
 - Related docs
@@ -1139,7 +1139,7 @@ This Master 100% Coverage Promptset & Planset provides a comprehensive, actionab
 4. **Continuous Validation**: Check progress frequently
 5. **Team Collaboration**: Engage team in reviews and validation
 
-**Timeline**: 12 weeks to 100% coverage
+**Timeline**: 12 phases to 100% coverage
 **Estimated Effort**: ~480 hours (distributed across agents + Copilot)
 **Expected Outcome**: Production-ready codebase with comprehensive coverage
 

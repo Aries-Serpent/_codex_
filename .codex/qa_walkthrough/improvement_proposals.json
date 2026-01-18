@@ -1,118 +1,54 @@
 {
   "metadata": {
-    "timestamp": "2026-01-16T20:07:00.000000+00:00",
-    "version": "1.0.0",
-    "status": "ALL_COMPLETE"
+    "generated_at": "2026-01-18T21:02:17.883593+00:00",
+    "total_proposals": 12
   },
   "proposals": [
     {
       "id": "IP-001",
-      "title": "Increase Test Coverage to 70%",
-      "priority": "high",
-      "effort": "large",
-      "impact": "high",
-      "description": "Add unit tests for 518 untested modules",
-      "current_state": "~100% coverage ✅ EXCEEDED TARGET",
-      "target_state": "70% coverage",
-      "status": "COMPLETE",
-      "completion_date": "2026-01-16",
-      "results": {
-        "tests_added": 1700,
-        "coverage_achieved": "~100%",
-        "modules_covered": 102
-      },
-      "dependencies": []
-    },
-    {
-      "id": "IP-002",
-      "title": "Consolidate Legacy Configuration",
-      "priority": "medium",
-      "effort": "medium",
-      "impact": "medium",
-      "description": "Migrate config_legacy and yaml_legacy to modern structure",
-      "current_state": "Audit complete - legacy shims already deprecated",
-      "target_state": "Single configs/ directory",
-      "status": "COMPLETE",
-      "completion_date": "2026-01-16",
-      "results": {
-        "notes": "No action required - legacy shims already deprecated"
-      },
-      "dependencies": []
-    },
-    {
-      "id": "IP-003",
-      "title": "Enhance Security Documentation",
-      "priority": "high",
-      "effort": "small",
-      "impact": "high",
-      "description": "Document security patterns and best practices",
-      "current_state": "SECURITY.md enhanced with 137 security files",
-      "target_state": "Comprehensive security documentation",
-      "status": "COMPLETE",
-      "completion_date": "2026-01-16",
-      "results": {
-        "notes": "SECURITY.md enhanced with security review checklist"
-      },
-      "dependencies": []
-    },
-    {
-      "id": "IP-004",
-      "title": "Production-Ready Authentication",
-      "priority": "high",
-      "effort": "large",
-      "impact": "high",
-      "description": "Move authentication from examples to production code",
-      "current_state": "Production auth module complete",
-      "target_state": "Production authentication module",
-      "status": "COMPLETE",
-      "completion_date": "2026-01-16",
-      "results": {
-        "components": [
-          "src/codex/auth/middleware.py - ASGI middleware",
-          "src/codex/auth/exceptions.py - 18+ exception types",
-          "tests/auth/test_middleware.py - 24 tests",
-          "tests/auth/test_exceptions.py - 45 tests"
-        ],
-        "features": [
-          "AuthMiddleware - Production ASGI middleware",
-          "APIKeyValidator - Secure API key validation",
-          "RateLimiter - In-memory rate limiting",
-          "require_auth decorator - Scope-based protection",
-          "Comprehensive exception hierarchy"
-        ]
-      },
-      "dependencies": [
-        "IP-003"
+      "title": "100% Test Coverage Initiative",
+      "status": "in_progress",
+      "priority": "critical",
+      "description": "Achieve 100% line and branch test coverage",
+      "phases": [
+        "Phase 2: 50%",
+        "Phase 3: 70%",
+        "Phase 4: 100%"
+      ],
+      "estimated_effort": "12 weeks",
+      "owner": "test-coverage-guardian",
+      "related_documents": [
+        ".codex/plans/MASTER_100_PERCENT_COVERAGE_PROMPTSET.md",
+        "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+        "docs/COVERAGE_ROADMAP_TO_100_PERCENT.md"
       ]
     },
     {
-      "id": "IP-005",
-      "title": "Dependency Audit and Update",
+      "id": "IP-002",
+      "title": "100% Documentation Coverage",
+      "status": "in_progress",
       "priority": "high",
-      "effort": "medium",
-      "impact": "high",
-      "description": "Review and update all dependencies for security",
-      "current_state": "Audit complete - 26 vulnerabilities identified",
-      "target_state": "All dependencies current and secure",
-      "status": "COMPLETE",
-      "completion_date": "2026-01-16",
-      "results": {
-        "vulnerabilities_found": 26,
-        "packages_affected": 11,
-        "high_priority_updates": [
-          "cryptography 41.0.7 → 43.0.1",
-          "jinja2 3.1.2 → 3.1.6",
-          "setuptools 68.1.2 → 78.1.1"
-        ]
-      },
-      "dependencies": []
+      "description": "Document all public APIs and modules",
+      "current_coverage": "~65%",
+      "target_coverage": "100%",
+      "estimated_effort": "8 weeks",
+      "owner": "documentation-quality-agent"
+    },
+    {
+      "id": "IP-003",
+      "title": "CI/CD Optimization",
+      "status": "completed",
+      "priority": "high",
+      "description": "Optimize GitHub Actions workflows for faster execution",
+      "completion_date": "2026-01-15"
+    },
+    {
+      "id": "IP-004",
+      "title": "Security Hardening",
+      "status": "in_progress",
+      "priority": "critical",
+      "description": "Address all security vulnerabilities and implement best practices",
+      "estimated_effort": "4 weeks"
     }
-  ],
-  "summary": {
-    "total_proposals": 5,
-    "completed": 5,
-    "in_progress": 0,
-    "not_started": 0,
-    "all_complete": true
-  }
+  ]
 }

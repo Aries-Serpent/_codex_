@@ -59,7 +59,7 @@ This document outlines the execution strategy for achieving **100% coverage** ac
 
 ### Phase 1: Foundation & Infrastructure (Current Phase)
 
-**Duration**: 2 weeks  
+**Duration**: 2 phases  
 **Status**: 🚧 In Progress
 
 **Objectives**:
@@ -96,7 +96,7 @@ This document outlines the execution strategy for achieving **100% coverage** ac
 
 **Execution Plan**:
 
-#### Week 3: Core ML Training Tests
+#### Phase 3: Core ML Training Tests
 - **Agent**: `test-coverage-guardian`
 - **Target**: `src/codex_ml/training/*.py` (18 files)
 - **Goal**: Add 80+ tests
@@ -114,7 +114,7 @@ Use test-coverage-guardian agent to generate comprehensive test suite for:
 Requirements: 80+ tests, 70%+ coverage per file, all tests pass CI
 ```
 
-#### Week 4: CLI & Data Tests
+#### Phase 4: CLI & Data Tests
 - **Agent**: `test-coverage-guardian`
 - **Target**: `src/codex_ml/cli/*.py` + `src/codex_ml/data/*.py` (43 files)
 - **Goal**: Add 120+ tests
@@ -129,7 +129,7 @@ Use test-coverage-guardian agent to generate tests for:
 Requirements: 120+ tests covering command parsing, data loading, validation
 ```
 
-#### Week 5: RAG System Tests
+#### Phase 5: RAG System Tests
 - **Agents**: `rag-index-manager` + `test-coverage-guardian`
 - **Target**: `src/codex/rag/*.py` (24 files)
 - **Goal**: Add 100+ tests
@@ -162,7 +162,7 @@ Requirements: 100+ tests, integration tests for full pipeline
 
 **Execution Plan**:
 
-#### Week 6: Agent Framework Tests
+#### Phase 6: Agent Framework Tests
 - **Agent**: `test-coverage-guardian`
 - **Target**: `agents/*.py` (33 files)
 - **Goal**: Add 120+ tests
@@ -196,17 +196,17 @@ Requirements: 100+ tests, integration tests for full pipeline
 
 **Execution Plan**:
 
-#### Week 10: Branch Coverage Analysis
+#### Phase 10: Branch Coverage Analysis
 - **Agent**: `test-alignment-fixer`
 - **Goal**: Identify and cover all uncovered branches
 - **Expected Coverage Gain**: +5-7%
 
-#### Week 11: Edge Cases & Error Handling
+#### Phase 11: Edge Cases & Error Handling
 - **Agent**: `test-coverage-guardian`
 - **Goal**: Test all exception handlers and error paths
 - **Expected Coverage Gain**: +4-5%
 
-#### Week 12: Final Gap Closure
+#### Phase 12: Final Gap Closure
 - **Agent**: `test-coverage-monitor`
 - **Goal**: Achieve 100% coverage
 - **Expected Coverage Gain**: +3-5%
@@ -240,7 +240,7 @@ Requirements: 100+ tests, integration tests for full pipeline
 - **Goal**: Complete CLI docs, workflows, tutorials
 - **Expected Coverage Gain**: +5-10%
 
-#### Week 10: Architecture & Design Documentation
+#### Phase 10: Architecture & Design Documentation
 - **Goal**: Update architecture diagrams and ADRs
 - **Expected Coverage Gain**: Finalize 100%
 
@@ -260,7 +260,7 @@ Requirements: 100+ tests, integration tests for full pipeline
 
 **Execution Plan**:
 
-#### Week 3: Feature Inventory
+#### Phase 3: Feature Inventory
 - **Goal**: Complete inventory of all features
 - **Identify**: Features without plans
 
@@ -268,7 +268,7 @@ Requirements: 100+ tests, integration tests for full pipeline
 - **Goal**: Create plans for security, CLI, deployment features
 - **Expected Coverage Gain**: +15-18%
 
-#### Week 6: Advanced Feature Plans
+#### Phase 6: Advanced Feature Plans
 - **Goal**: Create plans for RAG, agents, monitoring
 - **Expected Coverage Gain**: Finalize 100%
 
@@ -388,7 +388,7 @@ Each phase must pass all gates before proceeding:
 
 ### Identified Risks
 
-1. **Timeline Risk**: 12 weeks is ambitious
+1. **Timeline Risk**: 12 phases is ambitious
    - **Mitigation**: Prioritize critical modules, use custom agents efficiently
 
 2. **External Dependency Risk**: Some modules hard to test
@@ -416,21 +416,21 @@ If documentation lags:
 
 ## Next Actions
 
-### Immediate (Week 1)
+### Immediate (Phase 1)
 1. ✅ Create master promptset/planset
 2. ✅ Create cognitive brain execution document
 3. ⬜ Reply to PR comment with plan
 4. ⬜ Setup coverage tracking dashboard
 5. ⬜ Configure CI incremental thresholds
 
-### This Week (Week 1-2)
+### This Phase (Phase 1-2)
 1. ⬜ Test all custom agents
 2. ⬜ Fix MkDocs warnings
 3. ⬜ Create test templates
 4. ⬜ Document test patterns
 5. ⬜ Prepare for Phase 2 execution
 
-### Next Week (Week 3)
+### Next Phase (Phase 3)
 1. ⬜ Begin Phase 2.1: Core ML Training Tests
 2. ⬜ Invoke test-coverage-guardian agent
 3. ⬜ Generate 80+ tests for training modules
@@ -450,7 +450,7 @@ This cognitive brain execution plan provides a clear, systematic approach to ach
 4. **Continuous Validation**: Check progress frequently
 5. **Team Collaboration**: Engage team in reviews
 
-**Timeline**: 12 weeks to complete 100% coverage
+**Timeline**: 12 phases to complete 100% coverage
 **Approach**: Phased execution with custom agent assistance
 **Outcome**: Production-ready codebase with comprehensive coverage
 

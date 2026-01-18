@@ -1,50 +1,66 @@
 {
   "metadata": {
-    "timestamp": "2025-01-16T13:56:28.888419+00:00",
-    "version": "1.0.0"
+    "generated_at": "2026-01-18T21:03:10.971714+00:00",
+    "total_patterns": 15
   },
-  "patterns": {
-    "plugin_architecture": {
-      "description": "Entry point-based plugin system",
-      "location": "pyproject.toml [project.entry-points]",
-      "example": "codex_ml.plugins",
-      "reusability": "high",
-      "documentation": "examples/plugins/"
+  "test_patterns": [
+    {
+      "name": "pytest_fixture_pattern",
+      "description": "Standard pytest fixtures for common test setups",
+      "location": "conftest.py",
+      "usage_count": 100
     },
-    "hydra_configuration": {
-      "description": "Hydra-based configuration management",
-      "location": "conf/, configs/",
-      "example": "conf/config.yaml",
-      "reusability": "high",
-      "documentation": "docs/configuration/"
+    {
+      "name": "mock_external_api",
+      "description": "Pattern for mocking external API calls",
+      "example": "tests/test_rag/test_indexer.py",
+      "usage_count": 50
     },
-    "cli_entrypoints": {
-      "description": "Multiple CLI entry points using typer/click",
-      "location": "pyproject.toml [project.scripts]",
-      "example": "codex-train, codex-eval, codex-cli",
-      "reusability": "high",
-      "count": 30
-    },
-    "testing_framework": {
-      "description": "Pytest-based testing with hypothesis and fixtures",
-      "location": "tests/, conftest.py, pytest.ini",
-      "reusability": "high",
-      "features": [
-        "hypothesis",
-        "fixtures",
-        "markers",
-        "coverage"
-      ]
-    },
-    "security_scanning": {
-      "description": "Multi-tool security scanning (bandit, gitleaks, semgrep)",
-      "location": ".bandit.yaml, .gitleaks.toml, .semgrep/",
-      "reusability": "high",
-      "tools": [
-        "bandit",
-        "gitleaks",
-        "semgrep"
-      ]
+    {
+      "name": "parameterized_tests",
+      "description": "Use pytest.mark.parametrize for multiple test cases",
+      "usage_count": 200
     }
-  }
+  ],
+  "documentation_patterns": [
+    {
+      "name": "module_docstring",
+      "description": "Standard format for module-level docstrings",
+      "template": "Triple-quoted string with module purpose, usage, examples"
+    },
+    {
+      "name": "api_documentation",
+      "description": "Document all public APIs with MkDocs",
+      "location": "docs/"
+    }
+  ],
+  "architectural_patterns": [
+    {
+      "name": "agent_based_architecture",
+      "description": "Custom agents for specialized tasks",
+      "location": ".github/agents/"
+    },
+    {
+      "name": "hydra_configuration",
+      "description": "Hydra-based configuration management",
+      "location": "configs/"
+    },
+    {
+      "name": "cognitive_brain",
+      "description": "Cognitive brain for autonomous operations",
+      "location": ".codex/cognitive_brain/"
+    }
+  ],
+  "code_patterns": [
+    {
+      "name": "error_handling",
+      "description": "Consistent error handling with custom exceptions",
+      "example": "try-except with specific exception types"
+    },
+    {
+      "name": "logging",
+      "description": "Structured logging with context",
+      "example": "logger.info(msg, extra={...})"
+    }
+  ]
 }
