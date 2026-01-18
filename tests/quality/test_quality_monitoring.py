@@ -15,7 +15,7 @@ import os
 import tempfile
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -95,7 +95,7 @@ class TestCoverageTrendTracking:
     def test_coverage_snapshot_creation(self) -> None:
         """Test creating a coverage snapshot."""
         snapshot = CoverageSnapshot(
-            timestamp=datetime.utcnow().isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
             commit_sha="abc123",
             line_coverage=85.5,
             branch_coverage=72.3,
@@ -390,7 +390,7 @@ class TestQualityDashboard:
     def test_dashboard_json_export(self) -> None:
         """Test exporting dashboard to JSON."""
         dashboard = {
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "metrics": {
                 "coverage": 85.0,
                 "tests": 500,
