@@ -163,9 +163,10 @@ class TestRequestResponseContracts:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
                 # Find endpoint decorators with function definitions
                 # Pattern matches: @app.get/post/etc followed by optional decorators, then def
+                # Fixed ReDoS vulnerability by using atomic/possessive-like patterns with explicit bounds
                 endpoint_pattern = (
                     r"@(app|router)\.(get|post|put|delete|patch)\s*\([^)]*\)\s*\n"
-                    r"(?:@\w+[^)]*\)\s*\n)*\s*(?:async\s+)?def\s+(\w+)"
+                    r"(?:@[a-zA-Z_][a-zA-Z0-9_]*(?:\([^)]*\))?\s*\n){0,10}\s*(?:async\s+)?def\s+(\w+)"
                 )
                 matches = re.findall(endpoint_pattern, content)
                 for match in matches:
