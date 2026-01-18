@@ -291,10 +291,11 @@ class TestPickleProperties:
 
     @given(st.lists(st.integers(), max_size=100))
     def test_repr_eval_for_simple_lists(self, lst: list[int]) -> None:
-        """repr() can be eval'd back for simple lists."""
+        """repr() can be eval'd back for simple lists using ast.literal_eval."""
+        import ast
         repr_str = repr(lst)
-        # This is safe for simple integer lists
-        restored = eval(repr_str)  # noqa: S307
+        # Use ast.literal_eval for safe evaluation of literals
+        restored = ast.literal_eval(repr_str)
         assert restored == lst
 
     @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=20))

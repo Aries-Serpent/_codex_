@@ -81,7 +81,7 @@ class QualityMetrics:
     pass_rate: float
     avg_duration_ms: float
     flaky_test_count: int
-    timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: str = field(default_factory=lambda: datetime.now(tz=None).isoformat())
 
 
 # ============================================================================
