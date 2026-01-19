@@ -638,7 +638,7 @@ nvidia-cusparselt-cu12==0.7.1
     # via torch
 nvidia-ml-py==13.580.82
     # via pynvml
-nvidia-nccl-cu12==2.28.7
+nvidia-nccl-cu12==2.29.2
     # via torch
 nvidia-nvjitlink-cu12==12.9.86
     # via
@@ -809,7 +809,7 @@ pure-eval==0.2.3
     # via stack-data
 py-spy==0.4.1
     # via ray
-pyarrow==22.0.0
+pyarrow==23.0.0
     # via
     #   datasets
     #   mlflow
