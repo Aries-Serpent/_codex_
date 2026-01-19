@@ -55,7 +55,7 @@ jobs:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
 
       - name: Send enrollment notifications
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -118,7 +118,7 @@ jobs:
           retention-days: 90
 
       - name: Post summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
