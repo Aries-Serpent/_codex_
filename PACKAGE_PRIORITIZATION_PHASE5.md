@@ -2,7 +2,7 @@
 
 ## Phase 5 Package-Level Priorities
 
-### HIGH PRIORITY (Weeks 1-4)
+### HIGH PRIORITY (Phases 1-4)
 
 #### 1. codex_ml/ - **CRITICAL**
 - **Undocumented Items:** 1,940
@@ -10,7 +10,7 @@
 - **Coverage:** 51.5%
 - **Priority:** P0
 - **Rationale:** Largest package, core ML functionality
-- **Effort:** ~161 hours (48% of total)
+- **Effort:** ~161 pre-commits (48% of total)
 - **Key Areas:**
   - `data/` - Data loading and preprocessing
   - `modeling/` - Model architectures
@@ -24,7 +24,7 @@
 - **Coverage:** 75.5%
 - **Priority:** P0
 - **Rationale:** Core application package, user-facing
-- **Effort:** ~46 hours (14% of total)
+- **Effort:** ~46 pre-commits (14% of total)
 - **Key Areas:**
   - `zendesk/` - CRM integrations
   - `evidence/` - Evidence tracking
@@ -37,7 +37,7 @@
 - **Coverage:** 36.0%
 - **Priority:** P0
 - **Rationale:** Critical for ML operations, poor coverage
-- **Effort:** ~11 hours (3% of total)
+- **Effort:** ~11 pre-commits (3% of total)
 
 #### 4. mcp/ - **MEDIUM-HIGH**
 - **Undocumented Items:** 123
@@ -45,9 +45,9 @@
 - **Coverage:** 62.6%
 - **Priority:** P1
 - **Rationale:** MCP protocol implementation
-- **Effort:** ~10 hours (3% of total)
+- **Effort:** ~10 pre-commits (3% of total)
 
-### MEDIUM PRIORITY (Weeks 5-6)
+### MEDIUM PRIORITY (Phases 5-6)
 
 #### 5. hhg_logistics/ - **MEDIUM**
 - **Undocumented Items:** 57
@@ -55,7 +55,7 @@
 - **Coverage:** 29.6%
 - **Priority:** P1
 - **Rationale:** Low coverage, specific domain
-- **Effort:** ~5 hours
+- **Effort:** ~5 pre-commits
 
 #### 6. common/ - **MEDIUM**
 - **Undocumented Items:** 48
@@ -63,7 +63,7 @@
 - **Coverage:** 21.3%
 - **Priority:** P1
 - **Rationale:** Shared utilities, low coverage
-- **Effort:** ~4 hours
+- **Effort:** ~4 pre-commits
 
 #### 7. tokenization/ - **MEDIUM**
 - **Undocumented Items:** 31
@@ -71,7 +71,7 @@
 - **Coverage:** 34.0%
 - **Priority:** P1
 - **Rationale:** Text processing core
-- **Effort:** ~3 hours
+- **Effort:** ~3 pre-commits
 
 #### 8. codex_audit/ - **CRITICAL (Zero Coverage)**
 - **Undocumented Items:** 31
@@ -79,7 +79,7 @@
 - **Coverage:** 0.0%
 - **Priority:** P0
 - **Rationale:** Zero documentation is unacceptable
-- **Effort:** ~3 hours
+- **Effort:** ~3 pre-commits
 
 #### 9. codex_harness/ - **HIGH**
 - **Undocumented Items:** 30
@@ -87,7 +87,7 @@
 - **Coverage:** 6.2%
 - **Priority:** P0
 - **Rationale:** Nearly zero coverage
-- **Effort:** ~3 hours
+- **Effort:** ~3 pre-commits
 
 #### 10. codex_cli/ - **HIGH**
 - **Undocumented Items:** 24
@@ -95,9 +95,9 @@
 - **Coverage:** 7.7%
 - **Priority:** P0
 - **Rationale:** User-facing CLI, poor coverage
-- **Effort:** ~2 hours
+- **Effort:** ~2 pre-commits
 
-### LOW PRIORITY (Weeks 7-8 or Phase 6)
+### LOW PRIORITY (Phases 7-8 or Phase 6)
 
 #### Well-Documented Packages (>90% coverage):
 - **cognitive_brain/** - 97.7% ✅
@@ -127,44 +127,44 @@ These packages serve as **examples of good documentation** and can be used as te
 
 ---
 
-## WEEKLY BREAKDOWN
+## PHASE BREAKDOWN
 
-### Week 1-2: Foundation & Quick Wins
-- **codex_audit/** (3 hrs) - Zero to 90%
-- **codex_harness/** (3 hrs) - 6% to 90%
-- **codex_cli/** (2 hrs) - 8% to 95%
-- **Training package core** (11 hrs) - 36% to 80%
-- **Start codex_ml/data/** (20 hrs)
+### Phases 1-2: Foundation & Quick Wins
+- **codex_audit/** (3 pre-commits) - Zero to 90%
+- **codex_harness/** (3 pre-commits) - 6% to 90%
+- **codex_cli/** (2 pre-commits) - 8% to 95%
+- **Training package core** (11 pre-commits) - 36% to 80%
+- **Start codex_ml/data/** (20 pre-commits)
 
-**Total: 39 hours**  
+**Total: 39 pre-commits**  
 **Impact: 3 packages to >90%, training to 80%**
 
-### Week 3-4: codex_ml Deep Dive
-- **codex_ml/modeling/** (40 hrs)
-- **codex_ml/training/** (30 hrs)
-- **codex_ml/data/** (continued, 30 hrs)
+### Phases 3-4: codex_ml Deep Dive
+- **codex_ml/modeling/** (40 pre-commits)
+- **codex_ml/training/** (30 pre-commits)
+- **codex_ml/data/** (continued, 30 pre-commits)
 
-**Total: 100 hours**  
+**Total: 100 pre-commits**  
 **Impact: Core ML components documented**
 
-### Week 5-6: codex Package & MCP
-- **codex/rag/** (15 hrs)
-- **codex/zendesk/** (10 hrs)
-- **codex/plans/** (10 hrs)
-- **mcp/** (10 hrs)
-- **Tutorial creation** (21 hrs)
+### Phases 5-6: codex Package & MCP
+- **codex/rag/** (15 pre-commits)
+- **codex/zendesk/** (10 pre-commits)
+- **codex/plans/** (10 pre-commits)
+- **mcp/** (10 pre-commits)
+- **Tutorial creation** (21 pre-commits)
 
-**Total: 66 hours**  
+**Total: 66 pre-commits**  
 **Impact: Main packages to 90%+, tutorials complete**
 
-### Week 7-8: Polish & Remaining
-- **codex_ml/remaining** (30 hrs)
-- **tokenization/** (3 hrs)
-- **common/** (4 hrs)
-- **hhg_logistics/** (5 hrs)
-- **Link fixes & API reference** (25 hrs)
+### Phases 7-8: Polish & Remaining
+- **codex_ml/remaining** (30 pre-commits)
+- **tokenization/** (3 pre-commits)
+- **common/** (4 pre-commits)
+- **hhg_logistics/** (5 pre-commits)
+- **Link fixes & API reference** (25 pre-commits)
 
-**Total: 67 hours**  
+**Total: 67 pre-commits**  
 **Impact: All P0/P1 complete, docs polished**
 
 ---
@@ -222,30 +222,30 @@ See Also:
 
 ## MEASUREMENT & TRACKING
 
-### Weekly Progress Metrics
+### Phase Progress Metrics
 
 ```yaml
-week_1:
+phase_1:
   target_coverage: 88.0
   packages_completed:
     - codex_audit
     - codex_harness
     - codex_cli
-  hours_spent: 39
+  pre_commits: 39
 
-week_2:
+phase_2:
   target_coverage: 89.0
   packages_in_progress:
     - codex_ml
     - training
-  hours_spent: 40
+  pre_commits: 40
 
 # ... continue tracking
 ```
 
 ### Package Coverage Goals
 
-| Package | Current | Week 4 | Week 8 | Final Goal |
+| Package | Current | Phase 4 | Phase 8 | Final Goal |
 |---------|---------|--------|--------|------------|
 | codex_ml | 51.5% | 65% | 80% | 85% |
 | codex | 75.5% | 85% | 92% | 95% |
@@ -334,12 +334,12 @@ echo "Coverage threshold: 80%"
 
 ## CONCLUSION
 
-Phase 5 should follow a **package-centric approach** with clear weekly targets:
+Phase 5 should follow a **package-centric approach** with clear phase targets:
 
-1. **Weeks 1-2:** Quick wins (3 packages from <10% to >90%)
-2. **Weeks 3-4:** codex_ml core (51% → 65%)
-3. **Weeks 5-6:** codex & MCP (75% → 92%, 63% → 85%)
-4. **Weeks 7-8:** Remaining packages + polish
+1. **Phases 1-2:** Quick wins (3 packages from <10% to >90%)
+2. **Phases 3-4:** codex_ml core (51% → 65%)
+3. **Phases 5-6:** codex & MCP (75% → 92%, 63% → 85%)
+4. **Phases 7-8:** Remaining packages + polish
 
 **Expected Final Coverage:**
 - Overall: 92/100 (from 85.5)
@@ -347,4 +347,4 @@ Phase 5 should follow a **package-centric approach** with clear weekly targets:
 - codex: 92%+ (from 75.5%)
 - All P0 packages: 85%+
 
-This focused approach delivers maximum impact within the 8-week timeline.
+This focused approach delivers maximum impact within the 8-phase timeline.
