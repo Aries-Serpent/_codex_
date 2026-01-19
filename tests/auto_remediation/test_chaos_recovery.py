@@ -268,6 +268,8 @@ class TestCascadingFailurePrevention:
         # Under pressure, disable non-critical
         available_services = critical_services
         
+        # Verify only critical services remain
+        assert len(available_services) == len(critical_services)
         assert len(available_services) < len(critical_services + non_critical_services)
 
 

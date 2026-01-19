@@ -417,8 +417,10 @@ class TestGracefulDegradation:
         available_features = ["core", "essential"]
         disabled_features = ["analytics", "reporting", "cache"]
         
-        assert len(available_features) < len(available_features) + len(disabled_features)
-        # Some features should be disabled
+        # In degraded mode, some features should be disabled
+        total_features = len(available_features) + len(disabled_features)
+        assert len(available_features) < total_features
+        assert len(disabled_features) > 0
 
     def test_automatic_recovery_from_degradation(self):
         """Test automatic recovery when conditions improve."""

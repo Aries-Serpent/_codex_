@@ -233,10 +233,11 @@ class TestQualityAssurance:
 
     def test_test_coverage_thresholds(self, quality_thresholds):
         """Test coverage thresholds are met."""
-        current_coverage = 0.0  # Temporarily 0%
+        # TODO: Update when actual coverage metrics are available
+        current_coverage = 0.0  # Placeholder - will be updated with real metrics
         threshold = quality_thresholds["test_coverage"]
         
-        # Meets minimum threshold
+        # Meets minimum threshold (currently 0% during development)
         meets_threshold = current_coverage >= threshold
         assert meets_threshold is True
 

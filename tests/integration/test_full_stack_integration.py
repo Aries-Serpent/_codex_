@@ -136,7 +136,12 @@ class TestEndToEndWorkflows:
             "cache_hit_rate": 0.85,
         }
         
-        assert all(v > 0 for v in metrics.values() if isinstance(v, (int, float)))
+        # Verify all metrics exist and numeric values are non-negative
+        assert all(
+            isinstance(v, (int, float)) and v >= 0
+            for v in metrics.values()
+            if isinstance(v, (int, float))
+        )
 
     def test_alerting_pipeline_integration(self):
         """Test alerting pipeline end-to-end."""

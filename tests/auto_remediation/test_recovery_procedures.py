@@ -211,9 +211,11 @@ class TestRollbackProcedures:
         target_time = datetime(2026, 1, 19, 10, 0, 0)
         current_time = datetime(2026, 1, 19, 12, 0, 0)
         
+        SECONDS_PER_HOUR = 3600
         time_diff = current_time - target_time
+        expected_seconds = 2 * SECONDS_PER_HOUR  # 2 hours
         
-        assert time_diff.total_seconds() == 7200  # 2 hours
+        assert time_diff.total_seconds() == expected_seconds
         # Should restore state from 2 hours ago
 
     def test_rollback_validation_before_commit(self):
