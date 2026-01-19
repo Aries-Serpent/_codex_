@@ -1,9 +1,9 @@
 # 🤖 Agent Registry
 
-**Version**: 1.1.0  
-**Last Updated**: 2026-01-12T14:50:00Z  
-**Total Agents**: 30+  
-**Standardized**: 2 (ci-diagnostician, test-assertion-updater)  
+**Version**: 1.2.0  
+**Last Updated**: 2026-01-19T21:00:00Z  
+**Total Agents**: 31+  
+**Standardized**: 3 (ci-diagnostician, test-assertion-updater, batch-triage-agent)  
 **Target**: 100% standardization by 2026-01-26
 
 ---
@@ -15,6 +15,29 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 ---
 
 ## Priority Tier 1: Production-Critical Agents
+
+### 0. Batch-Triage-Agent ✅ NEW
+- **ID**: `batch-triage-agent`
+- **Directory**: `.github/agents/batch-triage-agent/`
+- **Purpose**: Intelligent batch CI failure triage with cognitive brain integration
+- **Status**: Active
+- **Maturity**: Beta
+- **Test Coverage**: 100% (21/21 tests passing)
+- **Has Prompts**: Yes (analyze_batch.md, extract_patterns.md, generate_remediations.md, escalation.md)
+- **Has Tests**: Yes (comprehensive unit tests)
+- **Has Docs**: Yes (README, agent.yaml)
+- **Has Config**: Yes (agent.yaml with full schema)
+- **Standard Structure**: Fully Compliant (src/, tests/, prompts/, CHANGELOG planned)
+- **Integration Points**: GitHub Actions, Cognitive Brain, Self-Healing Engine, Owner Approval Guard
+- **Capabilities**:
+  - batch_failure_analysis
+  - pattern_recognition
+  - automated_remediation
+  - stakeholder_notifications
+  - metrics_tracking
+  - cognitive_learning
+- **Last Updated**: 2026-01-19
+- **Maintainer**: batch-triage-integration-agent + Community
 
 ### 1. CI-Diagnostician ✅
 - **ID**: `ci-diagnostician`

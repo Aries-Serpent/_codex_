@@ -463,6 +463,44 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             sys.argv = orig_argv
 
 
+@cli.command("batch-triage")
+@click.option("--issues", help="Comma-separated GitHub issue numbers")
+@click.option("--from-file", type=click.Path(exists=True), help="CSV file with issue/workflow data")
+@click.option("--output", type=click.Path(), default="batch_triage_report.md", help="Output file path")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON instead of markdown")
+@click.option("--group-by", type=click.Choice(["root_cause", "workflow", "severity", "failure_type"]),
+              default="root_cause", help="Grouping strategy")
+def batch_triage(issues, from_file, output, as_json, group_by):
+    """Batch triage CI/test failures with automated remediation suggestions.
+    
+    Examples:
+        codex batch-triage --issues 2905,2906,2907,2908,2909,2910,2912,2913,2914,2915
+        codex batch-triage --from-file scripts/ci/links_extraction.csv
+    """
+    script = Path(__file__).resolve().parent.parent.parent / "scripts" / "ci" / "batch_triage.py"
+    
+    args = [sys.executable, str(script), "--output", output, "--group-by", group_by]
+    
+    if issues:
+        args.extend(["--issues", issues])
+    elif from_file:
+        args.extend(["--from-file", from_file])
+    else:
+        click.echo("Error: Must provide either --issues or --from-file", err=True)
+        sys.exit(1)
+    
+    if as_json:
+        args.append("--json")
+    
+    try:
+        subprocess.run(args, check=True)
+    except Exception as exc:
+        logger.debug(f"Exception: {exc}")
+        click.echo(f"Batch triage failed: {exc}", err=True)
+        _log_error("STEP batch_triage", "batch_triage.py", str(exc), "")
+        sys.exit(1)
+
+
 _WHITELIST_HEADER = "Whitelisted maintenance tasks:"
 
 
