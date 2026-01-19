@@ -168,13 +168,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.target_ref || github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0  # Full history for better analysis
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -492,7 +492,7 @@ jobs:
           (inputs.post_comment == true || inputs.post_comment == '') &&
           (github.event_name == 'pull_request' || github.event_name == 'issue_comment') &&
           needs.check-trigger.outputs.pr_number != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
