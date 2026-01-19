@@ -96,19 +96,16 @@ jobs:
 
       - name: Run RAG tests with coverage
         run: |
-          # Use python -m pytest to ensure proper module resolution in xdist workers
+          # Simplified command - let pytest.ini handle most configuration
+          # xdist workers inherit configuration from pytest.ini automatically
           python -m pytest tests/test_rag_*.py \
-            --timeout=300 \
-            --timeout-method=thread \
+            -n auto \
             --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing \
-            --cov-fail-under=0 \
             -v \
-            --tb=short \
-            -n auto \
-            --dist=loadfile
+            --tb=short
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
