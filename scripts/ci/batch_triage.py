@@ -295,6 +295,11 @@ class BatchTriageEngine:
         for idx, (key, failures) in enumerate(sorted(grouped.items(), key=lambda x: len(x[1]), reverse=True)):
             # Determine group severity (highest severity in group)
             severity_order = {'critical': 0, 'high': 1, 'medium': 2, 'low': 3, 'info': 4}
+            
+            # Handle empty failures list
+            if not failures:
+                continue
+            
             group_severity = min((f.severity for f in failures), key=lambda s: severity_order.get(s, 10))
             
             # Extract common patterns
