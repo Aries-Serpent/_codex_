@@ -1,76 +1,343 @@
 {
   "metadata": {
-    "timestamp": "2025-01-16T13:56:28.888435+00:00",
-    "version": "1.0.0"
+    "generated_at": "2026-01-18T21:02:17.883206+00:00",
+    "total_agents": 51,
+    "active_agents": 0
+  },
+  "custom_agents": [
+    {
+      "name": "ecosystem-coordinator-agent",
+      "path": ".github/agents/ecosystem-coordinator-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "metrics",
+      "path": ".github/agents/metrics",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "github-testing-orchestrator-agent",
+      "path": ".github/agents/github-testing-orchestrator-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "project-architect-researcher",
+      "path": ".github/agents/project-architect-researcher",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "github-security-validator-agent",
+      "path": ".github/agents/github-security-validator-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "test-coverage-enforcer",
+      "path": ".github/agents/test-coverage-enforcer",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "github-deployment-gatekeeper",
+      "path": ".github/agents/github-deployment-gatekeeper",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "scripts",
+      "path": ".github/agents/scripts",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "github-code-reviewer",
+      "path": ".github/agents/github-code-reviewer",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "doc-test-scribe",
+      "path": ".github/agents/doc-test-scribe",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "compliance-checker-agent",
+      "path": ".github/agents/compliance-checker-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "security-vulnerability-patcher",
+      "path": ".github/agents/security-vulnerability-patcher",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "dynamics365-powerplatform-architect-agent",
+      "path": ".github/agents/dynamics365-powerplatform-architect-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "github_app",
+      "path": ".github/agents/github_app",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "emergent-intelligence-agent",
+      "path": ".github/agents/emergent-intelligence-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "reasoning-advisor-agent",
+      "path": ".github/agents/reasoning-advisor-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "release-gate-agent",
+      "path": ".github/agents/release-gate-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "cache-logic-validator",
+      "path": ".github/agents/cache-logic-validator",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "repo-health-guardian",
+      "path": ".github/agents/repo-health-guardian",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "cognitive-brain-agent",
+      "path": ".github/agents/cognitive-brain-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "service-integration-tester",
+      "path": ".github/agents/service-integration-tester",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "github-security-enforcer",
+      "path": ".github/agents/github-security-enforcer",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "deploy",
+      "path": ".github/agents/deploy",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "utf8-safety-linter",
+      "path": ".github/agents/utf8-safety-linter",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "dep-upgrade-agent",
+      "path": ".github/agents/dep-upgrade-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "dependency-conflict-resolver",
+      "path": ".github/agents/dependency-conflict-resolver",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "ci-testing-agent",
+      "path": ".github/agents/ci-testing-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "ci-optimizer-agent",
+      "path": ".github/agents/ci-optimizer-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "rust-error-validator",
+      "path": ".github/agents/rust-error-validator",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "codebase-qa-walkthrough-agent",
+      "path": ".github/agents/codebase-qa-walkthrough-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "ci-diagnostic-agent",
+      "path": ".github/agents/ci-diagnostic-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "core",
+      "path": ".github/agents/core",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "security-scan-agent",
+      "path": ".github/agents/security-scan-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "documentation-agent",
+      "path": ".github/agents/documentation-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "ml-threat-detector",
+      "path": ".github/agents/ml-threat-detector",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "zendesk-architect-agent",
+      "path": ".github/agents/zendesk-architect-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "tests",
+      "path": ".github/agents/tests",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "ast-analysis-agent",
+      "path": ".github/agents/ast-analysis-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "infra-linter-agent",
+      "path": ".github/agents/infra-linter-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "ci-failure-diagnostician",
+      "path": ".github/agents/ci-failure-diagnostician",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "github-test-orchestrator",
+      "path": ".github/agents/github-test-orchestrator",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "admin-automation-agent",
+      "path": ".github/agents/admin-automation-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "performance-monitor-agent",
+      "path": ".github/agents/performance-monitor-agent",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "codex_reviewer",
+      "path": ".github/agents/codex_reviewer",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "flaky-triage-agent",
+      "path": ".github/agents/flaky-triage-agent",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "test-assertion-updater",
+      "path": ".github/agents/test-assertion-updater",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "pyo3-integration-tester",
+      "path": ".github/agents/pyo3-integration-tester",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "documentation-sync-validator",
+      "path": ".github/agents/documentation-sync-validator",
+      "has_spec": false,
+      "has_tests": true
+    },
+    {
+      "name": "github-workflow-optimizer",
+      "path": ".github/agents/github-workflow-optimizer",
+      "has_spec": false,
+      "has_tests": false
+    },
+    {
+      "name": "github-auth-manager",
+      "path": ".github/agents/github-auth-manager",
+      "has_spec": false,
+      "has_tests": false
+    }
+  ],
+  "agent_categories": {
+    "testing": [
+      "test-coverage-guardian",
+      "test-coverage-monitor",
+      "test-alignment-fixer",
+      "integration-test-runner"
+    ],
+    "documentation": [
+      "documentation-quality-agent",
+      "doc-freshness-checker",
+      "link-validator-agent"
+    ],
+    "security": [
+      "security-vulnerability-patcher",
+      "pii-scrubber",
+      "dependency-vulnerability-scanner"
+    ],
+    "ci_cd": [
+      "ci-testing-agent",
+      "workflow-ci-fixer",
+      "performance-regression-detector"
+    ],
+    "quality": [
+      "qa-walkthrough-agent",
+      "owner-approval-guard"
+    ]
   },
   "capabilities": {
-    "ml_training": {
-      "status": "active",
-      "entry_points": [
-        "codex-train",
-        "codex-ml"
-      ],
-      "dependencies": [
-        "torch",
-        "transformers",
-        "accelerate"
-      ],
-      "location": "src/codex_ml/",
-      "tests": "tests/codex_ml/"
-    },
-    "ml_evaluation": {
-      "status": "active",
-      "entry_points": [
-        "codex-eval"
-      ],
-      "dependencies": [
-        "lm-eval",
-        "datasets"
-      ],
-      "location": "src/codex_ml/",
-      "tests": "tests/codex_ml/"
-    },
-    "configuration_management": {
-      "status": "active",
-      "framework": "hydra",
-      "location": "conf/, configs/",
-      "tests": "tests/integration/"
-    },
-    "plugin_system": {
-      "status": "active",
-      "entry_points": [
-        "codex-list-plugins"
-      ],
-      "location": "src/codex_ml/plugins/",
-      "examples": "examples/plugins/"
-    },
-    "ast_analysis": {
-      "status": "active",
-      "entry_points": [
-        "codex-ast",
-        "codex-analyze"
-      ],
-      "dependencies": [
-        "libcst",
-        "radon",
-        "parso"
-      ],
-      "location": "src/codex/ast/"
-    },
-    "authentication": {
-      "status": "partial",
-      "location": "examples/authentication/",
-      "coverage": "examples_only",
-      "production_ready": false
-    },
-    "rag_pipeline": {
-      "status": "partial",
-      "dependencies": [
-        "sentence-transformers",
-        "faiss-cpu"
-      ],
-      "location": "examples/",
-      "production_ready": false
-    }
+    "test_generation": true,
+    "coverage_monitoring": true,
+    "documentation_auditing": true,
+    "security_scanning": true,
+    "ci_optimization": true
   }
 }
