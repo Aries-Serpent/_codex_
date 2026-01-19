@@ -7,6 +7,7 @@ with appropriate approval gates and safety checks.
 
 import json
 import logging
+import shlex
 from dataclasses import dataclass, asdict
 from enum import Enum
 from pathlib import Path
@@ -402,9 +403,12 @@ class RemediationEngine:
         # Apply automated fix
         try:
             import subprocess
+            # Use shlex.split to safely parse the command string
+            # This prevents shell injection vulnerabilities
+            cmd_args = shlex.split(action.automated_fix)
             result = subprocess.run(
-                action.automated_fix,
-                shell=True,
+                cmd_args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=300,
