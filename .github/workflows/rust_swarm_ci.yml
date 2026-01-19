@@ -100,6 +100,23 @@ jobs:
             echo "⚠️ Warning: No Criterion results found in target/criterion"
             mkdir -p target/criterion
           fi
+          
+          # Generate benchmark summary report
+          echo "# Rust Swarm Benchmark Results" > benchmark_results.txt
+          echo "" >> benchmark_results.txt
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> benchmark_results.txt
+          echo "Commit: ${GITHUB_SHA:0:8}" >> benchmark_results.txt
+          echo "" >> benchmark_results.txt
+          
+          if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' -print0 | grep -zc .)" -gt 0 ]; then
+            echo "## Benchmark Summary" >> benchmark_results.txt
+            echo "" >> benchmark_results.txt
+            find target/criterion -name "*.json" -print0 | while IFS= read -r -d '' file; do
+              echo "- $(basename "$(dirname "$file")"): Found JSON results" >> benchmark_results.txt
+            done
+          else
+            echo "⚠️  No benchmark data available (timeout or failure)" >> benchmark_results.txt
+          fi
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
@@ -230,6 +247,21 @@ jobs:
             echo "⚠️ No integration tests found in tests/integration/"
             echo "Creating placeholder for future tests"
             mkdir -p tests/integration
+          fi
+          
+          # Ensure htmlcov directory exists for artifact upload
+          if [ ! -d "htmlcov" ]; then
+            mkdir -p htmlcov
+            cat > htmlcov/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head><title>Integration Test Coverage Report</title></head>
+<body>
+<h1>Integration Test Coverage Report</h1>
+<p>No coverage data available - tests not run or no tests found</p>
+</body>
+</html>
+EOF
           fi
 
       - name: Upload integration test results

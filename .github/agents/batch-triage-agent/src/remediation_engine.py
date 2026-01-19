@@ -7,6 +7,7 @@ with appropriate approval gates and safety checks.
 
 import json
 import logging
+import shlex
 from dataclasses import dataclass, asdict
 from enum import Enum
 from pathlib import Path
@@ -88,6 +89,20 @@ class RemediationEngine:
     - Safe fix application
     """
     
+    # Whitelist of allowed command prefixes for automated fixes
+    ALLOWED_COMMANDS = {
+        "gh",           # GitHub CLI
+        "pip",          # Python package manager
+        "python",       # Python interpreter
+        "pytest",       # Python test runner
+        "ruff",         # Python linter/formatter
+        "black",        # Python formatter
+        "mypy",         # Python type checker
+        "git",          # Git version control
+        "cargo",        # Rust package manager
+        "npm",          # Node package manager
+    }
+    
     def __init__(
         self,
         repo_root: Path = Path("."),
@@ -103,6 +118,42 @@ class RemediationEngine:
         self.repo_root = repo_root
         self.dry_run = dry_run
         self.actions: List[RemediationAction] = []
+    
+    def _validate_command(self, cmd_string: str) -> bool:
+        """
+        Validate that a command is safe to execute.
+        
+        Args:
+            cmd_string: Command string to validate
+            
+        Returns:
+            True if command is allowed, False otherwise
+        """
+        if not cmd_string or not cmd_string.strip():
+            return False
+        
+        # Parse the command to get the executable
+        try:
+            cmd_parts = shlex.split(cmd_string)
+            if not cmd_parts:
+                return False
+            
+            # Get the base command (first part)
+            base_cmd = cmd_parts[0]
+            
+            # Check if the base command is in the whitelist
+            if base_cmd not in self.ALLOWED_COMMANDS:
+                logger.warning(
+                    f"Command '{base_cmd}' is not in the allowed commands whitelist. "
+                    f"Allowed: {', '.join(sorted(self.ALLOWED_COMMANDS))}"
+                )
+                return False
+            
+            return True
+            
+        except ValueError as e:
+            logger.error(f"Failed to parse command '{cmd_string}': {e}")
+            return False
     
     def generate_remediation(
         self,
@@ -399,12 +450,24 @@ class RemediationEngine:
             logger.warning(f"Action {action.action_id} has no automated fix")
             return {"success": False, "error": "No automated fix", "action_id": action.action_id}
         
+        # Validate command before execution
+        if not self._validate_command(action.automated_fix):
+            logger.error(f"Action {action.action_id} contains invalid or disallowed command: {action.automated_fix}")
+            return {
+                "success": False,
+                "error": "Command validation failed - not in allowed commands whitelist",
+                "action_id": action.action_id
+            }
+        
         # Apply automated fix
         try:
             import subprocess
+            # Use shlex.split to safely parse the command string
+            # This prevents shell injection vulnerabilities
+            cmd_args = shlex.split(action.automated_fix)
             result = subprocess.run(
-                action.automated_fix,
-                shell=True,
+                cmd_args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=300,
