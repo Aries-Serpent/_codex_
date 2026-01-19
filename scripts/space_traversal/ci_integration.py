@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 CI/CD integration helpers for v1.5.4
 
@@ -50,7 +52,6 @@ Example:
     if env["ci"] == "github_actions":
         write_github_step_summary(avg_score, capabilities, regressions)
 """
-from __future__ import annotations
 
 import os
 from typing import Any, Optional

@@ -29,9 +29,11 @@ Last Updated: 2026-01-16
 """
 
 
-"""
+from __future__ import annotations
+
 import logging
 logger = logging.getLogger(__name__)
+"""
 trend_aggregator.py — Trend aggregation across past audit manifests/reports
 
 Features:
@@ -45,8 +47,6 @@ API:
 - aggregate_trends(artifacts_dir, reports_dir, lookback_days, manifest_paths) -> dict
 - CLI: python -m scripts.space_traversal.trend_aggregator --lookback-days 30
 """
-from __future__ import annotations
-
 import argparse
 import json
 import sys

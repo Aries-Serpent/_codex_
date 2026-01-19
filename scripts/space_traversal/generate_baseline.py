@@ -29,9 +29,12 @@ Last Updated: 2026-01-16
 """
 
 
-"""
+from __future__ import annotations
+
+import importlib.util
 import logging
 logger = logging.getLogger(__name__)
+"""
 Generate baseline file from decoded Phase-A snapshot input.
 
 This script can:
@@ -42,8 +45,6 @@ This script can:
 
 Supports both legacy (capabilities_scored) and summary (gap_count/report) structures.
 """
-from __future__ import annotations
-
 import argparse
 import base64
 import gzip
@@ -53,10 +54,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-try:
+if importlib.util.find_spec("scripts.space_traversal.stable_manifest"):
     from scripts.space_traversal import stable_manifest
-except ImportError as e:
-    logger.debug(f"ImportError: {e}")
+else:
     stable_manifest = None
 
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024

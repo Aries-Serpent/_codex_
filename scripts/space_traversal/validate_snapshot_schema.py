@@ -29,9 +29,11 @@ Last Updated: 2026-01-16
 """
 
 
-"""
+from __future__ import annotations
+
 import logging
 logger = logging.getLogger(__name__)
+"""
 Validate a decoded validator snapshot against a permissive schema or perform lightweight checks.
 
 Features:
@@ -39,8 +41,6 @@ Features:
 - Falls back to lightweight structure validation if jsonschema is unavailable.
 - Supports both CLI and import as a module.
 """
-from __future__ import annotations
-
 import argparse
 import importlib
 import importlib.util
