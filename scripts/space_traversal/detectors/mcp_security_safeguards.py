@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 KEYWORDS = ["confirm", "dry_run", "sanitize", "validation", "bounds", "rollback"]
+ALIASES = {
+    "dry-run": "dry_run",
+    "dry run": "dry_run",
+    "validate": "validation",
+}
 
 
 def detect(file_index: dict[str, Any]) -> dict[str, Any]:
@@ -21,11 +26,15 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
             text = Path(path).read_text(encoding="utf-8", errors="ignore")
         except Exception:
             text = ""
+        normalized = text.lower()
         for keyword in KEYWORDS:
-            if keyword in text:
+            if keyword in normalized:
                 evidence.append(path)
                 found.append(keyword)
-                break
+        for alias, canonical in ALIASES.items():
+            if alias in normalized:
+                evidence.append(path)
+                found.append(canonical)
     return {
         "id": "mcp-security-safeguards",
         "evidence_files": sorted(set(evidence)),

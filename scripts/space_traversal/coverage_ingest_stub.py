@@ -28,11 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-Lightweight coverage ingest stub for tests.
-"""
 from __future__ import annotations
+
+# Lightweight coverage ingest stub for tests.
 
 import argparse
 import json

@@ -28,24 +28,24 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-trend_aggregator.py — Trend aggregation across past audit manifests/reports
-
-Features:
-- Aggregates capability scores across multiple audit runs
-- Supports lookback_days filter for time-based analysis
-- Generates trend reports under audit_artifacts/trends/
-- Deterministic ordering and output
-- CLI entry point for standalone execution
-
-API:
-- aggregate_trends(artifacts_dir, reports_dir, lookback_days, manifest_paths) -> dict
-- CLI: python -m scripts.space_traversal.trend_aggregator --lookback-days 30
-"""
 from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# trend_aggregator.py — Trend aggregation across past audit manifests/reports
+#
+# Features:
+# - Aggregates capability scores across multiple audit runs
+# - Supports lookback_days filter for time-based analysis
+# - Generates trend reports under audit_artifacts/trends/
+# - Deterministic ordering and output
+# - CLI entry point for standalone execution
+#
+# API:
+# - aggregate_trends(artifacts_dir, reports_dir, lookback_days, manifest_paths) -> dict
+# - CLI: python -m scripts.space_traversal.trend_aggregator --lookback-days 30
 
 import argparse
 import json

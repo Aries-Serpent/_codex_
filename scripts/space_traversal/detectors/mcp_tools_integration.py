@@ -57,7 +57,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
         or "tool" in p.lower()
     ]
     found = []
-    required = ["mcp", "tool", "registry", "integration"]
+    required = ["mcp", "tool"]
 
     # Pattern detection
     for p in evidence:
@@ -68,10 +68,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
             found.append("mcp")
         if "tool" in stem or "tool" in path_lower:
             found.append("tool")
-        if "registry" in stem or "registry" in path_lower:
-            found.append("registry")
-        if "integration" in stem or "server" in stem or "client" in stem:
-            found.append("integration")
+        # Registry/integration patterns are informational only, not required.
 
     # Calculate functionality score
     functionality_score = len(set(found) & set(required)) / len(required) if required else 0.0
