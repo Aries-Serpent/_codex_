@@ -169,7 +169,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==4.4.2
+datasets==4.5.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1157,7 +1157,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==4.57.3
+transformers==4.57.6
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
