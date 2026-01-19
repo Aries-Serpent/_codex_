@@ -568,7 +568,7 @@ nbstripout==0.8.2
     # via codex-ml (pyproject.toml)
 nest-asyncio==1.6.0
     # via ipykernel
-networkx==3.5
+networkx==3.6.1
     # via
     #   dvc
     #   torch
