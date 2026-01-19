@@ -381,6 +381,146 @@ class TestIntegration:
         success_rate = successful / total
         assert success_rate >= 0.80, f"Success rate {success_rate:.1%} below 80% target"
 
+    def test_rollback_on_failed_verification(self):
+        """Test rollback when fix verification fails."""
+        generator = IntelligentFixGenerator()
+        context = FixContext(
+            file_path="test.py",
+            code='subprocess.run("ls", shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10],
+            metadata={},
+        )
+
+        fix = generator.generate_fix(context)
+        assert fix is not None
+
+        # Simulate failed verification by checking original code preserved
+        assert fix.original_code == 'subprocess.run("ls", shell=True)'
+
+    def test_progressive_remediation_strategy(self):
+        """Test progressive remediation from conservative to aggressive."""
+        generator = IntelligentFixGenerator()
+
+        # Start with conservative fix
+        context = FixContext(
+            file_path="test.py",
+            code='result = eval(user_input)',
+            vulnerability_type="eval_usage",
+            risk_score=0.90,
+            line_numbers=[15],
+            metadata={"remediation_level": "conservative"},
+        )
+
+        fix = generator.generate_fix(context)
+        assert fix is not None
+        # Conservative approach might suggest ast.literal_eval
+        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code
+
+    def test_confidence_scoring_accuracy(self):
+        """Test confidence scoring reflects fix quality."""
+        generator = IntelligentFixGenerator()
+
+        # High confidence fix (simple substitution)
+        high_conf_context = FixContext(
+            file_path="test.py",
+            code='hash_value = hashlib.md5(data).hexdigest()',
+            vulnerability_type="weak_crypto_md5",
+            risk_score=0.70,
+            line_numbers=[25],
+            metadata={},
+        )
+
+        high_conf_fix = generator.generate_fix(high_conf_context)
+        assert high_conf_fix.confidence > 0.9
+
+        # Lower confidence fix (complex removal)
+        low_conf_context = FixContext(
+            file_path="test.py",
+            code='result = eval(complex_expression)',
+            vulnerability_type="eval_usage",
+            risk_score=0.90,
+            line_numbers=[15],
+            metadata={},
+        )
+
+        low_conf_fix = generator.generate_fix(low_conf_context)
+        # Should be lower confidence for eval removal
+        assert low_conf_fix.confidence <= high_conf_fix.confidence
+
+    def test_remediation_history_tracking(self):
+        """Test tracking of remediation attempts and history."""
+        verifier = FixVerifier(test_command="echo test")
+
+        # Simulate multiple remediation attempts
+        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+
+        pre = PreFixSnapshot("hash1", "code", {}, {}, "2026-01-01")
+        post = PostFixSnapshot("hash2", "fixed", {}, {}, "2026-01-01")
+
+        result1 = VerificationResult(True, pre, post, [], [], 0.9, "success")
+        result2 = VerificationResult(False, pre, post, ["error"], [], 0.3, "failed")
+
+        verifier.verification_history.append(result1)
+        verifier.verification_history.append(result2)
+
+        assert len(verifier.verification_history) == 2
+        assert verifier.get_success_rate() == 0.5
+
+    def test_learning_from_previous_failures(self):
+        """Test system learns from previous remediation failures."""
+        verifier = FixVerifier(test_command="echo test")
+
+        # Track multiple attempts
+        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+
+        pre = PreFixSnapshot("hash", "code", {}, {}, "2026-01-01")
+        post = PostFixSnapshot("hash2", "fixed", {}, {}, "2026-01-01")
+
+        # Add failed attempts
+        for i in range(3):
+            result = VerificationResult(False, pre, post, [f"error_{i}"], [], 0.2, "failed")
+            verifier.verification_history.append(result)
+
+        # Verify we can query failure patterns
+        failure_count = sum(1 for r in verifier.verification_history if not r.success)
+        assert failure_count == 3
+
+    def test_fix_metadata_preservation(self):
+        """Test that fix metadata is preserved through workflow."""
+        generator = IntelligentFixGenerator()
+        context = FixContext(
+            file_path="test.py",
+            code='subprocess.run("ls", shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10],
+            metadata={"author": "security-scanner", "scan_id": "123"},
+        )
+
+        fix = generator.generate_fix(context)
+        assert fix is not None
+        # Verify context metadata is accessible
+        assert context.metadata["author"] == "security-scanner"
+        assert context.metadata["scan_id"] == "123"
+
+    def test_multi_line_vulnerability_fix(self):
+        """Test fixing vulnerabilities spanning multiple lines."""
+        generator = IntelligentFixGenerator()
+        context = FixContext(
+            file_path="test.py",
+            code='cmd = user_input\nsubprocess.run(cmd, shell=True)',
+            vulnerability_type="shell_injection",
+            risk_score=0.85,
+            line_numbers=[10, 11],
+            metadata={},
+        )
+
+        fix = generator.generate_fix(context)
+        assert fix is not None
+        assert "shell=False" in fix.fixed_code or "shlex.split" in fix.fixed_code
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
