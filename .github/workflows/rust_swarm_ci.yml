@@ -218,7 +218,7 @@ jobs:
         run: |
           # Check if integration tests exist
           if [ -d "tests/integration" ]; then
-            pytest tests/integration/ -v --cov-report=html --cov-report=term || echo "Integration tests completed with issues"
+            python -m pytest tests/integration/ -v --cov-report=html --cov-report=term || echo "Integration tests completed with issues"
           else
             echo "⚠️ No integration tests found in tests/integration/"
             echo "Creating placeholder for future tests"
