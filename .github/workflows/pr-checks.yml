@@ -52,7 +52,7 @@ jobs:
           uv pip install --system -e .[dev]
 
       - name: Run tests
-        run: pytest tests/ -x --tb=short
+        run: python -m pytest tests/ -x --tb=short
 
       - name: Run linting
         run: |

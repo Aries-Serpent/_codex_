@@ -40,7 +40,7 @@ jobs:
 
       - name: Run authentication tests
         run: |
-          pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term
+          python -m pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -93,7 +93,7 @@ jobs:
 
       - name: Run integration tests
         run: |
-          pytest tests/auth/ -v -m "not slow" --tb=short
+          python -m pytest tests/auth/ -v -m "not slow" --tb=short
 
       - name: Test OAuth flow components
         run: |
