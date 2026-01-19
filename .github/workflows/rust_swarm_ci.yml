@@ -108,10 +108,10 @@ jobs:
           echo "Commit: ${GITHUB_SHA:0:8}" >> benchmark_results.txt
           echo "" >> benchmark_results.txt
           
-          if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' | wc -l)" -gt 0 ]; then
+          if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' -print0 | grep -zc .)" -gt 0 ]; then
             echo "## Benchmark Summary" >> benchmark_results.txt
             echo "" >> benchmark_results.txt
-            find target/criterion -name "*.json" | while read -r file; do
+            find target/criterion -name "*.json" -print0 | while IFS= read -r -d '' file; do
               echo "- $(basename "$(dirname "$file")"): Found JSON results" >> benchmark_results.txt
             done
           else
@@ -252,8 +252,16 @@ jobs:
           # Ensure htmlcov directory exists for artifact upload
           if [ ! -d "htmlcov" ]; then
             mkdir -p htmlcov
-            echo "# Integration Test Coverage Report" > htmlcov/index.html
-            echo "<p>No coverage data available - tests not run or no tests found</p>" >> htmlcov/index.html
+            cat > htmlcov/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head><title>Integration Test Coverage Report</title></head>
+<body>
+<h1>Integration Test Coverage Report</h1>
+<p>No coverage data available - tests not run or no tests found</p>
+</body>
+</html>
+EOF
           fi
 
       - name: Upload integration test results
