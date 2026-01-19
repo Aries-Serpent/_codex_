@@ -69,8 +69,8 @@ class SemanticDiffer:
     
     def batch_diff(
         self,
-        pairs: List[tuple[str, str]]
-    ) -> List[DiffResult]:
+        pairs: list[tuple[str, str]]
+    ) -> list[DiffResult]:
         """Compare multiple content pairs."""
         return [self.diff(old, new) for old, new in pairs]
 
