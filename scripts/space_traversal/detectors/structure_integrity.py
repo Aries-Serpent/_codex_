@@ -68,11 +68,11 @@ def detect(file_index: dict, evidence_limit: int = 10) -> dict:
         evidence_files.extend(root_samples + src_samples)
 
     # Add related test and doc files for comprehensive evidence
-    # Add these FIRST so they're not cut off by the cap
     related_evidence = []
-    for rf in RELATED_FILES:
-        if rf in files or Path(rf).exists():
-            related_evidence.append(rf)
+    if files:
+        for rf in RELATED_FILES:
+            if rf in files:
+                related_evidence.append(rf)
 
     # Library shadowing evidence with deterministic ordering
     for d in sorted(root_dirs):
@@ -85,7 +85,7 @@ def detect(file_index: dict, evidence_limit: int = 10) -> dict:
     all_evidence = related_evidence + evidence_files
 
     # De-duplicate and cap with deterministic ordering
-    evidence_files = sorted(list(dict.fromkeys(all_evidence)))
+    evidence_files = sorted(list(dict.fromkeys(all_evidence)))[:evidence_limit]
 
     return {
         "id": "structural-integrity",

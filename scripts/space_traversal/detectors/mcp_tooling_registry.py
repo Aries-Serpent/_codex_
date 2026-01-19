@@ -7,16 +7,7 @@ Safeguards: Bounded search, deterministic ordering, validation, sanitization
 Implements: validation, timeout, cleanup, error-handling, offline, reproducible
 """
 
-from pathlib import Path
 from typing import Any
-
-# Related files for evidence collection - bounded list with validation
-RELATED_FILES = [
-    "docs/capabilities/mcp_tooling_registry.md",
-    "scripts/space_traversal/detectors/mcp_tooling_registry.py",
-    "tests/mcp/test_mcp_tooling_registry.py",
-    "tests/tooling/test_mcp_tooling_comprehensive.py",
-]
 
 
 def _validate_path(path: str) -> bool:
@@ -67,20 +58,15 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
             continue
 
         lower = path.lower()
-        if "mcp/" in lower or "tool" in lower:
-            # Identify evidence of registry with validation
-            if path.endswith("mcp.json") or "registry" in lower:
-                evidence.append(path)
-            if "registry" in lower:
-                found.append("registry")
-            if path.endswith("mcp.json"):
-                found.append("mcp.json")
+        is_registry = "registry" in lower
+        is_mcp_json = lower.endswith("mcp.json")
 
-    # Add related files for comprehensive evidence (deterministic, bounded)
-    for rf in RELATED_FILES:
-        # Safeguard: Validate before checking
-        if _validate_path(rf) and (rf in files or Path(rf).exists()):
-            evidence.append(rf)
+        if is_registry or is_mcp_json:
+            evidence.append(path)
+        if is_registry:
+            found.append("registry")
+        if is_mcp_json:
+            found.append("mcp.json")
 
     required = ["registry", "mcp.json"]
 
@@ -139,7 +125,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
                 "cleanup",
                 "error-handling",
             ],
-            "detector_version": "1.3",
+            "detector_version": "1.1",
         },
     }
 
@@ -156,6 +142,6 @@ def _empty_result() -> dict[str, Any]:
         "meta": {
             "category": "mcp",
             "safeguards": ["validation", "error-handling"],
-            "detector_version": "1.3",
+            "detector_version": "1.1",
         },
     }

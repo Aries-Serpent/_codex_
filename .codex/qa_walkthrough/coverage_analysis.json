@@ -1,10 +1,12 @@
 {
   "metadata": {
-    "timestamp": "2026-01-18T21:02:17.871072+00:00",
+    "timestamp": "2026-01-19T12:00:00.000000+00:00",
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
-    "baseline_date": "2026-01-18",
-    "last_update": "2026-01-18T21:02:17.871086+00:00"
+    "baseline_date": "2026-01-19",
+    "last_update": "2026-01-19T12:00:00.000000+00:00",
+    "phase": "20.2",
+    "phase_status": "COMPLETE"
   },
   "source_modules": {
     "src/mcp": {
@@ -241,7 +243,26 @@
     "files_with_tests": 180,
     "files_without_tests": 862,
     "estimated_coverage_percent": 17.27,
-    "line_coverage_percent": 0.0
+    "line_coverage_percent": 0.0,
+    "total_test_files": 1756,
+    "total_test_functions": 2231,
+    "phase_20_1_additions": {
+      "new_automation_tests": 40,
+      "test_dependency_automation": 20,
+      "test_maintenance_schedule": 20
+    },
+    "phase_20_2_additions": {
+      "new_automation_tests": 104,
+      "test_self_service_automation": 21,
+      "test_workflow_orchestration": 27,
+      "test_configuration_management": 26,
+      "test_deployment_automation": 30
+    },
+    "combined_phase_20": {
+      "total_new_tests": 144,
+      "baseline_before_phase_20": 2087,
+      "current_total_after_phase_20": 2231
+    }
   },
   "coverage_targets": {
     "current": 17.27,

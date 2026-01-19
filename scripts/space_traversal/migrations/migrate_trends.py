@@ -28,27 +28,27 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-Database migration system for trend storage.
-
-Provides versioned schema migrations for the audit trend database.
-Requires Python 3.7+ for annotations support.
-
-Features:
-- Decorator-based migration registration
-- Automatic version tracking
-- Forward-only migrations (no rollback)
-- Safe execution with transactions
-
-Example:
-    from scripts.space_traversal.migrations import run_migrations
-    applied = run_migrations(Path("audit_artifacts/trends.db"))
-    print(f"Applied migrations: {applied}")
-"""
 from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Database migration system for trend storage.
+#
+# Provides versioned schema migrations for the audit trend database.
+# Requires Python 3.7+ for annotations support.
+#
+# Features:
+# - Decorator-based migration registration
+# - Automatic version tracking
+# - Forward-only migrations (no rollback)
+# - Safe execution with transactions
+#
+# Example:
+#     from scripts.space_traversal.migrations import run_migrations
+#     applied = run_migrations(Path("audit_artifacts/trends.db"))
+#     print(f"Applied migrations: {applied}")
 
 import sqlite3
 from pathlib import Path

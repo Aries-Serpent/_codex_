@@ -33,7 +33,7 @@ def detect(file_index: dict[str, Any]) -> dict[str, Any]:
 
     # Analysis: Count stem occurrences (deterministic, bounded operation)
     counts = Counter(stems)
-    duplicates = sum(max(c - 1, 0) for c in counts.values())
+    duplicates = sum(c for c in counts.values() if c > 1)
     evidence_count = max(len(stems), 1)
     dup_ratio = max(0.0, min(1.0, duplicates / evidence_count))
 
