@@ -77,7 +77,8 @@ jobs:
             pytest-xdist==3.8.0 \
             pytest-timeout==2.3.1 \
             pytest-rerunfailures==14.0 \
-            pytest-randomly==3.16.0
+            pytest-randomly==3.16.0 \
+            'coverage>=7.10.6,<8'
           # Verify plugins are installed and discoverable
           python -c "import pytest_cov; import xdist; import pytest_timeout; print('All pytest plugins verified')"
           python -m pytest --version
