@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 Zendesk Docs Fetch
 
@@ -35,7 +37,7 @@ Constraints:
 - No CI/GitHub Actions.
 - Writes under docs/vendors/zendesk/YYYY-MM-DD/<section>/<page>.html.
 """
-from __future__ import annotations
+
 import logging
 logger = logging.getLogger(__name__)
 

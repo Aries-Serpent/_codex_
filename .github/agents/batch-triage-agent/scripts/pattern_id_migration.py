@@ -2,7 +2,7 @@
 
 import argparse
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pattern_learner import PatternLearner
@@ -30,7 +30,7 @@ def main() -> None:
     output_path.write_text(
         json.dumps(
             {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "mappings": migrations,
                 "total_migrated": len(migrations),
             },
