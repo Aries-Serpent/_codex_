@@ -1,6 +1,6 @@
 # Follow-up Prompt: CI/CD Improvements & Batch Triage Phase 2
 **Generated:** 2026-01-19  
-**Updated:** 2026-01-19 (Pytest Plugin Fix Completed)  
+**Updated:** 2026-01-20 (Coverage Dependency Fix Completed)  
 **Context:** PR #2883 - CI/CD Failure Resolution Complete  
 **Next Phase:** Monitoring, Testing, and Documentation
 
@@ -16,15 +16,19 @@
 ✅ Passed code review and CodeQL security scanning  
 ✅ Updated cognitive brain status documentation  
 ✅ Enhanced batch-triage-agent configuration with security details  
-✅ **NEW: Fixed pytest plugin installation for comprehensive tests**  
-✅ **NEW: Created .codex/AGENTS_GUIDE.md with testing requirements**  
-✅ **NEW: Updated pytest.ini with centralized test configuration**  
-✅ **NEW: Updated requirements-dev.txt with all pytest plugins**
+✅ **Fixed pytest plugin installation for comprehensive tests**  
+✅ **Created .codex/AGENTS_GUIDE.md with testing requirements**  
+✅ **Updated pytest.ini with centralized test configuration**  
+✅ **Updated requirements-dev.txt with all pytest plugins**  
+✅ **CRITICAL FIX: Resolved coverage dependency conflict (7.6.0 → >=7.10.6,<8)**  
+✅ **Updated test-comprehensive.yml and test-rag.yml for pytest-cov compatibility**  
+✅ **Documented resolution in COVERAGE_FIX_2026_01_20.md**
 
 ### Reference Documents
 - Cognitive Brain: `.codex/cognitive_brain/CI_CD_FIXES_PR2883_2026_01_19.md`
+- Coverage Fix Doc: `.codex/cognitive_brain/COVERAGE_FIX_2026_01_20.md`
 - Agent Config: `.github/agents/batch-triage-agent/agent.yaml` (v1.1.0)
-- Key Commits: `6fe3c734`, `42df8d7f`, `66d461c3`
+- Key Commits: `6fe3c734`, `42df8d7f`, `66d461c3`, `39c3f014`, `89e00a5d`
 
 ---
 
