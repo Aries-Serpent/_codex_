@@ -70,7 +70,7 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 - [x] Fix CI/CD pipeline issues (Rust compilation, pytest plugin discovery)
 - [x] Align Python version matrix with project requirements (3.11+)
 - [x] Fix pytest plugin discovery in xdist workers
-- [x] Create coverage analysis baseline (`.codex/qa_walkthrough/coverage_analysis.json`)
+- [x] Create coverage analysis baseline (`https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json`)
 - [x] Create test priority matrix (`.codex/qa_walkthrough/test_priority_matrix.json`)
 - [x] Create test templates (`tests/templates/`)
 - [x] Create shared fixtures (`tests/conftest_shared.py`)
@@ -368,7 +368,7 @@ Each phase should update the CI workflow thresholds:
 
 ## Priority Test Proposals
 
-Based on `.codex/qa_walkthrough/coverage_analysis.json`:
+Based on `https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json`:
 
 ### TP-001: Unit Tests for High-Priority Modules
 - **Target:** 390 untested high-priority modules
@@ -462,7 +462,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 - [RAG 100% Coverage Plan](./PLAN_100_PERCENT_COVERAGE.md)
 - [Test Coverage Plan for RAG](./TEST_COVERAGE_PLAN_RAG.md)
-- [Coverage Analysis JSON](../.codex/qa_walkthrough/coverage_analysis.json)
+- [Coverage Analysis JSON](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json)
 - [pytest Documentation](https://docs.pytest.org/)
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/)
 

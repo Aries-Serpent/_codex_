@@ -1,11 +1,8 @@
-"""
-Test Bleu Rouge Fallbacks
-
-Test module for bleu rouge fallbacks.
-"""
-
 #!/usr/bin/env python3
-"""Tests for optional metric fallbacks and end-to-end emission semantics."""
+"""Test Bleu Rouge Fallbacks
+
+Tests for optional metric fallbacks and end-to-end emission semantics.
+"""
 
 from __future__ import annotations
 
