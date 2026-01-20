@@ -40,6 +40,7 @@ dependencies = [
   "lm-eval>=0.4.2,<1",
   "ray[serve]>=2.9,<3",
   "fastapi>=0.110,<1",
+  "slowapi>=0.1.9",
   "starlette>=0.37.2,<0.51",
   "httpx>=0.26,<1",
   "evidently>=0.4.28,<1",

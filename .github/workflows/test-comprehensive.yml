@@ -116,8 +116,8 @@ jobs:
       - name: Run tests with coverage
         run: |
           # pytest options are defined in pytest.ini
-          # Only override verbosity and max failures here
-          python -m pytest tests/ -v --tb=short --maxfail=5
+          # Explicitly add coverage source path here (removed from pytest.ini to avoid xdist duplication)
+          python -m pytest tests/ --cov=src -v --tb=short --maxfail=5
         env:
           PYTHONPATH: ${{ github.workspace }}/src
           CODEX_FORCE_CPU: "1"

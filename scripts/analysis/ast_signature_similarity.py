@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 """
 Ast Signature Similarity
 
@@ -45,7 +47,6 @@ Environment Knobs (parsed via scripts/config/parse_knobs.py schema):
   AST_SIMILARITY_MAX_FILES=30   -> cap evidence set to reduce cost
   AST_SIMILARITY_MIN_NODES=10   -> skip files with fewer AST nodes
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
