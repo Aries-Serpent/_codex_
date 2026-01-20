@@ -94,7 +94,7 @@ jobs:
             pytest-timeout==2.3.1 \
             pytest-rerunfailures==14.0 \
             pytest-randomly==3.16.0 \
-            coverage==7.6.0
+            'coverage>=7.10.6,<8'
           # Then install the main package (without overwriting plugins)
           pip install --no-deps -e . || pip install -e .
           # Finally install remaining dependencies
