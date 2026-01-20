@@ -294,3 +294,7 @@ class QuantumComplianceAssessor:
         # Partial score
         cost_factor = max(0, 1.0 - audit.remediation_cost / 10000)
         return audit.score * 0.3 + cost_factor * 0.3
+
+
+# Backward-compatible alias for imports
+ComplianceAssessor = QuantumComplianceAssessor
