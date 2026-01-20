@@ -197,8 +197,8 @@ class WorkflowJob(BaseModel):
     name: str
     status: str
     conclusion: str
-    started_at: str
-    completed_at: str
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
     if_condition: Optional[dict[str, Any]] = None
     
     class Config:
