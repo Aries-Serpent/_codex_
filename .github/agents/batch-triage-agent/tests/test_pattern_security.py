@@ -48,6 +48,11 @@ def test_legacy_lookup_resolves_pattern():
             }
         )
 
+        # NOTE: This is a white-box test. We directly attach the legacy MD5 ID
+        # to the pattern's `legacy_ids` list to simulate a migrated pattern,
+        # without going through any higher-level API. This is acceptable here
+        # because the test only verifies that `_resolve_pattern_id` correctly
+        # maps a known legacy ID to the canonical SHA-256-based `pattern_id`.
         learner.patterns[pattern_id].legacy_ids.append(legacy_id)
         resolved = learner._resolve_pattern_id(legacy_id)
         assert resolved == pattern_id

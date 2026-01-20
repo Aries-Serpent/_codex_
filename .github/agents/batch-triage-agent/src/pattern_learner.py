@@ -5,6 +5,7 @@ Implements pattern storage, retrieval, and learning from triage outcomes.
 Stores patterns in cognitive brain and tracks remediation success rates.
 """
 
+import copy
 import hashlib
 import json
 import logging
@@ -12,7 +13,7 @@ from collections import defaultdict
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, NamedTuple
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,14 @@ class FailurePattern:
         return asdict(self)
 
 
+# Type alias for migration plan entries
+class MigrationEntry(NamedTuple):
+    """Entry in the migration plan mapping legacy ID to new ID."""
+    legacy_id: str
+    content_id: str
+    pattern: FailurePattern
+
+
 class PatternLearner:
     """
     Learns from triage outcomes and stores patterns in cognitive brain.
@@ -59,7 +68,9 @@ class PatternLearner:
     - Pattern expiry management
     """
 
-    SHA256_PREFIX_LENGTH = 16
+    # Use 32 hex chars (128 bits) of SHA-256 to minimize birthday-collision risk
+    # for potentially large numbers of learned patterns.
+    SHA256_PREFIX_LENGTH = 32
     
     def __init__(
         self,
@@ -197,17 +208,32 @@ class PatternLearner:
         
         return patterns
     
-    def _generate_pattern_id(self, failure_type: str, root_cause: str) -> str:
-        """Generate a unique pattern ID."""
+    def _generate_pattern_id(self, failure_type: str, root_cause: str, register: bool = True) -> str:
+        """Generate a unique pattern ID.
+        
+        Args:
+            failure_type: Type of failure
+            root_cause: Root cause of failure
+            register: Whether to register the pattern signature (default: True)
+        
+        Returns:
+            Generated pattern ID
+        """
         content = f"{failure_type}:{root_cause}"
         digest = hashlib.sha256(content.encode("utf-8")).hexdigest()[: self.SHA256_PREFIX_LENGTH]
         pattern_id = f"pattern_{digest}"
-        self._register_pattern_signature(pattern_id, failure_type, root_cause)
+        if register:
+            self._register_pattern_signature(pattern_id, failure_type, root_cause)
         return pattern_id
 
     def _register_pattern_signature(self, pattern_id: str, failure_type: str, root_cause: str) -> None:
-        """Detect and alert on collisions for generated IDs."""
+        """Detect and alert on collisions for generated IDs.
+        
+        Checks both the in-memory cache and all loaded patterns to ensure
+        comprehensive collision detection across sessions.
+        """
         content = f"{failure_type}:{root_cause}"
+        # Check in-memory cache first
         cached = self._pattern_id_cache.get(pattern_id)
         if cached and cached != content:
             logger.critical(
@@ -217,9 +243,32 @@ class PatternLearner:
                 content,
             )
             raise ValueError(f"Hash collision detected for {pattern_id}")
+        
+        # Also check against all loaded patterns to detect collisions from previous sessions
+        if pattern_id in self.patterns:
+            existing_pattern = self.patterns[pattern_id]
+            if (existing_pattern.failure_type != failure_type or 
+                existing_pattern.root_cause != root_cause):
+                logger.critical(
+                    "Hash collision detected for %s across sessions (existing: %s:%s vs new: %s:%s)",
+                    pattern_id,
+                    existing_pattern.failure_type,
+                    existing_pattern.root_cause,
+                    failure_type,
+                    root_cause,
+                )
+                raise ValueError(f"Hash collision detected for {pattern_id} with existing pattern")
+        
         self._pattern_id_cache[pattern_id] = content
 
     def _legacy_pattern_id(self, failure_type: str, root_cause: str) -> str:
+        """Generate a legacy MD5-based pattern ID for backward compatibility.
+
+        This helper exists solely to resolve and map pre-existing pattern IDs
+        that were generated using MD5. It MUST NOT be used for new pattern ID
+        generation. New IDs should always be created via `_generate_pattern_id`,
+        which uses a SHA-256-based identifier.
+        """
         content = f"{failure_type}:{root_cause}"
         digest = hashlib.md5(content.encode("utf-8")).hexdigest()[:12]
         return f"pattern_{digest}"
@@ -243,25 +292,74 @@ class PatternLearner:
         return None
 
     def migrate_existing_patterns(self) -> Dict[str, str]:
-        """Migrate existing patterns to SHA-256 IDs with legacy alias support."""
+        """Migrate existing patterns to SHA-256 IDs with legacy alias support.
+
+        The migration is performed in two phases to avoid data loss:
+        1. Compute migrations and write all new pattern files.
+        2. Only after successful writes, update in-memory mappings and delete legacy files.
+        """
         migrations: Dict[str, str] = {}
-        for legacy_id, pattern in list(self.patterns.items()):
-            content_id = self._generate_pattern_id(pattern.failure_type, pattern.root_cause)
+        # Phase 0: build migration plan without modifying original pattern objects
+        migration_plan: List[MigrationEntry] = []
+        for legacy_id, original_pattern in list(self.patterns.items()):
+            # Generate new ID without registering to avoid side effects during planning
+            content_id = self._generate_pattern_id(
+                original_pattern.failure_type, 
+                original_pattern.root_cause,
+                register=False
+            )
             if content_id == legacy_id:
+                # Already using content-based ID; nothing to migrate.
                 continue
-            if legacy_id not in pattern.legacy_ids:
-                pattern.legacy_ids.append(legacy_id)
-            pattern.pattern_id = content_id
-            self.patterns.pop(legacy_id, None)
-            self.patterns[content_id] = pattern
-            migrations[legacy_id] = content_id
-            self._legacy_id_map[legacy_id] = content_id
-            legacy_file = self.patterns_dir / f"{legacy_id}.json"
+            
+            # Create a copy of the pattern with updated ID and legacy alias
+            pattern_copy = copy.deepcopy(original_pattern)
+            if legacy_id not in pattern_copy.legacy_ids:
+                pattern_copy.legacy_ids.append(legacy_id)
+            pattern_copy.pattern_id = content_id
+            
+            migration_plan.append(MigrationEntry(legacy_id, content_id, pattern_copy))
+
+        if not migration_plan:
+            return migrations
+
+        # Phase 1: write new pattern files. If any write fails, abort without deleting legacy files.
+        write_failed = False
+        for entry in migration_plan:
+            pattern_file = self.patterns_dir / f"{entry.content_id}.json"
+            try:
+                with open(pattern_file, "w") as f:
+                    json.dump(entry.pattern.to_dict(), f, indent=2)
+                logger.info(f"Wrote migrated pattern to {pattern_file}")
+            except Exception as e:
+                logger.error(f"Failed to write migrated pattern {entry.content_id}: {e}")
+                write_failed = True
+                break
+        
+        if write_failed:
+            logger.error("Migration aborted: failed to write one or more pattern files")
+            return {}
+        
+        # Phase 2: Update in-memory mappings and delete legacy files only after successful writes
+        for entry in migration_plan:
+            # Now register the new pattern signature and update in-memory structures
+            self._register_pattern_signature(
+                entry.content_id, 
+                entry.pattern.failure_type, 
+                entry.pattern.root_cause
+            )
+            self.patterns.pop(entry.legacy_id, None)
+            self.patterns[entry.content_id] = entry.pattern
+            migrations[entry.legacy_id] = entry.content_id
+            self._legacy_id_map[entry.legacy_id] = entry.content_id
+            legacy_file = self.patterns_dir / f"{entry.legacy_id}.json"
             if legacy_file.exists():
-                legacy_file.unlink()
-            pattern_file = self.patterns_dir / f"{content_id}.json"
-            with open(pattern_file, "w") as f:
-                json.dump(pattern.to_dict(), f, indent=2)
+                try:
+                    legacy_file.unlink()
+                    logger.info(f"Deleted legacy pattern file {legacy_file}")
+                except Exception as e:
+                    logger.warning(f"Could not delete legacy file {legacy_file}: {e}")
+        
         if migrations:
             payload = {
                 "timestamp": datetime.now().isoformat(),
