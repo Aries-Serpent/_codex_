@@ -130,3 +130,4 @@
 {"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_workflow_parser_inventory.py","summary":"Added workflow parser/inventory integration tests."}
 {"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_crawler_services.py","summary":"Added crawler service integration tests."}
 {"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"updated","path":".codex/smoke/import_check.py","summary":"Updated smoke import check to load repo root and sitecustomize stubs."}
+{"timestamp": "2026-01-20T06:07:00Z", "actor": "assistant", "action": "updated", "path": "AGENTS.md", "summary": "Added Coverage Gapfill Agent to specialized agents table."}
