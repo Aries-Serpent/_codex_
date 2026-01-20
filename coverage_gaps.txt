@@ -1,0 +1,206 @@
+# Coverage Gaps Analysis - Phase 4
+# Generated from Phase 4 coverage report
+# Files with <20% coverage, sorted by statement count
+
+Total files with <20% coverage: 811
+
+agents/physics_orchestrator.py
+  Coverage: 0.00%
+  Statements: 1346, Missing: 1346
+
+src/codex_ml/train_loop.py
+  Coverage: 0.00%
+  Statements: 1277, Missing: 1277
+
+src/codex_ml/training/legacy_api.py
+  Coverage: 9.00%
+  Statements: 904, Missing: 790
+
+src/codex/cli.py
+  Coverage: 0.00%
+  Statements: 784, Missing: 784
+
+src/codex_ml/utils/checkpointing.py
+  Coverage: 10.69%
+  Statements: 772, Missing: 662
+
+src/codex_ml/tracking/writers.py
+  Coverage: 14.29%
+  Statements: 618, Missing: 502
+
+src/codex_ml/detectors/capability_detectors.py
+  Coverage: 0.00%
+  Statements: 614, Missing: 614
+
+agents/advanced_physics_calculators.py
+  Coverage: 0.00%
+  Statements: 605, Missing: 605
+
+src/training/engine_hf_trainer.py
+  Coverage: 0.00%
+  Statements: 594, Missing: 594
+
+training/engine_hf_trainer.py
+  Coverage: 0.00%
+  Statements: 574, Missing: 574
+
+src/codex_ml/safety/filters.py
+  Coverage: 14.80%
+  Statements: 565, Missing: 445
+
+src/codex/training.py
+  Coverage: 0.00%
+  Statements: 546, Missing: 546
+
+agents/mental_mapping.py
+  Coverage: 0.00%
+  Statements: 523, Missing: 523
+
+src/training/functional_training.py
+  Coverage: 0.00%
+  Statements: 520, Missing: 520
+
+training/functional_training.py
+  Coverage: 0.00%
+  Statements: 497, Missing: 497
+
+src/codex/archive/dal.py
+  Coverage: 0.00%
+  Statements: 460, Missing: 460
+
+src/codex_ml/utils/checkpoint_core.py
+  Coverage: 13.06%
+  Statements: 458, Missing: 382
+
+src/training/trainer.py
+  Coverage: 0.00%
+  Statements: 455, Missing: 455
+
+agents/quantum_game_theory.py
+  Coverage: 0.00%
+  Statements: 447, Missing: 447
+
+src/codex_ml/eval/runner.py
+  Coverage: 0.00%
+  Statements: 440, Missing: 440
+
+src/codex/quantum_orchestrator/orchestrator.py
+  Coverage: 0.00%
+  Statements: 406, Missing: 406
+
+src/codex_ml/monitoring/codex_logging.py
+  Coverage: 0.00%
+  Statements: 400, Missing: 400
+
+src/codex/cli_zendesk.py
+  Coverage: 0.00%
+  Statements: 391, Missing: 391
+
+src/bridge_manager.py
+  Coverage: 0.00%
+  Statements: 383, Missing: 383
+
+src/codex_ml/data/loaders.py
+  Coverage: 0.00%
+  Statements: 381, Missing: 381
+
+src/codex/archive/cli.py
+  Coverage: 0.00%
+  Statements: 380, Missing: 380
+
+src/codex_ml/training/functional_training.py
+  Coverage: 0.00%
+  Statements: 378, Missing: 378
+
+src/codex_ml/cli/codex_cli.py
+  Coverage: 0.00%
+  Statements: 376, Missing: 376
+
+agents/developer_orchestrator.py
+  Coverage: 0.00%
+  Statements: 370, Missing: 370
+
+src/codex_ml/pipeline.py
+  Coverage: 9.25%
+  Statements: 368, Missing: 321
+
+agents/agent_memory.py
+  Coverage: 0.00%
+  Statements: 366, Missing: 366
+
+src/codex_ml/monitoring/system_metrics.py
+  Coverage: 0.00%
+  Statements: 363, Missing: 363
+
+src/services/crawler/zendesk_sync.py
+  Coverage: 0.00%
+  Statements: 363, Missing: 363
+
+src/codex_ml/plugins/registries.py
+  Coverage: 15.88%
+  Statements: 361, Missing: 284
+
+src/codex_ml/utils/checkpoint.py
+  Coverage: 0.00%
+  Statements: 337, Missing: 337
+
+src/codex_ml/cli/metrics_cli.py
+  Coverage: 0.00%
+  Statements: 321, Missing: 321
+
+src/codex_ml/training/unified_training.py
+  Coverage: 18.33%
+  Statements: 320, Missing: 239
+
+agents/workflow_navigator.py
+  Coverage: 0.00%
+  Statements: 316, Missing: 316
+
+src/codex_ml/cli/main.py
+  Coverage: 0.00%
+  Statements: 313, Missing: 313
+
+src/codex_ml/cli/train.py
+  Coverage: 0.00%
+  Statements: 312, Missing: 312
+
+src/codex_ml/tokenization/adapter.py
+  Coverage: 17.65%
+  Statements: 309, Missing: 234
+
+src/codex/cli_rag.py
+  Coverage: 0.00%
+  Statements: 297, Missing: 297
+
+src/codex_ml/utils/scalability.py
+  Coverage: 0.00%
+  Statements: 292, Missing: 292
+
+src/codex_ml/metrics/registry.py
+  Coverage: 19.27%
+  Statements: 290, Missing: 217
+
+src/codex/retrieval/stores/faiss_store.py
+  Coverage: 0.00%
+  Statements: 286, Missing: 286
+
+src/codex_ml/data/loader.py
+  Coverage: 0.00%
+  Statements: 286, Missing: 286
+
+src/codex/zendesk/apply.py
+  Coverage: 0.00%
+  Statements: 275, Missing: 275
+
+src/codex/rag/indexer.py
+  Coverage: 0.00%
+  Statements: 266, Missing: 266
+
+src/codex/retrieval/stores/advanced_indexing.py
+  Coverage: 0.00%
+  Statements: 262, Missing: 262
+
+src/codex_ml/serving/resilience.py
+  Coverage: 0.00%
+  Statements: 262, Missing: 262
+
