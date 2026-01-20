@@ -1,7 +1,7 @@
 {
   "metadata": {
     "generated_at": "2026-01-18T21:02:17.873541+00:00",
-    "total_untested": 100,
+    "total_untested": 862,
     "target_coverage": "100%",
     "current_coverage": "17.3%",
     "baseline_date": "2026-01-18"

@@ -1,10 +1,10 @@
-pytest>=7.2,<10
-pytest-cov>=4.0,<8
-pytest-xdist>=3.0,<4
-pytest-timeout>=2.0,<3
-pytest-rerunfailures>=13.0,<15
-pytest-randomly>=3.0,<4
-coverage>=7.0,<8
+pytest>=9.0,<10
+pytest-cov>=7.0,<8
+pytest-xdist>=3.8,<4
+pytest-timeout>=2.3,<3
+pytest-rerunfailures>=14.0,<15
+pytest-randomly>=3.16,<4
+coverage>=7.10.6,<8
 requests>=2.32.4,<3  # Security: Updated from 2.31 to fix CVE-2024-35195, CVE-2024-47081
 jsonschema>=4.0,<5
 pre-commit>=3,<4

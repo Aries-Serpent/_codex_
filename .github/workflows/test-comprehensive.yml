@@ -124,9 +124,10 @@ jobs:
           RAG_EMBEDDING_PROVIDER: tfidf
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: always()
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           flags: python-${{ matrix.python-version }}
           name: coverage-${{ matrix.python-version }}
