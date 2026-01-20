@@ -28,18 +28,18 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-Validate a decoded validator snapshot against a permissive schema or perform lightweight checks.
-
-Features:
-- Validates decoded Phase-A snapshot JSON against a schema (if provided and jsonschema installed).
-- Falls back to lightweight structure validation if jsonschema is unavailable.
-- Supports both CLI and import as a module.
-"""
 from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Validate a decoded validator snapshot against a permissive schema or perform lightweight checks.
+#
+# Features:
+# - Validates decoded Phase-A snapshot JSON against a schema (if provided and jsonschema installed).
+# - Falls back to lightweight structure validation if jsonschema is unavailable.
+# - Supports both CLI and import as a module.
 
 import argparse
 import importlib

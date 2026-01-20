@@ -26,7 +26,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        # Python version matrix aligned with requires-python = ">=3.11" in pyproject.toml
+        python-version: ['3.11', '3.12']
 
     steps:
       - name: Checkout code
@@ -84,13 +85,28 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          # Install pytest plugins first to ensure they're available before editable install
-          pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures
-          pip install -e ".[test]" || pip install -e .
+          # Install pytest plugins FIRST with pinned versions
+          # This ensures xdist workers have correct versions at consistent paths
+          pip install \
+            pytest==9.0.2 \
+            pytest-cov==7.0.0 \
+            pytest-xdist==3.8.0 \
+            pytest-timeout==2.3.1 \
+            pytest-rerunfailures==14.0 \
+            pytest-randomly==3.16.0 \
+            'coverage>=7.10.6,<8'
+          # Then install the main package (without overwriting plugins)
+          pip install --no-deps -e . || pip install -e .
+          # Finally install remaining dependencies
+          pip install -e ".[test]"
+          python -m pytest --version
 
       - name: Verify pytest plugins
+        id: validate_plugins
         run: |
           python scripts/validate_test_env.py
+        # Note: continue-on-error removed to fail fast on plugin issues
+        # If this step fails, fix the plugin installation rather than masking the error
 
       - name: Install optional RAG dependencies
         continue-on-error: true
@@ -99,27 +115,19 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest tests/ \
-            --cov=src \
-            --cov-report=xml \
-            --cov-report=html \
-            --cov-report=term-missing \
-            -v \
-            --tb=short \
-            -n auto \
-            --dist=loadfile \
-            --maxfail=5 \
-            --reruns=2 \
-            --reruns-delay=1
+          # pytest options are defined in pytest.ini
+          # Explicitly add coverage source path here (removed from pytest.ini to avoid xdist duplication)
+          python -m pytest tests/ --cov=src -v --tb=short --maxfail=5
         env:
           PYTHONPATH: ${{ github.workspace }}/src
           CODEX_FORCE_CPU: "1"
           RAG_EMBEDDING_PROVIDER: tfidf
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: always()
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           flags: python-${{ matrix.python-version }}
           name: coverage-${{ matrix.python-version }}
@@ -182,6 +190,6 @@ jobs:
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Matrix: Python 3.9, 3.10, 3.11, 3.12" >> $GITHUB_STEP_SUMMARY
+          echo "- Matrix: Python 3.11, 3.12" >> $GITHUB_STEP_SUMMARY
           echo "- Caching: pip + models + pytest" >> $GITHUB_STEP_SUMMARY
           echo "- Coverage: Uploaded to Codecov" >> $GITHUB_STEP_SUMMARY

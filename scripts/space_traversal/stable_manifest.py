@@ -28,17 +28,17 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-Produce a stable manifest JSON for a given output directory.
-
-Features:
-- Walks a given directory and produces a manifest of filenames with timestamp normalization.
-- Also provides stable, deterministic JSON dump for objects/lists if used as a module.
-"""
 from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Produce a stable manifest JSON for a given output directory.
+#
+# Features:
+# - Walks a given directory and produces a manifest of filenames with timestamp normalization.
+# - Also provides stable, deterministic JSON dump for objects/lists if used as a module.
 
 import argparse
 import json

@@ -1,0 +1,89 @@
+# Codex CodeQL Configuration
+#
+# Phase 18.2: CI/CD Pipeline Optimization
+# Created: 2026-01-18
+#
+# This configuration optimizes CodeQL scans by:
+# - Excluding test files from security scans
+# - Using security-extended queries
+# - Configuring memory and performance settings
+#
+# Reference: https://codeql.github.com/docs/codeql-cli/creating-codeql-databases/
+
+name: "Codex CodeQL Configuration"
+
+# Disable default queries and use only specified ones
+disable-default-queries: false
+
+# Paths to analyze (production code only)
+paths:
+  - src/
+  - agents/
+  - training/
+  - scripts/
+
+# Paths to exclude from analysis
+paths-ignore:
+  # Test directories
+  - tests/
+  - "**/test_*.py"
+  - "**/*_test.py"
+  - "**/conftest.py"
+  
+  # Generated files
+  - "**/__pycache__/"
+  - "**/*.pyc"
+  - "**/*.pyo"
+  
+  # Documentation
+  - docs/
+  - "**/*.md"
+  
+  # Configuration files
+  - "*.yaml"
+  - "*.yml"
+  - "*.toml"
+  - "*.json"
+  
+  # Virtual environments
+  - ".venv/"
+  - "venv/"
+  - "env/"
+  
+  # Build artifacts
+  - build/
+  - dist/
+  - "*.egg-info/"
+  
+  # Coverage and cache
+  - ".coverage"
+  - "coverage/"
+  - ".pytest_cache/"
+  - ".mypy_cache/"
+  - ".ruff_cache/"
+
+# Query suites to use
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Query filters
+query-filters:
+  - include:
+      kind: problem
+  - include:
+      kind: path-problem
+  - exclude:
+      id: py/redundant-comparison
+  - exclude:
+      id: py/similar-function
+
+# Database configuration for Python
+database:
+  python:
+    buildless: true
+
+# Performance settings
+# Note: These are applied at runtime via workflow
+# memory: 16384  # 16GB
+# threads: 4

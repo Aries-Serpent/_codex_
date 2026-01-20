@@ -7,7 +7,7 @@ omit =
 [report]
 show_missing = True
 skip_empty = True
-fail_under = 70
+# Note: fail_under removed - use pyproject.toml [tool.coverage.report] as single source of truth
 precision = 2
 skip_covered = True
 exclude_also =

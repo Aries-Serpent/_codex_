@@ -71,7 +71,8 @@ def detect(file_index: dict) -> dict:
         found_patterns.append("sphinx")
 
     # Calculate functionality score
-    functionality_score = len(found_patterns) / len(required_patterns) if required_patterns else 0.0
+    raw_score = len(found_patterns) / len(required_patterns) if required_patterns else 0.0
+    functionality_score = min(1.0, raw_score)
 
     return {
         "id": "documentation-system",

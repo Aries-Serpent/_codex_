@@ -78,4 +78,9 @@ python-source = "src"
 
 [features]
 default = []
-# extension-module feature will be enabled by maturin during Python builds
+# Python bindings feature - enables extension-module for proper Python extension building
+# Use: maturin build --features extension-module
+# The extension-module feature is required for creating Python extensions that don't link libpython
+# `python` is kept as a convenience alias for `extension-module`.
+python = ["extension-module"]
+extension-module = ["pyo3/extension-module"]

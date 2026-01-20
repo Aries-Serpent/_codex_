@@ -1,0 +1,353 @@
+"""
+Pattern Learner - Cognitive brain integration for batch triage
+
+Implements pattern storage, retrieval, and learning from triage outcomes.
+Stores patterns in cognitive brain and tracks remediation success rates.
+"""
+
+import json
+import logging
+from collections import defaultdict
+from dataclasses import dataclass, asdict
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional, Any
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class FailurePattern:
+    """A learned failure pattern."""
+    
+    pattern_id: str
+    failure_type: str
+    root_cause: str
+    common_symptoms: List[str]
+    occurrences: int = 1
+    first_seen: str = ""
+    last_seen: str = ""
+    success_rate: float = 0.0
+    avg_resolution_time_hours: Optional[float] = None
+    recommended_actions: List[str] = None
+    
+    def __post_init__(self):
+        if not self.first_seen:
+            self.first_seen = datetime.now().isoformat()
+        if not self.last_seen:
+            self.last_seen = datetime.now().isoformat()
+        if self.recommended_actions is None:
+            self.recommended_actions = []
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary."""
+        return asdict(self)
+
+
+class PatternLearner:
+    """
+    Learns from triage outcomes and stores patterns in cognitive brain.
+    
+    Capabilities:
+    - Pattern extraction and storage
+    - Remediation success tracking
+    - Historical context retrieval
+    - Pattern expiry management
+    """
+    
+    def __init__(
+        self,
+        kb_path: Path = Path(".codex/cognitive_brain"),
+        pattern_expiry_days: int = 90,
+        min_occurrences: int = 3,
+    ):
+        """
+        Initialize the pattern learner.
+        
+        Args:
+            kb_path: Path to cognitive brain knowledge base
+            pattern_expiry_days: Days before patterns expire
+            min_occurrences: Minimum occurrences before pattern is considered stable
+        """
+        self.kb_path = kb_path
+        self.patterns_dir = kb_path / "patterns" / "ci_failures"
+        self.metrics_dir = Path(".codex/metrics")
+        self.remediations_db = self.patterns_dir / "remediations.jsonl"
+        
+        # Configuration
+        self.pattern_expiry_days = pattern_expiry_days
+        self.min_occurrences = min_occurrences
+        
+        # Create directories
+        self.patterns_dir.mkdir(parents=True, exist_ok=True)
+        self.metrics_dir.mkdir(parents=True, exist_ok=True)
+        
+        # In-memory cache
+        self.patterns: Dict[str, FailurePattern] = {}
+        self._load_patterns()
+    
+    def _load_patterns(self) -> None:
+        """Load existing patterns from storage."""
+        pattern_files = self.patterns_dir.glob("pattern_*.json")
+        
+        for pattern_file in pattern_files:
+            try:
+                with open(pattern_file, 'r') as f:
+                    data = json.load(f)
+                    pattern = FailurePattern(**data)
+                    self.patterns[pattern.pattern_id] = pattern
+            except Exception as e:
+                logger.warning(f"Failed to load pattern from {pattern_file}: {e}")
+    
+    def record_triage_outcome(
+        self,
+        batch_id: str,
+        failures: List[Dict[str, Any]],
+        outcomes: Optional[List[Dict[str, Any]]] = None,
+    ) -> None:
+        """
+        Record triage outcomes for learning.
+        
+        Args:
+            batch_id: Unique identifier for this batch
+            failures: List of failure records
+            outcomes: Optional list of remediation outcomes
+        """
+        timestamp = datetime.now().isoformat()
+        outcome_file = self.patterns_dir / f"batch_{batch_id}_{timestamp.replace(':', '-')}.json"
+        
+        data = {
+            "batch_id": batch_id,
+            "timestamp": timestamp,
+            "total_failures": len(failures),
+            "failures": failures,
+            "outcomes": outcomes or [],
+            "patterns_detected": self._extract_patterns_from_batch(failures),
+        }
+        
+        # Save to file
+        with open(outcome_file, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        # Update patterns
+        for pattern_data in data["patterns_detected"]:
+            self._update_or_create_pattern(pattern_data)
+        
+        logger.info(f"Recorded triage outcome for batch {batch_id}")
+    
+    def _extract_patterns_from_batch(self, failures: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Extract patterns from a batch of failures."""
+        pattern_groups = defaultdict(list)
+        
+        for failure in failures:
+            key = (failure.get("failure_type"), failure.get("root_cause"))
+            pattern_groups[key].append(failure)
+        
+        patterns = []
+        for (failure_type, root_cause), group in pattern_groups.items():
+            if not failure_type or not root_cause:
+                continue
+            
+            # Extract common symptoms
+            symptoms = set()
+            for failure in group:
+                for issue in failure.get("detected_issues", []):
+                    symptoms.add(issue.get("description", "")[:100])
+            
+            pattern = {
+                "pattern_id": self._generate_pattern_id(failure_type, root_cause),
+                "failure_type": failure_type,
+                "root_cause": root_cause,
+                "common_symptoms": list(symptoms)[:5],
+                "occurrences": len(group),
+            }
+            patterns.append(pattern)
+        
+        return patterns
+    
+    def _generate_pattern_id(self, failure_type: str, root_cause: str) -> str:
+        """Generate a unique pattern ID."""
+        import hashlib
+        content = f"{failure_type}:{root_cause}"
+        return f"pattern_{hashlib.md5(content.encode()).hexdigest()[:12]}"
+    
+    def _update_or_create_pattern(self, pattern_data: Dict[str, Any]) -> None:
+        """Update existing pattern or create new one."""
+        pattern_id = pattern_data["pattern_id"]
+        
+        if pattern_id in self.patterns:
+            # Update existing
+            pattern = self.patterns[pattern_id]
+            pattern.occurrences += pattern_data.get("occurrences", 1)
+            pattern.last_seen = datetime.now().isoformat()
+        else:
+            # Create new
+            pattern = FailurePattern(**pattern_data)
+            self.patterns[pattern_id] = pattern
+        
+        # Save to file
+        pattern_file = self.patterns_dir / f"{pattern_id}.json"
+        with open(pattern_file, 'w') as f:
+            json.dump(pattern.to_dict(), f, indent=2)
+    
+    def track_remediation_outcome(
+        self,
+        remediation_id: str,
+        pattern_id: str,
+        success: bool,
+        resolution_time_hours: Optional[float] = None,
+    ) -> None:
+        """
+        Track remediation success/failure for learning.
+        
+        Args:
+            remediation_id: Unique identifier for the remediation
+            pattern_id: Associated pattern ID
+            success: Whether remediation was successful
+            resolution_time_hours: Time to resolve in hours
+        """
+        entry = {
+            "remediation_id": remediation_id,
+            "pattern_id": pattern_id,
+            "timestamp": datetime.now().isoformat(),
+            "success": success,
+            "resolution_time_hours": resolution_time_hours,
+        }
+        
+        # Append to JSONL
+        with open(self.remediations_db, 'a') as f:
+            f.write(json.dumps(entry) + '\n')
+        
+        # Update pattern success rate
+        if pattern_id in self.patterns:
+            self._recalculate_pattern_success_rate(pattern_id)
+        
+        logger.info(f"Tracked remediation outcome: {remediation_id} - {'success' if success else 'failure'}")
+    
+    def _recalculate_pattern_success_rate(self, pattern_id: str) -> None:
+        """Recalculate success rate for a pattern."""
+        if not self.remediations_db.exists():
+            return
+        
+        successes = 0
+        total = 0
+        resolution_times = []
+        
+        with open(self.remediations_db, 'r') as f:
+            for line in f:
+                try:
+                    entry = json.loads(line)
+                    if entry.get("pattern_id") == pattern_id:
+                        total += 1
+                        if entry.get("success"):
+                            successes += 1
+                        if entry.get("resolution_time_hours"):
+                            resolution_times.append(entry["resolution_time_hours"])
+                except json.JSONDecodeError:
+                    continue
+        
+        if total > 0:
+            pattern = self.patterns[pattern_id]
+            pattern.success_rate = successes / total
+            if resolution_times:
+                pattern.avg_resolution_time_hours = sum(resolution_times) / len(resolution_times)
+            
+            # Save updated pattern
+            pattern_file = self.patterns_dir / f"{pattern_id}.json"
+            with open(pattern_file, 'w') as f:
+                json.dump(pattern.to_dict(), f, indent=2)
+    
+    def get_pattern(self, failure_type: str, root_cause: str) -> Optional[FailurePattern]:
+        """
+        Get pattern matching failure type and root cause.
+        
+        Args:
+            failure_type: Type of failure
+            root_cause: Root cause description
+            
+        Returns:
+            Matching pattern or None
+        """
+        pattern_id = self._generate_pattern_id(failure_type, root_cause)
+        return self.patterns.get(pattern_id)
+    
+    def get_best_remediation(self, failure_type: str, root_cause: str) -> Optional[Dict[str, Any]]:
+        """
+        Get best remediation based on historical success rates.
+        
+        Args:
+            failure_type: Type of failure
+            root_cause: Root cause description
+            
+        Returns:
+            Best remediation or None
+        """
+        pattern = self.get_pattern(failure_type, root_cause)
+        
+        if not pattern or not pattern.recommended_actions:
+            return None
+        
+        return {
+            "actions": pattern.recommended_actions,
+            "success_rate": pattern.success_rate,
+            "avg_resolution_time_hours": pattern.avg_resolution_time_hours,
+            "confidence": "high" if pattern.success_rate >= 0.7 else "medium" if pattern.success_rate >= 0.5 else "low",
+        }
+    
+    def cleanup_expired_patterns(self) -> int:
+        """
+        Remove expired patterns.
+        
+        Returns:
+            Number of patterns removed
+        """
+        expiry_date = datetime.now() - timedelta(days=self.pattern_expiry_days)
+        removed = 0
+        
+        for pattern_id, pattern in list(self.patterns.items()):
+            try:
+                last_seen = datetime.fromisoformat(pattern.last_seen)
+                if last_seen < expiry_date:
+                    # Remove from memory and disk
+                    del self.patterns[pattern_id]
+                    pattern_file = self.patterns_dir / f"{pattern_id}.json"
+                    if pattern_file.exists():
+                        pattern_file.unlink()
+                    removed += 1
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Failed to parse date for pattern {pattern_id}: {e}")
+        
+        logger.info(f"Cleaned up {removed} expired patterns")
+        return removed
+    
+    def get_statistics(self) -> Dict[str, Any]:
+        """
+        Get learning statistics.
+        
+        Returns:
+            Dictionary of statistics
+        """
+        stable_patterns = [p for p in self.patterns.values() if p.occurrences >= self.min_occurrences]
+        high_success = [p for p in stable_patterns if p.success_rate >= 0.7]
+        
+        return {
+            "total_patterns": len(self.patterns),
+            "stable_patterns": len(stable_patterns),
+            "high_success_patterns": len(high_success),
+            "avg_success_rate": sum(p.success_rate for p in self.patterns.values()) / len(self.patterns) if self.patterns else 0.0,
+            "most_common_failure_types": self._get_top_failure_types(),
+        }
+    
+    def _get_top_failure_types(self, limit: int = 5) -> List[Dict[str, Any]]:
+        """Get most common failure types."""
+        type_counts = defaultdict(int)
+        
+        for pattern in self.patterns.values():
+            type_counts[pattern.failure_type] += pattern.occurrences
+        
+        sorted_types = sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
+        
+        return [
+            {"failure_type": ft, "count": count}
+            for ft, count in sorted_types[:limit]
+        ]

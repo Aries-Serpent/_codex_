@@ -263,3 +263,7 @@ def create_scoring_function(optimizer: AdaptiveScoringOptimizer) -> Callable[[Di
     def scoring_fn(features: Dict[str, float]) -> float:
         return optimizer.compute_score(features)
     return scoring_fn
+
+
+# Backward-compatible alias for imports
+AdaptiveScoringEngine = AdaptiveScoringOptimizer

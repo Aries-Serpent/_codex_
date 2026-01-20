@@ -302,6 +302,8 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 | **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
 | **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
 | **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit evidence | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) | ✅ Active |
+| **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
+| **Coverage Gapfill Agent** | Target low-coverage modules and add deterministic tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ✅ Active |
 
 ### Using Specialized Agents
 

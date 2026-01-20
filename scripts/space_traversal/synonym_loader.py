@@ -28,34 +28,34 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-Capability Synonym Loader (P6)
-
-Expands found_patterns in capabilities_raw.json using a synonym map.
-Records map_hash for reproducibility.
-
-Synonym Map Format (JSON):
-{
-  "train": ["training", "epoch", "fit"],
-  "checkpoint": ["save_checkpoint", "restore", "load_checkpoint"],
-  "tokenizer": ["tokenize", "encode", "decode"]
-}
-
-Environment Knobs:
-  SYNONYM_MAP_PATH=configs/synonyms/synonyms.json  (default)
-
-Behavior:
-- Load capabilities_raw.json
-- For each capability, expand found_patterns via synonym map
-- Output capabilities_raw_expanded.json with synonym_count and map_hash
-
-Integration:
-- S3 can optionally use expanded version for richer pattern matching
-"""
 from __future__ import annotations
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Capability Synonym Loader (P6)
+#
+# Expands found_patterns in capabilities_raw.json using a synonym map.
+# Records map_hash for reproducibility.
+#
+# Synonym Map Format (JSON):
+# {
+#   "train": ["training", "epoch", "fit"],
+#   "checkpoint": ["save_checkpoint", "restore", "load_checkpoint"],
+#   "tokenizer": ["tokenize", "encode", "decode"]
+# }
+#
+# Environment Knobs:
+#   SYNONYM_MAP_PATH=configs/synonyms/synonyms.json  (default)
+#
+# Behavior:
+# - Load capabilities_raw.json
+# - For each capability, expand found_patterns via synonym map
+# - Output capabilities_raw_expanded.json with synonym_count and map_hash
+#
+# Integration:
+# - S3 can optionally use expanded version for richer pattern matching
 
 import hashlib
 import json

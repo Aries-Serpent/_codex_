@@ -1,0 +1,223 @@
+name: Batch CI Failure Triage
+# Automated batch triage of post-merge CI/test failures with remediation suggestions
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_numbers:
+        description: 'Comma-separated GitHub issue numbers (e.g., 2905,2906,2907)'
+        required: false
+        type: string
+      csv_file:
+        description: 'Path to CSV file with failure data (e.g., scripts/ci/links_extraction.csv)'
+        required: false
+        type: string
+        default: 'scripts/ci/links_extraction.csv'
+      group_by:
+        description: 'Grouping strategy'
+        required: false
+        type: choice
+        options:
+          - root_cause
+          - workflow
+          - severity
+          - failure_type
+        default: 'root_cause'
+      create_issue:
+        description: 'Create a GitHub issue with the triage report'
+        required: false
+        type: boolean
+        default: true
+  schedule:
+    # Run daily at 00:00 UTC to check for new failures
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  batch-triage:
+    name: Batch Triage CI Failures
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          pip install pyyaml click --quiet
+      
+      - name: Setup Cached Environment
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.11'
+          cache-tier: 'common'
+      
+      - name: Determine Input Method
+        id: input
+        run: |
+          if [ -n "${{ inputs.issue_numbers }}" ]; then
+            echo "method=issues" >> $GITHUB_OUTPUT
+            echo "value=${{ inputs.issue_numbers }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ inputs.csv_file }}" ] && [ -f "${{ inputs.csv_file }}" ]; then
+            echo "method=csv" >> $GITHUB_OUTPUT
+            echo "value=${{ inputs.csv_file }}" >> $GITHUB_OUTPUT
+          else
+            # Default to links_extraction.csv if it exists
+            if [ -f "scripts/ci/links_extraction.csv" ]; then
+              echo "method=csv" >> $GITHUB_OUTPUT
+              echo "value=scripts/ci/links_extraction.csv" >> $GITHUB_OUTPUT
+            else
+              echo "::error::No input provided and default CSV file not found"
+              exit 1
+            fi
+          fi
+      
+      - name: Run Batch Triage
+        id: triage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "::group::Running batch triage"
+          
+          # Build command
+          cmd="python scripts/ci/batch_triage.py"
+          
+          if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
+            cmd="$cmd --issues ${{ steps.input.outputs.value }}"
+          else
+            cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
+          fi
+          
+          cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
+          cmd="$cmd --output batch_triage_report.md"
+          
+          echo "Executing: $cmd"
+          eval $cmd
+          
+          echo "::endgroup::"
+          
+          if [ -f "batch_triage_report.md" ]; then
+            echo "triage_success=true" >> $GITHUB_OUTPUT
+            echo "report_file=batch_triage_report.md" >> $GITHUB_OUTPUT
+          else
+            echo "::error::Triage report not generated"
+            echo "triage_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      - name: Upload Triage Report
+        if: steps.triage.outputs.triage_success == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-triage-report-${{ github.run_id }}
+          path: batch_triage_report.md
+          retention-days: 90
+      
+      - name: Generate JSON Report
+        if: steps.triage.outputs.triage_success == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "::group::Generating JSON report"
+          
+          # Build command for JSON output
+          cmd="python scripts/ci/batch_triage.py"
+          
+          if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
+            cmd="$cmd --issues ${{ steps.input.outputs.value }}"
+          else
+            cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
+          fi
+          
+          cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
+          cmd="$cmd --output batch_triage_report.json --json"
+          
+          echo "Executing: $cmd"
+          eval $cmd
+          
+          echo "::endgroup::"
+      
+      - name: Upload JSON Report
+        if: steps.triage.outputs.triage_success == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-triage-json-${{ github.run_id }}
+          path: batch_triage_report.json
+          retention-days: 90
+      
+      - name: Create GitHub Issue with Report
+        if: |
+          steps.triage.outputs.triage_success == 'true' &&
+          (inputs.create_issue == true || github.event_name == 'schedule')
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('batch_triage_report.md', 'utf8');
+            
+            // Truncate report if too long (GitHub API limit)
+            const maxLength = 60000;
+            let body = report;
+            if (body.length > maxLength) {
+              body = body.substring(0, maxLength) + '\n\n... (truncated, see artifact for full report)';
+            }
+            
+            // Add workflow run link
+            body += `\n\n---\n**Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📊 Batch CI Failure Triage Report - ${new Date().toISOString().split('T')[0]}`,
+              body: body,
+              labels: ['ci-triage', 'automated', 'batch-analysis']
+            });
+            
+            console.log(`Created issue #${issue.data.number}`);
+            core.setOutput('issue_number', issue.data.number);
+      
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "## 📊 Batch CI Failure Triage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.triage.outputs.triage_success }}" = "true" ]; then
+            echo "✅ **Status:** Success" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Reports Generated" >> $GITHUB_STEP_SUMMARY
+            echo "- Markdown: \`batch_triage_report.md\`" >> $GITHUB_STEP_SUMMARY
+            echo "- JSON: \`batch_triage_report.json\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Configuration" >> $GITHUB_STEP_SUMMARY
+            echo "- **Input Method:** ${{ steps.input.outputs.method }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Grouping Strategy:** ${{ inputs.group_by || 'root_cause' }}" >> $GITHUB_STEP_SUMMARY
+            
+            # Show excerpt from report
+            if [ -f "batch_triage_report.md" ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "### Report Excerpt" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              head -20 batch_triage_report.md >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ **Status:** Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Triage report generation failed. Check the logs for details." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Generated by Batch CI Failure Triage Workflow*" >> $GITHUB_STEP_SUMMARY

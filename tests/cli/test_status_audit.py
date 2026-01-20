@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+from __future__ import annotations
+
 """
 Test Status Audit
 
 Test module for status audit.
 """
 
-#!/usr/bin/env python
 """
 Test suite for codex-status-audit command.
 
@@ -14,7 +16,6 @@ These tests validate the status audit CLI functionality including:
 - Report generation
 - Baseline comparison
 """
-from __future__ import annotations
 
 import subprocess
 import sys

@@ -103,8 +103,8 @@ jobs:
 
           # Run pytest twice and compare outputs for determinism
           echo "=== Running test suite twice to verify determinism ==="
-          pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee baseline_test.out || echo "⚠️ First test run had failures"
-          pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee second_test.out || echo "⚠️ Second test run had failures"
+          python -m pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee baseline_test.out || echo "⚠️ First test run had failures"
+          python -m pytest tests/ -q --disable-warnings --maxfail=1 -v 2>&1 | tee second_test.out || echo "⚠️ Second test run had failures"
 
           # Compare test outputs (excluding timing information)
           # Note: This is a basic comparison; may need refinement for timing-sensitive output

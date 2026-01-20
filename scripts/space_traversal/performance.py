@@ -28,31 +28,29 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-Performance optimizations for v1.5.5
-
-Provides performance utilities for audit pipeline operations.
-
-Features:
-- Function timing decorator
-- Disk-based caching with TTL
-- Batch file reading
-- Memory-efficient operations
-
-Example:
-    from scripts.space_traversal.performance import timed, FileCache
-
-    @timed
-    def expensive_operation():
-        pass
-
-    cache = FileCache(Path(".cache"))
-    if (result := cache.get("key")) is None:
-        result = compute()
-        cache.set("key", result, ttl_seconds=3600)
-"""
 from __future__ import annotations
+
+# Performance optimizations for v1.5.5
+#
+# Provides performance utilities for audit pipeline operations.
+#
+# Features:
+# - Function timing decorator
+# - Disk-based caching with TTL
+# - Batch file reading
+# - Memory-efficient operations
+#
+# Example:
+#     from scripts.space_traversal.performance import timed, FileCache
+#
+#     @timed
+#     def expensive_operation():
+#         pass
+#
+#     cache = FileCache(Path(".cache"))
+#     if (result := cache.get("key")) is None:
+#         result = compute()
+#         cache.set("key", result, ttl_seconds=3600)
 
 import functools
 import hashlib

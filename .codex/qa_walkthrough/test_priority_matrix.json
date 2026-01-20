@@ -1,0 +1,561 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-18T21:02:17.873541+00:00",
+    "total_untested": 862,
+    "target_coverage": "100%",
+    "current_coverage": "17.3%",
+    "baseline_date": "2026-01-18"
+  },
+  "priority_tiers": {
+    "tier_1_critical": [
+      {
+        "path": "src/codex/cli_rag.py",
+        "size": 26325,
+        "lines": 821,
+        "priority": "high",
+        "priority_score": 100
+      },
+      {
+        "path": "src/tokenization/cli.py",
+        "size": 20792,
+        "lines": 596,
+        "priority": "high",
+        "priority_score": 100
+      },
+      {
+        "path": "src/codex/archive/cli.py",
+        "size": 24889,
+        "lines": 712,
+        "priority": "high",
+        "priority_score": 100
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/cli.py",
+        "size": 20147,
+        "lines": 608,
+        "priority": "high",
+        "priority_score": 100
+      },
+      {
+        "path": "src/codex_ml/cli/codex_cli.py",
+        "size": 28107,
+        "lines": 846,
+        "priority": "high",
+        "priority_score": 100
+      },
+      {
+        "path": "src/codex_ml/safety/filters.py",
+        "size": 36202,
+        "lines": 1027,
+        "priority": "high",
+        "priority_score": 95
+      },
+      {
+        "path": "src/training/engine_hf_trainer.py",
+        "size": 50868,
+        "lines": 1357,
+        "priority": "high",
+        "priority_score": 90
+      },
+      {
+        "path": "src/codex_ml/training/unified_training.py",
+        "size": 22006,
+        "lines": 604,
+        "priority": "high",
+        "priority_score": 90
+      },
+      {
+        "path": "src/codex_ml/training/legacy_api.py",
+        "size": 60999,
+        "lines": 1571,
+        "priority": "high",
+        "priority_score": 90
+      },
+      {
+        "path": "src/codex_ml/training/functional_training.py",
+        "size": 24005,
+        "lines": 579,
+        "priority": "high",
+        "priority_score": 90
+      },
+      {
+        "path": "src/codex_ml/data/loaders.py",
+        "size": 21776,
+        "lines": 659,
+        "priority": "high",
+        "priority_score": 90
+      },
+      {
+        "path": "src/codex_ml/config/__init__.py",
+        "size": 33679,
+        "lines": 904,
+        "priority": "high",
+        "priority_score": 90
+      }
+    ],
+    "tier_2_high": [
+      {
+        "path": "src/codex/auth/middleware.py",
+        "size": 16856,
+        "lines": 531,
+        "priority": "high",
+        "priority_score": 85
+      },
+      {
+        "path": "src/bridge_manager.py",
+        "size": 30316,
+        "lines": 822,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_cli/app.py",
+        "size": 16653,
+        "lines": 453,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/pipeline.py",
+        "size": 26412,
+        "lines": 719,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/train_loop.py",
+        "size": 78626,
+        "lines": 2163,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/services/crawler/content_diff.py",
+        "size": 22332,
+        "lines": 646,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/services/crawler/zendesk_sync.py",
+        "size": 30910,
+        "lines": 791,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/cognitive_brain/learning/rl_algorithms.py",
+        "size": 25156,
+        "lines": 774,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/archive/dal.py",
+        "size": 37374,
+        "lines": 1109,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/archive/backend.py",
+        "size": 21765,
+        "lines": 590,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/intent/llm_client.py",
+        "size": 10707,
+        "lines": 325,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/orchestrator.py",
+        "size": 30357,
+        "lines": 904,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/cli/pr_operator.py",
+        "size": 12537,
+        "lines": 413,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/cli/main.py",
+        "size": 11039,
+        "lines": 265,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/rag/embeddings.py",
+        "size": 21735,
+        "lines": 628,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/rag/indexer.py",
+        "size": 25506,
+        "lines": 756,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/rag/retriever.py",
+        "size": 21753,
+        "lines": 636,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/qft/gauge.py",
+        "size": 20004,
+        "lines": 652,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/retrieval/stores/advanced_indexing.py",
+        "size": 23080,
+        "lines": 662,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex/retrieval/stores/faiss_store.py",
+        "size": 23140,
+        "lines": 640,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/metrics/registry.py",
+        "size": 21544,
+        "lines": 648,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/utils/checkpoint_core.py",
+        "size": 26729,
+        "lines": 768,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/utils/checkpointing.py",
+        "size": 54984,
+        "lines": 1486,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/training/fsdp_wrapper.py",
+        "size": 18830,
+        "lines": 552,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/monitoring/system_metrics.py",
+        "size": 26420,
+        "lines": 813,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/interfaces/tokenizer.py",
+        "size": 26990,
+        "lines": 716,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/cli/feature_store.py",
+        "size": 11751,
+        "lines": 372,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/cli/ndjson_summary.py",
+        "size": 13675,
+        "lines": 397,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/cli/hydra_audit.py",
+        "size": 13589,
+        "lines": 429,
+        "priority": "high",
+        "priority_score": 80
+      },
+      {
+        "path": "src/codex_ml/cli/repo_map.py",
+        "size": 10721,
+        "lines": 333,
+        "priority": "high",
+        "priority_score": 80
+      }
+    ],
+    "tier_3_medium": [
+      {
+        "path": "src/training/checkpoint_manager.py",
+        "size": 18630,
+        "lines": 455,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/training/checkpointing.py",
+        "size": 11043,
+        "lines": 320,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/cli_github_logs.py",
+        "size": 7724,
+        "lines": 270,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/ingestion/pipeline.py",
+        "size": 19071,
+        "lines": 598,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/symbolic_pipeline.py",
+        "size": 17357,
+        "lines": 520,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/rag/pipelines/quantum_retrieval.py",
+        "size": 18070,
+        "lines": 558,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/api/rag_api.py",
+        "size": 16004,
+        "lines": 505,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/ast/export.py",
+        "size": 19202,
+        "lines": 582,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/utils/config_loader.py",
+        "size": 14076,
+        "lines": 391,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/mlops_bridge.py",
+        "size": 16733,
+        "lines": 545,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/rag/monitoring.py",
+        "size": 19314,
+        "lines": 539,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/retrieval/query_rewriter.py",
+        "size": 16558,
+        "lines": 504,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/qft/second_quantization.py",
+        "size": 16190,
+        "lines": 516,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/quantum_orchestrator/qft/entanglement.py",
+        "size": 16261,
+        "lines": 509,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex/rag/ingestion/pipeline.py",
+        "size": 18257,
+        "lines": 542,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/eval/reasoning_metrics.py",
+        "size": 15104,
+        "lines": 507,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/utils/config_loader.py",
+        "size": 12603,
+        "lines": 353,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/utils/checkpoint.py",
+        "size": 19676,
+        "lines": 549,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/utils/reproducibility_hardening.py",
+        "size": 17457,
+        "lines": 529,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/training/strategies.py",
+        "size": 18099,
+        "lines": 499,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/training/multi_node_orchestration.py",
+        "size": 10892,
+        "lines": 367,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/training/continuous_learning.py",
+        "size": 10590,
+        "lines": 317,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/training/curriculum.py",
+        "size": 15212,
+        "lines": 467,
+        "priority": "high",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/validate.py",
+        "size": 7390,
+        "lines": 206,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/list_plugins.py",
+        "size": 9183,
+        "lines": 276,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/entrypoints.py",
+        "size": 9211,
+        "lines": 302,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/infer.py",
+        "size": 9366,
+        "lines": 245,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/audit_pipeline.py",
+        "size": 8885,
+        "lines": 274,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/registry.py",
+        "size": 8635,
+        "lines": 257,
+        "priority": "medium",
+        "priority_score": 70
+      },
+      {
+        "path": "src/codex_ml/cli/config.py",
+        "size": 7782,
+        "lines": 277,
+        "priority": "medium",
+        "priority_score": 70
+      }
+    ],
+    "tier_4_low": []
+  },
+  "test_proposals": {
+    "phase_2": {
+      "target_coverage": "50%",
+      "modules_to_test": 61,
+      "estimated_effort_days": 30,
+      "focus_areas": [
+        "CLI",
+        "Training",
+        "Data loaders",
+        "Security"
+      ]
+    },
+    "phase_3": {
+      "target_coverage": "70%",
+      "modules_to_test": 39,
+      "estimated_effort_days": 40,
+      "focus_areas": [
+        "Config",
+        "Monitoring",
+        "Utilities",
+        "RAG"
+      ]
+    },
+    "phase_4": {
+      "target_coverage": "100%",
+      "modules_to_test": 0,
+      "estimated_effort_days": 60,
+      "focus_areas": [
+        "Edge cases",
+        "Integration",
+        "Documentation examples"
+      ]
+    }
+  },
+  "recent_progress": {
+    "tests_added_last_month": 1730,
+    "coverage_improvement": "+72.5%",
+    "commits_with_tests": 53
+  }
+}
