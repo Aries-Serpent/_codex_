@@ -439,12 +439,19 @@ precision = 2
 # Target coverage: 100% (see docs/COVERAGE_ROADMAP_TO_100_PERCENT.md)
 # The gap is due to xdist worker crashes and test discovery issues.
 #
+# ============================================================================
+# COVERAGE THRESHOLD - SINGLE SOURCE OF TRUTH
+# ============================================================================
+# This pyproject.toml setting is the authoritative coverage threshold.
+# All other tools (.coveragerc, pytest.ini) defer to this configuration.
+#
 # TODO: Restore threshold incrementally as coverage improves:
-# - Phase 14.1: Raise to 30% (target: 2026-02-01)
-# - Phase 14.2: Raise to 50% (target: 2026-02-15)
-# - Phase 14.3: Raise to 70% (target: 2026-03-01)
-# - Phase 14.4: Raise to 85% (target: 2026-03-15)
-# - Phase 15+: Raise to 100% (target: 2026-04-01)
+# See .codex/plans/COVERAGE_THRESHOLD_ROADMAP.md for detailed plan
+# - Phase 21: 0% (current - permissive during migration)
+# - Phase 23: Raise to 30% (target: 2026-02-15)
+# - Phase 24: Raise to 50% (target: 2026-03-01)
+# - Phase 25: Raise to 70% (target: 2026-03-15)
+# - Phase 26+: Raise to 100% (aspirational: 2026-04-01)
 # Owner: @mbaetiong
 fail_under = 0
 exclude_lines = [
