@@ -5,6 +5,7 @@ Implements pattern storage, retrieval, and learning from triage outcomes.
 Stores patterns in cognitive brain and tracks remediation success rates.
 """
 
+import copy
 import hashlib
 import json
 import logging
@@ -12,7 +13,7 @@ from collections import defaultdict
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, NamedTuple
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,14 @@ class FailurePattern:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
+
+
+# Type alias for migration plan entries
+class MigrationEntry(NamedTuple):
+    """Entry in the migration plan mapping legacy ID to new ID."""
+    legacy_id: str
+    content_id: str
+    pattern: FailurePattern
 
 
 class PatternLearner:
@@ -291,7 +300,7 @@ class PatternLearner:
         """
         migrations: Dict[str, str] = {}
         # Phase 0: build migration plan without modifying original pattern objects
-        migration_plan: List[tuple[str, str, FailurePattern]] = []
+        migration_plan: List[MigrationEntry] = []
         for legacy_id, original_pattern in list(self.patterns.items()):
             # Generate new ID without registering to avoid side effects during planning
             content_id = self._generate_pattern_id(
@@ -304,27 +313,26 @@ class PatternLearner:
                 continue
             
             # Create a copy of the pattern with updated ID and legacy alias
-            import copy
             pattern_copy = copy.deepcopy(original_pattern)
             if legacy_id not in pattern_copy.legacy_ids:
                 pattern_copy.legacy_ids.append(legacy_id)
             pattern_copy.pattern_id = content_id
             
-            migration_plan.append((legacy_id, content_id, pattern_copy))
+            migration_plan.append(MigrationEntry(legacy_id, content_id, pattern_copy))
 
         if not migration_plan:
             return migrations
 
         # Phase 1: write new pattern files. If any write fails, abort without deleting legacy files.
         write_failed = False
-        for legacy_id, content_id, pattern_copy in migration_plan:
-            pattern_file = self.patterns_dir / f"{content_id}.json"
+        for entry in migration_plan:
+            pattern_file = self.patterns_dir / f"{entry.content_id}.json"
             try:
                 with open(pattern_file, "w") as f:
-                    json.dump(pattern_copy.to_dict(), f, indent=2)
+                    json.dump(entry.pattern.to_dict(), f, indent=2)
                 logger.info(f"Wrote migrated pattern to {pattern_file}")
             except Exception as e:
-                logger.error(f"Failed to write migrated pattern {content_id}: {e}")
+                logger.error(f"Failed to write migrated pattern {entry.content_id}: {e}")
                 write_failed = True
                 break
         
@@ -333,14 +341,18 @@ class PatternLearner:
             return {}
         
         # Phase 2: Update in-memory mappings and delete legacy files only after successful writes
-        for legacy_id, content_id, pattern_copy in migration_plan:
+        for entry in migration_plan:
             # Now register the new pattern signature and update in-memory structures
-            self._register_pattern_signature(content_id, pattern_copy.failure_type, pattern_copy.root_cause)
-            self.patterns.pop(legacy_id, None)
-            self.patterns[content_id] = pattern_copy
-            migrations[legacy_id] = content_id
-            self._legacy_id_map[legacy_id] = content_id
-            legacy_file = self.patterns_dir / f"{legacy_id}.json"
+            self._register_pattern_signature(
+                entry.content_id, 
+                entry.pattern.failure_type, 
+                entry.pattern.root_cause
+            )
+            self.patterns.pop(entry.legacy_id, None)
+            self.patterns[entry.content_id] = entry.pattern
+            migrations[entry.legacy_id] = entry.content_id
+            self._legacy_id_map[entry.legacy_id] = entry.content_id
+            legacy_file = self.patterns_dir / f"{entry.legacy_id}.json"
             if legacy_file.exists():
                 try:
                     legacy_file.unlink()
