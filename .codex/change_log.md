@@ -517,3 +517,10 @@ All Phase 11.x objectives have been completed, building on the successful QA wal
 - Improved module importability across space_traversal utilities
 - Detector scoring more consistent and deterministic
 - Optional dependencies handled gracefully without import failures
+
+### 2026-01-20
+
+- Updated CI workflow dependency pinning to resolve pytest-cov/coverage conflict and added Codecov token reference.
+- Added cognitive brain entry documenting the dependency conflict resolution plan.
+- Added path-to-100% coverage planset for CI dependency fixes and artifact restoration.
+- Added dependency conflict agent documentation and registered it in agent listings.

@@ -455,3 +455,15 @@ Supporting files:
 ---
 
 *Updated: 2026-01-19 (Phase 20 patchset integration)*
+
+### 2026-01-20
+
+| Component | Change | Status |
+|-----------|--------|--------|
+| test-comprehensive.yml | coverage pin updated + Codecov token reference | ✅ |
+| test-rag.yml | codecov-action v5 + token reference | ✅ |
+| Cognitive Brain | PYTEST_FIX_2026_01_20.md added | ✅ |
+| Plansets | path_100 dependency coverage fix | ✅ |
+| Agents | dependency-conflict-agent registered | ✅ |
+
+*Updated: 2026-01-20 (CI dependency conflict remediation)*
