@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Batch triage pattern IDs**: replaced MD5-based pattern identifiers with SHA-256 (64-bit prefix) and added legacy alias support, collision detection, and migration mapping output for batch triage patterns.
+
 ### Added - Phase 14-18: Comprehensive Test Coverage (2026-01-18)
 
 **1300+ tests created across 60+ test files:**

@@ -1,11 +1,8 @@
-"""
-Test Schema Compat
-
-Test module for schema compat.
-"""
-
 #!/usr/bin/env python3
-"""Schema round-trip tests for the evaluation runner (NDJSON/CSV)."""
+"""Test Schema Compat
+
+Schema round-trip tests for the evaluation runner (NDJSON/CSV).
+"""
 
 from __future__ import annotations
 
