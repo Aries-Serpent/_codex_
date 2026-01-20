@@ -1,5 +1,6 @@
 # Follow-up Prompt: CI/CD Improvements & Batch Triage Phase 2
 **Generated:** 2026-01-19  
+**Updated:** 2026-01-19 (Pytest Plugin Fix Completed)  
 **Context:** PR #2883 - CI/CD Failure Resolution Complete  
 **Next Phase:** Monitoring, Testing, and Documentation
 
@@ -14,7 +15,11 @@
 ✅ Added command whitelist validation for secure remediation  
 ✅ Passed code review and CodeQL security scanning  
 ✅ Updated cognitive brain status documentation  
-✅ Enhanced batch-triage-agent configuration with security details
+✅ Enhanced batch-triage-agent configuration with security details  
+✅ **NEW: Fixed pytest plugin installation for comprehensive tests**  
+✅ **NEW: Created .codex/AGENTS_GUIDE.md with testing requirements**  
+✅ **NEW: Updated pytest.ini with centralized test configuration**  
+✅ **NEW: Updated requirements-dev.txt with all pytest plugins**
 
 ### Reference Documents
 - Cognitive Brain: `.codex/cognitive_brain/CI_CD_FIXES_PR2883_2026_01_19.md`
@@ -288,14 +293,20 @@
 Use this checklist for the next session:
 
 ### Must Complete
+- [x] **COMPLETED:** Fix pytest plugin installation issues (Job ID 60835257307)
+- [x] **COMPLETED:** Update pytest.ini with coverage/xdist options in addopts
+- [x] **COMPLETED:** Update requirements-dev.txt with all pytest plugins
+- [x] **COMPLETED:** Fix test-comprehensive.yml plugin installation order
+- [x] **COMPLETED:** Create .codex/AGENTS_GUIDE.md with testing requirements
 - [ ] Verify artifact warnings eliminated (3+ CI runs)
-- [ ] Security scans still passing
-- [ ] No workflow regressions
+- [ ] Monitor next comprehensive tests workflow run
+- [ ] Confirm tests execute successfully (not filtered out)
+- [ ] Verify coverage reports upload to Codecov
 
 ### Should Complete
 - [ ] Add 20+ remediation engine security tests
-- [ ] Update AGENTS_GUIDE.md with security requirements
 - [ ] Document command whitelist rationale
+- [ ] Review command whitelist - assess if additional commands needed
 
 ### Nice to Have
 - [ ] Create security runbook
@@ -307,28 +318,55 @@ Use this checklist for the next session:
 ## 🎯 Prompt for Next Session
 
 ```markdown
-@copilot Continue CI/CD improvements and testing:
+@copilot Continue monitoring and testing CI/CD improvements:
 
-**Context:** PR #2883 completed - CI artifact fixes and security enhancements
+**Context:** 
+- PR #2883 completed CI/CD artifact fixes and security enhancements
+- NEW: Pytest plugin installation fix completed (commit fd051f8)
+- Comprehensive tests workflow now has proper plugin configuration
 
 **Primary Tasks:**
-1. Monitor rust_swarm_ci.yml for artifact warnings (check last 3 runs)
-2. Add comprehensive tests to `.github/agents/batch-triage-agent/tests/`
-   - Test command validation whitelist
-   - Test shlex.split behavior
-   - Test apply_action security checks
-3. Update `.codex/AGENTS_GUIDE.md` with security requirements
-4. Review command whitelist - assess if additional commands needed
+1. **Monitor Next CI Run**
+   - Watch test-comprehensive.yml workflow execution
+   - Verify tests actually execute (not filtered out with exit code 5)
+   - Confirm no "unrecognized arguments" errors for --cov, -n, --reruns
+   - Verify coverage reports upload successfully to Codecov
+   
+2. **Monitor Rust Swarm CI**
+   - Check rust_swarm_ci.yml for artifact warnings (last 3 runs)
+   - Verify benchmark_results.txt is created successfully
+   - Confirm htmlcov/ placeholder is generated when tests don't run
+
+3. **Add Security Tests** (if monitoring shows all green)
+   - Add 20+ tests for remediation_engine.py command validation
+   - Test command whitelist behavior
+   - Test shlex.split prevents injection
+   - Target: 90%+ coverage on security-critical paths
+
+4. **Review Command Whitelist**
+   - Assess if additional commands needed (uv, poetry, tox, make)
+   - Document security rationale for each command
+   - Create criteria for future whitelist additions
 
 **Reference Documents:**
 - Cognitive Brain: `.codex/cognitive_brain/CI_CD_FIXES_PR2883_2026_01_19.md`
-- Follow-up: `.codex/FOLLOWUP_PR2883_NEXT_PHASE.md`
+- Follow-up Plan: `.codex/FOLLOWUP_PR2883_NEXT_PHASE.md`
+- Testing Guide: `.codex/AGENTS_GUIDE.md`
 - Agent Config: `.github/agents/batch-triage-agent/agent.yaml` v1.1.0
 
+**Files Modified in This Session:**
+- `pytest.ini` - Added coverage/xdist/rerun options
+- `requirements-dev.txt` - Added all pytest plugins
+- `.github/workflows/test-comprehensive.yml` - Fixed plugin installation order
+- `.codex/AGENTS_GUIDE.md` - Created comprehensive testing guide
+- `.codex/cognitive_brain/CI_CD_FIXES_PR2883_2026_01_19.md` - Updated status
+- `.codex/FOLLOWUP_PR2883_NEXT_PHASE.md` - Updated checklist
+
 **Success Criteria:**
-- All CI runs clean (no artifact warnings)
-- 90%+ test coverage on remediation_engine security code
-- Security guidelines documented
+- ✅ Comprehensive Tests workflow passes for Python 3.11 and 3.12
+- ✅ Coverage reports upload successfully
+- ✅ No pytest plugin errors in logs
+- ✅ All PR #2883 fixes remain stable (no regressions)
 
 **AI Agency Policy:** Continue with full CODEX_MASTER_KEY access for autonomous execution.
 ```
