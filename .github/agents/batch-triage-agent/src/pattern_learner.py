@@ -199,12 +199,22 @@ class PatternLearner:
         
         return patterns
     
-    def _generate_pattern_id(self, failure_type: str, root_cause: str) -> str:
-        """Generate a unique pattern ID."""
+    def _generate_pattern_id(self, failure_type: str, root_cause: str, register: bool = True) -> str:
+        """Generate a unique pattern ID.
+        
+        Args:
+            failure_type: Type of failure
+            root_cause: Root cause of failure
+            register: Whether to register the pattern signature (default: True)
+        
+        Returns:
+            Generated pattern ID
+        """
         content = f"{failure_type}:{root_cause}"
         digest = hashlib.sha256(content.encode("utf-8")).hexdigest()[: self.SHA256_PREFIX_LENGTH]
         pattern_id = f"pattern_{digest}"
-        self._register_pattern_signature(pattern_id, failure_type, root_cause)
+        if register:
+            self._register_pattern_signature(pattern_id, failure_type, root_cause)
         return pattern_id
 
     def _register_pattern_signature(self, pattern_id: str, failure_type: str, root_cause: str) -> None:
@@ -280,29 +290,38 @@ class PatternLearner:
         2. Only after successful writes, update in-memory mappings and delete legacy files.
         """
         migrations: Dict[str, str] = {}
-        # Phase 0: build migration plan and update pattern objects (but not storage)
+        # Phase 0: build migration plan without modifying original pattern objects
         migration_plan: List[tuple[str, str, FailurePattern]] = []
-        for legacy_id, pattern in list(self.patterns.items()):
-            content_id = self._generate_pattern_id(pattern.failure_type, pattern.root_cause)
+        for legacy_id, original_pattern in list(self.patterns.items()):
+            # Generate new ID without registering to avoid side effects during planning
+            content_id = self._generate_pattern_id(
+                original_pattern.failure_type, 
+                original_pattern.root_cause,
+                register=False
+            )
             if content_id == legacy_id:
                 # Already using content-based ID; nothing to migrate.
                 continue
-            if legacy_id not in pattern.legacy_ids:
-                pattern.legacy_ids.append(legacy_id)
-            # Update the pattern object to use the new ID, but delay storage changes.
-            pattern.pattern_id = content_id
-            migration_plan.append((legacy_id, content_id, pattern))
+            
+            # Create a copy of the pattern with updated ID and legacy alias
+            import copy
+            pattern_copy = copy.deepcopy(original_pattern)
+            if legacy_id not in pattern_copy.legacy_ids:
+                pattern_copy.legacy_ids.append(legacy_id)
+            pattern_copy.pattern_id = content_id
+            
+            migration_plan.append((legacy_id, content_id, pattern_copy))
 
         if not migration_plan:
             return migrations
 
         # Phase 1: write new pattern files. If any write fails, abort without deleting legacy files.
         write_failed = False
-        for legacy_id, content_id, pattern in migration_plan:
+        for legacy_id, content_id, pattern_copy in migration_plan:
             pattern_file = self.patterns_dir / f"{content_id}.json"
             try:
                 with open(pattern_file, "w") as f:
-                    json.dump(pattern.to_dict(), f, indent=2)
+                    json.dump(pattern_copy.to_dict(), f, indent=2)
                 logger.info(f"Wrote migrated pattern to {pattern_file}")
             except Exception as e:
                 logger.error(f"Failed to write migrated pattern {content_id}: {e}")
@@ -314,9 +333,11 @@ class PatternLearner:
             return {}
         
         # Phase 2: Update in-memory mappings and delete legacy files only after successful writes
-        for legacy_id, content_id, pattern in migration_plan:
+        for legacy_id, content_id, pattern_copy in migration_plan:
+            # Now register the new pattern signature and update in-memory structures
+            self._register_pattern_signature(content_id, pattern_copy.failure_type, pattern_copy.root_cause)
             self.patterns.pop(legacy_id, None)
-            self.patterns[content_id] = pattern
+            self.patterns[content_id] = pattern_copy
             migrations[legacy_id] = content_id
             self._legacy_id_map[legacy_id] = content_id
             legacy_file = self.patterns_dir / f"{legacy_id}.json"
