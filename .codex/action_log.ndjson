@@ -131,3 +131,8 @@
 {"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_crawler_services.py","summary":"Added crawler service integration tests."}
 {"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"updated","path":".codex/smoke/import_check.py","summary":"Updated smoke import check to load repo root and sitecustomize stubs."}
 {"timestamp": "2026-01-20T06:07:00Z", "actor": "assistant", "action": "updated", "path": "AGENTS.md", "summary": "Added Coverage Gapfill Agent to specialized agents table."}
+{"timestamp":"2026-01-20T12:45:00Z","action":"create_critical_path_tests","phase":"25_week1","component":"authentication","file":"tests/critical_path/test_auth_flows.py","test_count":28,"status":"complete"}
+{"timestamp":"2026-01-20T12:46:00Z","action":"create_critical_path_tests","phase":"25_week1","component":"authorization","file":"tests/critical_path/test_authorization.py","test_count":33,"status":"complete"}
+{"timestamp":"2026-01-20T12:48:00Z","action":"create_critical_path_tests","phase":"25_week1","component":"persistence","file":"tests/critical_path/test_persistence.py","test_count":26,"status":"complete"}
+{"timestamp":"2026-01-20T12:49:00Z","action":"create_critical_path_tests","phase":"25_week1","component":"monitoring","file":"tests/critical_path/test_monitoring.py","test_count":36,"status":"complete"}
+{"timestamp":"2026-01-20T12:50:00Z","action":"phase_25_week1_completion","total_tests":123,"coverage_target":"70%","status":"complete"}
