@@ -51,13 +51,111 @@ This document provides comprehensive documentation for all secrets and environme
 
 #### `CODECOV_TOKEN`
 - **Purpose**: Upload coverage reports to Codecov
-- **Used In**: `rust_swarm_ci.yml`
-- **Required**: No (workflow continues without it)
+- **Format**: Codecov repository upload token
+- **Used In**: 
+  - `test-comprehensive.yml`
+  - `test-rag.yml`
+  - `rust_swarm_ci.yml`
+  - `auth-tests.yml`
+- **Security Level**: MEDIUM - Rotate as needed via Codecov dashboard
+- **Required**: No (workflow continues without it, but coverage won't upload)
+- **Note**: Updated to codecov-action@v5 requiring explicit token
 
-#### `NOTEBOOKLM_API_KEY`
-- **Purpose**: NotebookLM integration for documentation sync
+#### `SESSION_ENCRYPTION_KEY`
+- **Purpose**: Encrypt session data for secure storage
+- **Format**: Base64-encoded Fernet key
+- **Used In**: `auth-secret-rotation.yml`
+- **Generation**: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`
+- **Security Level**: HIGH - Rotate every 90 days
+- **Required**: Yes (for session security features)
+
+#### `ENABLE_LIVE_TESTS`
+- **Purpose**: Feature flag to enable live integration tests
+- **Format**: Boolean string ("true" or "false")
+- **Used In**: `integration-gated.yml`
+- **Security Level**: LOW (configuration flag)
+- **Required**: No (defaults to false)
+
+### Third-Party Integration Secrets
+
+#### `NOTEBOOKLM_WEBHOOK_URL`
+- **Purpose**: NotebookLM webhook URL for documentation sync
+- **Format**: HTTPS webhook URL
 - **Used In**: `notebooklm-sync.yml`
+- **Security Level**: LOW - Regenerate webhook as needed
 - **Required**: No (sync skipped if not available)
+
+#### `GOOGLE_CLIENT_SECRET`
+- **Purpose**: Google OAuth client secret for API access
+- **Format**: Google OAuth 2.0 client secret
+- **Used In**: `notebooklm-sync.yml`
+- **Security Level**: MEDIUM - Rotate every 180 days
+- **Required**: No (for Google Drive integration features)
+
+#### `GDRIVE_SERVICE_ACCOUNT_JSON`
+- **Purpose**: Google Drive service account credentials
+- **Format**: JSON key file content (base64 or raw JSON)
+- **Used In**: `notebooklm-sync.yml`
+- **Security Level**: MEDIUM - Rotate annually
+- **Required**: No (for automated Drive operations)
+
+#### `GITHUB_OAUTH_CLIENT_ID`
+- **Purpose**: GitHub OAuth app client ID (public identifier)
+- **Format**: 20-character hex string
+- **Used In**: `auth-oauth-app-sync.yml`
+- **Security Level**: LOW (public identifier, not secret)
+- **Required**: Yes (for OAuth flow)
+
+#### `GITHUB_OAUTH_CLIENT_SECRET`
+- **Purpose**: GitHub OAuth app client secret
+- **Format**: 40-character hex string
+- **Used In**: 
+  - `auth-oauth-app-sync.yml`
+  - `auth-secret-rotation.yml`
+- **Generation**: Via GitHub OAuth App settings
+- **Security Level**: HIGH - Rotate every 180 days
+- **Required**: Yes (for OAuth authentication)
+
+### AWS Integration Secrets
+
+#### `AWS_ACCESS_KEY_ID`
+- **Purpose**: AWS IAM access key ID (public identifier)
+- **Format**: 20-character uppercase alphanumeric
+- **Used In**: `zendesk-knowledge-sync.yml`
+- **Security Level**: LOW (public identifier, paired with SECRET)
+- **Required**: Yes (for AWS S3/service access)
+
+#### `AWS_SECRET_ACCESS_KEY`
+- **Purpose**: AWS IAM secret access key
+- **Format**: 40-character base64-encoded string
+- **Used In**: `zendesk-knowledge-sync.yml`
+- **Generation**: Via AWS IAM Console
+- **Security Level**: HIGH - Rotate every 90 days
+- **Required**: Yes (for AWS authentication)
+
+### Zendesk Integration Secrets
+
+#### `ZENDESK_TOKEN`
+- **Purpose**: Zendesk API authentication token
+- **Format**: Zendesk API token string
+- **Used In**: `zendesk-knowledge-sync.yml`
+- **Generation**: Via Zendesk Admin → API settings
+- **Security Level**: MEDIUM - Rotate annually
+- **Required**: Yes (for knowledge base sync)
+
+#### `ZENDESK_USER`
+- **Purpose**: Zendesk account email for API authentication
+- **Format**: Email address
+- **Used In**: `zendesk-knowledge-sync.yml`
+- **Security Level**: LOW (username, public)
+- **Required**: Yes (paired with ZENDESK_TOKEN)
+
+#### `ZENDESK_URL`
+- **Purpose**: Zendesk instance URL
+- **Format**: HTTPS URL (e.g., https://company.zendesk.com)
+- **Used In**: `zendesk-knowledge-sync.yml`
+- **Security Level**: LOW (public URL)
+- **Required**: Yes (to specify Zendesk instance)
 
 ## Environment Variables
 
@@ -143,22 +241,36 @@ permissions:
 
 ### Secret Rotation Schedule
 
-| Secret | Rotation Frequency | Method |
-|--------|-------------------|--------|
-| `CODEX_MASTER_KEY` | Every 90 days | Manual via GitHub UI |
-| `COMPLIANCE_REPORT_KEY` | Every 90 days | Manual via GitHub UI |
-| `TOKEN_SECRET_KEY` | Monthly | Automated workflow |
-| GitHub Secrets | Monthly | Automated workflow |
+Comprehensive rotation schedule with all 17 secrets: **[.codex/security/rotation_schedule.md](.codex/security/rotation_schedule.md)**
+
+| Secret Category | Examples | Rotation Frequency | Method |
+|----------------|----------|-------------------|--------|
+| **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 days (JWT: monthly) | Manual / Automated workflow |
+| **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 days | Manual via service provider |
+| **Medium Priority** | `CODECOV_TOKEN`, `ZENDESK_TOKEN`, `GOOGLE_CLIENT_SECRET` | Annually or as needed | Manual via service dashboard |
+| **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL` | N/A or with paired secret | GitHub auto / Manual |
+
+### Secrets Usage Matrix
+
+Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_matrix.json](.codex/security/secrets_usage_matrix.json)**
+
+**Summary**:
+- Total Secrets: 17
+- Total Workflows: 86
+- Secret References: 107
+- Most Used: `GITHUB_TOKEN` (20 workflows)
+- Newly Documented: `SESSION_ENCRYPTION_KEY`, `ENABLE_LIVE_TESTS`, AWS/Zendesk/Google integration secrets
 
 ### Secret Management Guidelines
 
 1. **Never commit secrets** to the repository
 2. **Use environment-specific secrets** for dev/staging/prod
-3. **Rotate compromised secrets immediately**
+3. **Rotate compromised secrets immediately** (see emergency procedures in rotation_schedule.md)
 4. **Audit secret access** via GitHub audit logs
 5. **Use least privilege** for workflow permissions
 6. **Document all secrets** in this file
 7. **Test rotation procedures** regularly
+8. **Review usage matrix** monthly for unauthorized secret sprawl
 
 ### MFA and Authentication
 
@@ -231,9 +343,13 @@ The MFA enrollment automation (`scripts/mfa_enrollment_automation.py`) generates
 | 2026-01-16 | Initial documentation created | @copilot |
 | 2026-01-16 | Added COMPLIANCE_REPORT_KEY documentation | @copilot |
 | 2026-01-16 | Documented MFA credential handling | @copilot |
+| 2026-01-20 | **Phase 22 Secrets Audit Complete**: Added 11 undocumented secrets (SESSION_ENCRYPTION_KEY, ENABLE_LIVE_TESTS, AWS, Zendesk, Google integrations) | @copilot |
+| 2026-01-20 | Created secrets usage matrix (.codex/security/secrets_usage_matrix.json) mapping 17 secrets across 86 workflows | @copilot |
+| 2026-01-20 | Created comprehensive rotation schedule (.codex/security/rotation_schedule.md) with emergency procedures | @copilot |
+| 2026-01-20 | Updated CODECOV_TOKEN documentation for v5 migration (4 workflows) | @copilot |
 
 ---
 
-**Last Updated**: 2026-01-16  
+**Last Updated**: 2026-01-20  
 **Maintainer**: @mbaetiong  
 **Review Frequency**: Quarterly
