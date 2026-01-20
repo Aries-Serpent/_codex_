@@ -446,7 +446,7 @@ After execution, update:
 1. `docs/testing/phase_4_1_validation_report.md` - Add actual coverage results
 2. `docs/testing/phase_4_execution_strategy.md` - Update with findings
 3. `docs/testing/phase_4_3_completion_report.md` - Add validation section
-4. `.codex/qa_walkthrough/coverage_analysis.json` - Update baseline
+4. `https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json` - Update baseline
 
 ---
 

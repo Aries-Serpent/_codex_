@@ -49,6 +49,8 @@ load_jsonl = _core.load_jsonl
 load_csv = _core.load_csv
 compute_file_checksum = _core.compute_file_checksum
 Sample = _core.Sample
+_resolve_connector_cache_root = _core._resolve_connector_cache_root
+_materialize_connector_uri = _core._materialize_connector_uri
 
 
 def _resolve_loader(loader_entry: Callable) -> Callable:
@@ -159,13 +161,6 @@ __all__ = [
     "load_csv",
     "compute_file_checksum",
     "Sample",
-]
-
-
-__all__ = [
-    "load_dataset",
-    "register_loader",
-    "load_parquet",
-    "load_arrow",
-    "load_hdf5",
+    "_resolve_connector_cache_root",
+    "_materialize_connector_uri",
 ]

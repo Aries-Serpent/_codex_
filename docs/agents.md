@@ -59,7 +59,7 @@ As of 2025-12-16:
 Activate comprehensive task completion mode with:
 - `Enable CTEP` or `CTEP Mode: ON` or `Task mode: ON`
 
-See `.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
+See `https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
 
 ## Prohibited actions
 
@@ -97,5 +97,5 @@ See Hydra's docs for background on defaults lists and composition order.
 
 ## Related Documentation
 
-- [CTEP Protocol](/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
+- [CTEP Protocol](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
 - [CHANGELOG](CHANGELOG.md) - Version history

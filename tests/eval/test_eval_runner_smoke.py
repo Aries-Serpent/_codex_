@@ -1,11 +1,8 @@
-"""
-Test Eval Runner Smoke
-
-Test module for eval runner smoke.
-"""
-
 #!/usr/bin/env python3
-"""CLI smoke tests for the evaluation runner (Typer app)."""
+"""Test Eval Runner Smoke
+
+CLI smoke tests for the evaluation runner (Typer app).
+"""
 
 from __future__ import annotations
 

@@ -29,19 +29,17 @@ Last Updated: 2026-01-16
 """
 
 
-"""
-Deterministic Inference Pipeline Runner (v1.0.2)
-
-Production hardening:
- - Ensure importlib is imported for dynamic preprocessor overrides.
- - Token cache key includes model_hash, tokenizer identity, max_input_length, and preprocessor override identifier.
- - Safe tokenizer identity extraction (fallbacks).
- - Use context["tokenizer"] in inference stage (no NameError).
- - Keep strict offline default via WANDB_MODE=offline; add --allow-online hidden flag for test harnesses.
-"""
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
+
+# Deterministic Inference Pipeline Runner (v1.0.2)
+# Production hardening:
+#  - Ensure importlib is imported for dynamic preprocessor overrides.
+#  - Token cache key includes model_hash, tokenizer identity, max_input_length, and preprocessor override identifier.
+#  - Safe tokenizer identity extraction (fallbacks).
+#  - Use context["tokenizer"] in inference stage (no NameError).
+#  - Keep strict offline default via WANDB_MODE=offline; add --allow-online hidden flag for test harnesses.
 
 import argparse
 import hashlib
