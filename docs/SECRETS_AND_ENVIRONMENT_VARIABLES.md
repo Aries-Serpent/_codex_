@@ -241,7 +241,7 @@ permissions:
 
 ### Secret Rotation Schedule
 
-Comprehensive rotation schedule with all 17 secrets: **[.codex/security/rotation_schedule.md](.codex/security/rotation_schedule.md)**
+Comprehensive rotation schedule with all 17 secrets: **[.codex/security/rotation_schedule.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)**
 
 | Secret Category | Examples | Rotation Frequency | Method |
 |----------------|----------|-------------------|--------|
@@ -252,7 +252,7 @@ Comprehensive rotation schedule with all 17 secrets: **[.codex/security/rotation
 
 ### Secrets Usage Matrix
 
-Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_matrix.json](.codex/security/secrets_usage_matrix.json)**
+Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_matrix.json](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json)**
 
 **Summary**:
 - Total Secrets: 17
@@ -265,7 +265,7 @@ Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_m
 
 1. **Never commit secrets** to the repository
 2. **Use environment-specific secrets** for dev/staging/prod
-3. **Rotate compromised secrets immediately** (see emergency procedures in rotation_schedule.md)
+3. **Rotate compromised secrets immediately** (see emergency procedures in https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)
 4. **Audit secret access** via GitHub audit logs
 5. **Use least privilege** for workflow permissions
 6. **Document all secrets** in this file

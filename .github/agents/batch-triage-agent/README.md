@@ -124,6 +124,16 @@ pytest .github/agents/batch-triage-agent/tests/test_pattern_learner.py -v
 pytest .github/agents/batch-triage-agent/tests/ --cov=.github/agents/batch-triage-agent/src
 ```
 
+## Migration
+
+To migrate legacy MD5-based pattern IDs to SHA-256 IDs while preserving aliases, run:
+
+```bash
+python .github/agents/batch-triage-agent/scripts/pattern_id_migration.py \
+  --kb-path .codex/cognitive_brain \
+  --output .codex/cognitive_brain/patterns/ci_failures/pattern_id_migration.json
+```
+
 ## Key Performance Indicators
 
 - **Triage Time**: < 5 minutes per batch
@@ -133,6 +143,11 @@ pytest .github/agents/batch-triage-agent/tests/ --cov=.github/agents/batch-triag
 - **Stakeholder Satisfaction**: > 4.0/5.0
 
 ## Changelog
+
+### Version 1.1.0 (2026-01-20)
+- Hardened pattern IDs with SHA-256 (64-bit prefix) and legacy alias support
+- Added collision detection for pattern identifiers
+- Added migration map output for legacy pattern IDs
 
 ### Version 1.0.0 (2026-01-19)
 - Initial release
