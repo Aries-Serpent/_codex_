@@ -42,7 +42,7 @@ def extract_code_elements(filepath: str) -> ModuleInfo:
                 info.methods[node.name] = methods
             elif isinstance(node, ast.FunctionDef):
                 # Only top-level functions
-                if isinstance(node, ast.FunctionDef) and node.col_offset == 0:
+                if node.col_offset == 0:
                     info.functions.append(node.name)
                     
     except Exception as e:
