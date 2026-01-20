@@ -53,13 +53,14 @@ def sanitize_log_input(value: Any, max_length: int = 500) -> str:
     # Convert to string
     str_value = str(value)
     
+    # Remove ANSI escape codes (terminal color codes, etc.) before stripping control chars
+    sanitized = re.sub(r'\x1b\[[0-9;]*m', '', str_value)
+    sanitized = re.sub(r'\[[0-9;]*m', '', sanitized)
+
     # Remove control characters (newlines, tabs, etc.)
     # \\x00-\\x1f: C0 control characters
     # \\x7f-\\x9f: DEL and C1 control characters
-    sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', str_value)
-    
-    # Remove ANSI escape codes (terminal color codes, etc.)
-    sanitized = re.sub(r'\x1b\[[0-9;]*m', '', sanitized)
+    sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', sanitized)
     
     # Truncate to max length
     if len(sanitized) > max_length:

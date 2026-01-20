@@ -467,7 +467,22 @@ Supporting files:
 | Agents | dependency-conflict-agent registered | ✅ |
 | Plansets | path_100 Phase 23-25 continuation plan added | ✅ |
 | Agents | Coverage Roadmap Agent created (10KB spec) | ✅ |
-| Tests | Phase 23 Week 1: 146 unit tests delivered via task agent | ✅ |
+| Tests | Phase 23 Week 1: 20 CLI/data unit tests added | ✅ |
 | Plansets | path_100 Phase 23 Week 1 completion report | ✅ |
+| Tests | Phase 23 Week 2: 15 integration tests added | ✅ |
+| Plansets | path_100 Phase 23 Week 2 completion report | ✅ |
+| Tests | Phase 23 Week 3: 38 utils gapfill tests added | ✅ |
+| Plansets | path_100 Phase 23 Week 3 completion report | ✅ |
+| Coverage | fail_under raised to 70 in pyproject.toml | ✅ |
+| Agents | coverage-gapfill-agent registered | ✅ |
+| Tests | Phase 24: 47 integration/workflow/E2E/service tests added | ✅ |
+| Plansets | path_100 Phase 24 integration/workflow plan | ✅ |
+| Tooling | pytest.ini: removed xdist/reruns, added --cov-fail-under=70 | ✅ |
+| Tooling | sitecustomize.py: added hydra/mlflow/logging stubs | ✅ |
+| Fixes | crawler imports + log sanitizer + noxfile + modeling | ✅ |
+| Tooling | smoke import check: loads repo root/sitecustomize | ✅ |
+| Fixtures | mock_classification.tsv + workflow_classification.tsv | ✅ |
 
-*Updated: 2026-01-20 (Phase 23 Week 1 execution complete)*
+**Total Tests Added**: ~120 tests across Phases 23-24 (unit, integration, E2E, service).
+
+*Updated: 2026-01-20 (Phase 23-24 comprehensive patchset applied, coverage threshold raised to 70%)*

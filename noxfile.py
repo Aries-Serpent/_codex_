@@ -176,7 +176,7 @@ def _dependency_plan(session: nox.Session) -> None:
     session.log(f"[plan] wrote {out_file}")
 
 
-def _toml_fail_under_from_str(text: str) -> int | None:
+def _toml_fail_under_from_str(text: str) -> str | None:
     try:
         data = tomllib.loads(text)
     except (tomllib.TOMLDecodeError, ValueError, KeyError) as e:
@@ -185,7 +185,7 @@ def _toml_fail_under_from_str(text: str) -> int | None:
     report = data.get("tool", {}).get("coverage", {}).get("report", {})
     value = report.get("fail_under")
     if isinstance(value, int):
-        return int(value)
+        return str(value)
     return None
 
 

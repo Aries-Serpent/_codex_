@@ -98,3 +98,35 @@
 {"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0421_phase23-week1-completion.md","summary":"Documented Phase 23 Week 1 completion report with 146 tests delivered."}
 {"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"updated","path":".codex/change_log.md","summary":"Logged Phase 23 Week 1 execution and continuation plan additions."}
 {"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"updated","path":".codex/results.md","summary":"Recorded Phase 23 Week 1 test delivery and planset status entries."}
+{"timestamp":"2026-01-20T04:11:13Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0410_phase23-25-execution.md","summary":"Added best-effort path-to-100% coverage continuation plan for Phases 23-25."}
+{"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"created","path":"tests/unit/cli/test_cli_argument_parsing.py","summary":"Added unit tests for CLI argument parsing and trainer wiring."}
+{"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"created","path":"tests/unit/data/test_data_splits.py","summary":"Added unit tests for data split utilities and dataset parsing."}
+{"timestamp":"2026-01-20T04:21:31Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0421_phase23-week1-cli-data-tests.md","summary":"Documented Phase 23 Week 1 CLI/data unit test plan completion."}
+{"timestamp":"2026-01-20T04:26:26Z","actor":"assistant","action":"created","path":"tests/integration/cli/test_cli_pipeline_integration.py","summary":"Added CLI pipeline integration tests for Phase 23 Week 2."}
+{"timestamp":"2026-01-20T04:26:26Z","actor":"assistant","action":"created","path":"tests/integration/data_pipeline/test_data_pipeline_integration.py","summary":"Added data pipeline integration tests for Phase 23 Week 2."}
+{"timestamp":"2026-01-20T04:26:26Z","actor":"assistant","action":"created","path":"tests/fixtures/data/mock_classification.tsv","summary":"Added deterministic TSV fixture for integration tests."}
+{"timestamp":"2026-01-20T04:26:26Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0426_phase23-week2-integration.md","summary":"Documented Phase 23 Week 2 integration test completion."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":"tests/unit/utils/test_sanitize_utils.py","summary":"Added unit tests for sanitize_prompt gapfill."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":"tests/unit/utils/test_log_sanitizer_utils.py","summary":"Added unit tests for log_sanitizer gapfill."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":"tests/unit/utils/test_sensitive_data_utils.py","summary":"Added unit tests for sensitive_data gapfill."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":"tests/unit/utils/test_error_logging_utils.py","summary":"Added unit tests for error_logging gapfill."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":"tests/integration/utils/test_logging_sanitization_integration.py","summary":"Added integration tests for sanitization pipeline."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"updated","path":"pyproject.toml","summary":"Raised coverage fail_under threshold to 70."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0433_phase23-week3-gapfill.md","summary":"Documented Phase 23 Week 3 gapfill plan."}
+{"timestamp":"2026-01-20T04:34:30Z","actor":"assistant","action":"created","path":".github/agents/coverage-gapfill-agent.md","summary":"Added Coverage Gapfill Agent definition."}
+{"timestamp":"2026-01-20T04:52:02Z","actor":"assistant","action":"created","path":"tests/integration/test_phase24_cli_workflows.py","summary":"Added Phase 24 CLI workflow integration tests."}
+{"timestamp":"2026-01-20T04:52:02Z","actor":"assistant","action":"created","path":"tests/e2e/test_phase24_workflow_e2e.py","summary":"Added Phase 24 workflow E2E tests for data pipeline flows."}
+{"timestamp":"2026-01-20T04:52:02Z","actor":"assistant","action":"created","path":"tests/fixtures/data/workflow_classification.tsv","summary":"Added deterministic TSV fixture for Phase 24 workflows."}
+{"timestamp":"2026-01-20T04:52:02Z","actor":"assistant","action":"created","path":".codex/plans/path_100_2026-01-20-0451_phase24-integration.md","summary":"Documented Phase 24 integration/workflow expansion plan."}
+{"timestamp":"2026-01-20T05:01:41Z","actor":"assistant","action":"created","path":"tests/integration/test_phase24_training_eval_workflows.py","summary":"Added Phase 24 training/eval workflow tests."}
+{"timestamp":"2026-01-20T05:01:41Z","actor":"assistant","action":"updated","path":"pytest.ini","summary":"Removed xdist/reruns options and added --cov-fail-under=70."}
+{"timestamp":"2026-01-20T05:01:41Z","actor":"assistant","action":"updated","path":"sitecustomize.py","summary":"Added hydra/mlflow/logging stubs for optional dependencies."}
+{"timestamp":"2026-01-20T05:12:16Z","actor":"assistant","action":"updated","path":"src/services/crawler/__init__.py","summary":"Reordered crawler imports to avoid circular import."}
+{"timestamp":"2026-01-20T05:12:16Z","actor":"assistant","action":"updated","path":"src/utils/log_sanitizer.py","summary":"Adjusted ANSI/control-character sanitization order."}
+{"timestamp":"2026-01-20T05:12:16Z","actor":"assistant","action":"updated","path":"noxfile.py","summary":"Returned fail_under as string for TOML parsing tests."}
+{"timestamp":"2026-01-20T05:12:16Z","actor":"assistant","action":"updated","path":"src/modeling.py","summary":"Exposed import_module alias for test monkeypatching."}
+{"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_github_service_types.py","summary":"Added service workflow tests for GitHub exceptions and types."}
+{"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_workflow_types.py","summary":"Added service workflow tests for workflow metadata models."}
+{"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_workflow_parser_inventory.py","summary":"Added workflow parser/inventory integration tests."}
+{"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"created","path":"tests/integration/services/test_crawler_services.py","summary":"Added crawler service integration tests."}
+{"timestamp":"2026-01-20T05:40:48Z","actor":"assistant","action":"updated","path":".codex/smoke/import_check.py","summary":"Updated smoke import check to load repo root and sitecustomize stubs."}

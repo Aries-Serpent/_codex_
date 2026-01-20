@@ -38,6 +38,9 @@ except Exception:  # pragma: no cover - allow graceful degradation when PEFT is 
 
 LOGGER = logging.getLogger(__name__)
 
+# Expose import_module for test monkeypatching compatibility.
+import_module = importlib.import_module
+
 
 if torch is not None:
     _DTYPE_MAP: dict[str, torch.dtype] = {
