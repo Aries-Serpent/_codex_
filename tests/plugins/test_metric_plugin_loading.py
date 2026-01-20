@@ -1,13 +1,12 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
 """
 Test Metric Plugin Loading
 
 Test module for metric plugin loading.
+Test that metric plugin loading is non-fatal and built-ins remain available.
 """
-
-#!/usr/bin/env python3
-"""Test that metric plugin loading is non-fatal and built-ins remain available."""
-
-from __future__ import annotations
 
 from codex_ml.metrics.registry import init_metric_plugins, list_metrics
 

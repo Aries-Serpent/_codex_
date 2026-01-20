@@ -169,3 +169,49 @@ class InventoryStats(BaseModel):
 
     class Config:
         frozen = True
+
+
+# ============================================================================
+# Service Integration Types (Phase 24)
+# ============================================================================
+
+
+class WorkflowRun(BaseModel):
+    """Workflow run execution metadata for service integration."""
+    
+    id: int
+    workflow_id: int
+    status: str
+    conclusion: str
+    url: str
+    
+    class Config:
+        frozen = True
+
+
+class WorkflowJob(BaseModel):
+    """Workflow job execution metadata for service integration."""
+    
+    id: int
+    run_id: int
+    name: str
+    status: str
+    conclusion: str
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
+    if_condition: Optional[dict[str, Any]] = None
+    
+    class Config:
+        frozen = True
+
+
+class WorkflowStep(BaseModel):
+    """Workflow step execution metadata for service integration."""
+    
+    name: str
+    status: str
+    conclusion: str
+    number: int
+    
+    class Config:
+        frozen = True
