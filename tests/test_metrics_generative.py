@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Test Metrics Generative
 
@@ -6,8 +7,6 @@ Test module for metrics generative.
 
 #!/usr/bin/env python3
 """Tests for optional generative metrics (BLEU, ROUGE-L) behavior."""
-
-from __future__ import annotations
 
 import json
 from pathlib import Path
