@@ -47,8 +47,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 def ts() -> str:
     """Return an ISO-8601 timestamp without microseconds."""
-
-    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    from codex.utils.path_utils import windows_safe_timestamp
+    return windows_safe_timestamp(fmt="iso")
 
 
 def _rel(path: Path) -> str:

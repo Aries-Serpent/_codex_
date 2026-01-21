@@ -272,6 +272,44 @@ All operations must be logged to:
 
 ---
 
+## 🖥️ Cross-Platform Filename Requirements
+
+### Windows Compatibility
+All generated filenames **MUST** be Windows-compatible. The following characters are **PROHIBITED** in filenames:
+
+```
+< > : " / \ | ? *
+```
+
+### Timestamp Generation
+**Always use** `codex.utils.path_utils.windows_safe_timestamp()` for filename timestamps:
+
+```python
+from codex.utils.path_utils import windows_safe_timestamp
+
+# ✅ CORRECT
+filename = f"report_{windows_safe_timestamp(fmt='compact')}.json"
+# Produces: report_20260121_143045.json
+
+# ❌ INCORRECT - Creates colons
+filename = f"report_{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}.json"
+# Produces: report_2026-01-21T14:30:45Z.json (FAILS ON WINDOWS)
+```
+
+### Available Formats
+- `iso`: ISO-8601-like with hyphens → `2026-01-21T14-30-45Z`
+- `compact`: Compact numeric → `20260121_143045`
+- `readable`: Human-friendly → `2026-01-21-14-30-45-UTC`
+
+### Validation
+Pre-commit hooks automatically check for Windows-incompatible filenames. Run manually:
+
+```bash
+python scripts/remediation/check_windows_filenames.py <files...>
+```
+
+---
+
 ## ✅ Best Practices
 
 **Do:**

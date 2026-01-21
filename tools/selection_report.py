@@ -44,7 +44,8 @@ def _ensure_parent(path: Path) -> None:
 
 
 def _timestamp() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+    from codex.utils.path_utils import windows_safe_timestamp
+    return windows_safe_timestamp(fmt="compact")
 
 
 def _run_config_mode(args: argparse.Namespace) -> int:
