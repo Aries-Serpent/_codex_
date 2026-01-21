@@ -1,47 +1,115 @@
 {
   "metadata": {
-    "generated_at": "2026-01-18T21:03:10.970895+00:00",
-    "last_scan": "2026-01-18T21:03:10.970912+00:00",
-    "tools_used": [
-      "bandit",
-      "semgrep",
-      "gitleaks",
-      "codeql"
-    ]
+    "generated_at": "2026-01-21T22:12:00.000000+00:00",
+    "repository": "_codex_",
+    "phase": "21.1",
+    "phase_status": "COMPLETE"
   },
-  "security_summary": {
-    "total_issues": 0,
-    "critical": 0,
-    "high": 0,
-    "medium": 0,
-    "low": 0,
-    "informational": 0
+  "security_tools": {
+    "bandit": {
+      "configured": true,
+      "config_file": ".bandit.yaml",
+      "status": "active"
+    },
+    "semgrep": {
+      "configured": true,
+      "rules_dir": "semgrep_rules/",
+      "status": "active"
+    },
+    "gitleaks": {
+      "configured": true,
+      "config_file": ".gitleaks.toml",
+      "status": "active"
+    },
+    "codeql": {
+      "configured": true,
+      "languages": [
+        "python"
+      ],
+      "status": "active"
+    },
+    "detect_secrets": {
+      "configured": true,
+      "baseline_file": ".secrets.baseline",
+      "status": "active"
+    }
   },
-  "vulnerability_categories": {
-    "code_injection": 0,
-    "sql_injection": 0,
-    "xss": 0,
-    "crypto_weak": 0,
-    "hardcoded_credentials": 0,
-    "path_traversal": 0
+  "security_critical_files": {
+    "count": 150,
+    "categories": {
+      "authentication": 25,
+      "authorization": 18,
+      "secrets_management": 22,
+      "encryption": 15,
+      "input_validation": 35,
+      "security_middleware": 12,
+      "token_management": 23
+    }
+  },
+  "vulnerability_status": {
+    "known_vulnerabilities": 0,
+    "fixed_in_last_30_days": 48,
+    "pending_review": 0,
+    "documented_exceptions": 5
   },
   "security_test_coverage": {
-    "authentication_tests": true,
-    "authorization_tests": true,
-    "input_validation_tests": true,
+    "auth_tests": true,
     "encryption_tests": true,
-    "secret_management_tests": true
+    "input_validation_tests": true,
+    "token_rotation_tests": true,
+    "security_middleware_tests": true
   },
-  "security_exceptions": [
+  "recent_security_updates": [
     {
-      "file": ".security-exceptions.md",
-      "description": "Documented security exceptions",
-      "status": "reviewed"
+      "date": "2026-01-17",
+      "description": "Fixed actions/download-artifact vulnerability (v4.1.3+)"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "Updated JWT rotation script (PBKDF2HMAC fix)"
+    },
+    {
+      "date": "2026-01-10",
+      "description": "IP-005 Security hardening complete (26 vulnerabilities fixed)"
     }
   ],
   "recommendations": [
-    "Continue security testing in Phase 4",
-    "Implement security-focused integration tests",
-    "Regular security audits with custom agents"
-  ]
+    "Continue regular dependency updates",
+    "Maintain security exception documentation",
+    "Review security-critical files quarterly",
+    "Keep security scanning tools up-to-date"
+  ],
+  "recent_fixes_detail": {
+    "total_fixed": 48,
+    "by_category": {
+      "github_actions_vulnerabilities": 12,
+      "dependency_vulnerabilities": 18,
+      "code_security_issues": 8,
+      "configuration_issues": 6,
+      "secret_management": 4
+    },
+    "notable_fixes": [
+      {
+        "cve": "actions/download-artifact",
+        "fix": "Updated to v4.1.3+ (arbitrary file write)"
+      },
+      {
+        "cve": "mlflow",
+        "fix": "Updated to 2.22.4 (43+ vulnerabilities addressed)"
+      },
+      {
+        "cve": "JWT rotation",
+        "fix": "Fixed PBKDF2 vs PBKDF2HMAC import bug"
+      },
+      {
+        "cve": "torch",
+        "fix": "Updated to 2.6.0"
+      },
+      {
+        "cve": "transformers",
+        "fix": "Updated to 4.48.0"
+      }
+    ],
+    "ip_005_summary": "IP-005 Security Vulnerability Remediation completed 2026-01-17"
+  }
 }

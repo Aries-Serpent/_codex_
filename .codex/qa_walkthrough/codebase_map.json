@@ -1,40 +1,40 @@
 {
   "metadata": {
-    "generated_at": "2026-01-19T12:00:00.000000+00:00",
+    "generated_at": "2026-01-21T22:12:00.000000+00:00",
     "repository": "_codex_",
-    "branch": "copilot/implement-cognitive-brain-updates",
-    "last_commit": "0c8b488",
-    "phase": "20.2",
+    "branch": "copilot/qa-walkthrough-repo-validation",
+    "last_commit": "b4b3bf6",
+    "phase": "21.1",
     "phase_status": "COMPLETE"
   },
   "directory_structure": {
     "src": {
       "total_files": 1305,
-      "python_files": 1042,
+      "python_files": 1043,
       "path": "src"
     },
     "tests": {
-      "total_files": 2168,
-      "python_files": 1892,
+      "total_files": 2200,
+      "python_files": 1797,
       "path": "tests"
     },
     "docs": {
-      "total_files": 1285,
+      "total_files": 1400,
       "python_files": 2,
       "path": "docs"
     },
     ".github": {
-      "total_files": 1435,
-      "python_files": 255,
+      "total_files": 1500,
+      "python_files": 260,
       "path": ".github"
     },
     ".codex": {
-      "total_files": 545,
+      "total_files": 600,
       "python_files": 14,
       "path": ".codex"
     },
     "configs": {
-      "total_files": 262,
+      "total_files": 270,
       "python_files": 5,
       "path": "configs"
     }
@@ -61,12 +61,16 @@
     "tests/automation/test_workflow_orchestration.py",
     "tests/automation/test_configuration_management.py",
     "tests/automation/test_deployment_automation.py",
-    "services/audio/analysis/intelligent_analyzer.py",
-    "services/audio/workflow/auto_tune_workflow.py",
-    "services/crawler/content_diff.py",
-    "services/crawler/multi_locale_sync.py",
     ".codex/plans/MASTER_100_PERCENT_COVERAGE_PROMPTSET.md",
     "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
     "docs/PLAN_100_PERCENT_COVERAGE.md"
-  ]
+  ],
+  "repository_stats": {
+    "total_python_files": 4191,
+    "total_test_files": 1797,
+    "total_markdown_files": 2684,
+    "total_workflows": 88,
+    "total_custom_agents": 109,
+    "total_test_functions": 15640
+  }
 }
