@@ -1,9 +1,9 @@
 # 🤖 Agent Registry
 
-**Version**: 1.2.0  
-**Last Updated**: 2026-01-19T21:00:00Z  
-**Total Agents**: 31+  
-**Standardized**: 3 (ci-diagnostician, test-assertion-updater, batch-triage-agent)  
+**Version**: 1.3.0  
+**Last Updated**: 2026-01-21T04:40:00Z  
+**Total Agents**: 34+  
+**Standardized**: 6 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator)  
 **Target**: 100% standardization by 2026-01-26
 
 ---
@@ -15,6 +15,72 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 ---
 
 ## Priority Tier 1: Production-Critical Agents
+
+### 0. Root-Organizer-Agent ✅ NEW
+- **ID**: `root-organizer-agent`
+- **File**: `.github/agents/root-organizer-agent.md`
+- **Purpose**: Safe, incremental root folder reorganization with zero-break guarantee
+- **Status**: Active
+- **Maturity**: Production
+- **Test Coverage**: Validated with dry-run tests
+- **Has Prompts**: Embedded in agent documentation
+- **Has Tests**: Integration with validation scripts
+- **Has Docs**: Yes (comprehensive documentation)
+- **Standard Structure**: Documentation-based agent
+- **Integration Points**: validate_references.py, organize_root_incremental.py, rollback_move.py
+- **Capabilities**:
+  - risk_assessment (LOW/MEDIUM/HIGH)
+  - reference_graph_analysis
+  - automated_move_execution
+  - rollback_on_failure
+  - pre_post_validation
+- **Physics Model**: Energy=5 (Balance⚖️ - zero-break guarantee)
+- **Last Updated**: 2026-01-21
+- **Maintainer**: Root Organization Team
+
+### 0. Reference-Updater-Agent ✅ NEW
+- **ID**: `reference-updater-agent`
+- **File**: `.github/agents/reference-updater-agent.md`
+- **Purpose**: Atomic reference updates across codebase with transaction-like behavior
+- **Status**: Active
+- **Maturity**: Production
+- **Test Coverage**: Validated with dry-run tests
+- **Has Prompts**: Embedded in agent documentation
+- **Has Tests**: Integration with update_links_atomic.py
+- **Has Docs**: Yes (comprehensive documentation)
+- **Standard Structure**: Documentation-based agent
+- **Integration Points**: update_links_atomic.py, validate_references.py
+- **Capabilities**:
+  - exhaustive_reference_scanning
+  - generate_update_patches
+  - apply_updates_atomically
+  - link_validation_post_update
+  - report_unreachable_references
+- **Transaction Model**: ACID-compliant
+- **Last Updated**: 2026-01-21
+- **Maintainer**: Root Organization Team
+
+### 0. Documentation-Consolidator ✅ NEW
+- **ID**: `documentation-consolidator`
+- **File**: `.github/agents/documentation-consolidator.md`
+- **Purpose**: Intelligent documentation consolidation with content preservation
+- **Status**: Active
+- **Maturity**: Production
+- **Test Coverage**: Manual validation
+- **Has Prompts**: Embedded in agent documentation
+- **Has Tests**: Manual testing with cognitive brain docs
+- **Has Docs**: Yes (comprehensive documentation)
+- **Standard Structure**: Documentation-based agent
+- **Integration Points**: root-organizer-agent, reference-updater-agent
+- **Capabilities**:
+  - identify_duplicate_related_docs
+  - recommend_consolidation_targets
+  - merge_documents_intelligently
+  - update_cross_references
+  - generate_navigation_aids
+- **Safety Guarantee**: NO_DELETION (all content preserved)
+- **Last Updated**: 2026-01-21
+- **Maintainer**: Root Organization Team
 
 ### 0. Batch-Triage-Agent ✅ NEW
 - **ID**: `batch-triage-agent`
