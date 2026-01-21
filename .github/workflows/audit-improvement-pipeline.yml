@@ -155,7 +155,7 @@ jobs:
           python scripts/space_traversal/audit_runner.py check-regressions || true
 
       - name: Upload Audit Artifacts
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: audit-results
           path: |
@@ -269,7 +269,7 @@ jobs:
           cat usage_metrics.json
 
       - name: Upload Usage Metrics
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: usage-metrics
           path: usage_metrics.json
