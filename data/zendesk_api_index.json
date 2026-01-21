@@ -1,12 +1,12 @@
 {
   "version": "2.0",
-  "last_sync": "2026-01-16T12:32:56.537796+00:00",
+  "last_sync": "2026-01-21T23:44:27.595476+00:00",
   "articles": {
     "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/": {
       "url": "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/",
       "section": "apps",
       "bucket": "support_app_api",
-      "last_fetched": "2026-01-16T12:32:39.684581+00:00",
+      "last_fetched": "2026-01-21T23:44:15.642077+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -15,7 +15,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/ticket-management/skill_based_routing/",
       "section": "routing",
       "bucket": "skills",
-      "last_fetched": "2026-01-16T12:32:41.903174+00:00",
+      "last_fetched": "2026-01-21T23:44:17.073584+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -24,7 +24,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_skill_based_routing/",
       "section": "routing",
       "bucket": "skills",
-      "last_fetched": "2026-01-16T12:32:42.889318+00:00",
+      "last_fetched": "2026-01-21T23:44:17.572480+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -33,7 +33,7 @@
       "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivrs/",
       "section": "talk",
       "bucket": "ivrs",
-      "last_fetched": "2026-01-16T12:32:43.743532+00:00",
+      "last_fetched": "2026-01-21T23:44:18.199229+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -42,7 +42,7 @@
       "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_menus/",
       "section": "talk",
       "bucket": "ivrs",
-      "last_fetched": "2026-01-16T12:32:44.747011+00:00",
+      "last_fetched": "2026-01-21T23:44:18.808068+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -51,7 +51,7 @@
       "url": "https://developer.zendesk.com/api-reference/voice/talk-api/ivr_routes/",
       "section": "talk",
       "bucket": "ivrs",
-      "last_fetched": "2026-01-16T12:32:45.721620+00:00",
+      "last_fetched": "2026-01-21T23:44:19.262521+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -60,7 +60,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields/",
       "section": "ticketing",
       "bucket": "fields",
-      "last_fetched": "2026-01-16T12:32:47.217052+00:00",
+      "last_fetched": "2026-01-21T23:44:20.436010+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -69,7 +69,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_forms/",
       "section": "ticketing",
       "bucket": "forms",
-      "last_fetched": "2026-01-16T12:32:48.860697+00:00",
+      "last_fetched": "2026-01-21T23:44:21.731503+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -78,7 +78,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/groups/groups/",
       "section": "ticketing",
       "bucket": "groups",
-      "last_fetched": "2026-01-16T12:32:49.672423+00:00",
+      "last_fetched": "2026-01-21T23:44:22.443926+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -87,7 +87,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/macros/",
       "section": "ticketing",
       "bucket": "macros",
-      "last_fetched": "2026-01-16T12:32:51.596903+00:00",
+      "last_fetched": "2026-01-21T23:44:23.887171+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -96,7 +96,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/triggers/",
       "section": "ticketing",
       "bucket": "triggers",
-      "last_fetched": "2026-01-16T12:32:53.300853+00:00",
+      "last_fetched": "2026-01-21T23:44:25.055308+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -105,7 +105,7 @@
       "url": "https://developer.zendesk.com/api-reference/ticketing/business-rules/views/",
       "section": "ticketing",
       "bucket": "views",
-      "last_fetched": "2026-01-16T12:32:55.087353+00:00",
+      "last_fetched": "2026-01-21T23:44:26.436533+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
@@ -114,7 +114,7 @@
       "url": "https://developer.zendesk.com/api-reference/webhooks/webhooks-api/webhooks/",
       "section": "webhooks",
       "bucket": "webhooks",
-      "last_fetched": "2026-01-16T12:32:56.537744+00:00",
+      "last_fetched": "2026-01-21T23:44:27.595406+00:00",
       "last_modified": null,
       "etag": null,
       "content_hash": null
