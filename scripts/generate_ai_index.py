@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """
 Generate Ai Index
@@ -35,7 +36,6 @@ This script creates multi-layered indices optimized for AI assistant/agent
 repository navigation, search, and understanding. It combines semantic,
 structural, content, and metadata indices for efficient discovery.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

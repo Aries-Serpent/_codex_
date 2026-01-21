@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """
 Dataset Pipeline
@@ -38,7 +39,6 @@ This script provides comprehensive dataset management including:
 - Content deduplication and optimization
 - Quality scoring and validation
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
