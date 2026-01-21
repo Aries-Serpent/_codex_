@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Dataset Dedup
 
@@ -37,7 +38,6 @@ This tool provides advanced deduplication and space optimization:
 - Incremental dataset updates
 - Storage optimization recommendations
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Test Query Logs Build Query
 
@@ -16,8 +17,6 @@ Merged test script combining:
 - Temporary module compilation tests (pure SQL, dict-based, mixed, nested)
 - Robust multi-strategy invocation of build_query
 """
-
-from __future__ import annotations
 
 import ast
 import importlib.util

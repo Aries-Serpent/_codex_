@@ -1,8 +1,3 @@
-# Generated: 2025-12-26T08:25:00Z | Author: mbaetiong
-# Updated: 2026-01-05 | Checksum-based caching to skip unchanged files
-# Link Checker for Documentation
-# Validates all internal and external links in documentation files
-
 name: Documentation Link Checker
 
 on:
@@ -188,7 +183,7 @@ jobs:
 
       - name: Upload link check report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: link-check-report
           path: link-check-report.json

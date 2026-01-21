@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Ai Self Review Protocol
 
@@ -37,7 +38,6 @@ AI assistants perform thorough validation before concluding any interaction.
 It provides a deterministic, iterative process that prevents premature
 completion through autonomous self-healing cycles.
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from typing import Optional, Any

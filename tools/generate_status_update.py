@@ -791,7 +791,8 @@ def main():
         print(f"⚠️  Validation errors: {errors}")
         # Save invalid report to separate location for debugging
         STATUS_DIR.mkdir(parents=True, exist_ok=True)
-        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+        from codex.utils.path_utils import windows_safe_timestamp
+        timestamp = windows_safe_timestamp(fmt="readable")
         invalid_file = STATUS_DIR / f"_codex_status_update-{timestamp}.invalid.json"
 
         with open(invalid_file, "w") as f:

@@ -32,7 +32,8 @@ SUPPLIED_TASK_BASENAME = "supplied_task.md"
 
 
 def ts() -> str:
-    return datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    from codex.utils.path_utils import windows_safe_timestamp
+    return windows_safe_timestamp(fmt="iso")
 
 
 def ensure_dirs():

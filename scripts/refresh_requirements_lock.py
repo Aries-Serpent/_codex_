@@ -120,7 +120,8 @@ def _today_slug() -> str:
 
 
 def _timestamp() -> str:
-    return _dt.datetime.now(tz=_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    from codex.utils.path_utils import windows_safe_timestamp
+    return windows_safe_timestamp(fmt="iso")
 
 
 def _error_file() -> Path:

@@ -387,14 +387,14 @@ class TestGitHubLogsMCPTools:
 class TestGitHubLogsIntegration:
     """Integration tests requiring actual GitHub API access."""
 
-    @pytest.mark.skipif(
-        not pytest.config.getoption("--run-integration", default=False),
-        reason="Integration tests require --run-integration flag and GITHUB_TOKEN"
-    )
-    def test_real_github_api_check_run(self):
+    def test_real_github_api_check_run(self, request):
         """Test fetching real check run from GitHub API."""
         import os
         from services.github.client import GitHubClientSync
+        
+        # Skip if not running integration tests
+        if not request.config.getoption("--run-integration", default=False):
+            pytest.skip("Integration tests require --run-integration flag")
         
         # Requires GITHUB_TOKEN
         if not os.getenv("GITHUB_TOKEN"):

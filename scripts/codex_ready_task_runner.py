@@ -57,7 +57,8 @@ def _ensure_log_files() -> None:
 
 
 def _timestamp() -> str:
-    return _dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    from codex.utils.path_utils import windows_safe_timestamp
+    return windows_safe_timestamp(fmt="iso")
 
 
 def log_change(message: str) -> None:
