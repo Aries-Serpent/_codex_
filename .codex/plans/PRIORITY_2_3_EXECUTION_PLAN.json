@@ -1,0 +1,383 @@
+{
+  "timestamp": "2026-01-21T04:50:28.815168",
+  "priority_2_cognitive_brain": [
+    {
+      "source": "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "target": "docs/cognitive_brain/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "target": "docs/cognitive_brain/architecture/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_1.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_1.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_4.md",
+      "target": "docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_4.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_PHASE_10_2_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PHASE_10_2_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_PHASE_10_2_PROGRESS.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PHASE_10_2_PROGRESS.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_QA_WALKTHROUGH_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_QA_WALKTHROUGH_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_UPDATE_FINAL.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_UPDATE_FINAL.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V11_1_CONTINUATION.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V11_1_CONTINUATION.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V11_ALL_PHASES_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V11_ALL_PHASES_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V14_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V14_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V14_PHASE_14_3_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V14_PHASE_14_3_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V18_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V18_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V2.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V2.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V3.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V3.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "COGNITIVE_BRAIN_STATUS_V4_PHASE_10_1_COMPLETE.md",
+      "target": "docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V4_PHASE_10_1_COMPLETE.md",
+      "category": "cognitive_brain"
+    },
+    {
+      "source": "PHASE_11_1_COGNITIVE_BRAIN_UPDATE.md",
+      "target": "docs/cognitive_brain/PHASE_11_1_COGNITIVE_BRAIN_UPDATE.md",
+      "category": "cognitive_brain"
+    }
+  ],
+  "priority_3_low_risk": [
+    {
+      "source": "AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "target": "docs/archive/phases/AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "category": "archive"
+    },
+    {
+      "source": "AUDIT_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/completion/AUDIT_COMPLETION_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "target": "docs/archive/phases/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "category": "archive"
+    },
+    {
+      "source": "COMPLETE_SESSION_SUMMARY_PHASE_20.md",
+      "target": "docs/archive/phases/COMPLETE_SESSION_SUMMARY_PHASE_20.md",
+      "category": "archive"
+    },
+    {
+      "source": "COMPREHENSIVE_DOCUMENTATION_AUDIT_PHASE5.md",
+      "target": "docs/archive/phases/COMPREHENSIVE_DOCUMENTATION_AUDIT_PHASE5.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/misc/COPILOT_CONTINUATION_PROMPT.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_CONTINUATION_PROMPT_V2.md",
+      "target": "docs/archive/misc/COPILOT_CONTINUATION_PROMPT_V2.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_PHASE_5_7_CONTINUATION.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_5_7_CONTINUATION.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_PHASE_8_CONTINUATION.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_8_CONTINUATION.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_PHASE_8_CONTINUATION_PROMPT_V3.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_8_CONTINUATION_PROMPT_V3.md",
+      "category": "archive"
+    },
+    {
+      "source": "COPILOT_PHASE_9_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_9_CONTINUATION_PROMPT.md",
+      "category": "archive"
+    },
+    {
+      "source": "FINAL_CONTINUATION_PROMPT_FOR_PR.md",
+      "target": "docs/archive/misc/FINAL_CONTINUATION_PROMPT_FOR_PR.md",
+      "category": "archive"
+    },
+    {
+      "source": "FINAL_SESSION_SUMMARY_AND_FOLLOWUP.md",
+      "target": "docs/archive/sessions/FINAL_SESSION_SUMMARY_AND_FOLLOWUP.md",
+      "category": "archive"
+    },
+    {
+      "source": "FINAL_SESSION_SUMMARY_PR2836_PHASE10.md",
+      "target": "docs/archive/phases/FINAL_SESSION_SUMMARY_PR2836_PHASE10.md",
+      "category": "archive"
+    },
+    {
+      "source": "FINAL_SESSION_SUMMARY_PR2883.md",
+      "target": "docs/archive/sessions/FINAL_SESSION_SUMMARY_PR2883.md",
+      "category": "archive"
+    },
+    {
+      "source": "FOLLOW_UP_PROMPT_PHASE_20_COMPLETE.md",
+      "target": "docs/archive/phases/FOLLOW_UP_PROMPT_PHASE_20_COMPLETE.md",
+      "category": "archive"
+    },
+    {
+      "source": "PACKAGE_PRIORITIZATION_PHASE5.md",
+      "target": "docs/archive/phases/PACKAGE_PRIORITIZATION_PHASE5.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_1_COMPLETE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_10_1_COMPLETE_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_2_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_2_CONTINUATION_PROMPT_NEXT_SESSION.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT_NEXT_SESSION.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_2_FINAL_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_10_2_FINAL_COMPLETION_REPORT.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "target": "docs/archive/phases/PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_10_MASTER_INTEGRATION_PROMPTSET.md",
+      "target": "docs/archive/phases/PHASE_10_MASTER_INTEGRATION_PROMPTSET.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_1_AUTHENTICATION_IMPLEMENTATION.md",
+      "target": "docs/archive/phases/PHASE_11_1_AUTHENTICATION_IMPLEMENTATION.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_1_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_1_COMPLETION_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_X_COMPREHENSIVE_PLANNING.md",
+      "target": "docs/archive/phases/PHASE_11_X_COMPREHENSIVE_PLANNING.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_X_FINAL_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_X_FINAL_COMPLETION_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_X_FOLLOWUP_GITHUB_FOCUS.md",
+      "target": "docs/archive/phases/PHASE_11_X_FOLLOWUP_GITHUB_FOCUS.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_11_X_PROMPTSETS.md",
+      "target": "docs/archive/phases/PHASE_11_X_PROMPTSETS.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_12_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/PHASE_12_CONTINUATION_PROMPT.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_20_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_20_COMPLETION_REPORT.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_2_1_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_2_1_COMPLETION_REPORT.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_2_2_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_2_2_COMPLETION_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_2_3_RAG_TESTS_COMPLETE.md",
+      "target": "docs/archive/phases/PHASE_2_3_RAG_TESTS_COMPLETE.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_2_QUICK_REFERENCE.md",
+      "target": "docs/archive/phases/PHASE_2_QUICK_REFERENCE.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_4_COMPLETION_FINAL_SUMMARY.txt",
+      "target": "docs/archive/phases/PHASE_4_COMPLETION_FINAL_SUMMARY.txt",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "PHASE_8_COMPLETE_IMPLEMENTATION_MASTER_PLAN.md",
+      "target": "docs/archive/phases/PHASE_8_COMPLETE_IMPLEMENTATION_MASTER_PLAN.md",
+      "category": "archive"
+    },
+    {
+      "source": "PR_2858_FINAL_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/completion/PR_2858_FINAL_COMPLETION_SUMMARY.md",
+      "category": "archive"
+    },
+    {
+      "source": "ROOT_CAUSE_ANALYSIS_COPILOT_SESSION_FAILURE.md",
+      "target": "docs/archive/sessions/ROOT_CAUSE_ANALYSIS_COPILOT_SESSION_FAILURE.md",
+      "category": "archive"
+    },
+    {
+      "source": "SESSION_COMPLETION_100_PERCENT_COVERAGE_PHASE1.md",
+      "target": "docs/archive/phases/SESSION_COMPLETION_100_PERCENT_COVERAGE_PHASE1.md",
+      "category": "archive"
+    },
+    {
+      "source": "SESSION_COMPLETION_PHASE2_VERIFICATION.md",
+      "target": "docs/archive/phases/SESSION_COMPLETION_PHASE2_VERIFICATION.md",
+      "category": "archive"
+    },
+    {
+      "source": "SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "target": "docs/archive/sessions/SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "category": "archive"
+    }
+  ],
+  "total_files": 75
+}
