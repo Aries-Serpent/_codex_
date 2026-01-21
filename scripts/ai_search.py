@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """
 Ai Search
@@ -34,7 +35,6 @@ Last Updated: 2026-01-16
 This module provides efficient search capabilities across the multi-layered
 repository indices for AI assistants and agents.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """
 Code Change Reviewer
@@ -35,7 +36,6 @@ Code Change Self-Review Tool
 Applies the autonomous self-review protocol to code changes,
 ensuring comprehensive validation before committing.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
