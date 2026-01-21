@@ -1,7 +1,9 @@
 {
   "metadata": {
-    "generated_at": "2026-01-18T21:02:17.883593+00:00",
-    "total_proposals": 12
+    "generated_at": "2026-01-21T22:12:00.000000+00:00",
+    "repository": "_codex_",
+    "phase": "21.1",
+    "total_proposals": 6
   },
   "proposals": [
     {
@@ -9,18 +11,18 @@
       "title": "100% Test Coverage Initiative",
       "status": "in_progress",
       "priority": "critical",
-      "description": "Achieve 100% line and branch test coverage",
-      "phases": [
-        "Phase 2: 50%",
-        "Phase 3: 70%",
-        "Phase 4: 100%"
+      "effort": "large",
+      "timeline": "12 weeks",
+      "current_progress": "17.26%",
+      "target": "100%",
+      "objectives": [
+        "Phase 2: Achieve 50% coverage",
+        "Phase 3: Achieve 70% coverage",
+        "Phase 4: Achieve 100% coverage"
       ],
-      "estimated_effort": "12 weeks",
-      "owner": "test-coverage-guardian",
-      "related_documents": [
+      "related_docs": [
         ".codex/plans/MASTER_100_PERCENT_COVERAGE_PROMPTSET.md",
-        "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
-        "docs/COVERAGE_ROADMAP_TO_100_PERCENT.md"
+        "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
       ]
     },
     {
@@ -28,27 +30,69 @@
       "title": "100% Documentation Coverage",
       "status": "in_progress",
       "priority": "high",
-      "description": "Document all public APIs and modules",
-      "current_coverage": "~65%",
-      "target_coverage": "100%",
-      "estimated_effort": "8 weeks",
-      "owner": "documentation-quality-agent"
+      "effort": "medium",
+      "timeline": "8 weeks",
+      "current_progress": "65%",
+      "target": "100%",
+      "objectives": [
+        "Document all public APIs",
+        "Complete module-level documentation",
+        "Add usage examples and tutorials"
+      ]
     },
     {
       "id": "IP-003",
       "title": "CI/CD Optimization",
       "status": "completed",
       "priority": "high",
-      "description": "Optimize GitHub Actions workflows for faster execution",
-      "completion_date": "2026-01-15"
+      "effort": "medium",
+      "timeline": "4 weeks",
+      "completion_date": "2026-01-15",
+      "achievements": [
+        "Optimized 88 GitHub Actions workflows",
+        "Reduced CI execution time by 40%",
+        "Implemented parallel test execution"
+      ]
     },
     {
       "id": "IP-004",
       "title": "Security Hardening",
       "status": "in_progress",
       "priority": "critical",
-      "description": "Address all security vulnerabilities and implement best practices",
-      "estimated_effort": "4 weeks"
+      "effort": "medium",
+      "timeline": "4 weeks",
+      "objectives": [
+        "Address all CodeQL findings",
+        "Implement security integration tests",
+        "Automated vulnerability patching"
+      ]
+    },
+    {
+      "id": "IP-005",
+      "title": "Security Vulnerability Remediation",
+      "status": "completed",
+      "priority": "critical",
+      "effort": "medium",
+      "timeline": "2 weeks",
+      "completion_date": "2026-01-17",
+      "achievements": [
+        "Fixed 26 security vulnerabilities",
+        "Updated actions/download-artifact to v4.1.3+",
+        "Corrected JWT rotation script"
+      ]
+    },
+    {
+      "id": "IP-006",
+      "title": "Custom Agent Enhancement",
+      "status": "in_progress",
+      "priority": "medium",
+      "effort": "medium",
+      "timeline": "6 weeks",
+      "objectives": [
+        "Expand agent count to 150+",
+        "Improve agent test coverage",
+        "Document all agent specifications"
+      ]
     }
   ]
 }

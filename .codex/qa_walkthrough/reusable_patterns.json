@@ -1,66 +1,131 @@
 {
   "metadata": {
-    "generated_at": "2026-01-18T21:03:10.971714+00:00",
-    "total_patterns": 15
+    "generated_at": "2026-01-21T22:12:00.000000+00:00",
+    "repository": "_codex_",
+    "phase": "21.1",
+    "total_patterns": 12
   },
-  "test_patterns": [
-    {
-      "name": "pytest_fixture_pattern",
-      "description": "Standard pytest fixtures for common test setups",
-      "location": "conftest.py",
-      "usage_count": 100
-    },
-    {
-      "name": "mock_external_api",
-      "description": "Pattern for mocking external API calls",
-      "example": "tests/test_rag/test_indexer.py",
-      "usage_count": 50
-    },
-    {
-      "name": "parameterized_tests",
-      "description": "Use pytest.mark.parametrize for multiple test cases",
-      "usage_count": 200
-    }
-  ],
-  "documentation_patterns": [
-    {
-      "name": "module_docstring",
-      "description": "Standard format for module-level docstrings",
-      "template": "Triple-quoted string with module purpose, usage, examples"
-    },
-    {
-      "name": "api_documentation",
-      "description": "Document all public APIs with MkDocs",
-      "location": "docs/"
-    }
-  ],
-  "architectural_patterns": [
-    {
-      "name": "agent_based_architecture",
-      "description": "Custom agents for specialized tasks",
-      "location": ".github/agents/"
-    },
-    {
-      "name": "hydra_configuration",
-      "description": "Hydra-based configuration management",
-      "location": "configs/"
-    },
-    {
-      "name": "cognitive_brain",
-      "description": "Cognitive brain for autonomous operations",
-      "location": ".codex/cognitive_brain/"
-    }
-  ],
-  "code_patterns": [
-    {
-      "name": "error_handling",
-      "description": "Consistent error handling with custom exceptions",
-      "example": "try-except with specific exception types"
-    },
-    {
-      "name": "logging",
-      "description": "Structured logging with context",
-      "example": "logger.info(msg, extra={...})"
-    }
-  ]
+  "patterns": {
+    "test_patterns": [
+      {
+        "name": "pytest-fixtures",
+        "description": "Use pytest fixtures for test setup and teardown",
+        "examples": [
+          "tests/conftest.py",
+          "tests/unit/conftest.py"
+        ],
+        "usage": "Define reusable fixtures in conftest.py files"
+      },
+      {
+        "name": "property-based-testing",
+        "description": "Use Hypothesis for property-based testing",
+        "examples": [
+          "tests/unit/test_validators.py"
+        ],
+        "usage": "@given(strategies.text()) pattern"
+      },
+      {
+        "name": "mocking",
+        "description": "Use unittest.mock for external dependencies",
+        "examples": [
+          "tests/mcp/test_auth.py"
+        ],
+        "usage": "@patch decorator or MagicMock instances"
+      }
+    ],
+    "documentation_patterns": [
+      {
+        "name": "google-docstrings",
+        "description": "Use Google-style docstrings for all functions",
+        "examples": [
+          "src/codex/cli.py",
+          "src/codex_ml/training/trainer.py"
+        ],
+        "usage": "Args, Returns, Raises, Examples sections"
+      },
+      {
+        "name": "mkdocs-navigation",
+        "description": "Use MkDocs for documentation site",
+        "examples": [
+          "mkdocs.yml",
+          "docs/"
+        ],
+        "usage": "nav structure in mkdocs.yml"
+      }
+    ],
+    "architectural_patterns": [
+      {
+        "name": "entry-point-plugins",
+        "description": "Use entry points for plugin discovery",
+        "examples": [
+          "pyproject.toml [project.entry-points]"
+        ],
+        "usage": "Define entry points in pyproject.toml"
+      },
+      {
+        "name": "hydra-configuration",
+        "description": "Use Hydra for hierarchical configuration",
+        "examples": [
+          "configs/",
+          "src/codex_ml/config/"
+        ],
+        "usage": "@hydra.main decorator with config_path"
+      },
+      {
+        "name": "typer-cli",
+        "description": "Use Typer/Click for CLI commands",
+        "examples": [
+          "src/codex/cli.py",
+          "src/codex_ml/cli/"
+        ],
+        "usage": "@app.command() decorators with type hints"
+      },
+      {
+        "name": "cognitive-brain-architecture",
+        "description": "Cognitive brain system for agent coordination",
+        "examples": [
+          "src/cognitive_brain/",
+          "scripts/cognitive/"
+        ],
+        "usage": "CognitiveBrain class with learning modules"
+      }
+    ],
+    "code_patterns": [
+      {
+        "name": "structured-logging",
+        "description": "Use structured logging with contextual information",
+        "examples": [
+          "src/logging_utils.py",
+          "src/mcp/observability.py"
+        ],
+        "usage": "logger.info(\"message\", extra={...})"
+      },
+      {
+        "name": "validation-decorators",
+        "description": "Use Pydantic for data validation",
+        "examples": [
+          "src/codex/validation/",
+          "src/common/validate.py"
+        ],
+        "usage": "BaseModel classes with Field validators"
+      },
+      {
+        "name": "error-handling",
+        "description": "Custom exception hierarchy with context",
+        "examples": [
+          "src/mcp/errors.py",
+          "src/codex/errors.py"
+        ],
+        "usage": "Inherit from base exception classes"
+      },
+      {
+        "name": "windows-safe-timestamps",
+        "description": "Use windows_safe_timestamp for filenames",
+        "examples": [
+          "src/codex/utils/path_utils.py"
+        ],
+        "usage": "windows_safe_timestamp(fmt='compact')"
+      }
+    ]
+  }
 }
