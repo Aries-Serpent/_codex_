@@ -20,7 +20,15 @@
     "runtime": 56,
     "dev": 45,
     "test": 35,
-    "optional": 85
+    "optional": 85,
+    "validation_note": "Counts are approximations based on pyproject.toml sections. Actual counts may vary based on optional dependencies and environment.",
+    "count_verification": {
+      "runtime_source": "[project].dependencies section",
+      "dev_source": "[project.optional-dependencies].dev section",
+      "test_source": "[project.optional-dependencies].test section",
+      "optional_source": "[project.optional-dependencies].* sections combined",
+      "verified_date": "2026-01-21"
+    }
   },
   "vulnerability_status": {
     "known_vulnerabilities": 0,

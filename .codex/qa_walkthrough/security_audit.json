@@ -78,5 +78,38 @@
     "Maintain security exception documentation",
     "Review security-critical files quarterly",
     "Keep security scanning tools up-to-date"
-  ]
+  ],
+  "recent_fixes_detail": {
+    "total_fixed": 48,
+    "by_category": {
+      "github_actions_vulnerabilities": 12,
+      "dependency_vulnerabilities": 18,
+      "code_security_issues": 8,
+      "configuration_issues": 6,
+      "secret_management": 4
+    },
+    "notable_fixes": [
+      {
+        "cve": "actions/download-artifact",
+        "fix": "Updated to v4.1.3+ (arbitrary file write)"
+      },
+      {
+        "cve": "mlflow",
+        "fix": "Updated to 2.22.4 (43+ vulnerabilities addressed)"
+      },
+      {
+        "cve": "JWT rotation",
+        "fix": "Fixed PBKDF2 vs PBKDF2HMAC import bug"
+      },
+      {
+        "cve": "torch",
+        "fix": "Updated to 2.6.0"
+      },
+      {
+        "cve": "transformers",
+        "fix": "Updated to 4.48.0"
+      }
+    ],
+    "ip_005_summary": "IP-005 Security Vulnerability Remediation completed 2026-01-17"
+  }
 }

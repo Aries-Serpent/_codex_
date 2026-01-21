@@ -261,6 +261,12 @@
       "after_phase_20": 2231,
       "current_total": 15640,
       "note": "Test function count includes all test methods, not just unique test files"
+    },
+    "methodology": {
+      "test_function_count_method": "grep -r 'def test_' tests/ --include='*.py'",
+      "explanation": "Total test functions counted by scanning all test files for 'def test_' patterns. This includes all test methods in test classes and standalone test functions.",
+      "previous_count_note": "Previous counts (2,231) were based on unique test file estimations. The current count (15,640+) reflects actual test function/method count.",
+      "verified_date": "2026-01-21"
     }
   },
   "coverage_targets": {
