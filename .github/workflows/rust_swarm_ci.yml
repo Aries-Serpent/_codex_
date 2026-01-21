@@ -285,7 +285,7 @@ EOF
           fetch-depth: 0  # Fetch all history for comparison
 
       - name: Download benchmark results
-        uses: actions/download-artifact@v7.0.0
+        uses: actions/download-artifact@v4
         with:
           name: benchmark-results
 

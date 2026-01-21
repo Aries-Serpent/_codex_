@@ -123,4 +123,14 @@ repos:
                     print(f'Warning: Failed to analyze {filepath}: {e}', file=sys.stderr)
             sys.exit(1 if has_errors else 0)
 
+  # Windows filename compatibility check
+  - repo: local
+    hooks:
+      - id: check-windows-filenames
+        name: Check for Windows-incompatible filenames
+        entry: python scripts/remediation/check_windows_filenames.py
+        language: system
+        pass_filenames: true
+        types: [file]
+
 
