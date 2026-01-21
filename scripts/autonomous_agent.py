@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """
 Autonomous Agent
@@ -36,7 +37,6 @@ This module provides the foundation for achieving truly autonomous codebase
 management where AI handles routine maintenance, optimization, and evolution
 through self-directed actions, proactive monitoring, and intelligent decision-making.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
