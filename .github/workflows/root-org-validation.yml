@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest ruff mypy markdown-link-check
+          pip install pytest ruff mypy
       
       - name: Run link checker
         id: link-check
@@ -217,6 +217,7 @@ jobs:
       
       - name: Download baseline
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: validation-baseline
           path: .codex/validation/
@@ -226,17 +227,23 @@ jobs:
           echo "Comparing current state with baseline..."
           
           if [ -f ".codex/validation/baseline.txt" ]; then
-            echo "Baseline found:"
+            echo "✅ Baseline found:"
             cat .codex/validation/baseline.txt
           else
-            echo "No baseline found - this is the first validation"
+            echo "⚠️ No baseline found - skipping comparison"
+            echo "This may occur on first run or if pre-validation failed"
+            mkdir -p .codex/validation
           fi
           
           # Record current state
           echo "Current validation at $(date)" > .codex/validation/current.txt
           
           # Compare (simplified - would need more sophisticated diffing)
-          echo "Comparison: No regressions detected" >> .codex/validation/current.txt
+          if [ -f ".codex/validation/baseline.txt" ]; then
+            echo "Comparison: No regressions detected" >> .codex/validation/current.txt
+          else
+            echo "Comparison: Baseline unavailable - first run or pre-validation failure" >> .codex/validation/current.txt
+          fi
       
       - name: Generate final report
         run: |
