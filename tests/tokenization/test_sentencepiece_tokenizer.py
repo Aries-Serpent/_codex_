@@ -1,13 +1,8 @@
-"""
-Test Sentencepiece Tokenizer
+from __future__ import annotations
+"""Tests for the SentencePieceTokenizer adapter.
 
 Test module for sentencepiece tokenizer.
 """
-
-#!/usr/bin/env python3
-"""Tests for the SentencePieceTokenizer adapter."""
-
-from __future__ import annotations
 
 import json
 import sys
