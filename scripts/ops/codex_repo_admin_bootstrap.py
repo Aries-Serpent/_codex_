@@ -29,11 +29,11 @@ Last Updated: 2026-01-16
 """
 
 
-"""Harden a GitHub repository without touching workflows."""
-
 from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
+
+"""Harden a GitHub repository without touching workflows."""
 
 import argparse
 import base64

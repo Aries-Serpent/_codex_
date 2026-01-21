@@ -29,6 +29,17 @@ class TuneResult:
     warnings: List[str] = field(default_factory=list)
 
 
+@dataclass
+class WorkflowResult:
+    """Result of complete workflow execution."""
+    success: bool = True
+    files_processed: int = 0
+    files_failed: int = 0
+    output_paths: List[str] = field(default_factory=list)
+    error: Optional[str] = None
+    metrics: Dict[str, Any] = field(default_factory=dict)
+
+
 class AutoTuneWorkflow:
     """
     Auto-tune workflow for audio pitch correction.
@@ -37,9 +48,10 @@ class AutoTuneWorkflow:
     and musical scale awareness.
     """
     
-    def __init__(self, config: Optional[WorkflowConfig] = None):
-        """Initialize workflow with optional config."""
+    def __init__(self, config: Optional[WorkflowConfig] = None, cognitive_mode: bool = False):
+        """Initialize workflow with optional config and cognitive mode."""
         self.config = config or WorkflowConfig()
+        self.cognitive_mode = cognitive_mode
         self._initialized = True
     
     def process(
@@ -79,10 +91,62 @@ class AutoTuneWorkflow:
         """Validate input audio file."""
         path = Path(audio_path)
         return path.suffix.lower() in {".wav", ".mp3", ".flac", ".ogg"}
+    
+    def process_path(self, path: str, **kwargs) -> WorkflowResult:
+        """
+        Process all audio files in a directory or a single file.
+        
+        Args:
+            path: Path to directory or single audio file
+            **kwargs: Additional processing options
+            
+        Returns:
+            WorkflowResult with batch processing details
+        """
+        path_obj = Path(path)
+        
+        if path_obj.is_file():
+            files = [path]
+        elif path_obj.is_dir():
+            files = []
+            for ext in [".wav", ".mp3", ".flac", ".ogg"]:
+                files.extend(str(f) for f in path_obj.glob(f"**/*{ext}"))
+        else:
+            return WorkflowResult(
+                success=False,
+                error=f"Path not found: {path}"
+            )
+        
+        if not files:
+            return WorkflowResult(
+                success=False,
+                error="No audio files found"
+            )
+        
+        output_paths = []
+        failed = 0
+        
+        for file_path in files:
+            try:
+                result = self.process(file_path, **kwargs)
+                if result.success and result.output_path:
+                    output_paths.append(result.output_path)
+                else:
+                    failed += 1
+            except Exception:
+                failed += 1
+        
+        return WorkflowResult(
+            success=failed == 0,
+            files_processed=len(files) - failed,
+            files_failed=failed,
+            output_paths=output_paths,
+        )
 
 
 __all__ = [
     "AutoTuneWorkflow",
     "TuneResult",
+    "WorkflowResult",
     "WorkflowConfig",
 ]

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 Date Sanitizer
 
@@ -40,7 +42,6 @@ It distinguishes between:
 The goal is to remove specific calendar commitments while preserving technical timestamps
 that are part of version history, release dates, or actual event logs.
 """
-from __future__ import annotations
 
 import re
 from typing import NamedTuple

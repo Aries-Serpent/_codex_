@@ -272,3 +272,48 @@ class ListCheckRunsResponse(BaseModel):
 
     class Config:
         extra = "ignore"
+
+
+# ============================================================================
+# Service Integration Types (Phase 24)
+# ============================================================================
+
+
+class Repository(BaseModel):
+    """GitHub repository metadata for service integration."""
+    
+    id: int
+    name: str
+    owner: str
+    url: str
+    
+    class Config: 
+        extra = "ignore"
+
+
+class Issue(BaseModel):
+    """GitHub issue metadata for service integration."""
+    
+    id: int
+    number: int
+    title: str
+    state: str
+    url: str
+    
+    class Config:
+        extra = "ignore"
+
+
+class PullRequest(BaseModel):
+    """GitHub pull request metadata for service integration."""
+    
+    id: int
+    number: int
+    title: str
+    state: str
+    url: str
+    base_ref: str
+    head_ref: str
+    
+    class Config:
+        extra = "ignore"
