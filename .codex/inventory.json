@@ -1,17 +1,2209 @@
-[
-  {
-    "path": "tools/codex_workflow_session_query.py",
-    "sha256": "96096f6749722fb8e65d4cbc683c5a308dc26b983c4eaa66e7f23058b2542e7f",
-    "size": 17605
-  },
-  {
-    "path": ".pre-commit-config.yaml",
-    "sha256": "b29eb10d62d62050836701a5417abc6dafa004e1241623ab98c73d91fd0199bb",
-    "size": 646
-  },
-  {
-    "path": "README.md",
-    "sha256": "ff0d029e1145a0f6e1cfac2b801c722f2d7d2e2f28e6a51ff8cecc07cb95ba4b",
-    "size": 17789
-  }
-]
+{
+  "scan_timestamp": "2026-01-21T03:51:50.919088",
+  "total_items": 275,
+  "essentials": 30,
+  "relocatable": 156,
+  "needs_review": 89,
+  "items": [
+    {
+      "name": ".codex",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.728194"
+    },
+    {
+      "name": ".github",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.811194"
+    },
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 6274,
+      "timestamp": "2026-01-21T03:50:18.820194"
+    },
+    {
+      "name": "AGENTS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".github/agents/docs/",
+      "size_bytes": 11904,
+      "timestamp": "2026-01-21T03:50:18.825194"
+    },
+    {
+      "name": "AGENTS.md.original",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".github/agents/docs/",
+      "size_bytes": 42134,
+      "timestamp": "2026-01-21T03:50:18.825194"
+    },
+    {
+      "name": "AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 19745,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "AI_AGENCY_POLICY_VERIFICATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/docs/",
+      "size_bytes": 4659,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "AUDIT_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/completion_reports/",
+      "size_bytes": 9909,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/docs/",
+      "size_bytes": 23872,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "BROKEN_LINKS_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/reports/",
+      "size_bytes": 17151,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CHANGELOG.md",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 14963,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CHANGELOG_AGENTS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".github/agents/docs/",
+      "size_bytes": 5991,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CHANGELOG_GITHUB_LOGS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 5614,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CHANGES.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 3940,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CITATION.cff",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 1041,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CI_FAILURE_ANALYSIS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/ci/",
+      "size_bytes": 7254,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CI_FIXES_PYTEST_MKDOCS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/ci/",
+      "size_bytes": 4492,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CI_FIX_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 3434,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CI_TEST_FIXES_PR2883.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 9542,
+      "timestamp": "2026-01-21T03:50:18.826194"
+    },
+    {
+      "name": "CODE_OF_CONDUCT.md",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 3122,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 13298,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9577,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11322,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 4129,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 5350,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 4022,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_1.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 3393,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_4.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 8922,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_PHASE_10_2_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11307,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_PHASE_10_2_PROGRESS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10167,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 2900,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10774,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_QA_WALKTHROUGH_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 7920,
+      "timestamp": "2026-01-21T03:50:18.827194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 33169,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 4175,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_UPDATE_FINAL.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11505,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V11_1_CONTINUATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 5180,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V11_ALL_PHASES_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 16323,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 14962,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V14_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 6532,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V14_PHASE_14_3_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 7004,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V18_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 2595,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 3577,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V2.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 13598,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 6202,
+      "timestamp": "2026-01-21T03:50:18.828194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V3.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 38158,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COGNITIVE_BRAIN_STATUS_V4_PHASE_10_1_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 14614,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COMPLETE_SESSION_SUMMARY_PHASE_20.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11696,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COMPREHENSIVE_DOCUMENTATION_AUDIT_PHASE5.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/audits/",
+      "size_bytes": 12564,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/audits/",
+      "size_bytes": 17343,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "CONTRIBUTING.md",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 4484,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_CONTINUATION_CODEQL_REMEDIATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/prompts/",
+      "size_bytes": 7974,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/prompts/",
+      "size_bytes": 2665,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_CONTINUATION_PROMPT_V2.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/prompts/",
+      "size_bytes": 13275,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_FOLLOWUP_QA_WALKTHROUGH.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 1908,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_PHASE_5_7_CONTINUATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9451,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_PHASE_8_CONTINUATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 15669,
+      "timestamp": "2026-01-21T03:50:18.829194"
+    },
+    {
+      "name": "COPILOT_PHASE_8_CONTINUATION_PROMPT_V3.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 19491,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "COPILOT_PHASE_9_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 4652,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Cargo.lock",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 35040,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Cargo.toml",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 3103,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "DOCUMENTATION_AUDIT_INDEX.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/audits/",
+      "size_bytes": 10043,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "DOCUMENTATION_QUALITY_AUDIT_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/audits/",
+      "size_bytes": 4860,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 2341,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.ci",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 1925,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.embedding",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 340,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.gpu",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 4329,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.local",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 508,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.local-codex-env",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 765,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.optimized",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 8789,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "Dockerfile.prod",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 2855,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "EXECUTIVE_SUMMARY_DOCUMENTATION_AUDIT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/audits/",
+      "size_bytes": 9819,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "FINAL_CONTINUATION_PROMPT_FOR_PR.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/prompts/",
+      "size_bytes": 6287,
+      "timestamp": "2026-01-21T03:50:18.830194"
+    },
+    {
+      "name": "FINAL_SESSION_SUMMARY_AND_FOLLOWUP.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 22124,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "FINAL_SESSION_SUMMARY_PR2836_PHASE10.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 19925,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "FINAL_SESSION_SUMMARY_PR2883.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 10157,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "FIX_SUMMARY_PR_2852.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 7265,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "FOLLOW_UP_PROMPT_PHASE_20_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9107,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".github/agents/docs/",
+      "size_bytes": 23979,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "GLOSSARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 4306,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "GOVERNANCE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 5361,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 26441,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "LICENSE",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 2200,
+      "timestamp": "2026-01-21T03:50:18.831194"
+    },
+    {
+      "name": "LICENSES",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "MANIFEST.in",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 1167,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "Makefile",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 5429,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "Makefile.ml",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 906,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "Makefile.status",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 962,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PACKAGE_PRIORITIZATION_PHASE5.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 8579,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_1_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9108,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_2_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 15117,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10407,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_2_CONTINUATION_PROMPT_NEXT_SESSION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 13840,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_2_FINAL_COMPLETION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 15468,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 42434,
+      "timestamp": "2026-01-21T03:50:18.832194"
+    },
+    {
+      "name": "PHASE_10_MASTER_INTEGRATION_PROMPTSET.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 18483,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11409,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_1_AUTHENTICATION_IMPLEMENTATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 16254,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_1_COGNITIVE_BRAIN_UPDATE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 14553,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_1_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10595,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_X_COMPREHENSIVE_PLANNING.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 17348,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_X_FINAL_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10617,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_X_FOLLOWUP_GITHUB_FOCUS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 14069,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_11_X_PROMPTSETS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 19252,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_12_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 11007,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 14246,
+      "timestamp": "2026-01-21T03:50:18.833194"
+    },
+    {
+      "name": "PHASE_20_COMPLETION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10532,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_2_1_COMPLETION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9921,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_2_2_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 5109,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_2_3_RAG_TESTS_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 9293,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_2_QUICK_REFERENCE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 2539,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 15206,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_4_COMPLETION_FINAL_SUMMARY.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 16526,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 10047,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PHASE_8_COMPLETE_IMPLEMENTATION_MASTER_PLAN.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/phases/",
+      "size_bytes": 34299,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PR2782_VALIDATION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 7426,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PR2785_VALIDATION_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 10605,
+      "timestamp": "2026-01-21T03:50:18.834194"
+    },
+    {
+      "name": "PROMPTS",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "PR_2858_FINAL_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/completion_reports/",
+      "size_bytes": 15605,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "PR_CONTINUATION_COMMENT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 5119,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "QA_WALKTHROUGH_OPTIMIZATION_ANALYSIS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 11077,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "QUICKSTART.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 18103,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "RAG_TEST_VALIDATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 6020,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 44477,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 24869,
+      "timestamp": "2026-01-21T03:50:18.835194"
+    },
+    {
+      "name": "ROOT_CAUSE_ANALYSIS_COPILOT_SESSION_FAILURE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 16507,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "RUST_ENGINE_README.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 3588,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SECURITY.md",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 18458,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SECURITY_ADVISORY_DOWNLOAD_ARTIFACT_CVE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/security/",
+      "size_bytes": 4729,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SECURITY_SUMMARY_CODEQL_REMEDIATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/security/",
+      "size_bytes": 10586,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SECURITY_WORK_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/completion_reports/",
+      "size_bytes": 8919,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SESSION_COMPLETION_100_PERCENT_COVERAGE_PHASE1.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 13895,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SESSION_COMPLETION_PHASE2_VERIFICATION.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 9603,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/sessions/",
+      "size_bytes": 19019,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "TESTING_CONVENTIONS.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 13139,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "TEST_COVERAGE_BASELINE_REPORT.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/reports/",
+      "size_bytes": 15897,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "TEST_COVERAGE_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/reports/",
+      "size_bytes": 1853,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "VALIDATION_SUMMARY.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/validation/",
+      "size_bytes": 6986,
+      "timestamp": "2026-01-21T03:50:18.836194"
+    },
+    {
+      "name": "WORKFLOW_FIXES_SUMMARY.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/ci/",
+      "size_bytes": 9475,
+      "timestamp": "2026-01-21T03:50:18.837194"
+    },
+    {
+      "name": "WORKFLOW_FIX_QUICK_REFERENCE.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/ci/",
+      "size_bytes": 3552,
+      "timestamp": "2026-01-21T03:50:18.837194"
+    },
+    {
+      "name": "_codex",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.837194"
+    },
+    {
+      "name": "_codex_",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.837194"
+    },
+    {
+      "name": "_codex_reports",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.838194"
+    },
+    {
+      "name": "actions",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.838194"
+    },
+    {
+      "name": "agents",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.842194"
+    },
+    {
+      "name": "analysis",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.843194"
+    },
+    {
+      "name": "analyze_broken_links.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 5234,
+      "timestamp": "2026-01-21T03:50:18.843194"
+    },
+    {
+      "name": "archive",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.843194"
+    },
+    {
+      "name": "artifacts",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.848194"
+    },
+    {
+      "name": "assets",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.848194"
+    },
+    {
+      "name": "audio_cleaner_v1",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.850194"
+    },
+    {
+      "name": "automation",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.851194"
+    },
+    {
+      "name": "bandit.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 273,
+      "timestamp": "2026-01-21T03:50:18.851194"
+    },
+    {
+      "name": "baseline",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.851194"
+    },
+    {
+      "name": "baseline_coverage.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 161895,
+      "timestamp": "2026-01-21T03:50:18.853194"
+    },
+    {
+      "name": "benches",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.853194"
+    },
+    {
+      "name": "benchmarks",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.853194"
+    },
+    {
+      "name": "brain_cli.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 7446,
+      "timestamp": "2026-01-21T03:50:18.853194"
+    },
+    {
+      "name": "build_helpers_manifest.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 1786,
+      "timestamp": "2026-01-21T03:50:18.853194"
+    },
+    {
+      "name": "cli",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.854194"
+    },
+    {
+      "name": "codex_addons",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_capability_map.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 2580,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_digest",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_engine.pyi",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 4200,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_gap_registry.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 1580,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_hardship.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 463,
+      "timestamp": "2026-01-21T03:50:18.855194"
+    },
+    {
+      "name": "codex_ml",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_ml_test_map.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 441,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_ready_task_sequence.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 6303,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_regression",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_task_executor.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 39975,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_task_sequence.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 1036,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_task_sequence.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 16407,
+      "timestamp": "2026-01-21T03:50:18.856194"
+    },
+    {
+      "name": "codex_utils",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.857194"
+    },
+    {
+      "name": "cognitive",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.857194"
+    },
+    {
+      "name": "cognitive_app",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.869194"
+    },
+    {
+      "name": "cognitive_codex_app.zip",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 271423,
+      "timestamp": "2026-01-21T03:50:18.871194"
+    },
+    {
+      "name": "commitlint.config.mjs",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 591,
+      "timestamp": "2026-01-21T03:50:18.871194"
+    },
+    {
+      "name": "conf",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.872194"
+    },
+    {
+      "name": "config",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.873194"
+    },
+    {
+      "name": "config_legacy",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.873194"
+    },
+    {
+      "name": "configs",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.882194"
+    },
+    {
+      "name": "conftest.py",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 8869,
+      "timestamp": "2026-01-21T03:50:18.882194"
+    },
+    {
+      "name": "copilot",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.882194"
+    },
+    {
+      "name": "coverage.json",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 30645,
+      "timestamp": "2026-01-21T03:50:18.883194"
+    },
+    {
+      "name": "coverage_gaps.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 4327,
+      "timestamp": "2026-01-21T03:50:18.883194"
+    },
+    {
+      "name": "coverage_reports",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.888194"
+    },
+    {
+      "name": "coverage_validation_report.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 13328,
+      "timestamp": "2026-01-21T03:50:18.889194"
+    },
+    {
+      "name": "data",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.889194"
+    },
+    {
+      "name": "datasets",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.890194"
+    },
+    {
+      "name": "db",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "deny.toml",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 803,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "deploy",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "detectors",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "digest.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 8825,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "doc_quality_audit.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 26857,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "docker",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.892194"
+    },
+    {
+      "name": "docker-compose.embedding.yml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 415,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "docker-compose.override.local.yml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 229,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "docker-compose.override.yml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 185,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "docker-compose.yml",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 2168,
+      "timestamp": "2026-01-21T03:50:18.891194"
+    },
+    {
+      "name": "docs",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.969194"
+    },
+    {
+      "name": "documentation_quality_audit.json",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 656,
+      "timestamp": "2026-01-21T03:50:18.969194"
+    },
+    {
+      "name": "dvc.yaml",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 654,
+      "timestamp": "2026-01-21T03:50:18.969194"
+    },
+    {
+      "name": "examples",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.972194"
+    },
+    {
+      "name": "experiments",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.972194"
+    },
+    {
+      "name": "great_expectations",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.972194"
+    },
+    {
+      "name": "guides",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.973194"
+    },
+    {
+      "name": "implementation_completed",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.973194"
+    },
+    {
+      "name": "interfaces",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.973194"
+    },
+    {
+      "name": "logs",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.977194"
+    },
+    {
+      "name": "manifests",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.979194"
+    },
+    {
+      "name": "mappings",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.979194"
+    },
+    {
+      "name": "misc",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.980194"
+    },
+    {
+      "name": "mkdocs.yml",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 3667,
+      "timestamp": "2026-01-21T03:50:18.983194"
+    },
+    {
+      "name": "models",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.983194"
+    },
+    {
+      "name": "monitoring",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "mutmut_config.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 1404,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "mypy.ini",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 552,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "notebooks",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "nox_enhancements.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 8861,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "nox_sessions",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "noxfile.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 24559,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "noxfile.security_additions.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 1784,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "omegaconf",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "ops",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.984194"
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 282,
+      "timestamp": "2026-01-21T03:50:18.985194"
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 962,
+      "timestamp": "2026-01-21T03:50:18.985194"
+    },
+    {
+      "name": "patches",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.986194"
+    },
+    {
+      "name": "policies",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.987194"
+    },
+    {
+      "name": "prompts",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.987194"
+    },
+    {
+      "name": "pyproject.toml",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 14368,
+      "timestamp": "2026-01-21T03:50:18.988194"
+    },
+    {
+      "name": "pytest.ini",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 2089,
+      "timestamp": "2026-01-21T03:50:18.988194"
+    },
+    {
+      "name": "repomix-instruction.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 12339,
+      "timestamp": "2026-01-21T03:50:18.988194"
+    },
+    {
+      "name": "repomix.config.json",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 1786,
+      "timestamp": "2026-01-21T03:50:18.988194"
+    },
+    {
+      "name": "reports",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-dev.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 301,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-eval.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 221,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-minimal.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 911,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-ml-cpu.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 279,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-ml-lite.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 582,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-notebook.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 171,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-optional.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 1109,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements-test.txt",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 853,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "requirements.txt",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 1270,
+      "timestamp": "2026-01-21T03:50:18.994194"
+    },
+    {
+      "name": "run_codex_env.sh",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 402,
+      "timestamp": "2026-01-21T03:50:18.995194"
+    },
+    {
+      "name": "run_codex_task_sequence.sh",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": ".codex/archive/",
+      "size_bytes": 463,
+      "timestamp": "2026-01-21T03:50:18.995194"
+    },
+    {
+      "name": "rust_swarm",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.995194"
+    },
+    {
+      "name": "samples",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.995194"
+    },
+    {
+      "name": "schemas",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:18.996194"
+    },
+    {
+      "name": "scripts",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.026194"
+    },
+    {
+      "name": "semgrep_rules",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.026194"
+    },
+    {
+      "name": "sentencepiece",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.026194"
+    },
+    {
+      "name": "services",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.028194"
+    },
+    {
+      "name": "session_summary.md",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "docs/archive/misc/",
+      "size_bytes": 5236,
+      "timestamp": "2026-01-21T03:50:19.029194"
+    },
+    {
+      "name": "setup.cfg",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 179,
+      "timestamp": "2026-01-21T03:50:19.030194"
+    },
+    {
+      "name": "sitecustomize.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 5074,
+      "timestamp": "2026-01-21T03:50:19.030194"
+    },
+    {
+      "name": "space.mk",
+      "type": "file",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 2197,
+      "timestamp": "2026-01-21T03:50:19.030194"
+    },
+    {
+      "name": "src",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.097194"
+    },
+    {
+      "name": "temp",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.097194"
+    },
+    {
+      "name": "templates",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.100194"
+    },
+    {
+      "name": "tests",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.206194"
+    },
+    {
+      "name": "tests_rust",
+      "type": "directory",
+      "classification": "essential",
+      "target_location": "Root - Core directory",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.206194"
+    },
+    {
+      "name": "tokenization",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.206194"
+    },
+    {
+      "name": "tools",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.277194"
+    },
+    {
+      "name": "torch",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.277194"
+    },
+    {
+      "name": "training",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.278194"
+    },
+    {
+      "name": "transformers",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.278194"
+    },
+    {
+      "name": "typer",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.278194"
+    },
+    {
+      "name": "utils",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.278194"
+    },
+    {
+      "name": "uv.lock",
+      "type": "file",
+      "classification": "essential",
+      "target_location": "Root - Core project file",
+      "size_bytes": 119778,
+      "timestamp": "2026-01-21T03:50:19.279194"
+    },
+    {
+      "name": "validate_fences.py",
+      "type": "file",
+      "classification": "relocatable",
+      "target_location": "scripts/archive/",
+      "size_bytes": 617,
+      "timestamp": "2026-01-21T03:50:19.279194"
+    },
+    {
+      "name": "workbench",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.282194"
+    },
+    {
+      "name": "yaml_legacy",
+      "type": "directory",
+      "classification": "investigate",
+      "target_location": "NEEDS_MANUAL_REVIEW",
+      "size_bytes": 0,
+      "timestamp": "2026-01-21T03:50:19.282194"
+    }
+  ]
+}

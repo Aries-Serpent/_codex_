@@ -1,0 +1,3493 @@
+{
+  "plan_version": "1.0.0",
+  "physics_model": {
+    "energy_level": 5,
+    "path_stability": "minimize_churn",
+    "field_tracking": [
+      "timestamp",
+      "commit_sha",
+      "file_hash"
+    ],
+    "pattern_enforcement": "strict",
+    "redundancy": "rollback_enabled",
+    "balance": "zero_break_guarantee"
+  },
+  "relocations": [
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_1.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_1.md",
+      "type": "file",
+      "size_bytes": 3393,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_4.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20_4.md",
+      "type": "file",
+      "size_bytes": 8922,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_PHASE_10_2_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_PHASE_10_2_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 11307,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_PHASE_10_2_PROGRESS.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_PHASE_10_2_PROGRESS.md",
+      "type": "file",
+      "size_bytes": 10167,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_PHASE_UPDATE.md",
+      "type": "file",
+      "size_bytes": 2900,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+      "type": "file",
+      "size_bytes": 10774,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_QA_WALKTHROUGH_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_QA_WALKTHROUGH_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 7920,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "type": "file",
+      "size_bytes": 33169,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md",
+      "type": "file",
+      "size_bytes": 4175,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_UPDATE_FINAL.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_UPDATE_FINAL.md",
+      "type": "file",
+      "size_bytes": 11505,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V11_1_CONTINUATION.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V11_1_CONTINUATION.md",
+      "type": "file",
+      "size_bytes": 5180,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V11_ALL_PHASES_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V11_ALL_PHASES_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 16323,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md",
+      "type": "file",
+      "size_bytes": 14962,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V14_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V14_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 6532,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V14_PHASE_14_3_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V14_PHASE_14_3_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 7004,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V18_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V18_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 2595,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 3577,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V2.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V2.md",
+      "type": "file",
+      "size_bytes": 13598,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md",
+      "type": "file",
+      "size_bytes": 6202,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V3.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V3.md",
+      "type": "file",
+      "size_bytes": 38158,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_STATUS_V4_PHASE_10_1_COMPLETE.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_STATUS_V4_PHASE_10_1_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 14614,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COMPLETE_SESSION_SUMMARY_PHASE_20.md",
+      "target": "docs/archive/phases/COMPLETE_SESSION_SUMMARY_PHASE_20.md",
+      "type": "file",
+      "size_bytes": 11696,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COMPREHENSIVE_DOCUMENTATION_AUDIT_PHASE5.md",
+      "target": "docs/audits/COMPREHENSIVE_DOCUMENTATION_AUDIT_PHASE5.md",
+      "type": "file",
+      "size_bytes": 12564,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md",
+      "target": "docs/audits/COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md",
+      "type": "file",
+      "size_bytes": 17343,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_CONTINUATION_CODEQL_REMEDIATION.md",
+      "target": "docs/archive/prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md",
+      "type": "file",
+      "size_bytes": 7974,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/prompts/COPILOT_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "size_bytes": 2665,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_CONTINUATION_PROMPT_V2.md",
+      "target": "docs/archive/prompts/COPILOT_CONTINUATION_PROMPT_V2.md",
+      "type": "file",
+      "size_bytes": 13275,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_FOLLOWUP_QA_WALKTHROUGH.md",
+      "target": "docs/archive/misc/COPILOT_FOLLOWUP_QA_WALKTHROUGH.md",
+      "type": "file",
+      "size_bytes": 1908,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_PHASE_5_7_CONTINUATION.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_5_7_CONTINUATION.md",
+      "type": "file",
+      "size_bytes": 9451,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_PHASE_8_CONTINUATION.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_8_CONTINUATION.md",
+      "type": "file",
+      "size_bytes": 15669,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_PHASE_8_CONTINUATION_PROMPT_V3.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_8_CONTINUATION_PROMPT_V3.md",
+      "type": "file",
+      "size_bytes": 19491,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./COPILOT_PHASE_9_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/COPILOT_PHASE_9_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "size_bytes": 4652,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./DOCUMENTATION_AUDIT_INDEX.md",
+      "target": "docs/audits/DOCUMENTATION_AUDIT_INDEX.md",
+      "type": "file",
+      "size_bytes": 10043,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./DOCUMENTATION_QUALITY_AUDIT_REPORT.md",
+      "target": "docs/audits/DOCUMENTATION_QUALITY_AUDIT_REPORT.md",
+      "type": "file",
+      "size_bytes": 4860,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./EXECUTIVE_SUMMARY_DOCUMENTATION_AUDIT.md",
+      "target": "docs/audits/EXECUTIVE_SUMMARY_DOCUMENTATION_AUDIT.md",
+      "type": "file",
+      "size_bytes": 9819,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FINAL_CONTINUATION_PROMPT_FOR_PR.md",
+      "target": "docs/archive/prompts/FINAL_CONTINUATION_PROMPT_FOR_PR.md",
+      "type": "file",
+      "size_bytes": 6287,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FINAL_SESSION_SUMMARY_AND_FOLLOWUP.md",
+      "target": "docs/archive/sessions/FINAL_SESSION_SUMMARY_AND_FOLLOWUP.md",
+      "type": "file",
+      "size_bytes": 22124,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FINAL_SESSION_SUMMARY_PR2836_PHASE10.md",
+      "target": "docs/archive/sessions/FINAL_SESSION_SUMMARY_PR2836_PHASE10.md",
+      "type": "file",
+      "size_bytes": 19925,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FINAL_SESSION_SUMMARY_PR2883.md",
+      "target": "docs/archive/sessions/FINAL_SESSION_SUMMARY_PR2883.md",
+      "type": "file",
+      "size_bytes": 10157,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FIX_SUMMARY_PR_2852.md",
+      "target": "docs/archive/validation/FIX_SUMMARY_PR_2852.md",
+      "type": "file",
+      "size_bytes": 7265,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./FOLLOW_UP_PROMPT_PHASE_20_COMPLETE.md",
+      "target": "docs/archive/phases/FOLLOW_UP_PROMPT_PHASE_20_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 9107,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+      "target": ".github/agents/docs/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+      "type": "file",
+      "size_bytes": 23979,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./GLOSSARY.md",
+      "target": "docs/archive/misc/GLOSSARY.md",
+      "type": "file",
+      "size_bytes": 4306,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./GOVERNANCE.md",
+      "target": "docs/archive/misc/GOVERNANCE.md",
+      "type": "file",
+      "size_bytes": 5361,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
+      "target": "docs/archive/misc/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
+      "type": "file",
+      "size_bytes": 26441,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PACKAGE_PRIORITIZATION_PHASE5.md",
+      "target": "docs/archive/misc/PACKAGE_PRIORITIZATION_PHASE5.md",
+      "type": "file",
+      "size_bytes": 8579,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_1_COMPLETE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_10_1_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 9108,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_2_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "size_bytes": 15117,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "type": "file",
+      "size_bytes": 10407,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_2_CONTINUATION_PROMPT_NEXT_SESSION.md",
+      "target": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT_NEXT_SESSION.md",
+      "type": "file",
+      "size_bytes": 13840,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_2_FINAL_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_10_2_FINAL_COMPLETION_REPORT.md",
+      "type": "file",
+      "size_bytes": 15468,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "target": "docs/archive/phases/PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "type": "file",
+      "size_bytes": 42434,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_10_MASTER_INTEGRATION_PROMPTSET.md",
+      "target": "docs/archive/phases/PHASE_10_MASTER_INTEGRATION_PROMPTSET.md",
+      "type": "file",
+      "size_bytes": 18483,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 11409,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_1_AUTHENTICATION_IMPLEMENTATION.md",
+      "target": "docs/archive/phases/PHASE_11_1_AUTHENTICATION_IMPLEMENTATION.md",
+      "type": "file",
+      "size_bytes": 16254,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_1_COGNITIVE_BRAIN_UPDATE.md",
+      "target": "docs/archive/phases/PHASE_11_1_COGNITIVE_BRAIN_UPDATE.md",
+      "type": "file",
+      "size_bytes": 14553,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_1_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_1_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 10595,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_X_COMPREHENSIVE_PLANNING.md",
+      "target": "docs/archive/phases/PHASE_11_X_COMPREHENSIVE_PLANNING.md",
+      "type": "file",
+      "size_bytes": 17348,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_X_FINAL_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_11_X_FINAL_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 10617,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_X_FOLLOWUP_GITHUB_FOCUS.md",
+      "target": "docs/archive/phases/PHASE_11_X_FOLLOWUP_GITHUB_FOCUS.md",
+      "type": "file",
+      "size_bytes": 14069,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_11_X_PROMPTSETS.md",
+      "target": "docs/archive/phases/PHASE_11_X_PROMPTSETS.md",
+      "type": "file",
+      "size_bytes": 19252,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_12_CONTINUATION_PROMPT.md",
+      "target": "docs/archive/phases/PHASE_12_CONTINUATION_PROMPT.md",
+      "type": "file",
+      "size_bytes": 11007,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 14246,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_20_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_20_COMPLETION_REPORT.md",
+      "type": "file",
+      "size_bytes": 10532,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_2_1_COMPLETION_REPORT.md",
+      "target": "docs/archive/phases/PHASE_2_1_COMPLETION_REPORT.md",
+      "type": "file",
+      "size_bytes": 9921,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_2_2_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_2_2_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 5109,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_2_3_RAG_TESTS_COMPLETE.md",
+      "target": "docs/archive/phases/PHASE_2_3_RAG_TESTS_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 9293,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_2_QUICK_REFERENCE.md",
+      "target": "docs/archive/phases/PHASE_2_QUICK_REFERENCE.md",
+      "type": "file",
+      "size_bytes": 2539,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 15206,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_4_COMPLETION_FINAL_SUMMARY.txt",
+      "target": "docs/archive/phases/PHASE_4_COMPLETION_FINAL_SUMMARY.txt",
+      "type": "file",
+      "size_bytes": 16526,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md",
+      "target": "docs/archive/phases/PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 10047,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PHASE_8_COMPLETE_IMPLEMENTATION_MASTER_PLAN.md",
+      "target": "docs/archive/phases/PHASE_8_COMPLETE_IMPLEMENTATION_MASTER_PLAN.md",
+      "type": "file",
+      "size_bytes": 34299,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PR2782_VALIDATION_REPORT.md",
+      "target": "docs/archive/validation/PR2782_VALIDATION_REPORT.md",
+      "type": "file",
+      "size_bytes": 7426,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PR2785_VALIDATION_REPORT.md",
+      "target": "docs/archive/validation/PR2785_VALIDATION_REPORT.md",
+      "type": "file",
+      "size_bytes": 10605,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PR_2858_FINAL_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/completion_reports/PR_2858_FINAL_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 15605,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./PR_CONTINUATION_COMMENT.md",
+      "target": "docs/archive/validation/PR_CONTINUATION_COMMENT.md",
+      "type": "file",
+      "size_bytes": 5119,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./QA_WALKTHROUGH_OPTIMIZATION_ANALYSIS.md",
+      "target": "docs/archive/misc/QA_WALKTHROUGH_OPTIMIZATION_ANALYSIS.md",
+      "type": "file",
+      "size_bytes": 11077,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./QUICKSTART.md",
+      "target": "docs/archive/misc/QUICKSTART.md",
+      "type": "file",
+      "size_bytes": 18103,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./RAG_TEST_VALIDATION.md",
+      "target": "docs/archive/misc/RAG_TEST_VALIDATION.md",
+      "type": "file",
+      "size_bytes": 6020,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+      "target": "docs/archive/misc/REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+      "type": "file",
+      "size_bytes": 24869,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./ROOT_CAUSE_ANALYSIS_COPILOT_SESSION_FAILURE.md",
+      "target": "docs/archive/sessions/ROOT_CAUSE_ANALYSIS_COPILOT_SESSION_FAILURE.md",
+      "type": "file",
+      "size_bytes": 16507,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./RUST_ENGINE_README.md",
+      "target": "docs/archive/misc/RUST_ENGINE_README.md",
+      "type": "file",
+      "size_bytes": 3588,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SECURITY_ADVISORY_DOWNLOAD_ARTIFACT_CVE.md",
+      "target": "docs/security/SECURITY_ADVISORY_DOWNLOAD_ARTIFACT_CVE.md",
+      "type": "file",
+      "size_bytes": 4729,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SECURITY_SUMMARY_CODEQL_REMEDIATION.md",
+      "target": "docs/security/SECURITY_SUMMARY_CODEQL_REMEDIATION.md",
+      "type": "file",
+      "size_bytes": 10586,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SECURITY_WORK_COMPLETE_SUMMARY.md",
+      "target": "docs/archive/completion_reports/SECURITY_WORK_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 8919,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SESSION_COMPLETION_100_PERCENT_COVERAGE_PHASE1.md",
+      "target": "docs/archive/sessions/SESSION_COMPLETION_100_PERCENT_COVERAGE_PHASE1.md",
+      "type": "file",
+      "size_bytes": 13895,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SESSION_COMPLETION_PHASE2_VERIFICATION.md",
+      "target": "docs/archive/sessions/SESSION_COMPLETION_PHASE2_VERIFICATION.md",
+      "type": "file",
+      "size_bytes": 9603,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "target": "docs/archive/sessions/SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "type": "file",
+      "size_bytes": 19019,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./TESTING_CONVENTIONS.md",
+      "target": "docs/archive/misc/TESTING_CONVENTIONS.md",
+      "type": "file",
+      "size_bytes": 13139,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./TEST_COVERAGE_BASELINE_REPORT.md",
+      "target": ".codex/reports/TEST_COVERAGE_BASELINE_REPORT.md",
+      "type": "file",
+      "size_bytes": 15897,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./TEST_COVERAGE_SUMMARY.md",
+      "target": ".codex/reports/TEST_COVERAGE_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 1853,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./VALIDATION_SUMMARY.txt",
+      "target": "docs/archive/validation/VALIDATION_SUMMARY.txt",
+      "type": "file",
+      "size_bytes": 6986,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./WORKFLOW_FIXES_SUMMARY.md",
+      "target": "docs/ci/WORKFLOW_FIXES_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 9475,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./WORKFLOW_FIX_QUICK_REFERENCE.md",
+      "target": "docs/ci/WORKFLOW_FIX_QUICK_REFERENCE.md",
+      "type": "file",
+      "size_bytes": 3552,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./analyze_broken_links.py",
+      "target": "scripts/archive/analyze_broken_links.py",
+      "type": "file",
+      "size_bytes": 5234,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./bandit.yaml",
+      "target": ".codex/archive/bandit.yaml",
+      "type": "file",
+      "size_bytes": 273,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./baseline_coverage.txt",
+      "target": ".codex/archive/baseline_coverage.txt",
+      "type": "file",
+      "size_bytes": 161895,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./brain_cli.py",
+      "target": "scripts/archive/brain_cli.py",
+      "type": "file",
+      "size_bytes": 7446,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./build_helpers_manifest.py",
+      "target": "scripts/archive/build_helpers_manifest.py",
+      "type": "file",
+      "size_bytes": 1786,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_capability_map.yaml",
+      "target": ".codex/archive/codex_capability_map.yaml",
+      "type": "file",
+      "size_bytes": 2580,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_gap_registry.yaml",
+      "target": ".codex/archive/codex_gap_registry.yaml",
+      "type": "file",
+      "size_bytes": 1580,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_hardship.yaml",
+      "target": ".codex/archive/codex_hardship.yaml",
+      "type": "file",
+      "size_bytes": 463,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_ml_test_map.yaml",
+      "target": ".codex/archive/codex_ml_test_map.yaml",
+      "type": "file",
+      "size_bytes": 441,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_ready_task_sequence.yaml",
+      "target": ".codex/archive/codex_ready_task_sequence.yaml",
+      "type": "file",
+      "size_bytes": 6303,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_task_executor.py",
+      "target": "scripts/archive/codex_task_executor.py",
+      "type": "file",
+      "size_bytes": 39975,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_task_sequence.py",
+      "target": "scripts/archive/codex_task_sequence.py",
+      "type": "file",
+      "size_bytes": 1036,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./codex_task_sequence.yaml",
+      "target": ".codex/archive/codex_task_sequence.yaml",
+      "type": "file",
+      "size_bytes": 16407,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./coverage.json",
+      "target": ".codex/archive/coverage.json",
+      "type": "file",
+      "size_bytes": 30645,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./coverage_gaps.txt",
+      "target": ".codex/archive/coverage_gaps.txt",
+      "type": "file",
+      "size_bytes": 4327,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./coverage_validation_report.md",
+      "target": "docs/archive/misc/coverage_validation_report.md",
+      "type": "file",
+      "size_bytes": 13328,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./digest.md",
+      "target": "docs/archive/misc/digest.md",
+      "type": "file",
+      "size_bytes": 8825,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./doc_quality_audit.py",
+      "target": "scripts/archive/doc_quality_audit.py",
+      "type": "file",
+      "size_bytes": 26857,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./docker-compose.embedding.yml",
+      "target": ".codex/archive/docker-compose.embedding.yml",
+      "type": "file",
+      "size_bytes": 415,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./docker-compose.override.local.yml",
+      "target": ".codex/archive/docker-compose.override.local.yml",
+      "type": "file",
+      "size_bytes": 229,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./docker-compose.override.yml",
+      "target": ".codex/archive/docker-compose.override.yml",
+      "type": "file",
+      "size_bytes": 185,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./documentation_quality_audit.json",
+      "target": ".codex/archive/documentation_quality_audit.json",
+      "type": "file",
+      "size_bytes": 656,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./dvc.yaml",
+      "target": ".codex/archive/dvc.yaml",
+      "type": "file",
+      "size_bytes": 654,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./mutmut_config.py",
+      "target": "scripts/archive/mutmut_config.py",
+      "type": "file",
+      "size_bytes": 1404,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./nox_enhancements.py",
+      "target": "scripts/archive/nox_enhancements.py",
+      "type": "file",
+      "size_bytes": 8861,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./noxfile.py",
+      "target": "scripts/archive/noxfile.py",
+      "type": "file",
+      "size_bytes": 24559,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./noxfile.security_additions.py",
+      "target": "scripts/archive/noxfile.security_additions.py",
+      "type": "file",
+      "size_bytes": 1784,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./repomix-instruction.md",
+      "target": "docs/archive/misc/repomix-instruction.md",
+      "type": "file",
+      "size_bytes": 12339,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./repomix.config.json",
+      "target": ".codex/archive/repomix.config.json",
+      "type": "file",
+      "size_bytes": 1786,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-dev.txt",
+      "target": ".codex/archive/requirements-dev.txt",
+      "type": "file",
+      "size_bytes": 301,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-eval.txt",
+      "target": ".codex/archive/requirements-eval.txt",
+      "type": "file",
+      "size_bytes": 221,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-minimal.txt",
+      "target": ".codex/archive/requirements-minimal.txt",
+      "type": "file",
+      "size_bytes": 911,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-ml-cpu.txt",
+      "target": ".codex/archive/requirements-ml-cpu.txt",
+      "type": "file",
+      "size_bytes": 279,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-ml-lite.txt",
+      "target": ".codex/archive/requirements-ml-lite.txt",
+      "type": "file",
+      "size_bytes": 582,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-notebook.txt",
+      "target": ".codex/archive/requirements-notebook.txt",
+      "type": "file",
+      "size_bytes": 171,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-optional.txt",
+      "target": ".codex/archive/requirements-optional.txt",
+      "type": "file",
+      "size_bytes": 1109,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./requirements-test.txt",
+      "target": ".codex/archive/requirements-test.txt",
+      "type": "file",
+      "size_bytes": 853,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./run_codex_env.sh",
+      "target": ".codex/archive/run_codex_env.sh",
+      "type": "file",
+      "size_bytes": 402,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./run_codex_task_sequence.sh",
+      "target": ".codex/archive/run_codex_task_sequence.sh",
+      "type": "file",
+      "size_bytes": 463,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./session_summary.md",
+      "target": "docs/archive/misc/session_summary.md",
+      "type": "file",
+      "size_bytes": 5236,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./sitecustomize.py",
+      "target": "scripts/archive/sitecustomize.py",
+      "type": "file",
+      "size_bytes": 5074,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./validate_fences.py",
+      "target": "scripts/archive/validate_fences.py",
+      "type": "file",
+      "size_bytes": 617,
+      "references_count": 0,
+      "risk_level": "LOW",
+      "validation_required": false
+    },
+    {
+      "source": "./AGENTS.md.original",
+      "target": ".github/agents/docs/AGENTS.md.original",
+      "type": "file",
+      "size_bytes": 42134,
+      "references_count": 3,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "target": "docs/archive/phases/AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "type": "file",
+      "size_bytes": 19745,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./AI_AGENCY_POLICY_VERIFICATION.md",
+      "target": ".codex/docs/AI_AGENCY_POLICY_VERIFICATION.md",
+      "type": "file",
+      "size_bytes": 4659,
+      "references_count": 2,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./AUDIT_COMPLETION_SUMMARY.md",
+      "target": "docs/archive/completion_reports/AUDIT_COMPLETION_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 9909,
+      "references_count": 2,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./BROKEN_LINKS_REPORT.md",
+      "target": ".codex/reports/BROKEN_LINKS_REPORT.md",
+      "type": "file",
+      "size_bytes": 17151,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CHANGELOG_AGENTS.md",
+      "target": ".github/agents/docs/CHANGELOG_AGENTS.md",
+      "type": "file",
+      "size_bytes": 5991,
+      "references_count": 2,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CHANGELOG_GITHUB_LOGS.md",
+      "target": "docs/archive/misc/CHANGELOG_GITHUB_LOGS.md",
+      "type": "file",
+      "size_bytes": 5614,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CI_FAILURE_ANALYSIS.md",
+      "target": "docs/ci/CI_FAILURE_ANALYSIS.md",
+      "type": "file",
+      "size_bytes": 7254,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CI_FIXES_PYTEST_MKDOCS.md",
+      "target": "docs/ci/CI_FIXES_PYTEST_MKDOCS.md",
+      "type": "file",
+      "size_bytes": 4492,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CI_FIX_SUMMARY.md",
+      "target": "docs/archive/validation/CI_FIX_SUMMARY.md",
+      "type": "file",
+      "size_bytes": 3434,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./CI_TEST_FIXES_PR2883.md",
+      "target": "docs/archive/validation/CI_TEST_FIXES_PR2883.md",
+      "type": "file",
+      "size_bytes": 9542,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "type": "file",
+      "size_bytes": 11322,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "type": "file",
+      "size_bytes": 4129,
+      "references_count": 4,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "type": "file",
+      "size_bytes": 5350,
+      "references_count": 1,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "type": "file",
+      "size_bytes": 4022,
+      "references_count": 3,
+      "risk_level": "MEDIUM",
+      "validation_required": true
+    },
+    {
+      "source": "./AGENTS.md",
+      "target": ".github/agents/docs/AGENTS.md",
+      "type": "file",
+      "size_bytes": 11904,
+      "references_count": 293,
+      "risk_level": "HIGH",
+      "validation_required": true
+    },
+    {
+      "source": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "target": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "type": "file",
+      "size_bytes": 23872,
+      "references_count": 6,
+      "risk_level": "HIGH",
+      "validation_required": true
+    },
+    {
+      "source": "./CHANGES.md",
+      "target": "docs/archive/misc/CHANGES.md",
+      "type": "file",
+      "size_bytes": 3940,
+      "references_count": 6,
+      "risk_level": "HIGH",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "type": "file",
+      "size_bytes": 13298,
+      "references_count": 9,
+      "risk_level": "HIGH",
+      "validation_required": true
+    },
+    {
+      "source": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "target": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "type": "file",
+      "size_bytes": 9577,
+      "references_count": 6,
+      "risk_level": "HIGH",
+      "validation_required": true
+    }
+  ],
+  "reference_updates": [
+    {
+      "affected_file": "docs/inventory.md",
+      "line_number": 3,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/inventory.md",
+      "line_number": 8,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/inventory.md",
+      "line_number": 45,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/inventory.md",
+      "line_number": 45,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/inventory.md",
+      "line_number": 115,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/PR_TEMPLATE_COMPREHENSIVE.md",
+      "line_number": 712,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/GITHUB_SPARK_INTEGRATION_GUIDE.md",
+      "line_number": 1592,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/GITHUB_SPARK_INTEGRATION_GUIDE.md",
+      "line_number": 1592,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ADMIN_DECISIONS_README.md",
+      "line_number": 210,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ADMIN_DECISIONS_README.md",
+      "line_number": 210,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/FINAL_COMPLETION_REPORT.md",
+      "line_number": 26,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/PHYSICS_TECHNICAL_REFERENCE.md",
+      "line_number": 435,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/mkdocs_warnings_analysis.md",
+      "line_number": 62,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/mkdocs_warnings_analysis.md",
+      "line_number": 62,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ARCHITECTURE_BLUEPRINT.md",
+      "line_number": 981,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ARCHITECTURE_BLUEPRINT.md",
+      "line_number": 1142,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/config_consolidation_guide.md",
+      "line_number": 247,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/config_consolidation_guide.md",
+      "line_number": 247,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/TERMINOLOGY_MIGRATION.md",
+      "line_number": 224,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md",
+      "line_number": 1177,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md",
+      "line_number": 2026,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 27,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 27,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 129,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 129,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 217,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 261,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 261,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 274,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_INDEX.md",
+      "line_number": 274,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ci_cd_strategy.md",
+      "line_number": 5,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/mkdocs_fix_plan.md",
+      "line_number": 27,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/mkdocs_fix_plan.md",
+      "line_number": 27,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/PR_2598_FINAL_STATUS.md",
+      "line_number": 40,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/PR_2598_FINAL_STATUS.md",
+      "line_number": 111,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CONTRIBUTOR_ONBOARDING.md",
+      "line_number": 47,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CONTRIBUTOR_ONBOARDING.md",
+      "line_number": 196,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CONTRIBUTOR_ONBOARDING.md",
+      "line_number": 429,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CONTRIBUTOR_ONBOARDING.md",
+      "line_number": 509,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CONTRIBUTOR_ONBOARDING.md",
+      "line_number": 540,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 12,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 39,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 40,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 41,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 42,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 43,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 44,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 44,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 88,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 121,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 140,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 156,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/DOCUMENTATION_UPDATE_MANIFEST.md",
+      "line_number": 163,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CHATGPT_ASSISTANT_GUIDE.md",
+      "line_number": 73,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CHATGPT_ASSISTANT_GUIDE.md",
+      "line_number": 107,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/CHATGPT_ASSISTANT_GUIDE.md",
+      "line_number": 396,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/INTERACTIVE_NAVIGATOR_README.md",
+      "line_number": 223,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/INTERACTIVE_NAVIGATOR_README.md",
+      "line_number": 305,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md",
+      "line_number": 1422,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/REPOSITORY_MAPPING.md",
+      "line_number": 13,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/REPOSITORY_MAPPING.md",
+      "line_number": 123,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/REPOSITORY_MAPPING.md",
+      "line_number": 332,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/MERGE_READINESS_CONFIRMATION.md",
+      "line_number": 283,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/MERGE_READINESS_CONFIRMATION.md",
+      "line_number": 283,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/FINALIZATION_ROADMAP.md",
+      "line_number": 83,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/FINALIZATION_ROADMAP.md",
+      "line_number": 521,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/FINALIZATION_ROADMAP.md",
+      "line_number": 666,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/DOCUMENTATION_COVERAGE.md",
+      "line_number": 14,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/CI_PYTEST_IMPLEMENTATION.md",
+      "line_number": 61,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/CI_PYTEST_IMPLEMENTATION.md",
+      "line_number": 270,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "line_number": 299,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "line_number": 464,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "line_number": 480,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "line_number": 480,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/pages_publish_tiles_yml_archive.md",
+      "line_number": 53,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/archive/pages_publish_tiles_yml_archive.md",
+      "line_number": 53,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/plans/patchset.md",
+      "line_number": 6,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/plans/copilot-workflow-agent/README.md",
+      "line_number": 83,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/plans/copilot-workflow-agent/README.md",
+      "line_number": 83,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ai-facing/4_PHASE_IMPLEMENTATION.md",
+      "line_number": 382,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/ai-facing/4_PHASE_IMPLEMENTATION.md",
+      "line_number": 382,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/guides/AGENTS.md",
+      "line_number": 40,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/guides/AGENTS.md",
+      "line_number": 40,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/security/SECURITY_FIXES_PAGE4_FINAL.md",
+      "line_number": 307,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/security/SECURITY_FIXES_PAGE2_3.md",
+      "line_number": 265,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/arch/ADR-2025-11-12-dependency-segmentation.md",
+      "line_number": 79,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_TODO.md",
+      "line_number": 28,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 77,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 77,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 77,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 79,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 79,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 79,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 81,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 81,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 81,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 84,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 99,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 99,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 99,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 151,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 176,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 176,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/audit/Audit_Pipeline_Reference_v1.4.0.md",
+      "line_number": 323,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/agents/PROMPT_TEMPLATES.md",
+      "line_number": 281,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/agents/PROMPT_TEMPLATES.md",
+      "line_number": 284,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/agents/PROMPT_TEMPLATES.md",
+      "line_number": 286,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/onboarding/QUICK_START.md",
+      "line_number": 181,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/onboarding/QUICK_START.md",
+      "line_number": 181,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/governance/CONTRIBUTING.md",
+      "line_number": 173,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/governance/CONTRIBUTING.md",
+      "line_number": 173,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/codex/IMPLEMENTATION_GUIDE.md",
+      "line_number": 92,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/codex/IMPLEMENTATION_GUIDE.md",
+      "line_number": 179,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/codex/IMPLEMENTATION_GUIDE.md",
+      "line_number": 198,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/analysis/implementation_plan_archival_memory_saving.md",
+      "line_number": 46,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/analysis/implementation_plan_archival_memory_saving.md",
+      "line_number": 162,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/analysis/implementation_plan_archival_memory_saving.md",
+      "line_number": 168,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/analysis/implementation_plan_archival_memory_saving.md",
+      "line_number": 217,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/validation/Dependency_Segmentation_Validation.md",
+      "line_number": 18,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/templates/README.md",
+      "line_number": 51,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/templates/README.md",
+      "line_number": 51,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AGENTS.md",
+      "line_number": 48,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AGENTS.md",
+      "line_number": 48,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AI_SEARCH_README.md",
+      "line_number": 446,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AI_SEARCH_README.md",
+      "line_number": 446,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/organize_repository.py",
+      "line_number": 50,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 38,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 75,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 128,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 253,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 276,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/check_documentation_updates.py",
+      "line_number": 277,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/generate_capability_report.py",
+      "line_number": 35,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AUTO_CONFIG_README.md",
+      "line_number": 168,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/AUTO_CONFIG_README.md",
+      "line_number": 168,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/review_root_markdown.py",
+      "line_number": 92,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/space_traversal/viz_docs_hub.py",
+      "line_number": 324,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/space_traversal/viz_docs_hub.py",
+      "line_number": 327,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/space_traversal/viz_agent_interface.py",
+      "line_number": 1096,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/space_traversal/detectors/ci_cd_pipeline.py",
+      "line_number": 30,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "scripts/space_traversal/detectors/ci_cd_pipeline.py",
+      "line_number": 107,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/mcp/AGENTS.md",
+      "line_number": 50,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/mcp/AGENTS.md",
+      "line_number": 50,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/codex_plans/Tasks_PR_2459.md",
+      "line_number": 396,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/codex_plans/Tasks_PR_2459.md",
+      "line_number": 1514,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/codex_plans/Tasks_PR_2459.md",
+      "line_number": 1716,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/codex_plans/Tasks_PR_2459.md",
+      "line_number": 2246,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "src/codex/cli.py",
+      "line_number": 839,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/test_agents_infrastructure.py",
+      "line_number": 1,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/integration/README.md",
+      "line_number": 284,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/docs/test_doc_validation.py",
+      "line_number": 59,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/docs/test_doc_validation.py",
+      "line_number": 60,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/docs/test_doc_validation.py",
+      "line_number": 61,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/security/test_injection_prevention.py",
+      "line_number": 4,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/security/test_secret_entropy.py",
+      "line_number": 3,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "tests/archival/test_archival_tombstone_required.py",
+      "line_number": 11,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/README_FUTURE_WORK_PLANSETS.md",
+      "line_number": 182,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/README_FUTURE_WORK_PLANSETS.md",
+      "line_number": 182,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/FOLLOWUP_PROMPT_PHASE_C_RAG_PIPELINE.md",
+      "line_number": 24,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 60,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 61,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 62,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 63,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 64,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 70,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 71,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 72,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 73,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 74,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/runtime_variables.md",
+      "line_number": 406,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_POST_CI_VALIDATION.md",
+      "line_number": 88,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 33,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 41,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/FOLLOWUP_COMMENT_FOR_PR.md",
+      "line_number": 203,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/FOLLOWUP_PHASE4_NEXT_SESSION.md",
+      "line_number": 204,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/MERGE_CONFLICT_RESOLUTION_GUIDE.md",
+      "line_number": 159,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/change_log.md",
+      "line_number": 535,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/AUTONOMOUS_CONTINUATION_PROMPT_FUTURE_WORK.md",
+      "line_number": 562,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md",
+      "line_number": 602,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md",
+      "line_number": 603,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 22,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 64,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 89,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 178,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 209,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 253,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 320,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 370,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 587,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 647,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 728,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 773,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 849,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 933,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1144,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1200,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1249,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1340,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1383,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1452,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status_scan.json",
+      "line_number": 1927,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/scripts/validate_repository.py",
+      "line_number": 160,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 38,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 48,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 48,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 63,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 63,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Genesis-Protocol.md",
+      "line_number": 74,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Genesis-Protocol.md",
+      "line_number": 113,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Genesis-Protocol.md",
+      "line_number": 601,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Genesis-Protocol.md",
+      "line_number": 601,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/_Sidebar.md",
+      "line_number": 16,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/wiki/_Sidebar.md",
+      "line_number": 16,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/plans/v10_implementation_verification_and_phases.md",
+      "line_number": 186,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/plans/BATCH_TRIAGE_COGNITIVE_BRAIN_INTEGRATION_PLANSET.md",
+      "line_number": 71,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "line_number": 1,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/COGNITIVE_BRAIN_CONTINUATION_PHASE_22.md",
+      "line_number": 353,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/SECURITY_FIXES_PR2782_2026_01_11.md",
+      "line_number": 328,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/PHASE_21_STATUS_CICD_HARDENING.md",
+      "line_number": 91,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/PHASE_21_STATUS_CICD_HARDENING.md",
+      "line_number": 140,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/PHASE_23_24_STATUS_COVERAGE_70_PERCENT.md",
+      "line_number": 19,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/cognitive_brain/diagrams/PRODUCTION_READY_CODEBASE_MINDMAP.md",
+      "line_number": 112,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md",
+      "line_number": 490,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md",
+      "line_number": 490,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/tree_structure.json",
+      "line_number": 1251,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/tree_structure.json",
+      "line_number": 2686,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/tree_structure.json",
+      "line_number": 4320,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/README.md",
+      "line_number": 307,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/WALKTHROUGH_SUMMARY.md",
+      "line_number": 367,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/prompts/COGNITIVE_BRAIN_PHASE_8_CONTINUATION.md",
+      "line_number": 320,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/prompts/COGNITIVE_BRAIN_PHASE_8_3_CONTINUATION.md",
+      "line_number": 782,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-23.md",
+      "line_number": 19,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 83,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 84,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 85,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 88,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 89,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 90,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 92,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 93,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 98,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 99,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 101,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 102,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 103,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 106,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 112,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 113,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 114,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 117,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 118,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 119,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-18.md",
+      "line_number": 185,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 83,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 84,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 85,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 88,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 89,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 90,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 92,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 93,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 98,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 99,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 101,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 102,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 103,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 106,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 112,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 113,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 114,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 117,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 118,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 119,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-20.md",
+      "line_number": 184,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-07.md",
+      "line_number": 21,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-07.md",
+      "line_number": 21,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/status/_codex_status_update-2025-09-07.md",
+      "line_number": 224,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/pre_manifest.json",
+      "line_number": 3758,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/post_manifest.json",
+      "line_number": 3758,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/tests_docs_links_audit.md",
+      "line_number": 55,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/tests_docs_links_audit.md",
+      "line_number": 66,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/tests_docs_links_audit.json",
+      "line_number": 55,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/tests_docs_links_audit.json",
+      "line_number": 66,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T113918Z/pre_manifest.json",
+      "line_number": 1874,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T113918Z/post_manifest.json",
+      "line_number": 1874,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T210555Z/pre_manifest.json",
+      "line_number": 3074,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T210555Z/post_manifest.json",
+      "line_number": 3074,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T151757Z/pre_manifest.json",
+      "line_number": 1922,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T151757Z/post_manifest.json",
+      "line_number": 1922,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T151757Z/compare_report.json",
+      "line_number": 71,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T135035Z/pre_manifest.json",
+      "line_number": 2674,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/validation/20250910T135035Z/post_manifest.json",
+      "line_number": 2686,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/notes/Codex_Answers.md",
+      "line_number": 24,
+      "old_reference": "./AGENTS.md",
+      "new_reference": ".github/agents/docs/AGENTS.md"
+    },
+    {
+      "affected_file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "line_number": 84,
+      "old_reference": "./AGENTS.md.original",
+      "new_reference": ".github/agents/docs/AGENTS.md.original"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 41,
+      "old_reference": "./AGENTS.md.original",
+      "new_reference": ".github/agents/docs/AGENTS.md.original"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/tree_structure.json",
+      "line_number": 2686,
+      "old_reference": "./AGENTS.md.original",
+      "new_reference": ".github/agents/docs/AGENTS.md.original"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 49,
+      "old_reference": "./AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md",
+      "new_reference": "docs/archive/phases/AI_AGENCY_COMPLETION_REPORT_PHASE_10_2.md"
+    },
+    {
+      "affected_file": "docs/CONTINUATION_PROMPT_PHASE_12.md",
+      "line_number": 512,
+      "old_reference": "./AI_AGENCY_POLICY_VERIFICATION.md",
+      "new_reference": ".codex/docs/AI_AGENCY_POLICY_VERIFICATION.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 57,
+      "old_reference": "./AI_AGENCY_POLICY_VERIFICATION.md",
+      "new_reference": ".codex/docs/AI_AGENCY_POLICY_VERIFICATION.md"
+    },
+    {
+      "affected_file": "docs/archive/DOCUMENTATION_COVERAGE.md",
+      "line_number": 27,
+      "old_reference": "./AUDIT_COMPLETION_SUMMARY.md",
+      "new_reference": "docs/archive/completion_reports/AUDIT_COMPLETION_SUMMARY.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 65,
+      "old_reference": "./AUDIT_COMPLETION_SUMMARY.md",
+      "new_reference": "docs/archive/completion_reports/AUDIT_COMPLETION_SUMMARY.md"
+    },
+    {
+      "affected_file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "line_number": 107,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "line_number": 410,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "line_number": 410,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": "scripts/phase10/execute_secrets_injection_now.py",
+      "line_number": 239,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": "scripts/phase10/comprehensive_validation_suite.py",
+      "line_number": 259,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 73,
+      "old_reference": "./AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "new_reference": ".codex/docs/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 81,
+      "old_reference": "./BROKEN_LINKS_REPORT.md",
+      "new_reference": ".codex/reports/BROKEN_LINKS_REPORT.md"
+    },
+    {
+      "affected_file": "tests/docs/test_documentation_system.py",
+      "line_number": 301,
+      "old_reference": "./CHANGELOG_AGENTS.md",
+      "new_reference": ".github/agents/docs/CHANGELOG_AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 97,
+      "old_reference": "./CHANGELOG_AGENTS.md",
+      "new_reference": ".github/agents/docs/CHANGELOG_AGENTS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 105,
+      "old_reference": "./CHANGELOG_GITHUB_LOGS.md",
+      "new_reference": "docs/archive/misc/CHANGELOG_GITHUB_LOGS.md"
+    },
+    {
+      "affected_file": "scripts/organize_repository.py",
+      "line_number": 57,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": "tests/docs/test_documentation_system.py",
+      "line_number": 300,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 113,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 332,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": ".codex/wiki/Home.md",
+      "line_number": 332,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": ".codex/wiki/_Sidebar.md",
+      "line_number": 47,
+      "old_reference": "./CHANGES.md",
+      "new_reference": "docs/archive/misc/CHANGES.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 129,
+      "old_reference": "./CI_FAILURE_ANALYSIS.md",
+      "new_reference": "docs/ci/CI_FAILURE_ANALYSIS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 137,
+      "old_reference": "./CI_FIXES_PYTEST_MKDOCS.md",
+      "new_reference": "docs/ci/CI_FIXES_PYTEST_MKDOCS.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 145,
+      "old_reference": "./CI_FIX_SUMMARY.md",
+      "new_reference": "docs/archive/validation/CI_FIX_SUMMARY.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 153,
+      "old_reference": "./CI_TEST_FIXES_PR2883.md",
+      "new_reference": "docs/archive/validation/CI_TEST_FIXES_PR2883.md"
+    },
+    {
+      "affected_file": ".codex/QA_WALKTHROUGH_UPDATE_REPORT_2026_01_18.md",
+      "line_number": 200,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/QA_WALKTHROUGH_UPDATE_REPORT_2026_01_18.md",
+      "line_number": 423,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 169,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/codebase_map.json",
+      "line_number": 69,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/UPDATE_LOG_2026_01_19.md",
+      "line_number": 319,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/README.md",
+      "line_number": 300,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/WALKTHROUGH_SUMMARY.md",
+      "line_number": 228,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/WALKTHROUGH_SUMMARY.md",
+      "line_number": 349,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/qa_walkthrough/improvement_proposals.json",
+      "line_number": 22,
+      "old_reference": "./COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_BATCH_TRIAGE_PHASE2.md",
+      "line_number": 251,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_BATCH_TRIAGE_PHASE2.md",
+      "line_number": 258,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_BATCH_TRIAGE_PHASE2.md",
+      "line_number": 297,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_BATCH_TRIAGE_PHASE2.md",
+      "line_number": 304,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/CONTINUATION_PROMPT_BATCH_TRIAGE_PHASE2.md",
+      "line_number": 341,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 177,
+      "old_reference": "./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 185,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 193,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md"
+    },
+    {
+      "affected_file": ".codex/change_log.md",
+      "line_number": 280,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md"
+    },
+    {
+      "affected_file": ".codex/change_log.md",
+      "line_number": 416,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md"
+    },
+    {
+      "affected_file": ".codex/plans/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md",
+      "line_number": 447,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_12.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 201,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_19.md"
+    },
+    {
+      "affected_file": ".codex/inventory.json",
+      "line_number": 209,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md"
+    },
+    {
+      "affected_file": ".codex/ROOT_CAUSE_ANALYSIS_2026_01_18.md",
+      "line_number": 21,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md"
+    },
+    {
+      "affected_file": ".codex/ROOT_CAUSE_ANALYSIS_2026_01_18.md",
+      "line_number": 64,
+      "old_reference": "./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md",
+      "new_reference": "docs/archive/phases/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_20.md"
+    }
+  ]
+}
