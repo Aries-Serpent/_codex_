@@ -19,6 +19,7 @@ Example:
 """
 
 import hashlib
+import re
 
 
 def mask_token(token: str, show_last: int = 4) -> str:
@@ -170,3 +171,92 @@ def mask_sensitive_dict(data: dict) -> dict:
             result[key] = value
 
     return result
+
+
+def mask_sensitive_data(text: str) -> str:
+    """Mask multiple types of sensitive data in text.
+
+    Detects and masks:
+    - Email addresses
+    - Phone numbers (US format)
+    - Social Security Numbers (SSN)
+    - Credit card numbers
+    - API keys (sk_*/pk_* format)
+    - Passwords in assignments
+
+    Args:
+        text: Text potentially containing sensitive data
+
+    Returns:
+        Text with sensitive data masked
+
+    Example:
+        >>> mask_sensitive_data("Contact user@example.com or call 555-123-4567")
+        'Contact u***@example.com or call ***-***-****'
+    """
+    if not text:
+        return text
+
+    # Email pattern
+    text = re.sub(
+        r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
+        lambda m: mask_email(m.group()),
+        text,
+    )
+
+    # Phone patterns (US format: XXX-XXX-XXXX, XXX.XXX.XXXX, XXXXXXXXXX, XXX-XXXX)
+    text = re.sub(r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b", "***-***-****", text)
+    text = re.sub(r"\b\d{3}[-.]?\d{4}\b", "***-****", text)
+
+    # SSN pattern (XXX-XX-XXXX)
+    text = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "***-**-****", text)
+
+    # Credit card pattern (with or without dashes/spaces)
+    text = re.sub(
+        r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b",
+        "****-****-****-****",
+        text,
+    )
+
+    # API key pattern (sk_*, pk_* style keys with various formats)
+    text = re.sub(r"\b(sk|pk)_[a-z]+_[A-Za-z0-9]{8,}\b", "***_REDACTED_***", text)
+
+    # Password in quotes/assignments (password="value" or password: "value")
+    text = re.sub(
+        r'(password|passwd|pwd|secret)\s*[=:]\s*["\']([^"\']+)["\']',
+        r'\1="***"',
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    return text
+
+
+def hash_sensitive_value(value: str) -> str:
+    """Create consistent hash of sensitive value for logging/comparison.
+
+    This is a convenience wrapper around hash_for_logging() to match
+    the test interface expectations.
+
+    Args:
+        value: Sensitive data to hash
+
+    Returns:
+        Hex hash string (first 16 chars of SHA-256)
+
+    Example:
+        >>> hash_sensitive_value("myPassword123")
+        'a1b2c3d4e5f67890'
+    """
+    return hash_for_logging(value)
+
+
+__all__ = [
+    "mask_token",
+    "mask_email",
+    "mask_password",
+    "hash_for_logging",
+    "mask_sensitive_dict",
+    "mask_sensitive_data",
+    "hash_sensitive_value",
+]

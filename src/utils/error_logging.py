@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 from datetime import datetime, UTC
 from pathlib import Path
 
-__all__ = ["append_error"]
+__all__ = ["append_error", "log_error", "append_error_to_file"]
 
 _ERROR_LOG_PATH = Path("docs/troubleshooting/error_log.md")
 
@@ -58,3 +58,62 @@ def append_error(step_number: str, description: str, message: str, context: str)
         # The error log must never raise a secondary exception; downstream
         # callers still need the original error to propagate.
         return
+
+
+def log_error(
+    message: str,
+    exception: Exception | None = None,
+    severity: str = "ERROR",
+    context: dict | None = None,
+    log_file: str | None = None,
+) -> None:
+    """Log error with timestamp and optional exception details.
+
+    Parameters
+    ----------
+    message:
+        Error message to log.
+    exception:
+        Optional exception object to include details.
+    severity:
+        Log level (ERROR, WARNING, INFO, etc.).
+    context:
+        Optional dictionary with contextual information.
+    log_file:
+        Optional custom log file path. Defaults to logs/errors.log.
+    """
+    timestamp = datetime.now(UTC).isoformat()
+    log_path = Path(log_file) if log_file else Path("logs/errors.log")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    log_entry = f"[{timestamp}] [{severity}] {message}\n"
+    if exception:
+        log_entry += f"  Exception: {type(exception).__name__}: {exception}\n"
+    if context:
+        log_entry += f"  Context: {context}\n"
+
+    try:
+        with log_path.open("a", encoding="utf-8") as f:
+            f.write(log_entry)
+    except Exception:
+        logger.warning("Failed to write to error log", exc_info=True)
+
+
+def append_error_to_file(message: str, file_path: str) -> None:
+    """Append error message to specified file.
+
+    Parameters
+    ----------
+    message:
+        Error message to append.
+    file_path:
+        Path to the log file.
+    """
+    log_path = Path(file_path)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        with log_path.open("a", encoding="utf-8") as f:
+            f.write(f"{message}\n")
+    except Exception:
+        logger.warning("Failed to append error to file", exc_info=True)

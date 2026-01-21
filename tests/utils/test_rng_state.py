@@ -14,9 +14,14 @@ if importlib.util.find_spec("numpy") is not None:  # pragma: no cover - optional
 
 torch = None
 _torch_has_rand = False
-if importlib.util.find_spec("torch") is not None:  # pragma: no cover - optional dependency
-    torch = importlib.import_module("torch")
-    _torch_has_rand = hasattr(torch, "rand")
+try:
+    if importlib.util.find_spec("torch") is not None:  # pragma: no cover - optional dependency
+        torch = importlib.import_module("torch")
+        _torch_has_rand = hasattr(torch, "rand")
+except (ValueError, AttributeError, ImportError):
+    # torch.__spec__ may be unset, malformed, or torch may not be installed
+    # This is acceptable as torch is an optional dependency
+    pass
 
 
 def test_rng_snapshot_restore_consistency() -> None:
