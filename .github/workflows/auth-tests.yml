@@ -89,7 +89,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest pytest-mock pytest-timeout httpx
+          pip install pytest pytest-mock pytest-cov pytest-timeout httpx
           pip install -e .
 
       - name: Run integration tests
