@@ -108,7 +108,7 @@ class TestPython312Performance:
         
         start = time.perf_counter()
         for i in range(iterations):
-            result = simple_func(1, 2, c=i % 100)
+            _ = simple_func(1, 2, c=i % 100)  # Discard result, measuring performance
         elapsed = time.perf_counter() - start
         
         assert elapsed < 0.5, f"Function calls took {elapsed:.3f}s, expected < 0.5s"
@@ -130,7 +130,7 @@ class TestPython312Performance:
             parts = formatted.split(" ")
             
             # String joining
-            joined = "-".join(parts[:10])
+            _ = "-".join(parts[:10])  # Discard result, measuring performance
         elapsed = time.perf_counter() - start
         
         assert elapsed < 2.0, f"String operations took {elapsed:.3f}s, expected < 2.0s"
@@ -169,7 +169,7 @@ class TestCriticalPathBenchmarks:
         json_str = json.dumps(data)
         start = time.perf_counter()
         for _ in range(iterations):
-            parsed = json.loads(json_str)
+            _ = json.loads(json_str)  # Discard result, measuring performance
         deserialize_time = time.perf_counter() - start
         
         assert serialize_time < 1.0, f"JSON serialization took {serialize_time:.3f}s"
@@ -185,11 +185,11 @@ class TestCriticalPathBenchmarks:
             # Common list operations
             filtered = [x for x in data if x % 2 == 0]
             mapped = [x * 2 for x in filtered]
-            reduced = sum(mapped)
+            _ = sum(mapped)  # Discard result, measuring performance
             
             # List slicing
             subset = data[1000:2000]
-            reversed_data = list(reversed(subset))
+            _ = list(reversed(subset))  # Discard result, measuring performance
         elapsed = time.perf_counter() - start
         
         assert elapsed < 2.0, f"List operations took {elapsed:.3f}s"
@@ -209,7 +209,7 @@ class TestCriticalPathBenchmarks:
         # Read benchmark
         start = time.perf_counter()
         for _ in range(iterations):
-            data = test_file.read_text()
+            _ = test_file.read_text()  # Discard result, measuring performance
         read_time = time.perf_counter() - start
         
         assert write_time < 1.0, f"File writes took {write_time:.3f}s"
@@ -344,7 +344,7 @@ items = [{", ".join(str(j) for j in range(10))}]
         start = time.perf_counter()
         for _ in range(iterations):
             with open(toml_file, "rb") as f:
-                data = tomllib.load(f)
+                _ = tomllib.load(f)  # Discard result, measuring performance
         elapsed = time.perf_counter() - start
         
         assert elapsed < 5.0, f"TOML parsing took {elapsed:.3f}s, expected < 5.0s"

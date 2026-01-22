@@ -230,12 +230,12 @@ class TestPython312SpecificFeatures:
         try:
             from typing_extensions import TypedDict
             
-            class Config(TypedDict):
+            class _Config(TypedDict):  # Prefix with _ to indicate it's used for type checking
                 name: str
                 version: str
                 debug: bool
             
-            config: Config = {
+            config: _Config = {
                 "name": "test",
                 "version": "1.0",
                 "debug": True
