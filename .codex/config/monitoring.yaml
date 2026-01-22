@@ -1,0 +1,125 @@
+# Monitoring Configuration for Autonomous Artifact Monitor
+# Version: 1.0.0
+# Last Updated: 2026-01-22
+
+# Monitoring behavior
+monitoring:
+  # Polling interval (cron schedule in workflow)
+  schedule: "0 */3 * * *"  # Every 3 hours
+  
+  # Workflows to monitor (empty = all artifact-producing workflows)
+  workflow_filter: []
+  
+  # Failure detection thresholds
+  consecutive_failures_threshold: 2  # Create issue after N consecutive failures
+  recovery_threshold: 3  # Close issue after N consecutive successes
+  
+  # Flakiness detection
+  flakiness:
+    enabled: true
+    window_size: 20  # Look at last N runs
+    threshold: 0.15  # 15% failure rate indicates flakiness
+    min_runs: 5  # Minimum runs before analyzing flakiness
+  
+  # Rate limit handling
+  rate_limit:
+    requests_per_hour: 5000  # GitHub API limit
+    buffer: 500  # Reserve buffer
+    backoff_multiplier: 2  # Exponential backoff multiplier
+    max_retries: 3
+
+# Issue management
+issues:
+  # Deduplication window (hours)
+  deduplication_window: 24
+  
+  # Issue labels
+  labels:
+    workflow_failure: "workflow:failure"
+    auto_created: "auto:monitor"
+    flaky_test: "test:flaky"
+    dependency_issue: "deps:conflict"
+    security_issue: "security:alert"
+    coverage_issue: "coverage:low"
+  
+  # Issue assignment (empty = no auto-assignment)
+  auto_assign: []
+  
+  # Close stale issues after N days of recovery
+  close_after_recovery_days: 1
+
+# Pattern recognition
+patterns:
+  # Confidence threshold for pattern matching (0.0-1.0)
+  confidence_threshold: 0.6
+  
+  # Pattern database location
+  signature_file: ".codex/monitoring/patterns/error_signatures.yaml"
+  
+  # Pattern categories with weights
+  categories:
+    dependency: 1.0
+    test: 1.0
+    build: 0.9
+    coverage: 0.8
+    lint: 0.7
+    infrastructure: 0.9
+    security: 1.0
+    documentation: 0.6
+
+# Agent orchestration
+agents:
+  # Confidence threshold for agent routing (0.0-1.0)
+  routing_threshold: 0.7
+  
+  # Agent routing map (category -> agent)
+  routing:
+    test: "ci-testing-agent"
+    dependency: "dependency-conflict-agent"
+    coverage: "coverage-gapfill-agent"
+    security: "security-agent"
+    lint: "repository-hygiene-agent"
+    documentation: "documentation-quality-agent"
+  
+  # Multi-agent orchestration
+  enable_multi_agent: true
+  max_agents_per_failure: 3
+
+# State persistence
+state:
+  # Local state file
+  file: ".codex/monitoring/state/monitor_state.json"
+  
+  # GitHub Actions artifact (for persistence across runs)
+  artifact_name: "artifact-monitor-state"
+  artifact_retention_days: 90
+  
+  # Backup frequency (runs)
+  backup_frequency: 1
+
+# Cognitive Brain integration (Phase 6)
+cognitive_brain:
+  enabled: false  # Will be enabled in Phase 6
+  sensor_module: "scripts/cognitive/sensors/monitoring_sensor.py"
+  confidence_threshold: 0.8
+  auto_fix_enabled: false  # Requires human approval
+
+# Logging and reporting
+logging:
+  level: "INFO"
+  file: ".codex/monitoring/logs/monitor.log"
+  max_file_size_mb: 10
+  backup_count: 5
+
+# Dry-run mode (testing)
+dry_run:
+  enabled: false  # Set to true via CLI/workflow for testing
+  log_actions: true
+  skip_issue_creation: true
+
+# Feature flags
+features:
+  meta_monitoring: true  # Create issue if monitoring workflow fails
+  secret_scrubbing: false  # PII scrubbing (Phase 6)
+  auto_remediation: false  # Autonomous fixes (Phase 6)
+  metrics_collection: true

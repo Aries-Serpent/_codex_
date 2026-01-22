@@ -1,0 +1,579 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-01-22T07:34:26Z",
+  "total_workflows": 95,
+  "artifact_producing_workflows": 30,
+  "monitored_workflows": 30,
+  "workflows": [
+    {
+      "name": "aftermath.yml",
+      "path": ".github/workflows/aftermath.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "agent-runtime.yml",
+      "path": ".github/workflows/agent-runtime.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "api-documentation.yml",
+      "path": ".github/workflows/api-documentation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "artifact-monitoring.yml",
+      "path": ".github/workflows/artifact-monitoring.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "audit-improvement-pipeline.yml",
+      "path": ".github/workflows/audit-improvement-pipeline.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "auth-compliance-report.yml",
+      "path": ".github/workflows/auth-compliance-report.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "auth-mfa-enrollment.yml",
+      "path": ".github/workflows/auth-mfa-enrollment.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "auth-oauth-app-sync.yml",
+      "path": ".github/workflows/auth-oauth-app-sync.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "auth-secret-rotation.yml",
+      "path": ".github/workflows/auth-secret-rotation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "auth-security-audit.yml",
+      "path": ".github/workflows/auth-security-audit.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "auth-tests.yml",
+      "path": ".github/workflows/auth-tests.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "auth-token-rotation.yml",
+      "path": ".github/workflows/auth-token-rotation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "auto-update-configs.yml",
+      "path": ".github/workflows/auto-update-configs.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "autonomous-agent.yml",
+      "path": ".github/workflows/autonomous-agent.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "batch-ci-triage.yml",
+      "path": ".github/workflows/batch-ci-triage.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "biweekly-research-digest.yml",
+      "path": ".github/workflows/biweekly-research-digest.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "build-chatgpt-package.yml",
+      "path": ".github/workflows/build-chatgpt-package.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cache-cleanup.yml",
+      "path": ".github/workflows/cache-cleanup.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cache-management.yml",
+      "path": ".github/workflows/cache-management.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cache-warmup.yml",
+      "path": ".github/workflows/cache-warmup.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "ci-diagnostic-automation.yml",
+      "path": ".github/workflows/ci-diagnostic-automation.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "ci-health-monitor.yml",
+      "path": ".github/workflows/ci-health-monitor.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "behavior-compare.yaml",
+      "path": ".github/workflows/ci-templates/behavior-compare.yaml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "code-quality.yml",
+      "path": ".github/workflows/code-quality.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "codebase-qa-walkthrough.yml",
+      "path": ".github/workflows/codebase-qa-walkthrough.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "codeql-analysis.yml",
+      "path": ".github/workflows/codeql-analysis.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "codeql-chunked.yml",
+      "path": ".github/workflows/codeql-chunked.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "cognitive-action.yml",
+      "path": ".github/workflows/cognitive-action.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cognitive-aftermath.yml",
+      "path": ".github/workflows/cognitive-aftermath.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cognitive-decision.yml",
+      "path": ".github/workflows/cognitive-decision.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "cognitive-perception.yml",
+      "path": ".github/workflows/cognitive-perception.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "copilot-cascade-review.yml",
+      "path": ".github/workflows/copilot-cascade-review.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "copilot-self-evolution.yml",
+      "path": ".github/workflows/copilot-self-evolution.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "coverage_report.yml",
+      "path": ".github/workflows/coverage_report.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "data_validation.yml",
+      "path": ".github/workflows/data_validation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "decode-validate-artifact.yml",
+      "path": ".github/workflows/decode-validate-artifact.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "dependency-scan.yml",
+      "path": ".github/workflows/dependency-scan.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "deploy-cognitive-app.yml",
+      "path": ".github/workflows/deploy-cognitive-app.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "detect-duplicates.yml",
+      "path": ".github/workflows/detect-duplicates.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "determinism.yml",
+      "path": ".github/workflows/determinism.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "docker-build-push.yml",
+      "path": ".github/workflows/docker-build-push.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "documentation-link-checker.yml",
+      "path": ".github/workflows/documentation-link-checker.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "draft-audit-pr.yml",
+      "path": ".github/workflows/draft-audit-pr.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "copilot-with-mcp.yml",
+      "path": ".github/workflows/examples/copilot-with-mcp.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "mcp-cache-warm.yml",
+      "path": ".github/workflows/examples/mcp-cache-warm.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "flatten-repo-download.yml",
+      "path": ".github/workflows/flatten-repo-download.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "generate-repository-structure.yml",
+      "path": ".github/workflows/generate-repository-structure.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "genesis-bootstrap.yml",
+      "path": ".github/workflows/genesis-bootstrap.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "html_visual_baseline.yml",
+      "path": ".github/workflows/html_visual_baseline.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "html_visual_regression.yml",
+      "path": ".github/workflows/html_visual_regression.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "integration-gated.yml",
+      "path": ".github/workflows/integration-gated.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "labeler.yml",
+      "path": ".github/workflows/labeler.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "monthly-model-retraining.yml",
+      "path": ".github/workflows/monthly-model-retraining.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "notebooklm-sync.yml",
+      "path": ".github/workflows/notebooklm-sync.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "nox_gates.yml",
+      "path": ".github/workflows/nox_gates.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "optimized-ci.yml",
+      "path": ".github/workflows/optimized-ci.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "pages-mkdocs.yml",
+      "path": ".github/workflows/pages-mkdocs.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "phase10-automated-secrets-setup.yml",
+      "path": ".github/workflows/phase10-automated-secrets-setup.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "post-merge-validation-optimized.yml",
+      "path": ".github/workflows/post-merge-validation-optimized.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "pr-checks.yml",
+      "path": ".github/workflows/pr-checks.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "pr-followup-generator.yml",
+      "path": ".github/workflows/pr-followup-generator.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "pre-release-deployment.yml",
+      "path": ".github/workflows/pre-release-deployment.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "publish_dashboard_release.yml",
+      "path": ".github/workflows/publish_dashboard_release.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "ratelimit_history_prune.yml",
+      "path": ".github/workflows/ratelimit_history_prune.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "repo-organization.yml",
+      "path": ".github/workflows/repo-organization.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "root-org-validation.yml",
+      "path": ".github/workflows/root-org-validation.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "runner-diagnostics.yml",
+      "path": ".github/workflows/runner-diagnostics.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "rust_swarm_ci.yml",
+      "path": ".github/workflows/rust_swarm_ci.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "sbom.yml",
+      "path": ".github/workflows/sbom.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "scan-secrets-variables.yml",
+      "path": ".github/workflows/scan-secrets-variables.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "scheduled-archival.yml",
+      "path": ".github/workflows/scheduled-archival.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "scheduled-dependency-audit.yml",
+      "path": ".github/workflows/scheduled-dependency-audit.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "security-alert-notification.yml",
+      "path": ".github/workflows/security-alert-notification.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "security-scan.yml",
+      "path": ".github/workflows/security-scan.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "security-suite.yml",
+      "path": ".github/workflows/security-suite.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "security-tools-bootstrap.yml",
+      "path": ".github/workflows/security-tools-bootstrap.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "self-healing-ci.yml",
+      "path": ".github/workflows/self-healing-ci.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "self-healing-feedback-loop.yml",
+      "path": ".github/workflows/self-healing-feedback-loop.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "self-healing.yml",
+      "path": ".github/workflows/self-healing.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "semgrep_sarif.yml",
+      "path": ".github/workflows/semgrep_sarif.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "status_gate.yml",
+      "path": ".github/workflows/status_gate.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "sync-env-vars.yml",
+      "path": ".github/workflows/sync-env-vars.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "template_lint.yml",
+      "path": ".github/workflows/template_lint.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "test-analytics-failure-sim.yml",
+      "path": ".github/workflows/test-analytics-failure-sim.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "test-comprehensive.yml",
+      "path": ".github/workflows/test-comprehensive.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "test-rag.yml",
+      "path": ".github/workflows/test-rag.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "token-rotation.yml",
+      "path": ".github/workflows/token-rotation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "validate-secrets-documentation.yml",
+      "path": ".github/workflows/validate-secrets-documentation.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "wiki-assemble.yml",
+      "path": ".github/workflows/wiki-assemble.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "workflow-analytics-manual.yml",
+      "path": ".github/workflows/workflow-analytics-manual.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "workflow-analytics-scheduled.yml",
+      "path": ".github/workflows/workflow-analytics-scheduled.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "workflow-expiry-enforcer.yml",
+      "path": ".github/workflows/workflow-expiry-enforcer.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "workflow-restore.yml",
+      "path": ".github/workflows/workflow-restore.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    },
+    {
+      "name": "zendesk-knowledge-sync.yml",
+      "path": ".github/workflows/zendesk-knowledge-sync.yml",
+      "produces_artifacts": true,
+      "monitored": true
+    },
+    {
+      "name": "zendesk-quantum-packaging.yml",
+      "path": ".github/workflows/zendesk-quantum-packaging.yml",
+      "produces_artifacts": false,
+      "monitored": false
+    }
+  ]
+}

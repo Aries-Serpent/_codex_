@@ -12,6 +12,8 @@ All tests use mocked responses - no real Zendesk API calls.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import pytest
 import responses
 from responses import matchers

@@ -1,9 +1,9 @@
 # 🤖 Agent Registry
 
-**Version**: 1.3.0  
-**Last Updated**: 2026-01-21T04:40:00Z  
-**Total Agents**: 34+  
-**Standardized**: 6 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator)  
+**Version**: 1.4.0  
+**Last Updated**: 2026-01-22T07:21:00Z  
+**Total Agents**: 35+  
+**Standardized**: 7 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator, artifact-monitor-agent)  
 **Target**: 100% standardization by 2026-01-26
 
 ---
@@ -15,6 +15,39 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 ---
 
 ## Priority Tier 1: Production-Critical Agents
+
+### 0. Artifact-Monitor-Agent ✅ NEW
+- **ID**: `artifact-monitor-agent`
+- **File**: `.github/agents/artifact-monitor-agent.md`
+- **Purpose**: Autonomous CI/CD health monitoring with pattern recognition and agent orchestration
+- **Status**: Active
+- **Maturity**: Production
+- **Test Coverage**: Phase 7 pending (comprehensive testing planned)
+- **Has Prompts**: Embedded in agent documentation
+- **Has Tests**: Phase 7 pending
+- **Has Docs**: Yes (comprehensive documentation + CLI)
+- **Standard Structure**: Full implementation (monitoring engine + CLI + patterns)
+- **Integration Points**: 
+  - GitHub Actions (artifact-monitoring.yml - scheduled every 3 hours)
+  - scripts/monitoring/artifact_monitor.py
+  - scripts/monitoring/issue_manager.py
+  - scripts/monitoring/pattern_analyzer.py (30+ error signatures)
+  - scripts/monitoring/agent_orchestrator.py (routes to 6+ specialized agents)
+  - scripts/agents/artifact_monitor_cli.py (interactive CLI)
+- **Capabilities**:
+  - workflow_health_monitoring (91 workflows, 27 with artifacts)
+  - failure_pattern_recognition (30+ signatures across 8 categories)
+  - intelligent_agent_routing (CI Testing, Dependency Conflict, Coverage, Security, Hygiene, Docs)
+  - rich_issue_generation (diagnostic links, pattern analysis, agent recommendations)
+  - statistical_flakiness_detection
+  - auto_close_on_recovery (3 consecutive successes)
+  - interactive_cli_troubleshooting
+  - dry_run_mode
+- **Monitoring Model**: Scheduled (3-hour intervals) + Manual (CLI)
+- **CLI Commands**: check, report, test-patterns, interactive
+- **Pattern Categories**: dependency, test, build, coverage, lint, infrastructure, security, documentation
+- **Last Updated**: 2026-01-22
+- **Maintainer**: Artifact Monitoring Team
 
 ### 0. Root-Organizer-Agent ✅ NEW
 - **ID**: `root-organizer-agent`
