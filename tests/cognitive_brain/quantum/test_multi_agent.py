@@ -54,7 +54,7 @@ class TestGHZStateCreation:
 
         assert state is not None
         assert len(state.agent_ids) == 3
-        assert state.fidelity >= 0.9  # Target: > 0.9
+        assert state.fidelity >= 0.9  # Target: >= 0.9 (perfect fidelity at creation)
         # correlation_matrix is a Dict of pairwise correlations
         expected_pairs = 3  # C(3,2) = 3 pairs
         assert len(state.correlation_matrix) == expected_pairs
@@ -376,7 +376,7 @@ class TestCorrelationMeasurement:
         manager.update_correlations(state.state_id)
 
         # Fidelity might change after measurement
-        # Access via manager.states (not ghz_states)
+        # Access via manager.states attribute
         updated_state = manager.states[state.state_id]
         assert updated_state.fidelity >= 0.0  # Still valid
 
