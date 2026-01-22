@@ -336,6 +336,7 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
+| **Artifact Monitor Agent** | Autonomous CI/CD health monitoring with pattern recognition and agent orchestration | [.github/agents/artifact-monitor-agent.md](.github/agents/artifact-monitor-agent.md) | ✅ Active |
 | **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
 | **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
 | **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
