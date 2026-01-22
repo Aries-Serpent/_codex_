@@ -1,0 +1,459 @@
+# Artifact Monitor Agent
+
+**Agent Type**: Specialized Monitoring & Diagnostics Agent  
+**Version**: 1.0.0  
+**Created**: 2026-01-22  
+**Status**: Active
+
+---
+
+## 🎯 Purpose
+
+The **Artifact Monitor Agent** is a specialized GitHub Copilot agent designed to autonomously monitor CI/CD workflows, detect failures, analyze patterns, and orchestrate remediation through specialized agents. It operates as the central intelligence hub for repository health monitoring.
+
+---
+
+## 🤖 Agent Profile
+
+| Attribute | Value |
+|-----------|-------|
+| **Name** | Artifact Monitor Agent |
+| **Activation Command** | `@copilot Use Artifact Monitor Agent to analyze workflow failures` |
+| **Primary Function** | CI/CD health monitoring and failure pattern analysis |
+| **Authority Level** | Read + Issue Management |
+| **Autonomous Actions** | Issue creation, agent orchestration (with human oversight) |
+| **Integration Points** | 6+ specialized agents, Cognitive Brain system |
+
+---
+
+## 🔧 Capabilities
+
+### Core Capabilities
+1. **Workflow Monitoring**
+   - Track 91 GitHub Actions workflows (27 producing artifacts)
+   - Detect status changes (success → fail, fail → success)
+   - Monitor artifact availability and integrity
+   - Calculate failure rates and trends
+
+2. **Pattern Recognition**
+   - Match against 30+ known error signatures
+   - Categorize failures (test, build, dependency, security, etc.)
+   - Calculate confidence scores for pattern matches
+   - Detect flaky tests through statistical analysis
+
+3. **Agent Orchestration**
+   - Route failures to appropriate specialized agents:
+     - Test failures → CI Testing Agent
+     - Dependency conflicts → Dependency Conflict Agent
+     - Coverage gaps → Coverage Gapfill Agent
+     - Security issues → Security Agent
+     - Lint issues → Repository Hygiene Agent
+     - Documentation → Documentation Quality Agent
+   - Aggregate agent recommendations
+   - Manage agent invocation timeouts and retries
+
+4. **Issue Management**
+   - Create rich, actionable GitHub Issues with:
+     - Tabular links to logs, artifacts, debug info
+     - Pattern analysis and confidence scores
+     - Agent recommendations with rationale
+     - Historical context and trends
+   - Deduplicate similar failures
+   - Auto-close issues on recovery
+   - Apply appropriate labels and severity tags
+
+5. **Cognitive Brain Integration**
+   - Expose monitoring state to Cognitive Brain sensors
+   - Generate autonomous action proposals
+   - Validate fixes through self-healing loops
+   - Adjust confidence thresholds based on outcomes
+
+---
+
+## 📋 Usage Examples
+
+### Activation Commands
+
+```markdown
+# Basic activation
+@copilot Use Artifact Monitor Agent to analyze workflow failures
+
+# Specific workflow analysis
+@copilot Use Artifact Monitor Agent to analyze failures in test-comprehensive.yml
+
+# Pattern analysis
+@copilot Use Artifact Monitor Agent to identify flaky tests over the past week
+
+# Historical analysis
+@copilot Use Artifact Monitor Agent to generate failure trends for the past month
+
+# Manual orchestration
+@copilot Use Artifact Monitor Agent to route dependency failure to appropriate agent
+```
+
+### Interactive CLI
+
+```bash
+# Run monitoring check
+python scripts/agents/artifact_monitor_cli.py --check
+
+# Analyze specific workflow
+python scripts/agents/artifact_monitor_cli.py --workflow test-comprehensive.yml
+
+# Generate failure report
+python scripts/agents/artifact_monitor_cli.py --report --days 7
+
+# Test pattern matching
+python scripts/agents/artifact_monitor_cli.py --test-patterns --log-file path/to/log
+
+# Dry-run mode (no issue creation)
+python scripts/agents/artifact_monitor_cli.py --check --dry-run
+```
+
+---
+
+## 🏗️ Architecture
+
+### Agent Components
+
+```
+Artifact Monitor Agent
+├── Monitoring Engine (artifact_monitor.py)
+│   ├── GitHub API Client
+│   ├── State Manager
+│   └── Failure Detector
+├── Pattern Analyzer (pattern_analyzer.py)
+│   ├── Regex Matcher
+│   ├── Statistical Analyzer
+│   └── Confidence Calculator
+├── Agent Orchestrator (agent_orchestrator.py)
+│   ├── Routing Logic
+│   ├── Agent Invoker
+│   └── Recommendation Aggregator
+├── Issue Manager (issue_manager.py)
+│   ├── Issue Creator
+│   ├── Deduplicator
+│   └── Rich Formatter
+└── CLI Wrapper (artifact_monitor_cli.py)
+    ├── Interactive Mode
+    ├── Report Generator
+    └── Validation Tools
+```
+
+### Data Flow
+
+```
+Scheduled Trigger (3-6h)
+    ↓
+Monitoring Engine
+    ↓
+[Detect Failure]
+    ↓
+Pattern Analyzer
+    ↓
+[Match Patterns + Calculate Confidence]
+    ↓
+Agent Orchestrator
+    ↓
+[Route to Specialized Agents]
+    ↓
+Issue Manager
+    ↓
+[Create/Update GitHub Issue]
+    ↓
+Cognitive Brain
+    ↓
+[Propose Autonomous Actions]
+```
+
+---
+
+## 📊 Inputs & Outputs
+
+### Inputs
+1. **GitHub API Data**
+   - Workflow runs and statuses
+   - Workflow logs and artifacts
+   - Previous run history
+   - Artifact metadata
+
+2. **Configuration**
+   - Monitoring settings (`.codex/config/monitoring.yaml`)
+   - Pattern database (`.codex/monitoring/patterns/error_signatures.yaml`)
+   - Agent routing map
+   - Thresholds and policies
+
+3. **State Data**
+   - Last check timestamp
+   - Known failures and their history
+   - Pattern match cache
+   - Metrics and statistics
+
+### Outputs
+1. **GitHub Issues**
+   - Rich failure reports with diagnostic links
+   - Pattern analysis and confidence scores
+   - Agent recommendations
+   - Suggested actions
+
+2. **State Updates**
+   - Monitor state (`.codex/monitoring/state/monitor_state.json`)
+   - Pattern cache (`.codex/monitoring/state/pattern_cache.json`)
+   - Audit logs (`.codex/monitoring/state/audit.log`)
+
+3. **Metrics**
+   - Monitoring uptime
+   - Detection latency
+   - Pattern match accuracy
+   - MTTR (Mean Time To Resolution)
+
+4. **Cognitive Brain Signals**
+   - Failure rate trends
+   - Action proposal recommendations
+   - Confidence score adjustments
+
+---
+
+## 🔐 Permissions & Security
+
+### Required Permissions
+- **GitHub API**: 
+  - `actions:read` - Read workflow runs and logs
+  - `issues:write` - Create and update issues
+  - `contents:read` - Read repository files
+- **Secrets**:
+  - `GITHUB_TOKEN` or `CODEX_MASTER_KEY` with appropriate scopes
+
+### Security Measures
+1. **Secret Scrubbing**: Remove sensitive data from logs before posting
+2. **Rate Limiting**: Respect GitHub API rate limits (5000 req/hr with App token)
+3. **PII Protection**: Integrate with PII scrubber for data sanitization
+4. **Audit Logging**: Track all operations for compliance review
+5. **Human Oversight**: Require approval for high-risk autonomous actions
+
+---
+
+## 🎨 Issue Format
+
+### Example Generated Issue
+
+```markdown
+# [AUTO-MONITOR] Workflow Failure: test-comprehensive.yml
+
+**Status**: ❌ FAILED (3 consecutive failures)  
+**Last Success**: 2026-01-21T14:30:00Z  
+**Failure Rate**: 15% (3/20 recent runs)  
+**Pattern Detected**: Import error - missing dependency
+
+---
+
+## 📊 Failure Summary
+
+| Metric | Value |
+|--------|-------|
+| **Workflow** | test-comprehensive.yml |
+| **Run ID** | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678) |
+| **Branch** | main |
+| **Commit** | abc1234 |
+| **Started** | 2026-01-22T06:15:00Z |
+| **Duration** | 5m 23s |
+| **Triggered By** | push event |
+
+---
+
+## 🔗 Diagnostic Links
+
+| Resource | Link |
+|----------|------|
+| Workflow Run | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678) |
+| Logs | [View Logs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/logs) |
+| Artifacts | [Download](https://github.com/Aries-Serpent/_codex_/actions/artifacts/67890) |
+| Debug Log | [Raw Debug](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/debug.log) |
+| Rerun | [Rerun Failed Jobs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/rerun-failed-jobs) |
+
+---
+
+## 🔍 Pattern Analysis
+
+### Matched Patterns (Confidence: 95%)
+
+#### Pattern: Missing Python Module Import
+- **ID**: `import_error_001`
+- **Category**: dependency
+- **Severity**: medium
+- **Confidence**: 95%
+
+**Error Message**:
+```
+ImportError: No module named 'pytest_rerunfailures'
+```
+
+**Suggested Fix**:
+Install missing dependency: `pip install pytest-rerunfailures` or add to `requirements-test.txt`
+
+**Documentation**: [pip documentation](https://pip.pypa.io/en/stable/)
+
+---
+
+## 🤖 Agent Analysis
+
+### CI Testing Agent Analysis
+**Confidence**: 85%
+
+**Root Cause**: Missing `pytest-rerunfailures` package in test environment
+
+**Recommended Actions**:
+1. Add `pytest-rerunfailures>=2.0.0` to `requirements-test.txt`
+2. Verify package installation in workflow setup step
+3. Consider pinning version to avoid future conflicts
+
+**Related Issues**:
+- Similar failure in #2948 (resolved by dependency fix)
+- Pattern documented in `.codex/monitoring/patterns/error_signatures.yaml#L15`
+
+---
+
+## 📈 Historical Context
+
+- **First Occurrence**: 2026-01-22T03:30:00Z
+- **Failure Count**: 3 consecutive failures
+- **Last Success**: 2026-01-21T14:30:00Z (12 hours ago)
+- **Flakiness Score**: 0.05 (not flaky)
+- **Average Duration**: 5m 18s (±23s)
+
+---
+
+## ✅ Recommended Actions
+
+1. **Immediate**: Add missing dependency to requirements-test.txt
+2. **Short-term**: Update workflow to verify all test dependencies
+3. **Long-term**: Implement pre-commit hook to validate dependencies
+
+---
+
+**Labels**: `automated`, `workflow-failure`, `medium-severity`, `dependency`, `needs-triage`
+
+**Auto-generated by Artifact Monitor Agent** | [Configuration](.codex/config/monitoring.yaml) | [Architecture](.codex/monitoring/ARCHITECTURE.md)
+```
+
+---
+
+## 🧪 Testing & Validation
+
+### Test Commands
+
+```bash
+# Unit tests
+pytest tests/monitoring/test_artifact_monitor.py
+
+# Integration tests
+pytest tests/monitoring/test_agent_integration.py
+
+# Pattern validation
+python scripts/monitoring/validate_patterns.py
+
+# Dry-run full monitoring cycle
+python scripts/agents/artifact_monitor_cli.py --check --dry-run --verbose
+```
+
+### Validation Criteria
+- [ ] Correctly identifies 27 artifact-producing workflows
+- [ ] Detects status changes within 3-6 hour window
+- [ ] Matches patterns with >80% accuracy
+- [ ] Routes failures to correct specialized agents
+- [ ] Creates well-formatted issues with all diagnostic links
+- [ ] Deduplicates similar failures within 24-hour window
+- [ ] Respects GitHub API rate limits
+- [ ] Handles errors gracefully without crashing
+
+---
+
+## 📈 Performance Metrics
+
+### Target Metrics
+- **Monitoring Uptime**: >99.5%
+- **Detection Latency**: <6 hours (scheduled interval)
+- **Pattern Match Accuracy**: >80%
+- **False Positive Rate**: <5%
+- **Agent Response Rate**: >95%
+- **MTTR**: <24 hours from detection to fix merged
+
+### Monitoring Dashboard
+View real-time metrics: `.codex/monitoring/state/metrics.json`
+
+---
+
+## 🔄 Cognitive Brain Integration
+
+### Sensor Interface
+```python
+def get_monitoring_state():
+    """Expose monitoring data to Cognitive Brain."""
+    return {
+        'active_failures': list,
+        'failure_rate': float,
+        'pattern_confidence': float,
+        'recommended_actions': list
+    }
+```
+
+### Action Proposal
+```python
+def propose_action(failure_data):
+    """Generate autonomous action proposal."""
+    return {
+        'action_type': str,  # 'create_pr', 'update_config', etc.
+        'confidence': float,
+        'risk_level': str,  # 'low', 'medium', 'high'
+        'description': str,
+        'rationale': str
+    }
+```
+
+---
+
+## 📚 References
+
+- **Configuration**: `.codex/config/monitoring.yaml`
+- **Architecture**: `.codex/monitoring/ARCHITECTURE.md`
+- **Pattern Database**: `.codex/monitoring/patterns/error_signatures.yaml`
+- **Workflow Inventory**: `.codex/monitoring/workflow_inventory.json`
+- **Specialized Agents**: `.github/agents/`
+
+---
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+**Issue**: Monitoring not detecting failures  
+**Solution**: Check state file timestamp and GitHub API connectivity
+
+**Issue**: Pattern matching low confidence  
+**Solution**: Review and tune patterns in error_signatures.yaml
+
+**Issue**: Agent routing timeouts  
+**Solution**: Increase timeout_seconds in monitoring.yaml
+
+**Issue**: GitHub API rate limit exceeded  
+**Solution**: Use GitHub App token or increase polling interval
+
+---
+
+## 🚀 Future Enhancements
+
+1. **ML-Based Pattern Recognition**: Train models on historical failures
+2. **Real-Time Notifications**: Slack/Discord integration for critical failures
+3. **Predictive Analytics**: Predict failures before they occur
+4. **Auto-Fix Generation**: Generate PRs for simple fixes automatically
+5. **Cross-Repository Learning**: Share patterns across multiple repos
+
+---
+
+**Status**: ✅ Active  
+**Last Updated**: 2026-01-22  
+**Maintainer**: Cognitive Brain System + Human Admin
+
+---
+
+**Activation**: `@copilot Use Artifact Monitor Agent to analyze workflow failures`
