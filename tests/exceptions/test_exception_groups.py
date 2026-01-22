@@ -56,16 +56,6 @@ class TestExceptionGroups:
         The except* syntax allows catching specific exception types
         from an ExceptionGroup.
         """
-        def raise_mixed_errors():
-            raise ExceptionGroup(
-                "mixed",
-                [
-                    ValueError("value error"),
-                    TypeError("type error"),
-                    ValueError("another value error"),
-                ]
-            )
-        
         # Test that we can parse except* syntax
         code = """
 try:
@@ -216,6 +206,7 @@ class TestCodexMLExceptionHandling:
             raise CustomError("custom error", 42)
         
         assert exc_info.value.code == 42
+        # Verify error message is in exception string representation
         assert "custom error" in str(exc_info.value)
 
 

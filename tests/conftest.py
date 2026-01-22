@@ -455,6 +455,7 @@ def disable_torch_profiler():
             try:
                 torch._C._profiler._set_profiler_enabled(False)
             except (AttributeError, RuntimeError):
+                # PyTorch profiler may not support disabling in all versions
                 pass
     except (ImportError, AttributeError):
         # Torch not installed or _C not available, skip profiler disabling

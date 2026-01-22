@@ -24,13 +24,13 @@
 
 ## 🎯 Overview
 
-This guide covers migration from Python 3.12 to 3.12 for the **_codex_** repository.
+This guide covers migration from Python 3.11 to 3.12 for the **_codex_** repository.
 
 ### Migration Summary
 
 | Aspect | Details |
 |--------|---------|
-| **Current Baseline** | Python ≥ 3.12 |
+| **Current Baseline** | Python ≥ 3.11 |
 | **Target Version** | Python 3.12 (primary), maintain 3.11 compatibility |
 | **Migration Status** | ✅ **READY** - All dependencies compatible |
 | **Breaking Changes** | **0** - Zero breaking changes required |

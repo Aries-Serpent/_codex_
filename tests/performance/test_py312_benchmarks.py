@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import sys
 import time
-from pathlib import Path
 
 import pytest
 
@@ -55,13 +54,13 @@ class TestPython312Performance:
         start = time.perf_counter()
         for _ in range(iterations):
             # List comprehension
-            result = [x * 2 for x in data if x % 2 == 0]
+            _ = [x * 2 for x in data if x % 2 == 0]
             
             # Dict comprehension
-            result_dict = {x: x ** 2 for x in data if x < 100}
+            _ = {x: x ** 2 for x in data if x < 100}
             
             # Set comprehension
-            result_set = {x % 10 for x in data}
+            _ = {x % 10 for x in data}
         elapsed = time.perf_counter() - start
         
         assert elapsed < 2.0, f"Comprehensions took {elapsed:.3f}s, expected < 2.0s"
@@ -163,7 +162,7 @@ class TestCriticalPathBenchmarks:
         # Benchmark serialization
         start = time.perf_counter()
         for _ in range(iterations):
-            json_str = json.dumps(data)
+            _ = json.dumps(data)  # Discard result, we're measuring performance
         serialize_time = time.perf_counter() - start
         
         # Benchmark deserialization
@@ -256,17 +255,18 @@ class TestPerformanceComparisons:
         start = time.perf_counter()
         for _ in range(iterations):
             try:
-                x = 1 / 1  # No exception
+                _ = 1 / 1  # No exception, benchmarking try-except overhead
             except ZeroDivisionError:
+                # Exception not expected, benchmarking happy path
                 pass
         elapsed_no_exception = time.perf_counter() - start
         
         start = time.perf_counter()
         for _ in range(iterations):
             try:
-                x = 1 / 0  # Raises exception
+                _ = 1 / 0  # Raises exception
             except ZeroDivisionError:
-                pass
+                # Expected exception, intentionally caught for benchmarking
         elapsed_with_exception = time.perf_counter() - start
         
         # Both should complete reasonably

@@ -67,18 +67,21 @@ class TestPython312Integration:
                 from codex_ml import evaluation
                 optional_imports.append("evaluation")
             except ImportError:
+                # Optional module not available, skip
                 pass
             
             try:
                 from codex_ml import data
                 optional_imports.append("data")
             except ImportError:
+                # Optional module not available, skip
                 pass
             
             try:
                 from codex_ml import models
                 optional_imports.append("models")
             except ImportError:
+                # Optional module not available, skip
                 pass
             
             # At least the main package should import

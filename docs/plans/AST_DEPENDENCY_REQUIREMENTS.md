@@ -54,7 +54,7 @@ ast = [
 
 ### Compatibility Matrix
 
-| Dependency | Python 3.8 | Python 3.9 | Python 3.10 | Python 3.12 | Python 3.12 |
+| Dependency | Python 3.8 | Python 3.9 | Python 3.10 | Python 3.11 | Python 3.12 |
 |------------|------------|------------|-------------|-------------|-------------|
 | libcst>=1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | radon>=6.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ |

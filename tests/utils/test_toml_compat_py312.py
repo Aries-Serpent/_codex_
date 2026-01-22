@@ -7,7 +7,6 @@ Verifies tomllib is used on Python 3.11+ and fallback works correctly.
 from __future__ import annotations
 
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
