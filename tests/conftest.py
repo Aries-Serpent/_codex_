@@ -451,13 +451,13 @@ def disable_torch_profiler():
     
     try:
         import torch
-        if hasattr(torch._C, '_profiler'):
+        if hasattr(torch, '_C') and hasattr(torch._C, '_profiler'):
             try:
                 torch._C._profiler._set_profiler_enabled(False)
             except (AttributeError, RuntimeError):
                 pass
-    except ImportError:
-        # Torch not installed, skip profiler disabling
+    except (ImportError, AttributeError):
+        # Torch not installed or _C not available, skip profiler disabling
         pass
     
     yield

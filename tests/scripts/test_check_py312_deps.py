@@ -36,27 +36,37 @@ class TestParseDependencySpec:
     
     def test_simple_package(self):
         """Test parsing simple package name."""
-        name, constraint = parse_dependency_spec("numpy")
+        name, constraint, is_conditional = parse_dependency_spec("numpy")
         assert name == "numpy"
         assert constraint is None
+        assert is_conditional is False
     
     def test_package_with_version(self):
         """Test parsing package with version constraint."""
-        name, constraint = parse_dependency_spec("numpy>=1.26,<3")
+        name, constraint, is_conditional = parse_dependency_spec("numpy>=1.26,<3")
         assert name == "numpy"
         assert constraint == ">=1.26,<3"
+        assert is_conditional is False
     
     def test_package_with_extras(self):
         """Test parsing package with extras."""
-        name, constraint = parse_dependency_spec("ray[serve]>=2.9,<3")
+        name, constraint, is_conditional = parse_dependency_spec("ray[serve]>=2.9,<3")
         assert name == "ray"
         assert constraint == ">=2.9,<3"
+        assert is_conditional is False
     
     def test_package_with_exact_version(self):
         """Test parsing package with exact version."""
-        name, constraint = parse_dependency_spec("hydra-core==1.3.2")
+        name, constraint, is_conditional = parse_dependency_spec("hydra-core==1.3.2")
         assert name == "hydra-core"
         assert constraint == "==1.3.2"
+        assert is_conditional is False
+    
+    def test_conditional_dependency(self):
+        """Test parsing conditional dependency with environment marker."""
+        name, constraint, is_conditional = parse_dependency_spec("importlib-metadata; python_version < '3.10'")
+        assert name == "importlib-metadata"
+        assert is_conditional is True
 
 
 class TestCheckPackagePy312Support:
