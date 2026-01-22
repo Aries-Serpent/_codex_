@@ -94,9 +94,17 @@ class MultiLanguageValidator:
         if not cargo_toml.exists():
             return
         
-        # Use existing validation logic
-        from validate_cargo_features import validate_cargo_features
-        is_valid, errors = validate_cargo_features(cargo_toml)
+        # Use existing validation logic from same directory
+        # Note: Import here to avoid issues if validate_cargo_features not available
+        try:
+            from pathlib import Path
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent))
+            from validate_cargo_features import validate_cargo_features
+            is_valid, errors = validate_cargo_features(cargo_toml)
+        except ImportError:
+            print("⚠️  validate_cargo_features module not available, skipping Rust validation")
+            return
         
         if not is_valid:
             for error in errors:

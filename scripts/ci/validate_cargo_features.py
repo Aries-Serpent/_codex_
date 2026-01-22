@@ -66,8 +66,10 @@ def validate_cargo_features(cargo_toml_path: Path) -> Tuple[bool, List[str]]:
         features_section_text = features_match.group(1)
     else:
         # Convert TOML dict back to text format for regex checks
+        # Properly format lists as valid TOML syntax
         features_section_text = "\n".join(
-            f"{k} = {v}" for k, v in features_section.items()
+            f"{k} = {json.dumps(v)}" if isinstance(v, list) else f"{k} = {v}"
+            for k, v in features_section.items()
         )
     
     # Check 3: Required features for PyO3

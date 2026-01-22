@@ -398,9 +398,11 @@ def main():
     
     dashboard = MetricsDashboard(metrics_file)
     
-    # If no metrics exist, create sample data for demonstration
-    if not dashboard.metrics:
-        print("📊 Creating sample metrics data for demonstration...")
+    # If no metrics exist, create sample data for demonstration (dev/demo mode only)
+    # Set CODEX_DEMO_MODE=1 environment variable to generate sample data
+    import os
+    if not dashboard.metrics and os.getenv('CODEX_DEMO_MODE'):
+        print("📊 Creating sample metrics data for demonstration (DEMO MODE)...")
         
         # Generate sample metrics
         sample_metrics = [
