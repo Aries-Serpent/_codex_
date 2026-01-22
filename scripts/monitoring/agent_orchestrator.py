@@ -19,7 +19,6 @@ Version: 1.0.0
 Created: 2026-01-22
 """
 
-import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -162,6 +161,12 @@ class AgentOrchestrator:
         try:
             with open(agent_path, 'r') as f:
                 agent_definition = f.read()
+            logger.debug(
+                "Loaded agent definition for %s from %s (length=%d)",
+                agent_name,
+                agent_path,
+                len(agent_definition),
+            )
         except Exception as e:
             logger.error(f"Failed to read agent definition {agent_path}: {e}")
             return None

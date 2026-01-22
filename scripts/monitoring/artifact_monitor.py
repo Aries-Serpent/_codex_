@@ -25,19 +25,19 @@ import os
 import re
 import sys
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 try:
-    import requests
     import yaml
     from github import Github, GithubException
     from github.WorkflowRun import WorkflowRun
 except ImportError as e:
-    print(f"Error: Required dependencies not installed: {e}")
-    print("Install with: pip install PyGithub requests PyYAML")
-    sys.exit(1)
+    raise ImportError(
+        f"Required dependencies not installed: {e}. "
+        "Install with: pip install PyGithub requests PyYAML"
+    ) from e
 
 # Configure logging
 logging.basicConfig(
