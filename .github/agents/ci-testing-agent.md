@@ -289,6 +289,69 @@ Activate this agent when encountering:
 
 ---
 
+## Recent CI Fix Patterns (Added 2026-01-22)
+
+### Missing Import Errors
+
+**Problem**: Script fails with `NameError: name 'module' is not defined`
+
+**Root Cause**: Module used without import statement (common with `json`, `re`, `os`)
+
+**Diagnostic Steps**:
+1. Check error message for undefined name
+2. Search file for usage of that name
+3. Verify import statement exists at top of file
+
+**Solution Pattern**:
+```python
+# ❌ WRONG - Missing import
+def output_features(features: dict) -> str:
+    return json.dumps(features, indent=2)  # NameError!
+
+# ✅ CORRECT - Import at top of file
+import json
+
+def output_features(features: dict) -> str:
+    return json.dumps(features, indent=2)
+```
+
+**Prevention**:
+- Use `ruff check --select=F` to detect undefined names
+- Add pre-commit hooks for import validation
+- Run `python -m py_compile script.py` before commit
+
+### Fix: Missing json Import in validate_cargo_features.py (2026-01-22)
+
+**Problem**: `rust_tests` job failed with `NameError: name 'json' is not defined`
+
+**Root Cause**: Line 71 used `json.dumps()` without importing json module
+
+**Solution Applied**:
+1. Added `import json` at line 12
+2. Created 29 regression tests (21 unit + 8 integration)
+3. Added troubleshooting documentation
+4. Created AfterMath report for cognitive brain
+
+**Files Modified**:
+- scripts/ci/validate_cargo_features.py
+- tests/ci/test_validate_cargo_features.py (new)
+- tests/integration/test_ci_validation_workflow.py (new)
+- docs/troubleshooting/CI_FAILURE_RESOLUTION.md (new)
+
+**Validation**:
+```bash
+# Syntax check
+python -m py_compile scripts/ci/validate_cargo_features.py
+
+# Run tests
+pytest tests/ci/test_validate_cargo_features.py -v
+
+# Linting
+ruff check scripts/ci/validate_cargo_features.py
+```
+
+---
+
 ## Cognitive App Testing (Added 2026-01-06)
 
 ### Overview

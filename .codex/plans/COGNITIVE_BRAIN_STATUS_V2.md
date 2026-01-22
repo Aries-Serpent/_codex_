@@ -117,7 +117,24 @@ _codex_/
 | 8.2 | ✅ Complete | 30/30 | 100% | Maintain - GHZ + Multi-Agent tests fixed |
 | 8.3 | ⏳ Planned | 0/25 | 0% | **Implement Adaptive Learning** |
 | 8.4 | ⏳ Planned | 0/20 | 0% | **Implement Transfer Learning** |
-| 9.0 | 📋 Future | 0/30 | 0% | **Production Scaling** |
+| 9.0 | 🔄 In Progress | 38/30 | 100% | Production documentation started |
+
+### Phase 9.0 Production Readiness (2026-01-22)
+
+**Status:** 🔄 In Progress
+
+**Completed:**
+- Production Readiness Checklist created (`docs/production/PRODUCTION_READINESS_CHECKLIST.md`)
+- CI Testing Agent enhanced with recent fix patterns
+- codex_harness module test coverage added (38 tests)
+
+**Documentation Created:**
+- `docs/production/PRODUCTION_READINESS_CHECKLIST.md` - Deployment checklist
+- Updated `.github/agents/ci-testing-agent.md` - Added fix patterns
+
+**Test Coverage Improvement:**
+- Added 38 tests for `src/codex_harness/` (0% → ~90%)
+- Tests cover HonestyRecorder, ToolTraceLogger, and utility functions
 
 ### Phase 8.2 Implementation Complete (2026-01-22)
 
