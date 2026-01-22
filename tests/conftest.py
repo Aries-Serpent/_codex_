@@ -466,6 +466,12 @@ def disable_torch_profiler():
             try:
                 torch._C._profiler._set_profiler_enabled(False)
             except (AttributeError, RuntimeError, TypeError):
+                # Best-effort: C++ profiler API may not be available in all PyTorch versions
+                logger.debug(
+                    "Failed to disable torch C++ profiler via _set_profiler_enabled; "
+                    "continuing without C++ profiler changes.",
+                    exc_info=True,
+                )
                 pass
         
         # Method B: Disable via Python profiler module
@@ -483,6 +489,12 @@ def disable_torch_profiler():
                 
                 torch.profiler.profile.__init__ = noop_init
             except (AttributeError, TypeError):
+                # Best-effort: profiler API may have changed or be unavailable
+                logger.debug(
+                    "Failed to disable torch profiler via Python API; "
+                    "torch.profiler.profile may be unavailable or changed.",
+                    exc_info=True,
+                )
                 pass
         
         # Method C: Monkey-patch record_function to no-op
@@ -501,14 +513,22 @@ def disable_torch_profiler():
                 
                 torch.autograd.profiler.record_function = NoOpRecordFunction
             except (AttributeError, TypeError):
+                # Best-effort patching: older/newer torch versions may not expose this API.
+                # In that case, we skip the monkey-patch and continue with the default behavior.
+                logger.debug(
+                    "torch.autograd.profiler.record_function could not be patched to NoOpRecordFunction",
+                    exc_info=True,
+                )
                 pass
         
         # Method D: Disable autograd profiler globally
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
             try:
                 torch.autograd.profiler.emit_nvtx(enabled=False)
-                torch.autograd.profiler.profile(enabled=False)
-            except (AttributeError, TypeError, RuntimeError):
+                # Note: Removed torch.autograd.profiler.profile(enabled=False) as profile is a class/context manager, not a function
+            except (AttributeError, TypeError, RuntimeError) as exc:
+                # Best-effort: emit_nvtx API may not be available
+                logger.debug("Failed to disable autograd profiler globally: %s", exc)
                 pass
         
     except ImportError:
