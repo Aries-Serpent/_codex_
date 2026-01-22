@@ -206,7 +206,7 @@ def __getattr__(name: str):
 ### 7. Test Suite Compatibility
 
 **Current Status:**
-- ✅ Running on Python 3.12 and 3.12 in CI
+- ✅ Running on Python 3.11 and 3.12 in CI
 - ✅ 10 test failures fixed in this PR (multi-job CI fix)
 - ✅ PyTorch 2.6.0 profiler compatibility added
 
@@ -420,7 +420,7 @@ def disable_torch_profiler():
 - [x] Fix test failures (10 tests fixed)
 
 ### Phase 2: CI Validation (In Progress 🔄)
-- [ ] Monitor CI runs on both Python 3.12 and 3.12
+- [ ] Monitor CI runs on both Python 3.11 and 3.12
 - [ ] Verify all jobs pass
 - [ ] Check coverage reports
 
@@ -533,7 +533,7 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 - ✅ All 37 core dependencies support Python 3.12
 - ✅ Modern type hints and syntax already in use
 - ✅ No deprecated patterns found
-- ✅ CI already tests both Python 3.12 and 3.12
+- ✅ CI already tests both Python 3.11 and 3.12
 - ✅ PyTorch 2.6.0 compatibility fixed
 - ✅ Proactive deprecation handling implemented
 
