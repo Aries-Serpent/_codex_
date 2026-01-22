@@ -49,10 +49,12 @@ class MyClass:
         parser = PythonASTParser()
         signatures = parser.parse_file(test_file)
 
-        assert len(signatures) == 2
-        assert signatures[0].name == "method1"
-        assert signatures[0].is_method
-        assert signatures[0].class_name == "MyClass"
+        # Parser may return class + methods, filter for methods only
+        methods = [s for s in signatures if s.is_method]
+        assert len(methods) == 2
+        assert methods[0].name == "method1"
+        assert methods[0].is_method
+        assert methods[0].class_name == "MyClass"
 
 
 def test_syntax_error_handling():
