@@ -267,6 +267,7 @@ class TestPerformanceComparisons:
                 _ = 1 / 0  # Raises exception
             except ZeroDivisionError:
                 # Expected exception, intentionally caught for benchmarking
+                pass
         elapsed_with_exception = time.perf_counter() - start
         
         # Both should complete reasonably
