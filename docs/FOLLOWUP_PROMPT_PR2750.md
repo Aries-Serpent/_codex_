@@ -28,7 +28,7 @@
 
 ### Production-Ready Custom Copilot Agents Created ✅
 1. **datetime-modernizer** (`.github/copilot/agents/datetime-modernizer.md`)
-   - Automated Python datetime API migration for Python 3.11+
+   - Automated Python datetime API migration for Python 3.12+
    - Detects and fixes deprecated patterns
    - Full YAML spec with Mermaid workflow diagrams
    - Triggers: PR review, CI failure, manual invocation, schedule

@@ -1470,7 +1470,7 @@ class TestUserManager:
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.12+
 - Node.js 18+ (for GitHub Spark)
 - Git
 - Virtual environment tool (venv, conda, poetry)

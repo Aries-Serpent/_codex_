@@ -41,7 +41,7 @@ See `pytest.ini` for all available markers and `tests/README.md` for comprehensi
 All push and PR events trigger `.github/workflows/ci-pytest.yml`:
 
 **Features:**
-- Python 3.11+ on ubuntu-latest
+- Python 3.12+ on ubuntu-latest
 - Full pytest suite with coverage
 - 90% coverage threshold (configurable via `COVERAGE_THRESHOLD`)
 - Multiple report formats (HTML, XML, JSON)

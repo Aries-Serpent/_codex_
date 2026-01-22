@@ -172,7 +172,7 @@ Check Error Type
 **Symptom:** Script fails when parsing Cargo.toml or other TOML files
 
 **Solution:**
-1. Ensure `tomllib` (Python 3.11+) or `tomli` fallback is available
+1. Ensure `tomllib` (Python 3.12+) or `tomli` fallback is available
 2. Check TOML syntax with `python -c "import tomllib; tomllib.load(open('file.toml', 'rb'))"`
 
 ### 3. Rust Build Failures

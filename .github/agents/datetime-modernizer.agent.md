@@ -28,7 +28,7 @@ now = datetime.now(UTC)
 
 ## When to Use
 
-- When updating code to Python 3.11+ datetime patterns
+- When updating code to Python 3.12+ datetime patterns
 - During code quality improvement sprints
 - When fixing timezone-related bugs
 

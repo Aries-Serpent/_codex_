@@ -262,7 +262,7 @@ if article_id not in local_index or remote_ts > local_index[article_id]:
 - Automated Python datetime API migration
 - Detects deprecated patterns
 - Applies fixes with validation
-- Python 3.11+ compatible
+- Python 3.12+ compatible
 
 ### 2. test-alignment-fixer (Already Created)
 - Updates tests after implementation refactoring

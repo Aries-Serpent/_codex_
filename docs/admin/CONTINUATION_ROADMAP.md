@@ -291,7 +291,7 @@ class TestGenesisWorkflow:
 
 | Resource | Phase 2 | Phase 3 | Notes |
 |----------|---------|---------|-------|
-| Python 3.11+ | Required | Required | Testing framework |
+| Python 3.12+ | Required | Required | Testing framework |
 | GitHub Actions | Required | Required | CI/CD pipeline |
 | GitHub API Token | Required | Required | Automation |
 | Monitoring Tools | Optional | Required | Dashboard |

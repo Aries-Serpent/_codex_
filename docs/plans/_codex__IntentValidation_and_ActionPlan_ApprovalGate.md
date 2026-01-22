@@ -491,9 +491,9 @@ To validate TOML and JSON configuration files against a JSON Schema in Python, y
 
 ### 1. Load TOML and JSON Configurations into Python Dictionaries
 
-- TOML: Use the built-in tomllib (Python 3.11+) or tomli for earlier versions.
+- TOML: Use the built-in tomllib (Python 3.12+) or tomli for earlier versions.
     ```python
-    import tomllib  # Python 3.11+
+    import tomllib  # Python 3.12+
     with open("config.toml", "rb") as f:
         toml_data = tomllib.load(f)
     ```

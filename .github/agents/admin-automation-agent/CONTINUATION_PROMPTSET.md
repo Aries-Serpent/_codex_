@@ -30,7 +30,7 @@
    Trigger: workflow_dispatch
    Steps:
    - Checkout code
-   - Setup Python 3.11
+   - Setup Python 3.12
    - Install agent dependencies
    - Run configuration validation
    - Run health check

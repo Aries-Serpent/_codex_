@@ -178,7 +178,7 @@ VERIFICATION REPORT
 
 **Workflow Steps:**
 1. Checkout repository (full history)
-2. Setup Python 3.11
+2. Setup Python 3.12
 3. Install GitHub CLI
 4. Authenticate with GitHub
 5. Determine target environment

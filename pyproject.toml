@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"  # BREAKING CHANGE: Python 3.11 support removed
 license = {text = "MIT"}
 authors = [
   { name = "Aries Serpent" }
@@ -21,6 +21,7 @@ keywords = ["ml", "training", "evaluation", "plugins", "hydra", "cli"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
   "Operating System :: OS Independent",
 ]
 # Ensure runtime dependencies remain declared so console entrypoints import successfully

@@ -44,7 +44,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       
       - name: Install dependencies
         run: |
@@ -123,7 +123,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       
       - name: Validate references (manual trigger)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.file_to_validate != ''
@@ -213,7 +213,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       
       - name: Download baseline
         uses: actions/download-artifact@v4

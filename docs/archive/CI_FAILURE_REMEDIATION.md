@@ -138,7 +138,7 @@ $ python -c "import codex_ml; import codex"
 
 2. **PR Checks** (`.github/workflows/pr-checks.yml`)
    - Fast validation with isolated cache
-   - Python 3.11 only
+   - Python 3.12 only
 
 ## Outstanding Items
 

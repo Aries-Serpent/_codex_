@@ -168,4 +168,4 @@ print(f'Triggerable: {len(inv.get_triggerable())}')
 **Notes:**
 - Handled YAML 'on' keyword (boolean True issue)
 - Added pytest-split for test sharding
-- Fixed test suite timeouts for Python 3.11 & 3.12
+- Fixed test suite timeouts for Python 3.12 & 3.12

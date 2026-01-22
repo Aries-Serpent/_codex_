@@ -312,7 +312,7 @@ from src.tools import ToolRegistry, get_registry, register_tool
 ## Dependencies
 
 ### Required
-- Python 3.11+
+- Python 3.12+
 - No additional dependencies for core functionality (graceful degradation)
 
 ### Optional

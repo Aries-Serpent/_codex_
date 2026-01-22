@@ -239,7 +239,7 @@ sequenceDiagram
     
     GH->>WF: Trigger Workflow
     WF->>WF: Checkout Code
-    WF->>WF: Setup Python 3.11
+    WF->>WF: Setup Python 3.12
     
     WF->>Cache: Request Cache (Primary Key)
     

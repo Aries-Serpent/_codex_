@@ -26,7 +26,7 @@ Fix PR review comments from #2750 review thread #3641426934 and resolve failing 
 # Before (deprecated in Python 3.12)
 timestamp = datetime.utcnow().isoformat() + "Z"
 
-# After (Python 3.11+ compatible)
+# After (Python 3.12+ compatible)
 from datetime import UTC, datetime
 timestamp = datetime.now(UTC).isoformat()  # Outputs: 2026-01-08T21:58:07.834371+00:00
 ```
@@ -179,7 +179,7 @@ Based on job 59849939833 failure report:
 
 ## 🔧 Technical Patterns Learned
 
-### 1. Python 3.11+ UTC Constant
+### 1. Python 3.12+ UTC Constant
 ```python
 # Import
 from datetime import UTC, datetime
@@ -290,7 +290,7 @@ See: `.github/copilot/agents/` directory for production agent specifications
 
 ## 🔍 CI Validation Checklist
 
-- [x] Code compiles (Python 3.11+)
+- [x] Code compiles (Python 3.12+)
 - [x] UTC imports correct
 - [x] Test fixes aligned with implementation
 - [x] Duplicate code removed

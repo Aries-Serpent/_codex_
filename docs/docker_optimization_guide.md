@@ -50,7 +50,7 @@ docker build -f Dockerfile.gpu -t codex:gpu .
 | Argument | Values | Default | Description |
 |----------|--------|---------|-------------|
 | `BUILD_ENV` | `prod`, `dev`, `minimal` | `prod` | Build environment |
-| `PYTHON_VERSION` | `3.10`, `3.11`, `3.12` | `3.11` | Python version |
+| `PYTHON_VERSION` | `3.10`, `3.12`, `3.12` | `3.12` | Python version |
 
 ### Feature Flags
 

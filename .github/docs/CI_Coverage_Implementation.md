@@ -44,7 +44,7 @@ This implementation provides **dynamic coverage threshold enforcement** for the 
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  1. Setup Environment (Python 3.11, deps, nox)                  │
+│  1. Setup Environment (Python 3.12, deps, nox)                  │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼

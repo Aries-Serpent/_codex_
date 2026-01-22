@@ -99,7 +99,7 @@ All examples tested and working correctly.
 **Workflows Created**:
 1. **`auth-tests.yml`** - Automated testing
    - Runs on push to main, develop, copilot/** branches
-   - Tests on Python 3.11 and 3.12
+   - Tests on Python 3.12 and 3.12
    - Coverage reporting
    - Example validation
    - Security scanning

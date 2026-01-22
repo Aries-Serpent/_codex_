@@ -43,7 +43,7 @@ pip install -r requirements.txt
 ```
 
 Requirements:
-- Python 3.11+
+- Python 3.12+
 - click
 - pyyaml
 

@@ -342,7 +342,7 @@ python .github/scripts/workflow_analytics_runner.py \
 
 ### Requirements
 
-- Python 3.11+
+- Python 3.12+
 - GitHub CLI (`gh`) installed and authenticated
 - Required Python packages: `requests`, `pyyaml`
 

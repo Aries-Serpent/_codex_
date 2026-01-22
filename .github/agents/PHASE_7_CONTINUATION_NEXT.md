@@ -170,7 +170,7 @@ export CODEX_QUANTUM_ROLLOUT_PCT=0
 ```
 
 ### Python Dependencies
-- Python 3.11+
+- Python 3.12+
 - sqlite3 (built-in)
 - dataclasses (built-in)
 - typing (built-in)

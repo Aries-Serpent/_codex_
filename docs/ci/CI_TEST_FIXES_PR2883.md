@@ -13,7 +13,7 @@
 **Symptoms**:
 - Workflow: `.github/workflows/test-comprehensive.yml`
 - Error: `no tests ran in 129.04s` with exit code 5
-- Python 3.11 and 3.12 both failing
+- Python 3.12 and 3.12 both failing
 - Tests exist in tests/ directory but aren't being discovered/run
 
 **Root Cause**: 
@@ -35,7 +35,7 @@
 - Workflow: `.github/workflows/test-rag.yml`
 - Error: `pytest.UsageError: unrecognized arguments: --timeout=300 --timeout-method=thread --cov=src/codex/rag ...`
 - Maximum crashed workers reached: 8
-- Python 3.11 failing (3.12 was cancelled)
+- Python 3.12 failing (3.12 was cancelled)
 
 **Root Cause**:
 - pytest.ini defined `--timeout=300 --timeout-method=thread` in addopts section
@@ -150,7 +150,7 @@ The timeout args are now defined explicitly in workflows where needed.
 ### Before Fixes:
 - ❌ Comprehensive Tests: "no tests ran in 129.04s" (exit code 5)
 - ❌ RAG Tests: "Maximum crashed workers reached: 8" with UsageError
-- ❌ Python 3.11 and 3.12 both failing
+- ❌ Python 3.12 and 3.12 both failing
 - ❌ Test discovery failures
 - ❌ xdist workers crashing immediately
 

@@ -94,11 +94,11 @@ All quality checks passed:
 
 ```
 ❌ test-comprehensive.yml
-   Python 3.11: no tests ran in 129.04s (exit code 5)
+   Python 3.12: no tests ran in 129.04s (exit code 5)
    Python 3.12: no tests ran in 129.04s (exit code 5)
 
 ❌ test-rag.yml
-   Python 3.11: Maximum crashed workers reached: 8
+   Python 3.12: Maximum crashed workers reached: 8
    Python 3.12: Cancelled
 ```
 
@@ -106,12 +106,12 @@ All quality checks passed:
 
 ```
 ✅ test-comprehensive.yml
-   Python 3.11: Tests discovered and run successfully
+   Python 3.12: Tests discovered and run successfully
    Python 3.12: Tests discovered and run successfully
    Coverage reports generated
 
 ✅ test-rag.yml
-   Python 3.11: xdist workers spawn without crashes
+   Python 3.12: xdist workers spawn without crashes
    Python 3.12: xdist workers spawn without crashes
    Coverage reports generated
 ```
@@ -166,7 +166,7 @@ Look for:
 - ✅ Tests actually execute
 - ✅ No xdist worker crashes
 - ✅ Coverage reports generated
-- ✅ Python 3.11 and 3.12 both pass
+- ✅ Python 3.12 and 3.12 both pass
 
 ### 4. If Any Issues
 Run the validation script:
