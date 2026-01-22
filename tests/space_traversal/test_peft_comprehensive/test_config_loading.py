@@ -20,7 +20,6 @@ def ensure_cfg_dir(tmp_path, monkeypatch):
     """Work inside a temp copy and redirect config loader to temp directory."""
     import codex_ml.utils.config_loader as loader_module
     
-    cwd = Path.cwd()
     tmp_repo = tmp_path / "repo"
     tmp_repo.mkdir(parents=True, exist_ok=True)
     
