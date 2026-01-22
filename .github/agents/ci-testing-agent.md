@@ -304,9 +304,9 @@ Activate this agent when encountering:
 
 **Solution Pattern**:
 ```python
-# ❌ WRONG - Missing import
+# ❌ WRONG - Missing import (will raise NameError at runtime)
 def output_features(features: dict) -> str:
-    return json.dumps(features, indent=2)  # NameError!
+    return json.dumps(features, indent=2)  # This will raise NameError
 
 # ✅ CORRECT - Import at top of file
 import json

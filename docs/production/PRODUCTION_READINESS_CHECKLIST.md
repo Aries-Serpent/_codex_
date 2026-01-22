@@ -181,12 +181,17 @@ curl https://api.example.com/version
 
 ### Phase 9.0 Goals
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Test Coverage | 70% | 27.5% |
-| CI Pass Rate | 99% | ~95% |
-| Deploy Frequency | Daily | Weekly |
-| MTTR | < 1 hour | - |
+| Metric | Target | Current | Notes |
+|--------|--------|---------|-------|
+| Test Coverage | 70% | ~30% | Increased from 27.5% with new tests |
+| CI Pass Rate | 99% | ~95% | Improving with CI fixes |
+| Deploy Frequency | Daily | Weekly | Target for Phase 9.0 |
+| MTTR | < 1 hour | - | To be measured |
+
+**Note:** Repository-wide coverage is ~30% (target: 70%). Individual module coverage varies:
+- `codex_harness`: ~90% (recently improved from 0%)
+- `cognitive_brain`: ~85%
+- See `.codex/qa_walkthrough/coverage_analysis.json` for full breakdown.
 
 ---
 
