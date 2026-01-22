@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Pre-commit hook for configuration validation
+
+set -e
+
+echo "🔍 Running configuration validation pre-commit hook..."
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if [ ! -f "scripts/ci/validate_cargo_features.py" ]; then
+    echo "⚠️  Validation scripts not found, skipping"
+    exit 0
+fi
+
+VALIDATION_FAILED=0
+
+if git diff --cached --name-only | grep -q "Cargo.toml"; then
+    echo "  → Validating Cargo.toml..."
+    if python scripts/ci/validate_cargo_features.py; then
+        echo "  ✅ Cargo.toml validation passed"
+    else
+        echo "  ❌ Cargo.toml validation FAILED"
+        VALIDATION_FAILED=1
+    fi
+fi
+
+if [ $VALIDATION_FAILED -eq 1 ]; then
+    echo ""
+    echo "❌ Validation failed! Use: @copilot Use the Rust Configuration Validator agent"
+    echo "To bypass: git commit --no-verify"
+    exit 1
+fi
+
+echo "✅ All validations passed!"
+exit 0
