@@ -3,7 +3,6 @@ Test suite for security utilities.
 Validates safe_torch_loader, safe_pickle, and security middleware.
 """
 import pytest
-import torch
 import pickle
 import io
 import hashlib
@@ -11,6 +10,19 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 import tempfile
 import os
+
+# Import torch with error handling for CI environments
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except (ImportError, OSError):
+    torch = None
+    TORCH_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(
+    not TORCH_AVAILABLE,
+    reason="PyTorch not available or failed to load (expected in some CI environments)"
+)
 
 # Import security utilities
 import sys
