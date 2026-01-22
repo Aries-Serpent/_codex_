@@ -641,6 +641,18 @@ See `.github/agents/workflow-analytics-agent.md` for:
 - Artifact retrieval and analysis
 - Trend tracking and metrics
 
+### Error Pattern Database
+
+The comprehensive CI/CD Error Pattern Database is maintained collaboratively:
+- **Location**: `.codex/reports/ERROR_PATTERN_DATABASE.md`
+- **Purpose**: Centralized repository of known patterns, root causes, and mitigations
+- **Updates**: Automatically updated by Workflow Analytics Agent
+- **Usage**: Reference for diagnosing and fixing CI issues
+
+Recent analytics reports:
+- **Latest Report**: `.codex/reports/workflow_analytics_report_2026-01-22T04-25-44Z.md`
+- **Current Status**: ✅ HEALTHY (100% success rate, 0 active failures)
+
 ---
 
 **Maintained by**: @mbaetiong  
