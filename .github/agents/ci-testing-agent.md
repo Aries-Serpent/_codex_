@@ -597,6 +597,52 @@ Agent will:
 
 ---
 
+## Integration with Workflow Analytics Agent (Added 2026-01-22)
+
+The CI Testing Agent works with the Workflow Analytics Agent for comprehensive CI/CD analysis:
+
+### Cross-Agent Workflow
+
+1. **Workflow Analytics Agent**: Analyzes historical workflow runs and identifies error patterns
+2. **CI Testing Agent**: Fixes current failures using patterns identified by analytics
+
+### Using Error Pattern Analysis
+
+```bash
+# Analyze workflow logs for error patterns
+python scripts/ci/analyze_workflow_errors.py --logs <log_file>
+
+# The analyzer detects:
+# - Import errors (ModuleNotFoundError, NameError)
+# - Syntax errors (SyntaxError, YAML errors)
+# - Test failures (pytest, AssertionError)
+# - Timeouts and performance issues
+# - Permission and dependency conflicts
+```
+
+### Accessing Previous Workflow Runs
+
+```bash
+# List recent failed runs
+gh run list --status failure --limit 10
+
+# Get failed job logs
+gh run view <run-id> --log-failed
+
+# Download artifacts for analysis
+gh run download <run-id> --name <artifact-name>
+```
+
+### Related Agent
+
+See `.github/agents/workflow-analytics-agent.md` for:
+- Full workflow history access methods
+- Error pattern detection scripts
+- Artifact retrieval and analysis
+- Trend tracking and metrics
+
+---
+
 **Maintained by**: @mbaetiong  
-**Last Review**: 2026-01-06  
-**Next Review**: 2026-02-06
+**Last Review**: 2026-01-22  
+**Next Review**: 2026-02-22
