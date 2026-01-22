@@ -412,7 +412,7 @@ def test_training_enhancements_config_exists():
     """Test that training enhancements config file exists."""
     from pathlib import Path
 
-    config_path = Path(__file__).parents[3] / "configs" / "base" / "training_enhancements.yaml"
+    config_path = Path(__file__).parents[2] / "configs" / "base" / "training_enhancements.yaml"
     assert config_path.exists(), f"Config file not found: {config_path}"
 
 
@@ -421,7 +421,7 @@ def test_training_enhancements_config_valid():
     from pathlib import Path
     import yaml
 
-    config_path = Path(__file__).parents[3] / "configs" / "base" / "training_enhancements.yaml"
+    config_path = Path(__file__).parents[2] / "configs" / "base" / "training_enhancements.yaml"
 
     try:
         with open(config_path) as f:
