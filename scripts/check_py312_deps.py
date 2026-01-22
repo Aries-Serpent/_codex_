@@ -25,7 +25,7 @@ except ImportError:
         sys.exit(1)
 
 
-def parse_dependency_spec(dep_spec: str) -> tuple[str, str | None]:
+def parse_dependency_spec(dep_spec: str) -> tuple[str, str | None, bool]:
     """
     Parse a dependency specification into package name and version constraint.
     
@@ -33,14 +33,23 @@ def parse_dependency_spec(dep_spec: str) -> tuple[str, str | None]:
         dep_spec: Dependency specification like "package>=1.0.0" or "package[extras]>=2.0"
         
     Returns:
-        Tuple of (package_name, version_constraint)
+        Tuple of (package_name, version_constraint, is_conditional)
         
     Examples:
         >>> parse_dependency_spec("numpy>=1.26,<3")
-        ('numpy', '>=1.26,<3')
+        ('numpy', '>=1.26,<3', False)
         >>> parse_dependency_spec("torch[cuda]>=2.6.0")
-        ('torch', '>=2.6.0')
+        ('torch', '>=2.6.0', False)
+        >>> parse_dependency_spec("importlib-metadata; python_version < '3.10'")
+        ('importlib-metadata', None, True)
     """
+    # Check for conditional dependencies (environment markers)
+    is_conditional = ';' in dep_spec
+    
+    # Remove environment markers for parsing
+    if is_conditional:
+        dep_spec = dep_spec.split(';')[0].strip()
+    
     # Remove extras like [cuda], [serve], etc.
     dep_spec = re.sub(r'\[([^\]]+)\]', '', dep_spec)
     
@@ -49,9 +58,9 @@ def parse_dependency_spec(dep_spec: str) -> tuple[str, str | None]:
     if match:
         package_name = match.group(1)
         version_constraint = match.group(2) if match.group(2) else None
-        return package_name, version_constraint
+        return package_name, version_constraint, is_conditional
     
-    return dep_spec.strip(), None
+    return dep_spec.strip(), None, is_conditional
 
 
 def check_package_py312_support(package: str) -> dict[str, Any]:
@@ -197,13 +206,23 @@ def main() -> int:
     print("Loading dependencies from pyproject.toml...")
     dep_specs = load_dependencies_from_pyproject()
     
-    # Parse unique package names
+    # Parse unique package names, excluding conditional dependencies for Python < 3.12
     packages = set()
+    skipped_conditional = []
     for dep_spec in dep_specs:
-        package_name, _ = parse_dependency_spec(dep_spec)
+        package_name, _, is_conditional = parse_dependency_spec(dep_spec)
+        
+        # Skip conditional dependencies that don't apply to Python 3.12+
+        if is_conditional and ('python_version' in dep_spec and '<' in dep_spec):
+            # This is a conditional for older Python versions, skip it
+            skipped_conditional.append(dep_spec)
+            continue
+        
         packages.add(package_name)
     
     print(f"Found {len(packages)} unique packages to check")
+    if skipped_conditional:
+        print(f"Skipped {len(skipped_conditional)} conditional dependencies for Python < 3.12")
     print()
     
     # Check each package
