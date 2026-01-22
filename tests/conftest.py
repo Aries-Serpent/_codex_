@@ -484,7 +484,7 @@ def disable_torch_profiler():
                 pass
         
         # Method C: Monkey-patch record_function to no-op
-        if hasattr(torch.autograd, 'profiler'):
+        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
             try:
                 original_record_function = torch.autograd.profiler.record_function
                 
@@ -502,11 +502,12 @@ def disable_torch_profiler():
                 pass
         
         # Method D: Disable autograd profiler globally
-        try:
-            torch.autograd.profiler.emit_nvtx(enabled=False)
-            torch.autograd.profiler.profile(enabled=False)
-        except (AttributeError, TypeError, RuntimeError):
-            pass
+        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
+            try:
+                torch.autograd.profiler.emit_nvtx(enabled=False)
+                torch.autograd.profiler.profile(enabled=False)
+            except (AttributeError, TypeError, RuntimeError):
+                pass
         
     except ImportError:
         # Torch not installed - no action needed
