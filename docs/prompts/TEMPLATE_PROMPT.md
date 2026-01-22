@@ -21,7 +21,7 @@ Before starting, load the cognitive brain for full context:
 ### Prerequisites
 
 - [ ] Requirement 1 (e.g., "Repository cloned locally")
-- [ ] Requirement 2 (e.g., "Python 3.11+ installed")
+- [ ] Requirement 2 (e.g., "Python 3.12+ installed")
 - [ ] Requirement 3 (e.g., "Tests passing")
 
 ### Assumptions

@@ -43,7 +43,7 @@ See `tests/README.md` for comprehensive testing instructions.
 ### CI/CD Testing
 
 All pull requests are automatically tested via GitHub Actions (`.github/workflows/ci-pytest.yml`):
-- Tests run on Python 3.11+ (ubuntu-latest)
+- Tests run on Python 3.12+ (ubuntu-latest)
 - Coverage must meet 90% threshold (configurable)
 - Coverage reports are uploaded as artifacts
 - Automatic PR comment with coverage summary and artifact links

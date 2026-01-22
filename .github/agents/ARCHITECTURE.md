@@ -450,7 +450,7 @@ Production
 
 ## 📝 Technical Specifications
 
-**Languages:** Python 3.11+  
+**Languages:** Python 3.12+  
 **Frameworks:** asyncio, aiohttp  
 **Cloud:** AWS (Lambda, API Gateway, S3, Secrets Manager, CloudWatch)  
 **Infrastructure:** Terraform  

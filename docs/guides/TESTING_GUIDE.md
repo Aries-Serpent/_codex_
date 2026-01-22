@@ -33,7 +33,7 @@ See `tests/README.md` for detailed testing instructions and all available marker
 Every push and pull request triggers the pytest CI workflow (`.github/workflows/ci-pytest.yml`):
 
 **Workflow features:**
-- Runs on: Python 3.11+ (ubuntu-latest)
+- Runs on: Python 3.12+ (ubuntu-latest)
 - Test execution with pytest
 - Coverage collection (HTML, XML, JSON formats)
 - Coverage threshold enforcement (90% minimum, configurable)

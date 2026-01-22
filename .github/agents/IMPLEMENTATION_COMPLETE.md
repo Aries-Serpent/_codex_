@@ -322,7 +322,7 @@ Integration: Foundation ready
 **Review Feedback:** @mbaetiong  
 **Framework:** Custom GitHub Agents (emerging platform)  
 **Infrastructure:** AWS Lambda + API Gateway (planned)  
-**Languages:** Python 3.11+, YAML, Markdown  
+**Languages:** Python 3.12+, YAML, Markdown  
 
 ---
 

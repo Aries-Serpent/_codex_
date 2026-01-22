@@ -128,7 +128,7 @@ This document identifies gaps between PR objectives and implementation evidence,
 
 **Priority**: LOW  
 **Component**: Infrastructure  
-**Impact**: Some Dockerfiles still on Python 3.11
+**Impact**: Some Dockerfiles still on Python 3.12
 
 **Evidence**:
 - Dockerfile: ✅ Updated to python:3.14-slim

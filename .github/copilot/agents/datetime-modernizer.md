@@ -9,7 +9,7 @@
 
 ## 🎯 Purpose
 
-Automatically detect and fix deprecated datetime patterns in Python 3.11+ codebases:
+Automatically detect and fix deprecated datetime patterns in Python 3.12+ codebases:
 - Replace `datetime.utcnow()` → `datetime.now(UTC)`
 - Replace `datetime.utcfromtimestamp()` → `datetime.fromtimestamp(..., UTC)`
 - Ensure timezone-aware timestamps
@@ -34,7 +34,7 @@ metadata:
 spec:
   description: |
     Automated Python datetime API migration agent. Detects and fixes 
-    deprecated datetime patterns for Python 3.11+ compatibility.
+    deprecated datetime patterns for Python 3.12+ compatibility.
     
   capabilities:
     - Detect deprecated datetime.utcnow() usage
@@ -114,7 +114,7 @@ spec:
     - run_tests: true
     - check_imports: true
     - verify_syntax: true
-    - ensure_backwards_compatible: false  # Python 3.11+ only
+    - ensure_backwards_compatible: false  # Python 3.12+ only
     
   reporting:
     pr_comment_template: |
@@ -136,7 +136,7 @@ spec:
       - Imports updated: {{imports_count}}
       
       ### Compatibility
-      - ✅ Python 3.11+ compatible
+      - ✅ Python 3.12+ compatible
       - ✅ Timezone-aware timestamps
       - ✅ ISO 8601 compliant
       
@@ -185,7 +185,7 @@ spec:
 
 ```mermaid
 graph TB
-    A[PR Created/Updated] --> B{Python 3.11+?}
+    A[PR Created/Updated] --> B{Python 3.12+?}
     B -->|No| Z[Skip]
     B -->|Yes| C[Scan for Patterns]
     

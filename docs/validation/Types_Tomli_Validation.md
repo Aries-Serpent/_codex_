@@ -4,7 +4,7 @@
 ⚛️ Physics: Path🛤️ [Assess → Patch → Verify] Fields🔄 [Packaging, TOML] Patterns👁️ [Stdlib over vendor, Compat shim] Redundancy🔀 [Unit test + CI] Balance⚖️ [Simplicity vs portability]
 
 ## Why change
-- Python ≥3.11 includes `tomllib`; `types-tomli` is obsolete and not on PyPI.
+- Python ≥ 3.12 includes `tomllib`; `types-tomli` is obsolete and not on PyPI.
 - CI uses Python 3.12; removal avoids resolution failures.
 
 ## What changed

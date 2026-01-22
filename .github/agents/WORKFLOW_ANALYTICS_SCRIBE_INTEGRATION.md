@@ -476,7 +476,7 @@ Remediation:
 
 ### Required
 
-- Python 3.11+
+- Python 3.12+
 - GitHub CLI (`gh`)
 - `requests`, `pyyaml`
 

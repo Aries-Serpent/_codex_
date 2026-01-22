@@ -508,7 +508,7 @@ open htmlcov/index.html          # View coverage report
 ```
 
 **CI/CD:** All PRs run automated tests via `.github/workflows/ci-pytest.yml`
-- Python 3.11+ (ubuntu-latest)
+- Python 3.12+ (ubuntu-latest)
 - 90% coverage threshold (configurable)
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results
@@ -797,7 +797,7 @@ Weekly automated audit workflow (`scheduled-dependency-audit.yml`) runs:
 1. **Baseline Regeneration**: Rebuild wheelhouse and manifests
 2. **Drift Detection**: Compare with previous baseline, alert on changes
 3. **SBOM Scanning**: Generate and scan SBOMs for vulnerabilities
-4. **Upgrade Compatibility**: Test Python 3.11, 3.12, 3.13 compatibility
+4. **Upgrade Compatibility**: Test Python 3.12, 3.12, 3.13 compatibility
 5. **Issue Creation**: Auto-file GitHub issues when drift detected
 
 Trigger manually:

@@ -101,7 +101,7 @@ Rules:
   - eval_tests session installs requirements-dev.txt + requirements-eval.txt, runs pytest -m "eval or metrics" -q
   - Add helper session 'list_sessions' that prints available session names.
   - Ensure marker usage is documented in a comment block.
-Deliverable: Updated noxfile.py with Python 3.11+ interpreter fallback logic if unspecified.
+Deliverable: Updated noxfile.py with Python 3.12+ interpreter fallback logic if unspecified.
 ```text
 
 ### PROMPT A3 — Introduce Vendor Guard Script

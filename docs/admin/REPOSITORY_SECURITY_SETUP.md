@@ -170,7 +170,7 @@ Rules:
   - ✅ Require status checks to pass before merging
     - ✅ Require branches to be up to date before merging
     - Required checks:
-      - test (Python 3.11)
+      - test (Python 3.12)
       - security-scan
       - codeql
       - pre-commit

@@ -1,7 +1,7 @@
 # Python 3.12 Upgrade Blocker Analysis
 
 **Analysis Date**: 2025-12-28  
-**Current Version**: Python 3.11  
+**Current Version**: Python 3.12  
 **Target Version**: Python 3.12  
 **Repository**: Aries-Serpent/_codex_
 
@@ -31,7 +31,7 @@ requires-python = ">=3.11"
 **Status**: ✅ Currently allows 3.12, just needs testing and explicit support
 
 **Workflows**: 
-- 47 workflows use Python 3.11
+- 47 workflows use Python 3.12
 - 2 workflows already use Python 3.12:
   - `optimized-ci.yml`
   - `post-merge-validation-optimized.yml`

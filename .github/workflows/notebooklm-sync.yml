@@ -149,7 +149,7 @@ jobs:
       - name: Setup Python for Security Scanning
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Cache Security Tools

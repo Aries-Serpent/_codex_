@@ -196,7 +196,7 @@ Once workflows run successfully:
 
 5. **test-rag.yml**:
    - Approve workflow if needed
-   - Verify RAG module tests with Python 3.11 and 3.12
+   - Verify RAG module tests with Python 3.12 and 3.12
    - Check coverage meets 90% threshold
 
 6. **documentation-link-checker.yml**:

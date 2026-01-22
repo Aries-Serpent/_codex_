@@ -6,7 +6,7 @@ This guide covers deploying the _codex_ system in various environments.
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.12+
 - Docker (for containerized deployment)
 - Access to OpenAI API or compatible endpoint
 - Vector store (Pinecone, Weaviate, or local)

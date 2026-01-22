@@ -5,7 +5,7 @@
 
 ## Summary
 - Fixed gitleaks: moved from pip dependency to CI-installed binary (v8.18.0).
-- New failure: types-tomli is not available on PyPI and is unnecessary on Python ≥3.11 (tomli included as stdlib tomllib). Remove it from requirements-dev.txt.
+- New failure: types-tomli is not available on PyPI and is unnecessary on Python ≥ 3.12 (tomli included as stdlib tomllib). Remove it from requirements-dev.txt.
 
 ## Required Actions
 | Step | File/Area | Action | Why |

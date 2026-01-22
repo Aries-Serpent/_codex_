@@ -8,7 +8,7 @@ This guide covers low/no-cost hosting for the MCP HTTP prototype and how to alig
   - Map `/mcp/*` to the FastAPI schema in `docs/mcp/api_schema.md`
   - Use Durable Objects or KV for lightweight rate-limit buckets
 - **Fly.io (persistent container)**
-  - Runtime: Python 3.11 (FastAPI `src/mcp/server/http.py`)
+  - Runtime: Python 3.12 (FastAPI `src/mcp/server/http.py`)
   - Recommended: separate apps for API and embedding worker
   - Commands: `fly launch --name codex-mcp`, `fly deploy`
 - **Local Compose**

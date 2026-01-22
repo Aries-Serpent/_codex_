@@ -62,7 +62,7 @@ This document tracks the performance, issues, and observations during the 1-week
 
 ### Test Suite Performance
 
-| Date | Total Runtime | Python 3.10 | Python 3.11 | Python 3.12 | Failures | Notes |
+| Date | Total Runtime | Python 3.10 | Python 3.12 | Python 3.12 | Failures | Notes |
 |------|--------------|-------------|-------------|-------------|----------|-------|
 | 2025-12-17 | - | - | - | - | - | Pending |
 | 2025-12-18 | - | - | - | - | - | Pending |

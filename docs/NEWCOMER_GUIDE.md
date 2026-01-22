@@ -369,7 +369,7 @@ nox -s tests_min                 # Fast minimal tests
 
 **CI/CD Testing:**
 All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
-- Python 3.11+ on ubuntu-latest
+- Python 3.12+ on ubuntu-latest
 - 90% coverage threshold enforced
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results

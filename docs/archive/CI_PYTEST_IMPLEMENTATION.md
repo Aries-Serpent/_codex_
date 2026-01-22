@@ -12,7 +12,7 @@ This document describes the pytest CI implementation added to the `_codex_` repo
 
 **Features:**
 - Triggers on push/PR to main, 0D_base_, 0C_base_ branches
-- Runs on ubuntu-latest with Python 3.11
+- Runs on ubuntu-latest with Python 3.12
 - Executes pytest with coverage collection
 - Enforces 90% coverage threshold (configurable via `COVERAGE_THRESHOLD` env var)
 - Uploads coverage artifacts (HTML, XML, JSON) with 30-day retention
@@ -206,7 +206,7 @@ env:
 ## Troubleshooting
 
 ### Tests Fail Locally but Pass in CI
-- Ensure you're using Python 3.11+
+- Ensure you're using Python 3.12+
 - Install all dependencies: `pip install -r requirements.txt`
 - Install package in editable mode: `pip install -e .`
 

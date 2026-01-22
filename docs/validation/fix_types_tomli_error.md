@@ -13,7 +13,7 @@
 - Keep gitleaks binary install in CI and detection in nox security session.
 
 ## Rationale
-- Python ≥3.11 provides `tomllib` in stdlib; stubs for tomli are obsolete.
+- Python ≥ 3.12 provides `tomllib` in stdlib; stubs for tomli are obsolete.
 - Ensures CI on Python 3.12 remains green without fetching non-existent packages.
 
 ## Verification

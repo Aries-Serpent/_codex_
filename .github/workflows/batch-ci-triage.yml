@@ -51,7 +51,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       
       - name: Install Dependencies
         run: |
@@ -60,7 +60,7 @@ jobs:
       - name: Setup Cached Environment
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache-tier: 'common'
       
       - name: Determine Input Method

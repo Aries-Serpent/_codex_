@@ -24,13 +24,13 @@
 
 ## 🎯 Overview
 
-This guide covers migration from Python 3.11 to 3.12 for the **_codex_** repository.
+This guide covers migration from Python 3.12 to 3.12 for the **_codex_** repository.
 
 ### Migration Summary
 
 | Aspect | Details |
 |--------|---------|
-| **Current Baseline** | Python ≥3.11 |
+| **Current Baseline** | Python ≥ 3.12 |
 | **Target Version** | Python 3.12 (primary), maintain 3.11 compatibility |
 | **Migration Status** | ✅ **READY** - All dependencies compatible |
 | **Breaking Changes** | **0** - Zero breaking changes required |
@@ -156,7 +156,7 @@ cat .github/workflows/test-comprehensive.yml | grep -A 2 "python-version"
 #   python-version: ['3.11', '3.12']
 ```
 
-The CI pipeline already tests both Python 3.11 and 3.12. No changes needed.
+The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
 
 ---
 
@@ -184,7 +184,7 @@ The codebase proactively uses:
 1. **`from __future__ import annotations`** - String-based type hints
 2. **`dict[str, Any]`** instead of `Dict[str, Any]` - PEP 585
 3. **`str | None`** instead of `Optional[str]` - PEP 604
-4. **`tomllib` with fallback** - Python 3.11+ native TOML support
+4. **`tomllib` with fallback** - Python 3.12+ native TOML support
 5. **Compatibility modules** - `codex_ml/*/compat.py` for graceful deprecation
 
 ---
@@ -290,12 +290,12 @@ If issues arise during migration, follow this rollback procedure:
 # 1. Deactivate Python 3.12 environment
 deactivate
 
-# 2. Reactivate Python 3.11 environment
-source venv/bin/activate  # Your original Python 3.11 venv
+# 2. Reactivate Python 3.12 environment
+source venv/bin/activate  # Your original Python 3.12 venv
 
 # 3. Verify Python version
 python --version
-# Expected: Python 3.11.x
+# Expected: Python 3.12.x
 
 # 4. Reinstall dependencies (if needed)
 pip install -e ".[dev,test]"
@@ -315,7 +315,7 @@ git checkout HEAD -- pyproject.toml
 # 2. Revert any Python 3.12-specific code changes
 git checkout HEAD -- src/
 
-# 3. Reinstall with Python 3.11
+# 3. Reinstall with Python 3.12
 python3.11 -m venv venv
 source venv/bin/activate
 pip install -e ".[dev,test]"
@@ -364,7 +364,7 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
 
 ### Operating System Support
 
-| OS | Python 3.11 | Python 3.12 | Notes |
+| OS | Python 3.12 | Python 3.12 | Notes |
 |----|------------|-------------|-------|
 | **Linux (Ubuntu 20.04+)** | ✅ | ✅ | Fully supported |
 | **macOS (11+)** | ✅ | ✅ | Fully supported |
@@ -397,7 +397,7 @@ ImportError: No module named 'tomllib'
 
 **Solution:**
 ```bash
-# tomllib is built into Python 3.11+
+# tomllib is built into Python 3.12+
 # If seeing this error, check Python version:
 python --version
 

@@ -13,6 +13,6 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache-tier: 'ephemeral'
 

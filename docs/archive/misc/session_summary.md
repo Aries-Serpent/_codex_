@@ -67,7 +67,7 @@ Successfully diagnosed and fixed two critical CI test failures in PR #2883:
 ### Before Fixes
 - ❌ Comprehensive Tests: "no tests ran in 129.04s" (exit code 5)
 - ❌ RAG Tests: "Maximum crashed workers reached: 8"
-- ❌ Python 3.11 and 3.12 both failing
+- ❌ Python 3.12 and 3.12 both failing
 
 ### After Fixes
 - ✅ Tests discovered and run successfully

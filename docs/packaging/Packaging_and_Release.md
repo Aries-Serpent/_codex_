@@ -14,7 +14,7 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 | Wheel builder | ./scripts/build_wheel.sh |
 
 ## Prerequisites
-- Python 3.11+
+- Python 3.12+
 - pip, build, wheel (pip install build wheel)
 - Optional: twine (for metadata checks)
 
@@ -41,12 +41,12 @@ python - <<'PY'
 import sys
 
 try:
-    import tomllib as _toml  # Python 3.11+
+    import tomllib as _toml  # Python 3.12+
 except Exception:
     try:
         import tomli as _toml
     except Exception:  # pragma: no cover - docs snippet
-        sys.exit("tomllib/tomli not available; install tomli or use Python 3.11+")
+        sys.exit("tomllib/tomli not available; install tomli or use Python 3.12+")
 
 data = _toml.load(open('pyproject.toml','rb'))
 assert data['project']['license']=='MIT'

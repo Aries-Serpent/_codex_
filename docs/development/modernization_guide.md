@@ -367,7 +367,7 @@ This will identify legacy patterns that can be modernized.
 ## Resources
 
 - [What's New in Python 3.10](https://docs.python.org/3/whatsnew/3.10.html)
-- [What's New in Python 3.11](https://docs.python.org/3/whatsnew/3.11.html)
+- [What's New in Python 3.12](https://docs.python.org/3/whatsnew/3.11.html)
 - [What's New in Python 3.12](https://docs.python.org/3/whatsnew/3.12.html)
 - [PEP 585 – Type Hinting Generics In Standard Collections](https://peps.python.org/pep-0585/)
 - [Real Python - Python Type Checking](https://realpython.com/python-type-checking/)
