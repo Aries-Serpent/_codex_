@@ -447,8 +447,11 @@ def disable_torch_profiler():
     Solution: Multi-layered profiler disabling:
     1. Environment variable
     2. Direct C++ profiler API
-    3. Python-level profiler context override
+    3. Python-level profiler context override (no restoration needed - test env only)
     4. Global state manipulation
+    
+    Note: Original functions are not restored as this is a test-only fixture
+    and the modifications are intentionally persistent for the entire test session.
     """
     # Layer 1: Environment variable (attempted first, before torch import)
     os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
@@ -469,8 +472,7 @@ def disable_torch_profiler():
         if hasattr(torch, 'profiler'):
             try:
                 # Override profiler context managers to no-op
-                original_profile_init = torch.profiler.profile.__init__
-                
+                # Note: Not restored - test session should have profiler disabled
                 def noop_init(self, *args, **kwargs):
                     """No-op profiler initialization."""
                     self.enabled = False
@@ -486,8 +488,8 @@ def disable_torch_profiler():
         # Method C: Monkey-patch record_function to no-op
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
             try:
-                original_record_function = torch.autograd.profiler.record_function
-                
+                # Override record_function to no-op
+                # Note: Not restored - test session should have profiler disabled
                 class NoOpRecordFunction:
                     """No-op context manager for record_function."""
                     def __init__(self, *args, **kwargs):
