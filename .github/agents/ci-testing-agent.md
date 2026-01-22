@@ -1,9 +1,9 @@
 ---
 name: CI Testing Agent
 description: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
-version: 1.0.0
+version: 1.1.0
 created: 2025-12-29
-updated: 2025-12-29
+updated: 2026-01-22
 ---
 
 # CI Testing Agent
@@ -131,6 +131,141 @@ isort .
 
 # Check manually
 ruff check src/ tests/
+```
+
+### PyTorch/CUDA Library Errors (Added 2026-01-22)
+
+**Problem**: `OSError: libtorch_global_deps.so: cannot open shared object file`
+
+This occurs when PyTorch is installed but CUDA libraries are missing or corrupted in CI environments.
+
+**Diagnostic Steps**:
+1. Check if tests import torch at module level (bad pattern)
+2. Identify which module is importing torch
+3. Verify conftest.py torch import handling
+
+**Solution Pattern - Lazy Import**:
+```python
+# Bad: Module-level import fails in CI without CUDA
+import torch
+
+def some_function():
+    return torch.load(...)
+
+# Good: Lazy import inside function
+def _get_torch():
+    try:
+        import torch
+        return torch
+    except (ImportError, OSError) as e:
+        raise ImportError(f"PyTorch required: {e}") from e
+
+def some_function():
+    torch = _get_torch()
+    return torch.load(...)
+```
+
+**Solution Pattern - Test Skip**:
+```python
+# Skip entire test module if torch unavailable
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except (ImportError, OSError):
+    torch = None
+    TORCH_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(
+    not TORCH_AVAILABLE,
+    reason="PyTorch not available in this CI environment"
+)
+```
+
+**Solution Pattern - Conftest OSError Handling**:
+```python
+# In conftest.py - catch OSError in addition to ImportError
+try:
+    import torch
+    # torch operations
+except (ImportError, OSError) as e:
+    # Expected in CI without full CUDA setup
+    logger.debug("Torch import failed: %s", e)
+    pass
+```
+
+### Test Path Calculation Errors (Added 2026-01-22)
+
+**Problem**: `FileNotFoundError` when tests try to access repo root files
+
+**Root Cause**: Incorrect `parents[N]` index for repository root path.
+
+**Example Error**:
+```
+FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/_codex_/pyproject.toml'
+```
+(Note: Missing `_codex_` - path is one level too shallow)
+
+**Diagnostic Steps**:
+1. Check test file path: `tests/<category>/test_file.py`
+2. Count levels to repo root: `tests/category/file.py` = 2 levels
+3. Verify `REPO_ROOT = Path(__file__).parents[2]`
+
+**Common Mistake**:
+```python
+# WRONG: parents[3] goes above repo root
+REPO_ROOT = Path(__file__).parents[3]  # Goes to /home/runner/work/_codex_
+
+# CORRECT: parents[2] for tests at depth tests/category/test_file.py
+REPO_ROOT = Path(__file__).parents[2]  # Goes to /home/runner/work/_codex_/_codex_
+```
+
+**Path Depth Reference**:
+| File Location | parents[0] | parents[1] | parents[2] |
+|--------------|------------|------------|------------|
+| `tests/unit/test_x.py` | `tests/unit/` | `tests/` | repo root ✅ |
+| `tests/test_y.py` | `tests/` | repo root | ⚠️ |
+| `tests/a/b/test_z.py` | `tests/a/b/` | `tests/a/` | `tests/` (need parents[3]) |
+
+**Fix Command**:
+```bash
+# Find all affected files
+grep -r "parents\[3\]" tests/ --include="*.py"
+
+# Bulk fix
+sed -i 's/Path(__file__).parents\[3\]/Path(__file__).parents[2]/g' tests/**/*.py
+```
+
+### Config/Fixture Mocking Issues (Added 2026-01-22)
+
+**Problem**: Tests use temp directories but load real config files
+
+**Root Cause**: Module-level variables (like `_CFG_DIR`) are evaluated at import time, not test time.
+
+**Example**:
+```python
+# config_loader.py - module level
+_CFG_DIR = _find_cfg_dir()  # Points to real configs/training/
+
+# test_config.py
+@pytest.fixture
+def temp_config(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)  # Changes cwd but _CFG_DIR still points to real dir!
+```
+
+**Solution - Patch Module Variable**:
+```python
+@pytest.fixture
+def ensure_cfg_dir(tmp_path, monkeypatch):
+    import codex_ml.utils.config_loader as loader_module
+    
+    tmp_cfg_dir = tmp_path / "configs" / "training"
+    tmp_cfg_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Patch the already-imported module variable
+    monkeypatch.setattr(loader_module, "_CFG_DIR", tmp_cfg_dir)
+    
+    monkeypatch.chdir(tmp_path)
+    yield tmp_path
 ```
 
 ## Workflow Integration
