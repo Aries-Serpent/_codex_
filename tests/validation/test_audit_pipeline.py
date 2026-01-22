@@ -50,12 +50,14 @@ def test_audit_pipeline_produces_artifacts():
         pass
     else:
         # Run the fast audit path
+        # Timeout: 60s is generous for the audit runner which typically completes in <30s
+        # but allows for slower CI environments. If the script hangs, pytest will fail cleanly.
         result = subprocess.run(
             ["python", str(repo_root / "scripts" / "space_traversal" / "audit_runner.py"), "run"],
             cwd=repo_root,
             capture_output=True,
             text=True,
-            timeout=60,  # Add timeout to prevent hanging
+            timeout=60,
         )
 
         # If it failed due to known issues, that's expected and we skip this test
