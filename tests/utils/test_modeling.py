@@ -18,7 +18,7 @@ if not hasattr(transformers, "AutoTokenizer"):
 
 def test_invalid_dtype():
     mod = importlib.import_module("codex_ml.utils.modeling")
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         mod.load_model_and_tokenizer("m", dtype="unknown")
 
 
@@ -60,5 +60,7 @@ def test_load_success(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda m, **kw: Model(m, **kw)),
     )
+    # Mock the model name as a local path to bypass HF pinning requirement
+    monkeypatch.setenv("CODEX_HF_REVISION", "1234567890abcdef")  # Provide valid commit hash
     model, tok = mod.load_model_and_tokenizer("model", dtype="fp16", device_map="cpu")
     assert isinstance(model, Model) and isinstance(tok, Tok)
