@@ -53,6 +53,9 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Validate Cargo.toml features
+        run: python scripts/ci/validate_cargo_features.py
+
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
 
