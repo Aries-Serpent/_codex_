@@ -442,30 +442,81 @@ def disable_torch_profiler():
     Disable PyTorch profiler to prevent type errors in Torch 2.6.0.
     
     Issue: PyTorch 2.6.0 profiler has breaking changes in type checking
-    for ScriptObject vs _RecordFunction, causing RuntimeError in tests
-    that use torch.randn() and tensor operations.
+    for ScriptObject vs _RecordFunction, causing RuntimeError in tests.
     
-    Solution: Disable profiler globally for test suite.
+    Solution: Multi-layered profiler disabling:
+    1. Environment variable
+    2. Direct C++ profiler API
+    3. Python-level profiler context override
+    4. Global state manipulation
     """
+    # Layer 1: Environment variable (attempted first, before torch import)
     os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
+    os.environ["KINETO_LOG_LEVEL"] = "5"  # Suppress profiler logging
     
+    # Layer 2: Import torch and disable at C++ level
     try:
         import torch
+        
+        # Method A: Disable via C++ API (if available)
         if hasattr(torch, '_C') and hasattr(torch._C, '_profiler'):
             try:
                 torch._C._profiler._set_profiler_enabled(False)
-            except (AttributeError, RuntimeError):
-                # PyTorch profiler may not support disabling in all versions
-                # This is a best-effort attempt to disable profiling for test performance
+            except (AttributeError, RuntimeError, TypeError):
                 pass
-    except (ImportError, AttributeError):
-        # Torch not installed or _C not available, skip profiler disabling
+        
+        # Method B: Disable via Python profiler module
+        if hasattr(torch, 'profiler'):
+            try:
+                # Override profiler context managers to no-op
+                original_profile_init = torch.profiler.profile.__init__
+                
+                def noop_init(self, *args, **kwargs):
+                    """No-op profiler initialization."""
+                    self.enabled = False
+                    self.use_cuda = False
+                    self.record_shapes = False
+                    self.profile_memory = False
+                    self.with_stack = False
+                
+                torch.profiler.profile.__init__ = noop_init
+            except (AttributeError, TypeError):
+                pass
+        
+        # Method C: Monkey-patch record_function to no-op
+        if hasattr(torch.autograd, 'profiler'):
+            try:
+                original_record_function = torch.autograd.profiler.record_function
+                
+                class NoOpRecordFunction:
+                    """No-op context manager for record_function."""
+                    def __init__(self, *args, **kwargs):
+                        pass
+                    def __enter__(self):
+                        return self
+                    def __exit__(self, *args):
+                        pass
+                
+                torch.autograd.profiler.record_function = NoOpRecordFunction
+            except (AttributeError, TypeError):
+                pass
+        
+        # Method D: Disable autograd profiler globally
+        try:
+            torch.autograd.profiler.emit_nvtx(enabled=False)
+            torch.autograd.profiler.profile(enabled=False)
+        except (AttributeError, TypeError, RuntimeError):
+            pass
+        
+    except ImportError:
+        # Torch not installed - no action needed
         pass
     
     yield
     
-    # Cleanup
+    # Cleanup environment variables
     os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
+    os.environ.pop("KINETO_LOG_LEVEL", None)
 
 
 @pytest.fixture

@@ -3,7 +3,12 @@
 Enforce Policy
 
 Purpose:
-    Main execution script
+    Main execution script for security policy enforcement.
+    
+    Enforce security policy gates:
+    - Validate secrets baseline presence when required
+    - Run bandit and enforce severity threshold
+    - Run pip-audit JSON and enforce vulnerability caps
 
 Usage:
     python scripts/security/enforce_policy.py [options]
@@ -21,21 +26,11 @@ Dependencies:
     [To be documented]
 
 Exit Codes:
-    0: Success
-    1: Error
+    0: Success (policy passed)
+    1: Error (policy failed)
 
 Author: Codex Team
-Last Updated: 2026-01-16
-"""
-
-
-"""
-Enforce security policy gates:
-- Validate secrets baseline presence when required
-- Run bandit and enforce severity threshold
-- Run pip-audit JSON and enforce vulnerability caps
-
-Exit code: 0 pass, 1 fail
+Last Updated: 2026-01-22
 """
 from __future__ import annotations
 import logging
