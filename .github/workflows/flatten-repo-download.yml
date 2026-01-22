@@ -109,7 +109,6 @@ jobs:
               "style": "${{ inputs.output_format || 'xml' }}",
               "filePath": "codex-flatten-${{ github.run_number }}.xml",
               "headerText": "_codex_ Repository Consolidation (Run #${{ github.run_number }})",
-              "instructionFilePath": "repomix-instruction.md",
               "removeComments": false,
               "removeEmptyLines": false,
               "topFilesLength": 20,
