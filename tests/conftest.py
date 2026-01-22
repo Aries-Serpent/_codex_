@@ -472,7 +472,6 @@ def disable_torch_profiler():
                     "continuing without C++ profiler changes.",
                     exc_info=True,
                 )
-                pass
         
         # Method B: Disable via Python profiler module
         if hasattr(torch, 'profiler'):
@@ -495,7 +494,6 @@ def disable_torch_profiler():
                     "torch.profiler.profile may be unavailable or changed.",
                     exc_info=True,
                 )
-                pass
         
         # Method C: Monkey-patch record_function to no-op
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
@@ -519,7 +517,6 @@ def disable_torch_profiler():
                     "torch.autograd.profiler.record_function could not be patched to NoOpRecordFunction",
                     exc_info=True,
                 )
-                pass
         
         # Method D: Disable autograd profiler globally
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):

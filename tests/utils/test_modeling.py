@@ -60,7 +60,7 @@ def test_load_success(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda m, **kw: Model(m, **kw)),
     )
-    # Mock the model name as a local path to bypass HF pinning requirement
-    monkeypatch.setenv("CODEX_HF_REVISION", "1234567890abcdef")  # Provide valid commit hash
+    # Set CODEX_HF_REVISION to bypass HF pinning enforcement for test model identifier
+    monkeypatch.setenv("CODEX_HF_REVISION", "1234567890abcdef")
     model, tok = mod.load_model_and_tokenizer("model", dtype="fp16", device_map="cpu")
     assert isinstance(model, Model) and isinstance(tok, Tok)
