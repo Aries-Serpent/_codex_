@@ -1,0 +1,255 @@
+# Error Signature Database for Pattern Recognition
+# Version: 1.0.0
+# Last Updated: 2026-01-22
+# Total Patterns: 30+
+
+version: "1.0.0"
+
+categories:
+  dependency:
+    - id: "dep-001"
+      name: "Import Error - Missing Module"
+      pattern: "ImportError: No module named ['\"]([^'\"]+)['\"]"
+      confidence_base: 0.9
+      category: "dependency"
+      suggested_fix: "Install missing module: pip install {module}"
+      agent: "dependency-conflict-agent"
+    
+    - id: "dep-002"
+      name: "Pip Resolver Conflict"
+      pattern: "ERROR: Cannot install .+ because these package versions have conflicting dependencies"
+      confidence_base: 0.85
+      category: "dependency"
+      suggested_fix: "Review dependency conflicts and adjust version constraints"
+      agent: "dependency-conflict-agent"
+    
+    - id: "dep-003"
+      name: "Version Mismatch"
+      pattern: "requires ([\\w-]+)([<>=!]+)([\\d.]+).+but you'll have ([\\w-]+) ([\\d.]+)"
+      confidence_base: 0.9
+      category: "dependency"
+      suggested_fix: "Update dependency versions to resolve conflict"
+      agent: "dependency-conflict-agent"
+    
+    - id: "dep-004"
+      name: "Module Not Found (Python)"
+      pattern: "ModuleNotFoundError: No module named ['\"]([^'\"]+)['\"]"
+      confidence_base: 0.9
+      category: "dependency"
+      suggested_fix: "Install missing Python module: pip install {module}"
+      agent: "dependency-conflict-agent"
+
+  test:
+    - id: "test-001"
+      name: "Flaky Test - Timeout"
+      pattern: "Test .+ timed out after (\\d+) seconds"
+      confidence_base: 0.8
+      category: "test"
+      suggested_fix: "Increase timeout or investigate slow test execution"
+      agent: "ci-testing-agent"
+    
+    - id: "test-002"
+      name: "Assertion Failure"
+      pattern: "AssertionError: (.+)"
+      confidence_base: 0.85
+      category: "test"
+      suggested_fix: "Review test assertions and expected vs actual values"
+      agent: "ci-testing-agent"
+    
+    - id: "test-003"
+      name: "Fixture Error"
+      pattern: "fixture ['\"]([^'\"]+)['\"] not found"
+      confidence_base: 0.9
+      category: "test"
+      suggested_fix: "Define missing fixture or check fixture scope"
+      agent: "ci-testing-agent"
+    
+    - id: "test-004"
+      name: "Pytest Collection Error"
+      pattern: "ERROR collecting .+: (.+)"
+      confidence_base: 0.85
+      category: "test"
+      suggested_fix: "Fix test collection issues (imports, syntax, fixtures)"
+      agent: "ci-testing-agent"
+    
+    - id: "test-005"
+      name: "Test Setup/Teardown Failure"
+      pattern: "ERROR at (setup|teardown) of .+"
+      confidence_base: 0.85
+      category: "test"
+      suggested_fix: "Fix test setup or teardown logic"
+      agent: "ci-testing-agent"
+
+  build:
+    - id: "build-001"
+      name: "Python Syntax Error"
+      pattern: "SyntaxError: (.+) \\((.+), line (\\d+)\\)"
+      confidence_base: 0.95
+      category: "build"
+      suggested_fix: "Fix syntax error at specified location"
+      agent: "ci-testing-agent"
+    
+    - id: "build-002"
+      name: "Encoding Error"
+      pattern: "UnicodeDecodeError: 'utf-8' codec can't decode"
+      confidence_base: 0.9
+      category: "build"
+      suggested_fix: "Fix file encoding or specify correct encoding"
+      agent: "ci-testing-agent"
+    
+    - id: "build-003"
+      name: "Rust Compilation Error"
+      pattern: "error\\[E\\d+\\]: (.+)"
+      confidence_base: 0.9
+      category: "build"
+      suggested_fix: "Fix Rust compilation error"
+      agent: "ci-testing-agent"
+    
+    - id: "build-004"
+      name: "TypeScript Compilation Error"
+      pattern: "error TS(\\d+): (.+)"
+      confidence_base: 0.9
+      category: "build"
+      suggested_fix: "Fix TypeScript compilation error"
+      agent: "ci-testing-agent"
+
+  coverage:
+    - id: "cov-001"
+      name: "Coverage Below Threshold"
+      pattern: "Coverage .+ is below .+ threshold of (\\d+)%"
+      confidence_base: 0.95
+      category: "coverage"
+      suggested_fix: "Add tests to increase coverage above threshold"
+      agent: "coverage-gapfill-agent"
+    
+    - id: "cov-002"
+      name: "Uncovered Lines"
+      pattern: "TOTAL.+(\\d+)\\s+(\\d+)\\s+(\\d+)%"
+      confidence_base: 0.8
+      category: "coverage"
+      suggested_fix: "Review uncovered lines and add test coverage"
+      agent: "coverage-gapfill-agent"
+
+  lint:
+    - id: "lint-001"
+      name: "Ruff Error"
+      pattern: "(.+\\.py):(\\d+):(\\d+): ([A-Z]\\d+) (.+)"
+      confidence_base: 0.9
+      category: "lint"
+      suggested_fix: "Fix linting error reported by Ruff"
+      agent: "repository-hygiene-agent"
+    
+    - id: "lint-002"
+      name: "MyPy Type Error"
+      pattern: "(.+\\.py):(\\d+): error: (.+)"
+      confidence_base: 0.9
+      category: "lint"
+      suggested_fix: "Fix type checking error reported by MyPy"
+      agent: "repository-hygiene-agent"
+    
+    - id: "lint-003"
+      name: "Black Formatting"
+      pattern: "would reformat (.+\\.py)"
+      confidence_base: 0.85
+      category: "lint"
+      suggested_fix: "Run: black {file}"
+      agent: "repository-hygiene-agent"
+
+  infrastructure:
+    - id: "infra-001"
+      name: "API Rate Limit"
+      pattern: "API rate limit exceeded"
+      confidence_base: 0.95
+      category: "infrastructure"
+      suggested_fix: "Wait for rate limit reset or use authenticated requests"
+      agent: "ci-testing-agent"
+    
+    - id: "infra-002"
+      name: "Artifact Not Found"
+      pattern: "Unable to find artifact .+"
+      confidence_base: 0.9
+      category: "infrastructure"
+      suggested_fix: "Check artifact name and retention policy"
+      agent: "ci-testing-agent"
+    
+    - id: "infra-003"
+      name: "Runner Out of Memory"
+      pattern: "(Out of memory|OOM|MemoryError)"
+      confidence_base: 0.9
+      category: "infrastructure"
+      suggested_fix: "Increase runner memory or optimize memory usage"
+      agent: "ci-testing-agent"
+    
+    - id: "infra-004"
+      name: "Job Timeout"
+      pattern: "The job running on runner .+ has exceeded the maximum execution time of (\\d+) minutes"
+      confidence_base: 0.95
+      category: "infrastructure"
+      suggested_fix: "Optimize job execution time or increase timeout"
+      agent: "ci-testing-agent"
+
+  security:
+    - id: "sec-001"
+      name: "CVE Detection"
+      pattern: "CVE-\\d{4}-\\d{4,7}"
+      confidence_base: 0.95
+      category: "security"
+      suggested_fix: "Update vulnerable dependency to patched version"
+      agent: "security-agent"
+    
+    - id: "sec-002"
+      name: "Secret Exposure"
+      pattern: "(secret|password|token|api[_-]?key).+exposed"
+      confidence_base: 0.9
+      category: "security"
+      suggested_fix: "Rotate exposed secrets immediately"
+      agent: "security-agent"
+    
+    - id: "sec-003"
+      name: "CodeQL Alert"
+      pattern: "CodeQL .+ alert.+: (.+)"
+      confidence_base: 0.9
+      category: "security"
+      suggested_fix: "Review and fix CodeQL security alert"
+      agent: "security-agent"
+
+  documentation:
+    - id: "doc-001"
+      name: "MkDocs Build Error"
+      pattern: "ERROR.+- Doc file '(.+)' .+"
+      confidence_base: 0.9
+      category: "documentation"
+      suggested_fix: "Fix MkDocs configuration or missing file"
+      agent: "documentation-quality-agent"
+    
+    - id: "doc-002"
+      name: "Broken Link"
+      pattern: "broken link to '(.+)'"
+      confidence_base: 0.85
+      category: "documentation"
+      suggested_fix: "Fix or remove broken link"
+      agent: "documentation-quality-agent"
+    
+    - id: "doc-003"
+      name: "Missing Documentation"
+      pattern: "(.+) is not documented"
+      confidence_base: 0.7
+      category: "documentation"
+      suggested_fix: "Add documentation for missing items"
+      agent: "documentation-quality-agent"
+
+# Statistical patterns (flakiness, performance)
+statistical_patterns:
+  flaky_test:
+    description: "Test with intermittent failures"
+    detection_method: "failure_rate_analysis"
+    threshold: 0.15  # 15% failure rate
+    min_samples: 5
+    confidence_multiplier: 1.2
+  
+  performance_degradation:
+    description: "Gradual increase in execution time"
+    detection_method: "time_series_analysis"
+    threshold: 1.5  # 50% slower than baseline
+    window_size: 10
+    confidence_multiplier: 0.9
