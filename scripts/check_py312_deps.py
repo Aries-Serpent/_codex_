@@ -259,13 +259,11 @@ def main() -> int:
     report_path = Path(__file__).parent.parent / ".codex" / "py312_deps_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     
+    from datetime import datetime, timezone
+    
     with open(report_path, "w") as f:
         json.dump({
-            "timestamp": subprocess.run(
-                ["date", "-u", "+%Y-%m-%dT%H:%M:%SZ"],
-                capture_output=True,
-                text=True,
-            ).stdout.strip(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "total_packages": len(results),
             "compatible": compatible_count,
             "incompatible": len(incompatible),

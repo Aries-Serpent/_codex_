@@ -12,10 +12,18 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Import the script
+# Import the script module
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+import importlib.util
 
+# Load the script as a module
+script_path = Path(__file__).parent.parent.parent / "scripts" / "check_py312_deps.py"
+spec = importlib.util.spec_from_file_location("check_py312_deps", script_path)
+check_py312_deps = importlib.util.module_from_spec(spec)
+sys.modules["check_py312_deps"] = check_py312_deps
+spec.loader.exec_module(check_py312_deps)
+
+# Import functions from the loaded module
 from check_py312_deps import (
     check_package_py312_support,
     load_dependencies_from_pyproject,
