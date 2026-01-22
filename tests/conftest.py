@@ -480,10 +480,10 @@ def mock_json_serializable():
     
     original_default = json.JSONEncoder.default
     
-    def mock_default(self, obj):
+    def mock_default(encoder_self, obj):
         if isinstance(obj, MagicMock):
             return {"_mock": str(obj), "_mock_name": obj._mock_name or "MagicMock"}
-        return original_default(self, obj)
+        return original_default(encoder_self, obj)
     
     json.JSONEncoder.default = mock_default
     
