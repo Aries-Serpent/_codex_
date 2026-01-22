@@ -528,8 +528,10 @@ def disable_torch_profiler():
                 logger.debug("Failed to disable autograd profiler globally: %s", exc)
                 pass
         
-    except ImportError:
-        # Torch not installed - no action needed
+    except (ImportError, OSError) as exc:
+        # Torch not installed or failed to load (e.g., missing shared libraries)
+        # This is expected in CI environments without full CUDA setup
+        logger.debug("Torch import failed (expected in some CI environments): %s", exc)
         pass
     
     yield
