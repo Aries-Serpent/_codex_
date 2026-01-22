@@ -119,6 +119,23 @@ _codex_/
 | 8.4 | ⏳ Planned | 0/20 | 0% | **Implement Transfer Learning** |
 | 9.0 | 📋 Future | 0/30 | 0% | **Production Scaling** |
 
+### CI/CD Pipeline Reliability (2026-01-22)
+
+**Status:** ✅ Resolved
+
+**Issue:** Missing `import json` in `scripts/ci/validate_cargo_features.py` caused `rust_tests` job failure, blocking 5 dependent jobs.
+
+**Resolution:**
+- Added missing import statement
+- Created 29 tests (21 unit + 8 integration)
+- Added troubleshooting documentation
+- AfterMath report: `.codex/aftermath/CI_FIX_AFTERMATH_REPORT.md`
+
+**Impact on Cognitive Brain:**
+- CI pipeline reliability restored
+- Cognitive brain workflows can now execute properly
+- Pattern detection in `scripts/cognitive/detect_patterns.py` can collect CI metrics
+
 ---
 
 ## 🎯 Enhancement Plan: Phases 8.2-8.4

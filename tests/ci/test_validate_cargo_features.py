@@ -32,8 +32,7 @@ class TestValidateCargoFeatures:
     def valid_cargo_toml(self, tmp_path: Path) -> Path:
         """Create valid Cargo.toml with all required features."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             version = "0.1.0"
@@ -42,32 +41,28 @@ class TestValidateCargoFeatures:
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
             default = ["python"]
-            """)
-        )
+            """))
         return cargo_file
 
     @pytest.fixture
     def invalid_cargo_toml_no_features(self, tmp_path: Path) -> Path:
         """Create Cargo.toml without features section."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             version = "0.1.0"
 
             [dependencies]
             pyo3 = "0.18"
-            """)
-        )
+            """))
         return cargo_file
 
     @pytest.fixture
     def invalid_cargo_toml_no_python(self, tmp_path: Path) -> Path:
         """Create Cargo.toml without 'python' feature."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             version = "0.1.0"
@@ -75,16 +70,14 @@ class TestValidateCargoFeatures:
             [features]
             extension-module = ["pyo3/extension-module"]
             default = []
-            """)
-        )
+            """))
         return cargo_file
 
     @pytest.fixture
     def invalid_cargo_toml_no_extension_module(self, tmp_path: Path) -> Path:
         """Create Cargo.toml without 'extension-module' feature."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             version = "0.1.0"
@@ -92,8 +85,7 @@ class TestValidateCargoFeatures:
             [features]
             python = []
             default = []
-            """)
-        )
+            """))
         return cargo_file
 
     def test_missing_json_import_regression(self, valid_cargo_toml: Path) -> None:
@@ -157,16 +149,14 @@ class TestValidateCargoFeatures:
     def test_extension_module_missing_pyo3_dependency(self, tmp_path: Path) -> None:
         """Test detection of extension-module without pyo3 dependency."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
             [features]
             python = ["extension-module"]
             extension-module = []
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is False
         assert any("pyo3/extension-module" in err for err in errors)
@@ -174,16 +164,14 @@ class TestValidateCargoFeatures:
     def test_python_feature_without_extension_module_warning(self, tmp_path: Path) -> None:
         """Test warning when python feature doesn't depend on extension-module."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
             [features]
             python = []
             extension-module = ["pyo3/extension-module"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         # Should have warning about python not depending on extension-module
         assert any("WARNING" in err for err in errors)
@@ -212,8 +200,7 @@ class TestRegexFallback:
     def test_regex_fallback_with_valid_config(self, tmp_path: Path) -> None:
         """Test regex fallback parsing with valid configuration."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
@@ -221,23 +208,20 @@ class TestRegexFallback:
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
             default = ["python"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
     def test_regex_fallback_with_missing_feature(self, tmp_path: Path) -> None:
         """Test regex fallback detects missing features."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
             [features]
             default = []
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is False
         assert any("python" in err.lower() for err in errors)
@@ -250,8 +234,7 @@ class TestLibRsValidation:
         """Test that features used in lib.rs are validated against Cargo.toml."""
         # Create Cargo.toml
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
@@ -259,22 +242,19 @@ class TestLibRsValidation:
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
             custom-feature = []
-            """)
-        )
+            """))
 
         # Create src directory and lib.rs
         src_dir = tmp_path / "src"
         src_dir.mkdir()
         lib_rs = src_dir / "lib.rs"
-        lib_rs.write_text(
-            textwrap.dedent("""
+        lib_rs.write_text(textwrap.dedent("""
             #[cfg(feature = "python")]
             mod python_module;
 
             #[cfg(feature = "custom-feature")]
             mod custom_module;
-            """)
-        )
+            """))
 
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is True
@@ -284,30 +264,26 @@ class TestLibRsValidation:
         """Test detection of features used in lib.rs but not declared."""
         # Create Cargo.toml
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
             [features]
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
-            """)
-        )
+            """))
 
         # Create src directory and lib.rs with undeclared feature
         src_dir = tmp_path / "src"
         src_dir.mkdir()
         lib_rs = src_dir / "lib.rs"
-        lib_rs.write_text(
-            textwrap.dedent("""
+        lib_rs.write_text(textwrap.dedent("""
             #[cfg(feature = "python")]
             mod python_module;
 
             #[cfg(feature = "undeclared-feature")]
             mod undeclared_module;
-            """)
-        )
+            """))
 
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is False
@@ -352,23 +328,20 @@ class TestEdgeCases:
     def test_malformed_features_section(self, tmp_path: Path) -> None:
         """Test handling of malformed features section."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
             [features
             python = ["extension-module"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is False
 
     def test_unicode_in_cargo_toml(self, tmp_path: Path) -> None:
         """Test handling of unicode characters in Cargo.toml."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             description = "Test package with émojis 🦀"
@@ -376,16 +349,14 @@ class TestEdgeCases:
             [features]
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
     def test_multiple_feature_dependencies(self, tmp_path: Path) -> None:
         """Test features with multiple dependencies."""
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
 
@@ -395,8 +366,7 @@ class TestEdgeCases:
             numpy = []
             pandas = []
             default = ["python"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is True
 
@@ -424,8 +394,7 @@ class TestJsonModuleIntegration:
         # This is the exact scenario that caused the original bug
         # json.dumps was called on feature lists but json wasn't imported
         cargo_file = tmp_path / "Cargo.toml"
-        cargo_file.write_text(
-            textwrap.dedent("""
+        cargo_file.write_text(textwrap.dedent("""
             [package]
             name = "test-package"
             version = "0.1.0"
@@ -434,8 +403,7 @@ class TestJsonModuleIntegration:
             python = ["extension-module"]
             extension-module = ["pyo3/extension-module"]
             default = ["python"]
-            """)
-        )
+            """))
         is_valid, errors = validate_cargo_features(cargo_file)
         assert is_valid is True
         # If we got here without NameError, the json import is working
