@@ -234,7 +234,6 @@ The action uses a dynamic configuration based on `repomix.config.json` with runt
   "output": {
     "style": "xml",
     "headerText": "_codex_ Repository Consolidation",
-    "instructionFilePath": "repomix-instruction.md",
     "showLineNumbers": true,
     "compress": true
   },
