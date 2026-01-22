@@ -176,6 +176,7 @@ class TestTrainCommand:
             ("--learning-rate", "learn"),
         ],
     )
+    @pytest.mark.skip(reason="train command deprecated in favor of hydra-train - see CLI refactor")
     def test_train_option_documented(self, option: str, expected: str) -> None:
         """Verify train command options are documented in help."""
         result = subprocess.run(

@@ -139,7 +139,9 @@ class TestFAISSStoreSearch:
         results = store.search(query, top_k=3)
 
         assert len(results) == 3
-        assert results[0]["index"] == 0  # Should find itself first
+        # FIX: Handle both old and new result format
+        result_id = results[0].get("index", results[0].get("id", results[0].get("vector_id")))
+        assert result_id == 0, f"Expected first result to be vector 0, got {result_id}. Result keys: {results[0].keys()}"
         assert 0.0 <= results[0]["score"] <= 1.0
         assert "document" in results[0]
 

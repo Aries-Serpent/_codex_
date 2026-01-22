@@ -8,6 +8,7 @@ from __future__ import annotations
 import importlib
 import importlib.machinery
 import importlib.util
+import json
 import logging
 import os
 import random
@@ -428,4 +429,65 @@ def rag_test_config():
         "index_type": "IndexFlatL2",
         "cache_enabled": True,
     }
+
+
+# ============================================================================
+# PyTorch Profiler and JSON Serialization Fixtures (Added 2026-01-22)
+# ============================================================================
+
+
+@pytest.fixture(autouse=True, scope="session")
+def disable_torch_profiler():
+    """
+    Disable PyTorch profiler to prevent type errors in Torch 2.6.0.
+    
+    Issue: PyTorch 2.6.0 profiler has breaking changes in type checking
+    for ScriptObject vs _RecordFunction, causing RuntimeError in tests
+    that use torch.randn() and tensor operations.
+    
+    Solution: Disable profiler globally for test suite.
+    """
+    os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
+    
+    try:
+        import torch
+        if hasattr(torch._C, '_profiler'):
+            try:
+                torch._C._profiler._set_profiler_enabled(False)
+            except (AttributeError, RuntimeError):
+                pass
+    except ImportError:
+        # Torch not installed, skip profiler disabling
+        pass
+    
+    yield
+    
+    # Cleanup
+    os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
+
+
+@pytest.fixture
+def mock_json_serializable():
+    """
+    Helper fixture to make MagicMock objects JSON serializable.
+    
+    Usage:
+        def test_example(mock_json_serializable):
+            mock_obj = MagicMock()
+            json.dumps(mock_obj)  # Works with this fixture
+    """
+    from unittest.mock import MagicMock
+    
+    original_default = json.JSONEncoder.default
+    
+    def mock_default(self, obj):
+        if isinstance(obj, MagicMock):
+            return {"_mock": str(obj), "_mock_name": obj._mock_name or "MagicMock"}
+        return original_default(self, obj)
+    
+    json.JSONEncoder.default = mock_default
+    
+    yield
+    
+    json.JSONEncoder.default = original_default
 

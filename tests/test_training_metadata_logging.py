@@ -18,7 +18,7 @@ torch = pytest.importorskip("torch")
 
 
 def test_run_functional_training_records_metadata(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, mock_json_serializable
 ) -> None:
     real_import = builtins.__import__
 
