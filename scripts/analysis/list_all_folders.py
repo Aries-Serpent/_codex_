@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 List All Folders
 
@@ -33,8 +34,6 @@ Last Updated: 2026-01-16
 Simple script to list all folder paths in the repository.
 Outputs multiple formats: plain text, markdown with links, categorized, tree, JSON, and compressed.
 """
-
-from __future__ import annotations
 
 import argparse
 import gzip

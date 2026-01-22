@@ -73,7 +73,7 @@ jobs:
           EOF
 
       - name: Upload validation artifact
-        uses: actions/upload-artifact@v4.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: genesis-validation-report
           path: .codex/genesis_validation.json
