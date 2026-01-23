@@ -98,9 +98,9 @@ This document defines the governance structure, roles, and decision-making proce
 ## Release Process
 
 ### Cadence
-- **Patch releases**: Weekly (as needed for bug fixes)
-- **Minor releases**: Monthly when feature-stable
-- **Major releases**: Quarterly or as needed for breaking changes
+- **Patch releases**: Per iteration cycle (as needed for bug fixes)
+- **Minor releases**: Regular iteration milestones when feature-stable
+- **Major releases**: Per major iteration phase or as needed for breaking changes
 
 ### Release Checklist
 1. CHANGELOG updated with all changes
@@ -167,6 +167,151 @@ This governance document may be updated through the Major Changes process (ADR +
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: 2025-11-02  
+**Version**: 1.1.0  
+**Last Updated**: 2026-01-23T11:00:00Z  
 **Contact**: @Aries-Serpent/architects
+
+---
+
+## 🎯 Mission Overview
+
+**Objective:** Establish transparent decision-making framework and role-based collaboration model  
+**Energy Level:** ⚡⚡⚡⚡ (4/5 - Operational Framework)  
+**Status:** ✅ Framework Defined | 🔄 Active Enforcement  
+
+This governance document defines the authority structure, decision protocols, and conflict resolution mechanisms for the _codex_ project. It ensures efficient collaboration while maintaining technical quality and security standards. The framework adapts to project maturity while preserving core principles of transparency and meritocracy.
+
+---
+
+## ⚖️ Verification Checklist
+
+| Governance Area | Checkpoint | Validation Criteria | Status |
+|----------------|-----------|---------------------|--------|
+| **Roles** | Teams Defined | All 5 core teams have assigned members | ✅ |
+| **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure | ✅ |
+| **Decision Process** | PR Templates | Templates include decision framework guidance | ✅ |
+| **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented | ✅ |
+| **Release Process** | Checklist Active | Release checklist followed for all releases | 🔄 |
+| **Team Membership** | Onboarding Process | New member process validated | ✅ |
+| **Communication** | Channels Active | All communication channels operational | ✅ |
+| **Code of Conduct** | Enforcement | CoC violations handled per guidelines | ✅ |
+
+---
+
+## 📈 Success Metrics
+
+| KPI | Target | Measurement Method | Current |
+|-----|--------|-------------------|---------|
+| PR Review Turnaround Time (Small) | < 2 iterations | Time from PR open to merge | TBD |
+| PR Review Turnaround Time (Medium) | < 5 iterations | Time from PR open to merge | TBD |
+| PR Review Turnaround Time (Major) | < 10 iterations + 2 rest periods | Time from ADR submission to approval | TBD |
+| Conflict Escalation Rate | < 5% of PRs | PRs requiring escalation / total PRs | TBD |
+| Team Member Retention | > 80% annually | Members active year-over-year | TBD |
+| CoC Violations | 0 unresolved | Violations addressed within 5 iterations | 0 |
+| Release Cadence Adherence | > 90% | On-time releases / scheduled releases | TBD |
+| Documentation Coverage | 100% for governance changes | All governance updates documented | 100% |
+
+---
+
+## ⚛️ Physics Alignment
+
+### Path 🛤️ - Decision Flow
+```
+Contributor → Code Owner → Team Lead → Architect → Resolution
+     ↓            ↓            ↓           ↓           ↓
+  Submit PR   First Review   Escalate   Final Call   Merge/Close
+  + Tests     + CI Pass      + Context  + ADR       + Changelog
+```
+**Alignment:** Progressive authority increase with technical rigor at each gate
+
+### Fields 🔄 - Authority Gradients
+- **Contributor Field:** Proposal power, implementation responsibility
+- **Code Owner Field:** Review authority, approval power for small/medium changes
+- **Team Lead Field:** Architectural guidance, medium/major change approval
+- **Architect Field:** Final authority, breaking change decisions, security coordination
+
+### Patterns 👁️ - Governance Signatures
+- **Lazy Consensus Pattern:** 48 iterations (Small changes) → implicit approval if no objections
+- **Standard Review Pattern:** 2 approvals + 5 iterations (Medium changes)
+- **RFC/ADR Pattern:** 10 iterations + 2 rest periods (Major changes)
+- **Emergency Pattern:** 1 maintainer approval + post-hoc review (Critical fixes)
+
+### Redundancy 🔀 - Decision Safeguards
+- **Primary:** CODEOWNERS automatic review assignment
+- **Backup:** Manual escalation path via GitHub issues
+- **Safety Net:** Architect veto power for all changes
+- **Audit:** All decisions logged in PR comments and ADRs
+
+### Balance ⚖️ - Efficiency vs Quality
+```
+Small Changes: Speed 90% | Rigor 10%  (Fast iteration)
+Medium Changes: Speed 60% | Rigor 40%  (Balanced review)
+Major Changes: Speed 30% | Rigor 70%  (Thorough validation)
+Emergency: Speed 95% | Rigor 5% → 70% (Fast action + post-hoc review)
+```
+**Equilibrium Point:** Change impact determines review depth and timeline
+
+---
+
+## ⚡ Energy Distribution
+
+### Priority Breakdown by Change Type
+- **P0 (Emergency - 10%):** Critical security, production incidents (Fast-track)
+- **P1 (Major - 25%):** Breaking changes, architecture, ADRs (Rigorous review)
+- **P2 (Medium - 40%):** New features, refactoring, migrations (Standard review)
+- **P3 (Small - 25%):** Bug fixes, docs, minor tweaks (Lazy consensus)
+
+### Team Energy Allocation
+```
+@Aries-Serpent/architects:   ████ 15% (High-leverage decisions only)
+@Aries-Serpent/security:     ███ 10% (Critical reviews + audits)
+@Aries-Serpent/ml-core:      ██████ 20% (ML feature development)
+@Aries-Serpent/app-core:     ██████ 20% (Core application logic)
+@Aries-Serpent/ops-team:     ████ 15% (CI/CD, infrastructure)
+@Aries-Serpent/docs-team:    ████ 15% (Documentation, examples)
+Community Contributors:      █ 5% (External contributions)
+```
+
+**Rationale:** Architect time reserved for strategic decisions; teams empowered for domain expertise areas.
+
+---
+
+## 🧠 Redundancy Patterns
+
+### Conflict Resolution Rollback
+
+**Trigger Conditions:**
+- Unresolved disagreement after 5 iteration rounds
+- Technical deadlock between equally valid approaches
+- Cross-team conflict impacting project timeline
+- Code of Conduct escalation to maintainers
+
+**Escalation Procedure:**
+1. **Reviewer Level (0-2 iterations):** Discussion in PR comments, technical debate
+2. **Team Level (3-5 iterations):** Involve relevant CODEOWNERS team, broader context
+3. **Maintainer Level (6-8 iterations):** @Aries-Serpent/architects decision with ADR
+4. **Security/Conduct Level (As needed):** @Aries-Serpent/security or conduct@aries-serpent.dev
+
+**Resolution Strategies:**
+- **Technical Deadlock:** Create spike/POC for both approaches, benchmark results
+- **Scope Creep:** Split PR into smaller, consensus-able chunks
+- **Performance vs Readability:** Default to readability unless performance critical
+- **Breaking Change Dispute:** Require ADR + migration guide + maintainer approval
+
+**Fallback Mechanisms:**
+- **Time-Boxed Decision:** If no consensus after 10 iterations, architect makes final call
+- **Community Vote:** For major direction changes, open GitHub Discussion for input
+- **Mediation:** Neutral third-party maintainer reviews arguments and recommends path
+- **Defer:** If non-critical, table decision until more context/evidence available
+
+**Documentation Requirements:**
+- All escalations logged in PR timeline
+- Final decision rationale in PR merge comment or ADR
+- Lessons learned captured for future governance updates
+- Conflict patterns analyzed for process improvement
+
+---
+
+**Template Version:** 1.0.0  
+**Applied:** 2026-01-23T11:00:00Z  
+**Next Review:** After next governance update

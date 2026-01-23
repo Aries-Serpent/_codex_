@@ -557,4 +557,203 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 **Document Status:** ✅ COMPLETE  
 **Next Review:** After Python 3.13 release (October 2026)  
 **Owner:** @mbaetiong  
-**Last Updated:** 2026-01-22T17:30:00Z
+**Last Updated:** 2026-01-23T11:00:00Z
+
+---
+
+## 🎯 Mission Overview
+
+**Objective**: Provide comprehensive Python 3.11 to 3.12 migration readiness assessment for the _codex_ repository, analyzing all 37 core dependencies, code patterns, and potential blockers to enable confident version upgrade.
+
+**Energy Level**: ⚡⚡⚡⚡ (4/5) - Verification Critical
+- High impact: Enables performance improvements (5-10% speedup)
+- High confidence: 95% readiness assessment (0 blockers found)
+- Long-term value: Extended security support through 2028
+
+**Status**: ✅ Audit Complete | 🟢 Migration READY
+
+---
+
+## ⚖️ Verification Checklist
+
+**Dependency Compatibility**:
+- [x] All 37 core dependencies support Python 3.12
+- [x] All 6 security-critical packages updated (IP-005)
+- [x] PyTorch ≥2.6.0 compatibility verified
+- [x] No deprecated modules in use (distutils, imp, asyncore)
+
+**Code Pattern Analysis**:
+- [x] Type hints using modern syntax (dict[str, Any], str | Path)
+- [x] TOML handling with tomllib fallback
+- [x] Asyncio patterns modern (no deprecated get_event_loop())
+- [x] Future annotations widespread (200+ files)
+
+**Testing Validation**:
+- [x] CI tests both Python 3.11 and 3.12
+- [x] PyTorch profiler compatibility fixed (10 tests)
+- [x] Test suite passes on both versions
+- [x] No version-specific failures
+
+**Migration Readiness**:
+- [x] 0 critical blockers identified
+- [x] 0 high-priority issues found
+- [x] Migration path documented (3 options)
+- [x] Rollback strategy defined
+
+---
+
+## 📈 Success Metrics
+
+| Metric | Target | Achieved | Status |
+|--------|--------|----------|--------|
+| Dependency Compatibility | 100% | 100% (37/37) | ✅ Met |
+| Security Updates | 100% | 100% (6/6) | ✅ Met |
+| Deprecated Patterns | 0 found | 0 found | ✅ Met |
+| Test Pass Rate (3.12) | 100% | 100% | ✅ Met |
+| Confidence Level | ≥ 90% | 95% | ✅ Exceeded |
+| Blocker Count | 0 | 0 | ✅ Met |
+
+**KPI Dashboard**:
+- **Migration Risk Level**: 🟢 LOW (no breaking changes)
+- **Performance Gain Estimate**: 5-8% speedup (typical workloads)
+- **Security Benefit**: Extended support through 2028
+- **Implementation Effort**: 2-4 hours (testing + validation)
+
+---
+
+## ⚛️ Physics Alignment
+
+### Path 🛤️ (Migration Route Optimization)
+- **Option A (Full Migration)**: Drop 3.11 → 3.12 only (1 sprint, clean path)
+- **Option B (Gradual)**: Support both (2-3 sprints, smooth transition)
+- **Option C (Recommended)**: 3.11 minimum, 3.12 recommended (ongoing, maximum compatibility)
+- **Shortest Path**: Option C requires zero code changes (optimal)
+
+### Fields 🔄 (Version Transition Flow)
+- **Current State**: Python ≥3.11 baseline, CI tests both versions
+- **Transition Energy**: Minimal (proactive patterns already in place)
+- **Future State**: Python 3.12 recommended, 3.11 supported
+- **Energy Conservation**: No forced upgrade reduces ecosystem disruption
+
+### Patterns 👁️ (Compatibility Recognition)
+- **Forward-Compatible Patterns**: `from __future__ import annotations` (200+ files)
+- **Fallback Pattern**: `tomllib` → `tomli` (graceful degradation)
+- **Modern Syntax**: `dict[str, Any]` already used (no typing.Dict needed)
+- **Proactive Shims**: Deprecation warnings in tokenization compat layer
+
+### Redundancy 🔀 (Multi-Version Support)
+- **CI Redundancy**: Tests on both 3.11 and 3.12 (catches version-specific issues)
+- **Docker Redundancy**: Images for both versions (user choice)
+- **Documentation Redundancy**: Migration guide + audit report + troubleshooting
+- **Rollback Path**: Keep 3.11 support for 6-12 months (safety net)
+
+### Balance ⚖️ (Compatibility vs Innovation)
+- **Compatibility Weight**: Support 3.11 (existing users)
+- **Innovation Weight**: Recommend 3.12 (new benefits)
+- **Trade-off Resolution**: Option C (both versions, recommend newer)
+- **Optimal Point**: Maximum reach + gradual adoption
+
+---
+
+## ⚡ Energy Distribution
+
+**P0 - Migration Decision (Human Required)**:
+- Review audit report (30 min)
+- Choose migration strategy (Option A/B/C)
+- Update roadmap if full migration selected
+- Communicate decision to team
+
+**P1 - Documentation Updates (Partially Automated)**:
+- Update README.md Python version (manual)
+- Update CHANGELOG.md migration notes (manual)
+- Update Docker base images (automated script available)
+- Performance benchmarking (automated tests)
+
+**P2 - Optional Enhancements (Deferred)**:
+- Leverage PEP 695 type parameter syntax
+- Utilize PEP 701 f-string improvements
+- Explore per-interpreter GIL benefits
+
+**Energy Allocation Rationale**:
+- Major effort on decision (strategic impact)
+- Moderate effort on documentation (communication)
+- Minimal effort on code (already compatible)
+
+---
+
+## 🧠 Redundancy Patterns
+
+**Python Version Migration Rollback Strategy**:
+
+1. **Pre-Migration State**: Python ≥3.11 baseline
+   - Current: `requires-python = ">=3.11"` in pyproject.toml
+   - CI: Tests both 3.11 and 3.12
+   - Docker: Primary images use 3.11, 3.12 available
+   - Dependencies: All support both versions
+
+2. **Migration Checkpoints** (if Option A chosen):
+   - Checkpoint 1: Update `requires-python = ">=3.12"` (documentation change)
+   - Checkpoint 2: Update CI matrix to 3.12 only (CI configuration)
+   - Checkpoint 3: Update Docker base images (infrastructure)
+   - Checkpoint 4: Deploy to staging (validation)
+   - Checkpoint 5: Deploy to production (cutover)
+
+3. **Rollback Triggers**:
+   - Test failures on 3.12 not present on 3.11
+   - User reports of compatibility issues
+   - Dependency conflicts discovered post-migration
+   - Performance regression detected
+
+4. **Recovery Procedure**:
+   ```bash
+   # Option A Rollback (Full Migration reversed)
+   # 1. Revert pyproject.toml
+   git diff HEAD~1 pyproject.toml  # Review changes
+   git checkout HEAD~1 -- pyproject.toml
+   
+   # 2. Restore CI matrix
+   # Edit .github/workflows/test-comprehensive.yml
+   # python-version: ['3.11', '3.12']  # Re-add 3.11
+   
+   # 3. Rebuild Docker images with 3.11 base
+   docker build --build-arg PYTHON_VERSION=3.11 -t codex:3.11 .
+   
+   # 4. Validate rollback
+   pytest tests/ --python=3.11
+   ```
+   
+   ```bash
+   # Option B/C Rollback (No changes needed)
+   # Already supporting both versions, no rollback required
+   # Just update documentation to de-emphasize 3.12 if issues found
+   ```
+
+5. **Validation Points**:
+   - After pyproject.toml update: pip install succeeds on 3.12
+   - After CI update: All jobs pass on 3.12
+   - After Docker update: Images build and run correctly
+   - After staging deployment: Integration tests pass
+   - After production deployment: Monitor for 72 hours
+
+**Failure Mode Protection**:
+- **Dependency Incompatibility**: Pre-migration audit identified all (37/37 compatible)
+- **Test Failures**: CI catches version-specific issues before merge
+- **Performance Regression**: Benchmarking suite detects slowdowns (planned for P2)
+- **User Impact**: Gradual migration (Option C) eliminates forced upgrades
+
+**Disaster Recovery**:
+- **Critical Failure**: Revert to Python 3.11 in <1 hour (git revert + CI trigger)
+- **Data Loss**: N/A (version migration doesn't affect data)
+- **Service Disruption**: Docker images available for both versions (instant fallback)
+- **Knowledge Loss**: Audit report documents all decisions and rationale
+
+**Operational Continuity**:
+- **Option C (Recommended)**: Zero disruption (both versions work)
+- **Option B (Gradual)**: Controlled transition (6-month window)
+- **Option A (Full Migration)**: Requires user coordination (breaking change)
+
+**Monitoring Post-Migration**:
+- Track Python version distribution (user telemetry)
+- Monitor performance metrics (5-8% speedup expected)
+- Log version-specific errors (none expected)
+- Review in Q3 2026 for 3.11 deprecation decision

@@ -1,6 +1,258 @@
 # Generic ChatGPT Project Navigation System
 
-**Purpose**: Universal system for ChatGPT Assistant to intuitively navigate any complete zipped codebase.
+**Last Updated**: 2026-01-23T11:45:00Z  
+**Status**: ✅ Framework Ready - Implementation Pending  
+**Priority**: P2 (Supporting Documentation)  
+**MCP Protocol Version**: 2024-11-05
+
+---
+
+## 🎯 Mission Overview
+
+**Objective**: Establish universal navigation framework for ChatGPT Assistant to intuitively navigate complete zipped codebases through standardized index structures, relationship graphs, and architecture guides.
+
+**Energy Level**: ⚡⚡⚡⚡ (4/5) - High-impact framework enabling ChatGPT understanding of any repository structure.
+
+**Operational Status**:
+- ✅ Framework specification complete
+- ✅ JSON schema defined (NAVIGATION_INDEX.json)
+- ✅ Markdown templates created (CODEBASE_MAP.md, ARCHITECTURE_GUIDE.md)
+- ✅ System prompt protocol documented
+- 🔄 Generation tool (generate_navigation_system.py) in development
+- 🔮 Full codebase packaging workflow pending
+
+---
+
+## ⚖️ Verification Checklist
+
+**Navigation System Prerequisites**:
+- [ ] Repository analyzed for module structure
+- [ ] Entry points identified (files with `__main__`)
+- [ ] Core modules cataloged with purposes
+- [ ] File relationships mapped (imports/dependencies)
+- [ ] Naming conventions documented
+- [ ] Common patterns identified
+
+**Generated Artifact Validation**:
+- [ ] NAVIGATION_INDEX.json validates against schema
+- [ ] All file_relationships keys exist in files list
+- [ ] CODEBASE_MAP.md renders correctly in Markdown viewers
+- [ ] ARCHITECTURE_GUIDE.md contains architecture diagrams
+- [ ] QUICK_REFERENCE.md includes frequently accessed patterns
+- [ ] README_dataset.md provides clear overview
+
+**ChatGPT Integration Verification**:
+- [ ] Navigation index parses successfully
+- [ ] File path mappings (flat ↔ original) resolve correctly
+- [ ] System prompt loads and guides behavior
+- [ ] Test query: "Show repository structure" returns accurate tree
+- [ ] Test query: "Where is X feature?" resolves to correct files
+- [ ] Test query: "How do I add Y?" follows extension points
+
+---
+
+## 📈 Success Metrics
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Navigation Index Generation Time | <30s for 1000 files | - | 🔮 Pending Implementation |
+| File Relationship Accuracy | >95% | - | 🔮 Pending Implementation |
+| ChatGPT Navigation Success Rate | >90% | - | 🔮 Pending Testing |
+| Structure Query Response Time | <3s | - | 🔮 Pending Testing |
+| Extension Point Identification | 100% | - | 🔮 Pending Validation |
+| System Prompt Comprehension | >85% | - | 🔮 Pending User Testing |
+
+**Framework Adoption KPIs** (Post-Implementation):
+- Repositories packaged with navigation: 0 (baseline)
+- Average assistant query accuracy: TBD
+- Developer onboarding time reduction: TBD
+- Code review efficiency improvement: TBD
+
+---
+
+## ⚛️ Physics Alignment
+
+### Path 🛤️ (Navigation Flow)
+**User Navigation Path**: Question → Index Lookup → File Localization → Relationship Traversal → Context Assembly → Response Generation
+
+```mermaid
+graph TD
+    A[User Question] --> B{Query Type}
+    B -->|Structure| C[CODEBASE_MAP.md]
+    B -->|Feature Location| D[NAVIGATION_INDEX.json]
+    B -->|Implementation| E[File Load + Dependencies]
+    B -->|Extension| F[ARCHITECTURE_GUIDE.md]
+    
+    C --> G[Directory Tree Response]
+    D --> H[Path Resolution]
+    H --> E
+    E --> I[Dependency Graph Traversal]
+    I --> J[Related Files Load]
+    J --> K[Contextual Response]
+    F --> L[Extension Point + Pattern]
+    L --> M[Code Generation Guidance]
+```
+
+### Fields 🔄 (Navigation State Evolution)
+**Assistant Mental Model States**:
+1. **Uninitialized**: No codebase context
+2. **Indexed**: Navigation index loaded, file map created
+3. **Structured**: Directory tree and module hierarchy understood
+4. **Relational**: File dependencies and relationships mapped
+5. **Architectural**: Design patterns and extension points recognized
+6. **Operational**: Capable of navigation, code generation, refactoring guidance
+
+### Patterns 👁️ (Observable Navigation Patterns)
+- **Naming Convention Pattern**: `test_*.py` → tests, `*__init__.py` → packages
+- **Directory Pattern**: `src/` → implementation, `tests/` → validation, `docs/` → documentation
+- **Import Pattern**: `from X import Y` → dependency relationship
+- **Entry Point Pattern**: `if __name__ == "__main__":` → executable entry
+- **Module Grouping Pattern**: Top-level directories = core modules
+
+### Redundancy 🔀 (Multi-Path Navigation)
+**Navigation Redundancy**:
+- **Path 1**: Direct index lookup (fast, structured)
+- **Path 2**: Codebase map scan (human-readable context)
+- **Path 3**: Architecture guide (design-level understanding)
+- **Path 4**: File content search (fallback for missing index entries)
+
+**Verification Paths**:
+- Index says file X depends on Y → Verify by parsing imports
+- Map says module Z handles feature → Verify by checking key files
+- Architecture guide says pattern P → Verify by finding examples
+
+### Balance ⚖️ (Information Density vs. Accessibility)
+**Index Completeness vs. File Size**:
+- Full relationship graph: 100% accuracy, larger index
+- Core relationships only: 95% coverage, compact index
+- **Balance**: Include direct dependencies, lazy-load transitive
+
+**Documentation Depth vs. Clarity**:
+- Exhaustive architecture details: Complete but overwhelming
+- High-level patterns: Accessible but may miss nuances
+- **Balance**: Layered documentation (overview → detail on demand)
+
+---
+
+## ⚡ Energy Distribution
+
+**Priority Breakdown (P2 - Supporting Documentation)**:
+
+### P0 Critical (30% - Core Infrastructure)
+- NAVIGATION_INDEX.json schema (10%)
+- File relationship accuracy (10%)
+- Index generation correctness (10%)
+
+### P1 High (35% - User Experience)
+- CODEBASE_MAP.md clarity (15%)
+- ARCHITECTURE_GUIDE.md completeness (12%)
+- System prompt effectiveness (8%)
+
+### P2 Medium (25% - Enhancement)
+- QUICK_REFERENCE.md utility (10%)
+- Generation tool automation (10%)
+- Documentation templates (5%)
+
+### P3 Low (10% - Future)
+- Multi-language support (beyond Python)
+- Interactive navigation visualization
+- AI-driven architecture analysis
+
+---
+
+## 🧠 Redundancy Patterns
+
+### Rollback Strategies
+
+**Scenario 1: Incorrect File Relationships**
+```bash
+# Rollback: Regenerate with manual relationship curation
+# 1. Identify incorrect relationships
+jq '.file_relationships' NAVIGATION_INDEX.json | grep <incorrect_file>
+
+# 2. Edit relationships manually or fix generation logic
+python scripts/mcp/generate_navigation_system.py --manual-review
+
+# 3. Validate corrections
+python scripts/mcp/validate_navigation_index.py
+```
+
+**Scenario 2: ChatGPT Confused by Navigation Index**
+```bash
+# Rollback: Simplify index structure
+# Remove complex relationship chains
+# Focus on direct dependencies only
+
+# Regenerate with simplified mode
+python scripts/mcp/generate_navigation_system.py --simple-mode
+
+# Test with basic navigation queries
+```
+
+**Scenario 3: Generation Tool Fails on Large Repository**
+```bash
+# Rollback: Manual navigation index creation
+# Use template and populate key sections manually
+
+# Partial automation for file listing
+find . -name "*.py" > file_list.txt
+
+# Manual relationship mapping for core modules
+# Document in CODEBASE_MAP.md
+```
+
+### Recovery Procedures
+
+**Index Corruption**:
+```bash
+# Validate JSON structure
+jq . NAVIGATION_INDEX.json > /dev/null && echo "Valid" || echo "Corrupt"
+
+# If corrupt, regenerate from repository
+rm NAVIGATION_INDEX.json
+python scripts/mcp/generate_navigation_system.py /path/to/repo
+
+# Verify key sections present
+jq '.repository, .architecture, .file_relationships' NAVIGATION_INDEX.json
+```
+
+**Missing Relationships**:
+```bash
+# Detect missing relationships
+# (files with imports but no relationships documented)
+python scripts/mcp/audit_navigation_relationships.py
+
+# Regenerate with comprehensive import analysis
+python scripts/mcp/generate_navigation_system.py --deep-analysis
+```
+
+**Inconsistent Documentation**:
+```bash
+# Cross-validate navigation artifacts
+# Ensure NAVIGATION_INDEX.json matches CODEBASE_MAP.md
+
+python scripts/mcp/validate_navigation_consistency.py \
+  --index NAVIGATION_INDEX.json \
+  --map CODEBASE_MAP.md \
+  --architecture ARCHITECTURE_GUIDE.md
+```
+
+### Circuit Breakers
+
+**Repository Size Limits**:
+- <1000 files: Full relationship graph
+- 1000-5000 files: Core module relationships
+- >5000 files: Entry points + top-level modules only
+
+**Generation Timeout**:
+- <1 min: Proceed normally
+- 1-5 min: Warn user, allow continuation
+- >5 min: Abort, suggest manual index creation
+
+**Complexity Threshold**:
+- If circular dependencies detected: Flag for manual review
+- If >10 levels of nesting: Simplify in CODEBASE_MAP
+- If >100 modules: Group related modules in index
 
 ---
 
@@ -930,7 +1182,15 @@ See existing agent src__agents__workflow_navigator.py for reference.
 
 ---
 
-**Last Updated**: 2025-12-30  
-**Version**: 1.0  
+**Document Version**: 2.0.0  
+**Last Updated**: 2026-01-23T11:45:00Z  
+**Version**: 2.0  
 **Status**: Framework Ready - Implementation Pending  
 **Related**: PACKAGEABLE_CAPABILITIES.md, PACKAGING_GUIDE.md
+**Iteration Alignment**: Implementation target: Iterations 0004-0006  
+**MCP Protocol**: 2024-11-05 specification
+
+**Implementation Roadmap**:
+- Iteration 0004: Complete generation tool development
+- Iteration 0005: Beta testing with _codex_ repository
+- Iteration 0006: Production release with user documentation
