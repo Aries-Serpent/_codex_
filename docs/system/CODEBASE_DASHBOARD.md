@@ -565,7 +565,7 @@ nox -s lint type format
 
 **Update Frequency**: Real-time (every session)  
 **Review Cycle**: Per iteration or after major milestones  
-**Last Reviewed**: 2026-01-23 08:45 UTC
+**Last Reviewed**: 2026-01-23T08:45:00Z
 
 ---
 
