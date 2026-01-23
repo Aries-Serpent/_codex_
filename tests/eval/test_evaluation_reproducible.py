@@ -23,6 +23,10 @@ from codex_ml.config import EvaluationConfig  # noqa: E402
 from codex_ml.eval.runner import run_evaluation  # noqa: E402
 from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
 
+# Note: SerializableModelConfig, MockSerializableModel, and serializable_mock_model
+# fixture are now defined in tests/conftest.py as shared fixtures for reuse across
+# the test suite. This module uses those shared fixtures automatically.
+
 
 def test_run_evaluation_repeatable(tmp_path) -> None:
     dataset = tmp_path / "dataset.jsonl"

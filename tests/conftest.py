@@ -566,3 +566,114 @@ def mock_json_serializable():
     
     json.JSONEncoder.default = original_default
 
+
+# =============================================================================
+# Shared Test Fixtures and Utilities
+# =============================================================================
+
+@pytest.fixture
+def mock_transformer_model():
+    """Provide a shared MockTransformerModel for testing."""
+    import torch
+    from unittest.mock import Mock
+    
+    class MockTransformerModel(torch.nn.Module):
+        """Mock transformer model for testing."""
+        
+        def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
+            super().__init__()
+            self.num_layers = num_layers
+            self.num_heads = num_heads
+            self.seq_len = seq_len
+            self.hidden_dim = hidden_dim
+            # Pre-generate attention weights to avoid exhaustion
+            self._attention_weights = self._generate_mock_attention()
+            # Configure model attributes
+            self.config = type('Config', (), {
+                'num_hidden_layers': num_layers,
+                'num_attention_heads': num_heads,
+                'hidden_size': hidden_dim
+            })()
+        
+        def _generate_mock_attention(self):
+            """Generate realistic attention weight tensors."""
+            weights = []
+            for _ in range(self.num_layers):
+                layer_weights = torch.softmax(
+                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
+                    dim=-1
+                )
+                weights.append(layer_weights)
+            return weights
+        
+        def get_attention_weights(self, layer_idx=None):
+            """Return attention weights for specified layer or all layers."""
+            if layer_idx is not None:
+                return self._attention_weights[layer_idx]
+            return self._attention_weights
+            
+        def forward(self, input_ids, attention_mask=None, output_attentions=False):
+            batch_size = input_ids.size(0)
+            seq_len = input_ids.size(1)
+            
+            attentions = []
+            for _ in range(self.num_layers):
+                attn = torch.softmax(
+                    torch.randn(batch_size, self.num_heads, seq_len, seq_len),
+                    dim=-1
+                )
+                attentions.append(attn)
+            
+            mock_output = Mock()
+            mock_output.attentions = attentions if output_attentions else None
+            mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
+            
+            return mock_output
+    
+    return MockTransformerModel(num_layers=2, num_heads=4, seq_len=10)
+
+
+@pytest.fixture
+def serializable_mock_model():
+    """Provide a JSON-serializable mock model for evaluation tests."""
+    from dataclasses import asdict, dataclass
+    
+    @dataclass
+    class SerializableModelConfig:
+        """Test model config that supports JSON serialization."""
+        model_type: str = "test_transformer"
+        num_layers: int = 2
+        num_heads: int = 4
+        hidden_size: int = 512
+        vocab_size: int = 50257
+        
+        def to_dict(self):
+            return asdict(self)
+        
+        def to_json(self):
+            import json
+            return json.dumps(self.to_dict())
+    
+    class MockSerializableModel:
+        """Mock model with JSON serialization support."""
+        
+        def __init__(self):
+            self.config = SerializableModelConfig()
+            self._call_count = 0
+        
+        def __call__(self, *args, **kwargs):
+            self._call_count += 1
+            return {"loss": 0.5, "logits": [[0.1, 0.9]]}
+        
+        def to_dict(self):
+            """Enable JSON serialization."""
+            return {
+                "config": self.config.to_dict(),
+                "call_count": self._call_count
+            }
+        
+        def __repr__(self):
+            return f"MockSerializableModel(config={self.config})"
+    
+    return MockSerializableModel()
+

@@ -1,0 +1,43 @@
+# @package _global_
+experiment:
+  name: debug
+  type: unit_test
+  description: "Minimal configuration for unit testing"
+  
+  # Test-specific overrides
+  seed: 42
+  deterministic: true
+  
+  # Resource limits for testing
+  max_iterations: 10
+  batch_size: 2
+  num_workers: 0
+  
+  # Disable expensive operations
+  enable_logging: false
+  save_checkpoints: false
+  eval_frequency: 0
+
+# Model config - use only ModelCfg fields
+model:
+  name: test_model
+  dtype: float32
+  lora_enable: false
+
+# Training config - use only TrainCfg fields
+training:
+  max_epochs: 2
+  batch_size: 2
+  seed: 42
+  deterministic: true
+
+# Optimizer config for learning rate
+optim:
+  learning_rate: 0.001
+  weight_decay: 0.0
+
+# Data config - use only DataCfg fields
+data:
+  format: jsonl
+  train_path: data/train.jsonl
+  val_fraction: 0.0

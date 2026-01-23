@@ -1,6 +1,6 @@
 version: 1.0.0
-last_updated: '2026-01-12T12:17:34Z'
-total_agents: 24
+last_updated: '2026-01-23T07:25:00Z'
+total_agents: 26
 agents:
 - id: ast-analysis-agent
   name: Ast Analysis Agent
@@ -348,6 +348,58 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+- id: test-pattern-guardian
+  name: Test Pattern Guardian
+  directory: .github/agents
+  file: test-pattern-guardian.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues, and fixture independence
+  capabilities:
+  - ast_pattern_detection
+  - mock_exhaustion_prevention
+  - json_serialization_validation
+  - fixture_independence_checking
+  - test_quality_enforcement
+  integration_points:
+  - pre_commit_hooks
+  - ci_validation
+  - pytest
+  - cognitive_brain
+  priority: high
+  created: '2026-01-23T06:35:00Z'
+  tools:
+  - scripts/analyze_test_patterns.py
+- id: config-validator-enhanced
+  name: Config Validator (Enhanced)
+  directory: .github/agents
+  file: config-validator.agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are schema-compliant
+  capabilities:
+  - config_existence_validation
+  - cross_reference_checking
+  - schema_compliance
+  - hydra_integration
+  integration_points:
+  - pre_commit_hooks
+  - ci_validation
+  - hydra
+  - cognitive_brain
+  priority: high
+  created: '2026-01-23T06:40:00Z'
+  updated: '2026-01-23T07:20:00Z'
+  tools:
+  - scripts/verify_hydra_configs.sh
 standardization_status:
   fully_compliant: 0
   partially_compliant: 20

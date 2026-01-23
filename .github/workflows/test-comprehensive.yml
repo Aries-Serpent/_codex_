@@ -101,10 +101,22 @@ jobs:
           pip install -e ".[test]"
           python -m pytest --version
 
-      - name: Verify pytest plugins
+      - name: Verify pytest plugins and test patterns
         id: validate_plugins
         run: |
+          # Validate pytest environment
           python scripts/validate_test_env.py
+          
+          # Analyze test patterns for issues
+          python scripts/analyze_test_patterns.py > test_pattern_report.txt
+          cat test_pattern_report.txt
+          
+          # Exit if high-severity issues found
+          if grep -q "severity.*HIGH" test_pattern_report.txt; then
+            echo "❌ High-severity test patterns detected"
+            cat test_pattern_report.txt
+            exit 1
+          fi
         # Note: continue-on-error removed to fail fast on plugin issues
         # If this step fails, fix the plugin installation rather than masking the error
 
@@ -139,6 +151,15 @@ jobs:
         with:
           name: coverage-html-${{ matrix.python-version }}
           path: htmlcov/
+          retention-days: 14
+      
+      - name: Upload test pattern analysis
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-pattern-analysis-${{ matrix.python-version }}
+          path: |
+            test_pattern_report.txt
           retention-days: 14
 
       - name: Security scan with bandit

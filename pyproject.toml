@@ -292,7 +292,7 @@ include = [
   "agents*",
   "codex_ml*",
   "codex*",
-  "config*",
+  # "config*",  # REMOVED: config/ is a data directory (Hydra configs), not a Python package
   "cli*",
   "common*",
   "cognitive_brain*",
@@ -318,6 +318,7 @@ exclude = [
   ".stubs*",
   "*__pycache__*",
   "configs*",
+  "config*",      # Exclude config/ data directory
   "config_legacy*",
   "cli",
   "cli.*",

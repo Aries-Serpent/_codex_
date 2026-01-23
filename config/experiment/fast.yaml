@@ -1,0 +1,42 @@
+# @package _global_
+experiment:
+  name: fast
+  type: performance_test
+  description: "Fast configuration for quick testing"
+  
+  # Performance-optimized settings
+  seed: 42
+  deterministic: false
+  
+  # Resource settings for speed
+  max_iterations: 100
+  batch_size: 8
+  num_workers: 4
+  
+  # Minimal logging for speed
+  enable_logging: true
+  save_checkpoints: false
+  eval_frequency: 10
+
+# Model config - use only ModelCfg fields
+model:
+  name: fast_model
+  dtype: float32
+  lora_enable: false
+
+# Training config
+training:
+  max_epochs: 1
+  batch_size: 8
+  seed: 42
+
+# Optimizer config for learning rate
+optim:
+  learning_rate: 0.001
+  weight_decay: 0.0
+
+# Data config - use only DataCfg fields
+data:
+  format: jsonl
+  train_path: data/train.jsonl
+  val_fraction: 0.0

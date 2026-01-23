@@ -133,4 +133,23 @@ repos:
         pass_filenames: true
         types: [file]
 
+      # Test Pattern Guardian - Proactive test quality enforcement
+      - id: test-pattern-guardian
+        name: Test Pattern Guardian (mock exhaustion, serialization issues)
+        entry: python scripts/analyze_test_patterns.py
+        language: system
+        types: [python]
+        files: ^tests/.*\.py$
+        pass_filenames: false
+        # Fails if high-severity issues found (mock exhaustion, serialization problems)
+
+      # Config Validator - Hydra config integrity
+      - id: config-validator
+        name: Config Validator (Hydra experiment configs)
+        entry: bash scripts/verify_hydra_configs.sh
+        language: system
+        files: ^(config/.*\.yaml|tests/.*\.py)$
+        pass_filenames: false
+        # Validates that all Hydra configs referenced in tests exist
+
 
