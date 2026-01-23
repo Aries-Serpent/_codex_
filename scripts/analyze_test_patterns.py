@@ -54,9 +54,9 @@ class MockPatternAnalyzer(ast.NodeVisitor):
                 # Check if both patterns exist in the function's code
                 source_lines = []
                 for child in ast.walk(node):
-                    if hasattr(child, 'id') and child.id == 'MagicMock':
+                    if getattr(child, 'id', None) == 'MagicMock':
                         source_lines.append('MagicMock')
-                    if hasattr(child, 'attr') and child.attr == 'dumps':
+                    if getattr(child, 'attr', None) == 'dumps':
                         source_lines.append('json.dumps')
                 source = ' '.join(source_lines)
             

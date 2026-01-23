@@ -348,12 +348,6 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
-standardization_status:
-  fully_compliant: 0
-  partially_compliant: 20
-  non_compliant: 4
-  target: 100%
-  deadline: '2026-01-26'
 - id: test-pattern-guardian
   name: Test Pattern Guardian
   directory: .github/agents
@@ -406,3 +400,9 @@ standardization_status:
   updated: '2026-01-23T07:20:00Z'
   tools:
   - scripts/verify_hydra_configs.sh
+standardization_status:
+  fully_compliant: 0
+  partially_compliant: 20
+  non_compliant: 4
+  target: 100%
+  deadline: '2026-01-26'
