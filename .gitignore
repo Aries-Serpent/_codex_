@@ -334,3 +334,4 @@ artifacts/security/detect-secrets.txt
 .codex/test-outputs/
 secrets.txt
 temp/
+output/
