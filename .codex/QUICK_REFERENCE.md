@@ -79,10 +79,10 @@ cat .codex/admin_docs_audit.json | jq '.all_files[] | select(.file | contains("F
 
 ## ⏰ Timeline
 
-- **Week 1**: Security + Operational (8 files)
-- **Week 2**: Administrative (4 files)
-- **Target**: Feb 6, 2026 (100% complete)
-- **Next Audit**: Feb 23, 2026
+- **Iteration 1**: Security + Operational (8 files)
+- **Iteration 2**: Administrative (4 files)
+- **Target**: 2026-02-06 (100% complete)
+- **Next Audit**: 2026-02-23
 
 ---
 
