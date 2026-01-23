@@ -2,9 +2,7 @@
 """Analyze test suite for potential mock-related issues."""
 
 import ast
-import os
 from pathlib import Path
-from collections import defaultdict
 
 
 class MockPatternAnalyzer(ast.NodeVisitor):

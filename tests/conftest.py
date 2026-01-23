@@ -637,7 +637,6 @@ def mock_transformer_model():
 def serializable_mock_model():
     """Provide a JSON-serializable mock model for evaluation tests."""
     from dataclasses import asdict, dataclass
-    import json
     
     @dataclass
     class SerializableModelConfig:
@@ -652,6 +651,7 @@ def serializable_mock_model():
             return asdict(self)
         
         def to_json(self):
+            import json
             return json.dumps(self.to_dict())
     
     class MockSerializableModel:

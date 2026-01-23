@@ -106,6 +106,7 @@ def validate_config_files() -> Tuple[bool, str]:
     required_configs = [
         'config/experiment/debug.yaml',
         'config/experiment/fast.yaml',
+        'config/experiment/lambda.yaml',
     ]
     
     missing_configs = []

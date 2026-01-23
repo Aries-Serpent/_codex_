@@ -1,6 +1,5 @@
 """Test that pytest fixtures behave correctly."""
 
-import pytest
 from unittest.mock import MagicMock
 
 

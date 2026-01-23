@@ -108,7 +108,7 @@ jobs:
           python scripts/validate_test_env.py
           
           # Analyze test patterns for issues
-          python scripts/analyze_test_patterns.py > test_pattern_report.txt || true
+          python scripts/analyze_test_patterns.py > test_pattern_report.txt
           cat test_pattern_report.txt
           
           # Exit if high-severity issues found

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import random
-from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import pytest
@@ -24,50 +23,9 @@ from codex_ml.config import EvaluationConfig  # noqa: E402
 from codex_ml.eval.runner import run_evaluation  # noqa: E402
 from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
 
-
-@dataclass
-class SerializableModelConfig:
-    """Test model config that supports JSON serialization."""
-    model_type: str = "test_transformer"
-    num_layers: int = 2
-    num_heads: int = 4
-    hidden_size: int = 512
-    vocab_size: int = 50257
-    
-    def to_dict(self):
-        return asdict(self)
-    
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-
-class MockSerializableModel:
-    """Mock model with JSON serialization support."""
-    
-    def __init__(self):
-        self.config = SerializableModelConfig()
-        self._call_count = 0
-    
-    def __call__(self, *args, **kwargs):
-        self._call_count += 1
-        # Return mock outputs
-        return {"loss": 0.5, "logits": [[0.1, 0.9]]}
-    
-    def to_dict(self):
-        """Enable JSON serialization."""
-        return {
-            "config": self.config.to_dict(),
-            "call_count": self._call_count
-        }
-    
-    def __repr__(self):
-        return f"MockSerializableModel(config={self.config})"
-
-
-@pytest.fixture
-def serializable_mock_model():
-    """Provide JSON-serializable mock model for evaluation tests."""
-    return MockSerializableModel()
+# Note: SerializableModelConfig, MockSerializableModel, and serializable_mock_model
+# fixture are now defined in tests/conftest.py as shared fixtures for reuse across
+# the test suite. This module uses those shared fixtures automatically.
 
 
 def test_run_evaluation_repeatable(tmp_path) -> None:

@@ -5,8 +5,8 @@ set -e
 
 echo "🔍 Analyzing Hydra config coverage..."
 
-# Extract config references from tests
-config_refs=$(grep -r "experiment=" tests/ 2>/dev/null | grep -o "experiment=[a-z_]*" | cut -d= -f2 | sort -u)
+# Extract config references from tests (use -h to suppress filenames)
+config_refs=$(grep -rh "experiment=" tests/ 2>/dev/null | grep -o "experiment=[a-z_]*" | cut -d= -f2 | sort -u)
 
 if [ -z "$config_refs" ]; then
     echo "ℹ️  No experiment config references found in tests"

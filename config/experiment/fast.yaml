@@ -18,20 +18,25 @@ experiment:
   save_checkpoints: false
   eval_frequency: 10
 
-# Model config for fast testing
+# Model config - use only ModelCfg fields
 model:
   name: fast_model
-  hidden_size: 128
-  num_layers: 2
-  num_heads: 4
+  dtype: float32
+  lora_enable: false
 
-# Training config for fast runs
+# Training config
 training:
   max_epochs: 1
-  learning_rate: 0.001
   batch_size: 8
+  seed: 42
 
-# Data config for fast testing  
+# Optimizer config for learning rate
+optim:
+  learning_rate: 0.001
+  weight_decay: 0.0
+
+# Data config - use only DataCfg fields
 data:
-  subset_size: 1000
-  cache_dir: /tmp/codex_test_cache
+  format: jsonl
+  train_path: data/train.jsonl
+  val_fraction: 0.0

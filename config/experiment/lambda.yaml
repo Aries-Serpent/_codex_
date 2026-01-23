@@ -18,20 +18,26 @@ experiment:
   save_checkpoints: false
   eval_frequency: 0
 
-# Model config for serverless
+# Model config - use only ModelCfg fields
 model:
   name: lambda_model
-  hidden_size: 32
-  num_layers: 1
-  num_heads: 1
+  dtype: float32
+  lora_enable: false
 
-# Training config for serverless
+# Training config
 training:
   max_epochs: 1
-  learning_rate: 0.001
   batch_size: 1
+  seed: 42
+  deterministic: true
 
-# Data config for serverless  
+# Optimizer config for learning rate
+optim:
+  learning_rate: 0.001
+  weight_decay: 0.0
+
+# Data config - use only DataCfg fields
 data:
-  subset_size: 10
-  cache_dir: /tmp/lambda_cache
+  format: jsonl
+  train_path: data/train.jsonl
+  val_fraction: 0.0

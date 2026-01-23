@@ -1,7 +1,10 @@
 """Test JSON serialization of all config and model objects."""
 
 import json
+from dataclasses import asdict
+
 import pytest
+
 from src.codex_ml.cli.config import AppConfig, ExperimentConfig, ModelCfg
 
 
@@ -16,7 +19,8 @@ class TestConfigSerialization:
     def test_config_to_dict(self, config_class):
         """Test config objects can convert to dict."""
         config = config_class()
-        config_dict = config.to_dict() if hasattr(config, 'to_dict') else config.__dict__
+        # Use dataclasses.asdict for dataclass objects
+        config_dict = asdict(config)
         assert isinstance(config_dict, dict)
     
     @pytest.mark.parametrize("config_class", [
@@ -27,7 +31,8 @@ class TestConfigSerialization:
     def test_config_json_serialization(self, config_class):
         """Test config objects can serialize to JSON."""
         config = config_class()
-        config_dict = config.to_dict() if hasattr(config, 'to_dict') else config.__dict__
+        # Use dataclasses.asdict for proper serialization
+        config_dict = asdict(config)
         
         # Should not raise TypeError
         json_str = json.dumps(config_dict, default=str)
@@ -44,6 +49,6 @@ class TestConfigSerialization:
         assert config.experiment is None or isinstance(config.experiment, ExperimentConfig)
         
         # Should be JSON serializable even with None experiment
-        config_dict = config.__dict__
+        config_dict = asdict(config)
         json_str = json.dumps(config_dict, default=str)
         assert len(json_str) > 0
