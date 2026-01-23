@@ -1,6 +1,6 @@
 # Codebase Dashboard
 
-> Generated: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent  
+> Created: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent  
 > PR: #2960 | Branch: `copilot/update-html-documentation-standards`
 
 ---
@@ -13,9 +13,9 @@
 
 **Status**: 🟢 Active Development
 
-**Last Updated**: 2026-01-23 08:45 UTC  
+**Last Updated**: 2026-01-23T08:45:00Z  
 **Version**: 2.0.0  
-**Last Reviewed**: 2026-01-23 08:45 UTC
+**Last Reviewed**: 2026-01-23T08:45:00Z
 
 ---
 
