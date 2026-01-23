@@ -9,9 +9,25 @@ import contextlib
 import gc
 import logging
 
-import torch
-
 logger = logging.getLogger(__name__)
+
+# Lazy torch import to avoid issues in environments without CUDA
+_torch = None
+
+
+def _get_torch():
+    """Get torch module with lazy import."""
+    global _torch
+    if _torch is None:
+        try:
+            import torch
+            _torch = torch
+        except (ImportError, OSError) as e:
+            raise ImportError(
+                f"PyTorch is required for torch_resource_manager but failed to load: {e}. "
+                "Install with: pip install torch"
+            ) from e
+    return _torch
 
 
 @contextlib.contextmanager
@@ -37,6 +53,7 @@ def torch_resource_guard():
         This is particularly important for long-running services and
         batch processing where resource leaks can accumulate.
     """
+    torch = _get_torch()
     try:
         yield
     finally:
@@ -60,6 +77,7 @@ def cleanup_torch_resources():
         >>> # ... PyTorch operations ...
         >>> cleanup_torch_resources()
     """
+    torch = _get_torch()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.synchronize()

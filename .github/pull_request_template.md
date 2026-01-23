@@ -185,6 +185,18 @@
 - [ ] Type checking passes (`mypy`)
 - [ ] Pre-commit hooks pass
 
+### 🚨 Pre-Merge CI Verification (CRITICAL)
+**DO NOT MERGE until ALL items are verified:**
+
+- [ ] **All CI checks are GREEN** - No yellow/red status on required checks
+- [ ] **Test Summary sentinel passed** - Final test status shows 0 failures
+- [ ] **No flaky test failures** - If tests failed, verified they are not flaky
+- [ ] **CodeQL passed** - Security scan completed without new alerts
+- [ ] **Local verification done** - Ran `pytest tests/ -v` locally before merge
+
+> ⚠️ **WARNING**: Merging with failing CI pollutes main branch and hides future regressions.
+> If CI is failing, fix the issues or create a follow-up hotfix PR immediately after merge.
+
 ### Documentation
 - [ ] Documentation has been updated (if needed)
 - [ ] CHANGELOG.md has been updated (if applicable)

@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional
 import pytest
 
 # Repository root
-REPO_ROOT = Path(__file__).parents[3]
+REPO_ROOT = Path(__file__).parents[2]
 DOCS_DIR = REPO_ROOT / "docs"
 API_DOCS_DIR = DOCS_DIR / "api"
 SRC_DIR = REPO_ROOT / "src"

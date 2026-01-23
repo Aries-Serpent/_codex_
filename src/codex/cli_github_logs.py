@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def _get_github_client():
     """Get GitHub client instance."""
     try:
-        from services.github.client import GitHubClientSync
+        from src.services.github.client import GitHubClientSync
         return GitHubClientSync()
     except ImportError as e:
         raise click.ClickException(
@@ -238,7 +238,7 @@ def list_check_runs(
         
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
         
-        from services.github.types import CheckRunStatus
+        from src.services.github.types import CheckRunStatus
         status_enum = CheckRunStatus(status) if status else None
         
         check_runs = client.list_check_runs_for_ref(

@@ -26,15 +26,18 @@ def test_cli_train_engine_option():
 
 
 def test_cli_train_custom_engine_forwards_args(monkeypatch):
+    import sys
     runner = CliRunner()
     captured: dict[str, list[str] | None] = {}
 
-    def fake_main(argv=None):
-        captured["argv"] = argv
+    def fake_main():
+        # Capture sys.argv when main() is called
+        captured["argv"] = sys.argv[1:]  # Skip the program name
 
     monkeypatch.setattr("codex.training.main", fake_main)
     result = runner.invoke(cli, ["train", "--engine", "custom", "--output-dir", "out"])
     assert result.exit_code == 0
+    # The CLI sets sys.argv to include --engine custom plus the engine_args
     assert captured["argv"] == ["--engine", "custom", "--output-dir", "out"]
 
 

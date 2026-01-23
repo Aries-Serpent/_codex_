@@ -235,12 +235,18 @@ def test_metrics_and_eval_imports(module_name):
         "codex_ml.tokenization.offline_vocab",
     ],
 )
-def test_tokenization_modules(module_name):
+def test_tokenization_modules(module_name, monkeypatch):
     mod = importlib.import_module(module_name)
     assert mod is not None
 
     adapter_cls = getattr(mod, "HFTokenizerAdapter", None)
     if adapter_cls is not None:
+        # Mock load_from_pretrained to avoid actual HuggingFace downloads in CI
+        # The stub_optional_dependencies fixture provides fake transformers, but
+        # when real transformers is installed, this test would try to download.
+        # We use the whitespace fallback by temporarily hiding transformers availability.
+        monkeypatch.setattr(mod, "TRANSFORMERS_AVAILABLE", False)
+        monkeypatch.setattr(mod, "AutoTokenizer", None)
         adapter = adapter_cls.load("demo", use_fast=False)
         tokens = adapter.encode("hello world", pad_to_max=True, max_length=4)
         assert isinstance(tokens, list)

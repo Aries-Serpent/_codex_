@@ -9,9 +9,26 @@ import logging
 import os
 from typing import Any, Optional
 
-import torch
-
 logger = logging.getLogger(__name__)
+
+# Lazy torch import with caching to avoid repeated import attempts
+_torch = None
+
+
+def _get_torch():
+    """Lazy import torch with caching to allow module to be imported in environments without torch."""
+    global _torch
+    if _torch is not None:
+        return _torch
+    try:
+        import torch
+        _torch = torch
+        return _torch
+    except (ImportError, OSError) as e:
+        raise ImportError(
+            f"PyTorch is required for safe_torch_loader but failed to load: {e}. "
+            "Install with: pip install torch"
+        ) from e
 
 
 def safe_load(
@@ -65,6 +82,9 @@ def safe_load(
 
     if not os.path.isfile(file_path):
         raise ValueError(f"Path is not a file: {file_path}")
+
+    # Import torch lazily
+    torch = _get_torch()
 
     # Use torch.load with weights_only=True for security
     try:

@@ -199,18 +199,22 @@ def _csv_to_duckdb(
         csvp = csv_path.as_posix()
         mode_normalized = (mode or "replace").lower()
         if mode_normalized == "replace":
-            con.execute(  # nosec B608                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+            con.execute(
+                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",  # nosec B608
                 [csvp],
             )
         elif mode_normalized == "append":
-            con.execute(  # nosec B608                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",
+            con.execute(
+                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",  # nosec B608
                 [csvp],
             )
-            con.execute(  # nosec B608                f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto(?)",
+            con.execute(
+                f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto(?)",  # nosec B608
                 [csvp],
             )
         elif mode_normalized == "fail":
-            con.execute(  # nosec B608                f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+            con.execute(
+                f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",  # nosec B608
                 [csvp],
             )
         else:

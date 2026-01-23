@@ -9,7 +9,7 @@ import logging
 from enum import Enum
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class CheckRunsListResponse(BaseModel):
 def _get_github_client():
     """Get GitHub client instance."""
     try:
-        from services.github.client import GitHubClientSync
+        from src.services.github.client import GitHubClientSync
         return GitHubClientSync()
     except ImportError as e:
         logger.error(f"GitHub client not available: {e}")
@@ -89,7 +89,7 @@ def _get_github_client():
     description="Fetch logs from a GitHub Actions check run by ID.",
 )
 async def get_check_run_logs(
-    check_run_id: int = Field(..., description="Check run ID"),
+    check_run_id: int = Path(..., description="Check run ID"),
     owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
 ):
@@ -147,7 +147,7 @@ async def get_check_run_logs(
     description="Fetch logs from a GitHub Actions workflow job by ID.",
 )
 async def get_job_logs(
-    job_id: int = Field(..., description="Job ID"),
+    job_id: int = Path(..., description="Job ID"),
     owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
 ):
@@ -222,7 +222,7 @@ async def list_check_runs(
     try:
         client = _get_github_client()
         
-        from services.github.types import CheckRunStatus
+        from src.services.github.types import CheckRunStatus
         status_enum = CheckRunStatus(status) if status else None
         
         # Fetch check runs

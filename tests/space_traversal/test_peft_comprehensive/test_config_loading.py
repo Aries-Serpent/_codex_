@@ -4,7 +4,6 @@ Test Config Loading
 Test module for config loading.
 """
 
-import shutil
 from pathlib import Path
 
 import pytest
@@ -18,11 +17,19 @@ BASE = CFG_DIR / "base.yaml"
 
 @pytest.fixture
 def ensure_cfg_dir(tmp_path, monkeypatch):
-    """Work inside a temp copy of the repo root."""
-
-    cwd = Path.cwd()
+    """Work inside a temp copy and redirect config loader to temp directory."""
+    import codex_ml.utils.config_loader as loader_module
+    
     tmp_repo = tmp_path / "repo"
-    shutil.copytree(cwd, tmp_repo, dirs_exist_ok=True)
+    tmp_repo.mkdir(parents=True, exist_ok=True)
+    
+    # Create the config directory structure in temp
+    tmp_cfg_dir = tmp_repo / "configs" / "training"
+    tmp_cfg_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Patch the module-level _CFG_DIR to point to our temp directory
+    monkeypatch.setattr(loader_module, "_CFG_DIR", tmp_cfg_dir)
+    
     monkeypatch.chdir(tmp_repo)
     yield tmp_repo
 
@@ -54,7 +61,8 @@ def test_compose_api_when_file_exists(ensure_cfg_dir):
     from hydra import compose, initialize_config_dir
 
     CFG_DIR.mkdir(parents=True, exist_ok=True)
-    BASE.write_text("defaults: []\ntraining:\n  lr: 0.003\n", encoding="utf-8")
+    # Include batch_size in the config so we can override it (Hydra struct mode)
+    BASE.write_text("defaults: []\ntraining:\n  lr: 0.003\n  batch_size: 4\n", encoding="utf-8")
     with initialize_config_dir(version_base=None, config_dir=str(CFG_DIR.resolve())):
         # Compose API with simple override to ensure dynamic config handling
         cfg = compose(config_name="base", overrides=["training.batch_size=8"])
@@ -71,9 +79,13 @@ def test_missing_config_hard_fail(ensure_cfg_dir):
         load_training_cfg(allow_fallback=False)
 
 
-@pytest.mark.skipif(not BASE.exists(), reason="Config file missing; skip file-only invariant")
 def test_file_mode_invariant(ensure_cfg_dir):
+    """Test that file mode works when config file exists."""
     from hydra import compose, initialize_config_dir
+
+    # Create the config file in the temp directory
+    CFG_DIR.mkdir(parents=True, exist_ok=True)
+    BASE.write_text("defaults: []\ntraining:\n  lr: 0.001\n", encoding="utf-8")
 
     with initialize_config_dir(version_base=None, config_dir=str(CFG_DIR.resolve())):
         cfg = compose(config_name="base")
