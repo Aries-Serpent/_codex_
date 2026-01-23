@@ -99,18 +99,20 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 ## 📈 Success Metrics
 
+> Example metrics table – replace placeholders with agent-specific values.
+
 | Metric | Target | Current | Status | Iteration |
 |--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% | ✅ | Current |
-| Avg Execution Time | <5min | 3.2min | ✅ | Current |
-| Error Rate | <5% | 2.1% | ✅ | Current |
-| Coverage | ≥90% | 92% | ✅ | Current |
+| Success Rate | ≥<target_success_rate>% | <current_success_rate>% | <status_success_rate> | <iteration_label> |
+| Avg Execution Time | <target_execution_time> | <current_execution_time> | <status_execution_time> | <iteration_label> |
+| Error Rate | <target_error_rate>% | <current_error_rate>% | <status_error_rate> | <iteration_label> |
+| Coverage | ≥<target_coverage>% | <current_coverage>% | <status_coverage> | <iteration_label> |
 
 ### Performance Indicators
-- **Reliability**: 96% success rate across all invocations
-- **Efficiency**: Average execution time within target
-- **Quality**: Output meets validation criteria
-- **Stability**: Error rate below threshold
+- **Reliability**: <reliability_summary> (for example, overall success rate against target)
+- **Efficiency**: <efficiency_summary> (for example, average execution time vs. target)
+- **Quality**: <quality_summary> (for example, validation/approval rates)
+- **Stability**: <stability_summary> (for example, error rate vs. threshold)
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
