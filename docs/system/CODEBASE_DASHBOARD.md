@@ -276,7 +276,7 @@
    - Self-evolution infrastructure
 
 ### ⏳ Pending (Ready to Start)
-1. **MCP Advanced Features** (Cycle 1-Phase 3 (Current Cycle))
+1. **MCP Advanced Features** (Future iterations)
    - Size estimation (--estimate flag)
    - Exclude patterns (--exclude)
    - Duplicate resolution
@@ -500,7 +500,7 @@ nox -s lint type format
 - [ ] Update prompt templates
 - [ ] Validate Genesis Protocol readiness
 
-### This Week
+### Current Iteration
 - [ ] Coverage improvement planning
 - [ ] CI/CD optimization
 - [ ] Begin MCP advanced features
