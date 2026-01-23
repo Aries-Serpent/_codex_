@@ -545,16 +545,192 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-**Last Updated**: 2025-12-30  
+**Last Updated**: 2026-01-23T11:00:00Z  
 **Maintainer**: @mbaetiong  
 **Status**: Production Ready ✅  
 **Version**: 2.0.0
 
 ---
 
-**⚛️ Physics Principles Applied**:
-- **Path Optimization** 🛤️: Shortest route to context via MCP endpoints
-- **Field Theory** 🔄: Context flows from MCP to Copilot Agent
-- **Pattern Recognition** 👁️: Smart filtering based on usage patterns
-- **Redundancy** 🔀: Multiple encoding methods, fallback chains
-- **Balance** ⚖️: Token limits vs. context completeness
+## 🎯 Mission Overview
+
+**Objective**: Provide comprehensive guidance for integrating MCP (Model Context Protocol) with the _codex_ repository, enabling GitHub Copilot Agent to access curated codebase context, dependency manifests, and browser automation capabilities for enhanced code generation.
+
+**Energy Level**: ⚡⚡⚡⚡ (4/5) - Setup Critical
+- High impact: Transforms Copilot Agent capabilities
+- High complexity: Multi-service integration (MCP + GitHub + Playwright + Pinecone)
+- Long-term value: Foundation for AI-driven development
+
+**Status**: ✅ Documentation Complete | 🔄 Implementation Ready
+
+---
+
+## ⚖️ Verification Checklist
+
+**MCP Architecture Understanding**:
+- [ ] MCP service endpoints documented (7 endpoints)
+- [ ] Integration patterns explained (3 patterns)
+- [ ] Current implementation mapped (13 capabilities)
+- [ ] Security best practices outlined (14 practices)
+
+**Technical Readiness**:
+- [ ] All 37 dependencies support Python 3.12
+- [ ] GitHub token scopes defined
+- [ ] Service container patterns documented
+- [ ] Rate limiting configured
+
+**Integration Validation**:
+- [ ] MCP health check passes (`/health` responds)
+- [ ] Token authentication successful
+- [ ] Context retrieval working (`/manifest` returns data)
+- [ ] Playwright sessions functional (`/sessions` creates browser)
+
+**Operational Preparedness**:
+- [ ] Monitoring metrics defined (6 metrics)
+- [ ] Troubleshooting guide accessible
+- [ ] Backup authentication methods configured (PAT + GitHub App)
+- [ ] Known limitations understood (6 limitations)
+
+---
+
+## 📈 Success Metrics
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| MCP Service Uptime | > 99.9% | Health check endpoint monitoring |
+| Context Delivery Latency (p99) | < 5 seconds | MCP response time metrics |
+| Token Limit Compliance | < 100K tokens | Context size per request |
+| Cache Hit Rate | > 80% | Dependency cache performance |
+| API Success Rate | > 99% | Non-rate-limited request ratio |
+| Browser Session Creation | < 10 seconds | Playwright startup time |
+
+**KPI Dashboard**:
+- **Documentation Completeness**: 100% (all endpoints + patterns + examples)
+- **Security Hardening**: 14/14 best practices documented
+- **Integration Patterns**: 3 patterns with working examples
+- **Dependency Coverage**: 37/37 packages analyzed
+
+---
+
+## ⚛️ Physics Alignment
+
+### Path 🛤️ (Context Delivery Optimization)
+- **Shortest Path**: Copilot Agent → MCP `/manifest` → Filtered context → Code generation
+- **Parallel Execution**: Cache warming + dependency indexing + browser pool warming (simultaneous)
+- **Lazy Loading**: Browser sessions created on-demand, not pre-allocated
+- **Compression**: Tree-sitter reduces context size by ~60%
+
+### Fields 🔄 (Information Flow Architecture)
+- **Request Flow**: GitHub Action → MCP HTTP → libcst Parser → Filtered Manifest → Copilot
+- **Cache Flow**: PyPI/npm → GitHub Actions Cache → MCP Service → Copilot Context
+- **Browser Flow**: Playwright Pool → Session Management → Screenshot/HAR → Test Generation
+- **Feedback Loop**: Context quality metrics → Filtering adjustments → Improved relevance
+
+### Patterns 👁️ (Integration Recognition)
+- **Service Container Pattern**: Docker Compose → GitHub Actions Service → Ephemeral MCP
+- **Fallback Chain**: libcst (primary) → stdlib ast (fallback) → graceful degradation
+- **Token Management**: Encrypted master key → Base64 PAT → Decryption → Authentication
+- **Rate Limiting**: Token bucket → 60 req/min → Exponential backoff on 429
+
+### Redundancy 🔀 (Fault Tolerance)
+- **Authentication Redundancy**: GitHub App (preferred) ↔ Personal Access Token (backup)
+- **Parser Redundancy**: libcst → ast → basic text extraction
+- **Cache Redundancy**: GitHub Actions Cache → GHCR images → Re-download fallback
+- **Endpoint Redundancy**: Direct HTTP → Service container → Localhost proxy
+
+### Balance ⚖️ (Context vs Token Limits)
+- **Completeness**: Full codebase indexing (comprehensive)
+- **Efficiency**: Smart filtering (relevant only)
+- **Trade-off**: 100K token budget ↔ LLM context window
+- **Optimization**: Summarization (function signatures only) + RAG (Pinecone embeddings)
+
+---
+
+## ⚡ Energy Distribution
+
+**P0 - Critical Setup (50%)**:
+- Environment variables configuration (13 variables)
+- Secret management setup (8 secrets)
+- Token authentication implementation
+- MCP service deployment
+
+**P1 - Core Integration (30%)**:
+- Cache warming automation (Python + Node + Playwright)
+- Copilot workflow integration (Actions service containers)
+- Monitoring and metrics (Prometheus endpoints)
+- Security hardening (request validation + rate limiting)
+
+**P2 - Advanced Features (20%)**:
+- Browser automation (Playwright session management)
+- RAG integration (Pinecone vector search)
+- Custom context filtering (domain-specific logic)
+- Performance optimization (compression + batching)
+
+**Energy Allocation Rationale**:
+- Foundation first (authentication + basic MCP) enables all features
+- Core integration delivers immediate value (cache + context)
+- Advanced features deferred until baseline stable
+
+---
+
+## 🧠 Redundancy Patterns
+
+**MCP Integration Rollback Strategy**:
+
+1. **Pre-Integration State**: Standard Copilot without MCP
+   - Copilot uses editor context only
+   - No custom context providers
+   - GitHub API for repository metadata
+
+2. **Integration Checkpoints**:
+   - Checkpoint 1: MCP service deployed, health check passing
+   - Checkpoint 2: Token authentication working, manifest retrievable
+   - Checkpoint 3: Cache warming operational, artifacts generated
+   - Checkpoint 4: Copilot workflows consuming MCP context
+
+3. **Rollback Triggers**:
+   - MCP service repeatedly failing health checks (>5 failures/hour)
+   - Token authentication failures (permission issues)
+   - Context delivery exceeding token limits (>120K tokens)
+   - Performance degradation (p99 latency >10 seconds)
+   - Security incident (unauthorized access attempts)
+
+4. **Recovery Procedure**:
+   ```bash
+   # Disable MCP service container in workflow
+   # Edit .github/workflows/copilot-with-mcp.yml
+   # Comment out services: section
+   
+   # Or environment variable override
+   echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
+   
+   # Revert to baseline Copilot
+   # Remove MCP endpoint from .vscode/settings.json
+   
+   # Verify rollback
+   gh workflow run copilot-baseline-test.yml
+   ```
+
+5. **Validation Points**:
+   - After service deployment: `/health` returns 200 OK
+   - After token configuration: `copilot_get_github_token_safe()` returns valid token
+   - After cache warming: Artifacts present in Actions cache
+   - After full integration: Copilot generates code with enhanced context
+
+**Failure Mode Protection**:
+- **Service Unavailable**: Copilot falls back to standard context (no MCP)
+- **Token Expired**: Workflow fails fast with clear error message
+- **Rate Limited**: Exponential backoff + queue throttling
+- **Context Too Large**: Automatic truncation + summarization fallback
+
+**Disaster Recovery**:
+- **Documentation Recovery**: Git history preserves all guides (persistent)
+- **Configuration Recovery**: Environment setup guide provides regeneration instructions
+- **Service Recovery**: GHCR image available for redeployment
+- **Knowledge Recovery**: AI Architect (NotebookLM) retains architectural decisions
+
+**Operational Continuity**:
+- **Monitoring**: Prometheus metrics endpoint for real-time health
+- **Alerting**: Threshold-based alerts for latency/errors (see monitoring metrics table)
+- **Incident Response**: Troubleshooting guide covers 7 common issues
+- **Capacity Planning**: Known limitations documented for scaling decisions
