@@ -142,7 +142,8 @@ class DocTemplateValidator:
             for pattern in date_patterns:
                 match = re.search(pattern, line, re.IGNORECASE)
                 if match:
-                    date_str = match.group(-1).strip()
+                    # Get the last group (the date string)
+                    date_str = match.groups()[-1].strip() if match.groups() else ""
                     is_iso = any(re.match(p, date_str) for p in ISO_8601_PATTERNS)
                     
                     if not is_iso and date_str:
