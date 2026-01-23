@@ -236,7 +236,7 @@
 
 ---
 
-## �� Audit Artifacts
+## 📦 Audit Artifacts
 
 **Generated Files:**
 - `.codex/admin_docs_audit.json` - Full JSON report with all data
