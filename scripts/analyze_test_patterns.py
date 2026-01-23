@@ -48,7 +48,20 @@ class MockPatternAnalyzer(ast.NodeVisitor):
     def _check_test_function(self, node):
         """Check test function for JSON serialization of mocks."""
         try:
-            source = ast.unparse(node)
+            # ast.unparse() was introduced in Python 3.9
+            if hasattr(ast, 'unparse'):
+                source = ast.unparse(node)
+            else:
+                # Fallback for Python < 3.9: simple heuristic check
+                # Check if both patterns exist in the function's code
+                source_lines = []
+                for child in ast.walk(node):
+                    if hasattr(child, 'id') and child.id == 'MagicMock':
+                        source_lines.append('MagicMock')
+                    if hasattr(child, 'attr') and child.attr == 'dumps':
+                        source_lines.append('json.dumps')
+                source = ' '.join(source_lines)
+            
             if 'json.dumps' in source and 'MagicMock' in source:
                 self.issues.append({
                     'file': self.current_file,
@@ -58,7 +71,7 @@ class MockPatternAnalyzer(ast.NodeVisitor):
                     'message': 'Test may attempt JSON serialization of MagicMock'
                 })
         except Exception:
-            # ast.unparse may not be available in older Python versions
+            # If analysis fails, skip this check
             pass
 
 

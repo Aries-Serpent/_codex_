@@ -68,7 +68,25 @@ class TrainCfg:
 
 @dataclass
 class ExperimentConfig:
-    """Configuration for experiment settings."""
+    """Configuration for experiment settings.
+    
+    This class defines experimental configurations for training runs,
+    testing scenarios, and deployment environments. It controls resource
+    allocation, logging behavior, and checkpoint management.
+    
+    Attributes:
+        name: Experiment identifier (e.g., "debug", "production", "benchmark")
+        type: Experiment category (e.g., "unit_test", "integration", "performance")
+        description: Human-readable explanation of experiment purpose
+        seed: Random seed for reproducibility (default: 42)
+        deterministic: Enable deterministic mode for reproducible results
+        max_iterations: Maximum training/evaluation iterations allowed
+        batch_size: Number of samples per batch (1-512 typical range)
+        num_workers: Number of parallel data loading workers (0 disables parallelism)
+        enable_logging: Enable logging to files and tracking systems
+        save_checkpoints: Enable checkpoint saving during training
+        eval_frequency: Evaluation frequency in iterations (0 disables)
+    """
     name: str = "default"
     type: str = "default"
     description: str = ""
