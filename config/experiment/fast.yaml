@@ -1,0 +1,37 @@
+# @package _global_
+experiment:
+  name: fast
+  type: performance_test
+  description: "Fast configuration for quick testing"
+  
+  # Performance-optimized settings
+  seed: 42
+  deterministic: false
+  
+  # Resource settings for speed
+  max_iterations: 100
+  batch_size: 8
+  num_workers: 4
+  
+  # Minimal logging for speed
+  enable_logging: true
+  save_checkpoints: false
+  eval_frequency: 10
+
+# Model config for fast testing
+model:
+  name: fast_model
+  hidden_size: 128
+  num_layers: 2
+  num_heads: 4
+
+# Training config for fast runs
+training:
+  max_epochs: 1
+  learning_rate: 0.001
+  batch_size: 8
+
+# Data config for fast testing  
+data:
+  subset_size: 1000
+  cache_dir: /tmp/codex_test_cache

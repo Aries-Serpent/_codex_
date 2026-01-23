@@ -1,0 +1,37 @@
+# @package _global_
+experiment:
+  name: lambda
+  type: serverless
+  description: "Configuration for Lambda/serverless deployment"
+  
+  # Serverless-specific settings
+  seed: 42
+  deterministic: true
+  
+  # Resource constraints for serverless
+  max_iterations: 50
+  batch_size: 1
+  num_workers: 0
+  
+  # Minimal resource usage
+  enable_logging: true
+  save_checkpoints: false
+  eval_frequency: 0
+
+# Model config for serverless
+model:
+  name: lambda_model
+  hidden_size: 32
+  num_layers: 1
+  num_heads: 1
+
+# Training config for serverless
+training:
+  max_epochs: 1
+  learning_rate: 0.001
+  batch_size: 1
+
+# Data config for serverless  
+data:
+  subset_size: 10
+  cache_dir: /tmp/lambda_cache

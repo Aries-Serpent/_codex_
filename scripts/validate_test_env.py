@@ -8,6 +8,7 @@ accessible before running the test suite.
 
 import subprocess
 import sys
+from pathlib import Path
 from typing import List, Tuple
 
 
@@ -95,6 +96,54 @@ def check_pytest_args(args: List[str]) -> Tuple[bool, str]:
         return False, f"✗ Error checking pytest args: {e}"
 
 
+def validate_config_files() -> Tuple[bool, str]:
+    """
+    Verify required config files exist.
+    
+    Returns:
+        Tuple of (success: bool, message: str)
+    """
+    required_configs = [
+        'config/experiment/debug.yaml',
+        'config/experiment/fast.yaml',
+    ]
+    
+    missing_configs = []
+    for config_path in required_configs:
+        if not Path(config_path).exists():
+            missing_configs.append(config_path)
+    
+    if missing_configs:
+        return False, f"✗ Missing config files: {', '.join(missing_configs)}"
+    
+    return True, f"✓ All required config files exist ({len(required_configs)} files)"
+
+
+def validate_test_structure() -> Tuple[bool, str]:
+    """
+    Verify test directory structure.
+    
+    Returns:
+        Tuple of (success: bool, message: str)
+    """
+    required_dirs = [
+        'tests/unit',
+        'tests/integration',
+        'tests/eval',
+        'config/experiment',
+    ]
+    
+    missing_dirs = []
+    for dir_path in required_dirs:
+        if not Path(dir_path).exists():
+            missing_dirs.append(dir_path)
+    
+    if missing_dirs:
+        return False, f"⚠️  Missing directories: {', '.join(missing_dirs)}"
+    
+    return True, f"✓ Test directory structure validated ({len(required_dirs)} dirs)"
+
+
 def main() -> int:
     """
     Main validation function.
@@ -140,6 +189,22 @@ def main() -> int:
     print("Checking pytest command-line support:")
     required_args = ["-n", "--dist", "--reruns", "--reruns-delay", "--cov", "--timeout"]
     success, message = check_pytest_args(required_args)
+    print(f"  {message}")
+    if not success:
+        all_passed = False
+    print()
+    
+    # Check test structure
+    print("Checking test directory structure:")
+    success, message = validate_test_structure()
+    print(f"  {message}")
+    if not success:
+        all_passed = False
+    print()
+    
+    # Check config files
+    print("Checking config files:")
+    success, message = validate_config_files()
     print(f"  {message}")
     if not success:
         all_passed = False
