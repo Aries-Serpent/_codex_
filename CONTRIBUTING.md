@@ -19,6 +19,35 @@ Thank you for improving `_codex_`. This document highlights the workflow for usi
 
 All contributions must include appropriate tests and maintain code coverage standards.
 
+### Pre-commit Hooks (Automated Quality Gates)
+
+This repository uses pre-commit hooks to catch issues before they reach CI. Install and enable them:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+**Quality Gates Enforced**:
+- **Test Pattern Guardian**: Detects mock exhaustion and serialization issues in tests
+- **Config Validator**: Ensures all Hydra configs referenced in tests exist
+- **Security Checks**: Command injection, unsafe XML, weak hashing detection
+- **Code Quality**: Trailing whitespace, YAML validation, large file checks
+- **Windows Compatibility**: Filename validation for cross-platform support
+
+**Pre-commit hooks automatically run on every commit.** If they fail:
+1. Fix the reported issues
+2. Stage the fixes: `git add <files>`
+3. Commit again: `git commit`
+
+**Bypassing hooks** (only in emergencies): `git commit --no-verify`
+
 ### Running Tests Locally
 
 **Quick test run:**
