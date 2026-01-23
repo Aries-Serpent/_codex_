@@ -713,7 +713,7 @@ if __name__ == "__main__":
 **Failure Mode Protection**:
 - **Secret Expiration**: Documented rotation schedule with 7-day warning period
 - **Permission Loss**: GitHub App fallback to PAT when App credentials expire
-- **Configuration Drift**: Weekly validation workflow checks secret accessibility
+- **Configuration Drift**: Per-iteration validation workflow checks secret accessibility
 - **Documentation Staleness**: Version number tracks breaking changes (currently 1.0.0)
 
 **Disaster Recovery**:

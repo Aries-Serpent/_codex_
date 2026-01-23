@@ -106,9 +106,9 @@ Depth: Minimal detail in index, defer to linked docs (10% summary, 90% delegatio
 
 ### Link Maintenance Effort
 ```
-Weekly Link Checks:    ██ 10% (Automated)
-Monthly Review:        ███ 15% (Human verification)
-On-Demand Updates:     ████████ 75% (When docs added/removed)
+Iteration-Cycle Link Checks:  ██ 10% (Automated)
+Milestone Reviews:            ███ 15% (Human verification)
+On-Demand Updates:            ████████ 75% (When docs added/removed)
 ```
 
 ---
@@ -118,7 +118,7 @@ On-Demand Updates:     ████████ 75% (When docs added/removed)
 ### Link Maintenance Strategy
 
 **Automated Validation:**
-- Weekly documentation link checker workflow
+- Iteration-cycle documentation link checker workflow
 - Broken link alerts to maintainers
 - Auto-generated link report in CI/CD
 

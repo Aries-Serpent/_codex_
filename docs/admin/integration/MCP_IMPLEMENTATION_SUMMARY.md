@@ -505,7 +505,7 @@ For questions or issues:
 
 ---
 
-## �🧠 Redundancy Patterns
+## 🧠 Redundancy Patterns
 
 **Implementation Rollback Strategy**:
 

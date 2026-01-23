@@ -286,7 +286,7 @@ updates:
 
 ## Dependency Management
 
-### Weekly Maintenance Tasks
+### Per-Iteration Maintenance Tasks
 
 ```bash
 # 1. Check for vulnerabilities
@@ -626,17 +626,17 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 - Monitor Dependabot alerts
 - Review CodeQL findings
 
-### Weekly  
+### Per Iteration Cycle
 - Review security scan results
 - Triage new vulnerabilities
 - Update dependencies (automated)
 
-### Monthly
+### Per Iteration Phase
 - Security team retrospective
 - Update documentation
 - Review access permissions
 
-### Quarterly
+### Per Iteration Milestone
 - Full security audit
 - Penetration testing
 - Update security policies
@@ -716,7 +716,7 @@ For questions or updates, contact: security@localhost
 |-----------|-------------|----------------|
 | Path 🛤️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring |
 | Fields 🔄 | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced |
-| Patterns 👁️ | Continuous security posture observation | Weekly scans, daily alert monitoring, quarterly audits |
+| Patterns 👁️ | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
 | Redundancy 🔀 | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning |
 | Balance ⚖️ | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
 

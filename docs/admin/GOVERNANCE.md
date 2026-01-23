@@ -98,9 +98,9 @@ This document defines the governance structure, roles, and decision-making proce
 ## Release Process
 
 ### Cadence
-- **Patch releases**: Weekly (as needed for bug fixes)
-- **Minor releases**: Monthly when feature-stable
-- **Major releases**: Quarterly or as needed for breaking changes
+- **Patch releases**: Per iteration cycle (as needed for bug fixes)
+- **Minor releases**: Regular iteration milestones when feature-stable
+- **Major releases**: Per major iteration phase or as needed for breaking changes
 
 ### Release Checklist
 1. CHANGELOG updated with all changes
