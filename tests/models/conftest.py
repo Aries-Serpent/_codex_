@@ -15,7 +15,12 @@ Functions:
 Author: Codex Team
 """
 
+import os
+
 import pytest
+
+# Set HF_REVISION to avoid validation errors when loading HuggingFace models
+os.environ.setdefault("HF_REVISION", "abcdef0")
 
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
