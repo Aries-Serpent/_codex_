@@ -18,7 +18,7 @@ This directory (`.github/`) contains GitHub-specific configuration files includi
 
 - Most workflows use `if: github.event_name == 'workflow_dispatch'` or similar guards
 - Safety mechanisms in place (SAFE_MODE, autonomous_actions_enabled: false)
-- Genesis Protocol awaiting human admin secret injection
+- Genesis Protocol awaiting secret injection by repository maintainer
 - See [Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md) for details
 
 ---
