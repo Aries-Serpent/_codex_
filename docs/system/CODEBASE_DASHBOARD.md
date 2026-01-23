@@ -201,8 +201,8 @@
 #### 🎯 Phase 9: Coverage & Performance Enhancement (IN PROGRESS 🟢)
 **Status**: Active Development  
 **Completion**: 20%  
-**Started**: 2025-12-31
-**Latest Update**: 2025-12-31 19:07 UTC (Historical reference - project now using iteration-based workflow)
+**Started**: 2025-12-31 (Historical reference)
+**Latest Update**: Project now uses iteration-based workflow
 
 **Objective**: Achieve **100% test coverage** (currently ~75%, was ~72%)
 
@@ -358,7 +358,7 @@ None currently
 
 **Deliverable**: 75%+ coverage, <3 min builds, advanced features started
 
-**Time Estimate**: 3-5 iterations (~100K-200K tokens)
+**Time Estimate**: 3-5 sessions (~100K-200K tokens)
 
 ---
 
@@ -458,21 +458,23 @@ nox -s lint type format
 - **Decision**: Update all system docs to iteration-based workflow language
 - **Rationale**: Align documentation with project's incremental development philosophy
 - **Impact**: Improved clarity and consistency across documentation
-- **Status**: In Progress (PR #2960)
+- **Status**: Complete
 
-**2025-12-30**: Cognitive Brain Infrastructure (Historical)
+**Historical Context** (Pre-2026 decisions retained for reference):
+
+**2025-12-30**: Cognitive Brain Infrastructure
 - **Decision**: Create `docs/system/` with cognitive map and dashboard
 - **Rationale**: AI agents need unified navigation and status awareness
 - **Impact**: Improved agent efficiency, better continuation between sessions
 - **Status**: Complete
 
-**2025-12-30**: PR #2671 Review Comments (Historical)
+**2025-12-30**: PR #2671 Review Comments
 - **Decision**: Fix all review items (shebang, BSD date, error handling)
 - **Rationale**: Code quality and cross-platform compatibility
 - **Impact**: All systems work on macOS/BSD, better error handling
 - **Status**: Complete
 
-**2025-12-30**: Duration-Aware Planning (Historical)
+**2025-12-30**: Duration-Aware Planning
 - **Decision**: Maximize work within token budget, continue if capacity remains
 - **Rationale**: Avoid premature session termination, deliver more value
 - **Impact**: Higher productivity, better resource utilization
