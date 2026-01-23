@@ -67,6 +67,22 @@ class TrainCfg:
 
 
 @dataclass
+class ExperimentConfig:
+    """Configuration for experiment settings."""
+    name: str = "default"
+    type: str = "default"
+    description: str = ""
+    seed: int = 42
+    deterministic: bool = True
+    max_iterations: int = 1000
+    batch_size: int = 32
+    num_workers: int = 4
+    enable_logging: bool = True
+    save_checkpoints: bool = True
+    eval_frequency: int = 100
+
+
+@dataclass
 class LogCfg:
     """Logging integrations."""
 
@@ -86,6 +102,7 @@ class AppConfig:
     data: DataCfg = field(default_factory=DataCfg)
     training: TrainCfg = field(default_factory=TrainCfg)
     logging: LogCfg = field(default_factory=LogCfg)
+    experiment: Optional[ExperimentConfig] = None
 
 
 def register_configs() -> None:
@@ -263,6 +280,7 @@ def main(argv: list[str] | None = None) -> int:
 __all__ = [
     "AppConfig",
     "DataCfg",
+    "ExperimentConfig",
     "LogCfg",
     "ModelCfg",
     "OptimCfg",

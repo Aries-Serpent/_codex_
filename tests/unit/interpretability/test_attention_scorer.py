@@ -21,6 +21,32 @@ class MockTransformerModel(torch.nn.Module):
         self.num_heads = num_heads
         self.seq_len = seq_len
         self.hidden_dim = hidden_dim
+        # Pre-generate attention weights to avoid exhaustion
+        self._attention_weights = self._generate_mock_attention()
+        # Configure model attributes
+        self.config = type('Config', (), {
+            'num_hidden_layers': num_layers,
+            'num_attention_heads': num_heads,
+            'hidden_size': hidden_dim
+        })()
+    
+    def _generate_mock_attention(self):
+        """Generate realistic attention weight tensors."""
+        # Shape: [batch, num_layers, num_heads, seq_len, seq_len]
+        weights = []
+        for _ in range(self.num_layers):
+            layer_weights = torch.softmax(
+                torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
+                dim=-1
+            )
+            weights.append(layer_weights)
+        return weights
+    
+    def get_attention_weights(self, layer_idx=None):
+        """Return attention weights for specified layer or all layers."""
+        if layer_idx is not None:
+            return self._attention_weights[layer_idx]
+        return self._attention_weights
         
     def forward(self, input_ids, attention_mask=None, output_attentions=False):
         batch_size = input_ids.size(0)
@@ -49,7 +75,12 @@ class TestAttentionScorer:
     
     @pytest.fixture
     def mock_model(self):
-        """Create a mock transformer model."""
+        """Provide fresh mock transformer model for each test.
+        
+        Returns:
+            MockTransformerModel: Configured with 2 layers, 4 heads, 10 sequence length
+        """
+        # Ensure each test gets independent instance
         return MockTransformerModel(num_layers=2, num_heads=4, seq_len=10)
     
     @pytest.fixture
@@ -88,14 +119,19 @@ class TestAttentionScorer:
         
         assert isinstance(attn_weights, list)
         assert isinstance(layer_names, list)
-        assert len(attn_weights) > 0
+        # Enhanced assertion: should extract non-empty attention weights
+        assert len(attn_weights) > 0, "Should extract non-empty attention weights"
         assert len(layer_names) == len(attn_weights)
+        # Verify we got the expected number of layers
+        assert len(attn_weights) == scorer.model.num_layers, f"Expected {scorer.model.num_layers} layers"
         
         # Check shape of attention weights
         for attn in attn_weights:
             assert attn.dim() == 4  # (batch, heads, seq, seq)
             assert attn.size(0) == 1  # batch_size
             assert attn.size(2) == attn.size(3)  # square attention matrix
+            # Verify sequence length matches
+            assert attn.size(2) == scorer.model.seq_len, "Sequence length mismatch"
     
     def test_compute_token_importance_mean(self, scorer):
         """Test token importance computation with mean method."""

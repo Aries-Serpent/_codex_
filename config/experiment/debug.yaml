@@ -1,0 +1,36 @@
+# @package _global_
+experiment:
+  name: debug
+  type: unit_test
+  description: "Minimal configuration for unit testing"
+  
+  # Test-specific overrides
+  seed: 42
+  deterministic: true
+  
+  # Resource limits for testing
+  max_iterations: 10
+  batch_size: 2
+  num_workers: 0
+  
+  # Disable expensive operations
+  enable_logging: false
+  save_checkpoints: false
+  eval_frequency: 0
+
+# Model config for testing
+model:
+  name: test_model
+  hidden_size: 64  # Reduced for speed
+  num_layers: 2
+  num_heads: 2
+
+# Training config for testing
+training:
+  max_epochs: 2
+  learning_rate: 0.001
+
+# Data config for testing  
+data:
+  subset_size: 100
+  cache_dir: /tmp/codex_test_cache
