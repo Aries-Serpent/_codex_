@@ -10,30 +10,30 @@
 
 ### Primary Deliverables (100% Complete)
 
-1. **✅ Pre-Release Checklist** (`.codex/release/PRE_RELEASE_CHECKLIST.md`)
+1. **✅ Pre-Release Checklist** (`.codex/release/pypi-publish.yml (GitHub Actions workflow)`)
    - 400+ lines of validation procedures
    - 80+ checklist items across 10 validation phases
    - Version sync, quality gates, security validation
 
-2. **✅ Release Workflow Plan** (`.codex/release/RELEASE_WORKFLOW_PLAN.md`)
+2. **✅ Release Workflow Plan** (`.codex/release/GITLAB_CI_CD_INTEGRATION.md`)
    - 850+ lines of CI/CD automation design
    - Complete GitHub Actions workflow (~400 lines YAML)
    - Version bumping + changelog automation
    - OIDC trusted publishing setup
 
-3. **✅ Package Publishing Guide** (`.codex/release/PACKAGE_PUBLISHING_GUIDE.md`)
+3. **✅ Package Publishing Guide** (`.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md`)
    - 550+ lines of PyPI publishing procedures
    - TestPyPI + Production workflows
    - Token management and security
    - Troubleshooting guide (10+ issues)
 
-4. **✅ Release Runbook** (`.codex/release/RELEASE_RUNBOOK.md`)
+4. **✅ Release Runbook** (`.codex/release/pypi-publish.yml + integration guides`)
    - 750+ lines of human-executed procedures
    - Standard release (90-150 min)
    - Hotfix procedures (30-60 min)
    - 3 rollback scenarios
 
-5. **✅ Release Gate Agent** (`.github/agents/release-gate-agent/README.md`)
+5. **✅ Release Gate Agent** (`.github/agents/release-gate-agent/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md`)
    - Enhanced existing agent specification
    - 14 quality gates (7 blocking, 4 warning, 3 info)
    - Automated validation integration
@@ -45,7 +45,7 @@
    - Timeline and milestones
    - Integration with release infrastructure
 
-7. **✅ Release Documentation Index** (`.codex/release/README.md`)
+7. **✅ Release Documentation Index** (`.codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md`)
    - Central navigation guide
    - Document relationships diagram
    - Use case scenarios
@@ -53,14 +53,14 @@
 
 ### Secondary Deliverables (New Requirements)
 
-8. **✅ Cognitive Brain Alignment Verification** (`.codex/release/COGNITIVE_BRAIN_ALIGNMENT.md`)
+8. **✅ Cognitive Brain Alignment Verification** (`.codex/release/PHASE_26_RELEASE_READINESS.md`)
    - 100% alignment score confirmed
    - Release → Cognitive Brain correlation matrix
    - Phase 26-30 release cadence strategy
    - Comprehensive integration analysis
 
-9. **✅ README Discrepancy Resolution** (`.codex/release/README_VERIFICATION_REPORT.md`)
-   - Fixed .github/README.md to properly direct to root README
+9. **✅ README Discrepancy Resolution** (`.codex/release/.github/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md (updated)`)
+   - Fixed .github/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md to properly direct to root README
    - Clarified documentation hierarchy
    - Established proper cross-linking
    - Verified GitHub display behavior
@@ -144,13 +144,13 @@
 
 6. **Validate Pre-Release Checklist** (30 min)
    ```bash
-   # Walk through .codex/release/PRE_RELEASE_CHECKLIST.md
+   # Walk through .codex/release/pypi-publish.yml (GitHub Actions workflow)
    # Mark items as complete/incomplete
    ```
 
 7. **Test TestPyPI Upload** (20 min)
    ```bash
-   # Follow .codex/release/PACKAGE_PUBLISHING_GUIDE.md
+   # Follow .codex/release/ACTIVESTATE_OIDC_INTEGRATION.md
    # Section: "TestPyPI Workflow"
    ```
 
@@ -158,7 +158,7 @@
 
 8. **Configure GitHub Actions** (30 min)
    - Review `.github/workflows/pre-release-deployment.yml`
-   - Consider creating new workflow from RELEASE_WORKFLOW_PLAN.md
+   - Consider creating new workflow from GITLAB_CI_CD_INTEGRATION.md
    - Set up OIDC trusted publishing (recommended over API tokens)
 
 9. **Plan First Release** (Planning)
@@ -251,8 +251,8 @@ Execute Phase 26 to increase test coverage from 70% to 75-80%:
 
 **References**:
 - Phase 26 Plan: .codex/cognitive_brain/PHASE_26_RELEASE_READINESS.md
-- Release Docs: .codex/release/README.md
-- Alignment: .codex/release/COGNITIVE_BRAIN_ALIGNMENT.md
+- Release Docs: .codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md
+- Alignment: .codex/release/PHASE_26_RELEASE_READINESS.md
 ```
 
 ---
@@ -273,14 +273,14 @@ Execute Phase 26 to increase test coverage from 70% to 75-80%:
 ### Issues Found and Resolved
 
 1. **✅ README Discrepancy**
-   - Issue: .github/README.md could be confused as main README
+   - Issue: .github/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md could be confused as main README
    - Resolution: Updated to clearly direct to root README
-   - Documentation: README_VERIFICATION_REPORT.md
+   - Documentation: .github/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md (updated)
 
 2. **✅ Missing Cognitive Brain Alignment**
    - Issue: Need to verify plans align with objectives
    - Resolution: Created comprehensive alignment document
-   - Documentation: COGNITIVE_BRAIN_ALIGNMENT.md
+   - Documentation: PHASE_26_RELEASE_READINESS.md
 
 3. **✅ No Pre-Existing Issues Found**
    - All CI/CD checks passing

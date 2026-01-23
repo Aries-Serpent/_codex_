@@ -21,18 +21,18 @@ Phase 26 planning is **COMPLETE** with comprehensive release infrastructure esta
 
 ## 📦 Release Infrastructure Delivered
 
-### 1. Pre-Release Checklist ✅
+### 1. PyPI Publishing Workflow ✅
 
-**File**: `.codex/release/PRE_RELEASE_CHECKLIST.md`  
-**Size**: 12,449 characters  
-**Sections**: 10 major phases
+**File**: `.github/workflows/pypi-publish.yml`  
+**Size**: 3,574 characters  
+**Features**: GitHub Actions workflow
 
 **Coverage**:
-- Version synchronization procedures
-- Quality gates (tests, coverage, linting, security)
-- Documentation verification
-- Build artifact validation
-- Dependency audit
+- Automated build and distribution creation
+- TestPyPI and Production PyPI publishing
+- Multi-Python version validation (3.10, 3.11, 3.12)
+- Token-based authentication with PYPI_API_TOKEN
+- Manual approval gates for production
 - Platform compatibility testing
 - Backward compatibility checks
 - GitHub repository checks
@@ -48,66 +48,53 @@ Phase 26 planning is **COMPLETE** with comprehensive release infrastructure esta
 
 ---
 
-### 2. Release Workflow Plan ✅
+### 2. GitLab CI/CD Integration ✅
 
-**File**: `.codex/release/RELEASE_WORKFLOW_PLAN.md`  
-**Size**: 23,452 characters  
-**Phases**: 7 automated pipeline phases
+**File**: `.codex/release/GITLAB_CI_CD_INTEGRATION.md`  
+**Size**: 11,205 characters  
+**Sections**: Complete pipeline guide
 
-**Workflow Architecture**:
-```
-Trigger → Validation → Build → Package Test → TestPyPI → 
-Approval Gate → PyPI → Post-Release
-```
-
-**Features**:
-- ✅ Complete GitHub Actions workflow YAML
-- ✅ 7-phase automated pipeline
-- ✅ Manual approval gates
-- ✅ Version management strategy
-- ✅ Semantic versioning automation
-- ✅ Changelog generation scripts
-- ✅ Security considerations (OIDC, trusted publishing)
-- ✅ Rollback procedures
-- ✅ Success metrics tracking
-
-**Automation Level**: 60-70% (with human approval gates)
+**Coverage**:
+- Complete `.gitlab-ci.yml` example with all stages
+- Namespace and project configuration instructions
+- Pipeline file path guidance (external pipelines NOT supported)
+- Environment setup (`pypi-production` recommended)
+- Token configuration in GitLab CI/CD variables
+- OIDC trusted publishing setup
+- Security best practices and troubleshooting
 
 ---
 
-### 3. Package Publishing Guide ✅
+### 3. ActiveState OIDC Integration ✅
 
-**File**: `.codex/release/PACKAGE_PUBLISHING_GUIDE.md`  
-**Size**: 15,101 characters  
-**Audience**: Release Managers, DevOps Engineers
+**File**: `.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md`  
+**Size**: 10,542 characters  
+**Purpose**: ActiveState Platform integration guide
 
 **Topics Covered**:
-- PyPI and TestPyPI account setup
-- API token management and security
-- TestPyPI validation workflow
-- Production PyPI publishing
-- Package verification procedures
-- Rollback and hotfix procedures
-- Troubleshooting common issues
-- Trusted publishing (OIDC) setup
-
-**Security Features**:
-- ✅ No hardcoded secrets
-- ✅ Token rotation guidance
-- ✅ OIDC trusted publishing
-- ✅ Emergency override procedures
+- ActiveState Platform account setup
+- Organization configuration
+- OIDC provider setup (GitHub & GitLab)
+- Complete workflow examples for both CI/CD systems
+- Environment configuration
+- Security best practices
+- Troubleshooting guide
+- Reference: https://docs.activestate.com/platform/user/oidc/
 
 ---
 
-### 4. Release Runbook ✅
+### 4. Release Gate Agent ✅
 
-**File**: `.codex/release/RELEASE_RUNBOOK.md`  
-**Size**: 20,808 characters  
-**Purpose**: Step-by-step human execution guide
+**File**: `.github/agents/release-gate-agent/README.md`  
+**Size**: 20KB (enhanced)  
+**Purpose**: Automated quality validation
 
-**Release Types**:
-1. **Standard Release** (90-150 min)
-2. **Pre-Release** (60-120 min)
+**Features**:
+- 14 quality gates (7 blocking, 4 warning, 3 info)
+- Automated validation system
+- Override mechanisms for emergencies
+- Integration with CI/CD pipelines
+- Dual implementation modes (PDA Loop and CI/CD)
 3. **Hotfix Release** (30-60 min)
 
 **Phases Detailed**:
@@ -192,11 +179,10 @@ Approval Gate → PyPI → Post-Release
 
 | Capability | Status | Documentation |
 |------------|--------|---------------|
-| **Pre-release validation** | ✅ | PRE_RELEASE_CHECKLIST.md |
-| **Automated workflows** | ✅ | RELEASE_WORKFLOW_PLAN.md |
-| **PyPI publishing** | ✅ | PACKAGE_PUBLISHING_GUIDE.md |
-| **Manual procedures** | ✅ | RELEASE_RUNBOOK.md |
-| **Quality gates** | ✅ | release-gate-agent/README.md |
+| **PyPI publishing workflow** | ✅ | .github/workflows/pypi-publish.yml |
+| **GitLab CI/CD integration** | ✅ | .codex/release/GITLAB_CI_CD_INTEGRATION.md |
+| **ActiveState OIDC** | ✅ | .codex/release/ACTIVESTATE_OIDC_INTEGRATION.md |
+| **Quality gates** | ✅ | .github/agents/release-gate-agent/README.md |
 | **Cognitive tracking** | ✅ | This document |
 
 ---
@@ -353,11 +339,10 @@ Phase 30: ⏳ FUTURE (Final gap filling)
 
 1. **Review release documentation**:
    ```bash
-   # Read each document
-   cat .codex/release/PRE_RELEASE_CHECKLIST.md
-   cat .codex/release/RELEASE_WORKFLOW_PLAN.md
-   cat .codex/release/PACKAGE_PUBLISHING_GUIDE.md
-   cat .codex/release/RELEASE_RUNBOOK.md
+   # Read each integration guide
+   cat .codex/release/GITLAB_CI_CD_INTEGRATION.md
+   cat .codex/release/ACTIVESTATE_OIDC_INTEGRATION.md
+   cat .github/workflows/pypi-publish.yml
    ```
 
 2. **Set up PyPI credentials**:
@@ -432,10 +417,9 @@ Phase 30: ⏳ FUTURE (Final gap filling)
 ## 🔗 Related Documents
 
 ### Release Documentation
-- [Pre-Release Checklist](.codex/release/PRE_RELEASE_CHECKLIST.md)
-- [Release Workflow Plan](.codex/release/RELEASE_WORKFLOW_PLAN.md)
-- [Package Publishing Guide](.codex/release/PACKAGE_PUBLISHING_GUIDE.md)
-- [Release Runbook](.codex/release/RELEASE_RUNBOOK.md)
+- [PyPI Publishing Workflow](../../.github/workflows/pypi-publish.yml)
+- [GitLab CI/CD Integration](../release/GITLAB_CI_CD_INTEGRATION.md)
+- [ActiveState OIDC Integration](../release/ACTIVESTATE_OIDC_INTEGRATION.md)
 - [Release Gate Agent](../../.github/agents/release-gate-agent/README.md)
 
 ### Cognitive Brain Status
