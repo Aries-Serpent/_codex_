@@ -107,6 +107,9 @@ def test_cli_run_valid() -> None:
 
 
 def test_cli_module_run_ingest(tmp_path: Path) -> None:
+    # Skip if mlflow is not available
+    pytest.importorskip("mlflow", reason="mlflow not installed")
+    
     data_dir = tmp_path / "data"
     data_dir.mkdir()
     (data_dir / "example.jsonl").write_text("{}", encoding="utf-8")
@@ -118,7 +121,11 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     # Pre-initialize MLflow experiment
     import mlflow
     mlflow.set_tracking_uri(f"file:{mlruns_dir}")
-    mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
+    try:
+        mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
+    except Exception:
+        # Experiment might already exist
+        pass
     
     env = os.environ.copy()
     env["PYTHONPATH"] = str(Path(__file__).resolve().parent.parent / "src")

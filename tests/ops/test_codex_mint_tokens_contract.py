@@ -63,6 +63,7 @@ def test_exchange_and_revoke_offline(monkeypatch):
         def close(self):
             pass
 
+    # Create mock functions that use MockSession
     mock_session = MockSession()
     
     def fake_post(url, headers=None, json=None, timeout=None, **kwargs):
@@ -74,10 +75,11 @@ def test_exchange_and_revoke_offline(monkeypatch):
     def fake_get(url, headers=None, params=None, timeout=None, **kwargs):
         return mock_session.get(url, headers=headers, params=params, timeout=timeout)
 
+    # Patch all requests methods and Session
     monkeypatch.setattr(m.requests, "post", fake_post)
     monkeypatch.setattr(m.requests, "delete", fake_delete)
     monkeypatch.setattr(m.requests, "get", fake_get)
-    monkeypatch.setattr(m.requests, "Session", lambda: mock_session)
+    monkeypatch.setattr(m.requests, "Session", MockSession)
     monkeypatch.setattr(m, "_assert_online_allowed", lambda: None)
     monkeypatch.setattr(m, "_mint_app_jwt", lambda app_id, ttl=540: "app.jwt")
 
