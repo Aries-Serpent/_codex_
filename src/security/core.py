@@ -158,6 +158,82 @@ def _validate_path_input(value: str) -> None:
         raise SecurityError(f"Path traversal attempt detected: {value}")
 
 
+def enforce_absolute_path(path: str) -> Path:
+    """Validate and enforce absolute path requirements.
+    
+    Args:
+        path: Path string to validate
+        
+    Returns:
+        Validated absolute Path object
+        
+    Raises:
+        SecurityError: If path contains relative components or traversal
+    """
+    from pathlib import Path
+    
+    p = Path(path)
+    
+    # Reject relative path traversal
+    if ".." in path:
+        raise SecurityError(f"Path traversal not allowed: {path}")
+    
+    # Reject non-absolute paths
+    if not p.is_absolute():
+        raise SecurityError(f"Only absolute paths allowed: {path}")
+    
+    return p
+
+
+def sanitize_path(path: Path, base_dir: Path) -> Path:
+    """Sanitize and validate a path within a base directory.
+    
+    Args:
+        path: Path to sanitize
+        base_dir: Base directory to constrain path within
+        
+    Returns:
+        Sanitized absolute Path object
+        
+    Raises:
+        ValueError: If path escapes base_dir or contains traversal
+    """
+    try:
+        # Resolve both paths to absolute
+        abs_path = path.resolve()
+        abs_base = base_dir.resolve()
+        
+        # Check if path is within base_dir
+        abs_path.relative_to(abs_base)
+        
+        return abs_path
+    except ValueError:
+        raise ValueError(f"Path {path} is outside base directory {base_dir}")
+
+
+def check_permissions(path: Path, mode: str) -> bool:
+    """Check if a path has the specified permissions.
+    
+    Args:
+        path: Path to check
+        mode: Permission mode ('read', 'write', 'execute')
+        
+    Returns:
+        True if path has the specified permission
+    """
+    if not path.exists():
+        return False
+    
+    if mode == "read":
+        return os.access(path, os.R_OK)
+    elif mode == "write":
+        return os.access(path, os.W_OK)
+    elif mode == "execute":
+        return os.access(path, os.X_OK)
+    
+    return False
+
+
 def rate_limiter(
     *,
     calls: int = 60,

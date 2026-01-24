@@ -48,7 +48,6 @@ def _install_minimal_hf_stubs(
             
             # Convert to tensors if requested (needed for HF Trainer data collator)
             if return_tensors == "pt":
-                import torch
                 result = {k: torch.tensor(v) for k, v in result.items()}
             
             return result
@@ -125,7 +124,6 @@ def _install_minimal_hf_stubs(
             pass
         
         def __call__(self, features):
-            import torch
             if not features:
                 return {}
             
