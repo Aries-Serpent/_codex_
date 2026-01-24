@@ -99,10 +99,6 @@ class TestAgentEdgeCases:
 
     def test_agent_action_timeout(self):
         """Test agent action timeout"""
-        import time
-        def slow_action():
-            time.sleep(100)
-        
         # Should timeout after limit
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
