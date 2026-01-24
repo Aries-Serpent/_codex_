@@ -32,7 +32,7 @@ class TestDataLoaderEdgeCases:
     def test_loader_extremely_large_file(self):
         """Test data loader with very large file (>10GB simulation)"""
         # Should handle or stream large files
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_loader_binary_file_as_text(self):
         """Test data loader attempting to read binary as text"""
@@ -42,7 +42,7 @@ class TestDataLoaderEdgeCases:
         
         try:
             # Should detect binary and handle appropriately
-            pass
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
         finally:
             os.unlink(binary_file)
 
@@ -107,7 +107,7 @@ class TestDataLoaderEdgeCases:
     def test_loader_file_permissions_denied(self):
         """Test data loader with permission denied"""
         # Should handle permission errors gracefully
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
 
 class TestConfigEdgeCases:
@@ -117,7 +117,7 @@ class TestConfigEdgeCases:
         """Test config with missing required keys"""
         incomplete_config = {"optional_key": "value"}
         # Should detect missing required keys
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_type_mismatch(self):
         """Test config with wrong value types"""
@@ -127,7 +127,7 @@ class TestConfigEdgeCases:
             "list_value": "not_a_list"
         }
         # Should validate types
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_range_violation(self):
         """Test config values outside valid range"""
@@ -137,27 +137,27 @@ class TestConfigEdgeCases:
             "epochs": 0
         }
         # Should enforce value ranges
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_circular_reference(self):
         """Test config with circular references"""
         circular = {"a": None}
         circular["a"] = circular
         # Should detect circular references
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_environment_override(self):
         """Test config environment variable override"""
         with patch.dict(os.environ, {'CODEX_BATCH_SIZE': '128'}):
             # Should apply environment overrides
-            pass
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_merge_conflicts(self):
         """Test config merge with conflicting values"""
         config1 = {"key": "value1"}
         config2 = {"key": "value2"}
         # Should handle merge conflicts
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_schema_validation_failure(self):
         """Test config that fails schema validation"""
@@ -166,23 +166,23 @@ class TestConfigEdgeCases:
             "invalid_type": []
         }
         # Should reject invalid schema
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_default_values(self):
         """Test config falls back to defaults correctly"""
         empty_config = {}
         # Should apply defaults
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_inheritance(self):
         """Test config inheritance chain"""
         base_config = {"base_key": "base_value"}
         child_config = {"child_key": "child_value"}
         # Should inherit correctly
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_immutability(self):
         """Test config immutability after loading"""
         config = {"key": "value"}
         # Should prevent modification after freeze
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")

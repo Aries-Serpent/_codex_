@@ -4,9 +4,7 @@ Target: 15+ edge case tests for utility functions
 Coverage Target: src/codex/utils/, src/codex_ml/utils/
 """
 
-import pytest
 from pathlib import Path
-import os
 import tempfile
 
 
@@ -23,7 +21,7 @@ class TestPathUtilsEdgeCases:
         ]
         for path in dangerous_paths:
             # Should sanitize or reject
-            pass
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_path_symlink_handling(self):
         """Test path utils handle symlinks correctly"""
@@ -46,7 +44,7 @@ class TestPathUtilsEdgeCases:
         ]
         for path in unicode_paths:
             # Should handle Unicode paths
-            pass
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_path_extremely_long(self):
         """Test path utils with very long paths (>260 chars Windows limit)"""
@@ -58,7 +56,7 @@ class TestPathUtilsEdgeCases:
         """Test path utils with null bytes"""
         path_with_null = "file\x00name.txt"
         # Should reject null bytes in paths
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
 
 class TestStringUtilsEdgeCases:
@@ -68,13 +66,13 @@ class TestStringUtilsEdgeCases:
         """Test string truncation with multi-byte Unicode"""
         unicode_str = "🚀" * 100
         # Should not break multi-byte characters
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_string_normalize_whitespace(self):
         """Test normalizing various whitespace characters"""
         weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
         # Should normalize all Unicode whitespace
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_string_sanitize_xss(self):
         """Test XSS sanitization"""
@@ -85,7 +83,7 @@ class TestStringUtilsEdgeCases:
         ]
         for xss in xss_attempts:
             # Should sanitize XSS
-            pass
+            pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_string_encode_decode_roundtrip(self):
         """Test encode/decode roundtrip doesn't lose data"""
@@ -116,7 +114,7 @@ class TestCryptoUtilsEdgeCases:
     def test_encrypt_decrypt_roundtrip(self):
         """Test encryption/decryption roundtrip"""
         # Should preserve data through encrypt/decrypt
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_random_generation_uniqueness(self):
         """Test random generation produces unique values"""
@@ -132,12 +130,12 @@ class TestDateTimeUtilsEdgeCases:
     def test_datetime_leap_second(self):
         """Test datetime handling of leap seconds"""
         # Should handle leap seconds correctly
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_datetime_timezone_conversion(self):
         """Test timezone conversion edge cases"""
         # Should handle DST transitions correctly
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_datetime_year_boundaries(self):
         """Test datetime at year boundaries"""

@@ -16,32 +16,32 @@ class TestServiceEdgeCases:
     def test_service_initialization_order(self):
         """Test service initialization with dependency order"""
         # Should initialize dependencies first
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_circular_dependency(self):
         """Test service with circular dependencies"""
         # Should detect and reject circular dependencies
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_shutdown_timeout(self):
         """Test service graceful shutdown timeout"""
         # Should timeout and force shutdown
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_health_check_failure(self):
         """Test service when health check fails"""
         # Should mark service as unhealthy
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_rate_limiting(self):
         """Test service rate limiting"""
         # Should enforce rate limits
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_request_queue_overflow(self):
         """Test service when request queue overflows"""
         # Should reject or handle queue overflow
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_concurrent_requests(self):
         """Test service handling many concurrent requests"""
@@ -61,12 +61,12 @@ class TestServiceEdgeCases:
     def test_service_retry_exhaustion(self):
         """Test service when all retries exhausted"""
         # Should fail after max retries
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_service_circuit_breaker(self):
         """Test service circuit breaker pattern"""
         # Should open circuit after failures
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
 
 class TestCognitiveBrainEdgeCases:
@@ -75,12 +75,12 @@ class TestCognitiveBrainEdgeCases:
     def test_brain_state_corruption(self):
         """Test cognitive brain with corrupted state"""
         # Should detect and recover from corruption
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_memory_overflow(self):
         """Test cognitive brain when memory limit exceeded"""
         # Should evict old memories or reject new ones
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_concurrent_updates(self):
         """Test cognitive brain with concurrent state updates"""
@@ -101,32 +101,32 @@ class TestCognitiveBrainEdgeCases:
     def test_brain_decision_cycle_timeout(self):
         """Test cognitive brain decision cycle timeout"""
         # Should timeout long-running decision cycles
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_invalid_state_transition(self):
         """Test cognitive brain with invalid state transition"""
         # Should reject invalid transitions
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_snapshot_consistency(self):
         """Test cognitive brain snapshot consistency"""
         # Should produce consistent snapshots
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_restore_from_snapshot(self):
         """Test cognitive brain restore from snapshot"""
         # Should restore state correctly
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_phase_progression_validation(self):
         """Test cognitive brain phase progression validation"""
         # Should enforce phase progression rules
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_brain_rollback_on_error(self):
         """Test cognitive brain state rollback on error"""
         # Should rollback to last good state
-        pass
+        pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
 
 class TestAsyncEdgeCases:
