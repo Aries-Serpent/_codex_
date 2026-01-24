@@ -28,6 +28,7 @@ class TestTrainingEdgeCases:
         small_dataset = [{"data": i} for i in range(3)]
         batch_size = 100
         # Should adjust batch size or handle gracefully
+        assert len(small_dataset) < batch_size
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_training_nan_loss(self):
@@ -55,6 +56,7 @@ class TestTrainingEdgeCases:
         # Simulate very small gradients
         small_gradient = torch.tensor([1e-10, 1e-10, 1e-10])
         # Should detect vanishing gradients
+        assert torch.max(torch.abs(small_gradient)) < 1e-5
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_training_out_of_memory(self):

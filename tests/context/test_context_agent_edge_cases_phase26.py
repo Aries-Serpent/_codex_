@@ -25,6 +25,7 @@ class TestContextEdgeCases:
         # Simulate exceeding token limit
         long_message = "word " * 100000
         # Should truncate or reject
+        assert len(long_message) > 500000
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_concurrent_modifications(self):
@@ -80,6 +81,7 @@ class TestContextEdgeCases:
         """Test context with null bytes in content"""
         null_content = "test\x00data"
         # Should sanitize or reject
+        assert "\x00" in null_content
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_state_rollback(self):

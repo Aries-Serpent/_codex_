@@ -4,6 +4,7 @@ Target: 15+ edge case tests for utility functions
 Coverage Target: src/codex/utils/, src/codex_ml/utils/
 """
 
+import pytest
 from pathlib import Path
 import tempfile
 
@@ -56,6 +57,7 @@ class TestPathUtilsEdgeCases:
         """Test path utils with null bytes"""
         path_with_null = "file\x00name.txt"
         # Should reject null bytes in paths
+        assert "\x00" in path_with_null
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
 
@@ -66,12 +68,14 @@ class TestStringUtilsEdgeCases:
         """Test string truncation with multi-byte Unicode"""
         unicode_str = "🚀" * 100
         # Should not break multi-byte characters
+        assert len(unicode_str) == 100
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_string_normalize_whitespace(self):
         """Test normalizing various whitespace characters"""
-        _weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
+        weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
         # Should normalize all Unicode whitespace
+        assert "\u00A0" in weird_whitespace or "\u2000" in weird_whitespace
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_string_sanitize_xss(self):

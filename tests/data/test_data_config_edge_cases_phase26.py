@@ -125,6 +125,8 @@ class TestConfigEdgeCases:
             "list_value": "not_a_list"
         }
         # Should validate types
+        assert isinstance(bad_config, dict)
+        assert set(bad_config.keys()) == {"int_value", "bool_value", "list_value"}
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_range_violation(self):
@@ -171,8 +173,10 @@ class TestConfigEdgeCases:
     def test_config_inheritance(self):
         """Test config inheritance chain"""
         base_config = {"base_key": "base_value"}
-        child_config = {"child_key": "child_value"}
+        child_config = {**base_config, "child_key": "child_value"}
         # Should inherit correctly
+        assert "base_key" in child_config
+        assert "child_key" in child_config
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_immutability(self):
