@@ -23,6 +23,39 @@ def _sha256_bytes(data: bytes) -> str:
 class AuditLogger:
     path: Path
 
+    def __init__(self, path: Path | None = None, log_dir: Path | None = None):
+        """Initialize audit logger with path or log_dir.
+        
+        Args:
+            path: Direct path to log file (takes precedence)
+            log_dir: Directory for audit logs (creates audit.log inside)
+        """
+        if path is not None:
+            self.path = path
+        elif log_dir is not None:
+            self.path = log_dir / "audit.log"
+        else:
+            self.path = Path("logs/audit/audit.log")
+
+    def log_event(self, event_type: str, resource: str, action: str, user: str) -> None:
+        """Log a security audit event.
+        
+        Args:
+            event_type: Type of security event
+            resource: Resource being accessed
+            action: Action performed
+            user: User performing action
+        """
+        from datetime import datetime
+        log_entry = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "event_type": event_type,
+            "resource": resource,
+            "action": action,
+            "user": user
+        }
+        self.append(log_entry)
+
     def _last_hash(self) -> str:
         if not self.path.exists():
             return "0" * 64
@@ -69,3 +102,29 @@ class AuditLogger:
                 return False
             prev = hash_value
         return True
+
+
+def log_security_event(
+    event_type: str,
+    user: str,
+    action: str,
+    success: bool = True,
+    log_dir: Path | None = None,
+) -> None:
+    """Helper function to log a security event.
+    
+    Args:
+        event_type: Type of security event (e.g., 'authentication')
+        user: User performing the action
+        action: Action performed (e.g., 'login')
+        success: Whether the action was successful
+        log_dir: Directory to store logs (optional)
+    """
+    logger = AuditLogger(log_dir=log_dir)
+    event = {
+        "type": event_type,
+        "user": user,
+        "action": action,
+        "success": success,
+    }
+    logger.append(event)

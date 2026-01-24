@@ -95,3 +95,9 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
 
 # Shorthand alias for convenience
 safe_log = sanitize_log_input
+
+# Export alias for backward compatibility
+sanitize_log = sanitize_log_input
+
+# Ensure it's in __all__ if defined
+__all__ = ['sanitize_log_input', 'safe_log', 'sanitize_log', 'sanitize_dict_for_log']

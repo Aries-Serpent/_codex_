@@ -157,11 +157,12 @@ class TestSecurityPatterns:
 
     def test_path_validation_absolute_only(self) -> None:
         """Test path validation enforces absolute paths."""
+        from src.security.core import enforce_absolute_path, SecurityError
+        
         relative_path = "../dangerous/path"
         
         # Relative paths should be rejected in security contexts
         with pytest.raises((ValueError, SecurityError)):
-            from src.security.core import enforce_absolute_path
             enforce_absolute_path(relative_path)
 
 
@@ -171,14 +172,19 @@ class TestEncryptionUtilities:
     def test_encrypt_decrypt_roundtrip(self) -> None:
         """Test encryption and decryption roundtrip."""
         try:
-            from src.security.encryption import encrypt, decrypt
+            from src.security.encryption import encrypt, decrypt, generate_key
             
-            plaintext = "sensitive data"
-            key = "test_key_12345"
+            # Generate proper 32-byte key
+            key = generate_key()
             
+            # Use bytes for plaintext (note the 'b' prefix)
+            plaintext = b"sensitive data"
+            
+            # Encrypt and decrypt
             encrypted = encrypt(plaintext, key)
             decrypted = decrypt(encrypted, key)
             
+            # Verify roundtrip
             assert decrypted == plaintext
             assert encrypted != plaintext
         except ImportError:
