@@ -46,16 +46,17 @@ class TestServiceEdgeCases:
     def test_service_concurrent_requests(self):
         """Test service handling many concurrent requests"""
         results = []
-        
+        lock = threading.Lock()
+
         def make_request(i):
-            results.append(i)
-        
+            with lock:
+                results.append(i)
+
         threads = [threading.Thread(target=make_request, args=(i,)) for i in range(100)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
         assert len(results) == 100
 
     def test_service_retry_exhaustion(self):
