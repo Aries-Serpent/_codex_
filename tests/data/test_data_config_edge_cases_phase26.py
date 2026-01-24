@@ -119,17 +119,8 @@ class TestConfigEdgeCases:
 
     def test_config_type_mismatch(self):
         """Test config with wrong value types"""
-        bad_config = {
-            "int_value": "should_be_int",
-            "bool_value": "not_a_bool",
-            "list_value": "not_a_list"
-        }
-        # Basic structure checks to use bad_config in this placeholder test
-        assert isinstance(bad_config, dict)
-        assert set(bad_config.keys()) == {"int_value", "bool_value", "list_value"}
         # Should validate types
-        assert isinstance(bad_config, dict)
-        assert set(bad_config.keys()) == {"int_value", "bool_value", "list_value"}
+        # Examples: {"int_value": "should_be_int", "bool_value": "not_a_bool", "list_value": "not_a_list"}
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_range_violation(self):

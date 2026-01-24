@@ -58,12 +58,8 @@ class TestContextEdgeCases:
 
     def test_context_invalid_message_format(self):
         """Test context with invalid message format"""
-        invalid_messages = [
-            {"role": "unknown", "content": "test"},
-            {"missing_role": "test"},
-            {"role": "user"},  # Missing content
-        ]
         # Should reject invalid formats
+        # Examples: {"role": "unknown", "content": "test"}, {"missing_role": "test"}, {"role": "user"}
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_unicode_in_messages(self):

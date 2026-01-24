@@ -38,8 +38,8 @@ import json
 import os
 import sys
 import time
-from dataclasses import dataclass
-from typing import Iterable, Mapping
+from dataclasses import dataclass, field
+from typing import Any, Iterable, Mapping
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency installed via [ops]
@@ -80,6 +80,7 @@ class GitHubSession:
 
     auth: str
     api_base: str = DEFAULT_API_BASE
+    _session: Any = field(init=False, default=None, repr=False)
 
     def __post_init__(self) -> None:
         if not self.auth:
