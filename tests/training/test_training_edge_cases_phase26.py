@@ -22,7 +22,6 @@ class TestTrainingEdgeCases:
 
     def test_training_single_sample(self):
         """Test training with only one sample"""
-        single_sample = [{"input": "test", "output": "result"}]
         # Should handle single sample gracefully
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
