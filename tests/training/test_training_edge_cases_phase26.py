@@ -143,7 +143,7 @@ class TestTrainingEdgeCases:
         if torch.cuda.is_available():
             # Try to allocate huge tensor
             try:
-                huge_tensor = torch.randn(10000, 10000, 10000, device='cuda')
+                torch.randn(10000, 10000, 10000, device='cuda')
             except RuntimeError as e:
                 assert "out of memory" in str(e).lower()
 
