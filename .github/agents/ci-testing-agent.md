@@ -1,158 +1,74 @@
 ---
 name: CI Testing Agent
-description: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
-version: 1.1.0
+description: Specialized agent for debugging CI/CD pipeline issues, test failures, and build problems
+version: 2.0.0
 created: 2026-01-23
-updated: 2026-01-23
+updated: 2026-01-24
 ---
 
 # CI Testing Agent
 
 ## Overview
 
-The CI Testing Agent is a specialized GitHub Copilot agent designed to debug, diagnose, and fix continuous integration and testing issues in the _codex_ repository.
+Specialized GitHub Copilot agent for debugging CI/CD pipelines, test failures, and build issues in the _codex_ repository.
 
-## Responsibilities
+## Core Responsibilities
 
-### Primary Functions
-1. **CI Pipeline Debugging**: Identify and resolve workflow failures, configuration issues, and build problems
-2. **Test Failure Analysis**: Diagnose test failures, import errors, and dependency issues
-3. **Import Path Resolution**: Fix module import errors and ensure proper package structure
-4. **Dependency Management**: Manage test dependencies, extras, and optional packages
-5. **Lint and Format Issues**: Resolve code quality issues that block CI
+1. **CI Pipeline Debugging**: Workflow failures, configuration issues, build problems
+2. **Test Failure Analysis**: Diagnose test failures, imports, dependencies
+3. **Import Path Resolution**: Fix module imports, package structure
+4. **Dependency Management**: Handle test dependencies, extras, optional packages
+5. **Lint/Format Issues**: Resolve code quality blocks
 
-### Areas of Expertise
-- GitHub Actions workflow debugging
-- pytest configuration and execution
-- Python import system and package structure
-- Dependency resolution (pip, uv, nox)
-- Ruff, Black, isort, mypy integration
-- Test sharding and parallel execution
-- Environment setup and PYTHONPATH configuration
+## Key Expertise
+- GitHub Actions workflows, pytest, Python imports
+- Dependency resolution (pip, uv, nox), Ruff/Black/isort/mypy
+- Test sharding, environment setup, PYTHONPATH
 
-## Common Issues and Solutions
+## Common Issues - Quick Reference
 
 ### Import Errors
-
-**Problem**: `ImportError: No module named 'X'` or `ModuleNotFoundError`
-
-**Diagnostic Steps**:
-1. Check package structure in `pyproject.toml` (`[tool.setuptools.packages.find]`)
-2. Verify `[tool.setuptools.package-dir]` configuration
-3. Check if module requires optional extras installation
-4. Verify PYTHONPATH is set correctly in CI workflow
-
-**Solution Pattern**:
+**Pattern**: `ImportError: No module named 'X'`
+**Fix**: Check namespace, add extras, verify PYTHONPATH
 ```python
-# Bad import
-from module import something
-
-# Good import (with proper namespace)
-from codex_ml.module import something
+# ✅ Correct
+from codex_ml.monitoring import system_metrics
 ```
-
-**CI Workflow Fix**:
 ```yaml
-- name: Install dependencies
-  run: |
-    # Include all required extras
-    uv pip install --system -e ".[dev,test,monitoring]"
-
-- name: Run tests
-  run: |
-    # Ensure PYTHONPATH is set
-    export PYTHONPATH="${GITHUB_WORKSPACE}/src:${PYTHONPATH}"
-    pytest tests/
+# CI fix
+- run: uv pip install --system -e ".[dev,test,monitoring]"
+- run: export PYTHONPATH="${GITHUB_WORKSPACE}/src:${PYTHONPATH}"
 ```
 
 ### Test Collection Failures
-
-**Problem**: pytest fails during test collection phase
-
-**Diagnostic Steps**:
-1. Check test file imports
-2. Verify conftest.py configurations
-3. Check for missing test dependencies
-4. Review pytest plugins and markers
-
-**Solution**: Add import safety checks in `__init__.py`:
+**Pattern**: pytest fails during collection
+**Fix**: Add import safety in `__init__.py`, check conftest.py
 ```python
-"""
-Package initialization with import safety checks.
-"""
 try:
     from required_module import something
 except ImportError as e:
-    import sys
-    print(
-        f"ERROR: Cannot import required_module\n"
-        f"Install with: pip install -e '.[extras]'\n"
-        f"Original error: {e}",
-        file=sys.stderr,
-    )
-    raise
+    raise ImportError(f"Install: pip install -e '.[extras]'\nError: {e}") from e
 ```
 
-### Parallel Test Sharding Issues
-
-**Problem**: Tests fail only in specific shards or parallel execution
-
-**Diagnostic Steps**:
-1. Check for test isolation issues
-2. Verify no shared state between tests
-3. Review pytest-split configuration
-4. Check for race conditions
-
-**Solution**:
+### Parallel Test Sharding
+**Pattern**: Fails only in specific shards
+**Fix**: Check test isolation, no shared state
 ```yaml
-- name: Run parallel tests
-  run: |
-    pytest tests/ \
-      --splits 4 \
-      --group ${{ matrix.shard }} \
-      -x --tb=short -q
+- run: pytest tests/ --splits 4 --group ${{ matrix.shard }} -x --tb=short
 ```
 
 ### Linting Failures
-
-**Problem**: Ruff, Black, or isort errors block CI
-
-**Common Issues**:
-- E402: Module level import not at top of file
-- W293: Blank line contains whitespace
-- I001: Import block is un-sorted
-
-**Solution**:
+**Pattern**: Ruff/Black/isort errors
+**Quick Fix**:
 ```bash
-# Fix automatically
-ruff check --fix .
-black .
-isort .
-
-# Check manually
-ruff check src/ tests/
+ruff check --fix . && black . && isort .
 ```
 
-### PyTorch/CUDA Library Errors (Added 2026-01-23)
-
-**Problem**: `OSError: libtorch_global_deps.so: cannot open shared object file`
-
-This occurs when PyTorch is installed but CUDA libraries are missing or corrupted in CI environments.
-
-**Diagnostic Steps**:
-1. Check if tests import torch at module level (bad pattern)
-2. Identify which module is importing torch
-3. Verify conftest.py torch import handling
-
-**Solution Pattern - Lazy Import**:
+### PyTorch/CUDA Library Errors
+**Pattern**: `OSError: libtorch_global_deps.so: cannot open`
+**Fix**: Lazy import or skip tests
 ```python
-# Bad: Module-level import fails in CI without CUDA
-import torch
-
-def some_function():
-    return torch.load(...)
-
-# Good: Lazy import inside function
+# ✅ Lazy import
 def _get_torch():
     try:
         import torch
@@ -160,1053 +76,112 @@ def _get_torch():
     except (ImportError, OSError) as e:
         raise ImportError(f"PyTorch required: {e}") from e
 
-def some_function():
-    torch = _get_torch()
-    return torch.load(...)
-```
-
-**Solution Pattern - Test Skip**:
-```python
-# Skip entire test module if torch unavailable
-try:
-    import torch
-    TORCH_AVAILABLE = True
-except (ImportError, OSError):
-    torch = None
-    TORCH_AVAILABLE = False
-
+# ✅ Skip if unavailable
 pytestmark = pytest.mark.skipif(
-    not TORCH_AVAILABLE,
-    reason="PyTorch not available in this CI environment"
+    not torch_available,
+    reason="PyTorch not available"
 )
 ```
 
-**Solution Pattern - Conftest OSError Handling**:
+### Test Path Calculation
+**Pattern**: `FileNotFoundError` accessing repo root
+**Fix**: Use correct `parents[N]` index
+
+**Verification**:
 ```python
-# In conftest.py - catch OSError in addition to ImportError
-try:
-    import torch
-    # torch operations
-except (ImportError, OSError) as e:
-    # Expected in CI without full CUDA setup
-    logger.debug("Torch import failed: %s", e)
-    pass
+# In test file - find correct index
+from pathlib import Path
+test_file = Path(__file__)
+print(f"Test file: {test_file}")
+for i in range(5):
+    print(f"parents[{i}]: {test_file.parents[i]}")
 ```
 
-### Test Path Calculation Errors (Added 2026-01-23)
-
-**Problem**: `FileNotFoundError` when tests try to access repo root files
-
-**Root Cause**: Incorrect `parents[N]` index for repository root path.
-
-**Example Error**:
-```
-FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/_codex_/pyproject.toml'
-```
-(Note: Missing `_codex_` - path is one level too shallow)
-
-**Diagnostic Steps**:
-1. Check test file path: `tests/<category>/test_file.py`
-2. Count levels to repo root: `tests/category/file.py` = 2 levels
-3. Verify `REPO_ROOT = Path(__file__).parents[2]`
-
-**Common Mistake**:
+### Missing Module Imports
+**Pattern**: `NameError: name 'json' is not defined`
+**Fix**: Add import at top of file
 ```python
-# WRONG: parents[3] goes above repo root
-REPO_ROOT = Path(__file__).parents[3]  # Goes to /home/runner/work/_codex_
-
-# CORRECT: parents[2] for tests at depth tests/category/test_file.py
-REPO_ROOT = Path(__file__).parents[2]  # Goes to /home/runner/work/_codex_/_codex_
+# ✅ Correct
+import json
+def output(data):
+    return json.dumps(data)
 ```
+**Prevention**: `ruff check --select=F` detects undefined names
 
-**Path Depth Reference**:
-| File Location | parents[0] | parents[1] | parents[2] |
-|--------------|------------|------------|------------|
-| `tests/unit/test_x.py` | `tests/unit/` | `tests/` | repo root ✅ |
-| `tests/test_y.py` | `tests/` | repo root | ⚠️ |
-| `tests/a/b/test_z.py` | `tests/a/b/` | `tests/a/` | `tests/` (need parents[3]) |
+## Best Practices
 
-**Fix Command**:
-```bash
-# Find all affected files
-grep -r "parents\[3\]" tests/ --include="*.py"
+1. **Fail-Fast**: Verify imports before pytest collection
+2. **Clear Errors**: Include installation instructions
+3. **Package Structure**: Follow src/ layout, proper namespaces
+4. **CI Optimization**: Test sharding, caching, appropriate timeouts
+5. **Dev Parity**: Match local and CI environments
 
-# Bulk fix
-sed -i 's/Path(__file__).parents\[3\]/Path(__file__).parents[2]/g' tests/**/*.py
-```
+## Pre-Test Validation Pattern
 
-### Config/Fixture Mocking Issues (Added 2026-01-23)
-
-**Problem**: Tests use temp directories but load real config files
-
-**Root Cause**: Module-level variables (like `_CFG_DIR`) are evaluated at import time, not test time.
-
-**Example**:
-```python
-# config_loader.py - module level
-_CFG_DIR = _find_cfg_dir()  # Points to real configs/training/
-
-# test_config.py
-@pytest.fixture
-def temp_config(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)  # Changes cwd but _CFG_DIR still points to real dir!
-```
-
-**Solution - Patch Module Variable**:
-```python
-@pytest.fixture
-def ensure_cfg_dir(tmp_path, monkeypatch):
-    import codex_ml.utils.config_loader as loader_module
-    
-    tmp_cfg_dir = tmp_path / "configs" / "training"
-    tmp_cfg_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Patch the already-imported module variable
-    monkeypatch.setattr(loader_module, "_CFG_DIR", tmp_cfg_dir)
-    
-    monkeypatch.chdir(tmp_path)
-    yield tmp_path
-```
-
-## Workflow Integration
-
-### CI Workflow Structure
-
-```yaml
-name: CI - Optimized with Caching
-
-jobs:
-  parallel-tests:
-    strategy:
-      matrix:
-        shard: [1, 2, 3, 4]
-    
-    steps:
-      - name: Install dependencies
-        run: |
-          pip install uv
-          uv pip install --system nox pytest pytest-xdist pytest-split
-          uv pip install --system -e ".[dev,test,monitoring]"
-      
-      - name: Run parallel tests (shard ${{ matrix.shard }})
-        run: |
-          export PYTHONPATH="${GITHUB_WORKSPACE}/src:${PYTHONPATH}"
-          
-          # Verify critical imports before running tests
-          python -c "
-          from codex_ml.cli.audit_pipeline import audit_file
-          print('✓ Module import verified successfully')
-          
-          try:
-              from codex_ml.monitoring import system_metrics
-              print('✓ Monitoring module import verified')
-          except ImportError as e:
-              print(f'✗ Monitoring import failed: {e}')
-              raise
-          "
-          
-          pytest tests/ \
-            --splits 4 \
-            --group ${{ matrix.shard }} \
-            -x --tb=short -q \
-            --ignore=tests/integration \
-            --ignore=tests/e2e
-        env:
-          CODEX_CPU_MINIMAL: "1"
-```
-
-### Pre-Test Validation Pattern
-
-Always add import verification before pytest runs:
 ```bash
 python -c "
 from critical_module import something
 print('✓ Critical imports verified')
 "
+pytest tests/
 ```
 
-## Best Practices
+## Cognitive App Testing (React/TypeScript)
 
-### 1. Fail-Fast Validation
-- Add import verification before pytest collection
-- Catch configuration errors early
-- Provide clear error messages
-
-### 2. Comprehensive Error Messages
-- Include installation instructions in error messages
-- Reference pyproject.toml extras
-- Provide context about missing dependencies
-
-### 3. Proper Package Structure
-- Follow src/ layout pattern
-- Use proper namespace packages
-- Configure setuptools correctly in pyproject.toml
-
-### 4. CI Optimization
-- Use test sharding for parallel execution
-- Cache dependencies properly
-- Set appropriate timeouts
-
-### 5. Local Development Parity
-- Ensure local and CI environments match
-- Use same Python version
-- Install same extras and dependencies
-
-## Recent Fixes (Examples)
-
-### Fix: Import Error in test_system_metrics.py (2026-01-23)
-
-**Problem**: All 4 test shards failing with `ImportError: No module named 'monitoring'`
-
-**Root Cause**: Test used incorrect import path `from monitoring import system_metrics`
-
-**Solution Applied**:
-1. Fixed import: `from codex_ml.monitoring import system_metrics`
-2. Added monitoring extras to CI: `".[dev,test,monitoring]"`
-3. Added pre-test import verification
-4. Created tests/monitoring/__init__.py with safety check
-5. Fixed related lint issues (E402, W293, I001)
-
-**Files Modified**:
-- tests/monitoring/test_system_metrics.py
-- .github/workflows/optimized-ci.yml
-- tests/monitoring/__init__.py
-- src/cli.py, src/agents/orchestrator.py, src/__init__.py
-
-**Validation**:
+### Quick Commands
 ```bash
-python -c "from codex_ml.monitoring import system_metrics; print('✓ Import works')"
-ruff check src/ tests/
-pytest tests/monitoring/test_system_metrics.py -v
+# Unit tests (Vitest)
+cd cognitive_app && npm test
+
+# E2E tests (Playwright)
+cd cognitive_app && npx playwright test
+
+# Dev mode
+cd cognitive_app && npm run dev
 ```
 
-## Agent Activation
+### Common Issues
+- **Timeouts**: Increase in test file (`{ timeout: 10000 }`)
+- **Missing browsers**: `npx playwright install --with-deps`
+- **Port in use**: `lsof -ti:5173 | xargs kill -9`
+- **Env vars**: Use `.env.local` or set in test setup
 
-### When to Use This Agent
+### Test Locations
+- Units: `cognitive_app/src/components/**/__tests__/*.test.tsx`
+- E2E: `cognitive_app/e2e/*.spec.ts`
+- Config: `vitest.config.ts`, `playwright.config.ts`
 
-Activate this agent when encountering:
-- CI pipeline failures
-- Test collection errors
-- Import errors in tests
-- Dependency resolution issues
-- Lint/format violations
-- Test sharding problems
-- Build configuration issues
+## Activation
 
-### Activation Command
+### When to Use
+- CI pipeline failures, test collection errors, import errors
+- Dependency issues, lint violations, sharding problems
 
+### Command
 ```
-@copilot Use the CI Testing Agent to debug and fix the test failure in [workflow/test/file]
+@copilot Use CI Testing Agent to debug [workflow/test/file]
 ```
 
-### Expected Behavior
+### Workflow
+1. Analyze CI logs, identify root cause
+2. Diagnose imports, dependencies, config
+3. Apply targeted fixes
+4. Validate locally and in CI
+5. Document changes
 
-1. **Analyze**: Review CI logs, identify root cause
-2. **Diagnose**: Check imports, dependencies, configuration
-3. **Fix**: Apply targeted fixes (imports, config, dependencies)
-4. **Validate**: Verify fixes locally and in CI
-5. **Document**: Update relevant documentation
-6. **Report**: Provide clear summary of changes
+## Related Docs
+- [AGENTS.md](../../AGENTS.md)
+- [GitHub Workflows](../workflows/)
+- [pyproject.toml](../../pyproject.toml)
 
-## Related Documentation
+## Knowledge Base References
 
-- [AGENTS.md](../../AGENTS.md) - Main agents documentation
-- [GitHub Actions Workflows](../workflows/) - CI workflow configurations
-- [Testing Guide](../../docs/testing.md) - Testing best practices
-- [pyproject.toml](../../pyproject.toml) - Package configuration
-
-## Maintenance
-
-- Review and update this agent documentation when CI patterns change
-- Add new common issues and solutions as they're discovered
-- Keep examples current with actual fixes applied
-- Update when GitHub Actions or pytest versions change
+For detailed examples and extended troubleshooting:
+- PyTorch/CUDA detailed patterns → `.codex/knowledge/ci_testing_pytorch.md`
+- Test path calculation deep-dive → `.codex/knowledge/ci_testing_paths.md`
+- Recent fix examples → `.codex/knowledge/ci_testing_recent_fixes.md`
+- Cognitive app troubleshooting → `.codex/knowledge/cognitive_app_testing.md`
 
 ---
 
-## Recent CI Fix Patterns (Added 2026-01-23)
-
-### Missing Import Errors
-
-**Problem**: Script fails with `NameError: name 'module' is not defined`
-
-**Root Cause**: Module used without import statement (common with `json`, `re`, `os`)
-
-**Diagnostic Steps**:
-1. Check error message for undefined name
-2. Search file for usage of that name
-3. Verify import statement exists at top of file
-
-**Solution Pattern**:
-```python
-# ❌ WRONG - Missing import (will raise NameError at runtime)
-def output_features(features: dict) -> str:
-    return json.dumps(features, indent=2)  # This will raise NameError
-
-# ✅ CORRECT - Import at top of file
-import json
-
-def output_features(features: dict) -> str:
-    return json.dumps(features, indent=2)
-```
-
-**Prevention**:
-- Use `ruff check --select=F` to detect undefined names
-- Add pre-commit hooks for import validation
-- Run `python -m py_compile script.py` before commit
-
-### Fix: Missing json Import in validate_cargo_features.py (2026-01-23)
-
-**Problem**: `rust_tests` job failed with `NameError: name 'json' is not defined`
-
-**Root Cause**: Line 71 used `json.dumps()` without importing json module
-
-**Solution Applied**:
-1. Added `import json` at line 12
-2. Created 29 regression tests (21 unit + 8 integration)
-3. Added troubleshooting documentation
-4. Created AfterMath report for cognitive brain
-
-**Files Modified**:
-- scripts/ci/validate_cargo_features.py
-- tests/ci/test_validate_cargo_features.py (new)
-- tests/integration/test_ci_validation_workflow.py (new)
-- docs/troubleshooting/CI_FAILURE_RESOLUTION.md (new)
-
-**Validation**:
-```bash
-# Syntax check
-python -m py_compile scripts/ci/validate_cargo_features.py
-
-# Run tests
-pytest tests/ci/test_validate_cargo_features.py -v
-
-# Linting
-ruff check scripts/ci/validate_cargo_features.py
-```
-
----
-
-## Cognitive App Testing (Added 2026-01-23)
-
-### Overview
-
-Extended capabilities for testing the React/TypeScript cognitive app in addition to Python backend testing.
-
-### Responsibilities
-
-1. **Unit Testing (Vitest)**: Run and debug Jest/Vitest tests for React components
-2. **E2E Testing (Playwright)**: Execute browser-based tests for user workflows
-3. **Dev Mode Validation**: Test application behavior in development environment
-4. **Component Testing**: Validate lazy initialization, state management, and props
-5. **Environment Configuration**: Test various VITE_* environment variable combinations
-
-### Cognitive App Test Execution
-
-#### Unit Tests with Vitest
-
-```bash
-cd cognitive_app
-
-# Install dependencies if not present
-if [ ! -d "node_modules" ]; then
-  npm install
-fi
-
-# Run specific test suite
-npm test -- CodeGenerator.lazy-init.test.tsx
-
-# Run all tests
-npm test
-
-# Run with coverage
-npm run test:coverage
-
-# Watch mode for development
-npm run test:watch
-```
-
-#### E2E Tests with Playwright
-
-```bash
-cd cognitive_app
-
-# Install Playwright browsers
-npx playwright install --with-deps
-
-# Start dev server in background (async mode)
-npm run dev &
-DEV_PID=$!
-
-# Wait for server to be ready
-sleep 5
-
-# Run E2E tests
-npx playwright test e2e/code-generator-lazy-init.spec.ts --reporter=list
-
-# Run with UI
-npx playwright test --ui
-
-# Cleanup dev server
-kill $DEV_PID
-```
-
-#### Dev Mode Testing Protocol
-
-When testing in dev mode, validate these scenarios:
-
-**Test 2: No API Key**
-```bash
-# Start without VITE_CODEX_KEY
-unset VITE_CODEX_KEY
-npm run dev
-
-# Verify:
-# - Error message: "Missing VITE_CODEX_KEY environment variable"
-# - Red status indicator visible
-# - Generate button disabled
-```
-
-**Test 3: With API Key**
-```bash
-# Start with valid API key
-export VITE_CODEX_KEY="test-key-12345"
-npm run dev
-
-# Verify:
-# - Initial "Checking..." status (yellow)
-# - Transitions to "Connected" or "Error"
-# - Generate button becomes enabled
-```
-
-**Test 4: Mock Fallback**
-```bash
-# Start with invalid API key
-export VITE_CODEX_KEY="invalid-key"
-npm run dev
-
-# Enter prompt (10+ characters)
-# Click generate
-# Verify:
-# - Mock client activates
-# - Toast shows "(Demo Mode)"
-# - Code generation succeeds
-```
-
-**Test 5: Timing Configuration**
-```bash
-# Test with fast timing
-export VITE_STAGE_EXECUTION_TIME_MS=200
-npm run dev
-
-# Test with slow timing
-export VITE_STAGE_EXECUTION_TIME_MS=2000
-npm run dev
-
-# Test invalid values (should fall back to 800ms)
-export VITE_STAGE_EXECUTION_TIME_MS=0
-export VITE_STAGE_EXECUTION_TIME_MS=20000
-export VITE_STAGE_EXECUTION_TIME_MS=invalid
-npm run dev
-```
-
-### Common Cognitive App Issues
-
-#### Issue: Tests timeout
-**Solution**: Increase timeout in test file or config
-```typescript
-// In test file
-test('slow test', async () => {
-  // test code
-}, { timeout: 10000 });
-
-// In vitest.config.ts
-export default defineConfig({
-  test: {
-    testTimeout: 10000,
-  },
-});
-```
-
-#### Issue: Component not rendering
-**Solution**: Check for missing dependencies or incorrect imports
-```bash
-# Verify imports
-npm run build --dry-run
-
-# Check for missing peer dependencies
-npm ls
-
-# Reinstall if needed
-rm -rf node_modules package-lock.json
-npm install
-```
-
-#### Issue: Environment variables not loading
-**Solution**: Use .env.local or set in test setup
-```typescript
-// In test setup
-beforeEach(() => {
-  import.meta.env.VITE_CODEX_KEY = 'test-key';
-});
-
-// Or use .env.local file
-// cognitive_app/.env.local
-VITE_CODEX_KEY=test-key-12345
-VITE_CODEX_API=http://localhost:8000
-```
-
-#### Issue: Playwright browsers not installed
-**Solution**: Install browsers before running E2E tests
-```bash
-npx playwright install
-# Or with system dependencies
-npx playwright install --with-deps
-```
-
-#### Issue: Dev server port already in use
-**Solution**: Kill existing process or use different port
-```bash
-# Kill process on port 5173
-lsof -ti:5173 | xargs kill -9
-
-# Or use different port
-npm run dev -- --port 5174
-```
-
-### Test File Locations
-
-- **Unit Tests**: `cognitive_app/src/components/**/__tests__/*.test.tsx`
-- **E2E Tests**: `cognitive_app/e2e/*.spec.ts`
-- **Test Config**: `cognitive_app/vitest.config.ts`
-- **Playwright Config**: `cognitive_app/playwright.config.ts` (create if needed)
-- **Test Setup**: `cognitive_app/src/test/setup.ts`
-
-### Test Reports & Documentation
-
-- [Test Suite README](../../cognitive_app/TEST_SUITE_README.md)
-- [Testing Validation Report](../../reports/cognitive_app_testing_validation.md)
-- [E2E Test Spec](../../cognitive_app/e2e/code-generator-lazy-init.spec.ts)
-- [Unit Test Suite](../../cognitive_app/src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx)
-
-### Agent Usage for Cognitive App
-
-#### Run All Cognitive App Tests
-```
-@copilot Use CI Testing Agent to run complete test suite for cognitive app
-```
-
-Agent will:
-1. Install dependencies if needed
-2. Run unit tests with Vitest
-3. Start dev server
-4. Run E2E tests with Playwright  
-5. Generate coverage report
-6. Report results with pass/fail status
-
-#### Debug Specific Test Failure
-```
-@copilot Use CI Testing Agent to debug failing test "should show red error indicator"
-```
-
-Agent will:
-1. Read test file and component code
-2. Run test with verbose output
-3. Analyze failure stack trace
-4. Identify root cause (code bug, config, timing issue)
-5. Apply fix or suggest solution
-6. Re-run test to validate fix
-
-#### Validate in Dev Mode
-```
-@copilot Use CI Testing Agent to validate cognitive app behavior in dev mode with all test scenarios
-```
-
-Agent will:
-1. Start dev server in background
-2. Test each scenario (no API key, with API key, mock fallback, timing)
-3. Verify UI states and interactions
-4. Check console for errors
-5. Stop dev server
-6. Report findings and any issues
-
----
-
-## Integration with Workflow Analytics Agent (Added 2026-01-23)
-
-The CI Testing Agent works with the Workflow Analytics Agent for comprehensive CI/CD analysis:
-
-### Cross-Agent Workflow
-
-1. **Workflow Analytics Agent**: Analyzes historical workflow runs and identifies error patterns
-2. **CI Testing Agent**: Fixes current failures using patterns identified by analytics
-
-### Using Error Pattern Analysis
-
-```bash
-# Analyze workflow logs for error patterns
-python scripts/ci/analyze_workflow_errors.py --logs <log_file>
-
-# The analyzer detects:
-# - Import errors (ModuleNotFoundError, NameError)
-# - Syntax errors (SyntaxError, YAML errors)
-# - Test failures (pytest, AssertionError)
-# - Timeouts and performance issues
-# - Permission and dependency conflicts
-```
-
-### Accessing Previous Workflow Runs
-
-```bash
-# List recent failed runs
-gh run list --status failure --limit 10
-
-# Get failed job logs
-gh run view <run-id> --log-failed
-
-# Download artifacts for analysis
-gh run download <run-id> --name <artifact-name>
-```
-
-### Related Agent
-
-See `.github/agents/workflow-analytics-agent.md` for:
-- Full workflow history access methods
-- Error pattern detection scripts
-- Artifact retrieval and analysis
-- Trend tracking and metrics
-
-### Error Pattern Database
-
-The comprehensive CI/CD Error Pattern Database is maintained collaboratively:
-- **Location**: `.codex/reports/ERROR_PATTERN_DATABASE.md`
-- **Purpose**: Centralized repository of known patterns, root causes, and mitigations
-- **Updates**: Automatically updated by Workflow Analytics Agent
-- **Usage**: Reference for diagnosing and fixing CI issues
-
-Recent analytics reports:
-- **Latest Report**: `.codex/reports/workflow_analytics_report_2026-01-22T04-25-44Z.md`
-- **Current Status**: ✅ HEALTHY (100% success rate, 0 active failures)
-
----
-
-**Maintained by**: @mbaetiong  
-**Last Review**: 2026-01-23  
-**Next Review**: 2026-01-23
-
----
-
-## 🎯 Mission Overview
-
-**Agent Name**: CI Testing Agent  
-**Agent Type**: Task Execution  
-**Energy Level**: 3/5  
-**Operational Status**: ✅ Active
-
-### Purpose
-This agent provides specialized functionality for ci testing agent operations within the Codex ecosystem.
-
-### Core Capabilities
-- Automated execution and validation
-- Integration with CI/CD pipelines
-- Real-time monitoring and reporting
-- Error detection and recovery
-
-### Activation Context
-Triggered by specific events, manual invocation, or scheduled workflows.
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## ⚖️ Verification Checklist
-
-### Prerequisites
-- [ ] Required tools and dependencies installed
-- [ ] Authentication and permissions configured
-- [ ] Target environment accessible
-- [ ] Input parameters validated
-
-### Validation Criteria
-- [ ] Agent executes without errors
-- [ ] Expected outputs generated
-- [ ] Side effects contained and documented
-- [ ] Integration points functional
-
-### Agent Capabilities
-- ✅ Autonomous operation
-- ✅ Error detection and recovery
-- ✅ Progress reporting
-- ✅ Result validation
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 📈 Success Metrics
-
-| Metric | Target | Current | Status | Iteration |
-|--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% | ✅ | Current |
-| Avg Execution Time | <5min | 3.2min | ✅ | Current |
-| Error Rate | <5% | 2.1% | ✅ | Current |
-| Coverage | ≥90% | 100% | ✅ | Current |
-
-### Performance Indicators
-- **Reliability**: 96% success rate across all invocations
-- **Efficiency**: Average execution time within target
-- **Quality**: Output meets validation criteria
-- **Stability**: Error rate below threshold
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## ⚛️ Physics Alignment
-
-### Path 🛤️ (Information Flow)
-```
-Input → Validation → Processing → Output → Verification
-```
-
-### Fields 🔄 (State Management)
-- **Input State**: Raw parameters and context
-- **Processing State**: Transformation and execution
-- **Output State**: Results and artifacts
-- **Feedback State**: Validation and reporting
-
-### Patterns 👁️ (Observable Behaviors)
-- Consistent execution patterns
-- Predictable error handling
-- Standard output formats
-- Repeatable results
-
-### Redundancy 🔀 (Failure Recovery)
-- Automatic retry on transient failures
-- Fallback strategies for degraded operation
-- State preservation across failures
-- Graceful degradation patterns
-
-### Balance ⚖️ (Resource Optimization)
-- CPU: Optimized processing algorithms
-- Memory: Efficient data structures
-- I/O: Batched operations where possible
-- Time: Parallelization of independent tasks
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## ⚡ Energy Distribution
-
-### Priority Breakdown
-
-**P0 - Critical Operations** (60% energy allocation)
-- Core functionality execution
-- Critical error detection
-- Primary validation checks
-
-**P1 - Standard Operations** (30% energy allocation)
-- Secondary validations
-- Non-critical monitoring
-- Performance optimization
-
-**P2 - Enhancement Operations** (10% energy allocation)
-- Logging and telemetry
-- Optional features
-- Experimental capabilities
-
-### Energy Flow
-```
-Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporting [20%]
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🧠 Redundancy Patterns
-
-### Fallback Strategies
-
-**Level 1: Automatic Retry**
-- Transient failure detection
-- Exponential backoff (1s, 2s, 4s, 8s)
-- Maximum 3 retry attempts
-
-**Level 2: Degraded Operation**
-- Reduced functionality mode
-- Alternative execution paths
-- Partial result generation
-
-**Level 3: Safe Failure**
-- Graceful shutdown
-- State preservation
-- Detailed error reporting
-
-### Error Recovery Procedures
-
-#### Transient Errors
-1. Log error details
-2. Wait with exponential backoff
-3. Retry operation
-4. Report if max retries exceeded
-
-#### Permanent Errors
-1. Log full context
-2. Preserve state
-3. Generate error report
-4. Escalate to monitoring systems
-
-### State Preservation
-- Checkpoint creation at key milestones
-- Automatic state backup before critical operations
-- Recovery from last valid checkpoint
-- Transaction-like semantics where applicable
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🏷️ Agent Type Classification
-
-**Category**: Task Execution  
-**Description**: Executes specific tasks with defined inputs and outputs
-
-### Classification Details
-- **Autonomy Level**: Semi-autonomous with human oversight
-- **Decision Scope**: Bounded by defined operational parameters
-- **Interaction Model**: Event-driven and on-demand invocation
-- **Integration Level**: Deep integration with Codex ecosystem
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🛠️ Capabilities Matrix
-
-| Capability | Available | Permission Level | Notes |
-|------------|-----------|------------------|-------|
-| File System Access | ✅ | Read/Write | Scoped to workspace |
-| Network Access | ✅ | Restricted | Approved endpoints only |
-| Process Execution | ✅ | Sandboxed | Monitored execution |
-| Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
-| Git Operations | ✅ | Full | Within repository |
-
-### Tool Access
-- **bash**: Command execution
-- **view**: File inspection
-- **edit/create**: File modifications
-- **grep/glob**: Code search
-- **task**: Sub-agent invocation
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 💡 Usage Examples
-
-### Basic Invocation
-
-```yaml
-agent_type: ci-testing-agent
-prompt: |
-  Execute standard operation with default parameters
-  Target: <target>
-  Mode: <mode>
-```
-
-### Advanced Usage
-
-```yaml
-agent_type: ci-testing-agent
-prompt: |
-  Execute with custom configuration:
-  - Parameter 1: value1
-  - Parameter 2: value2
-  - Options: [option_a, option_b]
-  
-  Validation requirements:
-  - Requirement 1
-  - Requirement 2
-```
-
-### Common Patterns
-
-**Pattern 1: Validation Run**
-```bash
-# Validate without making changes
-<agent-name> --dry-run --target <path>
-```
-
-**Pattern 2: Full Execution**
-```bash
-# Execute with all checks
-<agent-name> --mode full --validate --report
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🔗 Integration Patterns
-
-### Workflow Integration
-
-```mermaid
-graph LR
-    A[Trigger] --> B[Agent Activation]
-    B --> C[Execution]
-    C --> D[Validation]
-    D --> E[Reporting]
-    E --> F[Next Stage]
-```
-
-### Integration Points
-
-**Upstream Dependencies**
-- Event triggers (GitHub Actions, webhooks)
-- Input validation agents
-- Authentication services
-
-**Downstream Consumers**
-- Monitoring dashboards
-- Notification systems
-- Artifact repositories
-- Follow-up agents
-
-### Cross-Agent Communication
-- Shared state via environment variables
-- Artifact passing through files
-- Event-driven triggers
-- Direct agent invocation
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## ⚡ Activation Commands
-
-### Manual Activation
-
-```bash
-# Via task tool
-task agent_type="ci-testing-agent" description="<description>" prompt="<prompt>"
-```
-
-### GitHub Actions Trigger
-
-```yaml
-- name: Activate ci-testing-agent
-  uses: ./.github/actions/agent-runner
-  with:
-    agent: ci-testing-agent
-    parameters: |
-      target: ${{ github.workspace }}
-      mode: full
-```
-
-### Programmatic Invocation
-
-```python
-from agent_framework import invoke_agent
-
-result = invoke_agent(
-    agent_type="ci-testing-agent",
-    prompt="Execute operation",
-    context={"target": "path/to/target"}
-)
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 📦 Tool Dependencies
-
-### Required Tools
-
-| Tool | Version | Purpose | Installation |
-|------|---------|---------|--------------|
-| Python | ≥3.11 | Runtime | Pre-installed |
-| Git | ≥2.40 | Version control | Pre-installed |
-| bash | ≥5.0 | Shell execution | Pre-installed |
-
-### Optional Tools
-
-| Tool | Version | Purpose | Notes |
-|------|---------|---------|-------|
-| jq | ≥1.6 | JSON processing | For JSON output |
-| yq | ≥4.0 | YAML processing | For YAML configs |
-| curl | ≥7.0 | HTTP requests | For API calls |
-
-### Python Dependencies
-```python
-# requirements.txt
-pyyaml>=6.0
-requests>=2.31.0
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 📤 Output Formats
-
-### Standard Output Format
-
-```json
-{
-  "status": "success|failure|partial",
-  "timestamp": "2026-01-23T19:45:00Z",
-  "agent": "agent-name",
-  "execution_time": "3.2s",
-  "results": {
-    "items_processed": 10,
-    "items_successful": 9,
-    "items_failed": 1
-  },
-  "artifacts": [
-    "path/to/output1.json",
-    "path/to/output2.txt"
-  ],
-  "errors": [],
-  "warnings": []
-}
-```
-
-### Markdown Report Format
-
-```markdown
-# Agent Execution Report
-
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
-**Duration**: 3.2s
-
-## Summary
-- Items Processed: 10
-- Success Rate: 90%
-
-## Details
-[Detailed execution information]
-
-## Artifacts
-- output1.json
-- output2.txt
-```
-
-### Log Format
-```
-2026-01-23T19:45:00Z [INFO] Agent started
-2026-01-23T19:45:00Z [INFO] Processing item 1/10
-2026-01-23T19:45:00Z [WARN] Minor issue detected
-2026-01-23T19:45:00Z [INFO] Execution completed
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-**Template Applied**: 2026-01-23T19:45:00Z
+**Version 2.0.0 Notes**: Condensed from 30,351 to ~5,500 chars (82% reduction). Detailed examples moved to knowledge base. Focus on actionable quick reference.
