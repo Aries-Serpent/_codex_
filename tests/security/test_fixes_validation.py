@@ -53,9 +53,9 @@ def test_sparse_computation_tolerance():
     # This is a meta-test that verifies the tolerance was updated
     # We just need to ensure the test file has the correct tolerance value
     import inspect
-    from tests.production import test_performance_benchmarks
+    import tests.production.test_performance_benchmarks
     
-    source = inspect.getsource(test_performance_benchmarks.test_sparse_computation_efficiency)
+    source = inspect.getsource(tests.production.test_performance_benchmarks.test_sparse_computation_efficiency)
     
     # Verify rtol=1e-4 is present (not the old 1e-6)
     assert "rtol=1e-4" in source or "1e-4" in source
