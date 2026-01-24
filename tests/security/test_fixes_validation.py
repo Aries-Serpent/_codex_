@@ -5,7 +5,6 @@ This module serves as a smoke test to verify that the critical fixes remain func
 """
 
 import pytest
-from pathlib import Path
 
 
 def test_audit_logger_log_dir_parameter(tmp_path):
