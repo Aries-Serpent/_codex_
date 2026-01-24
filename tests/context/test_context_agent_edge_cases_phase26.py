@@ -23,7 +23,7 @@ class TestContextEdgeCases:
     def test_context_token_limit_exceeded(self):
         """Test context when token limit is exceeded"""
         # Simulate exceeding token limit
-        long_message = "word " * 100000
+        _long_message = "word " * 100000
         # Should truncate or reject
         assert len(long_message) > 500000
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
