@@ -166,7 +166,6 @@ class TestConfigEdgeCases:
 
     def test_config_default_values(self):
         """Test config falls back to defaults correctly"""
-        empty_config = {}
         # Should apply defaults
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
