@@ -25,12 +25,12 @@ class TestAccelerateAvailability:
 
     def test_is_accelerate_available(self):
         """Test checking if accelerate is available"""
-        result = accelerate_init_guard.accelerate_init_guard.is_accelerate_available()
+        result = accelerate_init_guard.is_accelerate_available()
         assert isinstance(result, bool)
 
     def test_is_gpu_available(self):
         """Test checking if GPU is available"""
-        result = accelerate_init_guard.accelerate_init_guard.is_gpu_available()
+        result = accelerate_init_guard.is_gpu_available()
         assert isinstance(result, bool)
 
 
@@ -39,18 +39,18 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_cpu_fallback(self):
         """Test safe initialization with CPU fallback"""
-        result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
+        result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
 
-        assert isinstance(result, accelerate_init_guard.accelerate_init_guard.AccelerateInitResult)
+        assert isinstance(result, accelerate_init_guard.AccelerateInitResult)
         # On CPU-only systems, should skip with cpu_only reason
-        if not accelerate_init_guard.accelerate_init_guard.is_gpu_available():
+        if not accelerate_init_guard.is_gpu_available():
             assert result.skip_reason in ["cpu_only", "no_accelerate"]
             assert not result.success
 
     def test_safe_init_no_accelerate(self):
         """Test behavior when accelerate not available"""
         with patch("accelerate_init_guard.is_accelerate_available", return_value=False):
-            result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init()
+            result = accelerate_init_guard.safe_accelerate_init()
 
             assert not result.success
             assert not result.accelerate_available
@@ -61,11 +61,11 @@ class TestAccelerateInitGuard:
     def test_safe_init_cpu_only(self):
         """Test initialization on CPU-only system"""
         with patch("accelerate_init_guard.is_gpu_available", return_value=False):
-            result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init(
+            result = accelerate_init_guard.safe_accelerate_init(
                 cpu_fallback=True
             )
 
-            if accelerate_init_guard.accelerate_init_guard.is_accelerate_available():
+            if accelerate_init_guard.is_accelerate_available():
                 assert not result.success
                 assert result.skip_reason == "cpu_only"
                 assert result.accelerate_available
@@ -73,7 +73,7 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_structure(self):
         """Test result structure"""
-        result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init()
+        result = accelerate_init_guard.safe_accelerate_init()
 
         assert hasattr(result, "success")
         assert hasattr(result, "accelerate_available")
@@ -86,11 +86,11 @@ class TestAccelerateInitGuard:
 
     def test_result_str_representation(self):
         """Test string representation of result"""
-        result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init()
+        result = accelerate_init_guard.safe_accelerate_init()
         str_repr = str(result)
 
         assert isinstance(str_repr, str)
-        assert "accelerate_init_guard.AccelerateInitResult" in str_repr
+        assert "AccelerateInitResult" in str_repr
 
 
 class TestDistributedEnvironment:
