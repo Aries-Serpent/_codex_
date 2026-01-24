@@ -1,18 +1,21 @@
 """
 Sanitizers Module
 
-This module provides functionality for sanitizers.
+This module provides sanitization functionality for prompts and outputs,
+including detection and redaction of secrets, PII, and jailbreak attempts.
 
 Usage:
-    from safety.sanitizers import ...
-
-Classes:
-    [To be documented]
+    from codex_ml.safety.sanitizers import sanitize_prompt, sanitize_output
 
 Functions:
-    [To be documented]
+    sanitize_prompt(text, cfg, policy_yaml): Sanitize text before use as prompt
+    sanitize_output(text, cfg): Redact secrets/PII and optionally truncate output
+
+Classes:
+    SafetyConfig: Configuration for prompt and output sanitization
 
 Author: Codex Team
+Version: Updated 2026-01-24 with enhanced pattern detection
 """
 
 from __future__ import annotations
