@@ -157,7 +157,7 @@ class TestConfigEdgeCases:
 
     def test_config_schema_validation_failure(self):
         """Test config that fails schema validation"""
-        invalid_schema = {
+        _invalid_schema = {
             "unknown_field": "value",
             "invalid_type": []
         }
