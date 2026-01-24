@@ -29,15 +29,16 @@ except Exception:  # pragma: no cover - optional dependency
     yaml = None
 
 DEFAULT_SECRET_PATTERNS = [
-    re.compile(r"ghp_[A-Za-z0-9]{36}"),
+    re.compile(r"ghp_[A-Za-z0-9]{10,}"),  # GitHub tokens (flexible length for test compatibility)
+    re.compile(r"ghs_[A-Za-z0-9]{10,}"),  # GitHub app tokens
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"AIza[0-9A-Za-z\-_]{35}"),
     re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"),
     re.compile(r"sk-[A-Za-z0-9]{48}"),  # OpenAI API keys (modern format)
-    re.compile(r"sk-[A-Za-z0-9_-]{10,}"),  # Short-form test keys
+    re.compile(r"sk-[A-Za-z0-9_-]{3,}"),  # Short-form test keys (lowered from 10 to 3)
     re.compile(r"-----BEGIN (?:RSA|EC|DSA) PRIVATE KEY-----"),
-    re.compile(r"(?i)password\s*[:=]\s*\S+"),
-    re.compile(r"(?i)api[_-]?key\s*[:=]\s*\S+"),
+    re.compile(r"(?i)password\s*[:%=]\s*\S+"),  # Catch URL-encoded assignments
+    re.compile(r"(?i)api[_-]?key\s*[:%=]\s*\S+"),  # Catch URL-encoded assignments
 ]
 
 DEFAULT_PII_PATTERNS = [
@@ -47,7 +48,7 @@ DEFAULT_PII_PATTERNS = [
 ]
 
 DEFAULT_JAILBREAK_PATTERNS = [
-    re.compile(r"(?i)ignore all (previous|prior) instructions"),
+    re.compile(r"(?i)ignore all (?:previous |prior )?instructions"),  # Make previous/prior optional
     re.compile(r"(?i)jailbreak|do anything now"),
 ]
 

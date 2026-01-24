@@ -427,7 +427,7 @@ class TestPolicyYAMLOverride:
         """Test that YAML can add custom secret patterns."""
         yaml_policy = """
 secrets:
-  - CUSTOM-SECRET-\\d{8}
+  - 'CUSTOM-SECRET-\\d{8}'
 """
         text = "Token: CUSTOM-SECRET-12345678"
         result = sanitize_prompt(text, policy_yaml=yaml_policy)
@@ -439,7 +439,7 @@ secrets:
         """Test that YAML can add custom PII patterns."""
         yaml_policy = """
 pii:
-  - "EMP-\\d{6}"
+  - 'EMP-\\d{6}'
 """
         text = "Employee ID: EMP-123456"
         result = sanitize_prompt(text, policy_yaml=yaml_policy)
@@ -461,11 +461,11 @@ jailbreak:
         """Test YAML with all pattern types."""
         yaml_policy = """
 secrets:
-  - "SECRET-\\d+"
+  - 'SECRET-\\d+'
 pii:
-  - "ID-\\d+"
+  - 'ID-\\d+'
 jailbreak:
-  - "bypass mode"
+  - 'bypass mode'
 """
         
         text1 = "Token: SECRET-123"
@@ -484,7 +484,7 @@ jailbreak:
         """Test that YAML extends rather than replaces defaults."""
         yaml_policy = """
 secrets:
-  - "CUSTOM-KEY"
+  - 'CUSTOM-KEY'
 """
         # Should still catch default patterns
         text = "GitHub: ghp_1234567890abcdefghijklmnopqrstuv"

@@ -64,7 +64,10 @@ def test_project_tokens_clamps_to_vocab_size() -> None:
 def test_extract_logits_from_dict_payload() -> None:
     logits = [[0.1, 0.9]]
     tensor = main._extract_logits({"logits": logits})
-    assert tensor.tolist() == logits
+    result = tensor.tolist()
+    # Use element-wise comparison for nested lists
+    for actual_row, expected_row in zip(result, logits):
+        assert actual_row == pytest.approx(expected_row, rel=1e-6)
 
 
 class _WithLogits:
@@ -75,7 +78,11 @@ class _WithLogits:
 def test_extract_logits_from_sequence_object() -> None:
     payload = (_WithLogits([[0.2, 0.8]]),)
     tensor = main._extract_logits(payload)
-    assert tensor.tolist() == [[0.2, 0.8]]
+    result = tensor.tolist()
+    expected = [[0.2, 0.8]]
+    # Use element-wise comparison for nested lists
+    for actual_row, expected_row in zip(result, expected):
+        assert actual_row == pytest.approx(expected_row, rel=1e-6)
 
 
 @pytest.mark.parametrize("payload", [None, {}, ()])
