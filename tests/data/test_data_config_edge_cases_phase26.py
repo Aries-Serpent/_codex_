@@ -115,7 +115,6 @@ class TestConfigEdgeCases:
 
     def test_config_missing_required_keys(self):
         """Test config with missing required keys"""
-        incomplete_config = {"optional_key": "value"}
         # Should detect missing required keys
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
