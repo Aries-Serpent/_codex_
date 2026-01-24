@@ -140,6 +140,7 @@ Test Execution → Cache Management → Artifact Generation
 ## CI/CD Pipeline
 
 ### Key Workflows (`.github/workflows/`)
+
 | Workflow | Trigger | Purpose | Cache |
 |----------|---------|---------|-------|
 | `status_validation.yml` | push, PR | Repo status | - |
@@ -247,6 +248,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 ```
 
 ### Entry Points
+
 | System | Entry | Type |
 |--------|-------|------|
 | Codex CLI | `python -m codex.cli` | Module |
