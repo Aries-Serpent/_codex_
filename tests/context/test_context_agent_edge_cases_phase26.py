@@ -5,10 +5,7 @@ Coverage Target: src/codex/context/, src/agents/
 """
 
 import pytest
-from unittest.mock import Mock, patch
 import threading
-
-
 class TestContextEdgeCases:
     """Edge case tests for context management"""
 
