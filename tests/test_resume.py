@@ -40,6 +40,8 @@ def write_manifest(
 
 
 def test_resume_prefers_manifest_snapshot(monkeypatch, tmp_path):
+    monkeypatch.setenv("DISABLE_MLFLOW_INTEGRATION", "1")
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "")
     _install_minimal_hf_stubs(monkeypatch, tmp_path)
     run_dir = tmp_path / "run1"
     hydra_cfg = {"model_name": "tiny-gpt", "training": {"lr": 0.001}}

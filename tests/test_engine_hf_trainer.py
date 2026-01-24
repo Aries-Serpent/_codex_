@@ -28,9 +28,23 @@ def _install_minimal_hf_stubs(
         pad_token = None
         eos_token = "</s>"
         pad_token_id = 0
+        
+        def pad(self, *args, **kwargs):
+            # Return input unchanged for padding stub
+            if args and isinstance(args[0], dict):
+                return args[0]
+            return {"input_ids": [[0]], "attention_mask": [[1]]}
 
-        def __call__(self, text, truncation=True):
-            return {"input_ids": [0], "attention_mask": [1]}
+        def __call__(self, text, truncation=True, padding=False):
+            # Handle both single string and list of strings (batched)
+            if isinstance(text, str):
+                return {"input_ids": [0], "attention_mask": [1]}
+            else:
+                # Return lists of results for each text in the batch
+                return {
+                    "input_ids": [[0] for _ in text],
+                    "attention_mask": [[1] for _ in text]
+                }
 
         def save_pretrained(self, output_dir):  # pragma: no cover - stub
             return None

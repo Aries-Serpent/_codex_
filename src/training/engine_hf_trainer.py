@@ -861,7 +861,7 @@ def load_training_arguments(
 def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     """Tokenize an iterable of texts into a ``Dataset``."""
     ds = Dataset.from_dict({"text": list(texts)})
-    ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
+    ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True, padding=False), batched=True)
     return ds
 
 
