@@ -110,8 +110,20 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     data_dir = tmp_path / "data"
     data_dir.mkdir()
     (data_dir / "example.jsonl").write_text("{}", encoding="utf-8")
+    
+    # Setup MLflow tracking directory
+    mlruns_dir = tmp_path / "mlruns"
+    mlruns_dir.mkdir()
+    
+    # Pre-initialize MLflow experiment
+    import mlflow
+    mlflow.set_tracking_uri(f"file:{mlruns_dir}")
+    mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
+    
     env = os.environ.copy()
     env["PYTHONPATH"] = str(Path(__file__).resolve().parent.parent / "src")
+    env["MLFLOW_TRACKING_URI"] = f"file:{mlruns_dir}"
+    
     result = subprocess.run(
         [sys.executable, "-m", "codex.cli", "run", "ingest"],
         cwd=tmp_path,
@@ -172,6 +184,12 @@ def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     pytest.importorskip("mlflow", reason="mlflow not installed")
     target = tmp_path / "mlruns"
     monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file:{target}")
+    
+    # Initialize MLflow experiment before tracking
+    import mlflow
+    mlflow.set_tracking_uri(f"file:{target}")
+    mlflow.create_experiment("default", artifact_location=str(target))
+    
     runner = TyperCliRunner()
     result = runner.invoke(codex_cli_app, ["track-smoke", "--dir", str(target)])
     assert result.exit_code == 0

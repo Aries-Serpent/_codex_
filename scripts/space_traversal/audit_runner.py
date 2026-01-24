@@ -215,6 +215,174 @@ class AuditRunner:
             raise
 
 
+# ---------------------------------------------------------------------------
+# Module-level utility functions for test integration
+# ---------------------------------------------------------------------------
+
+def duplication_ratio(evidence_files, file_cache=None, cfg=None):
+    """
+    Calculate duplication ratio using configured heuristic.
+    
+    Args:
+        evidence_files: List of file paths to analyze
+        file_cache: Optional dict mapping file paths to contents
+        cfg: Optional configuration dict with scoring.dup settings
+    
+    Returns:
+        Float between 0.0 and 1.0 representing duplication ratio
+    """
+    if cfg is None:
+        cfg = {}
+    
+    scoring_cfg = cfg.get("scoring", {})
+    dup_cfg = scoring_cfg.get("dup", {})
+    heuristic = dup_cfg.get("heuristic", "simple")
+    
+    try:
+        if heuristic == "token_similarity" and file_cache:
+            # Token similarity heuristic
+            threshold = dup_cfg.get("threshold", 0.7)
+            max_pairwise = dup_cfg.get("max_pairwise", 1000)
+            max_tokens_per_file = dup_cfg.get("max_tokens_per_file", 1000)
+            
+            # Import token similarity function
+            try:
+                from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+                return duplication_ratio_token_similarity(
+                    evidence_files,
+                    file_cache,
+                    threshold=threshold,
+                    max_pairwise=max_pairwise,
+                    max_tokens_per_file=max_tokens_per_file
+                )
+            except (ImportError, Exception) as e:
+                logger.warning(f"Token similarity failed, falling back to simple: {e}")
+                # Fall through to simple heuristic
+        
+        # Simple stem-based duplication (default/fallback)
+        from pathlib import Path
+        stems = [Path(f).stem for f in evidence_files]
+        if not stems:
+            return 0.0
+        duplicates = len(stems) - len(set(stems))
+        ratio = duplicates / len(stems) if stems else 0.0
+        return max(0.0, min(1.0, ratio))
+        
+    except Exception as e:
+        logger.error(f"Duplication ratio calculation failed: {e}")
+        return 0.0
+
+
+def stage_s4_scoring(cfg, raw_caps):
+    """
+    Score capabilities with optional coverage integration (Stage S4).
+    
+    Args:
+        cfg: Configuration dict with weights, scoring, and output settings
+        raw_caps: List of capability dicts with evidence_files, patterns, etc.
+    
+    Returns:
+        List of scored capability dicts with added score components
+    """
+    from pathlib import Path
+    
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    
+    weights = cfg.get("weights", {
+        "functionality": 0.25,
+        "consistency": 0.20,
+        "tests": 0.25,
+        "safeguards": 0.15,
+        "documentation": 0.15,
+    })
+    
+    scoring_cfg = cfg.get("scoring", {})
+    thresholds = scoring_cfg.get("thresholds", {"low": 0.70, "medium": 0.85})
+    
+    # Check for coverage integration
+    coverage_map = {}
+    coverage_cfg = scoring_cfg.get("coverage", {})
+    if coverage_cfg.get("enabled", False):
+        try:
+            # Import and run coverage ingestion
+            from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
+            coverage_map = discover_and_parse_coverage(cfg, artifacts_dir) or {}
+            logger.info(f"Coverage integration enabled: {len(coverage_map)} files mapped")
+        except (ImportError, Exception) as e:
+            logger.warning(f"Coverage integration failed: {e}")
+    
+    # Build file cache for duplication analysis
+    file_cache = {}
+    for cap in raw_caps:
+        evidence = cap.get("evidence_files", [])
+        for filepath in evidence:
+            if filepath not in file_cache:
+                try:
+                    full_path = ROOT / filepath
+                    if full_path.exists():
+                        file_cache[filepath] = full_path.read_text(encoding="utf-8", errors="ignore")
+                except Exception:
+                    file_cache[filepath] = ""
+    
+    # Score each capability
+    scored_caps = []
+    for cap in raw_caps:
+        required = cap.get("required_patterns", []) or []
+        found = cap.get("found_patterns", []) or []
+        evidence_files = cap.get("evidence_files", []) or []
+        docs_keywords = cap.get("docs_keywords", []) or []
+        
+        # Functionality: pattern match ratio
+        functionality = len(found) / max(1, len(required)) if required else 0.0
+        
+        # Consistency: inverse of duplication
+        consistency = 1.0 - duplication_ratio(evidence_files, file_cache, cfg)
+        
+        # Tests: coverage-aware scoring
+        tests_score = 0.0
+        if evidence_files:
+            covered_files = sum(1 for f in evidence_files if coverage_map.get(f, {}).get("percent", 0) > 0)
+            tests_score = covered_files / len(evidence_files)
+        
+        # Safeguards: pattern-based heuristic
+        safeguards = min(1.0, len(found) * 0.1)
+        
+        # Documentation: keyword presence
+        documentation = min(1.0, len(docs_keywords) * 0.2)
+        
+        # Compute weighted score
+        components = {
+            "functionality": functionality,
+            "consistency": consistency,
+            "tests": tests_score,
+            "safeguards": safeguards,
+            "documentation": documentation,
+        }
+        
+        score = sum(components[k] * weights.get(k, 0.0) for k in components)
+        score = max(0.0, min(1.0, score))
+        
+        # Determine maturity level
+        if score >= thresholds.get("medium", 0.85):
+            maturity = "high"
+        elif score >= thresholds.get("low", 0.70):
+            maturity = "medium"
+        else:
+            maturity = "low"
+        
+        scored_cap = {
+            **cap,
+            "score": score,
+            "maturity": maturity,
+            "components": components,
+            "missing_patterns": sorted(set(required) - set(found)),
+        }
+        scored_caps.append(scored_cap)
+    
+    return scored_caps
+
+
 def main() -> None:
     """Main entry point"""
     logging.basicConfig(
