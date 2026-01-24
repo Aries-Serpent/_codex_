@@ -80,6 +80,7 @@ class TestContextEdgeCases:
     def test_context_null_bytes(self):
         """Test context with null bytes in content"""
         null_content = "test\x00data"
+        assert "\x00" in null_content
         # Should sanitize or reject
         assert "\x00" in null_content
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
