@@ -5,7 +5,6 @@ Coverage Target: src/codex_ml/cli/codex_cli.py (846 lines, 0% → 60%+)
 """
 
 import pytest
-import sys
 import os
 from unittest.mock import patch
 from io import StringIO
