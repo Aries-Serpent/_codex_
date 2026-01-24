@@ -86,18 +86,20 @@ class TestCognitiveBrainEdgeCases:
     def test_brain_concurrent_updates(self):
         """Test cognitive brain with concurrent state updates"""
         state = {"counter": 0}
-        
+        lock = threading.Lock()
+
         def increment():
-            state["counter"] += 1
-        
+            with lock:
+                state["counter"] += 1
+
         threads = [threading.Thread(target=increment) for _ in range(100)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Should handle concurrent updates safely
-        assert state["counter"] <= 100
+        assert state["counter"] == 100
 
     def test_brain_decision_cycle_timeout(self):
         """Test cognitive brain decision cycle timeout"""
