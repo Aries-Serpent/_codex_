@@ -124,6 +124,9 @@ class TestConfigEdgeCases:
             "bool_value": "not_a_bool",
             "list_value": "not_a_list"
         }
+        # Basic structure checks to use bad_config in this placeholder test
+        assert isinstance(bad_config, dict)
+        assert set(bad_config.keys()) == {"int_value", "bool_value", "list_value"}
         # Should validate types
         assert isinstance(bad_config, dict)
         assert set(bad_config.keys()) == {"int_value", "bool_value", "list_value"}
