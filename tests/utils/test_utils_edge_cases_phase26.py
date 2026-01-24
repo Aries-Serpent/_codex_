@@ -70,7 +70,7 @@ class TestStringUtilsEdgeCases:
 
     def test_string_normalize_whitespace(self):
         """Test normalizing various whitespace characters"""
-        weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
+        _weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
         # Should normalize all Unicode whitespace
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
