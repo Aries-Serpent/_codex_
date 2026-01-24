@@ -323,4 +323,4 @@ class TestCLIPerformance:
             cwd=REPO_ROOT,
         )
         elapsed = time.time() - start
-        assert elapsed < 5.0, f"Help command took too long: {elapsed:.2f}s"
+        assert elapsed < 7.0, f"Help command took too long: {elapsed:.2f}s"

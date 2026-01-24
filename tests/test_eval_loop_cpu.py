@@ -43,7 +43,13 @@ class _ToyModel:
         return self._training
 
     def __call__(self, input_ids, labels):  # type: ignore[no-untyped-def]
-        logits = self.linear(input_ids.float())
+        # Expand to produce per-token logits: (batch, seq_len) -> (batch, seq_len, vocab_size)
+        batch_size, seq_len = input_ids.shape
+        # Apply linear layer to each token position
+        expanded = input_ids.float().unsqueeze(-1)  # (batch, seq_len, 1)
+        # Replicate to match input dimension
+        expanded = expanded.expand(batch_size, seq_len, 4)  # (batch, seq_len, 4)
+        logits = self.linear(expanded)  # (batch, seq_len, 5)
         loss = self.loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
         return types.SimpleNamespace(loss=loss, logits=logits)
 
