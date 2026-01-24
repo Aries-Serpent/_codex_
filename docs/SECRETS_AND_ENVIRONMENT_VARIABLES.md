@@ -116,6 +116,32 @@ This document provides comprehensive documentation for all secrets and environme
 - **Security Level**: HIGH - Rotate every 180 days
 - **Required**: Yes (for OAuth authentication)
 
+### PyPI Publishing Secrets
+
+#### `PYPI_API_TOKEN`
+- **Purpose**: PyPI API token for publishing packages to production PyPI
+- **Format**: `pypi-` prefixed token string from PyPI account settings
+- **Used In**: 
+  - `pypi-publish.yml`
+  - Package publishing workflows
+- **Generation**: Via PyPI Account Settings → API tokens → Generate new token
+- **Security Level**: HIGH - Rotate every 90 days or after each use
+- **Required**: Yes (for production PyPI publishing)
+- **Rotation**: Recommended after each release or every 90 days
+- **Note**: Use with username `__token__` in Twine configuration
+
+#### `TEST_PYPI_API_TOKEN`
+- **Purpose**: TestPyPI API token for testing package uploads before production
+- **Format**: `pypi-` prefixed token string from TestPyPI account settings  
+- **Used In**:
+  - `pypi-publish.yml`
+  - Pre-release testing workflows
+- **Generation**: Via TestPyPI Account Settings → API tokens → Generate new token
+- **Security Level**: MEDIUM - Rotate every 90 days
+- **Required**: No (recommended for testing releases before production)
+- **Rotation**: Recommended every 90 days
+- **Note**: Separate token from production PYPI_API_TOKEN for security isolation
+
 ### AWS Integration Secrets
 
 #### `AWS_ACCESS_KEY_ID`
