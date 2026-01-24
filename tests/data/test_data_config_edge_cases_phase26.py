@@ -182,6 +182,5 @@ class TestConfigEdgeCases:
 
     def test_config_immutability(self):
         """Test config immutability after loading"""
-        config = {"key": "value"}
         # Should prevent modification after freeze
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
