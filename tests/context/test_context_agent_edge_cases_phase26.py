@@ -56,8 +56,6 @@ class TestContextEdgeCases:
 
     def test_context_memory_leak(self):
         """Test context for memory leaks over many operations"""
-        import sys
-        initial_size = sys.getsizeof({})
         # Should not leak memory
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
