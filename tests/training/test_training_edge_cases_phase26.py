@@ -8,7 +8,6 @@ import pytest
 import torch
 import numpy as np
 from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
 
 
 class TestTrainingEdgeCases:
