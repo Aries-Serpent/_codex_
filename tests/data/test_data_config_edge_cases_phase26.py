@@ -8,7 +8,7 @@ import pytest
 import json
 import yaml
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 import tempfile
 import os
 
