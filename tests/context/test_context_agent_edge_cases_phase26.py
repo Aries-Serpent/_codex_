@@ -4,7 +4,6 @@ Target: 15+ edge case tests for context management and agent operations
 Coverage Target: src/codex/context/, src/agents/
 """
 
-import pytest
 import threading
 class TestContextEdgeCases:
     """Edge case tests for context management"""
