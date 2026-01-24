@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - Comprehensive Test Failures (2026-01-24)
+
+**Fixed 5 failing tests in CI/CD comprehensive test suite:**
+
+#### Float Precision Tests (2 tests fixed)
+- Fixed `test_extract_logits_from_dict_payload` in `tests/services/api/test_main_utils.py`
+- Fixed `test_extract_logits_from_sequence_object` in `tests/services/api/test_main_utils.py`
+- Updated to use `pytest.approx()` with element-wise comparison for nested float lists
+- Handles IEEE 754 floating-point precision issues correctly
+
+#### Security Sanitizer Enhancements (3 tests fixed + 6 pre-existing issues)
+- Enhanced patterns in `src/codex_ml/safety/sanitizers.py`:
+  - **GitHub tokens**: Made pattern more flexible `ghp_[A-Za-z0-9]{10,}` (was `{36}`)
+  - **GitHub app tokens**: Added new pattern `ghs_[A-Za-z0-9]{10,}`
+  - **OpenAI test keys**: Lowered minimum length `sk-[A-Za-z0-9_-]{3,}` (was `{10,}`)
+  - **Jailbreak detection**: Made "previous/prior" optional in "ignore all instructions"
+  - **URL-encoded secrets**: Enhanced patterns to detect `password%3Dsecret` (URL-encoded `=`)
+- Fixed test escaping in `tests/safety/test_sanitizers_comprehensive.py`:
+  - Changed double quotes to single quotes for YAML regex patterns with backslashes
+  - Fixed 4 YAML override tests with proper escape sequences
+
+**Test Results**: 59/59 sanitizer tests passing ✅
+
+**Files Modified**: 3 files, 21 insertions, 13 deletions
+- `src/codex_ml/safety/sanitizers.py` - Enhanced patterns
+- `tests/safety/test_sanitizers_comprehensive.py` - Fixed YAML escaping
+- `tests/services/api/test_main_utils.py` - Fixed float comparisons
+
 ### Added - Workflow Analytics Agent with Autonomous Execution (2026-01-22)
 
 **Comprehensive CI/CD analytics system with autonomous testing:**
