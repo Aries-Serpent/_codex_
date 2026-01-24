@@ -130,11 +130,8 @@ class TestConfigEdgeCases:
 
     def test_config_range_violation(self):
         """Test config values outside valid range"""
-        invalid_ranges = {
-            "batch_size": -10,
-            "learning_rate": 1000.0,
-            "epochs": 0
-        }
+        # Example of invalid ranges that should be rejected:
+        # batch_size: -10, learning_rate: 1000.0, epochs: 0
         # Should enforce value ranges
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
