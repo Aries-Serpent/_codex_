@@ -16,7 +16,6 @@ class TestTrainingEdgeCases:
 
     def test_training_empty_dataset(self):
         """Test training with empty dataset"""
-        empty_data = []
         # Should handle or reject empty dataset
         with pytest.raises((ValueError, RuntimeError)):
             pass
