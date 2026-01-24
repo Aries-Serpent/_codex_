@@ -1,8 +1,8 @@
 /* ==========================================================================
    Custom CSS for _codex_ Documentation Site
    Fixes: Code block overflow, responsive design, layout constraints
-   Version: 1.0.0
-   Date: 2026-01-04
+   Version: 1.0.1 (Updated for forced dark theme)
+   Date: 2026-01-24
    ========================================================================== */
 
 /* Container and Layout
@@ -22,8 +22,8 @@ pre {
   overflow-y: hidden;
   padding: 1rem;
   border-radius: 4px;
-  background-color: #f6f8fa;
-  border: 1px solid #d1d5da;
+  background-color: #161b22;
+  border: 1px solid #30363d;
   white-space: pre;
   word-wrap: normal;
 }
@@ -48,36 +48,37 @@ pre code {
 /* Inline code */
 :not(pre) > code {
   padding: 0.2em 0.4em;
-  background-color: #f6f8fa;
+  background-color: #161b22;
   border-radius: 3px;
   font-size: 0.9em;
+  color: #c9d1d9;
 }
 
 /* Scrollbar Styling for Code Blocks
    ========================================================================== */
 pre::-webkit-scrollbar {
   height: 8px;
-  background: #f1f1f1;
+  background: #161b22;
 }
 
 pre::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #161b22;
   border-radius: 4px;
 }
 
 pre::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #484f58;
   border-radius: 4px;
 }
 
 pre::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #6e7681;
 }
 
 /* Firefox scrollbar */
 pre {
   scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+  scrollbar-color: #484f58 #161b22;
 }
 
 /* Table Responsiveness
@@ -91,13 +92,13 @@ table {
 }
 
 table thead {
-  background-color: #f6f8fa;
+  background-color: #161b22;
 }
 
 table th,
 table td {
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5da;
+  border: 1px solid #30363d;
   text-align: left;
 }
 
@@ -161,7 +162,7 @@ img {
 /* Link Styling
    ========================================================================== */
 a {
-  color: #0366d6;
+  color: #58a6ff;
   text-decoration: none;
 }
 
@@ -170,7 +171,7 @@ a:hover {
 }
 
 a:focus {
-  outline: 2px solid #0366d6;
+  outline: 2px solid #58a6ff;
   outline-offset: 2px;
 }
 
@@ -211,9 +212,9 @@ li > ol {
 blockquote {
   margin: 1em 0;
   padding: 0.5em 1em;
-  border-left: 4px solid #ddd;
-  background-color: #f9f9f9;
-  color: #666;
+  border-left: 4px solid #30363d;
+  background-color: #161b22;
+  color: #8b949e;
 }
 
 blockquote > :first-child {
@@ -228,14 +229,14 @@ blockquote > :last-child {
    ========================================================================== */
 hr {
   border: 0;
-  border-top: 1px solid #d1d5da;
+  border-top: 1px solid #30363d;
   margin: 2em 0;
 }
 
 /* Accessibility - Focus Styles
    ========================================================================== */
 :focus {
-  outline: 2px solid #0366d6;
+  outline: 2px solid #58a6ff;
   outline-offset: 2px;
 }
 
@@ -244,7 +245,7 @@ a:focus,
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #0366d6;
+  outline: 2px solid #58a6ff;
   outline-offset: 2px;
 }
 
@@ -278,8 +279,8 @@ dd {
    ========================================================================== */
 .footnotes {
   font-size: 0.9em;
-  color: #666;
-  border-top: 1px solid #d1d5da;
+  color: #8b949e;
+  border-top: 1px solid #30363d;
   margin-top: 2em;
   padding-top: 1em;
 }
@@ -324,48 +325,50 @@ dd {
   }
 }
 
-/* Dark Mode Support (Optional - for future enhancement)
+/* Dark Theme (Forced)
    ========================================================================== */
-@media (prefers-color-scheme: dark) {
-  /* Uncomment to enable dark mode support */
-  /*
-  .markdown-body {
-    background-color: #0d1117;
-    color: #c9d1d9;
-  }
-  
-  pre {
-    background-color: #161b22;
-    border-color: #30363d;
-  }
-  
-  :not(pre) > code {
-    background-color: #161b22;
-    color: #c9d1d9;
-  }
-  
-  table th {
-    background-color: #161b22;
-  }
-  
-  table th, table td {
-    border-color: #30363d;
-  }
-  
-  a {
-    color: #58a6ff;
-  }
-  
-  blockquote {
-    border-left-color: #30363d;
-    background-color: #161b22;
-    color: #8b949e;
-  }
-  
-  hr {
-    border-top-color: #30363d;
-  }
-  */
+/* Overall page background and text */
+body {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+/* Page header */
+.page-header {
+  background-color: #161b22;
+  color: #c9d1d9;
+}
+
+.page-header .project-name,
+.page-header .project-tagline {
+  color: #c9d1d9;
+}
+
+.page-header .btn {
+  background-color: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+}
+
+.page-header .btn:hover {
+  background-color: #30363d;
+}
+
+/* Main content */
+.markdown-body {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+/* Footer */
+.site-footer {
+  background-color: #161b22;
+  color: #8b949e;
+  border-top: 1px solid #30363d;
+}
+
+.site-footer a {
+  color: #58a6ff;
 }
 
 /* ==========================================================================

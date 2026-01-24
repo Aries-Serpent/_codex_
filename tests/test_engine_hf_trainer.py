@@ -35,16 +35,23 @@ def _install_minimal_hf_stubs(
                 return args[0]
             return {"input_ids": [[0]], "attention_mask": [[1]]}
 
-        def __call__(self, text, truncation=True, padding=False):
+        def __call__(self, text, truncation=True, padding=False, return_tensors=None):
             # Handle both single string and list of strings (batched)
             if isinstance(text, str):
-                return {"input_ids": [0], "attention_mask": [1]}
+                result = {"input_ids": [0], "attention_mask": [1]}
             else:
                 # Return lists of results for each text in the batch
-                return {
+                result = {
                     "input_ids": [[0] for _ in text],
                     "attention_mask": [[1] for _ in text]
                 }
+            
+            # Convert to tensors if requested (needed for HF Trainer data collator)
+            if return_tensors == "pt":
+                import torch
+                result = {k: torch.tensor(v) for k, v in result.items()}
+            
+            return result
 
         def save_pretrained(self, output_dir):  # pragma: no cover - stub
             return None
@@ -80,7 +87,11 @@ def _install_minimal_hf_stubs(
             self.data_collator = data_collator
             self.compute_metrics = compute_metrics
             self.callbacks = list(callbacks or [])
-            self.state = types.SimpleNamespace(global_step=0)
+            self.state = types.SimpleNamespace(
+                global_step=0,
+                last_model_checkpoint=None,
+                best_model_checkpoint=None
+            )
 
         def train(self, resume_from_checkpoint=None):  # pragma: no cover - stub
             self.state.global_step = global_step
@@ -107,20 +118,47 @@ def _install_minimal_hf_stubs(
 
     def fake_prepare_dataset(texts, tokenizer):  # pragma: no cover - stub
         return list(texts or [])
+    
+    class DummyDataCollator:
+        """Mock data collator that converts lists to tensors for HF Trainer compatibility."""
+        def __init__(self, *args, **kwargs):
+            pass
+        
+        def __call__(self, features):
+            import torch
+            if not features:
+                return {}
+            
+            batch = {}
+            for key in features[0].keys() if isinstance(features[0], dict) else []:
+                values = [f[key] if isinstance(f, dict) else f for f in features]
+                # Convert lists to tensors
+                if isinstance(values[0], list):
+                    batch[key] = torch.tensor(values)
+                elif isinstance(values[0], torch.Tensor):
+                    batch[key] = torch.stack(values)
+                else:
+                    batch[key] = torch.tensor(values)
+            
+            # Add labels (copy of input_ids for language modeling)
+            if "input_ids" in batch:
+                batch["labels"] = batch["input_ids"].clone()
+            
+            return batch
 
     monkeypatch.setattr(
-        "training.engine_hf_trainer.AutoTokenizer.from_pretrained", lambda *a, **k: DummyTokenizer()
+        "src.training.engine_hf_trainer.AutoTokenizer.from_pretrained", lambda *a, **k: DummyTokenizer()
     )
     monkeypatch.setattr(
-        "training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
+        "src.training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",
         lambda *a, **k: DummyModel(),
     )
-    monkeypatch.setattr("training.engine_hf_trainer.Trainer", DummyTrainer)
-    monkeypatch.setattr("training.engine_hf_trainer.prepare_dataset", fake_prepare_dataset)
+    monkeypatch.setattr("src.training.engine_hf_trainer.Trainer", DummyTrainer)
+    monkeypatch.setattr("src.training.engine_hf_trainer.prepare_dataset", fake_prepare_dataset)
     monkeypatch.setattr(
-        "training.engine_hf_trainer.DataCollatorForLanguageModeling", lambda *a, **k: object()
+        "src.training.engine_hf_trainer.DataCollatorForLanguageModeling", DummyDataCollator
     )
-    monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", lambda **kw: None)
+    monkeypatch.setattr("src.training.engine_hf_trainer._make_accelerator", lambda **kw: None)
 
 
 def test_hf_trainer_smoke(monkeypatch, tmp_path):
