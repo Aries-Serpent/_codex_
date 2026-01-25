@@ -40,8 +40,6 @@ pytestmark = pytest.mark.skipif(
     not RAG_ERROR_HANDLING_AVAILABLE,
     reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
-    create_embedding_provider,
-)
 
 # Only import OpenAI provider if available
 if OPENAI_AVAILABLE:
