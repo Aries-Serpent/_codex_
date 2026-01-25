@@ -72,6 +72,8 @@ __all__ = [
     "EntangledPair",
     "CorrelationMeasurement",
     "UncertaintyOptimizer",
-    "TestMetrics",
-    "TestPriority",
+    "TestExecutionMetrics",
+    "TestExecutionPriority",
+    "TestMetrics",  # Backward compatibility alias
+    "TestPriority",  # Backward compatibility alias
 ]
