@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.uncertainty import TestMetrics, UncertaintyOptimizer
+from cognitive_brain.quantum.uncertainty import TestExecutionMetrics, UncertaintyOptimizer
 
 
 @dataclass
@@ -132,7 +132,7 @@ def run_uncertainty_approach(
     
     # Update metrics for all tests
     for test in test_suite:
-        optimizer.update_test_metrics(TestMetrics(
+        optimizer.update_test_metrics(TestExecutionMetrics(
             test_id=test.test_id,
             execution_time=test.execution_time,
             failure_rate=test.failure_rate,

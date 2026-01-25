@@ -152,12 +152,14 @@ def test_uncertainty_prioritization(integrated_system):
     ]
     
     for test_id, energy, time, failure_rate in test_cases:
-        from cognitive_brain.quantum.uncertainty import TestMetrics
-        metrics = TestMetrics(
+        from cognitive_brain.quantum.uncertainty import TestExecutionMetrics
+        metrics = TestExecutionMetrics(
             test_id=test_id,
-            avg_duration_ms=time,
+            execution_time=time / 1000.0,  # Convert ms to seconds
             failure_rate=failure_rate,
-            last_run_timestamp=1000.0
+            last_failure_time=1000.0,
+            coverage_contribution=0.5,  # Default value
+            complexity_score=0.5  # Default value
         )
         optimizer.update_test_metrics(metrics)
     

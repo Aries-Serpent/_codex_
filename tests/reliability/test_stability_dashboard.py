@@ -123,7 +123,7 @@ class TestTrendAnalysis:
                 })
         
         assert len(regressions) == 1
-        assert regressions[0]["drop"] == 2.8
+        assert regressions[0]["drop"] == pytest.approx(2.8)
 
     def test_moving_average_stability(self):
         """Test calculation of moving average stability."""

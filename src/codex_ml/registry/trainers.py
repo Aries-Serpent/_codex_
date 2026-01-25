@@ -31,9 +31,9 @@ trainer_registry = Registry("trainer", entry_point_group="codex_ml.trainers")
 
 @trainer_registry.register("functional")
 def _load_functional_trainer() -> Callable[..., Any]:
-    from codex_ml.training.functional_training import run_custom_trainer
+    from codex_ml.training.functional_training import train
 
-    return run_custom_trainer
+    return train
 
 
 def register_trainer(name: str, obj: Callable[..., Any] | None = None, *, override: bool = False):
