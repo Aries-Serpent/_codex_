@@ -12,7 +12,7 @@ import re
 import time
 from collections import defaultdict, deque
 from collections.abc import Callable, Iterable, MutableMapping
-from pathlib import PurePosixPath, PureWindowsPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Literal
 
 
@@ -170,8 +170,6 @@ def enforce_absolute_path(path: str) -> Path:
     Raises:
         SecurityError: If path contains relative components or traversal
     """
-    from pathlib import Path
-    
     p = Path(path)
     
     # Reject relative path traversal
