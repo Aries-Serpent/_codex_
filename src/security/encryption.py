@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 import base64
 import os
-from dataclasses import dataclass
 from typing import cast
 
 try:

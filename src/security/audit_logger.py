@@ -104,14 +104,18 @@ class AuditLogger:
         return True
 
 
-def log_security_event(
+def log_audit_event(
     event_type: str,
     user: str,
     action: str,
     success: bool = True,
     log_dir: Path | None = None,
 ) -> None:
-    """Helper function to log a security event.
+    """Helper function to log a structured audit event to file-based hash chain.
+    
+    This function logs security-relevant events to a file-based audit trail with
+    hash chain integrity verification. For simple logger-based event logging,
+    use src.security.core.log_security_event instead.
     
     Args:
         event_type: Type of security event (e.g., 'authentication')
