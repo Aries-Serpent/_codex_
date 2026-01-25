@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.12"  # BREAKING CHANGE: Python 3.11 support removed
+requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
 license = {text = "MIT"}
 authors = [
   { name = "Aries Serpent" }
