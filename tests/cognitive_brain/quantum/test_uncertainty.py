@@ -12,8 +12,8 @@ from pathlib import Path
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.uncertainty import (
-    TestExecutionMetrics,
-    TestExecutionPriority,
+    ExecutionMetrics,
+    ExecutionPriority,
     UncertaintyOptimizer,
 )
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
@@ -87,7 +87,7 @@ def test_initialization(optimizer):
 
 def test_update_test_metrics(optimizer):
     """Test updating test metrics."""
-    metrics = TestExecutionMetrics(
+    metrics = ExecutionMetrics(
         test_id="test_001",
         execution_time=5.0,
         failure_rate=0.1,
@@ -115,7 +115,7 @@ def test_calculate_priority_new_test(optimizer):
 
 def test_calculate_priority_high_risk_test(optimizer):
     """Test priority calculation for high-risk test."""
-    metrics = TestExecutionMetrics(
+    metrics = ExecutionMetrics(
         test_id="test_high_risk",
         execution_time=10.0,
         failure_rate=0.8,
@@ -134,7 +134,7 @@ def test_calculate_priority_high_risk_test(optimizer):
 
 def test_calculate_priority_low_value_test(optimizer):
     """Test priority calculation for low-value test."""
-    metrics = TestExecutionMetrics(
+    metrics = ExecutionMetrics(
         test_id="test_low_value",
         execution_time=60.0,  # Slow
         failure_rate=0.01,  # Rarely fails
@@ -153,7 +153,7 @@ def test_calculate_priority_low_value_test(optimizer):
 
 def test_uncertainty_principle(optimizer):
     """Test that uncertainty principle is satisfied."""
-    metrics = TestExecutionMetrics(
+    metrics = ExecutionMetrics(
         test_id="test_uncertain",
         execution_time=5.0,
         failure_rate=0.5,
@@ -177,7 +177,7 @@ def test_optimize_test_schedule_within_budget(optimizer):
     for i in range(5):
         test_id = f"test_{i:03d}"
         tests.append(test_id)
-        optimizer.update_test_metrics(TestExecutionMetrics(
+        optimizer.update_test_metrics(ExecutionMetrics(
             test_id=test_id,
             execution_time=10.0,
             failure_rate=0.1 * i,  # Increasing risk
@@ -202,7 +202,7 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
     """Test schedule optimization with unlimited budget."""
     tests = ["test_001", "test_002", "test_003"]
     for test_id in tests:
-        optimizer.update_test_metrics(TestExecutionMetrics(
+        optimizer.update_test_metrics(ExecutionMetrics(
             test_id=test_id,
             execution_time=5.0,
             failure_rate=0.5,
@@ -222,7 +222,7 @@ def test_optimize_test_schedule_zero_budget(optimizer):
     """Test schedule optimization with zero budget."""
     tests = ["test_001", "test_002"]
     for test_id in tests:
-        optimizer.update_test_metrics(TestExecutionMetrics(
+        optimizer.update_test_metrics(ExecutionMetrics(
             test_id=test_id,
             execution_time=10.0,
             failure_rate=0.5,
@@ -271,7 +271,7 @@ def test_get_statistics_empty(optimizer):
 def test_get_statistics_with_data(optimizer):
     """Test statistics with test history."""
     for i in range(3):
-        optimizer.update_test_metrics(TestExecutionMetrics(
+        optimizer.update_test_metrics(ExecutionMetrics(
             test_id=f"test_{i}",
             execution_time=float(i + 1) * 5.0,
             failure_rate=0.1 * i,
@@ -291,7 +291,7 @@ def test_get_statistics_with_data(optimizer):
 def test_recency_factor_recent_failure(optimizer):
     """Test that recent failures increase priority."""
     # Recent failure
-    metrics_recent = TestExecutionMetrics(
+    metrics_recent = ExecutionMetrics(
         test_id="test_recent",
         execution_time=10.0,
         failure_rate=0.5,
@@ -303,7 +303,7 @@ def test_recency_factor_recent_failure(optimizer):
     priority_recent = optimizer.calculate_priority("test_recent", 2000.0)
     
     # Old failure
-    metrics_old = TestExecutionMetrics(
+    metrics_old = ExecutionMetrics(
         test_id="test_old",
         execution_time=10.0,
         failure_rate=0.5,
@@ -321,7 +321,7 @@ def test_recency_factor_recent_failure(optimizer):
 def test_execution_time_penalty(optimizer):
     """Test that longer execution time reduces priority."""
     # Fast test
-    metrics_fast = TestExecutionMetrics(
+    metrics_fast = ExecutionMetrics(
         test_id="test_fast",
         execution_time=1.0,  # Fast
         failure_rate=0.5,
@@ -333,7 +333,7 @@ def test_execution_time_penalty(optimizer):
     priority_fast = optimizer.calculate_priority("test_fast", 2000.0)
     
     # Slow test
-    metrics_slow = TestExecutionMetrics(
+    metrics_slow = ExecutionMetrics(
         test_id="test_slow",
         execution_time=60.0,  # Slow
         failure_rate=0.5,
@@ -380,7 +380,7 @@ def test_integration_with_monitor():
         optimizer = UncertaintyOptimizer(config, monitor)
         
         # Perform operations
-        metrics = TestExecutionMetrics(
+        metrics = ExecutionMetrics(
             test_id="test_monitored",
             execution_time=5.0,
             failure_rate=0.3,
@@ -405,7 +405,7 @@ def test_integration_with_monitor():
 
 def test_priority_deterministic(optimizer):
     """Test that priority calculation is deterministic."""
-    metrics = TestExecutionMetrics(
+    metrics = ExecutionMetrics(
         test_id="test_deterministic",
         execution_time=10.0,
         failure_rate=0.5,
