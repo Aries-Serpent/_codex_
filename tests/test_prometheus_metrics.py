@@ -9,6 +9,8 @@ Test module for prometheus metrics.
 import sys
 from pathlib import Path
 
+import pytest
+
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -19,6 +21,27 @@ from codex_ml.monitoring.metrics import (
     record_request,
     record_latency,
 )
+
+
+@pytest.fixture(autouse=True)
+def clear_prometheus_registry():
+    """Clear Prometheus registry between tests to prevent collision."""
+    from prometheus_client import REGISTRY
+    from prometheus_client.registry import Collector
+    
+    # Get collectors before test
+    collectors_before = list(REGISTRY._collector_to_names.keys())
+    
+    yield
+    
+    # Clean up collectors added during test
+    collectors_after = list(REGISTRY._collector_to_names.keys())
+    for collector in collectors_after:
+        if collector not in collectors_before:
+            try:
+                REGISTRY.unregister(collector)
+            except Exception:
+                pass  # Already unregistered
 
 
 def test_metrics_collector_initializes():
