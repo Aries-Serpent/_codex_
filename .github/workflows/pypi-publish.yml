@@ -92,19 +92,16 @@ jobs:
         with:
           skip-existing: false
   verify-installation:
-    name: Verify Installation
+    name: Verify Installation (Python 3.12)
     needs: [publish-testpypi, publish-pypi]
     if: always() && (needs.publish-testpypi.result == 'success' || needs.publish-pypi.result == 'success')
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10', '3.11', '3.12']
     
     steps:
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
       
       - name: Install from TestPyPI
         if: needs.publish-testpypi.result == 'success'

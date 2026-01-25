@@ -65,7 +65,7 @@ class SecurityIssue:
 @dataclass
 class ValidationPatterns:
     """Security validation patterns."""
-    
+
     # Command injection patterns
     command_injection: dict[str, str] = field(default_factory=lambda: {
         "shell_metacharacters": r'[`$|&;<>()\\]',
@@ -76,7 +76,7 @@ class ValidationPatterns:
         "background": r'\s*&\s*$',
         "semicolon_chain": r';\s*\w+',
     })
-    
+
     # Path traversal patterns
     path_traversal: dict[str, str] = field(default_factory=lambda: {
         "dot_dot_slash": r'\.\.[/\\]',
@@ -84,7 +84,7 @@ class ValidationPatterns:
         "double_encoded": r'%252e%252e',
         "unicode_traversal": r'[\u002e][\u002e]',
     })
-    
+
     # SQL injection patterns
     sql_injection: dict[str, str] = field(default_factory=lambda: {
         "union_select": r'\bunion\b.*\bselect\b',
@@ -93,7 +93,7 @@ class ValidationPatterns:
         "string_concat": r'\+\s*["\']',
         "stacked_queries": r';\s*\b(select|insert|update|delete|drop)\b',
     })
-    
+
     # XSS patterns
     xss: dict[str, str] = field(default_factory=lambda: {
         "script_tag": r'<script[^>]*>',
@@ -101,7 +101,7 @@ class ValidationPatterns:
         "javascript_protocol": r'javascript:',
         "data_protocol": r'data:text/html',
     })
-    
+
     # Unsafe function patterns (Python)
     unsafe_functions: list[str] = field(default_factory=lambda: [
         "subprocess.run",
@@ -122,12 +122,12 @@ class ValidationPatterns:
 
 class SecurityInputValidator:
     """Main security validator agent."""
-    
+
     def __init__(self, config: dict[str, Any] | None = None):
         self.config = config or self._default_config()
         self.patterns = ValidationPatterns()
         self.issues: list[SecurityIssue] = []
-    
+
     def _default_config(self) -> dict[str, Any]:
         """Default configuration."""
         return {
@@ -142,38 +142,38 @@ class SecurityInputValidator:
                 "**/.venv/**",
             ],
         }
-    
+
     def validate_file(self, file_path: Path) -> list[SecurityIssue]:
         """
         Validate a single file for security issues.
-        
+
         Args:
             file_path: Path to file to validate
-            
+
         Returns:
             List of SecurityIssue objects found
         """
         issues = []
-        
+
         # Skip excluded patterns
         if self._should_exclude(file_path):
             return issues
-        
+
         try:
             content = file_path.read_text(encoding="utf-8")
         except Exception as e:
             print(f"Error reading {file_path}: {e}", file=sys.stderr)
             return issues
-        
+
         # Python-specific analysis
         if file_path.suffix == ".py":
             issues.extend(self._validate_python(file_path, content))
-        
+
         # Language-agnostic pattern matching
         issues.extend(self._validate_patterns(file_path, content))
-        
+
         return issues
-    
+
     def _should_exclude(self, file_path: Path) -> bool:
         """Check if file should be excluded from validation."""
         path_str = str(file_path)
@@ -181,17 +181,17 @@ class SecurityInputValidator:
             if Path(path_str).match(pattern):
                 return True
         return False
-    
+
     def _validate_python(self, file_path: Path, content: str) -> list[SecurityIssue]:
         """Validate Python code using AST analysis."""
         issues = []
-        
+
         try:
             tree = ast.parse(content, filename=str(file_path))
-        except SyntaxError as e:
+        except SyntaxError:
             # Not valid Python, skip AST analysis
             return issues
-        
+
         # Walk the AST looking for dangerous patterns
         for node in ast.walk(tree):
             # Check for subprocess calls
@@ -199,19 +199,19 @@ class SecurityInputValidator:
                 issue = self._check_subprocess_call(node, file_path, content)
                 if issue:
                     issues.append(issue)
-                
+
                 # Check for eval/exec
                 issue = self._check_eval_exec(node, file_path, content)
                 if issue:
                     issues.append(issue)
-                
+
                 # Check for pickle.loads
                 issue = self._check_unsafe_deserialization(node, file_path, content)
                 if issue:
                     issues.append(issue)
-        
+
         return issues
-    
+
     def _check_subprocess_call(
         self, node: ast.Call, file_path: Path, content: str
     ) -> SecurityIssue | None:
@@ -222,25 +222,25 @@ class SecurityInputValidator:
             if isinstance(node.func.value, ast.Name):
                 if node.func.value.id == "subprocess":
                     func_name = f"subprocess.{node.func.attr}"
-        
+
         if not func_name.startswith("subprocess."):
             return None
-        
+
         # Check for shell=True
         has_shell_true = False
         for keyword in node.keywords:
             if keyword.arg == "shell" and isinstance(keyword.value, ast.Constant):
                 if keyword.value.value is True:
                     has_shell_true = True
-        
+
         # Check if command is constructed from user input
         has_user_input = self._has_user_input(node)
-        
+
         if has_shell_true or has_user_input:
             line_num = node.lineno
             lines = content.split("\n")
             context = lines[line_num - 1] if line_num <= len(lines) else ""
-            
+
             return SecurityIssue(
                 file_path=str(file_path),
                 line_number=line_num,
@@ -252,9 +252,9 @@ class SecurityInputValidator:
                 test_template=self._generate_subprocess_test(func_name),
                 cwe_id="CWE-78",
             )
-        
+
         return None
-    
+
     def _has_user_input(self, node: ast.Call) -> bool:
         """Check if call arguments might contain user input."""
         # Look for format strings, f-strings, or concatenation
@@ -266,7 +266,7 @@ class SecurityInputValidator:
                     if arg.func.attr in ("format", "join"):
                         return True
         return False
-    
+
     def _check_eval_exec(
         self, node: ast.Call, file_path: Path, content: str
     ) -> SecurityIssue | None:
@@ -275,14 +275,14 @@ class SecurityInputValidator:
         if isinstance(node.func, ast.Name):
             if node.func.id in ("eval", "exec", "compile"):
                 func_name = node.func.id
-        
+
         if not func_name:
             return None
-        
+
         line_num = node.lineno
         lines = content.split("\n")
         context = lines[line_num - 1] if line_num <= len(lines) else ""
-        
+
         return SecurityIssue(
             file_path=str(file_path),
             line_number=line_num,
@@ -294,7 +294,7 @@ class SecurityInputValidator:
             test_template=self._generate_eval_test(func_name),
             cwe_id="CWE-95",
         )
-    
+
     def _check_unsafe_deserialization(
         self, node: ast.Call, file_path: Path, content: str
     ) -> SecurityIssue | None:
@@ -304,14 +304,14 @@ class SecurityInputValidator:
             if isinstance(node.func.value, ast.Name):
                 if node.func.value.id == "pickle" and node.func.attr == "loads":
                     func_name = "pickle.loads"
-        
+
         if not func_name:
             return None
-        
+
         line_num = node.lineno
         lines = content.split("\n")
         context = lines[line_num - 1] if line_num <= len(lines) else ""
-        
+
         return SecurityIssue(
             file_path=str(file_path),
             line_number=line_num,
@@ -323,32 +323,32 @@ class SecurityInputValidator:
             test_template=self._generate_deserialization_test(),
             cwe_id="CWE-502",
         )
-    
+
     def _validate_patterns(self, file_path: Path, content: str) -> list[SecurityIssue]:
         """Validate using regex pattern matching."""
         issues = []
         lines = content.split("\n")
         in_docstring = False
-        
+
         for line_num, line in enumerate(lines, start=1):
             # Track docstrings
             if '"""' in line or "'''" in line:
                 in_docstring = not in_docstring
-            
+
             # Skip comments, docstrings, and imports
             stripped = line.strip()
-            if (stripped.startswith("#") or in_docstring or 
+            if (stripped.startswith("#") or in_docstring or
                 stripped.startswith("import ") or stripped.startswith("from ") or
                 not stripped or "getLogger" in stripped):
                 continue
-            
+
             # Check command injection patterns
             for pattern_name, pattern in self.patterns.command_injection.items():
                 if re.search(pattern, line):
                     # Skip backticks in code comments or variable names like `codex_ml`
                     if pattern_name == "backtick_substitution" and "`" in line and "subprocess" not in line.lower():
                         continue
-                    
+
                     issues.append(SecurityIssue(
                         file_path=str(file_path),
                         line_number=line_num,
@@ -359,7 +359,7 @@ class SecurityInputValidator:
                         suggestion="Validate and sanitize user input. Use allowlist-based validation.",
                         cwe_id="CWE-78",
                     ))
-            
+
             # Check path traversal patterns
             for pattern_name, pattern in self.patterns.path_traversal.items():
                 if re.search(pattern, line):
@@ -373,9 +373,9 @@ class SecurityInputValidator:
                         suggestion="Use Path.resolve() and validate paths are within expected directory.",
                         cwe_id="CWE-22",
                     ))
-        
+
         return issues
-    
+
     def _generate_subprocess_fix(self, context: str) -> str:
         """Generate fix suggestion for subprocess issue."""
         return """Replace with:
@@ -386,13 +386,13 @@ class SecurityInputValidator:
    def _validate_input(value: str) -> None:
        if not re.match(r'^[a-zA-Z0-9._-]+$', value):
            raise ValueError("Invalid input")
-   
+
    _validate_input(user_input)
    subprocess.run(['command', user_input], check=True)"""
-    
+
     def _generate_subprocess_test(self, func_name: str) -> str:
         """Generate test template for subprocess issue."""
-        return f"""
+        return """
 def test_subprocess_command_injection():
     '''Test that command injection attempts are blocked.'''
     with pytest.raises(ValueError, match="Invalid input"):
@@ -402,7 +402,7 @@ def test_subprocess_command_injection():
     with pytest.raises(ValueError, match="Invalid input"):
         your_function("`whoami`")
 """
-    
+
     def _generate_eval_test(self, func_name: str) -> str:
         """Generate test template for eval/exec issue."""
         return f"""
@@ -412,7 +412,7 @@ def test_no_eval_exec():
     # or refactor to avoid dynamic code execution
     pass
 """
-    
+
     def _generate_deserialization_test(self) -> str:
         """Generate test template for deserialization issue."""
         return """
@@ -424,7 +424,7 @@ def test_safe_deserialization():
     data = json.loads(trusted_json_string)
     assert isinstance(data, dict)
 """
-    
+
     def generate_report(self) -> dict[str, Any]:
         """Generate validation report."""
         issues_by_severity = {}
@@ -442,7 +442,7 @@ def test_safe_deserialization():
                 for issue in self.issues
                 if issue.severity == severity
             ]
-        
+
         return {
             "total_issues": len(self.issues),
             "by_severity": issues_by_severity,
@@ -450,7 +450,7 @@ def test_safe_deserialization():
             "critical_count": len([i for i in self.issues if i.severity == Severity.CRITICAL]),
             "high_count": len([i for i in self.issues if i.severity == Severity.HIGH]),
         }
-    
+
     def _group_by_category(self) -> dict[str, int]:
         """Group issues by category."""
         categories = {}
@@ -468,9 +468,9 @@ def main() -> int:
     parser.add_argument("--output", choices=["text", "json"], default="text")
     parser.add_argument("--severity", choices=["CRITICAL", "HIGH", "MEDIUM", "LOW"], default="MEDIUM")
     args = parser.parse_args()
-    
+
     validator = SecurityInputValidator()
-    
+
     if args.all:
         # Find all Python files
         files = list(ROOT.glob("**/*.py"))
@@ -484,16 +484,16 @@ def main() -> int:
     else:
         print("Error: Specify --files or --all", file=sys.stderr)
         return 1
-    
+
     # Validate files
     for file_path in files:
         if file_path.exists() and file_path.is_file():
             issues = validator.validate_file(file_path)
             validator.issues.extend(issues)
-    
+
     # Generate report
     report = validator.generate_report()
-    
+
     if args.output == "json":
         print(json.dumps(report, indent=2))
     else:
@@ -504,14 +504,14 @@ def main() -> int:
         print(f"Total Issues: {report['total_issues']}")
         print(f"Critical: {report['critical_count']}")
         print(f"High: {report['high_count']}")
-        print(f"\nBy Category:")
+        print("\nBy Category:")
         for cat, count in report['by_category'].items():
             print(f"  {cat}: {count}")
-        
+
         print(f"\n{'='*80}")
         print("Issues by Severity")
         print(f"{'='*80}\n")
-        
+
         for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
             issues = report['by_severity'].get(severity, [])
             if issues:
@@ -522,11 +522,11 @@ def main() -> int:
                     print(f"    Context: {issue['context']}")
                     print(f"    CWE: {issue['cwe']}")
                     print()
-    
+
     # Return non-zero if critical or high severity issues found
     if report['critical_count'] > 0 or report['high_count'] > 0:
         return 1
-    
+
     return 0
 
 

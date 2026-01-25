@@ -28,9 +28,9 @@ from .config import QuantumConfig
 
 
 @dataclass
-class TestExecutionMetrics:
+class ExecutionMetrics:
     """Metrics for a single test execution."""
-    
+
     test_id: str
     execution_time: float  # seconds
     failure_rate: float  # 0.0 to 1.0
@@ -40,9 +40,9 @@ class TestExecutionMetrics:
 
 
 @dataclass
-class TestExecutionPriority:
+class ExecutionPriority:
     """Priority calculation result for a test execution."""
-    
+
     test_id: str
     priority_score: float  # 0.0 to 1.0
     uncertainty: float  # 0.0 to 1.0
@@ -85,12 +85,12 @@ class UncertaintyOptimizer:
         self.monitor = monitor
         self.h_bar = h_bar
         self.uncertainty_threshold = uncertainty_threshold
-        self.test_history: Dict[str, TestExecutionMetrics] = {}
-    
-    def update_test_metrics(self, metrics: TestExecutionMetrics) -> None:
+        self.test_history: Dict[str, ExecutionMetrics] = {}
+
+    def update_test_metrics(self, metrics: ExecutionMetrics) -> None:
         """
         Update metrics for a test.
-        
+
         Args:
             metrics: Test metrics to update
         """
@@ -107,7 +107,7 @@ class UncertaintyOptimizer:
         self,
         test_id: str,
         current_time: float
-    ) -> TestExecutionPriority:
+    ) -> ExecutionPriority:
         """
         Calculate priority for a test using uncertainty principles.
         
@@ -122,11 +122,11 @@ class UncertaintyOptimizer:
             current_time: Current timestamp
         
         Returns:
-            TestExecutionPriority with score, uncertainty, and recommendation
+            ExecutionPriority with score, uncertainty, and recommendation
         """
         if test_id not in self.test_history:
             # Unknown test - high uncertainty, medium priority
-            return TestExecutionPriority(
+            return ExecutionPriority(
                 test_id=test_id,
                 priority_score=0.5,
                 uncertainty=1.0,
@@ -197,7 +197,7 @@ class UncertaintyOptimizer:
                 priority_score
             )
         
-        return TestExecutionPriority(
+        return ExecutionPriority(
             test_id=test_id,
             priority_score=priority_score,
             uncertainty=uncertainty,
@@ -210,7 +210,7 @@ class UncertaintyOptimizer:
         test_ids: List[str],
         time_budget: float,
         current_time: float
-    ) -> Tuple[List[str], Dict[str, TestExecutionPriority]]:
+    ) -> Tuple[List[str], Dict[str, ExecutionPriority]]:
         """
         Optimize test schedule given a time budget.
         
@@ -253,7 +253,7 @@ class UncertaintyOptimizer:
                 remaining_time -= exec_time
             else:
                 # Update recommendation to "skip" due to time constraint
-                priorities[test_id] = TestExecutionPriority(
+                priorities[test_id] = ExecutionPriority(
                     test_id=test_id,
                     priority_score=priorities[test_id].priority_score,
                     uncertainty=priorities[test_id].uncertainty,
