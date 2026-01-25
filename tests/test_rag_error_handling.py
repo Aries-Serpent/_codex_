@@ -24,6 +24,7 @@ try:
     from codex.rag.embeddings import (
         LocalSentenceTransformerProvider,
         CachedEmbeddingProvider,
+        create_embedding_provider,
     )
     RAG_ERROR_HANDLING_AVAILABLE = True
 except ImportError:
