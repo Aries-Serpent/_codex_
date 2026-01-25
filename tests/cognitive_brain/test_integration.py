@@ -145,21 +145,25 @@ def test_uncertainty_prioritization(integrated_system):
     optimizer = integrated_system['uncertainty']
     
     # Add test metrics
+    # Default values for coverage and complexity in test scenarios
+    DEFAULT_COVERAGE = 0.5  # Medium coverage contribution
+    DEFAULT_COMPLEXITY = 0.5  # Medium complexity
+    
     test_cases = [
-        ("test_critical", 100.0, 5.0, 0.8),  # High energy, fast, high failure
-        ("test_medium", 50.0, 10.0, 0.3),    # Medium energy, medium time, low failure
-        ("test_low", 10.0, 20.0, 0.1),       # Low energy, slow, very low failure
+        ("test_critical", 100.0, 5.0, 0.8),  # High energy, fast (5s), high failure
+        ("test_medium", 50.0, 10.0, 0.3),    # Medium energy, medium time (10s), low failure
+        ("test_low", 10.0, 20.0, 0.1),       # Low energy, slow (20s), very low failure
     ]
     
-    for test_id, energy, time, failure_rate in test_cases:
+    for test_id, energy, time_seconds, failure_rate in test_cases:
         from cognitive_brain.quantum.uncertainty import TestExecutionMetrics
         metrics = TestExecutionMetrics(
             test_id=test_id,
-            execution_time=time / 1000.0,  # Convert ms to seconds
+            execution_time=time_seconds,
             failure_rate=failure_rate,
             last_failure_time=1000.0,
-            coverage_contribution=0.5,  # Default value
-            complexity_score=0.5  # Default value
+            coverage_contribution=DEFAULT_COVERAGE,
+            complexity_score=DEFAULT_COMPLEXITY
         )
         optimizer.update_test_metrics(metrics)
     
