@@ -111,6 +111,9 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
     "requires_jax": ["jax"],
     "requires_numpy": ["numpy"],
     "requires_sentencepiece": ["sentencepiece"],
+    "requires_sentence_transformers": ["sentence_transformers"],
+    "requires_faiss": ["faiss"],
+    "requires_rag": ["sentence_transformers", "faiss"],
 }
 
 
@@ -676,4 +679,58 @@ def serializable_mock_model():
             return f"MockSerializableModel(config={self.config})"
     
     return MockSerializableModel()
+
+
+# ============================================================================
+# RAG Module Fixtures - pytest-xdist compatible
+# ============================================================================
+# These fixtures are designed to work safely with pytest-xdist workers.
+# They check for dependencies during test execution rather than at module
+# import time, preventing worker crashes during test collection.
+
+@pytest.fixture(scope="session")
+def sentence_transformers_available():
+    """Check if sentence_transformers is available (session-scoped for performance)."""
+    try:
+        import sentence_transformers  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+@pytest.fixture(scope="session")
+def faiss_available():
+    """Check if faiss is available (session-scoped for performance)."""
+    try:
+        import faiss  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+@pytest.fixture(scope="session")
+def rag_dependencies_available(sentence_transformers_available, faiss_available):
+    """Check if all RAG dependencies are available."""
+    return sentence_transformers_available and faiss_available
+
+
+@pytest.fixture
+def require_sentence_transformers(sentence_transformers_available):
+    """Skip test if sentence_transformers is not available."""
+    if not sentence_transformers_available:
+        pytest.skip("sentence_transformers is not installed")
+
+
+@pytest.fixture
+def require_faiss(faiss_available):
+    """Skip test if faiss is not available."""
+    if not faiss_available:
+        pytest.skip("faiss is not installed")
+
+
+@pytest.fixture
+def require_rag_dependencies(rag_dependencies_available):
+    """Skip test if RAG dependencies (sentence_transformers, faiss) are not available."""
+    if not rag_dependencies_available:
+        pytest.skip("RAG dependencies (sentence_transformers, faiss) are not installed")
 

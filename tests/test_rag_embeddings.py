@@ -10,8 +10,17 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-# Skip tests if dependencies not available
-pytest.importorskip("sentence_transformers")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.embeddings import (
+        CachedEmbeddingProvider,
+        LocalSentenceTransformerProvider,
+        OpenAIEmbeddingProvider,
+        create_embedding_provider,
+    )
+    RAG_EMBEDDINGS_AVAILABLE = True
+except ImportError:
+    RAG_EMBEDDINGS_AVAILABLE = False
 
 # Check if openai is available
 try:
@@ -20,11 +29,9 @@ try:
 except ImportError:
     OPENAI_AVAILABLE = False
 
-from codex.rag.embeddings import (
-    CachedEmbeddingProvider,
-    LocalSentenceTransformerProvider,
-    OpenAIEmbeddingProvider,
-    create_embedding_provider,
+pytestmark = pytest.mark.skipif(
+    not RAG_EMBEDDINGS_AVAILABLE,
+    reason="RAG embeddings dependencies (sentence_transformers) not installed"
 )
 
 

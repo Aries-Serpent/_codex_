@@ -9,12 +9,19 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.indexer import build_index_from_files, load_index
+    from codex.rag.retriever import Retriever, MultiIndexRetriever
+    from codex.rag.embeddings import create_embedding_provider
+    RAG_INTEGRATION_AVAILABLE = True
+except ImportError:
+    RAG_INTEGRATION_AVAILABLE = False
 
-from codex.rag.indexer import build_index_from_files, load_index
-from codex.rag.retriever import Retriever, MultiIndexRetriever
-from codex.rag.embeddings import create_embedding_provider
+pytestmark = pytest.mark.skipif(
+    not RAG_INTEGRATION_AVAILABLE,
+    reason="RAG dependencies (sentence_transformers, faiss) not installed"
+)
 
 
 @pytest.mark.integration

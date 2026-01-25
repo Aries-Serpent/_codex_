@@ -12,9 +12,23 @@ import threading
 import numpy as np
 import pytest
 
-# Skip if dependencies not available
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.indexer import (
+        chunk_text,
+        persist_index,
+        load_index,
+        build_index_from_files,
+    )
+    from codex.rag.retriever import Retriever, MultiIndexRetriever
+    from codex.rag.embeddings import (
+        LocalSentenceTransformerProvider,
+        CachedEmbeddingProvider,
+        create_embedding_provider,
+    )
+    RAG_ERROR_HANDLING_AVAILABLE = True
+except ImportError:
+    RAG_ERROR_HANDLING_AVAILABLE = False
 
 # Check if openai is available
 try:
@@ -23,17 +37,9 @@ try:
 except ImportError:
     OPENAI_AVAILABLE = False
 
-from codex.rag.indexer import (
-    chunk_text,
-    persist_index,
-    load_index,
-    build_index_from_files,
-)
-from codex.rag.retriever import Retriever, MultiIndexRetriever
-from codex.rag.embeddings import (
-    LocalSentenceTransformerProvider,
-    CachedEmbeddingProvider,
-    create_embedding_provider,
+pytestmark = pytest.mark.skipif(
+    not RAG_ERROR_HANDLING_AVAILABLE,
+    reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 
 # Only import OpenAI provider if available

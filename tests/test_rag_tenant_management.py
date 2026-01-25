@@ -9,14 +9,20 @@ from pathlib import Path
 
 import pytest
 
-# Skip tests if dependencies not available
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.indexer import (
+        IndexOperation,
+        TenantOperationResult,
+        manage_tenant_indices,
+    )
+    RAG_TENANT_AVAILABLE = True
+except ImportError:
+    RAG_TENANT_AVAILABLE = False
 
-from codex.rag.indexer import (
-    IndexOperation,
-    TenantOperationResult,
-    manage_tenant_indices,
+pytestmark = pytest.mark.skipif(
+    not RAG_TENANT_AVAILABLE,
+    reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 
 
