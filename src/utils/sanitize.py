@@ -39,9 +39,9 @@ def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> 
         
     Example:
         >>> sanitize_prompt("Hello\\x00World\\x1b[31m!", max_length=10)
-        'HelloWorld'
+        'HelloWorld'  # Removes control chars, ANSI codes, then truncates to 10
         
-        >>> sanitize_prompt("Normal text", max_length=100)
+        >>> sanitize_prompt("Normal text")
         'Normal text'
         
         >>> sanitize_prompt("<script>alert(1)</script>")
@@ -59,9 +59,11 @@ def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> 
     prompt = re.sub(r'[\x00-\x1F\x7F]', '', prompt)
     
     # Step 2: Remove ANSI escape sequences (terminal color codes, cursor movement)
-    # Pattern: ESC [ followed by parameter bytes and command byte
-    # Format: \x1B\[[0-?]*[ -/]*[@-~]
-    prompt = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', prompt)
+    # Pattern handles both 2-character sequences and CSI (Control Sequence Introducer) sequences
+    # Format: ESC followed by:
+    #   - [@-Z\\-_] for 2-char sequences (Fe)
+    #   - \[[0-?]*[ -/]*[@-~] for CSI sequences (most common)
+    prompt = re.sub(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '', prompt)
     
     # Step 3: Truncate to max_length if specified
     if max_length is not None:
