@@ -40,9 +40,13 @@ from cognitive_brain.quantum.entanglement import (
 )
 from cognitive_brain.quantum.uncertainty import (
     UncertaintyOptimizer,
-    TestMetrics,
-    TestPriority
+    TestExecutionMetrics,
+    TestExecutionPriority
 )
+
+# Backward compatibility aliases
+TestMetrics = TestExecutionMetrics
+TestPriority = TestExecutionPriority
 
 __version__ = "0.1.0"
 __all__ = [
@@ -68,6 +72,8 @@ __all__ = [
     "EntangledPair",
     "CorrelationMeasurement",
     "UncertaintyOptimizer",
-    "TestMetrics",
-    "TestPriority",
+    "TestExecutionMetrics",
+    "TestExecutionPriority",
+    "TestMetrics",  # Backward compatibility alias
+    "TestPriority",  # Backward compatibility alias
 ]
