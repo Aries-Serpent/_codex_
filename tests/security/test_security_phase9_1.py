@@ -254,12 +254,12 @@ class TestAuditLogging:
     def test_audit_log_creation(self, tmp_path: Path) -> None:
         """Test creating audit log entries."""
         try:
-            from src.security.audit_logger import log_security_event
+            from src.security.audit_logger import log_audit_event
             
             log_dir = tmp_path / "audit"
             log_dir.mkdir()
             
-            log_security_event(
+            log_audit_event(
                 event_type="authentication",
                 user="test_user",
                 action="login",
