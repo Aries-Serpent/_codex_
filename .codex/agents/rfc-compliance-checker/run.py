@@ -247,7 +247,7 @@ class RFCComplianceChecker:
                 context_start = max(0, line_num - 5)
                 context_end = min(len(lines), line_num + 5)
                 context_lines = lines[context_start:context_end]
-                if not any("User-Agent" in line for line in context_lines):
+                if not any("User-Agent" in ctx_line for ctx_line in context_lines):
                     issues.append(ComplianceIssue(
                         file_path=str(file_path),
                         line_number=line_num,
