@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0
       
       - name: Set up Python
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral

@@ -32,11 +32,12 @@ try:
     import requests
     from tabulate import tabulate
 except ImportError:
-    print("⚠️  Required packages not installed. Installing...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "requests", "tabulate"])
-    import requests
-    from tabulate import tabulate
+    print("❌ Error: Required packages not installed.")
+    print("\nPlease install required packages:")
+    print("  pip install requests tabulate")
+    print("\nOr install all optional dependencies:")
+    print("  pip install -e '.[optional]'")
+    sys.exit(1)
 
 
 class WorkflowMonitor:

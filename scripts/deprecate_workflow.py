@@ -132,9 +132,14 @@ class WorkflowDeprecator:
         
         return references
 
-    def check_recent_runs(self) -> Dict[str, any]:
-        """Check if workflow has recent runs (requires GitHub API)."""
-        # This would normally use GitHub API, but for now return placeholder
+    def check_recent_runs(self) -> Dict[str, Any]:
+        """Check if workflow has recent runs (requires GitHub API).
+        
+        Note: This is a placeholder for future implementation.
+        Actual implementation would query GitHub API for workflow run history.
+        """
+        # TODO: Implement GitHub API integration
+        # For now, manual verification is required
         return {
             'last_run': None,
             'recent_failures': 0,
