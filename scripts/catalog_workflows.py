@@ -48,7 +48,7 @@ import hashlib
 import json
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -258,7 +258,7 @@ def generate_inventory():
     
     inventory = {
         "metadata": {
-            "generated_at": datetime.utcnow().isoformat() + "Z",
+            "generated_at": datetime.now(timezone.utc).isoformat() + "Z",
             "total_workflows": len(workflow_files),
             "active_count": 0,
             "disabled_count": 0,

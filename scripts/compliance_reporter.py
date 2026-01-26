@@ -44,7 +44,7 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # Add src directory to path for development mode (if package not installed)
@@ -154,7 +154,7 @@ class ComplianceReporter:
         print("Generating compliance data...")
         
         data = {
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'mfa_enabled_users': 0,
             'total_users': 0,
             'active_tokens': 0,
@@ -233,7 +233,7 @@ class ComplianceReporter:
         
         report = f"""# Authentication Security Compliance Report
 
-**Generated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
+**Generated**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}
 
 ## Overall Compliance Score: {data['compliance_score']}%
 
@@ -256,13 +256,13 @@ class ComplianceReporter:
 
 ## Next Review
 
-Scheduled for: {(datetime.utcnow() + timedelta(days=7)).strftime('%Y-%m-%d')}
+Scheduled for: {(datetime.now(timezone.utc) + timedelta(days=7)).strftime('%Y-%m-%d')}
 
 ---
 *Automated Compliance Report - Auth Security*
 """
         
-        report_file = f'compliance_report_{datetime.utcnow().strftime("%Y%m%d")}.md'
+        report_file = f'compliance_report_{datetime.now(timezone.utc).strftime("%Y%m%d")}.md'
         encrypted_report = self.report_cipher.encrypt(report.encode('utf-8'))
         with open(report_file, 'wb') as f:
             f.write(encrypted_report)

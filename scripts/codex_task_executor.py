@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence
 
-RUN_TIMESTAMP = _dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+RUN_TIMESTAMP = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
 @dataclass
@@ -24,7 +24,7 @@ class ChangeLogEntry:
     status: str
     action: str
     details: str
-    timestamp: str = field(default_factory=lambda: _dt.datetime.utcnow().isoformat())
+    timestamp: str = field(default_factory=lambda: _dt.datetime.now(_dt.timezone.utc).isoformat())
 
 
 @dataclass
@@ -93,7 +93,7 @@ class CodexTaskExecutor:
         self._record_change(feature, "gap", reason, notes)
 
     def _record_error(self, step: str, description: str, error: Exception) -> None:
-        timestamp = _dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        timestamp = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
         question = (
             f"Question from ChatGPT @codex {timestamp}:\n"
             f"While performing [{step}:{description}], encountered the following error: {error} "

@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """Solution Packaging for Zendesk Quantum Workflows.
 
@@ -42,7 +45,6 @@ Usage:
     python scripts/packaging/build_solution.py --manifest configs/packaging/zendesk_quantum_packages.yaml --output build/solutions
 """
 
-from __future__ import annotations
 
 import argparse
 import hashlib

@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -39,7 +42,6 @@ Archive & Pointer (P2) with Knob Normalization
 - Respects AUTO_ARCHIVE_DISABLE
 - Uses scripts.config.parse_knobs for normalization
 """
-from __future__ import annotations
 
 import hashlib
 import json

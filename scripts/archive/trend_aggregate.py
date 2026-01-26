@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -44,7 +47,6 @@ Knobs:
   TREND_LIMIT=30 -> max snapshots considered
   TREND_SPARKLINE=1 -> include sparkline text
 """
-from __future__ import annotations
 
 import glob
 import json

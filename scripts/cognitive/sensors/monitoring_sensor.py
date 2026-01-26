@@ -12,7 +12,7 @@ Version: 1.0.0
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -96,7 +96,7 @@ class MonitoringSensor:
         """Export complete monitoring state for Cognitive Brain."""
         return {
             "sensor_type": "artifact_monitoring",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "system_health": self.get_system_health(),
             "active_failures": self.get_active_failures(),
             "action_recommendation": self.should_propose_action()

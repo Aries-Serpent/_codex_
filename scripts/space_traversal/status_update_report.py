@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -52,7 +55,6 @@ Determinism:
 - Offline-only, sorted output, no network.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

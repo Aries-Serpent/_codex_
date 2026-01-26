@@ -17,7 +17,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -58,7 +58,7 @@ class Python312MigrationTool:
             "file": str(file_path.relative_to(self.repo_root)),
             "type": change_type,
             "details": details,
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z"
         })
 
     def update_pyproject_toml(self) -> bool:
@@ -295,7 +295,7 @@ class Python312MigrationTool:
         """Generate migration report."""
         report = {
             "migration_strategy": "A - Immediate Full Migration",
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "dry_run": self.dry_run,
             "summary": {
                 "total_files_changed": len(self.changes),

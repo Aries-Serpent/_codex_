@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Secret Entropy Scan (P4)
@@ -39,7 +42,6 @@ Heuristic:
 - Optionally exclude known benign tokens (ALLOWLIST_SECRET_PREFIXES env CSV).
 - Writes secret_entropy_report.json with findings; does NOT mutate originals (non-destructive).
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

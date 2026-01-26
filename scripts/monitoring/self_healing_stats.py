@@ -39,7 +39,7 @@ import click
 import yaml
 import glob
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from typing import Dict, List
 
@@ -51,7 +51,7 @@ def load_attempts(lookback_hours: int = None) -> List[Dict]:
     
     cutoff_time = None
     if lookback_hours:
-        cutoff_time = datetime.utcnow() - timedelta(hours=lookback_hours)
+        cutoff_time = datetime.now(timezone.utc) - timedelta(hours=lookback_hours)
     
     for file_path in attempt_files:
         try:

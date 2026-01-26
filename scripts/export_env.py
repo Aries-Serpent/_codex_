@@ -45,10 +45,10 @@ logger = logging.getLogger(__name__)
 def _log_error(step: str, err: Exception, ctx: str) -> None:
     """Record errors in the standard research question format."""
     import textwrap
-    from datetime import datetime
+    from datetime import datetime, timezone
     from pathlib import Path
 
-    ts = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    ts = datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z"
     msg = textwrap.dedent(
         f"""\
         Question for ChatGPT @codex {ts}:

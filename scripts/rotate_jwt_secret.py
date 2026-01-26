@@ -58,7 +58,7 @@ import json
 import os
 import secrets
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
@@ -126,7 +126,7 @@ class JWTSecretRotator:
             print("Warning: No current secret to backup")
             return ""
         
-        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
         backup_file = self.backup_dir / f'jwt_secret_backup_{timestamp}.enc'
         
         encrypted, salt = self.encrypt_secret(self.current_secret)
@@ -151,8 +151,8 @@ class JWTSecretRotator:
         # Check if rotation is needed
         if not self.force_rotation and self.current_secret:
             last_rotation = self.get_last_rotation_date()
-            if last_rotation and (datetime.utcnow() - last_rotation).days < 30:
-                print(f"ℹ Info: Last rotation was {(datetime.utcnow() - last_rotation).days} days ago")
+            if last_rotation and (datetime.now(timezone.utc) - last_rotation).days < 30:
+                print(f"ℹ Info: Last rotation was {(datetime.now(timezone.utc) - last_rotation).days} days ago")
                 print("  Use FORCE_ROTATION=true to force rotation")
                 return {'status': 'skipped', 'reason': 'not_due'}
         
@@ -188,7 +188,7 @@ class JWTSecretRotator:
             'status': 'success',
             'message': 'JWT secret rotated successfully',  # No secret data logged
             'backup_file': backup_file,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         }
     
     def validate_secret(self, secret: str) -> bool:
@@ -238,7 +238,7 @@ class JWTSecretRotator:
             log_data = {'rotations': []}
         
         log_data['rotations'].append({
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'backup_file': backup_file,
             'secret_hash': hashlib.sha256(new_secret.encode()).hexdigest(),
             'force_rotation': self.force_rotation
@@ -283,7 +283,7 @@ class JWTSecretRotator:
         # Check rotation log
         last_rotation = self.get_last_rotation_date()
         if last_rotation:
-            age_hours = (datetime.utcnow() - last_rotation).total_seconds() / 3600
+            age_hours = (datetime.now(timezone.utc) - last_rotation).total_seconds() / 3600
             print(f"✓ Last rotation: {age_hours:.1f} hours ago")
             
             if age_hours > 24:

@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Merge Conflict Resolution Strategy for PR #2717
@@ -39,7 +42,6 @@ The PR contains 1,114 files with timestamp and word replacements that were rever
 When merging, we want to preserve ALL our changes (incoming) and override any
 conflicting changes in the base branch.
 """
-from __future__ import annotations
 
 import subprocess
 import sys

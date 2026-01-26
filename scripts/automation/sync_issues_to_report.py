@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Stub: Sync issues/PRs into a status report JSON (offline-friendly placeholder).
@@ -36,7 +39,6 @@ Notes:
 - In offline mode, this script reads pre-fetched JSON from artifacts (e.g., automation_issues.json).
 - Merge into reports/daily/<date>.json under 'automation'.
 """
-from __future__ import annotations
 
 import argparse
 import json

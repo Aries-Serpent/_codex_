@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Security Severity Classification (P5)
@@ -55,7 +58,6 @@ Classification (default thresholds):
   Low: entropy >= 3.5 and length in [16,48]
 Order: evaluate high first, then medium, then low.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

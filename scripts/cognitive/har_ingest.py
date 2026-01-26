@@ -28,12 +28,14 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 HAR Ingestion Script for Cognitive Brain
 Ingested from external source and integrated into cognitive perception layer
 """
-from __future__ import annotations
 
 import argparse
 import json

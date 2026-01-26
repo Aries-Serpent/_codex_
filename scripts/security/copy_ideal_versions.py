@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Alternative Merge Strategy: Copy Files from Ideal Commit
@@ -39,7 +42,6 @@ override any conflicting versions in the base branch.
 This is equivalent to accepting all incoming changes but done by copying files
 rather than using git merge conflict resolution.
 """
-from __future__ import annotations
 
 import subprocess
 import sys

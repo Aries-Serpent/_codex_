@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Trend Database for Audit Pipeline v1.5.0
@@ -56,7 +59,6 @@ Example:
     run_id = db.store_snapshot(snapshot)
     trend = db.get_trend("checkpointing", limit=30)
 """
-from __future__ import annotations
 
 import json
 import sqlite3
