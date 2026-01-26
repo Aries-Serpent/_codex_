@@ -46,15 +46,24 @@ print(f"Secret: {secret_token}")  # ❌ may appear in console logs
 ### ✅ DO: Sanitize User-Controlled Input
 
 ```python
-from codex.security import sanitize_log
+from src.utils.sanitize import sanitize_prompt
 
 # User input that may contain control characters
 user_input = request.form.get('username')
-logger.info(f"Login attempt: {sanitize_log(user_input)}")
+logger.info(f"Login attempt: {sanitize_prompt(user_input)}")
 
 # File paths from user
 filepath = user_provided_path
-logger.info(f"Processing file: {sanitize_log(filepath)}")
+logger.info(f"Processing file: {sanitize_prompt(filepath)}")
+
+# Long input with truncation
+user_message = request.form.get('message')
+logger.info(f"User message: {sanitize_prompt(user_message, max_length=200)}")
+
+# Multiple attack vectors (combined defense)
+dangerous_input = request.form.get('data')
+safe_output = sanitize_prompt(dangerous_input)  # Removes control chars, ANSI, HTML-escapes
+logger.info(f"Processed: {safe_output}")
 ```
 
 ### ❌ DON'T: Use Unsanitized User Input in Logs
@@ -68,6 +77,81 @@ logger.info(f"User provided: {user_input}")  # ❌ Log injection vulnerability
 # Result in logs:
 #   User provided: normal
 #   FAKE LOG ENTRY: Admin password reset  # ← Injected by attacker
+
+# More attack vectors:
+# - Null byte: "data\x00hidden"  → String termination attacks
+# - ANSI codes: "\x1b[31mred\x1b[0m" → Terminal hijacking
+# - HTML/XSS: "<script>alert(1)</script>" → If logs are viewed in browser
+```
+
+### 🛡️ Defense-in-Depth Strategy
+
+The `sanitize_prompt()` function provides multiple layers of protection:
+
+| Layer | Attack Vector | Protection |
+|-------|---------------|-----------|
+| 1️⃣ Control Char Removal | Null bytes, carriage returns | `[\x00-\x1F\x7F]` regex |
+| 2️⃣ ANSI Stripping | Terminal escape sequences | `\x1B(?:[@-Z\\-_]\|\[[0-?]*[ -/]*[@-~])` |
+| 3️⃣ HTML Escaping | XSS in web-viewable logs | `<` → `&lt;`, etc. |
+| 4️⃣ Truncation | Buffer overflow, DoS | `max_length` parameter |
+
+**Example Attack Scenarios:**
+
+```python
+from src.utils.sanitize import sanitize_prompt
+
+# Scenario 1: Log Injection via Newlines
+malicious = "user123\nERROR: Database compromised\nAdmin password: leaked"
+safe = sanitize_prompt(malicious)
+# safe = "user123ERROR: Database compromisedAdmin password: leaked"
+# ✅ Newlines removed, prevents fake log entries
+
+# Scenario 2: Terminal Hijacking via ANSI
+malicious = "\x1b[2J\x1b[H\x1b[31mSYSTEM HACKED\x1b[0m"
+safe = sanitize_prompt(malicious)
+# safe = "SYSTEM HACKED"
+# ✅ ANSI codes removed, prevents terminal control
+
+# Scenario 3: Null Byte String Termination
+malicious = "visible\x00hidden_payload"
+safe = sanitize_prompt(malicious)
+# safe = "visiblehidden_payload"
+# ✅ Null byte removed, prevents truncation attacks
+
+# Scenario 4: XSS in Web-Based Log Viewers
+malicious = "<img src=x onerror=alert(document.cookie)>"
+safe = sanitize_prompt(malicious)
+# safe = "&lt;img src=x onerror=alert(document.cookie)&gt;"
+# ✅ HTML escaped, prevents XSS execution
+```
+
+### 📋 When to Use `sanitize_prompt()`
+
+**ALWAYS sanitize before:**
+- Writing to logs
+- Displaying in web UI
+- Storing in database (as defense-in-depth)
+- Passing to shell commands (use with proper escaping)
+- Including in error messages
+- Sending to external APIs
+
+**Usage Pattern:**
+
+```python
+from src.utils.sanitize import sanitize_prompt
+
+def process_user_action(username: str, action: str, details: str):
+    """Process and log user action with proper sanitization."""
+    
+    # Sanitize all user inputs before logging
+    safe_username = sanitize_prompt(username, max_length=50)
+    safe_action = sanitize_prompt(action, max_length=20)
+    safe_details = sanitize_prompt(details, max_length=200)
+    
+    # Now safe to log
+    logger.info(f"User {safe_username} performed {safe_action}: {safe_details}")
+    
+    # Continue processing...
 ```
 
 ---

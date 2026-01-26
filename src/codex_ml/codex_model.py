@@ -78,6 +78,7 @@ def _load_checkpoint(torch_mod: Any, config: ModelConfig, map_location: str) -> 
         raise FileNotFoundError(f"Checkpoint not found at {path}")
 
     checkpoint = torch_mod.load(path, map_location=map_location)
+    # Handle both full model objects (legacy) and state_dict (recommended)
     if isinstance(checkpoint, torch_mod.nn.Module):
         return checkpoint
     if isinstance(checkpoint, dict):

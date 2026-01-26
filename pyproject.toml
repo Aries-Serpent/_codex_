@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.12"  # BREAKING CHANGE: Python 3.11 support removed
+requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
 license = {text = "MIT"}
 authors = [
   { name = "Aries Serpent" }
@@ -90,8 +90,8 @@ hydra = [
 ]
 dev = [
   "pytest>=7.4",
-  "pytest-cov>=4.1",
-  "pytest-xdist>=3.3",
+  "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.5.0",
   "pytest-randomly>=3.15",
   "pytest-timeout>=2.1",
   "pytest-rerunfailures>=12.0",
@@ -455,9 +455,10 @@ precision = 2
 # - Phase 23: Raise to 30% (target: 2026-02-15)
 # - Phase 24: Raise to 50% (target: 2026-03-01)
 # - Phase 25: Raise to 70% (target: 2026-03-15)
-# - Phase 26+: Raise to 100% (aspirational: 2026-04-01)
+# - Phase 26: Raise to 90% (target: 2026-01-25) - Test suite requirement
+# - Phase 27+: Raise to 100% (aspirational: 2026-04-01)
 # Owner: @mbaetiong
-fail_under = 70
+fail_under = 90
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

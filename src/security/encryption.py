@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 import base64
 import os
-from dataclasses import dataclass
 from typing import cast
 
 try:
@@ -34,9 +33,12 @@ KEY_SIZE = 32  # 256-bit
 BYTE_TYPES = (bytes, bytearray)
 
 
-@dataclass(frozen=True)
 class EncryptionError(Exception):
-    message: str
+    """Exception raised for encryption/decryption errors."""
+    
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
 
 
 def _coerce_bytes(value: bytes | bytearray, *, name: str) -> bytes:

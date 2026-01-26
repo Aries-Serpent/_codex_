@@ -9,16 +9,22 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-# Skip tests if dependencies not available
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.indexer import (
+        build_index_from_files,
+        chunk_text,
+        embed_chunks,
+        load_index,
+        persist_index,
+    )
+    RAG_INDEXER_AVAILABLE = True
+except ImportError:
+    RAG_INDEXER_AVAILABLE = False
 
-from codex.rag.indexer import (
-    build_index_from_files,
-    chunk_text,
-    embed_chunks,
-    load_index,
-    persist_index,
+pytestmark = pytest.mark.skipif(
+    not RAG_INDEXER_AVAILABLE,
+    reason="RAG indexer dependencies (sentence_transformers, faiss) not installed"
 )
 
 

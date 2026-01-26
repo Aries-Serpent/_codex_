@@ -7,12 +7,18 @@ from pathlib import Path
 
 import pytest
 
-# Skip tests if dependencies not available
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
+# Conditional imports for RAG dependencies - safely handled at test runtime
+try:
+    from codex.rag.indexer import build_index_from_files
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
+    RAG_RETRIEVER_AVAILABLE = True
+except ImportError:
+    RAG_RETRIEVER_AVAILABLE = False
 
-from codex.rag.indexer import build_index_from_files
-from codex.rag.retriever import MultiIndexRetriever, Retriever
+pytestmark = pytest.mark.skipif(
+    not RAG_RETRIEVER_AVAILABLE,
+    reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"
+)
 
 
 class TestRetriever:

@@ -111,6 +111,9 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
     "requires_jax": ["jax"],
     "requires_numpy": ["numpy"],
     "requires_sentencepiece": ["sentencepiece"],
+    "requires_sentence_transformers": ["sentence_transformers"],
+    "requires_faiss": ["faiss"],
+    "requires_rag": ["sentence_transformers", "faiss"],
 }
 
 
@@ -676,4 +679,133 @@ def serializable_mock_model():
             return f"MockSerializableModel(config={self.config})"
     
     return MockSerializableModel()
+
+
+# ============================================================================
+# RAG Module Fixtures - pytest-xdist compatible
+# ============================================================================
+# These fixtures are designed to work safely with pytest-xdist workers.
+# They check for dependencies during test execution rather than at module
+# import time, preventing worker crashes during test collection.
+
+@pytest.fixture(scope="session")
+def sentence_transformers_available():
+    """Check if sentence_transformers is available (session-scoped for performance)."""
+    try:
+        import sentence_transformers  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+@pytest.fixture(scope="session")
+def faiss_available():
+    """Check if faiss is available (session-scoped for performance)."""
+    try:
+        import faiss  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+@pytest.fixture(scope="session")
+def rag_dependencies_available(sentence_transformers_available, faiss_available):
+    """Check if all RAG dependencies are available."""
+    return sentence_transformers_available and faiss_available
+
+
+@pytest.fixture
+def require_sentence_transformers(sentence_transformers_available):
+    """Skip test if sentence_transformers is not available."""
+    if not sentence_transformers_available:
+        pytest.skip("sentence_transformers is not installed")
+
+
+@pytest.fixture
+def require_faiss(faiss_available):
+    """Skip test if faiss is not available."""
+    if not faiss_available:
+        pytest.skip("faiss is not installed")
+
+
+@pytest.fixture
+def require_rag_dependencies(rag_dependencies_available):
+    """Skip test if RAG dependencies (sentence_transformers, faiss) are not available."""
+    if not rag_dependencies_available:
+        pytest.skip("RAG dependencies (sentence_transformers, faiss) are not installed")
+
+
+@pytest.fixture(autouse=True)
+def ensure_cpu_device():
+    """
+    Ensure tests use CPU device and avoid meta tensor issues.
+    Applied automatically to all tests to prevent PyTorch meta tensor errors.
+    """
+    try:
+        import torch
+        
+        # Set default device to CPU
+        if torch.cuda.is_available():
+            torch.set_default_device("cpu")
+        
+        # Ensure deterministic behavior
+        torch.manual_seed(0)
+        
+        yield
+        
+        # Cleanup
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except ImportError:
+        # torch not available, skip fixture
+        yield
+
+
+@pytest.fixture
+def mock_sentence_transformer(monkeypatch):
+    """
+    Mock SentenceTransformer to avoid actual model downloads in tests.
+    Use this fixture when you want to test RAG logic without loading real models.
+    """
+    class MockSentenceTransformer:
+        def __init__(self, model_name, cache_folder=None, device="cpu"):
+            self.model_name = model_name
+            self.device = device
+            self.cache_folder = cache_folder
+            
+        def encode(self, texts, batch_size=32, show_progress_bar=False, 
+                   convert_to_numpy=True):
+            import numpy as np
+            # Return dummy embeddings with correct shape
+            if isinstance(texts, str):
+                texts = [texts]
+            return np.random.randn(len(texts), 384).astype(np.float32)
+        
+        def to(self, device):
+            self.device = device
+            return self
+        
+        def to_empty(self, device):
+            self.device = device
+            return self
+        
+        def eval(self):
+            return self
+        
+        def parameters(self):
+            # Return empty generator to avoid meta tensor checks
+            return iter([])
+    
+    try:
+        import sentence_transformers
+        monkeypatch.setattr(
+            "sentence_transformers.SentenceTransformer", 
+            MockSentenceTransformer
+        )
+    except ImportError:
+        # sentence_transformers not available, nothing to mock
+        pass
+    
+    return MockSentenceTransformer
+
 

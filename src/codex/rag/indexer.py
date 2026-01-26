@@ -100,11 +100,17 @@ def embed_chunks(
     )
     cache_dir = model_profile.get("cache_dir", None)
 
-    # Load model
+    # Load model directly to CPU
     logger.info(f"Loading embedding model: {model_name}")
-    model = SentenceTransformer(model_name, cache_folder=cache_dir)
-    # Apply safe model loading to handle meta device tensors
+    model = SentenceTransformer(
+        model_name, 
+        cache_folder=cache_dir,
+        device="cpu"  # Explicitly load to CPU
+    )
+    # Apply safe model loading as additional safety check
     model = safe_model_load(model, device="cpu")
+    # Ensure model is in eval mode
+    model.eval()
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]

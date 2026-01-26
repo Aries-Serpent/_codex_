@@ -58,24 +58,24 @@ class ComplianceIssue:
 
 class RFCComplianceChecker:
     """Main RFC compliance checker agent."""
-    
+
     def __init__(self, config: dict[str, Any] | None = None):
         self.config = config or self._default_config()
         self.issues: list[ComplianceIssue] = []
-        
+
         # RFC 3986 patterns
         self.uri_patterns = {
             "scheme_case_sensitive": r'([a-z]+)://(?:[A-Z])',
             "scheme_comparison": r'\.scheme\s*[!=]=\s*["\']https?["\']',
             "manual_url_parse": r'\.split\(["\'][:/]+["\']\)',
         }
-        
+
         # HTTP header patterns (RFC 7230)
         self.http_header_patterns = {
             "header_case_sensitive": r'headers?\[["\'][A-Z][a-z-]+["\']\]',
             "custom_header_format": r'["\']X-[A-Z][a-z-]*["\']',
         }
-    
+
     def _default_config(self) -> dict[str, Any]:
         """Default configuration."""
         return {
@@ -85,27 +85,27 @@ class RFCComplianceChecker:
             "check_cookies": True,
             "exclude_patterns": ["tests/**", "**/node_modules/**"],
         }
-    
+
     def validate_file(self, file_path: Path) -> list[ComplianceIssue]:
         """Validate a file for RFC compliance issues."""
         issues = []
-        
+
         if self._should_exclude(file_path):
             return issues
-        
+
         try:
             content = file_path.read_text(encoding="utf-8")
         except Exception as e:
             print(f"Error reading {file_path}: {e}", file=sys.stderr)
             return issues
-        
+
         # Python-specific checks
         if file_path.suffix == ".py":
             issues.extend(self._validate_python_uri(file_path, content))
             issues.extend(self._validate_python_http(file_path, content))
-        
+
         return issues
-    
+
     def _should_exclude(self, file_path: Path) -> bool:
         """Check if file should be excluded."""
         path_str = str(file_path)
@@ -113,12 +113,12 @@ class RFCComplianceChecker:
             if Path(path_str).match(pattern):
                 return True
         return False
-    
+
     def _validate_python_uri(self, file_path: Path, content: str) -> list[ComplianceIssue]:
         """Validate URI handling against RFC 3986."""
         issues = []
         lines = content.split("\n")
-        
+
         # Check for case-sensitive scheme comparison (RFC 3986 §3.1)
         for line_num, line in enumerate(lines, start=1):
             # Pattern: parsed.scheme == "https" (should use .lower())
@@ -134,7 +134,7 @@ class RFCComplianceChecker:
                         suggestion="Use .lower() for scheme comparison: parsed.scheme.lower() == 'https'",
                         reference="https://tools.ietf.org/html/rfc3986#section-3.1",
                     ))
-            
+
             # Check for manual URL parsing (should use urllib.parse)
             if "urlparse" not in content and re.search(r'\.split\(["\'][:/]+["\']\)', line):
                 if "http://" in line or "https://" in line:
@@ -148,7 +148,7 @@ class RFCComplianceChecker:
                         suggestion="Use urllib.parse.urlparse() for RFC-compliant URL parsing",
                         reference="https://tools.ietf.org/html/rfc3986",
                     ))
-            
+
             # Check for missing hostname validation
             if "urlparse" in line and "hostname" not in content[max(0, content.find(line)-500):content.find(line)+500]:
                 if line_num < len(lines) - 5:  # Look ahead a few lines
@@ -164,7 +164,7 @@ class RFCComplianceChecker:
                             suggestion="Add validation: if not parsed.hostname: raise ValueError('Invalid URL')",
                             reference="https://tools.ietf.org/html/rfc3986#section-3.2.2",
                         ))
-        
+
         # AST-based checks for urllib usage
         try:
             tree = ast.parse(content, filename=str(file_path))
@@ -175,9 +175,9 @@ class RFCComplianceChecker:
                         issues.append(issue)
         except SyntaxError:
             pass
-        
+
         return issues
-    
+
     def _check_urllib_usage(
         self, node: ast.Call, file_path: Path, content: str
     ) -> ComplianceIssue | None:
@@ -185,20 +185,20 @@ class RFCComplianceChecker:
         # Check for urlparse usage
         if isinstance(node.func, ast.Attribute):
             if isinstance(node.func.value, ast.Attribute):
-                if (hasattr(node.func.value.value, 'id') and 
+                if (hasattr(node.func.value.value, 'id') and
                     node.func.value.value.id == "urllib" and
                     node.func.value.attr == "parse" and
                     node.func.attr == "urlparse"):
                     # Found urlparse usage, check for scheme validation
                     return None  # This is good, just ensure validation follows
-        
+
         return None
-    
+
     def _validate_python_http(self, file_path: Path, content: str) -> list[ComplianceIssue]:
         """Validate HTTP handling against RFC 7230-7235."""
         issues = []
         lines = content.split("\n")
-        
+
         for line_num, line in enumerate(lines, start=1):
             # Check for case-sensitive header comparison (RFC 7230 §3.2)
             # Headers are case-insensitive
@@ -214,7 +214,7 @@ class RFCComplianceChecker:
                         suggestion="Use .lower() or .casefold() for header comparison, or use requests/httpx which handle this",
                         reference="https://tools.ietf.org/html/rfc7230#section-3.2",
                     ))
-            
+
             # Check for obsolete RFC 2616 references
             if "RFC 2616" in line or "rfc2616" in line.lower():
                 issues.append(ComplianceIssue(
@@ -227,7 +227,7 @@ class RFCComplianceChecker:
                     suggestion="Update references to RFC 7230 (Message Syntax), RFC 7231 (Semantics), etc.",
                     reference="https://tools.ietf.org/html/rfc7230",
                 ))
-            
+
             # Check for custom header naming (RFC 7231 §8.3.1)
             if re.search(r'["\']X-[A-Z][a-z-]*["\']', line):
                 issues.append(ComplianceIssue(
@@ -240,14 +240,14 @@ class RFCComplianceChecker:
                     suggestion="Use a descriptive name without X- prefix, or register with IANA",
                     reference="https://tools.ietf.org/html/rfc6648",
                 ))
-            
+
             # Check for missing User-Agent (RFC 7231 §5.5.3)
             if "urllib.request.Request" in line or "requests.get" in line:
                 # Look for User-Agent in nearby lines
                 context_start = max(0, line_num - 5)
                 context_end = min(len(lines), line_num + 5)
                 context_lines = lines[context_start:context_end]
-                if not any("User-Agent" in l for l in context_lines):
+                if not any("User-Agent" in ctx_line for ctx_line in context_lines):
                     issues.append(ComplianceIssue(
                         file_path=str(file_path),
                         line_number=line_num,
@@ -258,9 +258,9 @@ class RFCComplianceChecker:
                         suggestion="Add User-Agent header: headers={'User-Agent': 'YourApp/1.0'}",
                         reference="https://tools.ietf.org/html/rfc7231#section-5.5.3",
                     ))
-        
+
         return issues
-    
+
     def generate_report(self) -> dict[str, Any]:
         """Generate compliance report."""
         issues_by_level = {}
@@ -278,13 +278,13 @@ class RFCComplianceChecker:
                 for issue in self.issues
                 if issue.level == level
             ]
-        
+
         issues_by_standard = {}
         for standard in RFCStandard:
             count = len([i for i in self.issues if i.standard == standard])
             if count > 0:
                 issues_by_standard[standard.value] = count
-        
+
         return {
             "total_issues": len(self.issues),
             "by_level": issues_by_level,
@@ -292,19 +292,19 @@ class RFCComplianceChecker:
             "error_count": len([i for i in self.issues if i.level == ComplianceLevel.ERROR]),
             "warning_count": len([i for i in self.issues if i.level == ComplianceLevel.WARNING]),
         }
-    
+
     def generate_fixes(self) -> list[dict[str, Any]]:
         """Generate automatic fixes for compliance issues."""
         fixes = []
-        
+
         for issue in self.issues:
             if issue.level == ComplianceLevel.ERROR:
                 fix = self._generate_fix(issue)
                 if fix:
                     fixes.append(fix)
-        
+
         return fixes
-    
+
     def _generate_fix(self, issue: ComplianceIssue) -> dict[str, Any] | None:
         """Generate a fix for a specific issue."""
         if "Case-sensitive URI scheme" in issue.message:
@@ -316,7 +316,7 @@ class RFCComplianceChecker:
                 new_line = old_line.replace(".scheme !=", ".scheme.lower() !=")
             else:
                 return None
-            
+
             return {
                 "file": issue.file_path,
                 "line": issue.line_number,
@@ -324,7 +324,7 @@ class RFCComplianceChecker:
                 "new": new_line,
                 "description": "Add .lower() for RFC 3986 compliant scheme comparison",
             }
-        
+
         return None
 
 
@@ -338,7 +338,7 @@ def main() -> int:
     parser.add_argument("--output", choices=["text", "json"], default="text")
     parser.add_argument("--auto-fix", action="store_true", help="Generate automatic fixes")
     args = parser.parse_args()
-    
+
     config = {}
     if args.check_uri:
         config["check_http"] = False
@@ -346,9 +346,9 @@ def main() -> int:
     if args.check_http:
         config["check_uri"] = False
         config["check_cookies"] = False
-    
+
     checker = RFCComplianceChecker(config)
-    
+
     if args.all:
         files = list(ROOT.glob("**/*.py"))
         files = [
@@ -360,16 +360,16 @@ def main() -> int:
     else:
         print("Error: Specify --files or --all", file=sys.stderr)
         return 1
-    
+
     # Validate files
     for file_path in files:
         if file_path.exists() and file_path.is_file():
             issues = checker.validate_file(file_path)
             checker.issues.extend(issues)
-    
+
     # Generate report
     report = checker.generate_report()
-    
+
     if args.output == "json":
         output = report
         if args.auto_fix:
@@ -383,16 +383,16 @@ def main() -> int:
         print(f"Total Issues: {report['total_issues']}")
         print(f"Errors: {report['error_count']}")
         print(f"Warnings: {report['warning_count']}")
-        
+
         if report['by_standard']:
-            print(f"\nBy RFC Standard:")
+            print("\nBy RFC Standard:")
             for standard, count in report['by_standard'].items():
                 print(f"  {standard}: {count}")
-        
+
         print(f"\n{'='*80}")
         print("Issues by Level")
         print(f"{'='*80}\n")
-        
+
         for level in ["ERROR", "WARNING", "INFO"]:
             issues = report['by_level'].get(level, [])
             if issues:
@@ -405,7 +405,7 @@ def main() -> int:
                     print(f"    Suggestion: {issue['suggestion']}")
                     print(f"    Reference: {issue['reference']}")
                     print()
-        
+
         if args.auto_fix:
             fixes = checker.generate_fixes()
             if fixes:
@@ -418,11 +418,11 @@ def main() -> int:
                     print(f"    - {fix['old']}")
                     print(f"    + {fix['new']}")
                     print()
-    
+
     # Return non-zero if errors found
     if report['error_count'] > 0:
         return 1
-    
+
     return 0
 
 

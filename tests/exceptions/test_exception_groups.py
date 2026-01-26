@@ -1,19 +1,14 @@
 """
-Test ExceptionGroup compatibility (Python 3.11+ feature).
+Test ExceptionGroup compatibility (Python 3.12 standard feature).
 
-If codebase uses ExceptionGroup, verify 3.12 compatibility.
-ExceptionGroup was introduced in Python 3.11 and allows grouping
-multiple exceptions together.
+ExceptionGroup was introduced in Python 3.11 and is fully supported in 3.12.
 """
 
 from __future__ import annotations
 
-import sys
-
 import pytest
 
 
-@pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
 class TestExceptionGroups:
     """Test exception group handling in Python 3.12."""
     
@@ -48,10 +43,9 @@ class TestExceptionGroups:
         assert isinstance(eg.exceptions[0], ValueError)
         assert isinstance(eg.exceptions[1], TypeError)
     
-    @pytest.mark.skipif(sys.version_info < (3, 11), reason="except* requires 3.11+")
     def test_except_star_syntax(self):
         """
-        Test except* syntax for handling ExceptionGroup (Python 3.11+).
+        Test except* syntax for handling ExceptionGroup (Python 3.11+, standard in 3.12).
         
         The except* syntax allows catching specific exception types
         from an ExceptionGroup.
@@ -65,13 +59,8 @@ except* ValueError as eg:
 except* TypeError as eg:
     type_errors = eg.exceptions
 """
-        try:
-            compile(code, '<string>', 'exec')
-        except SyntaxError:
-            if sys.version_info >= (3, 11):
-                pytest.fail("except* syntax should be available in Python 3.11+")
-            else:
-                pytest.skip("except* syntax not available")
+        # This should compile without errors in Python 3.12
+        compile(code, '<string>', 'exec')
     
     def test_nested_exception_groups(self):
         """Test nested ExceptionGroups."""
@@ -110,7 +99,7 @@ except* TypeError as eg:
             assert all(not isinstance(e, ValueError) for e in rest.exceptions)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific")
+@pytest.mark.skipif(False, reason="Python 3.12 is the standard version")
 class TestPython312ExceptionImprovements:
     """Test Python 3.12-specific exception improvements."""
     
@@ -214,7 +203,6 @@ class TestCodexMLExceptionHandling:
 class TestExceptionGroupIntegration:
     """Integration tests for exception handling in Python 3.12."""
     
-    @pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
     def test_async_exception_group(self):
         """Test ExceptionGroup with async code."""
         import asyncio

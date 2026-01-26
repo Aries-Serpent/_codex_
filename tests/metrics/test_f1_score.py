@@ -30,4 +30,5 @@ def test_f1_macro_multiclass() -> None:
 def test_f1_micro_handles_zero_division() -> None:
     metric = F1Score(num_classes=2, average="micro")
     metric.update([0, 0], [0, 0])
-    assert metric.compute()["f1_score"] == 0.0
+    # When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)
+    assert metric.compute()["f1_score"] == 1.0
