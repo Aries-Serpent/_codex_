@@ -502,7 +502,7 @@ markupsafe==3.0.3
     #   werkzeug
 marshmallow==3.26.1
     # via great-expectations
-matplotlib==3.10.6
+matplotlib==3.10.8
     # via mlflow
 matplotlib-inline==0.2.1
     # via
