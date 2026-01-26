@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Stub Cleanup and Analysis Tool
 
@@ -40,8 +42,6 @@ This module provides AST-based stub detection and cleanup capabilities:
 
 Per gap analysis Phase A.3 requirements.
 """
-
-from __future__ import annotations
 
 import argparse
 import ast

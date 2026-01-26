@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 vendor_guard.py — Fail-fast scan for GPU vendor packages in CPU posture
 
@@ -41,8 +43,6 @@ Behavior:
 Example:
   python scripts/vendor_guard.py
 """
-
-from __future__ import annotations
 
 import json
 import os

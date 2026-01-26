@@ -29,13 +29,14 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Render a Markdown report from a v1.2 status JSON using simple templates.
 
 Usage:
   python scripts/status/render_markdown_report.py --json reports/daily/2025-11-02.json --out reports/daily/2025-11-02.md
 """
-from __future__ import annotations
 
 import argparse
 import json

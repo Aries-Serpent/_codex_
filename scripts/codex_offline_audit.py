@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Offline Codex repository audit orchestrator.
 
 This script executes a deterministic, offline audit pipeline composed of eight
@@ -51,10 +55,6 @@ python scripts/codex_offline_audit.py --repo-root . --output-dir _codex_reports/
 The script is intentionally offline: it does not perform any network calls and
 avoids touching CI workflows.
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import datetime as _dt

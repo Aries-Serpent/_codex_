@@ -29,8 +29,9 @@ Last Updated: 2026-01-16
 """
 
 
-"""Render a Markdown catalog from captured Zendesk docs."""
 from __future__ import annotations
+
+"""Render a Markdown catalog from captured Zendesk docs."""
 
 import json
 from pathlib import Path

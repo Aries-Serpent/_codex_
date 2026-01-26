@@ -7,11 +7,21 @@ monitoring:
   # Polling interval (cron schedule in workflow)
   schedule: "0 */3 * * *"  # Every 3 hours
   
-  # Workflows to monitor (empty = all artifact-producing workflows)
-  workflow_filter: []
+  # Workflow selection patterns
+  workflows:
+    # Include patterns (glob-style: *, ?, etc.)
+    # Empty list or ['*'] = monitor all workflows
+    include_patterns:
+      - '*'
+    # Exclude patterns (checked first, takes precedence)
+    exclude_patterns: []
   
-  # Failure detection thresholds
-  consecutive_failures_threshold: 2  # Create issue after N consecutive failures
+  # Failure detection thresholds and rate limiting
+  failure_detection:
+    consecutive_failures_threshold: 2  # Create issue after N consecutive failures
+    rate_limit_margin: 500  # Reserve buffer for API rate limit
+  
+  # Recovery threshold
   recovery_threshold: 3  # Close issue after N consecutive successes
   
   # Flakiness detection
@@ -21,7 +31,7 @@ monitoring:
     threshold: 0.15  # 15% failure rate indicates flakiness
     min_runs: 5  # Minimum runs before analyzing flakiness
   
-  # Rate limit handling
+  # Rate limit handling (additional settings)
   rate_limit:
     requests_per_hour: 5000  # GitHub API limit
     buffer: 500  # Reserve buffer

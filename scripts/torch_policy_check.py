@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Torch CPU policy checker.
 
 OK when:
@@ -36,10 +40,6 @@ OK when:
 - CUDA is absent (CPU-only posture),
 - and either the version has "+cpu" OR the environment enforces the PyTorch CPU index.
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import json
 import os

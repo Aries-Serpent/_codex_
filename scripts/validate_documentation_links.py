@@ -29,13 +29,13 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Documentation Link Validator
 
 Validates all internal markdown links point to existing files.
 """
-
-from __future__ import annotations
 
 import re
 from pathlib import Path

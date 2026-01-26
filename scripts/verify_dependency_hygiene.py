@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 verify_dependency_hygiene.py — Summarize dependency evidence and assert vendor hygiene
 
@@ -38,10 +42,6 @@ verify_dependency_hygiene.py — Summarize dependency evidence and assert vendor
 
 This is a convenience complement to nox session 'verify_hygiene'.
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import json
 import os

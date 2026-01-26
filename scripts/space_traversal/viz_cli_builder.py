@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 CLI Command Builder HTML for v1.5.3
 
@@ -50,7 +52,6 @@ Example:
         repo_name="my-repo"
     )
 """
-from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path

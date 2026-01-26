@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Webhook notifications for audit events.
 
@@ -54,7 +56,6 @@ Example:
     )
     success = send_webhook("https://hooks.example.com/audit", event)
 """
-from __future__ import annotations
 
 import hashlib
 import hmac

@@ -29,14 +29,15 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Generate Software Bill of Materials (SBOM) for the project.
 
 This script generates a CycloneDX-format SBOM containing all project dependencies
 for supply chain security and vulnerability tracking.
 """
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import json
 import subprocess

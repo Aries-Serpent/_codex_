@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Validate status artifacts and prepare a publishable bundle.
 
@@ -38,7 +40,6 @@ Actions:
 - Build audit integrity chain
 - Print concise summary JSON to stdout
 """
-from __future__ import annotations
 
 import json
 import subprocess

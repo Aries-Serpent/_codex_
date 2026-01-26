@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 ASCII visualization for terminal output.
 
@@ -49,7 +51,6 @@ Example:
     data = {"checkpointing": 0.85, "tokenization": 0.78}
     print(bar_chart(data))
 """
-from __future__ import annotations
 
 from typing import Optional
 
