@@ -12,6 +12,10 @@ accelerate==1.12.0
     #   codex-ml (pyproject.toml)
     #   lm-eval
     #   peft
+sentence-transformers==3.2.1
+    # via
+    #   -r requirements/base.txt
+    #   codex-ml (pyproject.toml)
 aiohappyeyeballs==2.6.1
     # via aiohttp
 aiohttp==3.13.3
