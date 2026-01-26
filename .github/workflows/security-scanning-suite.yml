@@ -94,7 +94,7 @@ jobs:
           safety check --json --output safety.json || true
           safety check || echo "Vulnerabilities found"
       - name: Upload results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dependency-scan-results
           path: |
@@ -129,7 +129,7 @@ jobs:
           SECRETS_COUNT=$(grep -c "filename" .secrets.baseline || echo "0")
           echo "secrets_found=$SECRETS_COUNT" >> $GITHUB_OUTPUT
       - name: Upload baseline
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: secrets-baseline
           path: .secrets.baseline
@@ -158,7 +158,7 @@ jobs:
           cyclonedx-py --format json --output sbom.json
           cyclonedx-py --format xml --output sbom.xml
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sbom-reports
           path: |

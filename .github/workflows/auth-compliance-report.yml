@@ -58,7 +58,7 @@ jobs:
           python scripts/compliance_reporter.py --visualize
 
       - name: Upload report artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: compliance-report
           path: |

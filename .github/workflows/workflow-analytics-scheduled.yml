@@ -160,7 +160,7 @@ jobs:
           fi
       
       - name: Upload Analytics Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: weekly-analytics-${{ github.run_id }}
           path: |

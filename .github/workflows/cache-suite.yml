@@ -264,7 +264,7 @@ jobs:
           cat /tmp/cache_analysis.txt >> $GITHUB_STEP_SUMMARY
       
       - name: Upload analysis report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: cache-analysis-report
           path: /tmp/cache_analysis.txt
