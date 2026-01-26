@@ -117,6 +117,16 @@
     "total_files_offloaded": 32,
     "estimated_size_reduction_mb": 6.8,
     "offload_date": "2026-01-26",
-    "inventory": "misc/repo-owner-review/OFFLOAD_INDEX.md"
+    "inventory": "misc/repo-owner-review/OFFLOAD_INDEX.md",
+    "automation": {
+      "monitoring_script": "scripts/repository_organization/monitor_offload_candidates.py",
+      "restoration_script": "scripts/repository_organization/restore_offloaded_files.py",
+      "compression_script": "scripts/repository_organization/compress_historical_files.py",
+      "health_dashboard": ".codex/repository_health/DASHBOARD.md",
+      "custom_agent": ".github/agents/repository-organization-agent.md",
+      "github_workflow": ".github/workflows/repository-health-monitoring.yml",
+      "phase": "22.1",
+      "status": "complete"
+    }
   }
 }
