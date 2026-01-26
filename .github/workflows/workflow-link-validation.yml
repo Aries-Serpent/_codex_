@@ -47,7 +47,8 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install PyYAML requests
+          # No external dependencies needed for link validation
+          echo "Link validation script is self-contained"
       
       - name: Validate workflow documentation links
         id: validate

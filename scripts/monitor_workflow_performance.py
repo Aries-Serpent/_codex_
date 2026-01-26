@@ -201,7 +201,9 @@ class WorkflowMonitor:
                 data['durations'].sort()
                 data['avg_duration'] = sum(data['durations']) / len(data['durations'])
                 data['p50_duration'] = data['durations'][len(data['durations']) // 2]
-                data['p95_duration'] = data['durations'][int(len(data['durations']) * 0.95)]
+                # Safe p95 calculation
+                p95_index = min(int(len(data['durations']) * 0.95), len(data['durations']) - 1)
+                data['p95_duration'] = data['durations'][p95_index]
         
         return dict(metrics)
 

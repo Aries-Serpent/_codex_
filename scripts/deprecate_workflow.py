@@ -137,13 +137,22 @@ class WorkflowDeprecator:
         
         Note: This is a placeholder for future implementation.
         Actual implementation would query GitHub API for workflow run history.
+        
+        For manual verification:
+        1. Check GitHub Actions UI for recent runs
+        2. Use gh CLI: gh run list --workflow=<workflow-name>
+        3. Review failure patterns in last 2 weeks
+        
+        Returns:
+            Dict with placeholder data. Manual verification required.
         """
         # TODO: Implement GitHub API integration
-        # For now, manual verification is required
+        # gh api repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs
+        # For now, deprecation script requires manual verification
         return {
             'last_run': None,
             'recent_failures': 0,
-            'status': 'unknown'
+            'status': 'unknown - manual verification required'
         }
 
     def disable_workflow(self) -> bool:

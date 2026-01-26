@@ -148,8 +148,9 @@ def validate_workflow_links(verbose: bool = False) -> int:
                 print(f"    Error: {link['error']}")
         
         # Write to GitHub step summary if available
-        github_step_summary = Path(os.environ.get('GITHUB_STEP_SUMMARY', '/dev/null'))
-        if github_step_summary.exists():
+        github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if github_step_summary_path:
+            github_step_summary = Path(github_step_summary_path)
             with open(github_step_summary, 'a') as f:
                 f.write("## ❌ Broken Links Found\n\n")
                 for file, links in broken_links.items():
@@ -163,8 +164,9 @@ def validate_workflow_links(verbose: bool = False) -> int:
         print("✅ All links are valid!")
         
         # Write to GitHub step summary if available
-        github_step_summary = Path(os.environ.get('GITHUB_STEP_SUMMARY', '/dev/null'))
-        if github_step_summary.exists():
+        github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if github_step_summary_path:
+            github_step_summary = Path(github_step_summary_path)
             with open(github_step_summary, 'a') as f:
                 f.write("## ✅ All Links Valid\n\n")
                 f.write(f"Validated {total_links} links in workflow documentation.\n")
