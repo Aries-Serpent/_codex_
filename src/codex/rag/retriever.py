@@ -81,12 +81,17 @@ class Retriever:
             from sentence_transformers import SentenceTransformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
+            # Load model directly to CPU to avoid meta device issues
             self.model = SentenceTransformer(
-                self.model_name, cache_folder=self.cache_dir
+                self.model_name, 
+                cache_folder=self.cache_dir,
+                device="cpu"  # Explicitly load to CPU
             )
-            # Apply safe model loading to handle meta device tensors
+            # Apply safe model loading as additional safety check
             self.model = safe_model_load(self.model, device="cpu")
-            logger.info("Query embedding model loaded")
+            # Ensure model is in eval mode for inference
+            self.model.eval()
+            logger.info("Query embedding model loaded successfully")
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "
