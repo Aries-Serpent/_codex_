@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: live  # Use live tier for critical tests
@@ -142,7 +142,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: common
@@ -193,7 +193,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: common
@@ -242,7 +242,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
@@ -278,7 +278,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common

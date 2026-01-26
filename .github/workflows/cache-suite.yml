@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python with LIVE tier cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: live  # Use live tier for warmup
@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python with cached dependencies
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral  # Use ephemeral for cleanup ops
@@ -196,7 +196,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up Python with cached dependencies
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
@@ -282,14 +282,14 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Validate live tier cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         id: cache-live
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: live
       
       - name: Validate common tier cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         id: cache-common
         with:
           python-version: ${{ env.PYTHON_VERSION }}

@@ -137,7 +137,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           cache-tier: common
@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python 3.12 with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           cache-tier: common
