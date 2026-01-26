@@ -27,7 +27,7 @@ Exit Codes:
 Author: Codex Team
 Last Updated: 2026-01-16
 """
-
+from __future__ import annotations
 
 """
 Historical comparison utilities for v1.5.1
@@ -46,7 +46,6 @@ Example:
     for r in results:
         print(f"{r.capability_id}: {r.delta:+.3f}")
 """
-from __future__ import annotations
 
 import json
 from dataclasses import dataclass
