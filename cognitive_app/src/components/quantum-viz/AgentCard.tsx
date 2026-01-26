@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Agent } from '@/lib/codex-api-client';
-import { Robot, Circle } from '@phosphor-icons/react';
+import { Robot } from '@phosphor-icons/react';
 
 interface AgentCardProps {
   agent: Agent;

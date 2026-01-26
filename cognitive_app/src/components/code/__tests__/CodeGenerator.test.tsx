@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { CodeGenerator } from '../CodeGenerator';
 import { CodexAPIClient } from '@/lib/codex-api-client';
-import { MockCodexAPIClient } from '@/lib/mock-api-client';
 import { SparkLLMClient } from '@/lib/spark-llm-client';
 
 // Create mock instances that will be reused
