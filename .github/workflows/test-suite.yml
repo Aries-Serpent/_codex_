@@ -86,6 +86,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
+          pip install pytest-xdist>=3.5.0 pytest-timeout>=2.2.0
           pip install -e ".[test]"
 
       - name: Run core tests with coverage
