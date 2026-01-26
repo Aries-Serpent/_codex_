@@ -43,10 +43,11 @@ except ImportError:
 class WorkflowMonitor:
     """Monitor and analyze GitHub Actions workflow performance."""
 
-    def __init__(self, repo: str, token: str, days: int = 14):
+    def __init__(self, repo: str, token: str, days: int = 14, max_pages: int = 10):
         self.repo = repo
         self.token = token
         self.days = days
+        self.max_pages = max_pages
         self.headers = {
             'Authorization': f'token {token}',
             'Accept': 'application/vnd.github.v3+json'
@@ -134,8 +135,9 @@ class WorkflowMonitor:
             
             page += 1
             
-            # Limit to avoid rate limiting
-            if page > 10:
+            # Check rate limit to avoid exceeding API limits
+            if page > self.max_pages:
+                print(f"⚠️  Reached page limit ({self.max_pages}). Use --max-pages to increase.")
                 break
         
         return all_runs
@@ -417,6 +419,12 @@ def main():
         help='Number of days to analyze (default: 14)'
     )
     parser.add_argument(
+        '--max-pages',
+        type=int,
+        default=10,
+        help='Maximum API pages to fetch (default: 10, 100 runs per page)'
+    )
+    parser.add_argument(
         '--output',
         type=Path,
         default=Path('.reports/workflow_performance.json'),
@@ -450,7 +458,7 @@ def main():
         print("❌ Error: GitHub token required. Set GITHUB_TOKEN env or use --token")
         sys.exit(1)
     
-    monitor = WorkflowMonitor(args.repo, args.token, args.days)
+    monitor = WorkflowMonitor(args.repo, args.token, args.days, args.max_pages)
     monitor.run(args.output, args.format, args.compare)
 
 
