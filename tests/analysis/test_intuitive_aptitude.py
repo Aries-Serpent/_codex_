@@ -74,7 +74,7 @@ class TestDataClasses:
 
     def test_function_info_with_decorators(self):
         """Test FunctionInfo dataclass with decorators."""
-        func = FunctionInfo(
+        function_info = FunctionInfo(
             name="decorated",
             args=["self"],
             defaults=0,
@@ -87,9 +87,9 @@ class TestDataClasses:
             complexity=2,
             calls=["print", "len"],
         )
-        assert func.decorators == ["@staticmethod", "@property"]
-        assert func.returns == "int"
-        assert func.calls == ["print", "len"]
+        assert function_info.decorators == ["@staticmethod", "@property"]
+        assert function_info.returns == "int"
+        assert function_info.calls == ["print", "len"]
 
     def test_class_info_basic(self):
         """Test ClassInfo dataclass with basic class."""
