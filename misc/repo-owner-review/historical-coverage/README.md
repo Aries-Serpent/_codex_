@@ -41,6 +41,31 @@ For current/active coverage data, see:
 - `coverage_reports/coverage.json` (main repo)
 - `.codex/qa_walkthrough/coverage_analysis.json` (QA analysis)
 
+## Retrieval Instructions
+
+### For Compressed Files (.gz)
+
+All historical coverage files are now compressed with gzip to save space (**71% reduction achieved** - 5.6MB → 1.6MB).
+
+**To decompress and view**:
+```bash
+# Decompress a specific file to stdout
+gunzip -c misc/repo-owner-review/historical-coverage/phase1_iteration1.json.gz > phase1_iteration1.json
+
+# Or decompress in-place (removes .gz file)
+gunzip misc/repo-owner-review/historical-coverage/phase1_iteration1.json.gz
+```
+
+**To restore to main repository**:
+```bash
+# Option 1: Decompress and copy manually
+gunzip -c misc/repo-owner-review/historical-coverage/phase1_iteration1.json.gz > coverage_reports/phase1_iteration1.json
+
+# Option 2: Use automated restoration script (handles decompression automatically)
+python scripts/repository_organization/restore_offloaded_files.py --file historical-coverage/phase1_iteration1.json.gz
+```
+
 ---
 **Offloaded**: 2026-01-26  
+**Compressed**: 2026-01-26 (71% reduction)  
 **Maintained by**: QA Walkthrough Agent
