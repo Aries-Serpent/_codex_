@@ -189,4 +189,4 @@ docs/cognitive_brain/
 **Directories Created:** 4  
 **Last Reorganization:** 2026-01-21 (Root Organization Phase 1 & 2)
 
-For additional cognitive brain information, see [.codex/cognitive_brain/](../../.codex/cognitive_brain/)
+For additional cognitive brain information, see [.codex/cognitive_brain/](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain)

@@ -7,7 +7,7 @@ The Cognitive Codex App is a quantum-enhanced code generation platform with real
 ## Quick Links
 
 - **Live Application:** [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/)
-- **Source Code:** [`/cognitive_app`](../../cognitive_app/)
+- **Source Code:** [`/cognitive_app`](https://github.com/Aries-Serpent/_codex_/tree/main/cognitive_app)
 - **Integration Guide:** [cognitive_app/README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
 - **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
 - **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md)
@@ -230,4 +230,4 @@ For issues or questions:
 
 ## License
 
-See [LICENSE](../../cognitive_app/LICENSE) file.
+See [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/LICENSE) file.

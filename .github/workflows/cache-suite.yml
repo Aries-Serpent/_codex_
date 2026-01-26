@@ -82,9 +82,7 @@ jobs:
         if: ${{ !inputs.dry-run }}
         run: |
           echo "🔥 Warming up LIVE cache for Python ${{ matrix.python-version }}"
-          pip install -e . || echo "Package install failed, continuing..."
-          pip install pytest pytest-cov pytest-xdist hypothesis
-          pip install ruff black mypy isort
+          pip install -e ".[test,dev]" || echo "Package install failed, continuing..."
           pip install PyYAML requests
       
       - name: Dry run mode

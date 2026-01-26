@@ -19,7 +19,7 @@ Summarize the user problem, measurable outcome, and scope boundaries. Reference 
 
 ## Discovery Inputs
 - User research, bug reports, or telemetry referenced.
-- Dependencies or services impacted (e.g., [`src/cli/`](../../src/cli/), `codex_ml` pipelines).
+- Dependencies or services impacted (e.g., [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), `codex_ml` pipelines).
 - Feature flags or configuration toggles that gate the rollout.
 
 ## Validation Activities

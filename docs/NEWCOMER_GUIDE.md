@@ -300,8 +300,8 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 - **[Zendesk Configuration-as-Code Guide](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
 - **[AI Agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
 - **[Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
-- **[Quick Start Script](examples/zendesk/quickstart.sh)** - Interactive setup automation
-- **[Examples & Templates](examples/zendesk/README.md)** - Configuration examples and templates
+- **[Quick Start Script](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/quickstart.sh)** - Interactive setup automation
+- **[Examples & Templates](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/README.md)** - Configuration examples and templates
 
 ### Quick Zendesk Workflow
 
@@ -335,9 +335,9 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 - [Zendesk Admin Workflow](./runbooks/zendesk_admin_workflow.md)
 - [End-to-End Support Workflows Plan](./runbooks/zendesk_e2e_support_workflows_plan.md)
 - [AI Agent App Builder Guide](./zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
-- [Workflow Diagrams](docs/zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
+- [Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
 - [Zendesk First Cycle Verification](./checklists/zendesk_first_cycle_verification.md)
-- [Zendesk API Reference](docs/zendesk_api_reference.md)
+- [Zendesk API Reference](./zendesk_api_reference.md)
 
 ## Testing and Quality
 

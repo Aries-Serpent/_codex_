@@ -588,6 +588,26 @@ python tools/selection_report.py \
 
 This runs the evaluator and enforces required selection-guard signals, then explains the tie-break.
 
+## Optional Components
+
+### GitHub Workflow Monitoring
+
+For monitoring GitHub Actions workflows and artifacts:
+
+```bash
+pip install -e ".[github]"
+```
+
+This installs PyGithub for automated workflow monitoring and failure detection. See [`scripts/monitoring/README.md`](scripts/monitoring/README.md) for setup and usage.
+
+### All Monitoring Tools
+
+For comprehensive monitoring including Prometheus metrics:
+
+```bash
+pip install -e ".[monitoring]"
+```
+
 ## Quickstart
 
 ```bash

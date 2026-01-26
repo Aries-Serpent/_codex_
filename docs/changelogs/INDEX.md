@@ -3,7 +3,7 @@
 Historical changelogs and change tracking documentation.
 
 ## Changelogs
-- [Main Changelog](../../CHANGELOG.md) - Primary repository changelog
+- [Main Changelog](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGELOG.md) - Primary repository changelog
 - [GitHub Logs Changelog](CHANGELOG_GITHUB_LOGS.md) - GitHub-specific changes
 - [Changes](CHANGES.md) - Additional change tracking
 

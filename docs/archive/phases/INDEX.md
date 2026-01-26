@@ -21,7 +21,7 @@ This directory contains historical phase completion reports from the Cognitive B
 - **Back to Archive:** [../INDEX.md](../INDEX.md)
 - **Validation Reports:** [../validation/INDEX.md](../validation/INDEX.md)
 - **Session Reports:** [../sessions/INDEX.md](../sessions/INDEX.md)
-- **Main Documentation:** [../../../README.md](../../../README.md)
+- **Main Documentation:** [../../../README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
 
 ## Purpose
 
