@@ -3,12 +3,12 @@ name: Testing Suite
 "on":
   # Run on all PRs
   pull_request:
-    branches: [ main, develop ]
-  
+    branches: [main, develop]
+
   # Run on push to main
   push:
-    branches: [ main ]
-  
+    branches: [main]
+
   # Manual trigger with test selection
   workflow_dispatch:
     inputs:
@@ -67,27 +67,27 @@ jobs:
       (github.event_name == 'push') ||
       (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'core')) ||
       github.event_name == 'workflow_call'
-    
+
     strategy:
       fail-fast: false
       matrix:
         python-version: ['3.12']
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: live  # Use live tier for critical tests
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[test]"
           pip install pytest pytest-cov pytest-xdist pytest-timeout hypothesis
-      
+
       - name: Run core tests with coverage
         run: |
           pytest tests/ \
@@ -99,7 +99,7 @@ jobs:
             --dist loadgroup \
             --maxfail=10 \
             -v
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -107,7 +107,7 @@ jobs:
           flags: python-${{ matrix.python-version }}
           name: coverage-${{ matrix.python-version }}
           fail_ci_if_error: false
-      
+
       - name: Upload coverage HTML report
         uses: actions/upload-artifact@v6
         if: always()
@@ -115,7 +115,7 @@ jobs:
           name: coverage-html-${{ matrix.python-version }}
           path: htmlcov/
           retention-days: 7
-      
+
       - name: Generate test summary
         if: always()
         run: |
@@ -132,21 +132,21 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'rag'))
-    
+
     strategy:
       matrix:
         python-version: ['3.12']
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: common
-      
+
       - name: Cache sentence transformers models
         uses: actions/cache@v4
         with:
@@ -157,19 +157,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-
             ${{ runner.os }}-sentence-transformers-
-      
+
       - name: Install RAG dependencies
         run: |
           pip install -e ".[rag]"
           pip install sentence-transformers chromadb
-      
+
       - name: Run RAG tests
         run: |
           pytest tests/rag/ \
             --cov=src/codex/rag \
             --cov-report=xml \
             -v
-      
+
       - name: Upload RAG coverage
         uses: actions/upload-artifact@v6
         with:
@@ -183,26 +183,26 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'auth'))
-    
+
     strategy:
       matrix:
         python-version: ['3.12']
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }} with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ matrix.python-version }}
           cache-tier: common
-      
+
       - name: Install auth dependencies
         run: |
           pip install -e ".[test]"
           pip install PyJWT cryptography PyNaCl
-      
+
       - name: Run auth tests
         env:
           # Use test secrets (not real)
@@ -214,13 +214,13 @@ jobs:
             --cov=src/codex/security \
             --cov-report=xml \
             -v
-      
+
       - name: Security scan of auth code
         run: |
           pip install bandit safety
           bandit -r src/codex/auth/ src/codex/security/ -f json -o /tmp/bandit-auth.json || true
           safety check --json > /tmp/safety-auth.json || true
-      
+
       - name: Upload auth security report
         uses: actions/upload-artifact@v6
         with:
@@ -236,21 +236,21 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'integration'))
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[test,all]"
-      
+
       - name: Run integration tests
         run: |
           pytest tests/integration/ \
@@ -258,7 +258,7 @@ jobs:
             --cov-report=xml \
             --timeout=300 \
             -v
-      
+
       - name: Upload integration coverage
         uses: actions/upload-artifact@v6
         with:
@@ -272,51 +272,51 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'determinism'))
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[test]"
-      
+
       - name: Run determinism tests (iteration 1)
         id: run1
         run: |
           pytest tests/determinism/ -v --json-report --json-report-file=/tmp/results1.json
-      
+
       - name: Run determinism tests (iteration 2)
         id: run2
         run: |
           pytest tests/determinism/ -v --json-report --json-report-file=/tmp/results2.json
-      
+
       - name: Compare results
         run: |
           python << 'EOF'
           import json
           import sys
-          
+
           with open('/tmp/results1.json') as f:
               results1 = json.load(f)
           with open('/tmp/results2.json') as f:
               results2 = json.load(f)
-          
+
           # Compare test outcomes
           outcomes1 = {test['nodeid']: test['outcome'] for test in results1.get('tests', [])}
           outcomes2 = {test['nodeid']: test['outcome'] for test in results2.get('tests', [])}
-          
+
           differences = []
           for nodeid in set(outcomes1.keys()) | set(outcomes2.keys()):
               if outcomes1.get(nodeid) != outcomes2.get(nodeid):
                   differences.append(f"  - {nodeid}: {outcomes1.get(nodeid)} vs {outcomes2.get(nodeid)}")
-          
+
           if differences:
               print("❌ Determinism check FAILED - test outcomes differ:")
               for diff in differences:
@@ -332,7 +332,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [core-tests, rag-tests, auth-tests, integration-tests, determinism-tests]
     if: always()
-    
+
     steps:
       - name: Generate summary
         run: |
@@ -344,7 +344,7 @@ jobs:
           echo "**Integration Tests:** ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
           echo "**Determinism Tests:** ${{ needs.determinism-tests.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Determine overall status
           if [ "${{ needs.core-tests.result }}" == "success" ]; then
             echo "✅ All critical tests passed" >> $GITHUB_STEP_SUMMARY

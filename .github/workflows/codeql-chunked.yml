@@ -199,7 +199,7 @@ jobs:
           cache-tier: common
 
       - name: Download All SARIF Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           pattern: sarif-*
           path: sarif-chunks
