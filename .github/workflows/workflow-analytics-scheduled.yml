@@ -118,7 +118,7 @@ jobs:
 
           1. Review the full analytics report (attached below)
           2. Investigate detected error patterns
-          3. Consult the Error Pattern Database (`.codex/reports/ERROR_PATTERN_DATABASE.md`)
+          3. Consult the Error Pattern Database (`../../.codex/reports/ERROR_PATTERN_DATABASE.md`)
           4. Engage CI Testing Agent for remediation if needed
 
           ### Full Report
@@ -193,7 +193,7 @@ jobs:
           fi)
 
           ### Resources
-          - [Error Pattern Database](.codex/reports/ERROR_PATTERN_DATABASE.md)
-          - [Workflow Analytics Agent](.github/agents/workflow-analytics-agent.md)
-          - [CI Testing Agent](.github/agents/ci-testing-agent.md)
+          - [Error Pattern Database](../../.codex/reports/ERROR_PATTERN_DATABASE.md)
+          - [Workflow Analytics Agent](../agents/workflow-analytics-agent.md)
+          - [CI Testing Agent](../agents/ci-testing-agent.md)
           EOF
