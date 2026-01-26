@@ -274,7 +274,7 @@ class intuitive_aptitude:
             if isinstance(node, ast.FunctionDef):
                 args = [a.arg for a in node.args.args]
                 kwonly = [a.arg for a in node.args.kwonlyargs]
-                decorators = [self._expr_to_str(d) for d in node.decorator_list]
+                decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
                 returns = self._expr_to_str(node.returns)
                 doc = ast.get_docstring(node)
                 calls = self._find_calls(node)
@@ -298,15 +298,15 @@ class intuitive_aptitude:
         assert self.ast_tree is not None
         for node in ast.walk(self.ast_tree):
             if isinstance(node, ast.ClassDef):
-                bases = [self._expr_to_str(b) for b in node.bases]
-                decorators = [self._expr_to_str(d) for d in node.decorator_list]
+                bases = [b for b in (self._expr_to_str(b) for b in node.bases) if b]
+                decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
                 doc = ast.get_docstring(node)
                 methods: Dict[str, FunctionInfo] = {}
                 for body_node in node.body:
                     if isinstance(body_node, ast.FunctionDef):
                         args = [a.arg for a in body_node.args.args]
                         kwonly = [a.arg for a in body_node.args.kwonlyargs]
-                        decorators_m = [self._expr_to_str(d) for d in body_node.decorator_list]
+                        decorators_m = [d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d]
                         returns = self._expr_to_str(body_node.returns)
                         doc_m = ast.get_docstring(body_node)
                         calls = self._find_calls(body_node)
@@ -478,7 +478,10 @@ class intuitive_aptitude:
                 styles["Simple"] += 1
 
         try:
-            module_doc = ast.get_docstring(self.ast_tree) if self.ast_tree else None
+            if isinstance(self.ast_tree, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                module_doc = ast.get_docstring(self.ast_tree)
+            else:
+                module_doc = None
         except Exception:
             module_doc = None
         classify(module_doc)
