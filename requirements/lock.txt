@@ -712,7 +712,7 @@ packaging==25.0
     #   transformers
     #   typepy
     #   wandb
-pandas==2.3.3
+pandas==3.0.0
     # via
     #   codex-ml (pyproject.toml)
     #   altair
