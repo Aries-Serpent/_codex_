@@ -76,7 +76,7 @@ jobs:
         run: mkdocs build --verbose
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: mkdocs-site
           path: site/

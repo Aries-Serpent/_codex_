@@ -174,7 +174,7 @@ jobs:
           ls -la sarif-results/
 
       - name: Upload Chunk SARIF
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sarif-${{ matrix.chunk.name }}
           path: sarif-results/${{ matrix.chunk.name }}.sarif
@@ -219,7 +219,7 @@ jobs:
           category: full-chunked-analysis
 
       - name: Archive Merged Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-merged-results
           path: merged-results.sarif
@@ -271,7 +271,7 @@ jobs:
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Size Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-size-report
           path: size-report.md

@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload diagnostic artifacts
         if: steps.diagnose.outputs.report_exists == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ci-diagnostic-report-${{ steps.download.outputs.run_id }}
           path: |

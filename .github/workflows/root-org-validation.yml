@@ -106,7 +106,7 @@ jobs:
           echo "MkDocs: ${{ steps.mkdocs-baseline.outcome }}" >> .codex/validation/baseline.txt
       
       - name: Upload baseline artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: validation-baseline
           path: .codex/validation/baseline.txt
@@ -196,7 +196,7 @@ jobs:
           echo "✅ Reference validation complete" >> .codex/reports/reference_validation.md
       
       - name: Upload reference report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: reference-validation-report
           path: .codex/reports/reference_validation.md
@@ -284,7 +284,7 @@ jobs:
           cat .codex/reports/root_org_validation_${{ github.run_number }}.md
       
       - name: Upload final report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: root-org-validation-report
           path: .codex/reports/root_org_validation_${{ github.run_number }}.md

@@ -109,7 +109,7 @@ jobs:
           fail_ci_if_error: false
       
       - name: Upload coverage HTML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: coverage-html-${{ matrix.python-version }}
@@ -171,7 +171,7 @@ jobs:
             -v
       
       - name: Upload RAG coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: rag-coverage-${{ matrix.python-version }}
           path: coverage.xml
@@ -222,7 +222,7 @@ jobs:
           safety check --json > /tmp/safety-auth.json || true
       
       - name: Upload auth security report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: auth-security-report-${{ matrix.python-version }}
           path: |
@@ -260,7 +260,7 @@ jobs:
             -v
       
       - name: Upload integration coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: integration-coverage
           path: coverage.xml
