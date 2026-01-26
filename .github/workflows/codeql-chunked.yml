@@ -143,7 +143,7 @@ jobs:
           cache-tier: common
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python
           config-file: .codeql/codeql-config.yml
@@ -156,7 +156,7 @@ jobs:
           echo "Size: ${{ matrix.chunk.size }} bytes"
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:python/chunk:${{ matrix.chunk.name }}"
           output: sarif-results
@@ -213,7 +213,7 @@ jobs:
             --validate
 
       - name: Upload Merged SARIF
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: merged-results.sarif
           category: full-chunked-analysis
