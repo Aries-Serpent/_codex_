@@ -47,29 +47,29 @@ jobs:
           echo "Branch: ${{ github.ref }}"
           echo "Commit SHA: ${{ github.sha }}"
           echo "::endgroup::"
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
-      
+
       - name: Fetch CodeQL Alerts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Fetching CodeQL alerts..."
-          
+
           # Determine severity filter
           SEVERITY_ARG=""
           if [ "${{ github.event.inputs.severity_filter }}" != "all" ]; then
             SEVERITY_ARG="--severity ${{ github.event.inputs.severity_filter }}"
           fi
-          
+
           # Run fetch script
           python scripts/security/fetch_codeql_alerts.py \
             --owner Aries-Serpent \
@@ -79,42 +79,43 @@ jobs:
             --output-dir .codex/security \
             $SEVERITY_ARG \
             --verbose
-      
+
       - name: Verify Alert Data
         run: |
           echo "Alert inventory files:"
           ls -lh .codex/security/
-          
+
           if [ -f .codex/security/alert_inventory.json ]; then
             echo "Total alerts fetched:"
             jq '.total_alerts' .codex/security/alert_inventory.json
-            
+
             echo "Alerts by severity:"
             jq '.alerts | group_by(.severity) | map({severity: .[0].severity, count: length})' \
               .codex/security/alert_inventory.json
           fi
-      
+
       - name: Generate Summary Report
         run: |
           if [ -f .codex/security/alert_summary.md ]; then
             echo "## CodeQL Alert Fetch Summary" >> $GITHUB_STEP_SUMMARY
             cat .codex/security/alert_summary.md >> $GITHUB_STEP_SUMMARY
           fi
-      
+
       - name: Commit Alert Data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           if [ -n "$(git status --porcelain .codex/security/)" ]; then
             git add .codex/security/
-            git commit -m "data: Phase 34 CodeQL alert inventory ($(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json 2>/dev/null || echo 'N/A') alerts fetched)"
+            ALERT_COUNT=$(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json 2>/dev/null || echo 'N/A')
+            git commit -m "data: Phase 34 CodeQL alert inventory ($ALERT_COUNT alerts fetched)"
             git push
             echo "✅ Alert data committed to repository"
           else
             echo "ℹ️ No changes to commit"
           fi
-      
+
       - name: Upload Alert Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -125,7 +126,7 @@ jobs:
             .codex/security/alert_inventory.csv
           retention-days: 30
           if-no-files-found: warn
-      
+
       - name: Create Issue for Analysis
         if: success()
         env:
