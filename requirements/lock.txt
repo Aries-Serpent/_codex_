@@ -207,7 +207,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.4.3
+duckdb==1.4.4
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -712,7 +712,7 @@ packaging==25.0
     #   transformers
     #   typepy
     #   wandb
-pandas==2.3.3
+pandas==3.0.0
     # via
     #   codex-ml (pyproject.toml)
     #   altair
