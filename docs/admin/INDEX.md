@@ -11,10 +11,10 @@ Administrative documentation including policies, governance, and tracking.
 - [Validation Summary](VALIDATION_SUMMARY.txt) - Validation status summary
 
 ## Related Documentation
-- [Main README](../../README.md)
-- [Contributing Guide](../../CONTRIBUTING.md)
-- [Code of Conduct](../../CODE_OF_CONDUCT.md)
-- [Security Policy](../../SECURITY.md)
+- [Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
+- [Contributing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
+- [Code of Conduct](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md)
+- [Security Policy](https://github.com/Aries-Serpent/_codex_/blob/main/SECURITY.md)
 
 ## Administrative Resources
 - [Genesis Setup Guide](GENESIS_SETUP_GUIDE.md) - Repository initialization

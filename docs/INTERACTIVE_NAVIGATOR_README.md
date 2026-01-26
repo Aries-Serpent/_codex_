@@ -414,7 +414,7 @@ open http://localhost:8000/interactive-codebase-navigator.html
 
 ## 📄 License
 
-MIT License - See [LICENSE](../LICENSE) for details
+MIT License - See [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/LICENSE) for details
 
 ---
 

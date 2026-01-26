@@ -24,7 +24,7 @@ awesome = "my_pkg.models:build_model"
 3. Distribute the package (wheel, editable install, etc.).
 4. Codex will discover it on demand: `codex_ml.registry.get_model("awesome", cfg)`.
 
-See [`examples/plugins`](../../examples/plugins/) for toy implementations.
+See [`examples/plugins`](https://github.com/Aries-Serpent/_codex_/blob/main/examples/plugins) for toy implementations.
 
 ## Handling conflicts
 

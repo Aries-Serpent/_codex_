@@ -556,7 +556,7 @@ def test_plugin_discovery():
 
 - [API Documentation](../api/index.md) - Auto-generated API reference
 - [Metrics Guide](../guides/metrics.md) - Implementing custom metrics
-- [Examples](../../examples/plugins/) - Example plugin implementations
+- [Examples](https://github.com/Aries-Serpent/_codex_/blob/main/examples/plugins) - Example plugin implementations
 
 ## Support
 

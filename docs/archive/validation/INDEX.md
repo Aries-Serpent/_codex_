@@ -17,7 +17,7 @@ This directory contains historical CI/CD analysis, failure analysis, and validat
 - **Back to Archive:** [../INDEX.md](../INDEX.md)
 - **Phase Reports:** [../phases/INDEX.md](../phases/INDEX.md)
 - **Session Reports:** [../sessions/INDEX.md](../sessions/INDEX.md)
-- **Main Documentation:** [../../../README.md](../../../README.md)
+- **Main Documentation:** [../../../README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
 
 ## Purpose
 
