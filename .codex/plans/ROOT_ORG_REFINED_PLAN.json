@@ -1,0 +1,86 @@
+{
+  "plan_version": "2.0.0",
+  "created_at": "2026-01-26T04:53:09.117379Z",
+  "created_by": "root-organizer-agent",
+  "description": "Refined root organization plan - moves only appropriate files",
+  "files_to_move": 11,
+  "files_to_keep": [
+    "README.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "AGENTS.md",
+    "requirements*.txt",
+    "noxfile.py",
+    "dvc.yaml"
+  ],
+  "relocations": [
+    {
+      "source": "./PHASE_3_EXECUTION_COMPLETE.md",
+      "target": "docs/archive/phases/PHASE_3_EXECUTION_COMPLETE.md",
+      "category": "phase_completion",
+      "reason": "Historical phase documentation"
+    },
+    {
+      "source": "./PHASE_4_VALIDATION_STATUS.md",
+      "target": "docs/archive/phases/PHASE_4_VALIDATION_STATUS.md",
+      "category": "phase_completion",
+      "reason": "Historical phase documentation"
+    },
+    {
+      "source": "./PHASE_5_COMPLETE.md",
+      "target": "docs/archive/phases/PHASE_5_COMPLETE.md",
+      "category": "phase_completion",
+      "reason": "Historical phase documentation"
+    },
+    {
+      "source": "./PHASE_6_COMPLETE.md",
+      "target": "docs/archive/phases/PHASE_6_COMPLETE.md",
+      "category": "phase_completion",
+      "reason": "Historical phase documentation"
+    },
+    {
+      "source": "./CI_CD_ANALYSIS_FINAL_REPORT.md",
+      "target": "docs/archive/validation/CI_CD_ANALYSIS_FINAL_REPORT.md",
+      "category": "ci_validation",
+      "reason": "Historical CI/CD analysis"
+    },
+    {
+      "source": "./CI_CD_FAILURE_ANALYSIS.md",
+      "target": "docs/archive/validation/CI_CD_FAILURE_ANALYSIS.md",
+      "category": "ci_validation",
+      "reason": "Historical CI/CD analysis"
+    },
+    {
+      "source": "./CI_FIX_SUMMARY.md",
+      "target": "docs/archive/validation/CI_FIX_SUMMARY.md",
+      "category": "ci_validation",
+      "reason": "Historical CI/CD fixes"
+    },
+    {
+      "source": "./EXECUTION_SUMMARY.md",
+      "target": "docs/archive/sessions/EXECUTION_SUMMARY.md",
+      "category": "session_summary",
+      "reason": "Historical execution summary"
+    },
+    {
+      "source": "./PR_2968_RESOLUTION_SUMMARY.md",
+      "target": "docs/archive/validation/PR_2968_RESOLUTION_SUMMARY.md",
+      "category": "pr_summary",
+      "reason": "Historical PR resolution"
+    },
+    {
+      "source": "./PYTHON_312_MIGRATION_GUIDE.md",
+      "target": "docs/guides/PYTHON_312_MIGRATION_GUIDE.md",
+      "category": "guide",
+      "reason": "Active migration guide"
+    },
+    {
+      "source": "./REMAINING_FIXES_QUICK_GUIDE.md",
+      "target": "docs/guides/REMAINING_FIXES_QUICK_GUIDE.md",
+      "category": "guide",
+      "reason": "Active quick reference guide"
+    }
+  ]
+}
