@@ -50,10 +50,11 @@ jobs:
           # No external dependencies needed for link validation
           echo "Link validation script is self-contained"
       
-      - name: Validate workflow documentation links
+      - name: Validate links with intelligent parser
         id: validate
         run: |
-          python scripts/validate_workflow_links.py --verbose
+          python .github/scripts/validate-links.py
+        continue-on-error: false
       
       - name: Comment on PR
         if: failure() && github.event_name == 'pull_request'
