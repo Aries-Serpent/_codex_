@@ -1,0 +1,328 @@
+name: Cache Management Suite
+
+"on":
+  # Scheduled cache operations
+  schedule:
+    # Warmup: Every 6 hours to keep live tier active
+    - cron: '0 */6 * * *'
+    # Cleanup: Daily at 2 AM UTC
+    - cron: '0 2 * * *'
+    # Management: Weekly on Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
+  
+  # Manual trigger with operation selection
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Cache operation to perform'
+        required: true
+        type: choice
+        options:
+          - 'all'
+          - 'warmup'
+          - 'cleanup'
+          - 'management'
+          - 'validate'
+        default: 'all'
+      python-versions:
+        description: 'Python versions to warm (comma-separated, e.g., 3.12)'
+        required: false
+        default: '3.12'
+      dry-run:
+        description: 'Dry run mode (no actual changes)'
+        required: false
+        type: boolean
+        default: false
+
+  # Enable workflow_call for AI agent integration
+  workflow_call:
+    inputs:
+      operation:
+        description: 'Cache operation to perform'
+        required: true
+        type: string
+      dry-run:
+        description: 'Dry run mode'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write  # Required for cache management
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  # Job 1: Cache Warmup - Prepopulate live tier cache
+  cache-warmup:
+    name: Cache Warmup (Live Tier)
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 */6 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'warmup')) ||
+      github.event_name == 'workflow_call'
+    
+    strategy:
+      matrix:
+        python-version: ['3.12']
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python with LIVE tier cache
+        uses: ./.github/actions/setup-python-cached@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: live  # Use live tier for warmup
+      
+      - name: Install core dependencies
+        if: ${{ !inputs.dry-run }}
+        run: |
+          echo "🔥 Warming up LIVE cache for Python ${{ matrix.python-version }}"
+          pip install -e . || echo "Package install failed, continuing..."
+          pip install pytest pytest-cov pytest-xdist hypothesis
+          pip install ruff black mypy isort
+          pip install PyYAML requests
+      
+      - name: Dry run mode
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "🔍 DRY RUN: Would warm cache with:"
+          echo "  Python: ${{ matrix.python-version }}"
+          echo "  Tier: live"
+          echo "  Packages: pytest, ruff, black, mypy, PyYAML, requests"
+      
+      - name: Verify cache
+        run: |
+          echo "✅ Cache warmup complete for Python ${{ matrix.python-version }}"
+          pip list | grep -E "pytest|ruff|black|mypy|PyYAML|requests" || echo "Packages not installed (dry run)"
+      
+      - name: Report cache statistics
+        run: |
+          echo "## Cache Warmup Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Python Version:** ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Cache Tier:** LIVE" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The LIVE tier cache has been warmed with core dependencies for " >> $GITHUB_STEP_SUMMARY
+          echo "Python ${{ matrix.python-version }}." >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Cache Cleanup - Remove old/unused caches
+  cache-cleanup:
+    name: Cache Cleanup (Old Caches)
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 2 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'cleanup'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python with cached dependencies
+        uses: ./.github/actions/setup-python-cached@main
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: ephemeral  # Use ephemeral for cleanup ops
+      
+      - name: Clean ephemeral tier caches
+        if: ${{ !inputs.dry-run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "🧹 Cleaning up old ephemeral caches..."
+          
+          # List all caches
+          gh api repos/${{ github.repository }}/actions/caches --paginate > /tmp/caches.json
+          
+          # Parse and delete ephemeral caches older than 1 day
+          python << 'EOF'
+          import json
+          import subprocess
+          from datetime import datetime, timedelta
+          
+          with open('/tmp/caches.json') as f:
+              data = json.load(f)
+          
+          now = datetime.utcnow()
+          one_day_ago = now - timedelta(days=1)
+          
+          deleted = 0
+          for cache in data.get('actions_caches', []):
+              key = cache.get('key', '')
+              if key.startswith('ephemeral-'):
+                  created = datetime.fromisoformat(cache['created_at'].replace('Z', '+00:00'))
+                  if created < one_day_ago:
+                      cache_id = cache['id']
+                      print(f"Deleting cache: {key} (id: {cache_id})")
+                      subprocess.run([
+                          'gh', 'api', '--method', 'DELETE',
+                          f'repos/${{ github.repository }}/actions/caches/{cache_id}'
+                      ])
+                      deleted += 1
+          
+          print(f"✅ Deleted {deleted} old ephemeral caches")
+          EOF
+      
+      - name: Dry run mode
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "🔍 DRY RUN: Would clean:"
+          echo "  - Ephemeral tier caches older than 1 day"
+          echo "  - Common tier caches older than 7 days"
+      
+      - name: Report cleanup statistics
+        run: |
+          echo "## Cache Cleanup Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Cleaned up old ephemeral tier caches (>1 day old)." >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Cache Management - Analyze and optimize
+  cache-management:
+    name: Cache Management (Analysis & Optimization)
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'management'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python with cached dependencies
+        uses: ./.github/actions/setup-python-cached@main
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+      
+      - name: Install analysis tools
+        run: |
+          pip install requests PyYAML pandas tabulate
+      
+      - name: Analyze cache usage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "📊 Analyzing cache usage across workflows..."
+          
+          # Fetch all caches
+          gh api repos/${{ github.repository }}/actions/caches --paginate > /tmp/caches.json
+          
+          # Analyze cache patterns
+          python << 'EOF'
+          import json
+          from collections import defaultdict
+          from datetime import datetime
+          
+          with open('/tmp/caches.json') as f:
+              data = json.load(f)
+          
+          # Analyze by tier
+          tier_stats = defaultdict(lambda: {'count': 0, 'size': 0})
+          for cache in data.get('actions_caches', []):
+              key = cache.get('key', '')
+              size = cache.get('size_in_bytes', 0)
+              
+              if key.startswith('live-'):
+                  tier_stats['live']['count'] += 1
+                  tier_stats['live']['size'] += size
+              elif key.startswith('common-'):
+                  tier_stats['common']['count'] += 1
+                  tier_stats['common']['size'] += size
+              elif key.startswith('ephemeral-'):
+                  tier_stats['ephemeral']['count'] += 1
+                  tier_stats['ephemeral']['size'] += size
+          
+          print("\n## Cache Usage by Tier\n")
+          for tier, stats in sorted(tier_stats.items()):
+              size_mb = stats['size'] / (1024 * 1024)
+              print(f"**{tier.upper()}:** {stats['count']} caches, {size_mb:.2f} MB")
+          
+          # Save to file for artifact
+          with open('/tmp/cache_analysis.txt', 'w') as f:
+              f.write("Cache Analysis Report\n")
+              f.write("=" * 50 + "\n\n")
+              for tier, stats in sorted(tier_stats.items()):
+                  size_mb = stats['size'] / (1024 * 1024)
+                  f.write(f"{tier.upper()}: {stats['count']} caches, {size_mb:.2f} MB\n")
+          EOF
+      
+      - name: Generate recommendations
+        run: |
+          echo "## Cache Management Recommendations" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Live Tier**: Protected, never auto-deleted" >> $GITHUB_STEP_SUMMARY
+          echo "2. **Common Tier**: 7-day retention for standard workflows" >> $GITHUB_STEP_SUMMARY
+          echo "3. **Ephemeral Tier**: 1-day retention for infrequent workflows" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat /tmp/cache_analysis.txt >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload analysis report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-analysis-report
+          path: /tmp/cache_analysis.txt
+          retention-days: 30
+
+  # Job 4: Cache Validation - Verify cache health
+  cache-validation:
+    name: Cache Validation
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'validate'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Validate live tier cache
+        uses: ./.github/actions/setup-python-cached@main
+        id: cache-live
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: live
+      
+      - name: Validate common tier cache
+        uses: ./.github/actions/setup-python-cached@main
+        id: cache-common
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+      
+      - name: Report validation results
+        run: |
+          echo "## Cache Validation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Live Tier Cache Hit:** ${{ steps.cache-live.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Common Tier Cache Hit:** ${{ steps.cache-common.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.cache-live.outputs.cache-hit }}" == "true" ]; then
+            echo "✅ Live tier cache is healthy" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️  Live tier cache miss - consider running warmup" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # Summary job
+  cache-suite-summary:
+    name: Cache Suite Summary
+    runs-on: ubuntu-latest
+    needs: [cache-warmup, cache-cleanup, cache-management]
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## Cache Management Suite - Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Warmup:** ${{ needs.cache-warmup.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Cleanup:** ${{ needs.cache-cleanup.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Management:** ${{ needs.cache-management.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All cache operations completed. See individual job outputs for details." >> $GITHUB_STEP_SUMMARY

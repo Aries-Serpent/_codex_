@@ -136,10 +136,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -191,10 +192,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
 
       - name: Download All SARIF Artifacts
         uses: actions/download-artifact@v4

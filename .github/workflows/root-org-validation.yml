@@ -41,10 +41,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Install dependencies
         run: |
@@ -120,10 +121,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Validate references (manual trigger)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.file_to_validate != ''
@@ -210,10 +212,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Download baseline
         uses: actions/download-artifact@v4
