@@ -223,8 +223,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest httpx
-          pip install -e .
+          pip install -e ".[test]"
+          pip install httpx
 
       - name: Test brute force protection
         run: |
