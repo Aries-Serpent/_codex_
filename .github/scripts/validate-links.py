@@ -6,7 +6,6 @@ Validates internal file links and flags dynamic variables for manual review.
 Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
 """
 
-import os
 import re
 import sys
 from pathlib import Path
