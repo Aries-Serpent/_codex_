@@ -74,7 +74,7 @@ class TestDataClasses:
 
     def test_function_info_with_decorators(self):
         """Test FunctionInfo dataclass with decorators."""
-        func = FunctionInfo(
+        function_info = FunctionInfo(
             name="decorated",
             args=["self"],
             defaults=0,
@@ -87,13 +87,13 @@ class TestDataClasses:
             complexity=2,
             calls=["print", "len"],
         )
-        assert func.decorators == ["@staticmethod", "@property"]
-        assert func.returns == "int"
-        assert func.calls == ["print", "len"]
+        assert function_info.decorators == ["@staticmethod", "@property"]
+        assert function_info.returns == "int"
+        assert function_info.calls == ["print", "len"]
 
     def test_class_info_basic(self):
         """Test ClassInfo dataclass with basic class."""
-        cls = ClassInfo(
+        class_info = ClassInfo(
             name="MyClass",
             bases=[],
             decorators=[],
@@ -102,9 +102,9 @@ class TestDataClasses:
             lineno=20,
             end_lineno=30,
         )
-        assert cls.name == "MyClass"
-        assert cls.bases == []
-        assert len(cls.methods) == 0
+        assert class_info.name == "MyClass"
+        assert class_info.bases == []
+        assert len(class_info.methods) == 0
 
     def test_class_info_with_methods(self):
         """Test ClassInfo dataclass with methods."""
@@ -121,7 +121,7 @@ class TestDataClasses:
             complexity=1,
             calls=[],
         )
-        cls = ClassInfo(
+        class_info = ClassInfo(
             name="MyClass",
             bases=["BaseClass"],
             decorators=["@dataclass"],
@@ -130,9 +130,9 @@ class TestDataClasses:
             lineno=20,
             end_lineno=30,
         )
-        assert "method1" in cls.methods
-        assert cls.bases == ["BaseClass"]
-        assert cls.decorators == ["@dataclass"]
+        assert "method1" in class_info.methods
+        assert class_info.bases == ["BaseClass"]
+        assert class_info.decorators == ["@dataclass"]
 
 
 # =============================================================================
