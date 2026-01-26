@@ -1,0 +1,316 @@
+name: Security Scanning Suite
+
+"on":
+  # Automatic triggers
+  push:
+    branches: [main, develop, copilot/**]
+  pull_request:
+    branches: [main, develop]
+  
+  # Scheduled scans
+  schedule:
+    # Daily security scan at 2 AM UTC
+    - cron: '0 2 * * *'
+    # Weekly deep scan on Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
+  
+  # Manual trigger with scan selection
+  workflow_dispatch:
+    inputs:
+      scan-type:
+        description: 'Security scan type to run'
+        required: true
+        type: choice
+        options:
+          - 'all'
+          - 'codeql'
+          - 'semgrep'
+          - 'dependency'
+          - 'secrets'
+          - 'sbom'
+        default: 'all'
+      severity-threshold:
+        description: 'Minimum severity to report'
+        required: false
+        type: choice
+        options:
+          - 'critical'
+          - 'high'
+          - 'medium'
+          - 'low'
+        default: 'medium'
+
+  # Enable workflow_call for AI agent integration
+  workflow_call:
+    inputs:
+      scan-type:
+        description: 'Security scan type'
+        required: false
+        type: string
+        default: 'all'
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+  pull-requests: write
+  actions: read
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  # Job 1: CodeQL Analysis - Static analysis for vulnerabilities
+  codeql-scan:
+    name: CodeQL Analysis (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'codeql')) ||
+      github.event_name == 'workflow_call'
+    
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['python', 'javascript']
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-extended,security-and-quality
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: true
+      
+      - name: Generate CodeQL summary
+        if: always()
+        run: |
+          echo "## CodeQL Analysis - ${{ matrix.language }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Language:** ${{ matrix.language }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Results uploaded to Security tab" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Semgrep SAST - Fast static analysis
+  semgrep-scan:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'semgrep'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: live
+      
+      - name: Install Semgrep
+        run: |
+          pip install semgrep
+      
+      - name: Run Semgrep scan
+        id: semgrep
+        continue-on-error: true
+        run: |
+          echo "Running Semgrep security scan..."
+          
+          # Run with multiple rulesets
+          semgrep scan \
+            --config=auto \
+            --config=p/security-audit \
+            --config=p/owasp-top-ten \
+            --config=p/python \
+            --sarif \
+            --output=semgrep-results.sarif \
+            --verbose
+      
+      - name: Upload SARIF to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.sarif
+          category: semgrep
+      
+      - name: Upload Semgrep results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.sarif
+          retention-days: 30
+      
+      - name: Generate Semgrep summary
+        if: always()
+        run: |
+          echo "## Semgrep SAST Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.semgrep.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f semgrep-results.sarif ]; then
+            FINDINGS=$(wc -l < semgrep-results.sarif 2>/dev/null || echo "0")
+          echo "secrets_found=$SECRETS_COUNT" >> $GITHUB_OUTPUT
+      
+      - name: Upload secrets baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets-baseline
+          path: .secrets.baseline
+          retention-days: 30
+      
+      - name: Generate secrets summary
+        if: always()
+        run: |
+          echo "## Secret Scanning Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.detect-secrets.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Potential secrets found:** ${{ steps.detect-secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.detect-secrets.outputs.secrets_found }}" != "0" ]; then
+            echo "⚠️ Review secrets baseline artifact for details" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No secrets detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # Job 5: SBOM Generation - Software Bill of Materials
+  sbom-generation:
+    name: SBOM Generation
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'sbom'))
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+      
+      - name: Install SBOM tools
+        run: |
+          pip install cyclonedx-bom sbom4python
+      
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          cyclonedx-py --format json --output sbom-cyclonedx.json
+          cyclonedx-py --format xml --output sbom-cyclonedx.xml
+      
+      - name: Generate SBOM (SPDX)
+        run: |
+          pip install sbom4python
+          python -m sbom4python.cli -r . -o sbom-spdx.json
+      
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-reports
+          path: |
+            sbom-cyclonedx.json
+            sbom-cyclonedx.xml
+            sbom-spdx.json
+          retention-days: 90
+      
+      - name: Generate SBOM summary
+        run: |
+          echo "## SBOM Generation" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Formats generated:**" >> $GITHUB_STEP_SUMMARY
+          echo "- CycloneDX (JSON, XML)" >> $GITHUB_STEP_SUMMARY
+          echo "- SPDX (JSON)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "SBOMs uploaded as artifacts (90-day retention)" >> $GITHUB_STEP_SUMMARY
+
+  # Job 6: Container Scanning (if Dockerfile exists)
+  container-scan:
+    name: Container Security Scan
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check for Dockerfile
+        id: check-dockerfile
+        run: |
+          if [ -f Dockerfile ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Build container image
+        if: steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          docker build -t codex-scan:latest .
+      
+      - name: Run Trivy container scan
+        if: steps.check-dockerfile.outputs.exists == 'true'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'codex-scan:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      
+      - name: Upload Trivy results
+        if: steps.check-dockerfile.outputs.exists == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+
+  # Summary job
+  security-suite-summary:
+    name: Security Scanning Suite Summary
+    runs-on: ubuntu-latest
+    needs: [codeql-scan, semgrep-scan, dependency-scan, secret-scan, sbom-generation]
+    if: always()
+    
+    steps:
+      - name: Generate consolidated summary
+        run: |
+          echo "## Security Scanning Suite - Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**CodeQL:** ${{ needs.codeql-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Semgrep:** ${{ needs.semgrep-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dependency Scan:** ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Secret Scan:** ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**SBOM Generation:** ${{ needs.sbom-generation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Determine overall security posture
+          if [[ "${{ needs.codeql-scan.result }}" == "success" && \
+                "${{ needs.dependency-scan.result }}" != "failure" ]]; then
+            echo "✅ Security scans completed - Review findings in Security tab" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Some security scans require attention" >> $GITHUB_STEP_SUMMARY
+          fi
