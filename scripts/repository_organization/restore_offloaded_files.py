@@ -121,7 +121,10 @@ def restore_file(
     dry_run: bool = False,
 ) -> bool:
     """Restore a single file to its original location."""
-    config = CATEGORY_MAPPINGS[category]
+    config = CATEGORY_MAPPINGS.get(category)
+    if config is None:
+        print(f"  ⚠️  Unknown category: {category!r}")
+        return False
     offload_dir = repo_root / OFFLOAD_ROOT / config["offload_dir"]
     
     # Calculate relative path within category
@@ -240,7 +243,6 @@ def main() -> int:
     parser.add_argument(
         "--log-actions",
         action="store_true",
-        default=True,
         help="Log restoration to action log (default: True)",
     )
     parser.add_argument(
@@ -250,6 +252,7 @@ def main() -> int:
         help="Do not log restoration to action log",
     )
     
+    parser.set_defaults(log_actions=True)
     args = parser.parse_args()
     
     repo_root = Path.cwd()

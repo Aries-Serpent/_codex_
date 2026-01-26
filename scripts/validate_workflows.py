@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+import os
 import requests
 import yaml
 
@@ -185,13 +186,18 @@ class CacheMonitor:
     def __init__(self, repo: str, token: str = None):
         self.repo = repo
         self.token = token or self._get_github_token()
-        self.headers = {'Authorization': f'token {self.token}'}
+        self.headers = {'Authorization': f'Bearer {self.token}'}
         self.base_url = f'https://api.github.com/repos/{repo}'
     
     def _get_github_token(self) -> str:
         """Get GitHub token from environment"""
-        import os
-        return os.environ.get('GITHUB_TOKEN', '')
+        token = os.environ.get('GITHUB_TOKEN', '')
+        if not token:
+            print(
+                "⚠️  GITHUB_TOKEN is not set; GitHub API calls may fail due to lack of authentication.",
+                file=sys.stderr,
+            )
+        return token
     
     def get_cache_usage(self) -> Dict:
         """Get cache usage statistics"""
@@ -348,9 +354,17 @@ def main():
     
     # Monitor cache (if GitHub token available)
     try:
-        import os
         if os.environ.get('GITHUB_TOKEN'):
-            monitor = CacheMonitor('Aries-Serpent/_codex_')
+            # Determine repository to monitor:
+            # 1) command-line argument (if provided)
+            # 2) GITHUB_REPOSITORY environment variable (if set)
+            # 3) default to the original hardcoded repository
+            default_repo = 'Aries-Serpent/_codex_'
+            cli_repo = sys.argv[1] if len(sys.argv) > 1 else None
+            env_repo = os.environ.get('GITHUB_REPOSITORY')
+            repo = cli_repo or env_repo or default_repo
+
+            monitor = CacheMonitor(repo)
             cache_stats = monitor.get_cache_usage()
             workflow_stats = monitor.analyze_workflow_performance(days=7)
             

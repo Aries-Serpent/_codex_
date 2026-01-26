@@ -109,10 +109,8 @@ def validate_workflow_links(verbose: bool = False) -> int:
                     print(f"❌ {md_file}: [{text}]({link}) - {error}")
     
     # Check YAML workflow files for documentation URLs
-    for yml_file in workflow_dir.glob('*.yml'):
-        if yml_file.name.endswith('.disabled'):
-            continue
-        
+    workflow_files = list(workflow_dir.glob('*.yml')) + list(workflow_dir.glob('*.yaml'))
+    for yml_file in workflow_files:
         try:
             content = yml_file.read_text()
             links = find_markdown_links(content)
@@ -151,7 +149,7 @@ def validate_workflow_links(verbose: bool = False) -> int:
         github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
         if github_step_summary_path:
             github_step_summary = Path(github_step_summary_path)
-            with open(github_step_summary, 'a') as f:
+            with github_step_summary.open('a') as f:
                 f.write("## ❌ Broken Links Found\n\n")
                 for file, links in broken_links.items():
                     f.write(f"### {file}\n\n")
@@ -167,7 +165,7 @@ def validate_workflow_links(verbose: bool = False) -> int:
         github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
         if github_step_summary_path:
             github_step_summary = Path(github_step_summary_path)
-            with open(github_step_summary, 'a') as f:
+            with github_step_summary.open('a') as f:
                 f.write("## ✅ All Links Valid\n\n")
                 f.write(f"Validated {total_links} links in workflow documentation.\n")
         

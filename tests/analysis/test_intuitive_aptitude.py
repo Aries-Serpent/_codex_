@@ -118,6 +118,8 @@ class TestDataClasses:
             docstring="Method docstring",
             lineno=22,
             end_lineno=25,
+            complexity=1,
+            calls=[],
         )
         cls = ClassInfo(
             name="MyClass",
@@ -904,7 +906,7 @@ def test_function(x):
     def test_analyze_and_suggest_suggestions_for_naming(self):
         """Test that suggestions are generated for naming issues."""
         code = """
-def 123invalid(): pass
+def BadFunctionName(): pass
 WeirdVar = 1
 """
         result = analyze_and_suggest(code)
@@ -1084,7 +1086,7 @@ async with async_context() as ctx:
         assert result is True
 
     def test_walrus_operator(self):
-        """Test handling walrus operator (Python 3.8+)."""
+        """Test walrus operator (Python 3.8+), ensuring support or graceful failure depending on Python version."""
         analyzer = intuitive_aptitude()
         code = """
 if (n := len(items)) > 10:
@@ -1096,9 +1098,8 @@ if (n := len(items)) > 10:
 
     def test_match_statement(self):
         """Test handling match/case statements (Python 3.10+)."""
-        if sys.version_info >= (3, 10):
-            analyzer = intuitive_aptitude()
-            code = """
+        analyzer = intuitive_aptitude()
+        code = """
 match value:
     case 1:
         result = "one"
@@ -1107,8 +1108,13 @@ match value:
     case _:
         result = "other"
 """
-            result = analyzer.ingest(code)
+        result = analyzer.ingest(code)
+        if sys.version_info >= (3, 10):
             assert result is True
+        else:
+            # On Python versions that do not support 'match', ensure the analyzer
+            # either handles the syntax gracefully or reports an error.
+            assert result is True or analyzer.last_error is not None
 
 
 # =============================================================================
