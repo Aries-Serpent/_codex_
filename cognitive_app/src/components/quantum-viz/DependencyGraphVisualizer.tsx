@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { WorkflowToken, workflowDependencyEngine } from '@/lib/workflow-dependency-engine';
+import { WorkflowToken } from '@/lib/workflow-dependency-engine';
 import { GitBranch, CheckCircle, Circle, Warning } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 
@@ -34,7 +34,6 @@ export function DependencyGraphVisualizer({
   useEffect(() => {
     const calculateLayout = () => {
       const levels = new Map<string, number>();
-      const visited = new Set<string>();
 
       const calculateLevel = (tokenId: string, visited: Set<string>): number => {
         if (levels.has(tokenId)) return levels.get(tokenId)!;
@@ -74,7 +73,6 @@ export function DependencyGraphVisualizer({
 
       const width = containerRef.current?.clientWidth || 800;
       const height = Math.max(400, (maxLevel + 1) * 150);
-      const nodeRadius = 40;
       const levelHeight = height / (maxLevel + 2);
 
       const graphNodes: GraphNode[] = [];
