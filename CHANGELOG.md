@@ -7,6 +7,128 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - Code Scanning Security & Quality Remediation (2026-01-26)
+
+**Phase 32: Comprehensive remediation of 69 security and quality issues across 57 files**
+
+#### Phase 1: Critical Code Scanning Fixes (17 fixes - 5 files)
+- **Data Loss Bug**: Fixed compression ratio calculation in `compress_historical_files.py`
+  - Issue: Accessed file size after deletion (always returned 0)
+  - Fix: Capture `original_size` before `unlink()`
+  - Impact: Prevented incorrect compression metrics and potential data loss
+  
+- **Argument Parsing Conflicts**: Fixed CLI flag handling in 2 files
+  - Issue: Conflicting `default=True` with negative flags `--no-log-actions`
+  - Fix: Use `parser.set_defaults()` pattern instead
+  - Files: `compress_historical_files.py`, `restore_offloaded_files.py`
+  
+- **Error Handling**: Added category validation in `restore_offloaded_files.py`
+  - Issue: Potential KeyError on invalid category
+  - Fix: Use `.get()` with validation and graceful error message
+  
+- **Workflow File Pattern**: Include .yaml extension in `validate_workflow_links.py`
+  - Issue: Only checked `.yml`, missed `.yaml` workflow files
+  - Fix: Combined glob patterns: `list(glob('*.yml')) + list(glob('*.yaml'))`
+  
+- **API Compatibility**: Updated GitHub API auth in `validate_workflows.py`
+  - Issue: Deprecated 'token' format
+  - Fix: Changed to 'Bearer' format
+  
+- **Code Quality**: Multiple improvements
+  - Added GITHUB_TOKEN missing warning to stderr
+  - Made repository name configurable (CLI arg > env > default)
+  - Moved imports to module level (PEP 8)
+  - Used `Path.open()` consistently
+  - Fixed test data: added missing `complexity` and `calls` fields
+  - Fixed invalid test function name: `def 123invalid()` → `def BadFunctionName()`
+  - Improved test version compatibility for Python 3.8-3.12
+
+**Files Modified**: 5 files (+49/-24 lines)
+- `scripts/repository_organization/compress_historical_files.py`
+- `scripts/repository_organization/restore_offloaded_files.py`
+- `scripts/validate_workflow_links.py`
+- `scripts/validate_workflows.py`
+- `tests/analysis/test_intuitive_aptitude.py`
+
+#### Phase 2: Datetime Deprecation Migration (27 fixes - 27 files)
+- **Python 3.12 Compatibility**: Migrated all `datetime.utcnow()` to `datetime.now(timezone.utc)`
+  - Pattern: 51 occurrences across 27 files
+  - Automated fix script: `scripts/remediation/fix_datetime_deprecation.py`
+  - Handles both `datetime` and aliased `_dt.datetime` patterns
+  - Automatically adds timezone imports where needed
+  
+- **Impact**:
+  - ✅ 0 deprecation warnings remaining
+  - ✅ Timezone-aware datetime handling throughout codebase
+  - ✅ Python 3.12+ compatibility ensured
+  
+**Files Fixed**: 27 scripts including:
+- `scripts/aftermath/parse_session.py`
+- `scripts/codex_offline_audit.py`
+- `scripts/compliance_reporter.py`
+- `scripts/consolidate_workflows.py`
+- `scripts/github_secrets_sync.py`
+- `scripts/monitor_workflow_performance.py`
+- `scripts/rotate_jwt_secret.py`
+- ... and 20 more
+
+#### Phase 3: Syntax Error Remediation (25 fixes - 25 files)
+- **from __future__ Import Placement**: Fixed all syntax errors
+  - Issue: Secondary docstrings between module docstring and `from __future__` imports
+  - Error: `SyntaxError: from __future__ imports must occur at the beginning of the file`
+  - Automated fix script: `scripts/remediation/fix_future_imports.py`
+  - Algorithm: AST-based parsing and reconstruction
+  - Validation: All files validated with `ast.parse()`
+  
+- **Impact**:
+  - ✅ 0 SyntaxErrors remaining
+  - ✅ PEP 236 compliance
+  - ✅ All scripts compile successfully
+  
+**Files Fixed**: 25 scripts including:
+- `scripts/archival/check_archival_compliance.py`
+- `scripts/archive/select_and_compress.py`
+- `scripts/audit/build_integrity_chain.py`
+- `scripts/cognitive/har_ingest.py`
+- `scripts/security/*.py` (9 files)
+- ... and 16 more
+
+#### Phase 4: Documentation & Automation
+- **Cognitive Brain**: Created `PHASE_32_CODE_SCANNING_REMEDIATION.md`
+  - Complete documentation of all phases
+  - Success metrics tracking
+  - Technical implementation details
+  - Lessons learned and best practices
+  
+- **Custom Agent**: Created `code-scanning-remediation-agent.md`
+  - Alert triage system
+  - Pattern-based fix automation
+  - Integration with existing agents
+  - Activation commands and examples
+  
+- **Automation Scripts**: 2 production-ready tools
+  - `scripts/remediation/fix_datetime_deprecation.py` (126 lines)
+  - `scripts/remediation/fix_future_imports.py` (232 lines)
+
+**Total Impact**:
+- **Files Modified**: 57 files (+469/-99 lines)
+- **Issues Fixed**: 69 (17 + 27 + 25)
+- **Automation Scripts**: 2 new reusable tools
+- **Documentation**: 2 comprehensive guides
+- **Test Pass Rate**: 100%
+- **Syntax Errors**: 0 (was 25+)
+- **Deprecation Warnings**: 0 (was 51)
+
+**Validation**:
+```bash
+✅ All workflow tests PASS (YAML, Structure, AI Agent Support)
+✅ 0 syntax errors across all scripts
+✅ 0 datetime.utcnow() occurrences remaining
+✅ AST validation passed for all fixed files
+```
+
+**Next Phase**: Triage and remediate remaining ~58 pages of code scanning alerts
+
 ### Fixed - Comprehensive Test Failures (2026-01-24)
 
 **Fixed 5 failing tests in CI/CD comprehensive test suite:**
