@@ -9,7 +9,7 @@ Run after creating new consolidated workflows to ensure they work correctly.
 import json
 import subprocess
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -163,7 +163,7 @@ class WorkflowValidator:
     def generate_report(self, output_file: Path = Path("workflow-validation-report.json")):
         """Generate validation report"""
         report = {
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'validated_workflows': len(self.consolidated_workflows),
             'results': self.results,
             'summary': {
@@ -266,7 +266,7 @@ class CacheMonitor:
         print("=" * 70)
         
         try:
-            since = (datetime.utcnow() - timedelta(days=days)).isoformat() + 'Z'
+            since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat() + 'Z'
             
             response = requests.get(
                 f'{self.base_url}/actions/runs',
@@ -339,7 +339,7 @@ def main():
     print("=" * 70)
     print("WORKFLOW CONSOLIDATION VALIDATION & MONITORING")
     print("=" * 70)
-    print(f"Timestamp: {datetime.utcnow().isoformat()}")
+    print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("")
     
     # Validate workflows
