@@ -87,7 +87,6 @@ class LinkFixer:
         anchor = ""
         if '#' in link_url:
             url_part, anchor = link_url.split('#', 1)
-            anchor = anchor  # Keep anchor for later
         else:
             url_part = link_url
         
