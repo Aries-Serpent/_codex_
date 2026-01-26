@@ -35,7 +35,9 @@ class PluginRegistry:
     def register(self, plugin: BasePlugin, *, override: bool = False) -> None:
         key = plugin.name().lower()
         if not override and key in self._by_name:
-            raise ValueError(f"plugin already registered: {key}")
+            # Log debug message for duplicate registration but don't raise
+            logger.debug(f"Plugin '{key}' already registered, skipping duplicate")
+            return
         self._by_name[key] = plugin
 
     def get(self, name: str) -> BasePlugin | None:
@@ -58,13 +60,11 @@ class PluginRegistry:
                     plugin = resolved
             if plugin is None:
                 continue
-            try:
-                self.register(plugin)
-            except ValueError as e:
-                logger.debug(f"ValueError: {e}")
-                logger.warning(f"ValueError: {e}", exc_info=True)
-                continue
-            count += 1
+            # register() now handles deduplication internally
+            self.register(plugin)
+            # Only count if actually added (not a duplicate)
+            if plugin.name().lower() in self._by_name:
+                count += 1
         return count
 
 

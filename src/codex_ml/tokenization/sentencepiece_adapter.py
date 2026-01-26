@@ -153,6 +153,10 @@ class SentencePieceAdapter:
         return self.load()
 
     def load(self) -> "SentencePieceAdapter":
+        # Check if model file exists before attempting to load
+        if not self.model_path.exists():
+            raise FileNotFoundError(f"Model file not found: {self.model_path}")
+        
         module = _get_sentencepiece()
         cls = module.SentencePieceProcessor
         try:
@@ -168,10 +172,48 @@ class SentencePieceAdapter:
         self.sp = proc
         return self
 
-    def encode(self, text: str) -> list[int]:
+    def encode(
+        self,
+        text: str,
+        add_special_tokens: bool = True,
+        padding: str | bool = False,
+        max_length: int | None = None,
+        **kwargs: object,
+    ) -> list[int]:
+        """Encode text to token IDs with optional padding.
+        
+        Parameters
+        ----------
+        text
+            Text to encode
+        add_special_tokens
+            Whether to add special tokens (currently ignored for compatibility)
+        padding
+            Padding strategy: False, True, "max_length", "longest"
+        max_length
+            Maximum sequence length when padding is enabled
+        **kwargs
+            Additional keyword arguments for compatibility
+            
+        Returns
+        -------
+        list[int]
+            Encoded token IDs, optionally padded
+        """
         if self.sp is None:
             raise RuntimeError("adapter not loaded")
-        return list(self.sp.encode(text, out_type=int))
+        
+        encoded = list(self.sp.encode(text, out_type=int))
+        
+        # Apply padding if requested
+        if padding and max_length is not None:
+            pad_id = getattr(self.sp, "pad_id", lambda: 0)()
+            if len(encoded) < max_length:
+                encoded = encoded + [pad_id] * (max_length - len(encoded))
+            elif len(encoded) > max_length:
+                encoded = encoded[:max_length]
+        
+        return encoded
 
     def decode(self, ids: list[int] | tuple[int, ...]) -> str:
         if self.sp is None:
