@@ -45,6 +45,12 @@ nav:
       - Codex Questions (Archive): reference/codex_questions.md
       - Deferred Items: deferred_items.md
       - Agents: agents.md
+  - CI/CD Workflows:
+      - Workflow Index: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md
+      - Consolidation Guide: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md
+      - Deprecation Plan: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md
+      - Optimization Summary: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md
+      - Cache Architecture: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md
   - Safety:
       - Safety Guide: safety/safety_guide.md
   - Database Options:
