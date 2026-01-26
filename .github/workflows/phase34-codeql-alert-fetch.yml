@@ -1,11 +1,4 @@
 name: Phase 34 - CodeQL Alert Fetch
-#
-# Fetches all CodeQL code scanning alerts from GitHub Security tab
-# Part of: Phase 34 Alert Resolution Execution
-# Created: 2026-01-26
-#
-# This workflow has security-events:read permission and can fetch alerts
-# that are not accessible to the AI agent execution environment.
 
 on:
   workflow_dispatch:
@@ -134,10 +127,8 @@ jobs:
           TOTAL_ALERTS=$(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json)
           
           if [ "$TOTAL_ALERTS" -gt 0 ]; then
-            # Create issue to trigger AI agent analysis
-            gh issue create \
-              --title "[Phase 34] CodeQL Alert Analysis Required - $TOTAL_ALERTS alerts fetched" \
-              --body "## CodeQL Alert Fetch Complete
+            # Define the issue body
+            BODY="## CodeQL Alert Fetch Complete
 
 Alert inventory has been fetched and committed to the repository.
 
@@ -161,7 +152,7 @@ Alert inventory has been fetched and committed to the repository.
 cat .codex/security/alert_summary.md
 
 # Extract P0/P1
-jq '.alerts[] | select(.severity == \"critical\" or .severity == \"high\")' \
+jq '.alerts[] | select(.severity == \"critical\" or .severity == \"high\")' \\
   .codex/security/alert_inventory.json > .codex/security/critical_alerts.json
 
 # Continue with remediation
@@ -171,7 +162,12 @@ jq '.alerts[] | select(.severity == \"critical\" or .severity == \"high\")' \
 **References:**
 - Master Planset: \`.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md\`
 - Agent Spec: \`.github/agents/codeql-alert-resolution-agent.md\`
-- Execution Plan: \`.codex/security/EXECUTION_PLAN_WITH_TOKEN_ACCESS.md\`" \
+- Execution Plan: \`.codex/security/EXECUTION_PLAN_WITH_TOKEN_ACCESS.md\`"
+            
+            # Create issue to trigger AI agent analysis
+            gh issue create \
+              --title "[Phase 34] CodeQL Alert Analysis Required - $TOTAL_ALERTS alerts fetched" \
+              --body "$BODY" \
               --label "security,phase-34,ai-agent" \
               --assignee mbaetiong || echo "Issue creation skipped (may already exist)"
           fi
