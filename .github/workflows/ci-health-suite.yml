@@ -1,6 +1,6 @@
 name: CI/CD Health Suite
 
-on:
+"on":
   # Scheduled monitoring
   schedule:
     # Health check: Every 3 hours

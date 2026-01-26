@@ -1,6 +1,6 @@
 name: Cache Management Suite
 
-on:
+"on":
   # Scheduled cache operations
   schedule:
     # Warmup: Every 6 hours to keep live tier active
