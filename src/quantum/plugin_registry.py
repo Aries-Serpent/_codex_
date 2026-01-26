@@ -171,7 +171,9 @@ class QuantumPluginRegistry:
             plugin: Plugin to register
         """
         self.plugins[plugin.name] = plugin
-        self.dependency_graph.add_node(plugin.name, {"plugin": plugin})
+        self.dependency_graph.add_node(
+            plugin.name, dependencies=plugin.dependencies, data={"plugin": plugin}
+        )
 
         for dep in plugin.dependencies:
             self.dependency_graph.add_edge(plugin.name, dep)
