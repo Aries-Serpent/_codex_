@@ -1,0 +1,177 @@
+name: Phase 34 - CodeQL Alert Fetch
+#
+# Fetches all CodeQL code scanning alerts from GitHub Security tab
+# Part of: Phase 34 Alert Resolution Execution
+# Created: 2026-01-26
+#
+# This workflow has security-events:read permission and can fetch alerts
+# that are not accessible to the AI agent execution environment.
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_pages:
+        description: 'Maximum pages to fetch (100 alerts per page)'
+        default: '60'
+        required: false
+        type: string
+      severity_filter:
+        description: 'Filter by severity (optional)'
+        required: false
+        type: choice
+        options:
+          - 'all'
+          - 'critical'
+          - 'high'
+          - 'medium'
+          - 'low'
+        default: 'all'
+
+permissions:
+  security-events: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  fetch-alerts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: copilot/resolve-codeql-notifications
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Fetch CodeQL Alerts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching CodeQL alerts..."
+          
+          # Determine severity filter
+          SEVERITY_ARG=""
+          if [ "${{ github.event.inputs.severity_filter }}" != "all" ]; then
+            SEVERITY_ARG="--severity ${{ github.event.inputs.severity_filter }}"
+          fi
+          
+          # Run fetch script
+          python scripts/security/fetch_codeql_alerts.py \
+            --owner Aries-Serpent \
+            --repo _codex_ \
+            --state open \
+            --max-pages ${{ github.event.inputs.max_pages }} \
+            --output-dir .codex/security \
+            $SEVERITY_ARG \
+            --verbose
+      
+      - name: Verify Alert Data
+        run: |
+          echo "Alert inventory files:"
+          ls -lh .codex/security/
+          
+          if [ -f .codex/security/alert_inventory.json ]; then
+            echo "Total alerts fetched:"
+            jq '.total_alerts' .codex/security/alert_inventory.json
+            
+            echo "Alerts by severity:"
+            jq '.alerts | group_by(.severity) | map({severity: .[0].severity, count: length})' \
+              .codex/security/alert_inventory.json
+          fi
+      
+      - name: Generate Summary Report
+        run: |
+          if [ -f .codex/security/alert_summary.md ]; then
+            echo "## CodeQL Alert Fetch Summary" >> $GITHUB_STEP_SUMMARY
+            cat .codex/security/alert_summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Commit Alert Data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if [ -n "$(git status --porcelain .codex/security/)" ]; then
+            git add .codex/security/
+            git commit -m "data: Phase 34 CodeQL alert inventory ($(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json 2>/dev/null || echo 'N/A') alerts fetched)"
+            git push
+            echo "✅ Alert data committed to repository"
+          else
+            echo "ℹ️ No changes to commit"
+          fi
+      
+      - name: Upload Alert Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-alert-inventory
+          path: |
+            .codex/security/alert_inventory.json
+            .codex/security/alert_summary.md
+            .codex/security/alert_inventory.csv
+          retention-days: 30
+          if-no-files-found: warn
+      
+      - name: Create Issue for Analysis
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if alert data exists
+          if [ ! -f .codex/security/alert_inventory.json ]; then
+            echo "No alert data found, skipping issue creation"
+            exit 0
+          fi
+          
+          TOTAL_ALERTS=$(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json)
+          
+          if [ "$TOTAL_ALERTS" -gt 0 ]; then
+            # Create issue to trigger AI agent analysis
+            gh issue create \
+              --title "[Phase 34] CodeQL Alert Analysis Required - $TOTAL_ALERTS alerts fetched" \
+              --body "## CodeQL Alert Fetch Complete
+
+Alert inventory has been fetched and committed to the repository.
+
+**Total Alerts:** $TOTAL_ALERTS
+**Location:** \`.codex/security/alert_inventory.json\`
+**Artifacts:** Available in workflow run
+
+### Next Steps
+
+@copilot Please analyze the alert data and proceed with Phase 34 execution:
+
+1. Review alert distribution by severity and pattern
+2. Extract P0/P1 (critical/high) alerts for immediate attention
+3. Generate automated fixes using security codemods
+4. Create PRs for high-confidence fixes
+5. Update progress dashboard
+
+**Commands:**
+\`\`\`bash
+# Analyze alerts
+cat .codex/security/alert_summary.md
+
+# Extract P0/P1
+jq '.alerts[] | select(.severity == \"critical\" or .severity == \"high\")' \
+  .codex/security/alert_inventory.json > .codex/security/critical_alerts.json
+
+# Continue with remediation
+@workspace codeql-alert-resolution-agent
+\`\`\`
+
+**References:**
+- Master Planset: \`.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md\`
+- Agent Spec: \`.github/agents/codeql-alert-resolution-agent.md\`
+- Execution Plan: \`.codex/security/EXECUTION_PLAN_WITH_TOKEN_ACCESS.md\`" \
+              --label "security,phase-34,ai-agent" \
+              --assignee mbaetiong || echo "Issue creation skipped (may already exist)"
+          fi
