@@ -62,7 +62,7 @@ jobs:
         with:
           fetch-depth: 0
       
-      - uses: ./.github/actions/setup-python-cached@main
+      - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
@@ -92,7 +92,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: ./.github/actions/setup-python-cached@main
+      - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral

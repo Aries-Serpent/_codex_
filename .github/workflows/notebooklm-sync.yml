@@ -147,7 +147,7 @@ jobs:
           fi
 
       - name: Setup Python 3.12 for Security Scanning with tiered cache
-        uses: ./.github/actions/setup-python-cached@main
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           cache-tier: ephemeral  # Sync jobs can use ephemeral cache
