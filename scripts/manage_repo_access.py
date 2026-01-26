@@ -39,7 +39,7 @@ Usage:
 """
 
 import argparse, json, os, sys
-from datetime import datetime
+from datetime import datetime, timezone
 try:
     from github import Github
     import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -79,7 +79,7 @@ class RepoAccessManager:
         
         # Save audit report
         with open('access_audit.json', 'w') as f:
-            json.dump({'timestamp': datetime.utcnow().isoformat(), **results}, f, indent=2)
+            json.dump({'timestamp': datetime.now(timezone.utc).isoformat(), **results}, f, indent=2)
         
         return results
     
@@ -88,7 +88,7 @@ class RepoAccessManager:
         print(f"Auditing repo: {repo_name}")
         
         repo = self.github.get_repo(repo_name)
-        audit = {'with_mfa': [], 'without_mfa': [], 'timestamp': datetime.utcnow().isoformat()}
+        audit = {'with_mfa': [], 'without_mfa': [], 'timestamp': datetime.now(timezone.utc).isoformat()}
         
         for collab in repo.get_collaborators():
             if self.check_user_mfa(collab.login):

@@ -39,7 +39,7 @@ import importlib.util
 import json
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -131,7 +131,7 @@ class AuditRunner:
         """
         logger.info("Starting full audit of %s", target_path)
         results = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "target": str(target_path),
             "audits": {},
         }

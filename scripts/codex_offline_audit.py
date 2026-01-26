@@ -107,7 +107,7 @@ class AuditContext:
 
 
 def timestamp() -> str:
-    return _dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat() + "Z"
 
 
 def record_error(

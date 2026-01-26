@@ -25,7 +25,7 @@ import argparse
 import re
 import shutil
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -208,7 +208,7 @@ class WorkflowDeprecator:
         record = f"""
 ## {self.workflow_file}
 
-**Deprecation Date:** {datetime.utcnow().isoformat()}Z  
+**Deprecation Date:** {datetime.now(timezone.utc).isoformat()}Z  
 **Replaced By:** {suite_file}  
 **Status:** Archived
 
@@ -259,7 +259,7 @@ class WorkflowDeprecator:
         content = f"""# {self.workflow_file} - Deprecated
 
 **Status:** ⚠️ DEPRECATED  
-**Deprecation Date:** {datetime.utcnow().strftime('%Y-%m-%d')}  
+**Deprecation Date:** {datetime.now(timezone.utc).strftime('%Y-%m-%d')}  
 **Replaced By:** [{suite_file}](../{suite_file})
 
 ## Migration Guide
@@ -289,7 +289,7 @@ If you were referencing `{self.workflow_file}` in your code or documentation:
 
 ---
 
-**Last Updated:** {datetime.utcnow().isoformat()}Z
+**Last Updated:** {datetime.now(timezone.utc).isoformat()}Z
 """
         
         if self.dry_run:

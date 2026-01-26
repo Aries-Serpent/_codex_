@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -45,7 +48,6 @@ Exit Codes:
  0 success
  2 structural issues
 """
-from __future__ import annotations
 
 import json
 import sys

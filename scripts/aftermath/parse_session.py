@@ -44,7 +44,7 @@ import re
 import sys
 import yaml
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 
@@ -162,7 +162,7 @@ class AftermathParser:
         output_dir.mkdir(parents=True, exist_ok=True)
         
         session_id = data.get('meta', {}).get('session_id', 'unknown')
-        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
         
         # Save individual session file
         session_file = output_dir / f"session_{timestamp}_{session_id}.yaml"
@@ -210,7 +210,7 @@ class AftermathParser:
         
         checkpoint = {
             'session_id': session_id,
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'status': data.get('status', 'unknown'),
             'phases_complete': data.get('phases_complete', []),
             'phases_active': data.get('phases_active', []),

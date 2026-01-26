@@ -21,7 +21,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -209,7 +209,7 @@ def main():
     else:
         total = len(results)
         valid = sum(1 for r in results if r.is_valid)
-        print(f"\nValidation Report - Generated: {datetime.utcnow().isoformat()}Z")
+        print(f"\nValidation Report - Generated: {datetime.now(timezone.utc).isoformat()}Z")
         print(f"Total: {total} | Valid: {valid} | Invalid: {total-valid}")
         
         for result in sorted(results, key=lambda r: r.severity_score, reverse=True):

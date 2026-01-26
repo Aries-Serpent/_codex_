@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Prefix Enforcement Validator (BUNDLE_PREFIX_MODE)
@@ -49,7 +52,6 @@ Outputs:
 - audit_artifacts/prefix_validation_report.json
 """
 
-from __future__ import annotations
 
 import json
 import os

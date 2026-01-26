@@ -39,7 +39,7 @@ import logging
 import os
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Set up logging
@@ -189,7 +189,7 @@ class PromptGenerator:
             'pr_author': os.environ.get('GITHUB_ACTOR', 'unknown'),
             'pr_title': os.environ.get('PR_TITLE', f'PR #{pr_number}'),
             'date': datetime.now().strftime('%Y-%m-%d'),
-            'timestamp': datetime.utcnow().isoformat() + 'Z',
+            'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
     

@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -43,7 +46,6 @@ Artifacts (created or hashed if present):
  - reports/capability_matrix_<ts>.md
  - audit_run_manifest.json
 """
-from __future__ import annotations
 
 import hashlib
 import json

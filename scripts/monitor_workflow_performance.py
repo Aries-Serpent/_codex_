@@ -24,7 +24,7 @@ import json
 import os
 import sys
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -102,7 +102,7 @@ class WorkflowMonitor:
     def fetch_workflow_runs(self, since: Optional[datetime] = None) -> List[Dict[str, Any]]:
         """Fetch workflow runs from GitHub API."""
         if since is None:
-            since = datetime.utcnow() - timedelta(days=self.days)
+            since = datetime.now(timezone.utc) - timedelta(days=self.days)
         
         url = f'{self.base_url}/actions/runs'
         params = {
@@ -264,7 +264,7 @@ class WorkflowMonitor:
     def generate_report(self, metrics: Dict[str, Any], comparisons: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Generate comprehensive performance report."""
         report = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat() + 'Z',
             'analysis_period_days': self.days,
             'repository': self.repo,
             'consolidated_workflows': {},

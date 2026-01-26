@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -47,7 +50,6 @@ Environment Knobs (optional):
   TOKEN_SIMILARITY_MAX_FILES=50 -> cap evidence set to reduce cost
   TOKEN_SIMILARITY_MIN_LEN=5   -> skip tokens shorter than threshold
 """
-from __future__ import annotations
 
 import json
 import math

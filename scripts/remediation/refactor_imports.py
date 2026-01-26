@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -46,7 +49,6 @@ Notes:
 - Uses ast for correctness; preserves formatting by writing back source (best-effort).
 - Recommended workflow: run --dry-run, review diffs, run with --apply --batch-size.
 """
-from __future__ import annotations
 import argparse
 import ast
 import json

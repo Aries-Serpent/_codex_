@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Secret Context Correlation (P6)
@@ -52,7 +55,6 @@ Outputs:
 Integration:
   Severity classification can use elevated context for higher weights.
 """
-from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 

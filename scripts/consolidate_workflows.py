@@ -39,7 +39,7 @@ Implements phased consolidation with validation gates.
 from __future__ import annotations
 
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -95,7 +95,7 @@ class WorkflowConsolidator:
         metadata_file = destination.with_suffix(".yml.meta")
         with open(metadata_file, "w") as f:
             yaml.dump({
-                "disabled_at": datetime.utcnow().isoformat() + "Z",
+                "disabled_at": datetime.now(timezone.utc).isoformat() + "Z",
                 "reason": reason,
                 "backed_up_to": str(backup_dir / workflow_file),
                 "backup_sha256": self._calculate_sha256(backup_dir / workflow_file),
@@ -193,7 +193,7 @@ class WorkflowConsolidator:
         report = f"""
 # Workflow Consolidation Report
 
-**Date**: {datetime.utcnow().isoformat()}Z
+**Date**: {datetime.now(timezone.utc).isoformat()}Z
 **Status**: Complete
 
 ## Summary

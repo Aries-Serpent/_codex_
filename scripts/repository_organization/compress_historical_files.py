@@ -79,11 +79,13 @@ def compress_file_gzip(source_path: Path, dry_run: bool = False) -> Path | None:
             with gzip.open(dest_path, "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
         
+        # Capture original size before removing original file
+        original_size = source_path.stat().st_size
+        
         # Remove original file
         source_path.unlink()
         
         # Calculate compression ratio
-        original_size = source_path.stat().st_size if source_path.exists() else 0
         compressed_size = dest_path.stat().st_size
         ratio = (1 - compressed_size / original_size) * 100 if original_size > 0 else 0
         
@@ -258,7 +260,7 @@ def main() -> int:
     parser.add_argument(
         "--log-actions",
         action="store_true",
-        default=True,
+        dest="log_actions",
         help="Log compression to action log (default: True)",
     )
     parser.add_argument(
@@ -267,6 +269,7 @@ def main() -> int:
         dest="log_actions",
         help="Do not log compression to action log",
     )
+    parser.set_defaults(log_actions=True)
     
     args = parser.parse_args()
     

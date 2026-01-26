@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 Cherry-Pick Strategy for Clean Merge
@@ -40,7 +43,6 @@ Strategy:
 2. Cherry-pick only the commits with actual fixes (not merge commits)
 3. This gives a clean history without conflicts
 """
-from __future__ import annotations
 
 import subprocess
 import sys

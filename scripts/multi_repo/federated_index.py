@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -60,7 +63,6 @@ Structure:
   ]
 }
 """
-from __future__ import annotations
 
 import json
 import os

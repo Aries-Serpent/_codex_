@@ -40,7 +40,7 @@ Usage:
 """
 
 import argparse, json, os, sys
-from datetime import datetime
+from datetime import datetime, timezone
 try:
     from github import Github
 except ImportError:
@@ -75,7 +75,7 @@ class OAuthAppManager:
         print("Syncing OAuth app configuration...")
         
         # Placeholder for actual sync logic
-        result = {'synced': True, 'timestamp': datetime.utcnow().isoformat()}
+        result = {'synced': True, 'timestamp': datetime.now(timezone.utc).isoformat()}
         
         print("✓ Sync complete")
         return result

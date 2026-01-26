@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -53,7 +56,6 @@ Notes / Limitations:
 - Evidence path is configurable via ARCHIVAL_EVIDENCE_PATH environment variable.
 - Non-exhaustive: intended as a CI gate to surface missing ADR/tombstone/evidence.
 """
-from __future__ import annotations
 
 import argparse
 import json

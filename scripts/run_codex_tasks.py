@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 
 import re
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,7 +65,7 @@ ERROR_LOG = LOGS_DIR / "error_captures.log"
 def log_error(step: str, error: Exception) -> None:
     """Log an error capture block for ChatGPT‑5 troubleshooting."""
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
     with ERROR_LOG.open("a", encoding="utf-8") as fh:
         fh.write(
             f"Question for ChatGPT-5 {timestamp}:\n"
@@ -127,7 +127,7 @@ def run_quality_gates() -> None:
 def append_changelog() -> None:
     """Append maintenance summary to docs/CHANGELOG.md."""
     changelog = ROOT / "docs" / "CHANGELOG.md"
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     entry = (
         f"\n### Unreleased - {timestamp}\n"
         "- Updated README references to current configuration structure.\n"

@@ -45,7 +45,7 @@ import argparse
 import sys
 import yaml
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 
 
@@ -133,7 +133,7 @@ class CognitiveBrainUpdater:
         # Build insights section
         insights = [
             "\n## 🧠 AfterMath Insights (Last 5 Sessions)\n",
-            f"**Last Updated**: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}\n\n",
+            f"**Last Updated**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}\n\n",
             "### Session Metrics\n",
             f"- **Total Sessions**: {metrics['sessions']}\n",
             f"- **Commits**: {metrics['commits']}\n",

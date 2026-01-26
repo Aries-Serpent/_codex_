@@ -39,7 +39,7 @@ Usage:
 """
 
 import argparse, json, os, sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 try:
     from github import Github
     import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -70,7 +70,7 @@ class GitHubUserProvisioner:
             'enrollment_url': f'https://github.com/{self.repo_name}/issues/new?title=MFA+Setup+{username}',
             'mfa_secret_length': len(secret.secret),
             'backup_codes_count': len(backup_codes),
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         }
         
         print(f"✓ Provisioned {username} (MFA ready)")
@@ -92,7 +92,7 @@ class GitHubUserProvisioner:
         
         # Save results
         with open('enrollment_results.json', 'w') as f:
-            json.dump({'users': results, 'deadline': (datetime.utcnow() + timedelta(days=7)).isoformat()}, f, indent=2)
+            json.dump({'users': results, 'deadline': (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()}, f, indent=2)
         
         return results
 

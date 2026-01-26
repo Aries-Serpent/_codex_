@@ -21,7 +21,7 @@ def security(session):
     except Exception as e:
         session.error(f"Failed to parse pip-audit JSON: {e}")
 
-    now = datetime.datetime.utcnow().date()
+    now = datetime.datetime.now(timezone.utc).date()
     allow_ids_active = {
         v["id"] for v in allowlist
         if datetime.date.fromisoformat(v["expiry_date"]) >= now

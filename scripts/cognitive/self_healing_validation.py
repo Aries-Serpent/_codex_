@@ -11,7 +11,7 @@ Version: 1.0.0
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -55,7 +55,7 @@ class SelfHealingValidator:
         new_confidence = max(0.0, min(1.0, initial_confidence + confidence_delta))
         
         result = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "workflow": workflow,
             "action_type": action_type,
             "validation_status": validation_status,

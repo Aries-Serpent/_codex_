@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 List shims & canonical module inventory.
@@ -38,7 +41,6 @@ with module ownership, canonical path, and status. Designed to be deterministic.
 Usage:
   python scripts/remediation/list_shims.py --roots training src/training tokenization src/tokenization --output .github/SHIM_INVENTORY.yaml
 """
-from __future__ import annotations
 import argparse
 from pathlib import Path
 import yaml

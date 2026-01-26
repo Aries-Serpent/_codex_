@@ -52,7 +52,7 @@ import json
 import os
 import secrets
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -92,7 +92,7 @@ class GitHubSecretsManager:
             'SESSION_ENCRYPTION_KEY'
         ]
         
-        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
         backup_file = self.backup_dir / f'github_secrets_backup_{timestamp}.json'
         
         backup_data = {
@@ -173,7 +173,7 @@ class GitHubSecretsManager:
         with open('rotation_results.json', 'r+') as f:
             data = json.load(f)
             data['validations'] = validations
-            data['next_rotation_date'] = (datetime.utcnow().replace(day=1) + 
+            data['next_rotation_date'] = (datetime.now(timezone.utc).replace(day=1) + 
                                          timedelta(days=32)).replace(day=1).isoformat()
             data['backup_location'] = str(self.backup_dir)
             f.seek(0)

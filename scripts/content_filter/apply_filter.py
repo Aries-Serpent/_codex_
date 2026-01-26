@@ -28,6 +28,9 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+from __future__ import annotations
+
+
 
 """
 import logging
@@ -44,7 +47,6 @@ Content Filter (P2 Full Implementation with Knob Normalization)
 
 Knobs normalized via scripts.config.parse_knobs.normalize_from_env()
 """
-from __future__ import annotations
 
 import json
 import re
