@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Swagger/OpenAPI-style Documentation for Audit CLI v1.5.4
 
@@ -46,7 +48,6 @@ Example:
         repo_name="my-repo"
     )
 """
-from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path

@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 General maintenance script for executing Codex tasks across multiple capabilities.
 
@@ -47,10 +51,6 @@ Run it locally via:
     python scripts/run_codex_tasks.py
 
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import re
 import subprocess

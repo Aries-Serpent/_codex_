@@ -29,16 +29,16 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Initialize a sample `session_events` table for development.
 
 This script creates a `session_events` table alongside existing Codex logging
 usage. By default it uses `.codex/session_logs.db` but a custom path can be
 provided via `--db-path`.
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import json

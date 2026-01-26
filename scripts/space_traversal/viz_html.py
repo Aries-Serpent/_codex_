@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 HTML visualization dashboard for v1.5.2
 
@@ -51,7 +53,6 @@ Example:
         repo_name="my-repo"
     )
 """
-from __future__ import annotations
 
 import json
 from datetime import datetime

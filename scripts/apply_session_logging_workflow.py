@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 End-to-end workflow to add session logging context manager, helper, CLI query,
 tests, and docs to the _codex_ repository (branch 0B_base_).
@@ -36,10 +40,6 @@ Respects the guardrail: DO NOT ACTIVATE ANY GitHub Actions files.
 
 Phases implemented: 1..6 (see top-level plan).
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import difflib
 import json

@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """Capability Audit Runner Script.
 
 Run regular audits to maintain 99%+ scores across all capabilities.
@@ -39,8 +41,6 @@ Usage:
     python scripts/run_capability_audit.py --output json
     python scripts/run_capability_audit.py --fail-under 0.85
 """
-
-from __future__ import annotations
 
 import argparse
 import json

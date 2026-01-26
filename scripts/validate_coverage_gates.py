@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Validate 3.5% coverage gate enforcement across all test contexts.
 
 This script ensures ``--cov-fail-under=3.5`` is present in the key surfaces that
@@ -44,10 +48,6 @@ document or execute our test suite:
 When a location is missing the flag the script prints a clear failure message
 and exits with status ``1`` so CI can gate the change.
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import re
 import sys

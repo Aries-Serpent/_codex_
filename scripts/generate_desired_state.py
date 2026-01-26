@@ -29,9 +29,9 @@ Last Updated: 2026-01-16
 """
 
 
-"""Generate scaffolds for Zendesk desired state files."""
-
 from __future__ import annotations
+
+"""Generate scaffolds for Zendesk desired state files."""
 
 import json
 from pathlib import Path

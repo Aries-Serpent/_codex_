@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Workflow Secret Decoder
 
@@ -48,8 +50,6 @@ Usage:
     # Generate secret usage report (authorized contexts only)
     python scripts/decode_workflow_secrets.py --report --authorized
 """
-
-from __future__ import annotations
 
 import argparse
 import base64

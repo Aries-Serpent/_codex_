@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 Enhanced environment snapshot with git commit, conda env, and seed tracking.
 
@@ -43,9 +47,6 @@ Usage:
     python scripts/environment_snapshot.py --out env_snapshot.json
     python scripts/environment_snapshot.py --out env_snapshot.json --seed 42
 """
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import json

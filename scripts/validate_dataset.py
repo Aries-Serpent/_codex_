@@ -29,9 +29,9 @@ Last Updated: 2026-01-16
 """
 
 
-"""CLI to validate dataset manifest files."""
-
 from __future__ import annotations
+
+"""CLI to validate dataset manifest files."""
 
 import argparse
 from pathlib import Path

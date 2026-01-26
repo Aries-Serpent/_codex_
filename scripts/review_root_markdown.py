@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Root-level Markdown File Review and Archival Tool.
 
 Implements: R10, R11 - Review root-level markdown files and archive superseded reports.
@@ -39,10 +43,6 @@ for archival based on:
 - Content analysis (superseded, historical, active)
 - Reference analysis (are files referenced elsewhere)
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import json

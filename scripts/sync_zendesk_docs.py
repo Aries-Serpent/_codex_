@@ -29,8 +29,9 @@ Last Updated: 2026-01-16
 """
 
 
-"""Curate the local Zendesk API documentation index."""
 from __future__ import annotations
+
+"""Curate the local Zendesk API documentation index."""
 
 import json
 from pathlib import Path

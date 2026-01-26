@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 Repo audit scanner for Codex Environment. Run locally in your Codex environment.
 
@@ -39,10 +43,6 @@ Outputs:
   - machine-readable JSON summary (audit.json)
   - human-readable markdown (audit.md)
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import fnmatch

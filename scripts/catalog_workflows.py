@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """
 Workflow Catalog Generator
 
@@ -40,8 +42,6 @@ Secret names are tokenized using SHA256 hashing and stored with base64 encoding
 for additional obfuscation. This prevents direct exposure of secret names in the
 inventory file while maintaining utility for internal tooling.
 """
-
-from __future__ import annotations
 
 import base64
 import hashlib

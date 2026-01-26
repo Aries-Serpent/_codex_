@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """Refresh requirements/lock.txt and validate dependency alignment.
 
 This utility compiles the repository lockfile according to the
@@ -49,9 +53,6 @@ python scripts/refresh_requirements_lock.py --skip-compile  # validate existing 
 python scripts/refresh_requirements_lock.py --skip-validate # generate lock without pip dry-run
 ```
 """
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import argparse
 import datetime as _dt

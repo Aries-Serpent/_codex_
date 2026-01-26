@@ -29,6 +29,10 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+
 """
 check_dependency_evidence.py — Minimal schema validation for dependency_ops.jsonl
 
@@ -39,10 +43,6 @@ Exit codes:
   0 = OK
   2 = Malformed or missing required keys
 """
-
-from __future__ import annotations
-import logging
-logger = logging.getLogger(__name__)
 
 import json
 import sys

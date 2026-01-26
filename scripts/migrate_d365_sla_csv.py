@@ -29,6 +29,8 @@ Last Updated: 2026-01-16
 """
 
 
+from __future__ import annotations
+
 """Migrate legacy D365 SLA configuration from CSV to versioned Policy Objects.
 
 This script converts configs/deployment/d365/slas.csv into a structured
@@ -38,8 +40,6 @@ Usage:
     python scripts/migrate_d365_sla_csv.py
     python scripts/migrate_d365_sla_csv.py --csv configs/deployment/d365/slas.csv --output configs/deployment/d365/sla_policies.json
 """
-
-from __future__ import annotations
 
 import argparse
 import json
