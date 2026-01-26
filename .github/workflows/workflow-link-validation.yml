@@ -86,4 +86,7 @@ jobs:
           name: link-validation-report
           path: |
             ${{ github.workspace }}/.github/workflows/*.md
+            ${{ github.workspace }}/docs/**/*.md
+            ${{ github.workspace }}/**/*.md
+          if-no-files-found: warn
           retention-days: 7

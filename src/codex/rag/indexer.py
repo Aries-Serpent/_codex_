@@ -102,15 +102,20 @@ def embed_chunks(
 
     # Load model directly to CPU
     logger.info(f"Loading embedding model: {model_name}")
-    model = SentenceTransformer(
-        model_name, 
-        cache_folder=cache_dir,
-        device="cpu"  # Explicitly load to CPU
-    )
-    # Apply safe model loading as additional safety check
-    model = safe_model_load(model, device="cpu")
-    # Ensure model is in eval mode
-    model.eval()
+    try:
+        model = SentenceTransformer(
+            model_name, 
+            cache_folder=cache_dir,
+            device="cpu"  # Explicitly load to CPU
+        )
+        # Ensure model is in eval mode
+        model.eval()
+    except Exception as e:
+        logger.warning(f"Direct load failed, attempting safe_model_load: {e}")
+        # Fallback: load without device specification then move safely
+        model = SentenceTransformer(model_name, cache_folder=cache_dir)
+        model = safe_model_load(model, device="cpu")
+        model.eval()
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
