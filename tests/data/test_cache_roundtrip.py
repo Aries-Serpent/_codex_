@@ -17,6 +17,7 @@ from src.training.datasets import TextDataset
 def test_cache_roundtrip(tmp_path):
     from transformers import AutoTokenizer
 
+    # Load tokenizer without invalid revision parameter
     tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
