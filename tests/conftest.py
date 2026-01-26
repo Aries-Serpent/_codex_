@@ -734,3 +734,78 @@ def require_rag_dependencies(rag_dependencies_available):
     if not rag_dependencies_available:
         pytest.skip("RAG dependencies (sentence_transformers, faiss) are not installed")
 
+
+@pytest.fixture(autouse=True)
+def ensure_cpu_device():
+    """
+    Ensure tests use CPU device and avoid meta tensor issues.
+    Applied automatically to all tests to prevent PyTorch meta tensor errors.
+    """
+    try:
+        import torch
+        
+        # Set default device to CPU
+        if torch.cuda.is_available():
+            torch.set_default_device("cpu")
+        
+        # Ensure deterministic behavior
+        torch.manual_seed(0)
+        
+        yield
+        
+        # Cleanup
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except ImportError:
+        # torch not available, skip fixture
+        yield
+
+
+@pytest.fixture
+def mock_sentence_transformer(monkeypatch):
+    """
+    Mock SentenceTransformer to avoid actual model downloads in tests.
+    Use this fixture when you want to test RAG logic without loading real models.
+    """
+    class MockSentenceTransformer:
+        def __init__(self, model_name, cache_folder=None, device="cpu"):
+            self.model_name = model_name
+            self.device = device
+            self.cache_folder = cache_folder
+            
+        def encode(self, texts, batch_size=32, show_progress_bar=False, 
+                   convert_to_numpy=True):
+            import numpy as np
+            # Return dummy embeddings with correct shape
+            if isinstance(texts, str):
+                texts = [texts]
+            return np.random.randn(len(texts), 384).astype(np.float32)
+        
+        def to(self, device):
+            self.device = device
+            return self
+        
+        def to_empty(self, device):
+            self.device = device
+            return self
+        
+        def eval(self):
+            return self
+        
+        def parameters(self):
+            # Return empty generator to avoid meta tensor checks
+            return iter([])
+    
+    try:
+        import sentence_transformers
+        monkeypatch.setattr(
+            "sentence_transformers.SentenceTransformer", 
+            MockSentenceTransformer
+        )
+    except ImportError:
+        # sentence_transformers not available, nothing to mock
+        pass
+    
+    return MockSentenceTransformer
+
+
