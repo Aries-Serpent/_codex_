@@ -90,8 +90,8 @@ hydra = [
 ]
 dev = [
   "pytest>=7.4",
-  "pytest-cov>=4.1",
-  "pytest-xdist>=3.3",
+  "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.5.0",
   "pytest-randomly>=3.15",
   "pytest-timeout>=2.1",
   "pytest-rerunfailures>=12.0",
