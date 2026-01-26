@@ -65,7 +65,10 @@ def prioritize_alerts(alerts: List[Dict]) -> Dict[str, List[Dict]]:
             priority_map['P1'].append(alert)
         elif severity == 'medium':
             priority_map['P2'].append(alert)
+        elif severity == 'low':
+            priority_map['P3'].append(alert)
         else:
+            # Reserve P4 for informational or unexpected severities
             priority_map['P4'].append(alert)
     
     return priority_map

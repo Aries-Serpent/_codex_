@@ -26,7 +26,9 @@ python scripts/security/fetch_codeql_alerts.py --output-dir /tmp/alerts
 
 **Requirements:**
 - `requests` library: `pip install requests`
-- GitHub token with `security_events:read` permission (via `GITHUB_TOKEN` env var)
+- GitHub token with `security_events` scope (for read operations, via `GITHUB_TOKEN` env var)
+  - Note: In GitHub Actions workflows, this is configured as `security-events: read` permission
+  - For personal access tokens (PATs), use the `security_events` scope (no `:read`/`:write` suffix)
 
 **Outputs:**
 - `.codex/security/alert_inventory.json` - Complete alert data
@@ -67,7 +69,9 @@ python scripts/security/close_codeql_alert.py \
 
 **Requirements:**
 - `requests` library: `pip install requests`
-- GitHub token with `security_events:write` permission (via `GITHUB_TOKEN` env var)
+- GitHub token with `security_events` scope (for write operations, via `GITHUB_TOKEN` env var)
+  - Note: In GitHub Actions workflows, this is configured as `security-events: write` permission
+  - For personal access tokens (PATs), use the `security_events` scope (no `:read`/`:write` suffix)
 
 **Dismissal Reasons:**
 - `fixed` - A fix has been deployed

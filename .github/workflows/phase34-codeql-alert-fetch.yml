@@ -24,16 +24,29 @@ permissions:
   security-events: read
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   fetch-alerts:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: copilot/resolve-codeql-notifications
+
+      - name: Debug Workflow Inputs
+        if: runner.debug == '1'
+        run: |
+          echo "::group::Workflow Debug Information"
+          echo "Workflow: phase34-codeql-alert-fetch"
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Max pages: ${{ github.event.inputs.max_pages }}"
+          echo "Severity filter: ${{ github.event.inputs.severity_filter }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "::endgroup::"
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -123,54 +136,43 @@ jobs:
             echo "No alert data found, skipping issue creation"
             exit 0
           fi
-          
+
           TOTAL_ALERTS=$(jq -r '.total_alerts // 0' .codex/security/alert_inventory.json)
-          
+
           if [ "$TOTAL_ALERTS" -gt 0 ]; then
-            # Define the issue body
-            BODY=$(cat <<EOF
-## CodeQL Alert Fetch Complete
+            # Build issue body using echo to avoid YAML heredoc parsing issues
+            {
+              echo "## CodeQL Alert Fetch Complete"
+              echo ""
+              echo "Alert inventory has been fetched and committed to the repository."
+              echo ""
+              echo "**Total Alerts:** $TOTAL_ALERTS"
+              echo "**Location:** .codex/security/alert_inventory.json"
+              echo "**Artifacts:** Available in workflow run"
+              echo ""
+              echo "### Next Steps"
+              echo ""
+              echo "@copilot Please analyze the alert data and proceed with Phase 34 execution:"
+              echo ""
+              echo "1. Review alert distribution by severity and pattern"
+              echo "2. Extract P0/P1 (critical/high) alerts for immediate attention"
+              echo "3. Generate automated fixes using security codemods"
+              echo "4. Create PRs for high-confidence fixes"
+              echo "5. Update progress dashboard"
+              echo ""
+              echo "**Commands:**"
+              echo "See .codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md for execution commands"
+              echo ""
+              echo "**References:**"
+              echo "- Master Planset: .codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md"
+              echo "- Agent Spec: .github/agents/codeql-alert-resolution-agent.md"
+              echo "- Execution Plan: .codex/security/EXECUTION_PLAN_WITH_TOKEN_ACCESS.md"
+            } > /tmp/issue_body.md
 
-Alert inventory has been fetched and committed to the repository.
-
-**Total Alerts:** $TOTAL_ALERTS
-**Location:** \`.codex/security/alert_inventory.json\`
-**Artifacts:** Available in workflow run
-
-### Next Steps
-
-@copilot Please analyze the alert data and proceed with Phase 34 execution:
-
-1. Review alert distribution by severity and pattern
-2. Extract P0/P1 (critical/high) alerts for immediate attention
-3. Generate automated fixes using security codemods
-4. Create PRs for high-confidence fixes
-5. Update progress dashboard
-
-**Commands:**
-\`\`\`bash
-# Analyze alerts
-cat .codex/security/alert_summary.md
-
-# Extract P0/P1
-jq '.alerts[] | select(.severity == \"critical\" or .severity == \"high\")' \\
-  .codex/security/alert_inventory.json > .codex/security/critical_alerts.json
-
-# Continue with remediation
-@workspace codeql-alert-resolution-agent
-\`\`\`
-
-**References:**
-- Master Planset: \`.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md\`
-- Agent Spec: \`.github/agents/codeql-alert-resolution-agent.md\`
-- Execution Plan: \`.codex/security/EXECUTION_PLAN_WITH_TOKEN_ACCESS.md\`
-EOF
-)
-            
-            # Create issue to trigger AI agent analysis
+            # Create issue
             gh issue create \
               --title "[Phase 34] CodeQL Alert Analysis Required - $TOTAL_ALERTS alerts fetched" \
-              --body "$BODY" \
+              --body-file /tmp/issue_body.md \
               --label "security,phase-34,ai-agent" \
               --assignee mbaetiong || echo "Issue creation skipped (may already exist)"
           fi
