@@ -290,9 +290,9 @@ fadfef1 - fix: Phase 2A quick wins - EntanglementManager signature
 
 **Documentation:**
 - Plan files: `.github/plans/plan0-plan6.md`
-- Analysis: `CI_CD_ANALYSIS_FINAL_REPORT.md`
-- Quick guide: `REMAINING_FIXES_QUICK_GUIDE.md`
-- Phase 2 summary: `PR_2968_RESOLUTION_SUMMARY.md`
+- Analysis: `../validation/CI_CD_ANALYSIS_FINAL_REPORT.md`
+- Quick guide: `../../guides/REMAINING_FIXES_QUICK_GUIDE.md`
+- Phase 2 summary: `../validation/PR_2968_RESOLUTION_SUMMARY.md`
 
 **Contact:**
 - Primary: @mbaetiong

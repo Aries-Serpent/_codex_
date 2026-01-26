@@ -110,9 +110,9 @@
 3. `PHASE_4_VALIDATION_STATUS.md` - Phase 4 CI/CD validation framework
 4. `PHASE_5_COMPLETE.md` - This document (Phase 5 retrospective)
 5. `CI_CD_ANALYSIS_FINAL_REPORT.md` - Initial failure analysis (21+ issues)
-6. `CI_FIX_SUMMARY.md` - Phase 1 fix details
+6. `../validation/CI_FIX_SUMMARY.md` - Phase 1 fix details
 7. `REMAINING_FIXES_QUICK_GUIDE.md` - Quick reference guide
-8. `PYTHON_312_MIGRATION_GUIDE.md` - User migration guide (NEW)
+8. `../../guides/PYTHON_312_MIGRATION_GUIDE.md` - User migration guide (NEW)
 
 **Plan Files Referenced:**
 - `.github/plans/plan0.md` - Master verification
@@ -313,7 +313,7 @@ black --check .
 - Phase 3 Summary: `PHASE_3_EXECUTION_COMPLETE.md`
 - Phase 4 Status: `PHASE_4_VALIDATION_STATUS.md`
 - Phase 5 Complete: `PHASE_5_COMPLETE.md` (this document)
-- Migration Guide: `PYTHON_312_MIGRATION_GUIDE.md`
+- Migration Guide: `../../guides/PYTHON_312_MIGRATION_GUIDE.md`
 - Quick Reference: `REMAINING_FIXES_QUICK_GUIDE.md`
 
 ---
