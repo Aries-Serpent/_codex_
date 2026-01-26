@@ -22,7 +22,6 @@ Options:
 """
 
 import argparse
-import json
 import re
 import shutil
 import sys
