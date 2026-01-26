@@ -1,8 +1,8 @@
 # QA Walkthrough Summary - _codex_ Repository
 
-**Last Updated**: 2026-01-21  
+**Last Updated**: 2026-01-26  
 **Repository**: _codex_  
-**Status**: Phase 21.1 Complete - Comprehensive QA Walkthrough Update
+**Status**: Phase 21.1 Complete - External Storage Offload Implemented
 
 ---
 
@@ -10,7 +10,9 @@
 
 This document provides a comprehensive summary of the QA walkthrough for the _codex_ repository, covering test coverage, documentation quality, security posture, and improvement proposals. The repository is currently executing a **100% Coverage Initiative** across tests, documentation, and plans.
 
-### Current State (2026-01-21)
+**Recent Update (2026-01-26)**: Implemented external storage offload strategy, moving 32 historical files (~6.8MB) to `misc/repo-owner-review/` while maintaining organization for effective QA walkthrough analysis.
+
+### Current State (2026-01-26)
 
 | Metric | Current | Target | Gap |
 |--------|---------|--------|-----|
@@ -24,10 +26,25 @@ This document provides a comprehensive summary of the QA walkthrough for the _co
 | **GitHub Actions Workflows** | 88 workflows | - | - |
 | **Custom Agents** | 109 agents | - | - |
 | **Services Modules** | 44 Python files | - | - |
+| **Repository Size Reduction** | ~6.8MB offloaded | - | - |
 
-### Recent Progress (Phase 21.1 - Current Update)
+### Recent Progress
 
-- ✅ **Phase 21.1 Complete**: Comprehensive QA Walkthrough Update
+**Phase 21.2 (2026-01-26): External Storage Offload** ✅
+- ✅ Identified 32 files for external storage (~6.8MB)
+- ✅ Created organized offload structure in `misc/repo-owner-review/`
+- ✅ Moved historical coverage reports (8 files)
+- ✅ Moved historical logs (7 files)
+- ✅ Moved historical artifacts (7 files)
+- ✅ Moved archive files (3 files)
+- ✅ Moved temporary outputs (1 directory)
+- ✅ Moved deprecated reports (6 files)
+- ✅ Created `OFFLOAD_INDEX.md` with complete inventory
+- ✅ Created README for each offload category (6 READMEs)
+- ✅ Updated `codebase_map.json` with offload structure
+- ✅ Logged actions to `.codex/action_log.ndjson`
+
+**Phase 21.1 (2026-01-21): Comprehensive QA Walkthrough Update** ✅
 - ✅ Updated all 11 JSON files in `.codex/qa_walkthrough/`
 - ✅ Updated **coverage_analysis.json** with accurate test function count (15,640+)
 - ✅ Updated **codebase_map.json** with current repository statistics
@@ -37,10 +54,44 @@ This document provides a comprehensive summary of the QA walkthrough for the _co
 - ✅ Updated **improvement_proposals.json** with 6 tracked proposals
 - ✅ Updated **reusable_patterns.json** with 12 architectural patterns
 - ✅ All JSON files validated successfully
-- ✅ Total Python files: **4,191** (up from 3,804)
-- ✅ Total test files: **1,797** (up from 1,756)
-- ✅ Total markdown files: **2,684** (up from 1,530)
-- ✅ Custom agents: **109** (up from 50+)
+
+---
+
+## External Storage Offload (NEW)
+
+### Overview
+
+**Purpose**: Optimize repository size while preserving historical data for QA analysis  
+**Location**: `misc/repo-owner-review/`  
+**Inventory**: See `misc/repo-owner-review/OFFLOAD_INDEX.md`
+
+### Offloaded Categories
+
+| Category | Files | Size | Retention | Path |
+|----------|-------|------|-----------|------|
+| Historical Coverage | 8 | ~2.8MB | Permanent | `historical-coverage/` |
+| Historical Logs | 7 | ~1.4MB | Permanent | `historical-logs/` |
+| Historical Artifacts | 7 | ~500KB | Permanent | `historical-artifacts/` |
+| Archive Files | 3 | ~800KB | Permanent | `archive-files/` |
+| Temporary Outputs | 1 | ~280KB | 90 days | `temp-outputs/` |
+| Deprecated Reports | 6 | ~120KB | 180 days | `deprecated-reports/` |
+| **Total** | **32** | **~6.8MB** | - | - |
+
+### Active Files (Kept in Main Repo)
+
+- `coverage_reports/current_coverage.json` (active coverage)
+- `coverage_reports/coverage.json` (active coverage)
+- `logs/error_captures.log` (active error tracking)
+- `artifacts/metrics/` (active metrics)
+- `artifacts/models/` (active ML models)
+
+### QA Walkthrough Integration
+
+The offload structure supports QA walkthrough analysis:
+- **Current State**: Active files in main repository
+- **Historical Trends**: Offloaded files provide historical context
+- **Audit Trail**: `OFFLOAD_INDEX.md` tracks all movements
+- **Retrieval**: Each subdirectory has README with usage instructions
 
 ---
 

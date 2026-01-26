@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "scan_time": "2026-01-26T07:04:43.815588+00:00",
+    "repo_root": "/home/runner/work/_codex_/_codex_",
+    "criteria": {
+      "temp_files_age_days": 90,
+      "deprecated_reports_age_days": 180,
+      "large_file_size_mb": 1.0,
+      "unused_file_age_days": 180
+    }
+  },
+  "summary": {
+    "total_candidates": 2,
+    "by_reason": {
+      "large": 2
+    },
+    "by_category": {
+      "logs": 1,
+      "unknown": 1
+    },
+    "total_size_mb": 13.4
+  },
+  "candidates": [
+    {
+      "path": ".codex/validation/20250910T135035Z/pre-commit.log",
+      "category": "logs",
+      "age_days": 0,
+      "size_mb": 1.04,
+      "reasons": [
+        "large_file_1.0mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "tools/github-secrets-cli/github-secrets-cli",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 12.35,
+      "reasons": [
+        "large_file_12.4mb"
+      ],
+      "recommendation": "compress_or_offload"
+    }
+  ]
+}

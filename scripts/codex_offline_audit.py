@@ -767,7 +767,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         default=None,
-        help="Directory to place generated artifacts (default: _codex_reports/<date>)",
+        help="Directory for NEW audit artifacts (default: _codex_reports/<date>). Historical reports in misc/repo-owner-review/deprecated-reports/",
     )
     args = parser.parse_args()
 

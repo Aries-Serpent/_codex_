@@ -72,5 +72,61 @@
     "total_workflows": 88,
     "total_custom_agents": 109,
     "total_test_functions": 15640
+  },
+  "offload_structure": {
+    "location": "misc/repo-owner-review/",
+    "purpose": "External storage for historical files to optimize repository size",
+    "categories": {
+      "historical-coverage": {
+        "path": "misc/repo-owner-review/historical-coverage/",
+        "description": "Historical coverage reports for trend analysis",
+        "file_count": 8,
+        "retention": "permanent"
+      },
+      "historical-logs": {
+        "path": "misc/repo-owner-review/historical-logs/",
+        "description": "Historical log extracts for troubleshooting reference",
+        "file_count": 7,
+        "retention": "permanent"
+      },
+      "historical-artifacts": {
+        "path": "misc/repo-owner-review/historical-artifacts/",
+        "description": "Historical CI/CD artifacts for audit compliance",
+        "file_count": 7,
+        "retention": "permanent"
+      },
+      "archive-files": {
+        "path": "misc/repo-owner-review/archive-files/",
+        "description": "Consolidated archive packages for legacy reference",
+        "file_count": 3,
+        "retention": "permanent"
+      },
+      "temp-outputs": {
+        "path": "misc/repo-owner-review/temp-outputs/",
+        "description": "Temporary outputs for review and cleanup",
+        "file_count": 1,
+        "retention": "90 days"
+      },
+      "deprecated-reports": {
+        "path": "misc/repo-owner-review/deprecated-reports/",
+        "description": "Deprecated _codex_reports/ superseded by .codex/ structure",
+        "file_count": 6,
+        "retention": "180 days"
+      }
+    },
+    "total_files_offloaded": 32,
+    "estimated_size_reduction_mb": 6.8,
+    "offload_date": "2026-01-26",
+    "inventory": "misc/repo-owner-review/OFFLOAD_INDEX.md",
+    "automation": {
+      "monitoring_script": "scripts/repository_organization/monitor_offload_candidates.py",
+      "restoration_script": "scripts/repository_organization/restore_offloaded_files.py",
+      "compression_script": "scripts/repository_organization/compress_historical_files.py",
+      "health_dashboard": ".codex/repository_health/DASHBOARD.md",
+      "custom_agent": ".github/agents/repository-organization-agent.md",
+      "github_workflow": ".github/workflows/repository-health-monitoring.yml",
+      "phase": "22.1",
+      "status": "complete"
+    }
   }
 }
