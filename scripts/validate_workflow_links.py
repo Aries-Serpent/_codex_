@@ -13,6 +13,7 @@ Exit codes:
     1 - Broken links found
 """
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -174,7 +175,6 @@ def validate_workflow_links(verbose: bool = False) -> int:
 def main():
     """Main entry point."""
     import argparse
-    import os
     
     parser = argparse.ArgumentParser(description='Validate workflow documentation links')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
