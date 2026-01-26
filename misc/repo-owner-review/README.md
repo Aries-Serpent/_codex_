@@ -1,19 +1,45 @@
 # Repository Owner Review Folder
 
-**Purpose**: This folder contains files that have been reviewed and deemed non-essential to the repository's core functionality. Files here are subject to removal by the repository owner.
+**Last Updated**: 2026-01-26  
+**Purpose**: External storage offload, historical files, and materials requiring human review  
+**QA Integration**: Maintains file organization for effective Codebase QA Walkthrough Analysis
+
+This folder contains files that have been reviewed, archived, or offloaded from the main repository for size optimization and governance oversight. As of 2026-01-26, it serves dual purposes:
+1. **External Storage**: Historical files offloaded to reduce repository size
+2. **Human Review**: Non-essential files subject to owner review and potential removal
 
 **⚠️ Important Notice**: 
-- Files in this folder are archived for review and potential deletion
-- These files are NOT maintained and may be outdated
-- Repository owner may delete these files at any time
+- Files in offload subdirectories are organized for QA walkthrough access
+- Historical files are preserved for trend analysis and audit compliance
+- Legacy archived files may be deleted by repository owner at any time
 - All files are backed up in git history
 
 ---
 
 ## Why Files Are Here
 
-To reduce repository size from 11.2MB to under 10MB (CodeQL requirement), we've moved large, non-essential files here. This approach:
+**Historical Context (2025-12-12)**: Initial archival to reduce repository size for CodeQL scanning  
+**Current Purpose (2026-01-26)**: External storage offload for QA walkthrough optimization
 
+This folder now serves two primary functions:
+
+### 1. External Storage Offload (NEW)
+To optimize repository size while preserving historical data for QA analysis:
+- ✅ Historical coverage reports (trend analysis)
+- ✅ Historical logs (troubleshooting reference)
+- ✅ CI/CD artifacts (audit compliance)
+- ✅ Archive packages (legacy references)
+- ✅ Temporary outputs (review/cleanup)
+- ✅ Deprecated reports (migration verification)
+
+**Benefits**:
+- Reduces main repository size by ~6-8MB
+- Preserves all historical data for QA walkthrough
+- Maintains organized structure for analysis
+- Supports audit and compliance requirements
+
+### 2. Legacy Archival (Existing)
+Original purpose to reduce repository size from 11.2MB to under 10MB:
 1. ✅ Preserves files for owner review before permanent deletion
 2. ✅ Reduces repository size for CodeQL scanning
 3. ✅ Maintains git history (files can be restored)
@@ -26,13 +52,68 @@ To reduce repository size from 11.2MB to under 10MB (CodeQL requirement), we've 
 ```
 misc/repo-owner-review/
 ├── README.md (this file)
+├── OFFLOAD_INDEX.md ⭐ (complete inventory of offloaded files)
 ├── metadata.json (tracks moved files)
+├── AUDIT_REPORT_2025-12-12.md
+├── FOLLOWUP_ACTIONS.md
+├── MIGRATION_GUIDE.md
+├── QUARTERLY_AUDIT_CHECKLIST.md
+├── RECOVERY_GUIDE.md
 ├── drop-for-restore/ (file recovery inbox - see Recovery Process below)
 ├── archived-backups/ (backup files with commit SHA naming)
 │   └── README.md
-└── archived-artifacts/
+├── archived-artifacts/ (existing archived artifacts)
+│   └── README.md
+├── auto-generated-prompts/ (auto-generated prompt review)
+├── pending-manual-review/ (items awaiting manual review)
+├── historical-coverage/ ⭐ (offloaded coverage reports)
+│   └── README.md
+├── historical-logs/ ⭐ (offloaded log extracts)
+│   └── README.md
+├── historical-artifacts/ ⭐ (offloaded CI/CD artifacts)
+│   └── README.md
+├── archive-files/ ⭐ (consolidated .zip/.tar.gz files)
+│   └── README.md
+├── temp-outputs/ ⭐ (temporary outputs for review)
+│   └── README.md
+└── deprecated-reports/ ⭐ (deprecated _codex_reports/)
     └── README.md
 ```
+
+**⭐ NEW (2026-01-26)**: Six offload subdirectories for external storage optimization  
+**See OFFLOAD_INDEX.md** for complete file inventory and retrieval instructions
+
+---
+
+## External Storage Offload (NEW - 2026-01-26)
+
+### Quick Access Guide
+
+**📊 For Coverage Analysis**: See `historical-coverage/` + `OFFLOAD_INDEX.md`  
+**📝 For Historical Logs**: See `historical-logs/` + `OFFLOAD_INDEX.md`  
+**🏗️ For CI/CD Artifacts**: See `historical-artifacts/` + `OFFLOAD_INDEX.md`  
+**📦 For Archive Files**: See `archive-files/` + `OFFLOAD_INDEX.md`  
+**⏱️ For Temp Outputs**: See `temp-outputs/` + `OFFLOAD_INDEX.md`  
+**🗂️ For Deprecated Reports**: See `deprecated-reports/` + `OFFLOAD_INDEX.md`
+
+### QA Walkthrough Integration
+
+The offload structure is designed to support QA walkthrough analysis:
+
+1. **Current State**: Active files remain in main repository
+2. **Historical Trends**: Offloaded files provide historical context
+3. **Audit Trail**: `OFFLOAD_INDEX.md` tracks all movements
+4. **Retrieval**: Each subdirectory has README with usage instructions
+
+### Size Impact
+
+**Estimated Repository Reduction**: ~6-8MB
+- Coverage Reports: ~2.8MB offloaded
+- Logs: ~1.4MB offloaded
+- Artifacts: ~500KB offloaded
+- Archives: ~800KB offloaded
+- Temp/Output: ~280KB offloaded
+- Deprecated Reports: ~120KB offloaded
 
 ---
 
