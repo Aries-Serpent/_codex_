@@ -4,7 +4,7 @@ Dependency graph implementation with cycle detection.
 Provides directed graph operations for tracking code dependencies,
 including cycle detection using Tarjan's algorithm and topological sorting.
 """
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from codex_ml.ast.core.exceptions import CycleDetectedError
 
@@ -30,16 +30,30 @@ class DependencyGraph:
         """Initialize empty dependency graph."""
         self.nodes: Dict[str, Set[str]] = {}
         self.reverse_edges: Dict[str, Set[str]] = {}  # Track reverse dependencies
+        self.node_data: Dict[str, Dict[str, Any]] = {}  # Store arbitrary node data
 
-    def add_node(self, node_id: str, dependencies: Optional[List[str]] = None) -> None:
-        """Add a node with its dependencies.
+    def add_node(
+        self,
+        node_id: str,
+        dependencies: Optional[List[str]] = None,
+        data: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Add a node with its dependencies and optional data.
 
         Args:
             node_id: Unique identifier for the node
             dependencies: List of node IDs this node depends on
+            data: Optional dictionary of node attributes/metadata
         """
         deps = set(dependencies or [])
         self.nodes[node_id] = deps
+
+        # Store or update node data
+        if node_id not in self.node_data:
+            self.node_data[node_id] = data or {}
+        elif data:
+            # Update existing node data
+            self.node_data[node_id].update(data)
 
         # Initialize reverse edges for new nodes
         if node_id not in self.reverse_edges:
@@ -51,6 +65,8 @@ class DependencyGraph:
                 self.nodes[dep] = set()
             if dep not in self.reverse_edges:
                 self.reverse_edges[dep] = set()
+            if dep not in self.node_data:
+                self.node_data[dep] = {}
             self.reverse_edges[dep].add(node_id)
 
     def remove_node(self, node_id: str) -> bool:
@@ -67,6 +83,10 @@ class DependencyGraph:
 
         # Remove forward edges
         del self.nodes[node_id]
+
+        # Remove node data
+        if node_id in self.node_data:
+            del self.node_data[node_id]
 
         # Remove from reverse edges
         if node_id in self.reverse_edges:
@@ -141,6 +161,33 @@ class DependencyGraph:
             Set of node IDs that depend on this node
         """
         return self.reverse_edges.get(node_id, set()).copy()
+
+    def get_node_data(self, node_id: str) -> Dict[str, Any]:
+        """Get data associated with a node.
+
+        Args:
+            node_id: Node to query
+
+        Returns:
+            Dictionary of node data (empty dict if node has no data)
+        """
+        return self.node_data.get(node_id, {}).copy()
+
+    def set_node_data(self, node_id: str, data: Dict[str, Any]) -> None:
+        """Set or update data for a node.
+
+        Args:
+            node_id: Node to update
+            data: Dictionary of node attributes to set/update
+
+        Raises:
+            KeyError: If node does not exist
+        """
+        if node_id not in self.nodes:
+            raise KeyError(f"Node '{node_id}' does not exist in graph")
+        if node_id not in self.node_data:
+            self.node_data[node_id] = {}
+        self.node_data[node_id].update(data)
 
     def get_all_dependencies(self, node_id: str) -> Set[str]:
         """Get all transitive dependencies of a node.
