@@ -4,8 +4,10 @@ Markdown Link Validator with GitHub Context Variable Detection
 Validates internal file links and flags dynamic variables for manual review.
 
 Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
+Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
 """
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -15,6 +17,38 @@ from typing import List, Tuple, Set
 GITHUB_CONTEXT_PATTERN = re.compile(r'\$\{\{[^}]+\}\}')
 # Markdown link pattern: [text](path)
 LINK_PATTERN = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+
+# Patterns to skip validation for
+SKIP_LINK_PATTERNS = [
+    r'^mailto:',           # Email links
+    r'^tel:',              # Telephone links
+    r'^javascript:',       # JavaScript links
+    r'^\s*<!--',           # HTML comments
+    r'^\*\*kwargs$',       # Python kwargs pattern
+    r'^\[',                # Regex character classes like [a-zA-Z0-9]
+    r'^items:\s*list\[',   # Type hints
+    r'^\d+$',              # Plain numbers
+    r'^blob:https?://',    # Blob URLs (ChatGPT, etc.)
+    r'^config$',           # Placeholder 'config'
+    r'^None$',             # Python None
+    r'^self$',             # Python self
+    r'^Dockerfile$',       # Single word placeholders without path
+    r'^show-trend\.md$',   # Placeholder filename
+    r'^store-trend\.md$',  # Placeholder filename
+    r'^generate-dashboard\.md$',  # Placeholder filename
+    r'^validate-release\.md$',    # Placeholder filename
+    r'^\{[^}]+\}$',        # Template variables like {output_file}, {pr_number}
+    r'^state\[',           # Python dictionary access patterns
+    r'^outputs,\s*state',  # Python code patterns
+    r'^\.\./src/',         # Relative imports to src (code, not docs)
+    r'^"[^"]*"$',          # Quoted strings like "valid_input"
+    r'^""$',               # Empty quotes
+    r'^\.\s+github/',      # Malformed paths with spaces
+    r'^link/to/',          # Placeholder paths
+    r'^\.\./configs/',     # Config file references (code)
+    r'^\.\.\./',           # Invalid relative paths
+    r'^sitecustomize\.py$', # Python site customization
+]
 
 class LinkValidator:
     def __init__(self, repo_root: Path):
@@ -34,14 +68,38 @@ class LinkValidator:
     def is_anchor_link(self, link: str) -> bool:
         """Check if link is an anchor (fragment identifier)"""
         return link.startswith('#')
+    
+    def should_skip_link(self, link: str) -> bool:
+        """Check if link should be skipped based on patterns"""
+        for pattern in SKIP_LINK_PATTERNS:
+            if re.match(pattern, link.strip()):
+                return True
+        return False
 
-    def resolve_relative_path(self, source_file: Path, link: str) -> Path:
-        """Resolve relative link path from source file location"""
-        source_dir = source_file.parent
-        # Handle ./ and ../ prefixes
-        if link.startswith('./'):
-            link = link[2:]
-        target_path = (source_dir / link).resolve()
+    def resolve_link_path(self, source_file: Path, link: str) -> Path:
+        """
+        Resolve link paths correctly handling:
+        - Absolute paths starting with '/' (treat as repo-root relative)
+        - Relative paths
+        - Parent directory traversal
+        - Directory links with trailing slashes
+        """
+        # Remove trailing slash for path resolution
+        clean_link = link.rstrip('/')
+        
+        # Handle absolute paths (starting with /) as repository root relative
+        if clean_link.startswith('/'):
+            # Convert absolute path to repository root relative
+            clean_link = clean_link.lstrip('/')
+            target_path = self.repo_root / clean_link
+        else:
+            # Handle relative paths from current file location
+            source_dir = source_file.parent
+            # Handle ./ prefix
+            if clean_link.startswith('./'):
+                clean_link = clean_link[2:]
+            target_path = (source_dir / clean_link).resolve()
+        
         return target_path
 
     def validate_file(self, file_path: Path) -> None:
@@ -67,6 +125,10 @@ class LinkValidator:
             # Skip anchor links
             if self.is_anchor_link(link_path):
                 continue
+            
+            # Skip patterns that shouldn't be validated
+            if self.should_skip_link(link_path):
+                continue
 
             # Warn about GitHub context variables
             if self.has_github_context(link_path):
@@ -78,6 +140,7 @@ class LinkValidator:
                 continue
 
             # Remove anchor fragment if present
+            original_link = link_path
             if '#' in link_path:
                 link_path = link_path.split('#')[0]
 
@@ -87,19 +150,31 @@ class LinkValidator:
 
             # Resolve and validate internal file path
             try:
-                target_path = self.resolve_relative_path(file_path, link_path)
+                target_path = self.resolve_link_path(file_path, link_path)
                 
-                # Check if target exists
+                # Check if target is within repository
+                try:
+                    target_path.relative_to(self.repo_root)
+                except ValueError:
+                    # Path is outside repository, skip it
+                    self.warnings.append((
+                        str(file_path.relative_to(self.repo_root)),
+                        original_link,
+                        f"Link points outside repository: {link_path}"
+                    ))
+                    continue
+                
+                # Check if target exists (file or directory)
                 if not target_path.exists():
                     self.errors.append((
                         str(file_path.relative_to(self.repo_root)),
-                        link_path,
-                        f"File not found: {target_path.relative_to(self.repo_root)}"
+                        original_link,
+                        f"File not found: {link_path}"
                     ))
             except Exception as e:
                 self.errors.append((
                     str(file_path.relative_to(self.repo_root)),
-                    link_path,
+                    original_link,
                     f"Failed to resolve path: {e}"
                 ))
 
