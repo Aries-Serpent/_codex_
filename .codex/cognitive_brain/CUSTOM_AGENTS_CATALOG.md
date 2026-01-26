@@ -1,10 +1,15 @@
 # Custom GitHub Copilot Agents Catalog
 
-**Version**: 1.1.0  
-**Last Updated**: 2026-01-11  
+**Version**: 1.2.0  
+**Last Updated**: 2026-01-26 (Phase 32)  
 **Purpose**: Comprehensive catalog of all available custom agents for GitHub Copilot task delegation  
 **Status**: 🟢 Active - Production Reference
 
+> **Update 2026-01-26 (Phase 32)**: Updated with link-validator-agent performance metrics
+> - link-validator-agent: 46 links fixed, 27 files modified, 100% success rate
+> - monitoring infrastructure agents updated
+> - Phase 32 completion documented
+> 
 > **Update 2026-01-11**: Added 4 new production-ready agents:
 > - test-assertion-updater
 > - cache-logic-validator  
@@ -15,7 +20,7 @@
 
 ## Executive Summary
 
-This document catalogs all **26 custom GitHub Copilot agents** available in the `_codex_` repository. These agents are specialized tools designed to automate specific tasks and can be invoked directly from GitHub Copilot using the MCP (Model Context Protocol) framework or agent-specific tool calls.
+This document catalogs all **27+ custom GitHub Copilot agents** available in the `_codex_` repository. These agents are specialized tools designed to automate specific tasks and can be invoked directly from GitHub Copilot using the MCP (Model Context Protocol) framework or agent-specific tool calls.
 
 **Quick Reference**: When working with GitHub Copilot, you can delegate tasks to these agents instead of handling them manually. Simply use the appropriate agent tool or reference the agent by name in your prompt.
 
@@ -307,7 +312,58 @@ ci-testing-agent({
 
 ## Category 4: Documentation & Knowledge Management
 
-### 15. ✅ Documentation Agent
+### 15. ✅ Link Validator Agent
+**Tool Name**: `link-validator-agent`  
+**File**: `.github/agents/link-validator-agent.md`  
+**Status**: 🟢 Production-Ready with Proven Track Record
+
+**Phase 32 Performance Metrics** ✅:
+- **Files Scanned**: 1,261 markdown files
+- **Links Analyzed**: 2,695+ total links
+- **Issues Found**: 46 broken links
+- **Files Modified**: 27
+- **Success Rate**: 100%
+- **Duration**: 45 minutes
+- **MkDocs Build**: 0 warnings, 0 errors
+- **Tool Created**: fix_doc_links.py (automated validation)
+
+**Capabilities**:
+- Comprehensive markdown link validation
+- MkDocs compatibility checking
+- Automatic link fixing (relative → GitHub URLs)
+- Batch processing of documentation directories
+- Missing README detection and correction
+- Automated tool generation for future validation
+- Detailed reporting with before/after examples
+
+**Link Validation Rules**:
+1. **Root-Level Files**: Convert `../../` links → GitHub URLs
+2. **Directory Indexes**: Convert directory links → GitHub tree URLs
+3. **Internal Links**: Keep relative links within docs/
+4. **External Links**: Validate https:// links
+
+**Use Cases**:
+- "Validate and fix all broken documentation links"
+- "Check MkDocs compatibility for all markdown files"
+- "Convert relative links to GitHub URLs for files outside docs/"
+- "Generate link validation report"
+
+**Example Invocation**:
+```python
+link-validator-agent({
+    "prompt": "Validate and fix all broken documentation links in docs/ directory"
+})
+```
+
+**Performance Indicators**:
+- ✅ Zero false positives in link detection
+- ✅ MkDocs builds cleanly after fixes
+- ✅ Links work on both GitHub and MkDocs site
+- ✅ Reusable automated tool created
+
+---
+
+### 16. ✅ Documentation Agent
 **Tool Name**: `documentation-agent`  
 **File**: `.github/agents/documentation-agent/agent.yml`  
 **Status**: 🟢 Available
