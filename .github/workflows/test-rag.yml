@@ -97,8 +97,13 @@ jobs:
 
       - name: Run RAG tests with coverage
         run: |
-          # Coverage options explicitly specified to work with pytest-xdist
+          # Ensure plugins are loaded before running tests
+          export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
+          
+          # Run with explicit plugin verification
           python -m pytest tests/test_rag_*.py \
+            -p xdist \
+            -p pytest_cov \
             -n auto \
             -v \
             --tb=short \

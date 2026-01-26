@@ -13,7 +13,6 @@ import pytest
 try:
     from codex.rag.indexer import (
         IndexOperation,
-        TenantOperationResult,
         manage_tenant_indices,
     )
     RAG_TENANT_AVAILABLE = True
