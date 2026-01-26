@@ -62,11 +62,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: live  # Autonomous agent is critical - use live tier
 
       - name: Install dependencies
         run: |

@@ -47,10 +47,11 @@ jobs:
         with:
           fetch-depth: 0  # For git-revision-date plugin if used
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
 
       # Cache MkDocs plugins and Material theme assets
       - name: Cache MkDocs plugins

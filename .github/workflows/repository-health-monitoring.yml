@@ -27,10 +27,11 @@ jobs:
         with:
           fetch-depth: 0  # Full history for accurate age calculation
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Scan for offload candidates
         id: scan

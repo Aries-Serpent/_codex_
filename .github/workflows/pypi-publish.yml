@@ -26,10 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Install build dependencies
         run: |
@@ -98,10 +99,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - name: Set up Python 3.12 with tiered cache
+        uses: ./.github/actions/setup-python-cached@main
         with:
           python-version: '3.12'
+          cache-tier: common
       
       - name: Install from TestPyPI
         if: needs.publish-testpypi.result == 'success'
