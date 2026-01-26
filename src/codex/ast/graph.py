@@ -13,10 +13,18 @@ class DependencyGraph:
     def __init__(self):
         self.nodes: set[str] = set()
         self.edges: dict[str, set[str]] = defaultdict(set)
+        self.node_data: dict[str, dict] = {}
 
-    def add_node(self, node_id: str) -> None:
-        """Add node to graph."""
+    def add_node(self, node_id: str, data: dict | None = None) -> None:
+        """Add node to graph with optional metadata.
+        
+        Args:
+            node_id: The name/identifier of the node
+            data: Optional dictionary of node attributes
+        """
         self.nodes.add(node_id)
+        if data:
+            self.node_data[node_id] = data
 
     def add_edge(self, source: str, target: str) -> None:
         """Add directed edge: source → target."""

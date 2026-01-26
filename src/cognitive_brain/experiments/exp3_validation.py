@@ -17,7 +17,8 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.uncertainty import TestExecutionMetrics, UncertaintyOptimizer
+from cognitive_brain.quantum import TestExecutionMetrics
+from cognitive_brain.quantum.uncertainty import UncertaintyOptimizer
 
 
 @dataclass
