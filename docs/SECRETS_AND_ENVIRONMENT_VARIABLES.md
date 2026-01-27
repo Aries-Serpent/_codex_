@@ -61,6 +61,17 @@ This document provides comprehensive documentation for all secrets and environme
 - **Required**: No (workflow continues without it, but coverage won't upload)
 - **Note**: Updated to codecov-action@v5 requiring explicit token
 
+#### `GITLEAKS_LICENSE`
+- **Purpose**: License key for Gitleaks Pro/Enterprise for enhanced secret scanning capabilities
+- **Format**: Gitleaks license key string
+- **Used In**: 
+  - `security-suite.yml`
+- **Generation**: Obtained from Gitleaks subscription (https://gitleaks.io)
+- **Security Level**: LOW - Does not grant access to sensitive data, only enables scanning features
+- **Required**: No (Gitleaks works without it in free mode with limited features)
+- **Rotation**: As needed when subscription is renewed
+- **Note**: Free version of Gitleaks works without this secret; this is only required for Pro/Enterprise features
+
 #### `SESSION_ENCRYPTION_KEY`
 - **Purpose**: Encrypt session data for secure storage
 - **Format**: Base64-encoded Fernet key
@@ -267,25 +278,25 @@ permissions:
 
 ### Secret Rotation Schedule
 
-Comprehensive rotation schedule with all 17 secrets: **[.codex/security/rotation_schedule.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)**
+Comprehensive rotation schedule with all 18 secrets: **[.codex/security/rotation_schedule.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)**
 
 | Secret Category | Examples | Rotation Frequency | Method |
 |----------------|----------|-------------------|--------|
 | **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 days (JWT: monthly) | Manual / Automated workflow |
 | **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 days | Manual via service provider |
 | **Medium Priority** | `CODECOV_TOKEN`, `ZENDESK_TOKEN`, `GOOGLE_CLIENT_SECRET` | Annually or as needed | Manual via service dashboard |
-| **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL` | N/A or with paired secret | GitHub auto / Manual |
+| **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL`, `GITLEAKS_LICENSE` | N/A or with paired secret / On renewal | GitHub auto / Manual / Subscription renewal |
 
 ### Secrets Usage Matrix
 
 Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_matrix.json](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json)**
 
 **Summary**:
-- Total Secrets: 17
+- Total Secrets: 18
 - Total Workflows: 86
-- Secret References: 107
+- Secret References: 108
 - Most Used: `GITHUB_TOKEN` (20 workflows)
-- Newly Documented: `SESSION_ENCRYPTION_KEY`, `ENABLE_LIVE_TESTS`, AWS/Zendesk/Google integration secrets
+- Newly Documented: `SESSION_ENCRYPTION_KEY`, `ENABLE_LIVE_TESTS`, `GITLEAKS_LICENSE`, AWS/Zendesk/Google integration secrets
 
 ### Secret Management Guidelines
 
@@ -373,9 +384,10 @@ The MFA enrollment automation (`scripts/mfa_enrollment_automation.py`) generates
 | 2026-01-20 | Created secrets usage matrix (.codex/security/secrets_usage_matrix.json) mapping 17 secrets across 86 workflows | @copilot |
 | 2026-01-20 | Created comprehensive rotation schedule (.codex/security/rotation_schedule.md) with emergency procedures | @copilot |
 | 2026-01-20 | Updated CODECOV_TOKEN documentation for v5 migration (4 workflows) | @copilot |
+| 2026-01-27 | Added GITLEAKS_LICENSE documentation for secret scanning workflow | @copilot |
 
 ---
 
-**Last Updated**: 2026-01-20  
+**Last Updated**: 2026-01-27  
 **Maintainer**: @mbaetiong  
 **Review Frequency**: Quarterly
