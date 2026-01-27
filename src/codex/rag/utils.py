@@ -145,7 +145,8 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                 logger.info(f"Attempting manual parameter materialization to {device}")
                 # This approach materializes each parameter individually
                 with torch.no_grad():
-                    for name, module in model.named_modules() if hasattr(model, "named_modules") else []:
+                    modules_to_iterate = model.named_modules() if hasattr(model, "named_modules") else []
+                    for name, module in modules_to_iterate:
                         for param_name, param in module.named_parameters(recurse=False):
                             if param.device.type == "meta":
                                 # Create a new tensor on target device with same shape and dtype
