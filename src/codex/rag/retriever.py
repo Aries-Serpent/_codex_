@@ -83,31 +83,20 @@ class Retriever:
             logger.info(f"Loading query embedding model: {self.model_name}")
             # Load model directly to CPU to avoid meta device issues
             try:
+                # Load model without device parameter to avoid meta tensor issues
                 self.model = SentenceTransformer(
                     self.model_name,
-                    cache_folder=self.cache_dir,
-                    device="cpu"  # Explicitly load to CPU
+                    cache_folder=self.cache_dir
                 )
+                
+                # Use safe_model_load to handle device placement properly
+                self.model = safe_model_load(self.model, device="cpu")
+                
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-            except (RuntimeError, NotImplementedError) as e:
-                # Handle device-related errors (meta tensors, CUDA errors, etc.)
-                # These specific exception types typically indicate device/tensor issues
-                logger.warning(f"Device-related load failed (type: {type(e).__name__}), attempting safe_model_load: {e}")
-                try:
-                    # Fallback: load without device specification then move safely
-                    self.model = SentenceTransformer(self.model_name, cache_folder=self.cache_dir)
-                    self.model = safe_model_load(self.model, device="cpu")
-                    self.model.eval()
-                except Exception as fallback_error:
-                    logger.error(f"Fallback model load also failed: {fallback_error}")
-                    raise RuntimeError(
-                        f"Failed to load model {self.model_name} on CPU. "
-                        f"Original error: {e}. Fallback error: {fallback_error}"
-                    ) from e
-            except (OSError, ValueError) as e:
-                # Re-raise non-device errors (network, missing files, invalid parameters)
-                logger.error(f"Model load failed due to non-device error (type: {type(e).__name__}): {e}")
+                
+            except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
+                logger.error(f"Failed to load query embedding model: {e}")
                 raise
             logger.info("Query embedding model loaded successfully")
         except ImportError:

@@ -215,6 +215,19 @@ jobs:
 
           echo "✅ Tools installed"
 
+      - name: Install project dependencies
+        run: |
+          echo "📦 Installing project dependencies..."
+          
+          # Install the project in editable mode with test dependencies
+          pip install --quiet -e ".[test]"
+          
+          # Verify installation
+          python -c "import torch; print(f'✅ PyTorch {torch.__version__} installed')"
+          python -c "import codex; print('✅ Codex package installed')"
+          
+          echo "✅ Dependencies installed"
+
       - name: Get changed files
         id: changed-files
         run: |
