@@ -61,13 +61,12 @@ class LocalSentenceTransformerProvider:
             from sentence_transformers import SentenceTransformer
 
             logger.info(f"Loading local embedding model: {self.model_name}")
-            # Load model directly to CPU to avoid meta device issues
+            # Load model without device parameter to avoid meta device issues (PyTorch 2.6+)
             self.model = SentenceTransformer(
                 self.model_name,
-                cache_folder=self.cache_dir,
-                device="cpu"  # Explicitly load to CPU
+                cache_folder=self.cache_dir
             )
-            # Apply safe model loading as additional safety check
+            # Apply safe model loading to handle device placement
             self.model = safe_model_load(self.model, device="cpu")
             # Ensure model is in eval mode
             self.model.eval()
