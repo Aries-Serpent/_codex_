@@ -220,11 +220,21 @@ jobs:
           echo "📦 Installing project dependencies..."
           
           # Install the project in editable mode with test dependencies
-          pip install --quiet -e ".[test]"
+          # Using single quotes to avoid shell escaping issues with brackets
+          pip install --quiet -e '.[test]' || {
+            echo "❌ Failed to install project dependencies"
+            exit 1
+          }
           
           # Verify installation
-          python -c "import torch; print(f'✅ PyTorch {torch.__version__} installed')"
-          python -c "import codex; print('✅ Codex package installed')"
+          python -c "import torch; print(f'✅ PyTorch {torch.__version__} installed')" || {
+            echo "❌ PyTorch import failed"
+            exit 1
+          }
+          python -c "import codex; print('✅ Codex package installed')" || {
+            echo "❌ Codex import failed"
+            exit 1
+          }
           
           echo "✅ Dependencies installed"
 

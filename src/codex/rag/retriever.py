@@ -83,13 +83,12 @@ class Retriever:
             logger.info(f"Loading query embedding model: {self.model_name}")
             # Load model directly to CPU to avoid meta device issues
             try:
-                # Load model without device parameter to avoid meta tensor issues
+                # Load model without device parameter to avoid meta tensor issues,
+                # then use safe_model_load to handle device placement properly
                 self.model = SentenceTransformer(
                     self.model_name,
                     cache_folder=self.cache_dir
                 )
-                
-                # Use safe_model_load to handle device placement properly
                 self.model = safe_model_load(self.model, device="cpu")
                 
                 # Ensure model is in eval mode for inference

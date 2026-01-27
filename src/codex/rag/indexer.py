@@ -103,10 +103,9 @@ def embed_chunks(
     # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        # Load model without device parameter to avoid meta tensor issues
+        # Load model without device parameter to avoid meta tensor issues,
+        # then use safe_model_load to handle device placement properly
         model = SentenceTransformer(model_name, cache_folder=cache_dir)
-        
-        # Use safe_model_load to handle device placement properly
         model = safe_model_load(model, device="cpu")
         
         # Ensure model is in eval mode
