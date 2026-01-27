@@ -8,30 +8,30 @@ This module provides production-grade document ingestion capabilities:
 - Batch processing with progress tracking
 """
 
-from .validator import (
-    DocumentValidator,
-    DocumentFormat,
-    ValidationResult,
-    validate_document,
+from .chunker import (
+    Chunk,
+    Chunker,
+    ChunkingConfig,
+    ChunkingStrategy,
+    chunk_document,
+)
+from .pipeline import (
+    BatchIngestionResult,
+    IngestionConfig,
+    IngestionPipeline,
+    IngestionResult,
 )
 from .preprocessor import (
     DocumentPreprocessor,
     PreprocessingConfig,
-    preprocess_text,
     normalize_text,
+    preprocess_text,
 )
-from .chunker import (
-    Chunker,
-    ChunkingStrategy,
-    ChunkingConfig,
-    Chunk,
-    chunk_document,
-)
-from .pipeline import (
-    IngestionPipeline,
-    IngestionConfig,
-    IngestionResult,
-    BatchIngestionResult,
+from .validator import (
+    DocumentFormat,
+    DocumentValidator,
+    ValidationResult,
+    validate_document,
 )
 
 __all__ = [

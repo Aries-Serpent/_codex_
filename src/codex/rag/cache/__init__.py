@@ -8,20 +8,20 @@ Provides production-grade caching for RAG pipeline:
 - Cache invalidation strategies
 """
 
-from .query_cache import (
-    QueryCache,
-    QueryCacheConfig,
-    CacheEntry,
-    CacheStats,
+from .distributed_cache import (
+    CacheBackend,
+    DistributedCache,
+    DistributedCacheConfig,
 )
 from .embedding_cache import (
     EmbeddingCache,
     EmbeddingCacheConfig,
 )
-from .distributed_cache import (
-    DistributedCache,
-    DistributedCacheConfig,
-    CacheBackend,
+from .query_cache import (
+    CacheEntry,
+    CacheStats,
+    QueryCache,
+    QueryCacheConfig,
 )
 
 __all__ = [

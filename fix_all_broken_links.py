@@ -34,21 +34,21 @@ class ComprehensiveLinkFixer:
             'paths_corrected': 0,
             'broken_blob_urls_removed': 0
         }
-        
+
     def fix_file(self, file_path: Path) -> Tuple[str, bool]:
         """Fix all broken links in a single file"""
         # Initialize variables before try-except to avoid uninitialized variable errors
         content = ""
         modified = False
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except Exception as e:
             print(f"⚠️  Cannot read {file_path}: {e}")
             return content, False
-        
+
         original_content = content
-        
+
         # Fix 1: Remove regex patterns that are incorrectly parsed as links
         # Example: `["\']([a-zA-Z0-9]{20,})`
         regex_pattern = r'\[(["\'])?\]\((\[[^\]]+\]|[^\)]*\{[^\}]*\}|[^\)]*[\[\]\(\)][^\)]*)\)'
@@ -60,7 +60,7 @@ class ComprehensiveLinkFixer:
                 content = content.replace(old_link, f'`{match[1]}`')
                 self.stats['regex_patterns_removed'] += 1
                 self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed regex pattern link: {old_link}")
-        
+
         # Fix 2: Fix code examples that look like links
         # Example: [ClassName](config={self._config})
         code_link_pattern = r'\[([A-Za-z_][A-Za-z0-9_]*)\]\(([a-z_]+=[^\)]+|[a-z_]+|None|""?|\'\'?|"[^"]*"|state\[[^\]]+\]|outputs[^)]*)\)'
@@ -73,7 +73,7 @@ class ComprehensiveLinkFixer:
                 content = content.replace(old_link, new_text)
                 self.stats['code_blocks_fixed'] += 1
                 self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Fixed code block: {old_link} → {new_text}")
-        
+
         # Fix 3: Remove template placeholder links
         # Example: [View](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
         template_pattern = r'\[[^\]]+\]\([^\)]*\{[^\}]+\}[^\)]*\)'
@@ -87,7 +87,7 @@ class ComprehensiveLinkFixer:
                     content = content.replace(match, replacement)
                     self.stats['template_placeholders_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed template link: {match}")
-        
+
         # Fix 4: Remove blob: URLs (invalid ChatGPT artifacts)
         blob_pattern = r'\[!\[[^\]]+\]\(blob:https://[^\)]+\)\]\([^\)]+\)'
         matches = re.findall(blob_pattern, content)
@@ -96,7 +96,7 @@ class ComprehensiveLinkFixer:
                 content = content.replace(match, '_[Image removed - invalid blob URL]_')
                 self.stats['broken_blob_urls_removed'] += 1
                 self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed broken blob URL")
-        
+
         # Fix 5: Remove links to non-existent files with absolute paths
         # Example: [link](/tmp/IMPLEMENTATION_SUMMARY.md)
         abs_path_pattern = r'\[([^\]]+)\]\(/[^\)]+\)'
@@ -110,7 +110,7 @@ class ComprehensiveLinkFixer:
                     content = content.replace(old_link, match)
                     self.stats['invalid_links_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed absolute path link: {old_link}")
-        
+
         # Fix 6: Fix HTML comment placeholders
         comment_pattern = r'\[([^\]]+)\]\(<!--[^\)]*-->\)'
         matches = re.findall(comment_pattern, content)
@@ -122,7 +122,7 @@ class ComprehensiveLinkFixer:
                     content = content.replace(old_link, match)
                     self.stats['invalid_links_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed HTML comment link: {old_link}")
-        
+
         # Fix 7: Convert specific broken links to GitHub URLs
         specific_fixes = {
             '/.github/docs/Copilot_Task_Execution_Protocol.md': 'https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md',
@@ -134,7 +134,7 @@ class ComprehensiveLinkFixer:
             '/AI_AGENCY_POLICY_VERIFICATION.md': 'https://github.com/Aries-Serpent/_codex_/blob/main/AI_AGENCY_POLICY_VERIFICATION.md',
             '/.github/agents/AGENT_DEVELOPMENT_GUIDE.md': 'https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/AGENT_DEVELOPMENT_GUIDE.md',
         }
-        
+
         for old_path, new_url in specific_fixes.items():
             pattern = r'\[([^\]]+)\]\(' + re.escape(old_path) + r'\)'
             matches = re.findall(pattern, content)
@@ -144,7 +144,7 @@ class ComprehensiveLinkFixer:
                 content = content.replace(old_link, new_link)
                 self.stats['paths_corrected'] += 1
                 self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Fixed path: {old_path} → {new_url}")
-        
+
         # Fix 8: Remove links to truly missing files within docs/
         missing_files = [
             'docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md',
@@ -203,7 +203,7 @@ class ComprehensiveLinkFixer:
             '../_codex_/CASCADE/',
             '../../../.codex/cognitive_brain.md',
         ]
-        
+
         for missing_file in missing_files:
             # Escape special regex characters
             escaped = re.escape(missing_file)
@@ -215,30 +215,30 @@ class ComprehensiveLinkFixer:
                 content = content.replace(old_link, match)
                 self.stats['missing_files_removed'] += 1
                 self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed missing file link: {old_link}")
-        
+
         # Return result
         modified = content != original_content
         return content, modified
-    
+
     def process_all_files(self, apply=False):
         """Process all markdown files in docs/"""
         files = list(DOCS_ROOT.rglob("*.md"))
         print(f"📄 Processing {len(files)} markdown files...")
-        
+
         modified_files = []
-        
+
         for file_path in files:
             # Initialize variables to avoid uninitialized variable errors
             new_content = ""
             modified = False
             new_content, modified = self.fix_file(file_path)
-            
+
             if modified:
                 modified_files.append((file_path, new_content))
-        
+
         # Report
         print(f"\n{'='*70}")
-        print(f"📊 COMPREHENSIVE LINK FIX REPORT")
+        print("📊 COMPREHENSIVE LINK FIX REPORT")
         print(f"{'='*70}")
         print(f"🔧 Regex patterns removed: {self.stats['regex_patterns_removed']}")
         print(f"💻 Code blocks fixed: {self.stats['code_blocks_fixed']}")
@@ -249,14 +249,14 @@ class ComprehensiveLinkFixer:
         print(f"🖼️  Broken blob URLs removed: {self.stats['broken_blob_urls_removed']}")
         print(f"\n📦 Total fixes: {sum(self.stats.values())}")
         print(f"📄 Files modified: {len(modified_files)}")
-        
+
         if self.fixes:
-            print(f"\n🔍 Sample fixes (first 20):")
+            print("\n🔍 Sample fixes (first 20):")
             for fix in self.fixes[:20]:
                 print(f"   • {fix}")
             if len(self.fixes) > 20:
                 print(f"   ... and {len(self.fixes) - 20} more")
-        
+
         # Apply changes
         if apply and modified_files:
             print(f"\n💾 Applying changes to {len(modified_files)} files...")
@@ -266,18 +266,18 @@ class ComprehensiveLinkFixer:
                     print(f"   ✅ {file_path.relative_to(REPO_ROOT)}")
                 except Exception as e:
                     print(f"   ❌ {file_path.relative_to(REPO_ROOT)}: {e}")
-            print(f"✨ Done!")
+            print("✨ Done!")
         elif not apply:
-            print(f"\n🔍 DRY RUN - No files modified. Run with --apply to apply fixes.")
-        
+            print("\n🔍 DRY RUN - No files modified. Run with --apply to apply fixes.")
+
         return len(modified_files) > 0
 
 if __name__ == "__main__":
     import sys
-    
+
     apply = '--apply' in sys.argv
-    
+
     fixer = ComprehensiveLinkFixer()
     has_changes = fixer.process_all_files(apply=apply)
-    
+
     sys.exit(0 if not has_changes else (0 if apply else 1))

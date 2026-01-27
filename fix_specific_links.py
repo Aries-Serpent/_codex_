@@ -3,7 +3,6 @@
 Final pass to fix remaining specific broken links
 """
 
-import sys
 from pathlib import Path
 
 # Get repository root dynamically
@@ -32,26 +31,26 @@ def apply_fixes():
     """Apply all specific fixes"""
     for fix in fixes:
         file_path = REPO_ROOT / fix['file']
-        
+
         if not file_path.exists():
             print(f"⚠️  File not found: {file_path}")
             continue
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
             original_content = content
-            
+
             for old, new in fix['replacements']:
                 if old in content:
                     content = content.replace(old, new)
                     print(f"✅ {fix['file']}: {old} → {new}")
                 else:
                     print(f"⚠️  {fix['file']}: Pattern not found: {old}")
-            
+
             if content != original_content:
                 file_path.write_text(content, encoding='utf-8')
                 print(f"💾 Saved {fix['file']}")
-        
+
         except Exception as e:
             print(f"❌ Error processing {fix['file']}: {e}")
 

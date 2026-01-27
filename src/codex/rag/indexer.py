@@ -104,7 +104,7 @@ def embed_chunks(
     logger.info(f"Loading embedding model: {model_name}")
     try:
         model = SentenceTransformer(
-            model_name, 
+            model_name,
             cache_folder=cache_dir,
             device="cpu"  # Explicitly load to CPU
         )
@@ -114,10 +114,10 @@ def embed_chunks(
         # Check if error is device-related by looking at exception type and message
         error_msg = str(e).lower()
         is_device_error = (
-            isinstance(e, (RuntimeError, NotImplementedError)) and 
+            isinstance(e, (RuntimeError, NotImplementedError)) and
             ("meta" in error_msg or "device" in error_msg or "cuda" in error_msg)
         )
-        
+
         if is_device_error:
             logger.warning(f"Device-related load failed, attempting safe_model_load: {e}")
             # Fallback: load without device specification then move safely

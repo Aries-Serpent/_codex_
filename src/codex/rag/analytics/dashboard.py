@@ -4,39 +4,37 @@ Real-time analytics dashboard for RAG metrics.
 Generates HTML dashboard with charts and statistics.
 """
 
-import json
-from pathlib import Path
-from typing import Dict, Any
 from datetime import datetime
+from pathlib import Path
 
 from .metrics_db import MetricsDatabase
 
 
 class AnalyticsDashboard:
     """Generate and serve RAG analytics dashboard."""
-    
+
     def __init__(self, metrics_db: MetricsDatabase):
         """
         Initialize dashboard generator.
-        
+
         Args:
             metrics_db: Metrics database instance
         """
         self.metrics_db = metrics_db
-    
+
     def generate_html(self, hours: int = 24) -> str:
         """
         Generate HTML dashboard.
-        
+
         Args:
             hours: Time window for metrics
-            
+
         Returns:
             HTML string
         """
         stats = self.metrics_db.get_stats(hours=hours)
         percentiles = self.metrics_db.get_percentiles(hours=hours)
-        
+
         html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -103,13 +101,13 @@ class AnalyticsDashboard:
 <body>
     <div class="container">
         <h1>RAG Analytics Dashboard</h1>
-        
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Queries</div>
                 <div class="stat-value">{stats['total_queries']}</div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-label">Avg Latency</div>
                 <div class="stat-value">
@@ -117,7 +115,7 @@ class AnalyticsDashboard:
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-label">Cache Hit Rate</div>
                 <div class="stat-value">
@@ -125,18 +123,18 @@ class AnalyticsDashboard:
                     <span class="stat-unit">%</span>
                 </div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-label">Avg Results</div>
                 <div class="stat-value">{stats['avg_results']:.1f}</div>
             </div>
         </div>
-        
+
         <div class="chart-container">
             <h2>Latency Percentiles</h2>
             <canvas id="percentiles-chart"></canvas>
         </div>
-        
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">P50 Latency</div>
@@ -145,7 +143,7 @@ class AnalyticsDashboard:
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-label">P95 Latency</div>
                 <div class="stat-value">
@@ -153,7 +151,7 @@ class AnalyticsDashboard:
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-label">P99 Latency</div>
                 <div class="stat-value">
@@ -162,12 +160,12 @@ class AnalyticsDashboard:
                 </div>
             </div>
         </div>
-        
+
         <div class="timestamp">
             Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         </div>
     </div>
-    
+
     <script>
         // Percentiles chart
         const ctx = document.getElementById('percentiles-chart').getContext('2d');
@@ -204,7 +202,7 @@ class AnalyticsDashboard:
                 }}
             }}
         }});
-        
+
         // Auto-refresh every 30 seconds
         setTimeout(() => location.reload(), 30000);
     </script>
@@ -212,11 +210,11 @@ class AnalyticsDashboard:
 </html>
 """
         return html
-    
+
     def save_to_file(self, output_path: Path, hours: int = 24) -> None:
         """
         Save dashboard HTML to file.
-        
+
         Args:
             output_path: Path to output HTML file
             hours: Time window for metrics
