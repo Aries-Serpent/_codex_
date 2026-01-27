@@ -278,34 +278,52 @@ jobs:
       - name: Run code quality analysis
         id: quality
         continue-on-error: true
+        timeout-minutes: 10  # Step-level timeout
         run: |
           echo "📊 Running code quality analysis..."
 
-          # Pylint (Python)
-          if ls *.py 2>/dev/null || [ -d "src" ]; then
-            echo "Running Pylint..."
-            pylint --output-format=json --recursive=y . > reports/pylint-report.json || true
-            pylint --recursive=y . > reports/pylint-report.txt || true
+          # Determine files to analyze
+          if [ -f "changed_files.txt" ] && [ -s "changed_files.txt" ]; then
+            PYTHON_FILES=$(grep '\.py$' changed_files.txt || true)
+            if [ -n "$PYTHON_FILES" ]; then
+              echo "Analyzing changed Python files only"
+              FILES_TO_CHECK="$PYTHON_FILES"
+            else
+              echo "No Python files changed, skipping analysis"
+              exit 0
+            fi
+          else
+            # Fallback: analyze src/ directory only (not entire repo)
+            echo "No changed files list, analyzing src/ directory only"
+            FILES_TO_CHECK="src/"
+          fi
+
+          # Pylint (Python) - with timeout and file limit
+          if [ -n "$FILES_TO_CHECK" ]; then
+            echo "Running Pylint on specific files..."
+            timeout 300 pylint --output-format=json $FILES_TO_CHECK > reports/pylint-report.json 2>&1 || true
+            timeout 300 pylint $FILES_TO_CHECK > reports/pylint-report.txt 2>&1 || true
+            echo "✅ Pylint complete"
           fi
 
           # Ruff (Python fast linter)
-          if ls *.py 2>/dev/null || [ -d "src" ]; then
+          if [ -n "$FILES_TO_CHECK" ]; then
             echo "Running Ruff..."
-            ruff check --output-format=json . > reports/ruff-report.json || true
-            ruff check . > reports/ruff-report.txt || true
+            ruff check --output-format=json $FILES_TO_CHECK > reports/ruff-report.json || true
+            ruff check $FILES_TO_CHECK > reports/ruff-report.txt || true
           fi
 
-          # Radon (complexity)
-          if ls *.py 2>/dev/null || [ -d "src" ]; then
+          # Radon (complexity) - limit to src/
+          if [ -d "src" ]; then
             echo "Running Radon..."
-            radon cc -a -s . > reports/complexity-report.txt || true
-            radon mi -s . > reports/maintainability-report.txt || true
+            radon cc -a -s src/ > reports/complexity-report.txt || true
+            radon mi -s src/ > reports/maintainability-report.txt || true
           fi
 
-          # MyPy (type checking)
-          if ls *.py 2>/dev/null || [ -d "src" ]; then
+          # MyPy (type checking) - with timeout
+          if [ -n "$FILES_TO_CHECK" ]; then
             echo "Running MyPy..."
-            mypy --install-types --non-interactive . > reports/mypy-report.txt 2>&1 || true
+            timeout 300 mypy --install-types --non-interactive $FILES_TO_CHECK > reports/mypy-report.txt 2>&1 || true
           fi
 
       - name: Run test coverage analysis
