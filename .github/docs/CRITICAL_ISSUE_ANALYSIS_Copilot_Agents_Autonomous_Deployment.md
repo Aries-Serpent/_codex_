@@ -373,7 +373,7 @@ In the issue body, ensure:
 #### Step 4: Monitor Dashboard (1 minute)
 
 1. Go to: GitHub Actions tab
-2. Find workflow: [post-merge-validation-optimized.yml](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/workflows/post-merge-validation-optimized.yml)
+2. Find workflow: post-merge-validation-optimized.yml
 3. Open: Real-time monitoring dashboard
 
 #### Step 5: Approve Phase Transitions (As Needed)

@@ -159,7 +159,7 @@ We follow [Semantic Versioning 2.0.0](https://semver.org/):
 
 ## Code of Conduct
 
-All participants must adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Violations will be handled per the enforcement guidelines in that document.
+All participants must adhere to our Code of Conduct. Violations will be handled per the enforcement guidelines in that document.
 
 ## Changes to Governance
 

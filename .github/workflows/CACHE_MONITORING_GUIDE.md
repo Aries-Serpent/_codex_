@@ -184,13 +184,13 @@ gh run view <run-id> --log | grep -i "cache"
 ## Resources
 
 - [GitHub Actions Cache Limits Documentation](https://docs.github.com/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy)
-- [Cache Analysis Report](.github/workflows/CACHE_ANALYSIS_REPORT.md)
-- [Workflow README](.github/workflows/README_SCAN_SECRETS_VARIABLES.md)
+- Cache Analysis Report
+- Workflow README
 
 ## Contacts
 
 For questions about cache management:
-- Review [CACHE_ANALYSIS_REPORT.md](.github/workflows/CACHE_ANALYSIS_REPORT.md)
+- Review CACHE_ANALYSIS_REPORT.md
 - Check GitHub Actions settings
 - Monitor workflow run logs
 

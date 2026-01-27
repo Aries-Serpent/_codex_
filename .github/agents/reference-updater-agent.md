@@ -419,7 +419,7 @@ Can be customized via config:
 # .codex/reference_updater_config.yaml
 patterns:
   markdown_link: '\[([^\]]+)\]\({old}\)'
-  html_href: 'href=["\']({old})["\']'
+  html_href: 'href="\'["\']'
   yaml_path: 'path:\s*{old}'
   python_import: 'from\s+{module}\s+import'
 

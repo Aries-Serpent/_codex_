@@ -613,7 +613,7 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 
 ## Additional Resources
 
-- **Internal Wiki**: [Security Best Practices](<!-- Security documentation placeholder -->)
+- **Internal Wiki**: Security Best Practices
 - **Slack Channel**: #security-alerts
 - **Email**: security@localhost
 - **Incident Response**: [Runbook](../security/INCIDENT_RESPONSE.md)

@@ -204,8 +204,8 @@ If work remains after session:
 3. Update documentation
 
 ## Context
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md) updated
-- [Commit ABC123](link/to/commit)
+- Dashboard updated
+- Commit ABC123
 ```
 
 ---

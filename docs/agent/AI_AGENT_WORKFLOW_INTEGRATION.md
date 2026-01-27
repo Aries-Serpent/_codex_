@@ -557,7 +557,7 @@ jobs:
 
 For issues or questions:
 1. Check workflow run logs for detailed error messages
-2. Review [CONSOLIDATION_GUIDE.md](../workflows/CONSOLIDATION_GUIDE.md)
+2. Review CONSOLIDATION_GUIDE.md
 3. Use CI Health Suite to diagnose issues
 4. Create an issue with `workflow-consolidation` label
 
