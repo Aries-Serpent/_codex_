@@ -129,6 +129,7 @@ jobs:
           name: coverage-report-${{ matrix.python-version }}
           path: htmlcov/
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Check coverage threshold
         run: |
@@ -168,3 +169,4 @@ jobs:
           name: security-report-${{ matrix.python-version }}
           path: bandit-report.txt
           retention-days: 30
+          if-no-files-found: warn
