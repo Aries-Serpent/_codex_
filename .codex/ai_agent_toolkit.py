@@ -11,7 +11,7 @@ Purpose: Enhance future agent capabilities and reduce redundant work
 """
 
 import json
-import subprocess
+import subprocess  # nosec B404 - Required for git/CLI operations, all calls use explicit arguments
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Any
@@ -41,12 +41,13 @@ class EnvironmentValidator:
         
         try:
             # Check git availability
-            subprocess.run(["git", "--version"], 
-                         capture_output=True, check=True)
+            subprocess.run(  # nosec B603 B607 - Trusted command, no user input
+                ["git", "--version"], 
+                capture_output=True, check=True)
             result["git_available"] = True
             
             # Check credential helper
-            cred_result = subprocess.run(
+            cred_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "config", "credential.helper"],
                 capture_output=True, text=True
             )
@@ -54,14 +55,14 @@ class EnvironmentValidator:
                 result["credentials_configured"] = True
             
             # Check current branch
-            branch_result = subprocess.run(
+            branch_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "branch", "--show-current"],
                 capture_output=True, text=True
             )
             result["current_branch"] = branch_result.stdout.strip()
             
             # Check remote access (note: timeout parameter not supported in older Python versions)
-            remote_result = subprocess.run(
+            remote_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "ls-remote", "--heads", "origin"],
                 capture_output=True, text=True
             )
@@ -99,7 +100,7 @@ class EnvironmentValidator:
         
         try:
             # Check gh CLI
-            gh_result = subprocess.run(
+            gh_result = subprocess.run(  # nosec B603 B607 - Trusted gh command
                 ["gh", "--version"],
                 capture_output=True, text=True
             )
@@ -107,7 +108,7 @@ class EnvironmentValidator:
                 result["gh_cli_available"] = True
                 
                 # Check authentication
-                auth_result = subprocess.run(
+                auth_result = subprocess.run(  # nosec B603 B607 - Trusted gh command
                     ["gh", "auth", "status"],
                     capture_output=True, text=True
                 )
@@ -217,7 +218,7 @@ class TestRunner:
         
         try:
             # Run pytest (note: timeout parameter not supported in older Python versions)
-            proc_result = subprocess.run(
+            proc_result = subprocess.run(  # nosec B603 B607 - Trusted pytest command
                 cmd,
                 capture_output=True,
                 text=True
