@@ -3,7 +3,6 @@
 Final pass to fix remaining specific broken links
 """
 
-import re
 from pathlib import Path
 
 REPO_ROOT = Path("/home/runner/work/_codex_/_codex_")

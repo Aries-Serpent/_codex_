@@ -3,10 +3,9 @@
 Fix broken links in .github directory files
 """
 
-import os
 import re
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import Tuple
 
 REPO_ROOT = Path("/home/runner/work/_codex_/_codex_")
 GITHUB_ROOT = REPO_ROOT / ".github"
@@ -22,6 +21,10 @@ class GitHubLinkFixer:
         
     def fix_file(self, file_path: Path) -> Tuple[str, bool]:
         """Fix all broken links in a single file"""
+        # Initialize variables before try-except to avoid uninitialized variable errors
+        content = ""
+        modified = False
+        
         try:
             content = file_path.read_text(encoding='utf-8')
         except Exception as e:
@@ -102,6 +105,9 @@ class GitHubLinkFixer:
         modified_files = []
         
         for file_path in files:
+            # Initialize variables to avoid uninitialized variable errors
+            new_content = ""
+            modified = False
             new_content, modified = self.fix_file(file_path)
             
             if modified:
