@@ -158,7 +158,7 @@ jobs:
     needs: check-trigger
     if: needs.check-trigger.outputs.should_run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30  # Reduced from 90 to 30 minutes
 
     outputs:
       critical_issues: ${{ steps.analyze.outputs.critical_issues }}
@@ -312,6 +312,7 @@ jobs:
         id: coverage
         if: contains(inputs.focus_areas || 'security,performance,testing,documentation', 'testing')
         continue-on-error: true
+        timeout-minutes: 10  # Step-level timeout
         run: |
           echo "🧪 Running test coverage analysis..."
 
