@@ -306,10 +306,10 @@ python3 scripts/validate_security_utils.py
 ## Resources
 
 ### Documentation
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
-- [Security Utils Documentation](src/codex/security_utils.py)
-- [QA Agent README](.github/agents/codebase-qa-walkthrough-agent/README.md)
-- [Flatten-Repo README](.github/workflows/FLATTEN_REPO_README.md)
+- [AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)
+- [Security Utils Documentation](../../../src/codex/security_utils.py)
+- QA Agent README
+- [Flatten-Repo README](../../../.github/workflows/flatten-repo-download.md)
 
 ### Tools & Commands
 ```bash

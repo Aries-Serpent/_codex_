@@ -232,8 +232,9 @@ class TestCoverageGuardian:
                         test_content = test_path.read_text()
                         if f"test_{function_name}" in test_content or function_name in test_content:
                             return True
-                    except Exception:
-                        pass
+                    except (OSError, UnicodeDecodeError) as e:
+                        # Log warning but continue checking other test files
+                        print(f"Warning: Could not read test file {test_path}: {e}", file=sys.stderr)
 
         return False
 

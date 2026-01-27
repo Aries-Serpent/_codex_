@@ -263,7 +263,7 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/src/codex_cli/app.py
 - Line 2210: ``quickstart.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/quickstart.md
-- Line 2211: `[`README_ROOT.md`](./README_ROOT.md#training-quickstart)`
+- Line 2211: `[`README_ROOT.md`](../README_ROOT.md#training-quickstart)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/README_ROOT.md
 - Line 2214: ``guides/serving_reproducibility.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/guides/serving_reproducibility.md
@@ -277,6 +277,6 @@
 
 ### validation/Usage_Guide.md
 
-- Line 87: `[Logging guide](guides/LOGGING.md)`
+- Line 87: `[Logging guide](../guides/LOGGING.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/guides/LOGGING.md
 
