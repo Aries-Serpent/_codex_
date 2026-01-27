@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Optional
 
 # Try to use typer, fall back to argparse
+_TYPER_IMPORT_ERROR: Optional[str] = None
 try:
     import typer
     # Verify typer is actually the real package
@@ -36,10 +37,8 @@ try:
         TYPER_AVAILABLE = False
         import argparse
 except ImportError as e:
-    # Use stderr for early errors since logger not yet initialized
-    import sys
-    # Note: print to stderr is acceptable here as logger is not initialized yet
-    print(f"ImportError during typer import: {e}", file=sys.stderr)
+    # Store error for later reporting when main() is called
+    _TYPER_IMPORT_ERROR = str(e)
     TYPER_AVAILABLE = False
     import argparse
 
@@ -211,6 +210,10 @@ if TYPER_AVAILABLE:
     
     def main():
         """Main entry point."""
+        # Emit typer import error warning if it occurred
+        if _TYPER_IMPORT_ERROR:
+            import sys
+            print(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.", file=sys.stderr)
         app()
 
 else:
