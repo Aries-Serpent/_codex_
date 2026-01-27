@@ -100,34 +100,19 @@ def embed_chunks(
     )
     cache_dir = model_profile.get("cache_dir", None)
 
-    # Load model directly to CPU
+    # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        model = SentenceTransformer(
-            model_name,
-            cache_folder=cache_dir,
-            device="cpu"  # Explicitly load to CPU
-        )
+        # Load model without device parameter to avoid meta tensor issues,
+        # then use safe_model_load to handle device placement properly
+        model = SentenceTransformer(model_name, cache_folder=cache_dir)
+        model = safe_model_load(model, device="cpu")
+        
         # Ensure model is in eval mode
         model.eval()
-    except (RuntimeError, NotImplementedError) as e:
-        # Handle device-related errors (meta tensors, CUDA errors, etc.)
-        # These specific exception types typically indicate device/tensor issues
-        logger.warning(f"Device-related load failed (type: {type(e).__name__}), attempting safe_model_load: {e}")
-        try:
-            # Fallback: load without device specification then move safely
-            model = SentenceTransformer(model_name, cache_folder=cache_dir)
-            model = safe_model_load(model, device="cpu")
-            model.eval()
-        except Exception as fallback_error:
-            logger.error(f"Fallback model load also failed: {fallback_error}")
-            raise RuntimeError(
-                f"Failed to load model {model_name} on CPU. "
-                f"Original error: {e}. Fallback error: {fallback_error}"
-            ) from e
-    except (OSError, ValueError) as e:
-        # Re-raise non-device errors (network, missing files, invalid parameters)
-        logger.error(f"Model load failed due to non-device error (type: {type(e).__name__}): {e}")
+        
+    except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
+        logger.error(f"Failed to load embedding model: {e}")
         raise
 
     # Extract text from chunks
