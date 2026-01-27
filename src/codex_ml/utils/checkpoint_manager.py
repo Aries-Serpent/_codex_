@@ -60,7 +60,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
             import inspect
             if "weights_only" in inspect.signature(torch.load).parameters:
                 load_kwargs["weights_only"] = True
-            data = torch.load(target, **load_kwargs)
+            data = torch.load(target, **load_kwargs)  # nosec B614 - weights_only=True set above when available
         except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
             logger.debug(f"Exception: {torch_error}")
             # Use safe pickle loading as fallback

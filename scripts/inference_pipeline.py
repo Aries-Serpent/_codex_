@@ -194,20 +194,22 @@ def load_inference_config(config_path: Path) -> InferenceConfig:
 
 # ---- Load model ----
 def _load_model_from_directory(model_dir: Path) -> tuple[torch.nn.Module, Any]:
-    tokenizer = AutoTokenizer.from_pretrained(str(model_dir), local_files_only=True)
-    model = AutoModelForCausalLM.from_pretrained(str(model_dir), local_files_only=True)
+    from codex_ml.utils.hf_pinning import load_from_pretrained
+    tokenizer = load_from_pretrained(AutoTokenizer, str(model_dir), local_files_only=True)  # Uses revision pinning for security
+    model = load_from_pretrained(AutoModelForCausalLM, str(model_dir), local_files_only=True)  # Uses revision pinning for security
     model.eval()
     return model, tokenizer
 
 
 def _load_model_from_file(model_path: Path) -> tuple[torch.nn.Module, Any]:
-    loaded = torch.load(model_path, map_location="cpu")
+    loaded = torch.load(model_path, map_location="cpu", weights_only=False)  # nosec B614 - Model file may contain custom classes requiring weights_only=False
     if isinstance(loaded, torch.nn.Module):
         model = loaded
     else:
         raise ValueError("Serialized model file must contain a torch.nn.Module")
     model.eval()
-    tokenizer = AutoTokenizer.from_pretrained(str(model_path.parent), local_files_only=True)
+    from codex_ml.utils.hf_pinning import load_from_pretrained
+    tokenizer = load_from_pretrained(AutoTokenizer, str(model_path.parent), local_files_only=True)  # Uses revision pinning for security
     return model, tokenizer
 
 

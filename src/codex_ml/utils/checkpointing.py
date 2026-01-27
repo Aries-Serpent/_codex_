@@ -356,7 +356,7 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(path, **kwargs)  # nosec B614
+            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
         except Exception as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
@@ -1172,7 +1172,7 @@ class CheckpointManager:
         state_payload: Any = payload
         if isinstance(payload, (bytes, bytearray)):
             try:
-                state_payload = torch.load(io.BytesIO(payload), map_location="cpu")  # nosec B614
+                state_payload = torch.load(io.BytesIO(payload), map_location="cpu", weights_only=False)  # nosec B614 - RNG state may contain complex objects
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 state_payload = {"payload": payload}

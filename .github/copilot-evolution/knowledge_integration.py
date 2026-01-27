@@ -540,7 +540,7 @@ class ConceptGraph:
         Returns:
             Created ConceptNode
         """
-        concept_id = hashlib.md5(name.lower().encode()).hexdigest()[:12]
+        concept_id = hashlib.md5(name.lower().encode(), usedforsecurity=False).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
         now = datetime.utcnow().isoformat()
 
         concept = ConceptNode(
@@ -766,8 +766,8 @@ class AutomatedResearcher:
             Created ResearchTask
         """
         task_id = hashlib.md5(
-            f"{concept}:{research_question}".encode()
-        ).hexdigest()[:12]
+            f"{concept}:{research_question}".encode(), usedforsecurity=False
+        ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
 
         task = ResearchTask(
             task_id=task_id,
@@ -981,8 +981,8 @@ class TestGenerator:
             Generated test template (requires manual completion)
         """
         test_id = hashlib.md5(
-            f"{concept}:{function_signature}".encode()
-        ).hexdigest()[:12]
+            f"{concept}:{function_signature}".encode(), usedforsecurity=False
+        ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
 
         # Parse function name from signature
         func_match = re.match(r"def\s+(\w+)", function_signature)
@@ -1050,8 +1050,8 @@ def test_{func_name}_edge_cases():
             Generated property test
         """
         test_id = hashlib.md5(
-            f"{concept}:property".encode()
-        ).hexdigest()[:12]
+            f"{concept}:property".encode(), usedforsecurity=False
+        ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
 
         # Generate property-based test code
         property_tests = []

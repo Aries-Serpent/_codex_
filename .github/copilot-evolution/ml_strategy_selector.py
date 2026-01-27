@@ -245,8 +245,8 @@ class MLStrategySelector:
         file_ext = Path(component).suffix if "." in component else ".py"
 
         return StrategyFeatures(
-            error_type_hash=hashlib.md5(error_type.encode()).hexdigest()[:8],
-            component_hash=hashlib.md5(component.encode()).hexdigest()[:8],
+            error_type_hash=hashlib.md5(error_type.encode(), usedforsecurity=False).hexdigest()[:8],  # nosec B324 - Not for security, ID generation only
+            component_hash=hashlib.md5(component.encode(), usedforsecurity=False).hexdigest()[:8],  # nosec B324 - Not for security, ID generation only
             message_keywords=keywords,
             severity_score=severity,
             stack_depth=stack_depth,

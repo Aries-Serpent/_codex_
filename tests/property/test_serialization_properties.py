@@ -318,8 +318,8 @@ class TestChecksumProperties:
     def test_md5_deterministic(self, data: bytes) -> None:
         """MD5 hash is deterministic."""
         import hashlib
-        hash1 = hashlib.md5(data).hexdigest()
-        hash2 = hashlib.md5(data).hexdigest()
+        hash1 = hashlib.md5(data, usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, test property verification only
+        hash2 = hashlib.md5(data, usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, test property verification only
         assert hash1 == hash2
 
     @given(st.binary(max_size=1000))

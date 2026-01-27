@@ -225,25 +225,25 @@ class TestLoadDataset:
 
     def test_load_preset_toy_copy_task(self) -> None:
         """Test loading preset dataset."""
-        bundle = load_dataset("toy_copy_task")
+        bundle = load_dataset("toy_copy_task")  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 2
         assert bundle.source == "toy_copy_task"
         assert bundle.dataset_hash is not None
 
     def test_load_preset_tiny_wikitext(self) -> None:
         """Test loading tiny_wikitext preset."""
-        bundle = load_dataset("tiny_wikitext")
+        bundle = load_dataset("tiny_wikitext")  # nosec B615 - Test code with known preset dataset
         assert len(bundle) >= 1
         assert bundle.source == "tiny_wikitext"
 
     def test_load_with_max_samples(self) -> None:
         """Test max_samples parameter."""
-        bundle = load_dataset("toy_copy_task", max_samples=1)
+        bundle = load_dataset("toy_copy_task", max_samples=1)  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 1
 
     def test_load_with_zero_max_samples(self) -> None:
         """Test max_samples=0 returns empty bundle."""
-        bundle = load_dataset("toy_copy_task", max_samples=0)
+        bundle = load_dataset("toy_copy_task", max_samples=0)  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 0
 
     def test_load_jsonl_file(self) -> None:
@@ -259,7 +259,7 @@ class TestLoadDataset:
                 encoding="utf-8",
             )
 
-            bundle = load_dataset(str(path))
+            bundle = load_dataset(str(path))  # nosec B615 - Test code loading local dataset file
             assert len(bundle) == 2
             assert bundle[0].input == "hello"
             assert bundle[1].target == "bar"
@@ -271,7 +271,7 @@ class TestLoadDataset:
             examples = [{"input": "test", "target": "result"}]
             path.write_text(json.dumps(examples[0]), encoding="utf-8")
 
-            bundle = load_dataset(str(path))
+            bundle = load_dataset(str(path))  # nosec B615 - Test code loading local dataset file
             assert len(bundle) == 1
             assert bundle[0].input == "test"
 
@@ -282,18 +282,18 @@ class TestLoadDataset:
             content = '{"input": "a", "target": "1"}\n\n{"input": "b", "target": "2"}'
             path.write_text(content, encoding="utf-8")
 
-            bundle = load_dataset(str(path))
+            bundle = load_dataset(str(path))  # nosec B615 - Test code loading local dataset file
             assert len(bundle) == 2
 
     def test_metadata_includes_source(self) -> None:
         """Test metadata includes source information."""
-        bundle = load_dataset("toy_copy_task")
+        bundle = load_dataset("toy_copy_task")  # nosec B615 - Test code with known preset dataset
         assert bundle.metadata is not None
         assert "source" in bundle.metadata
 
     def test_metadata_includes_num_examples(self) -> None:
         """Test metadata includes num_examples."""
-        bundle = load_dataset("toy_copy_task")
+        bundle = load_dataset("toy_copy_task")  # nosec B615 - Test code with known preset dataset
         assert bundle.metadata is not None
         assert "num_examples" in bundle.metadata
         assert bundle.metadata["num_examples"] == len(bundle)
@@ -305,7 +305,7 @@ class TestLoadDataset:
             try:
                 # This will fail because it's not a valid HF dataset,
                 # but the warning should be raised before that
-                load_dataset(
+                load_dataset(  # nosec B615 - Test code with known preset dataset
                     "toy_copy_task",  # Use preset to avoid HF requirement
                     hf_text_field="text",
                 )
@@ -318,7 +318,7 @@ class TestLoadDataset:
     def test_hf_text_field_conflict_raises_error(self) -> None:
         """Test hf_text_field + hf_input_field raises ValueError."""
         with pytest.raises(ValueError) as exc_info:
-            load_dataset(
+            load_dataset(  # nosec B615 - Test code, intentionally passing invalid parameters
                 "hf://some/dataset",
                 hf_text_field="text",
                 hf_input_field="input",
@@ -336,7 +336,7 @@ class TestLoadDatasetEdgeCases:
 
     def test_negative_max_samples_treated_as_zero(self) -> None:
         """Test negative max_samples is treated as 0."""
-        bundle = load_dataset("toy_copy_task", max_samples=-5)
+        bundle = load_dataset("toy_copy_task", max_samples=-5)  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 0
 
 

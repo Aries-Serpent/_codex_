@@ -102,7 +102,7 @@ def verify_write_permissions() -> None:
     for p in TARGETS:
         try:
             p.parent.mkdir(parents=True, exist_ok=True)
-            testfile = p.parent / (".codex.touch." + hashlib.sha1(str(p).encode()).hexdigest()[:8])
+            testfile = p.parent / (".codex.touch." + hashlib.sha1(str(p).encode(), usedforsecurity=False).hexdigest()[:8])  # nosec B324 - Not for security, test file naming only
             testfile.write_text("ok", encoding="utf-8")
             testfile.unlink(missing_ok=True)
         except Exception as e:

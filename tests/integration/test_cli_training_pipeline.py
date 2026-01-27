@@ -344,7 +344,7 @@ class TestOutputValidation:
             }
             torch.save(checkpoint, checkpoint_path)
             
-            loaded = torch.load(checkpoint_path)
+            loaded = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
             assert "model_state_dict" in loaded
             assert "optimizer_state_dict" in loaded
         except ImportError:

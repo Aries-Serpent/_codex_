@@ -75,7 +75,7 @@ class TestTrainingEdgeCases:
         try:
             # Should handle corrupted checkpoint
             with pytest.raises((RuntimeError, ValueError)):
-                torch.load(checkpoint_path)
+                torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         finally:
             import os
             os.unlink(checkpoint_path)
@@ -377,7 +377,7 @@ class TestTrainingEdgeCases:
         try:
             # Attempt to load
             with pytest.raises((RuntimeError, ValueError, EOFError)):
-                checkpoint = torch.load(corrupted_path)
+                checkpoint = torch.load(corrupted_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
             
             # Fallback to previous checkpoint
             fallback_checkpoint = {
@@ -501,7 +501,7 @@ class TestDataLoadingEdgeCases:
             import pickle
             with pytest.raises((pickle.UnpicklingError, EOFError)):
                 with open(corrupted_file, 'rb') as f:
-                    pickle.load(f)
+                    pickle.load(f)  # nosec B301 - Test code validating error handling of corrupted pickle files
         finally:
             import os
             os.unlink(corrupted_file)

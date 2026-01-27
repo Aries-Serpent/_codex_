@@ -475,8 +475,8 @@ class ArtifactLifecycleManager:
             Created Artifact
         """
         artifact_id = hashlib.md5(
-            f"{name}:{version}:{datetime.utcnow().isoformat()}".encode()
-        ).hexdigest()[:12]
+            f"{name}:{version}:{datetime.utcnow().isoformat()}".encode(), usedforsecurity=False
+        ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
 
         retention = retention_days or self.retention_policies.get(artifact_type, 30)
         now = datetime.utcnow()
@@ -665,8 +665,8 @@ class MultiArchBuilder:
             BuildConfiguration
         """
         build_id = hashlib.md5(
-            f"{base_image}:{datetime.utcnow().isoformat()}".encode()
-        ).hexdigest()[:12]
+            f"{base_image}:{datetime.utcnow().isoformat()}".encode(), usedforsecurity=False
+        ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
 
         # Validate platforms
         platforms = platforms or self.default_platforms

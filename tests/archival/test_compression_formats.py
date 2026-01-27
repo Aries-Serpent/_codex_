@@ -138,7 +138,12 @@ class TestZipCompression:
 
         extract_dir = tmp_path / "extracted"
         with zipfile.ZipFile(archive_path, "r") as zf:
-            zf.extractall(extract_dir)
+            # Safe extraction - validate paths to prevent directory traversal
+            for member in zf.namelist():
+                member_path = extract_dir / member
+                if not member_path.resolve().is_relative_to(extract_dir.resolve()):
+                    raise ValueError(f"Attempted path traversal in zip file: {member}")
+            zf.extractall(extract_dir)  # nosec B202 - Path validation performed above
 
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()

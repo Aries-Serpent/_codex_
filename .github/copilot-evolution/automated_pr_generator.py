@@ -152,8 +152,9 @@ class FixCodeGenerator:
                 return None
 
             suggestion = FixSuggestion(
-                suggestion_id=hashlib.md5(
-                    f"{issue_type}:{datetime.utcnow().isoformat()}".encode()
+                suggestion_id=hashlib.md5(  # nosec B324 - Not for security, suggestion ID generation only
+                    f"{issue_type}:{datetime.utcnow().isoformat()}".encode(),
+                    usedforsecurity=False
                 ).hexdigest()[:12],
                 issue_type=issue_type,
                 file_path=context.get("file_path", "unknown"),
@@ -587,7 +588,7 @@ class AutomatedPRGenerator:
             branch_name = f"self-healing/no-fix-{timestamp}"
 
             pr = GeneratedPR(
-                pr_id=hashlib.md5(branch_name.encode()).hexdigest()[:12],
+                pr_id=hashlib.md5(branch_name.encode(), usedforsecurity=False).hexdigest()[:12],  # nosec B324 - Not for security, PR ID generation only
                 title="[No Fixes] Unable to generate automatic fixes",
                 description=(
                     "## No Automatic Fixes Available\n\n"
@@ -625,7 +626,7 @@ class AutomatedPRGenerator:
         branch_name = f"self-healing/fix-{timestamp}"
 
         pr = GeneratedPR(
-            pr_id=hashlib.md5(branch_name.encode()).hexdigest()[:12],
+            pr_id=hashlib.md5(branch_name.encode(), usedforsecurity=False).hexdigest()[:12],  # nosec B324 - Not for security, PR ID generation only
             title=title,
             description=description,
             branch_name=branch_name,
