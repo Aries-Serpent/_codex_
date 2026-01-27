@@ -204,13 +204,16 @@ test-suite.yml wasn't generating junit.xml:
 -   pytest==9.0.2 \
 -   pytest-cov==7.0.0 \
 +   pytest==8.3.4 \
-+   pytest-cov==6.0.0 \
++   pytest-cov==5.0.0 \
 ```
 
 **Rationale:**
 - pyproject.toml requires `pytest>=8.2.0,<9.0.0`
+- pyproject.toml requires `pytest-cov>=4.1.0,<6.0.0`
 - pytest 9.0.2 violates this constraint
+- pytest-cov 7.0.0 violates this constraint
 - pytest 8.3.4 is latest in 8.x series
+- pytest-cov 5.0.0 is latest in 5.x series
 
 **Impact:** Resolves version conflicts, ensures compatibility
 
