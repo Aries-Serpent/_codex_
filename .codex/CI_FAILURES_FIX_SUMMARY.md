@@ -296,7 +296,7 @@ test-comprehensive.yml already used `ensure_test_artifacts.py` successfully. Now
 **Lines changed:** 90-91  
 **Changes:**
 - Updated `pytest==9.0.2` → `pytest==8.3.4`
-- Updated `pytest-cov==7.0.0` → `pytest-cov==6.0.0`
+- Updated `pytest-cov==7.0.0` → `pytest-cov==5.0.0`
 
 ---
 

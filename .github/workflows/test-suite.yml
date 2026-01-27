@@ -97,7 +97,12 @@ jobs:
       - name: Show test collection diagnostics
         run: |
           echo "=== Test Collection Diagnostics ==="
-          python -m pytest tests/ --collect-only -q 2>&1 | head -50 || echo "⚠️  Test collection may have issues"
+          # Show stdout and stderr separately for better error visibility
+          python -m pytest tests/ --collect-only -q 2>/tmp/pytest_stderr.log | head -50 || {
+            echo "⚠️  Test collection may have issues"
+            echo "=== Stderr output ==="
+            cat /tmp/pytest_stderr.log 2>/dev/null || true
+          }
           echo ""
           echo "=== Test Directory Structure ==="
           find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
@@ -163,12 +168,28 @@ jobs:
           echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Show test counts from JUnit XML if available
+          # Show test counts from JUnit XML if available using Python for robust parsing
           if [ -f junit.xml ]; then
-            tests=$(grep -o 'tests="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
-            failures=$(grep -o 'failures="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
-            errors=$(grep -o 'errors="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
-            echo "**Tests:** $tests total, $failures failed, $errors errors" >> $GITHUB_STEP_SUMMARY
+            python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    tree = ET.parse('junit.xml')
+    root = tree.getroot()
+    # Handle both testsuite and testsuites root elements
+    if root.tag == 'testsuites':
+        ts = root.find('testsuite')
+    else:
+        ts = root
+    if ts is not None:
+        tests = ts.get('tests', '0')
+        failures = ts.get('failures', '0')
+        errors = ts.get('errors', '0')
+        print(f'**Tests:** {tests} total, {failures} failed, {errors} errors')
+    else:
+        print('**Tests:** Unable to parse JUnit XML')
+except Exception as e:
+    print(f'**Tests:** Error parsing JUnit XML: {e}')
+" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
 

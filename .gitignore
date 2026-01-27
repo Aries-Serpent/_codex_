@@ -141,6 +141,10 @@ manifests/k8s/*/secret.yaml
 !.codex/prompts/**
 !.codex/qa_walkthrough/
 !.codex/qa_walkthrough/**
+!.codex/knowledge/
+!.codex/knowledge/**
+!.codex/docs/
+!.codex/docs/**
 !.codex/action_log.ndjson
 !.codex/change_log.md
 !.codex/results.md
