@@ -22,7 +22,7 @@ from datetime import datetime
 
 class GitHubVariableManager:
     """Manage GitHub repository variables via REST API"""
-    
+
     def __init__(self, owner: str, repo: str, token: str):
         self.owner = owner
         self.repo = repo
@@ -33,15 +33,15 @@ class GitHubVariableManager:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28"
         }
-    
+
     def create_or_update(self, name: str, value: str) -> bool:
         """Create or update a variable (PUT)"""
         url = f"{self.base_url}/{name}"
         data = {"name": name, "value": value}
-        
+
         try:
             response = requests.put(url, headers=self.headers, json=data, timeout=30)
-            
+
             if response.status_code in [201, 204]:
                 print(f"✅ Variable '{name}' created/updated successfully")
                 return True
@@ -52,14 +52,14 @@ class GitHubVariableManager:
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return False
-    
+
     def get(self, name: str) -> Optional[str]:
         """Get a variable value (GET)"""
         url = f"{self.base_url}/{name}"
-        
+
         try:
             response = requests.get(url, headers=self.headers, timeout=30)
-            
+
             if response.status_code == 200:
                 return response.json().get('value')
             elif response.status_code == 404:
@@ -71,14 +71,14 @@ class GitHubVariableManager:
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return None
-    
+
     def delete(self, name: str) -> bool:
         """Delete a variable (DELETE)"""
         url = f"{self.base_url}/{name}"
-        
+
         try:
             response = requests.delete(url, headers=self.headers, timeout=30)
-            
+
             if response.status_code == 204:
                 print(f"✅ Variable '{name}' deleted successfully")
                 return True
@@ -91,12 +91,12 @@ class GitHubVariableManager:
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return False
-    
+
     def list_all(self) -> List[Dict[str, Any]]:
         """List all variables"""
         try:
             response = requests.get(self.base_url, headers=self.headers, timeout=30)
-            
+
             if response.status_code == 200:
                 return response.json().get('variables', [])
             else:
@@ -105,7 +105,7 @@ class GitHubVariableManager:
         except requests.RequestException as e:
             print(f"❌ Request failed: {e}")
             return []
-    
+
     def upload_paginated_dataset(self, dataset_path: str, dataset_id: str) -> bool:
         """Upload a large dataset as paginated variables"""
         # Read dataset
@@ -115,14 +115,14 @@ class GitHubVariableManager:
         except IOError as e:
             print(f"❌ Failed to read dataset: {e}")
             return False
-        
+
         # Configuration
         MAX_CHUNK_SIZE = 49152  # 48 KB
         total_size = len(data)
         pages = math.ceil(total_size / MAX_CHUNK_SIZE)
-        
+
         print(f"📊 Dataset size: {total_size} bytes, will create {pages} pages")
-        
+
         # Create chunks
         chunks = []
         for i in range(pages):
@@ -135,7 +135,7 @@ class GitHubVariableManager:
             except UnicodeDecodeError:
                 import base64
                 chunks.append(base64.b64encode(chunk_data).decode('ascii'))
-        
+
         # Generate index
         index = {
             "dataset_id": dataset_id,
@@ -146,13 +146,13 @@ class GitHubVariableManager:
             "total_size_bytes": total_size,
             "compression": "none"
         }
-        
+
         # Upload index
         index_var = f"DATASET_{dataset_id.upper()}_INDEX"
         print(f"📤 Uploading index: {index_var}")
         if not self.create_or_update(index_var, json.dumps(index, separators=(',', ':'))):
             return False
-        
+
         # Upload pages
         for i, chunk in enumerate(chunks):
             page_var = f"DATASET_{dataset_id.upper()}_P{str(i+1).zfill(3)}"
@@ -160,33 +160,33 @@ class GitHubVariableManager:
             if not self.create_or_update(page_var, chunk):
                 print(f"❌ Failed to upload page {i+1}, aborting")
                 return False
-        
+
         print(f"✅ Successfully uploaded {pages} pages totaling {total_size} bytes")
         return True
-    
+
     def download_paginated_dataset(self, dataset_id: str, output_path: str) -> bool:
         """Download and reconstruct a paginated dataset"""
         # Read index
         index_var = f"DATASET_{dataset_id.upper()}_INDEX"
         print(f"📥 Reading index: {index_var}")
-        
+
         index_json = self.get(index_var)
         if not index_json:
             print(f"❌ Index variable not found: {index_var}")
             return False
-        
+
         try:
             index = json.loads(index_json)
         except json.JSONDecodeError as e:
             print(f"❌ Invalid JSON in index: {e}")
             return False
-        
+
         pages = index['pages']
         keys = index['keys']
         total_size = index.get('total_size_bytes', 0)
-        
+
         print(f"📊 Dataset has {pages} pages, total size: {total_size} bytes")
-        
+
         # Download pages
         chunks = []
         for i, key in enumerate(keys):
@@ -196,10 +196,10 @@ class GitHubVariableManager:
                 print(f"❌ Failed to download page: {key}")
                 return False
             chunks.append(chunk)
-        
+
         # Assemble
         assembled = ''.join(chunks)
-        
+
         # Check if data was base64 encoded
         if len(assembled) != total_size:
             try:
@@ -210,7 +210,7 @@ class GitHubVariableManager:
                 assembled_bytes = assembled.encode('utf-8')
         else:
             assembled_bytes = assembled.encode('utf-8')
-        
+
         # Write to file
         try:
             with open(output_path, 'wb') as f:
@@ -220,7 +220,7 @@ class GitHubVariableManager:
         except IOError as e:
             print(f"❌ Failed to write output: {e}")
             return False
-    
+
     def create_v10_variables(self) -> bool:
         """Create all V10 agent and audit variables"""
         variables = {
@@ -235,10 +235,10 @@ class GitHubVariableManager:
             "ECOSYSTEM_COORD_SEED": "51",
             "WANDB_MODE": "offline",
             "CI_DURATION_NORMALIZATION_MS": "1000",
-            
+
             # Audit Infrastructure
             "AUDIT_SAFEGUARD_KEYWORDS": json.dumps([
-                "sha256", "checksum", "rng", "seed", "offline", 
+                "sha256", "checksum", "rng", "seed", "offline",
                 "WANDB_MODE", "deterministic", "nosec"
             ]),
             "AUDIT_MAX_READ_BYTES": "200000",
@@ -255,18 +255,18 @@ class GitHubVariableManager:
                 "reports": "reports",
                 "artifacts": "audit_artifacts"
             }),
-            
+
             # Pre-deploy gates
             "PREDEPLOY_ENABLED": "false",  # Disabled by default
             "AUDIT_PREDEPLOY_GATE": "false"  # Disabled by default
         }
-        
+
         success = True
         for name, value in variables.items():
             print(f"\n📤 Creating variable: {name}")
             if not self.create_or_update(name, value):
                 success = False
-        
+
         return success
 
 def main():
@@ -288,26 +288,26 @@ def main():
         print("  GITHUB_OWNER  - Repository owner (default: Aries-Serpent)")
         print("  GITHUB_REPO   - Repository name (default: _codex_)")
         sys.exit(1)
-    
+
     # Get credentials from environment
     owner = os.getenv('GITHUB_OWNER', 'Aries-Serpent')
     repo = os.getenv('GITHUB_REPO', '_codex_')
     token = os.getenv('GITHUB_TOKEN')
-    
+
     if not token:
         print("❌ GITHUB_TOKEN environment variable required")
         print("Set it with: export GITHUB_TOKEN=your_token_here")
         sys.exit(1)
-    
+
     manager = GitHubVariableManager(owner, repo, token)
     command = sys.argv[1]
-    
+
     try:
         if command == 'set' and len(sys.argv) >= 4:
             name = sys.argv[2]
             value = sys.argv[3]
             sys.exit(0 if manager.create_or_update(name, value) else 1)
-        
+
         elif command == 'get' and len(sys.argv) >= 3:
             name = sys.argv[2]
             value = manager.get(name)
@@ -316,11 +316,11 @@ def main():
                 sys.exit(0)
             else:
                 sys.exit(1)
-        
+
         elif command == 'delete' and len(sys.argv) >= 3:
             name = sys.argv[2]
             sys.exit(0 if manager.delete(name) else 1)
-        
+
         elif command == 'list':
             variables = manager.list_all()
             if variables:
@@ -332,26 +332,26 @@ def main():
             else:
                 print("No variables found")
             sys.exit(0)
-        
+
         elif command == 'upload' and len(sys.argv) >= 4:
             dataset_path = sys.argv[2]
             dataset_id = sys.argv[3]
             sys.exit(0 if manager.upload_paginated_dataset(dataset_path, dataset_id) else 1)
-        
+
         elif command == 'download' and len(sys.argv) >= 4:
             dataset_id = sys.argv[2]
             output_path = sys.argv[3]
             sys.exit(0 if manager.download_paginated_dataset(dataset_id, output_path) else 1)
-        
+
         elif command == 'init-v10':
             print("🚀 Initializing V10 variables...")
             sys.exit(0 if manager.create_v10_variables() else 1)
-        
+
         else:
             print("❌ Invalid command or missing arguments")
             print("Run without arguments to see usage")
             sys.exit(1)
-    
+
     except KeyboardInterrupt:
         print("\n\n⚠️  Operation cancelled by user")
         sys.exit(130)

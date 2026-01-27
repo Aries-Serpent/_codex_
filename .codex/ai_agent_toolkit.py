@@ -11,22 +11,25 @@ Purpose: Enhance future agent capabilities and reduce redundant work
 """
 
 import json
+import logging
+import os
 import subprocess  # nosec B404 - Required for git/CLI operations, all calls use explicit arguments
 import sys
-from pathlib import Path
-from typing import Dict, List, Optional, Any
 from datetime import datetime
-import os
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class EnvironmentValidator:
     """Validates execution environment and available tools."""
-    
+
     @staticmethod
     def check_git_access() -> Dict[str, Any]:
         """
         Check git access and authentication status.
-        
+
         Returns:
             Dict with status, credentials, and access details
         """
@@ -38,14 +41,14 @@ class EnvironmentValidator:
             "current_branch": None,
             "error": None
         }
-        
+
         try:
             # Check git availability
             subprocess.run(  # nosec B603 B607 - Trusted command, no user input
-                ["git", "--version"], 
+                ["git", "--version"],
                 capture_output=True, check=True)
             result["git_available"] = True
-            
+
             # Check credential helper
             cred_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "config", "credential.helper"],
@@ -53,14 +56,14 @@ class EnvironmentValidator:
             )
             if cred_result.stdout.strip():
                 result["credentials_configured"] = True
-            
+
             # Check current branch
             branch_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "branch", "--show-current"],
                 capture_output=True, text=True
             )
             result["current_branch"] = branch_result.stdout.strip()
-            
+
             # Check remote access (note: timeout parameter not supported in older Python versions)
             remote_result = subprocess.run(  # nosec B603 B607 - Trusted git command
                 ["git", "ls-remote", "--heads", "origin"],
@@ -74,17 +77,17 @@ class EnvironmentValidator:
                     if line
                 ]
                 result["branches"] = branches
-                
+
         except Exception as e:
             result["error"] = str(e)
-        
+
         return result
-    
+
     @staticmethod
     def check_github_api_access() -> Dict[str, Any]:
         """
         Check GitHub API access via gh CLI or tokens.
-        
+
         Returns:
             Dict with API access status and available methods
         """
@@ -97,7 +100,7 @@ class EnvironmentValidator:
             "workarounds": [],
             "error": None
         }
-        
+
         try:
             # Check gh CLI
             gh_result = subprocess.run(  # nosec B603 B607 - Trusted gh command
@@ -106,40 +109,40 @@ class EnvironmentValidator:
             )
             if gh_result.returncode == 0:
                 result["gh_cli_available"] = True
-                
+
                 # Check authentication
                 auth_result = subprocess.run(  # nosec B603 B607 - Trusted gh command
                     ["gh", "auth", "status"],
                     capture_output=True, text=True
                 )
                 result["gh_authenticated"] = auth_result.returncode == 0
-            
+
             # Check environment tokens
             result["github_token_set"] = bool(os.getenv("GITHUB_TOKEN"))
             result["gh_token_set"] = bool(os.getenv("GH_TOKEN"))
-            
+
             # Check GitHub Actions context
             result["actions_context"] = bool(os.getenv("GITHUB_ACTIONS"))
-            
+
             # Determine workarounds
             if not result["gh_authenticated"]:
                 result["workarounds"].append("Use git commands instead of gh CLI")
             if result["actions_context"]:
                 result["workarounds"].append("Use GitHub Actions context variables")
-            
+
         except Exception as e:
             result["error"] = str(e)
-        
+
         return result
-    
+
     @staticmethod
     def check_python_packages(packages: List[str]) -> Dict[str, Any]:
         """
         Check if Python packages are installed.
-        
+
         Args:
             packages: List of package names to check
-            
+
         Returns:
             Dict with installation status for each package
         """
@@ -148,31 +151,32 @@ class EnvironmentValidator:
             "missing": [],
             "versions": {}
         }
-        
+
         for package in packages:
             try:
                 # Try importing the package
                 __import__(package)
                 result["installed"].append(package)
-                
+
                 # Try to get version (best-effort, ignore errors)
                 try:
                     mod = sys.modules[package]
                     if hasattr(mod, "__version__"):
                         result["versions"][package] = mod.__version__
-                except Exception:
-                    # Version detection is best-effort; ignore any errors and continue
-                    pass
-                    
+                except (AttributeError, ImportError) as e:  # nosec B110
+                    # Version detection is best-effort; some packages don't expose __version__
+                    logger.debug(f"Could not detect version for {package}: {e}")
+                    result["versions"][package] = "unknown"
+
             except ImportError:
                 result["missing"].append(package)
-        
+
         return result
 
 
 class TestRunner:
     """Utilities for running tests and collecting results."""
-    
+
     @staticmethod
     def run_pytest_suite(
         test_path: str,
@@ -182,29 +186,29 @@ class TestRunner:
     ) -> Dict[str, Any]:
         """
         Run pytest test suite and return structured results.
-        
+
         Args:
             test_path: Path to test file or directory
             markers: Pytest marker expression (e.g., "not slow")
             verbose: Enable verbose output
             max_failures: Maximum failures before stopping
-            
+
         Returns:
             Dict with test results, counts, and status
         """
         cmd = ["python", "-m", "pytest", test_path]
-        
+
         if verbose:
             cmd.append("-v")
-        
+
         if markers:
             cmd.extend(["-k", markers])
-        
+
         if max_failures:
             cmd.extend(["--maxfail", str(max_failures)])
-        
+
         cmd.extend(["--tb=short", "--color=yes"])
-        
+
         result = {
             "command": " ".join(cmd),
             "success": False,
@@ -215,7 +219,7 @@ class TestRunner:
             "output": "",
             "error": None
         }
-        
+
         try:
             # Run pytest (note: timeout parameter not supported in older Python versions)
             proc_result = subprocess.run(  # nosec B603 B607 - Trusted pytest command
@@ -223,10 +227,10 @@ class TestRunner:
                 capture_output=True,
                 text=True
             )
-            
+
             result["output"] = proc_result.stdout + proc_result.stderr
             result["success"] = proc_result.returncode == 0
-            
+
             # Parse output for counts
             for line in result["output"].split('\n'):
                 if " passed" in line:
@@ -241,18 +245,18 @@ class TestRunner:
                             result["skipped"] = int(parts[i-1])
                         elif part == "error" or part == "errors":
                             result["errors"] = int(parts[i-1])
-            
+
         except subprocess.TimeoutExpired:
             result["error"] = "Test execution timed out after 300s"
         except Exception as e:
             result["error"] = str(e)
-        
+
         return result
 
 
 class DocumentationBuilder:
     """Utilities for building documentation and reports."""
-    
+
     @staticmethod
     def create_status_report(
         title: str,
@@ -261,12 +265,12 @@ class DocumentationBuilder:
     ) -> str:
         """
         Create a structured status report in markdown.
-        
+
         Args:
             title: Report title
             sections: Dict of section name to content
             output_path: Optional path to write report
-            
+
         Returns:
             Markdown content as string
         """
@@ -278,11 +282,11 @@ class DocumentationBuilder:
             "---",
             ""
         ]
-        
+
         for section_name, content in sections.items():
             lines.append(f"## {section_name}")
             lines.append("")
-            
+
             if isinstance(content, dict):
                 lines.append("```json")
                 lines.append(json.dumps(content, indent=2))
@@ -292,18 +296,18 @@ class DocumentationBuilder:
                     lines.append(f"- {item}")
             else:
                 lines.append(str(content))
-            
+
             lines.append("")
             lines.append("---")
             lines.append("")
-        
+
         markdown = "\n".join(lines)
-        
+
         if output_path:
             Path(output_path).write_text(markdown)
-        
+
         return markdown
-    
+
     @staticmethod
     def create_task_checklist(
         tasks: List[Dict[str, Any]],
@@ -311,38 +315,38 @@ class DocumentationBuilder:
     ) -> str:
         """
         Create a task checklist in markdown format.
-        
+
         Args:
             tasks: List of task dicts with 'name', 'status', 'details'
             title: Checklist title
-            
+
         Returns:
             Markdown checklist
         """
         lines = [f"## {title}", ""]
-        
+
         for task in tasks:
             name = task.get("name", "Unnamed task")
             status = task.get("status", "pending")
             details = task.get("details", "")
-            
+
             checkbox = "[x]" if status == "complete" else "[ ]"
             status_emoji = "✅" if status == "complete" else "⏳"
-            
+
             lines.append(f"- {checkbox} **{name}** {status_emoji}")
             if details:
                 lines.append(f"  - {details}")
-        
+
         return "\n".join(lines)
 
 
 class LessonsLearned:
     """Store and retrieve lessons learned for future agents."""
-    
+
     def __init__(self, storage_path: str = ".codex/lessons_learned.json"):
         self.storage_path = Path(storage_path)
         self.lessons = self._load()
-    
+
     def _load(self) -> List[Dict[str, Any]]:
         """Load existing lessons from storage."""
         if self.storage_path.exists():
@@ -352,12 +356,12 @@ class LessonsLearned:
                 # File doesn't exist or is invalid JSON; return empty list
                 return []
         return []
-    
+
     def _save(self):
         """Save lessons to storage."""
         self.storage_path.parent.mkdir(parents=True, exist_ok=True)
         self.storage_path.write_text(json.dumps(self.lessons, indent=2))
-    
+
     def add_lesson(
         self,
         category: str,
@@ -368,7 +372,7 @@ class LessonsLearned:
     ):
         """
         Add a new lesson learned.
-        
+
         Args:
             category: Category (e.g., "testing", "dependencies", "ci-cd")
             title: Brief lesson title
@@ -385,22 +389,22 @@ class LessonsLearned:
             "solution": solution,
             "tags": tags or []
         }
-        
+
         self.lessons.append(lesson)
         self._save()
-    
+
     def search(self, category: Optional[str] = None, tag: Optional[str] = None) -> List[Dict]:
         """Search lessons by category or tag."""
         results = self.lessons
-        
+
         if category:
             results = [l for l in results if l["category"] == category]
-        
+
         if tag:
             results = [l for l in results if tag in l["tags"]]
-        
+
         return results
-    
+
     def export_markdown(self) -> str:
         """Export all lessons as markdown."""
         lines = [
@@ -412,7 +416,7 @@ class LessonsLearned:
             "---",
             ""
         ]
-        
+
         # Group by category
         categories = {}
         for lesson in self.lessons:
@@ -420,11 +424,11 @@ class LessonsLearned:
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(lesson)
-        
+
         for category, lessons in sorted(categories.items()):
             lines.append(f"## {category.title()}")
             lines.append("")
-            
+
             for lesson in lessons:
                 lines.append(f"### {lesson['title']}")
                 lines.append(f"*Added: {lesson['timestamp']}*")
@@ -440,7 +444,7 @@ class LessonsLearned:
                     lines.append("")
                 lines.append("---")
                 lines.append("")
-        
+
         return "\n".join(lines)
 
 
@@ -449,12 +453,12 @@ class LessonsLearned:
 def quick_environment_check() -> Dict[str, Any]:
     """
     Run a quick environment check and return comprehensive status.
-    
+
     Returns:
         Dict with all environment checks
     """
     validator = EnvironmentValidator()
-    
+
     return {
         "git": validator.check_git_access(),
         "github_api": validator.check_github_api_access(),
@@ -467,20 +471,20 @@ def quick_environment_check() -> Dict[str, Any]:
 def run_core_tests() -> Dict[str, Any]:
     """
     Run core test suite that doesn't require heavy dependencies.
-    
+
     Returns:
         Dict with test results
     """
     runner = TestRunner()
-    
+
     tests = []
-    
+
     # Run autonomous agent tests
     if Path("tests/test_autonomous_agent.py").exists():
         tests.append(
             runner.run_pytest_suite("tests/test_autonomous_agent.py")
         )
-    
+
     return {
         "total_suites": len(tests),
         "results": tests
@@ -546,7 +550,7 @@ _lessons.add_lesson(
 if __name__ == "__main__":
     # CLI interface for toolkit
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="AI Agent Toolkit - Reusable utilities"
     )
@@ -555,25 +559,25 @@ if __name__ == "__main__":
         choices=["check-env", "run-tests", "lessons", "export-lessons"],
         help="Command to execute"
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "check-env":
         print("=== Environment Check ===")
         result = quick_environment_check()
         print(json.dumps(result, indent=2))
-    
+
     elif args.command == "run-tests":
         print("=== Running Core Tests ===")
         result = run_core_tests()
         print(json.dumps(result, indent=2))
-    
+
     elif args.command == "lessons":
         print("=== Lessons Learned ===")
         for lesson in _lessons.lessons:
             print(f"\n{lesson['id']}. {lesson['title']}")
             print(f"   Category: {lesson['category']}")
             print(f"   Tags: {', '.join(lesson['tags'])}")
-    
+
     elif args.command == "export-lessons":
         print(_lessons.export_markdown())

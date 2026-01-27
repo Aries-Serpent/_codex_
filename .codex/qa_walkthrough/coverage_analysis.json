@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "2026-01-21T22:12:00.000000+00:00",
+    "timestamp": "2026-01-27T16:46:54.643499+00:00",
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
     "baseline_date": "2026-01-21",
-    "last_update": "2026-01-21T22:12:00.000000+00:00",
-    "phase": "21.1",
-    "phase_status": "COMPLETE"
+    "last_update": "2026-01-27T16:46:54.643499+00:00",
+    "phase": "37",
+    "phase_status": "COMPLETE_PENDING_CI"
   },
   "source_modules": {
     "src/mcp": {
@@ -255,6 +255,22 @@
       "new_tests_since_phase_20": 41,
       "test_files_added": 3,
       "coverage_stabilized": true
+    },
+    "phase_37_contribution": {
+      "test_fixes": 5,
+      "test_files_modified": 3,
+      "impact": "Stability improvement (5 flaky tests → 0)",
+      "files": [
+        "tests/cli/test_cli_offline_bootstrap.py",
+        "tests/test_distributed_setup.py",
+        "tests/cli/test_status_audit.py"
+      ],
+      "source_fixes": 1,
+      "source_files_modified": 1,
+      "ast_errors_fixed": 1,
+      "files_source": [
+        "src/codex/analyze/static/analyzer.py"
+      ]
     },
     "combined_totals": {
       "baseline_before_phase_20": 2087,

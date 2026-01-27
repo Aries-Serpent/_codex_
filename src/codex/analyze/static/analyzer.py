@@ -207,10 +207,13 @@ def _extract_exports(tree: ast.AST) -> list[str]:
         elif isinstance(node, ast.Assign):
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id == "__all__":
-                    if isinstance(node.value, (ast.list, ast.tuple)):
+                    # Fix: Use ast.List (capital L), not ast.list
+                    if isinstance(node.value, (ast.List, ast.Tuple)):
                         for elt in node.value.elts:
                             if isinstance(elt, ast.Constant):
                                 exports.append(str(elt.value))
+                            elif isinstance(elt, ast.Str):  # Python < 3.8 compatibility
+                                exports.append(elt.s)
 
     return sorted(set(exports))
 

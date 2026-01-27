@@ -1,11 +1,12 @@
 {
   "metadata": {
-    "generated_at": "2026-01-21T22:12:00.000000+00:00",
+    "generated_at": "2026-01-27T16:46:54.643499+00:00",
     "repository": "_codex_",
-    "branch": "copilot/qa-walkthrough-repo-validation",
-    "last_commit": "b4b3bf6",
-    "phase": "21.1",
-    "phase_status": "COMPLETE"
+    "branch": "copilot/sub-pr-3020",
+    "last_commit": "f8845062960ede23dba07a07bbdd1dccdc86f110",
+    "phase": "37",
+    "phase_status": "COMPLETE_PENDING_CI",
+    "previous_phase": "21.1"
   },
   "directory_structure": {
     "src": {
@@ -65,6 +66,15 @@
     "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md",
     "docs/PLAN_100_PERCENT_COVERAGE.md"
   ],
+  "recent_changes": {
+    "phase_37": {
+      "files_modified": 16,
+      "commits": 6,
+      "focus": "CI comprehensive resolution",
+      "pr": 3037,
+      "commit_range": "2cc7bfe..f884506"
+    }
+  },
   "repository_stats": {
     "total_python_files": 4191,
     "total_test_files": 1797,
