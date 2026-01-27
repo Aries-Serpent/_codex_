@@ -51,7 +51,7 @@ def benchmark_embedding_providers(
                 result = runner.run_benchmark(
                     name=f"{provider_name}_encode_{size}",
                     func=provider.encode,
-                    texts,
+                    texts=texts,
                     runs=runs
                 )
                 
