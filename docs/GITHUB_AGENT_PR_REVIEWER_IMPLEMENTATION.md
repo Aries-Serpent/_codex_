@@ -537,9 +537,9 @@ class SecurityValidator:
         import re
         
         patterns = {
-            "api_key": r'api[_-]?key["\']?\s*[:=]\s*"\'["\']',
+            "api_key": r'api[_-]?key["\']?\s*[:=]\s*["\']([^"\']+)["\']',
             "password": r'password["\']?\s*[:=]\s*["\']([^"\']+)["\']',
-            "token": r'token["\']?\s*[:=]\s*"\'["\']',
+            "token": r'token["\']?\s*[:=]\s*["\']([^"\']+)["\']',
         }
         
         for secret_type, pattern in patterns.items():

@@ -270,7 +270,7 @@ class PatternLearner:
         which uses a SHA-256-based identifier.
         """
         content = f"{failure_type}:{root_cause}"
-        digest = hashlib.md5(content.encode("utf-8")).hexdigest()[:12]
+        digest = hashlib.md5(content.encode("utf-8"), usedforsecurity=False).hexdigest()[:12]  # nosec B324 - Not for security, pattern ID generation only
         return f"pattern_{digest}"
 
     def _resolve_pattern_id(self, pattern_id: str) -> Optional[str]:

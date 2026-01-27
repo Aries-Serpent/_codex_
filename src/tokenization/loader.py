@@ -46,7 +46,10 @@ def _load_from_file(tokenizer_file: Path) -> PreTrainedTokenizerFast:
 def _load_from_model_name(
     model_name_or_path: str, cache_dir: Path, allow_remote: bool
 ) -> PreTrainedTokenizerFast:
-    tokenizer = AutoTokenizer.from_pretrained(
+    from codex_ml.utils.hf_pinning import load_from_pretrained
+    
+    tokenizer = load_from_pretrained(  # Uses revision pinning for security
+        AutoTokenizer,
         model_name_or_path,
         cache_dir=str(cache_dir),
         local_files_only=not allow_remote,

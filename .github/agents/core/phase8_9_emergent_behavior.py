@@ -384,7 +384,7 @@ class EmergentPatternDetector:
     
     def _compute_signature(self, pattern_id: str) -> str:
         """Compute unique signature for pattern."""
-        return hashlib.md5(pattern_id.encode()).hexdigest()[:16]
+        return hashlib.md5(pattern_id.encode(), usedforsecurity=False).hexdigest()[:16]  # nosec B324 - Not for security, signature generation only
     
     def get_patterns(self, pattern_type: Optional[PatternType] = None) -> List[EmergentPattern]:
         """Get detected patterns, optionally filtered by type.
@@ -844,7 +844,7 @@ class CapabilityDiscoverer:
     
     def _discover_reasoning_capability(self, context: Any) -> Optional[Capability]:
         """Discover reasoning capability."""
-        cap_id = "cap_reasoning_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_reasoning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         
@@ -860,7 +860,7 @@ class CapabilityDiscoverer:
     
     def _discover_planning_capability(self, context: Any) -> Optional[Capability]:
         """Discover planning capability."""
-        cap_id = "cap_planning_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_planning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         
@@ -876,7 +876,7 @@ class CapabilityDiscoverer:
     
     def _discover_learning_capability(self, context: Any) -> Optional[Capability]:
         """Discover learning capability."""
-        cap_id = "cap_learning_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_learning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         
@@ -892,7 +892,7 @@ class CapabilityDiscoverer:
     
     def _discover_adaptation_capability(self, context: Any) -> Optional[Capability]:
         """Discover adaptation capability."""
-        cap_id = "cap_adaptation_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_adaptation_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         
@@ -908,7 +908,7 @@ class CapabilityDiscoverer:
     
     def _discover_coordination_capability(self, context: Any) -> Optional[Capability]:
         """Discover coordination capability."""
-        cap_id = "cap_coordination_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_coordination_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         
@@ -924,7 +924,7 @@ class CapabilityDiscoverer:
     
     def _discover_optimization_capability(self, context: Any) -> Optional[Capability]:
         """Discover optimization capability."""
-        cap_id = "cap_optimization_" + hashlib.md5(str(context).encode()).hexdigest()[:8]
+        cap_id = "cap_optimization_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
         

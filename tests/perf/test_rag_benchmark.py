@@ -104,7 +104,7 @@ class TestIndexingBenchmarks:
         
         def generate_embedding(text: str) -> list[float]:
             # Simulate embedding generation
-            hash_val = int(hashlib.md5(text.encode()).hexdigest()[:8], 16)
+            hash_val = int(hashlib.md5(text.encode(), usedforsecurity=False).hexdigest()[:8], 16)  # nosec B324 - Not for security, test data generation only
             return [(hash_val + i) % 1000 / 1000.0 for i in range(embedding_dim)]
         
         texts = [f"Sample document number {i}" for i in range(100)]
@@ -366,7 +366,7 @@ class TestEndToEndRAGBenchmarks:
         def cached_rag(query: str) -> str:
             nonlocal cache_hits, cache_misses
             
-            cache_key = hashlib.md5(query.encode()).hexdigest()
+            cache_key = hashlib.md5(query.encode(), usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, cache key only
             if cache_key in cache:
                 cache_hits += 1
                 return cache[cache_key]

@@ -27,8 +27,8 @@ def main():
     model_name = "distilbert-base-uncased"
 
     try:
-        model = AutoModel.from_pretrained(model_name)
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModel.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
+        tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
     except Exception as e:
         print(f"Error loading model: {e}")
         print("This example requires the transformers library.")

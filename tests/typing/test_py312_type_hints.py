@@ -7,9 +7,12 @@ Tests PEP 585 (list[T]), PEP 604 (X | Y), and generic types.
 from __future__ import annotations
 
 import sys
-from typing import Any, get_type_hints
+from typing import Any, Callable, TypeVar, get_type_hints
 
 import pytest
+
+# Module-level TypeVar for generic tests
+T = TypeVar('T')
 
 
 class TestPython312TypeHints:
@@ -111,9 +114,6 @@ class TestGenericTypeHints:
     
     def test_generic_function(self):
         """Test generic function type hints."""
-        from typing import TypeVar
-        
-        T = TypeVar('T')
         
         def identity(x: T) -> T:
             return x
@@ -124,9 +124,7 @@ class TestGenericTypeHints:
     
     def test_generic_class(self):
         """Test generic class type hints."""
-        from typing import Generic, TypeVar
-        
-        T = TypeVar('T')
+        from typing import Generic
         
         class Container(Generic[T]):
             def __init__(self, value: T) -> None:
@@ -264,7 +262,6 @@ class TestRealWorldTypeHints:
     
     def test_callable_type_hints(self):
         """Test Callable type hints."""
-        from typing import Callable
         
         def higher_order(func: Callable[[int], str]) -> Callable[[str], int]:
             def wrapper(s: str) -> int:

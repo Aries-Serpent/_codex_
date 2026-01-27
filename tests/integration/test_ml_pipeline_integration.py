@@ -87,7 +87,7 @@ class TestCheckpointResumeWorkflow:
         new_model = torch.nn.Linear(10, 5)
         new_optimizer = torch.optim.Adam(new_model.parameters())
 
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
         new_model.load_state_dict(checkpoint["model_state_dict"])
         new_optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 

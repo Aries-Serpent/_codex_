@@ -248,8 +248,8 @@ class SemanticPatternClusterer:
         pattern_ids = []
         for i, pattern in enumerate(patterns):
             pid = hashlib.md5(
-                json.dumps(pattern, sort_keys=True).encode()
-            ).hexdigest()[:12]
+                json.dumps(pattern, sort_keys=True).encode(), usedforsecurity=False
+            ).hexdigest()[:12]  # nosec B324 - Not for security, ID generation only
             pattern_ids.append(pid)
             self.pattern_features[pid] = self.extract_features(pattern)
 

@@ -161,7 +161,7 @@ class CapabilityGapAnalyzer:
     def _generate_gap_id(self, gap_type: str, interaction: Dict) -> str:
         """Generate unique ID for a gap."""
         content = f"{gap_type}_{interaction.get('action', '')}_{interaction.get('pattern_type', '')}"
-        return f"gap_{gap_type}_{hashlib.md5(content.encode()).hexdigest()[:8]}"
+        return f"gap_{gap_type}_{hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, gap ID generation only
     
     def _detect_repetition(self, interaction: Dict) -> bool:
         """Detect if interaction shows repetitive pattern."""

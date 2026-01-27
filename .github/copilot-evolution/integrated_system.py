@@ -215,7 +215,7 @@ class KnowledgeHungerEngine:
     
     def _generate_gap_id(self, gap_type: str, content: str) -> str:
         """Generate unique gap ID."""
-        return f"gap_{gap_type}_{hashlib.md5(str(content).encode()).hexdigest()[:8]}"
+        return f"gap_{gap_type}_{hashlib.md5(str(content).encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, ID generation only
     
     def _estimate_impact(self, concept: str, context: Dict) -> float:
         """Estimate impact of learning this concept."""

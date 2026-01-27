@@ -55,11 +55,13 @@ class LocalTransformersAdapter(ModelAdapter):
         """Load model and tokenizer"""
         try:
             from transformers import AutoModelForCausalLM, AutoTokenizer
+            from codex_ml.utils.hf_pinning import load_from_pretrained
 
             logger.info(f"Loading model: {self.model_path}")
 
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
-            self.model = AutoModelForCausalLM.from_pretrained(
+            self.tokenizer = load_from_pretrained(AutoTokenizer, self.model_path)  # Uses revision pinning for security
+            self.model = load_from_pretrained(  # Uses revision pinning for security
+                AutoModelForCausalLM,
                 self.model_path,
                 device_map=self.device if self.device != "cpu" else None,
             )
