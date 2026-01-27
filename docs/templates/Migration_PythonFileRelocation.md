@@ -16,7 +16,7 @@ Use this template when relocating Python files or packages while maintaining imp
 
 ## Prerequisites
 - Document current import graph with `python -m modulefinder [PLACEHOLDER: ENTRY_POINT]` and capture output.
-- Confirm runtime hooks (e.g., [`sitecustomize.py`](../../sitecustomize.py)) do not hard-code the old paths.
+- Confirm runtime hooks (e.g., `sitecustomize.py`) do not hard-code the old paths.
 - Validate tests around the target modules exist; if missing, add smoke coverage in `../../tests/` before proceeding.
 - Align logging updates with observability owners to ensure dashboards continue tracking key signals.
 - Secure maintainer sign-off for the planned rollout window.
@@ -28,7 +28,7 @@ Use this template when relocating Python files or packages while maintaining imp
 
 ## Phase 2 — Scaffold Compatibility Shims
 1. Create aliases using `sys.modules` or import forwarding files.
-2. Update [`sitecustomize.py`](../../sitecustomize.py) to register runtime aliases if dynamic imports are involved.
+2. Update `sitecustomize.py` to register runtime aliases if dynamic imports are involved.
 3. Provide fallback entry points so third-party integrations remain functional.
 
 ## Phase 3 — Update Dependency Graph
@@ -73,6 +73,6 @@ Use this template when relocating Python files or packages while maintaining imp
 | `[PLACEHOLDER: TEST_SELECTOR]` | Command for validating affected tests. | "`pytest tests/foo -k relocation`" |
 
 ## References
-- [`sitecustomize.py`](../../sitecustomize.py) for runtime aliases.
+- `sitecustomize.py` for runtime aliases.
 - [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py) for pytest fixtures impacted by module moves.
 - [`docs/templates/README.md`](./README.md) for workflow overview.

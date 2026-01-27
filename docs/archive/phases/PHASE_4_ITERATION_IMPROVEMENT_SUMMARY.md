@@ -260,20 +260,20 @@ def test_token_scope_hierarchical_admin(self) -> None:
 ## 📞 References
 
 ### Documentation
-- [Phase 4.1 Summary](docs/testing/phase_4_1_summary.md)
-- [Phase 4.1 Validation Report](docs/testing/phase_4_1_validation_report.md)
-- [Phase 4.3 Completion Report](docs/testing/phase_4_3_completion_report.md)
-- [Phase 4 Execution Strategy](docs/testing/phase_4_execution_strategy.md)
+- Phase 4.1 Summary
+- Phase 4.1 Validation Report
+- Phase 4.3 Completion Report
+- Phase 4 Execution Strategy
 
 ### Generated Reports
-- [Coverage Validation Report](coverage_validation_report.md)
-- [Coverage Gaps Analysis](coverage_gaps.txt)
-- [HTML Coverage Report](htmlcov/phase4_complete/index.html)
+- Coverage Validation Report
+- Coverage Gaps Analysis
+- HTML Coverage Report
 
 ### Configuration
-- [pytest.ini](pytest.ini) - Pytest configuration
-- [.coveragerc](.coveragerc) - Coverage configuration
-- [pyproject.toml](pyproject.toml) - Project metadata
+- [pytest.ini](../../../pytest.ini) - Pytest configuration
+- [.coveragerc](../../../.coveragerc) - Coverage configuration
+- [pyproject.toml](../../../pyproject.toml) - Project metadata
 
 ---
 

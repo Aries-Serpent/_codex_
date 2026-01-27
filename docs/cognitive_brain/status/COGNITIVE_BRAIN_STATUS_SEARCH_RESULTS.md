@@ -24,7 +24,7 @@ This document provides a comprehensive search and analysis of the cognitive brai
 
 ### Primary Documentation Files
 
-#### 1.1 **Cognitive Map** (`docs/system/CODEBASE_COGNITIVE_MAP.md`)
+#### 1.1 **Cognitive Map** (`docs/DOCUMENTATION_INDEX.md`)
 - **Version**: 1.0.0 (2025-12-30)
 - **Size**: 8.5 KB
 - **Status**: ✅ Production Ready
@@ -55,7 +55,7 @@ _codex_/
 3. **MCP Package System** (`scripts/mcp/`) - Package codebase for ChatGPT Projects
 4. **RAG & Verification** (`src/rag/`, `src/verification/`) - CoVe, embeddings, retrieval
 
-#### 1.2 **Dashboard** (`docs/system/CODEBASE_DASHBOARD.md`)
+#### 1.2 **Dashboard** (`docs/DOCUMENTATION_INDEX.md`)
 - **Version**: 1.2.0 (2025-12-31)
 - **Size**: 13 KB
 - **Status**: ✅ Active Development
@@ -535,7 +535,7 @@ class FileCache:
 ```
 1. Load Cognitive Brain
    → Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
-   → Read docs/system/CODEBASE_DASHBOARD.md (current status)
+   → Read docs/DOCUMENTATION_INDEX.md (current status)
    → Read docs/ROADMAP.md (planned work)
 
 2. Identify Current Phase
@@ -679,9 +679,9 @@ class FileCache:
 
 ## 📚 Context References
 
-- [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
-- [Dashboard](../system/CODEBASE_DASHBOARD.md)
-- [Roadmap](../ROADMAP.md)
+- Cognitive Map
+- Dashboard (documentation pending)
+- Roadmap (see .codex/cognitive_brain/ for roadmap)
 - [Related Doc]
 
 **Branch**: [branch-name]
@@ -818,18 +818,18 @@ python scripts/cognitive/cognitive_brain_core.py
 ### 7.3 Quick Links
 
 **Documentation**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+- Cognitive Map (documentation pending) - Architecture
 - Dashboard - Status
-- [Roadmap](docs/ROADMAP.md) - Planning
-- [Master Index](docs/MASTER_INDEX.md) - Documentation hub
-- [Agent Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md) - Continuation
+- Roadmap (see .codex/cognitive_brain/ for roadmap) - Planning
+- Master Index (see docs/DOCUMENTATION_INDEX.md) - Documentation hub
+- Agent Protocol (documentation pending) - Continuation
 
 **Key Components**:
-- [Codex Pipeline](src/codex/) - Code ingestion
-- [Agent System](agents/) - Autonomous agents
-- [MCP System](scripts/mcp/) - ChatGPT packaging
-- [Cognitive Brain](scripts/cognitive/) - Brain core
-- [Test Suite](tests/) - Testing infrastructure
+- **Codex Pipeline** (`src/codex/`) - Code ingestion
+- **Agent System** (`agents/`) - Autonomous agents
+- **MCP System** (`scripts/mcp/`) - ChatGPT packaging
+- **Cognitive Brain** (`scripts/cognitive/`) - Brain core
+- **Test Suite** (`tests/`) - Testing infrastructure
 
 ---
 
@@ -1003,8 +1003,8 @@ The _codex_ repository cognitive brain is **production-ready** with:
 ## 12. References
 
 ### 12.1 Primary Documentation
-- `docs/system/CODEBASE_COGNITIVE_MAP.md` - Architecture overview
-- `docs/system/CODEBASE_DASHBOARD.md` - Live status
+- `docs/DOCUMENTATION_INDEX.md` - Architecture overview
+- `docs/DOCUMENTATION_INDEX.md` - Live status
 - `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md` - Continuation protocol
 - `docs/prompts/aftermath-agent-prompt.md` - AfterMath system
 - `cognitive_app/COGNITIVE_BRAIN_STATUS_V2.md` - App status
@@ -1038,4 +1038,4 @@ The _codex_ repository cognitive brain is **production-ready** with:
 
 ---
 
-**Questions?** Refer to [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) or Dashboard.
+**Questions?** Refer to Cognitive Map (documentation pending) or Dashboard.

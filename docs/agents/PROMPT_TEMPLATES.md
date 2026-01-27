@@ -62,9 +62,10 @@ Steps:
 4. Add test in tests/mcp/test_server.py
 
 Handler template:
-async def handle_[method_name](
+```python
+async def handle_method_name(
     self, params: Optional[Dict[str, Any]] = None
-) -> [ReturnType]:
+) -> ReturnType:
     """Handler for mcp.[methodName].
     
     Args:

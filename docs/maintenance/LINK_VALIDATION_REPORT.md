@@ -38,9 +38,7 @@
 
 ### docs/agents/PROMPT_TEMPLATES.md
 
-- `[method_name](
-    self, params: Optional[Dict[str, Any]] = None
-)` → No suggestion
+- _(Code snippet - not a link)_
 - ``method("valid_input")`` → No suggestion
 - ``method("")`` → No suggestion
 - ``method(None)`` → No suggestion

@@ -2208,7 +2208,7 @@ These assets are designed for offline validation and do not require hosted servi
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the
   [`codex_cli` help](../src/codex_cli/app.py) for command details.
 - **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in
-  [`README_ROOT.md`](./README_ROOT.md#training-quickstart).
+  [`README_ROOT.md`](../README_ROOT.md#training-quickstart).
 - **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure
   NDJSON metrics pipelines.
 - **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
