@@ -907,7 +907,7 @@ python-dotenv==1.2.1
     #   uvicorn
 python-json-logger==4.0.0
     # via jupyter-events
-python-multipart==0.0.21
+python-multipart==0.0.22
     # via fastapi
 pytokens==0.3.0
     # via black
