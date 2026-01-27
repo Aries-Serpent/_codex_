@@ -10,10 +10,16 @@ Handles various types of broken links including:
 """
 
 import re
+import sys
 from pathlib import Path
 from typing import Tuple
 
-REPO_ROOT = Path("/home/runner/work/_codex_/_codex_")
+# Get repository root dynamically - can be overridden via CLI argument
+if len(sys.argv) > 1 and sys.argv[1] not in ['--apply']:
+    REPO_ROOT = Path(sys.argv[1]).resolve()
+    sys.argv.pop(1)  # Remove from args so --apply still works
+else:
+    REPO_ROOT = Path(__file__).resolve().parent
 DOCS_ROOT = REPO_ROOT / "docs"
 
 class ComprehensiveLinkFixer:

@@ -3,9 +3,11 @@
 Final pass to fix remaining specific broken links
 """
 
+import sys
 from pathlib import Path
 
-REPO_ROOT = Path("/home/runner/work/_codex_/_codex_")
+# Get repository root dynamically
+REPO_ROOT = Path(__file__).resolve().parent
 
 # Specific files and their broken links to fix
 fixes = [

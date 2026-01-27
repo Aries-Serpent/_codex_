@@ -111,8 +111,14 @@ def embed_chunks(
         # Ensure model is in eval mode
         model.eval()
     except (RuntimeError, OSError, ValueError) as e:
-        # Only retry for specific errors that might be device-related
-        if "meta" in str(e).lower() or "device" in str(e).lower():
+        # Check if error is device-related by looking at exception type and message
+        error_msg = str(e).lower()
+        is_device_error = (
+            isinstance(e, RuntimeError) and 
+            ("meta" in error_msg or "device" in error_msg or "cuda" in error_msg)
+        )
+        
+        if is_device_error:
             logger.warning(f"Device-related load failed, attempting safe_model_load: {e}")
             # Fallback: load without device specification then move safely
             model = SentenceTransformer(model_name, cache_folder=cache_dir)
