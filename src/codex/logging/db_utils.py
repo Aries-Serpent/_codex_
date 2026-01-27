@@ -10,7 +10,9 @@ avoids triggering any GitHub Actions or network access.
 # ruff: noqa: E501,E701,E702
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import os

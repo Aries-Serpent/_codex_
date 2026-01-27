@@ -15,26 +15,26 @@ logger = logging.getLogger(__name__)
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely load a model to the specified device, handling meta tensors.
-    
+
     PyTorch models loaded with `device_map="meta"` contain meta tensors
     (tensors without data) that cannot be directly moved to CPU/GPU.
     This function properly initializes such models using appropriate methods.
-    
+
     Handles:
     - Standard PyTorch models with meta tensors
     - SentenceTransformer models (which wrap PyTorch modules)
     - Models that need reinitialization from checkpoint
-    
+
     Args:
         model: The model to load (PyTorch model or SentenceTransformer)
         device: Target device (default: 'cpu')
-    
+
     Returns:
         Model moved to the target device
-    
+
     Raises:
         RuntimeError: If model cannot be loaded to target device
-    
+
     Example:
         >>> from sentence_transformers import SentenceTransformer
         >>> model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -42,7 +42,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     try:
         import torch
-        
+
         # Detect if model has meta tensors by checking its modules/parameters
         has_meta_tensors = False
         meta_tensor_details = []
@@ -77,7 +77,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
             logger.warning(
                 f"Model contains meta tensors at: {', '.join(meta_tensor_details[:3])}{'...' if len(meta_tensor_details) > 3 else ''}"
             )
-            
+
             # Strategy 1: Try to_empty() if available (PyTorch >= 1.12)
             if hasattr(model, "to_empty"):
                 try:
@@ -89,7 +89,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                     return model
                 except Exception as e:
                     logger.warning(f"to_empty() failed: {e}, trying alternative methods")
-            
+
             # Strategy 2: For SentenceTransformers, reinitialize with device parameter
             if hasattr(model, "_load_sbert_model") or hasattr(model, "encode"):
                 model_name_or_path = getattr(model, "model_name_or_path", None)
@@ -103,7 +103,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                         # Create new instance directly on target device
                         cache_folder = getattr(model, "cache_folder", None)
                         new_model = SentenceTransformer(
-                            model_name_or_path, 
+                            model_name_or_path,
                             device=device,
                             cache_folder=cache_folder
                         )
@@ -113,7 +113,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                         logger.error(f"sentence_transformers not available: {e}")
                     except Exception as e:
                         logger.error(f"Failed to reinitialize SentenceTransformer: {e}")
-            
+
             # Strategy 3: Try manual parameter-by-parameter materialization
             try:
                 logger.info(f"Attempting manual parameter materialization to {device}")
@@ -124,7 +124,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                             if param.device.type == "meta":
                                 # Create a new tensor on target device with same shape and dtype
                                 new_param = torch.empty_like(
-                                    param, 
+                                    param,
                                     device=device,
                                     dtype=param.dtype,
                                     requires_grad=param.requires_grad
@@ -132,12 +132,12 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                 # Replace the parameter
                                 setattr(module, param_name, torch.nn.Parameter(new_param))
                                 logger.debug(f"Materialized {name}.{param_name} on {device}")
-                
+
                 logger.info(f"Successfully materialized all parameters on {device}")
                 return model
             except Exception as e:
                 logger.error(f"Manual materialization failed: {e}")
-            
+
             # Strategy 4: Last resort - return with error
             error_msg = (
                 f"Cannot safely move model from meta device to {device}. "
@@ -157,7 +157,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
             return model
 
         # Model doesn't support device movement
-        logger.debug(f"Model does not support device movement, returning as-is")
+        logger.debug("Model does not support device movement, returning as-is")
         return model
 
     except ImportError as e:

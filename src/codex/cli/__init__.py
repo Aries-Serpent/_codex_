@@ -31,11 +31,11 @@ def _load_click_cli() -> Any:
     if "codex._cli_click" in sys.modules:
         existing_module = sys.modules["codex._cli_click"]
         return getattr(existing_module, "cli", None)
-    
+
     # Validate that the file exists before attempting to load
     if not _click_cli_path.exists() or not _click_cli_path.is_file():
         return None
-    
+
     spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
     if spec is None or spec.loader is None:
         return None

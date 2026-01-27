@@ -13,18 +13,24 @@ try:
         create_embedding_provider,
     )
     from .indexer import (
+        IndexOperation,
+        TenantOperationResult,
         build_index_from_files,
         chunk_text,
         embed_chunks,
         load_index,
-        persist_index,
         manage_tenant_indices,
-        TenantOperationResult,
-        IndexOperation,
+        persist_index,
     )
-    from .retriever import MultiIndexRetriever, Retriever, CachedRetriever, LRUCache
-    from .utils import safe_model_load, ProvenanceMetadata
-    from .monitoring import RAGMetrics, get_metrics, reset_metrics, MetricDataPoint, MetricsConfig
+    from .monitoring import (
+        MetricDataPoint,
+        MetricsConfig,
+        RAGMetrics,
+        get_metrics,
+        reset_metrics,
+    )
+    from .retriever import CachedRetriever, LRUCache, MultiIndexRetriever, Retriever
+    from .utils import ProvenanceMetadata, safe_model_load
 
     _expanded_context_available = True
 except ImportError:
@@ -33,27 +39,27 @@ except ImportError:
 # Ingestion pipeline components
 try:
     from .ingestion import (
-        # Validator
-        DocumentValidator,
-        DocumentFormat,
-        ValidationResult,
-        validate_document,
-        # Preprocessor
-        DocumentPreprocessor,
-        PreprocessingConfig,
-        preprocess_text,
-        normalize_text,
+        BatchIngestionResult,
+        Chunk,
         # Chunker
         Chunker,
-        ChunkingStrategy,
         ChunkingConfig,
-        Chunk,
-        chunk_document,
+        ChunkingStrategy,
+        DocumentFormat,
+        # Preprocessor
+        DocumentPreprocessor,
+        # Validator
+        DocumentValidator,
+        IngestionConfig,
         # Pipeline
         IngestionPipeline,
-        IngestionConfig,
         IngestionResult,
-        BatchIngestionResult,
+        PreprocessingConfig,
+        ValidationResult,
+        chunk_document,
+        normalize_text,
+        preprocess_text,
+        validate_document,
     )
     _ingestion_available = True
 except ImportError:

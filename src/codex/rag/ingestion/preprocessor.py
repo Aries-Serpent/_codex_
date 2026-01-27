@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class NormalizationLevel(Enum):
     """Level of text normalization to apply."""
-    
+
     NONE = "none"  # No normalization
     MINIMAL = "minimal"  # Whitespace and encoding only
     STANDARD = "standard"  # Standard cleaning (default)
@@ -32,27 +32,27 @@ class NormalizationLevel(Enum):
 @dataclass
 class PreprocessingConfig:
     """Configuration for document preprocessing."""
-    
+
     normalization_level: NormalizationLevel = NormalizationLevel.STANDARD
-    
+
     # Whitespace handling
     normalize_whitespace: bool = True
     remove_extra_newlines: bool = True
     max_consecutive_newlines: int = 2
     strip_leading_trailing: bool = True
-    
+
     # Character handling
     normalize_unicode: bool = True
     unicode_form: str = "NFKC"  # NFC, NFD, NFKC, NFKD
     remove_control_chars: bool = True
     preserve_newlines: bool = True
-    
+
     # Content handling
     remove_urls: bool = False
     remove_emails: bool = False
     remove_html_tags: bool = True
     lowercase: bool = False
-    
+
     # Metadata extraction
     extract_title: bool = True
     extract_headers: bool = True
@@ -62,14 +62,14 @@ class PreprocessingConfig:
 @dataclass
 class PreprocessingResult:
     """Result of document preprocessing."""
-    
+
     text: str
     original_length: int
     processed_length: int
     fingerprint: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
     changes: list[str] = field(default_factory=list)
-    
+
     @property
     def compression_ratio(self) -> float:
         """Calculate text compression ratio (0.0 to 1.0, where 1.0 = maximum reduction)."""
@@ -83,21 +83,21 @@ class PreprocessingResult:
 class DocumentPreprocessor:
     """
     Production-grade document preprocessor for RAG ingestion.
-    
+
     Features:
     - Configurable normalization levels
     - Unicode normalization
     - HTML tag removal
     - Metadata extraction
     - Content fingerprinting for deduplication
-    
+
     Example:
         preprocessor = DocumentPreprocessor()
         result = preprocessor.preprocess(raw_text)
         processed_text = result.text
         fingerprint = result.fingerprint
     """
-    
+
     # Regular expressions for cleaning
     URL_PATTERN = re.compile(
         r"https?://[^\s<>\"{}|\\^`\[\]]+",
@@ -111,22 +111,22 @@ class DocumentPreprocessor:
     CONTROL_CHAR_PATTERN = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
     MULTIPLE_SPACES = re.compile(r"[ \t]+")
     MULTIPLE_NEWLINES = re.compile(r"\n{3,}")
-    
+
     # Header patterns for metadata extraction
     MARKDOWN_HEADER = re.compile(r"^(#{1,6})\s+(.+)$", re.MULTILINE)
     HTML_TITLE = re.compile(r"<title[^>]*>([^<]+)</title>", re.IGNORECASE)
-    
+
     def __init__(self, config: Optional[PreprocessingConfig] = None):
         """Initialize preprocessor with configuration."""
         self.config = config or PreprocessingConfig()
-    
+
     def preprocess(self, text: str) -> PreprocessingResult:
         """
         Preprocess document text.
-        
+
         Args:
             text: Raw document text
-            
+
         Returns:
             PreprocessingResult with processed text and metadata
         """
@@ -135,83 +135,83 @@ class DocumentPreprocessor:
             original_length=len(text),
             processed_length=0,
         )
-        
+
         if not text:
             result.processed_length = 0
             return result
-        
+
         # Apply preprocessing based on normalization level
         if self.config.normalization_level == NormalizationLevel.NONE:
             result.processed_length = len(text)
             return result
-        
+
         processed = text
-        
+
         # Unicode normalization (all levels except NONE)
         if self.config.normalize_unicode:
             processed = self._normalize_unicode(processed, result)
-        
+
         # Remove control characters
         if self.config.remove_control_chars:
             processed = self._remove_control_chars(processed, result)
-        
+
         # HTML tag removal
         if self.config.remove_html_tags:
             processed = self._remove_html_tags(processed, result)
-        
+
         # URL removal
         if self.config.remove_urls:
             processed = self._remove_urls(processed, result)
-        
+
         # Email removal
         if self.config.remove_emails:
             processed = self._remove_emails(processed, result)
-        
+
         # Whitespace normalization
         if self.config.normalize_whitespace:
             processed = self._normalize_whitespace(processed, result)
-        
+
         # Multiple newlines handling
         if self.config.remove_extra_newlines:
             processed = self._normalize_newlines(processed, result)
-        
+
         # Strip leading/trailing whitespace
         if self.config.strip_leading_trailing:
             processed = processed.strip()
-        
+
         # Lowercase (aggressive only)
         if self.config.lowercase:
             processed = processed.lower()
             result.changes.append("lowercased")
-        
+
         # Extract metadata
         if self.config.extract_title:
             self._extract_title(text, result)
-        
+
         if self.config.extract_headers:
             self._extract_headers(text, result)
-        
+
         # Compute fingerprint
         if self.config.compute_fingerprint:
             result.fingerprint = self._compute_fingerprint(processed)
-        
+
         result.text = processed
         result.processed_length = len(processed)
-        
+
         logger.debug(
             f"Preprocessed text: {result.original_length} -> {result.processed_length} chars "
             f"({result.compression_ratio:.1%} reduction)"
         )
-        
+
         return result
-    
+
     def _normalize_unicode(self, text: str, result: PreprocessingResult) -> str:
         """Normalize Unicode characters."""
         normalized = unicodedata.normalize(self.config.unicode_form, text)
         if normalized != text:
             result.changes.append(f"unicode_normalized_{self.config.unicode_form}")
         return normalized
-    
+
     def _remove_control_chars(self, text: str, result: PreprocessingResult) -> str:
         """Remove control characters while preserving newlines."""
         if self.config.preserve_newlines:
@@ -219,32 +219,32 @@ class DocumentPreprocessor:
             cleaned = re.sub(r"[\x00-\x09\x0b\x0c\x0e-\x1f\x7f-\x9f]", "", text)
         else:
             cleaned = self.CONTROL_CHAR_PATTERN.sub("", text)
-        
+
         if cleaned != text:
             result.changes.append("control_chars_removed")
         return cleaned
-    
+
     def _remove_html_tags(self, text: str, result: PreprocessingResult) -> str:
         """Remove HTML tags from text."""
         cleaned = self.HTML_TAG_PATTERN.sub("", text)
         if cleaned != text:
             result.changes.append("html_tags_removed")
         return cleaned
-    
+
     def _remove_urls(self, text: str, result: PreprocessingResult) -> str:
         """Remove URLs from text."""
         cleaned = self.URL_PATTERN.sub("", text)
         if cleaned != text:
             result.changes.append("urls_removed")
         return cleaned
-    
+
     def _remove_emails(self, text: str, result: PreprocessingResult) -> str:
         """Remove email addresses from text."""
         cleaned = self.EMAIL_PATTERN.sub("", text)
         if cleaned != text:
             result.changes.append("emails_removed")
         return cleaned
-    
+
     def _normalize_whitespace(self, text: str, result: PreprocessingResult) -> str:
         """Normalize whitespace (spaces and tabs)."""
         # Replace multiple spaces/tabs with single space
@@ -252,7 +252,7 @@ class DocumentPreprocessor:
         if cleaned != text:
             result.changes.append("whitespace_normalized")
         return cleaned
-    
+
     def _normalize_newlines(self, text: str, result: PreprocessingResult) -> str:
         """Reduce multiple newlines to configured maximum."""
         max_nl = self.config.max_consecutive_newlines
@@ -262,7 +262,7 @@ class DocumentPreprocessor:
         if cleaned != text:
             result.changes.append(f"newlines_reduced_to_{max_nl}")
         return cleaned
-    
+
     def _extract_title(self, text: str, result: PreprocessingResult) -> None:
         """Extract title from document."""
         # Try HTML title first
@@ -270,20 +270,20 @@ class DocumentPreprocessor:
         if match:
             result.metadata["title"] = match.group(1).strip()
             return
-        
+
         # Try first markdown header
         match = self.MARKDOWN_HEADER.search(text)
         if match:
             result.metadata["title"] = match.group(2).strip()
             return
-        
+
         # Use first non-empty line as title (truncated)
         for line in text.split("\n"):
             line = line.strip()
             if line:
                 result.metadata["title"] = line[:100] + ("..." if len(line) > 100 else "")
                 return
-    
+
     def _extract_headers(self, text: str, result: PreprocessingResult) -> None:
         """Extract headers/headings from document."""
         headers = []
@@ -291,10 +291,10 @@ class DocumentPreprocessor:
             level = len(match.group(1))
             content = match.group(2).strip()
             headers.append({"level": level, "text": content})
-        
+
         if headers:
             result.metadata["headers"] = headers
-    
+
     def _compute_fingerprint(self, text: str) -> str:
         """Compute content fingerprint for deduplication."""
         # Normalize for fingerprinting (lowercase, minimal whitespace)
@@ -308,11 +308,11 @@ def preprocess_text(
 ) -> PreprocessingResult:
     """
     Convenience function to preprocess text.
-    
+
     Args:
         text: Raw text to preprocess
         config: Optional preprocessing configuration
-        
+
     Returns:
         PreprocessingResult with processed text
     """
@@ -326,11 +326,11 @@ def normalize_text(
 ) -> str:
     """
     Quick text normalization.
-    
+
     Args:
         text: Text to normalize
         level: Normalization level
-        
+
     Returns:
         Normalized text string
     """

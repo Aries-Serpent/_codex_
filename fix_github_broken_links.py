@@ -24,21 +24,21 @@ class GitHubLinkFixer:
             'paths_corrected': 0,
             'template_placeholders_removed': 0,
         }
-        
+
     def fix_file(self, file_path: Path) -> Tuple[str, bool]:
         """Fix all broken links in a single file"""
         # Initialize variables before try-except to avoid uninitialized variable errors
         content = ""
         modified = False
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except Exception as e:
             print(f"⚠️  Cannot read {file_path}: {e}")
             return content, False
-        
+
         original_content = content
-        
+
         # Fix 1: Remove template placeholder links
         template_pattern = r'\[([^\]]+)\]\([^\)]*\{[^\}]+\}[^\)]*\)'
         matches = re.findall(template_pattern, content)
@@ -50,7 +50,7 @@ class GitHubLinkFixer:
                     content = content.replace(old_link, match)
                     self.stats['template_placeholders_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed template link: {old_link}")
-        
+
         # Fix 2: Fix specific broken paths
         specific_fixes = {
             '.github/actions/README.md': '../actions/',
@@ -71,7 +71,7 @@ class GitHubLinkFixer:
             '.github/agents/codebase-qa-walkthrough-agent/README.md': None,  # Remove
             '.github/workflows/FLATTEN_REPO_README.md': None,  # Remove
         }
-        
+
         for old_path, new_path in specific_fixes.items():
             pattern = r'\[([^\]]+)\]\(' + re.escape(old_path) + r'\)'
             matches = re.findall(pattern, content)
@@ -86,7 +86,7 @@ class GitHubLinkFixer:
                     content = content.replace(old_link, match)
                     self.stats['missing_files_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed missing file link: {old_link}")
-        
+
         # Fix 3: Remove external links to non-existent branch files
         external_broken_pattern = r'\[([^\]]+)\]\(https://github\.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/[^\)]+\)'
         matches = re.findall(external_broken_pattern, content)
@@ -98,42 +98,42 @@ class GitHubLinkFixer:
                     content = content.replace(old_link, match)
                     self.stats['missing_files_removed'] += 1
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed broken external link: {old_link}")
-        
+
         # Return result
         modified = content != original_content
         return content, modified
-    
+
     def process_all_files(self, apply=False):
         """Process all markdown files in .github/"""
         files = list(GITHUB_ROOT.rglob("*.md"))
         print(f"📄 Processing {len(files)} markdown files in .github/...")
-        
+
         modified_files = []
-        
+
         for file_path in files:
             # Initialize variables to avoid uninitialized variable errors
             new_content = ""
             modified = False
             new_content, modified = self.fix_file(file_path)
-            
+
             if modified:
                 modified_files.append((file_path, new_content))
-        
+
         # Report
         print(f"\n{'='*70}")
-        print(f"📊 .GITHUB LINK FIX REPORT")
+        print("📊 .GITHUB LINK FIX REPORT")
         print(f"{'='*70}")
         print(f"✅ Paths corrected: {self.stats['paths_corrected']}")
         print(f"📝 Template placeholders removed: {self.stats['template_placeholders_removed']}")
         print(f"❌ Missing file links removed: {self.stats['missing_files_removed']}")
         print(f"\n📦 Total fixes: {sum(self.stats.values())}")
         print(f"📄 Files modified: {len(modified_files)}")
-        
+
         if self.fixes:
-            print(f"\n🔍 All fixes:")
+            print("\n🔍 All fixes:")
             for fix in self.fixes:
                 print(f"   • {fix}")
-        
+
         # Apply changes
         if apply and modified_files:
             print(f"\n💾 Applying changes to {len(modified_files)} files...")
@@ -143,18 +143,18 @@ class GitHubLinkFixer:
                     print(f"   ✅ {file_path.relative_to(REPO_ROOT)}")
                 except Exception as e:
                     print(f"   ❌ {file_path.relative_to(REPO_ROOT)}: {e}")
-            print(f"✨ Done!")
+            print("✨ Done!")
         elif not apply:
-            print(f"\n🔍 DRY RUN - No files modified. Run with --apply to apply fixes.")
-        
+            print("\n🔍 DRY RUN - No files modified. Run with --apply to apply fixes.")
+
         return len(modified_files) > 0
 
 if __name__ == "__main__":
     import sys
-    
+
     apply = '--apply' in sys.argv
-    
+
     fixer = GitHubLinkFixer()
     has_changes = fixer.process_all_files(apply=apply)
-    
+
     sys.exit(0 if not has_changes else (0 if apply else 1))

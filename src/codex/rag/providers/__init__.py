@@ -7,9 +7,9 @@ Provides multiple embedding provider implementations for offline and local model
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .ollama_provider import OllamaEmbeddingProvider
-    from .llamacpp_provider import LlamaCppEmbeddingProvider
     from .gpt4all_provider import GPT4AllEmbeddingProvider
+    from .llamacpp_provider import LlamaCppEmbeddingProvider
+    from .ollama_provider import OllamaEmbeddingProvider
 
 __all__ = [
     "OllamaEmbeddingProvider",

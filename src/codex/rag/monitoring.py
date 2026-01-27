@@ -7,13 +7,12 @@ Supports export to Prometheus and CloudWatch for production monitoring.
 """
 
 import logging
-import time
 import threading
+import time
+from collections import deque
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Dict, List, Optional
-from collections import deque
-import json
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -74,60 +73,60 @@ class MetricDataPoint:
 class RAGMetrics:
     """
     Centralized metrics tracking for RAG operations.
-    
+
     Supports expanded context workflows (64k-512k tokens) with comprehensive
     observability for query performance, index health, cache efficiency,
     and embedding throughput.
-    
+
     Features:
         - Prometheus-compatible metric export
         - CloudWatch integration
         - Rolling window statistics
         - Alerting thresholds
-    
+
     Example:
         >>> metrics = RAGMetrics()
         >>> metrics.track_query_latency(125.5, tenant_id="customer_a")
         >>> metrics.track_cache_hit_rate(hits=85, misses=15)
         >>> prom_output = metrics.export_prometheus()
     """
-    
+
     def __init__(self, config: Optional[MetricsConfig] = None):
         """
         Initialize RAG metrics tracker.
-        
+
         Args:
             config: Optional MetricsConfig for fine-tuning memory usage.
                    If None, uses default configuration.
-        
+
         Memory Optimization:
             Uses configurable window sizes per metric type to reduce memory footprint.
             Default total memory ~500KB for 1000 query latencies.
         """
         self.config = config or MetricsConfig()
-        
+
         # Metric storage (rolling windows with optimized sizes)
         self.query_latencies: deque = deque(maxlen=self.config.query_latency_window)
         self.index_sizes: Dict[str, MetricDataPoint] = {}
         self.cache_stats: Dict[str, int] = {"hits": 0, "misses": 0}
         self.embedding_throughputs: deque = deque(maxlen=self.config.embedding_throughput_window)
-        
+
         # Additional metrics
         self.query_counts: Dict[str, int] = {}
         self.error_counts: Dict[str, int] = {}
         self.index_build_times: deque = deque(maxlen=self.config.index_build_time_window)
-        
+
         # Timestamp tracking
         self.start_time = time.time()
         self.last_reset = time.time()
-        
+
         logger.info(
             f"RAGMetrics initialized with config: "
             f"query_latency={self.config.query_latency_window}, "
             f"embedding_throughput={self.config.embedding_throughput_window}, "
             f"index_build_time={self.config.index_build_time_window}"
         )
-    
+
     def track_query_latency(
         self,
         duration_ms: float,
@@ -137,7 +136,7 @@ class RAGMetrics:
     ):
         """
         Track query latency for performance monitoring.
-        
+
         Args:
             duration_ms: Query duration in milliseconds
             tenant_id: Optional tenant identifier
@@ -151,21 +150,21 @@ class RAGMetrics:
             labels["index_name"] = index_name
         if cache_hit is not None:
             labels["cache_hit"] = str(cache_hit)
-        
+
         data_point = MetricDataPoint(
             timestamp=time.time(),
             value=duration_ms,
             labels=labels
         )
-        
+
         self.query_latencies.append(data_point)
-        
+
         # Track query count
         key = f"{tenant_id}:{index_name}" if tenant_id and index_name else "default"
         self.query_counts[key] = self.query_counts.get(key, 0) + 1
-        
+
         logger.debug(f"Query latency: {duration_ms:.2f}ms (labels={labels})")
-    
+
     def track_index_size(
         self,
         num_chunks: int,
@@ -175,7 +174,7 @@ class RAGMetrics:
     ):
         """
         Track FAISS index size metrics.
-        
+
         Args:
             num_chunks: Number of text chunks in index
             size_mb: Index size in megabytes
@@ -183,7 +182,7 @@ class RAGMetrics:
             index_name: Index name
         """
         key = f"{tenant_id}:{index_name}"
-        
+
         self.index_sizes[key] = MetricDataPoint(
             timestamp=time.time(),
             value=size_mb,
@@ -193,29 +192,29 @@ class RAGMetrics:
                 "num_chunks": str(num_chunks)
             }
         )
-        
+
         logger.info(f"Index size tracked: {key} = {size_mb:.2f}MB ({num_chunks} chunks)")
-    
+
     def track_cache_hit_rate(self, hits: int, misses: int):
         """
         Track cache hit rate for LRU cache performance.
-        
+
         Args:
             hits: Number of cache hits
             misses: Number of cache misses
         """
         self.cache_stats["hits"] = hits
         self.cache_stats["misses"] = misses
-        
+
         total = hits + misses
         hit_rate = hits / total if total > 0 else 0.0
-        
+
         logger.info(f"Cache hit rate: {hit_rate:.2%} (hits={hits}, misses={misses})")
-    
+
     def track_embedding_throughput(self, texts_per_sec: float):
         """
         Track embedding generation throughput.
-        
+
         Args:
             texts_per_sec: Number of texts embedded per second
         """
@@ -224,11 +223,11 @@ class RAGMetrics:
             value=texts_per_sec,
             labels={}
         )
-        
+
         self.embedding_throughputs.append(data_point)
-        
+
         logger.debug(f"Embedding throughput: {texts_per_sec:.2f} texts/sec")
-    
+
     def track_index_build_time(
         self,
         duration_seconds: float,
@@ -239,7 +238,7 @@ class RAGMetrics:
     ):
         """
         Track index build time for capacity planning.
-        
+
         Args:
             duration_seconds: Build duration in seconds
             tenant_id: Tenant identifier
@@ -257,30 +256,30 @@ class RAGMetrics:
                 "num_chunks": str(num_chunks)
             }
         )
-        
+
         self.index_build_times.append(data_point)
-        
+
         logger.info(
             f"Index build: {tenant_id}:{index_name} completed in {duration_seconds:.2f}s "
             f"({num_files} files, {num_chunks} chunks)"
         )
-    
+
     def track_error(self, error_type: str, error_message: str):
         """
         Track errors for alerting and debugging.
-        
+
         Args:
             error_type: Type of error (e.g., "index_not_found", "query_timeout")
             error_message: Error message
         """
         self.error_counts[error_type] = self.error_counts.get(error_type, 0) + 1
-        
+
         logger.warning(f"Error tracked: {error_type} - {error_message}")
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """
         Get comprehensive statistics summary.
-        
+
         Returns:
             Dictionary with all current statistics
         """
@@ -289,7 +288,7 @@ class RAGMetrics:
             latencies = [dp.value for dp in self.query_latencies]
             latencies.sort()
             n = len(latencies)
-            
+
             query_stats = {
                 "count": n,
                 "mean_ms": sum(latencies) / n,
@@ -301,13 +300,13 @@ class RAGMetrics:
             }
         else:
             query_stats = {}
-        
+
         # Cache stats
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
         cache_hit_rate = (
             self.cache_stats["hits"] / total_cache if total_cache > 0 else 0.0
         )
-        
+
         # Embedding throughput stats
         if self.embedding_throughputs:
             throughputs = [dp.value for dp in self.embedding_throughputs]
@@ -318,7 +317,7 @@ class RAGMetrics:
             }
         else:
             embedding_stats = {}
-        
+
         # Index build time stats
         if self.index_build_times:
             build_times = [dp.value for dp in self.index_build_times]
@@ -329,7 +328,7 @@ class RAGMetrics:
             }
         else:
             build_stats = {}
-        
+
         return {
             "uptime_seconds": time.time() - self.start_time,
             "query_latency": query_stats,
@@ -345,33 +344,33 @@ class RAGMetrics:
             "total_errors": sum(self.error_counts.values()),
             "error_breakdown": self.error_counts
         }
-    
+
     def export_prometheus(self) -> str:
         """
         Export metrics in Prometheus text format.
-        
+
         Returns:
             Prometheus-formatted metrics string
         """
         lines = []
-        
+
         # Query latency histogram
         if self.query_latencies:
             lines.append("# HELP rag_query_latency_ms Query latency in milliseconds")
             lines.append("# TYPE rag_query_latency_ms histogram")
-            
+
             # Calculate histogram buckets
             buckets = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000]
             latencies = [dp.value for dp in self.query_latencies]
-            
+
             for bucket in buckets:
                 count = sum(1 for lat in latencies if lat <= bucket)
                 lines.append(f'rag_query_latency_ms_bucket{{le="{bucket}"}} {count}')
-            
+
             lines.append(f'rag_query_latency_ms_bucket{{le="+Inf"}} {len(latencies)}')
             lines.append(f'rag_query_latency_ms_sum {sum(latencies)}')
             lines.append(f'rag_query_latency_ms_count {len(latencies)}')
-        
+
         # Cache hit rate
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
         if total_cache > 0:
@@ -379,52 +378,52 @@ class RAGMetrics:
             lines.append("# HELP rag_cache_hit_rate Cache hit rate (0-1)")
             lines.append("# TYPE rag_cache_hit_rate gauge")
             lines.append(f"rag_cache_hit_rate {hit_rate:.4f}")
-        
+
         # Index sizes
         if self.index_sizes:
             lines.append("# HELP rag_index_size_mb Index size in megabytes")
             lines.append("# TYPE rag_index_size_mb gauge")
-            
+
             for key, data_point in self.index_sizes.items():
                 labels = ','.join(f'{k}="{v}"' for k, v in data_point.labels.items())
                 lines.append(f"rag_index_size_mb{{{labels}}} {data_point.value:.2f}")
-        
+
         # Embedding throughput
         if self.embedding_throughputs:
             avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(self.embedding_throughputs)
             lines.append("# HELP rag_embedding_throughput_texts_per_sec Embedding generation throughput")
             lines.append("# TYPE rag_embedding_throughput_texts_per_sec gauge")
             lines.append(f"rag_embedding_throughput_texts_per_sec {avg_throughput:.2f}")
-        
+
         # Query counts
         lines.append("# HELP rag_queries_total Total number of queries")
         lines.append("# TYPE rag_queries_total counter")
         lines.append(f"rag_queries_total {sum(self.query_counts.values())}")
-        
+
         # Error counts
         lines.append("# HELP rag_errors_total Total number of errors")
         lines.append("# TYPE rag_errors_total counter")
         for error_type, count in self.error_counts.items():
             lines.append(f'rag_errors_total{{type="{error_type}"}} {count}')
-        
+
         return "\n".join(lines) + "\n"
-    
+
     def export_cloudwatch(self) -> Dict[str, Any]:
         """
         Export metrics in CloudWatch format.
-        
+
         Returns:
             Dictionary compatible with CloudWatch PutMetricData API
         """
         metric_data = []
         timestamp = datetime.now(UTC)
-        
+
         # Query latency metrics
         if self.query_latencies:
             latencies = [dp.value for dp in self.query_latencies]
             latencies.sort()
             n = len(latencies)
-            
+
             metric_data.append({
                 "MetricName": "QueryLatency",
                 "Timestamp": timestamp.isoformat(),
@@ -437,7 +436,7 @@ class RAGMetrics:
                     "Maximum": max(latencies)
                 }
             })
-        
+
         # Cache hit rate
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
         if total_cache > 0:
@@ -448,7 +447,7 @@ class RAGMetrics:
                 "Value": hit_rate,
                 "Unit": "Percent"
             })
-        
+
         # Index sizes
         for key, data_point in self.index_sizes.items():
             metric_data.append({
@@ -461,7 +460,7 @@ class RAGMetrics:
                     for k, v in data_point.labels.items()
                 ]
             })
-        
+
         # Embedding throughput
         if self.embedding_throughputs:
             avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(self.embedding_throughputs)
@@ -471,7 +470,7 @@ class RAGMetrics:
                 "Value": avg_throughput,
                 "Unit": "Count/Second"
             })
-        
+
         # Query count
         metric_data.append({
             "MetricName": "QueryCount",
@@ -479,7 +478,7 @@ class RAGMetrics:
             "Value": sum(self.query_counts.values()),
             "Unit": "Count"
         })
-        
+
         # Error count
         metric_data.append({
             "MetricName": "ErrorCount",
@@ -487,12 +486,12 @@ class RAGMetrics:
             "Value": sum(self.error_counts.values()),
             "Unit": "Count"
         })
-        
+
         return {
             "Namespace": "Codex/RAG",
             "MetricData": metric_data
         }
-    
+
     def reset(self):
         """Reset all metrics (useful for testing)."""
         self.query_latencies.clear()
@@ -503,7 +502,7 @@ class RAGMetrics:
         self.error_counts.clear()
         self.index_build_times.clear()
         self.last_reset = time.time()
-        
+
         logger.info("Metrics reset")
 
 
@@ -515,10 +514,10 @@ _metrics_lock = threading.Lock()
 def get_metrics() -> RAGMetrics:
     """
     Get global metrics instance (thread-safe singleton pattern).
-    
+
     Returns:
         Global RAGMetrics instance
-    
+
     Thread-Safe:
         Uses threading.Lock to ensure only one instance is created
         even when called from multiple threads simultaneously.
