@@ -3,8 +3,11 @@ RAG Retriever Module
 Provides semantic search over FAISS indices with provenance tracking.
 """
 
+import hashlib
 import logging
+from collections import OrderedDict
 from datetime import UTC, datetime
+from time import time
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -354,10 +357,6 @@ class MultiIndexRetriever:
 # ============================================================================
 # Cached Retriever with LRU Cache (Phase B)
 # ============================================================================
-
-import hashlib
-from collections import OrderedDict
-from time import time
 
 
 class LRUCache:
