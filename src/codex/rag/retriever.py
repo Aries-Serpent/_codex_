@@ -90,23 +90,25 @@ class Retriever:
                 )
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-            except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-                # Check if error is device-related by looking at exception type and message
-                error_msg = str(e).lower()
-                is_device_error = (
-                    isinstance(e, (RuntimeError, NotImplementedError)) and
-                    ("meta" in error_msg or "device" in error_msg or "cuda" in error_msg)
-                )
-
-                if is_device_error:
-                    logger.warning(f"Device-related load failed, attempting safe_model_load: {e}")
+            except (RuntimeError, NotImplementedError) as e:
+                # Handle device-related errors (meta tensors, CUDA errors, etc.)
+                # These specific exception types typically indicate device/tensor issues
+                logger.warning(f"Device-related load failed (type: {type(e).__name__}), attempting safe_model_load: {e}")
+                try:
                     # Fallback: load without device specification then move safely
                     self.model = SentenceTransformer(self.model_name, cache_folder=self.cache_dir)
                     self.model = safe_model_load(self.model, device="cpu")
                     self.model.eval()
-                else:
-                    # Re-raise non-device errors (network, missing files, etc.)
-                    raise
+                except Exception as fallback_error:
+                    logger.error(f"Fallback model load also failed: {fallback_error}")
+                    raise RuntimeError(
+                        f"Failed to load model {self.model_name} on CPU. "
+                        f"Original error: {e}. Fallback error: {fallback_error}"
+                    ) from e
+            except (OSError, ValueError) as e:
+                # Re-raise non-device errors (network, missing files, invalid parameters)
+                logger.error(f"Model load failed due to non-device error (type: {type(e).__name__}): {e}")
+                raise
             logger.info("Query embedding model loaded successfully")
         except ImportError:
             logger.error(
