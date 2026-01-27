@@ -90,7 +90,8 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                 except Exception as e:
                     logger.warning(f"to_empty() failed: {e}, trying alternative methods")
 
-            # Strategy 2: For SentenceTransformers, reinitialize with device parameter
+            # Strategy 2: For SentenceTransformers, reinitialize without device parameter
+            # then move to target device (PyTorch 2.6+ compatibility)
             if hasattr(model, "_load_sbert_model") or hasattr(model, "encode"):
                 model_name_or_path = getattr(model, "model_name_or_path", None)
                 if model_name_or_path:
@@ -98,16 +99,18 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                         from sentence_transformers import SentenceTransformer
                         logger.info(
                             f"Reinitializing SentenceTransformer '{model_name_or_path}' "
-                            f"directly on device '{device}'"
+                            f"without device parameter (PyTorch 2.6+ compatibility)"
                         )
-                        # Create new instance directly on target device
+                        # Create new instance WITHOUT device parameter to avoid meta tensor issues
                         cache_folder = getattr(model, "cache_folder", None)
                         new_model = SentenceTransformer(
                             model_name_or_path,
-                            device=device,
                             cache_folder=cache_folder
                         )
-                        logger.info(f"Successfully reinitialized model on {device}")
+                        # Then move to target device using .to() method
+                        logger.info(f"Moving reinitialized model to {device}")
+                        new_model = new_model.to(device)
+                        logger.info(f"Successfully reinitialized and moved model to {device}")
                         return new_model
                     except ImportError as e:
                         logger.error(f"sentence_transformers not available: {e}")

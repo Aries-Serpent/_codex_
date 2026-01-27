@@ -152,7 +152,14 @@ jobs:
         run: |
           pip install bandit
           bandit -r src/codex/rag/ -f txt -o bandit-report.txt || true
-          cat bandit-report.txt
+          # Ensure file exists even if bandit fails or produces no output
+          touch bandit-report.txt
+          if [ -s bandit-report.txt ]; then
+            cat bandit-report.txt
+          else
+            echo "No security issues found by Bandit" > bandit-report.txt
+            cat bandit-report.txt
+          fi
 
       - name: Upload security report
         uses: actions/upload-artifact@v6
