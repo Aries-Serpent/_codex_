@@ -65,7 +65,9 @@ def fix_test_file(filepath: Path) -> tuple[int, list[str]]:
 
 def main():
     """Fix all Phase 26 test files."""
-    test_dir = Path("/home/runner/work/_codex_/_codex_/tests")
+    # Get repository root dynamically
+    repo_root = Path(__file__).resolve().parents[1]  # scripts is one level down from root
+    test_dir = repo_root / "tests"
     phase26_files = list(test_dir.rglob("*phase26*.py"))
     
     print(f"Found {len(phase26_files)} Phase 26 test files")
