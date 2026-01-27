@@ -1011,9 +1011,9 @@ gh auth status
 
 | Agent | Tier | Status | Workflow | Docs |
 |-------|------|--------|----------|------|
-| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | [README](/.github/agents/github-auth-manager/README.md) |
-| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | [README](/.github/agents/github-security-enforcer/README.md) |
-| Workflow Optimizer | 1 | ✅ Active | (manual) | [README](/.github/agents/github-workflow-optimizer/README.md) |
+| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | README |
+| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | README |
+| Workflow Optimizer | 1 | ✅ Active | (manual) | README |
 | Code Reviewer | 2 | 🔄 Proposed | N/A | TBD |
 | Test Orchestrator | 1 | 🔄 Proposed | N/A | TBD |
 | Deployment Gatekeeper | 1 | 🔄 Proposed | N/A | TBD |
@@ -1029,8 +1029,8 @@ gh auth status
 
 - [GitHub Actions Documentation](https://docs.github.com/actions)
 - [GitHub Copilot Documentation](https://docs.github.com/copilot)
-- [AI Agency Policy](/AI_AGENCY_POLICY_VERIFICATION.md)
-- [Agent Development Guide](/.github/agents/AGENT_DEVELOPMENT_GUIDE.md)
+- AI Agency Policy
+- Agent Development Guide
 
 ---
 

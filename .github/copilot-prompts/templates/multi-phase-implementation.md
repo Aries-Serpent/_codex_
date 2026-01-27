@@ -1,6 +1,6 @@
 # 🎯 Multi-Phase Implementation Plan - PR #{pr_number}
 
-**PR**: [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})  
+**PR**: #{pr_number} - {pr_title}  
 **Total Phases**: {total_phases}  
 **Current Phase**: {current_phase}  
 **Status**: 🔄 IN PROGRESS

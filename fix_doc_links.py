@@ -147,9 +147,10 @@ class LinkFixer:
                     'new': new_link,
                     'reason': reason
                 })
-                # Replace exact match - safe because full_link includes unique markdown syntax [text](url)
-                # Multiple occurrences of the same link will all be replaced (intended behavior)
-                new_content = new_content.replace(full_link, new_link)
+                # Replace only the first occurrence to avoid unintended replacements
+                # If the same link appears multiple times and needs different handling,
+                # process the file multiple times or track positions
+                new_content = new_content.replace(full_link, new_link, 1)
         
         if fixes_in_file:
             return {

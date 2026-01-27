@@ -152,18 +152,18 @@ class Test[Class]:
     
     def test_[method]_happy_path(self, instance):
         """Test [method] with valid input."""
-        result = instance.[method]("valid_input")
+        result = instance.`method("valid_input")`
         assert result == expected_value
     
     def test_[method]_empty_input(self, instance):
         """Test [method] with empty input."""
-        result = instance.[method]("")
+        result = instance.`method("")`
         assert result == expected_empty_result
     
     def test_[method]_raises_on_invalid(self, instance):
         """Test [method] raises on invalid input."""
         with pytest.raises(ValueError):
-            instance.[method](None)
+            instance.`method(None)`
 ```
 
 Verification:

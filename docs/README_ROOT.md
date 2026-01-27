@@ -100,7 +100,7 @@ Key flows:
 3. **Deployment** — Bespoke models are packaged with manifest digests
    and signed hooks for downstream registries.
 
-When modifying the topology, update both the diagram and [`docs/guides/serving_reproducibility.md`](guides/serving_reproducibility.md).
+When modifying the topology, update both the diagram and `docs/guides/serving_reproducibility.md`.
 
 ## Hosting bespoke reasoning models
 

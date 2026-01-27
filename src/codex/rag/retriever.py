@@ -90,12 +90,17 @@ class Retriever:
                 )
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-            except Exception as e:
-                logger.warning(f"Direct load failed, attempting safe_model_load: {e}")
-                # Fallback: load without device specification then move safely
-                self.model = SentenceTransformer(self.model_name, cache_folder=self.cache_dir)
-                self.model = safe_model_load(self.model, device="cpu")
-                self.model.eval()
+            except (RuntimeError, OSError, ValueError) as e:
+                # Only retry for specific errors that might be device-related
+                if "meta" in str(e).lower() or "device" in str(e).lower():
+                    logger.warning(f"Device-related load failed, attempting safe_model_load: {e}")
+                    # Fallback: load without device specification then move safely
+                    self.model = SentenceTransformer(self.model_name, cache_folder=self.cache_dir)
+                    self.model = safe_model_load(self.model, device="cpu")
+                    self.model.eval()
+                else:
+                    # Re-raise non-device errors (network, missing files, etc.)
+                    raise
             logger.info("Query embedding model loaded successfully")
         except ImportError:
             logger.error(

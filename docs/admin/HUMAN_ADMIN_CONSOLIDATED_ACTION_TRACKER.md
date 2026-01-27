@@ -82,7 +82,7 @@ This document consolidates **ALL** human admin intervention points from:
 **Status**: DEFERRED TO FUTURE SCOPE  
 **Deferral Type**: **HUMAN DEFERRAL** (ONLY allowed type per AI Agency Policy)  
 **Created**: 2026-01-16T13:10:00Z  
-**Reference**: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md)
+**Reference**: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`
 
 **AI Agency Policy Compliance**:
 ```
@@ -117,7 +117,7 @@ This document consolidates **ALL** human admin intervention points from:
 **Blocking**: NotebookLM sync workflow, Drive upload  
 **Estimated Time**: 20-30 minutes  
 **Automation Status**: ❌ CANNOT BE AUTOMATED (requires Google account, billing setup)  
-**Reference**: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md) § Phase 1
+**Reference**: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md` § Phase 1
 
 **Why Human Required**:
 - Requires Google account with billing enabled
@@ -172,7 +172,7 @@ gcloud iam service-accounts list --project=codex-notebooklm-integration
 **Blocking**: NotebookLM sync workflow authentication  
 **Estimated Time**: 10-15 minutes  
 **Automation Status**: ⚠️ PARTIALLY AUTOMATED (secret generation automated, injection requires human)  
-**Reference**: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md) § Phase 2
+**Reference**: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md` § Phase 2
 
 **Why Human Required**:
 - GitHub Secrets can only be set via UI or authenticated CLI
@@ -238,7 +238,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep -E "GDRIVE|GOOGLE_CLIENT"
 **Blocking**: Knowledge synthesis, AI-powered health checks  
 **Estimated Time**: 15-20 minutes  
 **Automation Status**: ❌ CANNOT BE AUTOMATED (requires Google account, UI interaction)  
-**Reference**: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md) § Phase 5
+**Reference**: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md` § Phase 5
 
 **Why Human Required**:
 - NotebookLM has no public API
@@ -359,7 +359,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 **Blocking**: HA-NB-001 (NotebookLM source addition)  
 **Estimated Time**: 5 minutes (trigger) + 5-10 minutes (execution)  
 **Automation Status**: ⚠️ WORKFLOW AUTOMATED, FIRST TRIGGER REQUIRES HUMAN  
-**Reference**: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md) § Phase 7
+**Reference**: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md` § Phase 7
 
 **Why Human Required**:
 - First workflow dispatch requires authenticated user

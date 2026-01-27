@@ -379,7 +379,7 @@ section_key="evaluation",
 ```markdown
 [BEGIN CONTENT]
 `codex repo-map --reasoning` surfaces a shared set of knobs defined in
-[`configs/training/reasoning/baseline.yaml`](../configs/training/reasoning/baseline.yaml):
+`configs/training/reasoning/baseline.yaml`:
 
 - `trace_mode`
 - `curriculum.preset`

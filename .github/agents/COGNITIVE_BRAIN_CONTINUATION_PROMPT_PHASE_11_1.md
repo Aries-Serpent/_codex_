@@ -1228,7 +1228,7 @@ def generate_markdown_links(folders: list[str], root: Path) -> str:
         if folder == '.':
             lines.append(f"- [`.` (root)](./)")
         else:
-            lines.append(f"- [`{folder}`](./{folder})")
+            lines.append(f"- `{folder}`")
     
     return '\n'.join(lines)
 
@@ -1255,7 +1255,7 @@ def generate_categorized_links(folders: list[str]) -> str:
             if folder == '.':
                 lines.append(f"- [`.` (root)](./)")
             else:
-                lines.append(f"- [`{folder}`](./{folder})")
+                lines.append(f"- `{folder}`")
     
     return '\n'.join(lines)
 
@@ -1289,7 +1289,7 @@ def generate_tree_with_links(folders: list[str], max_depth: int = 10) -> str:
             current_path = f"{path}/{name}" if path != "." else name
             
             # Add link
-            lines.append(f"{prefix}{connector}[`{name}`](./{current_path})")
+            lines.append(f"{prefix}{connector}`{name}`")
             
             if children:
                 child_prefix = prefix + ("    " if is_last else "│   ")

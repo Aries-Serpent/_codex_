@@ -110,12 +110,17 @@ def embed_chunks(
         )
         # Ensure model is in eval mode
         model.eval()
-    except Exception as e:
-        logger.warning(f"Direct load failed, attempting safe_model_load: {e}")
-        # Fallback: load without device specification then move safely
-        model = SentenceTransformer(model_name, cache_folder=cache_dir)
-        model = safe_model_load(model, device="cpu")
-        model.eval()
+    except (RuntimeError, OSError, ValueError) as e:
+        # Only retry for specific errors that might be device-related
+        if "meta" in str(e).lower() or "device" in str(e).lower():
+            logger.warning(f"Device-related load failed, attempting safe_model_load: {e}")
+            # Fallback: load without device specification then move safely
+            model = SentenceTransformer(model_name, cache_folder=cache_dir)
+            model = safe_model_load(model, device="cpu")
+            model.eval()
+        else:
+            # Re-raise non-device errors (network, missing files, etc.)
+            raise
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]

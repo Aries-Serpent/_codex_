@@ -1,10 +1,10 @@
 # 🎯 PR Follow-Up Tasks - #{pr_number}
 
-**PR**: [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})  
+**PR**: #{pr_number} - {pr_title}  
 **Branch**: `{branch}`  
 **Author**: @{pr_author}  
 **Date**: {date}  
-**Commit**: [`{commit_sha}`](https://github.com/Aries-Serpent/_codex_/commit/{commit_sha})  
+**Commit**: `{commit_sha}`  
 **Status**: 🔄 ACTIVE
 
 ---

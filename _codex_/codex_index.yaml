@@ -317,6 +317,5 @@ symbolic_notation:
     
   optimization_strategy: "Follow wavepoint order in AGENTS.md to achieve near-optimal τ"
 
----
 # End of codex_index.yaml
 # For updates or questions, see docs/guides/AGENTS.md

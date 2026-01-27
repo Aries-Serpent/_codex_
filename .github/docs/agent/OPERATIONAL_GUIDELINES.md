@@ -208,7 +208,7 @@ Update `.codex/cognitive_brain.md` with:
 
 - [AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)
 - [Agent Registry](../../agents/AGENT_REGISTRY.md)
-- [Cognitive Brain](../../../.codex/cognitive_brain.md)
+- Cognitive Brain
 - [Change Log](../../../.codex/change_log.md)
 
 ---

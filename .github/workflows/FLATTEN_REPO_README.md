@@ -475,7 +475,7 @@ graph LR
 - [Repomix GitHub](https://github.com/yamadashy/repomix)
 - [GitHub Actions Artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts)
 - [GitHub REST API - Artifacts](https://docs.github.com/en/rest/actions/artifacts)
-- [Phase 10 Documentation](../../PHASE_10_MASTER_INTEGRATION_PLANSET.md)
+- Phase 10 Documentation
 
 ---
 

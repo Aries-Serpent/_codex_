@@ -128,7 +128,7 @@ class [ClassName]:
     
     def __repr__(self) -> str:
         """Return string representation."""
-        return f"[ClassName](config={self._config})"
+        return f"`ClassName(config={self._config})`"
 
 
 # Module-level convenience functions
@@ -525,7 +525,7 @@ class Test[ClassName]:
     @pytest.fixture
     def instance(self, config) -> [ClassName]:
         """Create test instance."""
-        return [ClassName](config)
+        return `ClassName(config)`
     
     @pytest.fixture(autouse=True)
     def reset_global(self):
@@ -542,7 +542,7 @@ class Test[ClassName]:
     
     def test_init_with_custom_config(self, config):
         """Test initialization with custom config."""
-        obj = [ClassName](config)
+        obj = `ClassName(config)`
         assert obj._config.setting1 == "test"
     
     def test_initialize_sets_flag(self, instance):
@@ -620,7 +620,7 @@ class Test[ClassName]:
     def test_is_enabled_when_disabled(self):
         """Test is_enabled when explicitly disabled."""
         config = [ClassName]Config(enabled=False)
-        obj = [ClassName](config)
+        obj = `ClassName(config)`
         assert obj.is_enabled is False
     
     # Module-level function tests
@@ -709,7 +709,7 @@ def config():
 @pytest.fixture
 def service(config):
     """Create test service."""
-    return [ServiceName](config)
+    return `ServiceName(config)`
 
 
 class Test[ServiceName]:

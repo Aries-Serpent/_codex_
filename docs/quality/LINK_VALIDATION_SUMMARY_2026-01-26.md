@@ -217,7 +217,7 @@ python3 fix_doc_links.py --apply
 - [MkDocs Fix Plan](../mkdocs_fix_plan.md)
 - [MkDocs Warnings Analysis](../mkdocs_warnings_analysis.md)
 - [Broken Links Report](./BROKEN_LINKS_REPORT.md)
-- [Link Validator Agent](.codex/agents/link-validator-agent.md)
+- Link Validator Agent
 
 ## Git Changes
 

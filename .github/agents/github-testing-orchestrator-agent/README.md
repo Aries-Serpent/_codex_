@@ -244,7 +244,7 @@ jobs:
               `**Status**: ${report.overall_status}\n` +
               `**Suites Passed**: ${report.passed}/${report.total}\n` +
               `**Duration**: ${report.duration_seconds}s\n\n` +
-              `[View detailed report](${report.artifact_url})`;
+              `View detailed report`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,

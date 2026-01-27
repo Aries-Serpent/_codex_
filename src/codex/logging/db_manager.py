@@ -21,6 +21,9 @@ try:
 except Exception as exc:  # pragma: no cover
     logging.getLogger(__name__).debug("SQLite patch disabled: %s", exc)
 
+# Initialize logger early
+logger = logging.getLogger(__name__)
+
 try:
     from .config import DEFAULT_LOG_DB
 except ImportError as e:
