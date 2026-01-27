@@ -4,6 +4,7 @@
 # Writes outputs under ./.codex/ only. No CI activation, no external calls.
 
 import json
+import logging
 import re
 import shutil
 import subprocess
@@ -13,6 +14,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+
+logger = logging.getLogger(__name__)
 
 ROOT = Path.cwd()
 CODEX_DIR = ROOT / ".codex"
@@ -237,8 +240,9 @@ def phase2_search_mapping():
         for f in code_files[:200]:  # cap reads
             try:
                 txt += f.read_text(encoding="utf-8", errors="ignore") + "\n"
-            except Exception:
-                pass
+            except (FileNotFoundError, PermissionError, UnicodeDecodeError) as e:
+                logger.debug(f"Could not read file {f}: {e}")
+                continue  # Skip unreadable files
         hints = len(
             re.findall(r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE)
         )
@@ -373,8 +377,9 @@ def collect_code_paths() -> List[str]:
         if p.suffix.lower() in code_exts or p.name.lower() == "dockerfile":
             try:
                 paths.append(p.relative_to(ROOT).as_posix())
-            except Exception:
-                pass
+            except (ValueError, OSError) as e:
+                logger.debug(f"Could not relativize path {p}: {e}")
+                continue  # Skip paths that can't be relativized
     return paths
 
 

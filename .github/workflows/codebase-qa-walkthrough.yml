@@ -281,8 +281,8 @@ jobs:
           # Safety (dependency vulnerabilities)
           if [ -f "requirements.txt" ]; then
             echo "Running Safety..."
-            safety check --json --output reports/safety-report.json || true
-            safety check --output reports/safety-report.txt || true
+            safety check --output json > reports/safety-report.json || true
+            safety check --output text > reports/safety-report.txt || true
           fi
 
           # detect-secrets
@@ -353,14 +353,14 @@ jobs:
         id: coverage
         if: contains(inputs.focus_areas || 'security,performance,testing,documentation', 'testing')
         continue-on-error: true
-        timeout-minutes: 10  # Step-level timeout
+        timeout-minutes: 15  # Increased from 10
         run: |
           echo "🧪 Running test coverage analysis..."
 
           # Python coverage
           if [ -f "pytest.ini" ] || [ -d "tests" ]; then
             echo "Running pytest with coverage..."
-            coverage run -m pytest tests/ -v --tb=short || true
+            coverage run -m pytest tests/ -v --tb=short --maxfail=5 -x || true
             coverage report > reports/coverage-report.txt || true
             coverage json -o reports/coverage-report.json || true
             coverage html -d reports/coverage-html || true

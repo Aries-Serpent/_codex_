@@ -19,7 +19,7 @@ import re
 
 class CodebaseAnalyzer:
     """Comprehensive codebase analysis for PR #2685"""
-    
+
     def __init__(self):
         self.timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
         self.pr_info = {
@@ -30,15 +30,15 @@ class CodebaseAnalyzer:
             "base_branch": "0D_base_"
         }
         self.root_path = Path(__file__).parent.parent.parent
-        
+
     def count_lines_by_extension(self) -> Dict[str, int]:
         """Count lines of code by file extension"""
         exts = {'.py': 0, '.md': 0, '.sh': 0, '.html': 0, '.yml': 0, '.yaml': 0, '.js': 0}
-        
+
         for root, dirs, files in os.walk(self.root_path):
             # Skip hidden and cache directories
             dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
-            
+
             for file in files:
                 ext = Path(file).suffix
                 if ext in exts:
@@ -49,9 +49,9 @@ class CodebaseAnalyzer:
                     except Exception:
                         # Silently skip files that cannot be read or decoded
                         pass
-        
+
         return exts
-    
+
     def analyze_code_patterns(self, files: List[str]) -> Dict[str, List[str]]:
         """Analyze code patterns for quality and security issues"""
         patterns = {
@@ -60,34 +60,34 @@ class CodebaseAnalyzer:
             "test_patterns": [],
             "documentation": []
         }
-        
+
         # Security patterns
         security_patterns = [
             r"sha256|checksum|hash",
             r"seed|rng|random",
             r"sanitize|validate|escape"
         ]
-        
+
         # Quality patterns
         quality_patterns = [
             r"def test_",
             r"@dataclass",
             r"type:.*->"
         ]
-        
+
         for file in files:
             if not file.endswith('.py'):
                 continue
-                
+
             try:
                 with open(file, 'r', encoding='utf-8') as f:
                     content = f.read()
-                    
+
                     # Check security patterns
                     for pattern in security_patterns:
                         if re.search(pattern, content, re.IGNORECASE):
                             patterns["security_keywords"].append(f"{file}: {pattern}")
-                    
+
                     # Check quality patterns
                     for pattern in quality_patterns:
                         matches = re.findall(pattern, content)
@@ -96,16 +96,16 @@ class CodebaseAnalyzer:
             except Exception:
                 # Silently skip files that fail pattern matching
                 pass
-        
+
         return patterns
-    
+
     def generate_capability_matrix(self) -> Dict[str, Any]:
         """Generate capability matrix based on traversal workflow"""
-        
+
         def calculate_score(components: Dict[str, float]) -> float:
             """Calculate overall score from components"""
             return sum(components.values()) / len(components) if components else 0.0
-        
+
         capabilities = {
             "emergent_intelligence": {
                 "components": {
@@ -148,16 +148,16 @@ class CodebaseAnalyzer:
                 "status": "complete"
             }
         }
-        
+
         # Calculate scores
         for capability in capabilities.values():
             capability["score"] = calculate_score(capability["components"])
-        
+
         return capabilities
-    
+
     def analyze_pr_changes(self) -> Dict[str, Any]:
         """Analyze specific changes in the PR"""
-        
+
         changes = {
             "summary": {
                 "total_commits": 3,
@@ -209,17 +209,17 @@ class CodebaseAnalyzer:
                 ]
             }
         }
-        
+
         return changes
-    
+
     def calculate_integrity_hash(self, data: Dict) -> str:
         """Calculate SHA256 integrity hash for audit trail"""
         json_str = json.dumps(data, sort_keys=True)
         return hashlib.sha256(json_str.encode()).hexdigest()
-    
+
     def generate_action_items(self) -> List[Dict[str, str]]:
         """Generate actionable items for PR completion"""
-        
+
         actions = [
             {
                 "id": "codeql_resolution",
@@ -286,12 +286,12 @@ class CodebaseAnalyzer:
                 "completion": "85%"
             }
         ]
-        
+
         return actions
-    
+
     def calculate_metrics(self) -> Dict[str, Any]:
         """Calculate quality metrics"""
-        
+
         return {
             "code_quality": {
                 "type_coverage": 100,
@@ -313,17 +313,17 @@ class CodebaseAnalyzer:
             },
             "repository_health": 92
         }
-    
+
     def generate_report(self) -> Dict[str, Any]:
         """Generate comprehensive status report"""
-        
+
         # Analyze code
         line_counts = self.count_lines_by_extension()
         capabilities = self.generate_capability_matrix()
         changes = self.analyze_pr_changes()
         actions = self.generate_action_items()
         metrics = self.calculate_metrics()
-        
+
         report = {
             "metadata": {
                 "timestamp": self.timestamp,
@@ -352,30 +352,30 @@ class CodebaseAnalyzer:
                 "performance": 90
             }
         }
-        
+
         # Add integrity hash
         report["integrity_hash"] = self.calculate_integrity_hash(report)
-        
+
         return report
-    
+
     def save_report(self, report: Dict[str, Any], filename: str = "pr_2685_status.json"):
         """Save report to file"""
-        
+
         # Create reports directory if it doesn't exist
         reports_dir = self.root_path / ".codex" / "reports"
         reports_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save JSON report
         report_path = reports_dir / filename
         with open(report_path, 'w') as f:
             json.dump(report, indent=2, fp=f)
-        
+
         print(f"✅ Report saved to: {report_path}")
         return report_path
-    
+
     def print_summary(self, report: Dict[str, Any]):
         """Print summary to console"""
-        
+
         print("\n" + "="*80)
         print(f"PR #{report['metadata']['pr']['number']} STATUS REPORT")
         print("="*80)
@@ -384,51 +384,51 @@ class CodebaseAnalyzer:
         print(f"Overall Health: {report['quality_score']['overall']}/100")
         print(f"Completion: {report['metrics']['progress']['overall_completion']}%")
         print()
-        
+
         print("📊 Repository Composition:")
         total_lines = report['repository_state']['total_lines']
-        for ext, lines in sorted(report['repository_state']['lines_by_language'].items(), 
+        for ext, lines in sorted(report['repository_state']['lines_by_language'].items(),
                                 key=lambda x: x[1], reverse=True):
             pct = (lines / total_lines * 100) if total_lines > 0 else 0
             print(f"  {ext:8s}: {lines:8,} lines ({pct:5.1f}%)")
         print()
-        
+
         print("✅ Completed Tasks:")
         for action in report['action_items']:
             if action['status'] == 'complete':
                 print(f"  ✓ {action['task']}")
         print()
-        
+
         print("⏳ Pending Tasks:")
         for action in report['action_items']:
             if action['status'] in ['pending', 'in_progress']:
                 print(f"  • {action['task']} ({action['completion']})")
         print()
-        
+
         print("🎯 Next Steps:")
         print("  1. Continue V10 development with Agent 2 (Performance Monitor)")
         print("  2. Implement remaining 5 agents + 4 enhancements")
         print("  3. Achieve 597+ total tests (currently 507)")
         print()
-        
+
         print(f"Integrity Hash: {report['integrity_hash'][:16]}...")
         print("="*80 + "\n")
 
 
 def main():
     """Main execution function"""
-    
+
     print("🚀 Starting PR #2685 Status Analysis...")
-    
+
     analyzer = CodebaseAnalyzer()
     report = analyzer.generate_report()
-    
+
     # Save report
     report_path = analyzer.save_report(report)
-    
+
     # Print summary
     analyzer.print_summary(report)
-    
+
     # Also save human-readable version
     hr_path = report_path.parent / "pr_2685_status_human_readable.txt"
     with open(hr_path, 'w') as f:
@@ -438,7 +438,7 @@ def main():
         f.write(f"\nOverall Health Score: {report['quality_score']['overall']}/100\n")
         f.write(f"Completion: {report['metrics']['progress']['overall_completion']}%\n")
         f.write(f"\nIntegrity Hash: {report['integrity_hash']}\n")
-    
+
     print(f"✅ Human-readable report saved to: {hr_path}")
     print(f"\n📝 Full markdown report available at: .codex/reports/pr_2685_status_report.md")
     print("\n✨ Analysis complete!")

@@ -1,15 +1,92 @@
 # Security Audit Agent
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Created**: 2026-01-23  
+**Updated**: 2026-01-27  
 **Phase**: 14.4 - Agent Ecosystem Expansion  
-**Status**: Production Ready
+**Status**: Production Ready (Enhanced)
 
 ---
 
 ## Overview
 
 The Security Audit Agent is a specialized GitHub Copilot custom agent designed to perform comprehensive security audits of the Codex repository. It detects vulnerabilities, monitors CVEs, audits dependencies, and generates security reports.
+
+## Enhanced Capabilities (v1.1.0)
+
+### 1. Smart Exception Handler Replacement
+- **Auto-detect bare except**: Scan code for `except Exception: pass` patterns
+- **Context-aware suggestions**: Suggest specific exception types based on code context
+- **Automatic logging addition**: Insert appropriate logging statements
+- **Nosec comment generation**: Add `# nosec B###` with justification for legitimate cases
+- **Example Fix**:
+```python
+# Before (Insecure)
+try:
+    risky_operation()
+except Exception:
+    pass
+
+# After (Secure)
+try:
+    risky_operation()
+except (FileNotFoundError, PermissionError) as e:  # nosec B110
+    logger.debug(f"Could not complete operation: {e}")
+    continue  # Skip unreadable items
+```
+
+### 2. Dependency Vulnerability Auto-Resolution
+- **Auto-update vulnerable deps**: Automatically update to secure versions
+- **Compatibility testing**: Run tests after each update
+- **Separate commits**: Create isolated commits per dependency
+- **Version pinning**: Suggest appropriate version constraints
+- **Example Fix**:
+```python
+# Before (requirements.txt)
+werkzeug==2.0.0  # CVE-2024-12345
+
+# After (Fixed)
+werkzeug>=3.0.0,<4.0.0  # Fixed CVE-2024-12345
+```
+
+### 3. Secret Detection & Remediation
+- **Pattern recognition**: Detect API keys, passwords, tokens
+- **Environment variable suggestions**: Recommend env var usage
+- **Gitignore updates**: Add patterns to prevent future leaks
+- **Baseline updates**: Maintain `.secrets.baseline` file
+- **Example Fix**:
+```python
+# Before (Leaked secret)
+API_KEY = "sk-1234567890abcdef"
+
+# After (Fixed)
+import os
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise ValueError("API_KEY environment variable required")
+```
+
+### 4. SQL Injection Prevention
+- **Unsafe query detection**: Find string concatenation in SQL
+- **Parameterized query suggestions**: Provide secure alternatives
+- **ORM recommendations**: Suggest using SQLAlchemy/Django ORM
+- **Input validation**: Add validation layers
+- **Example Fix**:
+```python
+# Before (Vulnerable)
+query = f"SELECT * FROM users WHERE id = {user_id}"
+cursor.execute(query)
+
+# After (Secure)
+query = "SELECT * FROM users WHERE id = ?"
+cursor.execute(query, (user_id,))
+```
+
+### 5. Import Organization Security
+- **Detect suspicious imports**: Find imports from untrusted sources
+- **Sort imports securely**: Organize with `isort` for consistency
+- **Add security comments**: Document security-sensitive imports
+- **Validate import paths**: Ensure imports match expected modules
 
 ## Architecture
 
