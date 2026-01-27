@@ -90,11 +90,11 @@ class Retriever:
                 )
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-            except (RuntimeError, OSError, ValueError) as e:
+            except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 # Check if error is device-related by looking at exception type and message
                 error_msg = str(e).lower()
                 is_device_error = (
-                    isinstance(e, RuntimeError) and 
+                    isinstance(e, (RuntimeError, NotImplementedError)) and 
                     ("meta" in error_msg or "device" in error_msg or "cuda" in error_msg)
                 )
                 
