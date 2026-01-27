@@ -98,10 +98,12 @@ jobs:
         run: |
           echo "=== Test Collection Diagnostics ==="
           # Show stdout and stderr separately for better error visibility
-          python -m pytest tests/ --collect-only -q 2>/tmp/pytest_stderr.log | head -50 || {
+          # Using RUNNER_TEMP for portability across different GitHub Actions runners
+          STDERR_LOG="${RUNNER_TEMP:-/tmp}/pytest_stderr.log"
+          python -m pytest tests/ --collect-only -q 2>"$STDERR_LOG" | head -50 || {
             echo "⚠️  Test collection may have issues"
             echo "=== Stderr output ==="
-            cat /tmp/pytest_stderr.log 2>/dev/null || true
+            cat "$STDERR_LOG" 2>/dev/null || true
           }
           echo ""
           echo "=== Test Directory Structure ==="
