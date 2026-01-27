@@ -88,6 +88,21 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -e ".[test]"
 
+      - name: Verify pytest environment
+        run: |
+          python -m pytest --version
+          python -c "import pytest_xdist; print(f'pytest-xdist: {pytest_xdist.__version__}')"
+          python -c "import pytest_cov; print(f'pytest-cov: {pytest_cov.__version__}')"
+
+      - name: Show test collection diagnostics
+        run: |
+          echo "=== Test Collection Diagnostics ==="
+          python -m pytest tests/ --collect-only -q 2>&1 | head -50 || echo "⚠️  Test collection may have issues"
+          echo ""
+          echo "=== Test Directory Structure ==="
+          find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
+          echo ""
+
       - name: Run core tests with coverage
         run: |
           pytest tests/ \
@@ -97,12 +112,24 @@ jobs:
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term \
+            --junitxml=junit.xml \
             -n auto \
             --dist loadgroup \
             --maxfail=10
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          CODEX_FORCE_CPU: "1"
+          RAG_EMBEDDING_PROVIDER: tfidf
+
+      - name: Ensure test artifacts exist
+        if: always()
+        run: |
+          # Guarantee all artifacts exist to prevent upload failures
+          python scripts/ensure_test_artifacts.py --coverage --junit
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        if: always()
         with:
           files: ./coverage.xml
           flags: python-${{ matrix.python-version }}
@@ -116,6 +143,16 @@ jobs:
           name: coverage-html-${{ matrix.python-version }}
           path: htmlcov/
           retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload JUnit test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: junit-report-${{ matrix.python-version }}
+          path: junit.xml
+          retention-days: 7
+          if-no-files-found: warn
 
       - name: Generate test summary
         if: always()
@@ -125,6 +162,16 @@ jobs:
           echo "**Python Version:** ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Show test counts from JUnit XML if available
+          if [ -f junit.xml ]; then
+            tests=$(grep -o 'tests="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
+            failures=$(grep -o 'failures="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
+            errors=$(grep -o 'errors="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
+            echo "**Tests:** $tests total, $failures failed, $errors errors" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "See attached artifacts for detailed coverage reports." >> $GITHUB_STEP_SUMMARY
 
   # Job 2: RAG Tests - Specialized RAG testing
