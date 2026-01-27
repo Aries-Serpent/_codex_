@@ -55,7 +55,7 @@ permissions:
 
 env:
   PYTHON_VERSION: '3.12'
-  PYTEST_ADDOPTS: '--color=yes --verbose'
+  # PYTEST_ADDOPTS removed - options passed directly to pytest command to avoid xdist worker crashes
 
 jobs:
   # Job 1: Core Tests - Main test suite
@@ -91,14 +91,15 @@ jobs:
       - name: Run core tests with coverage
         run: |
           pytest tests/ \
+            --color=yes \
+            --verbose \
             --cov=src \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term \
             -n auto \
             --dist loadgroup \
-            --maxfail=10 \
-            -v
+            --maxfail=10
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
