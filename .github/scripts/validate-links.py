@@ -102,6 +102,14 @@ class LinkValidator:
         
         return target_path
 
+    def is_in_code_block(self, content: str, position: int) -> bool:
+        """Check if a position in the content is inside a code block"""
+        # Count the number of code fences (```) before this position
+        before_content = content[:position]
+        code_fences = before_content.count('```')
+        # If odd number of fences, we're inside a code block
+        return (code_fences % 2) == 1
+
     def validate_file(self, file_path: Path) -> None:
         """Validate all links in a single markdown file"""
         if file_path in self.checked_files:
@@ -115,6 +123,10 @@ class LinkValidator:
             return
 
         for match in LINK_PATTERN.finditer(content):
+            # Skip links inside code blocks
+            if self.is_in_code_block(content, match.start()):
+                continue
+                
             link_text = match.group(1)
             link_path = match.group(2)
 
