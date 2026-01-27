@@ -107,9 +107,32 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                             model_name_or_path,
                             cache_folder=cache_folder
                         )
-                        # Then move to target device using .to() method
-                        logger.info(f"Moving reinitialized model to {device}")
-                        new_model = new_model.to(device)
+                        
+                        # Check if reinitialized model still has meta tensors
+                        new_model_has_meta = False
+                        if hasattr(new_model, "named_modules"):
+                            for name, module in new_model.named_modules():
+                                for param_name, param in module.named_parameters(recurse=False):
+                                    if hasattr(param, "device") and param.device.type == "meta":
+                                        new_model_has_meta = True
+                                        break
+                                if new_model_has_meta:
+                                    break
+                        
+                        # If still has meta tensors, use to_empty() first
+                        if new_model_has_meta:
+                            logger.info(f"Reinitialized model still has meta tensors, using to_empty()")
+                            if hasattr(new_model, "to_empty"):
+                                new_model = new_model.to_empty(device=device)
+                                logger.info(f"Successfully used to_empty() to move model to {device}")
+                            else:
+                                logger.warning("to_empty() not available, trying .to() anyway")
+                                new_model = new_model.to(device)
+                        else:
+                            # No meta tensors, safe to use .to()
+                            logger.info(f"Moving reinitialized model to {device}")
+                            new_model = new_model.to(device)
+                        
                         logger.info(f"Successfully reinitialized and moved model to {device}")
                         return new_model
                     except ImportError as e:
