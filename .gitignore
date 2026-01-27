@@ -301,6 +301,10 @@ index.html
 pytest_validation*.txt
 artifacts/coverage/*.xml
 htmlcov/
+junit.xml
+test_pattern_report.txt
+bandit-report.json
+bandit-report.txt
 
 # Generated inventory files
 workbench/codebase_inventory.json
