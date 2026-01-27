@@ -1,4 +1,4 @@
-# Archive Files 
+# Archive Files
 
 **Purpose**: Consolidated storage for legacy application archives  
 **Retention**: Permanent (historical reference)  
