@@ -210,7 +210,7 @@ except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
 ```
 
 ### Documentation
-- Comprehensive report: `.codex/RAG_META_TENSOR_REMEDIATION_REPORT.md`
+- Comprehensive remediation report (link to be added when available)
 - Function docstring with examples and raises clauses
 - Memory stored: "PyTorch 2.6+ SentenceTransformer compatibility pattern"
 
