@@ -1,7 +1,7 @@
 # Repository Hygiene Report - PR #3020
 **Date:** 2026-01-28T00:00:03Z  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Branch:** `copilot/sub-pr-3020-again`  
+**Branch:** `copilot/sub-pr-3020`  
 **Auditor:** Repository Hygiene Agent  
 **Scope:** Comprehensive scan across 4,266 Python files, 2,871 documentation files, 101 CI/CD workflows
 
