@@ -65,9 +65,7 @@ class Retriever:
                 tenant_id=self.tenant_id,
                 index_dir=self.index_dir,
             )
-            logger.info(
-                f"Loaded index '{self.index_name}' with {len(self.chunks_metadata)} chunks"
-            )
+            logger.info(f"Loaded index '{self.index_name}' with {len(self.chunks_metadata)} chunks")
         except FileNotFoundError as e:
             logger.warning(f"Index not found: {e}")
             logger.warning("Use indexer.py to build an index first")
@@ -80,21 +78,23 @@ class Retriever:
         """Load embedding model for query encoding."""
         try:
             from sentence_transformers import SentenceTransformer
-    
+
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
                 # Import meta tensor detection and remediation helpers
                 from codex.rag.utils import _check_for_meta_tensors, safe_model_load
-                
+
                 # Step 1: Load model with NO device parameter to let library handle initialization
                 # This prevents SentenceTransformer from attempting device moves on meta tensors
-                logger.debug("Loading model without device parameter (safer for meta tensor handling)")
+                logger.debug(
+                    "Loading model without device parameter (safer for meta tensor handling)"
+                )
                 self.model = SentenceTransformer(
                     self.model_name,
-                    cache_folder=self.cache_dir
+                    cache_folder=self.cache_dir,
                     # NO device parameter - let the model initialize on its default device first
                 )
-                
+
                 # Step 2: Check if model contains meta tensors
                 if _check_for_meta_tensors(self.model):
                     logger.warning(
@@ -103,7 +103,7 @@ class Retriever:
                     )
                     # Use safe_model_load to properly materialize meta tensors
                     self.model = safe_model_load(self.model, device="cpu")
-                    
+
                     # Verify meta tensors are gone
                     if _check_for_meta_tensors(self.model):
                         error_msg = (
@@ -113,17 +113,19 @@ class Retriever:
                         logger.error(error_msg)
                         raise RuntimeError(error_msg)
                     else:
-                        logger.info("Meta tensors successfully remediated - model ready for inference")
+                        logger.info(
+                            "Meta tensors successfully remediated - model ready for inference"
+                        )
                 else:
                     # No meta tensors, safe to move to CPU if needed
                     logger.debug("No meta tensors detected - applying standard device transfer")
                     if hasattr(self.model, "to"):
                         self.model = self.model.to("cpu")
-                
+
                 # Step 3: Ensure model is in eval mode for inference
                 self.model.eval()
                 logger.info(f"Model {self.model_name} loaded successfully and ready for inference")
-    
+
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")
                 raise
@@ -172,15 +174,11 @@ class Retriever:
 
         # Encode query
         logger.debug(f"Encoding query: {q[:100]}...")
-        query_embedding = self.model.encode(
-            [q], convert_to_numpy=True, show_progress_bar=False
-        )
+        query_embedding = self.model.encode([q], convert_to_numpy=True, show_progress_bar=False)
 
         # Search index
         logger.debug(f"Searching index for top {top_k} results")
-        distances, indices = self.faiss_index.search(
-            query_embedding.astype(np.float32), top_k
-        )
+        distances, indices = self.faiss_index.search(query_embedding.astype(np.float32), top_k)
 
         # Build results with provenance
         results = []
@@ -336,9 +334,7 @@ class MultiIndexRetriever:
                         f"Skipping index {idx_config.get('index_name')}: no index loaded"
                     )
             except Exception as e:
-                logger.warning(
-                    f"Failed to load index {idx_config.get('index_name')}: {e}"
-                )
+                logger.warning(f"Failed to load index {idx_config.get('index_name')}: {e}")
 
         logger.info(f"Initialized with {len(self.retrievers)} indices")
 
@@ -526,9 +522,7 @@ class CachedRetriever(Retriever):
         self.query_cache = LRUCache(maxsize=cache_maxsize)
         self.cache_timestamps = {}  # Track when entries were cached
 
-        logger.info(
-            f"Initialized CachedRetriever with TTL={cache_ttl}s, maxsize={cache_maxsize}"
-        )
+        logger.info(f"Initialized CachedRetriever with TTL={cache_ttl}s, maxsize={cache_maxsize}")
 
     def _normalize_query(self, q: str) -> str:
         """
@@ -652,8 +646,7 @@ class CachedRetriever(Retriever):
         cache_stats["ttl"] = self.cache_ttl
         cache_stats["normalize_queries"] = self.normalize_queries
         cache_stats["valid_entries"] = sum(
-            1 for key in self.cache_timestamps
-            if self._is_cache_valid(key)
+            1 for key in self.cache_timestamps if self._is_cache_valid(key)
         )
         return cache_stats
 
@@ -661,7 +654,8 @@ class CachedRetriever(Retriever):
         """Manually invalidate all expired cache entries."""
         current_time = time()
         expired_keys = [
-            key for key, timestamp in self.cache_timestamps.items()
+            key
+            for key, timestamp in self.cache_timestamps.items()
             if (current_time - timestamp) >= self.cache_ttl
         ]
 

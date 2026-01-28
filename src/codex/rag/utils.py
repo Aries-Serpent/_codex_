@@ -109,9 +109,9 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                 break
                         if module_has_meta:
                             modules_with_meta.append((name, module))
-                    
+
                     logger.info(f"Found {len(modules_with_meta)} modules with meta tensors")
-                    
+
                     # Move each module with meta tensors to target device using to_empty()
                     for name, module in modules_with_meta:
                         if hasattr(module, "to_empty"):
@@ -127,7 +127,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                     module.to(device)
                                 except Exception:
                                     pass  # Continue with other modules
-                    
+
                     # Verify all meta tensors are gone
                     remaining_meta = False
                     for name, module in model.named_modules():
@@ -138,13 +138,15 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                 break
                         if remaining_meta:
                             break
-                    
+
                     if not remaining_meta:
                         logger.info(f"Successfully materialized all modules to {device}")
                         return model
                     else:
-                        logger.warning("Some meta tensors could not be materialized, trying next strategy")
-                        
+                        logger.warning(
+                            "Some meta tensors could not be materialized, trying next strategy"
+                        )
+
                 except Exception as e:
                     logger.error(f"Failed to materialize modules: {e}")
 
@@ -163,7 +165,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                     param,
                                     device=device,
                                     dtype=param.dtype,
-                                    requires_grad=param.requires_grad
+                                    requires_grad=param.requires_grad,
                                 )
                                 # Replace the parameter
                                 setattr(module, param_name, torch.nn.Parameter(new_param))
@@ -210,17 +212,17 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
 def _check_for_meta_tensors(model: Any) -> bool:
     """
     Check if a model contains any meta device tensors.
-    
+
     Meta tensors are placeholder tensors on the 'meta' device that don't
     contain actual data. They're used for lazy loading but can cause
     NotImplementedError when trying to move to CPU/GPU.
-    
+
     Args:
         model: The model to check (PyTorch model or SentenceTransformer)
-        
+
     Returns:
         True if model contains meta tensors, False otherwise
-        
+
     Example:
         >>> from sentence_transformers import SentenceTransformer
         >>> model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -236,16 +238,16 @@ def _check_for_meta_tensors(model: Any) -> bool:
                     if hasattr(param, "device") and param.device.type == "meta":
                         logger.debug(f"Found meta tensor in {name}.{param_name}")
                         return True
-        
+
         # Check if model itself is on meta device
         elif hasattr(model, "device"):
             device_type = getattr(model.device, "type", None)
             if device_type == "meta":
                 logger.debug("Model is on meta device")
                 return True
-                
+
         return False
-        
+
     except Exception as e:
         logger.debug(f"Error checking for meta tensors: {e}")
         return False
@@ -280,6 +282,7 @@ class ProvenanceMetadata:
         ...     retrieval_score=0.85
         ... )
     """
+
     source_file: Path
     line_range: Tuple[int, int]
     chunk_id: str
