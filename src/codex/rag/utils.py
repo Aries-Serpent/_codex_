@@ -90,55 +90,63 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                 except Exception as e:
                     logger.warning(f"to_empty() failed: {e}, trying alternative methods")
 
-            # Strategy 2: For SentenceTransformers, reinitialize without device parameter
-            # then move to target device (PyTorch 2.6+ compatibility)
-            if hasattr(model, "_load_sbert_model") or hasattr(model, "encode"):
-                model_name_or_path = getattr(model, "model_name_or_path", None)
-                if model_name_or_path:
-                    try:
-                        from sentence_transformers import SentenceTransformer
-                        logger.info(
-                            f"Reinitializing SentenceTransformer '{model_name_or_path}' "
-                            f"without device parameter (PyTorch 2.6+ compatibility)"
-                        )
-                        # Create new instance WITHOUT device parameter to avoid meta tensor issues
-                        cache_folder = getattr(model, "cache_folder", None)
-                        new_model = SentenceTransformer(
-                            model_name_or_path,
-                            cache_folder=cache_folder
-                        )
-
-                        # Check if reinitialized model still has meta tensors
-                        new_model_has_meta = False
-                        if hasattr(new_model, "named_modules"):
-                            for name, module in new_model.named_modules():
-                                for param_name, param in module.named_parameters(recurse=False):
-                                    if hasattr(param, "device") and param.device.type == "meta":
-                                        new_model_has_meta = True
-                                        break
-                                if new_model_has_meta:
-                                    break
-
-                        # If still has meta tensors, use to_empty() first
-                        if new_model_has_meta:
-                            logger.info("Reinitialized model still has meta tensors, using to_empty()")
-                            if hasattr(new_model, "to_empty"):
-                                new_model = new_model.to_empty(device=device)
-                                logger.info(f"Successfully used to_empty() to move model to {device}")
-                            else:
-                                logger.warning("to_empty() not available, trying .to() anyway")
-                                new_model = new_model.to(device)
-                        else:
-                            # No meta tensors, safe to use .to()
-                            logger.info(f"Moving reinitialized model to {device}")
-                            new_model = new_model.to(device)
-
-                        logger.info(f"Successfully reinitialized and moved model to {device}")
-                        return new_model
-                    except ImportError as e:
-                        logger.error(f"sentence_transformers not available: {e}")
-                    except Exception as e:
-                        logger.error(f"Failed to reinitialize SentenceTransformer: {e}")
+            # Strategy 2: For SentenceTransformers, materialize underlying PyTorch modules
+            # using to_empty() on each module that has parameters
+            if hasattr(model, "_modules") and hasattr(model, "named_modules"):
+                try:
+                    logger.info(
+                        f"Attempting to materialize SentenceTransformer modules to {device} "
+                        f"using to_empty() on underlying PyTorch modules"
+                    )
+                    # For SentenceTransformer, we need to move underlying modules
+                    # Get all modules that contain parameters
+                    modules_with_meta = []
+                    for name, module in model.named_modules():
+                        module_has_meta = False
+                        for param_name, param in module.named_parameters(recurse=False):
+                            if hasattr(param, "device") and param.device.type == "meta":
+                                module_has_meta = True
+                                break
+                        if module_has_meta:
+                            modules_with_meta.append((name, module))
+                    
+                    logger.info(f"Found {len(modules_with_meta)} modules with meta tensors")
+                    
+                    # Move each module with meta tensors to target device using to_empty()
+                    for name, module in modules_with_meta:
+                        if hasattr(module, "to_empty"):
+                            try:
+                                logger.debug(f"Materializing module {name} to {device}")
+                                # This will create empty tensors on target device with same shape
+                                module.to_empty(device=device)
+                                logger.debug(f"Successfully materialized module {name}")
+                            except Exception as e:
+                                logger.warning(f"Failed to materialize module {name}: {e}")
+                                # Try standard .to() as fallback (will likely fail but worth trying)
+                                try:
+                                    module.to(device)
+                                except Exception:
+                                    pass  # Continue with other modules
+                    
+                    # Verify all meta tensors are gone
+                    remaining_meta = False
+                    for name, module in model.named_modules():
+                        for param_name, param in module.named_parameters(recurse=False):
+                            if hasattr(param, "device") and param.device.type == "meta":
+                                remaining_meta = True
+                                logger.warning(f"Meta tensor still present in {name}.{param_name}")
+                                break
+                        if remaining_meta:
+                            break
+                    
+                    if not remaining_meta:
+                        logger.info(f"Successfully materialized all modules to {device}")
+                        return model
+                    else:
+                        logger.warning("Some meta tensors could not be materialized, trying next strategy")
+                        
+                except Exception as e:
+                    logger.error(f"Failed to materialize modules: {e}")
 
             # Strategy 3: Try manual parameter-by-parameter materialization
             try:
