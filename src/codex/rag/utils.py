@@ -207,6 +207,50 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
         return model
 
 
+def _check_for_meta_tensors(model: Any) -> bool:
+    """
+    Check if a model contains any meta device tensors.
+    
+    Meta tensors are placeholder tensors on the 'meta' device that don't
+    contain actual data. They're used for lazy loading but can cause
+    NotImplementedError when trying to move to CPU/GPU.
+    
+    Args:
+        model: The model to check (PyTorch model or SentenceTransformer)
+        
+    Returns:
+        True if model contains meta tensors, False otherwise
+        
+    Example:
+        >>> from sentence_transformers import SentenceTransformer
+        >>> model = SentenceTransformer('all-MiniLM-L6-v2')
+        >>> has_meta = _check_for_meta_tensors(model)
+        >>> print(f"Model has meta tensors: {has_meta}")
+    """
+    try:
+        # Check if model has modules/parameters to iterate
+        if hasattr(model, "named_modules"):
+            for name, module in model.named_modules():
+                # Check parameters in this module (recurse=False to avoid duplicates)
+                for param_name, param in module.named_parameters(recurse=False):
+                    if hasattr(param, "device") and param.device.type == "meta":
+                        logger.debug(f"Found meta tensor in {name}.{param_name}")
+                        return True
+        
+        # Check if model itself is on meta device
+        elif hasattr(model, "device"):
+            device_type = getattr(model.device, "type", None)
+            if device_type == "meta":
+                logger.debug("Model is on meta device")
+                return True
+                
+        return False
+        
+    except Exception as e:
+        logger.debug(f"Error checking for meta tensors: {e}")
+        return False
+
+
 @dataclass
 class ProvenanceMetadata:
     """
