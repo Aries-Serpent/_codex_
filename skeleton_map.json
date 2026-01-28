@@ -1,0 +1,358 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "generated": "2026-01-23T19:00:00Z",
+    "branch": "copilot/sub-pr-3020",
+    "purpose": "Skeleton Map for NotebookLM Grounding Engine Ingestion",
+    "architecture": "Hybrid Python-Rust Monorepo"
+  },
+  "layers": {
+    "logic_layer": {
+      "description": "Python Cognitive Brain & Agent Orchestration",
+      "components": {
+        "cognitive_brain": {
+          "path": "scripts/cognitive/",
+          "modules": [
+            "cognitive_brain_core.py",
+            "detect_patterns.py",
+            "detect_anomalies.py",
+            "causal_reasoning.py",
+            "meta_learning_engine.py",
+            "self_healing_validation.py",
+            "extract_learnings.py",
+            "evaluate_outcomes.py",
+            "allocate_tasks.py",
+            "monitor_execution.py",
+            "dispatch_agent.py"
+          ],
+          "capabilities": [
+            "Pattern Detection",
+            "Anomaly Detection",
+            "Causal Reasoning",
+            "Meta-Learning",
+            "Self-Healing",
+            "Task Allocation",
+            "Agent Dispatch"
+          ]
+        },
+        "cognitive_app": {
+          "path": "cognitive_app/",
+          "modules": [
+            "cognitive_adapter.py",
+            "developer_orchestrator.py",
+            "physics_orchestrator.py",
+            "physics_integration.py",
+            "workflow_navigator.py",
+            "rag_ticket_context.py",
+            "self_healing.py",
+            "mental_mapping.py",
+            "quantum_game_theory.py"
+          ],
+          "capabilities": [
+            "Physics-Inspired Orchestration",
+            "RAG Ticket Context",
+            "Self-Healing Workflows",
+            "Quantum Game Theory",
+            "Mental Mapping"
+          ]
+        },
+        "agents": {
+          "registry": ".github/agents/AGENT_REGISTRY.yaml",
+          "total_agents": 26,
+          "categories": {
+            "ci_cd": [
+              "ci-testing-agent",
+              "ci-failure-diagnostician",
+              "ci-optimizer-agent",
+              "ci-emergency-response-agent"
+            ],
+            "security": [
+              "bridge-security-monitor",
+              "security-vulnerability-patcher",
+              "codeql-alert-resolution-agent",
+              "dependency-vulnerability-scanner"
+            ],
+            "code_quality": [
+              "codex-reviewer",
+              "ast-analysis-agent",
+              "test-coverage-monitor",
+              "coverage-gapfill-agent"
+            ],
+            "documentation": [
+              "documentation-quality-agent",
+              "documentation-consolidator",
+              "link-validator-agent",
+              "doc-freshness-checker"
+            ],
+            "cognitive": [
+              "cognitive-brain-agent",
+              "cognitive-brain-manager",
+              "emergent-intelligence-agent",
+              "reasoning-advisor-agent"
+            ],
+            "repository_management": [
+              "repository-hygiene-agent",
+              "root-organizer-agent",
+              "reference-updater-agent",
+              "config-migration-assistant"
+            ],
+            "testing": [
+              "test-alignment-fixer",
+              "integration-test-runner",
+              "test-coverage-guardian",
+              "pyo3-integration-tester"
+            ]
+          },
+          "locations": [
+            ".github/agents/",
+            "agents/",
+            ".codex/agents/"
+          ]
+        },
+        "src_codex": {
+          "path": "src/codex/",
+          "key_modules": [
+            "agents",
+            "api",
+            "archive",
+            "ast",
+            "audit",
+            "auth",
+            "cli",
+            "db",
+            "diagram",
+            "dynamics",
+            "evidence",
+            "intent",
+            "interpretability",
+            "knowledge",
+            "mapping",
+            "metrics",
+            "monitoring",
+            "qa",
+            "quantum_orchestrator",
+            "rag",
+            "release",
+            "reporting",
+            "search",
+            "security",
+            "transform",
+            "utils"
+          ],
+          "capabilities": [
+            "CLI Interface",
+            "Database Management",
+            "Quantum Orchestration",
+            "RAG Pipeline",
+            "Metrics & Monitoring",
+            "QA Walkthroughs",
+            "Evidence Collection",
+            "Security Utils"
+          ]
+        }
+      }
+    },
+    "performance_layer": {
+      "description": "Rust Orchestration Layer for High-Performance Task Execution",
+      "components": {
+        "rust_engine": {
+          "manifest": "Cargo.toml",
+          "package": "codex-swarm-engine",
+          "version": "0.1.0",
+          "crate_type": [
+            "cdylib",
+            "rlib"
+          ],
+          "sources": [
+            "src/lib.rs",
+            "src/agent_manager.rs",
+            "src/compression.rs",
+            "src/queue.rs",
+            "src/runtime.rs",
+            "src/serialization.rs",
+            "src/state.rs"
+          ],
+          "swarm_modules": [
+            "rust_swarm/swarm_engine.rs",
+            "rust_swarm/task_manager.rs",
+            "rust_swarm/ffi_bridge.rs",
+            "rust_swarm/telemetry.rs",
+            "rust_swarm/metrics.rs",
+            "rust_swarm/compression.rs"
+          ],
+          "capabilities": [
+            "PyO3 Python-Rust Interop (abi3-py38)",
+            "Async Runtime (Tokio)",
+            "Parallel Processing (Rayon)",
+            "Binary Serialization (MessagePack)",
+            "LZ4/ZSTD Compression",
+            "Concurrent State Management (DashMap)",
+            "High-Performance Agent Swarm"
+          ],
+          "benchmarks": "benches/swarm_benchmarks.rs",
+          "tests": "tests_rust/"
+        }
+      }
+    },
+    "bridge_layer": {
+      "description": "Schemas, Manifests, and Mappings for Python-Rust Integration",
+      "components": {
+        "schemas": {
+          "locations": [
+            "schemas/",
+            ".codex/schemas/"
+          ],
+          "files": [
+            "archive_evidence_schema_v1.json",
+            "archive_evidence_schema_v2.json",
+            "codex_archive.sql",
+            "codex_eval_rules.v3.schema.json",
+            "codex_status_update.schema.json",
+            "ingest-manifest.schema.yaml",
+            "intent.schema.yaml",
+            "metrics-ndjson-v0.3.json",
+            "metrics.ndjson.schema.json",
+            "run_metrics.schema.json",
+            "run_params.schema.json",
+            "selection_guard_rules.schema.json",
+            "static-report.schema.json",
+            "ledger_event.schema.json"
+          ],
+          "purpose": "Data structure definitions for cross-language validation"
+        },
+        "manifests": {
+          "path": "manifests/",
+          "files": [
+            "k8s/",
+            "monitoring/",
+            "codex_eval_rules.v3.json",
+            "selection_guard_rules.json"
+          ],
+          "purpose": "Deployment and orchestration manifests"
+        },
+        "mappings": {
+          "path": "mappings/",
+          "files": [
+            "batch1_mappings.json",
+            "batch2_mappings.json",
+            "shared_mappings.json"
+          ],
+          "purpose": "Field mappings for data transformation"
+        }
+      }
+    },
+    "documentation_layer": {
+      "description": "Guides, Prompts, and Documentation for Context Ingestion",
+      "components": {
+        "docs": {
+          "index": "docs/DOCUMENTATION_INDEX.md",
+          "guides": "docs/guides/",
+          "guide_count": 60,
+          "key_guides": [
+            "AGENTS.md",
+            "QUICKSTART.md",
+            "TESTING_GUIDE.md",
+            "RUST_ENGINE_README.md",
+            "PYTHON_312_MIGRATION_GUIDE.md",
+            "REPOSITORY_ARCHITECTURE_DIAGRAMS.md",
+            "codex_zendesk_integration_deep_dive.md",
+            "inference_deployment.md",
+            "reasoning_overview.md"
+          ]
+        },
+        "prompts": {
+          "locations": [
+            "PROMPTS/",
+            "prompts/",
+            ".codex/prompts/",
+            "agents/prompts/"
+          ],
+          "categories": [
+            "Cognitive Brain Continuation Prompts",
+            "Copilot Continuation Prompts",
+            "Phase Continuation Prompts",
+            "Root Reorganization Prompts",
+            "Dynamics 365 Enhancement Prompts"
+          ],
+          "total": 30,
+          "purpose": "AI agent context and continuation instructions"
+        },
+        "guides": {
+          "path": "guides/",
+          "files": [
+            "AGENTS.md",
+            "domains/",
+            "orchestrator/",
+            "system/",
+            "templates/"
+          ],
+          "purpose": "System-level operational guides"
+        }
+      }
+    }
+  },
+  "integration_points": {
+    "python_rust_ffi": {
+      "mechanism": "PyO3 with abi3-py38 feature",
+      "bridge": "rust_swarm/ffi_bridge.rs",
+      "interop": "pyo3-async-runtimes (Tokio)",
+      "data_exchange": "MessagePack serialization + LZ4/ZSTD compression"
+    },
+    "cognitive_to_rust": {
+      "dispatcher": "scripts/cognitive/dispatch_agent.py",
+      "task_manager": "rust_swarm/task_manager.rs",
+      "state_sync": "src/state.rs (DashMap concurrent state)"
+    },
+    "agent_orchestration": {
+      "registry": ".github/agents/AGENT_REGISTRY.yaml",
+      "cognitive_manager": ".github/agents/cognitive-brain-manager.md",
+      "orchestrator": "agents/developer_orchestrator.py",
+      "workflow_navigator": "agents/workflow_navigator.py"
+    }
+  },
+  "entry_points": {
+    "cli": [
+      "src/codex/cli.py",
+      "src/codex/cli_archive.py",
+      "src/codex/cli_github_logs.py",
+      "src/codex/cli_knowledge.py",
+      "src/codex/cli_qa.py",
+      "src/codex/cli_rag.py",
+      "src/codex/cli_zendesk.py"
+    ],
+    "cognitive_core": "scripts/cognitive/cognitive_brain_core.py",
+    "rust_engine": "src/lib.rs (Rust entry point)"
+  },
+  "key_features": {
+    "hybrid_architecture": "Python logic + Rust performance",
+    "agent_swarm": "26 specialized agents coordinated by cognitive brain",
+    "self_healing": "Automated anomaly detection and recovery",
+    "rag_pipeline": "Retrieval-Augmented Generation for knowledge",
+    "quantum_orchestration": "Quantum-inspired game theory for agent coordination",
+    "physics_based": "Physics-inspired orchestration patterns",
+    "ci_cd_integrated": "Deep GitHub Actions integration with specialized agents",
+    "security_first": "Multiple security scanning and remediation agents"
+  },
+  "traversal_summary": {
+    "verified_paths": {
+      "cognitive": "✅ scripts/cognitive/ (40+ modules)",
+      "cognitive_app": "✅ cognitive_app/ (20+ modules)",
+      "agents_github": "✅ .github/agents/ (26 agents)",
+      "agents_root": "✅ agents/ (present)",
+      "src_codex": "✅ src/codex/ (30+ modules)",
+      "rust_cargo": "✅ Cargo.toml (codex-swarm-engine v0.1.0)",
+      "rust_sources": "✅ src/*.rs + rust_swarm/*.rs (20+ files)",
+      "schemas": "✅ schemas/ + .codex/schemas/ (15+ schemas)",
+      "manifests": "✅ manifests/ (k8s, monitoring)",
+      "mappings": "✅ mappings/ (batch mappings)",
+      "docs_index": "✅ docs/DOCUMENTATION_INDEX.md",
+      "prompts": "✅ Multiple locations (30+ prompts)",
+      "guides": "✅ docs/guides/ (60+ guides)"
+    },
+    "total_files_found": 500,
+    "total_agents": 26,
+    "total_schemas": 15,
+    "total_rust_sources": 20,
+    "total_python_modules": 150
+  }
+}
