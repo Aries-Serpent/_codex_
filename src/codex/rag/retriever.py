@@ -77,54 +77,34 @@ class Retriever:
     def _load_model(self):
         """Load embedding model for query encoding."""
         try:
+            import os
+
             from sentence_transformers import SentenceTransformer
+
+            import torch
 
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
-                # Import meta tensor detection and remediation helpers
-                from codex.rag.utils import check_for_meta_tensors, safe_model_load
+                # Force environment settings to prevent meta device initialization
+                os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+                os.environ["TRANSFORMERS_OFFLINE"] = "0"
 
-                # Step 1: Load model with NO device parameter to let library handle initialization
-                # This prevents SentenceTransformer from attempting device moves on meta tensors
+                # Initialize model with explicit CPU device from the start to prevent meta tensors
                 logger.debug(
-                    "Loading model without device parameter (safer for meta tensor handling)"
+                    "Initializing SentenceTransformer with device='cpu' to prevent meta tensors"
                 )
-                self.model = SentenceTransformer(
-                    self.model_name,
-                    cache_folder=self.cache_dir,
-                    # NO device parameter - let the model initialize on its default device first
-                )
-
-                # Step 2: Check if model contains meta tensors
-                if check_for_meta_tensors(self.model):
-                    logger.warning(
-                        f"Model {self.model_name} contains meta tensors after initialization. "
-                        "Applying safe_model_load remediation."
+                with torch.device("cpu"):
+                    self.model = SentenceTransformer(
+                        self.model_name,
+                        cache_folder=self.cache_dir,
+                        device="cpu",  # Explicit CPU device prevents meta tensor creation
                     )
-                    # Use safe_model_load to properly materialize meta tensors
-                    self.model = safe_model_load(self.model, device="cpu")
 
-                    # Verify meta tensors are gone
-                    if check_for_meta_tensors(self.model):
-                        error_msg = (
-                            f"Model {self.model_name} still contains meta tensors after remediation. "
-                            "This may cause inference errors. Check model source and PyTorch version."
-                        )
-                        logger.error(error_msg)
-                        raise RuntimeError(error_msg)
-                    else:
-                        logger.info(
-                            "Meta tensors successfully remediated - model ready for inference"
-                        )
-                else:
-                    # No meta tensors, safe to move to CPU if needed
-                    logger.debug("No meta tensors detected - applying standard device transfer")
-                    if hasattr(self.model, "to"):
-                        self.model = self.model.to("cpu")
-
-                # Step 3: Ensure model is in eval mode for inference
+                # Ensure model is in eval mode for inference
                 self.model.eval()
-                logger.info(f"Model {self.model_name} loaded successfully and ready for inference")
+                logger.info(
+                    f"Model {self.model_name} loaded successfully on CPU and ready for inference"
+                )
 
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")

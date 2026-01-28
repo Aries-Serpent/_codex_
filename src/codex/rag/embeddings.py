@@ -13,8 +13,6 @@ from typing import Any, Dict, List, Optional, Protocol
 
 import numpy as np
 
-from .utils import safe_model_load
-
 logger = logging.getLogger(__name__)
 
 
@@ -58,19 +56,32 @@ class LocalSentenceTransformerProvider:
     def _load_model(self):
         """Load the embedding model."""
         try:
+            import os
+
             from sentence_transformers import SentenceTransformer
 
+            import torch
+
             logger.info(f"Loading local embedding model: {self.model_name}")
-            # Load model without device parameter to avoid meta device issues (PyTorch 2.6+)
-            self.model = SentenceTransformer(
-                self.model_name,
-                cache_folder=self.cache_dir
+
+            # Force environment settings to prevent meta device initialization
+            os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+            os.environ["TRANSFORMERS_OFFLINE"] = "0"
+
+            # Initialize model with explicit CPU device from the start to prevent meta tensors
+            logger.debug(
+                "Initializing SentenceTransformer with device='cpu' to prevent meta tensors"
             )
-            # Apply safe model loading to handle device placement
-            self.model = safe_model_load(self.model, device="cpu")
+            with torch.device("cpu"):
+                self.model = SentenceTransformer(
+                    self.model_name,
+                    cache_folder=self.cache_dir,
+                    device="cpu",  # Explicit CPU device prevents meta tensor creation
+                )
+
             # Ensure model is in eval mode
             self.model.eval()
-            logger.info("Local embedding model loaded successfully")
+            logger.info("Local embedding model loaded successfully on CPU")
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "
@@ -158,9 +169,7 @@ class OpenAIEmbeddingProvider:
             self.client = OpenAI(api_key=api_key)
             logger.info(f"Initialized OpenAI client with model: {self.model_name}")
         except ImportError:
-            logger.error(
-                "openai package not installed. Install with: pip install openai"
-            )
+            logger.error("openai package not installed. Install with: pip install openai")
             raise
 
     def encode(self, texts: List[str], batch_size: int = 100, **kwargs) -> np.ndarray:
@@ -184,9 +193,7 @@ class OpenAIEmbeddingProvider:
             batch = texts[i : i + batch_size]
 
             try:
-                response = self.client.embeddings.create(
-                    model=self.model_name, input=batch
-                )
+                response = self.client.embeddings.create(model=self.model_name, input=batch)
 
                 batch_embeddings = [item.embedding for item in response.data]
                 embeddings.extend(batch_embeddings)
@@ -407,9 +414,7 @@ def create_embedding_provider(
         try:
             logger.info("Attempting sentence-transformers provider")
             model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
-            provider = LocalSentenceTransformerProvider(
-                model_name=model_name_st, **kwargs
-            )
+            provider = LocalSentenceTransformerProvider(model_name=model_name_st, **kwargs)
             logger.info("✓ Using sentence-transformers provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
@@ -420,6 +425,7 @@ def create_embedding_provider(
         # Priority 2: Try Ollama (good quality, local server)
         try:
             from .providers.ollama_provider import OllamaEmbeddingProvider
+
             logger.info("Attempting Ollama provider")
             model_name_ollama = model_name or "nomic-embed-text"
             provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)
@@ -437,6 +443,7 @@ def create_embedding_provider(
         if "model_path" in kwargs:
             try:
                 from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+
                 logger.info("Attempting llama.cpp provider")
                 provider = LlamaCppEmbeddingProvider(**kwargs)
                 logger.info("✓ Using llama.cpp provider")
@@ -449,6 +456,7 @@ def create_embedding_provider(
         # Priority 4: Try GPT4All (easy setup, good quality)
         try:
             from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+
             logger.info("Attempting GPT4All provider")
             model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
             provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)
@@ -472,17 +480,20 @@ def create_embedding_provider(
 
     elif provider_type == "ollama":
         from .providers.ollama_provider import OllamaEmbeddingProvider
+
         model_name = model_name or "nomic-embed-text"
         provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)
 
     elif provider_type == "llamacpp":
         from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+
         if "model_path" not in kwargs:
             raise ValueError("llama.cpp provider requires 'model_path' parameter")
         provider = LlamaCppEmbeddingProvider(**kwargs)
 
     elif provider_type == "gpt4all":
         from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+
         model_name = model_name or "nomic-embed-text-v1.5"
         provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)
 
@@ -516,7 +527,6 @@ def create_embedding_provider(
             f"Unknown provider type: {provider_type}. "
             f"Choose from: auto, local, ollama, llamacpp, gpt4all, tfidf, openai"
         )
-
 
     # Wrap with caching if requested
     if use_cache:
@@ -563,24 +573,20 @@ class TfidfEmbeddingProvider:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
         except ImportError:
-            logger.error(
-                "scikit-learn not installed. "
-                "Install with: pip install scikit-learn"
-            )
+            logger.error("scikit-learn not installed. " "Install with: pip install scikit-learn")
             raise
 
         self.max_features = max_features
         self.vectorizer = TfidfVectorizer(
             max_features=max_features,
-            stop_words='english',
+            stop_words="english",
             ngram_range=(1, 2),  # Unigrams and bigrams for better context
             min_df=1,  # Minimum document frequency
             max_df=0.95,  # Maximum document frequency (filter common words)
         )
         self.is_fitted = False
         logger.info(
-            f"Initialized TF-IDF provider (dimension={max_features}, "
-            f"offline-capable=True)"
+            f"Initialized TF-IDF provider (dimension={max_features}, " f"offline-capable=True)"
         )
 
     def encode(self, texts: List[str], **kwargs) -> np.ndarray:
@@ -618,10 +624,7 @@ class TfidfEmbeddingProvider:
         # Transform texts to embeddings
         try:
             embeddings = self.vectorizer.transform(texts).toarray()
-            logger.debug(
-                f"Encoded {len(texts)} texts to shape {embeddings.shape} "
-                f"(TF-IDF)"
-            )
+            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} " f"(TF-IDF)")
             return embeddings
         except Exception as e:
             logger.error(f"Error transforming texts with TF-IDF: {e}")

@@ -97,49 +97,26 @@ def embed_chunks(
     # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        # Import meta tensor detection helper
-        from codex.rag.utils import check_for_meta_tensors
+        import os
 
-        # Step 1: Load model with NO device parameter to let library handle initialization
-        # This prevents SentenceTransformer from attempting device moves on meta tensors
-        logger.debug("Loading model without device parameter (safer for meta tensor handling)")
-        model = SentenceTransformer(
-            model_name,
-            cache_folder=cache_dir,
-            # NO device parameter - let the model initialize on its default device first
-        )
+        import torch
 
-        # Step 2: Check if model contains meta tensors
-        if check_for_meta_tensors(model):
-            logger.warning(
-                f"Model {model_name} contains meta tensors after initialization. "
-                "Applying safe_model_load remediation."
+        # Force environment settings to prevent meta device initialization
+        os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+        os.environ["TRANSFORMERS_OFFLINE"] = "0"
+
+        # Initialize model with explicit CPU device from the start to prevent meta tensors
+        logger.debug("Initializing SentenceTransformer with device='cpu' to prevent meta tensors")
+        with torch.device("cpu"):
+            model = SentenceTransformer(
+                model_name,
+                cache_folder=cache_dir,
+                device="cpu",  # Explicit CPU device prevents meta tensor creation
             )
-            # Import safe model loader
-            from codex.rag.utils import safe_model_load
 
-            # Use safe_model_load to properly materialize meta tensors
-            model = safe_model_load(model, device="cpu")
-
-            # Verify meta tensors are gone
-            if check_for_meta_tensors(model):
-                error_msg = (
-                    f"Model {model_name} still contains meta tensors after remediation. "
-                    "This may cause inference errors. Check model source and PyTorch version."
-                )
-                logger.error(error_msg)
-                raise RuntimeError(error_msg)
-            else:
-                logger.info("Meta tensors successfully remediated - model ready for inference")
-        else:
-            # No meta tensors, safe to move to CPU if needed
-            logger.debug("No meta tensors detected - applying standard device transfer")
-            if hasattr(model, "to"):
-                model = model.to("cpu")
-
-        # Step 3: Ensure model is in eval mode for inference
+        # Ensure model is in eval mode for inference
         model.eval()
-        logger.info(f"Model {model_name} loaded successfully and ready for inference")
+        logger.info(f"Model {model_name} loaded successfully on CPU and ready for inference")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
