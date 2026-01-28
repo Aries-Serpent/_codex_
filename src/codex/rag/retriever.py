@@ -82,7 +82,7 @@ class Retriever:
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
                 # Import meta tensor detection and remediation helpers
-                from codex.rag.utils import _check_for_meta_tensors, safe_model_load
+                from codex.rag.utils import check_for_meta_tensors, safe_model_load
 
                 # Step 1: Load model with NO device parameter to let library handle initialization
                 # This prevents SentenceTransformer from attempting device moves on meta tensors
@@ -96,7 +96,7 @@ class Retriever:
                 )
 
                 # Step 2: Check if model contains meta tensors
-                if _check_for_meta_tensors(self.model):
+                if check_for_meta_tensors(self.model):
                     logger.warning(
                         f"Model {self.model_name} contains meta tensors after initialization. "
                         "Applying safe_model_load remediation."
@@ -105,7 +105,7 @@ class Retriever:
                     self.model = safe_model_load(self.model, device="cpu")
 
                     # Verify meta tensors are gone
-                    if _check_for_meta_tensors(self.model):
+                    if check_for_meta_tensors(self.model):
                         error_msg = (
                             f"Model {self.model_name} still contains meta tensors after remediation. "
                             "This may cause inference errors. Check model source and PyTorch version."
@@ -129,7 +129,6 @@ class Retriever:
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")
                 raise
-            logger.info("Query embedding model loaded successfully")
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "

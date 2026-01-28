@@ -98,7 +98,7 @@ def embed_chunks(
     logger.info(f"Loading embedding model: {model_name}")
     try:
         # Import meta tensor detection helper
-        from codex.rag.utils import _check_for_meta_tensors
+        from codex.rag.utils import check_for_meta_tensors
 
         # Step 1: Load model with NO device parameter to let library handle initialization
         # This prevents SentenceTransformer from attempting device moves on meta tensors
@@ -110,7 +110,7 @@ def embed_chunks(
         )
 
         # Step 2: Check if model contains meta tensors
-        if _check_for_meta_tensors(model):
+        if check_for_meta_tensors(model):
             logger.warning(
                 f"Model {model_name} contains meta tensors after initialization. "
                 "Applying safe_model_load remediation."
@@ -122,7 +122,7 @@ def embed_chunks(
             model = safe_model_load(model, device="cpu")
 
             # Verify meta tensors are gone
-            if _check_for_meta_tensors(model):
+            if check_for_meta_tensors(model):
                 error_msg = (
                     f"Model {model_name} still contains meta tensors after remediation. "
                     "This may cause inference errors. Check model source and PyTorch version."

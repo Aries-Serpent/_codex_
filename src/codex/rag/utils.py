@@ -43,34 +43,26 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
     try:
         import torch
 
-        # Detect if model has meta tensors by checking its modules/parameters
-        has_meta_tensors = False
+        # Use the public check_for_meta_tensors function to detect meta tensors
+        has_meta_tensors = check_for_meta_tensors(model)
+
+        # If meta tensors detected, collect details for diagnostic logging
         meta_tensor_details = []
-
-        # For SentenceTransformer and other models with named_modules
-        if hasattr(model, "named_modules"):
-            # Check all modules for meta device parameters
-            for name, module in model.named_modules():
-                # Check parameters (recurse=False to avoid duplicates)
-                for param_name, param in module.named_parameters(recurse=False):
-                    if hasattr(param, "device") and param.device.type == "meta":
-                        has_meta_tensors = True
-                        meta_tensor_details.append(f"{name}.{param_name}")
-                        logger.debug(
-                            f"Detected meta tensor in {name}.{param_name}, "
-                            f"device={param.device}, shape={param.shape}"
-                        )
+        if has_meta_tensors:
+            if hasattr(model, "named_modules"):
+                for name, module in model.named_modules():
+                    for param_name, param in module.named_parameters(recurse=False):
+                        if hasattr(param, "device") and param.device.type == "meta":
+                            meta_tensor_details.append(f"{name}.{param_name}")
+                            logger.debug(
+                                f"Detected meta tensor in {name}.{param_name}, "
+                                f"device={param.device}, shape={param.shape}"
+                            )
+                            break
+                    if meta_tensor_details:
                         break
-                if has_meta_tensors:
-                    break
-
-        # For simple PyTorch models with direct device attribute
-        elif hasattr(model, "device"):
-            device_type = getattr(model.device, "type", None)
-            if device_type == "meta":
-                has_meta_tensors = True
+            elif hasattr(model, "device"):
                 meta_tensor_details.append("model.device")
-                logger.debug("Detected model on meta device")
 
         # If meta tensors detected, handle them appropriately
         if has_meta_tensors:
@@ -209,7 +201,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
         return model
 
 
-def _check_for_meta_tensors(model: Any) -> bool:
+def check_for_meta_tensors(model: Any) -> bool:
     """
     Check if a model contains any meta device tensors.
 
