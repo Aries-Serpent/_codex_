@@ -107,10 +107,10 @@ def embed_chunks(
         # then use safe_model_load to handle device placement properly
         model = SentenceTransformer(model_name, cache_folder=cache_dir)
         model = safe_model_load(model, device="cpu")
-        
+
         # Ensure model is in eval mode
         model.eval()
-        
+
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
         raise

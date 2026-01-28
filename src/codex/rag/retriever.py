@@ -93,10 +93,10 @@ class Retriever:
                     cache_folder=self.cache_dir
                 )
                 self.model = safe_model_load(self.model, device="cpu")
-                
+
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-                
+
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")
                 raise

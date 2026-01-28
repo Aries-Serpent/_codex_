@@ -40,7 +40,7 @@ def windows_safe_timestamp(fmt: str = 'iso') -> str:
         Formatted timestamp string safe for Windows filenames
     """
     now = datetime.now(timezone.utc)
-    
+
     if fmt == 'compact':
         # Compact numeric: 20260121_143045
         return now.strftime('%Y%m%d_%H%M%S')
@@ -65,20 +65,20 @@ def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
     if path.exists():
         print(f"✓ Coverage XML exists: {path}")
         return True
-    
+
     print(f"⚠️  Coverage XML missing, creating placeholder: {path}")
-    
+
     # Create minimal valid coverage XML
     placeholder_xml = """<?xml version="1.0" ?>
 <coverage version="7.0" timestamp="{timestamp}" lines-valid="0" lines-covered="0" line-rate="0" branches-covered="0" branches-valid="0" branch-rate="0" complexity="0">
     <packages/>
 </coverage>
 """.format(timestamp=windows_safe_timestamp(fmt='compact'))
-    
+
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(placeholder_xml)
-        print(f"✓ Created placeholder coverage.xml")
+        print("✓ Created placeholder coverage.xml")
         return True
     except Exception as e:
         print(f"✗ Failed to create coverage.xml: {e}")
@@ -98,9 +98,9 @@ def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
     if path.exists() and (path / "index.html").exists():
         print(f"✓ HTML coverage exists: {path}")
         return True
-    
+
     print(f"⚠️  HTML coverage missing, creating placeholder: {path}")
-    
+
     # Create minimal HTML coverage report
     placeholder_html = """<!DOCTYPE html>
 <html>
@@ -129,11 +129,11 @@ def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
 </body>
 </html>
 """.format(timestamp=windows_safe_timestamp(fmt='iso'))
-    
+
     try:
         path.mkdir(parents=True, exist_ok=True)
         (path / "index.html").write_text(placeholder_html)
-        print(f"✓ Created placeholder htmlcov/index.html")
+        print("✓ Created placeholder htmlcov/index.html")
         return True
     except Exception as e:
         print(f"✗ Failed to create htmlcov/: {e}")
@@ -153,9 +153,9 @@ def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
     if path.exists():
         print(f"✓ JUnit XML exists: {path}")
         return True
-    
+
     print(f"⚠️  JUnit XML missing, creating placeholder: {path}")
-    
+
     # Create minimal valid JUnit XML
     placeholder_xml = """<?xml version="1.0" encoding="utf-8"?>
 <testsuites>
@@ -164,11 +164,11 @@ def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
     </testsuite>
 </testsuites>
 """.format(timestamp=windows_safe_timestamp(fmt='iso'))
-    
+
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(placeholder_xml)
-        print(f"✓ Created placeholder junit.xml")
+        print("✓ Created placeholder junit.xml")
         return True
     except Exception as e:
         print(f"✗ Failed to create junit.xml: {e}")
@@ -188,9 +188,9 @@ def ensure_test_pattern_report(path: Path = Path("test_pattern_report.txt")) -> 
     if path.exists():
         print(f"✓ Test pattern report exists: {path}")
         return True
-    
+
     print(f"⚠️  Test pattern report missing, creating placeholder: {path}")
-    
+
     placeholder_report = """Test Pattern Analysis Report
 Generated: {timestamp}
 Status: No analysis performed (placeholder report)
@@ -209,11 +209,11 @@ If you see this report, verify:
 2. Test directory structure is correct (tests/ directory)
 3. Test files follow naming convention (test_*.py)
 """.format(timestamp=windows_safe_timestamp(fmt='iso'))
-    
+
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(placeholder_report)
-        print(f"✓ Created placeholder test_pattern_report.txt")
+        print("✓ Created placeholder test_pattern_report.txt")
         return True
     except Exception as e:
         print(f"✗ Failed to create test_pattern_report.txt: {e}")
@@ -235,7 +235,7 @@ def ensure_bandit_reports(
         True if files exist or were created, False on error
     """
     all_ok = True
-    
+
     # Check JSON report
     if json_path.exists():
         print(f"✓ Bandit JSON report exists: {json_path}")
@@ -264,11 +264,11 @@ def ensure_bandit_reports(
         try:
             json_path.parent.mkdir(parents=True, exist_ok=True)
             json_path.write_text(json.dumps(placeholder_json, indent=2))
-            print(f"✓ Created placeholder bandit-report.json")
+            print("✓ Created placeholder bandit-report.json")
         except Exception as e:
             print(f"✗ Failed to create bandit-report.json: {e}")
             all_ok = False
-    
+
     # Check text report
     if txt_path.exists():
         print(f"✓ Bandit text report exists: {txt_path}")
@@ -297,15 +297,15 @@ Run metrics:
 
 This is a placeholder report - no actual security scan was performed.
 """.format(timestamp=windows_safe_timestamp(fmt='iso'))
-        
+
         try:
             txt_path.parent.mkdir(parents=True, exist_ok=True)
             txt_path.write_text(placeholder_txt)
-            print(f"✓ Created placeholder bandit-report.txt")
+            print("✓ Created placeholder bandit-report.txt")
         except Exception as e:
             print(f"✗ Failed to create bandit-report.txt: {e}")
             all_ok = False
-    
+
     return all_ok
 
 
@@ -339,42 +339,42 @@ def main() -> int:
         "--all", action="store_true",
         help="Ensure all artifact types (default if no options specified)"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Default to --all if no specific options provided
     if not any([args.coverage, args.junit, args.patterns, args.bandit, args.all]):
         args.all = True
-    
+
     print("=" * 70)
     print("Ensuring Test Artifacts Exist")
     print("=" * 70)
     print()
-    
+
     results: List[bool] = []
-    
+
     # Process each artifact type
     if args.all or args.coverage:
         print("Checking coverage artifacts:")
         results.append(ensure_coverage_xml())
         results.append(ensure_htmlcov_dir())
         print()
-    
+
     if args.all or args.junit:
         print("Checking JUnit report:")
         results.append(ensure_junit_xml())
         print()
-    
+
     if args.all or args.patterns:
         print("Checking test pattern report:")
         results.append(ensure_test_pattern_report())
         print()
-    
+
     if args.all or args.bandit:
         print("Checking security reports:")
         results.append(ensure_bandit_reports())
         print()
-    
+
     # Summary
     print("=" * 70)
     if all(results):
