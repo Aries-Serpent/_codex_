@@ -3,7 +3,7 @@
 **Date:** 2026-01-28  
 **Audit Status:** ✅ COMPLETE  
 **Repository Health Score:** 78/100 🟡 Fair  
-**Full Report:** [.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md](./.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md)
+**Full Report:** [.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md](.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md)
 
 ---
 
