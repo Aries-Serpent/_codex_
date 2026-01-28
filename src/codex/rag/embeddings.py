@@ -57,31 +57,55 @@ class LocalSentenceTransformerProvider:
         """Load the embedding model."""
         try:
             import os
-
+            
+            import torch
             from sentence_transformers import SentenceTransformer
 
-            import torch
-
             logger.info(f"Loading local embedding model: {self.model_name}")
-
-            # Force environment settings to prevent meta device initialization
+            
+            # Force environment settings
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             os.environ["TRANSFORMERS_OFFLINE"] = "0"
-
-            # Initialize model with explicit CPU device from the start to prevent meta tensors
-            logger.debug(
-                "Initializing SentenceTransformer with device='cpu' to prevent meta tensors"
-            )
-            with torch.device("cpu"):
+            
+            # Initialize with explicit device
+            logger.debug("Initializing SentenceTransformer with device='cpu'")
+            with torch.device('cpu'):
                 self.model = SentenceTransformer(
                     self.model_name,
                     cache_folder=self.cache_dir,
-                    device="cpu",  # Explicit CPU device prevents meta tensor creation
+                    device="cpu",
+                    trust_remote_code=False
                 )
-
-            # Ensure model is in eval mode
+            
+            self.model = self.model.to('cpu')
+            
+            # Verify no meta tensors in parameters
+            meta_tensors = []
+            for name, param in self.model.named_parameters():
+                if param.device.type == "meta":
+                    meta_tensors.append(name)
+            
+            # Also check buffers
+            for name, buf in self.model.named_buffers():
+                if buf.device.type == "meta":
+                    meta_tensors.append(name)
+            
+            if meta_tensors:
+                raise RuntimeError(
+                    f"Model has {len(meta_tensors)} meta tensor(s). "
+                    f"Examples: {', '.join(meta_tensors[:3])}. "
+                    f"Check pyproject.toml [rag] dependencies for correct versions."
+                )
+            
             self.model.eval()
-            logger.info("Local embedding model loaded successfully on CPU")
+            
+            # Log device type safely
+            try:
+                device_type = next(self.model.parameters()).device.type
+            except StopIteration:
+                device_type = "unknown"
+            logger.info(f"Local embedding model loaded on {device_type}")
+            
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "

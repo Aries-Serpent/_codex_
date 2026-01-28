@@ -94,29 +94,56 @@ def embed_chunks(
     model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
-    # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
         import os
-
+        
         import torch
-
-        # Force environment settings to prevent meta device initialization
+        
+        # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
-
-        # Initialize model with explicit CPU device from the start to prevent meta tensors
-        logger.debug("Initializing SentenceTransformer with device='cpu' to prevent meta tensors")
-        with torch.device("cpu"):
+        
+        # Initialize with explicit CPU device from the start
+        logger.debug("Initializing SentenceTransformer with device='cpu'")
+        with torch.device('cpu'):
             model = SentenceTransformer(
                 model_name,
                 cache_folder=cache_dir,
-                device="cpu",  # Explicit CPU device prevents meta tensor creation
+                device="cpu",  # Explicit device prevents meta tensor creation
+                trust_remote_code=False
             )
-
-        # Ensure model is in eval mode for inference
+        
+        # Defensive: Force CPU again
+        model = model.to('cpu')
+        
+        # Verify no meta tensors in parameters
+        meta_tensors = []
+        for name, param in model.named_parameters():
+            if param.device.type == "meta":
+                meta_tensors.append(name)
+        
+        # Also check buffers
+        for name, buf in model.named_buffers():
+            if buf.device.type == "meta":
+                meta_tensors.append(name)
+        
+        if meta_tensors:
+            raise RuntimeError(
+                f"Model has {len(meta_tensors)} meta tensor(s). "
+                f"Examples: {', '.join(meta_tensors[:3])}. "
+                f"This indicates incompatible library versions. "
+                f"Check pyproject.toml [rag] dependencies for correct versions."
+            )
+        
         model.eval()
-        logger.info(f"Model {model_name} loaded successfully on CPU and ready for inference")
+        
+        # Log device type safely
+        try:
+            device_type = next(model.parameters()).device.type
+        except StopIteration:
+            device_type = "unknown"
+        logger.info(f"Model loaded on {device_type}")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")

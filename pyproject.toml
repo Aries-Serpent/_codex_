@@ -145,7 +145,9 @@ perf = ["numpy>=1.24; python_version<'3.13'", "mlflow>=2.22.4,<4"]  # Security: 
 sharding = ["xxhash>=3.0.0"]  # Optional: 10-100x faster hashing for index sharding (PS-06)
 plugins = ["importlib-metadata; python_version < '3.10'"]
 rag = [
-  "sentence-transformers>=2.3.0,<4.0.0",
+  "sentence-transformers>=2.2.0,<2.8.0",  # Pin to working versions
+  "torch>=2.0.0,<2.2.0",  # Avoid 2.2+ meta device changes
+  "transformers>=4.30.0,<4.37.0",  # Stable compatibility
   "chromadb>=0.4.22,<1.0.0",
   "faiss-cpu>=1.7.4,<2.0.0",
   "openai>=1.0; python_version >= '3.8'",  # Optional for OpenAI embeddings

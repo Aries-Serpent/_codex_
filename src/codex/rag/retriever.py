@@ -78,37 +78,58 @@ class Retriever:
         """Load embedding model for query encoding."""
         try:
             import os
-
-            from sentence_transformers import SentenceTransformer
-
+            
             import torch
+            from sentence_transformers import SentenceTransformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
-                # Force environment settings to prevent meta device initialization
+                # Force environment settings
                 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
                 os.environ["TRANSFORMERS_OFFLINE"] = "0"
-
-                # Initialize model with explicit CPU device from the start to prevent meta tensors
-                logger.debug(
-                    "Initializing SentenceTransformer with device='cpu' to prevent meta tensors"
-                )
-                with torch.device("cpu"):
+                
+                # Initialize with explicit device
+                with torch.device('cpu'):
                     self.model = SentenceTransformer(
                         self.model_name,
                         cache_folder=self.cache_dir,
-                        device="cpu",  # Explicit CPU device prevents meta tensor creation
+                        device="cpu",
+                        trust_remote_code=False
                     )
-
-                # Ensure model is in eval mode for inference
+                
+                self.model = self.model.to('cpu')
+                
+                # Verify no meta tensors in parameters
+                meta_tensors = []
+                for name, param in self.model.named_parameters():
+                    if param.device.type == "meta":
+                        meta_tensors.append(name)
+                
+                # Also check buffers
+                for name, buf in self.model.named_buffers():
+                    if buf.device.type == "meta":
+                        meta_tensors.append(name)
+                
+                if meta_tensors:
+                    raise RuntimeError(
+                        f"Model has {len(meta_tensors)} meta tensor(s). "
+                        f"Examples: {', '.join(meta_tensors[:3])}. "
+                        f"Check pyproject.toml [rag] dependencies for correct versions."
+                    )
+                
                 self.model.eval()
-                logger.info(
-                    f"Model {self.model_name} loaded successfully on CPU and ready for inference"
-                )
+                
+                # Log device type safely
+                try:
+                    device_type = next(self.model.parameters()).device.type
+                except StopIteration:
+                    device_type = "unknown"
+                logger.info(f"Model loaded on {device_type}")
 
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")
                 raise
+            
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "
