@@ -52,7 +52,7 @@ The cognitive brain enables:
 
 ## 🧭 Orientation Pillars
 
-- **Reasoning roadmap** — Track milestone health and forward-looking bets in `README_ROOT.md`.
+- **Reasoning roadmap** — Track milestone health and forward-looking bets in [README_ROOT.md](https://github.com/Aries-Serpent/_codex_/blob/main/README_ROOT.md).
 - **Architecture** — Pair [`diagrams/architecture.svg`](./diagrams/architecture.svg) with the systems notes in [`guides/reasoning_overview.md`](./guides/reasoning_overview.md).
 - **Curriculum design** — Apply the phased training playbooks from [`guides/first_principles_curricula.md`](./guides/first_principles_curricula.md).
 - **Bespoke hosting expectations** — Align ops and status updates with [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the rollout checklists under [`templates/`](./templates/README.md).
