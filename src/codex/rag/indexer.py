@@ -11,8 +11,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .utils import safe_model_load
-
 logger = logging.getLogger(__name__)
 
 
