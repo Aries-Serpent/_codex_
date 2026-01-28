@@ -94,29 +94,44 @@ def embed_chunks(
     model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
-    # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        import os
-
         import torch
-
-        # Force environment settings to prevent meta device initialization
+        import os
+        
+        # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
-
-        # Initialize model with explicit CPU device from the start to prevent meta tensors
-        logger.debug("Initializing SentenceTransformer with device='cpu' to prevent meta tensors")
-        with torch.device("cpu"):
+        
+        # Initialize with explicit CPU device from the start
+        logger.debug("Initializing SentenceTransformer with device='cpu'")
+        with torch.device('cpu'):
             model = SentenceTransformer(
                 model_name,
                 cache_folder=cache_dir,
-                device="cpu",  # Explicit CPU device prevents meta tensor creation
+                device="cpu",  # ✅ Explicit device
+                trust_remote_code=False
             )
-
-        # Ensure model is in eval mode for inference
+        
+        # Defensive: Force CPU again
+        model = model.to('cpu')
+        
+        # Verify no meta tensors
+        meta_params = []
+        for name, param in model.named_parameters():
+            if param.device.type == "meta":
+                meta_params.append(name)
+        
+        if meta_params:
+            raise RuntimeError(
+                f"Model has {len(meta_params)} meta tensor(s). "
+                f"Examples: {', '.join(meta_params[:3])}. "
+                f"Upgrade libraries: pip install --upgrade "
+                f"'sentence-transformers>=2.2.0,<2.8.0' 'torch>=2.0.0,<2.2.0'"
+            )
+        
         model.eval()
-        logger.info(f"Model {model_name} loaded successfully on CPU and ready for inference")
+        logger.info(f"Model loaded on {next(model.parameters()).device.type}")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
