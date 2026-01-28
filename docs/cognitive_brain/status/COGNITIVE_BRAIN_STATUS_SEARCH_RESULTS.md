@@ -24,7 +24,7 @@ This document provides a comprehensive search and analysis of the cognitive brai
 
 ### Primary Documentation Files
 
-#### 1.1 **Cognitive Map** (`docs/DOCUMENTATION_INDEX.md`)
+#### 1.1 **Cognitive Map** (`docs/system/CODEBASE_COGNITIVE_MAP.md`)
 - **Version**: 1.0.0 (2025-12-30)
 - **Size**: 8.5 KB
 - **Status**: ✅ Production Ready
