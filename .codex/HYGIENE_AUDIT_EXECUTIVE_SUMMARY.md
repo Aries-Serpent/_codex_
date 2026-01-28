@@ -229,7 +229,7 @@
 ### Reports
 - **Full Report:** `.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md` (39 KB, comprehensive)
 - **Tracking:** `.codex/HYGIENE_AUDIT_TRACKING.json` (machine-readable)
-- **PR #3020 Summary:** `SESSION_SUMMARY_PR_3020_COMPLETE.md`
+- **PR #3020 Summary:** `.codex/SESSION_SUMMARY_PR_3020_COMPLETE.md`
 - **Previous Health Check:** `COMPREHENSIVE_HEALTH_CHECK.md`
 
 ### Audit Data
