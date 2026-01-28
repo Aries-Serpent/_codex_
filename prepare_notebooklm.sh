@@ -7,7 +7,8 @@
 set -euo pipefail
 
 OUTPUT_FILE="full_context.txt"
-REPO_ROOT="/home/runner/work/_codex_/_codex_"
+# Detect repository root dynamically, fallback to GitHub Actions path
+REPO_ROOT="${1:-$(git rev-parse --show-toplevel 2>/dev/null || echo "/home/runner/work/_codex_/_codex_")}"
 
 echo "🚀 Preparing NotebookLM Context for Aries-Serpent/_codex_"
 echo "=================================================="
@@ -56,25 +57,22 @@ echo "🐍 Collecting Python Source Files..."
 # Find all Python files, excluding tests, node_modules, target, .git
 PY_COUNT=0
 while IFS= read -r file; do
-    # Skip if in excluded directories
-    if [[ "$file" == *"/tests/"* ]] || \
-       [[ "$file" == *"/node_modules/"* ]] || \
-       [[ "$file" == *"/target/"* ]] || \
-       [[ "$file" == *"/.git/"* ]] || \
-       [[ "$file" == *"/__pycache__/"* ]] || \
-       [[ "$file" == *"/.pytest_cache/"* ]] || \
-       [[ "$file" == *"/venv/"* ]] || \
-       [[ "$file" == *"/.venv/"* ]]; then
-        continue
-    fi
-    
     echo "================================================" >> "$OUTPUT_FILE"
     echo "FILE: $file" >> "$OUTPUT_FILE"
     echo "================================================" >> "$OUTPUT_FILE"
     cat "$file" >> "$OUTPUT_FILE"
     echo -e "\n\n" >> "$OUTPUT_FILE"
     ((PY_COUNT++))
-done < <(find "$REPO_ROOT" -type f -name "*.py" 2>/dev/null)
+done < <(find "$REPO_ROOT" -type f -name "*.py" \
+    -not -path "*/tests/*" \
+    -not -path "*/node_modules/*" \
+    -not -path "*/target/*" \
+    -not -path "*/.git/*" \
+    -not -path "*/__pycache__/*" \
+    -not -path "*/.pytest_cache/*" \
+    -not -path "*/venv/*" \
+    -not -path "*/.venv/*" \
+    2>/dev/null)
 
 echo "  ✅ Collected $PY_COUNT Python files"
 
@@ -83,20 +81,17 @@ echo "🦀 Collecting Rust Source Files..."
 # Find all Rust files, excluding tests, target, .git
 RS_COUNT=0
 while IFS= read -r file; do
-    # Skip if in excluded directories
-    if [[ "$file" == *"/tests/"* ]] || \
-       [[ "$file" == *"/target/"* ]] || \
-       [[ "$file" == *"/.git/"* ]]; then
-        continue
-    fi
-    
     echo "================================================" >> "$OUTPUT_FILE"
     echo "FILE: $file" >> "$OUTPUT_FILE"
     echo "================================================" >> "$OUTPUT_FILE"
     cat "$file" >> "$OUTPUT_FILE"
     echo -e "\n\n" >> "$OUTPUT_FILE"
     ((RS_COUNT++))
-done < <(find "$REPO_ROOT" -type f -name "*.rs" 2>/dev/null)
+done < <(find "$REPO_ROOT" -type f -name "*.rs" \
+    -not -path "*/tests/*" \
+    -not -path "*/target/*" \
+    -not -path "*/.git/*" \
+    2>/dev/null)
 
 echo "  ✅ Collected $RS_COUNT Rust files"
 
@@ -109,10 +104,7 @@ for file in \
     "$REPO_ROOT/pyproject.toml" \
     "$REPO_ROOT/setup.cfg" \
     "$REPO_ROOT/pytest.ini" \
-    "$REPO_ROOT/.github/agents/AGENT_REGISTRY.yaml" \
-    "$REPO_ROOT/schemas"/*.json \
-    "$REPO_ROOT/schemas"/*.yaml \
-    "$REPO_ROOT/.codex/schemas"/*.json; do
+    "$REPO_ROOT/.github/agents/AGENT_REGISTRY.yaml"; do
     
     if [[ -f "$file" ]]; then
         echo "================================================" >> "$OUTPUT_FILE"
@@ -123,6 +115,16 @@ for file in \
         ((CONFIG_COUNT++))
     fi
 done
+
+# Collect schema files using find to avoid shell glob expansion issues
+while IFS= read -r file; do
+    echo "================================================" >> "$OUTPUT_FILE"
+    echo "FILE: $file" >> "$OUTPUT_FILE"
+    echo "================================================" >> "$OUTPUT_FILE"
+    cat "$file" >> "$OUTPUT_FILE"
+    echo -e "\n\n" >> "$OUTPUT_FILE"
+    ((CONFIG_COUNT++))
+done < <(find "$REPO_ROOT/schemas" "$REPO_ROOT/.codex/schemas" -maxdepth 1 -type f \( -name "*.json" -o -name "*.yaml" \) 2>/dev/null || true)
 
 echo "  ✅ Collected $CONFIG_COUNT configuration/schema files"
 
