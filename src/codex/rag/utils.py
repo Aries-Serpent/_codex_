@@ -43,34 +43,26 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
     try:
         import torch
 
-        # Detect if model has meta tensors by checking its modules/parameters
-        has_meta_tensors = False
+        # Use the public check_for_meta_tensors function to detect meta tensors
+        has_meta_tensors = check_for_meta_tensors(model)
+
+        # If meta tensors detected, collect details for diagnostic logging
         meta_tensor_details = []
-
-        # For SentenceTransformer and other models with named_modules
-        if hasattr(model, "named_modules"):
-            # Check all modules for meta device parameters
-            for name, module in model.named_modules():
-                # Check parameters (recurse=False to avoid duplicates)
-                for param_name, param in module.named_parameters(recurse=False):
-                    if hasattr(param, "device") and param.device.type == "meta":
-                        has_meta_tensors = True
-                        meta_tensor_details.append(f"{name}.{param_name}")
-                        logger.debug(
-                            f"Detected meta tensor in {name}.{param_name}, "
-                            f"device={param.device}, shape={param.shape}"
-                        )
+        if has_meta_tensors:
+            if hasattr(model, "named_modules"):
+                for name, module in model.named_modules():
+                    for param_name, param in module.named_parameters(recurse=False):
+                        if hasattr(param, "device") and param.device.type == "meta":
+                            meta_tensor_details.append(f"{name}.{param_name}")
+                            logger.debug(
+                                f"Detected meta tensor in {name}.{param_name}, "
+                                f"device={param.device}, shape={param.shape}"
+                            )
+                            break
+                    if meta_tensor_details:
                         break
-                if has_meta_tensors:
-                    break
-
-        # For simple PyTorch models with direct device attribute
-        elif hasattr(model, "device"):
-            device_type = getattr(model.device, "type", None)
-            if device_type == "meta":
-                has_meta_tensors = True
+            elif hasattr(model, "device"):
                 meta_tensor_details.append("model.device")
-                logger.debug("Detected model on meta device")
 
         # If meta tensors detected, handle them appropriately
         if has_meta_tensors:
@@ -109,9 +101,9 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                 break
                         if module_has_meta:
                             modules_with_meta.append((name, module))
-                    
+
                     logger.info(f"Found {len(modules_with_meta)} modules with meta tensors")
-                    
+
                     # Move each module with meta tensors to target device using to_empty()
                     for name, module in modules_with_meta:
                         if hasattr(module, "to_empty"):
@@ -127,7 +119,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                     module.to(device)
                                 except Exception:
                                     pass  # Continue with other modules
-                    
+
                     # Verify all meta tensors are gone
                     remaining_meta = False
                     for name, module in model.named_modules():
@@ -138,13 +130,15 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                 break
                         if remaining_meta:
                             break
-                    
+
                     if not remaining_meta:
                         logger.info(f"Successfully materialized all modules to {device}")
                         return model
                     else:
-                        logger.warning("Some meta tensors could not be materialized, trying next strategy")
-                        
+                        logger.warning(
+                            "Some meta tensors could not be materialized, trying next strategy"
+                        )
+
                 except Exception as e:
                     logger.error(f"Failed to materialize modules: {e}")
 
@@ -163,7 +157,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                                     param,
                                     device=device,
                                     dtype=param.dtype,
-                                    requires_grad=param.requires_grad
+                                    requires_grad=param.requires_grad,
                                 )
                                 # Replace the parameter
                                 setattr(module, param_name, torch.nn.Parameter(new_param))
@@ -207,6 +201,50 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
         return model
 
 
+def check_for_meta_tensors(model: Any) -> bool:
+    """
+    Check if a model contains any meta device tensors.
+
+    Meta tensors are placeholder tensors on the 'meta' device that don't
+    contain actual data. They're used for lazy loading but can cause
+    NotImplementedError when trying to move to CPU/GPU.
+
+    Args:
+        model: The model to check (PyTorch model or SentenceTransformer)
+
+    Returns:
+        True if model contains meta tensors, False otherwise
+
+    Example:
+        >>> from sentence_transformers import SentenceTransformer
+        >>> model = SentenceTransformer('all-MiniLM-L6-v2')
+        >>> has_meta = _check_for_meta_tensors(model)
+        >>> print(f"Model has meta tensors: {has_meta}")
+    """
+    try:
+        # Check if model has modules/parameters to iterate
+        if hasattr(model, "named_modules"):
+            for name, module in model.named_modules():
+                # Check parameters in this module (recurse=False to avoid duplicates)
+                for param_name, param in module.named_parameters(recurse=False):
+                    if hasattr(param, "device") and param.device.type == "meta":
+                        logger.debug(f"Found meta tensor in {name}.{param_name}")
+                        return True
+
+        # Check if model itself is on meta device
+        elif hasattr(model, "device"):
+            device_type = getattr(model.device, "type", None)
+            if device_type == "meta":
+                logger.debug("Model is on meta device")
+                return True
+
+        return False
+
+    except Exception as e:
+        logger.debug(f"Error checking for meta tensors: {e}")
+        return False
+
+
 @dataclass
 class ProvenanceMetadata:
     """
@@ -236,6 +274,7 @@ class ProvenanceMetadata:
         ...     retrieval_score=0.85
         ... )
     """
+
     source_file: Path
     line_range: Tuple[int, int]
     chunk_id: str

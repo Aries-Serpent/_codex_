@@ -14,9 +14,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def chunk_text(
-    text: str, chunk_size: int = 1000, overlap: int = 128
-) -> List[Tuple[int, int, str]]:
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tuple[int, int, str]]:
     """
     Split text into overlapping chunks for embedding.
 
@@ -93,36 +91,66 @@ def embed_chunks(
 
     # Extract model configuration
     model_profile = model_profile or {}
-    model_name = model_profile.get(
-        "model_name", "sentence-transformers/all-MiniLM-L6-v2"
-    )
+    model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
     # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        # Load model directly to CPU device to avoid meta tensor issues
+        # Import meta tensor detection helper
+        from codex.rag.utils import check_for_meta_tensors
+
+        # Step 1: Load model with NO device parameter to let library handle initialization
+        # This prevents SentenceTransformer from attempting device moves on meta tensors
+        logger.debug("Loading model without device parameter (safer for meta tensor handling)")
         model = SentenceTransformer(
-            model_name, 
+            model_name,
             cache_folder=cache_dir,
-            device="cpu"  # Explicitly specify CPU device during initialization
+            # NO device parameter - let the model initialize on its default device first
         )
-        
-        # Ensure model is in eval mode
+
+        # Step 2: Check if model contains meta tensors
+        if check_for_meta_tensors(model):
+            logger.warning(
+                f"Model {model_name} contains meta tensors after initialization. "
+                "Applying safe_model_load remediation."
+            )
+            # Import safe model loader
+            from codex.rag.utils import safe_model_load
+
+            # Use safe_model_load to properly materialize meta tensors
+            model = safe_model_load(model, device="cpu")
+
+            # Verify meta tensors are gone
+            if check_for_meta_tensors(model):
+                error_msg = (
+                    f"Model {model_name} still contains meta tensors after remediation. "
+                    "This may cause inference errors. Check model source and PyTorch version."
+                )
+                logger.error(error_msg)
+                raise RuntimeError(error_msg)
+            else:
+                logger.info("Meta tensors successfully remediated - model ready for inference")
+        else:
+            # No meta tensors, safe to move to CPU if needed
+            logger.debug("No meta tensors detected - applying standard device transfer")
+            if hasattr(model, "to"):
+                model = model.to("cpu")
+
+        # Step 3: Ensure model is in eval mode for inference
         model.eval()
-    
+        logger.info(f"Model {model_name} loaded successfully and ready for inference")
+
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
         raise
-    
+
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
 
     # Generate embeddings
     logger.info(f"Generating embeddings for {len(texts)} chunks")
-    embeddings = model.encode(
-        texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True
-    )
+    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
 
     logger.info(f"Generated embeddings with shape: {embeddings.shape}")
     return embeddings
@@ -154,17 +182,13 @@ def persist_index(
         raise ValueError("Cannot persist empty embeddings")
 
     if len(embeddings) != len(chunks):
-        raise ValueError(
-            f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks"
-        )
+        raise ValueError(f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks")
 
     # Import FAISS
     try:
         import faiss
     except ImportError:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
         raise
 
     # Create tenant directory
@@ -244,9 +268,7 @@ def load_index(
     try:
         import faiss
     except ImportError:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
         raise
 
     index_path = Path(index_dir) / tenant_id / index_name
@@ -388,6 +410,7 @@ from typing import Optional
 
 class IndexOperation(Enum):
     """Operations supported by multi-tenant index manager."""
+
     CREATE = "create"
     UPDATE = "update"
     DELETE = "delete"
@@ -408,6 +431,7 @@ class TenantOperationResult:
         message: Human-readable result message
         details: Additional operation details
     """
+
     success: bool
     operation: IndexOperation
     tenant_id: str
@@ -722,19 +746,23 @@ def manage_tenant_indices(
                     if metadata_file.exists():
                         with open(metadata_file, "r") as f:
                             metadata = json.load(f)
-                        indices.append({
-                            "name": item.name,
-                            "vectors": metadata.get("num_vectors", 0),
-                            "dimension": metadata.get("dimension", 0),
-                            "created_at": metadata.get("created_at", "unknown"),
-                        })
+                        indices.append(
+                            {
+                                "name": item.name,
+                                "vectors": metadata.get("num_vectors", 0),
+                                "dimension": metadata.get("dimension", 0),
+                                "created_at": metadata.get("created_at", "unknown"),
+                            }
+                        )
                     else:
-                        indices.append({
-                            "name": item.name,
-                            "vectors": "unknown",
-                            "dimension": "unknown",
-                            "created_at": "unknown",
-                        })
+                        indices.append(
+                            {
+                                "name": item.name,
+                                "vectors": "unknown",
+                                "dimension": "unknown",
+                                "created_at": "unknown",
+                            }
+                        )
 
             return TenantOperationResult(
                 success=True,

@@ -55,7 +55,8 @@ permissions:
 
 env:
   PYTHON_VERSION: '3.12'
-  # PYTEST_ADDOPTS removed - options passed directly to pytest command to avoid xdist worker crashes
+  # PYTEST_ADDOPTS removed - environment variable causes pytest-xdist workers to crash during plugin initialization;
+  # pytest options are passed directly on the command line instead to avoid these worker crashes.
 
 jobs:
   # Job 1: Core Tests - Main test suite

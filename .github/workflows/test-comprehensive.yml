@@ -87,9 +87,9 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           # Install pytest plugins FIRST with pinned versions
           # This ensures xdist workers have correct versions at consistent paths
-          # NOTE: Versions pinned to match pyproject.toml constraints:
-          #   - pytest<9.0.0 (see [project.optional-dependencies.test])
-          #   - pytest-cov<6.0.0 (see [project.optional-dependencies.test])
+          # NOTE: Pinned versions chosen to satisfy pyproject.toml constraints:
+          #   - pytest==8.3.4  (constrained by pytest<9.0.0 in [project.optional-dependencies.test])
+          #   - pytest-cov==5.0.0  (constrained by pytest-cov<6.0.0 in [project.optional-dependencies.test])
           pip install \
             pytest==8.3.4 \
             pytest-cov==5.0.0 \
