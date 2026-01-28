@@ -178,6 +178,13 @@ manifests/k8s/*/secret.yaml
 !.codex/action_log.ndjson
 !.codex/change_log.md
 !.codex/results.md
+!.codex/PR_*.md
+!.codex/SPRINT_*.md
+!.codex/HYGIENE_*.md
+!.codex/*_PLAN.md
+!.codex/*_STATUS.md
+!.codex/*_SUMMARY.md
+!.codex/agent_environment_config.yaml
 !.codex/QA_WALKTHROUGH_EXECUTION_REPORT.md
 # Allow all planning and continuation documents
 !.codex/*PLAN*.md
