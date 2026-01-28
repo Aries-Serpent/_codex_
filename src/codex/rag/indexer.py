@@ -103,14 +103,17 @@ def embed_chunks(
     # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        # Load model without device parameter to avoid meta tensor issues,
-        # then use safe_model_load to handle device placement properly
-        model = SentenceTransformer(model_name, cache_folder=cache_dir)
-        model = safe_model_load(model, device="cpu")
-
+        # Initialize model on CPU directly to avoid meta tensors
+        import torch
+        with torch.device("cpu"):
+            model = SentenceTransformer(
+                model_name, 
+                cache_folder=cache_dir
+            )
+        
         # Ensure model is in eval mode
         model.eval()
-
+    
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
         raise
