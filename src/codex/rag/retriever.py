@@ -82,21 +82,19 @@ class Retriever:
         """Load embedding model for query encoding."""
         try:
             from sentence_transformers import SentenceTransformer
-
+    
             logger.info(f"Loading query embedding model: {self.model_name}")
-            # Load model directly to CPU to avoid meta device issues
             try:
-                # Load model without device parameter to avoid meta tensor issues,
-                # then use safe_model_load to handle device placement properly
+                # Load model directly to CPU device to avoid meta tensor issues
                 self.model = SentenceTransformer(
                     self.model_name,
-                    cache_folder=self.cache_dir
+                    cache_folder=self.cache_dir,
+                    device="cpu"  # Explicitly specify CPU device during initialization
                 )
-                self.model = safe_model_load(self.model, device="cpu")
-
+                
                 # Ensure model is in eval mode for inference
                 self.model.eval()
-
+    
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")
                 raise
