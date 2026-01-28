@@ -103,13 +103,12 @@ def embed_chunks(
     # Load model without device specification, then move safely
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        # Initialize model on CPU directly to avoid meta tensors
-        import torch
-        with torch.device("cpu"):
-            model = SentenceTransformer(
-                model_name, 
-                cache_folder=cache_dir
-            )
+        # Load model directly to CPU device to avoid meta tensor issues
+        model = SentenceTransformer(
+            model_name, 
+            cache_folder=cache_dir,
+            device="cpu"  # Explicitly specify CPU device during initialization
+        )
         
         # Ensure model is in eval mode
         model.eval()
@@ -117,7 +116,7 @@ def embed_chunks(
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
         raise
-
+    
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
 
