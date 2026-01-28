@@ -56,9 +56,10 @@ class LocalSentenceTransformerProvider:
     def _load_model(self):
         """Load the embedding model."""
         try:
-            from sentence_transformers import SentenceTransformer
-            import torch
             import os
+            
+            import torch
+            from sentence_transformers import SentenceTransformer
 
             logger.info(f"Loading local embedding model: {self.model_name}")
             
@@ -78,20 +79,32 @@ class LocalSentenceTransformerProvider:
             
             self.model = self.model.to('cpu')
             
-            # Verify no meta tensors
-            meta_params = []
+            # Verify no meta tensors in parameters
+            meta_tensors = []
             for name, param in self.model.named_parameters():
                 if param.device.type == "meta":
-                    meta_params.append(name)
+                    meta_tensors.append(name)
             
-            if meta_params:
+            # Also check buffers
+            for name, buf in self.model.named_buffers():
+                if buf.device.type == "meta":
+                    meta_tensors.append(name)
+            
+            if meta_tensors:
                 raise RuntimeError(
-                    f"Model has {len(meta_params)} meta tensor(s). "
-                    f"Examples: {', '.join(meta_params[:3])}"
+                    f"Model has {len(meta_tensors)} meta tensor(s). "
+                    f"Examples: {', '.join(meta_tensors[:3])}. "
+                    f"Check pyproject.toml [rag] dependencies for correct versions."
                 )
             
             self.model.eval()
-            logger.info(f"Local embedding model loaded on {next(self.model.parameters()).device.type}")
+            
+            # Log device type safely
+            try:
+                device_type = next(self.model.parameters()).device.type
+            except StopIteration:
+                device_type = "unknown"
+            logger.info(f"Local embedding model loaded on {device_type}")
             
         except ImportError:
             logger.error(

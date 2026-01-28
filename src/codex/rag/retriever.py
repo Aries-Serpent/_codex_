@@ -77,9 +77,10 @@ class Retriever:
     def _load_model(self):
         """Load embedding model for query encoding."""
         try:
-            from sentence_transformers import SentenceTransformer
-            import torch
             import os
+            
+            import torch
+            from sentence_transformers import SentenceTransformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
@@ -98,20 +99,32 @@ class Retriever:
                 
                 self.model = self.model.to('cpu')
                 
-                # Verify no meta tensors
-                meta_params = []
+                # Verify no meta tensors in parameters
+                meta_tensors = []
                 for name, param in self.model.named_parameters():
                     if param.device.type == "meta":
-                        meta_params.append(name)
+                        meta_tensors.append(name)
                 
-                if meta_params:
+                # Also check buffers
+                for name, buf in self.model.named_buffers():
+                    if buf.device.type == "meta":
+                        meta_tensors.append(name)
+                
+                if meta_tensors:
                     raise RuntimeError(
-                        f"Model has {len(meta_params)} meta tensor(s). "
-                        f"Examples: {', '.join(meta_params[:3])}"
+                        f"Model has {len(meta_tensors)} meta tensor(s). "
+                        f"Examples: {', '.join(meta_tensors[:3])}. "
+                        f"Check pyproject.toml [rag] dependencies for correct versions."
                     )
                 
                 self.model.eval()
-                logger.info(f"Model loaded on {next(self.model.parameters()).device.type}")
+                
+                # Log device type safely
+                try:
+                    device_type = next(self.model.parameters()).device.type
+                except StopIteration:
+                    device_type = "unknown"
+                logger.info(f"Model loaded on {device_type}")
 
             except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
                 logger.error(f"Failed to load query embedding model: {e}")

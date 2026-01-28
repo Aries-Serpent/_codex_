@@ -96,8 +96,9 @@ def embed_chunks(
 
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        import torch
         import os
+        
+        import torch
         
         # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
@@ -109,29 +110,40 @@ def embed_chunks(
             model = SentenceTransformer(
                 model_name,
                 cache_folder=cache_dir,
-                device="cpu",  # ✅ Explicit device
+                device="cpu",  # Explicit device prevents meta tensor creation
                 trust_remote_code=False
             )
         
         # Defensive: Force CPU again
         model = model.to('cpu')
         
-        # Verify no meta tensors
-        meta_params = []
+        # Verify no meta tensors in parameters
+        meta_tensors = []
         for name, param in model.named_parameters():
             if param.device.type == "meta":
-                meta_params.append(name)
+                meta_tensors.append(name)
         
-        if meta_params:
+        # Also check buffers
+        for name, buf in model.named_buffers():
+            if buf.device.type == "meta":
+                meta_tensors.append(name)
+        
+        if meta_tensors:
             raise RuntimeError(
-                f"Model has {len(meta_params)} meta tensor(s). "
-                f"Examples: {', '.join(meta_params[:3])}. "
-                f"Upgrade libraries: pip install --upgrade "
-                f"'sentence-transformers>=2.2.0,<2.8.0' 'torch>=2.0.0,<2.2.0'"
+                f"Model has {len(meta_tensors)} meta tensor(s). "
+                f"Examples: {', '.join(meta_tensors[:3])}. "
+                f"This indicates incompatible library versions. "
+                f"Check pyproject.toml [rag] dependencies for correct versions."
             )
         
         model.eval()
-        logger.info(f"Model loaded on {next(model.parameters()).device.type}")
+        
+        # Log device type safely
+        try:
+            device_type = next(model.parameters()).device.type
+        except StopIteration:
+            device_type = "unknown"
+        logger.info(f"Model loaded on {device_type}")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
