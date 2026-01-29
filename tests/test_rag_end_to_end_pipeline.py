@@ -1,4 +1,7 @@
-"""End-to-end tests for RAG indexing and retrieval pipeline behavior."""
+"""End-to-end tests for RAG indexing and retrieval pipeline behavior.
+
+Uses fake FAISS and SentenceTransformer implementations for offline determinism.
+"""
 
 from __future__ import annotations
 

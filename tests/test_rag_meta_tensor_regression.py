@@ -1,4 +1,7 @@
-"""Regression tests for RAG meta tensor handling and safe device moves."""
+"""Regression tests for RAG meta tensor handling and safe device moves.
+
+These checks ensure CPU-default allocations remain intact after meta tensor fixes.
+"""
 
 from __future__ import annotations
 

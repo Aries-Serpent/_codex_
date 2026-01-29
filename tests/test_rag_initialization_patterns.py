@@ -1,4 +1,7 @@
-"""Tests for RAG model initialization patterns and default device allocation."""
+"""Tests for RAG model initialization patterns and default device allocation.
+
+Focuses on CPU-default SentenceTransformer initialization after PR #3020 changes.
+"""
 
 from __future__ import annotations
 

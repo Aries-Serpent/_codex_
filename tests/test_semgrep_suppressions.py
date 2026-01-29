@@ -1,4 +1,7 @@
-"""Validate semgrep suppression policies for utility scripts."""
+"""Validate semgrep suppression policies for utility scripts.
+
+Ensures URL suppression comments remain scoped and correctly formatted.
+"""
 
 from __future__ import annotations
 
