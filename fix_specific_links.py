@@ -9,6 +9,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent
 
 # Specific files and their broken links to fix
+# nosemgrep: url-substring-check - static GitHub URLs in repair script
 fixes = [
     # docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md
     {

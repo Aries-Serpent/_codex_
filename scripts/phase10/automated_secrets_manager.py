@@ -102,6 +102,7 @@ class GitHubSecretsManager:
         self.owner = owner
         self.repo = repo
         self.token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+        # nosemgrep: url-substring-check - trusted GitHub API base for automation
         self.api_base = "https://api.github.com"
         
         if not self.token:

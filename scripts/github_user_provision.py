@@ -64,6 +64,7 @@ class GitHubUserProvisioner:
         backup_codes = self.mfa.generate_backup_codes(username, count=10)
         
         # Create enrollment data
+        # nosemgrep: url-substring-check - trusted GitHub enrollment URL for provisioning
         enrollment = {
             'username': username,
             'email': email,

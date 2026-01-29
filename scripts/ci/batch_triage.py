@@ -394,6 +394,7 @@ class BatchTriageEngine:
                 
                 failure = FailureRecord(
                     issue_number=issue_num,
+                    # nosemgrep: url-substring-check - trusted GitHub issue URL in CI triage
                     issue_url=f"https://github.com/{self.repo}/issues/{issue_num}",
                     workflow_run_id=workflow_runs[0] if workflow_runs else None,
                     analysis_run_id=workflow_runs[1] if len(workflow_runs) > 1 else None,

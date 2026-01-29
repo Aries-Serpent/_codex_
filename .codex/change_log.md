@@ -769,3 +769,8 @@ Executed comprehensive QA walkthrough to update all `.codex/qa_walkthrough/` fil
 - Fixed RAG optional dependency mocks and caching behavior.
 - Updated RAG indexer chunking guardrails for small chunks.
 - Added Codex test execution report for RAG suites.
+
+### 2026-01-29T21:39:28Z - RAG test suite expansion
+- Added RAG regression, initialization, and end-to-end pipeline tests.
+- Added semgrep suppression validation tests and inline suppressions for utility scripts.
+- Created coverage plan for path to 100% coverage on RAG/meta tensor fixes.

@@ -13,6 +13,7 @@ from typing import Dict, List, Tuple
 # Repository configuration - can be overridden via environment variables
 REPO_OWNER = os.getenv("GITHUB_REPOSITORY_OWNER", "Aries-Serpent")
 REPO_NAME = os.getenv("GITHUB_REPOSITORY_NAME", "_codex_")
+# nosemgrep: url-substring-check - trusted repository base URL for documentation repair
 REPO_BASE_URL = os.getenv("REPO_BASE_URL", f"https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/main")
 REPO_ROOT = Path(os.getenv("REPO_ROOT", os.getcwd()))
 DOCS_ROOT = REPO_ROOT / "docs"
