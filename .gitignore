@@ -380,3 +380,8 @@ artifacts/security/detect-secrets.txt
 secrets.txt
 temp/
 output/
+
+# Test marker management artifacts
+.test_markers.json
+docs/test_markers_report.md
+docs/stale_markers_report.md
