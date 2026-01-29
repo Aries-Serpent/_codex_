@@ -179,9 +179,9 @@ if has_meta_tensors(model):
 ```
 
 ### Integration Points
-- `src/codex/rag/indexer.py::embed_chunks()` - Simple SentenceTransformer init + eval()
-- `src/codex/rag/retriever.py::_load_model()` - Simple SentenceTransformer init + eval()
-- `src/codex/rag/embeddings.py::LocalSentenceTransformerProvider._load_model()` - Simple init + eval()
+- `src/codex/rag/indexer.py::embed_chunks()` - Simple SentenceTransformer initialization + eval()
+- `src/codex/rag/retriever.py::_load_model()` - Simple SentenceTransformer initialization + eval()
+- `src/codex/rag/embeddings.py::LocalSentenceTransformerProvider._load_model()` - Simple initialization + eval()
 
 ### Features (v2.0)
 - **Primary Prevention:** Default device allocation (no explicit device parameter)
