@@ -11,6 +11,7 @@ import html
 import re
 from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
+from codex.security.sanitization import sanitize_html, sanitize_integer, sanitize_string
 
 
 # SQL Injection Prevention Tests
@@ -113,19 +114,19 @@ def test_xss_basic_script_tag():
 def test_xss_event_handler_injection():
     """Test prevention of event handler XSS attacks."""
     malicious_input = '<img src="x" onerror="alert(1)">'
-    sanitized = html.escape(malicious_input)
+    sanitized = sanitize_html(malicious_input)
     
     assert "onerror=" not in sanitized
-    assert "&lt;img" in sanitized
+    assert "<img" not in sanitized
 
 
 def test_xss_javascript_protocol():
     """Test prevention of javascript: protocol XSS."""
     malicious_input = '<a href="javascript:alert(1)">Click</a>'
-    sanitized = html.escape(malicious_input)
+    sanitized = sanitize_html(malicious_input)
     
     assert "javascript:" not in sanitized
-    assert "&lt;a" in sanitized
+    assert "<a" not in sanitized
 
 
 def test_xss_encoded_characters():
@@ -141,10 +142,11 @@ def test_xss_encoded_characters():
 def test_xss_attribute_injection():
     """Test prevention of attribute-based XSS."""
     malicious_input = '" onload="alert(1)'
-    sanitized = html.escape(malicious_input)
+    sanitized = sanitize_html(malicious_input)
     
     assert 'onload=' not in sanitized
-    assert '&quot;' in sanitized
+    # After sanitization, should only have the quote character
+    assert 'alert' not in sanitized
 
 
 # CSRF Protection Tests
@@ -215,16 +217,26 @@ def test_input_sanitization_email():
     """Test email input validation and sanitization."""
     import re
     
+    # More strict email pattern that disallows consecutive dots
     email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    
+    # Additional check for consecutive dots
+    def is_valid_email(email):
+        if not email_pattern.match(email):
+            return False
+        # Check for consecutive dots
+        if '..' in email:
+            return False
+        return True
     
     valid_emails = ['test@example.com', 'user.name+tag@example.co.uk']
     invalid_emails = ['<script>@test.com', 'test@', '@example.com', 'test..test@example.com']
     
     for email in valid_emails:
-        assert email_pattern.match(email) is not None
+        assert is_valid_email(email), f"Valid email {email} was rejected"
     
     for email in invalid_emails:
-        assert email_pattern.match(email) is None
+        assert not is_valid_email(email), f"Invalid email {email} was accepted"
 
 
 def test_input_sanitization_filename():
@@ -269,18 +281,14 @@ def test_input_sanitization_username():
 
 def test_input_sanitization_integer():
     """Test integer input validation and bounds checking."""
-    def sanitize_integer(value, min_val=0, max_val=1000):
-        try:
-            int_val = int(value)
-            return max(min_val, min(int_val, max_val))
-        except (ValueError, TypeError):
-            return min_val
+    # Use the imported sanitization function
+    from codex.security.sanitization import sanitize_integer as sanitize_int
     
-    assert sanitize_integer('42') == 42
-    assert sanitize_integer('-10') == 0  # Clamped to min
-    assert sanitize_integer('9999') == 1000  # Clamped to max
-    assert sanitize_integer('not_a_number') == 0
-    assert sanitize_integer('42.7') == 42
+    assert sanitize_int('42', min_value=0, max_value=1000) == 42
+    assert sanitize_int('-10', min_value=0, max_value=1000) == 0  # Clamped to min
+    assert sanitize_int('9999', min_value=0, max_value=1000) == 1000  # Clamped to max
+    assert sanitize_int('not_a_number', default=0) == 0
+    assert sanitize_int('42.7', min_value=0, max_value=1000) == 42
 
 
 def test_input_sanitization_path_traversal():
