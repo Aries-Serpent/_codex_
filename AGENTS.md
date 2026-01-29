@@ -344,6 +344,7 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 | **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
 | **Coverage Gapfill Agent** | Target low-coverage modules and add deterministic tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ✅ Active |
 | **Meta Tensor Validator** | Validates PyTorch model initialization patterns to prevent meta tensor issues | [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md) | ✅ Active |
+| **RAG Meta Tensor Regression Agent** | Validates RAG initialization patterns and prevents meta tensor regressions | [.github/agents/rag-meta-tensor-regression-agent.md](.github/agents/rag-meta-tensor-regression-agent.md) | ✅ Active |
 
 ### Using Specialized Agents
 
