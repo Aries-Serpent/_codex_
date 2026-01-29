@@ -1,10 +1,6 @@
-"""
-RAG Utility Functions
-Shared utilities for RAG modules including model loading helpers.
-"""
+"""RAG utility functions for model loading and device management."""
 
 import logging
-import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -15,309 +11,63 @@ logger = logging.getLogger(__name__)
 
 def has_meta_tensors(model: Any) -> bool:
     """
-    Comprehensive meta tensor detection that checks parameters, buffers, AND nested modules.
-    
-    This function recursively checks ALL components of a model to detect meta tensors:
-    - Direct model parameters
-    - Model buffers (e.g., running_mean, running_var in BatchNorm)
-    - Nested submodules and their parameters/buffers
+    Check if model contains any meta tensors.
     
     Args:
-        model: PyTorch model or SentenceTransformer to check
+        model: PyTorch model to inspect
         
     Returns:
-        True if ANY meta tensors found anywhere in the model hierarchy
-        
-    Example:
-        >>> from sentence_transformers import SentenceTransformer
-        >>> model = SentenceTransformer('all-MiniLM-L6-v2')
-        >>> if has_meta_tensors(model):
-        ...     print("Model has meta tensors - needs special handling")
+        True if any parameter/buffer is on meta device
     """
     try:
         import torch
         
-        # Strategy 1: Check via named_modules (most comprehensive)
-        if hasattr(model, "named_modules"):
-            for module_name, module in model.named_modules():
-                # Check parameters in this specific module (recurse=False to avoid duplicates)
-                for param_name, param in module.named_parameters(recurse=False):
-                    if isinstance(param, torch.Tensor) and param.device.type == "meta":
-                        logger.debug(f"Meta tensor found: {module_name}.{param_name}")
-                        return True
-                
-                # Check buffers (often overlooked but critical for BatchNorm, etc.)
-                for buf_name, buf in module.named_buffers(recurse=False):
-                    if isinstance(buf, torch.Tensor) and buf.device.type == "meta":
-                        logger.debug(f"Meta buffer found: {module_name}.{buf_name}")
-                        return True
-        
-        # Strategy 2: Direct parameter check (fallback for non-module objects)
-        elif hasattr(model, "parameters"):
-            for param in model.parameters():
-                if isinstance(param, torch.Tensor) and param.device.type == "meta":
-                    logger.debug("Meta tensor found in direct parameters")
-                    return True
-        
-        # Strategy 3: Check model device attribute (last resort)
-        elif hasattr(model, "device"):
-            if hasattr(model.device, "type") and model.device.type == "meta":
-                logger.debug("Model itself is on meta device")
+        for param in model.parameters():
+            if param.device.type == 'meta':
                 return True
-        
+        for buffer in model.buffers():
+            if buffer.device.type == 'meta':
+                return True
         return False
-        
     except Exception as e:
-        logger.warning(f"Error during meta tensor detection: {e}")
-        # Conservative: assume no meta tensors if we can't check
+        logger.warning(f"Error checking for meta tensors: {e}")
         return False
 
 
 def safe_model_to_device(
-    model: Any,
-    device: str = "cpu",
-    model_name: Optional[str] = None,
-    cache_folder: Optional[str] = None,
-    max_retries: int = 3,
-    retry_delay: float = 1.0
+    model: Any, 
+    device: str = "cpu"
 ) -> Any:
     """
-    Robust model device transfer with 4-strategy fallback and retry logic.
-    
-    This function implements a comprehensive strategy pattern for moving models to
-    target devices, with special handling for PyTorch meta tensors that require
-    materialization before transfer.
-    
-    **Strategy Pattern:**
-    1. Try to_empty() + reload weights (best for meta tensors)
-    2. Reinitialize SentenceTransformer with device parameter
-    3. Manual parameter replacement (for stubborn cases)
-    4. Standard to() operation (for normal models)
-    
-    Each strategy includes retry logic with exponential backoff.
+    Safely move model to device, handling meta tensors.
     
     Args:
-        model: Model to transfer (PyTorch model or SentenceTransformer)
-        device: Target device ("cpu", "cuda", "cuda:0", etc.)
-        model_name: Original model name (required for strategies 1 & 2)
-        cache_folder: Model cache directory (optional, for strategies 1 & 2)
-        max_retries: Maximum retry attempts per strategy (default: 3)
-        retry_delay: Initial retry delay in seconds, doubles each retry (default: 1.0)
+        model: Model to move
+        device: Target device ("cpu" or "cuda")
         
     Returns:
-        Model properly materialized and moved to target device
+        Model on target device
         
     Raises:
-        RuntimeError: If all strategies fail after retries
-        
-    Example:
-        >>> from sentence_transformers import SentenceTransformer
-        >>> model = SentenceTransformer('all-MiniLM-L6-v2')
-        >>> model = safe_model_to_device(
-        ...     model,
-        ...     device="cpu",
-        ...     model_name='all-MiniLM-L6-v2'
-        ... )
-        >>> model.eval()
+        RuntimeError: If model contains meta tensors after transfer
     """
     import torch
     
-    # Check if model already has meta tensors
-    has_meta = has_meta_tensors(model)
-    
-    if not has_meta:
-        # No meta tensors detected, try simple move
-        logger.info(f"No meta tensors detected, attempting standard move to {device}")
+    if has_meta_tensors(model):
+        logger.warning(
+            f"Model contains meta tensors, using to_empty({device})"
+        )
         try:
-            model = model.to(device)
-            model.eval()
-            logger.info("✓ Standard to() operation successful")
-            return model
-        except Exception as e:
-            logger.warning(f"Standard to() failed: {e}, trying fallback strategies")
-    
-    # Model has meta tensors or standard to() failed - try advanced strategies
-    logger.info(f"Attempting 4-strategy fallback to materialize model on {device}")
-    
-    # Strategy 1: to_empty() + reload (best for meta tensors)
-    if model_name:
-        for attempt in range(max_retries):
-            try:
-                logger.info(f"Strategy 1 (attempt {attempt + 1}/{max_retries}): to_empty() + reload")
-                
-                from sentence_transformers import SentenceTransformer
-                
-                # Create empty model on target device
-                target_device = torch.device(device)
-                model = model.to_empty(device=target_device)
-                
-                # Reload weights from cache or hub
-                reloaded = SentenceTransformer(
-                    model_name,
-                    device=device,
-                    cache_folder=cache_folder,
-                    trust_remote_code=False
-                )
-                
-                # Verify no meta tensors remain
-                if not has_meta_tensors(reloaded):
-                    logger.info("✓ Strategy 1 successful")
-                    reloaded.eval()
-                    return reloaded
-                else:
-                    logger.warning("Strategy 1: Reloaded model still has meta tensors")
-                    
-            except Exception as e:
-                logger.warning(f"Strategy 1 attempt {attempt + 1} failed: {e}")
-                if attempt < max_retries - 1:
-                    delay = retry_delay * (2 ** attempt)
-                    logger.info(f"Retrying in {delay}s...")
-                    time.sleep(delay)
-    
-    # Strategy 2: Full reinitialization with device parameter
-    if model_name and hasattr(model, '__class__') and model.__class__.__name__ == 'SentenceTransformer':
-        for attempt in range(max_retries):
-            try:
-                logger.info(f"Strategy 2 (attempt {attempt + 1}/{max_retries}): Full reinitialization")
-                
-                from sentence_transformers import SentenceTransformer
-                
-                new_model = SentenceTransformer(
-                    model_name,
-                    device=device,
-                    cache_folder=cache_folder,
-                    trust_remote_code=False
-                )
-                
-                if not has_meta_tensors(new_model):
-                    logger.info("✓ Strategy 2 successful")
-                    new_model.eval()
-                    return new_model
-                else:
-                    logger.warning("Strategy 2: New model still has meta tensors")
-                    
-            except Exception as e:
-                logger.warning(f"Strategy 2 attempt {attempt + 1} failed: {e}")
-                if attempt < max_retries - 1:
-                    delay = retry_delay * (2 ** attempt)
-                    logger.info(f"Retrying in {delay}s...")
-                    time.sleep(delay)
-    
-    # Strategy 3: Manual parameter replacement
-    if has_meta:
-        for attempt in range(max_retries):
-            try:
-                logger.info(f"Strategy 3 (attempt {attempt + 1}/{max_retries}): Manual parameter replacement")
-                
-                target_device = torch.device(device)
-                
-                # Replace each parameter with a materialized version
-                for name, param in list(model.named_parameters()):
-                    if param.device.type == "meta":
-                        # Create new tensor on target device with same shape
-                        new_param = torch.empty(
-                            param.shape,
-                            dtype=param.dtype,
-                            device=target_device
-                        )
-                        # Replace parameter
-                        module_parts = name.rsplit(".", 1)
-                        if len(module_parts) == 2:
-                            module_name, param_name = module_parts
-                            module = dict(model.named_modules())[module_name]
-                            setattr(module, param_name, torch.nn.Parameter(new_param))
-                        else:
-                            setattr(model, name, torch.nn.Parameter(new_param))
-                
-                # Do the same for buffers
-                for name, buf in list(model.named_buffers()):
-                    if buf.device.type == "meta":
-                        new_buf = torch.empty(
-                            buf.shape,
-                            dtype=buf.dtype,
-                            device=target_device
-                        )
-                        module_parts = name.rsplit(".", 1)
-                        if len(module_parts) == 2:
-                            module_name, buf_name = module_parts
-                            module = dict(model.named_modules())[module_name]
-                            module.register_buffer(buf_name, new_buf)
-                        else:
-                            model.register_buffer(name, new_buf)
-                
-                if not has_meta_tensors(model):
-                    logger.info("✓ Strategy 3 successful")
-                    model.eval()
-                    return model
-                else:
-                    logger.warning("Strategy 3: Model still has meta tensors after replacement")
-                    
-            except Exception as e:
-                logger.warning(f"Strategy 3 attempt {attempt + 1} failed: {e}")
-                if attempt < max_retries - 1:
-                    delay = retry_delay * (2 ** attempt)
-                    logger.info(f"Retrying in {delay}s...")
-                    time.sleep(delay)
-    
-    # Strategy 4: Last resort - standard to() with retries
-    for attempt in range(max_retries):
-        try:
-            logger.info(f"Strategy 4 (attempt {attempt + 1}/{max_retries}): Standard to() operation")
-            
-            target_device = torch.device(device)
-            model = model.to(target_device)
-            
-            if not has_meta_tensors(model):
-                logger.info("✓ Strategy 4 successful")
-                model.eval()
-                return model
-            else:
-                logger.warning("Strategy 4: Model still has meta tensors")
-                
-        except Exception as e:
-            logger.warning(f"Strategy 4 attempt {attempt + 1} failed: {e}")
-            if attempt < max_retries - 1:
-                delay = retry_delay * (2 ** attempt)
-                logger.info(f"Retrying in {delay}s...")
-                time.sleep(delay)
-    
-    # All strategies exhausted
-    error_msg = (
-        f"✗ All 4 strategies failed to move model to {device}. "
-        f"Model: {model.__class__.__name__ if hasattr(model, '__class__') else 'Unknown'}, "
-        f"Has meta tensors: {has_meta_tensors(model)}"
-    )
-    if model_name:
-        error_msg += f", Model name: {model_name}"
-    
-    logger.error(error_msg)
-    raise RuntimeError(error_msg)
-
-
-def safe_model_load(model: Any, device: str = "cpu") -> Any:
-    """
-    DEPRECATED: Use safe_model_to_device() instead.
-    
-    This function is kept for backward compatibility and delegates to safe_model_to_device().
-    
-    Args:
-        model: The model to load
-        device: Target device
-    
-    Returns:
-        Model moved to target device
-    
-    Raises:
-        DeprecationWarning: Always raised to warn about deprecated usage
-    """
-    import warnings
-    warnings.warn(
-        "safe_model_load() is deprecated. Use safe_model_to_device() instead. "
-        "This function will be removed in version 1.0.0.",
-        DeprecationWarning,
-        stacklevel=2
-    )
-    return safe_model_to_device(model, device)
+            return model.to_empty(device=device)
+        except AttributeError:
+            # PyTorch < 2.0 fallback
+            logger.error(
+                "PyTorch version does not support to_empty(). "
+                "Upgrade to PyTorch >= 2.0"
+            )
+            raise
+    else:
+        return model.to(device)
 
 
 # Backward compatibility aliases

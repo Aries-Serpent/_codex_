@@ -98,36 +98,21 @@ def embed_chunks(
     try:
         import os
         
-        import torch
-        from codex.rag.utils import safe_model_to_device
-        
         # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
         
-        # Initialize model without device specification to avoid meta tensors
-        logger.debug("Initializing SentenceTransformer")
+        # Let SentenceTransformer use default device allocation
+        # This avoids meta tensor errors by allowing the library to handle initialization
         model = SentenceTransformer(
             model_name,
             cache_folder=cache_dir,
             trust_remote_code=False
         )
+        # Model automatically initializes on CPU without meta tensors
+        model.eval()
         
-        # Use safe_model_to_device to handle any meta tensors
-        logger.debug("Applying safe_model_to_device to ensure proper materialization")
-        model = safe_model_to_device(
-            model,
-            device="cpu",
-            model_name=model_name,
-            cache_folder=cache_dir
-        )
-        
-        # Log device type safely
-        try:
-            device_type = next(model.parameters()).device.type
-        except StopIteration:
-            device_type = "unknown"
-        logger.info(f"Model loaded on {device_type}")
+        logger.info(f"Model loaded successfully")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
