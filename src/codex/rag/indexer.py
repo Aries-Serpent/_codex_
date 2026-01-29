@@ -99,47 +99,28 @@ def embed_chunks(
         import os
         
         import torch
+        from codex.rag.utils import safe_model_load_v2
         
         # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
         
-        # Initialize with default device allocation
-        logger.debug("Initializing SentenceTransformer with default device allocation")
+        # Initialize model without device specification
+        logger.debug("Initializing SentenceTransformer")
         model = SentenceTransformer(
             model_name,
             cache_folder=cache_dir,
             trust_remote_code=False
         )
         
-        # Verify model loaded correctly with default device allocation
-        meta_tensors = []
-        cpu_tensors = 0
-        
-        for name, param in model.named_parameters():
-            if param.device.type == "meta":
-                meta_tensors.append(name)
-            elif param.device.type == "cpu":
-                cpu_tensors += 1
-        
-        # Also check buffers
-        for name, buf in model.named_buffers():
-            if buf.device.type == "meta":
-                meta_tensors.append(name)
-            elif buf.device.type == "cpu":
-                cpu_tensors += 1
-        
-        if meta_tensors:
-            raise RuntimeError(
-                f"Model has {len(meta_tensors)} meta tensor(s) after initialization. "
-                f"Examples: {', '.join(meta_tensors[:3])}. "
-                f"This indicates incompatible library versions. "
-                f"Ensure sentence-transformers and torch versions are compatible."
-            )
-        
-        logger.debug(f"Model verification complete: {cpu_tensors} tensors successfully placed on CPU")
-        
-        model.eval()
+        # Use safe_model_load_v2 to handle any meta tensors
+        logger.debug("Applying safe_model_load_v2 to ensure proper materialization")
+        model = safe_model_load_v2(
+            model,
+            device="cpu",
+            model_name=model_name,
+            cache_folder=cache_dir
+        )
         
         # Log device type safely
         try:
