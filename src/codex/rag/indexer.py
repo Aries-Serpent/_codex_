@@ -104,18 +104,15 @@ def embed_chunks(
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
         
-        # Initialize with explicit CPU device from the start
-        logger.debug("Initializing SentenceTransformer with device='cpu'")
-        with torch.device('cpu'):
-            model = SentenceTransformer(
-                model_name,
-                cache_folder=cache_dir,
-                device="cpu",  # Explicit device prevents meta tensor creation
-                trust_remote_code=False
-            )
+        # Initialize with default device allocation
+        logger.debug("Initializing SentenceTransformer with default device allocation")
+        model = SentenceTransformer(
+            model_name,
+            cache_folder=cache_dir,
+            trust_remote_code=False
+        )
         
-        # Verify model loaded correctly WITHOUT calling .to()
-        # The device parameter already handles placement
+        # Verify model loaded correctly with default device allocation
         meta_tensors = []
         cpu_tensors = 0
         
