@@ -114,27 +114,33 @@ def embed_chunks(
                 trust_remote_code=False
             )
         
-        # Defensive: Force CPU again
-        model = model.to('cpu')
-        
-        # Verify no meta tensors in parameters
+        # Verify model loaded correctly WITHOUT calling .to()
+        # The device parameter already handles placement
         meta_tensors = []
+        cpu_tensors = 0
+        
         for name, param in model.named_parameters():
             if param.device.type == "meta":
                 meta_tensors.append(name)
+            elif param.device.type == "cpu":
+                cpu_tensors += 1
         
         # Also check buffers
         for name, buf in model.named_buffers():
             if buf.device.type == "meta":
                 meta_tensors.append(name)
+            elif buf.device.type == "cpu":
+                cpu_tensors += 1
         
         if meta_tensors:
             raise RuntimeError(
-                f"Model has {len(meta_tensors)} meta tensor(s). "
+                f"Model has {len(meta_tensors)} meta tensor(s) after initialization. "
                 f"Examples: {', '.join(meta_tensors[:3])}. "
                 f"This indicates incompatible library versions. "
-                f"Check pyproject.toml [rag] dependencies for correct versions."
+                f"Ensure sentence-transformers and torch versions are compatible."
             )
+        
+        logger.debug(f"Model verification: {cpu_tensors} tensors on CPU, 0 meta tensors")
         
         model.eval()
         
