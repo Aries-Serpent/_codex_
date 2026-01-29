@@ -35,6 +35,7 @@ pre-commit run --all-files
 ```
 
 **Quality Gates Enforced**:
+- **Meta Tensor Validator**: Prevents PyTorch meta tensor issues in ML model loading code
 - **Test Pattern Guardian**: Detects mock exhaustion and serialization issues in tests
 - **Config Validator**: Ensures all Hydra configs referenced in tests exist
 - **Security Checks**: Command injection, unsafe XML, weak hashing detection
@@ -98,6 +99,124 @@ All pull requests are automatically tested via GitHub Actions (`.github/workflow
    # Verify no important files in /tmp/
    ls -la /tmp/ | grep -E "\.(md|txt|json|yaml|py)$"
    ```
+
+## Safe Model Loading (PyTorch/ML)
+
+When working with PyTorch, SentenceTransformers, or other ML models, follow these guidelines to prevent **meta tensor issues** (`NotImplementedError: Cannot copy out of meta tensor`).
+
+### ✅ Correct Pattern
+
+**Always use default device allocation** (no explicit `device=` parameter):
+
+```python
+import os
+import torch
+from sentence_transformers import SentenceTransformer
+
+def load_model_safely(model_name: str, cache_dir: str = "./cache"):
+    """Safe model loading with multi-layered prevention."""
+    
+    # Layer 1: Environment setup
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+    os.environ["TRANSFORMERS_OFFLINE"] = "0"
+    
+    # Layer 2: Initialize with default device allocation
+    model = SentenceTransformer(
+        model_name,
+        cache_folder=cache_dir,
+        trust_remote_code=False  # Security: prevent code execution
+    )
+    
+    # Layer 3: Verification - Check for meta tensors
+    meta_tensors = []
+    for name, param in model.named_parameters():
+        if param.device.type == "meta":
+            meta_tensors.append(name)
+    for name, buf in model.named_buffers():
+        if buf.device.type == "meta":
+            meta_tensors.append(name)
+    
+    if meta_tensors:
+        raise RuntimeError(
+            f"Model has {len(meta_tensors)} meta tensor(s). "
+            f"This is a bug. Please report to: "
+            f"https://github.com/Aries-Serpent/_codex_/issues"
+        )
+    
+    model.eval()
+    return model
+```
+
+### ❌ Anti-Patterns to Avoid
+
+**1. Explicit device parameter (causes meta tensors in some PyTorch versions):**
+```python
+# WRONG: Can create meta tensors
+model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
+```
+
+**2. Attempting to fix meta tensors after creation:**
+```python
+# WRONG: Cannot fix meta tensors after they exist
+model = SentenceTransformer('all-MiniLM-L6-v2')
+if check_for_meta_tensors(model):
+    model = safe_model_load(model, 'cpu')  # Doesn't work!
+```
+
+**3. Missing meta tensor verification:**
+```python
+# WRONG: No verification that model is safe
+model = SentenceTransformer('all-MiniLM-L6-v2')
+return model  # What if it has meta tensors?
+```
+
+**4. Using deprecated utilities:**
+```python
+# WRONG: Deprecated function
+from codex.rag.utils import safe_model_load
+model = safe_model_load(model, device='cpu')  # Don't use this!
+```
+
+### Best Practices
+
+1. **Always set `trust_remote_code=False`** for security (prevents arbitrary code execution)
+2. **Use default device allocation** (omit `device=` parameter in most cases)
+3. **Add verification loops** to check for meta tensors after loading
+4. **Handle errors gracefully** with clear upgrade instructions
+5. **Pin PyTorch versions** in dependencies to avoid breaking changes
+
+### Pre-commit Hook
+
+The **Meta Tensor Validator** pre-commit hook automatically checks your code:
+
+```bash
+# Run manually on changed files
+pre-commit run check-meta-tensors --files src/codex/rag/my_module.py
+
+# Run on all files
+pre-commit run check-meta-tensors --all-files
+```
+
+### Resources
+
+- **Agent Documentation**: [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)
+- **Utility Registry**: [.codex/AI_AGENT_UTILITIES_REGISTRY.md](.codex/AI_AGENT_UTILITIES_REGISTRY.md) - See `safe_model_load_v2()`
+- **Fix Summary**: [RAG_META_TENSOR_FIX_SUMMARY.md](RAG_META_TENSOR_FIX_SUMMARY.md) - Historical context
+
+### Troubleshooting
+
+**Issue**: `NotImplementedError: Cannot copy out of meta tensor`
+
+**Solution**:
+1. Remove explicit `device=` parameters from model constructors
+2. Add meta tensor verification loops
+3. Use utility functions from `codex.rag.utils` if available
+4. Pin PyTorch version (e.g., `torch>=2.0.0,<2.2.0`) if issues persist
+
+**Need Help?** Activate the Meta Tensor Validator agent:
+```markdown
+@copilot Use Meta Tensor Validator to check my model loading code
+```
 
 ## Using Operational Templates
 
