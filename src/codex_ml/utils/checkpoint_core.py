@@ -188,11 +188,12 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 random.setstate(state_tuple)
             else:
                 # Legacy format: use directly (already a tuple or list from JSON)
-                # If it's a list from JSON, convert to tuple
+                # If it's a list from JSON, convert to tuple with inner tuple
                 if isinstance(python_state, list):
-                    python_state = tuple(python_state)
                     if len(python_state) >= 2 and isinstance(python_state[1], list):
                         python_state = (python_state[0], tuple(python_state[1]), python_state[2])
+                    else:
+                        python_state = tuple(python_state)
                 random.setstate(python_state)
     except Exception as e:
         logger.debug("Exception: %s", e)
@@ -213,8 +214,21 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     )
                     np.random.set_state(state_tuple)
                 else:
-                    # Legacy format: use directly (tuple)
-                    np.random.set_state(numpy_state)
+                    # Legacy format: convert from JSON-deserialized format
+                    # If it's a tuple/list from JSON, ensure array element is converted
+                    if isinstance(numpy_state, (tuple, list)) and len(numpy_state) >= 5:
+                        # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)
+                        state_tuple = (
+                            numpy_state[0],
+                            np.array(numpy_state[1], dtype=np.uint32) if isinstance(numpy_state[1], list) else numpy_state[1],
+                            numpy_state[2],
+                            numpy_state[3],
+                            numpy_state[4],
+                        )
+                        np.random.set_state(state_tuple)
+                    else:
+                        # Direct tuple format (not from JSON)
+                        np.random.set_state(numpy_state)
         except Exception as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
