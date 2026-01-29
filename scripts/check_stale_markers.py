@@ -37,15 +37,19 @@ class StaleMarkerChecker:
     
     def check_staleness(self, max_age_days: int = 90) -> List[Dict]:
         """
-        Check for markers that might be stale.
+        Check for markers that might be stale based on suspicious indicators.
+        
+        Note: Currently checks for vague/missing reasons and issue references.
+        The max_age_days parameter is reserved for future time-based staleness detection.
         
         Args:
-            max_age_days: Maximum age in days before a marker is considered stale
+            max_age_days: Reserved for future use - maximum age in days before marker is stale
             
         Returns:
             List of potentially stale markers
         """
-        print(f"\n🔍 Checking for stale markers (max age: {max_age_days} days)...")
+        print(f"\n🔍 Checking for stale markers...")
+        # Note: max_age_days is not yet implemented - requires timestamp tracking
         
         stale_markers = []
         now = datetime.now()

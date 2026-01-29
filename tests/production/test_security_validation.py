@@ -281,14 +281,11 @@ def test_input_sanitization_username():
 
 def test_input_sanitization_integer():
     """Test integer input validation and bounds checking."""
-    # Use the imported sanitization function
-    from codex.security.sanitization import sanitize_integer as sanitize_int
-    
-    assert sanitize_int('42', min_value=0, max_value=1000) == 42
-    assert sanitize_int('-10', min_value=0, max_value=1000) == 0  # Clamped to min
-    assert sanitize_int('9999', min_value=0, max_value=1000) == 1000  # Clamped to max
-    assert sanitize_int('not_a_number', default=0) == 0
-    assert sanitize_int('42.7', min_value=0, max_value=1000) == 42
+    assert sanitize_integer('42', min_value=0, max_value=1000) == 42
+    assert sanitize_integer('-10', min_value=0, max_value=1000) == 0  # Clamped to min
+    assert sanitize_integer('9999', min_value=0, max_value=1000) == 1000  # Clamped to max
+    assert sanitize_integer('not_a_number', default=0) == 0
+    assert sanitize_integer('42.7', min_value=0, max_value=1000) == 42
 
 
 def test_input_sanitization_path_traversal():

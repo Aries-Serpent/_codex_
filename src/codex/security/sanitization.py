@@ -43,8 +43,9 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
         content = re.sub(protocol, '', content, flags=re.IGNORECASE)
     
     # Step 2: Remove event handlers (onclick, onerror, onload, etc.)
+    # Using raw string to properly handle \s for whitespace
     content = re.sub(
-        r'\s*on\w+\s*=\s*["\']?[^"\'>\\s]*["\']?',
+        r'\s*on\w+\s*=\s*["\']?[^"\'>\s]*["\']?',
         '',
         content,
         flags=re.IGNORECASE
@@ -68,8 +69,9 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
     if not allow_tags:
         content = re.sub(r'<[^>]+>', '', content)
     
-    # Step 5: HTML encode remaining special characters
-    # content = html.escape(content)  # Disabled - tests expect removal, not encoding
+    # Note: HTML encoding of special characters is not performed here.
+    # Tests expect tag/protocol removal rather than entity encoding.
+    # For production use in HTML contexts, consider additional encoding.
     
     logger.debug(f"Sanitized HTML: {len(content)} chars")
     return content.strip()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Test marker scanner and tracker.
-Scans all test files for pytest markers (skip, xfail, etc.) and maintains
-a registry of marked tests with metadata.
+Scans all test files for pytest markers (skip, skipif, xfail, xfailif) and 
+maintains a registry of marked tests with metadata.
 """
 import ast
 import json
