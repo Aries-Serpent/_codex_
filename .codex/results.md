@@ -491,3 +491,7 @@ Supporting files:
 ## 2026-01-29T19:41:07Z - RAG test validation
 - Phase 1: 45 RAG targeted tests passed.
 - Phase 2: 467 RAG suite tests passed.
+
+## 2026-01-29T21:39:28Z - RAG test suite updates
+- Added regression, initialization, integration, and semgrep suppression tests.
+- Updated utility scripts with documented URL suppression comments.

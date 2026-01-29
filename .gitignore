@@ -51,6 +51,7 @@ data/*
 runs/
 mlruns/
 .checkpoints/
+.github/checkpoints/
 
 # Generated artifacts (build outputs)
 # (see detailed artifacts rules below around line 121)

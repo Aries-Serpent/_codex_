@@ -124,6 +124,7 @@ class ComprehensiveLinkFixer:
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed HTML comment link: {old_link}")
 
         # Fix 7: Convert specific broken links to GitHub URLs
+        # nosemgrep: url-substring-check - static repository URL replacements in repair script
         specific_fixes = {
             '/.github/docs/Copilot_Task_Execution_Protocol.md': 'https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md',
             '/.github/workflows/': 'https://github.com/Aries-Serpent/_codex_/tree/main/.github/workflows',

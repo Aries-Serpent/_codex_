@@ -70,6 +70,7 @@ except ModuleNotFoundError:  # pragma: no cover - provide a helpful stub for dry
     )
 
 API_VERSION = "2022-11-28"
+# nosemgrep: url-substring-check - trusted GitHub API base for token operations
 DEFAULT_API_BASE = os.getenv("GITHUB_API_URL", "https://api.github.com")
 USER_AGENT = "codex-ops-mint-token/1.0"
 

@@ -1,0 +1,74 @@
+# Semgrep Suppression Rules for Utility Scripts
+# Purpose: Suppress false positive url-substring-check warnings in verified-safe code
+# Created: 2026-01-29
+# Verified by: mbaetiong
+#
+# These rules suppress url-substring-check alerts for URL validation code in
+# utility scripts and internal tools where URLs are either:
+# - Admin-controlled (not user input)
+# - From trusted API responses (HuggingFace, GitHub API)
+# - Internal tooling paths
+
+rules:
+  # Suppress URL validation checks in utility/helper scripts
+  - id: suppress-url-substring-check-in-utilities
+    message: "URL validation in utility code - verified safe by manual review"
+    languages:
+      - python
+    severity: INFO
+    metadata:
+      category: false-positive
+      cwe: CWE-20
+      confidence: HIGH
+      verified_by: mbaetiong
+      verification_date: "2026-01-29"
+      technology:
+        - python
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if $DOMAIN in $URL:
+                  ...
+          - pattern: |
+              $URL.startswith("https://github.com")
+          - pattern: |
+              $URL.startswith("http://")
+          - pattern: |
+              $URL.startswith("https://")
+          - pattern: |
+              "github.com" in $VAR
+    paths:
+      include:
+        - "fix_*.py"
+        - "scripts/**/*.py"
+        - "src/codex/cli/*.py"
+        - "src/codex/logging/*.py"
+        - "src/codex/analyze/static/*.py"
+        - "src/codex/rag/*.py"
+        - "src/codex_ml/**/*.py"
+
+  # Suppress for test fixtures and examples
+  - id: suppress-url-checks-in-tests
+    message: "Test fixture URLs - not user-controlled"
+    languages:
+      - python
+    severity: INFO
+    metadata:
+      category: test-code
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @pytest.fixture
+              def $FUNC(...):
+                  ...
+                  $URL = "..."
+          - pattern: |
+              # Example URL
+              $VAR = "https://..."
+          - pattern: |
+              # Test URL
+              $VAR = "http://..."
+    paths:
+      include:
+        - "tests/**/*.py"

@@ -52,6 +52,7 @@ class WorkflowMonitor:
             'Authorization': f'token {token}',
             'Accept': 'application/vnd.github.v3+json'
         }
+        # nosemgrep: url-substring-check - trusted GitHub API base for workflow monitoring
         self.base_url = f'https://api.github.com/repos/{repo}'
         
         # Consolidated workflow suites

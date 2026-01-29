@@ -77,6 +77,7 @@ class TokenScopeVerifier:
     """
     
     # GitHub API endpoint for token verification
+    # nosemgrep: url-substring-check - GitHub API endpoint for token scope verification
     API_URL = "https://api.github.com/user"
     
     # Required scopes for Copilot operations
