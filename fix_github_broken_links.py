@@ -52,6 +52,7 @@ class GitHubLinkFixer:
                     self.fixes.append(f"{file_path.relative_to(REPO_ROOT)}: Removed template link: {old_link}")
 
         # Fix 2: Fix specific broken paths
+        # nosemgrep: url-substring-check - repository URL substitution in maintenance script
         specific_fixes = {
             '.github/actions/README.md': '../actions/',
             '.github/workflows/CACHE_ANALYSIS_REPORT.md': None,  # Remove

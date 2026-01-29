@@ -68,6 +68,7 @@ class AlertCloser:
         self.repo = repo
         self.token = token or os.environ.get("GITHUB_TOKEN", "")
         self.dry_run = dry_run
+        # nosemgrep: url-substring-check - GitHub API base for code scanning automation
         self.base_url = "https://api.github.com"
         self.session = requests.Session()
         
