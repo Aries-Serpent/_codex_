@@ -128,10 +128,28 @@ def _git_sha_try() -> str | None:
 
 
 def _rng_snapshot() -> dict[str, Any]:
-    snap: dict[str, Any] = {"python": random.getstate()}
+    # Convert Python random state to JSON-serializable format
+    # Python random.getstate() returns: (version, tuple_of_ints, None)
+    python_state = random.getstate()
+    snap: dict[str, Any] = {
+        "python": {
+            "version": python_state[0],
+            "keys": list(python_state[1]),  # Convert inner tuple to list explicitly
+            "gauss_next": python_state[2],
+        }
+    }
     if np is not None:
         try:
-            snap["numpy"] = np.random.get_state()
+            # NumPy RNG state is a tuple: (name, array, pos, has_gauss, cached_gauss)
+            # Convert to JSON-serializable format
+            numpy_state = np.random.get_state()
+            snap["numpy"] = {
+                "name": numpy_state[0],
+                "keys": numpy_state[1].tolist(),  # Convert ndarray to list
+                "pos": int(numpy_state[2]),
+                "has_gauss": int(numpy_state[3]),
+                "cached_gauss": float(numpy_state[4]),
+            }
         except Exception as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
@@ -158,14 +176,59 @@ def _rng_snapshot() -> dict[str, Any]:
 def _rng_restore(snap: Mapping[str, Any]) -> None:
     try:
         if "python" in snap:
-            random.setstate(snap["python"])
+            python_state = snap["python"]
+            # Support both new dict format and legacy tuple format
+            if isinstance(python_state, dict):
+                # New format: convert back to tuple
+                state_tuple = (
+                    python_state["version"],
+                    tuple(python_state["keys"]),  # Convert list back to tuple
+                    python_state["gauss_next"],
+                )
+                random.setstate(state_tuple)
+            else:
+                # Legacy format: use directly (already a tuple or list from JSON)
+                # If it's a list from JSON, convert to tuple with inner tuple
+                if isinstance(python_state, list):
+                    if len(python_state) >= 2 and isinstance(python_state[1], list):
+                        python_state = (python_state[0], tuple(python_state[1]), python_state[2])
+                    else:
+                        python_state = tuple(python_state)
+                random.setstate(python_state)
     except Exception as e:
         logger.debug("Exception: %s", e)
         logger.warning("Exception: %s", e, exc_info=True)
     if np is not None:
         try:
             if "numpy" in snap:
-                np.random.set_state(snap["numpy"])
+                numpy_state = snap["numpy"]
+                # Support both new dict format and legacy tuple format
+                if isinstance(numpy_state, dict):
+                    # New format: convert back to tuple
+                    state_tuple = (
+                        numpy_state["name"],
+                        np.array(numpy_state["keys"], dtype=np.uint32),
+                        numpy_state["pos"],
+                        numpy_state["has_gauss"],
+                        numpy_state["cached_gauss"],
+                    )
+                    np.random.set_state(state_tuple)
+                else:
+                    # Legacy format: convert from JSON-deserialized format
+                    # If it's a tuple/list from JSON, ensure array element is converted
+                    if isinstance(numpy_state, (tuple, list)) and len(numpy_state) >= 5:
+                        # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)
+                        state_tuple = (
+                            numpy_state[0],
+                            np.array(numpy_state[1], dtype=np.uint32) if isinstance(numpy_state[1], list) else numpy_state[1],
+                            numpy_state[2],
+                            numpy_state[3],
+                            numpy_state[4],
+                        )
+                        np.random.set_state(state_tuple)
+                    else:
+                        # Direct tuple format (not from JSON)
+                        np.random.set_state(numpy_state)
         except Exception as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
