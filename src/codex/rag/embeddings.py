@@ -60,7 +60,7 @@ class LocalSentenceTransformerProvider:
             
             import torch
             from sentence_transformers import SentenceTransformer
-            from codex.rag.utils import safe_model_load_v2
+            from codex.rag.utils import safe_model_to_device
 
             logger.info(f"Loading local embedding model: {self.model_name}")
             
@@ -68,7 +68,7 @@ class LocalSentenceTransformerProvider:
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             os.environ["TRANSFORMERS_OFFLINE"] = "0"
             
-            # Initialize model without device specification
+            # Initialize model without device specification to avoid meta tensors
             logger.debug("Initializing SentenceTransformer")
             self.model = SentenceTransformer(
                 self.model_name,
@@ -76,9 +76,9 @@ class LocalSentenceTransformerProvider:
                 trust_remote_code=False
             )
             
-            # Use safe_model_load_v2 to handle any meta tensors
-            logger.debug("Applying safe_model_load_v2 to ensure proper materialization")
-            self.model = safe_model_load_v2(
+            # Use safe_model_to_device to handle any meta tensors
+            logger.debug("Applying safe_model_to_device to ensure proper materialization")
+            self.model = safe_model_to_device(
                 self.model,
                 device="cpu",
                 model_name=self.model_name,
