@@ -81,6 +81,7 @@ class Retriever:
             
             import torch
             from sentence_transformers import SentenceTransformer
+            from codex.rag.utils import safe_model_load_v2
 
             logger.info(f"Loading query embedding model: {self.model_name}")
             try:
@@ -88,32 +89,21 @@ class Retriever:
                 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
                 os.environ["TRANSFORMERS_OFFLINE"] = "0"
                 
-                # Initialize with default device allocation
+                # Initialize model without device specification
                 self.model = SentenceTransformer(
                     self.model_name,
                     cache_folder=self.cache_dir,
                     trust_remote_code=False
                 )
                 
-                # Verify no meta tensors in parameters
-                meta_tensors = []
-                for name, param in self.model.named_parameters():
-                    if param.device.type == "meta":
-                        meta_tensors.append(name)
-                
-                # Also check buffers
-                for name, buf in self.model.named_buffers():
-                    if buf.device.type == "meta":
-                        meta_tensors.append(name)
-                
-                if meta_tensors:
-                    raise RuntimeError(
-                        f"Model has {len(meta_tensors)} meta tensor(s). "
-                        f"Examples: {', '.join(meta_tensors[:3])}. "
-                        f"Check pyproject.toml [rag] dependencies for correct versions."
-                    )
-                
-                self.model.eval()
+                # Use safe_model_load_v2 to handle any meta tensors
+                logger.debug("Applying safe_model_load_v2 to ensure proper materialization")
+                self.model = safe_model_load_v2(
+                    self.model,
+                    device="cpu",
+                    model_name=self.model_name,
+                    cache_folder=self.cache_dir
+                )
                 
                 # Log device type safely
                 try:

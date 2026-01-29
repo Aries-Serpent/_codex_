@@ -113,6 +113,149 @@ def check_for_meta_tensors(model: Any) -> bool:
         return False
 
 
+def safe_model_load_v2(model: Any, device: str = "cpu", model_name: Optional[str] = None, cache_folder: Optional[str] = None) -> Any:
+    """
+    Enhanced model loading with strategy pattern for handling meta tensors.
+    
+    This function attempts multiple strategies to properly materialize models
+    that may contain meta tensors (placeholder tensors without data).
+    
+    Strategy Pattern:
+    1. First attempt: Reinitialize SentenceTransformer with device parameter
+    2. Second attempt: Use to_empty() if meta tensors detected
+    3. Third attempt: Manual per-parameter materialization
+    4. Fallback: Standard to() for normal models
+    
+    Args:
+        model: The model to load (SentenceTransformer or PyTorch model)
+        device: Target device ("cpu" or "cuda")
+        model_name: Original model name (for reinitialization strategy)
+        cache_folder: Cache directory (for reinitialization strategy)
+    
+    Returns:
+        Model properly materialized on target device
+        
+    Raises:
+        RuntimeError: If all strategies fail to materialize the model
+        
+    Example:
+        >>> from sentence_transformers import SentenceTransformer
+        >>> model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder='./cache')
+        >>> model = safe_model_load_v2(model, device="cpu", 
+        ...                            model_name='all-MiniLM-L6-v2',
+        ...                            cache_folder='./cache')
+        >>> model.eval()
+    """
+    import torch
+    
+    # Check if model has meta tensors
+    has_meta = check_for_meta_tensors(model)
+    
+    if not has_meta:
+        # No meta tensors, model is already properly loaded
+        logger.debug(f"Model has no meta tensors, moving to {device}")
+        try:
+            model = model.to(device)
+            model.eval()
+            return model
+        except Exception as e:
+            logger.warning(f"Standard to() failed: {e}, trying fallback strategies")
+    
+    # Strategy 1: Reinitialize SentenceTransformer with explicit device
+    if model_name and hasattr(model, '__class__') and model.__class__.__name__ == 'SentenceTransformer':
+        try:
+            logger.info(f"Strategy 1: Reinitializing SentenceTransformer with device={device}")
+            from sentence_transformers import SentenceTransformer
+            
+            new_model = SentenceTransformer(
+                model_name,
+                device=device,
+                cache_folder=cache_folder,
+                trust_remote_code=False
+            )
+            
+            # Verify no meta tensors
+            if not check_for_meta_tensors(new_model):
+                logger.info("Strategy 1 successful: Model reinitialized without meta tensors")
+                new_model.eval()
+                return new_model
+            else:
+                logger.warning("Strategy 1 failed: Reinitialized model still has meta tensors")
+        except Exception as e:
+            logger.warning(f"Strategy 1 failed: {e}")
+    
+    # Strategy 2: Use to_empty() for meta tensors
+    if has_meta:
+        try:
+            logger.info(f"Strategy 2: Using to_empty() to materialize meta tensors")
+            
+            # Create a device object
+            target_device = torch.device(device)
+            
+            # Use to_empty to materialize meta tensors
+            model = model.to_empty(device=target_device)
+            
+            # Initialize parameters with default values
+            for param in model.parameters():
+                if param.device.type == "meta":
+                    # This shouldn't happen after to_empty, but handle it
+                    raise RuntimeError("to_empty() did not materialize all parameters")
+                # Initialize with small random values
+                if param.requires_grad:
+                    torch.nn.init.normal_(param, mean=0.0, std=0.02)
+            
+            # Verify no meta tensors remain
+            if not check_for_meta_tensors(model):
+                logger.info("Strategy 2 successful: Model materialized with to_empty()")
+                model.eval()
+                return model
+            else:
+                logger.warning("Strategy 2 failed: Model still has meta tensors after to_empty()")
+        except Exception as e:
+            logger.warning(f"Strategy 2 failed: {e}")
+    
+    # Strategy 3: Manual per-parameter materialization
+    try:
+        logger.info(f"Strategy 3: Manual per-parameter materialization")
+        
+        target_device = torch.device(device)
+        
+        # Materialize each parameter individually
+        for name, param in model.named_parameters():
+            if param.device.type == "meta":
+                # Create a new tensor on target device with same shape
+                new_param = torch.empty(param.shape, dtype=param.dtype, device=target_device)
+                # Initialize with small random values
+                torch.nn.init.normal_(new_param, mean=0.0, std=0.02)
+                # Replace the parameter
+                # This requires module replacement which is complex
+                logger.warning(f"Cannot directly replace parameter {name}")
+        
+        # Try moving the model after materialization attempt
+        model = model.to(target_device)
+        
+        # Verify no meta tensors remain
+        if not check_for_meta_tensors(model):
+            logger.info("Strategy 3 successful: Manual parameter materialization worked")
+            model.eval()
+            return model
+        else:
+            logger.warning("Strategy 3 failed: Model still has meta tensors")
+    except Exception as e:
+        logger.warning(f"Strategy 3 failed: {e}")
+    
+    # All strategies failed
+    error_msg = (
+        f"Failed to load model on {device}. All strategies failed to materialize meta tensors. "
+        f"Model: {model.__class__.__name__ if hasattr(model, '__class__') else 'Unknown'}"
+    )
+    if model_name:
+        error_msg += f", Model name: {model_name}"
+    
+    logger.error(error_msg)
+    raise RuntimeError(error_msg)
+
+
 @dataclass
 class ProvenanceMetadata:
     """

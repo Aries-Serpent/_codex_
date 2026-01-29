@@ -222,7 +222,7 @@ class TestFileOperationBranches:
     def test_file_exists_check_true_branch(self) -> None:
         """Test file exists check - true branch."""
         with patch.object(Path, "exists", return_value=True):
-            path = Path("/tmp/test.txt")
+            path = Path("test.txt")  # Relative path avoids OS-specific issues
             if path.exists():
                 action = "read"
             else:
@@ -232,7 +232,7 @@ class TestFileOperationBranches:
     def test_file_exists_check_false_branch(self) -> None:
         """Test file exists check - false branch."""
         with patch.object(Path, "exists", return_value=False):
-            path = Path("/tmp/nonexistent.txt")
+            path = Path("nonexistent.txt")  # Relative path avoids OS-specific issues
             if path.exists():
                 action = "read"
             else:
@@ -242,7 +242,7 @@ class TestFileOperationBranches:
     def test_file_is_file_branch(self) -> None:
         """Test is_file check - true branch."""
         with patch.object(Path, "is_file", return_value=True):
-            path = Path("/tmp/file.txt")
+            path = Path("file.txt")  # Relative path avoids OS-specific issues
             if path.is_file():
                 obj_type = "file"
             elif path.is_dir():
@@ -254,7 +254,7 @@ class TestFileOperationBranches:
     def test_file_is_directory_branch(self) -> None:
         """Test is_dir check - true branch."""
         with patch.object(Path, "is_dir", return_value=True):
-            path = Path("/tmp/")
+            path = Path(".")  # Current directory, portable across platforms
             with patch.object(Path, "is_file", return_value=False):
                 if path.is_file():
                     obj_type = "file"
