@@ -60,6 +60,9 @@ def load_checkpoint() -> int:
     """
     Load and display the most recent checkpoint.
 
+    Checkpoints are sorted by their embedded timestamp to ensure correct
+    chronological ordering regardless of iteration naming convention.
+
     Returns:
         Exit code (0 for success)
     """
@@ -67,15 +70,31 @@ def load_checkpoint() -> int:
         print("No checkpoints found")
         return 0
 
-    checkpoints = sorted(CHECKPOINT_DIR.glob("iteration_*.json"))
+    checkpoint_files = list(CHECKPOINT_DIR.glob("iteration_*.json"))
 
-    if checkpoints:
-        latest = checkpoints[-1]
-        data = json.loads(latest.read_text())
-        print(f"Last checkpoint: {data['iteration']} at {data['timestamp']}")
-        print(f"Files modified: {data['files_modified']}")
-    else:
+    if not checkpoint_files:
         print("No checkpoints found")
+        return 0
+
+    # Sort by timestamp from file contents for correct chronological ordering
+    checkpoints_with_ts = []
+    for f in checkpoint_files:
+        try:
+            data = json.loads(f.read_text())
+            checkpoints_with_ts.append((data.get("timestamp", ""), f, data))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+    if not checkpoints_with_ts:
+        print("No valid checkpoints found")
+        return 0
+
+    # Sort by timestamp and get the latest
+    checkpoints_with_ts.sort(key=lambda x: x[0])
+    _, latest_file, data = checkpoints_with_ts[-1]
+
+    print(f"Last checkpoint: {data['iteration']} at {data['timestamp']}")
+    print(f"Files modified: {data['files_modified']}")
 
     return 0
 
