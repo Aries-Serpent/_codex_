@@ -30,7 +30,7 @@ try:
         reset_metrics,
     )
     from .retriever import CachedRetriever, LRUCache, MultiIndexRetriever, Retriever
-    from .utils import ProvenanceMetadata, safe_model_load
+    from .utils import ProvenanceMetadata
 
     _expanded_context_available = True
 except ImportError:
@@ -98,7 +98,6 @@ if _expanded_context_available:
             "CachedRetriever",
             "LRUCache",
             # Utils
-            "safe_model_load",
             "ProvenanceMetadata",
             # Monitoring
             "RAGMetrics",

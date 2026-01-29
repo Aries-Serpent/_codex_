@@ -88,16 +88,12 @@ class Retriever:
                 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
                 os.environ["TRANSFORMERS_OFFLINE"] = "0"
                 
-                # Initialize with explicit device
-                with torch.device('cpu'):
-                    self.model = SentenceTransformer(
-                        self.model_name,
-                        cache_folder=self.cache_dir,
-                        device="cpu",
-                        trust_remote_code=False
-                    )
-                
-                self.model = self.model.to('cpu')
+                # Initialize with default device allocation
+                self.model = SentenceTransformer(
+                    self.model_name,
+                    cache_folder=self.cache_dir,
+                    trust_remote_code=False
+                )
                 
                 # Verify no meta tensors in parameters
                 meta_tensors = []
