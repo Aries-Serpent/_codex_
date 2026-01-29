@@ -140,7 +140,7 @@ def embed_chunks(
                 f"Ensure sentence-transformers and torch versions are compatible."
             )
         
-        logger.debug(f"Model verification: {cpu_tensors} tensors on CPU, 0 meta tensors")
+        logger.debug(f"Model verification complete: {cpu_tensors} tensors successfully placed on CPU")
         
         model.eval()
         
