@@ -123,8 +123,7 @@ def safe_model_load_v2(model: Any, device: str = "cpu", model_name: Optional[str
     Strategy Pattern:
     1. First attempt: Reinitialize SentenceTransformer with device parameter
     2. Second attempt: Use to_empty() if meta tensors detected
-    3. Third attempt: Manual per-parameter materialization
-    4. Fallback: Standard to() for normal models
+    3. Fallback: Standard to() for normal models
     
     Args:
         model: The model to load (SentenceTransformer or PyTorch model)
@@ -192,17 +191,13 @@ def safe_model_load_v2(model: Any, device: str = "cpu", model_name: Optional[str
             # Create a device object
             target_device = torch.device(device)
             
-            # Use to_empty to materialize meta tensors
+            # Use to_empty to materialize meta tensors without loading weights
+            # This creates uninitialized tensors on the target device
             model = model.to_empty(device=target_device)
             
-            # Initialize parameters with default values
-            for param in model.parameters():
-                if param.device.type == "meta":
-                    # This shouldn't happen after to_empty, but handle it
-                    raise RuntimeError("to_empty() did not materialize all parameters")
-                # Initialize with small random values
-                if param.requires_grad:
-                    torch.nn.init.normal_(param, mean=0.0, std=0.02)
+            # Note: For pre-trained models, we rely on the model's own initialization
+            # or loading mechanism. We don't reinitialize parameters here as that
+            # would destroy pre-trained weights.
             
             # Verify no meta tensors remain
             if not check_for_meta_tensors(model):
@@ -214,29 +209,17 @@ def safe_model_load_v2(model: Any, device: str = "cpu", model_name: Optional[str
         except Exception as e:
             logger.warning(f"Strategy 2 failed: {e}")
     
-    # Strategy 3: Manual per-parameter materialization
+    # Strategy 3: Try standard to() as last resort
+    # This works for models that appear to have meta tensors but can still be moved
     try:
-        logger.info(f"Strategy 3: Manual per-parameter materialization")
+        logger.info(f"Strategy 3: Attempting standard to() operation")
         
         target_device = torch.device(device)
-        
-        # Materialize each parameter individually
-        for name, param in model.named_parameters():
-            if param.device.type == "meta":
-                # Create a new tensor on target device with same shape
-                new_param = torch.empty(param.shape, dtype=param.dtype, device=target_device)
-                # Initialize with small random values
-                torch.nn.init.normal_(new_param, mean=0.0, std=0.02)
-                # Replace the parameter
-                # This requires module replacement which is complex
-                logger.warning(f"Cannot directly replace parameter {name}")
-        
-        # Try moving the model after materialization attempt
         model = model.to(target_device)
         
         # Verify no meta tensors remain
         if not check_for_meta_tensors(model):
-            logger.info("Strategy 3 successful: Manual parameter materialization worked")
+            logger.info("Strategy 3 successful: Standard to() operation worked")
             model.eval()
             return model
         else:

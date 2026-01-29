@@ -114,18 +114,19 @@ class TestSafeModelLoadV2:
                 new_model.eval.return_value = new_model
                 mock_st.return_value = new_model
                 
-                result = safe_model_load_v2(
-                    mock_model,
-                    device="cpu",
-                    model_name="test-model",
-                    cache_folder="/tmp/cache"
-                )
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    result = safe_model_load_v2(
+                        mock_model,
+                        device="cpu",
+                        model_name="test-model",
+                        cache_folder=tmpdir
+                    )
                 
                 # Should call SentenceTransformer with device parameter
                 mock_st.assert_called_once_with(
                     "test-model",
                     device="cpu",
-                    cache_folder="/tmp/cache",
+                    cache_folder=tmpdir,
                     trust_remote_code=False
                 )
                 assert result is new_model
@@ -137,8 +138,9 @@ class TestSafeModelLoadV2:
         with torch.device('meta'):
             model = torch.nn.Linear(10, 5)
         
-        # Strategy 2 should fail for Linear because we can't reinitialize params properly
-        # This tests that the function handles failure gracefully
+        # Strategy 2 should handle meta tensors using to_empty()
+        # For simple models like Linear, this may still fail if weights aren't properly loaded
+        # This tests that the function handles the failure gracefully
         with pytest.raises(RuntimeError, match="Failed to load model"):
             safe_model_load_v2(model, device="cpu")
 
@@ -161,19 +163,28 @@ class TestSafeModelLoadV2:
         assert result is not None
         assert next(result.parameters()).device.type == "cpu"
 
-    def test_cuda_device_fallback_to_cpu(self):
-        """Test CUDA device request falls back gracefully when CUDA unavailable"""
+    def test_cuda_device_when_unavailable(self):
+        """Test behavior when CUDA device requested but unavailable"""
         model = torch.nn.Linear(10, 5)
         
         if not torch.cuda.is_available():
-            # Should either work with CPU or fail gracefully
+            # When CUDA is not available, the function may fall back or raise an error
+            # depending on PyTorch behavior. Test that it handles this gracefully.
             try:
                 result = safe_model_load_v2(model, device="cuda")
-                # If it succeeds, check it's on some device
+                # If it succeeds, verify the result is valid
                 assert result is not None
+                # It may have fallen back to CPU
+                device_type = next(result.parameters()).device.type
+                assert device_type in ["cuda", "cpu"]
             except (RuntimeError, AssertionError):
-                # Expected when CUDA is not available
+                # This is acceptable when CUDA is not available
                 pass
+        else:
+            # If CUDA is available, it should work
+            result = safe_model_load_v2(model, device="cuda")
+            assert result is not None
+            assert next(result.parameters()).device.type == "cuda"
 
 
 class TestProvenanceMetadata:
