@@ -15,6 +15,11 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+try:
+    from openai import OpenAI
+except ImportError:  # pragma: no cover - optional dependency
+    OpenAI = None
+
 
 class EmbeddingProvider(Protocol):
     """Protocol for embedding providers."""
@@ -159,14 +164,12 @@ class OpenAIEmbeddingProvider:
 
     def _initialize_client(self, api_key: str) -> None:
         """Initialize OpenAI client."""
-        try:
-            from openai import OpenAI
-
-            self.client = OpenAI(api_key=api_key)
-            logger.info(f"Initialized OpenAI client with model: {self.model_name}")
-        except ImportError:
+        if OpenAI is None:
             logger.error("openai package not installed. Install with: pip install openai")
-            raise
+            raise ImportError("openai package not installed")
+
+        self.client = OpenAI(api_key=api_key)
+        logger.info(f"Initialized OpenAI client with model: {self.model_name}")
 
     def encode(self, texts: List[str], batch_size: int = 100, **kwargs) -> np.ndarray:
         """
@@ -260,11 +263,9 @@ class CachedEmbeddingProvider:
         Returns:
             numpy array of embeddings
         """
-        # Generate cache key if not provided
-        if not cache_key:
-            # Hash all texts together
-            combined = "\n".join(texts)
-            cache_key = hashlib.sha256(combined.encode()).hexdigest()
+        if cache_key is None:
+            logger.debug("No cache key provided; bypassing cache")
+            return self.provider.encode(texts, **kwargs)
 
         cache_file = self.cache_dir / f"{cache_key}.npz"
         metadata_file = self.cache_dir / f"{cache_key}.meta.json"

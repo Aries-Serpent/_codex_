@@ -763,3 +763,9 @@ Executed comprehensive QA walkthrough to update all `.codex/qa_walkthrough/` fil
 
 ### Status
 ✅ PHASE 21.1 COMPLETE
+
+
+### 2026-01-29T19:41:07Z - RAG test remediation
+- Fixed RAG optional dependency mocks and caching behavior.
+- Updated RAG indexer chunking guardrails for small chunks.
+- Added Codex test execution report for RAG suites.

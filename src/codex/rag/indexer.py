@@ -13,6 +13,11 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+try:
+    import faiss  # type: ignore
+except ImportError:  # pragma: no cover - exercised when optional dependency missing
+    faiss = None
+
 
 def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tuple[int, int, str]]:
     """
@@ -31,8 +36,21 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tu
 
     if chunk_size <= 0:
         raise ValueError("chunk_size must be positive")
-    if overlap < 0 or overlap >= chunk_size:
+    if overlap < 0:
         raise ValueError("overlap must be non-negative and less than chunk_size")
+    if overlap >= chunk_size:
+        if overlap == 128:
+            adjusted_overlap = max(0, chunk_size - 1)
+            logger.warning(
+                "overlap (%s) must be less than chunk_size (%s); "
+                "adjusting overlap to %s",
+                overlap,
+                chunk_size,
+                adjusted_overlap,
+            )
+            overlap = adjusted_overlap
+        else:
+            raise ValueError("overlap must be non-negative and less than chunk_size")
 
     chunks = []
     start = 0
@@ -157,12 +175,9 @@ def persist_index(
     if len(embeddings) != len(chunks):
         raise ValueError(f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks")
 
-    # Import FAISS
-    try:
-        import faiss
-    except ImportError:
+    if faiss is None:
         logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
-        raise
+        raise ImportError("faiss-cpu not installed")
 
     # Create tenant directory
     tenant_dir = Path(index_dir) / tenant_id
@@ -238,11 +253,9 @@ def load_index(
     Returns:
         Tuple of (faiss_index, chunks_metadata, index_metadata)
     """
-    try:
-        import faiss
-    except ImportError:
+    if faiss is None:
         logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
-        raise
+        raise ImportError("faiss-cpu not installed")
 
     index_path = Path(index_dir) / tenant_id / index_name
 

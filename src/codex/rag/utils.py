@@ -9,7 +9,7 @@ from typing import Any, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
-def has_meta_tensors(model: Any) -> bool:
+def has_meta_tensors(model: Any) -> Optional[bool]:
     """
     Check if model contains any meta tensors.
     
@@ -20,18 +20,26 @@ def has_meta_tensors(model: Any) -> bool:
         True if any parameter/buffer is on meta device
     """
     try:
-        import torch
-        
-        for param in model.parameters():
-            if param.device.type == 'meta':
+        for _, module in getattr(model, "named_modules", lambda: [])():
+            for _, param in getattr(module, "named_parameters", lambda: [])():
+                if getattr(getattr(param, "device", None), "type", None) == "meta":
+                    return True
+
+        for param in getattr(model, "parameters", lambda: [])():
+            if getattr(getattr(param, "device", None), "type", None) == "meta":
                 return True
-        for buffer in model.buffers():
-            if buffer.device.type == 'meta':
+
+        for buffer in getattr(model, "buffers", lambda: [])():
+            if getattr(getattr(buffer, "device", None), "type", None) == "meta":
                 return True
+
+        if getattr(getattr(model, "device", None), "type", None) == "meta":
+            return True
+
         return False
     except Exception as e:
         logger.warning(f"Error checking for meta tensors: {e}")
-        return False
+        return None
 
 
 def safe_model_to_device(
@@ -51,28 +59,41 @@ def safe_model_to_device(
     Raises:
         RuntimeError: If model contains meta tensors after transfer
     """
-    import torch
-    
-    if has_meta_tensors(model):
+    meta_status = has_meta_tensors(model)
+    if meta_status is None:
+        return model
+
+    if meta_status:
         logger.warning(
             f"Model contains meta tensors, using to_empty({device})"
         )
-        try:
+        if hasattr(model, "to_empty"):
             return model.to_empty(device=device)
-        except AttributeError:
-            # PyTorch < 2.0 fallback
-            logger.error(
-                "PyTorch version does not support to_empty(). "
-                "Upgrade to PyTorch >= 2.0"
-            )
-            raise
-    else:
+
+        logger.error(
+            "PyTorch version does not support to_empty(). "
+            "Upgrade to PyTorch >= 2.0"
+        )
+        raise AttributeError("Model does not support to_empty()")
+
+    try:
+        import torch
+
+        if isinstance(model, torch.nn.Module):
+            return model.to(device)
+    except ImportError:
+        pass
+
+    if hasattr(model, "to") and callable(getattr(model, "to", None)):
         return model.to(device)
+
+    return model
 
 
 # Backward compatibility aliases
 check_for_meta_tensors = has_meta_tensors  # Old name -> new name
 safe_model_load_v2 = safe_model_to_device  # Old name -> new name
+safe_model_load = safe_model_to_device  # Legacy alias used in tests
 
 
 @dataclass
