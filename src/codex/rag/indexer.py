@@ -112,8 +112,7 @@ def embed_chunks(
             trust_remote_code=False
         )
         
-        # Verify model loaded correctly WITHOUT calling .to()
-        # The device parameter already handles placement
+        # Verify model loaded correctly with default device allocation
         meta_tensors = []
         cpu_tensors = 0
         
