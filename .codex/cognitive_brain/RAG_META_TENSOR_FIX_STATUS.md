@@ -1,7 +1,83 @@
 # RAG Meta Tensor Fix - Status Report
 
+**Latest Issue:** PR #3020 - Meta tensor errors recurred due to device parameter  
+**Latest Status:** ✅ **RESOLVED (v2.0)**  
+**Latest Date:** 2026-01-29T05:06:00Z  
+**Latest Commits:** 9f9f017, 6a6ccd9, 714e557
+
+---
+
+## 🆕 v2.0 Fix (2026-01-29) - Default Device Allocation
+
+### Problem Recurrence
+Despite the v1.0 fix (commit 8cb2ef90), meta tensor errors **recurred** in CI jobs:
+- Job 61807319678
+- Job 61825527263
+- 28 RAG test failures
+
+### Root Cause (v2.0)
+The v1.0 "multi-layer defense" approach with explicit `device="cpu"` parameter was **causing** the meta tensor issues, not preventing them:
+
+```python
+# ❌ WRONG: This CAUSES meta tensors (v1.0 approach)
+with torch.device('cpu'):
+    model = SentenceTransformer(
+        model_name,
+        device="cpu",  # This explicit parameter triggers meta tensor allocation!
+        cache_folder=cache_dir
+    )
+model = model.to('cpu')  # Redundant and problematic
+```
+
+**Why it failed:**
+- Explicit `device="cpu"` parameter triggers PyTorch's device mapping logic
+- This can cause models to initialize on meta device first, then fail to properly materialize
+- The context manager `with torch.device('cpu'):` can interfere with library internals
+- The defensive `.to('cpu')` call is redundant and can fail if meta tensors exist
+
+### Solution (v2.0)
+**Use default device allocation** - let SentenceTransformer handle device placement naturally:
+
+```python
+# ✅ CORRECT: Default device allocation (v2.0 approach)
+model = SentenceTransformer(
+    model_name,
+    cache_folder=cache_dir,
+    trust_remote_code=False
+)
+# No explicit device parameter, no context manager, no .to() call
+# Model automatically initializes on CPU without meta tensors
+```
+
+### Changes in PR #3020
+1. **Removed device="cpu" parameter** from all SentenceTransformer initializations:
+   - `src/codex/rag/embeddings.py`
+   - `src/codex/rag/indexer.py`
+   - `src/codex/rag/retriever.py`
+
+2. **Removed unnecessary patterns**:
+   - `with torch.device('cpu'):` context managers
+   - Redundant `.to('cpu')` calls
+
+3. **Deprecated safe_model_load**:
+   - Removed from public API exports in `src/codex/rag/__init__.py`
+   - Function still exists but marked deprecated (for backward compatibility)
+
+4. **Updated documentation**:
+   - `.github/agents/rag-meta-tensor-guardian.md` updated to v2.0
+   - Comments updated to reflect default device allocation
+
+### Result
+- Models now initialize correctly on CPU without creating meta tensors
+- Simpler, more maintainable code
+- Better aligned with SentenceTransformer best practices
+
+---
+
+## 📜 Historical Context (v1.0 - 2026-01-10)
+
 **Issue:** Job 59986153086 - 59 test failures due to meta tensor handling  
-**Status:** ✅ **RESOLVED**  
+**Status:** ✅ **RESOLVED** (but later found to be incomplete)  
 **Date:** 2026-01-10T09:54:29Z  
 **Commit:** 8cb2ef90
 

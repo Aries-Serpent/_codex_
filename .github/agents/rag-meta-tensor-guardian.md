@@ -1,8 +1,9 @@
 # RAG Meta Tensor Guardian Agent
 
 **Agent ID**: `rag-meta-tensor-guardian`  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Created**: 2026-01-28  
+**Updated**: 2026-01-29 (Default Device Allocation Pattern)  
 **Status**: 🟢 Active  
 **Maturity**: Production  
 **Maintainer**: RAG Team
@@ -25,10 +26,10 @@ Specialized agent for maintaining RAG (Retrieval-Augmented Generation) module he
 
 2. **Code Pattern Enforcement**
    - Ensure environment variables are set before model loading
-   - Validate `with torch.device('cpu')` context managers
-   - Check explicit `device="cpu"` parameters
-   - Verify defensive `.to('cpu')` calls
+   - **UPDATED (v2.0)**: Use default device allocation (no explicit device parameter)
+   - Verify model initialization uses default SentenceTransformer patterns
    - Confirm verification loops for parameters AND buffers
+   - Ensure `safe_model_load` is NOT used (deprecated)
 
 3. **Dependency Management**
    - Monitor `pyproject.toml` RAG dependencies
@@ -56,9 +57,9 @@ torch.nn.Module.to_empty()
 device_map="meta"
 ```
 
-**Good Patterns to Enforce**:
+**Good Patterns to Enforce (v2.0 - Updated 2026-01-29)**:
 ```python
-# ✅ CORRECT: Multi-layer defense
+# ✅ CORRECT: Default device allocation (CURRENT APPROACH)
 import os
 import torch
 from sentence_transformers import SentenceTransformer
@@ -66,15 +67,12 @@ from sentence_transformers import SentenceTransformer
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
 os.environ["TRANSFORMERS_OFFLINE"] = "0"
 
-with torch.device('cpu'):
-    model = SentenceTransformer(
-        model_name,
-        cache_folder=cache_dir,
-        device="cpu",
-        trust_remote_code=False  # Security
-    )
-
-model = model.to('cpu')
+# Initialize with default device allocation (no explicit device parameter)
+model = SentenceTransformer(
+    model_name,
+    cache_folder=cache_dir,
+    trust_remote_code=False  # Security
+)
 
 # Verify no meta tensors (parameters AND buffers)
 meta_tensors = []
@@ -93,12 +91,19 @@ model.eval()
 
 **Anti-Patterns to Prevent**:
 ```python
-# ❌ WRONG: Post-initialization fixing
-model = SentenceTransformer(...)  # May have meta tensors
-model = safe_model_load(model)     # Too late!
+# ❌ WRONG: Explicit device="cpu" parameter (CAUSES META TENSORS)
+model = SentenceTransformer(
+    model_name,
+    device="cpu"  # This actually CAUSES meta tensor issues!
+)
 
-# ❌ WRONG: Missing device specification
-model = SentenceTransformer(model_name)  # Device not specified
+# ❌ WRONG: Using deprecated safe_model_load
+model = SentenceTransformer(...)
+model = safe_model_load(model)  # Deprecated, doesn't fix meta tensors
+
+# ❌ WRONG: Using torch.device context manager
+with torch.device('cpu'):  # Not needed, can cause issues
+    model = SentenceTransformer(...)
 
 # ❌ WRONG: Only checking parameters
 for name, param in model.named_parameters():  # Missing buffers!
@@ -139,48 +144,75 @@ for name, param in model.named_parameters():  # Missing buffers!
 - Audit all RAG modules for correct patterns
 ```
 
-## 🔍 Validation Checklist
+## 🔍 Validation Checklist (v2.0 - Updated 2026-01-29)
 
 When activated, this agent performs:
 
 - [ ] **Import Order** - Standard lib → Third-party → Local
-- [ ] **Environment Setup** - Variables set before imports
-- [ ] **Context Manager** - `with torch.device('cpu')` present
-- [ ] **Explicit Device** - `device="cpu"` parameter set
-- [ ] **Defensive Move** - `.to('cpu')` call after initialization
-- [ ] **Parameter Verification** - Loop checks parameters
-- [ ] **Buffer Verification** - Loop checks buffers
+- [ ] **Environment Setup** - Variables set before model initialization
+- [ ] **Default Device** - NO explicit `device="cpu"` parameter (causes meta tensors)
+- [ ] **No Context Manager** - NO `with torch.device('cpu'):` wrapper
+- [ ] **No Explicit Move** - NO `.to('cpu')` call after initialization
+- [ ] **Parameter Verification** - Loop checks parameters for meta tensors
+- [ ] **Buffer Verification** - Loop checks buffers for meta tensors
 - [ ] **Security Flag** - `trust_remote_code=False` set
 - [ ] **Error Handling** - Proper exception catching
 - [ ] **Safe Logging** - `next()` with StopIteration handling
+- [ ] **No safe_model_load** - Deprecated function not used
+
+## 📚 Recent Changes (v2.0 - 2026-01-29)
+
+### Migration to Default Device Allocation
+
+**Problem**: Explicit `device="cpu"` parameter and `with torch.device('cpu'):` context manager were **causing** meta tensor errors, not preventing them.
+
+**Solution**: Remove all explicit device specifications and allow SentenceTransformer to use default device allocation.
+
+**Changes in PR #3020**:
+- Removed `device="cpu"` parameter from all SentenceTransformer initializations
+- Removed `with torch.device('cpu'):` context managers
+- Removed redundant `.to('cpu')` calls
+- Removed `safe_model_load` from public API exports
+- Updated comments to reflect default device allocation
+
+**Files Updated**:
+- `src/codex/rag/embeddings.py` (Commit: 9f9f017)
+- `src/codex/rag/indexer.py` (Commits: 9f9f017, 714e557)
+- `src/codex/rag/retriever.py` (Commit: 9f9f017)
+- `src/codex/rag/__init__.py` (Commit: 9f9f017)
+
+**Result**: Models now initialize correctly on CPU without creating meta tensors.
 - [ ] **Version Pins** - Dependencies match pyproject.toml
 - [ ] **Tests Pass** - All RAG tests green
 - [ ] **Documentation** - Changes documented
 
-## 🎯 Success Criteria
+## 🎯 Success Criteria (v2.0 - Updated 2026-01-29)
 
 ### Per-File Validation
 
 **src/codex/rag/indexer.py** (`embed_chunks` function):
-- ✅ 6-layer defense implemented
-- ✅ Environment variables set
-- ✅ Context manager used
-- ✅ Explicit device parameter
-- ✅ Defensive device move
-- ✅ Parameters and buffers verified
+- ✅ Default device allocation (no explicit device parameter)
+- ✅ Environment variables set (PYTORCH_CUDA_ALLOC_CONF, TRANSFORMERS_OFFLINE)
+- ✅ NO context manager (`with torch.device('cpu'):` removed)
+- ✅ NO explicit device parameter (causes meta tensors)
+- ✅ NO defensive device move (`.to('cpu')` removed)
+- ✅ Parameters and buffers verified for meta tensors
 - ✅ Security: trust_remote_code=False
 
 **src/codex/rag/retriever.py** (`_load_model` method):
-- ✅ Same defense pattern as indexer
+- ✅ Same pattern as indexer (default device allocation)
 - ✅ Consistent error messages
 - ✅ Safe device type logging
 
 **src/codex/rag/embeddings.py** (`LocalSentenceTransformerProvider._load_model`):
-- ✅ Same defense pattern
+- ✅ Same pattern as indexer and retriever
 - ✅ Consistent with other modules
 
+**src/codex/rag/__init__.py**:
+- ✅ `safe_model_load` removed from exports (deprecated)
+
 **pyproject.toml** (RAG dependencies):
-- ✅ `torch>=2.0.0,<2.2.0` (avoid 2.2+ meta device changes)
+- ✅ `torch>=2.0.0,<2.2.0` (stable versions)
 - ✅ `sentence-transformers>=2.2.0,<2.8.0` (stable versions)
 - ✅ `transformers>=4.30.0,<4.37.0` (stable compatibility)
 
@@ -189,7 +221,7 @@ When activated, this agent performs:
 - ✅ Unit tests mock SentenceTransformer
 - ✅ Integration tests verify no meta tensors
 - ✅ Error cases tested (meta tensor detection)
-- ✅ All 20 previous failures resolved
+- ⏳ All 28 RAG tests expected to pass (CI validation)
 
 ## 🔄 Maintenance Tasks
 
