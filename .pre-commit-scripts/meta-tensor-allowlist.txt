@@ -1,0 +1,14 @@
+# Meta Tensor Validation Allowlist
+# Files matching these patterns will skip meta tensor checks
+# One pattern per line, supports substring matching
+
+# Test files (checked by pattern in script, but listed here for documentation)
+# tests/
+# *_test.py
+# test_*.py
+
+# Legacy code that will be refactored later
+# (Add specific files here as needed)
+
+# Example:
+# legacy/old_model_loader.py

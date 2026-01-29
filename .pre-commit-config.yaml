@@ -158,6 +158,15 @@ repos:
         types: [python]
         files: ^tests/.*\.py$
         pass_filenames: false
+
+      # Meta Tensor Validator - Prevent PyTorch meta tensor issues
+      - id: check-meta-tensors
+        name: Meta Tensor Validator (PyTorch model loading patterns)
+        entry: python .pre-commit-scripts/check-meta-tensors.py
+        language: system
+        types: [python]
+        files: ^(src/|scripts/).*\.py$
+        pass_filenames: true
         # Fails if high-severity issues found (mock exhaustion, serialization problems)
 
       # Config Validator - Hydra config integrity
