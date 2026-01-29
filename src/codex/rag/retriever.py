@@ -14,6 +14,10 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:  # pragma: no cover - optional dependency
+    SentenceTransformer = None
 
 class Retriever:
     """
@@ -76,51 +80,35 @@ class Retriever:
 
     def _load_model(self):
         """Load embedding model for query encoding."""
-        try:
-            import os
-            
-            import torch
-            from sentence_transformers import SentenceTransformer
-            from codex.rag.utils import safe_model_load_v2
-
-            logger.info(f"Loading query embedding model: {self.model_name}")
-            try:
-                # Force environment settings
-                os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
-                os.environ["TRANSFORMERS_OFFLINE"] = "0"
-                
-                # Initialize model without device specification
-                self.model = SentenceTransformer(
-                    self.model_name,
-                    cache_folder=self.cache_dir,
-                    trust_remote_code=False
-                )
-                
-                # Use safe_model_load_v2 to handle any meta tensors
-                logger.debug("Applying safe_model_load_v2 to ensure proper materialization")
-                self.model = safe_model_load_v2(
-                    self.model,
-                    device="cpu",
-                    model_name=self.model_name,
-                    cache_folder=self.cache_dir
-                )
-                
-                # Log device type safely
-                try:
-                    device_type = next(self.model.parameters()).device.type
-                except StopIteration:
-                    device_type = "unknown"
-                logger.info(f"Model loaded on {device_type}")
-
-            except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-                logger.error(f"Failed to load query embedding model: {e}")
-                raise
-            
-        except ImportError:
+        if SentenceTransformer is None:
             logger.error(
                 "sentence-transformers not installed. "
                 "Install with: pip install sentence-transformers"
             )
+            raise ImportError("sentence-transformers not installed")
+
+        try:
+            import os
+
+            logger.info(f"Loading query embedding model: {self.model_name}")
+            # Force environment settings
+            os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+            os.environ["TRANSFORMERS_OFFLINE"] = "0"
+
+            # Let SentenceTransformer use default device allocation
+            # This avoids meta tensor errors by allowing the library to handle initialization
+            self.model = SentenceTransformer(
+                self.model_name,
+                cache_folder=self.cache_dir,
+                trust_remote_code=False,
+            )
+            # Model automatically initializes on CPU without meta tensors
+            self.model.eval()
+
+            logger.info("Model loaded successfully")
+
+        except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
+            logger.error(f"Failed to load query embedding model: {e}")
             raise
         except Exception as e:
             logger.error(f"Error loading embedding model: {e}")
@@ -170,7 +158,10 @@ class Retriever:
         results = []
         timestamp = datetime.now(UTC).isoformat()
 
-        for i, (idx, distance) in enumerate(zip(indices[0], distances[0])):
+        effective_top_k = min(top_k, len(indices[0]))
+        for i, (idx, distance) in enumerate(
+            zip(indices[0][:effective_top_k], distances[0][:effective_top_k])
+        ):
             # Skip invalid indices
             if idx < 0 or idx >= len(self.chunks_metadata):
                 continue

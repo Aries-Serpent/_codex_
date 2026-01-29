@@ -41,6 +41,10 @@ def temp_rag_workspace(tmp_path):
     return workspace
 
 
+def _touch_index_file(_index, path: str) -> None:
+    Path(path).touch()
+
+
 class TestEndToEndRAGPipeline:
     """Test complete RAG pipeline from indexing to retrieval."""
 
@@ -62,6 +66,7 @@ class TestEndToEndRAGPipeline:
         
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             index_path = persist_index(
                 index_name="test_index",
@@ -91,6 +96,7 @@ class TestEndToEndRAGPipeline:
         
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             mock_faiss.read_index.return_value = mock_index
             
             # Persist
@@ -260,6 +266,7 @@ class TestRAGMultiTenancy:
         
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             # Create indices for two tenants
             path1 = persist_index(
@@ -343,9 +350,9 @@ class TestRAGDataConsistency:
         text = "0123456789" * 10
         chunks = chunk_text(text, chunk_size=30, overlap=5)
         
-        for start, end, chunk_text in chunks:
+        for start, end, chunk_content in chunks:
             # Verify chunk matches original text
-            assert text[start:end].strip() == chunk_text
+            assert text[start:end].strip() == chunk_content
 
     def test_embedding_dimension_consistency(self):
         """Test embedding dimensions are consistent."""
@@ -376,6 +383,7 @@ class TestRAGDataConsistency:
         
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             index_path = persist_index(
                 index_name="test",

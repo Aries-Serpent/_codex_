@@ -15,6 +15,11 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+try:
+    from openai import OpenAI
+except ImportError:  # pragma: no cover - optional dependency
+    OpenAI = None
+
 
 class EmbeddingProvider(Protocol):
     """Protocol for embedding providers."""
@@ -58,9 +63,7 @@ class LocalSentenceTransformerProvider:
         try:
             import os
             
-            import torch
             from sentence_transformers import SentenceTransformer
-            from codex.rag.utils import safe_model_load_v2
 
             logger.info(f"Loading local embedding model: {self.model_name}")
             
@@ -68,29 +71,17 @@ class LocalSentenceTransformerProvider:
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             os.environ["TRANSFORMERS_OFFLINE"] = "0"
             
-            # Initialize model without device specification
-            logger.debug("Initializing SentenceTransformer")
+            # Let SentenceTransformer use default device allocation
+            # This avoids meta tensor errors by allowing the library to handle initialization
             self.model = SentenceTransformer(
                 self.model_name,
                 cache_folder=self.cache_dir,
                 trust_remote_code=False
             )
+            # Model automatically initializes on CPU without meta tensors
+            self.model.eval()
             
-            # Use safe_model_load_v2 to handle any meta tensors
-            logger.debug("Applying safe_model_load_v2 to ensure proper materialization")
-            self.model = safe_model_load_v2(
-                self.model,
-                device="cpu",
-                model_name=self.model_name,
-                cache_folder=self.cache_dir
-            )
-            
-            # Log device type safely
-            try:
-                device_type = next(self.model.parameters()).device.type
-            except StopIteration:
-                device_type = "unknown"
-            logger.info(f"Local embedding model loaded on {device_type}")
+            logger.info(f"Local embedding model loaded successfully")
             
         except ImportError:
             logger.error(
@@ -173,14 +164,12 @@ class OpenAIEmbeddingProvider:
 
     def _initialize_client(self, api_key: str) -> None:
         """Initialize OpenAI client."""
-        try:
-            from openai import OpenAI
-
-            self.client = OpenAI(api_key=api_key)
-            logger.info(f"Initialized OpenAI client with model: {self.model_name}")
-        except ImportError:
+        if OpenAI is None:
             logger.error("openai package not installed. Install with: pip install openai")
-            raise
+            raise ImportError("openai package not installed")
+
+        self.client = OpenAI(api_key=api_key)
+        logger.info(f"Initialized OpenAI client with model: {self.model_name}")
 
     def encode(self, texts: List[str], batch_size: int = 100, **kwargs) -> np.ndarray:
         """
@@ -274,11 +263,9 @@ class CachedEmbeddingProvider:
         Returns:
             numpy array of embeddings
         """
-        # Generate cache key if not provided
-        if not cache_key:
-            # Hash all texts together
-            combined = "\n".join(texts)
-            cache_key = hashlib.sha256(combined.encode()).hexdigest()
+        if cache_key is None:
+            logger.debug("No cache key provided; bypassing cache")
+            return self.provider.encode(texts, **kwargs)
 
         cache_file = self.cache_dir / f"{cache_key}.npz"
         metadata_file = self.cache_dir / f"{cache_key}.meta.json"
