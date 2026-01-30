@@ -61,6 +61,7 @@ class LocalSentenceTransformerProvider:
         """Load the embedding model."""
         try:
             import os
+            import torch
 
             from sentence_transformers import SentenceTransformer
 
@@ -69,8 +70,10 @@ class LocalSentenceTransformerProvider:
             # Use HF_TOKEN if available for authenticated downloads
             use_auth_token = os.environ.get('HF_TOKEN', False)
 
-            # CRITICAL FIX: Set device='cpu' during init to prevent meta tensor issues
-            # PyTorch 2.6+ with sentence-transformers 3.x creates meta tensors when device is not specified
+            # CRITICAL FIX: Force CPU device and prevent meta tensors
+            # Set default device to CPU before any model operations
+            torch.set_default_device('cpu')
+            
             self.model = SentenceTransformer(
                 self.model_name,
                 device='cpu',
@@ -78,9 +81,15 @@ class LocalSentenceTransformerProvider:
                 trust_remote_code=False,
                 use_auth_token=use_auth_token if use_auth_token else None
             )
+            
+            # Explicitly move all parameters to CPU (double-check)
+            self.model = self.model.to('cpu')
             self.model.eval()
+            
+            # Reset default device to avoid side effects
+            torch.set_default_device(None)
 
-            logger.info("Local embedding model loaded successfully")
+            logger.info(f"Local embedding model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
         except ImportError:
             logger.error(
