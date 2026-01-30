@@ -1,0 +1,13 @@
+==================== Copilot Agent Environment Report ====================
+Generated: 2026-01-30T18:44:48Z
+Environment Type: 
+Runner: Linux X64
+
+Python: Python 3.12.3
+Node: v20.20.0
+Rust: rustc 1.93.0 (254b59607 2026-01-19)
+
+Installed Packages: 85 packages
+Disk Space: 92G available
+
+Status: ✅ Environment ready for Copilot agent operations
