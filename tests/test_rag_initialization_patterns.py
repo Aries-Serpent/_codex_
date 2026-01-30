@@ -55,6 +55,9 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
 
     fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
+    # Also patch the module-level SentenceTransformer variable in retriever module
+    from codex.rag import retriever as retriever_module
+    monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls, instances=instances)
 
 
@@ -71,7 +74,8 @@ def test_local_provider_uses_default_device_allocation(
     tmp_path: Path,
 ) -> None:
     """Local provider should not pass a device override to SentenceTransformer."""
-    cache_dir = tmp_path.mktemp("rag_cache")
+    cache_dir = tmp_path / "rag_cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
     LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
     assert sentence_transformer_spy.calls
     _, kwargs = sentence_transformer_spy.calls[0]
