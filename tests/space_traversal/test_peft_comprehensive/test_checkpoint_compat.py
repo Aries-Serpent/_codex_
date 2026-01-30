@@ -4,27 +4,41 @@ Test Checkpoint Compat
 Test module for checkpoint compat.
 """
 
+import hashlib
+
 from codex_ml.utils import checkpoint_core as cc
 
 
 def test_load_legacy_checkpoint_without_version(tmp_path):
     path = tmp_path / "legacy.pt"
-    legacy_payload = {
-        "state": {"model_state": {"w": 1}},
-        "meta": {
-            "schema_version": cc.SCHEMA_VERSION,
-            "created_at": 0,
-            "git_sha": None,
-            "config_hash": None,
-            "rng": {},
-            "env": {},
-            "metric_key": None,
-            "metric_value": None,
-            "sha256": None,
-        },
+    # Create the meta dict for the legacy checkpoint (without config_version, dataset_version)
+    meta_dict = {
+        "schema_version": cc.SCHEMA_VERSION,
+        "created_at": 0,
+        "git_sha": None,
+        "config_hash": None,
+        "rng": {},
+        "env": {},
+        "metric_key": None,
+        "metric_value": None,
+        "sha256": None,
     }
-    digest = cc._digest_payload(legacy_payload).hex()
-    legacy_payload["meta"]["sha256"] = digest
+    state_dict = {"model_state": {"w": 1}}
+    
+    # Compute digest the same way load_checkpoint does for file paths
+    # (uses hashlib.sha256 of serialized payload, not _digest_payload)
+    digest_meta = dict(meta_dict)
+    digest_meta["sha256"] = None
+    digest = hashlib.sha256(
+        cc._serialize_payload({"state": state_dict, "meta": digest_meta})
+    ).hexdigest()
+    
+    # Set the digest in the meta and create the final payload
+    meta_dict["sha256"] = digest
+    legacy_payload = {
+        "state": state_dict,
+        "meta": meta_dict,
+    }
     raw = cc._serialize_payload(legacy_payload)
     path.write_bytes(raw)
 

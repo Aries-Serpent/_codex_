@@ -34,7 +34,9 @@ class TestStreamingParser:
 
         # Count FunctionDef nodes specifically, not just total nodes
         # (parser might also yield Module or other container nodes)
-        function_nodes = [n for n in nodes if n.node_type == "FunctionDef"]
+        # Note: StandardizedASTNode uses .type (NodeType enum), not .node_type
+        from codex.ast.node import NodeType
+        function_nodes = [n for n in nodes if n.type == NodeType.FUNCTION]
         assert len(function_nodes) >= 1000  # Should yield at least all functions
 
     def test_parse_directory(self, tmp_path):
