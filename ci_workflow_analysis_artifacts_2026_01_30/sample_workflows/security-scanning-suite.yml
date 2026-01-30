@@ -1,0 +1,186 @@
+name: Security Scanning Suite
+
+"on":
+  push:
+    branches: [main, develop, copilot/**]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+    - cron: '0 3 * * 0'  # Weekly on Sunday at 3 AM
+  workflow_dispatch:
+    inputs:
+      scan-type:
+        description: 'Security scan type'
+        required: true
+        type: choice
+        options:
+          - 'all'
+          - 'codeql'
+          - 'dependency'
+        default: 'all'
+  workflow_call:
+    inputs:
+      scan-type:
+        description: 'Security scan type'
+        required: false
+        type: string
+        default: 'all'
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  codeql-scan:
+    name: CodeQL Analysis (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'codeql')) ||
+      github.event_name == 'workflow_call'
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['python', 'javascript']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-extended,security-and-quality
+      - uses: github/codeql-action/autobuild@v4
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
+      - name: Summary
+        if: always()
+        run: |
+          echo "## CodeQL - ${{ matrix.language }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+      - name: Install security tools
+        run: pip install safety pip-audit
+      - name: Run pip-audit
+        continue-on-error: true
+        run: |
+          pip-audit --format json --output pip-audit.json || true
+          pip-audit || echo "Vulnerabilities found"
+      - name: Run Safety
+        continue-on-error: true
+        run: |
+          safety check --json --output safety.json || true
+          safety check || echo "Vulnerabilities found"
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: dependency-scan-results
+          path: |
+            pip-audit.json
+            safety.json
+          retention-days: 30
+      - name: Summary
+        run: |
+          echo "## Dependency Scan" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: ephemeral
+      - name: Install tools
+        run: pip install detect-secrets
+      - name: Run detect-secrets
+        id: detect-secrets
+        continue-on-error: true
+        run: |
+          detect-secrets scan --all-files --force-use-all-plugins > .secrets.baseline
+          SECRETS_COUNT=$(grep -c "filename" .secrets.baseline || echo "0")
+          echo "secrets_found=$SECRETS_COUNT" >> $GITHUB_OUTPUT
+      - name: Upload baseline
+        uses: actions/upload-artifact@v6
+        with:
+          name: secrets-baseline
+          path: .secrets.baseline
+          retention-days: 30
+      - name: Summary
+        run: |
+          echo "## Secret Scan" >> $GITHUB_STEP_SUMMARY
+          echo "**Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found }}" >> $GITHUB_STEP_SUMMARY
+
+  sbom-generation:
+    name: SBOM Generation
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+      - name: Install tools
+        run: pip install cyclonedx-bom
+      - name: Generate SBOM
+        run: |
+          cyclonedx-py --format json --output sbom.json
+          cyclonedx-py --format xml --output sbom.xml
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v6
+        with:
+          name: sbom-reports
+          path: |
+            sbom.json
+            sbom.xml
+          retention-days: 90
+      - name: Summary
+        run: |
+          echo "## SBOM Generation" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Complete" >> $GITHUB_STEP_SUMMARY
+
+  security-suite-summary:
+    name: Security Suite Summary
+    runs-on: ubuntu-latest
+    needs: [codeql-scan, dependency-scan, secret-scan, sbom-generation]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## Security Scanning Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**CodeQL:** ${{ needs.codeql-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dependency:** ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Secrets:** ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**SBOM:** ${{ needs.sbom-generation.result }}" >> $GITHUB_STEP_SUMMARY

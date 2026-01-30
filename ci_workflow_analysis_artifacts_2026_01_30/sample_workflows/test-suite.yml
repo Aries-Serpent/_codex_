@@ -1,0 +1,427 @@
+name: Testing Suite
+
+"on":
+  # Run on all PRs
+  pull_request:
+    branches: [main, develop]
+
+  # Run on push to main
+  push:
+    branches: [main]
+
+  # Manual trigger with test selection
+  workflow_dispatch:
+    inputs:
+      test-scope:
+        description: 'Test scope to run'
+        required: true
+        type: choice
+        options:
+          - 'all'
+          - 'core'
+          - 'rag'
+          - 'auth'
+          - 'integration'
+          - 'determinism'
+        default: 'all'
+      python-version:
+        description: 'Python version'
+        required: false
+        default: '3.12'
+      fail-fast:
+        description: 'Fail fast on first error'
+        required: false
+        type: boolean
+        default: false
+
+  # Enable workflow_call for AI agent integration
+  workflow_call:
+    inputs:
+      test-scope:
+        description: 'Test scope to run'
+        required: false
+        type: string
+        default: 'all'
+      python-version:
+        description: 'Python version'
+        required: false
+        type: string
+        default: '3.12'
+
+permissions:
+  contents: read
+  checks: write  # For test reporting
+  pull-requests: write  # For PR comments
+
+env:
+  PYTHON_VERSION: '3.12'
+  # PYTEST_ADDOPTS removed - environment variable causes pytest-xdist workers to crash during plugin initialization;
+  # pytest options are passed directly on the command line instead to avoid these worker crashes.
+
+jobs:
+  # Job 1: Core Tests - Main test suite
+  core-tests:
+    name: Core Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'push') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'core')) ||
+      github.event_name == 'workflow_call'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }} with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: live  # Use live tier for critical tests
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -e ".[test]"
+
+      - name: Verify pytest environment
+        run: |
+          python -m pytest --version
+          python -c "import pytest_xdist; print(f'pytest-xdist: {pytest_xdist.__version__}')"
+          python -c "import pytest_cov; print(f'pytest-cov: {pytest_cov.__version__}')"
+
+      - name: Show test collection diagnostics
+        run: |
+          echo "=== Test Collection Diagnostics ==="
+          # Capture combined stdout and stderr for easier error handling and reporting
+          COLLECT_OUTPUT="$(python -m pytest tests/ --collect-only -q 2>&1)"
+          COLLECT_STATUS=$?
+          printf '%s\n' "$COLLECT_OUTPUT" | head -50
+          if [ "$COLLECT_STATUS" -ne 0 ]; then
+            echo "⚠️  Test collection may have issues"
+            echo "=== Full pytest output (stdout + stderr) ==="
+            printf '%s\n' "$COLLECT_OUTPUT"
+          fi
+          echo ""
+          echo "=== Test Directory Structure ==="
+          find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
+          echo ""
+
+      - name: Run core tests with coverage
+        run: |
+          pytest tests/ \
+            --color=yes \
+            --verbose \
+            --cov=src \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term \
+            --junitxml=junit.xml \
+            -n auto \
+            --dist loadgroup \
+            --maxfail=10
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          CODEX_FORCE_CPU: "1"
+          RAG_EMBEDDING_PROVIDER: tfidf
+
+      - name: Ensure test artifacts exist
+        if: always()
+        run: |
+          # Guarantee all artifacts exist to prevent upload failures
+          python scripts/ensure_test_artifacts.py --coverage --junit
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          files: ./coverage.xml
+          flags: python-${{ matrix.python-version }}
+          name: coverage-${{ matrix.python-version }}
+          fail_ci_if_error: false
+
+      - name: Upload coverage HTML report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload JUnit test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: junit-report-${{ matrix.python-version }}
+          path: junit.xml
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## Core Tests Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Python Version:** ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Show test counts from JUnit XML if available using Python for robust parsing
+          if [ -f junit.xml ]; then
+            python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    tree = ET.parse('junit.xml')
+    root = tree.getroot()
+    # Handle both testsuite and testsuites root elements
+    if root.tag == 'testsuites':
+        ts = root.find('testsuite')
+    else:
+        ts = root
+    if ts is not None:
+        tests = ts.get('tests', '0')
+        failures = ts.get('failures', '0')
+        errors = ts.get('errors', '0')
+        print(f'**Tests:** {tests} total, {failures} failed, {errors} errors')
+    else:
+        print('**Tests:** Unable to parse JUnit XML')
+except Exception as e:
+    print(f'**Tests:** Error parsing JUnit XML: {e}')
+" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "See attached artifacts for detailed coverage reports." >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: RAG Tests - Specialized RAG testing
+  rag-tests:
+    name: RAG Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'rag'))
+
+    strategy:
+      matrix:
+        python-version: ['3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }} with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: common
+
+      - name: Cache sentence transformers models
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/torch
+            ~/.cache/huggingface
+          key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-
+            ${{ runner.os }}-sentence-transformers-
+
+      - name: Install RAG dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -e ".[test,rag]"
+
+      - name: Run RAG tests
+        run: |
+          pytest tests/rag/ \
+            --cov=src/codex/rag \
+            --cov-report=xml \
+            -v
+
+      - name: Upload RAG coverage
+        uses: actions/upload-artifact@v6
+        with:
+          name: rag-coverage-${{ matrix.python-version }}
+          path: coverage.xml
+          retention-days: 7
+
+  # Job 3: Auth Tests - Authentication & security tests
+  auth-tests:
+    name: Auth Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'auth'))
+
+    strategy:
+      matrix:
+        python-version: ['3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }} with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-tier: common
+
+      - name: Install auth dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -e ".[test,auth]"
+
+      - name: Run auth tests
+        env:
+          # Use test secrets (not real)
+          TEST_JWT_SECRET: test_secret_key_for_testing_only
+          TEST_MASTER_KEY: test_master_key_for_testing_only
+        run: |
+          pytest tests/auth/ tests/security/ \
+            --cov=src/codex/auth \
+            --cov=src/codex/security \
+            --cov-report=xml \
+            -v
+
+      - name: Security scan of auth code
+        run: |
+          pip install bandit safety
+          bandit -r src/codex/auth/ src/codex/security/ -f json -o /tmp/bandit-auth.json || true
+          safety check --json > /tmp/safety-auth.json || true
+
+      - name: Upload auth security report
+        uses: actions/upload-artifact@v6
+        with:
+          name: auth-security-report-${{ matrix.python-version }}
+          path: |
+            /tmp/bandit-auth.json
+            /tmp/safety-auth.json
+          retention-days: 7
+
+  # Job 4: Integration Tests - Cross-component testing
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'integration'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+
+      - name: Install all dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -e ".[all]"
+
+      - name: Run integration tests
+        run: |
+          pytest tests/integration/ \
+            --cov=src \
+            --cov-report=xml \
+            --timeout=300 \
+            -v
+
+      - name: Upload integration coverage
+        uses: actions/upload-artifact@v6
+        with:
+          name: integration-coverage
+          path: coverage.xml
+          retention-days: 7
+
+  # Job 5: Determinism Tests - Ensure reproducibility
+  determinism-tests:
+    name: Determinism Tests
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && (inputs.test-scope == 'all' || inputs.test-scope == 'determinism'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-tier: common
+
+      - name: Install dependencies
+        run: |
+          pip install -e ".[test]"
+
+      - name: Run determinism tests (iteration 1)
+        id: run1
+        run: |
+          pytest tests/determinism/ -v --json-report --json-report-file=/tmp/results1.json
+
+      - name: Run determinism tests (iteration 2)
+        id: run2
+        run: |
+          pytest tests/determinism/ -v --json-report --json-report-file=/tmp/results2.json
+
+      - name: Compare results
+        run: |
+          python << 'EOF'
+          import json
+          import sys
+
+          with open('/tmp/results1.json') as f:
+              results1 = json.load(f)
+          with open('/tmp/results2.json') as f:
+              results2 = json.load(f)
+
+          # Compare test outcomes
+          outcomes1 = {test['nodeid']: test['outcome'] for test in results1.get('tests', [])}
+          outcomes2 = {test['nodeid']: test['outcome'] for test in results2.get('tests', [])}
+
+          differences = []
+          for nodeid in set(outcomes1.keys()) | set(outcomes2.keys()):
+              if outcomes1.get(nodeid) != outcomes2.get(nodeid):
+                  differences.append(f"  - {nodeid}: {outcomes1.get(nodeid)} vs {outcomes2.get(nodeid)}")
+
+          if differences:
+              print("❌ Determinism check FAILED - test outcomes differ:")
+              for diff in differences:
+                  print(diff)
+              sys.exit(1)
+          else:
+              print("✅ Determinism check PASSED - all tests are deterministic")
+          EOF
+
+  # Summary job
+  test-suite-summary:
+    name: Test Suite Summary
+    runs-on: ubuntu-latest
+    needs: [core-tests, rag-tests, auth-tests, integration-tests, determinism-tests]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## Testing Suite - Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Core Tests:** ${{ needs.core-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**RAG Tests:** ${{ needs.rag-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Auth Tests:** ${{ needs.auth-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Integration Tests:** ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Determinism Tests:** ${{ needs.determinism-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Determine overall status
+          if [ "${{ needs.core-tests.result }}" == "success" ]; then
+            echo "✅ All critical tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some tests failed - review individual job outputs" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,4932 @@
+{
+  "summary": {
+    "total_workflows": 116,
+    "active_workflows": 101,
+    "guarded_workflows": 0,
+    "disabled_workflows": 15,
+    "parse_errors": 1,
+    "unique_runners": [
+      "${{ fromJSON(vars.RUNS_ON || '[\"self-hosted\",\"linux\"]') }}",
+      "${{ matrix.os }}",
+      "linux",
+      "self-hosted",
+      "ubuntu-latest"
+    ],
+    "unique_actions": [
+      "actions-rust-lang/setup-rust-toolchain",
+      "actions/cache",
+      "actions/cache/restore",
+      "actions/checkout",
+      "actions/configure-pages",
+      "actions/deploy-pages",
+      "actions/download-artifact",
+      "actions/github-script",
+      "actions/labeler",
+      "actions/setup-node",
+      "actions/setup-python",
+      "actions/upload-artifact",
+      "actions/upload-pages-artifact",
+      "anchore/sbom-action/download-syft",
+      "anchore/scan-action/download-grype",
+      "codecov/codecov-action",
+      "docker/build-push-action",
+      "docker/setup-buildx-action",
+      "dtolnay/rust-toolchain",
+      "github/codeql-action/analyze",
+      "github/codeql-action/autobuild",
+      "github/codeql-action/init",
+      "github/codeql-action/upload-sarif",
+      "gitleaks/gitleaks-action",
+      "iterative/setup-dvc",
+      "peter-evans/create-pull-request",
+      "pypa/gh-action-pypi-publish",
+      "returntocorp/semgrep-action",
+      "rustsec/audit-check",
+      "satackey/action-google-drive",
+      "trufflesecurity/trufflehog"
+    ],
+    "unique_secrets": [
+      "AWS_ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY",
+      "CODECOV_TOKEN",
+      "CODEX_MASTER_KEY",
+      "COMPLIANCE_REPORT_KEY",
+      "ENABLE_LIVE_TESTS",
+      "GDRIVE_SERVICE_ACCOUNT_JSON",
+      "GITHUB_OAUTH_CLIENT_ID",
+      "GITHUB_OAUTH_CLIENT_SECRET",
+      "GITHUB_TOKEN",
+      "GITLEAKS_LICENSE",
+      "GOOGLE_CLIENT_SECRET",
+      "NOTEBOOKLM_WEBHOOK_URL",
+      "SESSION_ENCRYPTION_KEY",
+      "TEST_PYPI_API_TOKEN",
+      "TOKEN_SECRET_KEY",
+      "ZENDESK_TOKEN",
+      "ZENDESK_URL",
+      "ZENDESK_USER"
+    ],
+    "secrets_count": 19
+  },
+  "workflows": {
+    "copilot-cascade-review.yml": {
+      "path": ".github/workflows/copilot-cascade-review.yml",
+      "name": "Copilot Cascade PR Review",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "cascade-review": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "github.event_name == 'pull_request' ||\n(github.event_name == 'issue_comment' &&\n contains(github.event.comment.body, '@cascade-review'))\n",
+          "timeout": 30
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-node"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 47,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "zendesk-quantum-packaging.yml": {
+      "path": ".github/workflows/zendesk-quantum-packaging.yml",
+      "name": "Zendesk Quantum Packaging",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "build": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 41,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "pr-checks.yml": {
+      "path": ".github/workflows/pr-checks.yml",
+      "name": "PR Checks (Isolated Cache)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "pr-test": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache/restore",
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": true,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 60,
+      "has_docker": false,
+      "has_uv": true,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "test-analytics-failure-sim.yml": {
+      "path": ".github/workflows/test-analytics-failure-sim.yml",
+      "name": "Analytics Failure Simulator",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "simulate-failure": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 60,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "copilot-self-evolution.yml": {
+      "path": ".github/workflows/copilot-self-evolution.yml",
+      "name": "Copilot Self-Evolution Pipeline",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "test-integrated-system": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 42,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "self-healing.yml": {
+      "path": ".github/workflows/self-healing.yml",
+      "name": "Self-Healing CI/CD",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "detect-and-analyze": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": "${{ github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}",
+          "timeout": null
+        },
+        "apply-fix": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": "detect-and-analyze",
+          "if": "needs.detect-and-analyze.outputs.fix_available == 'true' &&\n(needs.detect-and-analyze.outputs.confidence >= 70 || inputs.force_fix == true)\n",
+          "timeout": null
+        },
+        "create-pr": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [
+            "detect-and-analyze",
+            "apply-fix"
+          ],
+          "if": "needs.apply-fix.outputs.fix_applied == 'true' && needs.apply-fix.outputs.commit_sha != ''",
+          "timeout": null
+        },
+        "update-cognitive-brain": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [
+            "detect-and-analyze",
+            "apply-fix",
+            "create-pr"
+          ],
+          "if": "always() && needs.detect-and-analyze.result == 'success'",
+          "timeout": null
+        },
+        "notify-escalation": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": "detect-and-analyze",
+          "if": "needs.detect-and-analyze.outputs.fix_available != 'true' ||\nneeds.detect-and-analyze.outputs.confidence < 70\n",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "dtolnay/rust-toolchain",
+        "peter-evans/create-pull-request"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 406,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "phase10-automated-secrets-setup.yml": {
+      "path": ".github/workflows/phase10-automated-secrets-setup.yml",
+      "name": "Automated Phase 10 Secrets Setup",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "setup-secrets": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 221,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "coverage_report.yml": {
+      "path": ".github/workflows/coverage_report.yml",
+      "name": "Coverage Report",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "coverage": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 42,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "security-tools-bootstrap.yml": {
+      "path": ".github/workflows/security-tools-bootstrap.yml",
+      "name": "Bootstrap Security Tools from Variables",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "bootstrap-tools": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 32,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "scheduled-dependency-audit.yml": {
+      "path": ".github/workflows/scheduled-dependency-audit.yml",
+      "name": "Scheduled Dependency Audit & SBOM",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "baseline-wheels": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "sbom-generation": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": "baseline-wheels",
+          "if": null,
+          "timeout": null
+        },
+        "upgrade-compatibility": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "drift-detection": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": "baseline-wheels",
+          "if": null,
+          "timeout": null
+        },
+        "summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "baseline-wheels",
+            "sbom-generation",
+            "upgrade-compatibility",
+            "drift-detection"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION",
+        "ALLOW_MULTIARCH"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/upload-artifact",
+        "anchore/sbom-action/download-syft",
+        "anchore/scan-action/download-grype",
+        "docker/build-push-action",
+        "docker/setup-buildx-action",
+        "github/codeql-action/upload-sarif"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": true,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 283,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "aftermath.yml": {
+      "path": ".github/workflows/aftermath.yml",
+      "name": "AfterMath Lessons Learned",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "capture-aftermath": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": "github.event_name == 'pull_request' && github.event.pull_request.merged == true",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 29,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "detect-duplicates.yml": {
+      "path": ".github/workflows/detect-duplicates.yml",
+      "name": "Duplicate Detection on PR",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "detect-duplicates": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 28,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "data_validation.yml": {
+      "path": ".github/workflows/data_validation.yml",
+      "name": "Data Validation (Manifest & Drift)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "data-validate": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 19,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "pages-mkdocs.yml": {
+      "path": ".github/workflows/pages-mkdocs.yml",
+      "name": "Deploy Pages (MkDocs)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "build": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "deploy": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": "build",
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/deploy-pages",
+        "actions/upload-pages-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 163,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "copilot-setup-steps.yml": {
+      "path": ".github/workflows/copilot-setup-steps.yml",
+      "name": "Copilot Agent Environment Setup",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "copilot-setup-steps": {
+          "runner": "ubuntu-latest",
+          "steps": 24,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION",
+        "NODE_VERSION",
+        "RUST_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-node",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "dtolnay/rust-toolchain"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": true,
+        "cargo": true
+      },
+      "line_count": 432,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "dependency-scan.yml": {
+      "path": ".github/workflows/dependency-scan.yml",
+      "name": "Dependency Scan (template)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "depscan": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 17,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "security-alert-notification.yml": {
+      "path": ".github/workflows/security-alert-notification.yml",
+      "name": "Security Alert Notification",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "check-security-alerts": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 206,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auth-secret-rotation.yml": {
+      "path": ".github/workflows/auth-secret-rotation.yml",
+      "name": "GitHub Secrets Rotation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "rotate-secrets": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "GITHUB_OAUTH_CLIENT_SECRET",
+        "GITHUB_TOKEN",
+        "SESSION_ENCRYPTION_KEY",
+        "TOKEN_SECRET_KEY"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 141,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "scheduled-archival.yml": {
+      "path": ".github/workflows/scheduled-archival.yml",
+      "name": "Scheduled Archival",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "identify-candidates": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "create-proposal": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": "identify-candidates",
+          "if": "${{ needs.identify-candidates.outputs.count > 0 }}",
+          "timeout": null
+        },
+        "compress-large-files": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": "identify-candidates",
+          "if": "${{ github.event.inputs.dry_run != 'true' }}",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 175,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "determinism.yml": {
+      "path": ".github/workflows/determinism.yml",
+      "name": "Determinism & Audit Validation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "determinism-check": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHONHASHSEED",
+        "PYTHONDONTWRITEBYTECODE",
+        "RANDOM_SEED",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+        "TF_DETERMINISTIC_OPS",
+        "CUBLAS_WORKSPACE_CONFIG"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 181,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "auth-token-rotation.yml": {
+      "path": ".github/workflows/auth-token-rotation.yml",
+      "name": "Automated Token Rotation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "rotate-jwt-secret": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": 10
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "GITHUB_TOKEN",
+        "TOKEN_SECRET_KEY"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 137,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "draft-audit-pr.yml": {
+      "path": ".github/workflows/draft-audit-pr.yml",
+      "name": "draft-audit-pr",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "draft": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 28,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "pypi-publish.yml": {
+      "path": ".github/workflows/pypi-publish.yml",
+      "name": "Publish Python Package to PyPI",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "build": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "publish-testpypi": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [
+            "build"
+          ],
+          "if": "github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'",
+          "timeout": null
+        },
+        "publish-pypi": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [
+            "build"
+          ],
+          "if": "github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi')",
+          "timeout": null
+        },
+        "verify-installation": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [
+            "publish-testpypi",
+            "publish-pypi"
+          ],
+          "if": "always() && (needs.publish-testpypi.result == 'success' || needs.publish-pypi.result == 'success')",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "TEST_PYPI_API_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/upload-artifact",
+        "pypa/gh-action-pypi-publish"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 125,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auto-update-configs.yml": {
+      "path": ".github/workflows/auto-update-configs.yml",
+      "name": "Auto-update Package Configs",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "update-configs": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 35,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "ci-health-monitor.yml": {
+      "path": ".github/workflows/ci-health-monitor.yml",
+      "name": "CI Health Monitor",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "health-check": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 35,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cognitive-decision.yml": {
+      "path": ".github/workflows/cognitive-decision.yml",
+      "name": "Cognitive Decision Engine",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "decision_engine": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 30
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 38,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "documentation-link-checker.yml": {
+      "path": ".github/workflows/documentation-link-checker.yml",
+      "name": "Documentation Link Checker",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "check-links": {
+          "runner": "ubuntu-latest",
+          "steps": 12,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/setup-node",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 190,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "test-comprehensive.yml": {
+      "path": ".github/workflows/test-comprehensive.yml",
+      "name": "Comprehensive Tests with Caching",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "test": {
+          "runner": "ubuntu-latest",
+          "steps": 19,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "test-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": "test",
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "CODECOV_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "codecov/codecov-action"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 247,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "agent-runtime.yml": {
+      "path": ".github/workflows/agent-runtime.yml",
+      "name": "Autonomous Agent Runtime",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "execute-agent": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 52,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "workflow-link-validation.yml": {
+      "path": ".github/workflows/workflow-link-validation.yml",
+      "name": "Workflow Documentation Link Validation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate-workflow-links": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 92,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "ratelimit_history_prune.yml": {
+      "path": ".github/workflows/ratelimit_history_prune.yml",
+      "name": "Rate-Limit History Prune",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "prune": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 18,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "api-documentation.yml": {
+      "path": ".github/workflows/api-documentation.yml",
+      "name": "API Documentation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "build": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 40,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "batch-ci-triage.yml": {
+      "path": ".github/workflows/batch-ci-triage.yml",
+      "name": "Batch CI Failure Triage",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "batch-triage": {
+          "runner": "ubuntu-latest",
+          "steps": 11,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/setup-python",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 223,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "notebooklm-sync.yml": {
+      "path": ".github/workflows/notebooklm-sync.yml",
+      "name": "NotebookLM Live Sync (DEFERRED)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "consolidate-and-sync": {
+          "runner": "ubuntu-latest",
+          "steps": 16,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [
+        "GDRIVE_SERVICE_ACCOUNT_JSON",
+        "GOOGLE_CLIENT_SECRET",
+        "NOTEBOOKLM_WEBHOOK_URL"
+      ],
+      "env_vars": [
+        "OUTPUT_FILE",
+        "REPOMIX_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/setup-node",
+        "actions/upload-artifact",
+        "satackey/action-google-drive"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 385,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "repo-organization.yml": {
+      "path": ".github/workflows/repo-organization.yml",
+      "name": "Repository Organization & Cleanup",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "analyze-structure": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 49,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cognitive-action.yml": {
+      "path": ".github/workflows/cognitive-action.yml",
+      "name": "Cognitive Action Executor",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "action_executor": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": "${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}",
+          "timeout": 60
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 42,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "workflow-analytics-scheduled.yml": {
+      "path": ".github/workflows/workflow-analytics-scheduled.yml",
+      "name": "Scheduled Workflow Analytics",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "weekly-analytics": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 199,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "documentation-suite.yml": {
+      "path": ".github/workflows/documentation-suite.yml",
+      "name": "Documentation Suite",
+      "guarded": false,
+      "triggers": [
+        "push",
+        "pull_request",
+        "workflow_dispatch",
+        "workflow_call"
+      ],
+      "jobs": {
+        "mkdocs-build": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [],
+          "if": "(github.event_name == 'push') ||\n(github.event_name == 'pull_request') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'build')) ||\ngithub.event_name == 'workflow_call'\n",
+          "timeout": null
+        },
+        "link-check": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": "(github.event_name == 'pull_request') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'link-check'))\n",
+          "timeout": null
+        },
+        "deploy-pages": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [
+            "mkdocs-build"
+          ],
+          "if": "github.event_name == 'push' && github.ref == 'refs/heads/main'",
+          "timeout": null
+        },
+        "documentation-suite-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "mkdocs-build",
+            "link-check"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/configure-pages",
+        "actions/deploy-pages",
+        "actions/download-artifact",
+        "actions/upload-artifact",
+        "actions/upload-pages-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 141,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cognitive-perception.yml": {
+      "path": ".github/workflows/cognitive-perception.yml",
+      "name": "Cognitive Perception Layer",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "perceive-environment": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 30,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auth-tests.yml": {
+      "path": ".github/workflows/auth-tests.yml",
+      "name": "Authentication Tests",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "test-authentication": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "integration-test": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": "test-authentication",
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "CODECOV_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "codecov/codecov-action"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 137,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "decode-validate-artifact.yml": {
+      "path": ".github/workflows/decode-validate-artifact.yml",
+      "name": "decode-validate-artifact",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 22,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "zendesk-knowledge-sync.yml": {
+      "path": ".github/workflows/zendesk-knowledge-sync.yml",
+      "name": "Zendesk Knowledge Sync",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "sync-knowledge": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "GITHUB_TOKEN",
+        "ZENDESK_TOKEN",
+        "ZENDESK_URL",
+        "ZENDESK_USER"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "iterative/setup-dvc"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 157,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "build-chatgpt-package.yml": {
+      "path": ".github/workflows/build-chatgpt-package.yml",
+      "name": "Build ChatGPT Project Package",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "package": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 47,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "sync-env-vars.yml": {
+      "path": ".github/workflows/sync-env-vars.yml",
+      "name": "Sync Environment Variables",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "sync-env-vars": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 51,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "audit-improvement-pipeline.yml": {
+      "path": ".github/workflows/audit-improvement-pipeline.yml",
+      "name": "Audit & Improvement Pipeline",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "audit-gap-analysis": {
+          "runner": "ubuntu-latest",
+          "steps": 12,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "create-improvement-issue": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": "audit-gap-analysis",
+          "if": "inputs.create_improvement_pr == 'true' && needs.audit-gap-analysis.outputs.gap_count > '0'",
+          "timeout": null
+        },
+        "track-usage": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": "audit-gap-analysis",
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 276,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "genesis-bootstrap.yml": {
+      "path": ".github/workflows/genesis-bootstrap.yml",
+      "name": "Genesis Bootstrap - Agent Authority Activation (template)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate-genesis": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [],
+          "if": true,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 89,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "runner-diagnostics.yml": {
+      "path": ".github/workflows/runner-diagnostics.yml",
+      "name": "Runner diagnostics \u2014 self-hosted readiness",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "diag": {
+          "runner": "${{ fromJSON(vars.RUNS_ON || '[\"self-hosted\",\"linux\"]') }}",
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": 10
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "${{ fromJSON(vars.RUNS_ON || '[\"self-hosted\",\"linux\"]') }}"
+      ],
+      "actions_used": [],
+      "python_versions": [],
+      "dependencies": {
+        "docker": true,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 55,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "ci-diagnostic-automation.yml": {
+      "path": ".github/workflows/ci-diagnostic-automation.yml",
+      "name": "CI Diagnostic Automation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "diagnose-ci-failure": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": "github.event.workflow_run.conclusion == 'failure' ||\n(github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot diagnose ci'))\n",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 140,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cache-management.yml": {
+      "path": ".github/workflows/cache-management.yml",
+      "name": "Cache Management",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "cache-report": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": "inputs.action == 'report' || github.event_name == 'schedule'",
+          "timeout": null
+        },
+        "cleanup-ephemeral": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [],
+          "if": "inputs.action == 'cleanup-ephemeral' || inputs.action == 'cleanup-all-tiers'",
+          "timeout": null
+        },
+        "cleanup-common": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [],
+          "if": "inputs.action == 'cleanup-common' || inputs.action == 'cleanup-all-tiers'",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 203,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "ci-health-suite.yml": {
+      "path": ".github/workflows/ci-health-suite.yml",
+      "name": "CI/CD Health Suite",
+      "guarded": false,
+      "triggers": [
+        "schedule",
+        "workflow_dispatch",
+        "workflow_call"
+      ],
+      "jobs": {
+        "health-monitor": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 */3 * * *') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'health-monitor')) ||\ngithub.event_name == 'workflow_call'\n",
+          "timeout": null
+        },
+        "artifact-monitoring": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'artifact-check'))\n",
+          "timeout": null
+        },
+        "runner-diagnostics": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 */6 * * *') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'runner-check'))\n",
+          "timeout": null
+        },
+        "ci-diagnostics": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": "(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'diagnostics'))\n",
+          "timeout": null
+        },
+        "ci-health-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "health-monitor",
+            "artifact-monitoring",
+            "runner-diagnostics",
+            "ci-diagnostics"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 373,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cache-cleanup.yml": {
+      "path": ".github/workflows/cache-cleanup.yml",
+      "name": "Emergency Cache Cleanup",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "cleanup": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 71,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "pr-followup-generator.yml": {
+      "path": ".github/workflows/pr-followup-generator.yml",
+      "name": "Generate PR Follow-Up Prompt",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "generate": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 93,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cognitive-aftermath.yml": {
+      "path": ".github/workflows/cognitive-aftermath.yml",
+      "name": "Cognitive AfterMath Evaluator",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "aftermath_evaluator": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 45
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 37,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "publish_dashboard_release.yml": {
+      "path": ".github/workflows/publish_dashboard_release.yml",
+      "name": "Publish Status Dashboard Release",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "publish-dashboard": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 18,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "monthly-model-retraining.yml": {
+      "path": ".github/workflows/monthly-model-retraining.yml",
+      "name": "Monthly Model Retraining",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "model_retraining": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 120
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 38,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "security-scanning-suite.yml": {
+      "path": ".github/workflows/security-scanning-suite.yml",
+      "name": "Security Scanning Suite",
+      "guarded": false,
+      "triggers": [
+        "push",
+        "pull_request",
+        "schedule",
+        "workflow_dispatch",
+        "workflow_call"
+      ],
+      "jobs": {
+        "codeql-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [],
+          "if": "(github.event_name == 'push') ||\n(github.event_name == 'pull_request') ||\n(github.event_name == 'schedule') ||\n(github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'codeql')) ||\ngithub.event_name == 'workflow_call'\n",
+          "timeout": null
+        },
+        "dependency-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": "(github.event_name == 'schedule') ||\n(github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))\n",
+          "timeout": null
+        },
+        "secret-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": "(github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')\n",
+          "timeout": null
+        },
+        "sbom-generation": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||\n(github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')\n",
+          "timeout": null
+        },
+        "security-suite-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "codeql-scan",
+            "dependency-scan",
+            "secret-scan",
+            "sbom-generation"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact",
+        "github/codeql-action/analyze",
+        "github/codeql-action/autobuild",
+        "github/codeql-action/init"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 186,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "template_lint.yml": {
+      "path": ".github/workflows/template_lint.yml",
+      "name": "Template Lint (HTML includes)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "template-lint": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 15,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auth-oauth-app-sync.yml": {
+      "path": ".github/workflows/auth-oauth-app-sync.yml",
+      "name": "OAuth App Management & Sync",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "sync-oauth-apps": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": 10
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "GITHUB_OAUTH_CLIENT_ID",
+        "GITHUB_OAUTH_CLIENT_SECRET",
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 94,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "sbom.yml": {
+      "path": ".github/workflows/sbom.yml",
+      "name": "Generate SBOM",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "sbom": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 44,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "status_gate.yml": {
+      "path": ".github/workflows/status_gate.yml",
+      "name": "Status Gate (.statusrc)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "status-gate": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 18,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cache-suite.yml": {
+      "path": ".github/workflows/cache-suite.yml",
+      "name": "Cache Management Suite",
+      "guarded": false,
+      "triggers": [
+        "schedule",
+        "workflow_dispatch",
+        "workflow_call"
+      ],
+      "jobs": {
+        "cache-warmup": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 */6 * * *') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'warmup')) ||\ngithub.event_name == 'workflow_call'\n",
+          "timeout": null
+        },
+        "cache-cleanup": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 2 * * *') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'cleanup'))\n",
+          "timeout": null
+        },
+        "cache-management": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": "(github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||\n(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'management'))\n",
+          "timeout": null
+        },
+        "cache-validation": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "(github.event_name == 'workflow_dispatch' && (inputs.operation == 'all' || inputs.operation == 'validate'))\n",
+          "timeout": null
+        },
+        "cache-suite-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "cache-warmup",
+            "cache-cleanup",
+            "cache-management"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "PYTHON_VERSION"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 326,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "workflow-analytics-manual.yml": {
+      "path": ".github/workflows/workflow-analytics-manual.yml",
+      "name": "Manual Workflow Analytics",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "analyze-workflows": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 202,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "labeler.yml": {
+      "path": ".github/workflows/labeler.yml",
+      "name": "PR Labeler",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "triage": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/labeler"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 15,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "scan-secrets-variables.yml": {
+      "path": ".github/workflows/scan-secrets-variables.yml",
+      "name": "Scan and Report GitHub Secrets and Variables",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "scan-and-report": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 36,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "repository-health-monitoring.yml": {
+      "path": ".github/workflows/repository-health-monitoring.yml",
+      "name": "Repository Health Monitoring",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "monitor_repository_health": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact",
+        "peter-evans/create-pull-request"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 140,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "artifact-monitoring.yml": {
+      "path": ".github/workflows/artifact-monitoring.yml",
+      "name": "Artifact Monitoring",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "monitor-workflows": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 161,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "biweekly-research-digest.yml": {
+      "path": ".github/workflows/biweekly-research-digest.yml",
+      "name": "Bi-weekly Research Digest",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "research_integration": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 60
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 38,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "wiki-assemble.yml": {
+      "path": ".github/workflows/wiki-assemble.yml",
+      "name": "Wiki Assembly & Documentation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "assemble-wiki": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 43,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "generate-repository-structure.yml": {
+      "path": ".github/workflows/generate-repository-structure.yml",
+      "name": "Generate Repository Structure",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "generate-structure": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 123,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "token-rotation.yml": {
+      "path": ".github/workflows/token-rotation.yml",
+      "name": "Token Rotation & Security Audit",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "token-audit": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 43,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "codebase-qa-walkthrough.yml": {
+      "path": ".github/workflows/codebase-qa-walkthrough.yml",
+      "name": "Codebase QA Walkthrough",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "check-trigger": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "qa-analysis": {
+          "runner": "ubuntu-latest",
+          "steps": 15,
+          "needs": "check-trigger",
+          "if": "needs.check-trigger.outputs.should_run == 'true'",
+          "timeout": 30
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/setup-node",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 630,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "pre-release-deployment.yml": {
+      "path": ".github/workflows/pre-release-deployment.yml",
+      "name": "Pre-Release Deployment",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 38,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "autonomous-agent.yml": {
+      "path": ".github/workflows/autonomous-agent.yml",
+      "name": "Autonomous Codebase Management",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "owner-guard": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "autonomous-agent": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": "owner-guard",
+          "if": "needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode == 'monitor'",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 101,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "cache-warmup.yml": {
+      "path": ".github/workflows/cache-warmup.yml",
+      "name": "Cache Warmup - Live Tier",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "warmup-live-cache": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 97,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "rust_swarm_ci.yml": {
+      "path": ".github/workflows/rust_swarm_ci.yml",
+      "name": "Rust-Python Hybrid Swarm CI/CD",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "rust_tests": {
+          "runner": "ubuntu-latest",
+          "steps": 11,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "rust_benchmarks": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": "rust_tests",
+          "if": null,
+          "timeout": null
+        },
+        "code_coverage": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": "rust_tests",
+          "if": null,
+          "timeout": null
+        },
+        "python_integration": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": "rust_tests",
+          "if": null,
+          "timeout": null
+        },
+        "performance_regression": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [
+            "rust_benchmarks"
+          ],
+          "if": null,
+          "timeout": null
+        },
+        "security_audit": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "documentation": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "release": {
+          "runner": "${{ matrix.os }}",
+          "steps": 6,
+          "needs": [
+            "rust_tests",
+            "python_integration",
+            "code_coverage"
+          ],
+          "if": "github.event_name == 'push' && github.ref == 'refs/heads/main'",
+          "timeout": null
+        },
+        "status_check": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "rust_tests",
+            "rust_benchmarks",
+            "code_coverage",
+            "python_integration",
+            "security_audit"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "CODECOV_TOKEN",
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [
+        "CARGO_TERM_COLOR",
+        "RUST_BACKTRACE",
+        "RUST_TEST_THREADS"
+      ],
+      "runners": [
+        "${{ matrix.os }}",
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions-rust-lang/setup-rust-toolchain",
+        "actions/cache",
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "codecov/codecov-action",
+        "rustsec/audit-check"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": true
+      },
+      "line_count": 452,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "optimized-ci.yml": {
+      "path": ".github/workflows/optimized-ci.yml",
+      "name": "CI \u2014 Optimized with Caching",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "cache-dependencies": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "CODEX_FORCE_CPU",
+        "UV_CACHE_DIR",
+        "PIP_CACHE_DIR"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 39,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "security-suite.yml": {
+      "path": ".github/workflows/security-suite.yml",
+      "name": "Unified Security Suite",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "dependency-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": "inputs.scan_type == 'all' || inputs.scan_type == 'dependencies' || inputs.scan_type == ''",
+          "timeout": null
+        },
+        "secret-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "inputs.scan_type == 'all' || inputs.scan_type == 'secrets' || inputs.scan_type == ''",
+          "timeout": null
+        },
+        "code-scan": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": "inputs.scan_type == 'all' || inputs.scan_type == 'code' || inputs.scan_type == ''",
+          "timeout": null
+        },
+        "policy-check": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": "inputs.scan_type == 'all' || inputs.scan_type == 'policy' || inputs.scan_type == ''",
+          "timeout": null
+        },
+        "security-summary": {
+          "runner": "ubuntu-latest",
+          "steps": 5,
+          "needs": [
+            "dependency-scan",
+            "secret-scan",
+            "code-scan",
+            "policy-check"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN",
+        "GITLEAKS_LICENSE"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "github/codeql-action/analyze",
+        "github/codeql-action/init",
+        "github/codeql-action/upload-sarif",
+        "gitleaks/gitleaks-action",
+        "returntocorp/semgrep-action",
+        "trufflesecurity/trufflehog"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 395,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "flatten-repo-download.yml": {
+      "path": ".github/workflows/flatten-repo-download.yml",
+      "name": "Flatten Repository Download",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "flatten-repo": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": 30
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-node",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 391,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "code-quality.yml": {
+      "path": ".github/workflows/code-quality.yml",
+      "name": "Code Quality Analysis",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "code-smells-observation": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 31,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "codeql-analysis.yml": {
+      "path": ".github/workflows/codeql-analysis.yml",
+      "name": "CodeQL",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "analyze": {
+          "runner": "ubuntu-latest",
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "github/codeql-action/analyze",
+        "github/codeql-action/autobuild",
+        "github/codeql-action/init"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 50,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "html_visual_regression.yml": {
+      "path": ".github/workflows/html_visual_regression.yml",
+      "name": "HTML Visual (Screenshots)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "visual-html": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 18,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "phase34-codeql-alert-fetch.yml": {
+      "path": ".github/workflows/phase34-codeql-alert-fetch.yml",
+      "name": "Phase 34 - CodeQL Alert Fetch",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "fetch-alerts": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 179,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "test-rag.yml": {
+      "path": ".github/workflows/test-rag.yml",
+      "name": "RAG Module Tests",
+      "guarded": false,
+      "triggers": [
+        "push",
+        "pull_request"
+      ],
+      "jobs": {
+        "test-rag": {
+          "runner": "ubuntu-latest",
+          "steps": 12,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "CODECOV_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/cache",
+        "actions/checkout",
+        "actions/setup-python",
+        "actions/upload-artifact",
+        "codecov/codecov-action"
+      ],
+      "python_versions": [
+        "3.12"
+      ],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 172,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "self-healing-feedback-loop.yml": {
+      "path": ".github/workflows/self-healing-feedback-loop.yml",
+      "name": "Self-Healing Feedback Loop",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "analyze-feedback": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 38,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "security-scan.yml": {
+      "path": ".github/workflows/security-scan.yml",
+      "name": "Security Scan",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "security-audit": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 98,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "validate-secrets-documentation.yml": {
+      "path": ".github/workflows/validate-secrets-documentation.yml",
+      "name": "Validate Secrets Documentation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate-secrets-docs": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/setup-python"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 246,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "workflow-expiry-enforcer.yml": {
+      "path": ".github/workflows/workflow-expiry-enforcer.yml",
+      "name": "Workflow Expiry Enforcer \u2014 Auto-disable on expiry",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "enforce": {
+          "runner": [
+            "self-hosted",
+            "linux"
+          ],
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 10
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "linux",
+        "self-hosted"
+      ],
+      "actions_used": [],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 49,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "post-merge-validation-optimized.yml": {
+      "path": ".github/workflows/post-merge-validation-optimized.yml",
+      "name": "Post-Merge Validation (Optimized)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "validate-imports": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": 5
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 23,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "semgrep_sarif.yml": {
+      "path": ".github/workflows/semgrep_sarif.yml",
+      "name": "Semgrep SAST (SARIF Upload)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "semgrep": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": [],
+          "if": null,
+          "timeout": 30
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/upload-artifact",
+        "github/codeql-action/upload-sarif"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 166,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "docker-build-push.yml": {
+      "path": ".github/workflows/docker-build-push.yml",
+      "name": "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "approval-check": {
+          "runner": [
+            "self-hosted",
+            "linux"
+          ],
+          "steps": 4,
+          "needs": [],
+          "if": null,
+          "timeout": 10
+        },
+        "build-and-smoke": {
+          "runner": [
+            "self-hosted",
+            "linux"
+          ],
+          "steps": 9,
+          "needs": [],
+          "if": "${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}",
+          "timeout": 45
+        },
+        "push": {
+          "runner": [
+            "self-hosted",
+            "linux"
+          ],
+          "steps": 11,
+          "needs": [
+            "build-and-smoke"
+          ],
+          "if": "${{ github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}",
+          "timeout": 45
+        }
+      },
+      "secrets": [
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [
+        "OWNER_APPROVED_DURATION",
+        "OWNER_APPROVED_UNTIL",
+        "PUSH_PLATFORMS",
+        "BUILDX_CACHE_DIR"
+      ],
+      "runners": [
+        "linux",
+        "self-hosted"
+      ],
+      "actions_used": [],
+      "python_versions": [],
+      "dependencies": {
+        "docker": true,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 273,
+      "has_docker": true,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "integration-gated.yml": {
+      "path": ".github/workflows/integration-gated.yml",
+      "name": "Integration Gated",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "gate-checks": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "integration": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": "gate-checks",
+          "if": "needs.gate-checks.outputs.proceed == 'true'",
+          "timeout": 30
+        }
+      },
+      "secrets": [
+        "ENABLE_LIVE_TESTS"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 57,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auth-security-audit.yml": {
+      "path": ".github/workflows/auth-security-audit.yml",
+      "name": "Authentication Security Audit",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "security-audit": {
+          "runner": "ubuntu-latest",
+          "steps": 13,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "penetration-test": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": "security-audit",
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 301,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "codeql-chunked.yml": {
+      "path": ".github/workflows/codeql-chunked.yml",
+      "name": "CodeQL Chunked Analysis",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "chunk-discovery": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "analyze-chunk": {
+          "runner": "ubuntu-latest",
+          "steps": 7,
+          "needs": "chunk-discovery",
+          "if": "needs.chunk-discovery.outputs.should_run == 'true'",
+          "timeout": 30
+        },
+        "merge-results": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": "analyze-chunk",
+          "if": "always() && needs.analyze-chunk.result != 'cancelled'",
+          "timeout": null
+        },
+        "size-report": {
+          "runner": "ubuntu-latest",
+          "steps": 3,
+          "needs": "chunk-discovery",
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [
+        "CHUNK_SIZE_LIMIT"
+      ],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/upload-artifact",
+        "github/codeql-action/analyze",
+        "github/codeql-action/init",
+        "github/codeql-action/upload-sarif"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 278,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "workflow-restore.yml": {
+      "path": ".github/workflows/workflow-restore.yml",
+      "name": "Workflow Restore Tool",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "restore": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 241,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "auth-mfa-enrollment.yml": {
+      "path": ".github/workflows/auth-mfa-enrollment.yml",
+      "name": "Automated MFA Enrollment",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "enroll-users": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 135,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "self-healing-ci.yml": {
+      "path": ".github/workflows/self-healing-ci.yml",
+      "name": "Self-Healing CI",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "analyze-failure": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": "${{ github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 41,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "nox_gates.yml": {
+      "path": ".github/workflows/nox_gates.yml",
+      "name": "Nox Quality Gates",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "gates": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": true,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 34,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": true,
+      "has_pytest": false
+    },
+    "deploy-cognitive-app.yml": {
+      "path": ".github/workflows/deploy-cognitive-app.yml",
+      "name": "Deploy Cognitive Codex App",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "build": {
+          "runner": "ubuntu-latest",
+          "steps": 6,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "deploy": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": "build",
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/configure-pages",
+        "actions/deploy-pages",
+        "actions/setup-node",
+        "actions/upload-pages-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 65,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "root-org-validation.yml": {
+      "path": ".github/workflows/root-org-validation.yml",
+      "name": "Root Organization Validation",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "pre-validation": {
+          "runner": "ubuntu-latest",
+          "steps": 9,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        },
+        "reference-check": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": "pre-validation",
+          "if": null,
+          "timeout": null
+        },
+        "post-validation": {
+          "runner": "ubuntu-latest",
+          "steps": 8,
+          "needs": [
+            "pre-validation",
+            "reference-check"
+          ],
+          "if": "always()",
+          "timeout": null
+        },
+        "summary": {
+          "runner": "ubuntu-latest",
+          "steps": 1,
+          "needs": [
+            "pre-validation",
+            "reference-check",
+            "post-validation"
+          ],
+          "if": "always()",
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/download-artifact",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": true,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 349,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": true
+    },
+    "auth-compliance-report.yml": {
+      "path": ".github/workflows/auth-compliance-report.yml",
+      "name": "Auth Compliance Report",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "generate-compliance-report": {
+          "runner": "ubuntu-latest",
+          "steps": 10,
+          "needs": [],
+          "if": null,
+          "timeout": 15
+        }
+      },
+      "secrets": [
+        "CODEX_MASTER_KEY",
+        "COMPLIANCE_REPORT_KEY",
+        "GITHUB_TOKEN"
+      ],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout",
+        "actions/github-script",
+        "actions/upload-artifact"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": true,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 118,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    },
+    "html_visual_baseline.yml": {
+      "path": ".github/workflows/html_visual_baseline.yml",
+      "name": "HTML Visual Baseline Check",
+      "guarded": false,
+      "triggers": [],
+      "jobs": {
+        "visual-baseline": {
+          "runner": "ubuntu-latest",
+          "steps": 2,
+          "needs": [],
+          "if": null,
+          "timeout": null
+        }
+      },
+      "secrets": [],
+      "env_vars": [],
+      "runners": [
+        "ubuntu-latest"
+      ],
+      "actions_used": [
+        "actions/checkout"
+      ],
+      "python_versions": [],
+      "dependencies": {
+        "docker": false,
+        "pip": false,
+        "uv": false,
+        "nox": false,
+        "poetry": false,
+        "npm": false,
+        "yarn": false,
+        "apt": false,
+        "cargo": false
+      },
+      "line_count": 18,
+      "has_docker": false,
+      "has_uv": false,
+      "has_nox": false,
+      "has_pytest": false
+    }
+  },
+  "disabled": [
+    "comprehensive_tests.yml.disabled",
+    "security.yml.disabled",
+    "ml-tests.yml.disabled",
+    "security-scanning.yml.disabled",
+    "secrets_baseline_check.yml.disabled",
+    "archive-gates.yml.disabled",
+    "multi-python-ci.yml.disabled",
+    "security_gates.yml.disabled",
+    "tests.yml.disabled",
+    "ci-pytest.yml.disabled",
+    "ci.yml.disabled",
+    "security_policy_gate.yml.disabled",
+    "validate.yml.disabled",
+    "pages-static.yml.alt",
+    "pages_publish_tiles.yml.tombstone"
+  ],
+  "errors": {
+    "test-suite.yml": "YAML parse error: while scanning a simple key\n  in \"<unicode string>\", line 178, column 1:\n    import xml.etree.ElementTree as ET\n    ^\ncould not find expected ':'\n  in \"<unicode string>\", line 179, column 1:\n    try:\n    ^"
+  }
+}
