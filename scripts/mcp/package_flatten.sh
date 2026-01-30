@@ -267,14 +267,14 @@ cd "$WORK_DIR"
 if [[ "$OUTPUT_ZIP" = /* ]]; then
     # Absolute path - use directly
     zip -q -r "$OUTPUT_ZIP" ./*
-    cd "$REPO_ROOT"
-    ZIP_SIZE=$(stat -c%s "$OUTPUT_ZIP" 2>/dev/null || stat -f%z "$OUTPUT_ZIP")
+    FINAL_ZIP_PATH="$OUTPUT_ZIP"
 else
     # Relative path - prefix with REPO_ROOT
     zip -q -r "$REPO_ROOT/$OUTPUT_ZIP" ./*
-    cd "$REPO_ROOT"
-    ZIP_SIZE=$(stat -c%s "$OUTPUT_ZIP" 2>/dev/null || stat -f%z "$OUTPUT_ZIP")
+    FINAL_ZIP_PATH="$REPO_ROOT/$OUTPUT_ZIP"
 fi
+cd "$REPO_ROOT"
+ZIP_SIZE=$(stat -c%s "$FINAL_ZIP_PATH" 2>/dev/null || stat -f%z "$FINAL_ZIP_PATH")
 ZIP_SIZE_MB=$((ZIP_SIZE / 1024 / 1024))
 
 echo ""

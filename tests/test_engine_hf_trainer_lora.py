@@ -54,6 +54,8 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
         class State:
             def __init__(self) -> None:
                 self.global_step = 0
+                self.last_model_checkpoint = None
+                self.best_model_checkpoint = None
 
         def __init__(self, *args, **kwargs):
             self.state = self.State()
@@ -116,6 +118,8 @@ def test_run_hf_trainer_warns_on_grad_accum(monkeypatch, tmp_path: Path) -> None
         class State:
             def __init__(self) -> None:
                 self.global_step = 0
+                self.last_model_checkpoint = None
+                self.best_model_checkpoint = None
 
         def __init__(self, *args, **kwargs):
             self.state = self.State()
