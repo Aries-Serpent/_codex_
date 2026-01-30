@@ -16,9 +16,9 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-from codex.rag.embeddings import LocalSentenceTransformerProvider
-from codex.rag.indexer import embed_chunks
-from codex.rag.retriever import Retriever
+from codex.rag.embeddings import LocalSentenceTransformerProvider  # noqa: E402
+from codex.rag.indexer import embed_chunks  # noqa: E402
+from codex.rag.retriever import Retriever  # noqa: E402
 
 
 @dataclass

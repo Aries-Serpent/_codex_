@@ -6,6 +6,9 @@ Provides text chunking, embedding, and FAISS index persistence for expanded cont
 import hashlib
 import json
 import logging
+import shutil
+from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -115,13 +118,13 @@ def embed_chunks(
     logger.info(f"Loading embedding model: {model_name}")
     try:
         import os
-        
+
         from codex.rag.utils import safe_model_to_device
-        
+
         # Force environment settings to prevent meta device
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
         os.environ["TRANSFORMERS_OFFLINE"] = "0"
-        
+
         # Load model without device specification to avoid meta tensor issues
         model = SentenceTransformer(
             model_name,
@@ -131,8 +134,8 @@ def embed_chunks(
         # Use safe_model_to_device to handle meta tensors with PyTorch 2.6+
         model = safe_model_to_device(model, device="cpu")
         model.eval()
-        
-        logger.info(f"Model loaded successfully")
+
+        logger.info("Model loaded successfully")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
@@ -389,11 +392,6 @@ def build_index_from_files(
 # ============================================================================
 # Multi-Tenant Index Management (Phase B)
 # ============================================================================
-
-import shutil
-from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
 
 
 class IndexOperation(Enum):

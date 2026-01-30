@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 def has_meta_tensors(model: Any) -> Optional[bool]:
     """
     Check if model contains any meta tensors.
-    
+
     Args:
         model: PyTorch model to inspect
-        
+
     Returns:
         True if any parameter/buffer is on meta device
     """
@@ -43,19 +43,19 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
 
 
 def safe_model_to_device(
-    model: Any, 
+    model: Any,
     device: str = "cpu"
 ) -> Any:
     """
     Safely move model to device, handling meta tensors.
-    
+
     Args:
         model: Model to move
         device: Target device ("cpu" or "cuda")
-        
+
     Returns:
         Model on target device
-        
+
     Raises:
         RuntimeError: If model contains meta tensors after transfer
     """
@@ -98,18 +98,18 @@ safe_model_load_v2 = safe_model_to_device  # Old name -> new name
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Deprecated: Use safe_model_to_device() instead.
-    
+
     This function is provided for backward compatibility only.
-    
+
     Args:
         model: Model to move
         device: Target device ("cpu" or "cuda")
-        
+
     Returns:
         Model on target device
     """
     import warnings
-    
+
     warnings.warn(
         "safe_model_load() is deprecated. Use safe_model_to_device() instead.",
         DeprecationWarning,

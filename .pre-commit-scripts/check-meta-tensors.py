@@ -16,7 +16,7 @@ import argparse
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
 
 class MetaTensorPatternChecker(ast.NodeVisitor):
@@ -151,7 +151,7 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
     def check_verification_pattern(self, tree: ast.AST) -> None:
         """
         Check if file contains meta tensor verification pattern.
-        
+
         This is a best practice but not strictly required for all files.
         """
         # Look for meta tensor verification loops

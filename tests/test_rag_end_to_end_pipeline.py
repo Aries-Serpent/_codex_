@@ -15,8 +15,8 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-from codex.rag import indexer
-from codex.rag.retriever import Retriever
+from codex.rag import indexer  # noqa: E402
+from codex.rag.retriever import Retriever  # noqa: E402
 
 
 @dataclass

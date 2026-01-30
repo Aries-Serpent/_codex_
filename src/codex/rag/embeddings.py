@@ -3,7 +3,6 @@ RAG Embeddings Module
 Provides embedding provider abstraction with caching layer for expanded context workflows.
 """
 
-import hashlib
 import json
 import logging
 import os
@@ -62,17 +61,17 @@ class LocalSentenceTransformerProvider:
         """Load the embedding model."""
         try:
             import os
-            
+
             from sentence_transformers import SentenceTransformer
 
             from codex.rag.utils import safe_model_to_device
 
             logger.info(f"Loading local embedding model: {self.model_name}")
-            
+
             # Force environment settings
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             os.environ["TRANSFORMERS_OFFLINE"] = "0"
-            
+
             # Load model without device specification to avoid meta tensor issues
             self.model = SentenceTransformer(
                 self.model_name,
@@ -82,9 +81,9 @@ class LocalSentenceTransformerProvider:
             # Use safe_model_to_device to handle meta tensors with PyTorch 2.6+
             self.model = safe_model_to_device(self.model, device="cpu")
             self.model.eval()
-            
-            logger.info(f"Local embedding model loaded successfully")
-            
+
+            logger.info("Local embedding model loaded successfully")
+
         except ImportError:
             logger.error(
                 "sentence-transformers not installed. "
