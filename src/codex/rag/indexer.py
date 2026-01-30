@@ -119,20 +119,19 @@ def embed_chunks(
     try:
         import os
 
-        from codex.rag.utils import safe_model_to_device
+        # Use HF_TOKEN if available for authenticated downloads
+        use_auth_token = os.environ.get('HF_TOKEN', False)
 
-        # Force environment settings to prevent meta device
-        os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
-        os.environ["TRANSFORMERS_OFFLINE"] = "0"
-
-        # Load model without device specification to avoid meta tensor issues
+        # CRITICAL FIX: Set device='cpu' during init to prevent meta tensor issues
+        # PyTorch 2.6+ with sentence-transformers 3.x creates meta tensors when device is not specified
+        # Explicitly passing device='cpu' ensures tensors are materialized on CPU from the start
         model = SentenceTransformer(
             model_name,
+            device='cpu',
             cache_folder=cache_dir,
-            trust_remote_code=False
+            trust_remote_code=False,
+            token=use_auth_token
         )
-        # Use safe_model_to_device to handle meta tensors with PyTorch 2.6+
-        model = safe_model_to_device(model, device="cpu")
         model.eval()
 
         logger.info("Model loaded successfully")

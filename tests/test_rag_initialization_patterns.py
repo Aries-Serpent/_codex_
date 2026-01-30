@@ -64,8 +64,7 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
 @pytest.fixture(autouse=True)
 def reset_env_vars() -> None:
     """Reset environment variables to avoid test interference."""
-    os.environ.pop("PYTORCH_CUDA_ALLOC_CONF", None)
-    os.environ.pop("TRANSFORMERS_OFFLINE", None)
+    os.environ.pop("HF_TOKEN", None)
 
 
 @pytest.mark.timeout(30)
@@ -73,23 +72,24 @@ def test_local_provider_uses_default_device_allocation(
     sentence_transformer_spy: SentenceTransformerSpy,
     tmp_path: Path,
 ) -> None:
-    """Local provider should not pass a device override to SentenceTransformer."""
+    """Local provider should explicitly set device='cpu' to prevent meta tensors."""
     cache_dir = tmp_path / "rag_cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
     LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
     assert sentence_transformer_spy.calls
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert "device" not in kwargs
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
-def test_local_provider_sets_env_vars(
+def test_local_provider_sets_device_cpu(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
-    """Local provider should configure PyTorch and Transformers environment flags."""
+    """Local provider should explicitly set device='cpu' to prevent meta tensor issues."""
     LocalSentenceTransformerProvider()
-    assert os.environ["PYTORCH_CUDA_ALLOC_CONF"] == "max_split_size_mb:128"
-    assert os.environ["TRANSFORMERS_OFFLINE"] == "0"
+    assert sentence_transformer_spy.calls
+    _, kwargs = sentence_transformer_spy.calls[0]
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
@@ -104,11 +104,11 @@ def test_local_provider_calls_eval(sentence_transformer_spy: SentenceTransformer
 def test_embed_chunks_uses_default_device_allocation(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
-    """Indexer embed_chunks should avoid explicit device overrides."""
+    """Indexer embed_chunks should explicitly set device='cpu' to prevent meta tensors."""
     chunks = [(0, 10, "hello"), (11, 20, "world")]
     embed_chunks(chunks, model_profile={"model_name": "fake-model", "cache_dir": "cache"})
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert "device" not in kwargs
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
@@ -128,11 +128,11 @@ def test_retriever_load_model_uses_default_device_allocation(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    """Retriever model initialization should not override device placement."""
+    """Retriever model initialization should explicitly set device='cpu' to prevent meta tensors."""
     monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
     Retriever(index_dir=str(tmp_path))
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert "device" not in kwargs
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
