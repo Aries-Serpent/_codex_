@@ -130,7 +130,7 @@ def embed_chunks(
             device='cpu',
             cache_folder=cache_dir,
             trust_remote_code=False,
-            token=use_auth_token
+            use_auth_token=use_auth_token if use_auth_token else None
         )
         model.eval()
 

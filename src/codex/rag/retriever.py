@@ -102,7 +102,7 @@ class Retriever:
                 device='cpu',
                 cache_folder=self.cache_dir,
                 trust_remote_code=False,
-                token=use_auth_token
+                use_auth_token=use_auth_token if use_auth_token else None
             )
             self.model.eval()
 
