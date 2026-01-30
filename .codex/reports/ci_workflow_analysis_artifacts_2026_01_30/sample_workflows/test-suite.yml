@@ -174,7 +174,26 @@ jobs:
 
           # Show test counts from JUnit XML if available using Python for robust parsing
           if [ -f junit.xml ]; then
-            python3 .github/scripts/parse_junit_xml.py junit.xml >> $GITHUB_STEP_SUMMARY
+            python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    tree = ET.parse('junit.xml')
+    root = tree.getroot()
+    # Handle both testsuite and testsuites root elements
+    if root.tag == 'testsuites':
+        ts = root.find('testsuite')
+    else:
+        ts = root
+    if ts is not None:
+        tests = ts.get('tests', '0')
+        failures = ts.get('failures', '0')
+        errors = ts.get('errors', '0')
+        print(f'**Tests:** {tests} total, {failures} failed, {errors} errors')
+    else:
+        print('**Tests:** Unable to parse JUnit XML')
+except Exception as e:
+    print(f'**Tests:** Error parsing JUnit XML: {e}')
+" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
 
@@ -354,7 +373,32 @@ jobs:
 
       - name: Compare results
         run: |
-          python .github/scripts/compare_test_results.py /tmp/results1.json /tmp/results2.json
+          python << 'EOF'
+          import json
+          import sys
+
+          with open('/tmp/results1.json') as f:
+              results1 = json.load(f)
+          with open('/tmp/results2.json') as f:
+              results2 = json.load(f)
+
+          # Compare test outcomes
+          outcomes1 = {test['nodeid']: test['outcome'] for test in results1.get('tests', [])}
+          outcomes2 = {test['nodeid']: test['outcome'] for test in results2.get('tests', [])}
+
+          differences = []
+          for nodeid in set(outcomes1.keys()) | set(outcomes2.keys()):
+              if outcomes1.get(nodeid) != outcomes2.get(nodeid):
+                  differences.append(f"  - {nodeid}: {outcomes1.get(nodeid)} vs {outcomes2.get(nodeid)}")
+
+          if differences:
+              print("❌ Determinism check FAILED - test outcomes differ:")
+              for diff in differences:
+                  print(diff)
+              sys.exit(1)
+          else:
+              print("✅ Determinism check PASSED - all tests are deterministic")
+          EOF
 
   # Summary job
   test-suite-summary:

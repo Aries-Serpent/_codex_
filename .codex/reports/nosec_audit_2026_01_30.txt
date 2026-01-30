@@ -1,0 +1,377 @@
+Scanning . for nosec comments...
+================================================================================
+NOSEC SUPPRESSION AUDIT REPORT
+================================================================================
+
+EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+Total nosec comments: 210
+Files with nosec: 97
+With justification: 148 (70.5%)
+Without justification: 62 (29.5%)
+
+SUPPRESSIONS BY RULE
+--------------------------------------------------------------------------------
+  B615      :  58 occurrences
+  B614      :  24 occurrences
+  B608      :  20 occurrences
+  B311      :  20 occurrences
+  B603      :  19 occurrences
+  B404      :  15 occurrences
+  B324      :  12 occurrences
+  B105      :  10 occurrences
+  B603 B607 :   8 occurrences
+  B110      :   7 occurrences
+  B607      :   7 occurrences
+  B112      :   4 occurrences
+  B101      :   3 occurrences
+  B301      :   2 occurrences
+  B102      :   2 occurrences
+  B310      :   2 occurrences
+  B106      :   2 occurrences
+  all       :   1 occurrences
+  B202      :   1 occurrences
+  B403      :   1 occurrences
+
+FILES WITHOUT JUSTIFICATION
+--------------------------------------------------------------------------------
+
+.codex/ai_agent_toolkit.py:
+  Line 166: Rule B110 - NO JUSTIFICATION
+
+.codex/run_repo_scout.py:
+  Line 16: Rule B404 - NO JUSTIFICATION
+  Line 72: Rule B603 - NO JUSTIFICATION
+
+cli/train_codex.py:
+  Line 111: Rule B615 - NO JUSTIFICATION
+
+scripts/deep_research_task_process.py:
+  Line 104: Rule B404 - NO JUSTIFICATION
+  Line 349: Rule B603 - NO JUSTIFICATION
+
+src/codex/api/app.py:
+  Line 103: Rule B615 - NO JUSTIFICATION
+
+src/codex/logging/export.py:
+  Line 83: Rule B608 - NO JUSTIFICATION
+
+src/codex/logging/query_logs.py:
+  Line 89: Rule B608 - NO JUSTIFICATION
+  Line 164: Rule B608 - NO JUSTIFICATION
+
+src/codex/logging/session_query.py:
+  Line 151: Rule B608 - NO JUSTIFICATION
+  Line 157: Rule B608 - NO JUSTIFICATION
+  Line 161: Rule B608 - NO JUSTIFICATION
+  Line 165: Rule B608 - NO JUSTIFICATION
+  Line 168: Rule B608 - NO JUSTIFICATION
+
+src/codex/logging/viewer.py:
+  Line 249: Rule B608 - NO JUSTIFICATION
+
+src/codex/utils/subprocess.py:
+  Line 24: Rule B603 - NO JUSTIFICATION
+
+src/codex_ml/cli/metrics_cli.py:
+  Line 203: Rule B608 - NO JUSTIFICATION
+  Line 208: Rule B608 - NO JUSTIFICATION
+  Line 212: Rule B608 - NO JUSTIFICATION
+  Line 217: Rule B608 - NO JUSTIFICATION
+
+src/codex_ml/eval/eval_runner.py:
+  Line 114: Rule B615 - NO JUSTIFICATION
+
+src/codex_ml/metrics/api.py:
+  Line 353: Rule B608 - NO JUSTIFICATION
+
+src/codex_ml/plugins/registry.py:
+  Line 88: Rule B102 - NO JUSTIFICATION
+
+src/codex_ml/safety/filters.py:
+  Line 57: Rule B105 - NO JUSTIFICATION
+
+src/codex_ml/serving/model_loader.py:
+  Line 291: Rule B615 - NO JUSTIFICATION
+
+src/codex_ml/symbolic_pipeline.py:
+  Line 187: Rule B311 - NO JUSTIFICATION
+  Line 231: Rule B311 - NO JUSTIFICATION
+  Line 288: Rule B311 - NO JUSTIFICATION
+  Line 342: Rule B311 - NO JUSTIFICATION
+
+src/codex_ml/utils/subproc.py:
+  Line 101: Rule B603 - NO JUSTIFICATION
+
+src/cognitive_brain/experiments/complex_scenarios.py:
+  Line 59: Rule B311 - NO JUSTIFICATION
+
+src/cognitive_brain/experiments/exp2_validation.py:
+  Line 71: Rule B311 - NO JUSTIFICATION
+
+src/cognitive_brain/experiments/exp3_validation.py:
+  Line 51: Rule B311 - NO JUSTIFICATION
+
+src/hhg_logistics/model/peft_utils.py:
+  Line 92: Rule B615 - NO JUSTIFICATION
+  Line 98: Rule B615 - NO JUSTIFICATION
+  Line 107: Rule B615 - NO JUSTIFICATION
+
+src/ingestion/utils.py:
+  Line 229: Rule B603 - NO JUSTIFICATION
+
+src/modeling.py:
+  Line 254: Rule B615 - NO JUSTIFICATION
+  Line 381: Rule B615 - NO JUSTIFICATION
+
+tests/test_sqlite_pool_close.py:
+  Line 19: Rule B101 - NO JUSTIFICATION
+  Line 24: Rule B101 - NO JUSTIFICATION
+  Line 45: Rule B101 - NO JUSTIFICATION
+
+tools/codex_agents_workflow.py:
+  Line 14: Rule B404 - NO JUSTIFICATION
+  Line 31: Rule B603,B607 - NO JUSTIFICATION
+  Line 60: Rule B603,B607 - NO JUSTIFICATION
+
+tools/codex_cli.py:
+  Line 7: Rule B404 - NO JUSTIFICATION
+  Line 41: Rule B603 - NO JUSTIFICATION
+
+tools/codex_logging_workflow.py:
+  Line 22: Rule B404 - NO JUSTIFICATION
+  Line 117: Rule B603,B607 - NO JUSTIFICATION
+  Line 127: Rule B112 - NO JUSTIFICATION
+  Line 216: Rule B112 - NO JUSTIFICATION
+
+tools/codex_patch_session_logging.py:
+  Line 22: Rule B404 - NO JUSTIFICATION
+  Line 36: Rule B603,B607 - NO JUSTIFICATION
+  Line 93: Rule B603,B607 - NO JUSTIFICATION
+
+tools/codex_session_logging_workflow.py:
+  Line 10: Rule B404 - NO JUSTIFICATION
+  Line 71: Rule B603 - NO JUSTIFICATION
+  Line 153: Rule B603 - NO JUSTIFICATION
+  Line 237: Rule B603 - NO JUSTIFICATION
+
+tools/run_supplied_task.py:
+  Line 28: Rule B404 - NO JUSTIFICATION
+  Line 321: Rule B603,B607 - NO JUSTIFICATION
+  Line 341: Rule B603,B607 - NO JUSTIFICATION
+
+DETAILED INVENTORY (First 50 entries)
+--------------------------------------------------------------------------------
+✅ .codex/agents/test-coverage-guardian/run.py:20
+   Rule: B404
+   Justification: - Required for CLI operations, all calls use explicit arguments
+
+✅ .codex/agents/test-coverage-guardian/run.py:405
+   Rule: B603 B607
+   Justification: - Internal utility, trusted input only
+
+✅ .codex/ai_agent_toolkit.py:16
+   Rule: B404
+   Justification: - Required for git/CLI operations, all calls use explicit arguments
+
+✅ .codex/ai_agent_toolkit.py:47
+   Rule: B603 B607
+   Justification: - Trusted command, no user input
+
+✅ .codex/ai_agent_toolkit.py:53
+   Rule: B603 B607
+   Justification: - Trusted git command
+
+✅ .codex/ai_agent_toolkit.py:61
+   Rule: B603 B607
+   Justification: - Trusted git command
+
+✅ .codex/ai_agent_toolkit.py:68
+   Rule: B603 B607
+   Justification: - Trusted git command
+
+✅ .codex/ai_agent_toolkit.py:106
+   Rule: B603 B607
+   Justification: - Trusted gh command
+
+✅ .codex/ai_agent_toolkit.py:114
+   Rule: B603 B607
+   Justification: - Trusted gh command
+
+❌ .codex/ai_agent_toolkit.py:166
+   Rule: B110
+   Justification: (NONE)
+
+✅ .codex/ai_agent_toolkit.py:225
+   Rule: B603 B607
+   Justification: - Trusted pytest command
+
+❌ .codex/run_repo_scout.py:16
+   Rule: B404
+   Justification: (NONE)
+
+❌ .codex/run_repo_scout.py:72
+   Rule: B603
+   Justification: (NONE)
+
+❌ cli/train_codex.py:111
+   Rule: B615
+   Justification: (NONE)
+
+✅ examples/interpretability/basic_attention_analysis.py:30
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/interpretability/basic_attention_analysis.py:31
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:33
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:34
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:93
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:94
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:147
+   Rule: B615
+   Justification: - Example code with known model ID
+
+✅ examples/nlp_capabilities_demo.py:148
+   Rule: B615
+   Justification: - Example code with known model ID
+
+❌ scripts/deep_research_task_process.py:104
+   Rule: B404
+   Justification: (NONE)
+
+❌ scripts/deep_research_task_process.py:349
+   Rule: B603
+   Justification: (NONE)
+
+✅ scripts/ensure_test_artifacts.py:284
+   Rule: all
+   Justification: ): 0
+
+✅ scripts/inference_pipeline.py:205
+   Rule: B614
+   Justification: - Model file may contain custom classes requiring weights_only=False
+
+✅ src/codex/api/app.py:55
+   Rule: B105
+   Justification: - conventional tokenizer pad token
+
+✅ src/codex/api/app.py:56
+   Rule: B105,B106
+   Justification: - conventional unknown token marker
+
+❌ src/codex/api/app.py:103
+   Rule: B615
+   Justification: (NONE)
+
+✅ src/codex/archive/retry.py:36
+   Rule: B311
+   Justification: - deterministic non-crypto RNG
+
+✅ src/codex/ingest/adapter.py:241
+   Rule: B404
+   Justification: : subprocess is required for git invocation
+
+✅ src/codex/ingest/adapter.py:274
+   Rule: B603
+   Justification: : command arguments are controlled and validated above
+
+❌ src/codex/logging/export.py:83
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/query_logs.py:89
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/query_logs.py:164
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/session_query.py:151
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/session_query.py:157
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/session_query.py:161
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/session_query.py:165
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/session_query.py:168
+   Rule: B608
+   Justification: (NONE)
+
+❌ src/codex/logging/viewer.py:249
+   Rule: B608
+   Justification: (NONE)
+
+✅ src/codex/metrics/duplication.py:223
+   Rule: B324
+   Justification: - MD5 used for deduplication hashing, not security
+
+✅ src/codex/retrieval/sharding.py:265
+   Rule: B324
+   Justification: - MD5 used for data distribution hashing, not cryptographic security
+
+❌ src/codex/utils/subprocess.py:24
+   Rule: B603
+   Justification: (NONE)
+
+✅ src/codex_bridge/github_client.py:47
+   Rule: B324
+   Justification: - SHA1 used for cache key generation, not security
+
+✅ src/codex_cli/app.py:85
+   Rule: B311
+   Justification: - deterministic CLI shuffle
+
+✅ src/codex_ml/checkpointing/checkpoint_core.py:96
+   Rule: B614
+   Justification: - weights_only=False required for optimizer/RNG state
+
+✅ src/codex_ml/checkpointing/checkpoint_core.py:101
+   Rule: B614
+   Justification: - Retrying without weights_only parameter
+
+✅ src/codex_ml/cli/metrics_cli.py:141
+   Rule: B608
+   Justification: f"CREATE TABLE IF NOT EXISTS {table_safe} "
+
+✅ src/codex_ml/cli/metrics_cli.py:161
+   Rule: B608
+   Justification: f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+
+
+... and 160 more entries
+================================================================================
+RECOMMENDATIONS
+================================================================================
+⚠️  Found 62 nosec comment(s) without justification
+   Action: Add justification comments explaining why suppression is needed
+   Format: # nosec B101 - Justification here
+
+Current justification rate: 70.5%
+Target justification rate: 100%
+
+================================================================================
