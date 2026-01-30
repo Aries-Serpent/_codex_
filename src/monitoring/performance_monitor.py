@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from datetime import datetime, UTC
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 
 @dataclass

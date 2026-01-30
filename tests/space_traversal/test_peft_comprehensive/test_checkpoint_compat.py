@@ -24,7 +24,7 @@ def test_load_legacy_checkpoint_without_version(tmp_path):
         "sha256": None,
     }
     state_dict = {"model_state": {"w": 1}}
-    
+
     # Compute digest the same way load_checkpoint does for file paths
     # (uses hashlib.sha256 of serialized payload, not _digest_payload)
     digest_meta = dict(meta_dict)
@@ -32,7 +32,7 @@ def test_load_legacy_checkpoint_without_version(tmp_path):
     digest = hashlib.sha256(
         cc._serialize_payload({"state": state_dict, "meta": digest_meta})
     ).hexdigest()
-    
+
     # Set the digest in the meta and create the final payload
     meta_dict["sha256"] = digest
     legacy_payload = {

@@ -8,10 +8,9 @@ Part of Phase 5: AI Agent Tooling Enhancement
 """
 from __future__ import annotations
 
-import os
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 import hashlib
 

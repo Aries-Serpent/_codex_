@@ -5,27 +5,27 @@ Tests all exception paths, edge cases, and failure scenarios.
 
 import os
 import tempfile
+import threading
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-import threading
 
 import numpy as np
 import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    from codex.rag.indexer import (
-        chunk_text,
-        persist_index,
-        load_index,
-        build_index_from_files,
-    )
-    from codex.rag.retriever import Retriever, MultiIndexRetriever
     from codex.rag.embeddings import (
-        LocalSentenceTransformerProvider,
         CachedEmbeddingProvider,
+        LocalSentenceTransformerProvider,
         create_embedding_provider,
     )
+    from codex.rag.indexer import (
+        build_index_from_files,
+        chunk_text,
+        load_index,
+        persist_index,
+    )
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
     RAG_ERROR_HANDLING_AVAILABLE = True
 except ImportError:
     RAG_ERROR_HANDLING_AVAILABLE = False
@@ -54,13 +54,13 @@ class TestIndexerErrorHandling:
         """Test chunking with invalid parameters"""
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=0)
-        
+
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=-100)
-        
+
         with pytest.raises(ValueError, match="overlap must be"):
             chunk_text("test", chunk_size=100, overlap=-1)
-        
+
         with pytest.raises(ValueError, match="overlap must be"):
             chunk_text("test", chunk_size=100, overlap=100)
 
@@ -81,7 +81,7 @@ class TestIndexerErrorHandling:
         with tempfile.TemporaryDirectory() as tmpdir:
             embeddings = np.random.randn(3, 384).astype(np.float32)
             chunks = [(0, 10, "Only one chunk")]
-            
+
             with pytest.raises(ValueError, match="Mismatch"):
                 persist_index(
                     index_name="test",
@@ -116,11 +116,11 @@ class TestIndexerErrorHandling:
         """Test building index with empty files"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create empty file
             empty_file = tmpdir / "empty.txt"
             empty_file.write_text("")
-            
+
             with pytest.raises(ValueError, match="no text content"):
                 build_index_from_files(
                     files=[empty_file],
@@ -134,14 +134,14 @@ class TestIndexerErrorHandling:
         """Test handling of file permission errors"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create a file
             test_file = tmpdir / "test.txt"
             test_file.write_text("test content " * 100)
-            
+
             # Mock permission error
             mock_open.side_effect = PermissionError("Permission denied")
-            
+
             # Should handle gracefully and raise appropriate error
             with pytest.raises(ValueError, match="no text content"):
                 build_index_from_files(
@@ -155,11 +155,11 @@ class TestIndexerErrorHandling:
         """Test handling of encoding errors"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create file with invalid UTF-8
             bad_file = tmpdir / "bad.txt"
             bad_file.write_bytes(b"\xff\xfe Invalid UTF-8")
-            
+
             # Should handle gracefully
             try:
                 build_index_from_files(
@@ -184,7 +184,7 @@ class TestRetrieverErrorHandling:
                 index_name="nonexistent",
                 tenant_id="test",
             )
-            
+
             # Should have no index loaded
             assert retriever.faiss_index is None
 
@@ -196,7 +196,7 @@ class TestRetrieverErrorHandling:
                 index_name="nonexistent",
                 tenant_id="test",
             )
-            
+
             results = retriever.query("test query", top_k=5)
             assert len(results) == 0
 
@@ -208,7 +208,7 @@ class TestRetrieverErrorHandling:
                 index_name="test",
                 tenant_id="test",
             )
-            
+
             assert retriever.query("", top_k=5) == []
             assert retriever.query("   ", top_k=5) == []
 
@@ -220,11 +220,11 @@ class TestRetrieverErrorHandling:
                 index_name="test",
                 tenant_id="test",
             )
-            
+
             # Should handle gracefully
             results = retriever.query("test", top_k=0)
             assert isinstance(results, list)
-            
+
             results = retriever.query("test", top_k=-1)
             assert isinstance(results, list)
 
@@ -235,15 +235,15 @@ class TestRetrieverErrorHandling:
                 {"index_name": "nonexistent1", "tenant_id": "test"},
                 {"index_name": "nonexistent2", "tenant_id": "test"},
             ]
-            
+
             retriever = MultiIndexRetriever(
                 indices=indices,
                 index_dir=tmpdir,
             )
-            
+
             # Should have 0 loaded retrievers
             assert len(retriever.retrievers) == 0
-            
+
             # Query should return empty
             results = retriever.query("test", top_k=5)
             assert len(results) == 0
@@ -281,10 +281,10 @@ class TestEmbeddingsErrorHandling:
         mock_client = MagicMock()
         mock_client.embeddings.create.side_effect = Exception("API Error")
         mock_openai.return_value = mock_client
-        
+
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
             provider = OpenAIEmbeddingProvider()
-            
+
             with pytest.raises(Exception, match="API Error"):
                 provider.encode(["test text"])
 
@@ -295,19 +295,19 @@ class TestEmbeddingsErrorHandling:
             mock_provider = MagicMock()
             mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
             mock_provider.get_dimension.return_value = 384
-            
+
             cached = CachedEmbeddingProvider(
                 provider=mock_provider,
                 cache_dir=tmpdir,
             )
-            
+
             # Create cache
             cached.encode(["test"], cache_key="test_key")
-            
+
             # Corrupt cache file
             cache_file = Path(tmpdir) / "test_key.npz"
             cache_file.write_text("corrupted")
-            
+
             # Should handle corruption and regenerate
             embeddings = cached.encode(["test"], cache_key="test_key")
             assert embeddings is not None
@@ -319,19 +319,19 @@ class TestEmbeddingsErrorHandling:
             mock_provider = MagicMock()
             mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
             mock_provider.get_dimension.return_value = 384
-            
+
             cached = CachedEmbeddingProvider(
                 provider=mock_provider,
                 cache_dir=tmpdir,
             )
-            
+
             # Create cache
             cached.encode(["test"], cache_key="test_key")
-            
+
             # Corrupt metadata
             meta_file = Path(tmpdir) / "test_key.meta.json"
             meta_file.write_text("{invalid json")
-            
+
             # Should handle and regenerate
             embeddings = cached.encode(["test"], cache_key="test_key")
             assert embeddings is not None
@@ -356,15 +356,15 @@ class TestConcurrentAccess:
         """Test building multiple indices concurrently"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             def build_index(index_id):
                 # Create test file
                 docs_dir = tmpdir / f"docs_{index_id}"
                 docs_dir.mkdir()
-                
+
                 test_file = docs_dir / "test.txt"
                 test_file.write_text(f"Test content {index_id} " * 100)
-                
+
                 # Build index
                 try:
                     build_index_from_files(
@@ -379,19 +379,19 @@ class TestConcurrentAccess:
                 except Exception as e:
                     print(f"Error in thread {index_id}: {e}")
                     return False
-            
+
             # Build 3 indices concurrently
             threads = []
             results = []
-            
+
             for i in range(3):
                 thread = threading.Thread(target=lambda idx=i: results.append(build_index(idx)))
                 threads.append(thread)
                 thread.start()
-            
+
             for thread in threads:
                 thread.join(timeout=60)  # 60 second timeout
-            
+
             # At least some should succeed
             # (Concurrent access may cause some failures, which is expected)
             assert len([r for r in results if r]) >= 0
@@ -402,12 +402,12 @@ class TestConcurrentAccess:
             mock_provider = MagicMock()
             mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
             mock_provider.get_dimension.return_value = 384
-            
+
             cached = CachedEmbeddingProvider(
                 provider=mock_provider,
                 cache_dir=tmpdir,
             )
-            
+
             def access_cache(thread_id):
                 try:
                     cached.encode([f"test {thread_id}"], cache_key=f"key_{thread_id % 2}")
@@ -415,18 +415,18 @@ class TestConcurrentAccess:
                 except Exception as e:
                     print(f"Error in thread {thread_id}: {e}")
                     return False
-            
+
             threads = []
             results = []
-            
+
             for i in range(5):
                 thread = threading.Thread(target=lambda idx=i: results.append(access_cache(idx)))
                 threads.append(thread)
                 thread.start()
-            
+
             for thread in threads:
                 thread.join(timeout=10)
-            
+
             # All should succeed (cache handles concurrent access)
             assert all(results)
 
@@ -439,7 +439,7 @@ class TestResourceExhaustion:
         # This tests memory management
         large_texts = [f"Text content {i} " * 100 for i in range(1000)]
         chunks = [(i*100, (i+1)*100, text) for i, text in enumerate(large_texts)]
-        
+
         # Should not crash, but may skip due to memory/time
         # In real scenario, would use batch processing
         assert len(chunks) == 1000
@@ -452,7 +452,7 @@ class TestResourceExhaustion:
                 index_name="test",
                 tenant_id="test",
             )
-            
+
             # Should handle gracefully
             results = retriever.query("test", top_k=1000000)
             assert isinstance(results, list)
@@ -468,24 +468,24 @@ class TestPlatformSpecific:
             # Use Path for cross-platform compatibility
             index_path = Path(tmpdir) / "test_tenant" / "test_index"
             index_path.mkdir(parents=True)
-            
+
             assert index_path.exists()
 
     def test_case_sensitive_filenames(self):
         """Test handling of case-sensitive filenames"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create files with different cases
             file1 = tmpdir / "Test.txt"
             file2 = tmpdir / "test.txt"
-            
+
             file1.write_text("Content 1")
-            
+
             # On case-insensitive systems, file2 might overwrite file1
             # Handle gracefully
             if not file2.exists() or file2.read_text() == "Content 1":
                 file2.write_text("Content 2")
-            
+
             # Should handle appropriately based on platform
             assert file1.exists()

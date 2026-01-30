@@ -6,7 +6,7 @@ import importlib
 import importlib.util
 import logging
 from pathlib import Path
-from typing import Optional, Type
+from typing import Optional
 
 from . import AnalysisPlugin, ASTPlugin
 
@@ -63,7 +63,6 @@ class PluginLoader:
         # Look for packages with 'codex_ast_plugin_' prefix
         try:
             import pkgutil
-            import sys
 
             # Only search in known plugin paths, not all of sys.path
             plugin_prefix = "codex_ast_plugin_"

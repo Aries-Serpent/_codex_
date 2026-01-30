@@ -1620,7 +1620,7 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         click.echo(json.dumps(data, indent=2))
     elif format == "summary":
         stats = inventory.get_stats()
-        click.echo(f"\n📊 Workflow Inventory Summary\n")
+        click.echo("\n📊 Workflow Inventory Summary\n")
         click.echo(f"Total workflows: {stats.total_workflows}")
         click.echo(f"Triggerable: {stats.triggerable_workflows}")
         click.echo(f"Reusable: {stats.reusable_workflows}")

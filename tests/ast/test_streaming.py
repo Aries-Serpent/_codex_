@@ -1,7 +1,5 @@
 """Tests for streaming parser."""
 
-import tempfile
-from pathlib import Path
 
 import pytest
 

@@ -5,7 +5,6 @@ Enforces token limits with sliding windows and priority-based pruning.
 Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 """
 
-import re
 import logging
 logger = logging.getLogger(__name__)
 from typing import Optional, Callable

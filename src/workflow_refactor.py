@@ -12,11 +12,9 @@ configuration file before using this module.
 """
 from __future__ import annotations
 
-import os
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import re
 
 logger = logging.getLogger(__name__)
 

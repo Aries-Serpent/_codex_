@@ -14,9 +14,8 @@ from __future__ import annotations
 import importlib
 import importlib.metadata
 import logging
-import sys
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional, Type
+from typing import Any, Optional, Type
 from packaging import version as pkg_version
 
 logger = logging.getLogger(__name__)

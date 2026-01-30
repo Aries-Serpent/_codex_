@@ -11,7 +11,6 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
-import json
 import sys
 from pathlib import Path
 from typing import Optional
@@ -235,7 +234,7 @@ def materialize(
         # In real usage, would need input data
         # This is a placeholder implementation
         console.print(
-            f"[yellow]Note: Materialization requires input data (not implemented in CLI yet)[/yellow]"
+            "[yellow]Note: Materialization requires input data (not implemented in CLI yet)[/yellow]"
         )
         console.print(f"Features to materialize: {', '.join(feature_names)}")
         console.print(f"Output path: {output_path}")
@@ -243,7 +242,7 @@ def materialize(
         if version:
             console.print(f"Version: {version}")
 
-        console.print(f"\n[dim]Use Python API for full materialization functionality[/dim]")
+        console.print("\n[dim]Use Python API for full materialization functionality[/dim]")
 
     except Exception as e:
         logger.debug(f"Exception: {e}")
@@ -332,7 +331,7 @@ def info(
         console.print(f"\n[bold]Feature: {feature_name}[/bold]\n")
 
         if metadata:
-            console.print(f"[cyan]Metadata:[/cyan]")
+            console.print("[cyan]Metadata:[/cyan]")
             console.print(f"  Version: {metadata.version}")
             console.print(f"  Data Type: {metadata.dtype}")
             console.print(f"  Description: {metadata.description}")
@@ -342,7 +341,7 @@ def info(
             if metadata.tags:
                 console.print(f"  Tags: {', '.join(f'{k}={v}' for k, v in metadata.tags.items())}")
 
-        console.print(f"\n[cyan]Health Status:[/cyan]")
+        console.print("\n[cyan]Health Status:[/cyan]")
         health_icon = "✓" if health.is_healthy else "✗"
         health_color = "green" if health.is_healthy else "red"
         console.print(
@@ -353,7 +352,7 @@ def info(
         console.print(f"  Error Count: {health.error_count}")
 
         if health.warnings:
-            console.print(f"\n[yellow]Warnings:[/yellow]")
+            console.print("\n[yellow]Warnings:[/yellow]")
             for warning in health.warnings:
                 console.print(f"  • {warning}")
 

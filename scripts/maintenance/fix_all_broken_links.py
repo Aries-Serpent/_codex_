@@ -19,7 +19,7 @@ if len(sys.argv) > 1 and sys.argv[1] not in ['--apply']:
     REPO_ROOT = Path(sys.argv[1]).resolve()
     sys.argv.pop(1)  # Remove from args so --apply still works
 else:
-    REPO_ROOT = Path(__file__).resolve().parent
+    REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # scripts/maintenance/ is 2 levels deep
 DOCS_ROOT = REPO_ROOT / "docs"
 
 class ComprehensiveLinkFixer:

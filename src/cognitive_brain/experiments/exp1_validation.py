@@ -183,7 +183,7 @@ def run_exp1_validation() -> Dict:
             if c_assessment.decision == ground_truth:
                 classical_correct += 1
         
-        print(f"✅ All 100 audits assessed")
+        print("✅ All 100 audits assessed")
         print()
         
         # Calculate metrics
@@ -201,7 +201,7 @@ def run_exp1_validation() -> Dict:
         print(f"  Quantum Accuracy:     {quantum_accuracy:.1%} ({quantum_correct}/100)")
         print(f"  Classical Accuracy:   {classical_accuracy:.1%} ({classical_correct}/100)")
         print(f"  Improvement:          {accuracy_improvement:+.1f}%")
-        print(f"  Target:               +15.0%")
+        print("  Target:               +15.0%")
         print(f"  Status:               {'✅ TARGET MET' if accuracy_improvement >= 15.0 else '⚠️ BELOW TARGET'}")
         print()
         print(f"  Avg Quantum Time:     {avg_quantum_time:.2f}ms")
@@ -216,23 +216,23 @@ def run_exp1_validation() -> Dict:
         # Pattern 1: Coherence correlation
         high_coherence_audits = [(c, scenarios[i]) for i, c in enumerate(coherence_values) if c > 0.5]
         if high_coherence_audits:
-            print(f"  1. High Coherence Correlation:")
+            print("  1. High Coherence Correlation:")
             print(f"     - {len(high_coherence_audits)} audits had coherence > 0.5")
-            print(f"     - These represent clear-cut decisions")
+            print("     - These represent clear-cut decisions")
             print()
         
         # Pattern 2: Performance vs accuracy tradeoff
         time_ratio = avg_quantum_time / avg_classical_time if avg_classical_time > 0 else 1.0
-        print(f"  2. Performance-Accuracy Tradeoff:")
+        print("  2. Performance-Accuracy Tradeoff:")
         print(f"     - Quantum is {time_ratio:.2f}x slower than classical")
         print(f"     - But delivers {accuracy_improvement:+.1f}% accuracy improvement")
-        print(f"     - Rayleigh k₁ reduction validated")
+        print("     - Rayleigh k₁ reduction validated")
         print()
         
         # Pattern 3: Decision distribution
         quantum_decisions = [quantum_assessor.assess_compliance(audit).decision for audit, _ in scenarios]
         decision_dist = {d: quantum_decisions.count(d) for d in ComplianceDecision}
-        print(f"  3. Decision Distribution (Quantum):")
+        print("  3. Decision Distribution (Quantum):")
         for decision, count in decision_dist.items():
             print(f"     - {decision.value}: {count}/100 ({count}%)")
         print()

@@ -5,7 +5,7 @@ Processes files in chunks to minimize memory usage.
 
 import logging
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator
 
 from .node import StandardizedASTNode
 from .parser import parse_python

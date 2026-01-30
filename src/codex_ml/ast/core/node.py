@@ -6,7 +6,7 @@ and analysis findings.
 """
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Dict, List, Optional
 import uuid
 import weakref
 

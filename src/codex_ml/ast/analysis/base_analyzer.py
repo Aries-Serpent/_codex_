@@ -4,7 +4,7 @@ Abstract base class for AST analyzers.
 Defines the interface for all AST analyzers in the framework.
 """
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
 
