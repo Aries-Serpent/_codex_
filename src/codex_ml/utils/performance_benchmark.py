@@ -150,11 +150,21 @@ def benchmark_training_step(
     """
     model.train()
 
+    def _get_loss(outputs):
+        """Extract loss from model outputs (handles dict, tuple, or object with .loss)."""
+        if hasattr(outputs, "loss"):
+            return outputs.loss
+        if isinstance(outputs, dict) and "loss" in outputs:
+            return outputs["loss"]
+        if isinstance(outputs, (tuple, list)) and len(outputs) > 0:
+            return outputs[0]
+        raise ValueError(f"Cannot extract loss from outputs: {type(outputs)}")
+
     # Warmup
     for _ in range(warmup_iters):
         optimizer.zero_grad()
         outputs = model(**batch)
-        loss = outputs.loss if hasattr(outputs, "loss") else outputs[0]
+        loss = _get_loss(outputs)
         loss.backward()
         optimizer.step()
 
@@ -168,7 +178,7 @@ def benchmark_training_step(
     for _ in range(num_iterations):
         optimizer.zero_grad()
         outputs = model(**batch)
-        loss = outputs.loss if hasattr(outputs, "loss") else outputs[0]
+        loss = _get_loss(outputs)
         loss.backward()
         optimizer.step()
 

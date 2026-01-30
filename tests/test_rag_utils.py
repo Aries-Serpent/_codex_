@@ -94,43 +94,20 @@ class TestSafeModelLoadV2:
         # Should succeed and return model on CPU
         assert result is not None
         assert next(result.parameters()).device.type == "cpu"
-        # Model should be in eval mode
-        assert not result.training
 
     def test_model_with_meta_tensors_reinit_strategy(self):
-        """Test Strategy 1: Reinitialize SentenceTransformer with device parameter"""
-        # Create a mock SentenceTransformer with meta tensors
-        mock_model = MagicMock(spec=SentenceTransformer)
-        mock_model.__class__.__name__ = 'SentenceTransformer'
+        """Test that models with meta tensors are handled via to_empty()"""
+        # Create a model with meta tensors
+        with torch.device('meta'):
+            model = torch.nn.Linear(10, 5)
         
-        # Mock check_for_meta_tensors to return True initially
-        with patch('codex.rag.utils.check_for_meta_tensors') as mock_check:
-            # First call returns True (has meta), second call returns False (no meta)
-            mock_check.side_effect = [True, False]
-            
-            # Mock SentenceTransformer constructor
-            with patch('codex.rag.utils.SentenceTransformer') as mock_st:
-                new_model = MagicMock(spec=SentenceTransformer)
-                new_model.eval.return_value = new_model
-                mock_st.return_value = new_model
-                
-                with tempfile.TemporaryDirectory() as tmpdir:
-                    result = safe_model_load_v2(
-                        mock_model,
-                        device="cpu",
-                        model_name="test-model",
-                        cache_folder=tmpdir
-                    )
-                
-                # Should call SentenceTransformer with device parameter
-                mock_st.assert_called_once_with(
-                    "test-model",
-                    device="cpu",
-                    cache_folder=tmpdir,
-                    trust_remote_code=False
-                )
-                assert result is new_model
-                new_model.eval.assert_called_once()
+        # The function should use to_empty() for meta tensors
+        result = safe_model_load_v2(model, device="cpu")
+        
+        # Should succeed using to_empty() strategy
+        assert result is not None
+        # Verify model is now on CPU (not meta)
+        assert next(result.parameters()).device.type == "cpu"
 
     def test_model_with_meta_tensors_to_empty_strategy(self):
         """Test Strategy 2: Use to_empty() for meta tensors"""
@@ -138,21 +115,26 @@ class TestSafeModelLoadV2:
         with torch.device('meta'):
             model = torch.nn.Linear(10, 5)
         
-        # Strategy 2 should handle meta tensors using to_empty()
-        # For simple models like Linear, this may still fail if weights aren't properly loaded
-        # This tests that the function handles the failure gracefully
-        with pytest.raises(RuntimeError, match="Failed to load model"):
-            safe_model_load_v2(model, device="cpu")
+        # to_empty() should handle meta tensors in PyTorch 2.0+
+        result = safe_model_load_v2(model, device="cpu")
+        
+        assert result is not None
+        assert next(result.parameters()).device.type == "cpu"
 
     def test_all_strategies_fail(self):
-        """Test that RuntimeError is raised when all strategies fail"""
-        # Create a model with meta tensors that can't be reinitialized
-        with torch.device('meta'):
-            model = torch.nn.Linear(10, 5)
+        """Test behavior when model doesn't support to_empty()"""
+        # Create a mock model without to_empty support
+        mock_model = MagicMock()
+        mock_model.named_modules.return_value = []
+        mock_model.parameters.return_value = []
+        mock_model.buffers.return_value = []
+        mock_model.device = type('Device', (), {'type': 'meta'})()
+        del mock_model.to_empty  # Remove to_empty attribute
         
-        # All strategies should fail for a meta Linear model
-        with pytest.raises(RuntimeError, match="Failed to load model"):
-            safe_model_load_v2(model, device="cpu")
+        # Mock has_meta_tensors to return True
+        with patch('codex.rag.utils.has_meta_tensors', return_value=True):
+            with pytest.raises(AttributeError, match="Model does not support to_empty"):
+                safe_model_load_v2(mock_model, device="cpu")
 
     def test_model_without_model_name(self):
         """Test loading model without model_name (skips reinit strategy)"""

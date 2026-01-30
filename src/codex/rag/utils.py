@@ -93,7 +93,29 @@ def safe_model_to_device(
 # Backward compatibility aliases
 check_for_meta_tensors = has_meta_tensors  # Old name -> new name
 safe_model_load_v2 = safe_model_to_device  # Old name -> new name
-safe_model_load = safe_model_to_device  # Legacy alias used in tests
+
+
+def safe_model_load(model: Any, device: str = "cpu") -> Any:
+    """
+    Deprecated: Use safe_model_to_device() instead.
+    
+    This function is provided for backward compatibility only.
+    
+    Args:
+        model: Model to move
+        device: Target device ("cpu" or "cuda")
+        
+    Returns:
+        Model on target device
+    """
+    import warnings
+    
+    warnings.warn(
+        "safe_model_load() is deprecated. Use safe_model_to_device() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return safe_model_to_device(model, device)
 
 
 @dataclass
