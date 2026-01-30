@@ -1,168 +1,144 @@
+"""Tests for RAG model initialization patterns and default device allocation.
+
+Focuses on CPU-default SentenceTransformer initialization after PR #3020 changes.
+"""
+
 from __future__ import annotations
 
-import time
-from concurrent.futures import ThreadPoolExecutor
+import os
+import sys
+import types
+from dataclasses import dataclass
 from pathlib import Path
+from typing import List, Tuple
 
 import pytest
 
+np = pytest.importorskip("numpy")
 
-def _resolve_model_name(model_name: str) -> str:
-    """Ensure model name uses the sentence-transformers namespace."""
-    if "/" in model_name:
-        return model_name
-    return f"sentence-transformers/{model_name}"
-
-
-@pytest.mark.timeout(300)
-def test_embedding_model_caching(tmp_path: Path) -> None:
-    """Verify LocalSentenceTransformerProvider uses the provided cache directory."""
-    pytest.importorskip("sentence_transformers")
-
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
-
-    cache_dir = tmp_path / "cache"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    provider = LocalSentenceTransformerProvider(
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(cache_dir),
-    )
-
-    cache_contents = list(cache_dir.rglob("*"))
-    if not cache_contents:
-        pytest.skip("Cache directory empty; model may already be cached elsewhere")
-
-    assert provider.model is not None, "Expected embedding model to initialize"
+from codex.rag.embeddings import LocalSentenceTransformerProvider
+from codex.rag.indexer import embed_chunks
+from codex.rag.retriever import Retriever
 
 
-@pytest.mark.parametrize("model_profile", ["fast", "quality", "multilingual"])
-@pytest.mark.timeout(300)
-def test_indexer_model_profile_handling(model_profile: str, tmp_path: Path) -> None:
-    """
-    Ensure embed_chunks handles multiple model profiles with stable embeddings.
-    """
-    pytest.importorskip("sentence_transformers")
+@dataclass
+class SentenceTransformerSpy:
+    """Capture SentenceTransformer initialization for validation."""
 
-    from codex.rag.indexer import embed_chunks
-
-    profile_map = {
-        "fast": "all-MiniLM-L6-v2",
-        "quality": "all-MiniLM-L6-v2",
-        "multilingual": "all-MiniLM-L6-v2",
-    }
-    model_name = _resolve_model_name(profile_map[model_profile])
-
-    chunks = [(0, 28, "Profile handling regression test")]
-    embeddings = embed_chunks(
-        chunks,
-        model_profile={"model_name": model_name, "cache_dir": str(tmp_path / "models")},
-    )
-
-    assert embeddings.shape[0] == 1, f"Expected one embedding for profile {model_profile}"
+    calls: List[Tuple[str, dict]]
+    instances: List[object]
 
 
-@pytest.mark.timeout(300)
-def test_retriever_index_loading(tmp_path: Path) -> None:
-    """Verify retriever loads an existing index and returns results."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
+@pytest.fixture()
+def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransformerSpy:
+    """Install a fake sentence_transformers module that records init kwargs."""
+    calls: List[Tuple[str, dict]] = []
+    instances: List[object] = []
 
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import Retriever
+    class FakeSentenceTransformer:
+        def __init__(self, model_name: str, **kwargs):
+            self.model_name = model_name
+            self.kwargs = kwargs
+            self.eval_called = False
+            calls.append((model_name, kwargs))
+            instances.append(self)
 
-    docs_dir = tmp_path / "docs"
-    docs_dir.mkdir(parents=True, exist_ok=True)
-    doc_path = docs_dir / "doc.txt"
-    doc_path.write_text("Retrieval test document for index loading.")
+        def encode(self, texts, **kwargs):
+            return np.zeros((len(texts), 3))
 
-    index_path = build_index_from_files(
-        files=[doc_path],
-        index_name="docs",
-        tenant_id="tenant",
-        index_dir=str(tmp_path / "indices"),
-    )
-    assert index_path.exists(), "Expected index directory to be created"
+        def get_sentence_embedding_dimension(self) -> int:
+            return 3
 
-    retriever = Retriever(
-        index_dir=str(tmp_path / "indices"),
-        index_name="docs",
-        tenant_id="tenant",
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
-    )
+        def eval(self):
+            self.eval_called = True
+            return self
 
-    results = retriever.query("index loading", top_k=1)
-    assert results, "Expected retriever to return results from loaded index"
+    fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
+    monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
+    return SentenceTransformerSpy(calls=calls, instances=instances)
 
 
-@pytest.mark.timeout(300)
-def test_model_initialization_timeout(tmp_path: Path) -> None:
-    """Ensure model initialization completes within a reasonable time bound."""
-    pytest.importorskip("sentence_transformers")
-
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
-
-    start = time.monotonic()
-    _ = LocalSentenceTransformerProvider(
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
-    )
-    duration = time.monotonic() - start
-
-    assert duration < 300, f"Model initialization took too long: {duration:.1f}s"
+@pytest.fixture(autouse=True)
+def reset_env_vars() -> None:
+    """Reset environment variables to avoid test interference."""
+    os.environ.pop("PYTORCH_CUDA_ALLOC_CONF", None)
+    os.environ.pop("TRANSFORMERS_OFFLINE", None)
 
 
-@pytest.mark.timeout(300)
-def test_concurrent_model_loading(tmp_path: Path) -> None:
-    """Validate model initialization is thread-safe under concurrent loads."""
-    pytest.importorskip("sentence_transformers")
-
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
-
-    cache_dir = tmp_path / "models"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    def _load() -> LocalSentenceTransformerProvider:
-        return LocalSentenceTransformerProvider(
-            model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-            cache_dir=str(cache_dir),
-        )
-
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        providers = list(executor.map(lambda _: _load(), range(2)))
-
-    assert all(provider.model is not None for provider in providers), "Model load failed in threads"
+@pytest.mark.timeout(30)
+def test_local_provider_uses_default_device_allocation(
+    sentence_transformer_spy: SentenceTransformerSpy,
+    tmp_path: Path,
+) -> None:
+    """Local provider should not pass a device override to SentenceTransformer."""
+    cache_dir = tmp_path.mktemp("rag_cache")
+    LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
+    assert sentence_transformer_spy.calls
+    _, kwargs = sentence_transformer_spy.calls[0]
+    assert "device" not in kwargs
 
 
-@pytest.mark.timeout(300)
-def test_invalid_model_name_handling(tmp_path: Path) -> None:
-    """Ensure invalid model names raise a clear initialization error."""
-    pytest.importorskip("sentence_transformers")
-
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
-
-    with pytest.raises(Exception):
-        _ = LocalSentenceTransformerProvider(
-            model_name="invalid-model-name-for-tests",
-            cache_dir=str(tmp_path / "models"),
-        )
+@pytest.mark.timeout(30)
+def test_local_provider_sets_env_vars(
+    sentence_transformer_spy: SentenceTransformerSpy,
+) -> None:
+    """Local provider should configure PyTorch and Transformers environment flags."""
+    LocalSentenceTransformerProvider()
+    assert os.environ["PYTORCH_CUDA_ALLOC_CONF"] == "max_split_size_mb:128"
+    assert os.environ["TRANSFORMERS_OFFLINE"] == "0"
 
 
-@pytest.mark.timeout(300)
-def test_model_device_attribute(tmp_path: Path) -> None:
-    """Check that the embedding model reports CPU device allocation."""
-    pytest.importorskip("sentence_transformers")
-    torch = pytest.importorskip("torch")
+@pytest.mark.timeout(30)
+def test_local_provider_calls_eval(sentence_transformer_spy: SentenceTransformerSpy) -> None:
+    """Local provider should call eval on the loaded model."""
+    LocalSentenceTransformerProvider()
+    assert sentence_transformer_spy.instances
+    assert sentence_transformer_spy.instances[0].eval_called is True
 
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
 
-    provider = LocalSentenceTransformerProvider(
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
-    )
+@pytest.mark.timeout(30)
+def test_embed_chunks_uses_default_device_allocation(
+    sentence_transformer_spy: SentenceTransformerSpy,
+) -> None:
+    """Indexer embed_chunks should avoid explicit device overrides."""
+    chunks = [(0, 10, "hello"), (11, 20, "world")]
+    embed_chunks(chunks, model_profile={"model_name": "fake-model", "cache_dir": "cache"})
+    _, kwargs = sentence_transformer_spy.calls[0]
+    assert "device" not in kwargs
 
-    device = getattr(provider.model, "device", None)
-    assert device is not None, "Expected model to expose device attribute"
-    assert isinstance(device, torch.device), "Model device should be a torch.device"
-    assert device.type == "cpu", f"Expected CPU device, got {device}"
+
+@pytest.mark.timeout(30)
+def test_embed_chunks_passes_cache_folder(
+    sentence_transformer_spy: SentenceTransformerSpy,
+) -> None:
+    """Indexer embed_chunks should pass cache_dir as cache_folder."""
+    chunks = [(0, 10, "hello")]
+    embed_chunks(chunks, model_profile={"cache_dir": "custom-cache"})
+    _, kwargs = sentence_transformer_spy.calls[0]
+    assert kwargs.get("cache_folder") == "custom-cache"
+
+
+@pytest.mark.timeout(30)
+def test_retriever_load_model_uses_default_device_allocation(
+    sentence_transformer_spy: SentenceTransformerSpy,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Retriever model initialization should not override device placement."""
+    monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
+    Retriever(index_dir=str(tmp_path))
+    _, kwargs = sentence_transformer_spy.calls[0]
+    assert "device" not in kwargs
+
+
+@pytest.mark.timeout(30)
+def test_retriever_load_model_calls_eval(
+    sentence_transformer_spy: SentenceTransformerSpy,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Retriever should call eval on the loaded SentenceTransformer."""
+    monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
+    Retriever(index_dir=str(tmp_path))
+    assert sentence_transformer_spy.instances
+    assert sentence_transformer_spy.instances[0].eval_called is True

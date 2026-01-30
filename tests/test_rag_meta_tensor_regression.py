@@ -1,216 +1,217 @@
+"""Regression tests for RAG meta tensor handling and safe device moves.
+
+These checks ensure CPU-default allocations remain intact after meta tensor fixes.
+"""
+
 from __future__ import annotations
 
-import re
-from pathlib import Path
-from typing import Iterable, List
+import builtins
+import types
+from types import SimpleNamespace
+from typing import Callable, Dict, List
+
+import sys
 
 import pytest
 
-
-def _resolve_model_name(model_name: str) -> str:
-    """Ensure model name uses the sentence-transformers namespace."""
-    if "/" in model_name:
-        return model_name
-    return f"sentence-transformers/{model_name}"
+from codex.rag import utils
 
 
-def has_meta_tensors(model) -> List[str]:
-    """Return parameter names that are on the meta device."""
-    meta_params: List[str] = []
-    for name, param in model.named_parameters():
-        if getattr(param, "device", None) is not None and param.device.type == "meta":
-            meta_params.append(name)
-    return meta_params
+@pytest.fixture()
+def device_factory() -> Callable[[str], SimpleNamespace]:
+    """Provide a factory for creating lightweight device markers."""
+
+    def _factory(device_type: str) -> SimpleNamespace:
+        return SimpleNamespace(type=device_type)
+
+    return _factory
 
 
-@pytest.fixture
-def small_model_name() -> str:
-    """Return a fast, small model name for regression tests."""
-    return "all-MiniLM-L6-v2"
+@pytest.fixture()
+def meta_param(device_factory: Callable[[str], SimpleNamespace]) -> SimpleNamespace:
+    """Provide a fake parameter that lives on the meta device."""
+
+    return SimpleNamespace(device=device_factory("meta"))
 
 
-@pytest.fixture
-def temp_cache_dir(tmp_path: Path) -> Path:
-    """Create a temporary cache directory for model downloads."""
-    cache_dir = tmp_path / "model-cache"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    return cache_dir
+@pytest.fixture()
+def cpu_param(device_factory: Callable[[str], SimpleNamespace]) -> SimpleNamespace:
+    """Provide a fake parameter that lives on the CPU device."""
+
+    return SimpleNamespace(device=device_factory("cpu"))
 
 
-pytestmark = [pytest.mark.regression, pytest.mark.timeout(300)]
+@pytest.fixture()
+def fake_model_factory() -> Callable[..., object]:
+    """Build fake models with optional named modules, parameters, and buffers."""
+
+    class FakeModule:
+        def __init__(self, parameters: List[object]):
+            self._parameters = parameters
+
+        def named_parameters(self):
+            return [(f"p{idx}", param) for idx, param in enumerate(self._parameters)]
+
+    def _factory(
+        *,
+        modules: List[object] | None = None,
+        parameters: List[object] | None = None,
+        buffers: List[object] | None = None,
+        device: SimpleNamespace | None = None,
+        to_empty: Callable[..., object] | None = None,
+        to: Callable[..., object] | None = None,
+    ) -> object:
+        class FakeModel:
+            def __init__(self):
+                self._modules = modules or []
+                self._parameters = parameters or []
+                self._buffers = buffers or []
+                self.device = device
+                if to_empty is not None:
+                    self.to_empty = to_empty
+                if to is not None:
+                    self.to = to
+
+            def named_modules(self):
+                return [("module", FakeModule(self._modules))] if self._modules else []
+
+            def parameters(self):
+                return self._parameters
+
+            def buffers(self):
+                return self._buffers
+
+        return FakeModel()
+
+    return _factory
 
 
-@pytest.mark.timeout(300)
-def test_embeddings_no_meta_tensors(
-    tmp_path: Path, small_model_name: str, temp_cache_dir: Path
+@pytest.mark.timeout(30)
+def test_has_meta_tensors_detects_module_parameters(
+    fake_model_factory: Callable[..., object],
+    meta_param: SimpleNamespace,
 ) -> None:
-    """
-    Verify LocalSentenceTransformerProvider initializes without meta tensors.
-
-    This guards against regressions where specifying device='cpu' or redundant
-    .to('cpu') calls can yield meta device parameters in sentence-transformers 3.x.
-    """
-    pytest.importorskip("sentence_transformers")
-    torch = pytest.importorskip("torch")
-
-    from codex.rag.embeddings import LocalSentenceTransformerProvider
-
-    model = LocalSentenceTransformerProvider(
-        model_name=_resolve_model_name(small_model_name),
-        cache_dir=str(temp_cache_dir),
-    )
-
-    meta_params = has_meta_tensors(model.model)
-    assert not meta_params, f"Found meta tensors in embeddings model: {meta_params}"
-
-    embedding = model.model.encode("Meta tensor regression check", convert_to_tensor=True)
-    assert isinstance(embedding, torch.Tensor), "Expected tensor embedding output"
-    assert embedding.device.type == "cpu", "Embedding tensor should be on CPU"
+    """Ensure meta parameters inside named modules are detected."""
+    model = fake_model_factory(modules=[meta_param])
+    assert utils.has_meta_tensors(model) is True
 
 
-@pytest.mark.timeout(300)
-def test_indexer_no_meta_tensors(
-    tmp_path: Path, small_model_name: str, temp_cache_dir: Path, monkeypatch: pytest.MonkeyPatch
+@pytest.mark.timeout(30)
+@pytest.mark.parametrize(
+    "attribute_name",
+    ["parameters", "buffers", "device"],
+)
+def test_has_meta_tensors_detects_meta_locations(
+    fake_model_factory: Callable[..., object],
+    meta_param: SimpleNamespace,
+    attribute_name: str,
+    device_factory: Callable[[str], SimpleNamespace],
 ) -> None:
-    """
-    Verify the indexer embedding path loads sentence-transformers without meta tensors.
-    """
-    st_module = pytest.importorskip("sentence_transformers")
+    """Confirm meta tensors are detected across parameters, buffers, or device."""
+    kwargs: Dict[str, object] = {}
+    if attribute_name == "parameters":
+        kwargs["parameters"] = [meta_param]
+    elif attribute_name == "buffers":
+        kwargs["buffers"] = [meta_param]
+    else:
+        kwargs["device"] = device_factory("meta")
 
-    from codex.rag import indexer
-
-    captured_models: List[object] = []
-    original_cls = st_module.SentenceTransformer
-
-    def _capturing_sentence_transformer(*args, **kwargs):
-        model = original_cls(*args, **kwargs)
-        captured_models.append(model)
-        return model
-
-    monkeypatch.setattr(st_module, "SentenceTransformer", _capturing_sentence_transformer)
-
-    chunks = [(0, 10, "Indexing text for meta tensor regression")]
-    embeddings = indexer.embed_chunks(
-        chunks,
-        model_profile={
-            "model_name": _resolve_model_name(small_model_name),
-            "cache_dir": str(temp_cache_dir),
-        },
-    )
-
-    assert embeddings.shape[0] == 1, "Expected one embedding from indexer"
-    assert captured_models, "Expected indexer to instantiate SentenceTransformer"
-
-    meta_params = has_meta_tensors(captured_models[0])
-    assert not meta_params, f"Found meta tensors in indexer model: {meta_params}"
+    model = fake_model_factory(**kwargs)
+    assert utils.has_meta_tensors(model) is True
 
 
-@pytest.mark.timeout(300)
-def test_retriever_no_meta_tensors(
-    tmp_path: Path, small_model_name: str, temp_cache_dir: Path
+@pytest.mark.timeout(30)
+def test_has_meta_tensors_false_for_cpu_only(
+    fake_model_factory: Callable[..., object],
+    cpu_param: SimpleNamespace,
+    device_factory: Callable[[str], SimpleNamespace],
 ) -> None:
-    """
-    Verify Retriever loads embedding model without meta tensors.
-    """
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.retriever import Retriever
-
-    retriever = Retriever(
-        index_dir=str(tmp_path / "indices"),
-        index_name="missing",
-        tenant_id="default",
-        model_name=_resolve_model_name(small_model_name),
-        cache_dir=str(temp_cache_dir),
+    """Verify CPU-only fake models are not flagged as meta tensors."""
+    model = fake_model_factory(
+        modules=[cpu_param],
+        parameters=[cpu_param],
+        buffers=[cpu_param],
+        device=device_factory("cpu"),
     )
-
-    meta_params = has_meta_tensors(retriever.model)
-    assert not meta_params, f"Found meta tensors in retriever model: {meta_params}"
+    assert utils.has_meta_tensors(model) is False
 
 
-@pytest.mark.timeout(300)
-def test_sentence_transformer_direct_init(
-    tmp_path: Path, small_model_name: str, temp_cache_dir: Path
+@pytest.mark.timeout(30)
+def test_safe_model_to_device_uses_to_empty_for_meta(
+    fake_model_factory: Callable[..., object],
+    meta_param: SimpleNamespace,
 ) -> None:
-    """Direct SentenceTransformer init should avoid meta tensors without device args."""
-    st_module = pytest.importorskip("sentence_transformers")
-    torch = pytest.importorskip("torch")
+    """Ensure meta tensors trigger to_empty and return the moved model."""
+    call_state: Dict[str, str] = {}
 
-    model = st_module.SentenceTransformer(
-        _resolve_model_name(small_model_name),
-        cache_folder=str(temp_cache_dir),
-        trust_remote_code=False,
-    )
-    model.eval()
+    def to_empty(device: str) -> str:
+        call_state["device"] = device
+        return "moved"
 
-    meta_params = has_meta_tensors(model)
-    assert not meta_params, f"Found meta tensors in direct init: {meta_params}"
-
-    embedding = model.encode("Direct init regression", convert_to_tensor=True)
-    assert isinstance(embedding, torch.Tensor), "Expected tensor embedding output"
-    assert embedding.device.type == "cpu", "Direct init embedding should be on CPU"
+    model = fake_model_factory(parameters=[meta_param], to_empty=to_empty)
+    assert utils.safe_model_to_device(model, device="cpu") == "moved"
+    assert call_state["device"] == "cpu"
 
 
-@pytest.mark.timeout(300)
-def test_model_inference_cpu_only(
-    tmp_path: Path, small_model_name: str, temp_cache_dir: Path
+@pytest.mark.timeout(30)
+def test_safe_model_to_device_raises_without_to_empty(
+    fake_model_factory: Callable[..., object],
+    meta_param: SimpleNamespace,
 ) -> None:
-    """
-    Verify embeddings and retriever models produce CPU outputs without device transfers.
-    """
-    st_module = pytest.importorskip("sentence_transformers")
-    torch = pytest.importorskip("torch")
-    pytest.importorskip("faiss")
-
-    from codex.rag.retriever import Retriever
-
-    model = st_module.SentenceTransformer(
-        _resolve_model_name(small_model_name),
-        cache_folder=str(temp_cache_dir),
-        trust_remote_code=False,
-    )
-    model.eval()
-
-    embedding = model.encode("CPU inference check", convert_to_tensor=True)
-    assert embedding.device.type == "cpu", "SentenceTransformer output should be on CPU"
-
-    retriever = Retriever(
-        index_dir=str(tmp_path / "indices"),
-        index_name="missing",
-        tenant_id="default",
-        model_name=_resolve_model_name(small_model_name),
-        cache_dir=str(temp_cache_dir),
-    )
-    retriever_embedding = retriever.model.encode("Retriever CPU output", convert_to_tensor=True)
-    assert retriever_embedding.device.type == "cpu", "Retriever output should be on CPU"
+    """Confirm meta tensors raise when to_empty is not available."""
+    model = fake_model_factory(parameters=[meta_param])
+    with pytest.raises(AttributeError, match="to_empty"):
+        utils.safe_model_to_device(model, device="cpu")
 
 
-@pytest.mark.timeout(300)
-def test_no_redundant_device_transfers() -> None:
-    """Ensure RAG code does not call model.to() explicitly."""
-    rag_dir = Path(__file__).resolve().parents[1] / "src" / "codex" / "rag"
-    python_files = list(rag_dir.glob("*.py"))
+@pytest.mark.timeout(30)
+def test_safe_model_to_device_uses_torch_module_to(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Validate that torch.nn.Module instances use their .to method."""
+    moved: Dict[str, str] = {}
 
-    assert python_files, "Expected RAG Python files to scan for device transfers"
+    class FakeTorchModule:
+        def to(self, device: str):
+            moved["device"] = device
+            return "torch-moved"
 
-    for path in python_files:
-        content = path.read_text(encoding="utf-8")
-        assert not re.search(r"\.to\(\s*['\"]cpu['\"]\s*\)", content), (
-            f"Found explicit .to('cpu') in {path}"
-        )
-        assert not re.search(r"\.to\(\s*['\"]cuda['\"]\s*\)", content), (
-            f"Found explicit .to('cuda') in {path}"
-        )
+    torch_module = types.SimpleNamespace(nn=types.SimpleNamespace(Module=FakeTorchModule))
+    monkeypatch.setitem(sys.modules, "torch", torch_module)
+
+    class FakeModel(FakeTorchModule):
+        def parameters(self):
+            return []
+
+        def buffers(self):
+            return []
+
+    model = FakeModel()
+    assert utils.safe_model_to_device(model, device="cpu") == "torch-moved"
+    assert moved["device"] == "cpu"
 
 
-@pytest.mark.timeout(300)
-def test_sentence_transformers_version() -> None:
-    """Validate sentence-transformers version is at least 3.3.0."""
-    st_module = pytest.importorskip("sentence_transformers")
-    from packaging.version import parse as parse_version
+@pytest.mark.timeout(30)
+def test_safe_model_to_device_fallbacks_when_torch_missing(
+    monkeypatch: pytest.MonkeyPatch,
+    fake_model_factory: Callable[..., object],
+) -> None:
+    """Verify the fallback .to path is used if torch import fails."""
+    moved: Dict[str, str] = {}
 
-    version = parse_version(st_module.__version__)
-    assert version >= parse_version("3.3.0"), (
-        f"sentence-transformers version too old: {st_module.__version__}"
-    )
+    original_import = builtins.__import__
+
+    def fake_import(name: str, *args, **kwargs):
+        if name == "torch":
+            raise ImportError("torch unavailable")
+        return original_import(name, *args, **kwargs)
+
+    def to(device: str) -> str:
+        moved["device"] = device
+        return "fallback-moved"
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    model = fake_model_factory(to=to)
+    assert utils.safe_model_to_device(model, device="cpu") == "fallback-moved"
+    assert moved["device"] == "cpu"

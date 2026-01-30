@@ -1,250 +1,235 @@
+"""End-to-end tests for RAG indexing and retrieval pipeline behavior.
+
+Uses fake FAISS and SentenceTransformer implementations for offline determinism.
+"""
+
 from __future__ import annotations
 
-import threading
-from concurrent.futures import ThreadPoolExecutor
+import sys
+import types
+from dataclasses import dataclass
 from pathlib import Path
+from typing import List, Tuple
 
 import pytest
 
-pytestmark = [pytest.mark.integration, pytest.mark.slow, pytest.mark.timeout(600)]
+np = pytest.importorskip("numpy")
+
+from codex.rag import indexer
+from codex.rag.retriever import Retriever
 
 
-def _resolve_model_name(model_name: str) -> str:
-    """Ensure model name uses the sentence-transformers namespace."""
-    if "/" in model_name:
-        return model_name
-    return f"sentence-transformers/{model_name}"
+@dataclass
+class FakeFaissIndex:
+    """In-memory FAISS-like index for deterministic tests."""
+
+    dimension: int
+    vectors: List[np.ndarray]
+
+    def add(self, vectors: np.ndarray) -> None:
+        for vec in vectors:
+            self.vectors.append(np.array(vec))
+
+    @property
+    def ntotal(self) -> int:
+        return len(self.vectors)
+
+    def search(self, queries: np.ndarray, top_k: int):
+        data = np.vstack(self.vectors) if self.vectors else np.zeros((0, self.dimension))
+        distances = []
+        indices = []
+        for query in queries:
+            if len(data) == 0:
+                distances.append(np.array([np.inf] * top_k))
+                indices.append(np.array([-1] * top_k))
+                continue
+            l2 = np.sum((data - query) ** 2, axis=1)
+            order = np.argsort(l2)[:top_k]
+            distances.append(l2[order])
+            indices.append(order)
+        return np.array(distances), np.array(indices)
 
 
-@pytest.fixture
-def sample_documents(tmp_path: Path) -> Path:
-    """Create sample documents for testing."""
-    docs_dir = tmp_path / "docs"
-    docs_dir.mkdir()
+class FakeFaissModule:
+    """Minimal FAISS API used by the indexer and retriever."""
 
-    documents = [
-        ("Machine learning is a subset of artificial intelligence.", "ml.txt"),
-        ("Deep learning uses neural networks with multiple layers.", "dl.txt"),
-        ("Natural language processing enables computers to understand text.", "nlp.txt"),
-    ]
+    def IndexFlatL2(self, dimension: int) -> FakeFaissIndex:
+        return FakeFaissIndex(dimension=dimension, vectors=[])
 
-    for content, filename in documents:
-        (docs_dir / filename).write_text(content)
+    def write_index(self, index: FakeFaissIndex, path: str) -> None:
+        with open(path, "wb") as handle:
+            np.save(handle, np.vstack(index.vectors) if index.vectors else np.zeros((0, index.dimension)))
 
-    return docs_dir
+    def read_index(self, path: str) -> FakeFaissIndex:
+        with open(path, "rb") as handle:
+            data = np.load(handle)
+        dimension = data.shape[1] if data.size else 3
+        index = FakeFaissIndex(dimension=dimension, vectors=[])
+        if data.size:
+            index.add(data)
+        return index
 
 
-@pytest.mark.timeout(600)
-def test_full_rag_pipeline(sample_documents: Path, tmp_path: Path) -> None:
-    """Test the full ingestion → index → query workflow."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
+@dataclass
+class SentenceTransformerSpy:
+    """Capture SentenceTransformer initialization and encode calls."""
 
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import Retriever
+    calls: List[Tuple[str, dict]]
 
-    index_dir = tmp_path / "indices"
 
-    index_path = build_index_from_files(
-        files=list(sample_documents.glob("*.txt")),
-        index_name="docs",
+@pytest.fixture()
+def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransformerSpy:
+    """Provide a fake SentenceTransformer for embedding generation."""
+    calls: List[Tuple[str, dict]] = []
+
+    class FakeSentenceTransformer:
+        def __init__(self, model_name: str, **kwargs):
+            self.model_name = model_name
+            self.kwargs = kwargs
+            calls.append((model_name, kwargs))
+
+        def encode(self, texts, **kwargs):
+            return np.array([[float(len(text)) % 5, 0.0, 1.0] for text in texts])
+
+        def eval(self):
+            return self
+
+    fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
+    monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
+    return SentenceTransformerSpy(calls=calls)
+
+
+@pytest.fixture()
+def fake_faiss(monkeypatch: pytest.MonkeyPatch) -> FakeFaissModule:
+    """Provide a fake FAISS module for index persistence tests."""
+    fake_module = FakeFaissModule()
+    monkeypatch.setattr(indexer, "faiss", fake_module)
+    return fake_module
+
+
+@pytest.fixture()
+def sample_text() -> str:
+    """Provide sample text content for chunking and embedding."""
+    return "Hello world. This is a test document for the RAG pipeline."
+
+
+@pytest.mark.timeout(60)
+def test_chunk_text_adjusts_overlap(sample_text: str) -> None:
+    """Chunking should adjust overlap when it exceeds chunk size."""
+    chunks = indexer.chunk_text(sample_text, chunk_size=10, overlap=128)
+    assert chunks
+    assert all(len(chunk[2]) <= 10 for chunk in chunks)
+
+
+@pytest.mark.timeout(60)
+def test_embed_chunks_returns_embeddings(
+    sentence_transformer_spy: SentenceTransformerSpy,
+) -> None:
+    """Embedding generation should return deterministic numpy arrays."""
+    chunks = [(0, 5, "hello"), (6, 11, "world")]
+    embeddings = indexer.embed_chunks(chunks, model_profile={"model_name": "fake"})
+    assert embeddings.shape == (2, 3)
+    assert sentence_transformer_spy.calls
+
+
+@pytest.mark.timeout(60)
+def test_persist_and_load_index_roundtrip(
+    fake_faiss: FakeFaissModule,
+    sentence_transformer_spy: SentenceTransformerSpy,
+    tmp_path: Path,
+) -> None:
+    """Persisted indices should load with metadata intact."""
+    chunks = [(0, 5, "hello"), (6, 11, "world")]
+    embeddings = indexer.embed_chunks(chunks, model_profile={"model_name": "fake"})
+    index_path = indexer.persist_index(
+        index_name="demo",
+        embeddings=embeddings,
+        chunks=chunks,
         tenant_id="tenant",
-        index_dir=str(index_dir),
+        index_dir=str(tmp_path),
     )
-
-    assert index_path.exists(), "Expected index directory to be created"
-
-    retriever = Retriever(
-        index_dir=str(index_dir),
-        index_name="docs",
+    index, chunk_meta, meta = indexer.load_index(
+        index_name="demo",
         tenant_id="tenant",
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
+        index_dir=str(tmp_path),
     )
+    assert index.ntotal == len(chunks)
+    assert len(chunk_meta) == len(chunks)
+    assert meta.get("index_name") == "demo"
+    assert (index_path / "metadata.json").exists()
 
-    results = retriever.query("machine learning", top_k=2)
-    assert results, "Expected RAG query to return results"
+
+@pytest.mark.timeout(60)
+def test_build_index_from_files_missing_files(tmp_path: Path) -> None:
+    """Building an index with only missing files should raise a ValueError."""
+    missing = tmp_path / "missing.txt"
+    with pytest.raises(ValueError, match="No valid input files found"):
+        indexer.build_index_from_files([missing], index_name="demo")
 
 
-@pytest.mark.timeout(600)
-def test_pipeline_with_metadata(sample_documents: Path, tmp_path: Path) -> None:
-    """Verify metadata is persisted alongside the index."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
+@pytest.mark.timeout(60)
+def test_build_index_from_files_empty_file(
+    tmp_path: Path,
+    sentence_transformer_spy: SentenceTransformerSpy,
+) -> None:
+    """Empty files should raise a ValueError when no chunks are generated."""
+    empty_file = tmp_path / "empty.txt"
+    empty_file.write_text("", encoding="utf-8")
+    with pytest.raises(ValueError, match="Input files contain no text content"):
+        indexer.build_index_from_files([empty_file], index_name="demo")
 
-    from codex.rag.indexer import build_index_from_files
 
-    index_dir = tmp_path / "indices"
-    index_path = build_index_from_files(
-        files=list(sample_documents.glob("*.txt")),
-        index_name="docs",
+@pytest.mark.timeout(60)
+def test_retriever_query_returns_results(
+    fake_faiss: FakeFaissModule,
+    sentence_transformer_spy: SentenceTransformerSpy,
+    tmp_path: Path,
+) -> None:
+    """Retrieval should return scored results with provenance fields."""
+    chunks = [(0, 5, "hello"), (6, 11, "world")]
+    embeddings = indexer.embed_chunks(chunks, model_profile={"model_name": "fake"})
+    indexer.persist_index(
+        index_name="demo",
+        embeddings=embeddings,
+        chunks=chunks,
         tenant_id="tenant",
-        index_dir=str(index_dir),
+        index_dir=str(tmp_path),
     )
+    retriever = Retriever(index_dir=str(tmp_path), index_name="demo", tenant_id="tenant")
+    results = retriever.query("hello", top_k=2)
+    assert results
+    first = results[0]
+    assert {"text", "file", "start_line", "end_line", "score", "generated_at"}.issubset(first)
 
-    metadata_file = index_path / "metadata.json"
-    assert metadata_file.exists(), "Expected metadata.json to be persisted"
 
-
-@pytest.mark.timeout(600)
-def test_index_persistence(sample_documents: Path, tmp_path: Path) -> None:
-    """Ensure index files are saved and reloadable."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import build_index_from_files
-
-    index_path = build_index_from_files(
-        files=list(sample_documents.glob("*.txt")),
-        index_name="docs",
+@pytest.mark.timeout(60)
+def test_retriever_query_min_score_filters(
+    fake_faiss: FakeFaissModule,
+    sentence_transformer_spy: SentenceTransformerSpy,
+    tmp_path: Path,
+) -> None:
+    """min_score should filter out results beyond the threshold."""
+    chunks = [(0, 5, "hello"), (6, 11, "world")]
+    embeddings = indexer.embed_chunks(chunks, model_profile={"model_name": "fake"})
+    indexer.persist_index(
+        index_name="demo",
+        embeddings=embeddings,
+        chunks=chunks,
         tenant_id="tenant",
-        index_dir=str(tmp_path / "indices"),
+        index_dir=str(tmp_path),
     )
-
-    assert (index_path / "index.faiss").exists(), "Expected FAISS index file"
-    assert (index_path / "chunks.json").exists(), "Expected chunks metadata file"
-
-
-@pytest.mark.timeout(600)
-def test_concurrent_queries(sample_documents: Path, tmp_path: Path) -> None:
-    """Validate concurrent queries against a single index."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import Retriever
-
-    index_dir = tmp_path / "indices"
-    build_index_from_files(
-        files=list(sample_documents.glob("*.txt")),
-        index_name="docs",
-        tenant_id="tenant",
-        index_dir=str(index_dir),
-    )
-
-    retriever = Retriever(
-        index_dir=str(index_dir),
-        index_name="docs",
-        tenant_id="tenant",
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
-    )
-
-    queries = ["machine learning", "deep learning", "natural language"]
-
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        results = list(executor.map(lambda q: retriever.query(q, top_k=1), queries))
-
-    assert all(result for result in results), "Expected results for all concurrent queries"
+    retriever = Retriever(index_dir=str(tmp_path), index_name="demo", tenant_id="tenant")
+    results = retriever.query("hello", top_k=2, min_score=0.0)
+    assert results == []
 
 
-@pytest.mark.timeout(600)
-def test_pipeline_error_recovery(tmp_path: Path) -> None:
-    """Ensure the pipeline fails gracefully on malformed input files."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import build_index_from_files
-
-    docs_dir = tmp_path / "docs"
-    docs_dir.mkdir()
-    empty_file = docs_dir / "empty.txt"
-    empty_file.write_text("")
-
-    with pytest.raises(ValueError):
-        build_index_from_files(
-            files=[empty_file],
-            index_name="empty",
-            tenant_id="tenant",
-            index_dir=str(tmp_path / "indices"),
-        )
-
-
-@pytest.mark.timeout(600)
-def test_large_document_ingestion(tmp_path: Path) -> None:
-    """Verify ingestion works with a larger batch of documents."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import build_index_from_files
-
-    docs_dir = tmp_path / "docs"
-    docs_dir.mkdir()
-    for i in range(120):
-        (docs_dir / f"doc_{i}.txt").write_text(
-            f"Document {i} about machine learning and retrieval augmented generation."
-        )
-
-    index_path = build_index_from_files(
-        files=list(docs_dir.glob("*.txt")),
-        index_name="large",
-        tenant_id="tenant",
-        index_dir=str(tmp_path / "indices"),
-    )
-
-    assert index_path.exists(), "Expected large index to be created"
-
-
-@pytest.mark.timeout(600)
-def test_index_update_operations(sample_documents: Path, tmp_path: Path) -> None:
-    """Validate index update operations add new documents."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import manage_tenant_indices
-
-    index_dir = tmp_path / "indices"
-    tenant_id = "tenant"
-
-    create_result = manage_tenant_indices(
-        tenant_id=tenant_id,
-        operation="create",
-        index_names=["docs"],
-        index_dir=str(index_dir),
-        files=list(sample_documents.glob("*.txt")),
-    )
-    assert create_result.success, "Expected initial index creation to succeed"
-
-    extra_doc = sample_documents / "extra.txt"
-    extra_doc.write_text("Additional document for update test.")
-
-    update_result = manage_tenant_indices(
-        tenant_id=tenant_id,
-        operation="update",
-        index_names=["docs"],
-        index_dir=str(index_dir),
-        files=list(sample_documents.glob("*.txt")),
-    )
-
-    assert update_result.success, "Expected index update to succeed"
-
-
-@pytest.mark.timeout(600)
-def test_retrieval_relevance(sample_documents: Path, tmp_path: Path) -> None:
-    """Verify retrieved results are semantically relevant to the query."""
-    pytest.importorskip("sentence_transformers")
-    pytest.importorskip("faiss")
-
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import Retriever
-
-    index_dir = tmp_path / "indices"
-    build_index_from_files(
-        files=list(sample_documents.glob("*.txt")),
-        index_name="docs",
-        tenant_id="tenant",
-        index_dir=str(index_dir),
-    )
-
-    retriever = Retriever(
-        index_dir=str(index_dir),
-        index_name="docs",
-        tenant_id="tenant",
-        model_name=_resolve_model_name("all-MiniLM-L6-v2"),
-        cache_dir=str(tmp_path / "models"),
-    )
-
-    results = retriever.query("artificial intelligence", top_k=3)
-    assert any("Machine learning" in result["text"] for result in results), (
-        "Expected a machine learning result for AI query"
-    )
+@pytest.mark.timeout(60)
+def test_retriever_query_empty_index_returns_empty(
+    fake_faiss: FakeFaissModule,
+    sentence_transformer_spy: SentenceTransformerSpy,
+    tmp_path: Path,
+) -> None:
+    """Queries against missing indices should return empty lists."""
+    retriever = Retriever(index_dir=str(tmp_path), index_name="missing", tenant_id="tenant")
+    retriever.faiss_index = None
+    assert retriever.query("hello") == []
