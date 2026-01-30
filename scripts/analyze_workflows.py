@@ -10,7 +10,6 @@ Analyzes all GitHub Actions workflows to:
 """
 
 import json
-import os
 import re
 import sys
 from collections import defaultdict
