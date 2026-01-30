@@ -1,0 +1,2 @@
+# Check if zip is ignored
+grep -n "\.zip" .gitignore || echo "No .zip pattern in .gitignore"
