@@ -270,7 +270,6 @@ def infer_intent(
     # Optionally enhance with LLM
     if use_llm and llm_client is not None:
         try:
-            from .llm_client import CodexLLMClient
             
             # Build context for LLM
             context = {

@@ -74,7 +74,7 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     # Verify optimized weights are loaded
     optimizer = AdaptiveScoringOptimizer(learning_rate=0.12)
     weights = optimizer.weights
-    print(f"Loaded optimized weights:")
+    print("Loaded optimized weights:")
     print(f"  - compliance_score_weight: {weights.compliance_score_weight:.3f}")
     print(f"  - risk_weight: {weights.risk_weight:.3f}")
     print(f"  - cost_weight: {weights.cost_weight:.3f}")

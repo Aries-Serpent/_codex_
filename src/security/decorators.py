@@ -16,7 +16,6 @@ from contextvars import ContextVar
 from security.scope_validator import (
     TokenScope,
     ScopeValidator,
-    InsufficientScopeError,
 )
 
 logger = logging.getLogger(__name__)

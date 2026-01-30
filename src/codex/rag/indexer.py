@@ -6,6 +6,9 @@ Provides text chunking, embedding, and FAISS index persistence for expanded cont
 import hashlib
 import json
 import logging
+import shutil
+from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -115,22 +118,31 @@ def embed_chunks(
     logger.info(f"Loading embedding model: {model_name}")
     try:
         import os
+        import torch
+
+        # Use HF_TOKEN if available for authenticated downloads
+        use_auth_token = os.environ.get('HF_TOKEN', False)
+
+        # CRITICAL FIX: Force CPU device and prevent meta tensors
+        # Set default device to CPU before any model operations
+        torch.set_default_device('cpu')
         
-        # Force environment settings to prevent meta device
-        os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
-        os.environ["TRANSFORMERS_OFFLINE"] = "0"
-        
-        # Let SentenceTransformer use default device allocation
-        # This avoids meta tensor errors by allowing the library to handle initialization
         model = SentenceTransformer(
             model_name,
+            device='cpu',
             cache_folder=cache_dir,
-            trust_remote_code=False
+            trust_remote_code=False,
+            use_auth_token=use_auth_token if use_auth_token else None
         )
-        # Model automatically initializes on CPU without meta tensors
+        
+        # Explicitly move all parameters to CPU (double-check)
+        model = model.to('cpu')
         model.eval()
         
-        logger.info(f"Model loaded successfully")
+        # Reset default device to avoid side effects
+        torch.set_default_device(None)
+
+        logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
@@ -387,11 +399,6 @@ def build_index_from_files(
 # ============================================================================
 # Multi-Tenant Index Management (Phase B)
 # ============================================================================
-
-import shutil
-from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
 
 
 class IndexOperation(Enum):

@@ -175,8 +175,8 @@ def audit_file(file_path: Path, repo_root: Path) -> Dict:
 
 def generate_audit_report(docs_dir: Path) -> Dict:
     """Generate comprehensive audit report."""
-    # Get repo root for relative paths
-    repo_root = Path(__file__).resolve().parent
+    # Get repo root for relative paths - scripts/maintenance/ is 2 levels deep
+    repo_root = Path(__file__).resolve().parent.parent.parent
     
     # Find all markdown files
     md_files = sorted(docs_dir.rglob('*.md'))
@@ -242,8 +242,8 @@ def generate_audit_report(docs_dir: Path) -> Dict:
 
 def main():
     """Main execution function."""
-    # Get repository root dynamically
-    repo_root = Path(__file__).resolve().parent
+    # Get repository root dynamically - scripts/maintenance/ is 2 levels deep
+    repo_root = Path(__file__).resolve().parent.parent.parent
     docs_dir = repo_root / 'docs' / 'admin'
     
     if not docs_dir.exists():

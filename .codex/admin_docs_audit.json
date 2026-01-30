@@ -1,87 +1,61 @@
 {
   "statistics": {
-    "audit_timestamp": "2026-01-23T10:46:06.485704",
+    "audit_timestamp": "2026-01-30T06:53:57.848160",
     "total_files": 17,
     "files_with_date_metadata": 5,
     "files_missing_date_metadata": 12,
     "files_iso_8601_compliant": 5,
     "files_non_iso_8601": 0,
     "staleness_breakdown": {
-      "fresh_under_30_days": 4,
-      "aging_30_90_days": 1,
+      "fresh_under_30_days": 2,
+      "aging_30_90_days": 3,
       "stale_over_90_days": 0,
       "unknown_no_date": 12
     },
     "calendar_language": {
-      "files_with_calendar_language": 2,
-      "total_calendar_instances": 4
+      "files_with_calendar_language": 3,
+      "total_calendar_instances": 5
     }
   },
   "categorized_files": {
     "fresh": [
       {
         "file": "docs/admin/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
-        "size_bytes": 26097,
-        "line_count": 776,
+        "size_bytes": 30236,
+        "line_count": 894,
         "last_updated_raw": "2026-01-13T17:05:00Z",
         "last_updated_line": 6,
         "is_iso_8601": true,
         "last_updated_parsed": "2026-01-13T17:05:00",
-        "age_days": 9,
+        "age_days": 16,
         "staleness_level": "Fresh",
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/MULTI_JOB_CI_FIX_SUMMARY.md",
-        "size_bytes": 9802,
-        "line_count": 350,
+        "size_bytes": 16972,
+        "line_count": 534,
         "last_updated_raw": "2026-01-22T17:15:00Z",
         "last_updated_line": 5,
         "is_iso_8601": true,
         "last_updated_parsed": "2026-01-22T17:15:00",
-        "age_days": 0,
+        "age_days": 7,
         "staleness_level": "Fresh",
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
-      },
-      {
-        "file": "docs/admin/integration/GITHUB_ENVIRONMENT_SETUP.md",
-        "size_bytes": 19554,
-        "line_count": 554,
-        "last_updated_raw": "2025-12-30",
-        "last_updated_line": 5,
-        "is_iso_8601": true,
-        "last_updated_parsed": "2025-12-30T00:00:00",
-        "age_days": 24,
-        "staleness_level": "Fresh",
-        "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
-      },
-      {
-        "file": "docs/admin/integration/MCP_IMPLEMENTATION_SUMMARY.md",
-        "size_bytes": 11893,
-        "line_count": 398,
-        "last_updated_raw": "2025-12-30",
-        "last_updated_line": 5,
-        "is_iso_8601": true,
-        "last_updated_parsed": "2025-12-30T00:00:00",
-        "age_days": 24,
-        "staleness_level": "Fresh",
-        "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       }
     ],
     "aging": [
       {
         "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
-        "size_bytes": 14482,
-        "line_count": 653,
+        "size_bytes": 19749,
+        "line_count": 761,
         "last_updated_raw": "2025-12-23",
         "last_updated_line": 5,
         "is_iso_8601": true,
         "last_updated_parsed": "2025-12-23T00:00:00",
-        "age_days": 31,
+        "age_days": 38,
         "staleness_level": "Aging",
         "calendar_language_count": 3,
         "calendar_language_samples": [
@@ -101,78 +75,111 @@
             "context": "- Weekly Monday 6am UTC"
           }
         ],
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
+      },
+      {
+        "file": "docs/admin/integration/GITHUB_ENVIRONMENT_SETUP.md",
+        "size_bytes": 26647,
+        "line_count": 724,
+        "last_updated_raw": "2025-12-30",
+        "last_updated_line": 5,
+        "is_iso_8601": true,
+        "last_updated_parsed": "2025-12-30T00:00:00",
+        "age_days": 31,
+        "staleness_level": "Aging",
+        "calendar_language_count": 0,
+        "file_mtime": "2026-01-30T06:39:40.764080"
+      },
+      {
+        "file": "docs/admin/integration/MCP_IMPLEMENTATION_SUMMARY.md",
+        "size_bytes": 18601,
+        "line_count": 568,
+        "last_updated_raw": "2025-12-30",
+        "last_updated_line": 5,
+        "is_iso_8601": true,
+        "last_updated_parsed": "2025-12-30T00:00:00",
+        "age_days": 31,
+        "staleness_level": "Aging",
+        "calendar_language_count": 0,
+        "file_mtime": "2026-01-30T06:39:40.764080"
       }
     ],
     "stale": [],
     "missing_dates": [
       {
         "file": "docs/admin/AI_AGENCY_POLICY_VERIFICATION.md",
-        "size_bytes": 4623,
-        "line_count": 154,
+        "size_bytes": 8107,
+        "line_count": 263,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.823334"
+        "file_mtime": "2026-01-30T06:39:40.762079"
       },
       {
         "file": "docs/admin/AST_IMPLEMENTATION_STATUS.md",
-        "size_bytes": 21879,
-        "line_count": 821,
+        "size_bytes": 29061,
+        "line_count": 1003,
         "last_updated_raw": null,
         "missing_date_metadata": true,
-        "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.823334"
+        "calendar_language_count": 1,
+        "calendar_language_samples": [
+          {
+            "line_number": 821,
+            "text": "October",
+            "context": "**Next Review:** After Python 3.13 release (October 2026)"
+          }
+        ],
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/CONTINUATION_ROADMAP.md",
-        "size_bytes": 13275,
-        "line_count": 513,
+        "size_bytes": 19232,
+        "line_count": 658,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.823334"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/GENESIS_SETUP_GUIDE.md",
-        "size_bytes": 11839,
-        "line_count": 345,
+        "size_bytes": 17618,
+        "line_count": 475,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.823334"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/GOVERNANCE.md",
-        "size_bytes": 5359,
-        "line_count": 173,
+        "size_bytes": 12131,
+        "line_count": 318,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/HUMAN_ACTION_REQUIRED.md",
-        "size_bytes": 16044,
-        "line_count": 450,
+        "size_bytes": 22683,
+        "line_count": 597,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/INDEX.md",
-        "size_bytes": 1008,
-        "line_count": 27,
+        "size_bytes": 5352,
+        "line_count": 148,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.763079"
       },
       {
         "file": "docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md",
-        "size_bytes": 17101,
-        "line_count": 561,
+        "size_bytes": 24735,
+        "line_count": 760,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 1,
@@ -183,51 +190,67 @@
             "context": "**Next Review:** After Python 3.13 release (October 2026)"
           }
         ],
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       },
       {
         "file": "docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md",
-        "size_bytes": 20442,
-        "line_count": 561,
+        "size_bytes": 27698,
+        "line_count": 737,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       },
       {
         "file": "docs/admin/security/ADMIN_TOKEN_SETUP.md",
-        "size_bytes": 7436,
-        "line_count": 292,
+        "size_bytes": 10945,
+        "line_count": 376,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.825335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       },
       {
         "file": "docs/admin/security/COPILOT_TOKEN_USAGE.md",
-        "size_bytes": 10217,
-        "line_count": 457,
+        "size_bytes": 13673,
+        "line_count": 542,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.825335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       },
       {
         "file": "docs/admin/security/HUMAN_ADMIN_FOLLOWUP_PR2639.md",
-        "size_bytes": 11741,
-        "line_count": 421,
+        "size_bytes": 15645,
+        "line_count": 514,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 0,
-        "file_mtime": "2026-01-23T10:42:53.825335"
+        "file_mtime": "2026-01-30T06:39:40.765079"
       }
     ],
     "needs_iso_conversion": [],
     "has_calendar_language": [
       {
+        "file": "docs/admin/AST_IMPLEMENTATION_STATUS.md",
+        "size_bytes": 29061,
+        "line_count": 1003,
+        "last_updated_raw": null,
+        "missing_date_metadata": true,
+        "calendar_language_count": 1,
+        "calendar_language_samples": [
+          {
+            "line_number": 821,
+            "text": "October",
+            "context": "**Next Review:** After Python 3.13 release (October 2026)"
+          }
+        ],
+        "file_mtime": "2026-01-30T06:39:40.763079"
+      },
+      {
         "file": "docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md",
-        "size_bytes": 17101,
-        "line_count": 561,
+        "size_bytes": 24735,
+        "line_count": 760,
         "last_updated_raw": null,
         "missing_date_metadata": true,
         "calendar_language_count": 1,
@@ -238,17 +261,17 @@
             "context": "**Next Review:** After Python 3.13 release (October 2026)"
           }
         ],
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       },
       {
         "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
-        "size_bytes": 14482,
-        "line_count": 653,
+        "size_bytes": 19749,
+        "line_count": 761,
         "last_updated_raw": "2025-12-23",
         "last_updated_line": 5,
         "is_iso_8601": true,
         "last_updated_parsed": "2025-12-23T00:00:00",
-        "age_days": 31,
+        "age_days": 38,
         "staleness_level": "Aging",
         "calendar_language_count": 3,
         "calendar_language_samples": [
@@ -268,104 +291,111 @@
             "context": "- Weekly Monday 6am UTC"
           }
         ],
-        "file_mtime": "2026-01-23T10:42:53.824335"
+        "file_mtime": "2026-01-30T06:39:40.764080"
       }
     ]
   },
   "all_files": [
     {
       "file": "docs/admin/AI_AGENCY_POLICY_VERIFICATION.md",
-      "size_bytes": 4623,
-      "line_count": 154,
+      "size_bytes": 8107,
+      "line_count": 263,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.823334"
+      "file_mtime": "2026-01-30T06:39:40.762079"
     },
     {
       "file": "docs/admin/AST_IMPLEMENTATION_STATUS.md",
-      "size_bytes": 21879,
-      "line_count": 821,
+      "size_bytes": 29061,
+      "line_count": 1003,
       "last_updated_raw": null,
       "missing_date_metadata": true,
-      "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.823334"
+      "calendar_language_count": 1,
+      "calendar_language_samples": [
+        {
+          "line_number": 821,
+          "text": "October",
+          "context": "**Next Review:** After Python 3.13 release (October 2026)"
+        }
+      ],
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/CONTINUATION_ROADMAP.md",
-      "size_bytes": 13275,
-      "line_count": 513,
+      "size_bytes": 19232,
+      "line_count": 658,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.823334"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/GENESIS_SETUP_GUIDE.md",
-      "size_bytes": 11839,
-      "line_count": 345,
+      "size_bytes": 17618,
+      "line_count": 475,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.823334"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/GOVERNANCE.md",
-      "size_bytes": 5359,
-      "line_count": 173,
+      "size_bytes": 12131,
+      "line_count": 318,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/HUMAN_ACTION_REQUIRED.md",
-      "size_bytes": 16044,
-      "line_count": 450,
+      "size_bytes": 22683,
+      "line_count": 597,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
-      "size_bytes": 26097,
-      "line_count": 776,
+      "size_bytes": 30236,
+      "line_count": 894,
       "last_updated_raw": "2026-01-13T17:05:00Z",
       "last_updated_line": 6,
       "is_iso_8601": true,
       "last_updated_parsed": "2026-01-13T17:05:00",
-      "age_days": 9,
+      "age_days": 16,
       "staleness_level": "Fresh",
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/INDEX.md",
-      "size_bytes": 1008,
-      "line_count": 27,
+      "size_bytes": 5352,
+      "line_count": 148,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/MULTI_JOB_CI_FIX_SUMMARY.md",
-      "size_bytes": 9802,
-      "line_count": 350,
+      "size_bytes": 16972,
+      "line_count": 534,
       "last_updated_raw": "2026-01-22T17:15:00Z",
       "last_updated_line": 5,
       "is_iso_8601": true,
       "last_updated_parsed": "2026-01-22T17:15:00",
-      "age_days": 0,
+      "age_days": 7,
       "staleness_level": "Fresh",
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.763079"
     },
     {
       "file": "docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md",
-      "size_bytes": 17101,
-      "line_count": 561,
+      "size_bytes": 24735,
+      "line_count": 760,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 1,
@@ -376,17 +406,17 @@
           "context": "**Next Review:** After Python 3.13 release (October 2026)"
         }
       ],
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
-      "size_bytes": 14482,
-      "line_count": 653,
+      "size_bytes": 19749,
+      "line_count": 761,
       "last_updated_raw": "2025-12-23",
       "last_updated_line": 5,
       "is_iso_8601": true,
       "last_updated_parsed": "2025-12-23T00:00:00",
-      "age_days": 31,
+      "age_days": 38,
       "staleness_level": "Aging",
       "calendar_language_count": 3,
       "calendar_language_samples": [
@@ -406,69 +436,69 @@
           "context": "- Weekly Monday 6am UTC"
         }
       ],
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/integration/GITHUB_ENVIRONMENT_SETUP.md",
-      "size_bytes": 19554,
-      "line_count": 554,
+      "size_bytes": 26647,
+      "line_count": 724,
       "last_updated_raw": "2025-12-30",
       "last_updated_line": 5,
       "is_iso_8601": true,
       "last_updated_parsed": "2025-12-30T00:00:00",
-      "age_days": 24,
-      "staleness_level": "Fresh",
+      "age_days": 31,
+      "staleness_level": "Aging",
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md",
-      "size_bytes": 20442,
-      "line_count": 561,
+      "size_bytes": 27698,
+      "line_count": 737,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/integration/MCP_IMPLEMENTATION_SUMMARY.md",
-      "size_bytes": 11893,
-      "line_count": 398,
+      "size_bytes": 18601,
+      "line_count": 568,
       "last_updated_raw": "2025-12-30",
       "last_updated_line": 5,
       "is_iso_8601": true,
       "last_updated_parsed": "2025-12-30T00:00:00",
-      "age_days": 24,
-      "staleness_level": "Fresh",
+      "age_days": 31,
+      "staleness_level": "Aging",
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.824335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/security/ADMIN_TOKEN_SETUP.md",
-      "size_bytes": 7436,
-      "line_count": 292,
+      "size_bytes": 10945,
+      "line_count": 376,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.825335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/security/COPILOT_TOKEN_USAGE.md",
-      "size_bytes": 10217,
-      "line_count": 457,
+      "size_bytes": 13673,
+      "line_count": 542,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.825335"
+      "file_mtime": "2026-01-30T06:39:40.764080"
     },
     {
       "file": "docs/admin/security/HUMAN_ADMIN_FOLLOWUP_PR2639.md",
-      "size_bytes": 11741,
-      "line_count": 421,
+      "size_bytes": 15645,
+      "line_count": 514,
       "last_updated_raw": null,
       "missing_date_metadata": true,
       "calendar_language_count": 0,
-      "file_mtime": "2026-01-23T10:42:53.825335"
+      "file_mtime": "2026-01-30T06:39:40.765079"
     }
   ]
 }

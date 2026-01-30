@@ -16,7 +16,7 @@ import argparse
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
 
 class MetaTensorPatternChecker(ast.NodeVisitor):
@@ -80,12 +80,13 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
 
     def _is_sentence_transformer_init(self, node: ast.Call) -> bool:
         """Check if call is SentenceTransformer initialization."""
-        if isinstance(node.func, ast.Name) and node.func.id == "SentenceTransformer":
-            return True
-        if isinstance(node.func, ast.Attribute):
-            if node.func.attr == "SentenceTransformer":
-                return True
-        return False
+        return (
+            isinstance(node.func, ast.Name)
+            and node.func.id == "SentenceTransformer"
+        ) or (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "SentenceTransformer"
+        )
 
     def _check_sentence_transformer_call(self, node: ast.Call) -> None:
         """Validate SentenceTransformer initialization pattern."""
@@ -150,7 +151,7 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
     def check_verification_pattern(self, tree: ast.AST) -> None:
         """
         Check if file contains meta tensor verification pattern.
-        
+
         This is a best practice but not strictly required for all files.
         """
         # Look for meta tensor verification loops

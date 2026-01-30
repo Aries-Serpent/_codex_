@@ -9,7 +9,7 @@ PDA: Active - Outcome tracking and pattern extraction
 """
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from enum import Enum
 
 

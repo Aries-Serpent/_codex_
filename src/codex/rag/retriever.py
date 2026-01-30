@@ -89,23 +89,33 @@ class Retriever:
 
         try:
             import os
+            import torch
 
             logger.info(f"Loading query embedding model: {self.model_name}")
-            # Force environment settings
-            os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
-            os.environ["TRANSFORMERS_OFFLINE"] = "0"
+            
+            # Use HF_TOKEN if available for authenticated downloads
+            use_auth_token = os.environ.get('HF_TOKEN', False)
 
-            # Let SentenceTransformer use default device allocation
-            # This avoids meta tensor errors by allowing the library to handle initialization
+            # CRITICAL FIX: Force CPU device and prevent meta tensors
+            # Set default device to CPU before any model operations
+            torch.set_default_device('cpu')
+            
             self.model = SentenceTransformer(
                 self.model_name,
+                device='cpu',
                 cache_folder=self.cache_dir,
                 trust_remote_code=False,
+                use_auth_token=use_auth_token if use_auth_token else None
             )
-            # Model automatically initializes on CPU without meta tensors
+            
+            # Explicitly move all parameters to CPU (double-check)
+            self.model = self.model.to('cpu')
             self.model.eval()
+            
+            # Reset default device to avoid side effects
+            torch.set_default_device(None)
 
-            logger.info("Model loaded successfully")
+            logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")

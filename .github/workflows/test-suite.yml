@@ -98,14 +98,15 @@ jobs:
       - name: Show test collection diagnostics
         run: |
           echo "=== Test Collection Diagnostics ==="
-          # Show stdout and stderr separately for better error visibility
-          # Using RUNNER_TEMP for portability across different GitHub Actions runners
-          STDERR_LOG="${RUNNER_TEMP:-/tmp}/pytest_stderr.log"
-          python -m pytest tests/ --collect-only -q 2>"$STDERR_LOG" | head -50 || {
+          # Capture combined stdout and stderr for easier error handling and reporting
+          COLLECT_OUTPUT="$(python -m pytest tests/ --collect-only -q 2>&1)"
+          COLLECT_STATUS=$?
+          printf '%s\n' "$COLLECT_OUTPUT" | head -50
+          if [ "$COLLECT_STATUS" -ne 0 ]; then
             echo "⚠️  Test collection may have issues"
-            echo "=== Stderr output ==="
-            cat "$STDERR_LOG" 2>/dev/null || true
-          }
+            echo "=== Full pytest output (stdout + stderr) ==="
+            printf '%s\n' "$COLLECT_OUTPUT"
+          fi
           echo ""
           echo "=== Test Directory Structure ==="
           find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"

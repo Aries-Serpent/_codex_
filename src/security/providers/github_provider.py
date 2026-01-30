@@ -31,7 +31,6 @@ from security.providers.base import (
     SecretType,
     SecretMetadata,
     RotationResult,
-    RotationError,
     ValidationError,
     ProviderConfig,
 )

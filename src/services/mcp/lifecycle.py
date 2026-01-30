@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import logging
-from typing import Callable, Optional, Any
+from typing import Callable, Any
 
 logger = logging.getLogger(__name__)
 

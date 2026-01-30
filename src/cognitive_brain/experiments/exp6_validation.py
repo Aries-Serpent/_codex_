@@ -384,25 +384,25 @@ def run_validation(
     logger.info("VALIDATION SUMMARY")
     logger.info("=" * 80)
     
-    logger.info(f"\n1. Multi-Agent Correlation:")
+    logger.info("\n1. Multi-Agent Correlation:")
     for key, val in correlation_results.items():
         status = "✅" if val["target_met"] else "❌"
         logger.info(f"   {key}: {val['mean']:.4f} {status}")
     
-    logger.info(f"\n2. Decision Quality:")
+    logger.info("\n2. Decision Quality:")
     status = "✅" if quality_results["target_met"] else "❌"
     logger.info(f"   Improvement: {quality_results['improvement_pct']:.2f}% {status}")
     
-    logger.info(f"\n3. Redundancy Reduction:")
+    logger.info("\n3. Redundancy Reduction:")
     status = "✅" if redundancy_results["target_met"] else "❌"
     logger.info(f"   Reduction: {redundancy_results['redundancy_reduction_pct']:.2f}% {status}")
     
-    logger.info(f"\n4. Consensus Latency:")
+    logger.info("\n4. Consensus Latency:")
     for key, val in latency_results.items():
         status = "✅" if val["target_met"] else "❌"
         logger.info(f"   {key}: {val['mean_ms']:.2f}ms {status}")
     
-    logger.info(f"\n5. k₁ Impact:")
+    logger.info("\n5. k₁ Impact:")
     status = "✅" if k1_results["target_met"] else "❌"
     logger.info(f"   k₁: {k1_results['phase_8_1_k1']:.4f} → {k1_results['phase_8_2_k1']:.4f} {status}")
     logger.info(f"   Improvement: {k1_results['k1_improvement_pct']:.2f}%")

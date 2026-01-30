@@ -9,7 +9,7 @@ PDA: Active - Continuous outcome analysis and pattern extraction
 """
 import logging
 from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from collections import defaultdict
 
 from cognitive_brain.models.learning_outcome import (

@@ -165,7 +165,13 @@ model = SentenceTransformer(
 model.eval()
 
 # ❌ WRONG PATTERN: DO NOT pass device parameter
-model = SentenceTransformer("...", device="cpu")  # Causes meta tensors!
+model = SentenceTransformer(
+    "...",
+    device="cpu",  # In some torch / sentence-transformers / HF-Transformers versions, forcing a device
+                   # at construction can leave modules on the special "meta" device (lazy, uninitialized
+                   # tensors) instead of materializing real CPU tensors. See:
+                   # https://pytorch.org/docs/stable/notes/meta_tensors.html
+)
 ```
 
 ### Optional Utility Usage

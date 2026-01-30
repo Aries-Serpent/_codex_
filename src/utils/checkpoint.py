@@ -12,7 +12,6 @@ import inspect
 import logging
 logger = logging.getLogger(__name__)
 import os
-import pickle  # nosec B403 - legacy checkpoint compatibility requires pickle
 import random as _random
 import tempfile
 import warnings as _warnings

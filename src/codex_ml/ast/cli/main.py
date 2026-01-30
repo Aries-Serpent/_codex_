@@ -15,10 +15,9 @@ import json
 import sys
 from datetime import datetime, UTC
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from codex_ml.ast.core.config import ASTConfig
-from codex_ml.ast.core.node import Finding
 from codex_ml.ast.analysis.registry import AnalyzerRegistry
 from codex_ml.ast.storage.sqlite_storage import ASTStorage
 
@@ -61,7 +60,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
 
     # For now, show a placeholder since we don't have a parser yet
     # In a full implementation, this would parse files and run analysis
-    print(f"\nNote: Full parsing requires libcst/tree-sitter integration.")
+    print("\nNote: Full parsing requires libcst/tree-sitter integration.")
     print(f"Registry initialized with {len(registry)} analyzers:")
 
     for analyzer_type in registry.list_analyzers():
