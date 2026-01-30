@@ -96,6 +96,9 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
 
     fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
+    # Also patch the module-level SentenceTransformer variable in retriever module
+    from codex.rag import retriever as retriever_module
+    monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls)
 
 
@@ -219,7 +222,10 @@ def test_retriever_query_min_score_filters(
         index_dir=str(tmp_path),
     )
     retriever = Retriever(index_dir=str(tmp_path), index_name="demo", tenant_id="tenant")
-    results = retriever.query("hello", top_k=2, min_score=0.0)
+    # Query with a very strict min_score threshold that filters out all results
+    # min_score acts as maximum L2 distance (lower is better)
+    # Use a negative value to ensure all results are filtered
+    results = retriever.query("hello", top_k=2, min_score=-1.0)
     assert results == []
 
 
