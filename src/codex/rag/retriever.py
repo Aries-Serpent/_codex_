@@ -89,14 +89,17 @@ class Retriever:
 
         try:
             import os
+            import torch
 
             logger.info(f"Loading query embedding model: {self.model_name}")
             
             # Use HF_TOKEN if available for authenticated downloads
             use_auth_token = os.environ.get('HF_TOKEN', False)
 
-            # CRITICAL FIX: Set device='cpu' during init to prevent meta tensor issues
-            # PyTorch 2.6+ with sentence-transformers 3.x creates meta tensors when device is not specified
+            # CRITICAL FIX: Force CPU device and prevent meta tensors
+            # Set default device to CPU before any model operations
+            torch.set_default_device('cpu')
+            
             self.model = SentenceTransformer(
                 self.model_name,
                 device='cpu',
@@ -104,9 +107,15 @@ class Retriever:
                 trust_remote_code=False,
                 use_auth_token=use_auth_token if use_auth_token else None
             )
+            
+            # Explicitly move all parameters to CPU (double-check)
+            self.model = self.model.to('cpu')
             self.model.eval()
+            
+            # Reset default device to avoid side effects
+            torch.set_default_device(None)
 
-            logger.info("Model loaded successfully")
+            logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")
