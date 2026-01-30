@@ -34,6 +34,8 @@ EXPECTED_SUPPRESSION_FILES: Dict[str, int] = {
     "scripts/github_user_provision.py": 1,
 }
 
+URL_LITERAL_REGEX = re.compile(r"\bhttps?://", re.IGNORECASE)
+
 
 @pytest.fixture()
 def repo_root() -> Path:
@@ -58,7 +60,9 @@ def _find_suppression_lines(content: str) -> List[int]:
 
 def _find_nearby_url_line(lines: List[str], start_index: int, window: int = 20) -> str:
     for offset in range(1, window + 1):
-        if start_index + offset < len(lines) and "http" in lines[start_index + offset]:
+        if start_index + offset < len(lines) and URL_LITERAL_REGEX.search(
+            lines[start_index + offset]
+        ):
             return lines[start_index + offset]
     return ""
 
@@ -139,4 +143,6 @@ def test_suppression_comment_targets_url_literals(repo_root: Path, filepath: str
     for index in _find_suppression_lines("\n".join(lines)):
         url_line = _find_nearby_url_line(lines, index)
         assert url_line, f"No URL literal found near suppression in {filepath}"
-        assert "http" in url_line, f"Expected URL literal near suppression in {filepath}"
+        assert URL_LITERAL_REGEX.search(url_line), (
+            f"Expected URL literal near suppression in {filepath}"
+        )
