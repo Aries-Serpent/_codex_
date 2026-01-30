@@ -282,7 +282,10 @@ jobs:
           if [ -f "requirements.txt" ]; then
             echo "Running Safety..."
             safety check --output json > reports/safety-report.json || true
-            safety check --output text > reports/safety-report.txt || true
+            # Generate text report from JSON to avoid duplicate scan
+            if [ -f "reports/safety-report.json" ]; then
+              jq -r '.vulnerabilities[] | "\(.package_name) \(.vulnerable_spec): \(.advisory)"' reports/safety-report.json > reports/safety-report.txt 2>/dev/null || true
+            fi
           fi
 
           # detect-secrets

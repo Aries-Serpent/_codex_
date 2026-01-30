@@ -80,12 +80,13 @@ class MetaTensorPatternChecker(ast.NodeVisitor):
 
     def _is_sentence_transformer_init(self, node: ast.Call) -> bool:
         """Check if call is SentenceTransformer initialization."""
-        if isinstance(node.func, ast.Name) and node.func.id == "SentenceTransformer":
-            return True
-        if isinstance(node.func, ast.Attribute):
-            if node.func.attr == "SentenceTransformer":
-                return True
-        return False
+        return (
+            isinstance(node.func, ast.Name)
+            and node.func.id == "SentenceTransformer"
+        ) or (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "SentenceTransformer"
+        )
 
     def _check_sentence_transformer_call(self, node: ast.Call) -> None:
         """Validate SentenceTransformer initialization pattern."""
