@@ -103,27 +103,34 @@ def test_log_once():
     log_once("Test log message", level="info", rank=0)
 
 
-@patch("torch.distributed.is_initialized")
-@patch("torch.distributed.get_rank")
-@patch("torch.distributed.get_world_size")
+@patch("codex_ml.training.distributed_setup.torch.distributed.is_initialized")
+@patch("codex_ml.training.distributed_setup.torch.distributed.get_rank")
+@patch("codex_ml.training.distributed_setup.torch.distributed.get_world_size")
 def test_distributed_functions_with_mock(mock_world_size, mock_rank, mock_init):
     """Test distributed functions with mocked torch.distributed."""
     mock_init.return_value = True
     mock_rank.return_value = 1
     mock_world_size.return_value = 4
 
-    # These should use the mocked values
+    # Import after patching to ensure mocks are applied
+    from codex_ml.training.distributed_setup import (
+        get_rank, get_world_size, is_main_process
+    )
+
     assert get_rank() == 1
     assert get_world_size() == 4
     assert is_main_process() is False
 
 
-@patch("torch.distributed.is_available")
-@patch("torch.distributed.is_initialized")
+@patch("codex_ml.training.distributed_setup.torch.distributed.is_available")
+@patch("codex_ml.training.distributed_setup.torch.distributed.is_initialized")
 def test_is_distributed_with_mock(mock_init, mock_available):
     """Test is_distributed with mocked values."""
     mock_available.return_value = True
     mock_init.return_value = True
+
+    # Import after patching
+    from codex_ml.training.distributed_setup import is_distributed
 
     assert is_distributed() is True
 

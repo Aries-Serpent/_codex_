@@ -222,7 +222,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
             try:  # pragma: no cover - optional dependency handling
-                import sentencepiece_model_pb2
+                pass
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)

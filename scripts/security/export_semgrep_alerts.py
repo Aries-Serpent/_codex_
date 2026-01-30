@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 OWNER = "Aries-Serpent"
 REPO = "_codex_"
+# nosemgrep: url-substring-check - GitHub API base for Semgrep alert export
 API_BASE = f"https://api.github.com/repos/{OWNER}/{REPO}"
 
 # Safeguards: Bounds checking

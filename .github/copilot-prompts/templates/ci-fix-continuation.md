@@ -16,7 +16,7 @@
 ## 🔍 FAILURE ANALYSIS
 
 ### Workflow: {workflow_1_name}
-- **Run ID**: [{run_1_id}](https://github.com/Aries-Serpent/_codex_/actions/runs/{run_1_id})
+- **Run ID**: {run_1_id}
 - **Error**: {error_1_summary}
 - **Root Cause**: {root_cause_1}
 - **Fix Required**: {fix_required_1}

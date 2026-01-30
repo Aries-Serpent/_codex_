@@ -46,7 +46,7 @@ def test_rng_roundtrip(monkeypatch):
 
 
 def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr("utils.checkpointing.TORCH_AVAILABLE", False, raising=False)
+    monkeypatch.setattr("codex_ml.utils.checkpointing.TORCH_AVAILABLE", False, raising=False)
     mgr = CheckpointManager(tmp_path, keep_last=1, keep_best=1)
     mgr.save(1, metrics={"val_loss": 1.0})
     mgr.save(2, metrics={"val_loss": 0.5})

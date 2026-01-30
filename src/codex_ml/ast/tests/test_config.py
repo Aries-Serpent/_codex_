@@ -1,9 +1,6 @@
 """
 Tests for AST configuration.
 """
-import pytest
-import os
-from pathlib import Path
 
 from codex_ml.ast.core.config import ASTConfig
 

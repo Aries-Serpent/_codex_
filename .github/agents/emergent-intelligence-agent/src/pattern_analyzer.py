@@ -410,7 +410,7 @@ class EmergentIntelligenceAgent:
         
         # Simple heuristic-based detection
         for repo in repositories:
-            pattern_id = f"pattern_{hashlib.md5(repo.encode()).hexdigest()[:8]}"
+            pattern_id = f"pattern_{hashlib.md5(repo.encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, pattern ID generation only
             pattern = EmergentPattern(
                 pattern_id=pattern_id,
                 emergence_type=EmergenceType.DESIGN_PATTERN,

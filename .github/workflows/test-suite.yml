@@ -55,7 +55,8 @@ permissions:
 
 env:
   PYTHON_VERSION: '3.12'
-  PYTEST_ADDOPTS: '--color=yes --verbose'
+  # PYTEST_ADDOPTS removed - environment variable causes pytest-xdist workers to crash during plugin initialization;
+  # pytest options are passed directly on the command line instead to avoid these worker crashes.
 
 jobs:
   # Job 1: Core Tests - Main test suite
@@ -88,20 +89,56 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -e ".[test]"
 
+      - name: Verify pytest environment
+        run: |
+          python -m pytest --version
+          python -c "import pytest_xdist; print(f'pytest-xdist: {pytest_xdist.__version__}')"
+          python -c "import pytest_cov; print(f'pytest-cov: {pytest_cov.__version__}')"
+
+      - name: Show test collection diagnostics
+        run: |
+          echo "=== Test Collection Diagnostics ==="
+          # Capture combined stdout and stderr for easier error handling and reporting
+          COLLECT_OUTPUT="$(python -m pytest tests/ --collect-only -q 2>&1)"
+          COLLECT_STATUS=$?
+          printf '%s\n' "$COLLECT_OUTPUT" | head -50
+          if [ "$COLLECT_STATUS" -ne 0 ]; then
+            echo "⚠️  Test collection may have issues"
+            echo "=== Full pytest output (stdout + stderr) ==="
+            printf '%s\n' "$COLLECT_OUTPUT"
+          fi
+          echo ""
+          echo "=== Test Directory Structure ==="
+          find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
+          echo ""
+
       - name: Run core tests with coverage
         run: |
           pytest tests/ \
+            --color=yes \
+            --verbose \
             --cov=src \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term \
+            --junitxml=junit.xml \
             -n auto \
             --dist loadgroup \
-            --maxfail=10 \
-            -v
+            --maxfail=10
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          CODEX_FORCE_CPU: "1"
+          RAG_EMBEDDING_PROVIDER: tfidf
+
+      - name: Ensure test artifacts exist
+        if: always()
+        run: |
+          # Guarantee all artifacts exist to prevent upload failures
+          python scripts/ensure_test_artifacts.py --coverage --junit
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        if: always()
         with:
           files: ./coverage.xml
           flags: python-${{ matrix.python-version }}
@@ -115,6 +152,16 @@ jobs:
           name: coverage-html-${{ matrix.python-version }}
           path: htmlcov/
           retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload JUnit test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: junit-report-${{ matrix.python-version }}
+          path: junit.xml
+          retention-days: 7
+          if-no-files-found: warn
 
       - name: Generate test summary
         if: always()
@@ -124,6 +171,32 @@ jobs:
           echo "**Python Version:** ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Show test counts from JUnit XML if available using Python for robust parsing
+          if [ -f junit.xml ]; then
+            python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    tree = ET.parse('junit.xml')
+    root = tree.getroot()
+    # Handle both testsuite and testsuites root elements
+    if root.tag == 'testsuites':
+        ts = root.find('testsuite')
+    else:
+        ts = root
+    if ts is not None:
+        tests = ts.get('tests', '0')
+        failures = ts.get('failures', '0')
+        errors = ts.get('errors', '0')
+        print(f'**Tests:** {tests} total, {failures} failed, {errors} errors')
+    else:
+        print('**Tests:** Unable to parse JUnit XML')
+except Exception as e:
+    print(f'**Tests:** Error parsing JUnit XML: {e}')
+" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "See attached artifacts for detailed coverage reports." >> $GITHUB_STEP_SUMMARY
 
   # Job 2: RAG Tests - Specialized RAG testing

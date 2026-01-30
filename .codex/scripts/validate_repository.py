@@ -22,23 +22,23 @@ class ValidationResult:
         self.passed = []
         self.failed = []
         self.warnings = []
-    
+
     def add_pass(self, check: str):
         self.passed.append(check)
         print(f"✅ {check}")
-    
+
     def add_fail(self, check: str, error: str):
         self.failed.append((check, error))
         print(f"❌ {check}: {error}")
-    
+
     def add_warning(self, check: str, message: str):
         self.warnings.append((check, message))
         print(f"⚠️  {check}: {message}")
-    
+
     def summary(self) -> Tuple[int, int, int]:
         """Returns (passed, failed, warnings) counts."""
         return len(self.passed), len(self.failed), len(self.warnings)
-    
+
     def is_success(self) -> bool:
         """Returns True if no failures."""
         return len(self.failed) == 0
@@ -47,7 +47,7 @@ class ValidationResult:
 def validate_package_structure(results: ValidationResult):
     """Validate package structure and pyproject.toml."""
     print("\n## Package Structure Validation\n")
-    
+
     # Check pyproject.toml exists
     pyproject = REPO_ROOT / "pyproject.toml"
     if pyproject.exists():
@@ -55,7 +55,7 @@ def validate_package_structure(results: ValidationResult):
     else:
         results.add_fail("pyproject.toml", "File not found")
         return
-    
+
     # Check that services* is NOT in include list
     with open(pyproject) as f:
         content = f.read()
@@ -63,14 +63,14 @@ def validate_package_structure(results: ValidationResult):
             results.add_pass("services* correctly excluded from pyproject.toml")
         else:
             results.add_fail("services* exclusion", "services* found in include list (should be excluded)")
-    
+
     # Check src/ directory exists
     src_dir = REPO_ROOT / "src"
     if src_dir.exists():
         results.add_pass("src/ directory exists")
     else:
         results.add_fail("src/ directory", "Directory not found")
-    
+
     # Check agents/ directory exists
     agents_dir = REPO_ROOT / "agents"
     if agents_dir.exists():
@@ -82,7 +82,7 @@ def validate_package_structure(results: ValidationResult):
 def validate_imports(results: ValidationResult):
     """Validate that imports follow conventions."""
     print("\n## Import Validation\n")
-    
+
     # Check for incorrect services imports in src/
     src_dir = REPO_ROOT / "src"
     if src_dir.exists():
@@ -100,7 +100,7 @@ def validate_imports(results: ValidationResult):
                         # Additional check: not in a string literal
                         if not ('"from services."' in line or "'from services.'" in line):
                             bad_imports.append(f"{py_file.relative_to(REPO_ROOT)}:{line_no}")
-        
+
         if bad_imports:
             results.add_fail("src/ imports", f"Found incorrect 'from services.' imports in src/: {bad_imports[:3]}")
         else:
@@ -110,14 +110,14 @@ def validate_imports(results: ValidationResult):
 def validate_tests(results: ValidationResult, quick: bool = True):
     """Validate test suite."""
     print("\n## Test Suite Validation\n")
-    
+
     tests_dir = REPO_ROOT / "tests"
     if not tests_dir.exists():
         results.add_fail("tests/ directory", "Directory not found")
         return
-    
+
     results.add_pass("tests/ directory exists")
-    
+
     # Check pytest is available
     try:
         subprocess.run(["pytest", "--version"], capture_output=True, check=True)
@@ -125,7 +125,7 @@ def validate_tests(results: ValidationResult, quick: bool = True):
     except (subprocess.CalledProcessError, FileNotFoundError):
         results.add_fail("pytest", "pytest not installed")
         return
-    
+
     # Run quick smoke tests if requested
     if quick:
         print("  Running quick smoke tests...")
@@ -153,7 +153,7 @@ def validate_tests(results: ValidationResult, quick: bool = True):
 def validate_documentation(results: ValidationResult):
     """Validate documentation completeness."""
     print("\n## Documentation Validation\n")
-    
+
     # Check key documentation files
     required_docs = [
         "README.md",
@@ -161,19 +161,19 @@ def validate_documentation(results: ValidationResult):
         "CONTRIBUTING.md",
         "SECURITY.md",
     ]
-    
+
     for doc in required_docs:
         doc_path = REPO_ROOT / doc
         if doc_path.exists():
             results.add_pass(f"{doc} exists")
         else:
             results.add_fail(doc, "File not found")
-    
+
     # Check .codex/ documentation
     codex_dir = REPO_ROOT / ".codex"
     if codex_dir.exists():
         results.add_pass(".codex/ directory exists")
-        
+
         # Check for phase reports
         phase_reports = [
             ".codex/gap_discovery_report.md",
@@ -182,7 +182,7 @@ def validate_documentation(results: ValidationResult):
             ".codex/phase1_decision_gate.md",
             ".codex/phase2_decision_gate.md",
         ]
-        
+
         for report in phase_reports:
             report_path = REPO_ROOT / report
             if report_path.exists():
@@ -196,19 +196,19 @@ def validate_documentation(results: ValidationResult):
 def validate_configuration(results: ValidationResult):
     """Validate configuration files."""
     print("\n## Configuration Validation\n")
-    
+
     # Check pytest.ini
     pytest_ini = REPO_ROOT / "pytest.ini"
     if pytest_ini.exists():
         results.add_pass("pytest.ini exists")
     else:
         results.add_warning("pytest.ini", "File not found")
-    
+
     # Check .gitignore
     gitignore = REPO_ROOT / ".gitignore"
     if gitignore.exists():
         results.add_pass(".gitignore exists")
-        
+
         # Check for .hypothesis in gitignore
         with open(gitignore) as f:
             if ".hypothesis" in f.read():
@@ -217,7 +217,7 @@ def validate_configuration(results: ValidationResult):
                 results.add_warning(".hypothesis", "Should be in .gitignore")
     else:
         results.add_fail(".gitignore", "File not found")
-    
+
     # Check DO_NOT_ACTIVATE_GITHUB_ACTIONS policy
     policy_file = REPO_ROOT / ".codex" / "DO_NOT_ACTIVATE_GITHUB_ACTIONS"
     if policy_file.exists():
@@ -229,7 +229,7 @@ def validate_configuration(results: ValidationResult):
 def validate_build(results: ValidationResult):
     """Validate that package builds."""
     print("\n## Build Validation\n")
-    
+
     # Check if build module is available
     try:
         import build
@@ -237,7 +237,7 @@ def validate_build(results: ValidationResult):
     except Exception as e:
         results.add_warning("build module", f"Unavailable or broken (e.g., not installed). Details: {e}")
         return
-    
+
     # Try to build the package
     print("  Building package (this may take a moment)...")
     try:
@@ -263,10 +263,10 @@ def validate_build(results: ValidationResult):
                 self.stderr = stderr
 
         result = _Result(proc.returncode, stdout, stderr)
-        
+
         if result.returncode == 0:
             results.add_pass("Package builds successfully")
-            
+
             # Check wheel contents
             import zipfile
             dist_dir = REPO_ROOT / "dist"
@@ -299,32 +299,32 @@ def main():
     parser.add_argument("--skip-tests", action="store_true", help="Skip test execution")
     parser.add_argument("--skip-build", action="store_true", help="Skip build validation")
     args = parser.parse_args()
-    
+
     print("=" * 70)
     print("  _codex_ Repository Validation")
     print("=" * 70)
-    
+
     results = ValidationResult()
-    
+
     # Run validation checks
     validate_package_structure(results)
     validate_imports(results)
-    
+
     if not args.skip_tests:
         validate_tests(results, quick=True)
     else:
         print("\n## Test Suite Validation\n")
         print("⏭️  Skipped (--skip-tests)")
-    
+
     validate_documentation(results)
     validate_configuration(results)
-    
+
     if not args.skip_build:
         validate_build(results)
     else:
         print("\n## Build Validation\n")
         print("⏭️  Skipped (--skip-build)")
-    
+
     # Print summary
     passed, failed, warnings = results.summary()
     print("\n" + "=" * 70)
@@ -334,7 +334,7 @@ def main():
     print(f"❌ Failed:   {failed}")
     print(f"⚠️  Warnings: {warnings}")
     print("=" * 70)
-    
+
     if results.is_success():
         print("\n✅ All validations passed!")
         return 0

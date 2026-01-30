@@ -428,7 +428,7 @@ None active. All blockers resolved or have mitigation plans.
 - [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing infrastructure
 
 ### Workflows
-- [CI/CD Workflows](../../.github/workflows/) - All workflows
+- [CI/CD Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows) - All workflows
 - [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml) - Packaging
 - [Security Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/scan-secrets-variables.yml) - Secrets scan
 

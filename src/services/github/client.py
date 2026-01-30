@@ -24,7 +24,6 @@ from .exceptions import (
 from .types import (
     ArtifactInfo,
     CheckRun,
-    CheckRunConclusion,
     CheckRunStatus,
     ListArtifactsResponse,
     ListCheckRunsResponse,

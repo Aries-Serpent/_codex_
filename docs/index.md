@@ -52,7 +52,7 @@ The cognitive brain enables:
 
 ## 🧭 Orientation Pillars
 
-- **Reasoning roadmap** — Track milestone health and forward-looking bets in [`README_ROOT.md`](./README_ROOT.md).
+- **Reasoning roadmap** — Track milestone health and forward-looking bets in [README_ROOT.md](https://github.com/Aries-Serpent/_codex_/blob/main/README_ROOT.md).
 - **Architecture** — Pair [`diagrams/architecture.svg`](./diagrams/architecture.svg) with the systems notes in [`guides/reasoning_overview.md`](./guides/reasoning_overview.md).
 - **Curriculum design** — Apply the phased training playbooks from [`guides/first_principles_curricula.md`](./guides/first_principles_curricula.md).
 - **Bespoke hosting expectations** — Align ops and status updates with [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the rollout checklists under [`templates/`](./templates/README.md).
@@ -65,9 +65,9 @@ Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the 
 ## 🚀 Quick Links for Reasoning Teams
 
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the [`codex_cli` help](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py) for command details.
-- **End-to-end quickstart** — Follow [`quickstart.md`](./quickstart.md) with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](./README_ROOT.md#training-quickstart).
+- **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](./README_ROOT.md#training-quickstart).
 - **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure NDJSON metrics pipelines.
-- **Deployment guardrails** — Cross-check bespoke model expectations against [`guides/serving_reproducibility.md`](./guides/serving_reproducibility.md).
+- **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
 ---
 

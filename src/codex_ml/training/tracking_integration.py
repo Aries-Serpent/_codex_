@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Optional
 
-from codex_ml.tracking.mlflow_wrapper import MLflowTracker, get_tracker, init_tracking
+from codex_ml.tracking.mlflow_wrapper import MLflowTracker, get_tracker
 
 logger = logging.getLogger(__name__)
 

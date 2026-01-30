@@ -338,11 +338,11 @@ Prepared for next session:
 
 ## 🔗 Quick Links
 
-📊 [Status Document](./COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md)  
-🏗️ [Architecture Diagrams](./COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md)  
-📋 [Continuation Instructions](./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md)  
-💬 [PR Comment Template](./PR_CONTINUATION_COMMENT.md)  
-🤖 [Workflow CI Fixer Agent](./.github/agents/workflow-ci-fixer.agent.md)
+📊 [Status Document](https://github.com/Aries-Serpent/_codex_/tree/main/docs/cognitive_brain/status)  
+🏗️ [Architecture Diagrams](https://github.com/Aries-Serpent/_codex_/blob/main/docs/cognitive_brain/ARCHITECTURE.md)  
+📋 [Continuation Instructions](../../cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md)  
+💬 PR Comment Template  
+🤖 [Workflow CI Fixer Agent](../../../.github/agents/workflow-ci-fixer.agent.md)
 
 ---
 

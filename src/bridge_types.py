@@ -9,7 +9,7 @@ Part of Phase 2: Fragile Bridge Elimination
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 from datetime import datetime
 from enum import Enum
 

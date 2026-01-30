@@ -289,4 +289,4 @@ See inline documentation for detailed API information.
 
 ## License
 
-MIT License - see [LICENSE](../../LICENSE) for details.
+MIT License - see [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/LICENSE) for details.

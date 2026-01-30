@@ -5,7 +5,7 @@ Structured observability for context management including
 logging, metrics, and alerts with correlation ID support.
 """
 
-from typing import Optional, Any, Callable
+from typing import Optional, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum

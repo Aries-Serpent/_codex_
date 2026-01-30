@@ -17,7 +17,7 @@ import argparse
 import ast
 import json
 import re
-import subprocess
+import subprocess  # nosec B404 - Required for CLI operations, all calls use explicit arguments
 import sys
 from dataclasses import dataclass
 from enum import Enum
@@ -232,8 +232,9 @@ class TestCoverageGuardian:
                         test_content = test_path.read_text()
                         if f"test_{function_name}" in test_content or function_name in test_content:
                             return True
-                    except Exception:
-                        pass
+                    except (OSError, UnicodeDecodeError) as e:
+                        # Log warning but continue checking other test files
+                        print(f"Warning: Could not read test file {test_path}: {e}", file=sys.stderr)
 
         return False
 
@@ -401,7 +402,7 @@ def test_{func_name}():
         """Run pytest coverage analysis on a file."""
         try:
             # Run pytest with coverage
-            subprocess.run(
+            subprocess.run(  # nosec B603 B607 - Internal utility, trusted input only
                 [
                     sys.executable,
                     "-m",

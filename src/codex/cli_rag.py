@@ -12,7 +12,6 @@ Integrates with the core RAG pipeline in src/codex/rag/
 
 import json
 import logging
-import sys
 from pathlib import Path
 from typing import List, Optional
 
@@ -164,7 +163,7 @@ def build(
             
             progress.update(task, completed=True)
         
-        console.print(f"\n[green]✅ Index built successfully![/green]")
+        console.print("\n[green]✅ Index built successfully![/green]")
         console.print(f"[dim]   Location: {index_path}[/dim]")
         
     except ImportError as e:
@@ -513,7 +512,7 @@ def merge(
             progress.update(task, completed=True)
         
         if result.success:
-            console.print(f"\n[green]✅ Indices merged successfully![/green]")
+            console.print("\n[green]✅ Indices merged successfully![/green]")
             console.print(f"[dim]   Target: {target_index}[/dim]")
             if result.details and "chunks_count" in result.details:
                 console.print(f"[dim]   Total chunks: {result.details['chunks_count']}[/dim]")

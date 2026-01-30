@@ -414,9 +414,9 @@ Overall Score = Weighted Average:
 
 ### Internal
 
-- [Documentation Standards](docs/contributing/CONTRIBUTING.md)
-- [Code Review Standards](docs/CODE_REVIEW_STANDARDS.md)
-- [Best Practices](docs/development/best_practices.md)
+- Documentation Standards
+- Code Review Standards
+- Best Practices
 
 ### External
 

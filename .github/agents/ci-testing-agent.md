@@ -1,9 +1,9 @@
 ---
 name: CI Testing Agent
 description: Specialized agent for debugging CI/CD pipeline issues, test failures, and build problems
-version: 2.0.0
+version: 2.1.0
 created: 2026-01-23
-updated: 2026-01-24
+updated: 2026-01-27
 ---
 
 # CI Testing Agent
@@ -20,10 +20,101 @@ Specialized GitHub Copilot agent for debugging CI/CD pipelines, test failures, a
 4. **Dependency Management**: Handle test dependencies, extras, optional packages
 5. **Lint/Format Issues**: Resolve code quality blocks
 
+## Enhanced Capabilities (v2.1.0)
+
+### 1. Automated Test Fixture Management
+- **Auto-detect missing fixtures**: Scan test files for undefined fixtures
+- **Generate fixture code**: Create fixture definitions based on usage patterns
+- **Validate fixture scope**: Ensure proper fixture scope (function, class, module, session)
+- **Example Fix**:
+```python
+# Before (ERROR: fixture 'artifacts_dir' not found)
+def test_something(artifacts_dir):
+    pass
+
+# After (Fixed)
+@pytest.fixture
+def artifacts_dir(tmp_path):
+    """Provide temporary artifacts directory."""
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir(parents=True, exist_ok=True)
+    return artifacts
+
+def test_something(artifacts_dir):
+    pass
+```
+
+### 2. Mock Strategy Analysis
+- **Detect improper mock ordering**: Find tests where imports happen before mocks
+- **Suggest optimal patch paths**: Use full module paths for reliable mocking
+- **Validate mock return values**: Ensure mocks return appropriate types
+- **Example Fix**:
+```python
+# Before (Mocks don't apply)
+from module import function
+
+@patch("torch.distributed.is_initialized")
+def test_something(mock_init):
+    assert function() == expected
+
+# After (Fixed)
+@patch("module.torch.distributed.is_initialized")
+def test_something(mock_init):
+    # Import after patching
+    from module import function
+    assert function() == expected
+```
+
+### 3. Timeout Prediction
+- **Analyze historical durations**: Review past CI run times
+- **Recommend timeouts**: Suggest appropriate timeout values
+- **Detect infinite loops**: Identify tests that may hang
+- **Example Fix**:
+```yaml
+# Before (Times out at 10 minutes)
+- name: Run tests
+  timeout-minutes: 10
+  run: pytest tests/
+
+# After (Fixed based on analysis)
+- name: Run tests
+  timeout-minutes: 15  # Increased based on historical 12min avg
+  run: pytest tests/ --maxfail=5 -x  # Fail fast
+```
+
+### 4. Parallel Test Optimization
+- **Identify parallelizable tests**: Find tests without shared state
+- **Detect race conditions**: Spot tests that fail in parallel
+- **Suggest pytest-xdist config**: Optimize parallel execution
+- **Example Fix**:
+```yaml
+# Before (Sequential, slow)
+- run: pytest tests/ -v
+
+# After (Parallel, fast)
+- run: pytest tests/ -n auto --dist loadgroup -v
+```
+
+### 5. AST Error Detection
+- **Detect Python AST issues**: Find `ast.list` vs `ast.List` mistakes
+- **Suggest correct AST nodes**: Provide proper capitalization
+- **Validate AST usage**: Ensure compatibility across Python versions
+- **Example Fix**:
+```python
+# Before (AttributeError: module 'ast' has no attribute 'list')
+if isinstance(node.value, (ast.list, ast.tuple)):
+    pass
+
+# After (Fixed)
+if isinstance(node.value, (ast.List, ast.Tuple)):
+    pass
+```
+
 ## Key Expertise
 - GitHub Actions workflows, pytest, Python imports
 - Dependency resolution (pip, uv, nox), Ruff/Black/isort/mypy
 - Test sharding, environment setup, PYTHONPATH
+- Mock strategies, fixture management, AST analysis
 
 ## Common Issues - Quick Reference
 

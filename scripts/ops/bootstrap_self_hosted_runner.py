@@ -59,6 +59,7 @@ def _assert_online_allowed():
 def _download_url(version: str) -> str:
     os_name = "linux"
     arch = "x64" if platform.machine() in {"x86_64", "amd64"} else platform.machine()
+    # nosemgrep: url-substring-check - trusted GitHub release URL for runner downloads
     return f"https://github.com/actions/runner/releases/download/v{version}/actions-runner-{os_name}-{arch}-{version}.tar.gz"
 
 

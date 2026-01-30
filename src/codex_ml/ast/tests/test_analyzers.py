@@ -1,11 +1,9 @@
 """
 Tests for AST analyzers.
 """
-import pytest
 
 from codex_ml.ast.core.node import StandardizedASTNode, SourceLocation, Finding
 from codex_ml.ast.analysis.base_analyzer import (
-    ASTAnalyzer,
     ComplexityAnalyzer,
     LongFunctionAnalyzer,
     ParameterCountAnalyzer,

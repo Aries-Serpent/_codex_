@@ -182,7 +182,7 @@ Historical continuation prompts for various initiatives.
 
 ### Active Documentation
 - [Cognitive Brain Status](../cognitive_brain/INDEX.md) - Current state
-- [Root Organization](../../.codex/prompts/) - Current work
+- [Root Organization](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/prompts) - Current work
 - [Main Documentation](../README.md) - Overview
 
 ### Historical Context

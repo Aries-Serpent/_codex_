@@ -18,7 +18,7 @@
 | `GH_TOKEN` | GitHub token (alias) | Multiple workflows | ✅ Active |
 | `GITHUB_CODEX` | OpenAI API key | agent-runtime.yml | ✅ Active |
 | `GITHUB_TOKEN` | Default GitHub Actions token | Auto-provided by Actions | ✅ Active |
-| `GITLEAKS_LICENSE` | Gitleaks license key | (If using Gitleaks Pro) | 🟡 Optional |
+| `GITLEAKS_LICENSE` | Gitleaks license key for Pro/Enterprise | security-suite.yml | 🟡 Optional |
 | `OPENAI_API_KEY` | OpenAI API key | integration-gated.yml | ✅ Active |
 | `PINECONE_API_KEY` | Pinecone vector DB key | integration-gated.yml | ✅ Active |
 

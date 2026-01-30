@@ -19,8 +19,8 @@ Comprehensive guides, references, and documentation for repository usage and arc
 
 ## Additional Resources
 - [Testing Conventions](../testing/TESTING_CONVENTIONS.md)
-- [Main README](../../README.md)
-- [Contributing Guide](../../CONTRIBUTING.md)
+- [Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
+- [Contributing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)

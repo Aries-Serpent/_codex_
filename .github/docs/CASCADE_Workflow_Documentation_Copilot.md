@@ -685,7 +685,7 @@ def make_api_call_with_retry(url, max_retries=3):
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Copilot API](https://docs.github.com/en/copilot)
 - [PyGithub Library](https://pygithub.readthedocs.io/)
-- [CASCADE Project Documentation](../_codex_/CASCADE/)
+- CASCADE Project Documentation
 
 ---
 
@@ -701,7 +701,7 @@ def make_api_call_with_retry(url, max_retries=3):
 
 For questions or issues related to this workflow:
 
-- **Repository Issues**: [GitHub Issues](../../issues)
+- **Repository Issues**: [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - **Documentation**: [CASCADE Docs](./)
 - **Maintainer**: @mbaetiong
 

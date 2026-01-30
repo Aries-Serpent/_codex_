@@ -2034,7 +2034,7 @@ For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](
 ### Control surface knobs and promotion checklist
 
 `codex repo-map --reasoning` surfaces a shared set of knobs defined in
-[`configs/training/reasoning/baseline.yaml`](../configs/training/reasoning/baseline.yaml):
+`configs/training/reasoning/baseline.yaml`:
 
 - `trace_mode`
 - `curriculum.preset`
@@ -2083,7 +2083,7 @@ Key flows:
 3. **Deployment** — Bespoke models are packaged with manifest digests
    and signed hooks for downstream registries.
 
-When modifying the topology, update both the diagram and [`docs/guides/serving_reproducibility.md`](guides/serving_reproducibility.md).
+When modifying the topology, update both the diagram and `docs/guides/serving_reproducibility.md`.
 
 ## Hosting bespoke reasoning models
 
@@ -2191,7 +2191,7 @@ Welcome to the `_codex_` knowledge base. Start here to navigate the reasoning ro
 hands-on guides that keep bespoke model hosting disciplined.
 
 ## 🧭 Orientation pillars
-- **Reasoning roadmap** — Track milestone health and forward-looking bets in [`README_ROOT.md`](./README_ROOT.md).
+- **Reasoning roadmap** — Track milestone health and forward-looking bets in `README_ROOT.md`.
 - **Architecture** — Pair [`diagrams/architecture.svg`](./diagrams/architecture.svg) with the systems notes in
   [`guides/reasoning_overview.md`](./guides/reasoning_overview.md).
 - **Curriculum design** — Apply the phased training playbooks from
@@ -2207,11 +2207,11 @@ These assets are designed for offline validation and do not require hosted servi
 ## 🚀 Quick links for reasoning teams
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the
   [`codex_cli` help](../src/codex_cli/app.py) for command details.
-- **End-to-end quickstart** — Follow [`quickstart.md`](./quickstart.md) with the `+reasoning=baseline` overrides highlighted in
-  [`README_ROOT.md`](./README_ROOT.md#training-quickstart).
+- **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in
+  [`README_ROOT.md`](../README_ROOT.md#training-quickstart).
 - **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure
   NDJSON metrics pipelines.
-- **Deployment guardrails** — Cross-check bespoke model expectations against [`guides/serving_reproducibility.md`](./guides/serving_reproducibility.md).
+- **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
 ## 📋 Operational templates
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning
@@ -2616,7 +2616,7 @@ ReasoningTrainer: NOT FOUND in code. References exist only in docs (e.g., docs/R
 ```text
 [BEGIN CONTENT]
 --- docs/README.md ---
-- **Deployment guardrails** — Cross-check bespoke model expectations against [`guides/serving_reproducibility.md`](./guides/serving_reproducibility.md).
+- **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
 ## 📋 Operational templates
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning

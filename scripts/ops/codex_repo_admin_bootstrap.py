@@ -74,6 +74,7 @@ else:  # pragma: no cover - exercised in integration
 
 
 API_VERSION = os.getenv("GITHUB_API_VERSION", "2022-11-28")
+# nosemgrep: url-substring-check - trusted GitHub API base for bootstrap automation
 DEFAULT_API_BASE = os.getenv("GITHUB_API_BASE", "https://api.github.com")
 USER_AGENT = "codex-ops-repo-admin-bootstrap/2.0"
 

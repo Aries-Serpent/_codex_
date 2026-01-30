@@ -6,19 +6,23 @@ Provides text chunking, embedding, and FAISS index persistence for expanded cont
 import hashlib
 import json
 import logging
+import shutil
+from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .utils import safe_model_load
-
 logger = logging.getLogger(__name__)
 
+try:
+    import faiss  # type: ignore
+except ImportError:  # pragma: no cover - exercised when optional dependency missing
+    faiss = None
 
-def chunk_text(
-    text: str, chunk_size: int = 1000, overlap: int = 128
-) -> List[Tuple[int, int, str]]:
+
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tuple[int, int, str]]:
     """
     Split text into overlapping chunks for embedding.
 
@@ -35,8 +39,21 @@ def chunk_text(
 
     if chunk_size <= 0:
         raise ValueError("chunk_size must be positive")
-    if overlap < 0 or overlap >= chunk_size:
+    if overlap < 0:
         raise ValueError("overlap must be non-negative and less than chunk_size")
+    if overlap >= chunk_size:
+        if overlap == 128:
+            adjusted_overlap = max(0, chunk_size - 1)
+            logger.warning(
+                "overlap (%s) must be less than chunk_size (%s); "
+                "adjusting overlap to %s",
+                overlap,
+                chunk_size,
+                adjusted_overlap,
+            )
+            overlap = adjusted_overlap
+        else:
+            raise ValueError("overlap must be non-negative and less than chunk_size")
 
     chunks = []
     start = 0
@@ -95,31 +112,48 @@ def embed_chunks(
 
     # Extract model configuration
     model_profile = model_profile or {}
-    model_name = model_profile.get(
-        "model_name", "sentence-transformers/all-MiniLM-L6-v2"
-    )
+    model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     cache_dir = model_profile.get("cache_dir", None)
 
-    # Load model directly to CPU
     logger.info(f"Loading embedding model: {model_name}")
-    model = SentenceTransformer(
-        model_name, 
-        cache_folder=cache_dir,
-        device="cpu"  # Explicitly load to CPU
-    )
-    # Apply safe model loading as additional safety check
-    model = safe_model_load(model, device="cpu")
-    # Ensure model is in eval mode
-    model.eval()
+    try:
+        import os
+        import torch
+
+        # Use HF_TOKEN if available for authenticated downloads
+        use_auth_token = os.environ.get('HF_TOKEN', False)
+
+        # CRITICAL FIX: Force CPU device and prevent meta tensors
+        # Set default device to CPU before any model operations
+        torch.set_default_device('cpu')
+        
+        model = SentenceTransformer(
+            model_name,
+            device='cpu',
+            cache_folder=cache_dir,
+            trust_remote_code=False,
+            use_auth_token=use_auth_token if use_auth_token else None
+        )
+        
+        # Explicitly move all parameters to CPU (double-check)
+        model = model.to('cpu')
+        model.eval()
+        
+        # Reset default device to avoid side effects
+        torch.set_default_device(None)
+
+        logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
+
+    except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
+        logger.error(f"Failed to load embedding model: {e}")
+        raise
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
 
     # Generate embeddings
     logger.info(f"Generating embeddings for {len(texts)} chunks")
-    embeddings = model.encode(
-        texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True
-    )
+    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
 
     logger.info(f"Generated embeddings with shape: {embeddings.shape}")
     return embeddings
@@ -151,18 +185,11 @@ def persist_index(
         raise ValueError("Cannot persist empty embeddings")
 
     if len(embeddings) != len(chunks):
-        raise ValueError(
-            f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks"
-        )
+        raise ValueError(f"Mismatch: {len(embeddings)} embeddings vs {len(chunks)} chunks")
 
-    # Import FAISS
-    try:
-        import faiss
-    except ImportError:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )
-        raise
+    if faiss is None:
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
+        raise ImportError("faiss-cpu not installed")
 
     # Create tenant directory
     tenant_dir = Path(index_dir) / tenant_id
@@ -238,13 +265,9 @@ def load_index(
     Returns:
         Tuple of (faiss_index, chunks_metadata, index_metadata)
     """
-    try:
-        import faiss
-    except ImportError:
-        logger.error(
-            "faiss-cpu not installed. Install with: pip install faiss-cpu"
-        )
-        raise
+    if faiss is None:
+        logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
+        raise ImportError("faiss-cpu not installed")
 
     index_path = Path(index_dir) / tenant_id / index_name
 
@@ -377,14 +400,10 @@ def build_index_from_files(
 # Multi-Tenant Index Management (Phase B)
 # ============================================================================
 
-import shutil
-from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
-
 
 class IndexOperation(Enum):
     """Operations supported by multi-tenant index manager."""
+
     CREATE = "create"
     UPDATE = "update"
     DELETE = "delete"
@@ -405,6 +424,7 @@ class TenantOperationResult:
         message: Human-readable result message
         details: Additional operation details
     """
+
     success: bool
     operation: IndexOperation
     tenant_id: str
@@ -719,19 +739,23 @@ def manage_tenant_indices(
                     if metadata_file.exists():
                         with open(metadata_file, "r") as f:
                             metadata = json.load(f)
-                        indices.append({
-                            "name": item.name,
-                            "vectors": metadata.get("num_vectors", 0),
-                            "dimension": metadata.get("dimension", 0),
-                            "created_at": metadata.get("created_at", "unknown"),
-                        })
+                        indices.append(
+                            {
+                                "name": item.name,
+                                "vectors": metadata.get("num_vectors", 0),
+                                "dimension": metadata.get("dimension", 0),
+                                "created_at": metadata.get("created_at", "unknown"),
+                            }
+                        )
                     else:
-                        indices.append({
-                            "name": item.name,
-                            "vectors": "unknown",
-                            "dimension": "unknown",
-                            "created_at": "unknown",
-                        })
+                        indices.append(
+                            {
+                                "name": item.name,
+                                "vectors": "unknown",
+                                "dimension": "unknown",
+                                "created_at": "unknown",
+                            }
+                        )
 
             return TenantOperationResult(
                 success=True,

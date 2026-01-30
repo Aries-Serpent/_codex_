@@ -744,6 +744,12 @@ def ensure_cpu_device():
     try:
         import torch
         
+        # Check if this is a stub/placeholder torch module
+        if not hasattr(torch, 'Tensor') or not callable(getattr(torch, 'manual_seed', None)):
+            # Stub torch module, skip fixture
+            yield
+            return
+        
         # Set default device to CPU
         if torch.cuda.is_available():
             torch.set_default_device("cpu")
@@ -756,8 +762,8 @@ def ensure_cpu_device():
         # Cleanup
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-    except ImportError:
-        # torch not available, skip fixture
+    except (ImportError, AttributeError):
+        # torch not available or is a stub, skip fixture
         yield
 
 

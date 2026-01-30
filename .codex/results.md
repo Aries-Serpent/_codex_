@@ -486,3 +486,53 @@ Supporting files:
 **Total Tests Added**: ~120 tests across Phases 23-24 (unit, integration, E2E, service).
 
 *Updated: 2026-01-20 (Phase 23-24 comprehensive patchset applied, coverage threshold raised to 70%)*
+
+
+## 2026-01-29T19:41:07Z - RAG test validation
+- Phase 1: 45 RAG targeted tests passed.
+- Phase 2: 467 RAG suite tests passed.
+
+## 2026-01-29T21:39:28Z - RAG test suite updates
+- Added regression, initialization, integration, and semgrep suppression tests.
+- Updated utility scripts with documented URL suppression comments.
+
+## 2026-01-29T22:42:11Z - RAG meta tensor regression coverage
+- Added RAG regression, initialization, semgrep suppression, and end-to-end pipeline tests.
+- Registered RAG Meta Tensor Regression Agent for targeted device-init validation.
+- Created planset for path-to-100% RAG coverage.
+- Test run: `PYENV_VERSION=3.12.12 python -m pytest tests/test_rag_meta_tensor_regression.py tests/test_rag_initialization_patterns.py tests/test_semgrep_suppressions.py tests/test_rag_end_to_end_pipeline.py` (61 passed, 5 skipped; numpy missing, pytest-timeout config warnings).
+
+## 2026-01-29T23:01:33Z - RAG meta tensor regression re-validation
+- Syntax check: `PYENV_VERSION=3.12.12 python -m py_compile tests/test_rag_meta_tensor_regression.py tests/test_rag_initialization_patterns.py tests/test_semgrep_suppressions.py tests/test_rag_end_to_end_pipeline.py`.
+- Test run: `PYENV_VERSION=3.12.12 python -m pytest tests/test_rag_meta_tensor_regression.py tests/test_rag_initialization_patterns.py tests/test_semgrep_suppressions.py tests/test_rag_end_to_end_pipeline.py` (61 passed, 5 skipped; pytest-timeout config warnings and Hydra extra warning).
+
+## 2026-01-29T23:02:23Z - RAG regression docstring update validation
+- Syntax check: `PYENV_VERSION=3.12.12 python -m py_compile tests/test_rag_meta_tensor_regression.py tests/test_rag_initialization_patterns.py tests/test_semgrep_suppressions.py tests/test_rag_end_to_end_pipeline.py`.
+- Test run: `PYENV_VERSION=3.12.12 python -m pytest tests/test_rag_meta_tensor_regression.py tests/test_rag_initialization_patterns.py tests/test_semgrep_suppressions.py tests/test_rag_end_to_end_pipeline.py` (61 passed, 5 skipped; pytest-timeout config warnings and Hydra extra warning).
+
+## 2026-01-29T23:29:43Z - PR #3020 CI/alert verification
+- Fetched GitHub run/job/PR pages into `artifacts/github_fetch_20260129_232552/` (unauthenticated HTML requires sign-in to view logs).
+- Test run (smoke marker): `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest -m "smoke"` (failed during collection: missing numpy, yaml, pydantic, torch, mlflow, hydra, typer attribute errors).
+- Test run (unit): `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/unit` (failed during collection: missing yaml, numpy, pydantic, torch, mlflow, hydra).
+- Test run (integration): `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/integration -m "integration"` (failed during collection: missing yaml, torch, mlflow, hydra).
+- Coverage run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=70` (failed: pytest-cov plugin unavailable; same missing dependency stack).
+
+## 2026-01-30T00:00:45Z - PR #3020 CI log access + semgrep URL regex validation
+- GitHub API log fetch attempts:
+  - `curl -sS -o /dev/null -w "%{http_code}" https://api.github.com/repos/Aries-Serpent/_codex_/actions/jobs/61934477962/logs` → 403
+  - `curl -sS -o /dev/null -w "%{http_code}" https://api.github.com/repos/Aries-Serpent/_codex_/actions/jobs/61935610904/logs` → 403
+  - `curl -sS -o /dev/null -w "%{http_code}" https://api.github.com/repos/Aries-Serpent/_codex_/actions/jobs/61934477813/logs` → 403
+  - `curl -sS -o /dev/null -w "%{http_code}" https://api.github.com/repos/Aries-Serpent/_codex_/dependabot/alerts` → 401
+- Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/test_semgrep_suppressions.py` (52 passed, 3 skipped; Hydra extras + pytest-timeout config warnings).
+- Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/test_rag_end_to_end_pipeline.py` (1 skipped; exit code 5 due to no tests collected; Hydra extras + pytest-timeout warnings).
+- Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest -m "smoke"` (failed during collection: missing numpy, yaml, pydantic, torch, mlflow, hydra; typer attribute errors).
+- Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/unit` (failed during collection: missing yaml, numpy, pydantic, torch, mlflow, hydra).
+- Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest tests/integration -m "integration"` (failed during collection: missing yaml, torch, mlflow, hydra).
+- Coverage run: `PYENV_VERSION=3.11.14 PYTHONPATH=src python -m pytest --cov=src --cov-report=term-missing --cov-fail-under=70` (failed: pytest-cov plugin unavailable; missing dependency stack).
+
+## 2026-01-30T00:00:45Z - Self-review iterations (5 passes)
+1. Pass 1 (Code correctness): verified semgrep regex update and plan/report edits.
+2. Pass 2 (Testing): executed semgrep/RAG spot-check and mandatory smoke/unit/integration/coverage commands.
+3. Pass 3 (Docs): validated report updates and agent registrations for completeness.
+4. Pass 4 (Security): confirmed no secrets added; noted auth requirements for logs/alerts.
+5. Pass 5 (Integration): ensured audit logs updated and plan references aligned with instructions.

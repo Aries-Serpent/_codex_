@@ -11,7 +11,7 @@ This directory contains historical session execution summaries and reports.
 - **Back to Archive:** [../INDEX.md](../INDEX.md)
 - **Phase Reports:** [../phases/INDEX.md](../phases/INDEX.md)
 - **Validation Reports:** [../validation/INDEX.md](../validation/INDEX.md)
-- **Main Documentation:** [../../../README.md](../../../README.md)
+- **Main Documentation:** [../../../README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
 
 ## Purpose
 

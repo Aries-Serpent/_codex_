@@ -506,7 +506,7 @@ If issues encountered:
 > **⚠️ HUMAN DEFERRAL NOTICE (2026-01-16)**:  
 > Google Drive integration has been **DEFERRED to future scope** pending external setup.  
 > Status: Workflow created but automated triggers disabled (manual dispatch only).  
-> Reference: [`docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`](docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md)  
+> Reference: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`  
 > 
 > **AI Agency Policy Compliance**:
 > - ✅ ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)

@@ -304,6 +304,32 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 
 ## Priority Tier 3: Specialized Agents (15+)
 
+### 16. Meta-Tensor-Validator ✅ NEW
+- **ID**: `meta-tensor-validator`
+- **File**: `.github/agents/meta-tensor-validator.md`
+- **Purpose**: Validates PyTorch model initialization patterns to prevent meta tensor issues in RAG modules and ML components
+- **Status**: Active
+- **Maturity**: Production
+- **Test Coverage**: Validated with pre-commit hooks
+- **Has Prompts**: Embedded in agent documentation
+- **Has Tests**: Integration with pre-commit validation
+- **Has Docs**: Yes (comprehensive documentation)
+- **Standard Structure**: Documentation-based agent with pre-commit integration
+- **Integration Points**: 
+  - `.pre-commit-scripts/check-meta-tensors.py` (pre-commit hook)
+  - `src/codex/rag/utils.py` (`safe_model_load_v2()` utility)
+  - `.github/workflows/test-suite.yml` (CI validation)
+  - `CONTRIBUTING.md` (developer guidelines)
+- **Capabilities**:
+  - pattern_detection (unsafe model initialization)
+  - pre_commit_validation (automated checks)
+  - safe_loading_guidance (correct patterns)
+  - regression_prevention (PyTorch version tracking)
+  - documentation_maintenance
+- **Related Agents**: RAG Meta Tensor Guardian
+- **Last Updated**: 2026-01-29
+- **Maintainer**: RAG Team, AI Agent Team
+
 *Additional specialized agents for specific use cases. Full catalog to be added in next update.*
 
 ---

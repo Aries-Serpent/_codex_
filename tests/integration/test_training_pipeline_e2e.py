@@ -120,7 +120,7 @@ checkpoint:
             assert checkpoint_path.exists()
             
             # Step 5: Load and validate checkpoint
-            loaded = torch.load(checkpoint_path)
+            loaded = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
             assert loaded["epoch"] == 5
             assert loaded["loss"] == 0.25
         else:

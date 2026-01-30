@@ -120,5 +120,5 @@ Two nav issues were fixed in `mkdocs.yml`:
 ## References
 
 - [MkDocs Validation Docs](https://www.mkdocs.org/user-guide/configuration/#validation)
-- [mkdocs.yml Configuration](/mkdocs.yml)
+- [mkdocs.yml Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml)
 - [Related Issue: Phase 11.X Documentation Quality]

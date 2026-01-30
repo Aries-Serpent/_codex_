@@ -340,9 +340,13 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 | **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
 | **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
 | **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
+| **Security Alert Verification Agent** | Verify GitHub security alerts and propose remediation steps | [.github/agents/security-alert-verification-agent.md](.github/agents/security-alert-verification-agent.md) | ✅ Active |
+| **CI Log Retrieval Agent** | Retrieve authenticated GitHub Actions logs and summarize failures | [.github/agents/ci-log-retrieval-agent.md](.github/agents/ci-log-retrieval-agent.md) | ✅ Active |
 | **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit evidence | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) | ✅ Active |
 | **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
 | **Coverage Gapfill Agent** | Target low-coverage modules and add deterministic tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ✅ Active |
+| **Meta Tensor Validator** | Validates PyTorch model initialization patterns to prevent meta tensor issues | [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md) | ✅ Active |
+| **RAG Meta Tensor Regression Agent** | Validates RAG initialization patterns and prevents meta tensor regressions | [.github/agents/rag-meta-tensor-regression-agent.md](.github/agents/rag-meta-tensor-regression-agent.md) | ✅ Active |
 
 ### Using Specialized Agents
 

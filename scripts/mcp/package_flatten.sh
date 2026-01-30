@@ -263,10 +263,18 @@ EOF
 echo ""
 echo "Creating zip archive: $OUTPUT_ZIP"
 cd "$WORK_DIR"
-zip -q -r "$REPO_ROOT/$OUTPUT_ZIP" ./*
-
+# Handle both absolute and relative output paths
+if [[ "$OUTPUT_ZIP" = /* ]]; then
+    # Absolute path - use directly
+    zip -q -r "$OUTPUT_ZIP" ./*
+    FINAL_ZIP_PATH="$OUTPUT_ZIP"
+else
+    # Relative path - prefix with REPO_ROOT
+    zip -q -r "$REPO_ROOT/$OUTPUT_ZIP" ./*
+    FINAL_ZIP_PATH="$REPO_ROOT/$OUTPUT_ZIP"
+fi
 cd "$REPO_ROOT"
-ZIP_SIZE=$(stat -c%s "$OUTPUT_ZIP" 2>/dev/null || stat -f%z "$OUTPUT_ZIP")
+ZIP_SIZE=$(stat -c%s "$FINAL_ZIP_PATH" 2>/dev/null || stat -f%z "$FINAL_ZIP_PATH")
 ZIP_SIZE_MB=$((ZIP_SIZE / 1024 / 1024))
 
 echo ""

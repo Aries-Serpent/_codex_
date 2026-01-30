@@ -5,7 +5,6 @@ Measures inference latency (time per sample/batch).
 """
 
 from typing import Any
-import time
 
 import sys
 import os

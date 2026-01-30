@@ -326,7 +326,7 @@ At any point, you can:
 ### 4.1 File 1: Deployment Orchestration Specification
 
 **File: `.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md`**
- https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md
+ DEPLOYMENT_ORCHESTRATION_PR2207.md
 
 ### 4.2 File 2: Deployment Orchestration Task Template
 
@@ -361,7 +361,7 @@ In the issue body, ensure:
 ```markdown
 **Assigned to: @copilot-swe-agent**
 **Type**: Autonomous Orchestrated Deployment
-**Specification**: [.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md]( https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md)
+**Specification**: `.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md` (documentation archived)
 ```text
 
 #### Step 3: Assign & Label (1 minute)
@@ -373,7 +373,7 @@ In the issue body, ensure:
 #### Step 4: Monitor Dashboard (1 minute)
 
 1. Go to: GitHub Actions tab
-2. Find workflow: [post-merge-validation-optimized.yml](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/workflows/post-merge-validation-optimized.yml)
+2. Find workflow: post-merge-validation-optimized.yml
 3. Open: Real-time monitoring dashboard
 
 #### Step 5: Approve Phase Transitions (As Needed)

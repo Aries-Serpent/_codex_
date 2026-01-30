@@ -10,10 +10,9 @@ Reference: Anthropic 2024 - Effective Context Engineering for AI Agents
 """
 
 import hashlib
-import json
 from typing import Optional, Any
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 import math
 

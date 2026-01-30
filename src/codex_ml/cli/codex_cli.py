@@ -481,7 +481,7 @@ def train(
             run_functional_training(config=training_cfg, resume=resume)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
-        click.echo("training complete")
+        click.echo("Training complete")
     except Exception as exc:  # pragma: no cover - Click handles presentation
         log_training_error(
             "cli.train",

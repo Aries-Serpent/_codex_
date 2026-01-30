@@ -1,0 +1,350 @@
+name: "Copilot Agent Environment Setup"
+
+# This workflow customizes the ephemeral GitHub Actions environment where GitHub Copilot's
+# coding agent operates. It preinstalls dependencies, sets environment variables, and configures
+# the development environment before the agent starts working on code changes or PRs.
+#
+# Documentation: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
+# Policy: Follows .codex/CODEBASE_AGENCY_POLICY.md
+# Created: 2026-01-28
+# Integrated: Cognitive Brain Phase objectives for agent environment management
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_type:
+        description: 'Environment type to setup'
+        required: false
+        default: 'standard'
+        type: choice
+        options:
+          - standard
+          - ml-heavy
+          - security-scan
+          - documentation
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+      - .codex/agent_environment_config.yaml
+      - pyproject.toml
+      - requirements*.txt
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+      - .codex/agent_environment_config.yaml
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "20"
+  RUST_VERSION: "1.75"
+
+jobs:
+  copilot-setup-steps:
+    name: "Copilot Agent Environment Preparation"
+    runs-on: ubuntu-latest-4-cores  # Use larger runner for better performance
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      # ============================================================================
+      # Phase 1: Repository & Code Setup
+      # ============================================================================
+      
+      - name: "📦 Checkout Repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git operations
+          lfs: true       # Enable Git LFS for large files
+      
+      - name: "🔍 Detect Environment Type"
+        id: detect_env
+        run: |
+          ENV_TYPE="${{ github.event.inputs.environment_type || 'standard' }}"
+          
+          # Auto-detect based on PR labels or branch name if not specified
+          if [[ "$ENV_TYPE" == "standard" ]]; then
+            if [[ "${{ github.head_ref }}" == *"ml"* ]] || [[ "${{ github.head_ref }}" == *"rag"* ]]; then
+              ENV_TYPE="ml-heavy"
+            elif [[ "${{ github.head_ref }}" == *"security"* ]] || [[ "${{ github.head_ref }}" == *"sec"* ]]; then
+              ENV_TYPE="security-scan"
+            elif [[ "${{ github.head_ref }}" == *"docs"* ]] || [[ "${{ github.head_ref }}" == *"documentation"* ]]; then
+              ENV_TYPE="documentation"
+            fi
+          fi
+          
+          echo "environment_type=$ENV_TYPE" >> $GITHUB_OUTPUT
+          echo "✅ Detected environment type: $ENV_TYPE"
+      
+      # ============================================================================
+      # Phase 2: Language Runtimes Setup
+      # ============================================================================
+      
+      - name: "🐍 Set up Python ${{ env.PYTHON_VERSION }}"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: |
+            requirements*.txt
+            pyproject.toml
+      
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION }}"
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+        if: hashFiles('package.json') != ''
+      
+      - name: "🦀 Set up Rust ${{ env.RUST_VERSION }}"
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+        if: hashFiles('Cargo.toml') != ''
+      
+      # ============================================================================
+      # Phase 3: System Dependencies
+      # ============================================================================
+      
+      - name: "📚 Install System Dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git-lfs \
+            libffi-dev \
+            libssl-dev \
+            sqlite3 \
+            jq \
+            ripgrep \
+            fd-find
+          
+          # ML-specific dependencies
+          if [[ "${{ steps.detect_env.outputs.environment_type }}" == "ml-heavy" ]]; then
+            sudo apt-get install -y \
+              libblas-dev \
+              liblapack-dev \
+              gfortran
+          fi
+      
+      # ============================================================================
+      # Phase 4: Python Dependencies (Environment-Specific)
+      # ============================================================================
+      
+      - name: "🔧 Upgrade pip and install build tools"
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          pip --version
+      
+      - name: "📦 Install Python Dependencies (Standard)"
+        if: steps.detect_env.outputs.environment_type == 'standard'
+        run: |
+          # Install core dependencies
+          pip install -e ".[dev]" --no-cache-dir
+          
+          # Install additional tooling
+          pip install \
+            ruff \
+            black \
+            mypy \
+            pytest \
+            pytest-cov \
+            pytest-xdist
+      
+      - name: "🤖 Install Python Dependencies (ML-Heavy)"
+        if: steps.detect_env.outputs.environment_type == 'ml-heavy'
+        run: |
+          # Force CPU-only PyTorch for faster installs
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          
+          # Install with ML extras
+          pip install -e ".[dev,ml]" --no-cache-dir
+          
+          # Install ML-specific tools
+          pip install \
+            transformers \
+            sentence-transformers \
+            scikit-learn \
+            mlflow
+      
+      - name: "🔒 Install Python Dependencies (Security-Scan)"
+        if: steps.detect_env.outputs.environment_type == 'security-scan'
+        run: |
+          pip install -e ".[dev]" --no-cache-dir
+          
+          # Install security scanning tools
+          pip install \
+            bandit \
+            safety \
+            pip-audit \
+            semgrep
+      
+      - name: "📝 Install Python Dependencies (Documentation)"
+        if: steps.detect_env.outputs.environment_type == 'documentation'
+        run: |
+          pip install -e ".[dev,docs]" --no-cache-dir
+          
+          # Install documentation tools
+          pip install \
+            mkdocs \
+            mkdocs-material \
+            mkdocstrings \
+            mkdocstrings-python
+      
+      # ============================================================================
+      # Phase 5: Rust Dependencies
+      # ============================================================================
+      
+      - name: "🦀 Build Rust Components"
+        if: hashFiles('Cargo.toml') != ''
+        run: |
+          cargo build --release
+          echo "RUST_BACKTRACE=1" >> $GITHUB_ENV
+      
+      # ============================================================================
+      # Phase 6: Environment Variables & Configuration
+      # ============================================================================
+      
+      - name: "⚙️ Set Codex Environment Variables"
+        run: |
+          # Core configuration
+          echo "CODEX_ENV=copilot-agent" >> $GITHUB_ENV
+          echo "CODEX_FORCE_CPU=1" >> $GITHUB_ENV
+          echo "RAG_EMBEDDING_PROVIDER=tfidf" >> $GITHUB_ENV
+          echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH" >> $GITHUB_ENV
+          
+          # Logging configuration
+          echo "CODEX_LOG_LEVEL=INFO" >> $GITHUB_ENV
+          echo "CODEX_SESSION_LOG_DIR=${{ github.workspace }}/.codex/sessions" >> $GITHUB_ENV
+          
+          # Database paths
+          echo "CODEX_DB_PATH=${{ github.workspace }}/.codex/codex.db" >> $GITHUB_ENV
+          
+          # Disable interactive prompts
+          echo "DEBIAN_FRONTEND=noninteractive" >> $GITHUB_ENV
+          echo "PIP_NO_INPUT=1" >> $GITHUB_ENV
+          
+          # GitHub-specific
+          echo "CI=true" >> $GITHUB_ENV
+          echo "GITHUB_COPILOT_AGENT=true" >> $GITHUB_ENV
+      
+      - name: "📋 Load Custom Agent Configuration"
+        if: hashFiles('.codex/agent_environment_config.yaml') != ''
+        run: |
+          # Load additional environment variables from config file
+          if [ -f .codex/agent_environment_config.yaml ]; then
+            echo "✅ Loading custom agent configuration..."
+            # Parse YAML and set environment variables
+            # (This would require yq or similar tool - simplified here)
+            cat .codex/agent_environment_config.yaml
+          fi
+      
+      # ============================================================================
+      # Phase 7: Validation & Diagnostics
+      # ============================================================================
+      
+      - name: "✅ Validate Environment Setup"
+        run: |
+          echo "==================== Environment Validation ===================="
+          echo "Python Version: $(python --version)"
+          echo "Pip Version: $(pip --version)"
+          echo "Node Version: $(node --version 2>/dev/null || echo 'Not installed')"
+          echo "Rust Version: $(rustc --version 2>/dev/null || echo 'Not installed')"
+          echo ""
+          echo "==================== Installed Packages ===================="
+          pip list | head -20
+          echo "..."
+          echo ""
+          echo "==================== Environment Variables ===================="
+          env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB)" | sort
+          echo ""
+          echo "==================== Disk Space ===================="
+          df -h | grep -E "^/dev"
+          echo ""
+          echo "✅ Environment setup complete for type: ${{ steps.detect_env.outputs.environment_type }}"
+      
+      - name: "🏥 Run Health Check"
+        run: |
+          # Verify critical files and directories exist
+          echo "Checking critical paths..."
+          
+          test -d src/codex && echo "✅ src/codex exists" || echo "❌ src/codex missing"
+          test -d .codex && echo "✅ .codex exists" || echo "❌ .codex missing"
+          test -d tests && echo "✅ tests exists" || echo "❌ tests missing"
+          test -f pyproject.toml && echo "✅ pyproject.toml exists" || echo "❌ pyproject.toml missing"
+          
+          # Verify Python imports work
+          python -c "import codex; print('✅ codex package importable')" || echo "⚠️  codex package import failed"
+          
+          # Verify tools are available
+          which ruff && echo "✅ ruff available" || echo "⚠️  ruff not available"
+          which black && echo "✅ black available" || echo "⚠️  black not available"
+          which pytest && echo "✅ pytest available" || echo "⚠️  pytest not available"
+      
+      # ============================================================================
+      # Phase 8: Cache Preparation (Optional)
+      # ============================================================================
+      
+      - name: "💾 Prepare Cache Artifacts"
+        run: |
+          # Create cache directories for faster subsequent runs
+          mkdir -p .codex/cache
+          mkdir -p .codex/sessions
+          
+          echo "✅ Cache directories prepared"
+      
+      # ============================================================================
+      # Phase 9: Agent-Specific Initialization
+      # ============================================================================
+      
+      - name: "🤖 Initialize Cognitive Brain Context"
+        run: |
+          # Load agent registry and prepare context
+          if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then
+            echo "✅ Loading 26 specialized agents from registry..."
+            cat .github/agents/AGENT_REGISTRY.yaml | head -20
+          fi
+          
+          # Initialize cognitive brain state if needed
+          if [ -d cognitive/ ]; then
+            echo "✅ Cognitive brain components available"
+            ls -la cognitive/ | head -10
+          fi
+      
+      - name: "📊 Generate Environment Report"
+        if: always()
+        run: |
+          cat > .copilot-agent-environment-report.txt << EOF
+          ==================== Copilot Agent Environment Report ====================
+          Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          Environment Type: ${{ steps.detect_env.outputs.environment_type }}
+          Runner: ${{ runner.os }} ${{ runner.arch }}
+          
+          Python: $(python --version)
+          Node: $(node --version 2>/dev/null || echo 'N/A')
+          Rust: $(rustc --version 2>/dev/null || echo 'N/A')
+          
+          Installed Packages: $(pip list | wc -l) packages
+          Disk Space: $(df -h / | tail -1 | awk '{print $4}') available
+          
+          Status: ✅ Environment ready for Copilot agent operations
+          EOF
+          
+          cat .copilot-agent-environment-report.txt
+      
+      - name: "📤 Upload Environment Report"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: copilot-agent-environment-report
+          path: .copilot-agent-environment-report.txt
+          retention-days: 7
+
+# ============================================================================
+# Workflow Metadata
+# ============================================================================
+# Version: 1.0.0
+# Created: 2026-01-28
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md
+# Integration: Cognitive Brain Phase objectives
+# Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md

@@ -30,8 +30,8 @@ def example_1_bert_embeddings():
         # Load BERT model
         print("\n1. Loading BERT model...")
         model_name = "bert-base-uncased"
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModel.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
+        model = AutoModel.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
         
         # Example sentences
         sentences = [
@@ -90,8 +90,8 @@ def example_2_gpt_text_generation():
         
         print("\n1. Loading GPT-2 model...")
         model_name = "gpt2"
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
+        model = AutoModelForCausalLM.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
         
         # Set pad token
         tokenizer.pad_token = tokenizer.eos_token
@@ -144,8 +144,8 @@ def example_3_physics_statement_generation():
         
         print("\n1. Loading language model for physics generation...")
         model_name = "gpt2"
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
+        model = AutoModelForCausalLM.from_pretrained(model_name)  # nosec B615 - Example code with known model ID
         tokenizer.pad_token = tokenizer.eos_token
         
         # Physics-focused prompts

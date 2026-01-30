@@ -87,13 +87,18 @@ class AuditLogEntry:
 
 
 # Safeguard: Validate API key format
-API_KEY_PATTERN = re.compile(r"^sk-[a-zA-Z0-9]{32,}$")
+# Supports: sk-<32+ alphanumeric chars> and sk-<project>-<alphanumeric chars> formats
+API_KEY_PATTERN = re.compile(r"^sk-[a-zA-Z0-9-]{32,}$")
 MAX_API_KEY_LENGTH = 256
 MAX_AUDIT_LOG_SIZE = 1000
 
 
 def _validate_api_key(api_key: str | None) -> bool:
     """Validate API key format (safeguard).
+
+    Supports standard OpenAI API key formats:
+    - sk-<32+ alphanumeric chars>
+    - sk-<project>-<alphanumeric chars> (project-scoped keys)
 
     Args:
         api_key: The API key to validate

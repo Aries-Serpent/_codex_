@@ -79,5 +79,5 @@ Or use the continuation prompts:
 ## Related Documents
 
 - [CTEP Protocol](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md)
-- [Workflow Files](/.github/workflows/)
+- Workflow Files
 - [AGENTS.md](../../agents.md)

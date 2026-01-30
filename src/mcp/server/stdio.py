@@ -12,7 +12,7 @@ import json
 import logging
 import sys
 from dataclasses import dataclass
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import Any, AsyncIterator, Optional
 
 logger = logging.getLogger(__name__)
 

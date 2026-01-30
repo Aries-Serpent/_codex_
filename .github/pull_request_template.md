@@ -10,7 +10,7 @@
 
 @copilot continue with next phase tasks for this PR
 
-**📋 Follow-Up Prompt**: [View Active Prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
+**📋 Follow-Up Prompt**: View Active Prompt
 
 <!-- Note: The {pr_number} placeholder is NOT automatically replaced in this template.
      After PR creation, the workflow will post a comment with the correct link.

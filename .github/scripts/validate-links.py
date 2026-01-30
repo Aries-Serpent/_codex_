@@ -102,6 +102,30 @@ class LinkValidator:
         
         return target_path
 
+    def is_in_code_block(self, content: str, position: int) -> bool:
+        """Check if a position in the content is inside a fenced code block.
+
+        This implementation looks for fenced code delimiters (```), only when they
+        appear at the start of a line (optionally preceded by whitespace), and
+        toggles an `inside` flag each time such a fence is encountered before
+        the specified position. This avoids misclassifying inline code spans that
+        use backticks.
+        """
+        before_content = content[:position]
+        inside_code_block = False
+
+        # Process content line by line to detect fenced code blocks reliably.
+        # A fence is considered any line that starts with optional whitespace
+        # followed by at least three backticks, optionally followed by a language
+        # identifier (e.g., ```python).
+        fence_pattern = re.compile(r'^[ \t]*```')
+
+        for line in before_content.splitlines(keepends=True):
+            if fence_pattern.match(line):
+                inside_code_block = not inside_code_block
+
+        return inside_code_block
+
     def validate_file(self, file_path: Path) -> None:
         """Validate all links in a single markdown file"""
         if file_path in self.checked_files:
@@ -115,6 +139,10 @@ class LinkValidator:
             return
 
         for match in LINK_PATTERN.finditer(content):
+            # Skip links inside code blocks
+            if self.is_in_code_block(content, match.start()):
+                continue
+                
             link_text = match.group(1)
             link_path = match.group(2)
 

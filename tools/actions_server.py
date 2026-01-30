@@ -39,7 +39,7 @@ def _auth_headers() -> Dict[str, str]:
 
 
 def _cache_get(key: str) -> Any | None:
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
+    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json")  # nosec B324 - Not for security, cache key only
     if os.path.exists(p):
         with open(p, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -49,7 +49,7 @@ def _cache_get(key: str) -> Any | None:
 def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
     # naive cache with timestamp; actions are human-in-the-loop so short TTL is fine
     obj = {"ts": time.time(), "data": data}
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
+    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json")  # nosec B324 - Not for security, cache key only
     with open(p, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 

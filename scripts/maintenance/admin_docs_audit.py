@@ -115,8 +115,13 @@ def get_staleness_level(date_obj: datetime) -> str:
     else:
         return 'Stale'
 
-def audit_file(file_path: Path) -> Dict:
-    """Audit a single markdown file."""
+def audit_file(file_path: Path, repo_root: Path) -> Dict:
+    """Audit a single markdown file.
+    
+    Args:
+        file_path: Path to the file to audit
+        repo_root: Repository root path for relative path calculation
+    """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -127,7 +132,7 @@ def audit_file(file_path: Path) -> Dict:
         }
     
     result = {
-        'file': str(file_path.relative_to('/home/runner/work/_codex_/_codex_')),
+        'file': str(file_path.relative_to(repo_root)),
         'size_bytes': len(content),
         'line_count': content.count('\n') + 1,
     }
@@ -170,6 +175,9 @@ def audit_file(file_path: Path) -> Dict:
 
 def generate_audit_report(docs_dir: Path) -> Dict:
     """Generate comprehensive audit report."""
+    # Get repo root for relative paths - scripts/maintenance/ is 2 levels deep
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    
     # Find all markdown files
     md_files = sorted(docs_dir.rglob('*.md'))
     
@@ -177,8 +185,8 @@ def generate_audit_report(docs_dir: Path) -> Dict:
     
     audit_results = []
     for file_path in md_files:
-        print(f"Auditing: {file_path.relative_to('/home/runner/work/_codex_/_codex_')}")
-        result = audit_file(file_path)
+        print(f"Auditing: {file_path.relative_to(repo_root)}")
+        result = audit_file(file_path, repo_root)
         audit_results.append(result)
     
     # Generate statistics
@@ -234,7 +242,9 @@ def generate_audit_report(docs_dir: Path) -> Dict:
 
 def main():
     """Main execution function."""
-    docs_dir = Path('/home/runner/work/_codex_/_codex_/docs/admin')
+    # Get repository root dynamically - scripts/maintenance/ is 2 levels deep
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    docs_dir = repo_root / 'docs' / 'admin'
     
     if not docs_dir.exists():
         print(f"Error: Directory {docs_dir} does not exist!")
@@ -249,7 +259,7 @@ def main():
     report = generate_audit_report(docs_dir)
     
     # Save to JSON file
-    output_dir = Path('/home/runner/work/_codex_/_codex_/.codex')
+    output_dir = repo_root / '.codex'
     output_dir.mkdir(exist_ok=True)
     output_file = output_dir / 'admin_docs_audit.json'
     

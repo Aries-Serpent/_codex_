@@ -602,9 +602,9 @@ for agent in coalition.agents:
 - 🚧 Phase 8.13-8.15 planning
 
 **Documentation**:
-- 📖 [V9 Complete Status](.github/agents/COGNITIVE_BRAIN_STATUS_V9_COMPLETE.md)
-- 🗺️ [V10 Roadmap](.github/agents/COGNITIVE_BRAIN_V10_ROADMAP.md)
-- 📋 [Consolidated Status](.github/agents/COGNITIVE_BRAIN_CONSOLIDATED_STATUS_V10.md)
+- 📖 [V9 Complete Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md)
+- 🗺️ [V10 Roadmap](https://github.com/Aries-Serpent/_codex_/blob/main/docs/roadmap/V10_ROADMAP.md)
+- 📋 [Consolidated Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md)
 
 ---
 

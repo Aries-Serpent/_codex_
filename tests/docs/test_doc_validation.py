@@ -76,10 +76,9 @@ class TestMarkdownQuality:
     """Tests for Markdown documentation quality."""
 
     @pytest.fixture
-    def markdown_files(self) -> Generator[Path, None, None]:
-        """Yield all markdown files in docs/."""
-        for md_file in DOCS_DIR.rglob("*.md"):
-            yield md_file
+    def markdown_files(self) -> List[Path]:
+        """Return all markdown files in docs/."""
+        return list(DOCS_DIR.rglob("*.md"))
 
     def test_no_empty_markdown_files(self, markdown_files):
         """Verify no empty markdown files exist."""

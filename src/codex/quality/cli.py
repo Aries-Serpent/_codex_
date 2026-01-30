@@ -36,7 +36,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
         codex-smell --format json --output smells.json
         codex-smell --fail-on error --warn-on warning
     """
-    click.echo(f"👃 Detecting code smells...")
+    click.echo("👃 Detecting code smells...")
     click.echo(f"📋 Config: {config}")
     
     # Load configuration
@@ -44,7 +44,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
         with open(config) as f:
             conf = yaml.safe_load(f)
         
-        click.echo(f"\n📊 Thresholds:")
+        click.echo("\n📊 Thresholds:")
         smells = conf.get('code_smells', {})
         click.echo(f"  • Long function: {smells.get('long_function', {}).get('threshold', 50)} lines")
         click.echo(f"  • Max arguments: {smells.get('max_arguments', {}).get('threshold', 5)}")

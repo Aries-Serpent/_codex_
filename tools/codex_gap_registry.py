@@ -51,7 +51,7 @@ def _slugify(text: str) -> str:
     text = text.strip().lower()
     text = re.sub(r"[^a-z0-9]+", "-", text)
     text = re.sub(r"-+", "-", text).strip("-")
-    return text or f"gap-{hashlib.md5(original_text.encode()).hexdigest()[:8]}"
+    return text or f"gap-{hashlib.md5(original_text.encode(), usedforsecurity=False).hexdigest()[:8]}"  # nosec B324 - Not for security, ID generation only
 
 
 def _infer_capability_from_text(text: str) -> str:

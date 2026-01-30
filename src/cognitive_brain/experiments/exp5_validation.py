@@ -81,9 +81,9 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     Returns:
         EXP5Results with all validation metrics
     """
-    print(f"="*70)
+    print("="*70)
     print("EXP-5: Quantum Memory Management Validation")
-    print(f"="*70)
+    print("="*70)
     print(f"Scenarios: {scenarios} | Seed: {seed}")
     print()
     

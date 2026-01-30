@@ -5,12 +5,12 @@
 ### Quick Start
 
 1. **Create Deployment Issue**
-   - Use template: [.github/templates/DEPLOYMENT_ORCHESTRATION_TASK.md](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/templates/DEPLOYMENT_ORCHESTRATION_TASK.md)
+   - Use template: .github/templates/DEPLOYMENT_ORCHESTRATION_TASK.md
    - Mention: @copilot-swe-agent
    - Priority: CRITICAL
 
 2. **Copilot Agent Activates**
-   - Reads specification: [.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md)
+   - Reads specification: .github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md
    - Reviews approval status
    - Initiates Phase 1
 

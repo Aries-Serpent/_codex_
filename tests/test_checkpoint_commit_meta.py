@@ -24,7 +24,7 @@ def test_checkpoint_records_git_commit(tmp_path):
     model = Toy()
     path = tmp_path / "ckpt.pt"
     save_checkpoint(str(path), model, None, None, epoch=0)
-    ckpt = torch.load(str(path), weights_only=False)
+    ckpt = torch.load(str(path), weights_only=False)  # nosec B614 - Test checkpoint with custom model class requires weights_only=False
     extra = ckpt["extra"]
     repo_root = Path(__file__).resolve().parent.parent
     commit = subprocess.check_output(

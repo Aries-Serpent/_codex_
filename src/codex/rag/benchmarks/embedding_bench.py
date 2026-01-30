@@ -4,9 +4,11 @@ Embedding provider benchmarks.
 Measures latency and throughput of different embedding providers.
 """
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 import numpy as np
-from .runner import BenchmarkRunner, BenchmarkResult
+
+from .runner import BenchmarkResult, BenchmarkRunner
 
 
 def benchmark_embedding_providers(
@@ -16,50 +18,50 @@ def benchmark_embedding_providers(
 ) -> Dict[str, Any]:
     """
     Benchmark all available embedding providers.
-    
+
     Args:
         providers: List of provider names to test (None = all)
         corpus_sizes: List of corpus sizes to test
         runs: Number of runs per benchmark
-    
+
     Returns:
         Dictionary with benchmark results
     """
     if providers is None:
         providers = ['tfidf', 'transformers']  # Available providers
-    
+
     if corpus_sizes is None:
         corpus_sizes = [10, 100, 1000]
-    
+
     runner = BenchmarkRunner(warmup_runs=1)
-    
+
     # Generate test corpus
     test_texts = {
-        size: [f"This is test document number {i} with some content." 
+        size: [f"This is test document number {i} with some content."
                for i in range(size)]
         for size in corpus_sizes
     }
-    
+
     for provider_name in providers:
         try:
             provider = _get_provider(provider_name)
-            
+
             for size in corpus_sizes:
                 texts = test_texts[size]
-                
+
                 # Benchmark encoding
                 result = runner.run_benchmark(
                     name=f"{provider_name}_encode_{size}",
                     func=provider.encode,
-                    texts,
+                    texts=texts,
                     runs=runs
                 )
-                
+
                 # Calculate throughput
                 if result.success:
                     throughput = size / (result.duration_ms / 1000)
                     result.metadata['throughput_texts_per_sec'] = throughput
-        
+
         except Exception as e:
             runner.results.append(BenchmarkResult(
                 name=f"{provider_name}_error",
@@ -68,7 +70,7 @@ def benchmark_embedding_providers(
                 success=False,
                 error=str(e)
             ))
-    
+
     return {
         "results": [r.to_dict() for r in runner.results],
         "summary": runner.get_summary()
@@ -78,7 +80,7 @@ def benchmark_embedding_providers(
 def _get_provider(name: str):
     """Get embedding provider by name."""
     from codex.rag.embeddings import create_embedding_provider
-    
+
     if name == 'tfidf':
         return create_embedding_provider('tfidf')
     elif name == 'transformers':
@@ -103,33 +105,33 @@ def benchmark_embedding_quality(
 ) -> Dict[str, Any]:
     """
     Benchmark embedding quality using similarity tests.
-    
+
     Args:
         providers: List of provider names to test
         test_queries: Test queries for similarity evaluation
-    
+
     Returns:
         Quality metrics for each provider
     """
     if providers is None:
         providers = ['tfidf']
-    
+
     if test_queries is None:
         test_queries = [
             "machine learning algorithms",
             "data science python",
             "natural language processing"
         ]
-    
+
     results = {}
-    
+
     for provider_name in providers:
         try:
             provider = _get_provider(provider_name)
-            
+
             # Encode queries
             query_embeddings = provider.encode(test_queries)
-            
+
             # Calculate pairwise similarities
             similarities = []
             for i in range(len(query_embeddings)):
@@ -139,18 +141,18 @@ def benchmark_embedding_quality(
                         query_embeddings[j]
                     )
                     similarities.append(float(sim))
-            
+
             results[provider_name] = {
                 "avg_similarity": np.mean(similarities),
                 "std_similarity": np.std(similarities),
                 "embedding_dim": len(query_embeddings[0])
             }
-        
+
         except Exception as e:
             results[provider_name] = {
                 "error": str(e)
             }
-    
+
     return results
 
 

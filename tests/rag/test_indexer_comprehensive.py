@@ -12,6 +12,10 @@ import pytest
 from codex.rag.indexer import chunk_text, embed_chunks, load_index, persist_index
 
 
+def _touch_index_file(_index, path: str) -> None:
+    Path(path).touch()
+
+
 class TestChunkText:
     """Test suite for chunk_text function."""
 
@@ -88,10 +92,10 @@ class TestChunkText:
         text = "Test text for chunking"
         chunks = chunk_text(text, chunk_size=10)
         
-        for start, end, chunk_text in chunks:
+        for start, end, chunk_content in chunks:
             assert isinstance(start, int)
             assert isinstance(end, int)
-            assert isinstance(chunk_text, str)
+            assert isinstance(chunk_content, str)
             assert start >= 0
             assert end > start
             assert end <= len(text)
@@ -252,8 +256,12 @@ class TestPersistIndex:
             (10, 20, "Chunk two"),
             (20, 30, "Chunk three"),
         ]
-        
-        with patch('faiss'):
+        mock_index = MagicMock()
+        mock_index.ntotal = len(chunks)
+
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
+            mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             index_path = persist_index(
                 index_name="test_index",
                 embeddings=embeddings,
@@ -296,8 +304,9 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = 2
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             index_path = persist_index(
                 index_name="my_index",
@@ -323,8 +332,9 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = 2
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             index_path = persist_index(
                 index_name="test_index",
@@ -351,8 +361,9 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = 2
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
+            mock_faiss.write_index.side_effect = _touch_index_file
             
             index_path = persist_index(
                 index_name="test_index",
@@ -373,10 +384,10 @@ class TestPersistIndex:
 
     def test_persist_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
-        embeddings = np.random.randn(2, 384).astype(np.float32)
+        embeddings = np.random.randn(1, 384).astype(np.float32)
         chunks = [(0, 10, "Test")]
-        
-        with patch('faiss', side_effect=ImportError):
+
+        with patch('codex.rag.indexer.faiss', None):
             with pytest.raises(ImportError):
                 persist_index(
                     index_name="test",
@@ -391,7 +402,7 @@ class TestLoadIndex:
 
     def test_load_index_not_found(self, tmp_path):
         """Test loading non-existent index raises error."""
-        with patch('faiss'):
+        with patch('codex.rag.indexer.faiss'):
             with pytest.raises(FileNotFoundError):
                 load_index(
                     index_name="nonexistent",
@@ -420,7 +431,7 @@ class TestLoadIndex:
         
         mock_faiss_index = MagicMock()
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = mock_faiss_index
             
             index, chunks, meta = load_index(
@@ -435,7 +446,7 @@ class TestLoadIndex:
 
     def test_load_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
-        with patch('faiss', side_effect=ImportError):
+        with patch('codex.rag.indexer.faiss', None):
             with pytest.raises(ImportError):
                 load_index(
                     index_name="test",
@@ -451,7 +462,7 @@ class TestLoadIndex:
         
         # No chunks.json file created
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
             
             # Should handle missing chunks gracefully or raise appropriate error
@@ -476,7 +487,7 @@ class TestLoadIndex:
         
         # No metadata.json file
         
-        with patch('faiss') as mock_faiss:
+        with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
             
             # Should handle missing metadata

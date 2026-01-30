@@ -1,0 +1,187 @@
+{
+  "summary": {
+    "total_issues": 141,
+    "p0_critical": 7,
+    "p0_fixed": 7,
+    "p1_high": 127,
+    "p2_medium": 7,
+    "ready_for_merge": true
+  },
+  "p0_critical_fixed": [
+    {
+      "id": "P0-001",
+      "category": "Python Syntax Error",
+      "file": "src/codex/rag/benchmarks/embedding_bench.py",
+      "line": 56,
+      "issue": "Positional argument after keyword argument",
+      "status": "FIXED",
+      "fix": "Changed 'texts' to 'texts=texts'"
+    },
+    {
+      "id": "P0-002",
+      "category": "Undefined Name",
+      "file": "src/codex/cli/main.py",
+      "lines": "39-40",
+      "issue": "logger used before initialization",
+      "status": "FIXED",
+      "fix": "Added sys.stderr fallback for early errors"
+    },
+    {
+      "id": "P0-003",
+      "category": "Undefined Name",
+      "file": "src/codex/logging/db_manager.py",
+      "lines": "27-28",
+      "issue": "logger used before initialization",
+      "status": "FIXED",
+      "fix": "Moved logger initialization before import try/except"
+    },
+    {
+      "id": "P0-004",
+      "category": "YAML Syntax Error",
+      "file": ".pre-commit-config.yaml",
+      "line": 45,
+      "issue": "Long bash command causing YAML parse error",
+      "status": "FIXED",
+      "fix": "Converted to multiline YAML syntax with |"
+    },
+    {
+      "id": "P0-005",
+      "category": "YAML Syntax Error",
+      "file": ".pre-commit-config.yaml",
+      "line": 62,
+      "issue": "Long bash command causing YAML parse error",
+      "status": "FIXED",
+      "fix": "Converted to multiline YAML syntax with |"
+    },
+    {
+      "id": "P0-006",
+      "category": "YAML Syntax Error",
+      "file": ".pre-commit-config.yaml",
+      "line": 79,
+      "issue": "Long bash command causing YAML parse error",
+      "status": "FIXED",
+      "fix": "Converted to multiline YAML syntax with |"
+    },
+    {
+      "id": "P0-007",
+      "category": "YAML Multiple Documents",
+      "file": "_codex_/codex_index.yaml",
+      "line": 320,
+      "issue": "--- document separator creates invalid multi-document",
+      "status": "FIXED",
+      "fix": "Removed --- separator"
+    }
+  ],
+  "p1_security_audit_required": [
+    {
+      "id": "P1-001",
+      "category": "Hardcoded Secret",
+      "file": "benchmarks/security_benchmarks.py",
+      "line": 54,
+      "issue": "Hardcoded password",
+      "action": "AUDIT - May be test fixture",
+      "recommendation": "Add # pragma: allowlist secret if test"
+    },
+    {
+      "id": "P1-002",
+      "category": "Hardcoded Secret",
+      "file": "scripts/validate_auth_security.py",
+      "line": 291,
+      "issue": "Hardcoded secret",
+      "action": "AUDIT - May be test fixture",
+      "recommendation": "Add # pragma: allowlist secret if test"
+    },
+    {
+      "id": "P1-003",
+      "category": "Hardcoded Secret",
+      "file": "scripts/security/codemods/fix_hardcoded_secrets.py",
+      "lines": "5-6",
+      "issue": "API key & password",
+      "action": "AUDIT - Likely example code",
+      "recommendation": "Use placeholder like YOUR_API_KEY"
+    },
+    {
+      "id": "P1-004",
+      "category": "Hardcoded Secret",
+      "file": "src/security/providers/base.py",
+      "lines": "33-34",
+      "issue": "API key & password",
+      "action": "AUDIT - May be production code",
+      "recommendation": "Use os.environ.get() if production"
+    }
+  ],
+  "p1_security_eval_exec": {
+    "total_instances": 78,
+    "top_files": [
+      "examples/secure_model_loading.py:110",
+      "examples/rag_workflow.py:88,298",
+      "training/functional_training.py:382",
+      "scripts/inference_pipeline.py:199,209",
+      "scripts/autonomous_agent.py:255,257",
+      "cli/task_sequence.py:354"
+    ],
+    "recommendation": "Create follow-up issue to refactor using ast.literal_eval() or yaml.safe_load()"
+  },
+  "p1_code_quality": {
+    "unused_imports": {
+      "count": 49,
+      "fix": "Run 'ruff check --fix src/' to auto-fix",
+      "examples": [
+        "src/bridge_types.py:12 - typing.List",
+        "src/codex/cli/pr_operator.py:24 - datetime.datetime",
+        "src/codex/api/github_logs.py:13 - pydantic.Field"
+      ]
+    },
+    "f_string_without_placeholders": {
+      "count": 8,
+      "examples": [
+        "src/codex/cli.py:1623",
+        "src/codex/cli_rag.py:167,516",
+        "src/codex/quality/cli.py:39,47"
+      ],
+      "fix": "Convert f-strings to regular strings"
+    }
+  },
+  "p2_non_blocking": {
+    "excessive_relative_imports": {
+      "count": 3,
+      "files": [
+        ".github/agents/ci-testing-agent/agent/learning_adapter.py:23",
+        ".github/agents/cognitive-brain-agent/agent/brain_processor.py:13",
+        ".github/agents/cognitive-brain-agent/agent/learning_integrator.py:13"
+      ],
+      "pattern": "from ...core.adaptive_learning import ...",
+      "recommendation": "Convert to absolute imports"
+    },
+    "test_discovery": {
+      "count": 4,
+      "files": [
+        "scripts/test_qa_walkthrough_simulation.py",
+        "analysis/tests_docs_links_audit.py",
+        "scripts/space_traversal/detectors/testing_infrastructure.py",
+        ".github/agents/core/tests/test_phase8_11_advanced_reasoning.py"
+      ],
+      "issue": "No test_* functions found",
+      "fix": "Rename functions or move out of test namespace"
+    }
+  },
+  "validation_commands": {
+    "python_syntax": "python3 -m py_compile src/**/*.py",
+    "yaml_syntax": "python3 -c \"import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))\"",
+    "ruff_lint": "ruff check src/ --select=F,E9",
+    "security_scan": "bandit -r src/ -ll",
+    "test_suite": "pytest tests/ -v"
+  },
+  "files_modified": [
+    "src/codex/rag/benchmarks/embedding_bench.py",
+    "src/codex/cli/main.py",
+    "src/codex/logging/db_manager.py",
+    ".pre-commit-config.yaml",
+    "_codex_/codex_index.yaml"
+  ],
+  "effort_estimate": {
+    "phase_1_p0_completed": "30 minutes",
+    "phase_2_p1_recommended": "4 hours",
+    "phase_3_p2_optional": "2 hours"
+  }
+}

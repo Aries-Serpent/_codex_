@@ -44,7 +44,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
         type(
             "DT",
             (),
-            {"from_pretrained": staticmethod(lambda name, use_fast=True: DummyTokenizer())},
+            {"from_pretrained": staticmethod(lambda name, use_fast=True, **kwargs: DummyTokenizer())},
         ),
     )
     monkeypatch.setattr(hf, "prepare_dataset", lambda texts, tokenizer: list(texts))
@@ -54,6 +54,8 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
         class State:
             def __init__(self) -> None:
                 self.global_step = 0
+                self.last_model_checkpoint = None
+                self.best_model_checkpoint = None
 
         def __init__(self, *args, **kwargs):
             self.state = self.State()
@@ -116,6 +118,8 @@ def test_run_hf_trainer_warns_on_grad_accum(monkeypatch, tmp_path: Path) -> None
         class State:
             def __init__(self) -> None:
                 self.global_step = 0
+                self.last_model_checkpoint = None
+                self.best_model_checkpoint = None
 
         def __init__(self, *args, **kwargs):
             self.state = self.State()

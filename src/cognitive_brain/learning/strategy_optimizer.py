@@ -20,7 +20,7 @@ from cognitive_brain.learning.rl_algorithms import (
     PPO
 )
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
-from cognitive_brain.models.learning_outcome import LearningOutcome, OutcomeType
+from cognitive_brain.models.learning_outcome import LearningOutcome
 
 logger = logging.getLogger(__name__)
 

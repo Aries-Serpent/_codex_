@@ -763,3 +763,59 @@ Executed comprehensive QA walkthrough to update all `.codex/qa_walkthrough/` fil
 
 ### Status
 ✅ PHASE 21.1 COMPLETE
+
+
+### 2026-01-29T19:41:07Z - RAG test remediation
+- Fixed RAG optional dependency mocks and caching behavior.
+- Updated RAG indexer chunking guardrails for small chunks.
+- Added Codex test execution report for RAG suites.
+
+### 2026-01-29T21:39:28Z - RAG test suite expansion
+- Added RAG regression, initialization, and end-to-end pipeline tests.
+- Added semgrep suppression validation tests and inline suppressions for utility scripts.
+- Created coverage plan for path to 100% coverage on RAG/meta tensor fixes.
+
+### 2026-01-29T22:42:11Z - RAG meta tensor regression coverage
+- Added RAG meta tensor regression tests covering detection and safe device moves.
+- Added RAG initialization pattern tests to assert CPU-default SentenceTransformer setup.
+- Refined semgrep suppression tests with fixtures and parametrization.
+- Added end-to-end RAG pipeline tests with fake FAISS/SentenceTransformer.
+- Created path-to-100% coverage plan for RAG meta tensor regression scope.
+- Added RAG Meta Tensor Regression Agent documentation and registry entry.
+
+### 2026-01-29T23:01:33Z - RAG regression re-validation
+- Re-ran syntax checks and targeted pytest suites for RAG meta tensor regression tests.
+- Logged validation output in `.codex/results.md`.
+
+### 2026-01-29T23:02:23Z - RAG regression docstring updates
+- Clarified docstrings in RAG regression test modules.
+- Re-validated syntax and targeted pytest suites.
+
+### 2026-01-29T23:28:03Z - PR #3020 CI/alert verification artifacts
+- Captured unauthenticated GitHub HTML snapshots for PR #3020 job/run links.
+- Added PR #3020 CI/alert verification report and path-to-100% coverage plan.
+- Added Security Alert Verification Agent documentation and registry entry.
+
+### 2026-01-29T23:29:43Z - PR #3020 verification testing
+- Attempted smoke/unit/integration/coverage pytest runs; failures due to missing optional dependencies and pytest-cov.
+- Logged results in `.codex/results.md`.
+
+### 2026-01-29T23:29:43Z - PR #3020 execution report
+- Added PR #3020 final fixes execution report with partial status and test blockers.
+
+### 2026-01-30T00:00:45Z - Semgrep URL regex hardening + CI log retrieval prep
+- Replaced URL substring checks with regex-based URL literal detection in semgrep suppression tests.
+- Added semgrep URL regex coverage plans (baseline + updated plan) using pre-commit terminology.
+- Added CI Log Retrieval Agent documentation and registered it in AGENTS.md.
+- Updated PR #3020 verification reports with API log retrieval/alert access status.
+
+### 2026-01-30T00:00:45Z - PR #3020 validation updates
+- Attempted GitHub API log and Dependabot alert fetches; unauthorized without token.
+- Ran semgrep suppression tests and RAG end-to-end spot-check; updated results log.
+- Re-ran smoke/unit/integration/coverage suites; failures due to missing dependencies and pytest-cov.
+
+### 2026-01-30T00:00:45Z - Self-review compliance
+- Recorded five-pass self-review summary in `.codex/results.md`.
+
+### 2026-01-30T00:00:45Z - PR #3020 acceptance criteria tracking
+- Added acceptance criteria status checklist to PR #3020 CI/alert verification report.

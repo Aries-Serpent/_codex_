@@ -227,8 +227,8 @@ Monitor these workflows in PR:
 - [pytest-timeout plugin](https://pypi.org/project/pytest-timeout/)
 
 ### Repository Documentation
-- [TESTING_CONVENTIONS.md](./TESTING_CONVENTIONS.md) - Testing best practices
-- [.codex/agents/ci-testing-agent/README.md](./.codex/agents/ci-testing-agent/README.md) - CI testing agent docs
+- [TESTING_CONVENTIONS.md](../testing/TESTING_CONVENTIONS.md) - Testing best practices
+- [.codex/agents/ci-testing-agent/README.md](../../.github/agents/ci-testing-agent.md) - CI testing agent docs
 
 ### Previous Related Issues
 - Similar timeout/xdist issues may have occurred in past PRs
@@ -301,7 +301,7 @@ If these changes cause unexpected issues:
 ---
 
 **Agent**: CI Testing Agent  
-**Policy Compliance**: ✅ Follows [CODEBASE_AGENCY_POLICY.md](./.codex/CODEBASE_AGENCY_POLICY.md)  
+**Policy Compliance**: ✅ Follows [CODEBASE_AGENCY_POLICY.md](../../.codex/CODEBASE_AGENCY_POLICY.md)  
 **Security**: ✅ No security implications  
 **Breaking Changes**: ❌ None  
 **Review Required**: Yes - verify CI passes after merge

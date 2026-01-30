@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Optional
 
 # Try to use typer, fall back to argparse
+_TYPER_IMPORT_ERROR: Optional[str] = None
 try:
     import typer
     # Verify typer is actually the real package
@@ -36,8 +37,8 @@ try:
         TYPER_AVAILABLE = False
         import argparse
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    # Store error for later reporting when main() is called
+    _TYPER_IMPORT_ERROR = str(e)
     TYPER_AVAILABLE = False
     import argparse
 
@@ -49,7 +50,7 @@ if TYPER_AVAILABLE:
         help="Codex Python Ingestion Pipeline CLI",
         add_completion=False,
     )
-    
+
     @app.command()
     def ingest(
         source: Annotated[str, typer.Argument(help="File path, ZIP, or Git URL")],
@@ -58,7 +59,7 @@ if TYPER_AVAILABLE:
     ):
         """Ingest a Python file or repository."""
         from src.codex.ingest import ingest as do_ingest
-        
+
         try:
             snapshot = do_ingest(source, manifest_path=manifest, snapshot_id=snapshot_id)
             typer.echo(f"✅ Created snapshot: {snapshot.snapshot_id}")
@@ -68,7 +69,7 @@ if TYPER_AVAILABLE:
             logger.debug(f"Exception: {e}")
             typer.echo(f"❌ Error: {e}", err=True)
             raise typer.Exit(1)
-    
+
     @app.command()
     def analyze(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to analyze")],
@@ -77,14 +78,14 @@ if TYPER_AVAILABLE:
     ):
         """Run analysis on a snapshot."""
         from src.codex.analyze.static import analyze as static_analyze
-        
+
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
             typer.echo(f"❌ Snapshot not found: {snapshot_id}", err=True)
             raise typer.Exit(1)
-        
+
         source_dir = artifacts_dir / "source"
-        
+
         if not runtime_only:
             typer.echo("Running static analysis...")
             report = static_analyze(source_dir, snapshot_id)
@@ -92,10 +93,10 @@ if TYPER_AVAILABLE:
             typer.echo(f"✅ Static analysis complete: {len(report.files)} files")
             typer.echo(f"   Lint issues: {report.summary.get('lint_error_count', 0)} errors, {report.summary.get('lint_warning_count', 0)} warnings")
             typer.echo(f"   Security issues: {report.summary.get('security_issue_count', 0)}")
-        
+
         if not static_only:
             typer.echo("ℹ️  Runtime analysis: not implemented in this version")
-    
+
     @app.command()
     def transform(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to transform")],
@@ -104,24 +105,25 @@ if TYPER_AVAILABLE:
         dry_run: Annotated[bool, typer.Option("--dry-run", help="Don't modify files")] = True,
     ):
         """Apply transformations to a snapshot."""
-        from src.codex.transform.transformer import transform as do_transform, Tier
-        
+        from src.codex.transform.transformer import Tier
+        from src.codex.transform.transformer import transform as do_transform
+
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
             typer.echo(f"❌ Snapshot not found: {snapshot_id}", err=True)
             raise typer.Exit(1)
-        
+
         source_dir = artifacts_dir / "source"
-        
+
         tier_enum = None
         if tier:
             tier_enum = Tier[tier.upper()]
-        
+
         typer.echo(f"Transforming snapshot {snapshot_id}...")
         result = do_transform(source_dir, snapshot_id, tier=tier_enum, auto_apply=auto, dry_run=dry_run)
         result.save(artifacts_dir / "patches")
-        
-        typer.echo(f"✅ Transform complete:")
+
+        typer.echo("✅ Transform complete:")
         typer.echo(f"   Tier A patches: {len(result.tier_a_patches)}")
         typer.echo(f"   Tier B patches: {len(result.tier_b_patches)}")
         typer.echo(f"   Tier C suggestions: {len(result.tier_c_suggestions)}")
@@ -129,7 +131,7 @@ if TYPER_AVAILABLE:
             typer.echo("   Changes applied to source")
         else:
             typer.echo("   Dry run - no changes applied")
-    
+
     @app.command()
     def verify(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to verify")],
@@ -137,28 +139,28 @@ if TYPER_AVAILABLE:
         tolerance: Annotated[str, typer.Option("--tolerance", help="Comparison tolerance")] = "strict",
     ):
         """Verify behavior preservation."""
-        from src.codex.verify.comparator import compare, ComparisonMode
-        
+        from src.codex.verify.comparator import ComparisonMode, compare
+
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
             typer.echo(f"❌ Snapshot not found: {snapshot_id}", err=True)
             raise typer.Exit(1)
-        
+
         if compare_mode:
             baseline_dir = artifacts_dir / "source"
             patched_dir = artifacts_dir / "patched" if (artifacts_dir / "patched").exists() else baseline_dir
-            
+
             mode = ComparisonMode[tolerance.upper()]
             result = compare(baseline_dir, patched_dir, mode=mode)
             result.save(artifacts_dir / "behavior-diff.json")
-            
+
             status = "✅" if result.result == "pass" else "❌" if result.result == "fail" else "⚠️"
             typer.echo(f"{status} Comparison result: {result.result.upper()}")
             for comp in result.comparisons:
                 typer.echo(f"   {comp.input_ref}: {comp.result}")
         else:
             typer.echo("ℹ️  Use --compare to run behavior comparison")
-    
+
     @app.command("list")
     def list_snapshots(
         status: Annotated[Optional[str], typer.Option("--status", help="Filter by status")] = None,
@@ -168,7 +170,7 @@ if TYPER_AVAILABLE:
         if not artifacts_dir.exists():
             typer.echo("No snapshots found")
             return
-        
+
         snapshots = sorted(artifacts_dir.iterdir())
         for snapshot_path in snapshots:
             if snapshot_path.is_dir():
@@ -179,7 +181,7 @@ if TYPER_AVAILABLE:
                     typer.echo(f"  {meta['snapshot_id']} - {meta.get('source', 'unknown')}")
                 else:
                     typer.echo(f"  {snapshot_path.name} (no metadata)")
-    
+
     @app.command()
     def show(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID")],
@@ -190,12 +192,12 @@ if TYPER_AVAILABLE:
         if not artifacts_dir.exists():
             typer.echo(f"❌ Snapshot not found: {snapshot_id}", err=True)
             raise typer.Exit(1)
-        
+
         meta_path = artifacts_dir / "snapshot-meta.json"
         if meta_path.exists():
             with meta_path.open() as f:
                 meta = json.load(f)
-            
+
             if as_json:
                 typer.echo(json.dumps(meta, indent=2))
             else:
@@ -206,9 +208,13 @@ if TYPER_AVAILABLE:
                 typer.echo(f"Files: {meta.get('file_count', 'unknown')}")
         else:
             typer.echo("No metadata available")
-    
+
     def main():
         """Main entry point."""
+        # Emit typer import error warning if it occurred
+        if _TYPER_IMPORT_ERROR:
+            import sys
+            print(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.", file=sys.stderr)
         app()
 
 else:
@@ -219,45 +225,45 @@ else:
             description="Codex Python Ingestion Pipeline CLI",
             prog="codex",
         )
-        
+
         subparsers = parser.add_subparsers(dest="command", help="Available commands")
-        
+
         # Ingest command
         ingest_parser = subparsers.add_parser("ingest", help="Ingest a Python file or repository")
         ingest_parser.add_argument("source", help="File path, ZIP, or Git URL")
         ingest_parser.add_argument("--manifest", "-m", help="Manifest file path")
         ingest_parser.add_argument("--snapshot-id", help="Custom snapshot ID")
-        
+
         # Analyze command
         analyze_parser = subparsers.add_parser("analyze", help="Run analysis on a snapshot")
         analyze_parser.add_argument("snapshot_id", help="Snapshot ID to analyze")
         analyze_parser.add_argument("--static-only", action="store_true", help="Run only static analysis")
-        
+
         # Transform command
         transform_parser = subparsers.add_parser("transform", help="Apply transformations")
         transform_parser.add_argument("snapshot_id", help="Snapshot ID to transform")
         transform_parser.add_argument("--tier", "-t", help="Tier to apply (A, B, or C)")
         transform_parser.add_argument("--auto", action="store_true", help="Auto-apply Tier A")
         transform_parser.add_argument("--dry-run", action="store_true", default=True, help="Don't modify files")
-        
+
         # List command
         list_parser = subparsers.add_parser("list", help="List all snapshots")
         list_parser.add_argument("--status", help="Filter by status")
-        
+
         # Show command
         show_parser = subparsers.add_parser("show", help="Show snapshot details")
         show_parser.add_argument("snapshot_id", help="Snapshot ID")
         show_parser.add_argument("--json", action="store_true", help="Output as JSON")
-        
+
         args = parser.parse_args()
-        
+
         if not args.command:
             parser.print_help()
             sys.exit(1)
-        
+
         print(f"Command: {args.command}")
         print("Note: Full CLI requires 'typer' package. Install with: pip install typer")
-    
+
     app = None  # No typer app available
 
 

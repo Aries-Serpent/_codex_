@@ -52,5 +52,5 @@
 ## Links
 
 - **Full Report:** [TEST_COVERAGE_BASELINE_REPORT.md](TEST_COVERAGE_BASELINE_REPORT.md)
-- **Coverage Data:** [.codex/qa_walkthrough/coverage_analysis.json](.codex/qa_walkthrough/coverage_analysis.json)
-- **Priority Matrix:** [.codex/qa_walkthrough/test_priority_matrix.json](.codex/qa_walkthrough/test_priority_matrix.json)
+- **Coverage Data:** .codex/qa_walkthrough/coverage_analysis.json
+- **Priority Matrix:** .codex/qa_walkthrough/test_priority_matrix.json

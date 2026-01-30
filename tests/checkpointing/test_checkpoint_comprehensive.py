@@ -61,7 +61,7 @@ class TestCheckpointSaveLoad:
         assert checkpoint_path.exists()
 
         # Verify contents
-        loaded = torch.load(checkpoint_path)
+        loaded = torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         assert "model_state_dict" in loaded
         assert loaded["epoch"] == 5
         assert loaded["step"] == 1000
@@ -74,7 +74,7 @@ class TestCheckpointSaveLoad:
         torch.save({"model_state_dict": mock_model.state_dict(), "epoch": 5}, checkpoint_path)
 
         # Load
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         new_model = torch.nn.Linear(10, 5)
         new_model.load_state_dict(checkpoint["model_state_dict"])
 
@@ -96,7 +96,7 @@ class TestRNGState:
 
         torch.save({"rng_state": rng_state}, checkpoint_path)
 
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         assert "rng_state" in checkpoint
 
     def test_restore_rng_state(self, temp_checkpoint_dir):
@@ -115,7 +115,7 @@ class TestRNGState:
         torch.manual_seed(123)
 
         # Restore RNG state
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         torch.set_rng_state(checkpoint["rng_state"])
 
         # Should generate same numbers

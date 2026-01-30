@@ -21,9 +21,8 @@ import logging
 import os
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ DEFAULT_LABELS = ["copilot:automated"]
 @dataclass
 class PRConfig:
     """Configuration for PR creation.
-    
+
     Attributes:
         owner: Repository owner
         repo: Repository name
@@ -54,7 +53,7 @@ class PRConfig:
 @dataclass
 class PRContent:
     """Content for a PR.
-    
+
     Attributes:
         title: PR title
         body: PR body (markdown)
@@ -72,7 +71,7 @@ class PRContent:
 @dataclass
 class PRResult:
     """Result of PR operation.
-    
+
     Attributes:
         success: Whether operation succeeded
         pr_number: PR number if created
@@ -87,12 +86,12 @@ class PRResult:
 
 def _sanitize_branch_name(name: str) -> str:
     """Sanitize a string for use as a branch name.
-    
+
     Safeguard: Branch name sanitization.
-    
+
     Args:
         name: Raw name
-        
+
     Returns:
         Sanitized branch name
     """
@@ -117,7 +116,7 @@ def _generate_pr_body(
     security_issues: int,
 ) -> str:
     """Generate PR body from pipeline results.
-    
+
     Args:
         snapshot_id: Snapshot identifier
         intent_summary: Goal from intent inference
@@ -127,14 +126,14 @@ def _generate_pr_body(
         tier_c_count: Number of Tier C suggestions
         verification_result: Result of behavior verification
         security_issues: Number of security issues found
-        
+
     Returns:
         Markdown PR body
     """
     # Icon mapping for verification result
     verification_icons = {"pass": "✅", "fail": "❌"}
     verification_icon = verification_icons.get(verification_result, "⚠️")
-    
+
     # Icon mapping for security issues
     if security_issues == 0:
         security_icon = "✅"
@@ -142,11 +141,11 @@ def _generate_pr_body(
         security_icon = "⚠️"
     else:
         security_icon = "❌"
-    
+
     body = f"""## Codex Automated Refactor
 
-**Snapshot:** `{snapshot_id}`  
-**Intent:** {intent_summary}  
+**Snapshot:** `{snapshot_id}`
+**Intent:** {intent_summary}
 **Confidence:** {confidence:.0%}
 
 ### Changes Applied (Tier A)
@@ -185,33 +184,33 @@ def _generate_pr_body(
 
 class PROperator:
     """Operator for creating and managing GitHub PRs.
-    
+
     Handles the creation of PRs from pipeline results, including:
     - Branch creation
     - File commits
     - PR creation with appropriate labels
     - Artifact attachment
-    
+
     Example:
         >>> operator = PROperator(PRConfig(owner="org", repo="repo"))
         >>> result = operator.create_pr(content, artifacts_dir)
         >>> print(f"Created PR #{result.pr_number}")
-    
+
     Note:
         Requires GitHub API access. In environments without API access,
         use generate_pr_content() to create the content for manual submission.
     """
-    
+
     def __init__(self, config: PRConfig):
         """Initialize PR operator.
-        
+
         Args:
             config: PR configuration
         """
         self.config = config
         self._github = None
         self._init_github()
-    
+
     def _init_github(self) -> None:
         """Initialize GitHub client if available."""
         try:
@@ -226,7 +225,7 @@ class PROperator:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("PyGithub not installed, PR creation disabled")
-    
+
     def generate_pr_content(
         self,
         snapshot_id: str,
@@ -239,7 +238,7 @@ class PROperator:
         security_issues: int = 0,
     ) -> PRContent:
         """Generate PR content from pipeline results.
-        
+
         Args:
             snapshot_id: Snapshot identifier
             intent_summary: Goal from intent inference
@@ -249,18 +248,18 @@ class PROperator:
             tier_c_count: Number of Tier C suggestions
             verification_result: Result of behavior verification
             security_issues: Number of security issues found
-            
+
         Returns:
             PRContent ready for submission
         """
         branch_name = f"codex/refactor-{_sanitize_branch_name(snapshot_id)}"
-        
+
         title = f"Codex: Refactor {snapshot_id}"
         if intent_summary:
             # Truncate for title
             short_intent = intent_summary[:50] + "..." if len(intent_summary) > 50 else intent_summary
             title = f"Codex: {short_intent}"
-        
+
         body = _generate_pr_body(
             snapshot_id=snapshot_id,
             intent_summary=intent_summary,
@@ -271,25 +270,25 @@ class PROperator:
             verification_result=verification_result,
             security_issues=security_issues,
         )
-        
+
         return PRContent(
             title=title,
             body=body,
             branch_name=branch_name,
             snapshot_id=snapshot_id,
         )
-    
+
     def create_pr(
         self,
         content: PRContent,
         files: Optional[dict[str, str]] = None,
     ) -> PRResult:
         """Create a GitHub PR.
-        
+
         Args:
             content: PR content
             files: Optional dict of {path: content} for files to commit
-            
+
         Returns:
             PRResult with outcome
         """
@@ -298,13 +297,13 @@ class PROperator:
                 success=False,
                 errors=["GitHub client not available. set GITHUB_TOKEN and install PyGithub."],
             )
-        
+
         try:
             repo = self._github.get_repo(f"{self.config.owner}/{self.config.repo}")
-            
+
             # Get base branch
             base = repo.get_branch(self.config.base_branch)
-            
+
             # Create new branch
             try:
                 repo.create_git_ref(
@@ -317,7 +316,7 @@ class PROperator:
                 if "already exists" not in str(e).lower():
                     raise
                 logger.info("Branch already exists: %s", content.branch_name)
-            
+
             # Commit files if provided
             if files:
                 for path, file_content in files.items():
@@ -341,7 +340,7 @@ class PROperator:
                             content=file_content,
                             branch=content.branch_name,
                         )
-            
+
             # Create PR
             pr = repo.create_pull(
                 title=content.title,
@@ -350,23 +349,23 @@ class PROperator:
                 base=self.config.base_branch,
                 draft=self.config.draft,
             )
-            
+
             # Add labels
             if self.config.labels:
                 pr.add_to_labels(*self.config.labels)
-            
+
             # Add assignees
             if self.config.assignees:
                 pr.add_to_assignees(*self.config.assignees)
-            
+
             logger.info("Created PR #%d: %s", pr.number, pr.html_url)
-            
+
             return PRResult(
                 success=True,
                 pr_number=pr.number,
                 pr_url=pr.html_url,
             )
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.error("Failed to create PR: %s", e)
@@ -374,19 +373,19 @@ class PROperator:
                 success=False,
                 errors=[str(e)],
             )
-    
+
     def save_pr_content(self, content: PRContent, output_dir: Path) -> Path:
         """Save PR content to files for manual submission.
-        
+
         Args:
             content: PR content
             output_dir: Directory to save files
-            
+
         Returns:
             Path to saved PR description file
         """
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save PR description
         pr_file = output_dir / "pr-description.md"
         pr_file.write_text(f"""# {content.title}
@@ -398,7 +397,7 @@ class PROperator:
 
 {content.body}
 """, encoding="utf-8")
-        
+
         # Save metadata
         meta_file = output_dir / "pr-metadata.json"
         meta_file.write_text(json.dumps({
@@ -407,7 +406,7 @@ class PROperator:
             "snapshot_id": content.snapshot_id,
             "files_changed": content.files_changed,
         }, indent=2), encoding="utf-8")
-        
+
         logger.info("Saved PR content to %s", output_dir)
-        
+
         return pr_file
