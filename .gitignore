@@ -176,6 +176,8 @@ manifests/k8s/*/secret.yaml
 !.codex/wiki/**
 !.codex/external_analysis/
 !.codex/external_analysis/**
+!.codex/analysis/
+!.codex/analysis/**
 !.codex/action_log.ndjson
 !.codex/change_log.md
 !.codex/results.md

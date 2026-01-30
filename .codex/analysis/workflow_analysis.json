@@ -1,0 +1,2864 @@
+{
+  "analysis_date": "2026-01-30T20:17:07.006986Z",
+  "repository": "Aries-Serpent/_codex_",
+  "summary": {
+    "total_workflows": 101,
+    "active": 101,
+    "guarded": 0,
+    "disabled": 0,
+    "archived": 0,
+    "self_hosted": 3,
+    "docker_required": 1,
+    "secrets_used": 20,
+    "unique_actions": 33
+  },
+  "failure_patterns": {
+    "test-suite": [
+      "no tests ran (exit code 5)",
+      "Missing PYTHONPATH environment variable",
+      "Missing CODEX_FORCE_CPU environment variable"
+    ],
+    "artifacts": [
+      "artifact_missing errors",
+      "Coverage files not generated",
+      "JUnit XML not generated"
+    ],
+    "dependencies": [
+      "pytest version conflict (9.x vs <9.0.0)",
+      "pytest-cov version conflict"
+    ],
+    "code-quality": [
+      "4533 TODO markers in code",
+      "4188 NotImplementedError instances",
+      "365 bare pass statements"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "AfterMath Lessons Learned",
+      "path": ".github/workflows/aftermath.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "capture-aftermath"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Autonomous Agent Runtime",
+      "path": ".github/workflows/agent-runtime.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "execute-agent"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "API Documentation",
+      "path": ".github/workflows/api-documentation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "build"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Artifact Monitoring",
+      "path": ".github/workflows/artifact-monitoring.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "monitor-workflows"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/download-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Audit & Improvement Pipeline",
+      "path": ".github/workflows/audit-improvement-pipeline.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "audit-gap-analysis",
+        "create-improvement-issue",
+        "track-usage"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/download-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Auth Compliance Report",
+      "path": ".github/workflows/auth-compliance-report.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "generate-compliance-report"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "COMPLIANCE_REPORT_KEY",
+          "CODEX_MASTER_KEY"
+        ],
+        "actions_used": [
+          "actions/github-script",
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Automated MFA Enrollment",
+      "path": ".github/workflows/auth-mfa-enrollment.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "enroll-users"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "CODEX_MASTER_KEY"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "OAuth App Management & Sync",
+      "path": ".github/workflows/auth-oauth-app-sync.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "sync-oauth-apps"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "GITHUB_OAUTH_CLIENT_ID",
+          "GITHUB_OAUTH_CLIENT_SECRET",
+          "CODEX_MASTER_KEY"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "GitHub Secrets Rotation",
+      "path": ".github/workflows/auth-secret-rotation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "rotate-secrets"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_OAUTH_CLIENT_SECRET",
+          "TOKEN_SECRET_KEY",
+          "CODEX_MASTER_KEY",
+          "GITHUB_TOKEN",
+          "SESSION_ENCRYPTION_KEY"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Authentication Security Audit",
+      "path": ".github/workflows/auth-security-audit.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "security-audit",
+        "penetration-test"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/github-script",
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Authentication Tests",
+      "path": ".github/workflows/auth-tests.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "test-authentication",
+        "integration-test"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}",
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "CODECOV_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-python",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "codecov/codecov-action"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "no tests ran (exit code 5)",
+        "Missing PYTHONPATH environment variable",
+        "Missing CODEX_FORCE_CPU environment variable",
+        "artifact_missing errors",
+        "Coverage files not generated",
+        "JUnit XML not generated",
+        "pytest version conflict (9.x vs <9.0.0)",
+        "pytest-cov version conflict"
+      ]
+    },
+    {
+      "name": "Automated Token Rotation",
+      "path": ".github/workflows/auth-token-rotation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "rotate-jwt-secret"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "TOKEN_SECRET_KEY",
+          "CODEX_MASTER_KEY"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Auto-update Package Configs",
+      "path": ".github/workflows/auto-update-configs.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "update-configs"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Autonomous Codebase Management",
+      "path": ".github/workflows/autonomous-agent.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "owner-guard",
+        "autonomous-agent"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Batch CI Failure Triage",
+      "path": ".github/workflows/batch-ci-triage.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "batch-triage"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-python",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Bi-weekly Research Digest",
+      "path": ".github/workflows/biweekly-research-digest.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "research_integration"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Build ChatGPT Project Package",
+      "path": ".github/workflows/build-chatgpt-package.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "package"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Emergency Cache Cleanup",
+      "path": ".github/workflows/cache-cleanup.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "cleanup"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cache Management",
+      "path": ".github/workflows/cache-management.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "cache-report",
+        "cleanup-ephemeral",
+        "cleanup-common"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cache Management Suite",
+      "path": ".github/workflows/cache-suite.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "cache-warmup",
+        "cache-cleanup",
+        "cache-management",
+        "cache-validation",
+        "cache-suite-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}",
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cache Warmup - Live Tier",
+      "path": ".github/workflows/cache-warmup.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "warmup-live-cache"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CI Diagnostic Automation",
+      "path": ".github/workflows/ci-diagnostic-automation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "diagnose-ci-failure"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CI Health Monitor",
+      "path": ".github/workflows/ci-health-monitor.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "health-check"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CI/CD Health Suite",
+      "path": ".github/workflows/ci-health-suite.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "health-monitor",
+        "artifact-monitoring",
+        "runner-diagnostics",
+        "ci-diagnostics",
+        "ci-health-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Code Quality Analysis",
+      "path": ".github/workflows/code-quality.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "code-smells-observation"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Codebase QA Walkthrough",
+      "path": ".github/workflows/codebase-qa-walkthrough.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "check-trigger",
+        "qa-analysis"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-node",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CodeQL",
+      "path": ".github/workflows/codeql-analysis.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "analyze"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "github/codeql-action/init",
+          "actions/checkout",
+          "github/codeql-action/autobuild",
+          "github/codeql-action/analyze"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "CodeQL Chunked Analysis",
+      "path": ".github/workflows/codeql-chunked.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "chunk-discovery",
+        "analyze-chunk",
+        "merge-results",
+        "size-report"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "github/codeql-action/init",
+          "github/codeql-action/analyze",
+          "github/codeql-action/upload-sarif",
+          "actions/download-artifact",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Cognitive Action Executor",
+      "path": ".github/workflows/cognitive-action.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "action_executor"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cognitive AfterMath Evaluator",
+      "path": ".github/workflows/cognitive-aftermath.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "aftermath_evaluator"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cognitive Decision Engine",
+      "path": ".github/workflows/cognitive-decision.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "decision_engine"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Cognitive Perception Layer",
+      "path": ".github/workflows/cognitive-perception.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "perceive-environment"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Copilot Cascade PR Review",
+      "path": ".github/workflows/copilot-cascade-review.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "cascade-review"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/setup-node",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Copilot Self-Evolution Pipeline",
+      "path": ".github/workflows/copilot-self-evolution.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "test-integrated-system"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Copilot Agent Environment Setup",
+      "path": ".github/workflows/copilot-setup-steps.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "copilot-setup-steps"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/setup-python",
+          "actions/setup-node",
+          "actions/upload-artifact",
+          "dtolnay/rust-toolchain"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Coverage Report",
+      "path": ".github/workflows/coverage_report.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "coverage"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Data Validation (Manifest & Drift)",
+      "path": ".github/workflows/data_validation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "data-validate"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "decode-validate-artifact",
+      "path": ".github/workflows/decode-validate-artifact.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Dependency Scan (template)",
+      "path": ".github/workflows/dependency-scan.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "depscan"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Deploy Cognitive Codex App",
+      "path": ".github/workflows/deploy-cognitive-app.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "build",
+        "deploy"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/setup-node",
+          "actions/configure-pages",
+          "actions/checkout",
+          "actions/deploy-pages",
+          "actions/upload-pages-artifact"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Duplicate Detection on PR",
+      "path": ".github/workflows/detect-duplicates.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "detect-duplicates"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Determinism & Audit Validation",
+      "path": ".github/workflows/determinism.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "determinism-check"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)",
+      "path": ".github/workflows/docker-build-push.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "approval-check",
+        "build-and-smoke",
+        "push"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": true,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [],
+        "runners": [
+          "self-hosted",
+          "linux"
+        ]
+      },
+      "failure_patterns": [
+        "no tests ran (exit code 5)",
+        "Missing PYTHONPATH environment variable",
+        "Missing CODEX_FORCE_CPU environment variable",
+        "artifact_missing errors",
+        "Coverage files not generated",
+        "JUnit XML not generated",
+        "pytest version conflict (9.x vs <9.0.0)",
+        "pytest-cov version conflict"
+      ]
+    },
+    {
+      "name": "Documentation Link Checker",
+      "path": ".github/workflows/documentation-link-checker.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "check-links"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/cache",
+          "actions/setup-node",
+          "actions/upload-artifact"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Documentation Suite",
+      "path": ".github/workflows/documentation-suite.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "mkdocs-build",
+        "link-check",
+        "deploy-pages",
+        "documentation-suite-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/download-artifact",
+          "./.github/actions/setup-python-cached",
+          "actions/configure-pages",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "actions/deploy-pages",
+          "actions/upload-pages-artifact"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "draft-audit-pr",
+      "path": ".github/workflows/draft-audit-pr.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "draft"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Flatten Repository Download",
+      "path": ".github/workflows/flatten-repo-download.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "flatten-repo"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/setup-node"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Generate Repository Structure",
+      "path": ".github/workflows/generate-repository-structure.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "generate-structure"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Genesis Bootstrap - Agent Authority Activation (template)",
+      "path": ".github/workflows/genesis-bootstrap.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate-genesis"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "HTML Visual Baseline Check",
+      "path": ".github/workflows/html_visual_baseline.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "visual-baseline"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "HTML Visual (Screenshots)",
+      "path": ".github/workflows/html_visual_regression.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "visual-html"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Integration Gated",
+      "path": ".github/workflows/integration-gated.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "gate-checks",
+        "integration"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "ENABLE_LIVE_TESTS"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "PR Labeler",
+      "path": ".github/workflows/labeler.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "triage"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/labeler"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Monthly Model Retraining",
+      "path": ".github/workflows/monthly-model-retraining.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "model_retraining"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "NotebookLM Live Sync (DEFERRED)",
+      "path": ".github/workflows/notebooklm-sync.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "consolidate-and-sync"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GOOGLE_CLIENT_SECRET",
+          "NOTEBOOKLM_WEBHOOK_URL",
+          "GDRIVE_SERVICE_ACCOUNT_JSON",
+          "npm_token"
+        ],
+        "actions_used": [
+          "actions/setup-node",
+          "satackey/action-google-drive",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "actions/cache"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Nox Quality Gates",
+      "path": ".github/workflows/nox_gates.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "gates"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "CI \u2014 Optimized with Caching",
+      "path": ".github/workflows/optimized-ci.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "cache-dependencies"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Deploy Pages (MkDocs)",
+      "path": ".github/workflows/pages-mkdocs.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "build",
+        "deploy"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/upload-pages-artifact",
+          "./.github/actions/setup-python-cached",
+          "actions/checkout",
+          "actions/deploy-pages",
+          "actions/cache"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Automated Phase 10 Secrets Setup",
+      "path": ".github/workflows/phase10-automated-secrets-setup.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "setup-secrets"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Phase 34 - CodeQL Alert Fetch",
+      "path": ".github/workflows/phase34-codeql-alert-fetch.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "fetch-alerts"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/setup-python"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Post-Merge Validation (Optimized)",
+      "path": ".github/workflows/post-merge-validation-optimized.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate-imports"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "PR Checks (Isolated Cache)",
+      "path": ".github/workflows/pr-checks.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "pr-test"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/cache/restore",
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Generate PR Follow-Up Prompt",
+      "path": ".github/workflows/pr-followup-generator.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "generate"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Pre-Release Deployment",
+      "path": ".github/workflows/pre-release-deployment.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Publish Status Dashboard Release",
+      "path": ".github/workflows/publish_dashboard_release.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "publish-dashboard"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Publish Python Package to PyPI",
+      "path": ".github/workflows/pypi-publish.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "build",
+        "publish-testpypi",
+        "publish-pypi",
+        "verify-installation"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "TEST_PYPI_API_TOKEN"
+        ],
+        "actions_used": [
+          "actions/download-artifact",
+          "./.github/actions/setup-python-cached",
+          "pypa/gh-action-pypi-publish",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Rate-Limit History Prune",
+      "path": ".github/workflows/ratelimit_history_prune.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "prune"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Repository Organization & Cleanup",
+      "path": ".github/workflows/repo-organization.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "analyze-structure"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Repository Health Monitoring",
+      "path": ".github/workflows/repository-health-monitoring.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "monitor_repository_health"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "peter-evans/create-pull-request",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Root Organization Validation",
+      "path": ".github/workflows/root-org-validation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "pre-validation",
+        "reference-check",
+        "post-validation",
+        "summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/download-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Runner diagnostics \u2014 self-hosted readiness",
+      "path": ".github/workflows/runner-diagnostics.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "diag"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": true,
+        "secrets": [],
+        "actions_used": [],
+        "runners": [
+          "${{ fromJSON(vars.RUNS_ON || '[\"self-hosted\",\"linux\"]') }}"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Rust-Python Hybrid Swarm CI/CD",
+      "path": ".github/workflows/rust_swarm_ci.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "rust_tests",
+        "rust_benchmarks",
+        "code_coverage",
+        "python_integration",
+        "performance_regression",
+        "security_audit",
+        "documentation",
+        "release",
+        "status_check"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}",
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "CODECOV_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-python",
+          "actions/download-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions-rust-lang/setup-rust-toolchain",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "rustsec/audit-check",
+          "actions/cache",
+          "codecov/codecov-action"
+        ],
+        "runners": [
+          "ubuntu-latest",
+          "${{ matrix.os }}"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Generate SBOM",
+      "path": ".github/workflows/sbom.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "sbom"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Scan and Report GitHub Secrets and Variables",
+      "path": ".github/workflows/scan-secrets-variables.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "scan-and-report"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Scheduled Archival",
+      "path": ".github/workflows/scheduled-archival.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "identify-candidates",
+        "create-proposal",
+        "compress-large-files"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Scheduled Dependency Audit & SBOM",
+      "path": ".github/workflows/scheduled-dependency-audit.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "baseline-wheels",
+        "sbom-generation",
+        "upgrade-compatibility",
+        "drift-detection",
+        "summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": true,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "anchore/scan-action/download-grype",
+          "github/codeql-action/upload-sarif",
+          "actions/download-artifact",
+          "actions/github-script",
+          "actions/cache",
+          "./.github/actions/setup-python-cached",
+          "docker/build-push-action",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "docker/setup-buildx-action",
+          "anchore/sbom-action/download-syft"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Security Alert Notification",
+      "path": ".github/workflows/security-alert-notification.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "check-security-alerts"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Security Scan",
+      "path": ".github/workflows/security-scan.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "security-audit"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Security Scanning Suite",
+      "path": ".github/workflows/security-scanning-suite.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "codeql-scan",
+        "dependency-scan",
+        "secret-scan",
+        "sbom-generation",
+        "security-suite-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "github/codeql-action/init",
+          "github/codeql-action/analyze",
+          "github/codeql-action/autobuild",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Unified Security Suite",
+      "path": ".github/workflows/security-suite.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "dependency-scan",
+        "secret-scan",
+        "code-scan",
+        "policy-check",
+        "security-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.11"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN",
+          "GITLEAKS_LICENSE"
+        ],
+        "actions_used": [
+          "github/codeql-action/init",
+          "actions/setup-python",
+          "returntocorp/semgrep-action",
+          "github/codeql-action/analyze",
+          "trufflesecurity/trufflehog",
+          "github/codeql-action/upload-sarif",
+          "actions/download-artifact",
+          "actions/github-script",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "gitleaks/gitleaks-action"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Bootstrap Security Tools from Variables",
+      "path": ".github/workflows/security-tools-bootstrap.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "bootstrap-tools"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Self-Healing CI",
+      "path": ".github/workflows/self-healing-ci.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "analyze-failure"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Self-Healing Feedback Loop",
+      "path": ".github/workflows/self-healing-feedback-loop.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "analyze-feedback"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Self-Healing CI/CD",
+      "path": ".github/workflows/self-healing.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "detect-and-analyze",
+        "apply-fix",
+        "create-pr",
+        "update-cognitive-brain",
+        "notify-escalation"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/setup-python",
+          "peter-evans/create-pull-request",
+          "./.github/actions/apply-ci-fix",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "dtolnay/rust-toolchain"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Semgrep SAST (SARIF Upload)",
+      "path": ".github/workflows/semgrep_sarif.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "semgrep"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "github/codeql-action/upload-sarif",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached",
+          "actions/upload-artifact",
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Status Gate (.statusrc)",
+      "path": ".github/workflows/status_gate.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "status-gate"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Sync Environment Variables",
+      "path": ".github/workflows/sync-env-vars.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "sync-env-vars"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Template Lint (HTML includes)",
+      "path": ".github/workflows/template_lint.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "template-lint"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Analytics Failure Simulator",
+      "path": ".github/workflows/test-analytics-failure-sim.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "simulate-failure"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Comprehensive Tests with Caching",
+      "path": ".github/workflows/test-comprehensive.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "test",
+        "test-summary"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "CODECOV_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-python",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "actions/cache",
+          "codecov/codecov-action"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "no tests ran (exit code 5)",
+        "Missing PYTHONPATH environment variable",
+        "Missing CODEX_FORCE_CPU environment variable",
+        "artifact_missing errors",
+        "Coverage files not generated",
+        "JUnit XML not generated",
+        "pytest version conflict (9.x vs <9.0.0)",
+        "pytest-cov version conflict"
+      ]
+    },
+    {
+      "name": "RAG Module Tests",
+      "path": ".github/workflows/test-rag.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "test-rag"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ matrix.python-version }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "CODECOV_TOKEN"
+        ],
+        "actions_used": [
+          "actions/setup-python",
+          "actions/upload-artifact",
+          "actions/checkout",
+          "actions/cache",
+          "codecov/codecov-action"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "no tests ran (exit code 5)",
+        "Missing PYTHONPATH environment variable",
+        "Missing CODEX_FORCE_CPU environment variable",
+        "artifact_missing errors",
+        "Coverage files not generated",
+        "JUnit XML not generated",
+        "pytest version conflict (9.x vs <9.0.0)",
+        "pytest-cov version conflict"
+      ]
+    },
+    {
+      "name": "Token Rotation & Security Audit",
+      "path": ".github/workflows/token-rotation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "token-audit"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": [
+        "4533 TODO markers in code",
+        "4188 NotImplementedError instances",
+        "365 bare pass statements"
+      ]
+    },
+    {
+      "name": "Validate Secrets Documentation",
+      "path": ".github/workflows/validate-secrets-documentation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate-secrets-docs"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/github-script",
+          "actions/setup-python"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Wiki Assembly & Documentation",
+      "path": ".github/workflows/wiki-assemble.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "assemble-wiki"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Manual Workflow Analytics",
+      "path": ".github/workflows/workflow-analytics-manual.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "analyze-workflows"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/setup-python"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Scheduled Workflow Analytics",
+      "path": ".github/workflows/workflow-analytics-scheduled.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "weekly-analytics"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "GITHUB_TOKEN"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/setup-python"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Workflow Expiry Enforcer \u2014 Auto-disable on expiry",
+      "path": ".github/workflows/workflow-expiry-enforcer.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "enforce"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": true,
+        "secrets": [],
+        "actions_used": [],
+        "runners": [
+          "self-hosted",
+          "linux"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Workflow Documentation Link Validation",
+      "path": ".github/workflows/workflow-link-validation.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "validate-workflow-links"
+      ],
+      "resources": {
+        "python_versions": [
+          "${{ env.PYTHON_VERSION }}"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "actions/upload-artifact",
+          "actions/github-script",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Workflow Restore Tool",
+      "path": ".github/workflows/workflow-restore.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "restore"
+      ],
+      "resources": {
+        "python_versions": [],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Zendesk Knowledge Sync",
+      "path": ".github/workflows/zendesk-knowledge-sync.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "sync-knowledge"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [
+          "ZENDESK_USER",
+          "GITHUB_TOKEN",
+          "AWS_SECRET_ACCESS_KEY",
+          "ZENDESK_URL",
+          "ZENDESK_TOKEN",
+          "AWS_ACCESS_KEY_ID"
+        ],
+        "actions_used": [
+          "actions/checkout",
+          "iterative/setup-dvc",
+          "actions/upload-artifact",
+          "actions/setup-python"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    },
+    {
+      "name": "Zendesk Quantum Packaging",
+      "path": ".github/workflows/zendesk-quantum-packaging.yml",
+      "status": "active",
+      "guard_condition": null,
+      "jobs": [
+        "build"
+      ],
+      "resources": {
+        "python_versions": [
+          "3.12"
+        ],
+        "docker_required": false,
+        "self_hosted": false,
+        "secrets": [],
+        "actions_used": [
+          "actions/checkout",
+          "./.github/actions/setup-python-cached"
+        ],
+        "runners": [
+          "ubuntu-latest"
+        ]
+      },
+      "failure_patterns": []
+    }
+  ]
+}
