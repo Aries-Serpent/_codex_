@@ -5,8 +5,8 @@ Final pass to fix remaining specific broken links
 
 from pathlib import Path
 
-# Get repository root dynamically
-REPO_ROOT = Path(__file__).resolve().parent
+# Get repository root - scripts/maintenance/ is 2 levels deep
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Specific files and their broken links to fix
 # nosemgrep: url-substring-check - static GitHub URLs in repair script
