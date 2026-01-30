@@ -41,7 +41,7 @@ env:
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
-    runs-on: ubuntu-latest-4-cores  # Use larger runner for better performance
+    runs-on: ubuntu-latest  # Use larger runner for better performance
     permissions:
       contents: read
       actions: read
