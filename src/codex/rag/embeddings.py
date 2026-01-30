@@ -65,20 +65,22 @@ class LocalSentenceTransformerProvider:
             
             from sentence_transformers import SentenceTransformer
 
+            from codex.rag.utils import safe_model_to_device
+
             logger.info(f"Loading local embedding model: {self.model_name}")
             
             # Force environment settings
             os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
             os.environ["TRANSFORMERS_OFFLINE"] = "0"
             
-            # Let SentenceTransformer use default device allocation
-            # This avoids meta tensor errors by allowing the library to handle initialization
+            # Load model without device specification to avoid meta tensor issues
             self.model = SentenceTransformer(
                 self.model_name,
                 cache_folder=self.cache_dir,
                 trust_remote_code=False
             )
-            # Model automatically initializes on CPU without meta tensors
+            # Use safe_model_to_device to handle meta tensors with PyTorch 2.6+
+            self.model = safe_model_to_device(self.model, device="cpu")
             self.model.eval()
             
             logger.info(f"Local embedding model loaded successfully")
