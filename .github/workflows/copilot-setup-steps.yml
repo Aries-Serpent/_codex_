@@ -45,46 +45,24 @@ jobs:
     permissions:
       contents: read
       actions: read
+    # Critical: skip LFS smudge to avoid failing on missing LFS blobs (404) during checkout.
+    # The agent does not need the heavy LFS contents for environment preparation.
+    env:
+      GIT_LFS_SKIP_SMUDGE: "1"
 
     steps:
       # ============================================================================
       # Phase 1: Repository & Code Setup
       # ============================================================================
 
-      - name: "📦 Checkout Repository"
+      - name: "📦 Checkout Repository (no LFS content)"
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0      # Full history for git operations
-          lfs: true           # Enable Git LFS for large files
-          persist-credentials: true  # Ensure token persists for LFS/auth
-
-      - name: "🔧 Ensure git-lfs and fetch LFS objects (diagnostic & retry)"
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "== git and git-lfs diagnostics =="
-          git --version || true
-          if ! command -v git-lfs >/dev/null 2>&1; then
-            echo "git-lfs not found, attempting install via apt (if available)"
-            if command -v apt-get >/dev/null 2>&1; then
-              sudo apt-get update && sudo apt-get install -y git-lfs || true
-            fi
-          fi
-          git lfs install --local || true
-          # Retry fetching LFS objects to avoid transient failures
-          for i in 1 2 3; do
-            echo "Attempt $i: git lfs fetch --all"
-            if git lfs fetch --all; then
-              echo "git lfs fetch succeeded"
-              break
-            else
-              echo "git lfs fetch failed on attempt $i"
-              sleep $((i * 5))
-            fi
-          done
-          echo "Listing LFS-tracked files (if any):"
-          git lfs ls-files || true
-          echo "=== End git-lfs diagnostics ==="
+          fetch-depth: 0                 # Full history; required by some tools
+          lfs: false                     # Do NOT fetch LFS objects (avoid 404 on missing blobs)
+          persist-credentials: true      # Keep token for any subsequent git operations
+          clean: true
+          show-progress: true
 
       - name: "🔍 Detect Environment Type"
         id: detect_env
@@ -138,7 +116,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
-            git-lfs \
             libffi-dev \
             libssl-dev \
             sqlite3 \
@@ -316,12 +293,13 @@ jobs:
             ls -la cognitive/ | head -10
           fi
 
-      - name: "📊 Generate Environment Report"
+      - name: "📊 Generate Environment Report (temp path)"
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          REPORT=".copilot-agent-environment-report.txt"
+          REPORT_DIR="${RUNNER_TEMP:-/tmp}"
+          REPORT="$REPORT_DIR/.copilot-agent-environment-report.txt"
           {
             echo "==================== Copilot Agent Environment Report ===================="
             echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
@@ -339,22 +317,25 @@ jobs:
           } > "$REPORT"
           echo "Report written to $REPORT"
           head -20 "$REPORT" || true
+          echo "REPORT_PATH=$REPORT" >> "$GITHUB_OUTPUT"
 
       - name: "📤 Upload Environment Report"
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: copilot-agent-environment-report
-          path: .copilot-agent-environment-report.txt
+          path: ${{ steps['📊 Generate Environment Report (temp path)'].outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
 
 # ============================================================================
 # Workflow Metadata
 # ============================================================================
-# Version: 1.0.1
+# Version: 1.0.2
 # Created: 2026-01-28
-# Updated: 2026-01-30 (LFS robustness, persist-credentials, safe report generation)
+# Updated: 2026-01-30
+# - Disable LFS fetch during checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1) to avoid 404 missing LFS blobs
+# - Write environment report to RUNNER_TEMP and upload from there, preventing branch switch conflicts
 # Policy: .codex/CODEBASE_AGENCY_POLICY.md
 # Integration: Cognitive Brain Phase objectives
 # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
