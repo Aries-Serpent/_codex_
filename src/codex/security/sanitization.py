@@ -3,8 +3,7 @@ Security input sanitization utilities.
 Provides functions to sanitize user input and prevent XSS, injection attacks.
 """
 import re
-import html
-from typing import Any, Union
+from typing import Union
 import logging
 
 logger = logging.getLogger(__name__)

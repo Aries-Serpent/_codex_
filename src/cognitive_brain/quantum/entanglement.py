@@ -385,7 +385,7 @@ class EntanglementManager:
         pair = self.entangled_pairs[pair_id]
         
         if len(pair.observed_states) < 2:
-            raise ValueError(f"Insufficient observations for fidelity (need >= 2)")
+            raise ValueError("Insufficient observations for fidelity (need >= 2)")
         
         # Convert to binary states
         states = []
@@ -439,7 +439,7 @@ class EntanglementManager:
         pair = self.entangled_pairs[pair_id]
         
         if len(pair.observed_states) < 2:
-            raise ValueError(f"Insufficient observations for mutual information")
+            raise ValueError("Insufficient observations for mutual information")
         
         states1, states2 = zip(*pair.observed_states)
         

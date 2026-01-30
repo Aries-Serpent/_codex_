@@ -9,7 +9,7 @@ This module provides the JSON-RPC handling layer for MCP:
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Awaitable, Callable, Optional, Union
 
 logger = logging.getLogger(__name__)

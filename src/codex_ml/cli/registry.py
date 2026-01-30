@@ -154,7 +154,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
             print(f"Model: {args.name} v{args.version}")
             if lineage["lineage"]:
                 lin = lineage["lineage"]
-                print(f"\nLineage:")
+                print("\nLineage:")
                 print(f"  Run ID: {lin['run_id']}")
                 print(f"  Experiment ID: {lin['experiment_id']}")
                 print(f"  Status: {lin['status']}")

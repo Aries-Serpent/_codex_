@@ -139,7 +139,7 @@ class TransformResult:
                 with path.open("w", encoding="utf-8") as f:
                     f.write(f"# {suggestion.get('rule_id', 'unknown')}\n\n")
                     f.write(f"## Description\n{suggestion.get('description', '')}\n\n")
-                    f.write(f"## Checklist\n")
+                    f.write("## Checklist\n")
                     for item in suggestion.get("checklist", []):
                         f.write(f"- [ ] {item}\n")
 

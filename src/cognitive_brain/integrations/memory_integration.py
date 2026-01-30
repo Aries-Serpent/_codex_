@@ -178,7 +178,7 @@ class MemoryAugmentedComplianceAssessor:
                     return MemoryAugmentedAssessment(
                         decision=assessment.decision,
                         confidence=assessment.confidence,
-                        reasoning=f"Cache hit with invalid decision format, ran full assessment",
+                        reasoning="Cache hit with invalid decision format, ran full assessment",
                         coherence=assessment.coherence,
                         used_superposition=assessment.used_superposition,
                         evaluation_time_ms=elapsed_ms,

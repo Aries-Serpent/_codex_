@@ -10,7 +10,7 @@ PDA: Active - Continuous strategy improvement through RL
 import logging
 import numpy as np
 from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from collections import deque
 from abc import ABC, abstractmethod
 

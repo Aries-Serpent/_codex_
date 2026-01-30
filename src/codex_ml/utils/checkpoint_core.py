@@ -458,7 +458,6 @@ def _deserialize_payload(
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
     # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
-    from utils.safe_pickle import safe_pickle_load
     
     # safe_pickle_load expects a file path or file object, but we have bytes
     # We need to use the RestrictedUnpickler directly with the buffer

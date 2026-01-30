@@ -7,7 +7,6 @@ Uses multiple hashing strategies for different similarity thresholds.
 
 import hashlib
 import re
-from typing import Optional
 from dataclasses import dataclass
 
 

@@ -31,7 +31,7 @@ def dashboard_main(output: str, open_browser: bool):
     Examples:
         codex-dashboard --output dashboard.html --open
     """
-    click.echo(f"📊 Generating interactive dashboard...")
+    click.echo("📊 Generating interactive dashboard...")
     click.echo(f"💾 Output: {output}")
     
     # TODO: Phase 3 - Implement dashboard

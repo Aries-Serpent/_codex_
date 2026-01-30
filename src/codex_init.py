@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 import warnings
 
 logger = logging.getLogger(__name__)

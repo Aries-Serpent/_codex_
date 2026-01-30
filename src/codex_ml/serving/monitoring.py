@@ -5,7 +5,6 @@ Provides Prometheus metrics, health checks, and distributed tracing.
 """
 
 import logging
-import time
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional

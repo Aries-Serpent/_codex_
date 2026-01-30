@@ -16,7 +16,6 @@ Usage:
         return {"user": request.state.user}
 """
 
-import hmac
 import hashlib
 import logging
 import os
@@ -26,7 +25,7 @@ from enum import Enum
 from functools import wraps
 from typing import Callable, Dict, List, Optional, Set, Any
 
-from .token_manager import TokenManager, TokenClaims, TokenType
+from .token_manager import TokenManager, TokenClaims
 from ..security_utils import sanitize_log_message
 
 
