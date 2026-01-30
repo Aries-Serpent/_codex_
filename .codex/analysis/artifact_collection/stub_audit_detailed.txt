@@ -1,0 +1,103 @@
+Stub audit tool not available at scripts/codex_update_runner.py
+
+=== Alternative Stub Search ===
+./.codex/run_workflow.py:349:        pass
+./.codex/run_workflow.py:484:        pass
+./.codex/scripts/pr_2685_status_analyzer.py:51:                        pass
+./.codex/scripts/pr_2685_status_analyzer.py:98:                pass
+./.codex/run_repo_scout.py:227:    r"\bTODO\b",
+./.codex/run_repo_scout.py:239:        r"raise\s+NotImplementedError",
+./.codex/run_repo_scout.py:244:        r"throw\s+new\s+Error\(['\"]TODO",
+./.codex/run_repo_scout.py:249:        r"throw\s+new\s+Error\(['\"]TODO",
+./.codex/run_repo_scout.py:254:    "sql": [r"--\s*TODO", r"/\*\s*TODO"],
+./.codex/run_repo_scout.py:255:    "html": [r"<!--\s*TODO"],
+./.codex/agents/security-input-validator/run.py:413:    pass
+./.codex/agents/test-coverage-guardian/run.py:286:        # TODO: Implement test with valid input
+./.codex/agents/test-coverage-guardian/run.py:307:        # TODO: Test minimum/maximum values
+./.codex/agents/test-coverage-guardian/run.py:308:        pass
+./.codex/agents/test-coverage-guardian/run.py:317:        # TODO: Test unicode handling
+./.codex/agents/test-coverage-guardian/run.py:318:        pass
+./.codex/agents/test-coverage-guardian/run.py:334:        # TODO: Implement if function has rate limiting
+./.codex/agents/test-coverage-guardian/run.py:335:        pass
+./.codex/agents/test-coverage-guardian/run.py:339:        # TODO: Implement concurrent access tests
+./.codex/agents/test-coverage-guardian/run.py:340:        pass
+./.codex/agents/test-coverage-guardian/run.py:359:    # TODO: Implement test
+./.codex/agents/test-coverage-guardian/run.py:373:        # TODO: Add test cases
+./.codex/agents/test-coverage-guardian/run.py:396:    # TODO: Implement test
+./.codex/agents/rfc-compliance-checker/run.py:177:            pass
+./.codex/codex_repo_scout.py:247:            re.findall(r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE)
+./.codex/codex_repo_scout.py:272:    r"\b(TODO|FIXME|WIP|TBD|XXX|NOT\s*IMPLEMENTED|NotImplemented)\b", re.IGNORECASE
+./.codex/codex_repo_scout.py:274:PY_NOTIMPL_PAT = re.compile(r"raise\s+NotImplementedError\b")
+./.codex/codex_repo_scout.py:315:                    if "NotImplementedError" in line:
+./.codex/codex_repo_scout.py:335:            if "exit 1" in line and ("TODO" in line or "TBD" in line):
+./.codex/smoke/import_check.py:13:    pass
+./examples/mlflow_offline.py:85:            pass
+./examples/mlflow_offline.py:89:            pass
+./benchmarks/export.py:13:        pass
+./benchmarks/export.py:16:        pass
+./training/checkpoint_manager.py:28:    pass
+./training/checkpoint_manager.py:78:                    pass
+./training/checkpoint_manager.py:92:                    pass
+./training/checkpoint_manager.py:105:                    pass
+./training/checkpoint_manager.py:210:                            pass
+./training/checkpoint_manager.py:350:                pass
+./training/checkpoint_manager.py:400:                pass
+./training/checkpoint_manager.py:412:                    pass
+./training/checkpoint_manager.py:417:            pass
+./training/data_utils.py:172:            pass
+./training/data_utils.py:218:                pass
+./training/data_utils.py:243:            pass
+./training/data_utils.py:351:                        pass
+./training/functional_training.py:231:                    pass
+./training/functional_training.py:461:            pass
+./training/functional_training.py:489:            pass
+./training/functional_training.py:581:            pass
+./training/functional_training.py:652:                    pass
+./training/functional_training.py:708:                                pass
+./training/functional_training.py:751:                                pass
+./training/functional_training.py:759:                                pass
+./training/functional_training.py:800:                                pass
+./training/functional_training.py:810:                        pass
+./training/functional_training.py:816:                    pass
+./training/functional_training.py:848:                pass
+./training/engine_hf_trainer.py:204:        pass
+./monitoring/metrics_collector.py:191:            pass
+./monitoring/metrics_collector.py:204:            pass
+./monitoring/metrics_collector.py:224:            pass
+./codex_digest/tokenizer.py:21:        raise NotImplementedError
+./codex_digest/tokenizer.py:68:            pass
+./codex_digest/tokenizer.py:70:            pass
+./services/crawler/__init__.py:12:    pass
+./services/audio/workflow/__init__.py:9:    pass
+./services/audio/analysis/__init__.py:9:    pass
+./services/audio/__init__.py:9:    pass
+./services/ita/app/hygiene.py:44:        if "print(" in line and "TODO" in line:
+./services/ita/app/hygiene.py:49:                    message=f"Debug print with TODO found on line {line_no}",
+./services/msp_gateway/routers/infer.py:95:            pass
+./services/msp_gateway/providers/model_adapter.py:30:        pass
+./services/msp_gateway/providers/model_adapter.py:35:        pass
+./scripts/generate_ai_index.py:299:                pass
+./scripts/deprecate_workflow.py:148:        # TODO: Implement GitHub API integration
+./scripts/apply_session_logging_workflow.py:57:    pass
+./scripts/apply_session_logging_workflow.py:410:        pass
+./scripts/generate_audit_dashboard.py:110:                pass
+./scripts/generate_audit_dashboard.py:163:            pass
+./scripts/generate_audit_dashboard.py:407:            pass
+./scripts/code_change_reviewer.py:105:            # Check for TODOs and FIXMEs
+./scripts/code_change_reviewer.py:107:                if 'TODO' in line or 'FIXME' in line:
+./scripts/code_change_reviewer.py:111:                        f"Line {i}: Unresolved TODO/FIXME comment"
+./scripts/monitoring/table_generator.py:21:        pass
+./scripts/monitoring/pattern_analyzer.py:239:            pass
+./scripts/deploy_phase6.py:424:            pass
+./scripts/run_codex_tasks.py:43:2. Scanning the repository for TODOs, stubs, and missing implementations.
+./scripts/run_codex_tasks.py:92:    """Scan repository files for TODOs, NotImplementedError, and pass statements."""
+./scripts/run_codex_tasks.py:93:    patterns = [r"TODO", r"NotImplementedError", r"pass  # TODO"]
+./scripts/run_codex_tasks.py:134:        "- Generated gaps report for TODOs and stubs.\n"
+./scripts/space_traversal/decode_validate_and_extract.py:484:                pass
+./scripts/space_traversal/decode_validate_and_extract.py:486:            pass
+./scripts/space_traversal/performance.py:241:            pass
+./scripts/inference_pipeline.py:81:    pass
+./scripts/root_org/validate_references.py:137:        pass
+./scripts/adoption/track_metrics.py:168:                                pass
+./scripts/cognitive/ingest_external_repo.py:184:                    pass
+./scripts/cognitive/tests/test_meta_learning.py:230:            pass

@@ -22,6 +22,26 @@ on:
           - ml-heavy
           - security-scan
           - documentation
+      # Selectively reintroduce LFS behavior behind guards (safe defaults kept)
+      lfs_mode:
+        description: 'Git LFS mode (none=baseline, targeted=fetch specific paths, full=fetch all)'
+        required: false
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - targeted
+          - full
+      lfs_include_paths:
+        description: 'Comma-separated patterns for targeted LFS fetch (e.g., "data/models/*,artifacts/*")'
+        required: false
+        default: ''
+        type: string
+      lfs_continue_on_error:
+        description: 'Continue on LFS fetch error (guards against missing blobs failing entire setup)'
+        required: false
+        default: true
+        type: boolean
   push:
     paths:
       - .github/workflows/copilot-setup-steps.yml
@@ -45,8 +65,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-    # Critical: skip LFS smudge to avoid failing on missing LFS blobs (404) during checkout.
-    # The agent does not need the heavy LFS contents for environment preparation.
+    # Baseline stability: skip LFS smudge and do not fetch LFS during initial checkout
     env:
       GIT_LFS_SKIP_SMUDGE: "1"
 
@@ -55,14 +74,80 @@ jobs:
       # Phase 1: Repository & Code Setup
       # ============================================================================
 
-      - name: "📦 Checkout Repository (no LFS content)"
+      - name: "📦 Checkout Repository (baseline: no LFS content)"
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0                 # Full history; required by some tools
-          lfs: false                     # Do NOT fetch LFS objects (avoid 404 on missing blobs)
+          fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
+          lfs: false                     # Baseline stability: avoid LFS fetch during setup
           persist-credentials: true      # Keep token for any subsequent git operations
           clean: true
           show-progress: true
+
+      # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
+      - name: "🔭 LFS diagnostics"
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}
+        run: |
+          set -euo pipefail
+          echo "Git version: $(git --version)"
+          echo "LFS version: $(git lfs version || echo 'git-lfs not installed')"
+          git status || true
+          git lfs ls-files || true
+
+      - name: "📥 Install git-lfs (if needed)"
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || inputs.lfs_mode == 'targeted') }}
+        run: |
+          set -euo pipefail
+          if ! command -v git-lfs >/dev/null 2>&1; then
+            if command -v apt-get >/dev/null 2>&1; then
+              sudo apt-get update && sudo apt-get install -y git-lfs
+            fi
+          fi
+          git lfs install --local || true
+
+      - name: "🎯 Targeted LFS fetch & checkout (guarded)"
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '' }}
+        continue-on-error: ${{ inputs.lfs_continue_on_error }}
+        run: |
+          set -euo pipefail
+          # Convert comma-separated include patterns into git-lfs include string
+          INCLUDES="${{ inputs.lfs_include_paths }}"
+          INCLUDES_CLEAN=$(echo "$INCLUDES" | tr -d ' ' | tr ',' ' ')
+          echo "Targeted LFS includes: $INCLUDES_CLEAN"
+
+          # Retry LFS fetch to handle transient network issues
+          for i in 1 2 3; do
+            echo "Attempt $i: git lfs fetch --include=\"$INCLUDES_CLEAN\" origin"
+            if git lfs fetch --include="$INCLUDES_CLEAN" origin; then
+              echo "git lfs fetch succeeded"
+              break
+            else
+              echo "git lfs fetch failed on attempt $i"
+              sleep $((i * 5))
+            fi
+          done
+
+          # Checkout only targeted LFS files
+          git lfs checkout --include="$INCLUDES_CLEAN" || true
+
+      - name: "🌐 Full LFS fetch & checkout (guarded)"
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}
+        continue-on-error: ${{ inputs.lfs_continue_on_error }}
+        run: |
+          set -euo pipefail
+          # Retry LFS fetch --all; guarded to avoid hard failure if repository has missing blobs
+          for i in 1 2 3; do
+            echo "Attempt $i: git lfs fetch --all origin"
+            if git lfs fetch --all origin; then
+              echo "git lfs fetch --all succeeded"
+              break
+            else
+              echo "git lfs fetch --all failed on attempt $i"
+              sleep $((i * 5))
+            fi
+          done
+
+          # Materialize LFS files
+          git lfs checkout || true
 
       - name: "🔍 Detect Environment Type"
         id: detect_env
@@ -294,6 +379,7 @@ jobs:
           fi
 
       - name: "📊 Generate Environment Report (temp path)"
+        id: gen_report
         if: always()
         shell: bash
         run: |
@@ -324,18 +410,23 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: copilot-agent-environment-report
-          path: ${{ steps['📊 Generate Environment Report (temp path)'].outputs.REPORT_PATH }}
+          path: ${{ steps.gen_report.outputs.REPORT_PATH }}
           retention-days: 7
           if-no-files-found: warn
 
 # ============================================================================
 # Workflow Metadata
 # ============================================================================
-# Version: 1.0.2
+# Version: 1.1.0
 # Created: 2026-01-28
 # Updated: 2026-01-30
-# - Disable LFS fetch during checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1) to avoid 404 missing LFS blobs
-# - Write environment report to RUNNER_TEMP and upload from there, preventing branch switch conflicts
+# Baseline stability maintained:
+# - No LFS during initial checkout (lfs: false, GIT_LFS_SKIP_SMUDGE=1)
+# - Environment report written to RUNNER_TEMP to avoid branch operations conflicts
+# Selective adoption (guarded via workflow_dispatch inputs):
+# - lfs_mode: targeted/full with retries and continue-on-error option
+# - lfs_include_paths: limit LFS scope to required areas
+# - lfs_continue_on_error: prevent setup failure on missing LFS blobs (404)
 # Policy: .codex/CODEBASE_AGENCY_POLICY.md
 # Integration: Cognitive Brain Phase objectives
 # Documentation: .codex/cognitive_brain/AGENT_ENVIRONMENT_MANAGEMENT_PLANSET.md
