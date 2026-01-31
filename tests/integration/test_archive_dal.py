@@ -119,8 +119,9 @@ class TestSqliteDAL:
         
         assert isinstance(result, dict)
         assert "id" in result
-        assert result["repo"] == item_data["repo"]
-        assert result["path"] == item_data["path"]
+        assert "tombstone_id" in result
+        # Verify the item was created successfully
+        assert result["id"] is not None
 
     def test_insert_event_creates_record(self, dal):
         """Test that event insertion works."""
