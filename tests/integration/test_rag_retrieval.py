@@ -148,7 +148,7 @@ class TestRetrieverModelLoading:
         mock_st.return_value = mock_model
         
         with patch.object(Retriever, '_load_index'):
-            retriever = Retriever()
+            Retriever()
             
             # Should have attempted to use HF_TOKEN
             call_kwargs = mock_st.call_args[1]
