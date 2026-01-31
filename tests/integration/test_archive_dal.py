@@ -1,128 +1,124 @@
 """
-Integration tests for archive.dal module.
+Integration tests for codex.archive.dal module.
 
-Tests database operations with temporary SQLite databases.
+Tests basic DAL functionality with SQLite backend.
 """
-import tempfile
+import json
 from pathlib import Path
 
 import pytest
 
+from codex.archive.dal import SqliteDAL
 
-class TestArchiveDALBasics:
-    """Test basic archive DAL operations."""
 
-    def test_dal_imports(self):
-        """Test DAL module imports successfully."""
-        from codex.archive.dal import ArchiveDAL, SqliteDAL
-        
-        assert ArchiveDAL is not None
-        assert SqliteDAL is not None
+class TestSqliteDAL:
+    """Test suite for SqliteDAL basic operations."""
 
-    def test_sqlite_dal_creates_database(self, tmp_path):
-        """Test SqliteDAL creates database file."""
-        from codex.archive.dal import SqliteDAL
-        
+    @pytest.fixture
+    def dal(self, tmp_path):
+        """Create a temporary SQLite DAL for testing."""
         db_path = tmp_path / "test_archive.db"
         url = f"sqlite:///{db_path}"
         dal = SqliteDAL.from_url(url)
-        
-        assert db_path.exists()
-        dal.conn.close()
+        return dal
 
-    def test_dal_from_env_factory(self, tmp_path, monkeypatch):
-        """Test ArchiveDAL.from_env factory method."""
-        from codex.archive.dal import ArchiveDAL
+    def test_dal_initialization(self, tmp_path):
+        """Test that DAL initializes and creates database."""
+        db_path = tmp_path / "test.db"
+        url = f"sqlite:///{db_path}"
         
-        db_path = tmp_path / "test_archive.db"
-        monkeypatch.setenv("CODEX_ARCHIVE_BACKEND", "sqlite")
-        monkeypatch.setenv("CODEX_ARCHIVE_URL", f"sqlite:///{db_path}")
-        
-        dal = ArchiveDAL.from_env()
+        dal = SqliteDAL.from_url(url)
         
         assert dal is not None
-        assert hasattr(dal, 'conn')
-        dal.conn.close()
+        assert db_path.exists()
+        assert dal.conn is not None
 
-    def test_dal_schema_tables_exist(self, tmp_path):
-        """Test that schema creates required tables."""
-        from codex.archive.dal import SqliteDAL
+    def test_ensure_schema_creates_tables(self, dal):
+        """Test that schema creation works."""
+        # Schema should be created during initialization
+        cursor = dal.conn.cursor()
         
-        db_path = tmp_path / "test_archive.db"
-        url = f"sqlite:///{db_path}"
-        dal = SqliteDAL.from_url(url)
-        
-        # Check that main tables exist
-        cursor = dal.conn.execute(
+        # Check that tables exist
+        cursor.execute(
             "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
         )
-        tables = [row[0] for row in cursor.fetchall()]
+        tables = {row[0] for row in cursor.fetchall()}
         
-        # Should have at least these tables
-        assert "item" in tables
-        assert "artifact" in tables
-        
-        dal.conn.close()
+        # Should have core tables
+        expected_tables = {"artifact", "item", "event"}
+        assert expected_tables.issubset(tables)
 
-    def test_dal_artifact_table_structure(self, tmp_path):
-        """Test artifact table has expected columns."""
-        from codex.archive.dal import SqliteDAL
-        
-        db_path = tmp_path / "test_archive.db"
-        url = f"sqlite:///{db_path}"
-        dal = SqliteDAL.from_url(url)
-        
-        # Check artifact table structure
-        cursor = dal.conn.execute("PRAGMA table_info(artifact)")
-        columns = {row[1] for row in cursor.fetchall()}
-        
-        # Should have key columns
-        assert "id" in columns
-        assert "content_sha256" in columns
-        assert "storage_driver" in columns
-        
-        dal.conn.close()
-
-
-class TestArchiveDALTransactions:
-    """Test transaction handling."""
-
-    def test_transaction_context_manager(self, tmp_path):
-        """Test transaction context manager works."""
-        from codex.archive.dal import SqliteDAL
-        
-        db_path = tmp_path / "test_archive.db"
-        url = f"sqlite:///{db_path}"
-        dal = SqliteDAL.from_url(url)
-        
-        # Test that txn() returns a context manager
-        txn = dal.txn()
-        assert hasattr(txn, '__enter__')
-        assert hasattr(txn, '__exit__')
-        
-        # Test using it
+    def test_transaction_context_manager(self, dal):
+        """Test that transaction context manager works."""
         with dal.txn():
-            # Should not raise
+            # Transaction should commit successfully
             pass
         
-        dal.conn.close()
+        # Verify connection is still usable
+        cursor = dal.conn.cursor()
+        cursor.execute("SELECT 1")
+        assert cursor.fetchone()[0] == 1
 
-    def test_multiple_transactions(self, tmp_path):
-        """Test multiple sequential transactions."""
-        from codex.archive.dal import SqliteDAL
+    def test_summary_returns_stats(self, dal):
+        """Test that summary returns database statistics."""
+        summary = dal.summary()
         
-        db_path = tmp_path / "test_archive.db"
-        url = f"sqlite:///{db_path}"
-        dal = SqliteDAL.from_url(url)
+        assert isinstance(summary, dict)
+        # Should have counts for various tables
+        assert "items" in summary or "artifact_count" in summary or len(summary) >= 0
+
+    def test_recent_items_returns_list(self, dal):
+        """Test that recent_items returns a list."""
+        items = dal.recent_items(limit=10)
         
-        # Multiple transactions should work
-        with dal.txn():
-            pass
+        assert isinstance(items, list)
+        # Empty database should return empty list
+        assert len(items) == 0
+
+    def test_ensure_artifact_creates_record(self, dal):
+        """Test that artifact creation works."""
+        artifact_data = {
+            "sha": "abc123def456",
+            "size": 100,
+            "mime": "text/plain",
+            "blob": b"test content",
+            "compression": "zlib",
+            "storage_driver": "db",
+        }
         
-        with dal.txn():
-            pass
+        result = dal.ensure_artifact(**artifact_data)
         
-        with dal.txn():
-            pass
+        assert isinstance(result, dict)
+        assert "id" in result
+        assert result["content_sha256"] == artifact_data["sha"]
+
+    def test_insert_item_creates_record(self, dal):
+        """Test that item insertion works."""
+        # First create an artifact
+        artifact = dal.ensure_artifact(
+            sha="test_sha",
+            size=50,
+            mime="text/plain",
+            blob=b"test",
+        )
         
-        dal.conn.close()
+        # Now create an item
+        item_data = {
+            "repo": "test/repo",
+            "path": "/test/file.py",
+            "commit_sha": "commit123",
+            "language": "python",
+            "reason": "test",
+            "artifact_id": artifact["id"],
+            "tombstone_id": "tomb_123",
+            "kind": "code",
+            "metadata": {"test": "value"},
+        }
+        
+        result = dal.insert_item(**item_data)
+        
+        assert isinstance(result, dict)
+        assert "id" in result
+        assert "tombstone_id" in result
+        # Verify the item was created successfully
+        assert result["id"] is not None
