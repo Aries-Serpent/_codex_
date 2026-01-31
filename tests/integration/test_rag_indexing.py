@@ -181,10 +181,9 @@ class TestFAISSIntegration:
     def test_faiss_optional_dependency(self):
         """Test FAISS is treated as optional dependency."""
         try:
-            import faiss
-            FAISS_AVAILABLE = True
+            import faiss  # noqa: F401
         except ImportError:
-            FAISS_AVAILABLE = False
+            pass
         
         # Should not crash if FAISS unavailable
         from codex.rag import indexer

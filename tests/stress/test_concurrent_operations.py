@@ -4,9 +4,7 @@ Stress tests for concurrent operations and resource limits.
 Tests parallel execution, thread safety, and resource management.
 """
 import tempfile
-import threading
 import time
-import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import Mock

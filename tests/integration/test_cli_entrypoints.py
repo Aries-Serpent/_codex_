@@ -6,8 +6,6 @@ Tests that CLI commands execute without errors.
 import subprocess
 import sys
 
-import pytest
-
 
 class TestCodexCLI:
     """Test codex.cli module entrypoint."""

@@ -4,7 +4,6 @@ Unit tests for codex.config module.
 Tests environment variable management, validation, and configuration handling.
 """
 import os
-import uuid
 from unittest.mock import patch
 
 import pytest

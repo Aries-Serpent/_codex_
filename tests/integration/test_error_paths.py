@@ -109,7 +109,7 @@ class TestDALErrorPaths:
                 # Should handle gracefully or create parent dirs
                 try:
                     url = f"sqlite:///{invalid_path}"
-                    dal = SqliteDAL.from_url(url)
+                    SqliteDAL.from_url(url)
                     # If successful, verify it created parent dirs
                     assert invalid_path.exists()
                 except Exception:

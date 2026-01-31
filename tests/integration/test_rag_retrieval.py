@@ -52,12 +52,12 @@ class TestRetrieverInitialization:
         
         with patch.object(Retriever, '_load_index'), \
              patch.object(Retriever, '_load_model'):
-            retriever = Retriever()
+            r = Retriever()
             
-            assert hasattr(retriever, 'index_dir')
-            assert hasattr(retriever, 'index_name')
-            assert hasattr(retriever, 'tenant_id')
-            assert hasattr(retriever, 'model_name')
+            assert hasattr(r, 'index_dir')
+            assert hasattr(r, 'index_name')
+            assert hasattr(r, 'tenant_id')
+            assert hasattr(r, 'model_name')
 
 
 class TestRetrieverQuery:
