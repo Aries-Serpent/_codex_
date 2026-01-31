@@ -1,8 +1,12 @@
 [run]
 branch = True
 parallel = True
+source = src
 omit =
     */__init__.py
+    */tests/*
+    */.venv/*
+    */site-packages/*
 
 [report]
 show_missing = True
