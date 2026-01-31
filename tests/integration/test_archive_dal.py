@@ -3,7 +3,6 @@ Integration tests for codex.archive.dal module.
 
 Tests basic DAL functionality with SQLite backend.
 """
-import json
 from pathlib import Path
 
 import pytest
