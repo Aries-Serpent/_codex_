@@ -198,7 +198,7 @@ jobs:
           coverage xml || echo "XML report generation failed"
           
           echo "=== Coverage summary ==="
-          coverage report --fail-under=80 || {
+          coverage report --fail-under=85 || {
             echo "⚠️ Soft gate: Coverage below 80%"
             coverage report || true
           }
