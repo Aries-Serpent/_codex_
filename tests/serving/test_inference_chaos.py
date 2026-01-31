@@ -17,7 +17,9 @@ def chaos_client():
     """Create test client for chaos testing."""
     from src.codex_ml.serving.inference_server import create_app
 
-    app = create_app(enable_auth=False)
+    # create_app() takes optional config parameter, not enable_auth
+    # Authentication is controlled via env vars (CODEX_API_KEYS, CODEX_JWT_SECRET)
+    app = create_app()
     return TestClient(app)
 
 
