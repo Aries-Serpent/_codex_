@@ -199,8 +199,12 @@ jobs:
           coverage xml || echo "XML report generation failed"
           
           echo "=== Coverage summary ==="
-          coverage report --fail-under=25 || {
-            echo "⚠️ Soft gate: Coverage below 25%"
+          # Enforce a minimum coverage level for CI. This is a soft gate:
+          # - CI will emit a warning if coverage is below the threshold
+          # - The job will not fail solely due to low coverage
+          # If you adjust this threshold, update associated documentation/roadmap.
+          coverage report --fail-under=70 || {
+            echo "⚠️ Soft gate: Coverage below 70%"
             coverage report || true
           }
 
