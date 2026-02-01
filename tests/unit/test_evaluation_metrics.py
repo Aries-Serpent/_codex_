@@ -3,9 +3,6 @@ Unit tests for codex_ml.evaluation.metrics module.
 
 Tests metric calculation, accuracy, perplexity, and evaluation runners.
 """
-import math
-from unittest.mock import Mock, patch
-
 import pytest
 
 
