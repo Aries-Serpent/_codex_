@@ -113,6 +113,33 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 | **Scalability Utils** | LRUCache, RateLimiter, CircuitBreaker, LoadBalancer | `src/codex_ml/utils/scalability.py` |
 | **HAR Integration** | HTTP Archive recording/replay | `src/codex_ml/integrations/har_integration.py` |
 
+## 🧠 Philosophical & Cognitive Architecture
+
+**Status:** ✅ Complete - Comprehensive framework documentation integrated (2026-02-01)
+
+### Core Documentation
+
+| Document | Purpose | Key Topics |
+|----------|---------|------------|
+| [**Philosophical Framework**](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md) | Theoretical foundations and implementation guide | Deleuze (rhizomatic architecture), Whitehead (process & prehension), Process Philosophy (event ontology) |
+| [**Cognitive Architecture**](.codex/docs/COGNITIVE_ARCHITECTURE.md) | Deep codebase traversal analysis | Memory vs Map, Unbranded Recursion, Five Transformations (⟁⌁⚚☉🌿→∞) |
+| [**.codex/docs/ README**](.codex/docs/README.md) | Navigation guide and quick reference | Reading order, use cases, glossary, implementation status |
+
+### Key Concepts
+
+**Memory, Not Map** - Living knowledge retention vs static documentation  
+**Unbranded Recursion** - Self-modifying improvement loops without fixed ground  
+**Five Transformations** - Dissolve lenses, fracture rails, compress timelines, mirror contradictions, flood abundance
+
+### Quick Links
+
+- 📖 [Full Documentation Index](.codex/docs/README.md)
+- 🎯 [Implementation Roadmap](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
+- 📊 [Philosophical Metrics](.codex/docs/PHILOSOPHICAL_FRAMEWORK.md#philosophical-metrics)
+- 🧠 [Cognitive Pattern Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md#cognitive-domain-mapping)
+
+---
+
 ## 🧠 Cognitive Brain - Quantum-Inspired Decision System
 
 **Phase 8.0-8.1 Complete**: k₁ = 0.35 + Memory Management ✅  
