@@ -52,7 +52,7 @@ jobs:
           echo "🚀 Generating follow-up prompt for PR #${PR_NUMBER}"
           
           python scripts/generate_pr_followup.py \
-            --pr-number "${PR_NUMBER}" \
+            "${PR_NUMBER}" \
             --template comprehensive \
             --json-output
           
