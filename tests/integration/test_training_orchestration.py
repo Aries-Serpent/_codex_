@@ -6,8 +6,6 @@ Tests curriculum learning, multi-phase training, and training state management.
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 class TestCurriculumLearning:
     """Test curriculum learning functionality."""

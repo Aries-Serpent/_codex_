@@ -103,7 +103,6 @@ class TestGracefulDegradation:
     def test_service_degradation(self, error_workspace):
         """Test service degradation under errors."""
         service_levels = ["full", "reduced", "minimal", "offline"]
-        current_level = "full"
         
         # Simulate errors forcing degradation
         try:

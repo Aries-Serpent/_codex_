@@ -6,8 +6,6 @@ Tests profile, analyze, and report generation commands.
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 class TestCLIProfile:
     """Test CLI profile command functionality."""
@@ -263,8 +261,7 @@ class TestCLIUtilities:
         # Validate epochs
         assert args["epochs"] > 0
         
-        # Validate batch_size is power of 2
-        import math
+        # Validate batch_size is power of 2 (bitwise check)
         is_power_of_2 = (args["batch_size"] & (args["batch_size"] - 1)) == 0
         assert is_power_of_2 is True
 
@@ -281,7 +278,7 @@ class TestCLIUtilities:
         """Test error handling in CLI."""
         try:
             # Simulate invalid operation
-            result = 10 / 0
+            _ = 10 / 0
         except ZeroDivisionError as e:
             error_msg = str(e)
             

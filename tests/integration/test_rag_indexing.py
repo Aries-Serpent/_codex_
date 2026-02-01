@@ -7,7 +7,7 @@ import pytest
 
 # Check if required dependencies are available
 try:
-    import numpy  # noqa: F401
+    import numpy  # Import used for availability check
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
