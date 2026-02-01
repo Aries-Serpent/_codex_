@@ -63,8 +63,8 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
             if warn:
                 logger.warning(
-                    "Deterministic mode enabled. This may reduce performance "
-                    "SIGNIFICANTLY due to algorithmic constraints."
+                    "Deterministic mode enabled. This may significantly reduce performance "
+                    "due to algorithmic constraints."
                 )
         else:
             # Disable determinism for performance
