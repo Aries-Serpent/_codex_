@@ -47,6 +47,25 @@ Every agent session MUST improve the codebase, not just complete assigned tasks.
 
 ### 2. "Address ALL Concerns"
 
+<!-- TODO (PHILOSOPHICAL_FRAMEWORK): Deleuzian deterritorialization -->
+<!-- Ref: .codex/docs/PHILOSOPHICAL_FRAMEWORK.md#policy-deterritorialization -->
+<!-- 
+Philosophical Foundation: This policy implements Deleuzian deterritorialization
+by breaking the "bounded responsibility" territory.
+
+Traditional software development territorializes responsibility:
+- "My PR only touches X" (territorial boundary)
+- "Pre-existing issues are not my problem" (rigid structure)
+- "That's someone else's responsibility" (hierarchical thinking)
+
+This policy deterritorializes those boundaries:
+- ALL issues become your responsibility (line of flight)
+- Codebase health over task completion (rhizomatic thinking)
+- Continuous improvement over minimal compliance (creative advance)
+
+This is NOT chaos - it's strategic pattern-breaking for quality.
+-->
+
 **NEVER** claim "not my responsibility" or "pre-existing issue" to avoid work. You MUST:
 
 - Address ALL issues found during your session
@@ -159,6 +178,28 @@ BEFORE making ANY changes, you MUST:
 ---
 
 ## Timeline Terminology Convention
+
+<!-- TODO (PHILOSOPHICAL_FRAMEWORK): Whiteheadian temporal theory -->
+<!-- Ref: .codex/docs/PHILOSOPHICAL_FRAMEWORK.md#temporal-modes -->
+<!-- 
+Philosophical Foundation: This convention implements Whiteheadian epochal time
+and Deleuzian Aion vs Chronos distinction.
+
+Chronos (Clock Time): Linear, measurable, calendar-based
+- "2 weeks", "30 days", "Q1 2026"
+- Maps to external, objective time
+- Appropriate for historical records ONLY
+
+Aion (Intensive Time): Event-based, qualitative, process-oriented
+- "3 Steps", "Phase 2", "pre-commit cycle"
+- Maps to actual occasions (work events)
+- Appropriate for planning and execution
+
+Whitehead's Epochal Theory: Time is composed of discrete actual occasions,
+not continuous flow. Each commit is an epoch - a quantum of completed work.
+
+This policy aligns with process philosophy: reality is events, not duration.
+-->
 
 ### Mandatory Usage
 
