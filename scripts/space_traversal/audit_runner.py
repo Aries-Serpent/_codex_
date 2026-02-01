@@ -98,7 +98,7 @@ class AuditRunner:
         self.dep_scanner = DependencyScanner(self.config) if DependencyScanner else None
         self.quality_checker = CodeQualityChecker(self.config) if CodeQualityChecker else None
         self.vuln_db = VulnerabilityDatabase(self.config) if VulnerabilityDatabase else None
-        
+
     def _load_config(self, config_path: Optional[Path]) -> Dict[str, Any]:
         """Load configuration from file or use defaults"""
         try:
@@ -222,29 +222,29 @@ class AuditRunner:
 def duplication_ratio(evidence_files, file_cache=None, cfg=None):
     """
     Calculate duplication ratio using configured heuristic.
-    
+
     Args:
         evidence_files: List of file paths to analyze
         file_cache: Optional dict mapping file paths to contents
         cfg: Optional configuration dict with scoring.dup settings
-    
+
     Returns:
         Float between 0.0 and 1.0 representing duplication ratio
     """
     if cfg is None:
         cfg = {}
-    
+
     scoring_cfg = cfg.get("scoring", {})
     dup_cfg = scoring_cfg.get("dup", {})
     heuristic = dup_cfg.get("heuristic", "simple")
-    
+
     try:
         if heuristic == "token_similarity" and file_cache:
             # Token similarity heuristic
             threshold = dup_cfg.get("threshold", 0.7)
             max_pairwise = dup_cfg.get("max_pairwise", 1000)
             max_tokens_per_file = dup_cfg.get("max_tokens_per_file", 1000)
-            
+
             # Import token similarity function
             try:
                 from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
@@ -258,7 +258,7 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
             except (ImportError, Exception) as e:
                 logger.warning(f"Token similarity failed, falling back to simple: {e}")
                 # Fall through to simple heuristic
-        
+
         # Simple stem-based duplication (default/fallback)
         from pathlib import Path
         stems = [Path(f).stem for f in evidence_files]
@@ -267,7 +267,7 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
         duplicates = len(stems) - len(set(stems))
         ratio = duplicates / len(stems) if stems else 0.0
         return max(0.0, min(1.0, ratio))
-        
+
     except Exception as e:
         logger.error(f"Duplication ratio calculation failed: {e}")
         return 0.0
@@ -276,19 +276,19 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
 def stage_s4_scoring(cfg, raw_caps):
     """
     Score capabilities with optional coverage integration (Stage S4).
-    
+
     Args:
         cfg: Configuration dict with weights, scoring, and output settings
         raw_caps: List of capability dicts with evidence_files, patterns, etc.
-    
+
     Returns:
         List of scored capability dicts with added score components
     """
     from pathlib import Path
-    
+
     artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    
+
     weights = cfg.get("weights", {
         "functionality": 0.25,
         "consistency": 0.20,
@@ -296,10 +296,10 @@ def stage_s4_scoring(cfg, raw_caps):
         "safeguards": 0.15,
         "documentation": 0.15,
     })
-    
+
     scoring_cfg = cfg.get("scoring", {})
     thresholds = scoring_cfg.get("thresholds", {"low": 0.70, "medium": 0.85})
-    
+
     # Check for coverage integration
     coverage_map = {}
     coverage_cfg = scoring_cfg.get("coverage", {})
@@ -311,7 +311,7 @@ def stage_s4_scoring(cfg, raw_caps):
             logger.info(f"Coverage integration enabled: {len(coverage_map)} files mapped")
         except (ImportError, Exception) as e:
             logger.warning(f"Coverage integration failed: {e}")
-    
+
     # Build file cache for duplication analysis
     file_cache = {}
     for cap in raw_caps:
@@ -324,7 +324,7 @@ def stage_s4_scoring(cfg, raw_caps):
                         file_cache[filepath] = full_path.read_text(encoding="utf-8", errors="ignore")
                 except Exception:
                     file_cache[filepath] = ""
-    
+
     # Score each capability
     scored_caps = []
     for cap in raw_caps:
@@ -332,25 +332,25 @@ def stage_s4_scoring(cfg, raw_caps):
         found = cap.get("found_patterns", []) or []
         evidence_files = cap.get("evidence_files", []) or []
         docs_keywords = cap.get("docs_keywords", []) or []
-        
+
         # Functionality: pattern match ratio
         functionality = len(found) / max(1, len(required)) if required else 0.0
-        
+
         # Consistency: inverse of duplication
         consistency = 1.0 - duplication_ratio(evidence_files, file_cache, cfg)
-        
+
         # Tests: coverage-aware scoring
         tests_score = 0.0
         if evidence_files:
             covered_files = sum(1 for f in evidence_files if coverage_map.get(f, {}).get("percent", 0) > 0)
             tests_score = covered_files / len(evidence_files)
-        
+
         # Safeguards: pattern-based heuristic
         safeguards = min(1.0, len(found) * 0.1)
-        
+
         # Documentation: keyword presence
         documentation = min(1.0, len(docs_keywords) * 0.2)
-        
+
         # Compute weighted score
         components = {
             "functionality": functionality,
@@ -359,10 +359,10 @@ def stage_s4_scoring(cfg, raw_caps):
             "safeguards": safeguards,
             "documentation": documentation,
         }
-        
+
         score = sum(components[k] * weights.get(k, 0.0) for k in components)
         score = max(0.0, min(1.0, score))
-        
+
         # Determine maturity level
         if score >= thresholds.get("medium", 0.85):
             maturity = "high"
@@ -370,7 +370,7 @@ def stage_s4_scoring(cfg, raw_caps):
             maturity = "medium"
         else:
             maturity = "low"
-        
+
         scored_cap = {
             **cap,
             "score": score,
@@ -379,7 +379,7 @@ def stage_s4_scoring(cfg, raw_caps):
             "missing_patterns": sorted(set(required) - set(found)),
         }
         scored_caps.append(scored_cap)
-    
+
     return scored_caps
 
 
@@ -392,17 +392,17 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Run security audits")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # stage subcommand
     stage_parser = subparsers.add_parser("stage", help="Run a specific audit stage")
     stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4"], help="Stage to run")
     stage_parser.add_argument("--config", type=Path, help="Configuration file")
     stage_parser.add_argument("--output", type=Path, help="Output file path")
-    
+
     # explain subcommand
     explain_parser = subparsers.add_parser("explain", help="Explain a capability")
     explain_parser.add_argument("capability_id", help="Capability ID to explain")
-    
+
     # Legacy mode for backward compatibility
     parser.add_argument("target", type=Path, nargs="?", help="Target path to audit (legacy mode)")
     parser.add_argument("--config", type=Path, help="Configuration file (legacy mode)")
@@ -415,7 +415,7 @@ def main() -> None:
         # Run specific stage - create minimal artifacts for test compatibility
         artifacts_dir = Path("audit_artifacts")
         artifacts_dir.mkdir(exist_ok=True)
-        
+
         if args.stage_name == "S1":
             # Stage 1: Index - create file index
             result = {"files": [], "timestamp": datetime.now(timezone.utc).isoformat()}
@@ -457,35 +457,35 @@ def main() -> None:
             output_file.write_text(json.dumps(result, indent=2))
             print(f"Stage S4 complete: {output_file}")
         return
-    
+
     elif args.command == "explain":
         # Explain a capability - load scored capabilities and show explanation
         scored_file = Path("audit_artifacts/capabilities_scored.json")
         if not scored_file.exists():
             print("capabilities_scored.json not found. Run stage S4 first.", file=sys.stderr)
             sys.exit(EXIT_MISSING_ARTIFACTS)
-        
+
         scored = json.loads(scored_file.read_text())
         caps = scored.get("capabilities", [])
-        
+
         # Find the capability
         cap = next((c for c in caps if c.get("id") == args.capability_id), None)
         if not cap:
             print(f"Capability {args.capability_id} not found", file=sys.stderr)
             sys.exit(1)
-        
+
         # Print explanation
         print(f"Explain: {args.capability_id}")
         print(f"Score: {cap.get('score', 0.0)}")
         print(f"Maturity: {cap.get('maturity', 'unknown')}")
-        
+
         # Show component contributions
         components = cap.get("components", {})
         for name, value in components.items():
             print(f"  {name} contribution={value:.2f}")
-        
+
         return
-    
+
     # Legacy mode - full audit with target path
     if args.target is None:
         print("Target path is required (or use 'stage' or 'explain' subcommands)", file=sys.stderr)
