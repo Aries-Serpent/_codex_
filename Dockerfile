@@ -2,7 +2,7 @@
 # Provides separate cpu-runtime and gpu-runtime targets for deployment
 
 # ===== Stage 1: Base Image =====
-FROM python:3.14-slim AS base
+FROM python:3.12-slim AS base
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
@@ -58,28 +58,38 @@ FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04 AS gpu-runtime
 
 LABEL org.opencontainers.image.description="Codex ML GPU runtime"
 
-# Install Python 3.12 (matching base Python version)
+# Install Python 3.12
 RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
   && add-apt-repository ppa:deadsnakes/ppa \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-    python3.14 \
-    python3.14-distutils \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
     python3-pip \
+    build-essential \
+    gcc \
+    git \
+    curl \
   && rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.14 as default
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1
+# Set Python 3.12 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 
 WORKDIR /app
 
-# Copy from base stage (Python 3.14 packages)
-COPY --from=base /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
-COPY --from=base /app /app
+# Copy project files
+COPY --chown=root:root requirements.txt requirements.txt
+COPY --chown=root:root pyproject.toml pyproject.toml
+COPY --chown=root:root README.md README.md
+COPY --chown=root:root src/ ./src/
+
+# Install dependencies (rebuild instead of copy for compatibility)
+RUN python3 -m pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -e ".[core]"
 
 # Install GPU-enabled PyTorch
-RUN python3 -m pip install --upgrade pip
 RUN pip install --no-cache-dir torch torchvision torchaudio
 
 # Create non-root user
@@ -94,7 +104,7 @@ ENTRYPOINT ["python3", "-m", "codex_ml"]
 CMD ["--help"]
 
 # ===== Stage 4: Test Environment (default) =====
-FROM python:3.14-slim AS test
+FROM python:3.12-slim AS test
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
