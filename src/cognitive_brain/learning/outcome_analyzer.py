@@ -185,6 +185,10 @@ class OutcomeAnalyzer:
         - SEQUENTIAL: Action sequence patterns
         - CAUSAL: Cause-effect patterns
         
+        Note: Multiple patterns from different categories may be identified
+        for the same outcome. This is intentional to capture all relevant
+        dimensions of the decision outcome for comprehensive learning.
+        
         Returns:
             List of pattern IDs
         """

@@ -58,19 +58,28 @@ FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04 AS gpu-runtime
 
 LABEL org.opencontainers.image.description="Codex ML GPU runtime"
 
-# Install Python
+# Install Python 3.12 (matching base Python version)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.12 \
+    software-properties-common \
+  && add-apt-repository ppa:deadsnakes/ppa \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    python3.14 \
+    python3.14-distutils \
     python3-pip \
   && rm -rf /var/lib/apt/lists/*
 
-# Copy from base stage
-COPY --from=base /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.12/site-packages
-COPY --from=base /app /app
+# Set Python 3.14 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1
 
 WORKDIR /app
 
+# Copy from base stage (Python 3.14 packages)
+COPY --from=base /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
+COPY --from=base /app /app
+
 # Install GPU-enabled PyTorch
+RUN python3 -m pip install --upgrade pip
 RUN pip install --no-cache-dir torch torchvision torchaudio
 
 # Create non-root user
