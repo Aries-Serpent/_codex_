@@ -31,6 +31,17 @@ class TestPhase2_TimeEvolution:
             initial_state = {"position": [0.0, 0.0], "velocity": [1.0, 0.0]}
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
+            
+            # UPDATED: Handle dict return type (don't assume .energy attribute)
+            if isinstance(evolved, dict):
+                # Check for expected state keys
+                assert len(evolved) > 0, "Evolved state should not be empty"
+                # Check for common physics state keys
+                has_valid_keys = any(key in evolved for key in ["position", "state", "velocity", "momentum"])
+                assert has_valid_keys, f"Expected physics state keys not found in {list(evolved.keys())}"
+            else:
+                # If it's an object, check it has expected attributes
+                assert hasattr(evolved, "position") or hasattr(evolved, "state") or hasattr(evolved, "velocity")
 
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution"""
