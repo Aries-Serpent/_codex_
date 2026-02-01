@@ -4,10 +4,12 @@ Integration tests for RAG indexing functionality.
 Tests text chunking, embedding generation, and FAISS index building.
 """
 import pytest
+import importlib.util
 
 # Check if required dependencies are available
 try:
-    import numpy  # Import used for availability check
+    if importlib.util.find_spec("numpy") is None:
+        raise ImportError
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
