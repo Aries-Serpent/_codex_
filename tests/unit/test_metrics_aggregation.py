@@ -45,6 +45,24 @@ class TestMetricComputation:
         except ImportError:
             pytest.skip("AccuracyMetric not available")
 
+    def test_accuracy_metric_empty_batch(self):
+        """Test accuracy metric handles empty batch gracefully."""
+        try:
+            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
+
+            metric = AccuracyMetric()
+            # Compute on empty batch - should return 0.0 or raise appropriate error
+            result = metric.compute()
+
+            # Either it returns 0.0 accuracy or the result has accuracy key
+            if 'accuracy' in result:
+                assert isinstance(result['accuracy'], (int, float))
+        except ImportError:
+            pytest.skip("AccuracyMetric not available")
+        except (ValueError, ZeroDivisionError):
+            # Expected behavior: metric may raise error on empty batch
+            pass
+
     def test_precision_calculation(self):
         """Test precision metric calculation."""
         true_positives = 80

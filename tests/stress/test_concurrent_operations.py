@@ -78,6 +78,7 @@ class TestConcurrentTraining:
                 assert log_file.exists()
                 lines = log_file.read_text().strip().split('\n')
                 assert len(lines) >= 15  # At least 3 threads * 5 steps
+                assert len(lines) <= 20  # Upper bound to catch unexpected logging bugs
                 # Validate each line is valid JSON
                 import json
                 for line in lines:

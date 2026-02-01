@@ -218,7 +218,8 @@ class TestRAGIndexingQueryPipeline:
             # Simple mock similarity using query text and embedding distance
             text_match = 0.8 if query.lower() in doc["content"].lower() else 0.3
             # Simple cosine-like similarity with query embedding
-            embedding_sim = sum(q * d for q, d in zip(query_embedding, doc["embedding"])) / 3.0
+            embedding_dim = len(query_embedding)
+            embedding_sim = sum(q * d for q, d in zip(query_embedding, doc["embedding"])) / embedding_dim
             score = (text_match + embedding_sim) / 2.0
             results.append({"doc_id": doc["id"], "content": doc["content"], "score": score})
 
