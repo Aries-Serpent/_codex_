@@ -85,18 +85,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          # Install pytest plugins FIRST with pinned versions
-          # This ensures xdist workers have correct versions at consistent paths
-          # NOTE: Pinned versions chosen to satisfy pyproject.toml constraints:
-          #   - pytest==8.3.4  (constrained by pytest<9.0.0 in [project.optional-dependencies.test])
-          #   - pytest-cov==5.0.0  (constrained by pytest-cov<6.0.0 in [project.optional-dependencies.test])
-          pip install \
+          # Install pytest plugins with --no-cache-dir to prevent stale installations
+          pip install --no-cache-dir \
             pytest==8.3.4 \
             pytest-cov==5.0.0 \
             pytest-xdist==3.8.0 \
             pytest-timeout==2.3.1 \
             'coverage>=7.10.6,<8' \
             'sentence-transformers>=3.0'
+          # Verify plugin availability before editable install
+          python -c "import xdist; print(f'✅ pytest-xdist {xdist.__version__}')" || exit 1
           # Then install the main package with test dependencies
           pip install -e ".[test]"
           python -m pytest --version
