@@ -84,12 +84,11 @@ class TestCheckpointErrorPaths:
                 metadata_file = Path(tmpdir) / "metadata.json"
                 metadata_file.write_text("{ invalid json }")
                 
-                # Should handle gracefully or raise clear error
-                try:
+                # Should handle gracefully or raise clear error (JSONDecodeError expected)
+                with pytest.raises((ValueError, Exception)) as exc_info:
                     load_checkpoint(tmpdir)
-                except Exception as e:
-                    # Some error expected
-                    assert True
+                # Verify we got an appropriate error type
+                assert exc_info.type in (ValueError, RuntimeError, Exception)
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -107,14 +106,10 @@ class TestDALErrorPaths:
                 invalid_path = Path(tmpdir) / "nonexistent" / "subdir" / "db.sqlite"
                 
                 # Should handle gracefully or create parent dirs
-                try:
-                    url = f"sqlite:///{invalid_path}"
-                    SqliteDAL.from_url(url)
-                    # If successful, verify it created parent dirs
-                    assert invalid_path.exists()
-                except Exception:
-                    # Some error expected with truly invalid paths
-                    pass
+                url = f"sqlite:///{invalid_path}"
+                dal = SqliteDAL.from_url(url)
+                # If successful, verify it created parent dirs
+                assert invalid_path.exists(), "DAL should create parent directories"
         except ImportError:
             pytest.skip("SqliteDAL not available")
 
@@ -261,12 +256,9 @@ class TestEvaluationErrorPaths:
             
             metric = AccuracyMetric()
             
-            # Empty batch should handle gracefully
-            try:
+            # Empty batch should handle gracefully or raise ValueError/ZeroDivisionError
+            with pytest.raises((ValueError, ZeroDivisionError)):
                 metric.add_batch([], [])
-            except Exception:
-                # Some error expected
-                pass
         except ImportError:
             pytest.skip("AccuracyMetric not available")
 

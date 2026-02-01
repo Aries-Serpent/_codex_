@@ -6,9 +6,6 @@ Target: 20 tests for multi-component orchestration
 
 import json
 import pytest
-import torch
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

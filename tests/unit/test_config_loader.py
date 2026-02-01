@@ -6,8 +6,6 @@ Tests environment variable management, validation, and configuration handling.
 import os
 from unittest.mock import patch
 
-import pytest
-
 
 class TestEnvVarConfig:
     """Test EnvVarConfig dataclass."""
@@ -97,8 +95,15 @@ class TestEnvironmentManager:
     @patch.dict(os.environ, {"CODEX_ENV_PYTHON_VERSION": "3.11"}, clear=False)
     def test_environment_manager_reads_env_var(self):
         """Test EnvironmentManager can read environment variables."""
+        from codex.config.env_vars import EnvironmentManager
+        
         # Verify the environment variable is set
         assert os.environ.get("CODEX_ENV_PYTHON_VERSION") == "3.11"
+        
+        # Create EnvironmentManager and verify it can access the variable
+        env_mgr = EnvironmentManager()
+        # The manager should be able to read from ENV_VARS
+        assert "CODEX_ENV_PYTHON_VERSION" in EnvironmentManager.ENV_VARS
 
     def test_environment_manager_get_method_exists(self):
         """Test EnvironmentManager has getter methods."""
