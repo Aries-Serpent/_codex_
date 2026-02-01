@@ -116,7 +116,9 @@ class TestCodexMLImports:
                 hasattr(codex_ml, "VERSION") or
                 hasattr(codex_ml, "version")
             )
-            # Version may not be set in development
-            assert has_version or True  # Soft assertion
+            # Version may not be set in development - skip if not present
+            if not has_version:
+                pytest.skip("codex_ml version not set in development")
+            assert has_version
         except ImportError:
             pytest.skip("codex_ml not importable")

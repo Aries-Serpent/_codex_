@@ -31,32 +31,31 @@ class TestQueryExpansion:
 
     def test_query_rewrite_basic(self):
         """Test basic query rewrite functionality."""
-        query = "What is machine learning?"
+        # Test demonstrates query expansion pattern
+        original = "What is machine learning?"
+        expanded = f"{original} (definition, overview, introduction)"
 
-        # Simple expansion simulation
-        expanded = f"{query} (definition, overview, introduction)"
-
-        assert len(expanded) > len(query)
-        assert query in expanded
+        assert len(expanded) > len(original)
+        assert original in expanded
 
     def test_synonym_expansion(self):
         """Test synonym-based query expansion."""
-        query = "AI model training"
+        original_query = "AI model training"
         synonyms = ["artificial intelligence", "ML", "deep learning"]
 
-        expanded_terms = [query] + synonyms
+        expanded_terms = [original_query] + synonyms
 
         assert len(expanded_terms) > 1
-        assert query in expanded_terms
+        assert original_query in expanded_terms
 
     def test_contextual_expansion(self):
         """Test contextual query expansion."""
-        query = "transformer architecture"
+        original_query = "transformer architecture"
         context = ["NLP", "attention mechanism", "BERT"]
 
-        expanded = {"original": query, "context": context}
+        expanded = {"original": original_query, "context": context}
 
-        assert expanded["original"] == query
+        assert expanded["original"] == original_query
         assert len(expanded["context"]) == 3
 
 

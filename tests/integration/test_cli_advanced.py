@@ -3,8 +3,6 @@ Integration tests for advanced CLI commands.
 
 Tests profile, analyze, and report generation commands.
 """
-import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
