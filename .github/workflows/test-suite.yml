@@ -199,7 +199,7 @@ jobs:
           
           echo "=== Coverage summary ==="
           coverage report --fail-under=85 || {
-            echo "⚠️ Soft gate: Coverage below 80%"
+            echo "⚠️ Soft gate: Coverage below 85%"
             coverage report || true
           }
 

@@ -5,7 +5,6 @@ Tests curriculum learning, multi-phase training, and training state management.
 """
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
