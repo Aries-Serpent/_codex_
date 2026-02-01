@@ -6,8 +6,6 @@ Tests profile, analyze, and report generation commands.
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 class TestCLIProfile:
     """Test CLI profile command functionality."""
@@ -281,7 +279,7 @@ class TestCLIUtilities:
         """Test error handling in CLI."""
         try:
             # Simulate invalid operation
-            result = 10 / 0
+            _ = 10 / 0
         except ZeroDivisionError as e:
             error_msg = str(e)
             

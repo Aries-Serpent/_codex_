@@ -98,7 +98,6 @@ class TestReranking:
 
     def test_cross_encoder_reranking_mock(self):
         """Test cross-encoder reranking with mock."""
-        query = "test query"
         docs = ["doc1", "doc2", "doc3"]
 
         # Mock cross-encoder scores

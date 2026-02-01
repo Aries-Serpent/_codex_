@@ -383,6 +383,138 @@ def stage_s4_scoring(cfg, raw_caps):
     return scored_caps
 
 
+def stage_s5_gaps(cfg, scored_caps):
+    """
+    Identify capability gaps and create gap reports (Stage S5).
+
+    Args:
+        cfg: Configuration dict with output and scoring settings
+        scored_caps: List of scored capability dicts from stage_s4_scoring
+
+    Creates:
+        - gaps.json: List of low maturity capabilities
+        - component_gaps.json: Detailed component-level gap analysis
+    """
+    from pathlib import Path
+
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    thresholds = cfg.get("scoring", {}).get("thresholds", {"low": 0.70})
+    low_threshold = thresholds.get("low", 0.70)
+
+    # Identify low maturity capabilities
+    low_maturity = [
+        {"id": cap["id"], "score": cap["score"], "maturity": cap.get("maturity", "low")}
+        for cap in scored_caps
+        if cap.get("score", 0.0) < low_threshold
+    ]
+
+    # Write gaps.json
+    gaps_data = {
+        "low_maturity": low_maturity,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "threshold": low_threshold,
+    }
+    (artifacts_dir / "gaps.json").write_text(json.dumps(gaps_data, indent=2))
+
+    # Build component gaps analysis
+    component_gaps = []
+    for cap in scored_caps:
+        components = cap.get("components", {})
+        zero_components = [name for name, value in components.items() if value == 0.0]
+        
+        # Calculate missing patterns if not already present
+        if "missing_patterns" in cap:
+            missing_patterns = cap["missing_patterns"]
+        else:
+            # Calculate from found vs required patterns
+            required = set(cap.get("required_patterns", []))
+            found = set(cap.get("found_patterns", []))
+            missing_patterns = sorted(required - found)
+
+        if zero_components or missing_patterns:
+            component_gaps.append({
+                "id": cap["id"],
+                "score": cap["score"],
+                "zero_components": zero_components,
+                "missing_patterns": missing_patterns,
+                "components": components,
+            })
+
+    # Write component_gaps.json
+    comp_gaps_data = {
+        "component_gaps": component_gaps,
+        "total_capabilities": len(scored_caps),
+        "capabilities_with_gaps": len(component_gaps),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    (artifacts_dir / "component_gaps.json").write_text(json.dumps(comp_gaps_data, indent=2))
+
+    logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
+
+
+def command_validate(cfg):
+    """
+    Validate audit artifacts and fail if quality gates are not met.
+
+    Args:
+        cfg: Configuration dict with:
+            - output.artifacts_dir: Path to artifacts directory
+            - options.fail_on_low_maturity: Whether to fail on low maturity (default: True)
+            - options.fail_on_missing_detector: Whether to fail on missing detectors (default: False)
+            - scoring.thresholds.low: Low maturity threshold (default: 0.70)
+
+    Raises:
+        SystemExit: With appropriate exit code if validation fails
+            - EXIT_MISSING_ARTIFACTS (2): Required artifacts not found
+            - EXIT_LOW_MATURITY (4): Low maturity capabilities detected
+            - EXIT_MISSING_DETECTOR (5): Required detector missing
+    """
+    from pathlib import Path
+
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    options = cfg.get("options", {})
+    fail_on_low_maturity = options.get("fail_on_low_maturity", True)
+    fail_on_missing_detector = options.get("fail_on_missing_detector", False)
+
+    # Check for required artifacts
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    if not scored_file.exists():
+        logger.error(f"Required artifact not found: {scored_file}")
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+
+    # Load scored capabilities
+    try:
+        scored_data = json.loads(scored_file.read_text())
+        capabilities = scored_data.get("capabilities", [])
+    except Exception as e:
+        logger.error(f"Failed to load capabilities_scored.json: {e}")
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+
+    # Check for low maturity capabilities
+    low_threshold = cfg.get("scoring", {}).get("thresholds", {}).get("low", 0.70)
+    low_maturity_caps = [cap for cap in capabilities if cap.get("score", 0.0) < low_threshold]
+
+    if low_maturity_caps and fail_on_low_maturity:
+        logger.error(
+            f"Validation failed: {len(low_maturity_caps)} capabilities below threshold {low_threshold}"
+        )
+        for cap in low_maturity_caps[:5]:  # Show first 5
+            logger.error(f"  - {cap.get('id', 'unknown')}: {cap.get('score', 0.0):.2f}")
+        sys.exit(EXIT_LOW_MATURITY)
+
+    # Check for missing detectors (if enabled)
+    if fail_on_missing_detector:
+        # This is a placeholder for future detector validation
+        # For now, we just log a warning
+        logger.warning("Detector validation is not yet implemented")
+
+    logger.info(f"Validation passed: {len(capabilities)} capabilities analyzed, {len(low_maturity_caps)} below threshold")
+    if low_maturity_caps:
+        logger.warning(f"⚠️  {len(low_maturity_caps)} capabilities below threshold (not failing due to fail_on_low_maturity=False)")
+
+
 def main() -> None:
     """Main entry point"""
     logging.basicConfig(
