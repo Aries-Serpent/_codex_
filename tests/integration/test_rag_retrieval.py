@@ -9,7 +9,7 @@ import pytest
 
 # Check if required dependencies are available
 try:
-    import numpy as np  # Import used for availability check
+    import numpy  # Import used for availability check
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
