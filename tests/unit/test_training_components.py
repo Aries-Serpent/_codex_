@@ -5,7 +5,7 @@ Tests training loop functionality, loss computation, and metric logging.
 """
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

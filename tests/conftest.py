@@ -818,31 +818,36 @@ def mock_sentence_transformer(monkeypatch):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_audit_artifacts():
+def setup_audit_artifacts(tmp_path_factory):
     """
-    Create audit_artifacts directory for tests.
+    Create audit_artifacts directory for tests using pytest's temporary directory system.
     
     This fixture runs once per test session and ensures the directory
-    structure required by depth gating tests exists.
+    structure required by depth gating tests exists in an isolated temp location.
     """
-    # Use project root for consistency with actual usage
-    audit_dir = Path.cwd() / "audit_artifacts"
-    audit_dir.mkdir(exist_ok=True)
+    # Use pytest's temp directory factory for isolated test artifacts
+    audit_dir = tmp_path_factory.mktemp("audit_artifacts")
     
     # Create required files
     context_index = audit_dir / "context_index.json"
-    if not context_index.exists():
-        context_index.write_text(json.dumps({
-            "version": "1.0",
-            "contexts": [],
-            "metadata": {
-                "created": "test-session",
-                "purpose": "test-fixture"
-            }
-        }, indent=2))
+    context_index.write_text(json.dumps({
+        "version": "1.0",
+        "contexts": [],
+        "metadata": {
+            "created": "test-session",
+            "purpose": "test-fixture"
+        }
+    }, indent=2))
+    
+    # Set environment variable so tests can find the temp audit directory
+    import os
+    original_audit_dir = os.environ.get("CODEX_AUDIT_DIR")
+    os.environ["CODEX_AUDIT_DIR"] = str(audit_dir)
     
     yield audit_dir
     
-    # Cleanup after tests (optional - commented out to avoid removing real artifacts)
-    # import shutil
-    # shutil.rmtree(audit_dir, ignore_errors=True)
+    # Restore original environment variable
+    if original_audit_dir is not None:
+        os.environ["CODEX_AUDIT_DIR"] = original_audit_dir
+    else:
+        os.environ.pop("CODEX_AUDIT_DIR", None)

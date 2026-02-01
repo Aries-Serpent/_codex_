@@ -13,10 +13,6 @@ Part of Phase 7: Integration Scenarios (80-85% coverage)
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 

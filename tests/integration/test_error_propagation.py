@@ -5,10 +5,8 @@ Target: 10 tests for error propagation and recovery
 """
 
 import json
+
 import pytest
-import torch
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

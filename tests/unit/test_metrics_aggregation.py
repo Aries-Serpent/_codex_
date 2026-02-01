@@ -4,9 +4,6 @@ Unit tests for metrics aggregation and statistical analysis.
 Tests metric computation, aggregation strategies, and statistical analysis.
 """
 import math
-from unittest.mock import Mock, patch
-
-import pytest
 
 
 class TestMetricComputation:
