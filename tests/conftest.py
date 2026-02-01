@@ -824,6 +824,7 @@ def setup_audit_artifacts(tmp_path_factory):
     
     This fixture runs once per test session and ensures the directory
     structure required by depth gating tests exists in an isolated temp location.
+    Sets the CODEX_AUDIT_DIR environment variable to point to the temporary directory.
     """
     # Use pytest's temp directory factory for isolated test artifacts
     audit_dir = tmp_path_factory.mktemp("audit_artifacts")
@@ -840,7 +841,6 @@ def setup_audit_artifacts(tmp_path_factory):
     }, indent=2))
     
     # Set environment variable so tests can find the temp audit directory
-    import os
     original_audit_dir = os.environ.get("CODEX_AUDIT_DIR")
     os.environ["CODEX_AUDIT_DIR"] = str(audit_dir)
     
