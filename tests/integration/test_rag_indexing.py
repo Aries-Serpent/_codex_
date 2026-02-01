@@ -3,15 +3,11 @@ Integration tests for RAG indexing functionality.
 
 Tests text chunking, embedding generation, and FAISS index building.
 """
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch
-
 import pytest
 
 # Check if required dependencies are available
 try:
-    import numpy as np
+    import numpy as np  # noqa: F401
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
@@ -183,6 +179,7 @@ class TestFAISSIntegration:
         try:
             import faiss  # noqa: F401
         except ImportError:
+            # FAISS is optional - test that indexer still imports without it
             pass
         
         # Should not crash if FAISS unavailable

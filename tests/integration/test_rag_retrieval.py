@@ -3,15 +3,13 @@ Integration tests for RAG retrieval functionality.
 
 Tests end-to-end retrieval workflows with query processing and ranking.
 """
-import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
 # Check if required dependencies are available
 try:
-    import numpy as np
+    import numpy as np  # noqa: F401
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False

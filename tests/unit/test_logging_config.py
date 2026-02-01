@@ -7,8 +7,6 @@ import os
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 
 class TestLoggingConfig:
     """Test logging configuration module."""

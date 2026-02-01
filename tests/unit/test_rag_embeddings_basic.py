@@ -4,7 +4,6 @@ Basic unit tests for codex.rag.embeddings module.
 Tests provider protocol and TF-IDF fallback (no model downloads required).
 """
 import numpy as np
-import pytest
 
 
 class TestEmbeddingProviderProtocol:

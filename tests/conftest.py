@@ -825,9 +825,6 @@ def setup_audit_artifacts():
     This fixture runs once per test session and ensures the directory
     structure required by depth gating tests exists.
     """
-    import json
-    from pathlib import Path
-    
     # Use project root for consistency with actual usage
     audit_dir = Path.cwd() / "audit_artifacts"
     audit_dir.mkdir(exist_ok=True)
