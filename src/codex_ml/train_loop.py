@@ -450,6 +450,15 @@ def _now_ts() -> str:
     return datetime.now(UTC).isoformat()
 
 
+def _ts() -> str:
+    """Generate ISO 8601 timestamp with 'Z' suffix.
+    
+    Returns:
+        Timestamp string like "2026-02-01T12:34:56.789Z"
+    """
+    return datetime.now(UTC).isoformat().replace('+00:00', 'Z')
+
+
 _LEGACY_NDJSON = is_legacy_mode()
 _TRAIN_RUN_ID = os.environ.get("CODEX_RUN_ID") or uuid4().hex
 
