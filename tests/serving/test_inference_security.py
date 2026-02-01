@@ -16,8 +16,9 @@ def secure_client():
     """Create test client with authentication enabled."""
     from src.codex_ml.serving.inference_server import create_app
 
+    # Authentication is controlled via env vars, not function parameter
     with patch.dict("os.environ", {"CODEX_API_KEYS": "test-key-1,test-key-2"}):
-        app = create_app(enable_auth=True)
+        app = create_app()
         return TestClient(app)
 
 
@@ -26,8 +27,9 @@ def jwt_client():
     """Create test client with JWT authentication."""
     from src.codex_ml.serving.inference_server import create_app
 
+    # Authentication is controlled via env vars, not function parameter
     with patch.dict("os.environ", {"CODEX_JWT_SECRET": "test-secret-key"}):
-        app = create_app(enable_auth=True)
+        app = create_app()
         return TestClient(app)
 
 

@@ -815,3 +815,37 @@ def mock_sentence_transformer(monkeypatch):
     return MockSentenceTransformer
 
 
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_audit_artifacts():
+    """
+    Create audit_artifacts directory for tests.
+    
+    This fixture runs once per test session and ensures the directory
+    structure required by depth gating tests exists.
+    """
+    import json
+    from pathlib import Path
+    
+    # Use project root for consistency with actual usage
+    audit_dir = Path.cwd() / "audit_artifacts"
+    audit_dir.mkdir(exist_ok=True)
+    
+    # Create required files
+    context_index = audit_dir / "context_index.json"
+    if not context_index.exists():
+        context_index.write_text(json.dumps({
+            "version": "1.0",
+            "contexts": [],
+            "metadata": {
+                "created": "test-session",
+                "purpose": "test-fixture"
+            }
+        }, indent=2))
+    
+    yield audit_dir
+    
+    # Cleanup after tests (optional - commented out to avoid removing real artifacts)
+    # import shutil
+    # shutil.rmtree(audit_dir, ignore_errors=True)
