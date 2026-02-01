@@ -3,7 +3,6 @@ Unit tests for advanced RAG features.
 
 Tests query expansion, reranking algorithms, and advanced embedding strategies.
 """
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
@@ -14,23 +13,29 @@ class TestQueryExpansion:
     def test_query_expansion_import(self):
         """Test query expansion modules can be imported."""
         from codex.rag import prompt
-        
+
         assert prompt is not None
 
     def test_prompt_module_has_expansion_functions(self):
         """Test prompt module has query expansion capabilities."""
         from codex.rag import prompt
-        
-        # Check for prompt-related functions
-        assert hasattr(prompt, 'format_prompt') or hasattr(prompt, 'expand_query') or True
+
+        # Check for prompt-related functions - at least one should exist
+        has_prompt_api = (
+            hasattr(prompt, 'format_prompt')
+            or hasattr(prompt, 'expand_query')
+            or hasattr(prompt, 'build_prompt')
+        )
+        if not has_prompt_api:
+            pytest.skip("Prompt module does not have expected expansion functions")
 
     def test_query_rewrite_basic(self):
         """Test basic query rewrite functionality."""
         query = "What is machine learning?"
-        
+
         # Simple expansion simulation
         expanded = f"{query} (definition, overview, introduction)"
-        
+
         assert len(expanded) > len(query)
         assert query in expanded
 
@@ -38,9 +43,9 @@ class TestQueryExpansion:
         """Test synonym-based query expansion."""
         query = "AI model training"
         synonyms = ["artificial intelligence", "ML", "deep learning"]
-        
+
         expanded_terms = [query] + synonyms
-        
+
         assert len(expanded_terms) > 1
         assert query in expanded_terms
 
@@ -48,9 +53,9 @@ class TestQueryExpansion:
         """Test contextual query expansion."""
         query = "transformer architecture"
         context = ["NLP", "attention mechanism", "BERT"]
-        
+
         expanded = {"original": query, "context": context}
-        
+
         assert expanded["original"] == query
         assert len(expanded["context"]) == 3
 
@@ -61,7 +66,7 @@ class TestReranking:
     def test_reranking_import(self):
         """Test reranking can be imported."""
         from codex.rag import postprocess
-        
+
         assert postprocess is not None
 
     def test_score_based_reranking(self):
@@ -71,9 +76,9 @@ class TestReranking:
             {"text": "doc2", "score": 0.9},
             {"text": "doc3", "score": 0.7},
         ]
-        
+
         reranked = sorted(results, key=lambda x: x["score"], reverse=True)
-        
+
         assert reranked[0]["text"] == "doc2"
         assert reranked[1]["text"] == "doc3"
         assert reranked[2]["text"] == "doc1"
@@ -86,9 +91,9 @@ class TestReranking:
             {"text": "doc3", "score": 0.6},
         ]
         threshold = 0.5
-        
+
         filtered = [r for r in results if r["score"] >= threshold]
-        
+
         assert len(filtered) == 2
         assert all(r["score"] >= threshold for r in filtered)
 
@@ -96,11 +101,11 @@ class TestReranking:
         """Test cross-encoder reranking with mock."""
         query = "test query"
         docs = ["doc1", "doc2", "doc3"]
-        
+
         # Mock cross-encoder scores
         scores = [0.8, 0.6, 0.9]
         reranked_docs = [doc for _, doc in sorted(zip(scores, docs), reverse=True)]
-        
+
         assert reranked_docs[0] == "doc3"
         assert reranked_docs[1] == "doc1"
         assert reranked_docs[2] == "doc2"
@@ -112,7 +117,7 @@ class TestReranking:
             {"text": "doc2", "topic": "A"},
             {"text": "doc3", "topic": "B"},
         ]
-        
+
         # Simple diversity: prefer different topics
         seen_topics = set()
         diverse_results = []
@@ -120,7 +125,7 @@ class TestReranking:
             if r["topic"] not in seen_topics:
                 diverse_results.append(r)
                 seen_topics.add(r["topic"])
-        
+
         assert len(diverse_results) == 2
         assert diverse_results[0]["topic"] != diverse_results[1]["topic"]
 
@@ -131,7 +136,7 @@ class TestAdvancedEmbeddings:
     def test_embeddings_module_import(self):
         """Test embeddings module can be imported."""
         from codex.rag import embeddings
-        
+
         assert embeddings is not None
 
     def test_multi_vector_embeddings(self):
@@ -142,7 +147,7 @@ class TestAdvancedEmbeddings:
             [0.4, 0.5, 0.6],  # Vector 2
             [0.7, 0.8, 0.9],  # Vector 3
         ]
-        
+
         assert len(embeddings) == 3
         assert all(len(vec) == 3 for vec in embeddings)
 
@@ -150,18 +155,18 @@ class TestAdvancedEmbeddings:
         """Test embedding dimension consistency."""
         dim = 384
         embeddings = [[0.0] * dim, [0.1] * dim, [0.2] * dim]
-        
+
         assert all(len(emb) == dim for emb in embeddings)
 
     def test_late_interaction_embeddings_mock(self):
         """Test late interaction embeddings (ColBERT-style)."""
         query_tokens = ["what", "is", "AI"]
         doc_tokens = ["AI", "is", "artificial", "intelligence"]
-        
+
         # Mock token embeddings
         query_embs = [[0.1] * 3 for _ in query_tokens]
         doc_embs = [[0.2] * 3 for _ in doc_tokens]
-        
+
         assert len(query_embs) == len(query_tokens)
         assert len(doc_embs) == len(doc_tokens)
 
@@ -169,9 +174,9 @@ class TestAdvancedEmbeddings:
         """Test hybrid embedding strategies."""
         dense_emb = [0.1, 0.2, 0.3]
         sparse_emb = {"term1": 0.5, "term2": 0.3}
-        
+
         hybrid = {"dense": dense_emb, "sparse": sparse_emb}
-        
+
         assert "dense" in hybrid
         assert "sparse" in hybrid
         assert len(hybrid["dense"]) == 3
@@ -183,10 +188,10 @@ class TestAdvancedEmbeddings:
             [4.0, 5.0, 6.0],
             [7.0, 8.0, 9.0],
         ]
-        
+
         # Mean pooling
         mean_pooled = [sum(col) / len(col) for col in zip(*token_embeddings)]
-        
+
         assert len(mean_pooled) == 3
         assert mean_pooled[0] == 4.0  # (1+4+7)/3
         assert mean_pooled[1] == 5.0  # (2+5+8)/3
@@ -195,13 +200,13 @@ class TestAdvancedEmbeddings:
     def test_embedding_normalization(self):
         """Test embedding normalization."""
         import math
-        
+
         embedding = [3.0, 4.0]
-        
+
         # L2 normalization
         norm = math.sqrt(sum(x**2 for x in embedding))
         normalized = [x / norm for x in embedding]
-        
+
         assert abs(sum(x**2 for x in normalized) - 1.0) < 1e-6
 
 
@@ -211,29 +216,29 @@ class TestRAGPipeline:
     def test_rag_cache_import(self):
         """Test RAG cache can be imported."""
         from codex.rag import cache
-        
+
         assert cache is not None
 
     def test_retrieval_monitoring_import(self):
         """Test retrieval monitoring can be imported."""
         from codex.rag import monitoring
-        
+
         assert monitoring is not None
 
     def test_gpu_utils_import(self):
         """Test GPU utilities can be imported."""
         from codex.rag import gpu_utils
-        
+
         assert gpu_utils is not None
 
     def test_postprocess_import(self):
         """Test postprocessing can be imported."""
         from codex.rag import postprocess
-        
+
         assert postprocess is not None
 
     def test_prompt_import(self):
         """Test prompt utilities can be imported."""
         from codex.rag import prompt
-        
+
         assert prompt is not None
