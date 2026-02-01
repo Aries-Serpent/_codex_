@@ -395,8 +395,6 @@ def stage_s5_gaps(cfg, scored_caps):
         - gaps.json: List of low maturity capabilities
         - component_gaps.json: Detailed component-level gap analysis
     """
-    from pathlib import Path
-
     artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
@@ -469,10 +467,8 @@ def command_validate(cfg):
         SystemExit: With appropriate exit code if validation fails
             - EXIT_MISSING_ARTIFACTS (2): Required artifacts not found
             - EXIT_LOW_MATURITY (4): Low maturity capabilities detected
-            - EXIT_MISSING_DETECTOR (5): Required detector missing
+            - EXIT_MISSING_DETECTOR (5): Reserved for future detector validation
     """
-    from pathlib import Path
-
     artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
     options = cfg.get("options", {})
     fail_on_low_maturity = options.get("fail_on_low_maturity", True)
@@ -504,11 +500,12 @@ def command_validate(cfg):
             logger.error(f"  - {cap.get('id', 'unknown')}: {cap.get('score', 0.0):.2f}")
         sys.exit(EXIT_LOW_MATURITY)
 
-    # Check for missing detectors (if enabled)
+    # Check for missing detectors (future feature)
     if fail_on_missing_detector:
-        # This is a placeholder for future detector validation
-        # For now, we just log a warning
-        logger.warning("Detector validation is not yet implemented")
+        # Placeholder: Detector validation not yet implemented
+        # When implemented, this should check for required detection capabilities
+        # and exit with EXIT_MISSING_DETECTOR if critical detectors are missing
+        logger.warning("Detector validation requested but not yet implemented (EXIT_MISSING_DETECTOR=5)")
 
     logger.info(f"Validation passed: {len(capabilities)} capabilities analyzed, {len(low_maturity_caps)} below threshold")
     if low_maturity_caps:
