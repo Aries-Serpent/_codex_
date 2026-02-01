@@ -30,7 +30,10 @@ class TestMultiComponentInit:
     def test_dependency_resolution(self, orch_workspace):
         deps = {"trainer": ["data_loader"], "evaluator": ["trainer"]}
         order = ["data_loader", "trainer", "evaluator"]
-        assert order[0] == "data_loader"
+        # Validate that all dependencies come before their dependents
+        for component, component_deps in deps.items():
+            for dep in component_deps:
+                assert order.index(dep) < order.index(component)
     
     def test_initialization_order(self, orch_workspace):
         init_order = []

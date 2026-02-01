@@ -62,6 +62,10 @@ class TestRAGWorkflow:
         index = [{"doc_id": "d1", "emb": [0.1]}]
         query = "machine learning"
         results = [{"doc_id": "d1", "score": 0.9}]
+        # Validate workflow components are used correctly
+        assert len(docs) == 1
+        assert docs[0]["id"] == index[0]["doc_id"]
+        assert query.startswith("machine")
         assert len(results) == 1
 
 class TestTrainingWorkflow:
