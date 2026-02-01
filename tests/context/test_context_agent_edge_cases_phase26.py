@@ -4,6 +4,7 @@ Target: 15+ edge case tests for context management and agent operations
 Coverage Target: src/codex/context/, src/agents/
 """
 
+import pytest
 import threading
 class TestContextEdgeCases:
     """Edge case tests for context management"""
@@ -23,7 +24,7 @@ class TestContextEdgeCases:
     def test_context_token_limit_exceeded(self):
         """Test context when token limit is exceeded"""
         # Simulate exceeding token limit
-        _long_message = "word " * 100000
+        long_message = "word " * 100000
         # Should truncate or reject
         assert len(long_message) > 500000
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")

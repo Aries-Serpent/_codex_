@@ -98,6 +98,8 @@ jobs:
           # Then install the main package with test dependencies
           pip install -e ".[test]"
           python -m pytest --version
+          # Verify pytest-xdist is installed and working
+          python -c "import xdist; print(f'✓ pytest-xdist {xdist.__version__} installed')"
 
       - name: Verify pytest plugins and test patterns
         id: validate_plugins

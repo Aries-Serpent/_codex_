@@ -402,16 +402,19 @@ class TestEdgeCases:
         single_file = temp_data_dir / "single.jsonl"
         single_file.write_text('{"key": "value"}\n')
         
-        result = load_jsonl(single_file)
-        assert len(result["data"]) == 1
+        # UPDATED: Unpack tuple return (records, metadata)
+        data, metadata = load_jsonl(single_file)
+        assert len(data) == 1
+        assert metadata["num_records"] == 1
     
     def test_jsonl_no_newline_at_end(self, temp_data_dir: Path):
         """Verify JSONL without trailing newline."""
         no_newline = temp_data_dir / "no_newline.jsonl"
         no_newline.write_text('{"key": "value"}')
         
-        result = load_jsonl(no_newline)
-        assert len(result["data"]) == 1
+        # UPDATED: Unpack tuple return (records, metadata)
+        data, metadata = load_jsonl(no_newline)
+        assert len(data) == 1
     
     def test_csv_single_row(self, temp_data_dir: Path):
         """Verify CSV with single data row."""
@@ -421,8 +424,9 @@ class TestEdgeCases:
             writer.writerow(["col1", "col2"])
             writer.writerow(["val1", "val2"])
         
-        result = load_csv(single_row)
-        assert len(result["data"]) == 1
+        # UPDATED: Unpack tuple return (records, metadata)
+        data, metadata = load_csv(single_row)
+        assert len(data) == 1
     
     def test_jsonl_whitespace_only_lines(self, temp_data_dir: Path):
         """Verify whitespace-only lines are skipped."""
@@ -433,9 +437,10 @@ class TestEdgeCases:
             f.write('\t\t\n')
             f.write('{"valid": "line2"}\n')
         
-        result = load_jsonl(whitespace_file)
+        # UPDATED: Unpack tuple return (records, metadata)
+        data, metadata = load_jsonl(whitespace_file)
         # Whitespace lines should be skipped
-        assert len(result["data"]) == 2
+        assert len(data) == 2
     
     def test_checksum_identical_files(self, temp_data_dir: Path):
         """Verify identical files have same checksum."""
