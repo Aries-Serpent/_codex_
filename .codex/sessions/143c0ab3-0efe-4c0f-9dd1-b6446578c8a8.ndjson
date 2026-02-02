@@ -1,2 +1,0 @@
-{"ts":"2026-01-31T03:20:57.803500Z","type":"session_start","session_id":"143c0ab3-0efe-4c0f-9dd1-b6446578c8a8","cwd":"/home/runner/work/_codex_/_codex_","argv":["/home/runner/work/_codex_/_codex_/src/codex/logging/query_logs.py","--help"]}
-{"ts":"2026-01-31T03:20:57.812141Z","type":"session_end","session_id":"143c0ab3-0efe-4c0f-9dd1-b6446578c8a8","exit_code":1,"duration_s":0}
