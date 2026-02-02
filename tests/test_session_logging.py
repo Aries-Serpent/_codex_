@@ -273,8 +273,6 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
 
 def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
     """Test read-only directory handling"""
-    import os
-    
     # ADDED: Check if we can change UID (root required)
     if os.geteuid() != 0:
         pytest.skip("Test requires root privileges to demote to nobody user")

@@ -169,7 +169,7 @@ def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
     argv_backup = sys.argv[:]
     try:
         # Set up test CLI arguments
-        sys.argv = ["prog", "--epochs", "1", "--grad-accum", "2"]
+        sys.argv = ["prog", "--model-name", "test-tiny-model", "--epochs", "1", "--grad-accum", "2"]
 
         # Execute main function
         train_loop.main()
