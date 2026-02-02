@@ -39,14 +39,11 @@ class TestWorkflowFileValidation:
         """Test that active workflow files use .yml or .yaml extension."""
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
-            for f in workflows_dir.iterdir():
-                # Only validate files with .yml, .yaml, or .md extensions
-                # Skip archive files (.alt, .disabled, .bak, .tombstone, etc.)
-                if f.is_file() and f.suffix in [".yml", ".yaml", ".md"]:
-                    # This assertion will always pass since we filtered by suffix
-                    assert f.suffix in [".yml", ".yaml", ".md"], (
-                        f"Unexpected file extension: {f}"
-                    )
+            # Only validate active workflow files (not archived .alt, .disabled, etc.)
+            active_workflows = [f for f in workflows_dir.iterdir()
+                                if f.is_file() and f.suffix in [".yml", ".yaml", ".md"]]
+            # Verify we have at least some workflows
+            assert len(active_workflows) > 0, "No active workflow files found"
     
     @pytest.mark.skipif(not HAS_YAML, reason="PyYAML not installed")
     def test_workflow_files_valid_yaml(self) -> None:
