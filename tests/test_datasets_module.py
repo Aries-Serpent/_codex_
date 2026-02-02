@@ -52,7 +52,9 @@ def test_build_text_classification_dataloaders(tmp_path):
 
     train_loader, val_loader = build_text_classification_dataloaders(tokenizer, config)
 
-    batch = next(iter(train_loader))
+    # Create iterator explicitly for Python 3.12+ compatibility
+    train_iter = iter(train_loader)
+    batch = next(train_iter)
     assert set(batch.keys()) == {"input_ids", "attention_mask", "labels"}
     assert batch["input_ids"].shape == (2, 32)
     assert batch["labels"].dtype == torch.long
