@@ -44,8 +44,14 @@ def _patch_cuda(monkeypatch, deterministic: bool) -> None:
         return calls["count"] == 1
 
     monkeypatch.setattr(torch.cuda, "is_available", fake_is_available)
-    # cudnn.deterministic may not exist on some builds; allow non-raising set
-    monkeypatch.setattr(torch.backends.cudnn, "deterministic", deterministic, raising=False)
+    
+    # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
+    fake_cudnn = types.SimpleNamespace(
+        deterministic=deterministic,
+        benchmark=False,
+        enabled=True
+    )
+    monkeypatch.setattr(torch.backends, "cudnn", fake_cudnn)
 
 
 def test_passes_when_deterministic(monkeypatch, tmp_path):
@@ -63,7 +69,14 @@ def test_raises_when_nondeterministic(monkeypatch, tmp_path):
 
 def _patch_cuda_simple(monkeypatch, deterministic: bool) -> None:
     monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
-    monkeypatch.setattr(torch.backends.cudnn, "deterministic", deterministic, raising=False)
+    
+    # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
+    fake_cudnn = types.SimpleNamespace(
+        deterministic=deterministic,
+        benchmark=False,
+        enabled=True
+    )
+    monkeypatch.setattr(torch.backends, "cudnn", fake_cudnn)
 
 
 def _stub_hf_components(monkeypatch) -> None:
