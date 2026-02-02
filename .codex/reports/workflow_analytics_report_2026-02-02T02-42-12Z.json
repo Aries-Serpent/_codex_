@@ -1,0 +1,102 @@
+{
+  "report_metadata": {
+    "generated_at": "2026-02-02T02-42-12Z",
+    "report_type": "workflow_analytics",
+    "agent": "workflow-analytics-agent",
+    "analysis_period": "Last 100 workflow runs",
+    "version": "1.0.0",
+    "run_id": "21575490862",
+    "filters": {
+      "workflow": "all",
+      "status": "all"
+    }
+  },
+  "summary": {
+    "total_runs": 100,
+    "conclusion_distribution": {
+      "skipped": 83,
+      "in_progress": 10,
+      "success": 6,
+      "failure": 1
+    },
+    "success_rate": 6.67,
+    "health_status": "GOOD",
+    "completed_runs": 90,
+    "successful_runs": 6,
+    "failed_runs": 1
+  },
+  "error_patterns_detected": 0,
+  "workflow_runs_analyzed": [
+    {
+      "id": 21575496734,
+      "name": "AfterMath Lessons Learned",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:42:07Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575496728,
+      "name": "CI Diagnostic Automation",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:42:07Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575495380,
+      "name": "Copilot code review",
+      "conclusion": "",
+      "created_at": "2026-02-02T02:42:03Z",
+      "branch": "refs/pull/3095/head"
+    },
+    {
+      "id": 21575494069,
+      "name": "Artifact Monitoring",
+      "conclusion": "",
+      "created_at": "2026-02-02T02:42:00Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575493147,
+      "name": "CI Diagnostic Automation",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:41:56Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575492855,
+      "name": "AfterMath Lessons Learned",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:41:55Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575492235,
+      "name": "AfterMath Lessons Learned",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:41:53Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575492224,
+      "name": "CI Diagnostic Automation",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:41:53Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575490862,
+      "name": "Scheduled Workflow Analytics",
+      "conclusion": "",
+      "created_at": "2026-02-02T02:41:48Z",
+      "branch": "main"
+    },
+    {
+      "id": 21575486729,
+      "name": "CI Diagnostic Automation",
+      "conclusion": "skipped",
+      "created_at": "2026-02-02T02:41:32Z",
+      "branch": "main"
+    }
+  ],
+  "detected_patterns": {}
+}
