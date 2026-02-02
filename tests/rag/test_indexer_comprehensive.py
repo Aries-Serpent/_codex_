@@ -1,8 +1,6 @@
 """Comprehensive tests for RAG indexer module."""
 
-import hashlib
 import json
-import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -33,7 +31,7 @@ class TestChunkText:
         """Test chunking text smaller than chunk size."""
         text = "Hello world"
         chunks = chunk_text(text, chunk_size=100)
-        
+
         assert len(chunks) == 1
         assert chunks[0][2] == "Hello world"
         assert chunks[0][0] == 0
@@ -42,7 +40,7 @@ class TestChunkText:
         """Test chunking text larger than chunk size."""
         text = "A" * 1000
         chunks = chunk_text(text, chunk_size=100, overlap=10)
-        
+
         assert len(chunks) > 1
         for start, end, chunk in chunks:
             assert len(chunk) <= 100
@@ -51,7 +49,7 @@ class TestChunkText:
         """Test chunk overlap is respected."""
         text = "A" * 300
         chunks = chunk_text(text, chunk_size=100, overlap=20)
-        
+
         # Check that consecutive chunks overlap
         assert len(chunks) >= 2
         if len(chunks) >= 2:
@@ -64,7 +62,7 @@ class TestChunkText:
         """Test chunking prefers sentence boundaries."""
         text = "First sentence. Second sentence. Third sentence. Fourth sentence."
         chunks = chunk_text(text, chunk_size=30, overlap=5)
-        
+
         # At least one chunk should end with period
         assert any(chunk[2].rstrip().endswith('.') for chunk in chunks)
 
@@ -72,7 +70,7 @@ class TestChunkText:
         """Test chunk_size must be positive."""
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=0)
-        
+
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=-10)
 
@@ -80,10 +78,10 @@ class TestChunkText:
         """Test overlap must be non-negative and less than chunk_size."""
         with pytest.raises(ValueError, match="overlap must be non-negative"):
             chunk_text("test", chunk_size=100, overlap=-10)
-        
+
         with pytest.raises(ValueError, match="less than chunk_size"):
             chunk_text("test", chunk_size=100, overlap=100)
-        
+
         with pytest.raises(ValueError, match="less than chunk_size"):
             chunk_text("test", chunk_size=100, overlap=150)
 
@@ -91,7 +89,7 @@ class TestChunkText:
         """Test chunks return valid (start, end, text) tuples."""
         text = "Test text for chunking"
         chunks = chunk_text(text, chunk_size=10)
-        
+
         for start, end, chunk_content in chunks:
             assert isinstance(start, int)
             assert isinstance(end, int)
@@ -104,7 +102,7 @@ class TestChunkText:
         """Test that chunked text can reconstruct original (roughly)."""
         text = "Line one\nLine two\nLine three"
         chunks = chunk_text(text, chunk_size=20, overlap=5)
-        
+
         # Check that all chunks are from original text
         for start, end, chunk in chunks:
             assert chunk.strip() in text or text[start:end].strip() == chunk.strip()
@@ -113,7 +111,7 @@ class TestChunkText:
         """Test chunks are stripped of surrounding whitespace."""
         text = "  Lots   of   spaces  "
         chunks = chunk_text(text, chunk_size=50)
-        
+
         assert len(chunks) >= 1
         # Chunks should be stripped
         for _, _, chunk in chunks:
@@ -123,7 +121,7 @@ class TestChunkText:
         """Test that empty chunks are not included."""
         text = "Text\n\n\n\nMore text"
         chunks = chunk_text(text, chunk_size=10)
-        
+
         # All chunks should have content
         for _, _, chunk in chunks:
             assert len(chunk) > 0
@@ -132,7 +130,7 @@ class TestChunkText:
         """Test chunking text with newlines."""
         text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
         chunks = chunk_text(text, chunk_size=15, overlap=3)
-        
+
         assert len(chunks) >= 1
         # Should preserve newlines in chunks
         combined = ''.join([c[2] for c in chunks])
@@ -143,14 +141,14 @@ class TestChunkText:
         """Test chunking respects different sentence delimiters."""
         text = "Question? Another question? Statement. Exclamation!"
         chunks = chunk_text(text, chunk_size=30, overlap=5)
-        
+
         assert len(chunks) >= 1
 
     def test_chunk_metadata_positions(self):
         """Test chunk positions are accurate."""
         text = "0123456789" * 10  # 100 chars
         chunks = chunk_text(text, chunk_size=30, overlap=5)
-        
+
         for start, end, chunk in chunks:
             # Verify position matches actual text
             assert text[start:end].strip() == chunk
@@ -159,7 +157,7 @@ class TestChunkText:
         """Test chunking with very small chunk size."""
         text = "Hello world"
         chunks = chunk_text(text, chunk_size=5, overlap=1)
-        
+
         assert len(chunks) >= 1
 
 
@@ -176,7 +174,7 @@ class TestEmbedChunks:
     def test_embed_empty_chunks(self):
         """Test embedding empty chunks returns empty array."""
         embeddings = embed_chunks([])
-        
+
         assert isinstance(embeddings, np.ndarray)
         assert embeddings.shape[0] == 0
 
@@ -187,10 +185,10 @@ class TestEmbedChunks:
             (10, 20, "Chunk two"),
             (20, 30, "Chunk three"),
         ]
-        
+
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
             embeddings = embed_chunks(chunks)
-            
+
             assert isinstance(embeddings, np.ndarray)
             assert embeddings.shape[0] == 3
             mock_model.encode.assert_called_once()
@@ -198,15 +196,15 @@ class TestEmbedChunks:
     def test_embed_chunks_with_model_profile(self, mock_model):
         """Test embedding with custom model profile."""
         chunks = [(0, 10, "Test")]
-        
+
         model_profile = {
             "model_name": "sentence-transformers/paraphrase-MiniLM-L6-v2",
             "cache_dir": "/tmp/cache"
         }
-        
+
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model) as mock_st:
             embed_chunks(chunks, model_profile=model_profile)
-            
+
             # Check model was initialized with correct params
             mock_st.assert_called_once()
             call_args = mock_st.call_args
@@ -215,18 +213,24 @@ class TestEmbedChunks:
     def test_embed_chunks_default_model(self, mock_model):
         """Test embedding uses default model when no profile provided."""
         chunks = [(0, 10, "Test")]
-        
+
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model) as mock_st:
             embed_chunks(chunks)
-            
+
             # Should use default model
             call_args = mock_st.call_args[0]
             assert "all-MiniLM-L6-v2" in call_args[0]
 
     def test_embed_chunks_import_error(self):
         """Test embed_chunks raises error if sentence-transformers not installed."""
-        with patch('sentence_transformers.SentenceTransformer', side_effect=ImportError):
-            with pytest.raises(ImportError):
+
+        # Mock the entire module with __version__
+        mock_st = MagicMock()
+        mock_st.__version__ = "2.2.0"
+        mock_st.SentenceTransformer.side_effect = ImportError("sentence-transformers not installed")
+
+        with patch.dict('sys.modules', {'sentence_transformers': mock_st}):
+            with pytest.raises(ImportError, match="sentence-transformers"):
                 embed_chunks([(0, 10, "Test")])
 
     def test_embed_chunks_extracts_text_correctly(self, mock_model):
@@ -235,10 +239,10 @@ class TestEmbedChunks:
             (0, 5, "Hello"),
             (5, 10, "World"),
         ]
-        
+
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
             embed_chunks(chunks)
-            
+
             # Check that encode was called with the text parts
             call_args = mock_model.encode.call_args[0]
             assert "Hello" in call_args[0]
@@ -269,7 +273,7 @@ class TestPersistIndex:
                 tenant_id="test_tenant",
                 index_dir=str(tmp_path)
             )
-            
+
             assert index_path.exists()
             assert index_path.name == "test_index"
 
@@ -287,7 +291,7 @@ class TestPersistIndex:
         """Test mismatch between embeddings and chunks raises error."""
         embeddings = np.random.randn(3, 384).astype(np.float32)
         chunks = [(0, 10, "Only one chunk")]
-        
+
         with pytest.raises(ValueError, match="Mismatch"):
             persist_index(
                 index_name="test",
@@ -300,22 +304,22 @@ class TestPersistIndex:
         """Test index persistence creates proper directory structure."""
         embeddings = np.random.randn(2, 384).astype(np.float32)
         chunks = [(0, 10, "One"), (10, 20, "Two")]
-        
+
         mock_index = MagicMock()
         mock_index.ntotal = 2
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
-            
-            index_path = persist_index(
+
+            persist_index(
                 index_name="my_index",
                 embeddings=embeddings,
                 chunks=chunks,
                 tenant_id="tenant1",
                 index_dir=str(tmp_path)
             )
-            
+
             # Check directory structure
             assert (tmp_path / "tenant1" / "my_index").exists()
 
@@ -323,19 +327,19 @@ class TestPersistIndex:
         """Test index metadata is saved correctly."""
         embeddings = np.random.randn(2, 384).astype(np.float32)
         chunks = [(0, 10, "One"), (10, 20, "Two")]
-        
+
         metadata = {
             "source": "test_source",
             "version": "1.0"
         }
-        
+
         mock_index = MagicMock()
         mock_index.ntotal = 2
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
-            
+
             index_path = persist_index(
                 index_name="test_index",
                 embeddings=embeddings,
@@ -343,11 +347,11 @@ class TestPersistIndex:
                 metadata=metadata,
                 index_dir=str(tmp_path)
             )
-            
+
             # Load and verify metadata
             metadata_file = index_path / "metadata.json"
             assert metadata_file.exists()
-            
+
             with open(metadata_file) as f:
                 saved_metadata = json.load(f)
                 assert saved_metadata["source"] == "test_source"
@@ -357,25 +361,25 @@ class TestPersistIndex:
         """Test chunk metadata is saved correctly."""
         embeddings = np.random.randn(2, 384).astype(np.float32)
         chunks = [(0, 10, "First"), (10, 20, "Second")]
-        
+
         mock_index = MagicMock()
         mock_index.ntotal = 2
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
-            
+
             index_path = persist_index(
                 index_name="test_index",
                 embeddings=embeddings,
                 chunks=chunks,
                 index_dir=str(tmp_path)
             )
-            
+
             # Load and verify chunks
             chunks_file = index_path / "chunks.json"
             assert chunks_file.exists()
-            
+
             with open(chunks_file) as f:
                 saved_chunks = json.load(f)
                 assert len(saved_chunks) == 2
@@ -415,31 +419,31 @@ class TestLoadIndex:
         # Create mock index directory
         index_dir = tmp_path / "tenant1" / "test_index"
         index_dir.mkdir(parents=True)
-        
+
         # Create mock files
         (index_dir / "index.faiss").touch()
-        
+
         chunks_data = [
             {"id": 0, "text": "Chunk 1", "start": 0, "end": 10}
         ]
         with open(index_dir / "chunks.json", "w") as f:
             json.dump(chunks_data, f)
-        
+
         metadata = {"index_name": "test_index", "dimension": 384}
         with open(index_dir / "metadata.json", "w") as f:
             json.dump(metadata, f)
-        
+
         mock_faiss_index = MagicMock()
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = mock_faiss_index
-            
+
             index, chunks, meta = load_index(
                 index_name="test_index",
                 tenant_id="tenant1",
                 index_dir=str(tmp_path)
             )
-            
+
             assert index is not None
             assert len(chunks) == 1
             assert meta["index_name"] == "test_index"
@@ -459,12 +463,12 @@ class TestLoadIndex:
         index_dir = tmp_path / "tenant1" / "test_index"
         index_dir.mkdir(parents=True)
         (index_dir / "index.faiss").touch()
-        
+
         # No chunks.json file created
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
-            
+
             # Should handle missing chunks gracefully or raise appropriate error
             try:
                 load_index(
@@ -481,15 +485,15 @@ class TestLoadIndex:
         index_dir = tmp_path / "tenant1" / "test_index"
         index_dir.mkdir(parents=True)
         (index_dir / "index.faiss").touch()
-        
+
         with open(index_dir / "chunks.json", "w") as f:
             json.dump([], f)
-        
+
         # No metadata.json file
-        
+
         with patch('codex.rag.indexer.faiss') as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
-            
+
             # Should handle missing metadata
             try:
                 load_index(

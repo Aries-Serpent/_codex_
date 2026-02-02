@@ -43,7 +43,7 @@ import sys
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
@@ -447,10 +447,6 @@ def _set_seed(seed: Optional[int]) -> int:
 
 
 def _now_ts() -> str:
-    return datetime.now(UTC).isoformat()
-
-
-def _ts() -> str:
     """Generate ISO 8601 timestamp with 'Z' suffix.
     
     Returns:

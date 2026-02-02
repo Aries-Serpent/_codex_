@@ -20,7 +20,7 @@ def error_workspace(tmp_path):
 
 class TestExceptionHandling:
     """Exception handling across modules (4 tests)."""
-    
+
     def test_module_exception_capture(self, error_workspace):
         """Test capturing exceptions from modules."""
         try:
@@ -29,21 +29,21 @@ class TestExceptionHandling:
             error_log = {"type": "ValueError", "message": str(e)}
             (error_workspace / "errors" / "error.json").write_text(json.dumps(error_log))
         assert (error_workspace / "errors" / "error.json").exists()
-    
+
     def test_exception_propagation(self, error_workspace):
         """Test exception propagation through layers."""
         def layer1():
             raise RuntimeError("Layer 1 error")
-        
+
         def layer2():
             try:
                 layer1()
             except RuntimeError:
                 raise RuntimeError("Layer 2 propagated")
-        
+
         with pytest.raises(RuntimeError, match="Layer 2"):
             layer2()
-    
+
     def test_error_context_preservation(self, error_workspace):
         """Test preserving error context."""
         context = {"module": "trainer", "step": 100, "batch": 5}
@@ -52,30 +52,30 @@ class TestExceptionHandling:
         except ValueError as e:
             error_info = {"error": str(e), "context": context}
             assert error_info["context"]["step"] == 100
-    
+
     def test_cross_module_error_handling(self, error_workspace):
         """Test error handling across modules."""
         errors = []
-        
+
         def module_a():
             try:
                 raise ValueError("Module A error")
             except ValueError as e:
                 errors.append({"module": "A", "error": str(e)})
                 raise
-        
+
         def module_b():
             try:
                 module_a()
             except ValueError as e:
                 errors.append({"module": "B", "caught": str(e)})
-        
+
         module_b()
         assert len(errors) == 2
 
 class TestGracefulDegradation:
     """Graceful degradation (3 tests)."""
-    
+
     def test_fallback_to_default(self, error_workspace):
         """Test fallback to default behavior."""
         try:
@@ -84,50 +84,51 @@ class TestGracefulDegradation:
                 raise ValueError("Feature unavailable")
         except ValueError:
             config["advanced_feature"] = "default_value"
-        
+
         assert config["advanced_feature"] == "default_value"
-    
+
     def test_partial_functionality(self, error_workspace):
         """Test maintaining partial functionality."""
         features = {"core": True, "advanced": False, "experimental": False}
-        
+
         # Core feature should always work
         try:
             if not features["core"]:
                 raise RuntimeError("Core feature failed")
         except RuntimeError:
             features["core"] = True  # Restore
-        
+
         assert features["core"] is True
-    
+
     def test_service_degradation(self, error_workspace):
         """Test service degradation under errors."""
         service_levels = ["full", "reduced", "minimal", "offline"]
-        
+
         # Simulate errors forcing degradation
+        current_level = "reduced"
         try:
             raise ConnectionError("Service overload")
         except ConnectionError:
-            current_level = "reduced"
-        
+            pass
+
         assert current_level in service_levels
         assert current_level != "full"
 
 class TestRecoveryMechanisms:
     """Recovery mechanisms (3 tests)."""
-    
+
     def test_retry_mechanism(self, error_workspace):
         """Test automatic retry on failure."""
         attempts = 0
         max_retries = 3
-        
+
         def unreliable_operation():
             nonlocal attempts
             attempts += 1
             if attempts < 3:
                 raise RuntimeError("Temporary failure")
             return "success"
-        
+
         result = None
         for _ in range(max_retries):
             try:
@@ -135,17 +136,17 @@ class TestRecoveryMechanisms:
                 break
             except RuntimeError:
                 continue
-        
+
         assert result == "success"
         assert attempts == 3
-    
+
     def test_checkpoint_recovery(self, error_workspace):
         """Test recovery from checkpoint."""
         # Save checkpoint
         checkpoint = {"step": 100, "loss": 0.5}
         ckpt_path = error_workspace / "recovery" / "checkpoint.json"
         ckpt_path.write_text(json.dumps(checkpoint))
-        
+
         # Simulate failure and recovery
         try:
             raise RuntimeError("Training interrupted")
@@ -153,16 +154,16 @@ class TestRecoveryMechanisms:
             # Recover from checkpoint
             loaded = json.loads(ckpt_path.read_text())
             recovered_step = loaded["step"]
-        
+
         assert recovered_step == 100
-    
+
     def test_state_restoration(self, error_workspace):
         """Test state restoration after error."""
         # Save state
         original_state = {"model_weights": [0.1, 0.2], "optimizer_state": {"lr": 0.001}}
         state_path = error_workspace / "recovery" / "state.json"
         state_path.write_text(json.dumps(original_state))
-        
+
         # Simulate error and restore
         try:
             # Corrupt state
@@ -173,5 +174,5 @@ class TestRecoveryMechanisms:
             # Restore from backup
             restored = json.loads(state_path.read_text())
             current_state = restored
-        
+
         assert current_state["model_weights"] == [0.1, 0.2]
