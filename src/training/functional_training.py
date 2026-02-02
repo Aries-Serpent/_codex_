@@ -297,6 +297,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             **tokenizer_kwargs,
         )
         if getattr(tokenizer, "pad_token", None) is None:
+            logger.warning(
+                "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "This may affect training behaviour.",
+                tok_name,
+            )
             tokenizer.pad_token = tokenizer.eos_token
 
         tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")

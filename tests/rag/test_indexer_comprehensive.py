@@ -225,8 +225,15 @@ class TestEmbedChunks:
 
     def test_embed_chunks_import_error(self):
         """Test embed_chunks raises error if sentence-transformers not installed."""
-        with patch('sentence_transformers.SentenceTransformer', side_effect=ImportError):
-            with pytest.raises(ImportError):
+        import sys
+        
+        # Mock the entire module with __version__
+        mock_st = MagicMock()
+        mock_st.__version__ = "2.2.0"
+        mock_st.SentenceTransformer.side_effect = ImportError("sentence-transformers not installed")
+        
+        with patch.dict('sys.modules', {'sentence_transformers': mock_st}):
+            with pytest.raises(ImportError, match="sentence-transformers"):
                 embed_chunks([(0, 10, "Test")])
 
     def test_embed_chunks_extracts_text_correctly(self, mock_model):
