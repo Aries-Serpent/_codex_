@@ -6,6 +6,7 @@ import os
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+import importlib.util
 
 import numpy as np
 import pytest
@@ -22,6 +23,14 @@ try:
 except ImportError:
     RAG_EMBEDDINGS_AVAILABLE = False
 
+# Check if sentence_transformers is available
+try:
+    if importlib.util.find_spec("sentence_transformers") is None:
+        raise ImportError
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 # Check if openai is available
 try:
     import openai  # noqa: F401
@@ -30,7 +39,7 @@ except ImportError:
     OPENAI_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
-    not RAG_EMBEDDINGS_AVAILABLE,
+    not RAG_EMBEDDINGS_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
     reason="RAG embeddings dependencies (sentence_transformers) not installed"
 )
 
