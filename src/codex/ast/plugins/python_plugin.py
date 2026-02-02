@@ -50,7 +50,7 @@ class PythonPlugin(ASTPlugin):
     def validate(self) -> bool:
         """Validate plugin is ready."""
         try:
-            import libcst
+            import libcst  # noqa: F401 - Testing optional dependency availability
             return True
         except ImportError:
             return False

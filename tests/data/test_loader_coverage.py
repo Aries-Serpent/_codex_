@@ -113,9 +113,9 @@ class TestModuleImport:
             from codex_ml.data.loader import (
                 CacheManifest,
                 DataPreparationError,
-                load_dataset,
-                load_texts,
-                stream_texts,
+                load_dataset,  # noqa: F401 - Testing optional dependency availability
+                load_texts,  # noqa: F401 - Testing optional dependency availability
+                stream_texts,  # noqa: F401 - Testing optional dependency availability
             )
             assert CacheManifest is not None
             assert DataPreparationError is not None

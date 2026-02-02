@@ -21,7 +21,7 @@ except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
-    import torch
+    import torch  # noqa: F401 - Testing optional dependency availability
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False

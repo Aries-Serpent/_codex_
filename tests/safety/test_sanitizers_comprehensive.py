@@ -15,9 +15,9 @@ import pytest
 
 try:
     from codex_ml.safety.sanitizers import (
-        DEFAULT_JAILBREAK_PATTERNS,
-        DEFAULT_PII_PATTERNS,
-        DEFAULT_SECRET_PATTERNS,
+        DEFAULT_JAILBREAK_PATTERNS,  # noqa: F401 - Testing optional dependency availability
+        DEFAULT_PII_PATTERNS,  # noqa: F401 - Testing optional dependency availability
+        DEFAULT_SECRET_PATTERNS,  # noqa: F401 - Testing optional dependency availability
         SafetyConfig,
         sanitize_output,
         sanitize_prompt,

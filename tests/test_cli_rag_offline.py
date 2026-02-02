@@ -50,7 +50,7 @@ class TestTfidfIntegration:
         """Test building index with TF-IDF provider."""
         # Note: This test requires scikit-learn
         try:
-            import sklearn
+            import sklearn  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("scikit-learn not installed")
         

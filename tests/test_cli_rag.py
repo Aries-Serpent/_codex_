@@ -610,7 +610,7 @@ class TestIntegration:
         """Test full build and query workflow."""
         # Skip if sentence-transformers not available
         try:
-            import sentence_transformers
+            import sentence_transformers  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("sentence-transformers not installed")
         

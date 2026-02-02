@@ -235,7 +235,7 @@ class TestImportExceptions:
         """Test ImportError handling."""
         result = None
         try:
-            import nonexistent_module_xyz  # type: ignore
+            import nonexistent_module_xyz  # type: ignore  # noqa: F401 - Testing import error
         except ImportError:
             result = "import_failed"
         assert result == "import_failed"
@@ -244,7 +244,7 @@ class TestImportExceptions:
         """Test ModuleNotFoundError handling."""
         result = None
         try:
-            import another_nonexistent_module  # type: ignore
+            import another_nonexistent_module  # type: ignore  # noqa: F401 - Testing error
         except ModuleNotFoundError:
             result = "module_not_found"
         assert result == "module_not_found"
@@ -252,7 +252,7 @@ class TestImportExceptions:
     def test_optional_dependency_handler(self) -> None:
         """Test optional dependency handling pattern."""
         try:
-            import nonexistent_optional  # type: ignore
+            import nonexistent_optional  # type: ignore  # noqa: F401 - Testing pattern
             has_optional = True
         except ImportError:
             has_optional = False

@@ -131,7 +131,7 @@ class ProviderFactory:
         
         # Check GitHub
         try:
-            from security.providers.github_provider import GitHubTokenProvider
+            from security.providers.github_provider import GitHubTokenProvider  # noqa: F401 - Testing optional dependency availability
             available.append(ProviderType.GITHUB)
         except ImportError:
             # GitHub provider dependencies not available (e.g., requests library)
@@ -140,7 +140,7 @@ class ProviderFactory:
         
         # Check AWS
         try:
-            from security.providers.aws_provider import AWSSecretsManagerProvider
+            from security.providers.aws_provider import AWSSecretsManagerProvider  # noqa: F401 - Testing optional dependency availability
             available.append(ProviderType.AWS_SECRETS_MANAGER)
         except ImportError:
             # AWS provider dependencies not available (e.g., boto3 library)

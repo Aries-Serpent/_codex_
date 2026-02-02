@@ -115,7 +115,7 @@ class TestConfigurationLoading:
     def test_load_valid_yaml_config(self, minimal_config):
         """Verify loading valid YAML configuration."""
         try:
-            from codex.utils.config_loader import load_config, get_loader
+            from codex.utils.config_loader import load_config, get_loader  # noqa: F401 - Testing optional dependency availability
             
             get_loader()
             # Config loading should not raise

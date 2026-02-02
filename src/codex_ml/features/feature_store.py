@@ -399,8 +399,8 @@ class FeatureStore:
         """
         try:
             import pandas as pd
-            import pyarrow as pa
-            import pyarrow.parquet as pq
+            import pyarrow as pa  # noqa: F401 - Testing optional dependency availability
+            import pyarrow.parquet as pq  # noqa: F401 - Testing optional dependency availability
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)

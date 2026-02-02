@@ -12,7 +12,7 @@ import pytest
 
 # Import with graceful fallback
 try:
-    import torch
+    import torch  # noqa: F401 - Testing optional dependency availability
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False

@@ -119,7 +119,7 @@ class TestMentalMapNode:
     def MentalMapNode(self):
         """Import MentalMapNode class."""
         try:
-            from agents.mental_mapping import MentalMapNode, NodeType
+            from agents.mental_mapping import MentalMapNode, NodeType  # noqa: F401 - Testing optional dependency availability
             return MentalMapNode
         except ImportError:
             pytest.skip("MentalMapNode not available")
