@@ -189,8 +189,9 @@ class CommonIssueFixer:
             for yml_file in workflow_dir.glob("*.yml"):
                 content = yml_file.read_text()
                 # Replace fail-under=25 or fail-under=85 with fail-under=70
+                # Use word boundary to avoid matching 700, 170, etc.
                 new_content = re.sub(
-                    r'(fail-under[=\s]+)(?!70)\d+',
+                    r'(fail-under[=\s]+)(?!70\b)\d+\b',
                     r'\g<1>70',
                     content
                 )
