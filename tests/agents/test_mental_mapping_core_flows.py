@@ -14,14 +14,11 @@ Target coverage: 31.33% → 85%+
 import pytest
 from agents.mental_mapping import (
     MentalMappingModel,
-    MentalNode,
-    MentalEdge,
     NodeType,
     EdgeType,
     ReasoningStep,
     set_clock,
     reset_clock,
-    get_timestamp,
 )
 
 
@@ -254,7 +251,7 @@ class TestMentalMappingCoreFlows:
             reasoning="Testing appraisal",
         )
 
-        outcome_node = mental_map.record_outcome(
+        mental_map.record_outcome(
             decision_node_id=decision.node_id,
             outcome_content="Mixed results - some goals met, others not",
             success=False,

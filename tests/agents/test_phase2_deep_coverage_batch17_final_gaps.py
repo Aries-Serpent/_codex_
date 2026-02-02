@@ -219,7 +219,7 @@ class TestUncoveredPaths_WorkflowNavigator:
 
     def test_workflow_status_all_states(self):
         """Test workflow status in all possible states"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep, StepStatus
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -298,7 +298,7 @@ class TestRarelyUsed_AllModules:
         from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
-        node = model.create_node(NodeType.PROBLEM, {"test": True})
+        model.create_node(NodeType.PROBLEM, {"test": True})
 
         # These methods exist for persistence
         assert hasattr(model, "save_mental_map")
@@ -329,7 +329,7 @@ class TestCompleteCodePaths_Integration:
         memory.store_memory(key="decision", value=str(assessment))
 
         # Create mental map entry
-        node = mental_map.create_node(NodeType.PROBLEM, {"decision": "stored"})
+        mental_map.create_node(NodeType.PROBLEM, {"decision": "stored"})
 
         # Verify all components worked
         stored = memory.retrieve_memory("decision")

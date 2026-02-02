@@ -14,7 +14,6 @@ Test Categories:
 
 import pytest
 import math
-from typing import Dict, Any
 
 from agents.physics_orchestrator import EnergyState, EnergyLandscape
 
@@ -348,7 +347,7 @@ class TestEnergyLandscapeIntegration:
         landscape_hot.add_state(EnergyState({"x": 1}, energy=10.0, entropy=1.0))
         landscape_hot.add_state(EnergyState({"x": 2}, energy=100.0, entropy=1.0))
 
-        selected_hot = landscape_hot.select_state()
+        landscape_hot.select_state()
         # Current implementation is deterministic, but probabilities are closer
         prob_low_cold = landscape_cold.gibbs_probability(landscape_cold.states[0])
         prob_low_hot = landscape_hot.gibbs_probability(landscape_hot.states[0])

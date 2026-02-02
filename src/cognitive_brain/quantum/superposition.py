@@ -208,7 +208,7 @@ class SuperpositionEngine:
                 try:
                     score = future.result()
                     results[idx] = max(score, 0.0)  # Ensure non-negative
-                except Exception as e:
+                except Exception:
                     # Fallback to zero score on error
                     results[idx] = 0.0
             

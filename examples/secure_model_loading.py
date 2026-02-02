@@ -164,7 +164,7 @@ def main():
     # Load model securely
     logger.info("Loading model securely...")
     loader = SecureModelLoader(SimpleModel, device="cpu")
-    loaded_model = loader.load_model(test_checkpoint_path)
+    loader.load_model(test_checkpoint_path)
     
     # Run inference
     logger.info("Running inference...")

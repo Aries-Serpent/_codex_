@@ -7,9 +7,8 @@ maintains a registry of marked tests with metadata.
 import ast
 import json
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict, List
 from datetime import datetime
-import re
 
 
 class MarkerScanner:

@@ -6,9 +6,7 @@ Provides detailed diagnostics if failures persist.
 """
 import subprocess
 import sys
-import json
-from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import Dict, Tuple
 
 
 def run_test(test_path: str) -> Tuple[bool, str]:

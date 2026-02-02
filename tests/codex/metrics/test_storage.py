@@ -4,11 +4,7 @@ Tests for codex.metrics.storage module.
 This module contains tests for metric storage with JSON and SQLite backends.
 """
 
-import pytest
-import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-import json
 
 
 class TestMetricStorage:
@@ -72,7 +68,7 @@ class TestMetricStorage:
         json_dir = tmp_path / "nested" / "json" / "dir"
         sqlite_path = tmp_path / "nested" / "db" / "test.db"
         
-        storage = MetricStorage(
+        MetricStorage(
             json_dir=json_dir,
             sqlite_path=sqlite_path
         )

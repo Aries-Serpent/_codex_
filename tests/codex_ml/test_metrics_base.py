@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import math
 
-import pytest
 
 from codex_ml.metrics_base import accuracy, f1_score, perplexity, precision, recall
 

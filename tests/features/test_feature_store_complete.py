@@ -3,13 +3,11 @@
 import pytest
 import json
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 from codex_ml.features.feature_store import (
     FeatureStore,
     FeatureGroup,
     Feature,
-    FeatureMetadata,
-    FeatureVersion,
 )
 
 
@@ -175,7 +173,7 @@ class TestFeatureStoreComplete:
 
         # Clear cache and try again
         store.clear_cache()
-        result3 = store.materialize_features(["val"], inputs, cache=True)
+        store.materialize_features(["val"], inputs, cache=True)
         assert call_count[0] == 2  # Cache was cleared
 
     def test_registry_persistence(self, store, tmp_path):

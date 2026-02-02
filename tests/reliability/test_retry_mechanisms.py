@@ -5,12 +5,8 @@ Tests cover configurable retries, exponential backoff, and selective retry logic
 """
 
 import random
-import time
 from datetime import datetime
-from typing import Any, Callable, Optional
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 class TestRetryConfiguration:

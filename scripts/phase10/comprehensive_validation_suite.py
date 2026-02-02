@@ -41,11 +41,9 @@ import os
 import sys
 import json
 import subprocess
-import time
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime, UTC
-import hashlib
 
 class Phase10Validator:
     """Comprehensive validation for Phase 10 Master Integration."""
@@ -489,9 +487,9 @@ class Phase10Validator:
                             pass
             
             if metrics:
-                overall = metrics.get("Overall Health", 0)
-                knowledge = metrics.get("Knowledge Synthesis", 0)
-                self_healing = metrics.get("Self-Healing", 0)
+                metrics.get("Overall Health", 0)
+                metrics.get("Knowledge Synthesis", 0)
+                metrics.get("Self-Healing", 0)
                 
                 avg_score = sum(metrics.values()) / len(metrics)
                 

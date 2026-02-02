@@ -19,7 +19,6 @@ import pytest
 from agents.mental_mapping import (
     MentalMappingModel,
     MentalNode,
-    MentalEdge,
     NodeType,
     EdgeType,
     ReasoningStep,
@@ -330,7 +329,6 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_strategy_state_creation(self):
         """Table 4, Eq #1: Strategy state (not StrategySpace)"""
-        import numpy as np
 
         strategies = ["s1", "s2"]
 

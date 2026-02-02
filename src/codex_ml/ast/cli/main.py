@@ -51,7 +51,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         return 1
 
     # Initialize registry with config
-    config = ASTConfig()
+    ASTConfig()
     registry = AnalyzerRegistry()
 
     print(f"Analyzing: {target_path}")

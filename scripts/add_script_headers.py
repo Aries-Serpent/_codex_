@@ -18,7 +18,6 @@ Last Updated: 2026-01-16
 """
 
 import sys
-import re
 from pathlib import Path
 from typing import Optional
 

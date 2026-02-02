@@ -451,8 +451,6 @@ class QuantumGameState:
             return 0.0
 
         # Calculate overlap of reduced states with maximally mixed
-        m = self.blue_state.num_strategies
-        n = self.red_state.num_strategies
 
         # Purity measures: Tr(ρ²)
         purity_blue = np.trace(rho_blue @ rho_blue).real

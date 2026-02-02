@@ -15,13 +15,13 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING
+from unittest.mock import MagicMock
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 # =============================================================================
 # Constants

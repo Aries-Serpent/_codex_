@@ -5,7 +5,6 @@ Tests Docker, Kubernetes, Helm, Terraform detection and
 deployment script recognition.
 """
 
-import pytest
 from scripts.space_traversal.detectors.deployment_infrastructure import detect
 
 

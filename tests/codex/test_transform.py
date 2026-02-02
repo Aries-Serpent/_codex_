@@ -8,11 +8,8 @@ Tests cover:
 - Dry-run mode
 """
 
-import json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 class TestTransformer:

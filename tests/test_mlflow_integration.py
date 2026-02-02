@@ -3,7 +3,7 @@
 import pytest
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from codex_ml.training.mlflow_integration import (
     MLflowTracker,

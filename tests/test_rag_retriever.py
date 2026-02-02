@@ -530,7 +530,6 @@ class TestMultiIndexRetrieverErrorPaths:
 
     def test_query_error_in_individual_index(self, multiple_indices):
         """Test query error handling for individual indices (line 329-330)"""
-        from unittest.mock import MagicMock, patch
         
         retriever = MultiIndexRetriever(
             indices=multiple_indices["indices"],

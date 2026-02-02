@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
 
 
 def test_error_hierarchy_to_dict() -> None:

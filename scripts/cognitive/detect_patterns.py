@@ -35,9 +35,8 @@ Part of Perception Layer - integrates with Agent 1 for pattern recognition
 """
 import argparse
 import json
-import sys
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 def detect_patterns(input_dir: str, output_path: str, agent1_integration: bool = False) -> Dict[str, Any]:
@@ -140,7 +139,7 @@ def detect_patterns(input_dir: str, output_path: str, agent1_integration: bool =
     
     # CI/CD patterns
     if ci_data.get("runs"):
-        runs = ci_data["runs"]
+        ci_data["runs"]
         
         # Pattern: Workflow success patterns
         workflow_stats = ci_data.get("workflow_statistics", {})

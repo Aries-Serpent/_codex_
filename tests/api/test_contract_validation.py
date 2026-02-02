@@ -9,12 +9,10 @@ Phase: 16.1 - API Contract Testing
 Tests: 25+
 """
 
-import ast
-import inspect
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import List, Tuple
 
 import pytest
 
@@ -202,7 +200,7 @@ class TestRequestResponseContracts:
         
         # This is a heuristic check
         # Just verify we can find POST handlers
-        post_handlers = [h for h in handlers if "post" in str(h).lower()]
+        [h for h in handlers if "post" in str(h).lower()]
         # Log but don't fail
 
 

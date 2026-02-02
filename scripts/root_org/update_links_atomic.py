@@ -22,7 +22,7 @@ import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 # Import the reference validator
 try:
@@ -137,7 +137,7 @@ def update_references_in_file(
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             old_content = f.read()
-    except Exception as e:
+    except Exception:
         return False, "", ""
     
     new_content = old_content

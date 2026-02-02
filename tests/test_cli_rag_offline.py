@@ -4,9 +4,6 @@ Integration tests for RAG CLI with offline TF-IDF provider.
 Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 """
 
-import json
-import tempfile
-from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner

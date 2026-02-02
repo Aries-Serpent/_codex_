@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 
 
 def test_duplication_ratio_token_similarity_basic():

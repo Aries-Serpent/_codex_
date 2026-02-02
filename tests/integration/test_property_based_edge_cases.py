@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any
 
 import pytest
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 
@@ -192,14 +191,12 @@ class TestErrorHandlingProperties:
         """Circuit breaker should open after threshold failures."""
         threshold = 3
         consecutive_failures = 0
-        circuit_open = False
         for success in results:
             if success:
                 consecutive_failures = 0
             else:
                 consecutive_failures += 1
                 if consecutive_failures >= threshold:
-                    circuit_open = True
                     break
         # Verify logic
         if sum(1 for r in results if not r) >= threshold:

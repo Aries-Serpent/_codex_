@@ -6,7 +6,6 @@ This module contains tests for retry helpers with exponential backoff.
 
 import pytest
 import random
-from unittest.mock import patch, MagicMock
 
 
 class TestRetryConfig:

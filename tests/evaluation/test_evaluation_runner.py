@@ -24,7 +24,7 @@ import os
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 import pytest
 
@@ -378,7 +378,7 @@ class TestEvaluationRunner:
                 model, dataset, metrics, config=config, tracking_writer=tracking_writer
             )
 
-            results = runner.run()
+            runner.run()
 
             # Verify tracking writer was called
             assert tracking_writer.log_metric.called

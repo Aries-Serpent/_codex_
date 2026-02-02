@@ -9,7 +9,6 @@ Focus: ChaoticAttractor, ChaoticNeuralNetwork, FractalAnalyzer, FluidChannel,
 """
 
 import pytest
-import math
 
 
 # ============================================================================

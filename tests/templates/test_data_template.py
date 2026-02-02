@@ -103,7 +103,7 @@ class TestDataLoader:
 
     def test_handles_missing_file(self, tmp_path: Path) -> None:
         """Test handling of missing files."""
-        missing = tmp_path / "missing.jsonl"
+        tmp_path / "missing.jsonl"
         # with pytest.raises(FileNotFoundError):
         #     loader.load_jsonl(missing)
         pass  # Placeholder
@@ -141,18 +141,12 @@ class TestDataValidation:
 
     def test_validates_required_fields(self) -> None:
         """Test validation of required fields."""
-        schema = {"id": int, "text": str}
-        valid_record = {"id": 1, "text": "sample"}
-        invalid_record = {"id": 1}  # Missing text
         # assert validation.validate_record(valid_record, schema)
         # assert not validation.validate_record(invalid_record, schema)
         pass  # Placeholder
 
     def test_validates_field_types(self) -> None:
         """Test validation of field types."""
-        schema = {"id": int, "score": float}
-        valid_record = {"id": 1, "score": 0.5}
-        invalid_record = {"id": "not_int", "score": 0.5}
         # assert validation.validate_record(valid_record, schema)
         # assert not validation.validate_record(invalid_record, schema)
         pass  # Placeholder
@@ -168,14 +162,13 @@ class TestDataValidation:
 
     def test_detects_duplicate_ids(self, sample_dataset: list) -> None:
         """Test detection of duplicate IDs."""
-        dataset_with_dups = sample_dataset + [{"id": 0, "text": "duplicate"}]
+        sample_dataset + [{"id": 0, "text": "duplicate"}]
         # duplicates = validation.find_duplicates(dataset_with_dups, key="id")
         # assert len(duplicates) == 1
         pass  # Placeholder
 
     def test_detects_missing_values(self) -> None:
         """Test detection of missing values."""
-        records = [{"id": 1, "text": "a"}, {"id": 2, "text": None}]
         # missing = validation.find_missing(records, field="text")
         # assert len(missing) == 1
         pass  # Placeholder
@@ -215,7 +208,7 @@ class TestDataSplit:
 
     def test_stratified_split(self) -> None:
         """Test stratified splitting by label."""
-        labeled_data = [
+        [
             {"id": i, "label": "A" if i < 50 else "B"}
             for i in range(100)
         ]

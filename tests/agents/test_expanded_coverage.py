@@ -110,7 +110,7 @@ class TestQuantumGameTheoryExpanded:
 
     def test_quantum_game_state_creation(self):
         """Test QuantumGameState can be created."""
-        from agents.quantum_game_theory import QuantumGameState, TeamType
+        from agents.quantum_game_theory import QuantumGameState
 
         try:
             state = QuantumGameState(blue_strategies=["defend"], red_strategies=["attack"])

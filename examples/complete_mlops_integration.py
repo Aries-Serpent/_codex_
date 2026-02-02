@@ -22,7 +22,6 @@ def main():
 
     # Import MLOps components
     from codex_ml.tracking.mlflow_wrapper import MLflowTracker
-    from codex_ml.training.tracking_integration import TrainingTracker
     from codex_ml.features.feature_store import FeatureStore, FeatureGroup, Feature
     from codex_ml.features.monitoring import FeatureHealthMonitor
     from codex_ml.utils.reproducibility import set_global_seed, capture_rng_snapshot

@@ -503,7 +503,7 @@ class TestQuantumOptimizer:
     
     def test_superposition_creation(self):
         """Test creating task superposition."""
-        from quantum_optimizer import QuantumOptimizer, get_quantum_optimizer
+        from quantum_optimizer import get_quantum_optimizer
         
         optimizer = get_quantum_optimizer()
         

@@ -11,7 +11,6 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 # We need to mock the cognitive_brain imports since they require specific setup
 with patch.dict("sys.modules", {

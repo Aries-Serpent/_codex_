@@ -1,15 +1,13 @@
 """Comprehensive integration tests for RAG pipeline."""
 
 import json
-import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
 
-from codex.rag.embeddings import LocalSentenceTransformerProvider
-from codex.rag.indexer import chunk_text, embed_chunks, persist_index, load_index
+from codex.rag.indexer import chunk_text, embed_chunks, persist_index
 from codex.rag.postprocess import postprocess_output
 from codex.rag.prompt import build_prompt
 from codex.rag.retriever import Retriever
@@ -100,7 +98,7 @@ class TestEndToEndRAGPipeline:
             mock_faiss.read_index.return_value = mock_index
             
             # Persist
-            index_path = persist_index(
+            persist_index(
                 index_name="python_docs",
                 embeddings=mock_embeddings,
                 chunks=chunks,
@@ -312,7 +310,7 @@ class TestRAGPerformance:
         mock_model.encode.return_value = np.random.randn(100, 384).astype(np.float32)
         
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
-            embeddings = embed_chunks(chunks)
+            embed_chunks(chunks)
             
             # Should call encode once with batch
             assert mock_model.encode.call_count == 1

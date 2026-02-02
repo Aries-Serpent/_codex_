@@ -3,7 +3,6 @@ Tests for Distributed Cache Module.
 """
 
 import pytest
-import json
 
 from codex.rag.cache.distributed_cache import (
     DistributedCache,
@@ -205,7 +204,6 @@ class TestDistributedCache:
     
     def test_ttl(self, memory_cache):
         """Test TTL support."""
-        import time
         
         config = DistributedCacheConfig(
             backend=CacheBackend.MEMORY,

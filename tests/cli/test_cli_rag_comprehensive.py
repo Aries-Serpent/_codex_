@@ -12,7 +12,6 @@ Tests cover:
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -320,7 +319,7 @@ class TestTenantCommands:
         mock_instance = MagicMock()
         mock_indexer.return_value = mock_instance
         
-        result = runner.invoke(app, [
+        runner.invoke(app, [
             "tenant",
             "create",
             "--tenant-id", "new_tenant"
@@ -336,7 +335,7 @@ class TestTenantCommands:
         mock_indexer.return_value = mock_instance
         mock_instance.list_tenants.return_value = ["tenant1", "tenant2"]
         
-        result = runner.invoke(app, [
+        runner.invoke(app, [
             "tenant",
             "list"
         ])
@@ -439,7 +438,7 @@ class TestParameterValidation:
         mock_instance = MagicMock()
         mock_indexer.return_value = mock_instance
         
-        result = runner.invoke(app, [
+        runner.invoke(app, [
             "build",
             "--files", str(temp_test_files / "*.md"),
             "--index-name", ""

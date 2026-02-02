@@ -35,7 +35,6 @@ Security validation script - Run this to verify all security improvements.
 import subprocess
 import logging
 logger = logging.getLogger(__name__)
-from pathlib import Path
 import sys
 
 def run_check(name: str, pattern: str, should_find: bool = False) -> tuple[bool, int]:

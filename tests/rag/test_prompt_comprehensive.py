@@ -1,14 +1,8 @@
 """Comprehensive tests for RAG prompt assembly module."""
 
-from unittest.mock import MagicMock
 
-import pytest
 
 from codex.rag.prompt import (
-    CTX_HEADER,
-    CTX_ITEM_PREFIX,
-    INSTR_HEADER,
-    PROMPT_HEADER,
     PromptConfig,
     PromptTemplate,
     _count_tokens,

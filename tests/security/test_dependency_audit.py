@@ -9,11 +9,8 @@ Phase: 16.3 - Continuous Security Scanning
 Tests: 10+
 """
 
-import json
-import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
 
 import pytest
 
@@ -87,7 +84,7 @@ class TestDependencyVersioning:
         # Just log, don't enforce
         total = exact_pins + range_pins
         if total > 0:
-            exact_ratio = exact_pins / total
+            exact_pins / total
             # Log but don't fail
 
 

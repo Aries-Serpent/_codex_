@@ -5,7 +5,6 @@ Maximum density tests - every line counts.
 Applying: Physics Ref Tables 1, 2, 3 - All strategies combined.
 """
 
-import pytest
 
 
 class TestPhysicsOrchestratorExhaustive:

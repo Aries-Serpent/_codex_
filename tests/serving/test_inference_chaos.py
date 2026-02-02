@@ -4,10 +4,8 @@ Chaos engineering tests for inference server.
 Tests failure scenarios, resilience, and recovery mechanisms.
 """
 
-import asyncio
 import time
-from typing import List
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
@@ -118,7 +116,7 @@ class TestNetworkFailures:
             mock_response.side_effect = ConnectionResetError("Connection reset by peer")
 
             try:
-                response = chaos_client.post(
+                chaos_client.post(
                     "/infer",
                     json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )

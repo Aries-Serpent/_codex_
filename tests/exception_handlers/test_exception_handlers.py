@@ -10,11 +10,9 @@ Target: 100% coverage of exception handlers
 """
 
 import json
-import os
 import tempfile
-from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -295,7 +293,7 @@ class TestConfigurationExceptions:
         config = {"epochs": "not_an_int"}
         result = None
         try:
-            epochs = int(config["epochs"])  # type: ignore
+            int(config["epochs"])  # type: ignore
         except ValueError:
             result = "type_mismatch"
         assert result == "type_mismatch"

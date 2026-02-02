@@ -11,18 +11,15 @@ AI Agency Policy Compliance: ✅
 
 from __future__ import annotations
 
-import json
-import os
-import tempfile
 from dataclasses import asdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING
+from unittest.mock import MagicMock
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 # =============================================================================
 # Constants
@@ -442,7 +439,7 @@ class TestMLflowIntegration:
         try:
             from codex_ml.logging.mlflow_guard import init_mlflow_safe
             # Should not raise even without MLflow
-            result = init_mlflow_safe(experiment_name="test")
+            init_mlflow_safe(experiment_name="test")
             # Result can be anything - function should complete without error
             # The test passes if no exception is raised
         except ImportError:

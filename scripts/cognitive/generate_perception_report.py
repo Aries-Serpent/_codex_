@@ -37,7 +37,6 @@ import argparse
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any
 
 
 def generate_perception_report(input_dir: str, output_path: str) -> str:
@@ -171,7 +170,7 @@ def generate_perception_report(input_dir: str, output_path: str) -> str:
         # Group by severity
         high_severity = [a for a in anomalies["anomalies_detected"] if a["severity"] == "high"]
         medium_severity = [a for a in anomalies["anomalies_detected"] if a["severity"] == "medium"]
-        low_severity = [a for a in anomalies["anomalies_detected"] if a["severity"] == "low"]
+        [a for a in anomalies["anomalies_detected"] if a["severity"] == "low"]
         
         if high_severity:
             report_lines.extend(["### 🔴 High Severity", ""])

@@ -10,7 +10,6 @@ Version: 1.0.0
 
 import pytest
 import numpy as np
-from pathlib import Path
 
 
 class TestBranchCoverage_PhysicsOrchestrator:
@@ -193,7 +192,7 @@ class TestIntegrationDepth_MultiModule:
         from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
         from agents.agent_memory import AgentMemory
 
-        orch = PhysicsOrchestrator()
+        PhysicsOrchestrator()
         memory = AgentMemory()
 
         # Store decision state in memory
@@ -207,7 +206,6 @@ class TestIntegrationDepth_MultiModule:
     def test_mental_map_with_quantum_integration(self):
         """Test MentalMapping with QuantumGameTheory concepts"""
         from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
-        from agents.quantum_game_theory import StrategyState
 
         model = MentalMappingModel()
 

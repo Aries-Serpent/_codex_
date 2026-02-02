@@ -147,7 +147,6 @@ class TestCodexMLExceptionHandling:
         Search for ExceptionGroup usage in the codebase.
         If not used, this is informational.
         """
-        import ast
         from pathlib import Path
         
         repo_root = Path(__file__).parent.parent.parent

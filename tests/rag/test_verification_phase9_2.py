@@ -16,7 +16,7 @@ Tests cover:
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from verification.cove import (
     MAX_CLAIMS_PER_RESPONSE,

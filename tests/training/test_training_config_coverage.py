@@ -9,9 +9,6 @@ Tests focus on:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import tempfile
-from pathlib import Path
 
 # Import with graceful fallback
 try:

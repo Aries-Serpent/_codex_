@@ -11,7 +11,6 @@ Tests cover:
 from __future__ import annotations
 
 import time
-from collections import defaultdict
 from enum import Enum
 from typing import Any, Callable
 
@@ -19,8 +18,6 @@ import pytest
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
 
 
 # --- Metrics Endpoint Tests ---

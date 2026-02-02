@@ -9,8 +9,6 @@ from __future__ import annotations
 
 import time
 import warnings
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -29,7 +27,7 @@ class TestTokenManagerInitialization:
         
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            tm = TokenManager(secret_key=None)
+            TokenManager(secret_key=None)
             assert len(w) == 1
             assert "Auto-generating" in str(w[0].message)
 
@@ -67,7 +65,7 @@ class TestAccessTokenGeneration:
         assert len(parts) == 3  # header.payload.signature
 
     def test_generate_access_token_with_scope(self) -> None:
-        from src.codex.auth.token_manager import TokenManager, TokenType
+        from src.codex.auth.token_manager import TokenManager
         
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123", scope="read write")
@@ -163,7 +161,7 @@ class TestTokenValidation:
     """Tests for token validation."""
 
     def test_validate_access_token(self) -> None:
-        from src.codex.auth.token_manager import TokenManager, TokenType
+        from src.codex.auth.token_manager import TokenManager
         
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -273,7 +271,7 @@ class TestRefreshAccessToken:
     """Tests for refreshing access tokens."""
 
     def test_refresh_access_token(self) -> None:
-        from src.codex.auth.token_manager import TokenManager, TokenType
+        from src.codex.auth.token_manager import TokenManager
         
         tm = TokenManager(secret_key="test-secret")
         refresh_token = tm.generate_refresh_token("user123")
@@ -331,7 +329,7 @@ class TestSessionManagement:
         assert len(sessions) == 2
 
     def test_cleanup_expired_sessions(self) -> None:
-        from src.codex.auth.token_manager import TokenManager, SessionInfo
+        from src.codex.auth.token_manager import TokenManager
         
         tm = TokenManager(secret_key="test-secret")
         

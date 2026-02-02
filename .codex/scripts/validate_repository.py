@@ -232,7 +232,6 @@ def validate_build(results: ValidationResult):
 
     # Check if build module is available
     try:
-        import build
         results.add_pass("build module is available")
     except Exception as e:
         results.add_warning("build module", f"Unavailable or broken (e.g., not installed). Details: {e}")

@@ -13,7 +13,6 @@ Test Categories:
 
 import pytest
 from pathlib import Path
-from typing import Dict, Any
 import tempfile
 import shutil
 
@@ -460,7 +459,7 @@ def test():
         # Execute all
         ranked = orchestrator.deliberate_migrations()
         selected = orchestrator.optimize_migration_plan(ranked, energy_budget=1000.0)
-        results = orchestrator.execute_migrations(selected, dry_run=False)
+        orchestrator.execute_migrations(selected, dry_run=False)
 
         # All migrations should succeed
         app_file = complex_repo / "app.py"

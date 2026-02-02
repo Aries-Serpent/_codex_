@@ -762,7 +762,7 @@ class TestErrorPaths:
     def test_error_import_error(self):
         """Test ImportError"""
         with pytest.raises(ImportError):
-            import nonexistent_module
+            pass
     
     def test_error_runtime_error(self):
         """Test RuntimeError"""

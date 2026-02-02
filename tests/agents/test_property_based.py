@@ -12,14 +12,13 @@ Test Categories:
 - Data structure invariants
 """
 
-import pytest
 from hypothesis import given, strategies as st, assume, settings
 from hypothesis import HealthCheck
 import math
 
 # Import modules to test
-from agents.physics_orchestrator import DecisionState, ActionPath, PhysicsInspiredOrchestrator
-from agents.agent_memory import MemoryEntry, ContextFrame
+from agents.physics_orchestrator import DecisionState
+from agents.agent_memory import MemoryEntry
 from agents.quantum_game_theory import StrategyState
 
 

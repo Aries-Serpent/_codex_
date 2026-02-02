@@ -12,16 +12,14 @@ AI Agency Policy Compliance: ✅
 from __future__ import annotations
 
 import json
-import os
-import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterator
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING, Iterator
+from unittest.mock import MagicMock
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 # =============================================================================
 # Constants

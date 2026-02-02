@@ -4,7 +4,6 @@ Target: 15+ edge case tests for utility functions
 Coverage Target: src/codex/utils/, src/codex_ml/utils/
 """
 
-import pytest
 from pathlib import Path
 import tempfile
 

@@ -4,12 +4,8 @@ This module tests test parallelization strategies including
 worker distribution, load balancing, and execution optimization.
 """
 
-import json
-import math
 from datetime import datetime
-from typing import Any
 
-import pytest
 
 
 class TestWorkerDistribution:

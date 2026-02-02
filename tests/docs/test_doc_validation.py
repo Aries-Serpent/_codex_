@@ -10,10 +10,9 @@ Tests: 20+
 """
 
 import ast
-import os
 import re
 from pathlib import Path
-from typing import Generator, List, Optional, Tuple
+from typing import List, Tuple
 
 import pytest
 
@@ -115,9 +114,9 @@ class TestMarkdownQuality:
                     continue
                 # Relative path resolution
                 if not link_target.startswith("/"):
-                    resolved = doc.parent / link_target.split("#")[0]
+                    doc.parent / link_target.split("#")[0]
                 else:
-                    resolved = REPO_ROOT / link_target.lstrip("/").split("#")[0]
+                    REPO_ROOT / link_target.lstrip("/").split("#")[0]
                 # Just log, don't fail (MkDocs has known link issues)
 
 

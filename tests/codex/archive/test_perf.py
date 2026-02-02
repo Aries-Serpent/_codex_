@@ -4,7 +4,6 @@ Tests for codex.archive.perf module.
 This module contains tests for performance metrics utilities.
 """
 
-import pytest
 import time
 
 

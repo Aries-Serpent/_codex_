@@ -12,11 +12,8 @@ Target Coverage: 70%+
 
 from __future__ import annotations
 
-import json
-import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch, mock_open
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 

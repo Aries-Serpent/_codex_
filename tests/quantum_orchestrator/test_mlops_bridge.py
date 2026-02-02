@@ -10,7 +10,6 @@ from codex.quantum_orchestrator.mlops_bridge import (
     MetricsCollector,
     LoggingAdapter,
     DistributedCoordinator,
-    ObservableOrchestrator,
     create_observable_orchestrator,
     Metric,
     MetricType,

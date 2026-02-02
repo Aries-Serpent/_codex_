@@ -11,12 +11,9 @@ Tests: 10+
 
 import ast
 import re
-import subprocess
-import sys
 from pathlib import Path
 from typing import List, Tuple
 
-import pytest
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]

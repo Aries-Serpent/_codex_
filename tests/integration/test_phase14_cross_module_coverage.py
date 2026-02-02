@@ -13,8 +13,6 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -448,7 +446,7 @@ class TestEndToEndWorkflows:
         }
         
         # 2. Data preparation (mocked)
-        data = [{"text": f"sample {i}"} for i in range(10)]
+        [{"text": f"sample {i}"} for i in range(10)]
         
         # 3. Training (mocked)
         training_result = {

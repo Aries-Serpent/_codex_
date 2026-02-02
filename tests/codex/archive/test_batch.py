@@ -5,10 +5,7 @@ This module contains tests for batch restoration utilities.
 """
 
 import pytest
-import json
-import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 
 class TestBatchItem:

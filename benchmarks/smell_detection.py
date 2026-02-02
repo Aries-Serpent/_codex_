@@ -1,7 +1,6 @@
 """
 Benchmarks for code smell detection.
 """
-import pytest
 from codex.ast import CodeSmellDetector, parse_python
 
 # Test code with various complexity levels

@@ -12,10 +12,8 @@ Target: 30-40 tests for integration scenarios
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
-import pytest
 
 
 # ============================================================================

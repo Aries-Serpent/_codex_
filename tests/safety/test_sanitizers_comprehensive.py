@@ -10,8 +10,6 @@ Phase: 3.2 - Safety Module Testing
 
 from __future__ import annotations
 
-import re
-from typing import Pattern
 
 import pytest
 
@@ -660,7 +658,7 @@ class TestAttackVectors:
         """Test obfuscated patterns."""
         # Spaces in email
         text = "user @ example . com"
-        result = sanitize_prompt(text)
+        sanitize_prompt(text)
         
         # May not match with spaces
         # This is acceptable - catches standard formats

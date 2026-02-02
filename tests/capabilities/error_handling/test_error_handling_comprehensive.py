@@ -159,7 +159,7 @@ class Retrier:
                 last_error = e
                 self.attempts.append({"attempt": attempt, "success": False, "error": str(e)})
                 if attempt < self.config.max_retries:
-                    delay = self.config.get_delay(attempt)
+                    self.config.get_delay(attempt)
                     # In tests, we don't actually sleep
                     pass
         raise last_error

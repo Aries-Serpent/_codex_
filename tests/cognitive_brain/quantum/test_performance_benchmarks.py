@@ -35,7 +35,7 @@ class TestPerformanceBenchmarks:
         
         start = time.time()
         for pattern in test_patterns:
-            compressed = compressor.compress(pattern)
+            compressor.compress(pattern)
         elapsed = time.time() - start
         
         patterns_per_second = len(test_patterns) / elapsed
@@ -71,7 +71,7 @@ class TestPerformanceBenchmarks:
         retrieval_times = []
         for _ in range(100):
             start = time.time()
-            results = manager.retrieve_similar(query, k=5)
+            manager.retrieve_similar(query, k=5)
             elapsed = (time.time() - start) * 1000  # Convert to ms
             retrieval_times.append(elapsed)
         

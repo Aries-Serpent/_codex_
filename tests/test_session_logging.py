@@ -7,9 +7,7 @@ Test module for session logging.
 import importlib
 import json
 import logging
-import os
 import pathlib
-import pwd
 import shutil
 import sqlite3
 import subprocess

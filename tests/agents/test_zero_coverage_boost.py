@@ -10,7 +10,6 @@ to quickly increase coverage from 0% to 20-30% for these modules:
 """
 
 import pytest
-from pathlib import Path
 
 
 # ============================================================================

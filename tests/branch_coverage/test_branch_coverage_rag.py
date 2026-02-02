@@ -10,13 +10,10 @@ Target: Real code coverage improvement for RAG modules
 """
 
 import hashlib
-import json
 import os
-from pathlib import Path
 from typing import Any, Dict, List
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 # ============================================================================

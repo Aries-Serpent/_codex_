@@ -4,7 +4,6 @@ Tests for codex.archive.consolidate module.
 This module contains tests for consolidation planning utilities.
 """
 
-import pytest
 from pathlib import Path
 
 

@@ -9,9 +9,7 @@ Target: 90%+ coverage of src/codex/rag/monitoring.py
 import pytest
 import time
 import threading
-import json
 from collections import deque
-from unittest.mock import patch, MagicMock
 
 from src.codex.rag.monitoring import (
     MetricsConfig,

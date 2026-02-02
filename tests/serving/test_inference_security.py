@@ -171,7 +171,7 @@ class TestRateLimitBypass:
             responses.append(response.status_code)
 
         # Should still hit rate limit
-        rate_limited = sum(1 for status in responses if status == 429)
+        sum(1 for status in responses if status == 429)
         # May or may not trigger depending on rate limit config
         assert len(responses) == 50
 

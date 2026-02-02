@@ -84,7 +84,7 @@ class SandboxExecutor:
                 "stderr": e.stderr.decode() if e.stderr else "",
             }
 
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             return {
                 "status": "error",
                 "returncode": -1,

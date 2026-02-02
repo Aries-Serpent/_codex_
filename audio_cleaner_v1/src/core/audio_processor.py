@@ -5,7 +5,6 @@ import logging
 import time
 from pathlib import Path
 from typing import Callable, Dict, Any, Optional
-import numpy as np
 
 logger = logging.getLogger(__name__)
 

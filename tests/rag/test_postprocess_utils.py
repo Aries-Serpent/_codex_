@@ -1,11 +1,9 @@
 """Comprehensive tests for RAG postprocessing and utilities."""
 
-import re
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import pytest
 
 from codex.rag.postprocess import OutputProcessor, postprocess_output
 from codex.rag.utils import ProvenanceMetadata, safe_model_load
@@ -376,7 +374,7 @@ class TestSafeModelLoad:
         mock_model.named_modules.return_value = []
         mock_model.to.return_value = mock_model
         
-        result = safe_model_load(mock_model, device="cpu")
+        safe_model_load(mock_model, device="cpu")
         
         # Should call to() method
         mock_model.to.assert_called_with("cpu")
@@ -393,7 +391,7 @@ class TestSafeModelLoad:
         mock_model.named_modules.return_value = [("module1", mock_module)]
         mock_model.to_empty.return_value = mock_model
         
-        result = safe_model_load(mock_model, device="cpu")
+        safe_model_load(mock_model, device="cpu")
         
         # Should call to_empty() when meta tensors detected
         mock_model.to_empty.assert_called_with(device="cpu")

@@ -5,7 +5,6 @@ Handles notifications to Slack, email, and GitHub for batch triage results
 and remediation actions.
 """
 
-import json
 import logging
 import os
 from dataclasses import dataclass

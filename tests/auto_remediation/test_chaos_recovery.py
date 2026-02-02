@@ -13,10 +13,7 @@ Phase: 20.3 Self-Healing Infrastructure
 
 from __future__ import annotations
 
-import time
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict
 
 import pytest
 
@@ -92,8 +89,6 @@ class TestNetworkPartitionRecovery:
 
     def test_automatic_partition_healing(self):
         """Test automatic healing after partition resolves."""
-        partition_detected = True
-        healing_initiated = True
         
         # Simulate healing
         partition_resolved = True
@@ -143,7 +138,6 @@ class TestResourceExhaustionRecovery:
 
     def test_memory_exhaustion_recovery(self):
         """Test recovery from memory exhaustion."""
-        memory_used_mb = 15000
         memory_limit_mb = 16000
         
         # Trigger memory cleanup
@@ -163,7 +157,6 @@ class TestResourceExhaustionRecovery:
 
     def test_disk_space_exhaustion_recovery(self):
         """Test recovery from disk space exhaustion."""
-        disk_used_percent = 98
         critical_threshold = 95
         
         # Trigger cleanup
@@ -174,7 +167,6 @@ class TestResourceExhaustionRecovery:
     def test_connection_pool_exhaustion_recovery(self):
         """Test recovery from connection pool exhaustion."""
         max_connections = 100
-        active_connections = 100
         
         # Release idle connections
         active_after_cleanup = 50
@@ -184,7 +176,6 @@ class TestResourceExhaustionRecovery:
     def test_thread_pool_exhaustion_recovery(self):
         """Test recovery from thread pool exhaustion."""
         max_threads = 200
-        active_threads = 200
         
         # Wait for threads to complete
         active_after_wait = 100
@@ -222,7 +213,6 @@ class TestCascadingFailurePrevention:
 
     def test_bulkhead_isolation(self):
         """Test bulkhead pattern isolates failures."""
-        service_a_pool = {"size": 10, "available": 0}  # Exhausted
         service_b_pool = {"size": 10, "available": 8}  # Healthy
         
         service_b_isolated = service_b_pool["available"] > 0
@@ -282,7 +272,6 @@ class TestSelfHealingUnderChaos:
 
     def test_automatic_restart_on_crash(self):
         """Test automatic restart of crashed service."""
-        service_status = "crashed"
         max_restart_attempts = 3
         
         restart_count = 1
@@ -337,7 +326,6 @@ class TestChaosExperimentValidation:
 
     def test_experiment_hypothesis_validation(self):
         """Test validation of experiment hypothesis."""
-        hypothesis = "Service remains available during network latency"
         
         # Run experiment
         service_available = True
@@ -472,7 +460,6 @@ class TestResilienceTesting:
     def test_failover_mechanism(self):
         """Test failover to backup systems."""
         primary_available = False
-        secondary_available = True
         
         active_system = "secondary" if not primary_available else "primary"
         
@@ -511,7 +498,6 @@ class TestFailureInjectionRecovery:
     def test_latency_injection_recovery(self):
         """Test recovery from injected latency."""
         normal_latency_ms = 50
-        injected_latency_ms = 500
         
         # After injection stops
         recovered_latency_ms = 55
@@ -522,8 +508,6 @@ class TestFailureInjectionRecovery:
 
     def test_error_injection_recovery(self):
         """Test recovery from injected errors."""
-        error_rate_before = 0.1
-        error_rate_during = 50.0
         error_rate_after = 0.2
         
         recovered = error_rate_after < 1.0
@@ -532,8 +516,6 @@ class TestFailureInjectionRecovery:
 
     def test_packet_loss_recovery(self):
         """Test recovery from packet loss injection."""
-        normal_loss_percent = 0.1
-        injected_loss_percent = 10.0
         
         # After recovery
         recovered_loss_percent = 0.2
@@ -542,7 +524,6 @@ class TestFailureInjectionRecovery:
 
     def test_service_kill_recovery(self):
         """Test recovery from service kill."""
-        service_killed = True
         restart_successful = True
         
         service_running = restart_successful
@@ -551,7 +532,6 @@ class TestFailureInjectionRecovery:
 
     def test_dependency_failure_recovery(self):
         """Test recovery when dependency fails."""
-        dependency_failed = True
         fallback_activated = True
         
         service_operational = fallback_activated

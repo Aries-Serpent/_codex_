@@ -1,6 +1,4 @@
 """Tests for HTML visualization."""
-import pytest
-from pathlib import Path
 
 from codex.ast import parse_python
 from codex.ast.visualize import HTMLVisualizer

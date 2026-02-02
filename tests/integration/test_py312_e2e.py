@@ -41,11 +41,6 @@ class TestPython312Integration:
     def test_core_imports_work(self):
         """Test that core modules can be imported."""
         # Test standard library imports that may have changed
-        import asyncio
-        import json
-        import pathlib
-        import sys
-        import typing
         
         # Try importing tomllib (Python 3.11+)
         try:
@@ -391,7 +386,7 @@ class TestBackwardCompatibility:
     
     def test_typing_compatibility(self):
         """Test typing compatibility."""
-        from typing import Any, Dict, List, Optional, Union
+        from typing import Any, Dict, List, Optional
         
         # Old style should still work
         def old_style(data: Dict[str, Any]) -> Optional[List[str]]:

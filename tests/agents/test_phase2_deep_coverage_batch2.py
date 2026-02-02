@@ -226,7 +226,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
-        nodes = [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
+        [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
 
         clusters = model.cluster_nodes()
         assert clusters is not None

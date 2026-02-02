@@ -16,7 +16,6 @@ import pytest
 from scripts.space_traversal import (
     coverage_ingest_stub,
     decode_validate_and_extract,
-    generate_baseline,
     stable_manifest,
     validate_snapshot_schema,
 )

@@ -1,6 +1,5 @@
 """Tests for checkpoint management."""
 
-import pytest
 from pathlib import Path
 import sys
 

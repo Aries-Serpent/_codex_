@@ -7,11 +7,10 @@ Run after creating new consolidated workflows to ensure they work correctly.
 """
 
 import json
-import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict
 
 import os
 import requests
@@ -222,9 +221,9 @@ class CacheMonitor:
             
             for cache in caches:
                 key = cache.get('key', '')
-                size = cache.get('size_in_bytes', 0)
-                created = cache.get('created_at', '')
-                last_accessed = cache.get('last_accessed_at', '')
+                cache.get('size_in_bytes', 0)
+                cache.get('created_at', '')
+                cache.get('last_accessed_at', '')
                 
                 if key.startswith('live-'):
                     tier_stats['live'].append(cache)
