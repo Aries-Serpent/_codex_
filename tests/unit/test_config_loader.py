@@ -101,7 +101,7 @@ class TestEnvironmentManager:
         assert os.environ.get("CODEX_ENV_PYTHON_VERSION") == "3.11"
         
         # Create EnvironmentManager and verify it can access the variable
-        _ = EnvironmentManager()
+        EnvironmentManager()
         # The manager should be able to read from ENV_VARS
         assert "CODEX_ENV_PYTHON_VERSION" in EnvironmentManager.ENV_VARS
 

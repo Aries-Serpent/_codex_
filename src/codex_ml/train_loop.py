@@ -447,10 +447,6 @@ def _set_seed(seed: Optional[int]) -> int:
 
 
 def _now_ts() -> str:
-    return datetime.now(UTC).isoformat()
-
-
-def _ts() -> str:
     """Generate ISO 8601 timestamp with 'Z' suffix.
     
     Returns:

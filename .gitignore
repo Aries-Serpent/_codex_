@@ -166,6 +166,9 @@ manifests/k8s/*/secret.yaml
 !.codex/repository_health/**
 !.codex/sessions/
 !.codex/sessions/**
+# Exclude runtime session logs (should not be committed)
+.codex/sessions/*.ndjson
+.codex/sessions/*.meta
 !.codex/smoke/
 !.codex/smoke/**
 !.codex/status/

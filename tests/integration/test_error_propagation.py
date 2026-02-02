@@ -105,10 +105,11 @@ class TestGracefulDegradation:
         service_levels = ["full", "reduced", "minimal", "offline"]
         
         # Simulate errors forcing degradation
+        current_level = "reduced"
         try:
             raise ConnectionError("Service overload")
         except ConnectionError:
-            current_level = "reduced"
+            pass
         
         assert current_level in service_levels
         assert current_level != "full"
