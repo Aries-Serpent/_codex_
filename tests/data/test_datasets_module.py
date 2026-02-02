@@ -57,6 +57,8 @@ def test_build_dataloaders_with_split(tmp_path: Path) -> None:
     train_examples = sum(len(batch[0]) for batch in train_loader)
     val_examples = sum(len(batch[0]) for batch in val_loader) if val_loader else 0
     assert train_examples + val_examples == 4
-    batch_inputs, batch_labels = next(iter(train_loader))
+    # Create iterator explicitly for Python 3.12+ compatibility
+    train_iter = iter(train_loader)
+    batch_inputs, batch_labels = next(train_iter)
     assert batch_inputs.shape[0] == 2
     assert batch_labels.dtype == torch.long
