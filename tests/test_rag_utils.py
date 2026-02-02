@@ -277,12 +277,10 @@ class TestIntegrationMetaTensorHandling:
                 trust_remote_code=False
             )
 
-            # Apply safe_model_load_v2
+            # Apply safe_model_load_v2 - only accepts model and device parameters
             model = safe_model_load_v2(
                 model,
-                device="cpu",
-                model_name=model_name,
-                cache_folder=tmpdir
+                device="cpu"
             )
 
             # Verify model is properly loaded
