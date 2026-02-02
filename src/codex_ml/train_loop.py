@@ -43,7 +43,7 @@ import sys
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
