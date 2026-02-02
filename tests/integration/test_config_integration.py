@@ -198,7 +198,7 @@ class TestEnvironmentVariableHandling:
         monkeypatch.setenv("CODEX_MODEL_SIZE", "512")
         
         config_file = temp_config_dir / "env_config.yaml"
-        config_file.write_text("model_size: ${CODEX_MODEL_SIZE}\n")
+        config_file.write_text("model_size: ${oc.env:CODEX_MODEL_SIZE}\n")
         
         try:
             from omegaconf import OmegaConf
@@ -213,7 +213,7 @@ class TestEnvironmentVariableHandling:
     def test_env_var_defaults(self, temp_config_dir):
         """Verify environment variable defaults."""
         config_file = temp_config_dir / "defaults.yaml"
-        config_file.write_text("port: ${PORT:8080}\n")
+        config_file.write_text("port: ${oc.env:PORT,8080}\n")
         
         try:
             from omegaconf import OmegaConf
@@ -222,7 +222,7 @@ class TestEnvironmentVariableHandling:
             resolved = OmegaConf.to_container(config, resolve=True)
             
             # Should use default when env var not set
-            assert resolved["port"] == 8080 or isinstance(resolved["port"], (str, int))
+            assert resolved["port"] == "8080"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -587,6 +587,6 @@ class TestConfigurationMerging:
             # Replace strategy (default)
             merged = OmegaConf.merge(base, override)
             
-            assert merged.items == [4, 5]
+            assert merged["items"] == [4, 5]
         except ImportError:
             pytest.skip("OmegaConf not available")

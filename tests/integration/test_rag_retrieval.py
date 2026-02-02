@@ -4,6 +4,7 @@ Integration tests for RAG retrieval functionality.
 Tests end-to-end retrieval workflows with query processing and ranking.
 """
 from unittest.mock import MagicMock, Mock, patch
+import importlib.util
 
 import pytest
 
@@ -14,10 +15,17 @@ try:
 except ImportError:
     NUMPY_AVAILABLE = False
 
-# Skip all tests if numpy is not available
+try:
+    if importlib.util.find_spec("sentence_transformers") is None:
+        raise ImportError
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
+# Skip all tests if numpy or sentence_transformers is not available
 pytestmark = pytest.mark.skipif(
-    not NUMPY_AVAILABLE, 
-    reason="numpy required for RAG retrieval tests"
+    not NUMPY_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
+    reason="numpy and sentence_transformers required for RAG retrieval tests"
 )
 
 

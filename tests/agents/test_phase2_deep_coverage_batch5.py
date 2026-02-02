@@ -24,24 +24,24 @@ class TestPhase2_TimeEvolution:
 
     def test_evolve_state_basic(self):
         """Test basic state evolution"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
 
         orchestrator = PhysicsOrchestrator()
         if hasattr(orchestrator, "evolve_state"):
-            initial_state = {"position": [0.0, 0.0], "velocity": [1.0, 0.0]}
+            # Create proper EnergyState object, not a dict
+            initial_state = EnergyState(
+                configuration={"position": [0.0, 0.0], "velocity": [1.0, 0.0]},
+                energy=10.0,
+                temperature=1.0
+            )
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
             
-            # UPDATED: Handle dict return type (don't assume .energy attribute)
-            if isinstance(evolved, dict):
-                # Check for expected state keys
-                assert len(evolved) > 0, "Evolved state should not be empty"
-                # Check for common physics state keys
-                has_valid_keys = any(key in evolved for key in ["position", "state", "velocity", "momentum"])
-                assert has_valid_keys, f"Expected physics state keys not found in {list(evolved.keys())}"
-            else:
-                # If it's an object, check it has expected attributes
-                assert hasattr(evolved, "position") or hasattr(evolved, "state") or hasattr(evolved, "velocity")
+            # Check that the evolved state has expected attributes
+            assert hasattr(evolved, "energy")
+            assert hasattr(evolved, "configuration")
+            # Verify energy dissipation occurred (should be lower than initial)
+            assert evolved.energy <= initial_state.energy
 
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution"""
