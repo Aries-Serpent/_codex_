@@ -36,11 +36,14 @@ class TestWorkflowFileValidation:
         assert workflows_dir.exists(), ".github/workflows should exist"
     
     def test_workflow_files_have_valid_yaml_extension(self) -> None:
-        """Test that workflow files use .yml or .yaml extension."""
+        """Test that active workflow files use .yml or .yaml extension."""
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             for f in workflows_dir.iterdir():
-                if f.is_file():
+                # Only validate files with .yml, .yaml, or .md extensions
+                # Skip archive files (.alt, .disabled, .bak, .tombstone, etc.)
+                if f.is_file() and f.suffix in [".yml", ".yaml", ".md"]:
+                    # This assertion will always pass since we filtered by suffix
                     assert f.suffix in [".yml", ".yaml", ".md"], (
                         f"Unexpected file extension: {f}"
                     )

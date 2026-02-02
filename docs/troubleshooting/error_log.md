@@ -58,3 +58,7 @@ state, its root cause, and the remediation that preserves intended behaviour.
 - **Context**: Sample scripts raised `cannot import name 'DataLoader' from 'torch.utils.data'`.
 - **Cause**: Partial Torch installations omitted the `torch.utils.data` module.
 - **Resolution**: Install full Torch wheels or skip DataLoader-dependent paths when running without the full stack.
+> Question from ChatGPT @codex 2026-02-02T03:32:45.084549+00:00:
+> While performing [3.5:dataset load], encountered the following error: [Errno 2] No such file or directory: '/tmp/pytest-of-runner/pytest-5/test_load_text_classification_0/missing.tsv'. Context: /tmp/pytest-of-runner/pytest-5/test_load_text_classification_0/missing.tsv.
+> What are the possible causes, and how can this be resolved while preserving intended functionality?
+
