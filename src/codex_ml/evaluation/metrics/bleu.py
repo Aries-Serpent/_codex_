@@ -49,6 +49,11 @@ class BleuMetric(MetricAdapter):
     def __init__(self, name: str = "bleu", max_order: int = 4):
         super().__init__(name)
         self.max_order = max_order
+        if max_order != 4:
+            logger.warning(
+                f"max_order={max_order} specified, but sacrebleu uses n-gram order 4 by default. "
+                "Custom max_order values are not supported in current sacrebleu versions."
+            )
 
     def add_batch(self, predictions: Any, references: Any) -> None:
         """Accumulate batch results."""
