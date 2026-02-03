@@ -316,6 +316,7 @@ def bleu(
         ref_tok = [[(r.lower() if lowercase else r).split()] for r in references]
         smoothie = SmoothingFunction().method3
         try:
+            # NLTK corpus_bleu expects (references, hypotheses) order
             score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)
             return float(score)
         except Exception:

@@ -114,6 +114,20 @@ def counting_optimizer(monkeypatch: pytest.MonkeyPatch) -> None:
     _CountingAdamW.last_instance = None
 
 
+def _torch_version_less_than(version_str: str) -> bool:
+    """Check if torch version is less than the specified version using semantic versioning."""
+    try:
+        from packaging.version import Version
+        return Version(torch.__version__.split("+")[0]) < Version(version_str)
+    except ImportError:
+        # Fallback to string comparison if packaging is not available
+        return torch.__version__ < version_str
+
+
+@pytest.mark.skipif(
+    not hasattr(torch, "__version__") or _torch_version_less_than("2.0.0"),
+    reason="Profiler API may be incompatible with torch < 2.0"
+)
 def test_tail_flush_triggers_optimizer_step(tokenizer_stub: _FakeTokenizer, tmp_path: Path) -> None:
     texts = ["a b", "b c", "c d", "d e", "e a"]
     vocab_size = len(tokenizer_stub.vocab)

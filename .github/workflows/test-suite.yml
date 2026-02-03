@@ -161,8 +161,6 @@ jobs:
             --color=yes \
             --verbose \
             --junitxml=junit.xml \
-            -n 2 \
-            --dist worksteal \
             --maxfail=10; then
             echo "✅ Coverage-run parallel succeeded"
             coverage combine || true
