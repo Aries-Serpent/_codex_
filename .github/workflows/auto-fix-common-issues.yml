@@ -102,27 +102,32 @@ jobs:
             git push
           fi
       
-      - name: Comment on PR (if issues found)
+      - name: Comment on PR (if auto-fixable issues found)
         if: |
           github.event_name == 'pull_request' && 
           steps.check.outcome == 'failure'
         uses: actions/github-script@v7
         with:
           script: |
-            const message = `## ⚠️ Common CI Issues Detected
+            const message = `## ❌ Auto-Fixable CI Issues Detected
 
-            The auto-fix script detected issues that are frequently raised by workflows:
+            The auto-fix script detected issues that can be automatically fixed:
 
+            | Pattern | Description | Auto-Fix | Causes CI Failure |
+            |---------|-------------|----------|-------------------|
+            | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |
+            | 4 | Coverage thresholds | ✅ Yes | ✅ Yes |
+            | 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |
+            
+            ### Informational Warnings (Do NOT cause CI failure):
+            
             | Pattern | Description | Auto-Fix |
             |---------|-------------|----------|
-            | 1 | Unused imports | ✅ Yes (ruff) |
             | 2 | Unused variables | ⚠️ Manual review |
             | 3 | YAML indentation | ⚠️ Manual review |
-            | 4 | Coverage thresholds | ✅ Yes |
             | 5 | Tokenizer fallbacks | ⚠️ Manual review |
             | 6 | Test assertions | ⚠️ Manual review |
             | 7 | Redundant imports | ⚠️ Manual review |
-            | 8 | CodeQL alerts | ✅ Yes (ruff) |
 
             ### To apply automatic fixes:
 
@@ -134,10 +139,7 @@ jobs:
             # Go to Actions > Auto-Fix Common CI Issues > Run workflow
             \`\`\`
 
-            ### Manual review needed for:
-            - Unused variables (context-dependent)
-            - Vague test assertions (logic-dependent)
-            - Tokenizer fallbacks (code-flow dependent)
+            **Note:** Manual review patterns are informational only and do not cause CI failures.
 
             See the workflow logs for details.`;
             
@@ -148,10 +150,11 @@ jobs:
               body: message
             });
       
-      - name: Fail if issues found (PR only)
+      - name: Fail if auto-fixable issues found (PR only)
         if: |
           github.event_name == 'pull_request' && 
           steps.check.outcome == 'failure'
         run: |
-          echo "❌ Common CI issues detected. Run auto-fix script or fix manually."
+          echo "❌ Auto-fixable CI issues detected. Run auto-fix script to resolve."
+          echo "ℹ️  Manual review warnings do not cause CI failure."
           exit 1
