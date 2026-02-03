@@ -54,7 +54,9 @@ class TestMLPScorer:
 
         # Note: Due to random initialization, we can't guarantee monotonicity
         # but we can check that the model produces different scores
-        assert score_low != score_high, "Different inputs should produce different scores"
+        assert score_low != score_high, (
+            "Different inputs should produce different scores"
+        )
 
     def test_mlp_batch_scoring(self):
         """Test batch scoring produces correct number of outputs."""

@@ -12,8 +12,8 @@ Systematically applies operator and performance patterns:
 Target: +4-5% coverage gain (38% → 43%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_MomentumOperators:
@@ -41,7 +41,11 @@ class TestPhase2_MomentumOperators:
 
     def test_momentum_conservation_check(self):
         """Test momentum conservation checker (Eq #7)"""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath, ActionType
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Create minimal path for conservation check
@@ -56,7 +60,11 @@ class TestPhase2_MomentumOperators:
 
     def test_energy_conservation_check(self):
         """Test energy conservation checker (Eq #17)"""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath, ActionType
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
         path = ActionPath(action_type=ActionType.RESEARCH, description="test_energy")
@@ -162,7 +170,9 @@ class TestPhase2_EnergyOperators:
         """Test free energy F = U - TS calculation"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(state_id="test", configuration={}, internal_energy=100.0, entropy=10.0)
+        state = EnergyState(
+            state_id="test", configuration={}, internal_energy=100.0, entropy=10.0
+        )
         free_energy = state.free_energy()
         assert isinstance(free_energy, (int, float))
         # F = U - TS, at T=1.0 (default): F = 100 - 10 = 90
@@ -172,7 +182,9 @@ class TestPhase2_EnergyOperators:
         """Test Boltzmann probability e^{-ΔE/kT}"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(state_id="test", configuration={}, internal_energy=10.0, entropy=1.0)
+        state = EnergyState(
+            state_id="test", configuration={}, internal_energy=10.0, entropy=1.0
+        )
         prob = state.boltzmann_probability(reference_energy=5.0)
         assert isinstance(prob, (int, float))
         assert 0.0 <= prob <= 1.0
@@ -190,7 +202,9 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
-        state = EnergyState(state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0)
+        state = EnergyState(
+            state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0
+        )
         landscape.add_state(state)
         assert len(landscape.states) == 1
 
@@ -199,7 +213,9 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
-        state = EnergyState(state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0)
+        state = EnergyState(
+            state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0
+        )
         landscape.add_state(state)
         prob = landscape.gibbs_probability(state)
         assert isinstance(prob, (int, float))
@@ -212,7 +228,10 @@ class TestPhase2_EnergyOperators:
         landscape = EnergyLandscape()
         for i in range(3):
             state = EnergyState(
-                state_id=f"s{i}", configuration={}, internal_energy=float(i * 5), entropy=1.0
+                state_id=f"s{i}",
+                configuration={},
+                internal_energy=float(i * 5),
+                entropy=1.0,
             )
             landscape.add_state(state)
 

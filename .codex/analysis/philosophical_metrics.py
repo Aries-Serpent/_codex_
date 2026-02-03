@@ -367,7 +367,7 @@ class PhilosophicalMetricsDashboard:
             "─" * 60,
             f"Score: {latest.rhizomaticity:.2%}",
             f"Interpretation: {'✅ Rhizomatic' if latest.rhizomaticity > 0.5 else '⚠️ Tree-like'}",
-            f"Goal: > 50% (more connections than tree structure)",
+            "Goal: > 50% (more connections than tree structure)",
             "",
             "─" * 60,
             "2. SESSION SATISFACTION (Whitehead)",

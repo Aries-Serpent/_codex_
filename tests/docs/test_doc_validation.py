@@ -66,9 +66,7 @@ class TestDocumentationStructure:
             DOCS_DIR / "CHANGELOG",
             REPO_ROOT / "CHANGELOG.md",
         ]
-        assert any(p.exists() for p in changelog_paths), (
-            "CHANGELOG should exist"
-        )
+        assert any(p.exists() for p in changelog_paths), "CHANGELOG should exist"
 
 
 class TestMarkdownQuality:
@@ -98,16 +96,18 @@ class TestMarkdownQuality:
         """Spot-check for broken internal links in key docs."""
         key_docs = [
             REPO_ROOT / "README.md",
-            DOCS_DIR / "NEWCOMER_GUIDE.md" if (DOCS_DIR / "NEWCOMER_GUIDE.md").exists() else None,
+            DOCS_DIR / "NEWCOMER_GUIDE.md"
+            if (DOCS_DIR / "NEWCOMER_GUIDE.md").exists()
+            else None,
         ]
         internal_link_pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
-        
+
         for doc in key_docs:
             if doc is None or not doc.exists():
                 continue
             content = doc.read_text(encoding="utf-8", errors="ignore")
             links = internal_link_pattern.findall(content)
-            
+
             for link_text, link_target in links[:5]:  # Check first 5 links
                 # Skip external links and anchors
                 if link_target.startswith(("http://", "https://", "#", "mailto:")):
@@ -133,16 +133,18 @@ class TestCodeExamplesInDocs:
         # Sample key documentation files
         key_docs = [
             REPO_ROOT / "README.md",
-            DOCS_DIR / "QUICKSTART.md" if (DOCS_DIR / "QUICKSTART.md").exists() else None,
+            DOCS_DIR / "QUICKSTART.md"
+            if (DOCS_DIR / "QUICKSTART.md").exists()
+            else None,
         ]
-        
+
         errors = []
         for doc in key_docs:
             if doc is None or not doc.exists():
                 continue
             content = doc.read_text(encoding="utf-8", errors="ignore")
             code_blocks = self._extract_code_blocks(content)
-            
+
             for lang, code in code_blocks:
                 if lang.lower() in ("python", "py", "python3"):
                     # Skip incomplete snippets with ellipsis or comments
@@ -153,7 +155,7 @@ class TestCodeExamplesInDocs:
                     except SyntaxError as e:
                         # Don't fail, just collect for reporting
                         errors.append(f"{doc.name}: {e}")
-        
+
         # Log errors but don't fail (many examples are snippets)
         if errors:
             pytest.skip(f"Found {len(errors)} syntax issues (expected for snippets)")
@@ -163,12 +165,13 @@ class TestCodeExamplesInDocs:
         readme = REPO_ROOT / "README.md"
         if not readme.exists():
             pytest.skip("README.md not found")
-        
+
         content = readme.read_text(encoding="utf-8")
         code_blocks = self._extract_code_blocks(content)
-        
+
         bash_blocks = [
-            (lang, code) for lang, code in code_blocks
+            (lang, code)
+            for lang, code in code_blocks
             if lang.lower() in ("bash", "sh", "shell", "")
         ]
         assert len(bash_blocks) > 0, "README should have bash/shell examples"
@@ -201,16 +204,16 @@ class TestDocstringCoverage:
         """Verify key source modules have docstrings."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         py_files = self._get_python_files(SRC_DIR, limit=30)
         missing_docstrings = []
-        
+
         for py_file in py_files:
             if py_file.name.startswith("_"):
                 continue  # Skip private modules
             if not self._has_module_docstring(py_file):
                 missing_docstrings.append(py_file.name)
-        
+
         # Allow up to 30% missing (phase 16 target is 100%)
         max_missing = int(len(py_files) * 0.3)
         assert len(missing_docstrings) <= max_missing, (
@@ -221,18 +224,18 @@ class TestDocstringCoverage:
         """Spot-check that public functions have docstrings."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         sample_files = self._get_python_files(SRC_DIR, limit=10)
         functions_checked = 0
         functions_with_docs = 0
-        
+
         for py_file in sample_files:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
                 tree = ast.parse(content)
             except (SyntaxError, UnicodeDecodeError):
                 continue
-            
+
             for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef):
                     if node.name.startswith("_"):
@@ -240,7 +243,7 @@ class TestDocstringCoverage:
                     functions_checked += 1
                     if ast.get_docstring(node):
                         functions_with_docs += 1
-        
+
         if functions_checked > 0:
             coverage = functions_with_docs / functions_checked
             # Target: at least 30% docstring coverage (baseline)
@@ -284,9 +287,7 @@ class TestSecurityDocumentation:
             REPO_ROOT / "SECURITY.md",
             DOCS_DIR / "SECURITY.md",
         ]
-        assert any(p.exists() for p in security_paths), (
-            "SECURITY.md should exist"
-        )
+        assert any(p.exists() for p in security_paths), "SECURITY.md should exist"
 
     def test_security_has_vulnerability_reporting(self):
         """Verify security docs mention vulnerability reporting."""
@@ -315,9 +316,7 @@ class TestContributingDocumentation:
             REPO_ROOT / "CONTRIBUTING.md",
             DOCS_DIR / "CONTRIBUTING.md",
         ]
-        assert any(p.exists() for p in contrib_paths), (
-            "CONTRIBUTING.md should exist"
-        )
+        assert any(p.exists() for p in contrib_paths), "CONTRIBUTING.md should exist"
 
     def test_contributing_has_pr_guidelines(self):
         """Verify contributing docs mention PR guidelines."""
@@ -331,8 +330,6 @@ class TestContributingDocumentation:
                 # Check for PR-related content
                 keywords = ["pull request", "pr", "review", "commit"]
                 matches = sum(1 for kw in keywords if kw in content)
-                assert matches >= 2, (
-                    "CONTRIBUTING.md should discuss PR guidelines"
-                )
+                assert matches >= 2, "CONTRIBUTING.md should discuss PR guidelines"
                 return
         pytest.skip("No CONTRIBUTING.md found")

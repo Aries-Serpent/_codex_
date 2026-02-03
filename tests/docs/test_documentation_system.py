@@ -68,7 +68,10 @@ test.run()
             "method": "POST",
             "description": "Make predictions",
             "parameters": [{"name": "input", "type": "string", "required": True}],
-            "response": {"type": "object", "properties": {"prediction": {"type": "string"}}},
+            "response": {
+                "type": "object",
+                "properties": {"prediction": {"type": "string"}},
+            },
         }
 
         # Validate structure
@@ -457,7 +460,10 @@ class TestDocumentationQualityAssurance:
             "code_snippet_count": 200,
         }
 
-        assert metrics["avg_words_per_doc"] == metrics["total_words"] / metrics["total_docs"]
+        assert (
+            metrics["avg_words_per_doc"]
+            == metrics["total_words"] / metrics["total_docs"]
+        )
 
 
 if __name__ == "__main__":

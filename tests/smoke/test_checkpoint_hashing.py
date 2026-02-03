@@ -26,7 +26,9 @@ def test_project_save_checkpoint_hashes(tmp_path: Path):
     opt = torch.optim.SGD(model.parameters(), lr=0.01)
 
     ckpt = tmp_path / "ckpt.pt"
-    out = save_checkpoint(str(ckpt), model, opt, scheduler=None, epoch=0, extra={"test": True})
+    out = save_checkpoint(
+        str(ckpt), model, opt, scheduler=None, epoch=0, extra={"test": True}
+    )
     assert Path(out).exists()
     # Sidecars should exist
     assert ckpt.with_suffix(".pt.sha256").exists()

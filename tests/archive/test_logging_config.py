@@ -37,7 +37,9 @@ def test_setup_logging_text_format() -> None:
     assert "status=OK" in output
 
 
-def test_log_restore_appends_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_log_restore_appends_evidence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     evidence_dir = tmp_path / "evidence"
     monkeypatch.setenv("CODEX_EVIDENCE_DIR", str(evidence_dir))
     cfg = LoggingConfig(level="info", format="json")

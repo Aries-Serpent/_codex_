@@ -70,7 +70,7 @@ class TestCLIHelp:
         # Verify help output
         output = result.stdout + result.stderr
         has_usage = "Usage:" in output or "usage:" in output
-        
+
         if result.returncode != 0 and not has_usage:
             pytest.fail(
                 f"Help command failed: exit={result.returncode}, "
@@ -90,8 +90,10 @@ class TestCLIHelp:
         # Version output should contain version number
         output = result.stdout + result.stderr
         # Adjust assertion based on actual version format
-        assert result.returncode == 0 or "version" in output.lower() or any(
-            c.isdigit() for c in output
+        assert (
+            result.returncode == 0
+            or "version" in output.lower()
+            or any(c.isdigit() for c in output)
         )
 
 
@@ -117,9 +119,7 @@ class TestCLICommands:
         # assert result.returncode == 0
         pass  # Placeholder - implement actual test
 
-    def test_command_with_invalid_input_fails_gracefully(
-        self, tmp_path: Path
-    ) -> None:
+    def test_command_with_invalid_input_fails_gracefully(self, tmp_path: Path) -> None:
         """Test that invalid input produces appropriate error."""
         nonexistent = tmp_path / "does_not_exist.yaml"
         subprocess.run(
@@ -209,7 +209,11 @@ class TestCLIErrorHandling:
         )
         output = result.stdout + result.stderr
         # Should indicate command not found or show help
-        assert result.returncode != 0 or "error" in output.lower() or "unknown" in output.lower()
+        assert (
+            result.returncode != 0
+            or "error" in output.lower()
+            or "unknown" in output.lower()
+        )
 
 
 # =============================================================================
@@ -229,9 +233,7 @@ class TestCLIEnvironment:
         # Verify config is used
         pass  # Placeholder
 
-    def test_respects_verbose_env_var(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_respects_verbose_env_var(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that CLI respects verbose environment variable."""
         monkeypatch.setenv("CODEX_VERBOSE", "1")
         subprocess.run(
@@ -255,18 +257,14 @@ class TestCLIEnvironment:
 class TestCLIIntegration:
     """Integration tests for CLI with other modules."""
 
-    def test_cli_works_with_data_module(
-        self, temp_data_dir: Path
-    ) -> None:
+    def test_cli_works_with_data_module(self, temp_data_dir: Path) -> None:
         """Test CLI integration with data module."""
         # Create sample data
         # Run CLI command that processes data
         # Verify results
         pass  # Placeholder
 
-    def test_cli_works_with_config_module(
-        self, temp_config_file: Path
-    ) -> None:
+    def test_cli_works_with_config_module(self, temp_config_file: Path) -> None:
         """Test CLI integration with config module."""
         # Load config via CLI
         # Verify config is properly loaded
@@ -285,9 +283,7 @@ class TestCLIIntegration:
         # Add more command/exit code pairs
     ],
 )
-def test_cli_commands_exit_codes(
-    command: list[str], expected_exit_code: int
-) -> None:
+def test_cli_commands_exit_codes(command: list[str], expected_exit_code: int) -> None:
     """Test CLI commands return expected exit codes."""
     subprocess.run(
         [sys.executable, "-m", "codex_ml.cli"] + command,

@@ -124,14 +124,16 @@ class TestMentalMappingSmoke:
 
     def test_node_connection(self):
         """Test connecting nodes."""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.CONCEPT, content="concept1")
         node2 = model.create_node(NodeType.CONCEPT, content="concept2")
 
         edge = model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.LEADS_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.LEADS_TO,
         )
 
         assert edge is not None
@@ -239,13 +241,15 @@ class TestExceptionHandlingSmoke:
     def test_agent_error_import(self):
         """Test that custom exceptions can be imported."""
         from agents.exceptions import (
+            AgentConfigError,
             AgentError,
             AgentImportError,
-            AgentConfigError,
             AgentValidationError,
         )
 
-        assert all([AgentError, AgentImportError, AgentConfigError, AgentValidationError])
+        assert all(
+            [AgentError, AgentImportError, AgentConfigError, AgentValidationError]
+        )
 
     def test_agent_import_error_message(self):
         """Test AgentImportError provides helpful message."""
@@ -269,7 +273,9 @@ class TestIntegrationSmoke:
 
         memory = AgentMemory()
         state = DecisionState(
-            current_position="location_A", goal_position="location_B", available_resources=0.75
+            current_position="location_A",
+            goal_position="location_B",
+            available_resources=0.75,
         )
 
         # Store physics state in memory
@@ -281,8 +287,8 @@ class TestIntegrationSmoke:
 
     def test_workflow_with_memory(self):
         """Test WorkflowNavigator integration with AgentMemory."""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
         from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         memory = AgentMemory()
@@ -300,8 +306,8 @@ class TestIntegrationSmoke:
 
     def test_mental_map_with_memory(self):
         """Test MentalMapping integration with AgentMemory."""
-        from agents.mental_mapping import MentalMappingModel, NodeType
         from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         memory = AgentMemory()

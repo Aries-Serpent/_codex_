@@ -12,8 +12,8 @@ Systematically applies dynamics and evolution patterns:
 Target: +3-4% coverage gain (43% → 47%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_TimeEvolution:
@@ -24,7 +24,7 @@ class TestPhase2_TimeEvolution:
 
     def test_evolve_state_basic(self):
         """Test basic state evolution"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
+        from agents.physics_orchestrator import EnergyState, PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
         if hasattr(orchestrator, "evolve_state"):
@@ -32,11 +32,11 @@ class TestPhase2_TimeEvolution:
             initial_state = EnergyState(
                 configuration={"position": [0.0, 0.0], "velocity": [1.0, 0.0]},
                 energy=10.0,
-                temperature=1.0
+                temperature=1.0,
             )
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
-            
+
             # Check that the evolved state has expected attributes
             assert hasattr(evolved, "energy")
             assert hasattr(evolved, "configuration")
@@ -126,7 +126,7 @@ class TestPhase2_SelfHealing:
 
     def test_detected_issue_creation(self):
         """Test creating DetectedIssue"""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.IMPORT_ERROR,
@@ -171,7 +171,12 @@ class TestPhase2_SelfHealing:
 
     def test_suggest_remediation(self):
         """Test remediation suggestion"""
-        from agents.self_healing import SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import (
+            DetectedIssue,
+            IssueSeverity,
+            IssueType,
+            SelfHealingEngine,
+        )
 
         engine = SelfHealingEngine()
         issue = DetectedIssue(
@@ -260,7 +265,9 @@ class TestPhase2_Telemetry:
         """Test MetricsCollector initialization"""
         try:
             from codex.quantum_orchestrator.mlops_bridge import MetricsCollector
-            from codex.quantum_orchestrator.orchestrator import QuantumRelativisticDiracOrchestrator
+            from codex.quantum_orchestrator.orchestrator import (
+                QuantumRelativisticDiracOrchestrator,
+            )
 
             orchestrator = QuantumRelativisticDiracOrchestrator()
             collector = MetricsCollector(orchestrator)
@@ -285,7 +292,10 @@ class TestPhase2_Telemetry:
             from codex.quantum_orchestrator.mlops_bridge import Metric, MetricType
 
             metric = Metric(
-                name="test_metric", value=42.0, metric_type=MetricType.GAUGE, labels={"env": "test"}
+                name="test_metric",
+                value=42.0,
+                metric_type=MetricType.GAUGE,
+                labels={"env": "test"},
             )
             assert metric is not None
             assert metric.name == "test_metric"
@@ -314,7 +324,9 @@ class TestPhase2_Telemetry:
         """Test collecting orchestrator metrics"""
         try:
             from codex.quantum_orchestrator.mlops_bridge import MetricsCollector
-            from codex.quantum_orchestrator.orchestrator import QuantumRelativisticDiracOrchestrator
+            from codex.quantum_orchestrator.orchestrator import (
+                QuantumRelativisticDiracOrchestrator,
+            )
 
             orchestrator = QuantumRelativisticDiracOrchestrator()
             collector = MetricsCollector(orchestrator)

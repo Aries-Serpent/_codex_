@@ -4,8 +4,8 @@ Test Codex Experiment Index
 Test module for codex experiment index.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import yaml
 

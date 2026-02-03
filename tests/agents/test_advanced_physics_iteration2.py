@@ -10,7 +10,6 @@ Focus: ChaoticAttractor, ChaoticNeuralNetwork, FractalAnalyzer, FluidChannel,
 
 import pytest
 
-
 # ============================================================================
 # CHAOTIC ATTRACTOR TESTS
 # ============================================================================
@@ -374,26 +373,32 @@ class TestRelativityScheduler:
 
     def test_add_agent(self):
         """Test adding an agent to the scheduler."""
-        from agents.advanced_physics_calculators import RelativityScheduler
         import numpy as np
+
+        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
         scheduler.add_agent(
-            agent_id="agent1", position=np.array([0.0, 0.0]), velocity=np.array([10.0, 0.0])
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0]),
         )
 
         assert "agent1" in scheduler.agents
 
     def test_time_dilation(self):
         """Test time dilation calculation."""
-        from agents.advanced_physics_calculators import RelativityScheduler
         import numpy as np
+
+        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
         scheduler.add_agent(
-            agent_id="agent1", position=np.array([0.0, 0.0]), velocity=np.array([10.0, 0.0])
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0]),
         )
 
         # Use the actual method signature
@@ -403,8 +408,9 @@ class TestRelativityScheduler:
 
     def test_lorentz_factor(self):
         """Test Lorentz factor calculation."""
-        from agents.advanced_physics_calculators import RelativityScheduler
         import numpy as np
+
+        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -416,8 +422,9 @@ class TestRelativityScheduler:
 
     def test_communication_delay(self):
         """Test communication delay between agents."""
-        from agents.advanced_physics_calculators import RelativityScheduler
         import numpy as np
+
+        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -492,7 +499,10 @@ class TestPhysicsIntegration:
 
     def test_chaotic_to_neural_pipeline(self):
         """Test pipeline from chaotic attractor to neural network."""
-        from agents.advanced_physics_calculators import ChaoticAttractor, ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import (
+            ChaoticAttractor,
+            ChaoticNeuralNetwork,
+        )
 
         # Generate chaotic data
         attractor = ChaoticAttractor()
@@ -507,7 +517,10 @@ class TestPhysicsIntegration:
 
     def test_fluid_and_em_coordination(self):
         """Test coordinating fluid flow and EM routing."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler, EMFieldRouter
+        from agents.advanced_physics_calculators import (
+            EMFieldRouter,
+            FluidFlowScheduler,
+        )
 
         fluid_scheduler = FluidFlowScheduler(num_channels=2)
         em_router = EMFieldRouter(grid_size=5)

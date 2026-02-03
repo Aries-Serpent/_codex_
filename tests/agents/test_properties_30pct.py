@@ -5,8 +5,9 @@ Target: 3.77% more coverage
 Strategy: High-statement, low-complexity methods
 """
 
-import pytest
 import math
+
+import pytest
 
 
 class TestPhysicsOrchestratorProperties:
@@ -24,7 +25,9 @@ class TestPhysicsOrchestratorProperties:
         """Test force vector at 90 degrees (straight up)."""
         from agents.physics_orchestrator import ForceVector
 
-        force = ForceVector(name="up", magnitude=1.0, direction=math.pi / 2, priority=1.0)
+        force = ForceVector(
+            name="up", magnitude=1.0, direction=math.pi / 2, priority=1.0
+        )
         x, y = force.get_components()
 
         assert abs(x) < 0.001  # Should be ~0
@@ -82,7 +85,7 @@ class TestWorkflowNavigatorProperties:
 
         step = WorkflowStep(id="test", action="Test action")
 
-        assert step.optional == False
+        assert not step.optional
 
     def test_step_status_enum(self):
         """Test StepStatus enum."""
@@ -168,7 +171,7 @@ class TestSelfHealingProperties:
 
     def test_detected_issue_defaults(self):
         """Test DetectedIssue default field values."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_id="test",

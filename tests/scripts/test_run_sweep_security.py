@@ -1,4 +1,5 @@
 """Security-focused tests for scripts/run_sweep.py validation."""
+
 from __future__ import annotations
 
 import sys

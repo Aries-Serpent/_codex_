@@ -30,7 +30,15 @@ def test_sarif_aggregate(tmp_path):
     write_sarif(s1, "rule-a")
     write_sarif(s2, "rule-b")
     code = subprocess.call(
-        [sys.executable, "tools/sarif_aggregate.py", "--in", str(s1), str(s2), "--out", str(out)]
+        [
+            sys.executable,
+            "tools/sarif_aggregate.py",
+            "--in",
+            str(s1),
+            str(s2),
+            "--out",
+            str(out),
+        ]
     )
     assert code == 0
     data = json.loads(out.read_text(encoding="utf-8"))

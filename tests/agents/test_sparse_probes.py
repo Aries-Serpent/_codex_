@@ -47,8 +47,12 @@ class TestSparseLinearProbe:
         top_concepts = probe.top_concepts(test_vec, k=3)
 
         assert len(top_concepts) == 3, "Should return exactly 3 concepts"
-        assert all(isinstance(name, str) for name, _ in top_concepts), "Names should be strings"
-        assert all(isinstance(score, float) for _, score in top_concepts), "Scores should be floats"
+        assert all(isinstance(name, str) for name, _ in top_concepts), (
+            "Names should be strings"
+        )
+        assert all(isinstance(score, float) for _, score in top_concepts), (
+            "Scores should be floats"
+        )
 
         # Check ordering (by absolute value)
         scores = [abs(score) for _, score in top_concepts]
@@ -90,7 +94,9 @@ class TestUnembeddingHead:
 
         # Check ordering (descending by logit)
         logit_values = [logit for _, logit in top_labels]
-        assert logit_values == sorted(logit_values, reverse=True), "Should be sorted descending"
+        assert logit_values == sorted(logit_values, reverse=True), (
+            "Should be sorted descending"
+        )
 
     def test_unembedding_deterministic(self):
         """Test deterministic projection."""

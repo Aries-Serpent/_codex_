@@ -21,12 +21,13 @@ Test Categories:
 """
 
 import pytest
+
 from agents.developer_orchestrator import (
-    PhysicsGuidedDeveloperOrchestrator,
     AppType,
-    DevelopmentPhase,
-    RequirementVariable,
     CodeComponent,
+    DevelopmentPhase,
+    PhysicsGuidedDeveloperOrchestrator,
+    RequirementVariable,
 )
 
 
@@ -36,13 +37,16 @@ class TestRequirementVariable:
     def test_requirement_variable_initialization(self):
         """Test basic initialization."""
         var = RequirementVariable(
-            name="port", description="Server port number", variable_type="int", required=True
+            name="port",
+            description="Server port number",
+            variable_type="int",
+            required=True,
         )
 
         assert var.name == "port"
         assert var.description == "Server port number"
         assert var.variable_type == "int"
-        assert var.required == True
+        assert var.required
         assert var.current_value is None
 
     def test_requirement_variable_with_defaults(self):
@@ -373,16 +377,18 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
     def test_component_complexity_tracking(self, orchestrator):
         """Test tracking component complexity."""
-        simple = CodeComponent("simple.py", "module", "Simple", "x=1", complexity_score=0.1)
+        simple = CodeComponent(
+            "simple.py", "module", "Simple", "x=1", complexity_score=0.1
+        )
         complex = CodeComponent(
             "complex.py", "module", "Complex", "# lots of code", complexity_score=0.9
         )
 
         orchestrator.components = [simple, complex]
 
-        avg_complexity = sum(c.complexity_score or 0 for c in orchestrator.components) / len(
-            orchestrator.components
-        )
+        avg_complexity = sum(
+            c.complexity_score or 0 for c in orchestrator.components
+        ) / len(orchestrator.components)
         assert 0 < avg_complexity < 1
 
     def test_dependency_tracking(self, orchestrator):
@@ -419,7 +425,9 @@ class TestPhysicsIntegration:
 
     def test_chaos_suggestions_fallback(self):
         """Test chaos suggestions work with fallback."""
-        var = RequirementVariable("param", "Parameter", "int", suggested_values=[1, 2, 3])
+        var = RequirementVariable(
+            "param", "Parameter", "int", suggested_values=[1, 2, 3]
+        )
 
         suggestions = var.suggest_from_chaos(cnn=None)
         assert suggestions == [1, 2, 3]

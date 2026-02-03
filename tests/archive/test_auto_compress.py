@@ -34,7 +34,12 @@ def setup_files():
 
 def run_env(env):
     subprocess.run(
-        [sys.executable, "scripts/archive/select_and_compress.py", "--root", str(RAW_ROOT)],
+        [
+            sys.executable,
+            "scripts/archive/select_and_compress.py",
+            "--root",
+            str(RAW_ROOT),
+        ],
         check=True,
         env=env,
     )

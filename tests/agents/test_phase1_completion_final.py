@@ -169,11 +169,13 @@ class TestPhase1Completion_CrossModule:
 
     def test_import_all_orchestrators(self):
         """Test importing all orchestrator modules."""
-        from agents import physics_orchestrator
-        from agents import quantum_game_theory
-        from agents import mental_mapping
-        from agents import workflow_navigator
-        from agents import self_healing
+        from agents import (
+            mental_mapping,
+            physics_orchestrator,
+            quantum_game_theory,
+            self_healing,
+            workflow_navigator,
+        )
 
         assert physics_orchestrator is not None
         assert quantum_game_theory is not None

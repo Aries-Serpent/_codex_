@@ -21,7 +21,9 @@ def run(depth_default=None, depth=None):
     if depth:
         env["AUDIT_DEPTH"] = depth
     subprocess.run(
-        [sys.executable, "scripts/space_traversal/audit_runner.py", "run"], check=True, env=env
+        [sys.executable, "scripts/space_traversal/audit_runner.py", "run"],
+        check=True,
+        env=env,
     )
 
 

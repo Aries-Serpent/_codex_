@@ -6,14 +6,14 @@ Applying: Physics Ref Tables 1, 2, 3 - All strategies combined.
 """
 
 
-
 class TestPhysicsOrchestratorExhaustive:
     """Exhaustive simple tests for physics_orchestrator."""
 
     def test_force_vector_all_quadrants(self):
         """Test force vectors in all quadrants."""
-        from agents.physics_orchestrator import ForceVector
         import math
+
+        from agents.physics_orchestrator import ForceVector
 
         # Test all 4 quadrants
         f1 = ForceVector("q1", 1.0, 0.0)  # 0°
@@ -28,7 +28,9 @@ class TestPhysicsOrchestratorExhaustive:
         from agents.physics_orchestrator import ActionPath, ActionType
 
         for action_type in ActionType:
-            path = ActionPath(action_type=action_type, description=f"Test {action_type.value}")
+            path = ActionPath(
+                action_type=action_type, description=f"Test {action_type.value}"
+            )
             assert path.action_type == action_type
 
     def test_decision_state_various_resources(self):
@@ -130,7 +132,7 @@ class TestSelfHealingExhaustive:
 
     def test_all_severity_levels(self):
         """Test all severity levels."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         for severity in IssueSeverity:
             issue = DetectedIssue(
@@ -144,7 +146,7 @@ class TestSelfHealingExhaustive:
 
     def test_all_issue_types(self):
         """Test all issue types."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         for issue_type in IssueType:
             issue = DetectedIssue(

@@ -31,7 +31,7 @@ class TestMemoryEntry:
             content="Made a decision",
             context={"key": "value"},
         )
-        
+
         assert entry.memory_id == "test_id"
         assert entry.category == "decision"
         assert entry.content == "Made a decision"
@@ -47,9 +47,9 @@ class TestMemoryEntry:
             context={},
             tags=["tag1", "tag2"],
         )
-        
+
         result = entry.to_dict()
-        
+
         assert isinstance(result, dict)
         assert result["memory_id"] == "id1"
         assert result["category"] == "fact"
@@ -68,9 +68,9 @@ class TestMemoryEntry:
             "tags": ["python"],
             "related_memories": ["id1"],
         }
-        
+
         entry = MemoryEntry.from_dict(data)
-        
+
         assert entry.memory_id == "id2"
         assert entry.confidence == 0.9
         assert entry.access_count == 5
@@ -82,7 +82,7 @@ class TestMemoryEntry:
             content="test",
             context={},
         )
-        
+
         # Should have ISO format timestamp
         assert "T" in entry.created_at
         datetime.fromisoformat(entry.created_at)
@@ -97,7 +97,7 @@ class TestContextFrame:
             task_description="Test task",
             start_time=datetime.now().isoformat(),
         )
-        
+
         assert frame.frame_id == "frame1"
         assert frame.task_description == "Test task"
         assert frame.status == "active"
@@ -111,9 +111,9 @@ class TestContextFrame:
             files_modified=["file1.py", "file2.py"],
             tokens_used=1000,
         )
-        
+
         result = frame.to_dict()
-        
+
         assert result["frame_id"] == "frame2"
         assert result["files_modified"] == ["file1.py", "file2.py"]
         assert result["tokens_used"] == 1000
@@ -124,7 +124,7 @@ class TestContextFrame:
             task_description="task",
             start_time="now",
         )
-        
+
         assert frame.active_memories == []
         assert frame.decisions_made == []
         assert frame.lessons_learned == []
@@ -136,7 +136,7 @@ class TestPatternLibrary:
 
     def test_add_pattern(self) -> None:
         library = PatternLibrary()
-        
+
         library.add_pattern(
             pattern_id="p1",
             name="Test Pattern",
@@ -147,14 +147,14 @@ class TestPatternLibrary:
             examples=[],
             tags=["testing"],
         )
-        
+
         assert "p1" in library.patterns
         assert library.patterns["p1"]["name"] == "Test Pattern"
         assert library.patterns["p1"]["success_rate"] == 0.8
 
     def test_pattern_indexing(self) -> None:
         library = PatternLibrary()
-        
+
         library.add_pattern(
             pattern_id="p1",
             name="Pattern 1",
@@ -165,13 +165,13 @@ class TestPatternLibrary:
             examples=[],
             tags=["security", "fix"],
         )
-        
+
         assert "p1" in library.pattern_index["security"]
         assert "p1" in library.pattern_index["fix"]
 
     def test_match_patterns(self) -> None:
         library = PatternLibrary()
-        
+
         library.add_pattern(
             pattern_id="sec1",
             name="Security Fix",
@@ -182,16 +182,16 @@ class TestPatternLibrary:
             examples=[],
             tags=["security"],
         )
-        
+
         matches = library.match_patterns("fix security vulnerability in code")
-        
+
         assert len(matches) == 1
         assert matches[0]["pattern"]["name"] == "Security Fix"
         assert matches[0]["match_score"] > 0
 
     def test_match_patterns_min_success_rate(self) -> None:
         library = PatternLibrary()
-        
+
         library.add_pattern(
             pattern_id="low",
             name="Low Success",
@@ -202,14 +202,14 @@ class TestPatternLibrary:
             examples=[],
             tags=["low"],
         )
-        
+
         matches = library.match_patterns("test pattern", min_success_rate=0.5)
-        
+
         assert len(matches) == 0
 
     def test_record_pattern_usage(self) -> None:
         library = PatternLibrary()
-        
+
         library.add_pattern(
             pattern_id="p1",
             name="Test",
@@ -220,10 +220,10 @@ class TestPatternLibrary:
             examples=[],
             tags=[],
         )
-        
+
         library.patterns["p1"]["success_rate"]
         library.record_pattern_usage("p1", success=True)
-        
+
         # Success should increase rate slightly
         assert library.patterns["p1"]["usage_count"] == 1
         # Rate uses exponential moving average
@@ -240,10 +240,10 @@ class TestPatternLibrary:
             examples=[],
             tags=["tag"],
         )
-        
+
         data = library.to_dict()
         restored = PatternLibrary.from_dict(data)
-        
+
         assert "p1" in restored.patterns
         assert restored.patterns["p1"]["name"] == "Test"
 
@@ -264,10 +264,10 @@ class TestAgentMemory:
             content="Python is great",
             context={"source": "test"},
         )
-        
+
         memory.store_memory(entry)
         retrieved = memory.retrieve_memory("m1")
-        
+
         assert retrieved is not None
         assert retrieved.content == "Python is great"
         # Note: access_count is incremented in DB but returned object shows pre-increment value
@@ -282,14 +282,14 @@ class TestAgentMemory:
             content="Use pytest",
             context={"confidence": "high"},
         )
-        
+
         retrieved = memory.retrieve_memory("m2")
         assert retrieved.content == "Use pytest"
 
     def test_store_memory_old_style(self, memory: AgentMemory) -> None:
         """Test backward compatibility with key/value style."""
         memory.store_memory(key="old_key", value="old value", category="legacy")
-        
+
         retrieved = memory.retrieve_memory("old_key")
         assert retrieved.content == "old value"
 
@@ -300,7 +300,7 @@ class TestAgentMemory:
             category="observation",
             content="Tests are important",
         )
-        
+
         retrieved = memory.retrieve_memory("m3")
         assert retrieved is not None
 
@@ -314,22 +314,34 @@ class TestAgentMemory:
         memory.store_memory(
             MemoryEntry(memory_id="s3", category="decision", content="c", context={})
         )
-        
+
         decisions = memory.search_memories(category="decision")
-        
+
         assert len(decisions) == 2
         assert all(m.category == "decision" for m in decisions)
 
     def test_search_with_min_confidence(self, memory: AgentMemory) -> None:
         memory.store_memory(
-            MemoryEntry(memory_id="c1", category="test", content="high", context={}, confidence=0.9)
+            MemoryEntry(
+                memory_id="c1",
+                category="test",
+                content="high",
+                context={},
+                confidence=0.9,
+            )
         )
         memory.store_memory(
-            MemoryEntry(memory_id="c2", category="test", content="low", context={}, confidence=0.3)
+            MemoryEntry(
+                memory_id="c2",
+                category="test",
+                content="low",
+                context={},
+                confidence=0.3,
+            )
         )
-        
+
         high_conf = memory.search_memories(min_confidence=0.5)
-        
+
         assert len(high_conf) == 1
         assert high_conf[0].content == "high"
 
@@ -338,20 +350,24 @@ class TestAgentMemory:
             MemoryEntry(memory_id="x", category="test", content="test", context={})
         )
         memory.clear()
-        
+
         result = memory.retrieve_memory("x")
         assert result is None
 
     def test_get_memory_stats(self, memory: AgentMemory) -> None:
         memory.store_memory(
-            MemoryEntry(memory_id="1", category="a", content="1", context={}, confidence=0.8)
+            MemoryEntry(
+                memory_id="1", category="a", content="1", context={}, confidence=0.8
+            )
         )
         memory.store_memory(
-            MemoryEntry(memory_id="2", category="b", content="2", context={}, confidence=0.6)
+            MemoryEntry(
+                memory_id="2", category="b", content="2", context={}, confidence=0.6
+            )
         )
-        
+
         stats = memory.get_memory_stats()
-        
+
         assert stats["total_memories"] == 2
         assert stats["average_confidence"] == 0.7
 
@@ -359,9 +375,9 @@ class TestAgentMemory:
         memory.store_memory(
             MemoryEntry(memory_id="u1", category="test", content="old", context={})
         )
-        
+
         success = memory.update("u1", "new content")
-        
+
         assert success is True
         retrieved = memory.retrieve_memory("u1")
         assert retrieved.content == "new content"
@@ -376,10 +392,10 @@ class TestAgentMemory:
             task_description="Test task",
             start_time=datetime.now().isoformat(),
         )
-        
+
         memory.store_context_frame(frame)
         frames = memory.get_recent_context_frames()
-        
+
         assert len(frames) == 1
         assert frames[0].frame_id == "f1"
 
@@ -406,7 +422,7 @@ class TestAgentMemorySystem:
 
     def test_start_task(self, system: AgentMemorySystem) -> None:
         frame = system.start_task("Fix bug in module")
-        
+
         assert frame is not None
         assert frame.task_description == "Fix bug in module"
         assert frame.status == "active"
@@ -414,29 +430,29 @@ class TestAgentMemorySystem:
 
     def test_record_decision(self, system: AgentMemorySystem) -> None:
         system.start_task("Test task")
-        
+
         entry = system.record_decision(
             decision="Use pytest for testing",
             alternatives=["unittest", "nose"],
             confidence=0.85,
             reasoning="pytest has better fixtures",
         )
-        
+
         assert entry.category == "decision"
         assert entry.content == "Use pytest for testing"
         assert entry.confidence == 0.85
 
     def test_record_lesson(self, system: AgentMemorySystem) -> None:
         system.start_task("Test task")
-        
+
         entry = system.record_lesson("Always run tests before commit", success=True)
-        
+
         assert entry.category == "lesson"
         assert entry.confidence == 0.9  # Success = higher confidence
 
     def test_get_guidance(self, system: AgentMemorySystem) -> None:
         guidance = system.get_guidance("fix security vulnerability")
-        
+
         assert "patterns" in guidance
         assert "relevant_memories" in guidance
         # Should match the security_fix pattern
@@ -446,9 +462,9 @@ class TestAgentMemorySystem:
     def test_complete_task(self, system: AgentMemorySystem) -> None:
         system.start_task("Complete this task")
         system.record_decision("Decision 1", [], 0.8, "reason")
-        
+
         system.complete_task(success=True, summary="Task completed successfully")
-        
+
         assert system.current_frame is None
         # Verify context frame was saved
         frames = system.memory.get_recent_context_frames()
@@ -456,7 +472,7 @@ class TestAgentMemorySystem:
 
     def test_get_stats(self, system: AgentMemorySystem) -> None:
         stats = system.get_stats()
-        
+
         assert "agent_id" in stats
         assert stats["agent_id"] == "test_agent"
         assert "memory_stats" in stats
@@ -470,7 +486,7 @@ class TestAgentMemorySystem:
             rationale="Reduces API calls",
             context={"performance_gain": "30%"},
         )
-        
+
         assert memory_id is not None
         assert len(memory_id) == 16  # SHA256 hash prefix
 
@@ -481,9 +497,9 @@ class TestAgentMemorySystem:
             decision="Use redis for caching",
             rationale="Fast and reliable",
         )
-        
+
         results = system.retrieve_similar_context("caching performance")
-        
+
         assert isinstance(results, list)
         # Results should have expected fields
         if results:
@@ -492,10 +508,10 @@ class TestAgentMemorySystem:
 
     def test_get_pattern_library(self, system: AgentMemorySystem) -> None:
         patterns = system.get_pattern_library()
-        
+
         assert isinstance(patterns, list)
         assert len(patterns) >= 3  # Default patterns
-        
+
         pattern_names = [p["name"] for p in patterns]
         assert "Code Review Comment Resolution" in pattern_names
         assert "Security Vulnerability Fix" in pattern_names
@@ -512,9 +528,9 @@ class TestAgentMemorySystem:
                 access_count=0,
             )
         )
-        
+
         invalidated = system.invalidate_stale_contexts(age_days=30)
-        
+
         # Should have processed the old memory
         assert invalidated >= 0  # May or may not invalidate based on logic
 
@@ -528,14 +544,14 @@ class TestAgentMemoryIntegration:
             agent_id="integration_test",
             db_path=tmp_path / "integration.db",
         )
-        
+
         # Start task
         system.start_task("Fix code review comment about path traversal")
-        
+
         # Get guidance
         guidance = system.get_guidance("path traversal security fix")
         assert "patterns" in guidance
-        
+
         # Make decisions
         system.record_decision(
             decision="Use os.path.commonpath for validation",
@@ -543,19 +559,19 @@ class TestAgentMemoryIntegration:
             confidence=0.85,
             reasoning="commonpath handles edge cases",
         )
-        
+
         # Record lesson
         system.record_lesson(
             "Wrap commonpath in try/except for Windows compatibility",
             success=True,
         )
-        
+
         # Complete task
         system.complete_task(
             success=True,
             summary="Fixed path traversal vulnerability",
         )
-        
+
         # Verify stats
         stats = system.get_stats()
         assert stats["memory_stats"]["total_memories"] >= 2
@@ -563,7 +579,7 @@ class TestAgentMemoryIntegration:
     def test_memory_persistence(self, tmp_path: Path) -> None:
         """Test that memories persist across instances."""
         db_path = tmp_path / "persistent.db"
-        
+
         # Create and populate
         system1 = AgentMemorySystem(agent_id="persist_test", db_path=db_path)
         system1.store_decision(
@@ -571,10 +587,10 @@ class TestAgentMemoryIntegration:
             decision="Persistent decision",
             rationale="For testing",
         )
-        
+
         # Create new instance with same database
         system2 = AgentMemorySystem(agent_id="persist_test", db_path=db_path)
-        
+
         # Search should find the memory
         results = system2.retrieve_similar_context("persistent")
         assert len(results) >= 1

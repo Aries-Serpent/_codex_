@@ -80,7 +80,8 @@ class ASTPatternLibrary:
                 description="Classes that define __init__",
                 node_type=ast.ClassDef,
                 matcher=lambda n: any(
-                    isinstance(item, ast.FunctionDef) and item.name == "__init__" for item in n.body
+                    isinstance(item, ast.FunctionDef) and item.name == "__init__"
+                    for item in n.body
                 ),
             )
         )
@@ -124,7 +125,8 @@ class ASTPatternLibrary:
                 description="Functions with TODO in docstring",
                 node_type=ast.FunctionDef,
                 matcher=lambda n: (
-                    ast.get_docstring(n) is not None and "TODO" in ast.get_docstring(n).upper()
+                    ast.get_docstring(n) is not None
+                    and "TODO" in ast.get_docstring(n).upper()
                 ),
             )
         )
@@ -144,7 +146,10 @@ class ASTPatternLibrary:
             if isinstance(stmt, ast.Raise):
                 exc = stmt.exc
                 if isinstance(exc, ast.Call):
-                    if isinstance(exc.func, ast.Name) and exc.func.id == "NotImplementedError":
+                    if (
+                        isinstance(exc.func, ast.Name)
+                        and exc.func.id == "NotImplementedError"
+                    ):
                         return True
                 elif isinstance(exc, ast.Name) and exc.id == "NotImplementedError":
                     return True

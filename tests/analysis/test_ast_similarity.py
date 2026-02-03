@@ -32,7 +32,9 @@ def setup():
     (ART / "capabilities_raw.json").write_text(json.dumps(raw), encoding="utf-8")
 
     # Create test Python files with different structures
-    Path("test_a.py").write_text("def foo():\n    pass\nclass Bar:\n    x = 1", encoding="utf-8")
+    Path("test_a.py").write_text(
+        "def foo():\n    pass\nclass Bar:\n    x = 1", encoding="utf-8"
+    )
     Path("test_b.py").write_text("def baz():\n    return 42", encoding="utf-8")
     Path("test_c.md").write_text("# Docs", encoding="utf-8")
 
@@ -42,7 +44,9 @@ def test_ast_similarity_enabled():
     env = os.environ.copy()
     env["AST_SIMILARITY_ENABLE"] = "1"
     subprocess.run(
-        [sys.executable, "scripts/analysis/ast_signature_similarity.py"], check=True, env=env
+        [sys.executable, "scripts/analysis/ast_signature_similarity.py"],
+        check=True,
+        env=env,
     )
 
     out = ART / "ast_similarity.json"
@@ -64,7 +68,9 @@ def test_ast_similarity_disabled():
     env = os.environ.copy()
     env["AST_SIMILARITY_ENABLE"] = "0"
     subprocess.run(
-        [sys.executable, "scripts/analysis/ast_signature_similarity.py"], check=True, env=env
+        [sys.executable, "scripts/analysis/ast_signature_similarity.py"],
+        check=True,
+        env=env,
     )
 
     assert not (ART / "ast_similarity.json").exists()

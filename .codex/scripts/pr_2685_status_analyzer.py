@@ -8,13 +8,13 @@ Purpose: Automated status reporting for AI agents/assistants
 Usage: python3 .codex/scripts/pr_2685_status_analyzer.py
 """
 
-import json
 import hashlib
+import json
 import os
+import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
-import re
+from typing import Any, Dict, List
 
 
 class CodebaseAnalyzer:
@@ -27,24 +27,34 @@ class CodebaseAnalyzer:
             "branch": "copilot/sub-pr-2682",
             "title": "Apply code review fixes, resolve CodeQL alerts, and implement Emergent Intelligence Agent (V10)",
             "state": "open",
-            "base_branch": "0D_base_"
+            "base_branch": "0D_base_",
         }
         self.root_path = Path(__file__).parent.parent.parent
 
     def count_lines_by_extension(self) -> Dict[str, int]:
         """Count lines of code by file extension"""
-        exts = {'.py': 0, '.md': 0, '.sh': 0, '.html': 0, '.yml': 0, '.yaml': 0, '.js': 0}
+        exts = {
+            ".py": 0,
+            ".md": 0,
+            ".sh": 0,
+            ".html": 0,
+            ".yml": 0,
+            ".yaml": 0,
+            ".js": 0,
+        }
 
         for root, dirs, files in os.walk(self.root_path):
             # Skip hidden and cache directories
-            dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+            dirs[:] = [d for d in dirs if not d.startswith(".") and d != "__pycache__"]
 
             for file in files:
                 ext = Path(file).suffix
                 if ext in exts:
                     try:
                         filepath = os.path.join(root, file)
-                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(
+                            filepath, "r", encoding="utf-8", errors="ignore"
+                        ) as f:
                             exts[ext] += len(f.readlines())
                     except Exception:
                         # Silently skip files that cannot be read or decoded
@@ -58,29 +68,25 @@ class CodebaseAnalyzer:
             "security_keywords": [],
             "quality_patterns": [],
             "test_patterns": [],
-            "documentation": []
+            "documentation": [],
         }
 
         # Security patterns
         security_patterns = [
             r"sha256|checksum|hash",
             r"seed|rng|random",
-            r"sanitize|validate|escape"
+            r"sanitize|validate|escape",
         ]
 
         # Quality patterns
-        quality_patterns = [
-            r"def test_",
-            r"@dataclass",
-            r"type:.*->"
-        ]
+        quality_patterns = [r"def test_", r"@dataclass", r"type:.*->"]
 
         for file in files:
-            if not file.endswith('.py'):
+            if not file.endswith(".py"):
                 continue
 
             try:
-                with open(file, 'r', encoding='utf-8') as f:
+                with open(file, "r", encoding="utf-8") as f:
                     content = f.read()
 
                     # Check security patterns
@@ -92,7 +98,9 @@ class CodebaseAnalyzer:
                     for pattern in quality_patterns:
                         matches = re.findall(pattern, content)
                         if matches:
-                            patterns["quality_patterns"].append(f"{file}: {len(matches)} matches")
+                            patterns["quality_patterns"].append(
+                                f"{file}: {len(matches)} matches"
+                            )
             except Exception:
                 # Silently skip files that fail pattern matching
                 pass
@@ -110,43 +118,43 @@ class CodebaseAnalyzer:
             "emergent_intelligence": {
                 "components": {
                     "functionality": 90.0,  # 5 core capabilities implemented
-                    "consistency": 85.0,    # Follows project patterns
-                    "tests": 90.0,          # 34 comprehensive tests
-                    "safeguards": 80.0,     # Error handling, fallbacks
-                    "documentation": 80.0   # README + manifest
+                    "consistency": 85.0,  # Follows project patterns
+                    "tests": 90.0,  # 34 comprehensive tests
+                    "safeguards": 80.0,  # Error handling, fallbacks
+                    "documentation": 80.0,  # README + manifest
                 },
-                "status": "implemented"
+                "status": "implemented",
             },
             "codeql_compliance": {
                 "components": {
                     "functionality": 100.0,  # All alerts resolved
-                    "consistency": 100.0,    # Proper naming
-                    "tests": 100.0,          # Verified
-                    "safeguards": 100.0,     # Documentation
-                    "documentation": 100.0   # Comments added
+                    "consistency": 100.0,  # Proper naming
+                    "tests": 100.0,  # Verified
+                    "safeguards": 100.0,  # Documentation
+                    "documentation": 100.0,  # Comments added
                 },
-                "status": "complete"
+                "status": "complete",
             },
             "security_hardening": {
                 "components": {
-                    "functionality": 95.0,   # Full SHA-256
-                    "consistency": 95.0,     # Deterministic seeds
-                    "tests": 95.0,           # Validation present
-                    "safeguards": 95.0,      # Type hints
-                    "documentation": 95.0    # Security notes
+                    "functionality": 95.0,  # Full SHA-256
+                    "consistency": 95.0,  # Deterministic seeds
+                    "tests": 95.0,  # Validation present
+                    "safeguards": 95.0,  # Type hints
+                    "documentation": 95.0,  # Security notes
                 },
-                "status": "active"
+                "status": "active",
             },
             "code_review_fixes": {
                 "components": {
                     "functionality": 100.0,  # All 6 items
-                    "consistency": 100.0,    # Project standards
-                    "tests": 100.0,          # Compilation verified
-                    "safeguards": 100.0,     # No breaking changes
-                    "documentation": 100.0   # Updates complete
+                    "consistency": 100.0,  # Project standards
+                    "tests": 100.0,  # Compilation verified
+                    "safeguards": 100.0,  # No breaking changes
+                    "documentation": 100.0,  # Updates complete
                 },
-                "status": "complete"
-            }
+                "status": "complete",
+            },
         }
 
         # Calculate scores
@@ -165,7 +173,7 @@ class CodebaseAnalyzer:
                 "files_affected": 11,
                 "new_files": 4,
                 "review_status": "addressed",
-                "merge_readiness": "partial"
+                "merge_readiness": "partial",
             },
             "code_review_fixes": {
                 "random_seed_consistency": "complete",
@@ -173,7 +181,7 @@ class CodebaseAnalyzer:
                 "state_hash_full_digest": "complete",
                 "duration_normalization": "complete",
                 "regex_raw_strings": "complete",
-                "documentation_update": "complete"
+                "documentation_update": "complete",
             },
             "codeql_alerts": {
                 "resolved": [
@@ -181,10 +189,10 @@ class CodebaseAnalyzer:
                     "THROUGHPUT_WINDOW_SECONDS",
                     "METRICS_EXPORT_INTERVAL_SECONDS",
                     "TRACE_SAMPLE_RATE",
-                    "LOG_RETENTION_DAYS"
+                    "LOG_RETENTION_DAYS",
                 ],
                 "total": 5,
-                "remaining": 0
+                "remaining": 0,
             },
             "v10_implementation": {
                 "agent_1_emergent_intelligence": {
@@ -192,22 +200,22 @@ class CodebaseAnalyzer:
                     "loc": 576,
                     "tests": 34,
                     "documentation": 270,
-                    "capabilities": 5
+                    "capabilities": 5,
                 },
                 "agents_remaining": [
                     "Performance Monitor Agent",
                     "Documentation Agent",
                     "Self-Optimizing CI Agent",
                     "Reasoning Advisor Agent",
-                    "Ecosystem Coordinator Agent"
+                    "Ecosystem Coordinator Agent",
                 ],
                 "enhancements_remaining": [
                     "ci-testing-agent",
                     "cognitive-brain-agent",
                     "ast-analysis-agent",
-                    "security-scan-agent"
-                ]
-            }
+                    "security-scan-agent",
+                ],
+            },
         }
 
         return changes
@@ -227,7 +235,7 @@ class CodebaseAnalyzer:
                 "status": "complete",
                 "assignee": "automated",
                 "priority": "critical",
-                "completion": "100%"
+                "completion": "100%",
             },
             {
                 "id": "code_review_implementation",
@@ -235,7 +243,7 @@ class CodebaseAnalyzer:
                 "status": "complete",
                 "assignee": "copilot",
                 "priority": "high",
-                "completion": "100%"
+                "completion": "100%",
             },
             {
                 "id": "v10_agent_1",
@@ -243,7 +251,7 @@ class CodebaseAnalyzer:
                 "status": "complete",
                 "assignee": "copilot",
                 "priority": "high",
-                "completion": "100%"
+                "completion": "100%",
             },
             {
                 "id": "v10_agent_2",
@@ -251,7 +259,7 @@ class CodebaseAnalyzer:
                 "status": "pending",
                 "assignee": "copilot",
                 "priority": "high",
-                "completion": "0%"
+                "completion": "0%",
             },
             {
                 "id": "v10_agent_3",
@@ -259,7 +267,7 @@ class CodebaseAnalyzer:
                 "status": "pending",
                 "assignee": "copilot",
                 "priority": "high",
-                "completion": "0%"
+                "completion": "0%",
             },
             {
                 "id": "v10_agents_4_6",
@@ -267,7 +275,7 @@ class CodebaseAnalyzer:
                 "status": "pending",
                 "assignee": "copilot",
                 "priority": "medium",
-                "completion": "0%"
+                "completion": "0%",
             },
             {
                 "id": "agent_enhancements",
@@ -275,7 +283,7 @@ class CodebaseAnalyzer:
                 "status": "pending",
                 "assignee": "copilot",
                 "priority": "medium",
-                "completion": "0%"
+                "completion": "0%",
             },
             {
                 "id": "test_coverage",
@@ -283,8 +291,8 @@ class CodebaseAnalyzer:
                 "status": "in_progress",
                 "assignee": "automated",
                 "priority": "medium",
-                "completion": "85%"
-            }
+                "completion": "85%",
+            },
         ]
 
         return actions
@@ -297,21 +305,21 @@ class CodebaseAnalyzer:
                 "type_coverage": 100,
                 "test_coverage": 90,
                 "documentation_coverage": 85,
-                "compilation_success": 100
+                "compilation_success": 100,
             },
             "security": {
                 "codeql_alerts": 0,
                 "security_score": 100,
-                "safeguard_coverage": 95
+                "safeguard_coverage": 95,
             },
             "progress": {
                 "agents_complete": 1,
                 "agents_total": 6,
                 "tests_current": 507,
                 "tests_target": 597,
-                "overall_completion": 18
+                "overall_completion": 18,
             },
-            "repository_health": 92
+            "repository_health": 92,
         }
 
     def generate_report(self) -> Dict[str, Any]:
@@ -329,7 +337,7 @@ class CodebaseAnalyzer:
                 "timestamp": self.timestamp,
                 "pr": self.pr_info,
                 "audit_version": "1.1.0",
-                "generator": "pr_2685_status_analyzer.py"
+                "generator": "pr_2685_status_analyzer.py",
             },
             "repository_state": {
                 "total_lines": sum(line_counts.values()),
@@ -337,7 +345,7 @@ class CodebaseAnalyzer:
                 "total_files_python": 3512,
                 "total_files_markdown": 1698,
                 "total_test_files": 32,
-                "custom_agents": 10
+                "custom_agents": 10,
             },
             "capabilities": capabilities,
             "changes": changes,
@@ -349,8 +357,8 @@ class CodebaseAnalyzer:
                 "test_coverage": 90,
                 "documentation": 85,
                 "security": 100,
-                "performance": 90
-            }
+                "performance": 90,
+            },
         }
 
         # Add integrity hash
@@ -358,7 +366,9 @@ class CodebaseAnalyzer:
 
         return report
 
-    def save_report(self, report: Dict[str, Any], filename: str = "pr_2685_status.json"):
+    def save_report(
+        self, report: Dict[str, Any], filename: str = "pr_2685_status.json"
+    ):
         """Save report to file"""
 
         # Create reports directory if it doesn't exist
@@ -367,7 +377,7 @@ class CodebaseAnalyzer:
 
         # Save JSON report
         report_path = reports_dir / filename
-        with open(report_path, 'w') as f:
+        with open(report_path, "w") as f:
             json.dump(report, indent=2, fp=f)
 
         print(f"✅ Report saved to: {report_path}")
@@ -376,9 +386,9 @@ class CodebaseAnalyzer:
     def print_summary(self, report: Dict[str, Any]):
         """Print summary to console"""
 
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print(f"PR #{report['metadata']['pr']['number']} STATUS REPORT")
-        print("="*80)
+        print("=" * 80)
         print(f"Branch: {report['metadata']['pr']['branch']}")
         print(f"Timestamp: {report['metadata']['timestamp']}")
         print(f"Overall Health: {report['quality_score']['overall']}/100")
@@ -386,22 +396,25 @@ class CodebaseAnalyzer:
         print()
 
         print("📊 Repository Composition:")
-        total_lines = report['repository_state']['total_lines']
-        for ext, lines in sorted(report['repository_state']['lines_by_language'].items(),
-                                key=lambda x: x[1], reverse=True):
+        total_lines = report["repository_state"]["total_lines"]
+        for ext, lines in sorted(
+            report["repository_state"]["lines_by_language"].items(),
+            key=lambda x: x[1],
+            reverse=True,
+        ):
             pct = (lines / total_lines * 100) if total_lines > 0 else 0
             print(f"  {ext:8s}: {lines:8,} lines ({pct:5.1f}%)")
         print()
 
         print("✅ Completed Tasks:")
-        for action in report['action_items']:
-            if action['status'] == 'complete':
+        for action in report["action_items"]:
+            if action["status"] == "complete":
                 print(f"  ✓ {action['task']}")
         print()
 
         print("⏳ Pending Tasks:")
-        for action in report['action_items']:
-            if action['status'] in ['pending', 'in_progress']:
+        for action in report["action_items"]:
+            if action["status"] in ["pending", "in_progress"]:
                 print(f"  • {action['task']} ({action['completion']})")
         print()
 
@@ -412,7 +425,7 @@ class CodebaseAnalyzer:
         print()
 
         print(f"Integrity Hash: {report['integrity_hash'][:16]}...")
-        print("="*80 + "\n")
+        print("=" * 80 + "\n")
 
 
 def main():
@@ -431,7 +444,7 @@ def main():
 
     # Also save human-readable version
     hr_path = report_path.parent / "pr_2685_status_human_readable.txt"
-    with open(hr_path, 'w') as f:
+    with open(hr_path, "w") as f:
         f.write(f"PR #{report['metadata']['pr']['number']} Status Report\n")
         f.write(f"Generated: {report['metadata']['timestamp']}\n")
         f.write(f"Branch: {report['metadata']['pr']['branch']}\n")
@@ -440,7 +453,9 @@ def main():
         f.write(f"\nIntegrity Hash: {report['integrity_hash']}\n")
 
     print(f"✅ Human-readable report saved to: {hr_path}")
-    print(f"\n📝 Full markdown report available at: .codex/reports/pr_2685_status_report.md")
+    print(
+        "\n📝 Full markdown report available at: .codex/reports/pr_2685_status_report.md"
+    )
     print("\n✨ Analysis complete!")
 
 

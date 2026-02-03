@@ -4,8 +4,8 @@ Test Codex Secret Scan Stub
 Test module for codex secret scan stub.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import tools.codex_secret_scan_stub as ss
 
@@ -13,7 +13,7 @@ import tools.codex_secret_scan_stub as ss
 def test_secret_scan_stub_detects_pattern(tmp_path: Path):
     src = tmp_path / "test_secrets.py"
     src.write_text(
-        "api_key = 'AWS_SECRET_ACCESS_KEY=abc123'\n" "print('hello')\n",
+        "api_key = 'AWS_SECRET_ACCESS_KEY=abc123'\nprint('hello')\n",
         encoding="utf-8",
     )
 

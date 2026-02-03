@@ -23,7 +23,7 @@ class TestIssueType:
     def test_issue_types_exist(self):
         """Test all expected issue types exist."""
         from agents.self_healing import IssueType
-        
+
         assert IssueType.TEST_FAILURE.value == "test_failure"
         assert IssueType.BUILD_FAILURE.value == "build_failure"
         assert IssueType.DEPENDENCY_CONFLICT.value == "dependency_conflict"
@@ -32,7 +32,7 @@ class TestIssueType:
     def test_issue_type_iteration(self):
         """Test that IssueType is iterable."""
         from agents.self_healing import IssueType
-        
+
         types = list(IssueType)
         assert len(types) >= 4
 
@@ -43,7 +43,7 @@ class TestIssueSeverity:
     def test_severity_levels_exist(self):
         """Test all expected severity levels exist."""
         from agents.self_healing import IssueSeverity
-        
+
         assert IssueSeverity.CRITICAL.value == "critical"
         assert IssueSeverity.HIGH.value == "high"
         assert IssueSeverity.MEDIUM.value == "medium"
@@ -53,7 +53,7 @@ class TestIssueSeverity:
     def test_severity_ordering(self):
         """Test severity levels can be compared."""
         from agents.self_healing import IssueSeverity
-        
+
         # Enums can be compared by name
         assert IssueSeverity.CRITICAL.name == "CRITICAL"
 
@@ -65,18 +65,21 @@ class TestDetectedIssue:
     def DetectedIssue(self):
         """Import DetectedIssue class."""
         from agents.self_healing import DetectedIssue
+
         return DetectedIssue
 
     @pytest.fixture
     def IssueType(self):
         """Import IssueType enum."""
         from agents.self_healing import IssueType
+
         return IssueType
 
     @pytest.fixture
     def IssueSeverity(self):
         """Import IssueSeverity enum."""
         from agents.self_healing import IssueSeverity
+
         return IssueSeverity
 
     def test_create_detected_issue(self, DetectedIssue, IssueType, IssueSeverity):
@@ -112,7 +115,9 @@ class TestDetectedIssue:
         )
         assert issue.context["package"] == "numpy"
 
-    def test_issue_timestamp_auto_generated(self, DetectedIssue, IssueType, IssueSeverity):
+    def test_issue_timestamp_auto_generated(
+        self, DetectedIssue, IssueType, IssueSeverity
+    ):
         """Test that detected_at timestamp is auto-generated."""
         issue = DetectedIssue(
             issue_type=IssueType.LINT_ERROR,
@@ -132,6 +137,7 @@ class TestRemediationAction:
         """Import RemediationAction class if available."""
         try:
             from agents.self_healing import RemediationAction
+
             return RemediationAction
         except ImportError:
             pytest.skip("RemediationAction not available")
@@ -155,6 +161,7 @@ class TestSelfHealingEngine:
         """Import SelfHealingEngine class."""
         try:
             from agents.self_healing import SelfHealingEngine
+
             return SelfHealingEngine
         except ImportError:
             pytest.skip("SelfHealingEngine not available")
@@ -167,19 +174,19 @@ class TestSelfHealingEngine:
     def test_engine_diagnose_method(self, SelfHealingEngine):
         """Test engine has diagnose method."""
         engine = SelfHealingEngine()
-        assert hasattr(engine, 'diagnose') or hasattr(engine, 'analyze')
+        assert hasattr(engine, "diagnose") or hasattr(engine, "analyze")
 
     def test_engine_can_handle_test_output(self, SelfHealingEngine):
         """Test engine can process test output."""
         engine = SelfHealingEngine()
-        
+
         test_output = """
         FAILED tests/test_example.py::test_function
         AssertionError: Expected 1, got 2
         """
-        
+
         # Should not raise
-        if hasattr(engine, 'diagnose'):
+        if hasattr(engine, "diagnose"):
             result = engine.diagnose(test_output)
             assert result is not None
 
@@ -192,6 +199,7 @@ class TestDiagnosticResult:
         """Import DiagnosticResult class if available."""
         try:
             from agents.self_healing import DiagnosticResult
+
             return DiagnosticResult
         except ImportError:
             pytest.skip("DiagnosticResult not available")

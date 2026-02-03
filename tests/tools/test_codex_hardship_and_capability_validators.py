@@ -8,9 +8,9 @@ from pathlib import Path
 
 import yaml
 
-import tools.codex_hardship_validate as hv
 import tools.codex_capability_map_validate as cv
 import tools.codex_gap_registry as gr
+import tools.codex_hardship_validate as hv
 
 
 def test_hardship_validator_accepts_valid_file(tmp_path: Path):

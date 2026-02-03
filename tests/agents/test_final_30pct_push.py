@@ -13,7 +13,10 @@ class TestPhysicsOrchestratorFinalMethods:
 
     def test_orchestrate_with_empty_paths(self):
         """Test orchestrate with empty path list."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="A", goal_position="B")
@@ -25,10 +28,10 @@ class TestPhysicsOrchestratorFinalMethods:
     def test_orchestrate_with_single_path(self):
         """Test orchestrate with single path."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
@@ -49,7 +52,10 @@ class TestPhysicsOrchestratorFinalMethods:
 
     def test_assess_situation_detailed(self):
         """Test assess_situation with detailed state."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(
@@ -103,7 +109,7 @@ class TestWorkflowNavigatorExpanded:
 
         assert step.id == "step1"
         assert step.action == "Run tests"
-        assert step.optional == True
+        assert step.optional
 
 
 class TestAdvancedPhysicsExpanded:
@@ -111,7 +117,7 @@ class TestAdvancedPhysicsExpanded:
 
     def test_fluid_scheduler_add_multiple_channels(self):
         """Test adding multiple channels."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler, FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -195,7 +201,10 @@ class TestDeveloperOrchestratorExpanded:
 
         try:
             comp = CodeComponent(
-                component_id="test", component_type="module", name="test_module", description="Test"
+                component_id="test",
+                component_type="module",
+                name="test_module",
+                description="Test",
             )
 
             assert comp.component_id == "test"
@@ -290,8 +299,8 @@ class TestMultiOrchestratorPatterns:
 
     def test_cross_module_invariant_check(self):
         """Test invariant checking across modules (Table 3, Eq #56)."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
         from agents.physics_integration import HybridPhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         # Both orchestrators should initialize
         orch1 = PhysicsInspiredOrchestrator()

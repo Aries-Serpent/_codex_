@@ -16,7 +16,9 @@ def all_markdown_files():
     """Collect all markdown files in repository."""
     root = Path(".")
     return [
-        f for f in root.glob("**/*.md") if "node_modules" not in str(f) and ".git" not in str(f)
+        f
+        for f in root.glob("**/*.md")
+        if "node_modules" not in str(f) and ".git" not in str(f)
     ]
 
 
@@ -82,7 +84,11 @@ def test_no_duplicate_anchor_ids(all_markdown_files):
 
         # Convert headings to anchor IDs (simplified)
         anchor_ids = [
-            h.lower().replace(" ", "-").replace(".", "").replace("(", "").replace(")", "")
+            h.lower()
+            .replace(" ", "-")
+            .replace(".", "")
+            .replace("(", "")
+            .replace(")", "")
             for h in headings
         ]
 

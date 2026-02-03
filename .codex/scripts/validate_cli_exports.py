@@ -23,7 +23,9 @@ def main() -> int:
         cli = None
 
     if cli is None:
-        critical_failures.append("codex.cli.cli is None (Click group could not be loaded).")
+        critical_failures.append(
+            "codex.cli.cli is None (Click group could not be loaded)."
+        )
     else:
         try:
             import click  # noqa: WPS433
@@ -37,14 +39,17 @@ def main() -> int:
 
     # Contract 2: codex.cli.app and codex.cli.main exist
     try:
-        from codex.cli import app, main as entry_main  # noqa: WPS433
+        from codex.cli import app  # noqa: WPS433
+        from codex.cli import main as entry_main
 
         if app is None:
             warnings.append("codex.cli.app is None (Typer may be unavailable).")
         if not callable(entry_main):
             critical_failures.append("codex.cli.main is not callable.")
     except Exception as exc:
-        critical_failures.append(f"Import failed: from codex.cli import app, main -> {exc!r}")
+        critical_failures.append(
+            f"Import failed: from codex.cli import app, main -> {exc!r}"
+        )
 
     # Contract 3: __all__ includes required exports
     try:

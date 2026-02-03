@@ -13,8 +13,8 @@ Systematically applies advanced physics patterns:
 Target: +4-5% coverage gain (47% → 52%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_ChaoticAttractors:
@@ -162,7 +162,10 @@ class TestPhase2_FractalGeometry:
             "name": "root",
             "children": [
                 {"name": "child1", "children": []},
-                {"name": "child2", "children": [{"name": "grandchild1", "children": []}]},
+                {
+                    "name": "child2",
+                    "children": [{"name": "grandchild1", "children": []}],
+                },
             ],
         }
         if hasattr(analyzer, "analyze_code_tree"):
@@ -204,7 +207,7 @@ class TestPhase2_FluidDynamics:
 
     def test_add_channel(self):
         """Test adding channel to flow scheduler"""
-        from agents.advanced_physics_calculators import FluidFlowScheduler, FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
         channel = FluidChannel(name="ch1", capacity=10.0)
@@ -458,7 +461,9 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "explore_with_chaos"):
-            result = orchestrator.explore_with_chaos(search_space=[(0.0, 1.0)], num_samples=10)
+            result = orchestrator.explore_with_chaos(
+                search_space=[(0.0, 1.0)], num_samples=10
+            )
             assert result is not None
 
     def test_fractal_decomposition(self):
@@ -491,7 +496,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
             source = {"position": [0, 0], "strength": 1.0}
             target = {"position": [1, 0]}
             influence = orchestrator.propagate_influence(source, target)
-            assert influence is not None or influence == None  # Method may not exist
+            assert influence is not None or influence is None  # Method may not exist
 
     def test_wave_consensus(self):
         """Test wave-based consensus"""
@@ -501,7 +506,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         if hasattr(orchestrator, "wave_consensus"):
             agents = [{"state": 0.5}, {"state": 0.7}, {"state": 0.6}]
             consensus = orchestrator.wave_consensus(agents)
-            assert consensus is not None or consensus == None
+            assert consensus is not None or consensus is None
 
 
 class TestPhase2_NumericalMethods:

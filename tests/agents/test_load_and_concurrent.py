@@ -8,12 +8,13 @@ Tests system behavior under:
 - Sustained operations (endurance testing)
 """
 
-import pytest
-import threading
-import time
 import concurrent.futures
 import tempfile
+import threading
+import time
 from pathlib import Path
+
+import pytest
 
 from agents.agent_memory import AgentMemory, MemoryEntry
 from agents.physics_integration import HybridPhysicsOrchestrator
@@ -78,7 +79,10 @@ class TestConcurrentMemoryAccess:
         if hasattr(memory, "add_memory"):
             for i in range(100):
                 entry = MemoryEntry(
-                    memory_id=f"read_test_{i}", category="fact", content=f"Content {i}", context={}
+                    memory_id=f"read_test_{i}",
+                    category="fact",
+                    content=f"Content {i}",
+                    context={},
                 )
                 memory.add_memory(entry)
 
@@ -305,7 +309,10 @@ class TestEnduranceTesting:
                 if hasattr(memory, "add_memory"):
                     for i in range(100):
                         entry = MemoryEntry(
-                            memory_id=f"leak_test_{i}", category="fact", content="Test", context={}
+                            memory_id=f"leak_test_{i}",
+                            category="fact",
+                            content="Test",
+                            context={},
                         )
                         memory.add_memory(entry)
 
@@ -328,7 +335,11 @@ class TestRaceConditions:
         from agents.agent_memory import MemoryEntry
 
         entry = MemoryEntry(
-            memory_id="counter_test", category="fact", content="Counter", context={}, access_count=0
+            memory_id="counter_test",
+            category="fact",
+            content="Counter",
+            context={},
+            access_count=0,
         )
 
         errors = []
