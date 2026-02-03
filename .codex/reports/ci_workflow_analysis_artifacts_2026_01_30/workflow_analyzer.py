@@ -242,12 +242,10 @@ class WorkflowAnalyzer:
 
         all_runners = set()
         all_actions = set()
-        all_secrets = set()
 
         for workflow in self.workflows.values():
             all_runners.update(workflow["runners"])
             all_actions.update(workflow["actions_used"])
-            all_secrets.update(workflow["secrets"])
 
         return {
             "total_workflows": active_count + disabled_count,
@@ -257,8 +255,6 @@ class WorkflowAnalyzer:
             "parse_errors": len(self.errors),
             "unique_runners": sorted(list(all_runners)),
             "unique_actions": sorted(list(all_actions)),
-            "unique_secrets": sorted(list(all_secrets)),
-            "secrets_count": len(all_secrets),
         }
 
     def generate_json_report(self) -> str:
@@ -294,7 +290,6 @@ class WorkflowAnalyzer:
             f"- **Archived Workflows**: {summary['disabled_workflows']} (.disabled, .alt, .tombstone)"
         )
         md.append(f"- **Parse Errors**: {summary['parse_errors']}")
-        md.append(f"- **Unique Secrets**: {summary['secrets_count']}")
         md.append("")
 
         # Runner Types
@@ -379,20 +374,23 @@ class WorkflowAnalyzer:
         # Secrets Usage
         md.append("## 🔐 Secrets Usage Analysis")
         md.append("")
-        secret_usage = defaultdict(list)
-        for workflow_name, info in self.workflows.items():
-            for secret in info["secrets"]:
-                secret_usage[secret].append(workflow_name)
+        # To avoid exposing secret identifiers in clear text, we only report
+        # aggregate statistics about secret usage rather than listing names.
+        total_workflows = len(self.workflows)
+        workflows_with_secrets = 0
+        secrets_per_workflow: List[int] = []
+        for info in self.workflows.values():
+            count = len(info["secrets"])
+            if count > 0:
+                workflows_with_secrets += 1
+            secrets_per_workflow.append(count)
 
-        md.append("| Secret Name | Used In | Count |")
-        md.append("|-------------|---------|-------|")
-        for secret in sorted(secret_usage.keys()):
-            workflows = secret_usage[secret]
-            count = len(workflows)
-            workflows_str = ", ".join(workflows[:3])
-            if count > 3:
-                workflows_str += f", ... (+{count - 3} more)"
-            md.append(f"| `{secret}` | {workflows_str} | {count} |")
+        if total_workflows > 0:
+            max_secrets = max(secrets_per_workflow)
+            md.append(f"- Workflows using at least one secret: {workflows_with_secrets}/{total_workflows}")
+            md.append(f"- Maximum secrets used in a single workflow: {max_secrets}")
+        else:
+            md.append("- No workflows found to analyze.")
         md.append("")
 
         # Resource Requirements by Category
