@@ -57,12 +57,22 @@ class TestOpenAPISchema:
 
     def _find_openapi_files(self) -> List[Path]:
         """Find OpenAPI/Swagger schema files."""
-        patterns = ["openapi*.json", "openapi*.yaml", "openapi*.yml",
-                    "swagger*.json", "swagger*.yaml", "swagger*.yml"]
+        patterns = [
+            "openapi*.json",
+            "openapi*.yaml",
+            "openapi*.yml",
+            "swagger*.json",
+            "swagger*.yaml",
+            "swagger*.yml",
+        ]
         files = []
         for pattern in patterns:
             files.extend(DOCS_DIR.rglob(pattern))
-            files.extend((REPO_ROOT / "schemas").rglob(pattern) if (REPO_ROOT / "schemas").exists() else [])
+            files.extend(
+                (REPO_ROOT / "schemas").rglob(pattern)
+                if (REPO_ROOT / "schemas").exists()
+                else []
+            )
         return files
 
     def test_openapi_schema_valid_json(self):
@@ -81,7 +91,7 @@ class TestOpenAPISchema:
         openapi_files = self._find_openapi_files()
         if not openapi_files:
             pytest.skip("No OpenAPI schema files found")
-        
+
         for schema_file in openapi_files:
             if schema_file.suffix == ".json":
                 content = json.loads(schema_file.read_text(encoding="utf-8"))
@@ -110,14 +120,16 @@ class TestEndpointDocumentation:
         routers = self._find_fastapi_routers()
         if not routers:
             pytest.skip("No FastAPI router files found")
-        
+
         missing_docs = []
         for router in routers:
             content = router.read_text(encoding="utf-8", errors="ignore")
             # Check for module-level docstring
-            if not content.strip().startswith('"""') and not content.strip().startswith("'''"):
+            if not content.strip().startswith('"""') and not content.strip().startswith(
+                "'''"
+            ):
                 missing_docs.append(router.name)
-        
+
         # Allow some without docstrings
         assert len(missing_docs) < len(routers), (
             f"Most router files should have docstrings: missing in {missing_docs}"
@@ -128,22 +140,22 @@ class TestEndpointDocumentation:
         routers = self._find_fastapi_routers()
         if not routers:
             pytest.skip("No FastAPI router files found")
-        
+
         endpoints_found = 0
         endpoints_with_response = 0
-        
+
         for router in routers[:5]:  # Sample first 5
             content = router.read_text(encoding="utf-8", errors="ignore")
             # Count endpoint decorators
             endpoint_pattern = r"@(app|router)\.(get|post|put|delete|patch)\("
             endpoints = re.findall(endpoint_pattern, content)
             endpoints_found += len(endpoints)
-            
+
             # Check for response_model
             response_pattern = r"response_model\s*="
             response_models = re.findall(response_pattern, content)
             endpoints_with_response += len(response_models)
-        
+
         # Just verify we found some endpoints
         if endpoints_found > 0:
             endpoints_with_response / endpoints_found
@@ -194,7 +206,7 @@ class TestSchemaDocumentation:
         schemas_dir = REPO_ROOT / "schemas"
         if not schemas_dir.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         for schema_file in schemas_dir.rglob("*.json"):
             try:
                 content = schema_file.read_text(encoding="utf-8")
@@ -207,10 +219,10 @@ class TestSchemaDocumentation:
         schemas_dir = REPO_ROOT / "schemas"
         if not schemas_dir.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         schemas_checked = 0
         schemas_with_desc = 0
-        
+
         for schema_file in list(schemas_dir.rglob("*.json"))[:10]:
             try:
                 content = json.loads(schema_file.read_text(encoding="utf-8"))
@@ -219,13 +231,11 @@ class TestSchemaDocumentation:
                     schemas_with_desc += 1
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue
-        
+
         if schemas_checked > 0:
             coverage = schemas_with_desc / schemas_checked
             # At least 50% should have descriptions
-            assert coverage >= 0.3, (
-                f"Schema description coverage {coverage:.0%} < 30%"
-            )
+            assert coverage >= 0.3, f"Schema description coverage {coverage:.0%} < 30%"
 
 
 class TestConfigDocumentation:
@@ -243,7 +253,7 @@ class TestConfigDocumentation:
             # Check for config-related files in docs
             config_files = list(DOCS_DIR.glob("*config*.md"))
             found = len(config_files) > 0
-        
+
         # Don't require, just log
         if not found:
             pytest.skip("Configuration documentation not required")
@@ -257,7 +267,7 @@ class TestConfigDocumentation:
         found = any(p.exists() for p in hydra_paths)
         if not found:
             pytest.skip("Hydra documentation not required")
-        
+
         for hydra_path in hydra_paths:
             if hydra_path.exists():
                 content = hydra_path.read_text(encoding="utf-8")

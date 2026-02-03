@@ -28,7 +28,7 @@ class TestPhase3_Entanglement_BellStates:
         red_state = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
 
         bell_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
-        assert bell_state.entangled == True
+        assert bell_state.entangled
 
     def test_phi_plus_state(self):
         """Test |Φ+⟩ = (|00⟩ + |11⟩)/√2 state"""
@@ -222,7 +222,9 @@ class TestPhase3_Transactional_Semantics:
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
         if hasattr(orchestrator, "propagate_feature_flag"):
-            result = orchestrator.propagate_feature_flag(flag_name="new_feature", enabled=True)
+            result = orchestrator.propagate_feature_flag(
+                flag_name="new_feature", enabled=True
+            )
             assert result is not None
         else:
             assert orchestrator is not None
@@ -332,7 +334,8 @@ class TestPhase3_CrossModule_EntangledGroups:
         # Create entangled node-memory pair
         node = model.create_node(NodeType.PROBLEM, {"entangled": True})
         memory.store_memory(
-            key=f"node_{node.node_id}", value={"entangled": True, "node_id": str(node.node_id)}
+            key=f"node_{node.node_id}",
+            value={"entangled": True, "node_id": str(node.node_id)},
         )
 
         # Both should update together - may not retrieve if not persisted

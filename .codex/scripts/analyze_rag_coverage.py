@@ -6,14 +6,15 @@ Analyzes code structure and identifies coverage gaps without running tests.
 
 import ast
 import os
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Set
-from dataclasses import dataclass, field
 
 
 @dataclass
 class ModuleInfo:
     """Information about a module."""
+
     path: str
     lines: int
     classes: List[str] = field(default_factory=list)
@@ -26,7 +27,7 @@ def extract_code_elements(filepath: str) -> ModuleInfo:
     info = ModuleInfo(path=filepath, lines=0)
 
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             content = f.read()
             info.lines = len(content.splitlines())
 
@@ -64,7 +65,7 @@ def find_test_coverage(module_path: str, test_dirs: List[str]) -> Set[str]:
 
         for test_file in test_files:
             try:
-                with open(test_file, 'r', encoding='utf-8') as f:
+                with open(test_file, "r", encoding="utf-8") as f:
                     content = f.read()
                     # Look for test classes and functions
                     tree = ast.parse(content)
@@ -81,12 +82,7 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
     """Analyze RAG module structure and identify gaps."""
     rag_path = Path(rag_dir)
 
-    results = {
-        "summary": {},
-        "modules": {},
-        "gaps": {},
-        "priorities": []
-    }
+    results = {"summary": {}, "modules": {}, "gaps": {}, "priorities": []}
 
     # Analyze core modules
     core_modules = [
@@ -97,14 +93,14 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
         "utils.py",
         "gpu_utils.py",
         "postprocess.py",
-        "prompt.py"
+        "prompt.py",
     ]
 
     for module in core_modules:
         module_path = rag_path / module
         if module_path.exists():
             info = extract_code_elements(str(module_path))
-            module_key = module.replace('.py', '')
+            module_key = module.replace(".py", "")
 
             # Find what's tested
             tested = find_test_coverage(str(module_path), test_dirs)
@@ -120,7 +116,7 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
                 "methods": info.methods,
                 "untested_classes": untested_classes,
                 "untested_functions": untested_functions,
-                "coverage_estimate": "?"
+                "coverage_estimate": "?",
             }
 
             # Calculate rough coverage estimate
@@ -128,7 +124,9 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
             untested_items = len(untested_classes) + len(untested_functions)
             if total_items > 0:
                 coverage_pct = ((total_items - untested_items) / total_items) * 100
-                results["modules"][module_key]["coverage_estimate"] = f"{coverage_pct:.0f}%"
+                results["modules"][module_key]["coverage_estimate"] = (
+                    f"{coverage_pct:.0f}%"
+                )
 
     # Analyze sub-modules
     sub_dirs = ["cache", "ingestion", "providers", "analytics", "benchmarks"]
@@ -154,7 +152,7 @@ def analyze_rag_module(rag_dir: str, test_dirs: List[str]) -> Dict:
                     "classes": info.classes,
                     "functions": info.functions,
                     "untested_classes": untested_classes,
-                    "untested_functions": untested_functions
+                    "untested_functions": untested_functions,
                 }
 
     return results
@@ -180,9 +178,15 @@ def generate_report(results: Dict) -> str:
             untested_classes = len(info.get("untested_classes", []))
             untested_functions = len(info.get("untested_functions", []))
 
-            status = "✅ Good" if untested_classes + untested_functions < 2 else "⚠️ Needs Tests"
+            status = (
+                "✅ Good"
+                if untested_classes + untested_functions < 2
+                else "⚠️ Needs Tests"
+            )
 
-            report.append(f"| {module_name} | {info['lines']} | {classes} | {functions} | {coverage} | {status} |\n")
+            report.append(
+                f"| {module_name} | {info['lines']} | {classes} | {functions} | {coverage} | {status} |\n"
+            )
 
     report.append("\n## Detailed Gap Analysis\n")
 
@@ -198,28 +202,45 @@ def generate_report(results: Dict) -> str:
                 report.append(f"\n#### {module_name}.py ({info['lines']} lines)\n")
 
                 if untested_classes:
-                    report.append(f"\n**Untested Classes ({len(untested_classes)}):**\n")
+                    report.append(
+                        f"\n**Untested Classes ({len(untested_classes)}):**\n"
+                    )
                     for cls in untested_classes:
                         methods = info.get("methods", {}).get(cls, [])
-                        priority = "HIGH" if any(k in cls.lower() for k in ["provider", "cache", "retriever"]) else "MEDIUM"
+                        priority = (
+                            "HIGH"
+                            if any(
+                                k in cls.lower()
+                                for k in ["provider", "cache", "retriever"]
+                            )
+                            else "MEDIUM"
+                        )
                         report.append(f"- `{cls}` - Priority: {priority}\n")
                         if methods:
                             report.append(f"  - Methods: {', '.join(methods[:5])}")
                             if len(methods) > 5:
-                                report.append(f" (+{len(methods)-5} more)")
+                                report.append(f" (+{len(methods) - 5} more)")
                             report.append("\n")
 
                 if untested_functions:
-                    report.append(f"\n**Untested Functions ({len(untested_functions)}):**\n")
+                    report.append(
+                        f"\n**Untested Functions ({len(untested_functions)}):**\n"
+                    )
                     for func in untested_functions:
-                        priority = "HIGH" if any(k in func for k in ["load", "save", "encode", "query"]) else "MEDIUM"
+                        priority = (
+                            "HIGH"
+                            if any(
+                                k in func for k in ["load", "save", "encode", "query"]
+                            )
+                            else "MEDIUM"
+                        )
                         report.append(f"- `{func}()` - Priority: {priority}\n")
 
     # Sub-modules
     report.append("\n### Sub-Modules\n")
 
     for sub_dir, modules in sorted(results["modules"].items()):
-        if isinstance(modules, dict) and not "lines" in modules:
+        if isinstance(modules, dict) and "lines" not in modules:
             report.append(f"\n#### {sub_dir}/\n")
 
             for module_name, info in sorted(modules.items()):
@@ -230,9 +251,13 @@ def generate_report(results: Dict) -> str:
                     report.append(f"\n**{module_name}.py** ({info['lines']} lines)\n")
 
                     if untested_classes:
-                        report.append(f"- Untested classes: {', '.join(untested_classes)}\n")
+                        report.append(
+                            f"- Untested classes: {', '.join(untested_classes)}\n"
+                        )
                     if untested_functions:
-                        report.append(f"- Untested functions: {', '.join(untested_functions)}\n")
+                        report.append(
+                            f"- Untested functions: {', '.join(untested_functions)}\n"
+                        )
 
     # Test recommendations
     report.append("\n## Test Creation Recommendations\n")
@@ -327,14 +352,18 @@ def main():
     report = generate_report(results)
 
     output_file = "RAG_COVERAGE_ANALYSIS.md"
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(report)
 
-    print(f"\n✅ Coverage analysis complete!")
+    print("\n✅ Coverage analysis complete!")
     print(f"📄 Report saved to: {output_file}")
-    print(f"\nSummary:")
-    print(f"  - Analyzed {len([m for m in results['modules'].values() if isinstance(m, dict) and 'lines' in m])} core modules")
-    print(f"  - Found {len([m for m in results['modules'].values() if isinstance(m, dict) and not 'lines' in m])} sub-module directories")
+    print("\nSummary:")
+    print(
+        f"  - Analyzed {len([m for m in results['modules'].values() if isinstance(m, dict) and 'lines' in m])} core modules"
+    )
+    print(
+        f"  - Found {len([m for m in results['modules'].values() if isinstance(m, dict) and 'lines' not in m])} sub-module directories"
+    )
 
 
 if __name__ == "__main__":

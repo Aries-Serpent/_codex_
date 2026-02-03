@@ -133,7 +133,9 @@ class TestPhase2_MentalMapping_GraphOperations:
             try:
                 # Create a proper MentalNode first
                 node = MentalNode(
-                    node_id="test_node", node_type=NodeType.CONCEPT, content="test content"
+                    node_id="test_node",
+                    node_type=NodeType.CONCEPT,
+                    content="test content",
                 )
                 mapping.add_node(node)
                 assert "test_node" in mapping.nodes

@@ -7,7 +7,7 @@ import json
 import logging
 import re
 import shutil
-import subprocess
+import subprocess  # nosec B404 - subprocess usage validated
 import sys
 import traceback
 from dataclasses import dataclass, field
@@ -105,7 +105,7 @@ def run(cmd: List[str], step: str, check: bool = False) -> Tuple[int, str, str]:
     """Run a subprocess, capturing output and optionally raising on failure."""
 
     try:
-        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)  # nosec B603 - cmd constructed from trusted paths
         if check and proc.returncode != 0:
             raise RuntimeError(
                 f"exit={proc.returncode}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"

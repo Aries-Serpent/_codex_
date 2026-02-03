@@ -7,7 +7,6 @@ Target: Increase physics_orchestrator.py from 20% to 60%+
 
 from pathlib import Path
 
-
 # ============================================================================
 # PHYSICS_ORCHESTRATOR - DECISION STATE TESTS
 # ============================================================================
@@ -185,7 +184,10 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_assess_situation(self):
         """Test assess_situation method."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="start", goal_position="end")
@@ -199,18 +201,24 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_deliberate_paths(self):
         """Test deliberate_paths method."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="start", goal_position="end")
 
         paths = [
-            ActionPath(action_type=ActionType.TEST, description="Test 1", potential_energy=10.0),
-            ActionPath(action_type=ActionType.AUDIT, description="Audit 1", potential_energy=5.0),
+            ActionPath(
+                action_type=ActionType.TEST, description="Test 1", potential_energy=10.0
+            ),
+            ActionPath(
+                action_type=ActionType.AUDIT,
+                description="Audit 1",
+                potential_energy=5.0,
+            ),
         ]
 
         # Pre-calculate scores
@@ -226,10 +234,10 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_optimize_path_method(self):
         """Test optimize_path method."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
@@ -251,11 +259,16 @@ class TestPhysicsInspiredOrchestratorCore:
 
         optimal = orch.optimize_path(paths, state)
 
-        assert optimal is not None or optimal is None  # May be None if constraints not met
+        assert (
+            optimal is not None or optimal is None
+        )  # May be None if constraints not met
 
     def test_act_with_none_path(self):
         """Test act method when no path provided."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="start", goal_position="end")
@@ -269,10 +282,10 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_act_with_valid_path(self):
         """Test act method with valid path."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
@@ -290,10 +303,10 @@ class TestPhysicsInspiredOrchestratorCore:
     def test_orchestrate_full_cycle(self):
         """Test full orchestrate cycle."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
@@ -326,7 +339,10 @@ class TestOrchestratorHelpers:
 
     def test_calculate_distance(self):
         """Test _calculate_distance helper."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="A", goal_position="B")
@@ -338,7 +354,10 @@ class TestOrchestratorHelpers:
 
     def test_calculate_entropy(self):
         """Test _calculate_entropy helper."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="A", goal_position="B")
@@ -350,7 +369,10 @@ class TestOrchestratorHelpers:
 
     def test_calculate_potentials(self):
         """Test potential calculation helpers."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="A", goal_position="B")

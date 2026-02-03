@@ -11,6 +11,7 @@ Usage:
     python run.py --check-uri
     python run.py --check-http
 """
+
 from __future__ import annotations
 
 import argparse
@@ -29,6 +30,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 class RFCStandard(Enum):
     """RFC standards to check."""
+
     RFC_3986 = "RFC 3986: URI Generic Syntax"
     RFC_7230 = "RFC 7230: HTTP/1.1 Message Syntax"
     RFC_7231 = "RFC 7231: HTTP/1.1 Semantics"
@@ -38,14 +40,16 @@ class RFCStandard(Enum):
 
 class ComplianceLevel(Enum):
     """Compliance check severity."""
-    ERROR = "ERROR"        # Non-compliant, must fix
-    WARNING = "WARNING"    # Deviation from standard
-    INFO = "INFO"          # Suggestion for improvement
+
+    ERROR = "ERROR"  # Non-compliant, must fix
+    WARNING = "WARNING"  # Deviation from standard
+    INFO = "INFO"  # Suggestion for improvement
 
 
 @dataclass
 class ComplianceIssue:
     """Represents an RFC compliance issue."""
+
     file_path: str
     line_number: int
     level: ComplianceLevel
@@ -65,7 +69,7 @@ class RFCComplianceChecker:
 
         # RFC 3986 patterns
         self.uri_patterns = {
-            "scheme_case_sensitive": r'([a-z]+)://(?:[A-Z])',
+            "scheme_case_sensitive": r"([a-z]+)://(?:[A-Z])",
             "scheme_comparison": r'\.scheme\s*[!=]=\s*["\']https?["\']',
             "manual_url_parse": r'\.split\(["\'][:/]+["\']\)',
         }
@@ -114,7 +118,9 @@ class RFCComplianceChecker:
                 return True
         return False
 
-    def _validate_python_uri(self, file_path: Path, content: str) -> list[ComplianceIssue]:
+    def _validate_python_uri(
+        self, file_path: Path, content: str
+    ) -> list[ComplianceIssue]:
         """Validate URI handling against RFC 3986."""
         issues = []
         lines = content.split("\n")
@@ -124,46 +130,60 @@ class RFCComplianceChecker:
             # Pattern: parsed.scheme == "https" (should use .lower())
             if re.search(r'\.scheme\s*[!=]=\s*["\']https?["\']', line):
                 if ".lower()" not in line:
-                    issues.append(ComplianceIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        level=ComplianceLevel.ERROR,
-                        standard=RFCStandard.RFC_3986,
-                        message="Case-sensitive URI scheme comparison violates RFC 3986",
-                        context=line.strip(),
-                        suggestion="Use .lower() for scheme comparison: parsed.scheme.lower() == 'https'",
-                        reference="https://tools.ietf.org/html/rfc3986#section-3.1",
-                    ))
+                    issues.append(
+                        ComplianceIssue(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            level=ComplianceLevel.ERROR,
+                            standard=RFCStandard.RFC_3986,
+                            message="Case-sensitive URI scheme comparison violates RFC 3986",
+                            context=line.strip(),
+                            suggestion="Use .lower() for scheme comparison: parsed.scheme.lower() == 'https'",
+                            reference="https://tools.ietf.org/html/rfc3986#section-3.1",
+                        )
+                    )
 
             # Check for manual URL parsing (should use urllib.parse)
-            if "urlparse" not in content and re.search(r'\.split\(["\'][:/]+["\']\)', line):
+            if "urlparse" not in content and re.search(
+                r'\.split\(["\'][:/]+["\']\)', line
+            ):
                 if "http://" in line or "https://" in line:
-                    issues.append(ComplianceIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        level=ComplianceLevel.WARNING,
-                        standard=RFCStandard.RFC_3986,
-                        message="Manual URL parsing should use urllib.parse.urlparse()",
-                        context=line.strip(),
-                        suggestion="Use urllib.parse.urlparse() for RFC-compliant URL parsing",
-                        reference="https://tools.ietf.org/html/rfc3986",
-                    ))
-
-            # Check for missing hostname validation
-            if "urlparse" in line and "hostname" not in content[max(0, content.find(line)-500):content.find(line)+500]:
-                if line_num < len(lines) - 5:  # Look ahead a few lines
-                    next_lines = "\n".join(lines[line_num:line_num+5])
-                    if "hostname" not in next_lines:
-                        issues.append(ComplianceIssue(
+                    issues.append(
+                        ComplianceIssue(
                             file_path=str(file_path),
                             line_number=line_num,
                             level=ComplianceLevel.WARNING,
                             standard=RFCStandard.RFC_3986,
-                            message="URL parsing should validate hostname presence",
+                            message="Manual URL parsing should use urllib.parse.urlparse()",
                             context=line.strip(),
-                            suggestion="Add validation: if not parsed.hostname: raise ValueError('Invalid URL')",
-                            reference="https://tools.ietf.org/html/rfc3986#section-3.2.2",
-                        ))
+                            suggestion="Use urllib.parse.urlparse() for RFC-compliant URL parsing",
+                            reference="https://tools.ietf.org/html/rfc3986",
+                        )
+                    )
+
+            # Check for missing hostname validation
+            if (
+                "urlparse" in line
+                and "hostname"
+                not in content[
+                    max(0, content.find(line) - 500) : content.find(line) + 500
+                ]
+            ):
+                if line_num < len(lines) - 5:  # Look ahead a few lines
+                    next_lines = "\n".join(lines[line_num : line_num + 5])
+                    if "hostname" not in next_lines:
+                        issues.append(
+                            ComplianceIssue(
+                                file_path=str(file_path),
+                                line_number=line_num,
+                                level=ComplianceLevel.WARNING,
+                                standard=RFCStandard.RFC_3986,
+                                message="URL parsing should validate hostname presence",
+                                context=line.strip(),
+                                suggestion="Add validation: if not parsed.hostname: raise ValueError('Invalid URL')",
+                                reference="https://tools.ietf.org/html/rfc3986#section-3.2.2",
+                            )
+                        )
 
         # AST-based checks for urllib usage
         try:
@@ -185,16 +205,20 @@ class RFCComplianceChecker:
         # Check for urlparse usage
         if isinstance(node.func, ast.Attribute):
             if isinstance(node.func.value, ast.Attribute):
-                if (hasattr(node.func.value.value, 'id') and
-                    node.func.value.value.id == "urllib" and
-                    node.func.value.attr == "parse" and
-                    node.func.attr == "urlparse"):
+                if (
+                    hasattr(node.func.value.value, "id")
+                    and node.func.value.value.id == "urllib"
+                    and node.func.value.attr == "parse"
+                    and node.func.attr == "urlparse"
+                ):
                     # Found urlparse usage, check for scheme validation
                     return None  # This is good, just ensure validation follows
 
         return None
 
-    def _validate_python_http(self, file_path: Path, content: str) -> list[ComplianceIssue]:
+    def _validate_python_http(
+        self, file_path: Path, content: str
+    ) -> list[ComplianceIssue]:
         """Validate HTTP handling against RFC 7230-7235."""
         issues = []
         lines = content.split("\n")
@@ -204,42 +228,48 @@ class RFCComplianceChecker:
             # Headers are case-insensitive
             if re.search(r'headers?\[["\'][A-Z][a-z-]+["\']\]\s*[!=]=', line):
                 if ".lower()" not in line and ".casefold()" not in line:
-                    issues.append(ComplianceIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        level=ComplianceLevel.WARNING,
-                        standard=RFCStandard.RFC_7230,
-                        message="HTTP headers should be compared case-insensitively",
-                        context=line.strip(),
-                        suggestion="Use .lower() or .casefold() for header comparison, or use requests/httpx which handle this",
-                        reference="https://tools.ietf.org/html/rfc7230#section-3.2",
-                    ))
+                    issues.append(
+                        ComplianceIssue(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            level=ComplianceLevel.WARNING,
+                            standard=RFCStandard.RFC_7230,
+                            message="HTTP headers should be compared case-insensitively",
+                            context=line.strip(),
+                            suggestion="Use .lower() or .casefold() for header comparison, or use requests/httpx which handle this",
+                            reference="https://tools.ietf.org/html/rfc7230#section-3.2",
+                        )
+                    )
 
             # Check for obsolete RFC 2616 references
             if "RFC 2616" in line or "rfc2616" in line.lower():
-                issues.append(ComplianceIssue(
-                    file_path=str(file_path),
-                    line_number=line_num,
-                    level=ComplianceLevel.INFO,
-                    standard=RFCStandard.RFC_2616,
-                    message="RFC 2616 is obsolete, replaced by RFC 7230-7235",
-                    context=line.strip(),
-                    suggestion="Update references to RFC 7230 (Message Syntax), RFC 7231 (Semantics), etc.",
-                    reference="https://tools.ietf.org/html/rfc7230",
-                ))
+                issues.append(
+                    ComplianceIssue(
+                        file_path=str(file_path),
+                        line_number=line_num,
+                        level=ComplianceLevel.INFO,
+                        standard=RFCStandard.RFC_2616,
+                        message="RFC 2616 is obsolete, replaced by RFC 7230-7235",
+                        context=line.strip(),
+                        suggestion="Update references to RFC 7230 (Message Syntax), RFC 7231 (Semantics), etc.",
+                        reference="https://tools.ietf.org/html/rfc7230",
+                    )
+                )
 
             # Check for custom header naming (RFC 7231 §8.3.1)
             if re.search(r'["\']X-[A-Z][a-z-]*["\']', line):
-                issues.append(ComplianceIssue(
-                    file_path=str(file_path),
-                    line_number=line_num,
-                    level=ComplianceLevel.INFO,
-                    standard=RFCStandard.RFC_7231,
-                    message="X- prefix for custom headers is deprecated (RFC 6648)",
-                    context=line.strip(),
-                    suggestion="Use a descriptive name without X- prefix, or register with IANA",
-                    reference="https://tools.ietf.org/html/rfc6648",
-                ))
+                issues.append(
+                    ComplianceIssue(
+                        file_path=str(file_path),
+                        line_number=line_num,
+                        level=ComplianceLevel.INFO,
+                        standard=RFCStandard.RFC_7231,
+                        message="X- prefix for custom headers is deprecated (RFC 6648)",
+                        context=line.strip(),
+                        suggestion="Use a descriptive name without X- prefix, or register with IANA",
+                        reference="https://tools.ietf.org/html/rfc6648",
+                    )
+                )
 
             # Check for missing User-Agent (RFC 7231 §5.5.3)
             if "urllib.request.Request" in line or "requests.get" in line:
@@ -248,16 +278,18 @@ class RFCComplianceChecker:
                 context_end = min(len(lines), line_num + 5)
                 context_lines = lines[context_start:context_end]
                 if not any("User-Agent" in ctx_line for ctx_line in context_lines):
-                    issues.append(ComplianceIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        level=ComplianceLevel.WARNING,
-                        standard=RFCStandard.RFC_7231,
-                        message="HTTP requests should include User-Agent header",
-                        context=line.strip(),
-                        suggestion="Add User-Agent header: headers={'User-Agent': 'YourApp/1.0'}",
-                        reference="https://tools.ietf.org/html/rfc7231#section-5.5.3",
-                    ))
+                    issues.append(
+                        ComplianceIssue(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            level=ComplianceLevel.WARNING,
+                            standard=RFCStandard.RFC_7231,
+                            message="HTTP requests should include User-Agent header",
+                            context=line.strip(),
+                            suggestion="Add User-Agent header: headers={'User-Agent': 'YourApp/1.0'}",
+                            reference="https://tools.ietf.org/html/rfc7231#section-5.5.3",
+                        )
+                    )
 
         return issues
 
@@ -289,8 +321,12 @@ class RFCComplianceChecker:
             "total_issues": len(self.issues),
             "by_level": issues_by_level,
             "by_standard": issues_by_standard,
-            "error_count": len([i for i in self.issues if i.level == ComplianceLevel.ERROR]),
-            "warning_count": len([i for i in self.issues if i.level == ComplianceLevel.WARNING]),
+            "error_count": len(
+                [i for i in self.issues if i.level == ComplianceLevel.ERROR]
+            ),
+            "warning_count": len(
+                [i for i in self.issues if i.level == ComplianceLevel.WARNING]
+            ),
         }
 
     def generate_fixes(self) -> list[dict[str, Any]]:
@@ -333,10 +369,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="RFC Compliance Checker Agent")
     parser.add_argument("--files", nargs="+", help="Files to validate")
     parser.add_argument("--all", action="store_true", help="Validate all Python files")
-    parser.add_argument("--check-uri", action="store_true", help="Check URI compliance (RFC 3986)")
-    parser.add_argument("--check-http", action="store_true", help="Check HTTP compliance (RFC 7230-7235)")
+    parser.add_argument(
+        "--check-uri", action="store_true", help="Check URI compliance (RFC 3986)"
+    )
+    parser.add_argument(
+        "--check-http",
+        action="store_true",
+        help="Check HTTP compliance (RFC 7230-7235)",
+    )
     parser.add_argument("--output", choices=["text", "json"], default="text")
-    parser.add_argument("--auto-fix", action="store_true", help="Generate automatic fixes")
+    parser.add_argument(
+        "--auto-fix", action="store_true", help="Generate automatic fixes"
+    )
     args = parser.parse_args()
 
     config = {}
@@ -352,8 +396,11 @@ def main() -> int:
     if args.all:
         files = list(ROOT.glob("**/*.py"))
         files = [
-            f for f in files
-            if not any(part in f.parts for part in [".venv", "venv", "node_modules", ".git"])
+            f
+            for f in files
+            if not any(
+                part in f.parts for part in [".venv", "venv", "node_modules", ".git"]
+            )
         ]
     elif args.files:
         files = [Path(f) for f in args.files]
@@ -377,24 +424,24 @@ def main() -> int:
         print(json.dumps(output, indent=2))
     else:
         # Text output
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("RFC Compliance Checker - Scan Results")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
         print(f"Total Issues: {report['total_issues']}")
         print(f"Errors: {report['error_count']}")
         print(f"Warnings: {report['warning_count']}")
 
-        if report['by_standard']:
+        if report["by_standard"]:
             print("\nBy RFC Standard:")
-            for standard, count in report['by_standard'].items():
+            for standard, count in report["by_standard"].items():
                 print(f"  {standard}: {count}")
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("Issues by Level")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         for level in ["ERROR", "WARNING", "INFO"]:
-            issues = report['by_level'].get(level, [])
+            issues = report["by_level"].get(level, [])
             if issues:
                 print(f"\n{level}:")
                 for issue in issues:
@@ -409,9 +456,9 @@ def main() -> int:
         if args.auto_fix:
             fixes = checker.generate_fixes()
             if fixes:
-                print(f"\n{'='*80}")
+                print(f"\n{'=' * 80}")
                 print("Automatic Fixes Available")
-                print(f"{'='*80}\n")
+                print(f"{'=' * 80}\n")
                 for fix in fixes:
                     print(f"  {fix['file']}:{fix['line']}")
                     print(f"    {fix['description']}")
@@ -420,7 +467,7 @@ def main() -> int:
                     print()
 
     # Return non-zero if errors found
-    if report['error_count'] > 0:
+    if report["error_count"] > 0:
         return 1
 
     return 0

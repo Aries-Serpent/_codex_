@@ -14,7 +14,6 @@ import re
 from pathlib import Path
 from typing import List, Tuple
 
-
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
 
@@ -64,12 +63,13 @@ class TestREADMECodeBlocks:
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
         code_blocks = self._extract_code_blocks(content)
-        
+
         python_blocks = [
-            (lang, code) for lang, code in code_blocks
+            (lang, code)
+            for lang, code in code_blocks
             if lang.lower() in ("python", "py", "python3")
         ]
-        
+
         syntax_errors = []
         for lang, code in python_blocks:
             # Skip snippets with ellipsis or incomplete code
@@ -85,7 +85,7 @@ class TestREADMECodeBlocks:
                 ast.parse(code)
             except SyntaxError as e:
                 syntax_errors.append(f"Line {e.lineno}: {e.msg}")
-        
+
         # Allow some syntax errors (snippets are often incomplete)
         max_errors = len(python_blocks) // 2
         assert len(syntax_errors) <= max_errors, (
@@ -97,9 +97,10 @@ class TestREADMECodeBlocks:
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
         code_blocks = self._extract_code_blocks(content)
-        
+
         bash_blocks = [
-            (lang, code) for lang, code in code_blocks
+            (lang, code)
+            for lang, code in code_blocks
             if lang.lower() in ("bash", "sh", "shell", "")
         ]
         assert len(bash_blocks) > 0, "README should have bash examples"
@@ -166,10 +167,10 @@ class TestREADMELinks:
         """Verify README internal links have proper format."""
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
-        
+
         link_pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
         links = link_pattern.findall(content)
-        
+
         malformed_links = []
         for link_text, link_target in links:
             # Check for empty links
@@ -178,23 +179,24 @@ class TestREADMELinks:
             # Check for spaces in path (should be URL encoded)
             if " " in link_target and not link_target.startswith("http"):
                 malformed_links.append(f"Space in path: [{link_text}]({link_target})")
-        
+
         assert len(malformed_links) == 0, f"Malformed links: {malformed_links}"
 
     def test_readme_external_links_https(self):
         """Verify external links use HTTPS."""
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
-        
+
         link_pattern = re.compile(r"\[([^\]]+)\]\((http://[^)]+)\)")
         http_links = link_pattern.findall(content)
-        
+
         # Filter out localhost links
         external_http = [
-            (text, url) for text, url in http_links
+            (text, url)
+            for text, url in http_links
             if "localhost" not in url and "127.0.0.1" not in url
         ]
-        
+
         assert len(external_http) == 0, (
             f"External links should use HTTPS: {external_http[:3]}"
         )

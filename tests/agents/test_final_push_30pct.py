@@ -70,7 +70,11 @@ class TestWorkflowNavigatorAdditional:
 
     def test_register_and_retrieve_workflow(self):
         """Test workflow registration and retrieval flow."""
-        from agents.workflow_navigator import WorkflowNavigator, Workflow, WorkflowFrequency
+        from agents.workflow_navigator import (
+            Workflow,
+            WorkflowFrequency,
+            WorkflowNavigator,
+        )
 
         nav = WorkflowNavigator()
 
@@ -157,7 +161,7 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
     def test_fluid_channel_add(self):
         """Test adding a fluid channel."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler, FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -214,7 +218,7 @@ class TestSelfHealingAdditional:
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue serialization."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_id="test",

@@ -6,14 +6,14 @@ Ensures dependency compatibility checker works correctly.
 
 from __future__ import annotations
 
+import importlib.util
+
+# Import the script module
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-# Import the script module
-import sys
-import importlib.util
 
 # Load the script as a module
 script_path = Path(__file__).parent.parent.parent / "scripts" / "check_py312_deps.py"
@@ -32,46 +32,48 @@ from check_py312_deps import (
 
 class TestParseDependencySpec:
     """Test dependency specification parsing."""
-    
+
     def test_simple_package(self):
         """Test parsing simple package name."""
         name, constraint, is_conditional = parse_dependency_spec("numpy")
         assert name == "numpy"
         assert constraint is None
         assert is_conditional is False
-    
+
     def test_package_with_version(self):
         """Test parsing package with version constraint."""
         name, constraint, is_conditional = parse_dependency_spec("numpy>=1.26,<3")
         assert name == "numpy"
         assert constraint == ">=1.26,<3"
         assert is_conditional is False
-    
+
     def test_package_with_extras(self):
         """Test parsing package with extras."""
         name, constraint, is_conditional = parse_dependency_spec("ray[serve]>=2.9,<3")
         assert name == "ray"
         assert constraint == ">=2.9,<3"
         assert is_conditional is False
-    
+
     def test_package_with_exact_version(self):
         """Test parsing package with exact version."""
         name, constraint, is_conditional = parse_dependency_spec("hydra-core==1.3.2")
         assert name == "hydra-core"
         assert constraint == "==1.3.2"
         assert is_conditional is False
-    
+
     def test_conditional_dependency(self):
         """Test parsing conditional dependency with environment marker."""
-        name, constraint, is_conditional = parse_dependency_spec("importlib-metadata; python_version < '3.10'")
+        name, constraint, is_conditional = parse_dependency_spec(
+            "importlib-metadata; python_version < '3.10'"
+        )
         assert name == "importlib-metadata"
         assert is_conditional is True
 
 
 class TestCheckPackagePy312Support:
     """Test package Python 3.12 support checking."""
-    
-    @patch('subprocess.run')
+
+    @patch("subprocess.run")
     def test_compatible_package(self, mock_run):
         """Test checking a compatible package."""
         # Mock pip index versions
@@ -87,14 +89,14 @@ class TestCheckPackagePy312Support:
                 stderr="",
             ),
         ]
-        
+
         result = check_package_py312_support("numpy")
-        
+
         assert result["name"] == "numpy"
         assert result["supports_312"] is True
         assert result["error"] is None
-    
-    @patch('subprocess.run')
+
+    @patch("subprocess.run")
     def test_package_with_312_explicit(self, mock_run):
         """Test package that explicitly mentions 3.12."""
         mock_run.side_effect = [
@@ -105,12 +107,12 @@ class TestCheckPackagePy312Support:
                 stderr="",
             ),
         ]
-        
+
         result = check_package_py312_support("test")
-        
+
         assert result["supports_312"] is True
-    
-    @patch('subprocess.run')
+
+    @patch("subprocess.run")
     def test_package_query_error(self, mock_run):
         """Test handling of package query error."""
         mock_run.return_value = MagicMock(
@@ -118,50 +120,51 @@ class TestCheckPackagePy312Support:
             stdout="",
             stderr="ERROR: No matching distribution found",
         )
-        
+
         result = check_package_py312_support("nonexistent-package")
-        
+
         assert result["error"] is not None
         assert "Failed to query PyPI" in result["error"]
-    
-    @patch('subprocess.run')
+
+    @patch("subprocess.run")
     def test_timeout_handling(self, mock_run):
         """Test timeout handling during package check."""
         import subprocess
+
         mock_run.side_effect = subprocess.TimeoutExpired("pip", 30)
-        
+
         result = check_package_py312_support("slow-package")
-        
+
         assert result["error"] == "Timeout querying PyPI"
 
 
 class TestLoadDependenciesFromPyproject:
     """Test loading dependencies from pyproject.toml."""
-    
+
     def test_loads_dependencies(self):
         """Test that dependencies are loaded successfully."""
         deps = load_dependencies_from_pyproject()
-        
+
         assert isinstance(deps, list)
         assert len(deps) > 0
-        
+
         # Check for known dependencies
         dep_names = [parse_dependency_spec(d)[0] for d in deps]
         assert "pytest" in dep_names or "numpy" in dep_names or "torch" in dep_names
-    
+
     def test_includes_optional_dependencies(self):
         """Test that optional dependencies are included."""
         deps = load_dependencies_from_pyproject()
-        
+
         # Should include both main and optional dependencies
         assert len(deps) > 30  # We know there are 37+ core dependencies
 
 
 class TestMain:
     """Test main function integration."""
-    
-    @patch('check_py312_deps.load_dependencies_from_pyproject')
-    @patch('check_py312_deps.check_package_py312_support')
+
+    @patch("check_py312_deps.load_dependencies_from_pyproject")
+    @patch("check_py312_deps.check_package_py312_support")
     def test_main_all_compatible(self, mock_check, mock_load):
         """Test main function with all compatible packages."""
         mock_load.return_value = ["numpy>=1.26", "torch>=2.0"]
@@ -173,16 +176,16 @@ class TestMain:
             "python_requires": ">=3.9",
             "error": None,
         }
-        
+
         from check_py312_deps import main
-        
-        with patch('builtins.print'):  # Suppress output
+
+        with patch("builtins.print"):  # Suppress output
             exit_code = main()
-        
+
         assert exit_code == 0
-    
-    @patch('check_py312_deps.load_dependencies_from_pyproject')
-    @patch('check_py312_deps.check_package_py312_support')
+
+    @patch("check_py312_deps.load_dependencies_from_pyproject")
+    @patch("check_py312_deps.check_package_py312_support")
     def test_main_with_incompatible(self, mock_check, mock_load):
         """Test main function with incompatible package."""
         mock_load.return_value = ["old-package==1.0"]
@@ -194,23 +197,23 @@ class TestMain:
             "python_requires": ">=3.8,<3.11",
             "error": None,
         }
-        
+
         from check_py312_deps import main
-        
-        with patch('builtins.print'):  # Suppress output
+
+        with patch("builtins.print"):  # Suppress output
             exit_code = main()
-        
+
         assert exit_code == 1
 
 
 @pytest.mark.integration
 class TestIntegration:
     """Integration tests for dependency checker."""
-    
+
     def test_script_runs_without_error(self):
         """Test that script runs without crashing."""
         import subprocess
-        
+
         result = subprocess.run(
             [sys.executable, "scripts/check_py312_deps.py"],
             capture_output=True,
@@ -218,7 +221,7 @@ class TestIntegration:
             timeout=120,  # 2 minutes timeout
             cwd=Path(__file__).parent.parent.parent,
         )
-        
+
         # Script should run (may pass or fail depending on actual compatibility)
         assert result.returncode in [0, 1]
         assert "Python 3.12 Dependency Compatibility Checker" in result.stdout

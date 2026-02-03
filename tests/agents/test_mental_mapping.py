@@ -20,15 +20,15 @@ class TestClockAbstraction:
     def test_default_clock_returns_iso_format(self):
         """Test that default clock returns ISO format timestamp."""
         from agents.mental_mapping import _default_clock
-        
+
         result = _default_clock()
         # Should be parseable as ISO format
         datetime.fromisoformat(result)
 
     def test_get_timestamp_uses_current_clock(self):
         """Test get_timestamp uses the configured clock."""
-        from agents.mental_mapping import get_timestamp, set_clock, reset_clock
-        
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+
         try:
             # Set a custom clock
             set_clock(lambda: "2025-01-01T00:00:00")
@@ -39,8 +39,8 @@ class TestClockAbstraction:
 
     def test_set_clock_overrides_default(self):
         """Test set_clock overrides the default clock."""
-        from agents.mental_mapping import set_clock, get_timestamp, reset_clock
-        
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+
         try:
             custom_time = "2025-06-15T12:30:00"
             set_clock(lambda: custom_time)
@@ -50,11 +50,11 @@ class TestClockAbstraction:
 
     def test_reset_clock_restores_default(self):
         """Test reset_clock restores default behavior."""
-        from agents.mental_mapping import set_clock, reset_clock, get_timestamp
-        
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+
         set_clock(lambda: "fixed")
         reset_clock()
-        
+
         # Should now return a proper ISO timestamp
         result = get_timestamp()
         datetime.fromisoformat(result)
@@ -66,7 +66,7 @@ class TestNodeType:
     def test_node_types_exist(self):
         """Test all expected node types exist."""
         from agents.mental_mapping import NodeType
-        
+
         assert NodeType.PROBLEM.value == "problem"
         assert NodeType.HYPOTHESIS.value == "hypothesis"
         assert NodeType.EVIDENCE.value == "evidence"
@@ -74,7 +74,7 @@ class TestNodeType:
     def test_node_type_iteration(self):
         """Test that NodeType is iterable."""
         from agents.mental_mapping import NodeType
-        
+
         types = list(NodeType)
         assert len(types) >= 3  # At least PROBLEM, HYPOTHESIS, EVIDENCE
 
@@ -87,6 +87,7 @@ class TestReasoningChain:
         """Import ReasoningChain class."""
         try:
             from agents.mental_mapping import ReasoningChain
+
             return ReasoningChain
         except ImportError:
             pytest.skip("ReasoningChain not available")
@@ -119,7 +120,11 @@ class TestMentalMapNode:
     def MentalMapNode(self):
         """Import MentalMapNode class."""
         try:
-            from agents.mental_mapping import MentalMapNode, NodeType  # noqa: F401 - Testing optional dependency availability
+            from agents.mental_mapping import (  # noqa: F401 - Testing optional dependency availability
+                MentalMapNode,
+                NodeType,
+            )
+
             return MentalMapNode
         except ImportError:
             pytest.skip("MentalMapNode not available")
@@ -128,6 +133,7 @@ class TestMentalMapNode:
     def NodeType(self):
         """Import NodeType enum."""
         from agents.mental_mapping import NodeType
+
         return NodeType
 
     def test_create_problem_node(self, MentalMapNode, NodeType):
@@ -167,6 +173,7 @@ class TestMentalMap:
         """Import MentalMap class."""
         try:
             from agents.mental_mapping import MentalMappingModel
+
             return MentalMappingModel
         except ImportError:
             pytest.skip("MentalMappingModel not available")
@@ -175,6 +182,7 @@ class TestMentalMap:
     def NodeType(self):
         """Import NodeType enum."""
         from agents.mental_mapping import NodeType
+
         return NodeType
 
     def test_create_mental_map(self, MentalMap):
@@ -208,9 +216,11 @@ class TestMentalMap:
         mental_map = MentalMap()
         node1 = mental_map.create_node(NodeType.PROBLEM, content="Problem")
         node2 = mental_map.create_node(NodeType.HYPOTHESIS, content="Hypothesis")
-        
-        edge = mental_map.connect_nodes(source_id=node1.node_id, target_id=node2.node_id)
-        
+
+        edge = mental_map.connect_nodes(
+            source_id=node1.node_id, target_id=node2.node_id
+        )
+
         # Edge should exist
         assert edge is not None
 
@@ -218,9 +228,9 @@ class TestMentalMap:
         """Test serializing mental map to dict."""
         mental_map = MentalMap()
         mental_map.create_node(NodeType.PROBLEM, content="Test")
-        
+
         result = mental_map.to_dict()
-        
+
         assert isinstance(result, dict)
         assert "nodes" in result or len(result) > 0
 
@@ -233,6 +243,7 @@ class TestSelfAppraisal:
         """Import SelfAppraisal class if available."""
         try:
             from agents.mental_mapping import SelfAppraisal
+
             return SelfAppraisal
         except ImportError:
             pytest.skip("SelfAppraisal not available")
@@ -255,6 +266,7 @@ class TestDecisionPath:
         """Import DecisionPath class if available."""
         try:
             from agents.mental_mapping import DecisionPath
+
             return DecisionPath
         except ImportError:
             pytest.skip("DecisionPath not available")

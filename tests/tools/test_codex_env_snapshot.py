@@ -4,8 +4,8 @@ Test Codex Env Snapshot
 Test module for codex env snapshot.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import tools.codex_env_snapshot as snap
 

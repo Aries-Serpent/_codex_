@@ -5,8 +5,9 @@ Focuses on highest-impact classes and methods to maximize coverage/time efficien
 Uses Physics Reference Table strategy for time-efficient testing.
 """
 
-import pytest
 import math
+
+import pytest
 
 
 class TestForceVector:
@@ -128,10 +129,10 @@ class TestPhysicsInspiredOrchestrator:
     def test_orchestrate_basic(self):
         """Test basic orchestration."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orchestrator = PhysicsInspiredOrchestrator()

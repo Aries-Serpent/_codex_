@@ -12,8 +12,8 @@ Systematically applies orchestration and workflow patterns:
 Target: +4-5% coverage gain (57% → 62%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_DeveloperOrchestrator:
@@ -169,7 +169,11 @@ class TestPhase2_TaskScheduling:
 
     def test_priority_queue_scheduling(self):
         """Test priority-based scheduling"""
-        tasks = [{"id": 1, "priority": 2}, {"id": 2, "priority": 5}, {"id": 3, "priority": 1}]
+        tasks = [
+            {"id": 1, "priority": 2},
+            {"id": 2, "priority": 5},
+            {"id": 3, "priority": 1},
+        ]
         sorted_tasks = sorted(tasks, key=lambda x: -x["priority"])
         assert sorted_tasks[0]["id"] == 2  # Highest priority first
 
@@ -193,13 +197,21 @@ class TestPhase2_TaskScheduling:
 
     def test_earliest_deadline_first(self):
         """Test EDF scheduling"""
-        tasks = [{"id": 1, "deadline": 10}, {"id": 2, "deadline": 5}, {"id": 3, "deadline": 15}]
+        tasks = [
+            {"id": 1, "deadline": 10},
+            {"id": 2, "deadline": 5},
+            {"id": 3, "deadline": 15},
+        ]
         sorted_tasks = sorted(tasks, key=lambda x: x["deadline"])
         assert sorted_tasks[0]["id"] == 2  # Earliest deadline
 
     def test_shortest_job_first(self):
         """Test SJF scheduling"""
-        tasks = [{"id": 1, "duration": 10}, {"id": 2, "duration": 3}, {"id": 3, "duration": 7}]
+        tasks = [
+            {"id": 1, "duration": 10},
+            {"id": 2, "duration": 3},
+            {"id": 3, "duration": 7},
+        ]
         sorted_tasks = sorted(tasks, key=lambda x: x["duration"])
         assert sorted_tasks[0]["id"] == 2  # Shortest job
 
@@ -212,7 +224,10 @@ class TestPhase2_ResourceAllocation:
 
     def test_resource_pool(self):
         """Test resource pool management"""
-        pool = {"cpu": {"total": 8, "available": 5}, "memory": {"total": 16, "available": 10}}
+        pool = {
+            "cpu": {"total": 8, "available": 5},
+            "memory": {"total": 16, "available": 10},
+        }
         assert pool["cpu"]["available"] <= pool["cpu"]["total"]
 
     def test_allocate_resources(self):
@@ -416,7 +431,10 @@ class TestPhase2_WorkflowOptimization:
         """Test batching small tasks"""
         small_tasks = [{"id": i, "size": 1} for i in range(10)]
         batch_size = 5
-        batches = [small_tasks[i : i + batch_size] for i in range(0, len(small_tasks), batch_size)]
+        batches = [
+            small_tasks[i : i + batch_size]
+            for i in range(0, len(small_tasks), batch_size)
+        ]
         assert len(batches) == 2
 
     def test_load_balancing(self):
@@ -547,7 +565,10 @@ class TestPhase2_WorkflowValidation:
         """Test validating workflow structure"""
         workflow = {
             "name": "test",
-            "steps": [{"id": "step1", "action": "compile"}, {"id": "step2", "action": "test"}],
+            "steps": [
+                {"id": "step1", "action": "compile"},
+                {"id": "step2", "action": "test"},
+            ],
         }
         assert "name" in workflow
         assert "steps" in workflow

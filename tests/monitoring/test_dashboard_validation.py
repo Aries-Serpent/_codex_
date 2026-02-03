@@ -19,10 +19,10 @@ from typing import Any, Dict, List
 
 import pytest
 
-
 # ============================================================================
 # Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def dashboard_config() -> Dict[str, Any]:
@@ -49,7 +49,7 @@ def widget_configs() -> List[Dict[str, Any]]:
             "title": "CPU Usage",
             "position": {"x": 0, "y": 0, "w": 12, "h": 8},
             "datasource": "prometheus",
-            "query": 'rate(cpu_usage_total[5m])',
+            "query": "rate(cpu_usage_total[5m])",
         },
         {
             "id": "widget-2",
@@ -57,8 +57,11 @@ def widget_configs() -> List[Dict[str, Any]]:
             "title": "Memory Usage",
             "position": {"x": 12, "y": 0, "w": 6, "h": 4},
             "datasource": "prometheus",
-            "query": 'memory_usage_percent',
-            "thresholds": [{"value": 80, "color": "orange"}, {"value": 95, "color": "red"}],
+            "query": "memory_usage_percent",
+            "thresholds": [
+                {"value": 80, "color": "orange"},
+                {"value": 95, "color": "red"},
+            ],
         },
         {
             "id": "widget-3",
@@ -66,7 +69,7 @@ def widget_configs() -> List[Dict[str, Any]]:
             "title": "Active Users",
             "position": {"x": 18, "y": 0, "w": 6, "h": 4},
             "datasource": "influxdb",
-            "query": 'SELECT count(*) FROM active_sessions',
+            "query": "SELECT count(*) FROM active_sessions",
         },
         {
             "id": "widget-4",
@@ -74,7 +77,7 @@ def widget_configs() -> List[Dict[str, Any]]:
             "title": "Top Endpoints",
             "position": {"x": 0, "y": 8, "w": 12, "h": 6},
             "datasource": "prometheus",
-            "query": 'topk(10, http_requests_total)',
+            "query": "topk(10, http_requests_total)",
         },
     ]
 
@@ -104,6 +107,7 @@ def data_sources() -> List[Dict[str, Any]]:
 # Dashboard Configuration Tests
 # ============================================================================
 
+
 class TestDashboardConfiguration:
     """Tests for dashboard configuration validation."""
 
@@ -128,11 +132,11 @@ class TestDashboardConfiguration:
     def test_refresh_interval_format(self, dashboard_config: Dict[str, Any]):
         """Test refresh interval format parsing."""
         interval = dashboard_config["refresh_interval"]
-        
+
         # Parse interval (e.g., "30s" -> 30 seconds)
         value = int(interval[:-1])
         unit = interval[-1]
-        
+
         assert value > 0
         assert unit in ["s", "m", "h"]
 
@@ -157,6 +161,7 @@ class TestDashboardConfiguration:
 # Widget Configuration Tests
 # ============================================================================
 
+
 class TestWidgetConfiguration:
     """Tests for widget configuration validation."""
 
@@ -169,7 +174,15 @@ class TestWidgetConfiguration:
 
     def test_widget_types_valid(self, widget_configs: List[Dict[str, Any]]):
         """Test widget types are valid."""
-        valid_types = ["graph", "gauge", "stat", "table", "heatmap", "alert-list", "logs"]
+        valid_types = [
+            "graph",
+            "gauge",
+            "stat",
+            "table",
+            "heatmap",
+            "alert-list",
+            "logs",
+        ]
         for widget in widget_configs:
             assert widget["type"] in valid_types
 
@@ -220,6 +233,7 @@ class TestWidgetConfiguration:
 # Data Source Tests
 # ============================================================================
 
+
 class TestDataSources:
     """Tests for data source configuration."""
 
@@ -257,18 +271,19 @@ class TestDataSources:
 # Query Validation Tests
 # ============================================================================
 
+
 class TestQueryValidation:
     """Tests for query validation."""
 
     def test_prometheus_query_syntax(self):
         """Test Prometheus query syntax validation."""
         valid_queries = [
-            'cpu_usage_total',
-            'rate(http_requests_total[5m])',
-            'sum(cpu_usage) by (host)',
-            'topk(10, http_requests_total)',
+            "cpu_usage_total",
+            "rate(http_requests_total[5m])",
+            "sum(cpu_usage) by (host)",
+            "topk(10, http_requests_total)",
         ]
-        
+
         for query in valid_queries:
             # Basic validation - non-empty string
             assert len(query) > 0
@@ -276,29 +291,30 @@ class TestQueryValidation:
 
     def test_query_time_range_specified(self):
         """Test query with time range."""
-        query = 'rate(requests_total[5m])'
+        query = "rate(requests_total[5m])"
         # Check for time range specification
-        has_time_range = '[' in query and ']' in query
+        has_time_range = "[" in query and "]" in query
         assert has_time_range is True
 
     def test_query_aggregation_functions(self):
         """Test query aggregation functions."""
-        aggregations = ['sum', 'avg', 'min', 'max', 'count', 'rate']
-        query = 'sum(cpu_usage) by (host)'
-        
+        aggregations = ["sum", "avg", "min", "max", "count", "rate"]
+        query = "sum(cpu_usage) by (host)"
+
         has_aggregation = any(agg in query for agg in aggregations)
         assert has_aggregation is True
 
     def test_query_label_filtering(self):
         """Test query with label filtering."""
         query = 'http_requests_total{status="200", method="GET"}'
-        has_label_filter = '{' in query and '}' in query
+        has_label_filter = "{" in query and "}" in query
         assert has_label_filter is True
 
 
 # ============================================================================
 # Visualization Tests
 # ============================================================================
+
 
 class TestVisualization:
     """Tests for visualization rendering."""
@@ -313,7 +329,7 @@ class TestVisualization:
                 "line_interpolation": "smooth",
             },
         }
-        
+
         assert graph_config["type"] == "graph"
         assert "options" in graph_config
 
@@ -325,7 +341,7 @@ class TestVisualization:
             "max": 100,
             "value": 75,
         }
-        
+
         assert gauge_config["min"] <= gauge_config["value"] <= gauge_config["max"]
 
     def test_stat_value_formatting(self):
@@ -335,17 +351,17 @@ class TestVisualization:
             "value": 1234567,
             "format": "short",
         }
-        
+
         # Format value
         value = stat_config["value"]
         if stat_config["format"] == "short":
             if value >= 1000000:
-                formatted = f"{value/1000000:.1f}M"
+                formatted = f"{value / 1000000:.1f}M"
             elif value >= 1000:
-                formatted = f"{value/1000:.1f}K"
+                formatted = f"{value / 1000:.1f}K"
             else:
                 formatted = str(value)
-        
+
         assert formatted == "1.2M"
 
     def test_table_column_configuration(self):
@@ -358,7 +374,7 @@ class TestVisualization:
                 {"name": "Latency", "field": "latency_ms", "unit": "ms"},
             ],
         }
-        
+
         assert len(table_config["columns"]) == 3
         for col in table_config["columns"]:
             assert "name" in col
@@ -369,6 +385,7 @@ class TestVisualization:
 # Dashboard Permission Tests
 # ============================================================================
 
+
 class TestDashboardPermissions:
     """Tests for dashboard permissions."""
 
@@ -376,31 +393,31 @@ class TestDashboardPermissions:
         """Test valid permission levels."""
         valid_levels = ["view", "edit", "admin"]
         user_permission = "edit"
-        
+
         assert user_permission in valid_levels
 
     def test_viewer_cannot_edit(self):
         """Test viewer permission cannot edit."""
         user_permission = "view"
         can_edit = user_permission in ["edit", "admin"]
-        
+
         assert can_edit is False
 
     def test_editor_can_edit(self):
         """Test editor permission can edit."""
         user_permission = "edit"
         can_edit = user_permission in ["edit", "admin"]
-        
+
         assert can_edit is True
 
     def test_admin_has_full_access(self):
         """Test admin has full access."""
         user_permission = "admin"
-        
+
         can_view = user_permission in ["view", "edit", "admin"]
         can_edit = user_permission in ["edit", "admin"]
         can_admin = user_permission == "admin"
-        
+
         assert can_view is True
         assert can_edit is True
         assert can_admin is True
@@ -409,6 +426,6 @@ class TestDashboardPermissions:
         """Test permission inheritance from folder."""
         folder_permission = "edit"
         dashboard_permission = None  # Not set
-        
+
         effective_permission = dashboard_permission or folder_permission
         assert effective_permission == "edit"

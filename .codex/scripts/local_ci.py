@@ -66,15 +66,24 @@ DEFAULT_STEPS: tuple[Step, ...] = (
 )
 
 OPTIONAL_STEPS: tuple[Step, ...] = (
-    Step(name="lint", command=("nox", "-s", "lint"), description="Ruff + Black + import sorting."),
     Step(
-        name="typecheck", command=("nox", "-s", "typecheck"), description="Static typing with mypy."
+        name="lint",
+        command=("nox", "-s", "lint"),
+        description="Ruff + Black + import sorting.",
+    ),
+    Step(
+        name="typecheck",
+        command=("nox", "-s", "typecheck"),
+        description="Static typing with mypy.",
     ),
 )
 
 
 def build_steps(
-    *, fast: bool = False, include_optional: bool = False, skip: Iterable[str] | None = None
+    *,
+    fast: bool = False,
+    include_optional: bool = False,
+    skip: Iterable[str] | None = None,
 ) -> list[Step]:
     skip_set = {name.strip().lower() for name in (skip or []) if name.strip()}
     steps: list[Step] = []
@@ -147,9 +156,13 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="Skip a named step (repeatable).",
     )
     parser.add_argument(
-        "--dry-run", action="store_true", help="Print the resolved commands without executing them."
+        "--dry-run",
+        action="store_true",
+        help="Print the resolved commands without executing them.",
     )
-    parser.add_argument("--list", action="store_true", help="Show the resolved step list and exit.")
+    parser.add_argument(
+        "--list", action="store_true", help="Show the resolved step list and exit."
+    )
     parser.add_argument(
         "--continue-on-failure",
         action="store_true",
@@ -191,7 +204,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         runner = _runner
 
-    status, results = run_steps(steps, fail_fast=not args.continue_on_failure, runner=runner)
+    status, results = run_steps(
+        steps, fail_fast=not args.continue_on_failure, runner=runner
+    )
     print(_render_summary(results))
     return status
 

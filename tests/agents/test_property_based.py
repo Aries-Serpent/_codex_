@@ -12,13 +12,15 @@ Test Categories:
 - Data structure invariants
 """
 
-from hypothesis import given, strategies as st, assume, settings
-from hypothesis import HealthCheck
 import math
+
+from hypothesis import HealthCheck, assume, given, settings
+from hypothesis import strategies as st
+
+from agents.agent_memory import MemoryEntry
 
 # Import modules to test
 from agents.physics_orchestrator import DecisionState
-from agents.agent_memory import MemoryEntry
 from agents.quantum_game_theory import StrategyState
 
 
@@ -26,8 +28,12 @@ class TestPhysicsOrchestratorProperties:
     """Property-based tests for physics orchestrator."""
 
     @given(
-        energy=st.floats(min_value=0.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
-        friction=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        energy=st.floats(
+            min_value=0.0, max_value=1000.0, allow_nan=False, allow_infinity=False
+        ),
+        friction=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_energy_always_non_negative(self, energy, friction):
         """Property: Energy with friction should never be negative."""
@@ -41,7 +47,9 @@ class TestPhysicsOrchestratorProperties:
         momentum=st.floats(
             min_value=-100.0, max_value=100.0, allow_nan=False, allow_infinity=False
         ),
-        mass=st.floats(min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False),
+        mass=st.floats(
+            min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_momentum_mass_relationship(self, momentum, mass):
         """Property: Velocity should equal momentum/mass."""
@@ -53,8 +61,12 @@ class TestPhysicsOrchestratorProperties:
         assert abs(reconstructed_momentum - momentum) < 1e-6
 
     @given(
-        confidence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-        risk=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        confidence=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
+        risk=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_confidence_risk_inverse_relationship(self, confidence, risk):
         """Property: High confidence should correlate with low risk."""
@@ -66,9 +78,15 @@ class TestPhysicsOrchestratorProperties:
         assert 0.0 <= risk <= 1.0
 
     @given(
-        impact=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-        urgency=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-        confidence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        impact=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
+        urgency=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
+        confidence=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_priority_score_bounds(self, impact, urgency, confidence):
         """Property: Priority score should be bounded by its components."""
@@ -80,7 +98,12 @@ class TestPhysicsOrchestratorProperties:
 
     @given(
         positions=st.lists(
-            st.floats(min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-1000.0,
+                max_value=1000.0,
+                allow_nan=False,
+                allow_infinity=False,
+            ),
             min_size=2,
             max_size=10,
         )
@@ -105,11 +128,15 @@ class TestMemorySystemProperties:
 
     @given(
         memory_id=st.text(
-            min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd"))
+            min_size=1,
+            max_size=50,
+            alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd")),
         ),
         category=st.sampled_from(["decision", "fact", "pattern", "lesson"]),
         content=st.text(min_size=1, max_size=500),
-        confidence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        confidence=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_memory_entry_invariants(self, memory_id, category, content, confidence):
         """Property: MemoryEntry maintains invariants."""
@@ -131,7 +158,11 @@ class TestMemorySystemProperties:
     def test_access_count_monotonic_increasing(self, access_count):
         """Property: Access count should only increase."""
         entry = MemoryEntry(
-            memory_id="test", category="fact", content="test", context={}, access_count=access_count
+            memory_id="test",
+            category="fact",
+            content="test",
+            context={},
+            access_count=access_count,
         )
 
         # Simulate access
@@ -143,7 +174,9 @@ class TestMemorySystemProperties:
     @given(
         tags=st.lists(
             st.text(
-                min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=("Lu", "Ll"))
+                min_size=1,
+                max_size=20,
+                alphabet=st.characters(whitelist_categories=("Lu", "Ll")),
             ),
             min_size=0,
             max_size=10,
@@ -165,7 +198,9 @@ class TestQuantumGameProperties:
 
     @given(
         probabilities=st.lists(
-            st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+            ),
             min_size=2,
             max_size=5,
         )
@@ -189,14 +224,18 @@ class TestQuantumGameProperties:
     @given(
         strategies=st.lists(
             st.text(
-                min_size=1, max_size=10, alphabet=st.characters(whitelist_categories=("Lu", "Ll"))
+                min_size=1,
+                max_size=10,
+                alphabet=st.characters(whitelist_categories=("Lu", "Ll")),
             ),
             min_size=1,
             max_size=5,
             unique=True,
         ),
         probabilities=st.lists(
-            st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+            ),
             min_size=1,
             max_size=5,
         ),
@@ -216,7 +255,9 @@ class TestQuantumGameProperties:
         total = sum(probabilities)
         probabilities = [p / total for p in probabilities]
 
-        state = StrategyState(team="A", strategies=strategies, probabilities=probabilities)
+        state = StrategyState(
+            team="A", strategies=strategies, probabilities=probabilities
+        )
 
         assert len(state.strategies) == len(state.probabilities)
         assert abs(sum(state.probabilities) - 1.0) < 1e-6
@@ -226,8 +267,12 @@ class TestMathematicalProperties:
     """Property-based tests for mathematical invariants."""
 
     @given(
-        x=st.floats(min_value=-100.0, max_value=100.0, allow_nan=False, allow_infinity=False),
-        y=st.floats(min_value=-100.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        x=st.floats(
+            min_value=-100.0, max_value=100.0, allow_nan=False, allow_infinity=False
+        ),
+        y=st.floats(
+            min_value=-100.0, max_value=100.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_euclidean_distance_properties(self, x, y):
         """Property: Euclidean distance properties."""
@@ -243,7 +288,12 @@ class TestMathematicalProperties:
 
     @given(
         values=st.lists(
-            st.floats(min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-1000.0,
+                max_value=1000.0,
+                allow_nan=False,
+                allow_infinity=False,
+            ),
             min_size=1,
             max_size=100,
         )
@@ -257,8 +307,12 @@ class TestMathematicalProperties:
         assert min_val <= mean <= max_val
 
     @given(
-        base=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
-        exponent=st.floats(min_value=-5.0, max_value=5.0, allow_nan=False, allow_infinity=False),
+        base=st.floats(
+            min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False
+        ),
+        exponent=st.floats(
+            min_value=-5.0, max_value=5.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_exponential_properties(self, base, exponent):
         """Property: Exponential function properties."""
@@ -275,7 +329,9 @@ class TestMathematicalProperties:
         temperature=st.floats(
             min_value=0.01, max_value=100.0, allow_nan=False, allow_infinity=False
         ),
-        energy=st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        energy=st.floats(
+            min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False
+        ),
     )
     def test_boltzmann_probability_properties(self, temperature, energy):
         """Property: Boltzmann probability e^(-E/T) is valid."""
@@ -298,7 +354,9 @@ class TestStateMachineProperties:
     @given(
         states=st.lists(
             st.text(
-                min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=("Lu", "Ll"))
+                min_size=1,
+                max_size=20,
+                alphabet=st.characters(whitelist_categories=("Lu", "Ll")),
             ),
             min_size=2,
             max_size=10,
@@ -314,10 +372,16 @@ class TestStateMachineProperties:
         for from_state, to_state in transitions:
             assert from_state != to_state
 
-    @given(coherence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False))
+    @given(
+        coherence=st.floats(
+            min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+        )
+    )
     def test_decision_state_coherence_preserved(self, coherence):
         """Property: Decision state preserves coherence value."""
-        state = DecisionState(current_position="A", goal_position="B", coherence=coherence)
+        state = DecisionState(
+            current_position="A", goal_position="B", coherence=coherence
+        )
 
         assert state.coherence == coherence
         assert 0.0 <= state.coherence <= 1.0
@@ -326,7 +390,11 @@ class TestStateMachineProperties:
 class TestDataStructureInvariants:
     """Property-based tests for data structure invariants."""
 
-    @given(items=st.lists(st.integers(min_value=-1000, max_value=1000), min_size=0, max_size=100))
+    @given(
+        items=st.lists(
+            st.integers(min_value=-1000, max_value=1000), min_size=0, max_size=100
+        )
+    )
     def test_list_operations_preserve_elements(self, items):
         """Property: List operations preserve elements."""
         original_set = set(items)
@@ -341,7 +409,9 @@ class TestDataStructureInvariants:
     @given(
         dictionary=st.dictionaries(
             keys=st.text(
-                min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=("Lu", "Ll"))
+                min_size=1,
+                max_size=20,
+                alphabet=st.characters(whitelist_categories=("Lu", "Ll")),
             ),
             values=st.integers(min_value=-1000, max_value=1000),
             min_size=0,
@@ -358,7 +428,10 @@ class TestDataStructureInvariants:
 
     @given(
         elements=st.lists(
-            st.integers(min_value=0, max_value=100), min_size=0, max_size=50, unique=True
+            st.integers(min_value=0, max_value=100),
+            min_size=0,
+            max_size=50,
+            unique=True,
         )
     )
     def test_set_properties(self, elements):
@@ -378,7 +451,10 @@ class TestDataStructureInvariants:
 class TestCombinatorialProperties:
     """Property-based tests for combinatorial properties."""
 
-    @given(n=st.integers(min_value=0, max_value=10), k=st.integers(min_value=0, max_value=10))
+    @given(
+        n=st.integers(min_value=0, max_value=10),
+        k=st.integers(min_value=0, max_value=10),
+    )
     def test_combinations_formula(self, n, k):
         """Property: C(n,k) = C(n, n-k)."""
         assume(k <= n)  # Only valid when k <= n
@@ -394,7 +470,11 @@ class TestCombinatorialProperties:
 
         assert comb_k == comb_n_minus_k
 
-    @given(sequence=st.lists(st.integers(min_value=0, max_value=10), min_size=1, max_size=20))
+    @given(
+        sequence=st.lists(
+            st.integers(min_value=0, max_value=10), min_size=1, max_size=20
+        )
+    )
     def test_permutation_length(self, sequence):
         """Property: Permutation has same length as original."""
         import random
@@ -424,10 +504,14 @@ class TestPropertyBasedSuite:
         """Test using composite data generation."""
         # Generate related data
         energy = data.draw(
-            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)
+            st.floats(
+                min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False
+            )
         )
         temperature = data.draw(
-            st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False)
+            st.floats(
+                min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False
+            )
         )
 
         # Helmholtz free energy: F = E - TS (where S is entropy)

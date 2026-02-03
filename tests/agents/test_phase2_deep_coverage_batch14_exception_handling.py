@@ -8,8 +8,8 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestExceptionHandling_PhysicsOrchestrator:
@@ -117,7 +117,7 @@ class TestExceptionHandling_MentalMapping:
 
     def test_connect_nonexistent_nodes(self):
         """Test connecting nodes that don't exist"""
-        from agents.mental_mapping import MentalMappingModel, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -156,7 +156,7 @@ class TestExceptionHandling_MentalMapping:
 
     def test_bfs_from_disconnected_component(self):
         """Test BFS from disconnected graph component"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -164,7 +164,9 @@ class TestExceptionHandling_MentalMapping:
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         node3 = model.create_node(NodeType.CONCEPT, {})
@@ -219,11 +221,13 @@ class TestExceptionHandling_SelfHealing:
 
     def test_detected_issue_minimal_fields(self):
         """Test DetectedIssue with minimal required fields"""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         # Minimal fields - should auto-generate missing ones
         issue = DetectedIssue(
-            issue_type=IssueType.SYNTAX_ERROR, severity=IssueSeverity.HIGH, description="Test issue"
+            issue_type=IssueType.SYNTAX_ERROR,
+            severity=IssueSeverity.HIGH,
+            description="Test issue",
         )
         assert issue.issue_id != ""
         assert issue.title != ""
@@ -259,7 +263,7 @@ class TestExceptionHandling_WorkflowNavigator:
 
         # Try to navigate without setting current workflow
         result = navigator.navigate_to(step_index=0)
-        assert result == False
+        assert not result
 
         current = navigator.current_step()
         assert current is None
@@ -278,10 +282,10 @@ class TestExceptionHandling_WorkflowNavigator:
 
             # Navigate to invalid index
             result = navigator.navigate_to(step_index=999)
-            assert result == False
+            assert not result
 
             result = navigator.navigate_to(step_index=-1)
-            assert result == False
+            assert not result
         else:
             # Use existing workflows
             workflows = navigator.list_workflows()

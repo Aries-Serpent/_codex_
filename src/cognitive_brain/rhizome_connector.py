@@ -90,7 +90,9 @@ class RhizomaticConnection:
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.strength <= 1.0:
-            raise ValueError(f"Connection strength must be between 0.0 and 1.0, got {self.strength}")
+            raise ValueError(
+                f"Connection strength must be between 0.0 and 1.0, got {self.strength}"
+            )
 
     def record_use(self) -> None:
         """Record that this connection was used."""

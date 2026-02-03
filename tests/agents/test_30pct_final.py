@@ -160,7 +160,7 @@ class TestSelfHealingSimpleMethods:
 
     def test_detected_issue_severity_check(self):
         """Test issue severity comparison."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue1 = DetectedIssue(
             issue_id="test1",
@@ -223,7 +223,9 @@ class TestPhysicsIntegrationSimpleMethods:
         orch = HybridPhysicsOrchestrator()
 
         try:
-            decision = orch.make_decision(context="test context", options=["option1", "option2"])
+            decision = orch.make_decision(
+                context="test context", options=["option1", "option2"]
+            )
 
             assert decision is not None
         except (TypeError, AttributeError):

@@ -1,4 +1,5 @@
 """Security-focused tests for scripts/zendesk_docs_fetch.py URL validation."""
+
 from __future__ import annotations
 
 import sys

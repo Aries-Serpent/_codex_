@@ -12,8 +12,8 @@ Systematically applies memory and cognitive patterns:
 Target: +4-5% coverage gain (52% → 57%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_AgentMemory:
@@ -317,7 +317,7 @@ class TestPhase2_KnowledgeRepresentation:
             "dog": {"parent": "mammal", "loyal": True},
         }
         # Dog inherits breathes from animal
-        assert hierarchy["animal"]["breathes"] == True
+        assert hierarchy["animal"]["breathes"]
 
 
 class TestPhase2_CognitiveArchitecture:
@@ -397,7 +397,7 @@ class TestPhase2_ConceptFormation:
         """Test analogy: A:B :: C:D"""
         # Hot:Cold :: Wet:Dry
         relation = {"opposite": True}
-        assert relation["opposite"] == True
+        assert relation["opposite"]
 
     def test_schema_activation(self):
         """Test schema activation"""

@@ -12,7 +12,6 @@ Goal: Maximize coverage/time ratio to quickly reach 30%
 
 import pytest
 
-
 # ============================================================================
 # CODEX_CLIENT MODULES (0% coverage - 149 statements)
 # Quick win: Import-only tests following Table 2, Equation #1
@@ -217,7 +216,9 @@ class TestMentalMappingCorrected:
         """Test ReasoningStep can be created."""
         from agents.mental_mapping import ReasoningStep
 
-        step = ReasoningStep(step_id="step1", description="Test step", inputs=[], outputs=[])
+        step = ReasoningStep(
+            step_id="step1", description="Test step", inputs=[], outputs=[]
+        )
 
         assert step.step_id == "step1"
         assert step.description == "Test step"
@@ -250,7 +251,8 @@ class TestQuantumGameTheoryCorrected:
 
         try:
             simulator = BlueRedTeamSimulator(
-                blue_strategies=["defend", "monitor"], red_strategies=["probe", "exploit"]
+                blue_strategies=["defend", "monitor"],
+                red_strategies=["probe", "exploit"],
             )
 
             assert simulator is not None

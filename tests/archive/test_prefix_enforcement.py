@@ -33,7 +33,9 @@ def test_prefix_validator_reports_violation():
     env = os.environ.copy()
     env["BUNDLE_PREFIX_MODE"] = "1"
     subprocess.run(
-        [sys.executable, "scripts/archive/validate_prefixes.py", "--warn-only"], check=True, env=env
+        [sys.executable, "scripts/archive/validate_prefixes.py", "--warn-only"],
+        check=True,
+        env=env,
     )
     assert REPORT.exists()
     data = json.loads(REPORT.read_text())

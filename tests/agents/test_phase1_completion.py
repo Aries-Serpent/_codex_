@@ -13,7 +13,10 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_assess_situation(self):
         """Test assess_situation method."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="start", goal_position="end")
@@ -25,7 +28,10 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_act_with_none_path(self):
         """Test act method when no optimal path provided."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState(current_position="start", goal_position="end")
@@ -38,10 +44,10 @@ class TestPhysicsOrchestratorUncoveredMethods:
     def test_act_with_valid_path(self):
         """Test act method with a valid action path."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orchestrator = PhysicsInspiredOrchestrator()
@@ -67,7 +73,11 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_optimize_paths(self):
         """Test optimize method with multiple paths."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath, ActionType
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
 
@@ -122,7 +132,8 @@ class TestQuantumGameTheoryEngines:
 
         try:
             engine = QuantumInspiredGameEngine(
-                blue_strategies=["defend", "monitor"], red_strategies=["probe", "exploit"]
+                blue_strategies=["defend", "monitor"],
+                red_strategies=["probe", "exploit"],
             )
 
             assert engine is not None
@@ -185,7 +196,9 @@ class TestAdvancedPhysicsAdvancedPatterns:
 
         # Should be able to iterate
         (
-            attractor.state.copy() if hasattr(attractor.state, "copy") else attractor.state
+            attractor.state.copy()
+            if hasattr(attractor.state, "copy")
+            else attractor.state
         )
         attractor.iterate(steps=5)
 
@@ -225,7 +238,9 @@ class TestMentalMappingGraphOperations:
         try:
             # Add a node first
             node = MentalNode(
-                node_id="test1", node_type=NodeType.HYPOTHESIS, content="Test hypothesis"
+                node_id="test1",
+                node_type=NodeType.HYPOTHESIS,
+                content="Test hypothesis",
             )
             model.add_node(node)
 
@@ -240,7 +255,7 @@ class TestMentalMappingGraphOperations:
 
     def test_model_add_edge(self):
         """Test adding an edge to the model."""
-        from agents.mental_mapping import MentalMappingModel, MentalEdge, EdgeType
+        from agents.mental_mapping import EdgeType, MentalEdge, MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -285,7 +300,11 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
     def test_unregister_workflow(self):
         """Test unregistering a workflow."""
-        from agents.workflow_navigator import WorkflowNavigator, Workflow, WorkflowFrequency
+        from agents.workflow_navigator import (
+            Workflow,
+            WorkflowFrequency,
+            WorkflowNavigator,
+        )
 
         nav = WorkflowNavigator()
 

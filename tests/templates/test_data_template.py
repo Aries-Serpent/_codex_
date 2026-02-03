@@ -54,22 +54,19 @@ def sample_data_dir(tmp_path: Path) -> Path:
     """Create a sample data directory with multiple files."""
     data_dir = tmp_path / "data"
     data_dir.mkdir()
-    
+
     # Create multiple data files
     (data_dir / "train.jsonl").write_text('{"text": "train"}\n')
     (data_dir / "valid.jsonl").write_text('{"text": "valid"}\n')
     (data_dir / "test.jsonl").write_text('{"text": "test"}\n')
-    
+
     return data_dir
 
 
 @pytest.fixture
 def sample_dataset() -> list[dict[str, Any]]:
     """Create a sample in-memory dataset."""
-    return [
-        {"id": i, "text": f"Sample text {i}", "score": i * 0.1}
-        for i in range(100)
-    ]
+    return [{"id": i, "text": f"Sample text {i}", "score": i * 0.1} for i in range(100)]
 
 
 # =============================================================================
@@ -119,9 +116,7 @@ class TestDataLoader:
     def test_loads_large_file_efficiently(self, tmp_path: Path) -> None:
         """Test efficient loading of large files."""
         large_file = tmp_path / "large.jsonl"
-        large_file.write_text("\n".join(
-            json.dumps({"id": i}) for i in range(10000)
-        ))
+        large_file.write_text("\n".join(json.dumps({"id": i}) for i in range(10000)))
         # import time
         # start = time.time()
         # records = loader.load_jsonl(large_file)
@@ -208,10 +203,7 @@ class TestDataSplit:
 
     def test_stratified_split(self) -> None:
         """Test stratified splitting by label."""
-        [
-            {"id": i, "label": "A" if i < 50 else "B"}
-            for i in range(100)
-        ]
+        [{"id": i, "label": "A" if i < 50 else "B"} for i in range(100)]
         # train, test = split.stratified_split(labeled_data, test_size=0.2)
         # train_a = sum(1 for r in train if r["label"] == "A")
         # train_b = sum(1 for r in train if r["label"] == "B")

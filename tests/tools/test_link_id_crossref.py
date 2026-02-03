@@ -17,7 +17,10 @@ def test_crossref_ok(tmp_path):
             "findings": [
                 {
                     "id": "FIND-001",
-                    "links": {"capability_ids": ["CAP-001"], "patch_ids": ["PATCH-001"]},
+                    "links": {
+                        "capability_ids": ["CAP-001"],
+                        "patch_ids": ["PATCH-001"],
+                    },
                 }
             ],
             "repro": {"registry": [{"id": "REPRO-001"}]},

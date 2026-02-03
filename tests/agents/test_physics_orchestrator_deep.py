@@ -9,7 +9,6 @@ Focus: SwarmIntelligence, TaskDecomposer, ReflectionLoop, QuantumState,
 
 import pytest
 
-
 # ============================================================================
 # SWARM INTELLIGENCE TESTS
 # ============================================================================
@@ -108,7 +107,10 @@ class TestSwarmParticle:
 
         assert particle.position == (1.0, 2.0)
         assert particle.velocity == (0.1, 0.2)
-        assert particle.personal_best_position == (1.0, 2.0)  # Auto-set in __post_init__
+        assert particle.personal_best_position == (
+            1.0,
+            2.0,
+        )  # Auto-set in __post_init__
 
     def test_swarm_particle_with_best(self):
         """Test SwarmParticle with explicit personal best."""
@@ -144,19 +146,23 @@ class TestTaskDecomposer:
 
     def test_decompose_task(self):
         """Test decomposing a task into subtasks."""
-        from agents.physics_orchestrator import TaskDecomposer, ActionPath, ActionType
+        from agents.physics_orchestrator import ActionPath, ActionType, TaskDecomposer
 
         decomposer = TaskDecomposer()
 
-        task = ActionPath(action_type=ActionType.TEST, description="Run full test suite")
+        task = ActionPath(
+            action_type=ActionType.TEST, description="Run full test suite"
+        )
 
-        subtasks = decomposer.decompose_task(task, decomposition_strategy="energy_balanced")
+        subtasks = decomposer.decompose_task(
+            task, decomposition_strategy="energy_balanced"
+        )
 
         assert isinstance(subtasks, list)
 
     def test_build_dependency_graph(self):
         """Test building dependency graph for subtasks."""
-        from agents.physics_orchestrator import TaskDecomposer, SubTask
+        from agents.physics_orchestrator import SubTask, TaskDecomposer
 
         decomposer = TaskDecomposer()
 
@@ -372,7 +378,10 @@ class TestQuantumState:
 
             # Create a state in superposition of two basis states
             state = QuantumState(
-                amplitudes={"state_a": complex(0.707, 0.0), "state_b": complex(0.707, 0.0)}
+                amplitudes={
+                    "state_a": complex(0.707, 0.0),
+                    "state_b": complex(0.707, 0.0),
+                }
             )
 
             # Check both states have non-zero probability
@@ -387,7 +396,9 @@ class TestQuantumState:
         try:
             from agents.physics_orchestrator import QuantumState
 
-            state = QuantumState(amplitudes={"up": complex(0.7, 0.0), "down": complex(0.7, 0.0)})
+            state = QuantumState(
+                amplitudes={"up": complex(0.7, 0.0), "down": complex(0.7, 0.0)}
+            )
 
             measurement = state.collapse()
 
@@ -465,7 +476,11 @@ class TestPhysicsOrchestratorIntegration:
     def test_energy_landscape_with_swarm(self):
         """Test optimizing over energy landscape with swarm."""
         try:
-            from agents.physics_orchestrator import EnergyLandscape, SwarmIntelligence, EnergyState
+            from agents.physics_orchestrator import (
+                EnergyLandscape,
+                EnergyState,
+                SwarmIntelligence,
+            )
 
             landscape = EnergyLandscape(temperature=1.0)
             swarm = SwarmIntelligence(num_particles=5, dimensions=2)

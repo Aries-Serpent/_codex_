@@ -10,20 +10,20 @@ Tests all emerging physics paradigms:
 6. Relativistic Effects
 """
 
-import pytest
 import numpy as np
+import pytest
+
 from agents.advanced_physics_calculators import (
+    AdvancedPhysicsOrchestrator,
     ChaoticAttractor,
     ChaoticNeuralNetwork,
-    FractalAnalyzer,
+    EMFieldRouter,
     FluidChannel,
     FluidFlowScheduler,
-    EMFieldRouter,
-    WavePropagator,
+    FractalAnalyzer,
     RelativityScheduler,
-    AdvancedPhysicsOrchestrator,
+    WavePropagator,
 )
-
 
 # =============================================================================
 # CHAOS THEORY TESTS
@@ -305,7 +305,9 @@ class TestRelativityScheduler:
         scheduler = RelativityScheduler()
 
         scheduler.add_agent(
-            agent_id="agent1", position=np.array([0.0, 0.0]), velocity=np.array([10.0, 0.0])
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0]),
         )
 
         assert "agent1" in scheduler.agents

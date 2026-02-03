@@ -22,7 +22,6 @@ from analysis.intuitive_aptitude import (
     intuitive_aptitude,
 )
 
-
 # =============================================================================
 # Test Dataclasses
 # =============================================================================
@@ -626,10 +625,10 @@ Returns:
 
 def google_style():
     """Function with Google-style docstring.
-    
+
     Args:
         None
-        
+
     Returns:
         None
     """
@@ -637,7 +636,7 @@ def google_style():
 
 def sphinx_style():
     """Function with Sphinx-style docstring.
-    
+
     :param x: Parameter x
     :return: Result
     """
@@ -1164,11 +1163,11 @@ class DerivedClass(BaseClass):
 
     def extra_method(self, x: int, y: int = 10) -> int:
         """Add extra functionality.
-        
+
         Args:
             x: First parameter
             y: Second parameter with default
-            
+
         Returns:
             Sum of x and y
         """
@@ -1177,10 +1176,10 @@ class DerivedClass(BaseClass):
 
 def helper(items: List[int]) -> Dict[str, int]:
     """Helper function.
-    
+
     Args:
         items: List of integers
-        
+
     Returns:
         Dictionary with statistics
     """
@@ -1200,10 +1199,10 @@ def main():
     """Main entry point."""
     items = [1, 2, 3, 4, 5]
     stats = helper(items)
-    
+
     for key, value in stats.items():
         print(f"{key}: {value}")
-    
+
     obj = DerivedClass(100)
     result = obj.method()
     print(f"Result: {result}")
@@ -1236,7 +1235,7 @@ if __name__ == "__main__":
 
     def test_analyze_and_suggest_comprehensive(self):
         """Test comprehensive analysis with suggestions."""
-        code = '''
+        code = """
 def poorly_formatted_function(x,y,z):
     # Missing docstring
     if x>0:
@@ -1249,7 +1248,7 @@ class badClassName:
     # Bad naming, no docstring
     def BadMethod(self):
         pass
-'''
+"""
         result = analyze_and_suggest(code)
         assert result["success"] is True
         # Should have suggestions for various issues

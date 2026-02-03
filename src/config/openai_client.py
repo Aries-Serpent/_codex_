@@ -37,26 +37,54 @@ class ModelConfig:
 AVAILABLE_MODELS: dict[str, ModelConfig] = {
     # Reasoning models (o-series)
     "o1-preview": ModelConfig(
-        128000, reasoning=True, cost_tier="high", input_cost_per_1k=0.015, output_cost_per_1k=0.06
+        128000,
+        reasoning=True,
+        cost_tier="high",
+        input_cost_per_1k=0.015,
+        output_cost_per_1k=0.06,
     ),
     "o1-mini": ModelConfig(
-        128000, reasoning=True, cost_tier="medium", input_cost_per_1k=0.003, output_cost_per_1k=0.012
+        128000,
+        reasoning=True,
+        cost_tier="medium",
+        input_cost_per_1k=0.003,
+        output_cost_per_1k=0.012,
     ),
     "o3-mini": ModelConfig(
-        128000, reasoning=True, cost_tier="medium", input_cost_per_1k=0.003, output_cost_per_1k=0.012
+        128000,
+        reasoning=True,
+        cost_tier="medium",
+        input_cost_per_1k=0.003,
+        output_cost_per_1k=0.012,
     ),
     # GPT-4 Turbo models
-    "gpt-4-turbo": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03),
-    "gpt-4-turbo-preview": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03),
+    "gpt-4-turbo": ModelConfig(
+        128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03
+    ),
+    "gpt-4-turbo-preview": ModelConfig(
+        128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03
+    ),
     # GPT-4 models
-    "gpt-4": ModelConfig(8192, cost_tier="high", input_cost_per_1k=0.03, output_cost_per_1k=0.06),
-    "gpt-4-32k": ModelConfig(32768, cost_tier="very-high", input_cost_per_1k=0.06, output_cost_per_1k=0.12),
+    "gpt-4": ModelConfig(
+        8192, cost_tier="high", input_cost_per_1k=0.03, output_cost_per_1k=0.06
+    ),
+    "gpt-4-32k": ModelConfig(
+        32768, cost_tier="very-high", input_cost_per_1k=0.06, output_cost_per_1k=0.12
+    ),
     # GPT-4o models
-    "gpt-4o": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.005, output_cost_per_1k=0.015),
-    "gpt-4o-mini": ModelConfig(128000, cost_tier="low", input_cost_per_1k=0.00015, output_cost_per_1k=0.0006),
+    "gpt-4o": ModelConfig(
+        128000, cost_tier="medium", input_cost_per_1k=0.005, output_cost_per_1k=0.015
+    ),
+    "gpt-4o-mini": ModelConfig(
+        128000, cost_tier="low", input_cost_per_1k=0.00015, output_cost_per_1k=0.0006
+    ),
     # GPT-3.5 models
-    "gpt-3.5-turbo": ModelConfig(16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015),
-    "gpt-3.5-turbo-16k": ModelConfig(16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015),
+    "gpt-3.5-turbo": ModelConfig(
+        16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015
+    ),
+    "gpt-3.5-turbo-16k": ModelConfig(
+        16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015
+    ),
 }
 
 
@@ -173,7 +201,11 @@ class CodexOpenAIClient:
             Selected model name
         """
         # Use preferred model if specified and valid (safeguard: validate input)
-        if preferred_model and isinstance(preferred_model, str) and preferred_model in self.models:
+        if (
+            preferred_model
+            and isinstance(preferred_model, str)
+            and preferred_model in self.models
+        ):
             return preferred_model
 
         cost_order = ["low", "medium", "high", "very-high"]
@@ -215,8 +247,8 @@ Your capabilities:
 - Multi-agent coordination and task decomposition
 
 Current context:
-- Repository: {os.getenv('REPO_CONTEXT', '_codex_')}
-- Organization: {os.getenv('ORG_CONTEXT', 'Aries-Serpent')}
+- Repository: {os.getenv("REPO_CONTEXT", "_codex_")}
+- Organization: {os.getenv("ORG_CONTEXT", "Aries-Serpent")}
 - Task Type: {task_type}
 
 Physics-optimized principles:
@@ -283,7 +315,8 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             "total_tokens": sum(e.tokens_used for e in self.audit_log),
             "total_cost": sum(e.estimated_cost for e in self.audit_log),
             "models_used": list(set(e.model for e in self.audit_log)),
-            "avg_duration_ms": sum(e.duration_ms for e in self.audit_log) // len(self.audit_log),
+            "avg_duration_ms": sum(e.duration_ms for e in self.audit_log)
+            // len(self.audit_log),
         }
 
 

@@ -11,6 +11,7 @@ Usage:
     python run.py --pr <pr_number>
     python run.py --all
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,6 +31,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 class Severity(Enum):
     """Issue severity levels."""
+
     CRITICAL = "CRITICAL"
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
@@ -39,6 +41,7 @@ class Severity(Enum):
 
 class VulnerabilityType(Enum):
     """Types of security vulnerabilities."""
+
     COMMAND_INJECTION = "command_injection"
     PATH_TRAVERSAL = "path_traversal"
     SQL_INJECTION = "sql_injection"
@@ -51,6 +54,7 @@ class VulnerabilityType(Enum):
 @dataclass
 class SecurityIssue:
     """Represents a detected security issue."""
+
     file_path: str
     line_number: int
     severity: Severity
@@ -67,57 +71,67 @@ class ValidationPatterns:
     """Security validation patterns."""
 
     # Command injection patterns
-    command_injection: dict[str, str] = field(default_factory=lambda: {
-        "shell_metacharacters": r'[`$|&;<>()\\]',
-        "command_substitution": r'\$\([^)]*\)',
-        "backtick_substitution": r'`[^`]*`',
-        "pipe_operator": r'\s*\|\s*',
-        "redirection": r'[<>]{1,2}',
-        "background": r'\s*&\s*$',
-        "semicolon_chain": r';\s*\w+',
-    })
+    command_injection: dict[str, str] = field(
+        default_factory=lambda: {
+            "shell_metacharacters": r"[`$|&;<>()\\]",
+            "command_substitution": r"\$\([^)]*\)",
+            "backtick_substitution": r"`[^`]*`",
+            "pipe_operator": r"\s*\|\s*",
+            "redirection": r"[<>]{1,2}",
+            "background": r"\s*&\s*$",
+            "semicolon_chain": r";\s*\w+",
+        }
+    )
 
     # Path traversal patterns
-    path_traversal: dict[str, str] = field(default_factory=lambda: {
-        "dot_dot_slash": r'\.\.[/\\]',
-        "encoded_traversal": r'%2e%2e[/\\]',
-        "double_encoded": r'%252e%252e',
-        "unicode_traversal": r'[\u002e][\u002e]',
-    })
+    path_traversal: dict[str, str] = field(
+        default_factory=lambda: {
+            "dot_dot_slash": r"\.\.[/\\]",
+            "encoded_traversal": r"%2e%2e[/\\]",
+            "double_encoded": r"%252e%252e",
+            "unicode_traversal": r"[\u002e][\u002e]",
+        }
+    )
 
     # SQL injection patterns
-    sql_injection: dict[str, str] = field(default_factory=lambda: {
-        "union_select": r'\bunion\b.*\bselect\b',
-        "comment_out": r'(--|#|/\*)',
-        "or_true": r'\bor\b\s+[\d\w]+\s*=\s*[\d\w]+',
-        "string_concat": r'\+\s*["\']',
-        "stacked_queries": r';\s*\b(select|insert|update|delete|drop)\b',
-    })
+    sql_injection: dict[str, str] = field(
+        default_factory=lambda: {
+            "union_select": r"\bunion\b.*\bselect\b",
+            "comment_out": r"(--|#|/\*)",
+            "or_true": r"\bor\b\s+[\d\w]+\s*=\s*[\d\w]+",
+            "string_concat": r'\+\s*["\']',
+            "stacked_queries": r";\s*\b(select|insert|update|delete|drop)\b",
+        }
+    )
 
     # XSS patterns
-    xss: dict[str, str] = field(default_factory=lambda: {
-        "script_tag": r'<script[^>]*>',
-        "event_handler": r'on\w+\s*=',
-        "javascript_protocol": r'javascript:',
-        "data_protocol": r'data:text/html',
-    })
+    xss: dict[str, str] = field(
+        default_factory=lambda: {
+            "script_tag": r"<script[^>]*>",
+            "event_handler": r"on\w+\s*=",
+            "javascript_protocol": r"javascript:",
+            "data_protocol": r"data:text/html",
+        }
+    )
 
     # Unsafe function patterns (Python)
-    unsafe_functions: list[str] = field(default_factory=lambda: [
-        "subprocess.run",
-        "subprocess.Popen",
-        "subprocess.call",
-        "subprocess.check_output",
-        "os.system",
-        "eval",
-        "exec",
-        "compile",
-        "__import__",
-        "open",
-        "urllib.request.urlopen",
-        "pickle.loads",
-        "yaml.load",  # Should use safe_load
-    ])
+    unsafe_functions: list[str] = field(
+        default_factory=lambda: [
+            "subprocess.run",
+            "subprocess.Popen",
+            "subprocess.call",
+            "subprocess.check_output",
+            "os.system",
+            "eval",
+            "exec",
+            "compile",
+            "__import__",
+            "open",
+            "urllib.request.urlopen",
+            "pickle.loads",
+            "yaml.load",  # Should use safe_load
+        ]
+    )
 
 
 class SecurityInputValidator:
@@ -337,42 +351,55 @@ class SecurityInputValidator:
 
             # Skip comments, docstrings, and imports
             stripped = line.strip()
-            if (stripped.startswith("#") or in_docstring or
-                stripped.startswith("import ") or stripped.startswith("from ") or
-                not stripped or "getLogger" in stripped):
+            if (
+                stripped.startswith("#")
+                or in_docstring
+                or stripped.startswith("import ")
+                or stripped.startswith("from ")
+                or not stripped
+                or "getLogger" in stripped
+            ):
                 continue
 
             # Check command injection patterns
             for pattern_name, pattern in self.patterns.command_injection.items():
                 if re.search(pattern, line):
                     # Skip backticks in code comments or variable names like `codex_ml`
-                    if pattern_name == "backtick_substitution" and "`" in line and "subprocess" not in line.lower():
+                    if (
+                        pattern_name == "backtick_substitution"
+                        and "`" in line
+                        and "subprocess" not in line.lower()
+                    ):
                         continue
 
-                    issues.append(SecurityIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        severity=Severity.HIGH,
-                        category=VulnerabilityType.COMMAND_INJECTION,
-                        message=f"Potential command injection: {pattern_name}",
-                        context=line.strip(),
-                        suggestion="Validate and sanitize user input. Use allowlist-based validation.",
-                        cwe_id="CWE-78",
-                    ))
+                    issues.append(
+                        SecurityIssue(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            severity=Severity.HIGH,
+                            category=VulnerabilityType.COMMAND_INJECTION,
+                            message=f"Potential command injection: {pattern_name}",
+                            context=line.strip(),
+                            suggestion="Validate and sanitize user input. Use allowlist-based validation.",
+                            cwe_id="CWE-78",
+                        )
+                    )
 
             # Check path traversal patterns
             for pattern_name, pattern in self.patterns.path_traversal.items():
                 if re.search(pattern, line):
-                    issues.append(SecurityIssue(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        severity=Severity.HIGH,
-                        category=VulnerabilityType.PATH_TRAVERSAL,
-                        message=f"Potential path traversal: {pattern_name}",
-                        context=line.strip(),
-                        suggestion="Use Path.resolve() and validate paths are within expected directory.",
-                        cwe_id="CWE-22",
-                    ))
+                    issues.append(
+                        SecurityIssue(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            severity=Severity.HIGH,
+                            category=VulnerabilityType.PATH_TRAVERSAL,
+                            message=f"Potential path traversal: {pattern_name}",
+                            context=line.strip(),
+                            suggestion="Use Path.resolve() and validate paths are within expected directory.",
+                            cwe_id="CWE-22",
+                        )
+                    )
 
         return issues
 
@@ -447,7 +474,9 @@ def test_safe_deserialization():
             "total_issues": len(self.issues),
             "by_severity": issues_by_severity,
             "by_category": self._group_by_category(),
-            "critical_count": len([i for i in self.issues if i.severity == Severity.CRITICAL]),
+            "critical_count": len(
+                [i for i in self.issues if i.severity == Severity.CRITICAL]
+            ),
             "high_count": len([i for i in self.issues if i.severity == Severity.HIGH]),
         }
 
@@ -466,7 +495,9 @@ def main() -> int:
     parser.add_argument("--files", nargs="+", help="Files to validate")
     parser.add_argument("--all", action="store_true", help="Validate all Python files")
     parser.add_argument("--output", choices=["text", "json"], default="text")
-    parser.add_argument("--severity", choices=["CRITICAL", "HIGH", "MEDIUM", "LOW"], default="MEDIUM")
+    parser.add_argument(
+        "--severity", choices=["CRITICAL", "HIGH", "MEDIUM", "LOW"], default="MEDIUM"
+    )
     args = parser.parse_args()
 
     validator = SecurityInputValidator()
@@ -476,8 +507,11 @@ def main() -> int:
         files = list(ROOT.glob("**/*.py"))
         # Exclude common directories
         files = [
-            f for f in files
-            if not any(part in f.parts for part in [".venv", "venv", "node_modules", ".git"])
+            f
+            for f in files
+            if not any(
+                part in f.parts for part in [".venv", "venv", "node_modules", ".git"]
+            )
         ]
     elif args.files:
         files = [Path(f) for f in args.files]
@@ -498,22 +532,22 @@ def main() -> int:
         print(json.dumps(report, indent=2))
     else:
         # Text output
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("Security Input Validator - Scan Results")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
         print(f"Total Issues: {report['total_issues']}")
         print(f"Critical: {report['critical_count']}")
         print(f"High: {report['high_count']}")
         print("\nBy Category:")
-        for cat, count in report['by_category'].items():
+        for cat, count in report["by_category"].items():
             print(f"  {cat}: {count}")
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("Issues by Severity")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
-            issues = report['by_severity'].get(severity, [])
+            issues = report["by_severity"].get(severity, [])
             if issues:
                 print(f"\n{severity}:")
                 for issue in issues:
@@ -524,7 +558,7 @@ def main() -> int:
                     print()
 
     # Return non-zero if critical or high severity issues found
-    if report['critical_count'] > 0 or report['high_count'] > 0:
+    if report["critical_count"] > 0 or report["high_count"] > 0:
         return 1
 
     return 0

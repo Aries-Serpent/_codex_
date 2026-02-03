@@ -8,8 +8,8 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestMethodVariations_PhysicsOrchestrator:
@@ -17,7 +17,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
     def test_evolve_state_all_dt_values(self):
         """Test evolve_state with various dt values"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
+        from agents.physics_orchestrator import EnergyState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
@@ -100,7 +100,12 @@ class TestMethodVariations_MentalMapping:
 
         model = MentalMappingModel()
 
-        node_types = [NodeType.PROBLEM, NodeType.CONCEPT, NodeType.SOLUTION, NodeType.ENTITY]
+        node_types = [
+            NodeType.PROBLEM,
+            NodeType.CONCEPT,
+            NodeType.SOLUTION,
+            NodeType.ENTITY,
+        ]
 
         for node_type in node_types:
             node = model.create_node(node_type, {})
@@ -108,7 +113,7 @@ class TestMethodVariations_MentalMapping:
 
     def test_connect_nodes_all_edge_types(self):
         """Test connect_nodes with all EdgeType values"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -127,7 +132,7 @@ class TestMethodVariations_MentalMapping:
 
     def test_graph_traversal_all_starting_points(self):
         """Test graph traversal from various starting points"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -210,7 +215,7 @@ class TestMethodVariations_WorkflowNavigator:
 
         for i in range(10):
             result = navigator.navigate_to(step_index=i)
-            assert result == True
+            assert result
             assert navigator.current_step_index == i
 
 
@@ -219,7 +224,7 @@ class TestMethodVariations_SelfHealing:
 
     def test_all_issue_severities(self):
         """Test DetectedIssue with all severity levels"""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         severities = [
             IssueSeverity.LOW,
@@ -236,7 +241,7 @@ class TestMethodVariations_SelfHealing:
 
     def test_all_issue_types(self):
         """Test DetectedIssue with all issue types"""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue_types = [IssueType.SYNTAX_ERROR]  # Add more as they exist
 
@@ -254,7 +259,14 @@ class TestMethodVariations_AdvancedCalculators:
         """Test FluidChannel with various dimensions"""
         from agents.advanced_physics_calculators import FluidChannel
 
-        dimensions = [(0.1, 1.0), (0.5, 5.0), (1.0, 10.0), (2.0, 20.0), (5.0, 50.0), (10.0, 100.0)]
+        dimensions = [
+            (0.1, 1.0),
+            (0.5, 5.0),
+            (1.0, 10.0),
+            (2.0, 20.0),
+            (5.0, 50.0),
+            (10.0, 100.0),
+        ]
 
         for cross_section, length in dimensions:
             channel = FluidChannel("test", cross_section, length)
@@ -349,7 +361,7 @@ class TestOptionalParameters_AllMethods:
 
     def test_all_optional_parameters_physics(self):
         """Test PhysicsOrchestrator methods with optional parameters"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         state = DecisionState("a", "b")

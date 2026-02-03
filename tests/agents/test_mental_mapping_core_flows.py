@@ -12,13 +12,14 @@ Target coverage: 31.33% → 85%+
 """
 
 import pytest
+
 from agents.mental_mapping import (
+    EdgeType,
     MentalMappingModel,
     NodeType,
-    EdgeType,
     ReasoningStep,
-    set_clock,
     reset_clock,
+    set_clock,
 )
 
 
@@ -176,7 +177,9 @@ class TestMentalMappingCoreFlows:
         )
         assert edge_exists
 
-    def test_make_decision_low_confidence_marks_for_review(self, mental_map, problem_node):
+    def test_make_decision_low_confidence_marks_for_review(
+        self, mental_map, problem_node
+    ):
         """Test low confidence decisions are marked for review."""
         decision_node = mental_map.make_decision(
             decision_content="Uncertain choice between similar options",
@@ -190,7 +193,7 @@ class TestMentalMappingCoreFlows:
         assert decision_node.confidence < 0.6
 
         # Low confidence should trigger review flag
-        assert decision_node.needs_review == True
+        assert decision_node.needs_review
 
     # ========== RECORD OUTCOME TESTS ==========
 
@@ -311,7 +314,9 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should create learning node from failure
-        learning_nodes = [n for n in mental_map.nodes.values() if n.node_type == NodeType.LEARNING]
+        learning_nodes = [
+            n for n in mental_map.nodes.values() if n.node_type == NodeType.LEARNING
+        ]
         assert len(learning_nodes) > 0
 
     # ========== ITERATIVE REVIEW TESTS ==========
@@ -370,7 +375,9 @@ class TestMentalMappingCoreFlows:
     def test_create_node(self, mental_map):
         """Test node creation."""
         node = mental_map.create_node(
-            node_type=NodeType.CONCEPT, content="Important concept", metadata={"importance": "high"}
+            node_type=NodeType.CONCEPT,
+            content="Important concept",
+            metadata={"importance": "high"},
         )
 
         assert node is not None

@@ -75,7 +75,7 @@ class TestSelfHealingSmoke:
 
     def test_detected_issue_creation(self):
         """Test DetectedIssue can be created."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_id="test-001",
@@ -183,9 +183,9 @@ class TestExceptionsModule:
     def test_agent_error_hierarchy(self):
         """Test exception hierarchy."""
         from agents.exceptions import (
+            AgentConfigError,
             AgentError,
             AgentImportError,
-            AgentConfigError,
             AgentValidationError,
         )
 

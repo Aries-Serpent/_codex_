@@ -142,7 +142,9 @@ class ToolRegistry:
             if param_name in ("self", "cls"):
                 continue
 
-            param_info: dict[str, Any] = {"required": param.default is inspect.Parameter.empty}
+            param_info: dict[str, Any] = {
+                "required": param.default is inspect.Parameter.empty
+            }
 
             # Try to get type annotation
             if param.annotation is not inspect.Parameter.empty:
@@ -214,8 +216,7 @@ class ToolRegistry:
             # Execute the handler - only use wait_for for async handlers
             if asyncio.iscoroutinefunction(tool.handler):
                 result = await asyncio.wait_for(
-                    tool.handler(*args, **kwargs),
-                    timeout=tool.timeout_seconds
+                    tool.handler(*args, **kwargs), timeout=tool.timeout_seconds
                 )
             else:
                 # Sync handlers don't need timeout wrapper
@@ -264,17 +265,19 @@ class ToolRegistry:
         """Get OpenAI-compatible tool schemas."""
         schemas = []
         for tool in self.list_tools():
-            schemas.append({
-                "type": "function",
-                "function": {
-                    "name": tool.name,
-                    "description": tool.description,
-                    "parameters": {
-                        "type": "object",
-                        "properties": tool.parameters,
+            schemas.append(
+                {
+                    "type": "function",
+                    "function": {
+                        "name": tool.name,
+                        "description": tool.description,
+                        "parameters": {
+                            "type": "object",
+                            "properties": tool.parameters,
+                        },
                     },
-                },
-            })
+                }
+            )
         return schemas
 
 
@@ -296,6 +299,7 @@ def register_tool(
     **kwargs: Any,
 ) -> Callable:
     """Decorator to register a tool."""
+
     def decorator(fn: Callable) -> Callable:
         get_registry().register(name, fn, **kwargs)
         return fn
@@ -311,6 +315,7 @@ def register_tool(
 def main() -> None:
     """Test the tool registry."""
     import asyncio
+
     logging.basicConfig(level=logging.INFO)
 
     registry = ToolRegistry()

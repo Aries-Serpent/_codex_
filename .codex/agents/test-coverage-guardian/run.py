@@ -11,6 +11,7 @@ Usage:
     python run.py --security-critical-only
     python run.py --generate-tests
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,15 +31,17 @@ sys.path.insert(0, str(ROOT / "src"))
 
 class CriticalityLevel(Enum):
     """Code criticality levels."""
+
     SECURITY_CRITICAL = "security_critical"  # 100% coverage required
-    HIGH = "high"                             # 95% coverage required
-    MEDIUM = "medium"                         # 80% coverage required
-    LOW = "low"                               # No minimum
+    HIGH = "high"  # 95% coverage required
+    MEDIUM = "medium"  # 80% coverage required
+    LOW = "low"  # No minimum
 
 
 @dataclass
 class CoverageIssue:
     """Represents a test coverage issue."""
+
     file_path: str
     function_name: str
     line_number: int
@@ -60,26 +63,26 @@ class TestCoverageGuardian:
 
         # Security-critical function patterns
         self.critical_patterns = [
-            r'def\s+.*validate.*\(',
-            r'def\s+.*sanitize.*\(',
-            r'def\s+.*authenticate.*\(',
-            r'def\s+.*authorize.*\(',
-            r'def\s+.*encrypt.*\(',
-            r'def\s+.*decrypt.*\(',
-            r'def\s+.*hash.*\(',
-            r'def\s+.*sign.*\(',
-            r'def\s+.*verify.*\(',
-            r'def\s+.*check.*permission.*\(',
+            r"def\s+.*validate.*\(",
+            r"def\s+.*sanitize.*\(",
+            r"def\s+.*authenticate.*\(",
+            r"def\s+.*authorize.*\(",
+            r"def\s+.*encrypt.*\(",
+            r"def\s+.*decrypt.*\(",
+            r"def\s+.*hash.*\(",
+            r"def\s+.*sign.*\(",
+            r"def\s+.*verify.*\(",
+            r"def\s+.*check.*permission.*\(",
         ]
 
         # High-criticality patterns
         self.high_patterns = [
-            r'def\s+.*login.*\(',
-            r'def\s+.*logout.*\(',
-            r'def\s+.*password.*\(',
-            r'def\s+.*token.*\(',
-            r'def\s+.*session.*\(',
-            r'def\s+.*api.*key.*\(',
+            r"def\s+.*login.*\(",
+            r"def\s+.*logout.*\(",
+            r"def\s+.*password.*\(",
+            r"def\s+.*token.*\(",
+            r"def\s+.*session.*\(",
+            r"def\s+.*api.*key.*\(",
         ]
 
     def _default_config(self) -> dict[str, Any]:
@@ -150,22 +153,26 @@ class TestCoverageGuardian:
                 has_tests = self._has_tests(file_path, node.name)
 
                 if not has_tests:
-                    required_coverage = self.config["coverage_thresholds"][criticality.value]
+                    required_coverage = self.config["coverage_thresholds"][
+                        criticality.value
+                    ]
 
-                    issues.append(CoverageIssue(
-                        file_path=str(file_path),
-                        function_name=node.name,
-                        line_number=node.lineno,
-                        criticality=criticality,
-                        current_coverage=0.0,
-                        required_coverage=required_coverage,
-                        missing_lines=[],
-                        missing_branches=[],
-                        message=f"Missing tests for {criticality.value} function '{node.name}'",
-                        test_template=self._generate_test_template(
-                            node, file_path, content, criticality
-                        ),
-                    ))
+                    issues.append(
+                        CoverageIssue(
+                            file_path=str(file_path),
+                            function_name=node.name,
+                            line_number=node.lineno,
+                            criticality=criticality,
+                            current_coverage=0.0,
+                            required_coverage=required_coverage,
+                            missing_lines=[],
+                            missing_branches=[],
+                            message=f"Missing tests for {criticality.value} function '{node.name}'",
+                            test_template=self._generate_test_template(
+                                node, file_path, content, criticality
+                            ),
+                        )
+                    )
 
         return issues
 
@@ -182,8 +189,17 @@ class TestCoverageGuardian:
 
         # Check for security-related imports or calls in function body
         security_keywords = [
-            "password", "token", "secret", "key", "hash", "encrypt",
-            "decrypt", "authenticate", "authorize", "validate", "sanitize",
+            "password",
+            "token",
+            "secret",
+            "key",
+            "hash",
+            "encrypt",
+            "decrypt",
+            "authenticate",
+            "authorize",
+            "validate",
+            "sanitize",
         ]
 
         if any(keyword in func_name.lower() for keyword in security_keywords):
@@ -230,16 +246,26 @@ class TestCoverageGuardian:
                     # Check if test file contains test for this function
                     try:
                         test_content = test_path.read_text()
-                        if f"test_{function_name}" in test_content or function_name in test_content:
+                        if (
+                            f"test_{function_name}" in test_content
+                            or function_name in test_content
+                        ):
                             return True
                     except (OSError, UnicodeDecodeError) as e:
                         # Log warning but continue checking other test files
-                        print(f"Warning: Could not read test file {test_path}: {e}", file=sys.stderr)
+                        print(
+                            f"Warning: Could not read test file {test_path}: {e}",
+                            file=sys.stderr,
+                        )
 
         return False
 
     def _generate_test_template(
-        self, node: ast.FunctionDef, file_path: Path, content: str, criticality: CriticalityLevel
+        self,
+        node: ast.FunctionDef,
+        file_path: Path,
+        content: str,
+        criticality: CriticalityLevel,
     ) -> str:
         """Generate test template for a function."""
         func_name = node.name
@@ -256,11 +282,17 @@ class TestCoverageGuardian:
 
         # Generate test template based on criticality
         if criticality == CriticalityLevel.SECURITY_CRITICAL:
-            template = self._generate_security_test_template(func_name, args, module_path)
+            template = self._generate_security_test_template(
+                func_name, args, module_path
+            )
         elif criticality == CriticalityLevel.HIGH:
-            template = self._generate_high_priority_test_template(func_name, args, module_path)
+            template = self._generate_high_priority_test_template(
+                func_name, args, module_path
+            )
         else:
-            template = self._generate_standard_test_template(func_name, args, module_path)
+            template = self._generate_standard_test_template(
+                func_name, args, module_path
+            )
 
         return template
 
@@ -447,14 +479,16 @@ def test_{func_name}():
         return {
             "total_issues": len(self.issues),
             "by_criticality": issues_by_criticality,
-            "security_critical_count": len([
-                i for i in self.issues
-                if i.criticality == CriticalityLevel.SECURITY_CRITICAL
-            ]),
-            "high_priority_count": len([
-                i for i in self.issues
-                if i.criticality == CriticalityLevel.HIGH
-            ]),
+            "security_critical_count": len(
+                [
+                    i
+                    for i in self.issues
+                    if i.criticality == CriticalityLevel.SECURITY_CRITICAL
+                ]
+            ),
+            "high_priority_count": len(
+                [i for i in self.issues if i.criticality == CriticalityLevel.HIGH]
+            ),
         }
 
     def generate_test_files(self, output_dir: Path) -> list[Path]:
@@ -487,12 +521,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Test Coverage Guardian Agent")
     parser.add_argument("--files", nargs="+", help="Files to analyze")
     parser.add_argument("--all", action="store_true", help="Analyze all Python files")
-    parser.add_argument("--security-critical-only", action="store_true",
-                       help="Only report security-critical functions")
-    parser.add_argument("--generate-tests", action="store_true",
-                       help="Generate test templates")
-    parser.add_argument("--output-dir", default="tests/generated",
-                       help="Output directory for generated tests")
+    parser.add_argument(
+        "--security-critical-only",
+        action="store_true",
+        help="Only report security-critical functions",
+    )
+    parser.add_argument(
+        "--generate-tests", action="store_true", help="Generate test templates"
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="tests/generated",
+        help="Output directory for generated tests",
+    )
     parser.add_argument("--output", choices=["text", "json"], default="text")
     args = parser.parse_args()
 
@@ -512,7 +553,8 @@ def main() -> int:
             issues = guardian.analyze_file(file_path)
             if args.security_critical_only:
                 issues = [
-                    i for i in issues
+                    i
+                    for i in issues
                     if i.criticality == CriticalityLevel.SECURITY_CRITICAL
                 ]
             guardian.issues.extend(issues)
@@ -524,24 +566,26 @@ def main() -> int:
         print(json.dumps(report, indent=2))
     else:
         # Text output
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("Test Coverage Guardian - Analysis Results")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
         print(f"Total Issues: {report['total_issues']}")
         print(f"Security Critical: {report['security_critical_count']}")
         print(f"High Priority: {report['high_priority_count']}")
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("Issues by Criticality")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         for level in ["security_critical", "high", "medium"]:
-            issues = report['by_criticality'].get(level, [])
+            issues = report["by_criticality"].get(level, [])
             if issues:
                 print(f"\n{level.upper().replace('_', ' ')}:")
                 for issue in issues:
                     print(f"  {issue['file']}:{issue['line']} - {issue['function']}")
-                    print(f"    Coverage: {issue['current_coverage']:.1f}% / {issue['required_coverage']:.1f}%")
+                    print(
+                        f"    Coverage: {issue['current_coverage']:.1f}% / {issue['required_coverage']:.1f}%"
+                    )
                     print(f"    {issue['message']}")
                     print()
 
@@ -549,14 +593,14 @@ def main() -> int:
     if args.generate_tests:
         output_dir = Path(args.output_dir)
         generated = guardian.generate_test_files(output_dir)
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"Generated {len(generated)} test file(s) in {output_dir}")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
         for file_path in generated:
             print(f"  {file_path}")
 
     # Return non-zero if security-critical issues found
-    if report['security_critical_count'] > 0:
+    if report["security_critical_count"] > 0:
         return 1
 
     return 0

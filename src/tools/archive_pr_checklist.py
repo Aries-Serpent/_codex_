@@ -23,7 +23,9 @@ changing the helper.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse
@@ -121,9 +123,15 @@ def evaluate_archive_pr(
     root = Path(repo_root).resolve()
     staged = _normalise_paths(root, changed_files or _git_staged_files(root))
 
-    has_adr = any(path.startswith(ADR_PREFIX) and _path_exists(root, path) for path in staged)
-    has_changelog = any(path == CHANGELOG_PATH and _path_exists(root, path) for path in staged)
-    has_evidence = any(path == EVIDENCE_PATH and _path_exists(root, path) for path in staged)
+    has_adr = any(
+        path.startswith(ADR_PREFIX) and _path_exists(root, path) for path in staged
+    )
+    has_changelog = any(
+        path == CHANGELOG_PATH and _path_exists(root, path) for path in staged
+    )
+    has_evidence = any(
+        path == EVIDENCE_PATH and _path_exists(root, path) for path in staged
+    )
     has_provenance = any(
         _looks_like_provenance(path) and _path_exists(root, path) for path in staged
     )

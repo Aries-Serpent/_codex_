@@ -4,8 +4,8 @@ Test Codex Security Tools
 Test module for codex security tools.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import tools.codex_dep_pin_check as depcheck
 import tools.codex_secret_scan as secret_scan

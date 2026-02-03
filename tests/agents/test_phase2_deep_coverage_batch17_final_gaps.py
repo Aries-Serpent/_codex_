@@ -8,8 +8,8 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestUncoveredPaths_PhysicsOrchestrator:
@@ -28,7 +28,9 @@ class TestUncoveredPaths_PhysicsOrchestrator:
         ]
 
         for action_type in action_types:
-            path = ActionPath(action_type=action_type, description=f"test_{action_type.value}")
+            path = ActionPath(
+                action_type=action_type, description=f"test_{action_type.value}"
+            )
             assert path.action_type == action_type
 
     def test_force_vector_all_directions(self):
@@ -101,7 +103,12 @@ class TestUncoveredPaths_MentalMapping:
         model = MentalMappingModel()
 
         # Test each node type with various properties
-        node_types = [NodeType.PROBLEM, NodeType.CONCEPT, NodeType.SOLUTION, NodeType.ENTITY]
+        node_types = [
+            NodeType.PROBLEM,
+            NodeType.CONCEPT,
+            NodeType.SOLUTION,
+            NodeType.ENTITY,
+        ]
 
         for node_type in node_types:
             # Empty properties
@@ -116,7 +123,7 @@ class TestUncoveredPaths_MentalMapping:
 
     def test_all_edge_types_comprehensive(self):
         """Test all EdgeType enum values comprehensively"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -142,7 +149,7 @@ class TestUncoveredPaths_MentalMapping:
 
     def test_graph_metrics_various_graph_sizes(self):
         """Test calculate_metrics on various graph sizes"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         for size in [1, 2, 5, 10, 20]:
             model = MentalMappingModel()
@@ -189,11 +196,15 @@ class TestUncoveredPaths_SelfHealing:
 
         # With command
         action2 = RemediationAction(
-            action_type="patch", description="Apply patch", command="git apply patch.diff"
+            action_type="patch",
+            description="Apply patch",
+            command="git apply patch.diff",
         )
 
         # With auto_apply
-        action3 = RemediationAction(action_type="auto", description="Auto fix", auto_apply=True)
+        action3 = RemediationAction(
+            action_type="auto", description="Auto fix", auto_apply=True
+        )
 
         assert all([action1, action2, action3])
 
@@ -310,9 +321,9 @@ class TestCompleteCodePaths_Integration:
 
     def test_complete_agent_lifecycle(self):
         """Test complete lifecycle of agent components"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
         from agents.agent_memory import AgentMemory
         from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
         # Initialize all components
         orchestrator = PhysicsOrchestrator()
