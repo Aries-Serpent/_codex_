@@ -13,10 +13,7 @@ All tests are deterministic and isolated.
 
 import json
 import time
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
 
-import pytest
 
 
 class TestHealthCheckEndpoints:
@@ -448,7 +445,6 @@ class TestLoggingIntegration:
     
     def test_log_sampling(self):
         """Test log sampling for high-volume logs."""
-        sample_rate = 0.1  # 10% sampling
         
         # Simulate 100 log events
         sampled_count = 0

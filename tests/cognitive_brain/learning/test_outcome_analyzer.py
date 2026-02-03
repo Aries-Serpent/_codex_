@@ -8,7 +8,6 @@ AfterMath: Phase 8.3 - Adaptive Learning Engine
 PDA: Active - Test coverage for learning components
 """
 import pytest
-from datetime import datetime
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
 from cognitive_brain.models.learning_outcome import (
     OutcomeType,
@@ -248,7 +247,7 @@ def test_aftermath_integration(analyzer, simple_context):
     assert len(analyzer.reward_history) == 1
     
     # Second iteration with learned patterns
-    outcome2 = analyzer.analyze_outcome(
+    analyzer.analyze_outcome(
         decision_id="aftermath_002",
         outcome_type=OutcomeType.SUCCESS,
         result_metrics={"efficiency": 0.95},

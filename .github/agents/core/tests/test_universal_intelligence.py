@@ -19,7 +19,6 @@ All tests are deterministic with fixed seeds.
 import pytest
 import json
 import math
-from datetime import datetime
 
 from ..universal_intelligence import (
     # Constants
@@ -50,13 +49,7 @@ from ..universal_intelligence import (
     # Grounding
     AbstractStep,
     GroundedAction,
-    ExecutionTrace,
     GroundingLayer,
-    GitHubAPIAdapter,
-    ActionValidator,
-    # Meta-Cognition
-    SelfAssessment,
-    RecommendedAction,
     MetaCognition,
     # UPS
     Pattern,
@@ -69,29 +62,6 @@ from ..universal_intelligence import (
     DecoherenceModel,
     # Helper functions
     calculate_safe_quantum_advantage,
-    # PRE-COMMIT 1 additions
-    TaskComplexity,
-    estimate_task_complexity,
-    validate_task_spec_schema,
-    EnvironmentAdapter,
-    GridWorldAdapter,
-    BanditAdapter,
-    ClassificationAdapter,
-    ENVIRONMENT_ADAPTERS,
-    # PRE-COMMIT 2 additions
-    MAMLState,
-    ReptileState,
-    StrategyPerformance,
-    DynamicHyperparamTuner,
-    StrategyBenchmark,
-    # PRE-COMMIT 3-7 additions
-    DomainIsolation,
-    RollbackTrigger,
-    ForgettingDetector,
-    SafetyConstraintEnforcer,
-    EXP10BenchmarkHarness,
-    K1ValidationFramework,
-    TransferTestSuite,
 )
 
 

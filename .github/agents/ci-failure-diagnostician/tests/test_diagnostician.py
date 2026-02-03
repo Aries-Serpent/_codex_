@@ -9,7 +9,6 @@ import pytest
 import tempfile
 import yaml
 from pathlib import Path
-from datetime import datetime
 
 # Import the diagnostician
 import sys

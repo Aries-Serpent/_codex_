@@ -1,7 +1,7 @@
 """Tests for codex/knowledge/base.py module."""
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 
 class TestKnowledgeBaseImports:

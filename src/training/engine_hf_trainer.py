@@ -1001,6 +1001,11 @@ def run_hf_trainer(
         **tokenizer_kwargs,
     )
     if tokenizer.pad_token is None:
+        logger.warning(
+            "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
+            "This may affect training behaviour.",
+            source,
+        )
         tokenizer.pad_token = tokenizer.eos_token
 
     # Optionally split dataset

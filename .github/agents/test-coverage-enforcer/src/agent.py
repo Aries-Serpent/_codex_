@@ -16,12 +16,11 @@ Usage:
     python -m test_coverage_enforcer.src.agent generate-tests --file src/module.py
 """
 
-import re
 import ast
 import subprocess
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Set
+from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -186,7 +185,7 @@ class TestCoverageEnforcer:
                 '--cov-report=term',
                 '-v'
             ]
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+            subprocess.run(cmd, capture_output=True, text=True, timeout=300)
             
             # Load JSON coverage report
             coverage_json = Path('coverage.json')

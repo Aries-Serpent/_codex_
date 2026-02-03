@@ -9,8 +9,6 @@ Targets:
 - Path optimization logic
 """
 
-import pytest
-from typing import List, Dict, Any
 import math
 
 
@@ -243,7 +241,7 @@ class TestPhysicsOrchestratorDecisionMaking:
         """Test path optimization."""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath, ActionType
 
-        orch = PhysicsInspiredOrchestrator()
+        PhysicsInspiredOrchestrator()
 
         paths = [
             ActionPath(

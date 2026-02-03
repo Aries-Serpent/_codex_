@@ -13,7 +13,7 @@ Usage:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 
 @dataclass

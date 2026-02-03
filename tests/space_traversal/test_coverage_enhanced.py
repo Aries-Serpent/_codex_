@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
 
-import pytest
 
 
 def test_parse_coverage_xml_to_map_basic(tmp_path: Path):

@@ -4,7 +4,6 @@ Tests for codex.archive.similarity module.
 This module contains tests for similarity utilities.
 """
 
-import pytest
 
 
 class TestTokens:

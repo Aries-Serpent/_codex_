@@ -189,7 +189,7 @@ class EmergentIntelligenceAgent:
             
             self.initialized = True
             return True
-        except Exception as e:
+        except Exception:
             self.initialized = False
             return False
     

@@ -1,5 +1,4 @@
 """Comprehensive unit tests for Project Architect Researcher Agent."""
-import pytest
 from pathlib import Path
 import sys
 import json

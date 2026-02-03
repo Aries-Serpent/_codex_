@@ -2,13 +2,21 @@
 Determinism utilities for reproducible training.
 
 Provides functions to enable deterministic behavior in PyTorch,
-including CuDNN settings.
+including CuDNN settings and random seed management.
 """
 
 import logging
+import random
 from typing import Optional
 
 logger = logging.getLogger(__name__)
+
+try:
+    import numpy as np  # type: ignore
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None  # type: ignore
+    NUMPY_AVAILABLE = False
 
 try:
     import torch  # type: ignore
@@ -19,7 +27,24 @@ except (ImportError, AttributeError):
     TORCH_AVAILABLE = False
 
 
-def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
+def set_seed(seed: int = 42) -> None:
+    """Set random seeds for Python, NumPy, and PyTorch.
+    
+    Args:
+        seed: Random seed value
+    """
+    random.seed(seed)
+    
+    if NUMPY_AVAILABLE:
+        np.random.seed(seed)
+    
+    if TORCH_AVAILABLE:
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+
+
+def set_deterministic_mode(enabled: bool = True, warn: bool = True, seed: Optional[int] = None) -> bool:
     """Enable or disable deterministic mode for reproducibility.
 
     Warning: Enabling deterministic mode may reduce performance SIGNIFICANTLY
@@ -28,13 +53,17 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
     Args:
         enabled: Whether to enable deterministic mode
         warn: Whether to log performance warning when enabling
+        seed: Optional random seed to set when enabling (default: 42)
 
     Returns:
         True if operation succeeded, False otherwise
 
     Example:
-        # Enable for reproducibility
+        # Enable for reproducibility with default seed
         set_deterministic_mode(True)
+        
+        # Enable with custom seed
+        set_deterministic_mode(True, seed=123)
 
         # Disable for performance
         set_deterministic_mode(False)
@@ -46,6 +75,11 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
     try:
         if enabled:
+            # Set random seeds first
+            if seed is None:
+                seed = 42
+            set_seed(seed)
+            
             # Enable CuDNN determinism
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
@@ -63,8 +97,8 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
             if warn:
                 logger.warning(
-                    "Deterministic mode enabled. This may reduce performance "
-                    "SIGNIFICANTLY due to algorithmic constraints."
+                    "Deterministic mode enabled. This may significantly reduce performance "
+                    "due to algorithmic constraints."
                 )
         else:
             # Disable determinism for performance
@@ -116,6 +150,7 @@ def get_deterministic_status() -> dict[str, Optional[bool]]:
 
 
 __all__ = [
+    "set_seed",
     "set_deterministic_mode",
     "get_deterministic_status",
 ]

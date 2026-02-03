@@ -229,11 +229,9 @@ class TestPhase2_ExceptionPaths:
     def test_try_except_with_error(self):
         """Test try-except when error occurs"""
         try:
-            result = 10 / 0
             error_occurred = False
         except ZeroDivisionError:
             error_occurred = True
-            result = 0
 
         assert error_occurred
 
@@ -241,7 +239,7 @@ class TestPhase2_ExceptionPaths:
         """Test finally block execution"""
         finally_executed = False
         try:
-            value = 42
+            pass
         finally:
             finally_executed = True
 
@@ -263,7 +261,7 @@ class TestPhase2_ExceptionPaths:
         """Test exception within context manager"""
         executed = False
         try:
-            with open("/nonexistent/file.txt") as f:
+            with open("/nonexistent/file.txt"):
                 pass
         except FileNotFoundError:
             executed = True
@@ -614,16 +612,16 @@ class TestPhase2_FinalGapClosing:
 
         # Trigonometric
         sin_x = np.sin(x)
-        cos_x = np.cos(x)
-        tan_x = np.tan(x)
+        np.cos(x)
+        np.tan(x)
 
         # Exponential and logarithmic
-        exp_x = np.exp(x)
-        log_x = np.log(x)
+        np.exp(x)
+        np.log(x)
 
         # Power and root
-        sqrt_x = np.sqrt(x)
-        square_x = x**2
+        np.sqrt(x)
+        x**2
 
         assert len(sin_x) == len(x)
 
@@ -633,8 +631,8 @@ class TestPhase2_FinalGapClosing:
 
         mean = np.mean(data)
         median = np.median(data)
-        std = np.std(data)
-        var = np.var(data)
+        np.std(data)
+        np.var(data)
 
         assert mean == 3.0
         assert median == 3.0
@@ -651,7 +649,7 @@ class TestPhase2_FinalGapClosing:
         det = np.linalg.det(A)
 
         # Eigenvalues
-        eigenvalues = np.linalg.eigvals(A)
+        np.linalg.eigvals(A)
 
         assert len(c) == 2
         assert det != 0

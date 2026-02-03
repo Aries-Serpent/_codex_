@@ -12,11 +12,10 @@ Use redaction utilities for all logging operations.
 
 import os
 import sys
-import json
 import logging
 import argparse
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from datetime import datetime, UTC
 
 # Add parent directory to path for imports
@@ -285,7 +284,6 @@ class AdminAutomationAgent:
                 "error": "Secrets manager not available (missing GitHub token)"
             }
         
-        results = {}
         results_list = []  # Use list instead of dict to avoid secret names as keys
         
         for idx, secret_name in enumerate(secrets):
@@ -294,7 +292,7 @@ class AdminAutomationAgent:
             
             # Backup current secret (metadata only, never the value)
             if backup:
-                backup_info = {
+                {
                     "secret_index": idx,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "action": "rotation_backup"

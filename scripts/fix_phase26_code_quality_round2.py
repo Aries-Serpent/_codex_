@@ -4,7 +4,6 @@ Fix Phase 26 test code quality issues - Round 2
 Addresses all 19 comments from PR review #3700649605
 """
 
-import re
 from pathlib import Path
 
 def fix_utils_test():

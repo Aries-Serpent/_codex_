@@ -11,20 +11,12 @@ Comprehensive test suite for authorization critical paths including:
 All tests are deterministic and isolated.
 """
 
-import time
-from unittest.mock import Mock, MagicMock
 
-import pytest
 
 from src.codex.auth.token_manager import TokenManager, TokenType
 from src.codex.auth.middleware import (
     APIKeyValidator,
-    AuthMiddleware,
     AuthConfig,
-    AuthMethod,
-    require_auth,
-    get_current_user,
-    get_current_scopes,
 )
 
 
@@ -192,7 +184,7 @@ class TestRoleBasedAccessControl:
         manager = TokenManager(secret_key="test-secret")
         
         # Initial token with admin role
-        old_token = manager.generate_access_token("user123", scope="role:admin role:user")
+        manager.generate_access_token("user123", scope="role:admin role:user")
         
         # New token without admin (simulating role revocation)
         new_token = manager.generate_access_token("user123", scope="role:user")

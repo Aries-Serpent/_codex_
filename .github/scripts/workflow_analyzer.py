@@ -8,7 +8,7 @@ import json
 import re
 import yaml
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from collections import defaultdict
 
 REPO_ROOT = Path("/home/runner/work/_codex_/_codex_")

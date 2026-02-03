@@ -12,7 +12,7 @@ Usage:
 import click
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 import yaml
 
@@ -195,7 +195,7 @@ class PyO3IntegrationTester:
         
         try:
             content = filepath.read_text()
-            lines = content.splitlines()
+            content.splitlines()
             
             # Find all #[pyfunction] declarations
             for match in self.patterns['pyfunction'].finditer(content):

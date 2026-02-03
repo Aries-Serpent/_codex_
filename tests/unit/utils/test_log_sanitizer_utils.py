@@ -1,6 +1,5 @@
 """Unit tests for log_sanitizer utilities (Phase 23 Week 3 gapfill)."""
 
-import pytest
 
 from src.utils.log_sanitizer import sanitize_log_input, sanitize_dict_for_log
 

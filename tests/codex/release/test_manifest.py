@@ -6,8 +6,6 @@ This module contains tests for release manifest handling.
 
 import pytest
 import json
-import tempfile
-from pathlib import Path
 
 
 class TestComponent:
@@ -65,7 +63,7 @@ class TestManifest:
 
     def test_basic_creation(self):
         """Test Manifest basic creation."""
-        from codex.release.manifest import Manifest, Component, Symlink
+        from codex.release.manifest import Manifest, Component
         
         manifest = Manifest(
             release_id="release_1",

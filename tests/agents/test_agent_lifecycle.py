@@ -12,18 +12,15 @@ Tests cover:
 - State transitions
 """
 
-import pytest
 import tempfile
-import asyncio
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 from datetime import datetime
 
 from agents.agent_memory import (
     AgentMemory,
     AgentMemorySystem,
     ContextFrame,
-    MemoryEntry,
 )
 from agents.developer_orchestrator import (
     PhysicsGuidedDeveloperOrchestrator,
@@ -113,7 +110,7 @@ class TestStateManagement:
                 db_path=Path(tmpdir) / "state.db"
             )
             
-            frame = system.start_task("Test task")
+            system.start_task("Test task")
             
             assert system.current_frame is not None
             assert system.current_frame.status == "active"
@@ -306,7 +303,7 @@ class TestErrorRecovery:
             )
             
             # Start task but don't complete
-            frame1 = system.start_task("Incomplete task")
+            system.start_task("Incomplete task")
             
             # Start another task (implicitly abandoning first)
             frame2 = system.start_task("New task")
@@ -611,7 +608,7 @@ class TestResourceCleanup:
             )
             
             # Consolidate shouldn't affect recent memory
-            count = memory.consolidate_memories(older_than_days=30)
+            memory.consolidate_memories(older_than_days=30)
             
             # Recent memory should still exist
             result = memory.retrieve_memory(memory_id="recent")

@@ -4,7 +4,6 @@ Tests for training.accelerate_init_guard module.
 This module contains tests for the legacy accelerate_init_guard compatibility layer.
 """
 
-import pytest
 import warnings
 
 

@@ -16,7 +16,6 @@ from pathlib import Path
 
 from src.codex.verify.comparator import (
     DEFAULT_FLAKINESS_RUNS,
-    DEFAULT_TIMEOUT,
     ComparisonDetail,
     ComparisonMode,
     ComparisonResult,

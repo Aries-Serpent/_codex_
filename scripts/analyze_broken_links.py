@@ -5,7 +5,7 @@ Analyze broken internal links in documentation.
 
 import re
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import List, Tuple
 
 
 def extract_links(content: str, filepath: Path) -> List[Tuple[str, str, int]]:

@@ -8,7 +8,7 @@ import pytest
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestStableChecksum:
@@ -250,7 +250,7 @@ class TestRequireTorch:
     def test_require_torch_when_available(self):
         """Test _require_torch passes when torch is available."""
         try:
-            import torch
+            import torch  # noqa: F401 - Testing optional dependency
             from training.data_utils import _require_torch
             
             # Should not raise

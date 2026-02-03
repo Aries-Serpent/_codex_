@@ -364,7 +364,7 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        with path.open("rb") as fh:
+        with path.open("rb"):
             # Use safe pickle loading to prevent code execution vulnerabilities
             from utils.safe_pickle import safe_pickle_load
             return safe_pickle_load(str(path), use_restricted_unpickler=True)

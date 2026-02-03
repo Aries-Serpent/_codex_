@@ -9,11 +9,8 @@ Phase: 17.0 - Continuous Improvement & Maintenance
 Tests: 15+
 """
 
-import os
 import re
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import pytest
 
@@ -137,7 +134,6 @@ class TestDocumentationQuality:
 
     def test_code_examples_formatted(self):
         """Verify code examples use proper markdown fencing."""
-        poorly_formatted = []
         
         for doc_file in list(DOCS_DIR.rglob("*.md"))[:20]:
             try:

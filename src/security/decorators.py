@@ -214,8 +214,8 @@ def optional_scope(*scopes: str) -> Callable:
 
 # FastAPI dependency injection helpers
 try:
-    from fastapi import Depends, HTTPException, status
-    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+    from fastapi import Depends, HTTPException, status  # noqa: F401 - Optional FastAPI integration
+    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials  # noqa: F401
     
     security = HTTPBearer()
     

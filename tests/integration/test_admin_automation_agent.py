@@ -212,7 +212,7 @@ class TestSecurityCompliance:
     
     def test_no_secrets_in_logs(self, tmp_path, caplog):
         """Test that secrets are never logged in clear text."""
-        from src.codex.security_utils import redact_sensitive_value, sanitize_log_message
+        from src.codex.security_utils import redact_sensitive_value
         
         # Simulate logging a secret (should be redacted)
         secret_value = "ghp_1234567890abcdefghijklmnopqrstuvwxyz"

@@ -623,7 +623,7 @@ class MetaLearningFramework:
             
             # Calculate improvement direction
             success_rate = results.get('success_rate', 0.5)
-            transfer_efficiency = results.get('transfer_efficiency', 0.5)
+            results.get('transfer_efficiency', 0.5)
             
             for param in self.meta_parameters:
                 if success_rate > 0.7:

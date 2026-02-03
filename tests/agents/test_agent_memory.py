@@ -7,8 +7,6 @@ Tests MemoryEntry, ContextFrame, PatternLibrary, AgentMemory, and AgentMemorySys
 
 from __future__ import annotations
 
-import json
-import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -223,7 +221,7 @@ class TestPatternLibrary:
             tags=[],
         )
         
-        initial_rate = library.patterns["p1"]["success_rate"]
+        library.patterns["p1"]["success_rate"]
         library.record_pattern_usage("p1", success=True)
         
         # Success should increase rate slightly
@@ -532,7 +530,7 @@ class TestAgentMemoryIntegration:
         )
         
         # Start task
-        frame = system.start_task("Fix code review comment about path traversal")
+        system.start_task("Fix code review comment about path traversal")
         
         # Get guidance
         guidance = system.get_guidance("path traversal security fix")

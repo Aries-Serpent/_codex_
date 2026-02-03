@@ -256,7 +256,7 @@ def test_security_documentation_exists():
     repo_root = Path(__file__).parents[2]
 
     # Common locations for security docs
-    possible_docs = [
+    [
         repo_root / "docs" / "security.md",
         repo_root / "SECURITY.md",
         repo_root / "docs" / "SECURITY.md",

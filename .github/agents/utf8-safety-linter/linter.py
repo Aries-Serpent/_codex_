@@ -2,7 +2,6 @@
 """UTF-8 String Safety Linter"""
 import click
 import re
-import yaml
 from pathlib import Path
 
 class UTF8SafetyLinter:

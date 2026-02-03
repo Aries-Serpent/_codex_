@@ -20,7 +20,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 
 def get_last_operation() -> Optional[Dict]:
@@ -123,7 +123,7 @@ def rollback_last_operation(dry_run: bool = False) -> bool:
     print(f"Operation: {last_op['operation']}")
     print()
     
-    details = last_op.get('details', {})
+    last_op.get('details', {})
     
     # Extract moves to rollback
     # This depends on the structure of the logged operation

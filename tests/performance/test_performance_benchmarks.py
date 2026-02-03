@@ -15,8 +15,7 @@ from __future__ import annotations
 import time
 import pytest
 import statistics
-from typing import List, Dict, Any
-from unittest.mock import Mock, patch
+from typing import Dict
 from datetime import datetime, UTC
 
 # Test availability
@@ -184,7 +183,6 @@ class TestRAGQueryLatency:
             """Simulate RAG query pipeline"""
             # Step 1: Embedding generation (5ms)
             time.sleep(0.005)
-            query_embedding = [0.1] * 768
             
             # Step 2: Vector search (3ms)
             time.sleep(0.003)

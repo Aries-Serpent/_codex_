@@ -9,13 +9,10 @@ Tests focus on:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import tempfile
-from pathlib import Path
 
 # Import with graceful fallback
 try:
-    import torch
+    import torch  # noqa: F401 - Testing optional dependency availability
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False

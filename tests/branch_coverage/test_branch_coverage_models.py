@@ -10,11 +10,9 @@ Target: Real code coverage improvement for training modules
 """
 
 import os
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Any, List
+from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 # ============================================================================

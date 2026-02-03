@@ -127,7 +127,7 @@ class TestSaveEnvSnapshot:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "env_snapshot.txt"
 
-            snapshot = save_env_snapshot(output_path)
+            save_env_snapshot(output_path)
 
             assert output_path.exists(), "Snapshot file should be created"
             assert output_path.is_file(), "Should create a file"
@@ -296,7 +296,7 @@ class TestCreateReproducibilityManifest:
     def test_manifest_file_created(self):
         """Verify manifest JSON file is created"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            manifest = create_reproducibility_manifest(seed=42, output_dir=tmpdir)
+            create_reproducibility_manifest(seed=42, output_dir=tmpdir)
 
             manifest_path = Path(tmpdir) / "reproducibility_manifest.json"
             assert manifest_path.exists(), "Manifest file should be created"

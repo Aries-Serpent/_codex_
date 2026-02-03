@@ -15,7 +15,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from transfer_learning import (
     TransferLearningEngine,
-    DomainAdapter,
     SimpleDomainAdapter,
     KnowledgeDistiller,
     DomainInfo,
@@ -325,7 +324,7 @@ class TestIntegration:
         
         # Apply transfer
         target_q = {}
-        updated = engine.apply_transfer(knowledge, target_q)
+        engine.apply_transfer(knowledge, target_q)
         
         # Verify transfer occurred
         assert len(engine.transfer_history) == 1
@@ -418,7 +417,7 @@ class TestMetaLearningFramework:
             {'reward': 0.8, 'confidence': 0.85},
         ]
         
-        adapted = framework.adapt_to_domain("test_domain", experiences)
+        framework.adapt_to_domain("test_domain", experiences)
         
         assert "test_domain" in framework.domain_specific_params
         assert len(framework.adaptation_history) == 1

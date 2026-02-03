@@ -4,9 +4,7 @@ Tests for codex.archive.logging_config module.
 This module contains tests for structured logging helpers.
 """
 
-import pytest
 import json
-from unittest.mock import patch, MagicMock
 
 
 class TestStructuredLogRecord:

@@ -6,7 +6,6 @@ import json
 import time
 from pathlib import Path
 
-import pytest
 
 
 def test_aggregate_trends_basic(tmp_path: Path):

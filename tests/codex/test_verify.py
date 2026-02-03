@@ -9,11 +9,8 @@ Tests cover:
 """
 
 import json
-from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 class TestBehaviorComparator:

@@ -34,8 +34,6 @@ import logging
 logger = logging.getLogger(__name__)
 import argparse
 import json
-import os
-import sys
 from pathlib import Path
 
 # Offline CycloneDX-like minimal SBOM generator using stdlib only.
@@ -51,7 +49,6 @@ def list_distributions():
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Fallback: pip freeze
-        import pkgutil
 
         # Not reliable; advise using importlib.metadata
         pass
@@ -60,7 +57,7 @@ def list_distributions():
 def sbom() -> dict:
     comps = []
     try:
-        from importlib.metadata import distributions, PackageNotFoundError
+        from importlib.metadata import distributions
 
         for d in distributions():
             name = d.metadata.get("Name") or d.metadata.get("Summary") or str(d)

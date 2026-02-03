@@ -7,13 +7,10 @@ Comprehensive test module for DBManager class in codex.logging.db_manager.
 from __future__ import annotations
 
 import importlib
-import os
 import sqlite3
 import tempfile
 import threading
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 

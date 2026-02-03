@@ -36,7 +36,7 @@ Monitors real-time execution status across all agents
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 from datetime import datetime
 
 

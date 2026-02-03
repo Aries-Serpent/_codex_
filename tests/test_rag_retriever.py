@@ -4,6 +4,7 @@ Tests for RAG Retriever Module
 
 import tempfile
 from pathlib import Path
+import importlib.util
 
 import pytest
 
@@ -15,8 +16,16 @@ try:
 except ImportError:
     RAG_RETRIEVER_AVAILABLE = False
 
+# Check if sentence_transformers is available
+try:
+    if importlib.util.find_spec("sentence_transformers") is None:
+        raise ImportError
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 pytestmark = pytest.mark.skipif(
-    not RAG_RETRIEVER_AVAILABLE,
+    not RAG_RETRIEVER_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
     reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"
 )
 
@@ -521,7 +530,6 @@ class TestMultiIndexRetrieverErrorPaths:
 
     def test_query_error_in_individual_index(self, multiple_indices):
         """Test query error handling for individual indices (line 329-330)"""
-        from unittest.mock import MagicMock, patch
         
         retriever = MultiIndexRetriever(
             indices=multiple_indices["indices"],

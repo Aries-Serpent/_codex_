@@ -10,22 +10,6 @@ Systematically applies physics-guided dimensional tunneling to:
 Target: +3-5% coverage gain
 """
 
-import pytest
-from agents.physics_orchestrator import (
-    PhysicsInspiredOrchestrator,
-    ForceVector,
-    ActionPath,
-    DecisionState,
-)
-from agents.quantum_game_theory import (
-    QuantumInspiredGameEngine,
-    QuantumGameState,
-    StrategyState,
-    PayoffOperator,
-)
-from agents.mental_mapping import MentalMappingModel
-from agents.agent_memory import AgentMemory
-from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
 
 class TestPhase2_PhysicsOrchestrator_TimeDimension:

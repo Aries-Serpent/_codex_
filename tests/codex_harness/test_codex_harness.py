@@ -11,8 +11,7 @@ Phase 4: Coverage improvement - adding tests for 0% coverage module.
 
 import json
 import pytest
-from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
 
 from codex_harness.honesty import (
     HonestyStatement,
@@ -318,7 +317,7 @@ class TestToolTraceLogger:
     def test_init_creates_parent_dir(self, tmp_path):
         """Test initialization creates parent directory."""
         output = tmp_path / "subdir" / "trace.ndjson"
-        logger = ToolTraceLogger(output_path=output)
+        ToolTraceLogger(output_path=output)
         assert output.parent.exists()
 
     def test_record_invocation(self, tmp_path):

@@ -428,7 +428,7 @@ class TestEndToEndRAGBenchmarks:
         latencies = []
         for _ in range(50):
             start = time.perf_counter()
-            chunks = stream_response("What is AI?")
+            stream_response("What is AI?")
             first_chunk_time = time.perf_counter() - start
             latencies.append(first_chunk_time * 1000)
         

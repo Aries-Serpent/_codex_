@@ -337,8 +337,6 @@ class TestPhase2_WavePropagation:
         # Two waves in phase
         A1 = 1.0
         A2 = 1.0
-        phi1 = 0.0
-        phi2 = 0.0
         A_total = A1 + A2  # Amplitudes add
         assert A_total == 2.0
 

@@ -27,7 +27,6 @@ from codex_ml.monitoring.metrics import (
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
     from prometheus_client import REGISTRY
-    from prometheus_client.registry import Collector
     
     # Get collectors before test
     collectors_before = list(REGISTRY._collector_to_names.keys())

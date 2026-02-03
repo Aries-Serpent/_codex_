@@ -24,13 +24,24 @@ class TestPhase2_TimeEvolution:
 
     def test_evolve_state_basic(self):
         """Test basic state evolution"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
 
         orchestrator = PhysicsOrchestrator()
         if hasattr(orchestrator, "evolve_state"):
-            initial_state = {"position": [0.0, 0.0], "velocity": [1.0, 0.0]}
+            # Create proper EnergyState object, not a dict
+            initial_state = EnergyState(
+                configuration={"position": [0.0, 0.0], "velocity": [1.0, 0.0]},
+                energy=10.0,
+                temperature=1.0
+            )
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
+            
+            # Check that the evolved state has expected attributes
+            assert hasattr(evolved, "energy")
+            assert hasattr(evolved, "configuration")
+            # Verify energy dissipation occurred (should be lower than initial)
+            assert evolved.energy <= initial_state.energy
 
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution"""
@@ -495,7 +506,7 @@ class TestPhase2_EvolutionStrategies:
         # Full-step position
         x_new = x + dt * v_half
         # Half-step velocity
-        v_new = v_half - 0.5 * dt * x_new
+        v_half - 0.5 * dt * x_new
 
         assert abs(x_new - 0.1) < 0.01
 

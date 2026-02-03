@@ -1,10 +1,11 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2026-01-16 - IP-005 Security Updates Complete)  
+> **Status:** ✅ UP-TO-DATE (2026-02-02 - CI Automation System Deployed)  
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Workflows:** 49 active (100% parity, 19 consolidated)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
+> **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 > 
 > **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  
 > security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)
@@ -89,6 +90,7 @@ are available for testing and development purposes.
 4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 5. **[README.md](README.md)** - Repository overview (5 min)
 6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
+7. **[.codex/docs/CI_AUTO_FIX_SYSTEM.md](.codex/docs/CI_AUTO_FIX_SYSTEM.md)** - 🆕 CI/CD Automation (10 min)
 
 ### Reference Documents
 
@@ -98,6 +100,8 @@ are available for testing and development purposes.
 - [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
 - [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
 - [.codex/plans/cognitive_brain_phase_implementation.md](.codex/plans/cognitive_brain_phase_implementation.md) - Cognitive Brain Phase Plan 🆕
+- [.codex/PR_3095_RESOLUTION_PATTERNS.md](.codex/PR_3095_RESOLUTION_PATTERNS.md) - CI Fix Pattern Library 🆕
+- [scripts/ci/auto_fix_common_issues.py](scripts/ci/auto_fix_common_issues.py) - Auto-fix script 🆕
 - [scripts/cognitive/](scripts/cognitive/) - Cognitive Brain Scripts (22 files) 🆕
 
 ###human Workflow & Artifact Resources (Updated 2025-12-28)
@@ -263,12 +267,51 @@ All operations must be logged to:
 
 ## 🛠️ Tools Available
 
+### Core Tools
+
 - `view` - Read files
 - `edit` - Modify files
 - `create` - Create files
 - `grep` - Search content (ripgrep)
 - `glob` - Find files by pattern
 - `bash` - Execute commands (limited pre-Genesis)
+
+### CI/CD Automation Tools 🆕
+
+**Auto-Fix Script:** `scripts/ci/auto_fix_common_issues.py`
+
+Detects and fixes 8 common workflow failure patterns:
+
+```bash
+# Check for issues (no changes)
+python scripts/ci/auto_fix_common_issues.py --check-only
+
+# Apply automatic fixes
+python scripts/ci/auto_fix_common_issues.py
+
+# Dry run (show what would change)
+python scripts/ci/auto_fix_common_issues.py --dry-run
+
+# Specific pattern only (1-8)
+python scripts/ci/auto_fix_common_issues.py --pattern 1
+```
+
+**Auto-Fix Patterns:**
+- ✅ Pattern 1: Unused imports (ruff F401)
+- ⚠️ Pattern 2: Unused variables (detect only)
+- ⚠️ Pattern 3: YAML indentation (detect only)
+- ✅ Pattern 4: Coverage thresholds (standardize to 70%)
+- ⚠️ Pattern 5: Tokenizer fallbacks (detect only)
+- ⚠️ Pattern 6: Test assertions (detect only)
+- ⚠️ Pattern 7: Redundant imports (detect only)
+- ✅ Pattern 8: CodeQL alerts (ruff F401/F841)
+
+**Integration Points:**
+1. **Pre-commit Hook** - Runs automatically on `git commit`
+2. **GitHub Actions** - Runs on PRs (check-only mode)
+3. **Manual CLI** - On-demand execution
+
+**Documentation:** [.codex/docs/CI_AUTO_FIX_SYSTEM.md](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
 
 ---
 

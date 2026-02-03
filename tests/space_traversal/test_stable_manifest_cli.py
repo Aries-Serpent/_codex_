@@ -7,7 +7,6 @@ Test module for stable manifest cli.
 import json
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 SCRIPT = "scripts/space_traversal/stable_manifest.py"

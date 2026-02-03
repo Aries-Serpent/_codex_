@@ -7,12 +7,11 @@ Handles HA-OPT-002 and HA-OPT-003 from Human Admin Consolidated Action Tracker.
 
 import argparse
 import json
-import os
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 try:
     import yaml

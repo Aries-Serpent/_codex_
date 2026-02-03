@@ -5,12 +5,9 @@ metrics visualization, trend analysis, and reporting capabilities.
 """
 
 import json
-import os
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 

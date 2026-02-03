@@ -1,13 +1,9 @@
 """Tests for data validation module."""
 
-import pytest
 from codex_ml.data.validation import (
     DataValidator,
     RequiredColumnsRule,
-    NullCheckRule,
     DataTypeRule,
-    RangeCheckRule,
-    UniqueCheckRule,
     ValidationResult,
 )
 

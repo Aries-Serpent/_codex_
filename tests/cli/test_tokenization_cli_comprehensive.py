@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -113,7 +113,6 @@ class TestAppendErrorBlock:
     
     def test_append_error_block_basic(self, tmp_path: Path, monkeypatch):
         """Verify basic error block appending."""
-        from tokenization.cli import _ERROR_REPORT_DIR
         
         # Redirect error report dir
         error_dir = tmp_path / "errors"

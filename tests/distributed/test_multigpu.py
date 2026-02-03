@@ -14,8 +14,6 @@ Version: 1.0.0
 import os
 import sys
 import unittest
-from unittest import mock
-from typing import Optional, List
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))

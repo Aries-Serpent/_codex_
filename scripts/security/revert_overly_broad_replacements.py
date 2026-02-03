@@ -69,7 +69,7 @@ def infer_year_from_month_day(month: str, day: str) -> str:
     - Other months need context
     """
     month_num = int(month)
-    day_num = int(day)
+    int(day)
     
     # January dates are 2026
     if month_num == 1:

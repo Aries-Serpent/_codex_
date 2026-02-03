@@ -40,7 +40,6 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from dataclasses import dataclass, asdict
-from collections import defaultdict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -135,7 +134,6 @@ class AnnualArchitectureReview:
         # For now, simulate assessment
         
         import random
-        import numpy as np
         
         # Simulate metrics
         health_score = random.uniform(0.8, 1.0)

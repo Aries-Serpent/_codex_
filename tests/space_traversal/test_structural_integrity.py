@@ -4,7 +4,6 @@ Tests for structural integrity detector.
 Tests split-brain detection, library shadowing detection, and architectural validation.
 """
 
-import pytest
 from scripts.space_traversal.detectors import structure_integrity
 
 

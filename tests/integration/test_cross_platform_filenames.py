@@ -3,7 +3,6 @@ Integration tests for cross-platform filename compatibility.
 
 Ensures no Windows-incompatible filenames are generated during operations.
 """
-import os
 import tempfile
 from pathlib import Path
 

@@ -78,7 +78,7 @@ class TestWorkflowNavigatorSimple:
         if hasattr(nav, "get_workflow"):
             try:
                 # Try to get a default workflow
-                workflow = nav.get_workflow("code_review")
+                nav.get_workflow("code_review")
                 # If it returns something, that's coverage
             except (KeyError, ValueError):
                 # Expected if workflow doesn't exist

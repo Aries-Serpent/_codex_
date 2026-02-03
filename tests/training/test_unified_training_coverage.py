@@ -12,12 +12,8 @@ Target Coverage: 70%+
 
 from __future__ import annotations
 
-import json
-import os
-import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -337,19 +333,23 @@ def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
     """Test distributed_context integrates torch.distributed if available."""
     monkeypatch.setenv("WORLD_SIZE", "2")
     
-    # Mock torch.distributed
+    # Mock torch.distributed at the module level where it's imported
     mock_dist = MagicMock()
     mock_dist.is_available.return_value = True
     mock_dist.is_initialized.return_value = True
     mock_dist.get_backend.return_value = "nccl"
     mock_dist.get_world_size.return_value = 4
     mock_dist.get_rank.return_value = 1
+    
+    # Make torch.distributed accessible as an attribute
     mock_torch.distributed = mock_dist
     
-    context = distributed_context()
-    assert context["backend"] == "nccl"
-    assert context["world_size"] == 4  # max(2, 4)
-    assert context["rank"] == 1
+    # Also patch the actual torch.distributed import
+    with patch("torch.distributed", mock_dist):
+        context = distributed_context()
+        assert context["backend"] == "nccl"
+        assert context["world_size"] == 4  # max(2, 4)
+        assert context["rank"] == 1
 
 
 # =============================================================================

@@ -1,8 +1,5 @@
 """Tests for AST plugin system."""
-import pytest
-from pathlib import Path
 
-from codex.ast.plugins import ASTPlugin, PluginMetadata
 from codex.ast.plugins.loader import PluginLoader
 from codex.ast.plugins.python_plugin import PythonPlugin
 

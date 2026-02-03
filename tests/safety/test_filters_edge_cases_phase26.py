@@ -16,10 +16,6 @@ import pytest
 from unittest.mock import Mock, patch
 from codex_ml.safety.filters import (
     SafetyFilters,
-    SafetyPolicy,
-    PolicyRule,
-    RuleMatch,
-    SafetyResult,
     sanitize_prompt,
     sanitize_output,
     REDACT_PLACEHOLDER,

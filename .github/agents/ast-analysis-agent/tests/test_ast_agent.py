@@ -396,7 +396,7 @@ class MyClass:
             findings, summary = agent.analyze_file(f.name)
             
             # Detect patterns
-            patterns = detector.detect_patterns(code)
+            detector.detect_patterns(code)
             
             # Generate report
             report = generator.generate([f.to_dict() for f in findings])

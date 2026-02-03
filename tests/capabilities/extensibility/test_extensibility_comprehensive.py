@@ -9,8 +9,6 @@ Tests cover:
 
 from __future__ import annotations
 
-import hashlib
-import json
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -358,7 +356,7 @@ class SelfHealingDiscovery:
 
     def discover_plugin(self, name: str, loader_fn) -> PluginInterface | None:
         """Discover and load plugin with self-healing."""
-        retries = self.failed_plugins.get(name, [])
+        self.failed_plugins.get(name, [])
 
         for attempt in range(self.max_retries):
             try:

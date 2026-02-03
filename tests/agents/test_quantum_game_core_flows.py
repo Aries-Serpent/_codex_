@@ -14,7 +14,6 @@ import numpy as np
 from agents.quantum_game_theory import (
     TeamType,
     StrategyState,
-    PayoffOperator,
     QuantumGameState,
     ClassicalGameEngine,
     QuantumInspiredGameEngine,

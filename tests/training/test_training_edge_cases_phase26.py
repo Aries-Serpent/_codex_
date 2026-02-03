@@ -7,7 +7,7 @@ Coverage Target: src/training/engine_hf_trainer.py, src/codex_ml/training/unifie
 import pytest
 import torch
 import numpy as np
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import patch
 
 
 class TestTrainingEdgeCases:
@@ -48,7 +48,7 @@ class TestTrainingEdgeCases:
     def test_training_gradient_explosion(self):
         """Test training with exploding gradients"""
         # Simulate very large gradients
-        large_gradient = torch.tensor([1e10, 1e10, 1e10])
+        torch.tensor([1e10, 1e10, 1e10])
         # Should clip gradients or handle explosion
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -91,7 +91,7 @@ class TestTrainingEdgeCases:
     def test_training_mixed_precision_overflow(self):
         """Test mixed precision training overflow"""
         # FP16 overflow scenario
-        large_tensor = torch.tensor([65504.0])  # Max FP16 value
+        torch.tensor([65504.0])  # Max FP16 value
         # Should handle FP16 overflow
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -305,7 +305,7 @@ class TestTrainingEdgeCases:
             
             try:
                 # Simulate large allocation
-                large_tensor = torch.randn(10000, 10000)  # 400MB
+                torch.randn(10000, 10000)  # 400MB
                 
                 # If OOM occurs, reduce batch size
                 reduced_batch_size = 16  # Reduced from 32
@@ -377,7 +377,7 @@ class TestTrainingEdgeCases:
         try:
             # Attempt to load
             with pytest.raises((RuntimeError, ValueError, EOFError)):
-                checkpoint = torch.load(corrupted_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
+                torch.load(corrupted_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
             
             # Fallback to previous checkpoint
             fallback_checkpoint = {
@@ -404,7 +404,6 @@ class TestTrainingEdgeCases:
 
     def test_training_learning_rate_extreme(self):
         """Test training with extremely large learning rate"""
-        lr = 1e6
         # Should warn or clip extreme learning rate
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -472,10 +471,6 @@ class TestTrainingEdgeCases:
 
     def test_training_invalid_scheduler_config(self):
         """Test training with invalid scheduler configuration"""
-        invalid_config = {
-            "scheduler_type": "nonexistent",
-            "warmup_steps": -1
-        }
         # Should reject invalid scheduler config
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -508,12 +503,10 @@ class TestDataLoadingEdgeCases:
 
     def test_data_loader_missing_features(self):
         """Test data loader with missing required features"""
-        incomplete_sample = {"input": "text"}  # Missing 'labels'
         # Should handle missing features
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_data_loader_duplicate_samples(self):
         """Test data loader with duplicate samples"""
-        duplicates = [{"id": 1, "data": "same"}] * 1000
         # Should detect or handle duplicates
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")

@@ -5,8 +5,7 @@ This module contains tests for the hybrid physics integration
 connecting advanced physics calculators with existing systems.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestHybridPhysicsOrchestrator:

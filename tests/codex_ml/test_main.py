@@ -10,10 +10,8 @@ from __future__ import annotations
 import argparse
 import sys
 from io import StringIO
-from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from codex_ml.main import (
     _forward_to_cli,
@@ -128,7 +126,7 @@ class TestForwardToCli:
         """Test returns 0 on successful CLI execution."""
         # Test that the function handles cases gracefully
         try:
-            result = _forward_to_cli(["help"])
+            _forward_to_cli(["help"])
             # May succeed or fail depending on import
         except (SystemExit, Exception):
             pass  # Expected in test environment
@@ -153,7 +151,7 @@ class TestMain:
         """Test no arguments prints help."""
         with patch.object(sys, "stdout", new_callable=StringIO) as mock_stdout:
             result = main([])
-            output = mock_stdout.getvalue()
+            mock_stdout.getvalue()
             # Should contain help text or print help
             assert result == 0
 
@@ -254,7 +252,7 @@ class TestMainEdgeCases:
         """Test multiple --version flags."""
         with patch("builtins.print") as mock_print:
             # Should only print once
-            result = main(["--version"])
+            main(["--version"])
             assert mock_print.call_count == 1
 
 

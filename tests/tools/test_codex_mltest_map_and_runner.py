@@ -6,7 +6,6 @@ Test module for codex mltest map and runner.
 
 from pathlib import Path
 
-import pytest
 import yaml
 
 import tools.codex_mltest_map_validate as mv

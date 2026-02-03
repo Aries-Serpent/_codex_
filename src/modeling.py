@@ -251,7 +251,16 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         kwargs["trust_remote_code"] = True
 
     try:
-        return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)  # nosec B615
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)  # nosec B615
+        # Set pad_token to eos_token if not already set (common default)
+        if getattr(tokenizer, "pad_token", None) is None and getattr(tokenizer, "eos_token", None):
+            LOGGER.warning(
+                "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "This may affect training behaviour.",
+                tokenizer_name,
+            )
+            tokenizer.pad_token = tokenizer.eos_token
+        return tokenizer
     except Exception as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 

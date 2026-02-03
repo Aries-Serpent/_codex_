@@ -16,12 +16,10 @@ This cross-built agent leverages:
 import argparse
 import json
 import re
-import subprocess
-import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Try to import scribe tools if available
 try:
@@ -447,7 +445,7 @@ def main():
     print(f"{'✅' if SCRIBE_AVAILABLE and args.use_scribe else '❌'} Scribe tools: {'Available' if SCRIBE_AVAILABLE else 'Not available'}")
     
     # Initialize enhanced analyzer
-    analyzer = WorkflowAnalyticsScribe(use_scribe=args.use_scribe)
+    WorkflowAnalyticsScribe(use_scribe=args.use_scribe)
     
     # TODO: Fetch workflow runs (integrate with existing runner)
     # TODO: Perform enhanced analysis

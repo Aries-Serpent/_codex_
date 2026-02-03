@@ -11,8 +11,7 @@ Coverage targets:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
+from unittest.mock import Mock, patch
 
 try:
     from agents.msp_client import MSPClient
@@ -253,7 +252,7 @@ class TestMSPClientConfiguration:
         client = MSPClient()
 
         # Should have session or connection management
-        has_session = hasattr(client, "session") or hasattr(client, "_session")
+        hasattr(client, "session") or hasattr(client, "_session")
         # Connection pooling is optional but good practice
         assert True  # Pass if client initializes
 

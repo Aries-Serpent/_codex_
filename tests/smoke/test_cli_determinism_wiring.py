@@ -4,7 +4,6 @@ Test Cli Determinism Wiring
 Test module for cli determinism wiring.
 """
 
-import importlib
 
 import pytest
 

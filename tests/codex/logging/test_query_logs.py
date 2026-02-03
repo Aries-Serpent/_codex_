@@ -11,9 +11,6 @@ Phase 6 tests covering:
 from __future__ import annotations
 
 import importlib
-import sqlite3
-from datetime import datetime, timezone
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -411,7 +408,7 @@ class TestLogQueryEngine:
         mock_db_manager.connection.return_value.__enter__ = MagicMock(return_value=mock_conn)
         mock_db_manager.connection.return_value.__exit__ = MagicMock(return_value=False)
         
-        result = engine.search("test query", role="user")
+        engine.search("test query", role="user")
         
         # Check that role was passed in the query
         call_args = mock_conn.execute.call_args

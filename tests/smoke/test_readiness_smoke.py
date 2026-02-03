@@ -9,7 +9,6 @@ Run with: pytest tests/smoke/test_readiness_smoke.py -v
 """
 
 import pytest
-from pathlib import Path
 
 
 class TestAgentMemorySmoke:
