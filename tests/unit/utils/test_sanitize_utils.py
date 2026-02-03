@@ -1,6 +1,5 @@
 """Unit tests for sanitize_prompt utility (Phase 23 Week 3 gapfill)."""
 
-import pytest
 
 from src.utils.sanitize import sanitize_prompt
 

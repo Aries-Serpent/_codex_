@@ -7,7 +7,6 @@ Comprehensive test suite covering:
 - Deployment configuration
 - Production test suite
 """
-import pytest
 import sys
 import os
 
@@ -18,7 +17,6 @@ from production_deployment import (
     # Health checks
     HealthStatus,
     HealthCheckResult,
-    HealthCheck,
     MemoryHealthCheck,
     DatabaseHealthCheck,
     LearningEngineHealthCheck,
@@ -35,7 +33,6 @@ from production_deployment import (
     KubernetesConfig,
     DeploymentConfiguration,
     # Tests
-    ProductionTest,
     HealthEndpointTest,
     LearningEngineTest,
     ProductionTestSuite,

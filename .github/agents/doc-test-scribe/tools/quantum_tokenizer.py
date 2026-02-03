@@ -22,12 +22,11 @@ Date: 2026-01-17
 """
 
 import ast
-import hashlib
 import math
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Dict, List, Set, Tuple, Any, Optional
+from typing import Dict, List, Set, Tuple, Any
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 

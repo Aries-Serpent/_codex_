@@ -942,7 +942,7 @@ def test_main_imports():
             task_id = task.get("id", "")
             priority = task.get("priority", 0.5)
             complexity = task.get("complexity", 1.0)
-            dependencies = task.get("dependencies", [])
+            task.get("dependencies", [])
 
             # Score: priority / sqrt(complexity)
             # Penalize tasks with unmet dependencies

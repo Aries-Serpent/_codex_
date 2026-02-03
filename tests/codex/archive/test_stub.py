@@ -4,7 +4,6 @@ Tests for codex.archive.stub module.
 This module contains tests for stub generation functionality.
 """
 
-import pytest
 from unittest.mock import patch
 
 

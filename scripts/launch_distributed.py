@@ -46,7 +46,6 @@ Usage:
 import argparse
 import logging
 logger = logging.getLogger(__name__)
-import os
 import subprocess
 import sys
 

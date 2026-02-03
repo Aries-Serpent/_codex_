@@ -1,9 +1,8 @@
 """Tests for Rust Error Validator"""
-import pytest
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from scanner import RustErrorScanner, Finding
+from scanner import RustErrorScanner
 
 def test_scanner_detects_unwrap():
     """Test scanner detects unwrap() calls"""

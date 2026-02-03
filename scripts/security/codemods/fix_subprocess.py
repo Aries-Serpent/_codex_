@@ -17,7 +17,6 @@ been replaced with proper AST manipulation.
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 # Import from the libcst-based implementation
 try:

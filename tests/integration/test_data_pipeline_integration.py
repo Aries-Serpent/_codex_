@@ -17,10 +17,6 @@ from __future__ import annotations
 
 import csv
 import json
-import tempfile
-from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
@@ -146,7 +142,7 @@ class TestDataLoading:
         count = 0
         with large_file.open("r") as f:
             for line in f:
-                item = json.loads(line)
+                json.loads(line)
                 count += 1
         
         assert count == 100

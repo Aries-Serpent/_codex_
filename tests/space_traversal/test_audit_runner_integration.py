@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
 
 
 def test_audit_runner_token_similarity_integration(tmp_path: Path):
@@ -230,7 +229,7 @@ def test_audit_runner_trends_integration(tmp_path: Path):
         report_content = trend_files[0].read_text()
         assert "Capability Audit Trend Report" in report_content
 
-    except Exception as e:
+    except Exception:
         # Trends may fail if no data, that's ok
         pass
 

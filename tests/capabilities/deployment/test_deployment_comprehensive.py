@@ -20,8 +20,6 @@ import pytest
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
 
 
 # --- Build Attestation Tests ---

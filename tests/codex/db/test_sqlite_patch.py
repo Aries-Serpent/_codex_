@@ -13,7 +13,7 @@ import importlib
 import os
 import sqlite3
 import threading
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -172,7 +172,7 @@ class TestPooledConnect:
 
     def test_pooled_connect_with_pooling_enabled(self, pooled_connect, tmp_path, clean_env):
         """Test pooled_connect returns proxy when pooling enabled."""
-        from codex.db.sqlite_patch import PooledConnectionProxy, _CONN_POOL, _close_all
+        from codex.db.sqlite_patch import PooledConnectionProxy, _close_all
         
         os.environ["CODEX_SQLITE_POOL"] = "1"
         db_path = str(tmp_path / "test.db")
@@ -210,7 +210,6 @@ class TestEnableDisablePooling:
     @pytest.fixture
     def save_connect(self):
         """Save original connect and restore after test."""
-        from codex.db.sqlite_patch import _ORIG_CONNECT
         original = sqlite3.connect
         yield
         sqlite3.connect = original
@@ -247,7 +246,6 @@ class TestAutoEnableFromEnv:
     @pytest.fixture
     def save_connect(self):
         """Save original connect and restore after test."""
-        from codex.db.sqlite_patch import _ORIG_CONNECT
         original = sqlite3.connect
         yield
         sqlite3.connect = original

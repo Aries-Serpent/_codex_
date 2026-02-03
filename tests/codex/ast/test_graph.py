@@ -4,7 +4,6 @@ Tests for codex.ast.graph module.
 This module contains tests for dependency graph and cycle detection.
 """
 
-import pytest
 
 
 class TestDependencyGraph:

@@ -87,8 +87,9 @@ def test_data_pipeline_tokenizer_output(tmp_path):
             str(data_file),
             BadTokenizer(),
         )
-        # Force iteration to trigger collate error
-        next(iter(train_loader))
+        # Force iteration to trigger collate error - create iterator explicitly for Python 3.12+ compatibility
+        dataloader_iter = iter(train_loader)
+        next(dataloader_iter)
 
 
 @pytest.mark.integration

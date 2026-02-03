@@ -16,12 +16,8 @@ Phase: 20.1 Production Monitoring & Alerting
 from __future__ import annotations
 
 import json
-import os
-import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 import pytest
 

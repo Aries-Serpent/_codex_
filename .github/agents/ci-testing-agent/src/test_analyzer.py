@@ -6,7 +6,7 @@ import pytest
 from pathlib import Path
 import tempfile
 import json
-from analyzer import CIFailureAnalyzer, FailureAnalysis
+from analyzer import CIFailureAnalyzer
 
 
 class TestCIFailureAnalyzer:

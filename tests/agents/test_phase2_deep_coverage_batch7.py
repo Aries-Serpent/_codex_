@@ -245,7 +245,6 @@ class TestPhase2_GraphAlgorithms:
     def test_topological_sort(self):
         """Test topological sorting"""
         # DAG
-        graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
 
         # A topological order: [A, B, C, D] or [A, C, B, D]
         # Both are valid
@@ -253,7 +252,6 @@ class TestPhase2_GraphAlgorithms:
 
     def test_connected_components(self):
         """Test finding connected components"""
-        graph = {"A": ["B"], "B": ["A"], "C": ["D"], "D": ["C"]}
         # Two components: {A, B} and {C, D}
         components = 2
         assert components == 2
@@ -261,7 +259,6 @@ class TestPhase2_GraphAlgorithms:
     def test_cycle_detection(self):
         """Test cycle detection in graph"""
         # Graph with cycle
-        graph = {"A": ["B"], "B": ["C"], "C": ["A"]}
         # Has cycle: A -> B -> C -> A
         has_cycle = True
         assert has_cycle
@@ -416,7 +413,6 @@ class TestPhase2_ConceptFormation:
         """Test category learning"""
         # Supervised learning of categories
         positive_examples = [[1, 1], [1.2, 0.9], [0.9, 1.1]]
-        negative_examples = [[5, 5], [4.8, 5.2]]
         # Positive examples cluster near [1, 1]
         pos_center = np.mean(positive_examples, axis=0)
         assert np.linalg.norm(pos_center - [1, 1]) < 0.5
@@ -447,7 +443,6 @@ class TestPhase2_ReasoningPatterns:
     def test_abductive_reasoning(self):
         """Test abductive reasoning (inference to best explanation)"""
         # Grass is wet. Best explanation: it rained.
-        observation = "grass is wet"
         explanations = [
             {"theory": "it rained", "likelihood": 0.8},
             {"theory": "sprinkler was on", "likelihood": 0.6},
@@ -513,7 +508,6 @@ class TestPhase2_ProblemSolving:
         """Test backtracking"""
         # Simple assignment problem
         assignment = {}
-        variables = ["A", "B"]
         domains = {"A": [1, 2], "B": [2, 3]}
         # Assign A=1, B=2 is valid
         assignment["A"] = 1

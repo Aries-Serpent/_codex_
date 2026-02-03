@@ -11,10 +11,7 @@ Target: All documentation examples validated
 
 import ast
 import re
-import subprocess
-import sys
 from pathlib import Path
-from typing import Any
 
 import pytest
 

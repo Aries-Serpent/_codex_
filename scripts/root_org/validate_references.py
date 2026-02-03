@@ -20,7 +20,7 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Tuple
 
 # Reference patterns to search for
 REFERENCE_PATTERNS = [
@@ -132,7 +132,7 @@ def scan_file_for_references(
                     'pattern': pattern.pattern[:50],
                 })
     
-    except Exception as e:
+    except Exception:
         # Skip files that can't be read
         pass
     
@@ -294,7 +294,7 @@ Examples:
     
     # Validate file exists
     root_dir = Path.cwd()
-    target_path = root_dir / args.file_path
+    root_dir / args.file_path
     
     if args.dry_run:
         print(f"[DRY RUN] Validating references for: {args.file_path}")

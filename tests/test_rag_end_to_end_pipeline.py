@@ -94,6 +94,10 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
         def eval(self):
             return self
 
+        def to(self, device):
+            """Mock .to() method for device placement."""
+            return self
+
     fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
     # Also patch the module-level SentenceTransformer variable in retriever module

@@ -6,7 +6,7 @@ Tests the safe token verification without any token decoding or logging.
 
 import os
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 from scripts.security.verify_token_scope import (
     TokenScopeVerifier,

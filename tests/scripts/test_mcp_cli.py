@@ -15,7 +15,6 @@ import pytest
 import subprocess  # Using stdlib subprocess.run which supports timeout parameter
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 
 @pytest.fixture

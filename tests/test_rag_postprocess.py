@@ -1,5 +1,4 @@
 """Tests for RAG post-processing module"""
-import pytest
 from src.codex.rag.postprocess import (
     OutputProcessor,
     postprocess_output

@@ -5,7 +5,6 @@ Test module for cli config sweep.
 """
 
 import hashlib
-from pathlib import Path
 
 from click.testing import CliRunner
 

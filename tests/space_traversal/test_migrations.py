@@ -8,7 +8,7 @@ from pathlib import Path
 
 def test_migration_decorator():
     """Test migration registration decorator."""
-    from scripts.space_traversal.migrations.migrate_trends import MIGRATIONS, migration
+    from scripts.space_traversal.migrations.migrate_trends import MIGRATIONS
 
     # Check that migrations are registered
     assert "1.5.0" in MIGRATIONS

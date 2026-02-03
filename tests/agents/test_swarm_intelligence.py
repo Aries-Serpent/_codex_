@@ -14,7 +14,6 @@ Test Categories:
 """
 
 import pytest
-from typing import Tuple, List
 from agents.physics_orchestrator import SwarmParticle, SwarmIntelligence
 
 
@@ -290,12 +289,12 @@ class TestSwarmIntelligenceIntegration:
         # First initialization
         bounds1 = [(-1.0, 1.0), (-1.0, 1.0)]
         swarm.initialize_swarm(bounds1)
-        first_positions = [p.position for p in swarm.particles]
+        [p.position for p in swarm.particles]
 
         # Reinitialize with different bounds
         bounds2 = [(-10.0, 10.0), (-10.0, 10.0)]
         swarm.initialize_swarm(bounds2)
-        second_positions = [p.position for p in swarm.particles]
+        [p.position for p in swarm.particles]
 
         # Should have new positions
         assert len(swarm.particles) == 5

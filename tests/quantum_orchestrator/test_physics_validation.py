@@ -12,12 +12,9 @@ Tests that physical laws are correctly implemented and maintained:
 
 import pytest
 import numpy as np
-import math
 from codex.quantum_orchestrator.orchestrator import (
-    QuantumRelativisticDiracOrchestrator,
     create_orchestrator,
     DiracSpinor,
-    TaskState,
     PhysicsConstants,
     TaskVector,
 )
@@ -128,7 +125,7 @@ class TestRelativisticConstraints:
 
     def test_rest_energy(self):
         """Rest energy E₀ = m₀c²."""
-        const = PhysicsConstants(c=100.0)
+        PhysicsConstants(c=100.0)
         orch = create_orchestrator(max_throughput=100.0)
         orch.add_task("test_task", "Test", rest_mass=2.0)
 

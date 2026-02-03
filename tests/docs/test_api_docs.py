@@ -10,10 +10,9 @@ Tests: 15+
 """
 
 import json
-import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import List
 
 import pytest
 
@@ -147,7 +146,7 @@ class TestEndpointDocumentation:
         
         # Just verify we found some endpoints
         if endpoints_found > 0:
-            coverage = endpoints_with_response / endpoints_found
+            endpoints_with_response / endpoints_found
             # Log but don't fail (not all endpoints need response models)
 
 

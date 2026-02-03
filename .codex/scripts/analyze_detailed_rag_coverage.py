@@ -6,9 +6,7 @@ Maps test files to source code for gap identification
 
 import os
 import re
-from pathlib import Path
-from typing import Dict, List, Set
-from collections import defaultdict
+from typing import Set
 
 
 def extract_test_patterns(test_file: str) -> Set[str]:
@@ -84,7 +82,7 @@ def analyze_detailed_coverage() -> str:
     report.append("### Core Modules\n\n")
 
     for module, test_files in test_mapping.items():
-        module_name = module.replace('.py', '')
+        module.replace('.py', '')
         report.append(f"#### {module}\n\n")
 
         if test_files:

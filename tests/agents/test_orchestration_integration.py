@@ -11,11 +11,7 @@ Tests cover:
 - Agent communication patterns
 """
 
-import pytest
-import asyncio
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, AsyncMock
-from datetime import datetime
+from unittest.mock import Mock, patch
 
 # Patch ADVANCED_PHYSICS to False to avoid numpy initialization issues
 import sys
@@ -289,7 +285,7 @@ class TestCommunicationPatterns:
         """Test orchestrator tracks development history."""
         orch = PhysicsGuidedDeveloperOrchestrator()
         
-        initial_history = len(orch.development_history)
+        len(orch.development_history)
         
         # Should track state (though currently empty in basic implementation)
         assert isinstance(orch.development_history, list)
@@ -465,7 +461,7 @@ class TestMultiOrchestratorScenarios:
             "description": "CLI tool",
             "commands": ["start", "stop"],
         }
-        analysis = orch1.analyze_user_requirements(requirements)
+        orch1.analyze_user_requirements(requirements)
         
         # Second orchestrator uses the analysis
         orch2 = PhysicsGuidedDeveloperOrchestrator(session_id="handoff2")
@@ -521,8 +517,8 @@ class TestConcurrency:
         orch2.app_type = AppType.PYTHON_WEB
         
         # Generate architectures
-        arch1 = orch1.suggest_architecture({"commands": ["test"]})
-        arch2 = orch2.suggest_architecture({"routes": ["/"]})
+        orch1.suggest_architecture({"commands": ["test"]})
+        orch2.suggest_architecture({"routes": ["/"]})
         
         # States should remain separate
         assert orch1.app_type == AppType.PYTHON_CLI
@@ -557,7 +553,7 @@ class TestResourceManagement:
         orch = PhysicsGuidedDeveloperOrchestrator()
         orch.app_type = AppType.PYTHON_CONSOLE
         
-        architecture = orch.suggest_architecture({})
+        orch.suggest_architecture({})
         
         # Components should be stored
         assert len(orch.components) > 0

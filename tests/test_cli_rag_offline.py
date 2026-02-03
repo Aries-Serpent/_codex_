@@ -4,9 +4,6 @@ Integration tests for RAG CLI with offline TF-IDF provider.
 Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 """
 
-import json
-import tempfile
-from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
@@ -53,7 +50,7 @@ class TestTfidfIntegration:
         """Test building index with TF-IDF provider."""
         # Note: This test requires scikit-learn
         try:
-            import sklearn
+            import sklearn  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("scikit-learn not installed")
         

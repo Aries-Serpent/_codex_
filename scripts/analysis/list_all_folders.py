@@ -38,7 +38,6 @@ Outputs multiple formats: plain text, markdown with links, categorized, tree, JS
 import argparse
 import gzip
 import json
-import sys
 from pathlib import Path
 from typing import Any
 

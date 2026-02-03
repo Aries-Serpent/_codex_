@@ -9,11 +9,7 @@ Phase: 4.3 Part 3 - Error Recovery & Resilience Tests
 Target: 20-30 tests for error recovery scenarios
 """
 
-import time
-from typing import Any, Callable, Dict, List, Optional
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 # ============================================================================
@@ -113,7 +109,6 @@ class TestRetryLogicBranches:
     def test_retry_disabled_branch(self) -> None:
         """Test retry disabled."""
         max_attempts = 1
-        attempt = 1
         
         if max_attempts <= 1:
             retry_enabled = False

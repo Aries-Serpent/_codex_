@@ -12,23 +12,15 @@ All tests are deterministic and isolated.
 """
 
 import time
-from unittest.mock import Mock, patch
 
 import pytest
 
 from src.codex.auth.token_manager import (
     TokenManager,
-    TokenClaims,
     TokenType,
-    SessionInfo,
 )
 from src.codex.auth.middleware import (
-    AuthMiddleware,
-    APIKeyValidator,
     RateLimiter,
-    AuthConfig,
-    AuthResult,
-    AuthMethod,
 )
 
 

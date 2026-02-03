@@ -12,7 +12,6 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime
-from dataclasses import asdict
 
 # Import from cognitive brain base
 import sys
@@ -25,9 +24,6 @@ sys.path.insert(0, str(repo_root / "src"))
 from cognitive_brain.base import (
     Planner,
     MemoryInterface,
-    ObservationData,
-    OrientationResult,
-    Decision,
     ActionResult,
     PhysicsOfThought,
 )

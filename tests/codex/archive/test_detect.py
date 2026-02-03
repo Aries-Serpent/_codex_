@@ -4,8 +4,6 @@ Tests for codex.archive.detect module.
 This module contains tests for file detection utilities.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestFileMeta:

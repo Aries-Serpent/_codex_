@@ -13,7 +13,7 @@ import gc
 import os
 import time
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 import pytest
 
@@ -66,7 +66,6 @@ class TestInferenceThroughputBenchmarks:
         """Benchmark single token generation throughput."""
         def generate_token() -> int:
             # Simulate token generation
-            vocab_size = 50000
             logits = [0.01 * i for i in range(100)]  # Simplified
             token_id = logits.index(max(logits))
             return token_id
@@ -366,7 +365,6 @@ class TestInferenceMemoryBenchmarks:
         # Simulate output buffers
         max_length = 1024
         batch_size = 8
-        vocab_size = 50000
         
         # Only store generated tokens (not full logits to save memory)
         output_tokens = [[0] * max_length for _ in range(batch_size)]

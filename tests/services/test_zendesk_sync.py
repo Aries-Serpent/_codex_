@@ -13,9 +13,8 @@ Tests cover:
 
 import json
 import tempfile
-from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open, MagicMock
+from unittest.mock import patch, MagicMock
 from urllib.error import URLError
 
 import pytest

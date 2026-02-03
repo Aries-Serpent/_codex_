@@ -1,7 +1,110 @@
-# Basic, reproducible test image for running pytest in CI and locally
-# Maintainer note: This image is designed for deterministic test execution.
-# Update pinned versions in requirements-test.txt with care.
-FROM python:3.14-slim
+# Multi-stage Dockerfile for Codex ML
+# Provides separate cpu-runtime and gpu-runtime targets for deployment
+
+# ===== Stage 1: Base Image =====
+FROM python:3.12-slim AS base
+
+# Metadata
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.description="Codex ML base environment"
+LABEL org.opencontainers.image.version="1.0.0"
+
+# Environment configuration
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+WORKDIR /app
+
+# Install OS dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    git \
+    curl \
+  && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency manifests for layer caching
+COPY --chown=appuser:appuser requirements.txt requirements.txt
+COPY --chown=appuser:appuser pyproject.toml pyproject.toml
+COPY --chown=appuser:appuser README.md README.md
+
+# Install core dependencies
+RUN python -m pip install --upgrade pip setuptools wheel
+
+# Copy source code
+COPY --chown=appuser:appuser src/ ./src/
+
+# Install the package with core dependencies
+RUN pip install --no-cache-dir -e ".[core]"
+
+# ===== Stage 2: CPU Runtime =====
+FROM base AS cpu-runtime
+
+LABEL org.opencontainers.image.description="Codex ML CPU runtime"
+
+# Install CPU-optimized PyTorch
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+USER appuser
+
+ENTRYPOINT ["python", "-m", "codex_ml"]
+CMD ["--help"]
+
+# ===== Stage 3: GPU Runtime =====
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04 AS gpu-runtime
+
+LABEL org.opencontainers.image.description="Codex ML GPU runtime"
+
+# Install Python 3.12
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+  && add-apt-repository ppa:deadsnakes/ppa \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
+    python3-pip \
+    build-essential \
+    gcc \
+    git \
+    curl \
+  && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.12 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
+
+WORKDIR /app
+
+# Copy project files
+COPY --chown=root:root requirements.txt requirements.txt
+COPY --chown=root:root pyproject.toml pyproject.toml
+COPY --chown=root:root README.md README.md
+COPY --chown=root:root src/ ./src/
+
+# Install dependencies (rebuild instead of copy for compatibility)
+RUN python3 -m pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -e ".[core]"
+
+# Install GPU-enabled PyTorch
+RUN pip install --no-cache-dir torch torchvision torchaudio
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+    chown -R appuser:appuser /app
+
+ENV CUDA_VISIBLE_DEVICES=0
+
+USER appuser
+
+ENTRYPOINT ["python3", "-m", "codex_ml"]
+CMD ["--help"]
+
+# ===== Stage 4: Test Environment (default) =====
+FROM python:3.12-slim AS test
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"

@@ -10,12 +10,9 @@ correlation measurement, and performance validation.
 
 import pytest
 from datetime import datetime
-from typing import Dict, Tuple
 
 from cognitive_brain.quantum.ghz_states import (
     GHZStateManager,
-    GHZState,
-    SUPPORTED_AGENT_COUNTS,
 )
 from cognitive_brain.quantum.multi_agent_coordinator import (
     MultiAgentCoordinator,
@@ -428,7 +425,7 @@ class TestPerformance:
         ]
 
         start_time = datetime.now()
-        consensus = coordinator.reach_consensus(decisions)
+        coordinator.reach_consensus(decisions)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
@@ -445,7 +442,7 @@ class TestPerformance:
         ]
 
         start_time = datetime.now()
-        consensus = coordinator.reach_consensus(decisions)
+        coordinator.reach_consensus(decisions)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
@@ -456,7 +453,7 @@ class TestPerformance:
         manager = TopologyManager()
 
         start_time = datetime.now()
-        adj_matrix = manager.configure_topology(NetworkTopology.MESH, 6)
+        manager.configure_topology(NetworkTopology.MESH, 6)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 10, f"Configuration time {latency_ms}ms too slow"
@@ -467,7 +464,7 @@ class TestPerformance:
         agent_ids = [f"agent_{i}" for i in range(6)]
 
         start_time = datetime.now()
-        state = manager.create_ghz_state(agent_ids)
+        manager.create_ghz_state(agent_ids)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 50, f"Creation time {latency_ms}ms too slow"

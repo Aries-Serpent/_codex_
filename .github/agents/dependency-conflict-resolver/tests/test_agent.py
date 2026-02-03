@@ -15,7 +15,6 @@ import unittest
 import tempfile
 import json
 from pathlib import Path
-from datetime import datetime, timezone
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -23,7 +22,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from agent import (
     DependencyConflictResolver,
     DependencyInfo,
-    DependencyConflict,
     ResolutionStrategy,
     ConflictType,
     Ecosystem,

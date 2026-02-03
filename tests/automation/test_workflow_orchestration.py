@@ -15,10 +15,8 @@ Phase: 20.2 Advanced Automation
 
 from __future__ import annotations
 
-import json
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from datetime import datetime
+from typing import Any, Dict
 
 import pytest
 
@@ -182,7 +180,7 @@ class TestDependencyManagement:
     def test_topological_order_possible(self, workflow_definition: Dict[str, Any]):
         """Test tasks can be ordered topologically."""
         tasks = workflow_definition["tasks"]
-        task_ids = [t["id"] for t in tasks]
+        [t["id"] for t in tasks]
         
         # Simple check: first task should have no deps
         first_task = tasks[0]

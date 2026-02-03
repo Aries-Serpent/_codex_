@@ -1,10 +1,8 @@
 """Comprehensive tests for RAG embeddings module."""
 
-import hashlib
 import os
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -74,7 +72,7 @@ class TestLocalSentenceTransformerProvider:
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2", "Text 3"]
-            embeddings = provider.encode(texts, batch_size=2)
+            provider.encode(texts, batch_size=2)
             
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
             assert call_kwargs['batch_size'] == 2
@@ -84,7 +82,7 @@ class TestLocalSentenceTransformerProvider:
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2"]
-            embeddings = provider.encode(texts, show_progress=True)
+            provider.encode(texts, show_progress=True)
             
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
             assert call_kwargs['show_progress_bar'] is True
@@ -187,7 +185,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")
             texts = ["Text " + str(i) for i in range(5)]
-            embeddings = provider.encode(texts, batch_size=3)
+            provider.encode(texts, batch_size=3)
             
             # Should make 2 API calls (3 + 2)
             assert mock_client.embeddings.create.call_count == 2
@@ -275,7 +273,7 @@ class TestCachedEmbeddingProvider:
         
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         texts = ["Hello", "World"]
-        embeddings = cache.encode(texts, cache_key="test_key")
+        cache.encode(texts, cache_key="test_key")
         
         assert cache.cache_misses == 1
         assert cache.cache_hits == 0

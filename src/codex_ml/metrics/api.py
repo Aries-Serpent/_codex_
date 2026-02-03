@@ -342,7 +342,7 @@ def summarize_ndjson_to_sqlite(
     conn = sqlite3.connect(str(db_path_obj))
     try:
         # Create table with TEXT columns (flexible schema)
-        columns_def = ", ".join(
+        ", ".join(
             f'"{col}" TEXT' for col in columns
         )  # nosec B608        conn.execute(f'CREATE TABLE IF NOT EXISTS "{table_name}" ({columns_def})')
 

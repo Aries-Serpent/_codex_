@@ -7,7 +7,6 @@ import numpy as np
 
 from codex.quantum_orchestrator.optimized import (
     VectorizedEvolution,
-    BatchState,
     SpatialIndex,
     BatchGradientComputer,
     extract_batch_state,
@@ -16,7 +15,6 @@ from codex.quantum_orchestrator.optimized import (
 from codex.quantum_orchestrator.orchestrator import (
     create_orchestrator,
     PhysicsConstants,
-    DiracSpinor,
 )
 
 
@@ -305,7 +303,7 @@ class TestIntegrationWithOrchestrator:
         evolved_spinors = evolution.batch_normalize(evolved_spinors)
 
         # Check probabilities are conserved
-        initial_probs = evolution.batch_compute_probabilities(initial_batch.spinors)
+        evolution.batch_compute_probabilities(initial_batch.spinors)
         evolved_probs = evolution.batch_compute_probabilities(evolved_spinors)
 
         # Total probability should remain close to 1

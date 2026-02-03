@@ -8,7 +8,6 @@ Focus: DetectedIssue, RemediationAction, DiagnosticResult, SelfHealingEngine
 
 import pytest
 from pathlib import Path
-from datetime import datetime
 
 
 # ============================================================================

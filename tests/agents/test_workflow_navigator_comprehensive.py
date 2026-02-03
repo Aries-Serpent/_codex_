@@ -8,7 +8,6 @@ Focus: WorkflowFrequency, StepStatus, WorkflowStep, Workflow, WorkflowNavigator
 
 import pytest
 from pathlib import Path
-import json
 import tempfile
 
 

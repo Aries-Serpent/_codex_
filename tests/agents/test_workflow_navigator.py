@@ -5,10 +5,7 @@ This module contains tests for the Workflow Navigator that provides
 tokenized logical workflows for deterministic navigation and execution.
 """
 
-import pytest
 import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 
 class TestWorkflowFrequency:
@@ -160,7 +157,7 @@ class TestWorkflowStep:
             optional=True
         )
         
-        result = step.execute({})
+        step.execute({})
         
         # Optional steps that fail still complete
         # (the code sets COMPLETED if returncode != 0 but optional is True)
@@ -173,7 +170,7 @@ class TestWorkflow:
     def test_workflow_creation(self):
         """Test creating a Workflow."""
         from agents.workflow_navigator import (
-            Workflow, WorkflowStep, WorkflowFrequency
+            Workflow, WorkflowFrequency
         )
         
         workflow = Workflow(

@@ -5,6 +5,7 @@ Tests end-to-end workflows, multi-tenant isolation, and cross-module interaction
 
 import tempfile
 from pathlib import Path
+import importlib.util
 
 import numpy as np
 import pytest
@@ -18,8 +19,16 @@ try:
 except ImportError:
     RAG_INTEGRATION_AVAILABLE = False
 
+# Check if sentence_transformers is available
+try:
+    if importlib.util.find_spec("sentence_transformers") is None:
+        raise ImportError
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 pytestmark = pytest.mark.skipif(
-    not RAG_INTEGRATION_AVAILABLE,
+    not RAG_INTEGRATION_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
     reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 

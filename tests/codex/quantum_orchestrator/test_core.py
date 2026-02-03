@@ -1,7 +1,7 @@
 """Tests for codex/quantum_orchestrator/core.py module."""
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 
 class TestQuantumOrchestratorImports:

@@ -125,8 +125,8 @@ def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
 
 def test_base_config_module_loads() -> None:
     base = pytest.importorskip("configs.base_config")
-    assert isinstance(getattr(base, "BASE_CONFIG", {}), dict)
-    assert "gradient_accumulation_steps" in base.BASE_CONFIG
+    assert isinstance(getattr(base, "BASE_TRAINING_CONFIG", {}), dict)
+    assert "gradient_accumulation_steps" in base.BASE_TRAINING_CONFIG
 
 
 def test_mlflow_optional(monkeypatch) -> None:

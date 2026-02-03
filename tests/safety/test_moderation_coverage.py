@@ -11,8 +11,7 @@ Created: 2026-01-18 (Phase 14.2)
 
 from __future__ import annotations
 
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -304,7 +303,7 @@ class TestModerationAdapter:
         mock_resolve.return_value = None
         settings = ModerationSettings(provider="custom")
         
-        adapter = ModerationAdapter(settings)
+        ModerationAdapter(settings)
         
         mock_resolve.assert_called_once_with("custom")
 

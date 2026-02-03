@@ -9,10 +9,9 @@ Phase: 14.4 - Final Gaps & Branch Coverage
 Target: 100% branch coverage for data modules
 """
 
-import os
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -104,7 +103,6 @@ class TestDataLoadingBranches:
     def test_streaming_enabled_branch(self) -> None:
         """Test streaming mode enabled branch."""
         streaming = True
-        dataset_size = 1_000_000
         if streaming:
             loader_type = "iterable"
         else:

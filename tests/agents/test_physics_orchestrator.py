@@ -8,10 +8,7 @@ Tests force vectors, action paths, and physics-based calculations.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
-from typing import Any, List, Optional, Union
 
-import pytest
 
 from agents.physics_orchestrator import (
     ActionPath,

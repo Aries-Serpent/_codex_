@@ -4,7 +4,6 @@ Tests for codex.archive.score module.
 This module contains tests for archive scoring functionality.
 """
 
-import pytest
 
 
 class TestScoreInput:

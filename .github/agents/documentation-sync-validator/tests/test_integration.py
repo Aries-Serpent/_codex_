@@ -15,7 +15,7 @@ from datetime import datetime, timezone, timedelta
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from agent import DocumentationSyncValidator, DriftSeverity, FreshnessStatus
+from agent import DocumentationSyncValidator, DriftSeverity
 
 
 class TestIntegration:

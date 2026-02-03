@@ -11,10 +11,7 @@ Part of Post-Completion Phase 1.2: Training Pipeline Integration Tests
 from __future__ import annotations
 
 import pytest
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
+from unittest.mock import Mock
 
 # Test availability flags
 try:
@@ -24,7 +21,7 @@ except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
-    import torch
+    import torch  # noqa: F401 - Testing optional dependency availability
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -142,7 +139,7 @@ class TestMultiGPUWorkflow:
         import torch
         
         # Step 1: Check GPU availability
-        gpu_count = torch.cuda.device_count() if torch.cuda.is_available() else 0
+        torch.cuda.device_count() if torch.cuda.is_available() else 0
         
         # Step 2: Mock distributed setup
         mock_dist = Mock()

@@ -4,7 +4,6 @@ Tests for training.seed_utils module.
 This module contains tests for the legacy seed_utils compatibility layer.
 """
 
-import pytest
 import warnings
 
 
@@ -15,7 +14,7 @@ class TestLegacyImport:
         """Test importing from training.seed_utils emits deprecation warning."""
         # We need to test that the module emits a deprecation warning
         # Since it's already imported, we test the function exists
-        with warnings.catch_warnings(record=True) as w:
+        with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             # The import may already be cached, so we check for the function
             from training.seed_utils import set_all_seeds

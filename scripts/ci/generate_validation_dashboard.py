@@ -7,7 +7,6 @@ Generates HTML dashboard with metrics, charts, and trends.
 """
 
 import json
-import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
@@ -66,7 +65,7 @@ class MetricsDashboard:
         
         total_runs = len(self.metrics)
         passed = sum(1 for m in self.metrics if m.status == 'pass')
-        failed = sum(1 for m in self.metrics if m.status == 'fail')
+        sum(1 for m in self.metrics if m.status == 'fail')
         
         total_issues = sum(m.issues_found for m in self.metrics)
         total_fixed = sum(m.issues_fixed for m in self.metrics)

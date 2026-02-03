@@ -21,7 +21,6 @@ Test Categories:
 """
 
 import pytest
-from typing import Dict, Any, List
 from agents.developer_orchestrator import (
     PhysicsGuidedDeveloperOrchestrator,
     AppType,

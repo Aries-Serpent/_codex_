@@ -5,8 +5,7 @@ This module contains tests for the PhysicsGuidedDeveloperOrchestrator class
 and related classes for physics-inspired software development guidance.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestRequirementVariable:
@@ -259,7 +258,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         requirements = {"app_type": "invalid_type"}
         
-        result = orchestrator.analyze_user_requirements(requirements)
+        orchestrator.analyze_user_requirements(requirements)
         
         assert orchestrator.app_type == AppType.PYTHON_CONSOLE
 

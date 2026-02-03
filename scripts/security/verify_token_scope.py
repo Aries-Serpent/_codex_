@@ -49,7 +49,7 @@ Uses GitHub API's x-oauth-scopes header to verify permissions safely.
 import os
 import sys
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from datetime import datetime, UTC
 
 # Configure logging (token values are NEVER logged)

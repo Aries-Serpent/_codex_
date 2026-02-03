@@ -6,7 +6,6 @@ import logging
 import sys
 from types import SimpleNamespace
 
-import pytest
 
 from utils import logging_factory
 

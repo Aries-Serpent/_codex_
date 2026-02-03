@@ -1,8 +1,6 @@
 """Tests for parallel parser."""
 
-from pathlib import Path
 
-import pytest
 
 from codex.ast.parallel import ParallelParser
 

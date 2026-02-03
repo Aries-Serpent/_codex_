@@ -96,7 +96,7 @@ class RustErrorValidator:
             for i, line in enumerate(lines, 1):
                 # Get context lines for analysis
                 context_start_5 = max(0, i - 6)
-                context_lines_5 = lines[context_start_5:i-1]
+                lines[context_start_5:i-1]
                 
                 context_start_10 = max(0, i - 11)
                 context_lines_10 = lines[context_start_10:i-1]

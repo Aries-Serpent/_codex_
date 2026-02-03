@@ -4,10 +4,8 @@ Chaos engineering tests for inference server.
 Tests failure scenarios, resilience, and recovery mechanisms.
 """
 
-import asyncio
 import time
-from typing import List
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
@@ -17,7 +15,9 @@ def chaos_client():
     """Create test client for chaos testing."""
     from src.codex_ml.serving.inference_server import create_app
 
-    app = create_app(enable_auth=False)
+    # create_app() takes optional config parameter, not enable_auth
+    # Authentication is controlled via env vars (CODEX_API_KEYS, CODEX_JWT_SECRET)
+    app = create_app()
     return TestClient(app)
 
 
@@ -116,7 +116,7 @@ class TestNetworkFailures:
             mock_response.side_effect = ConnectionResetError("Connection reset by peer")
 
             try:
-                response = chaos_client.post(
+                chaos_client.post(
                     "/infer",
                     json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )

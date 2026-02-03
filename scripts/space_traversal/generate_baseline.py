@@ -157,7 +157,7 @@ def main(argv=None):
     input_path = Path(args.input)
     output_path = Path(args.baseline_path) if args.baseline_path else DEFAULT_OUTPUT
     stable_output = getattr(args, "stable_output", False)
-    max_bytes = getattr(args, "max_bytes", DEFAULT_MAX_BYTES)
+    getattr(args, "max_bytes", DEFAULT_MAX_BYTES)
 
     if not input_path.exists():
         print(f"Input file not found: {args.input}", file=sys.stderr)

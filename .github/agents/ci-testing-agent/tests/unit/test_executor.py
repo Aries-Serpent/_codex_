@@ -114,7 +114,7 @@ class TestSandboxExecutor:
             "env": {"TEST_VAR": "value"},
         }
 
-        result = executor.execute(task)
+        executor.execute(task)
 
         # Verify env was passed
         call_kwargs = mock_run.call_args[1]
@@ -185,7 +185,7 @@ class TestSandboxExecutor:
 
         task = {"command": "pytest", "timeout": 120}
 
-        result = executor.execute(task)
+        executor.execute(task)
 
         # Verify timeout was passed
         call_kwargs = mock_run.call_args[1]

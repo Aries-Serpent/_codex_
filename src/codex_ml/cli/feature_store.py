@@ -229,7 +229,7 @@ def materialize(
         python -m codex_ml.cli.feature_store materialize feature1 feature2 -o features.parquet
     """
     try:
-        store = FeatureStore(store_path)
+        FeatureStore(store_path)
 
         # In real usage, would need input data
         # This is a placeholder implementation

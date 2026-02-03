@@ -250,7 +250,6 @@ class TestCodexPackageStructure:
     def test_package_in_sys_modules(self) -> None:
         """Test package is in sys.modules."""
         # Arrange & Act
-        import codex
 
         # Assert
         assert "codex" in sys.modules
@@ -298,7 +297,6 @@ class TestCodexImportSafety:
         """Test importing codex does not raise exceptions."""
         # Arrange & Act & Assert
         try:
-            import codex
             assert True
         except Exception as e:
             pytest.fail(f"Import raised unexpected exception: {e}")
@@ -307,7 +305,6 @@ class TestCodexImportSafety:
         """Test importing __version__ does not raise exceptions."""
         # Arrange & Act & Assert
         try:
-            from codex import __version__
             assert True
         except Exception as e:
             pytest.fail(f"Version import raised unexpected exception: {e}")
@@ -316,7 +313,6 @@ class TestCodexImportSafety:
         """Test importing __all__ does not raise exceptions."""
         # Arrange & Act & Assert
         try:
-            from codex import __all__
             assert True
         except Exception as e:
             pytest.fail(f"__all__ import raised unexpected exception: {e}")

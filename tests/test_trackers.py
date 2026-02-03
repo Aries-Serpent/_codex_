@@ -6,7 +6,6 @@ Test module for trackers.
 
 #!/usr/bin/env python3
 """Tests for trackers utility - basic integration tests."""
-import os
 from src.utils.trackers import init_wandb_offline, init_mlflow_local
 
 

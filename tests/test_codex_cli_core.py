@@ -6,14 +6,7 @@ Comprehensive unit tests for the main CLI functionality in src/codex/cli.py
 
 from __future__ import annotations
 
-import json
-import os
-import sqlite3
-import sys
-import tempfile
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
 
 import click
 from click.testing import CliRunner
@@ -23,7 +16,6 @@ import pytest
 def _get_cli_module():
     """Helper to get the Click CLI module from sys.modules."""
     import sys
-    from codex.cli import cli  # Ensure CLI is loaded
     return sys.modules.get("codex._cli_click")
 
 

@@ -11,11 +11,9 @@ Target: Establish performance baseline for training operations
 
 import gc
 import os
-import sys
 import time
 from dataclasses import dataclass
 from typing import Any, Callable
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -287,7 +285,6 @@ class TestTrainingLatencyBenchmarks:
 
     def test_checkpoint_save_latency(self) -> None:
         """Benchmark checkpoint save latency (simulated)."""
-        import tempfile
         import json
         
         def save_checkpoint() -> str:

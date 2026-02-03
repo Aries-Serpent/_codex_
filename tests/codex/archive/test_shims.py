@@ -4,8 +4,6 @@ Tests for codex.archive.shims module.
 This module contains tests for writing consolidation shims and pointers.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestWritePythonShim:

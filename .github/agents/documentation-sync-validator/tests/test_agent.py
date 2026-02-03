@@ -14,7 +14,6 @@ Tests cover:
 import pytest
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
-from unittest.mock import patch, MagicMock
 import tempfile
 import os
 
@@ -25,7 +24,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from agent import (
     DocumentationSyncValidator,
     DocumentationIssue,
-    FreshnessReport,
     SemanticDriftReport,
     DriftSeverity,
     FreshnessStatus,

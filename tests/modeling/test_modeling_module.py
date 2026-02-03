@@ -87,25 +87,29 @@ def test_load_model_applies_lora(monkeypatch: pytest.MonkeyPatch) -> None:
 
     applied: dict[str, object] = {}
 
-    class FakeLoraConfig:
-        def __init__(self, **kwargs: object) -> None:
-            applied["config"] = kwargs
-
-    def fake_get_peft_model(model: _DummyModel, cfg: FakeLoraConfig) -> _DummyModel:
+    def fake_apply_lora(model: _DummyModel, cfg: modeling.LoRASettings) -> _DummyModel:
         applied["model"] = model
         applied["lora"] = cfg
+        # Record the config parameters for assertion
+        applied["config"] = {
+            "r": cfg.r,
+            "lora_alpha": cfg.alpha,
+            "lora_dropout": cfg.dropout,
+            "target_modules": list(cfg.target_modules),
+            "bias": cfg.bias,
+            "task_type": cfg.task_type,
+        }
         return model
 
     monkeypatch.setattr(
         modeling, "AutoModelForCausalLM", SimpleNamespace(from_pretrained=fake_from_pretrained)
     )
-    monkeypatch.setattr(modeling, "LoraConfig", FakeLoraConfig)
-    monkeypatch.setattr(modeling, "get_peft_model", fake_get_peft_model)
+    monkeypatch.setattr(modeling, "apply_lora_if_configured", fake_apply_lora)
 
     cfg = modeling.ModelConfig(
         model_name="demo",
         device="cpu",
-        lora=modeling.LoRASettings(enabled=True, r=4, alpha=32, dropout=0.1, target_modules=("x",)),
+        lora=modeling.LoRASettings(enabled=True, r=4, alpha=32, dropout=0.1, target_modules=("linear",)),
     )
     model = modeling.load_model(cfg)
 
@@ -114,7 +118,7 @@ def test_load_model_applies_lora(monkeypatch: pytest.MonkeyPatch) -> None:
     params = applied["config"]
     assert params["r"] == 4
     assert params["lora_alpha"] == 32
-    assert params["target_modules"] == ["x"]
+    assert params["target_modules"] == ["linear"]
 
 
 @pytest.mark.skipif(TORCH_STUB, reason="modeling tests require the real torch package")

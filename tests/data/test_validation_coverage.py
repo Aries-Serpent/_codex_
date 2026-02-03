@@ -14,12 +14,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 
 # =============================================================================
@@ -121,7 +120,7 @@ class TestSchemaValidation:
             if hasattr(validation, "validate_record"):
                 # May raise or return False for invalid
                 try:
-                    result = validation.validate_record(record)
+                    validation.validate_record(record)
                     # If no exception, result might be False or error dict
                 except (ValueError, TypeError):
                     pass  # Expected for invalid data

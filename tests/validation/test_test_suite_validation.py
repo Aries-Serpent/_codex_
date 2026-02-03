@@ -10,12 +10,9 @@ This module provides tests to validate the test suite itself:
 """
 
 import ast
-import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Set
 
-import pytest
 
 
 # =============================================================================

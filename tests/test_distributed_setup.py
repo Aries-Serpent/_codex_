@@ -4,7 +4,7 @@ import os
 import pytest
 import torch
 import torch.nn as nn
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from codex_ml.training.distributed_setup import (
     setup_distributed,

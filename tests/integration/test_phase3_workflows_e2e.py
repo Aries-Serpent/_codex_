@@ -14,13 +14,8 @@ Coverage goal: +15-18% (reaching 77-80% total)
 
 from __future__ import annotations
 
-import os
-import sys
 import json
-import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any, List
 import pytest
 
 
@@ -207,7 +202,7 @@ class TestCompleteTrainingWorkflow:
             # Update weights after accumulation
             if (step + 1) % accumulation_steps == 0:
                 # Average accumulated gradients
-                avg_grad = sum(g["grad"] for g in accumulated_gradients) / len(accumulated_gradients)
+                sum(g["grad"] for g in accumulated_gradients) / len(accumulated_gradients)
                 accumulated_gradients = []
         
         # Verify effective batch size
@@ -332,8 +327,6 @@ class TestCompleteRAGWorkflow:
         index_path.write_text(json.dumps(embeddings))
         
         # Step 4: Query
-        query = "What is machine learning?"
-        query_embedding = [0.1] * 128
         
         # Step 5: Retrieve (mock similarity)
         retrieved = [
@@ -342,7 +335,7 @@ class TestCompleteRAGWorkflow:
         ]
         
         # Step 6: Generate response
-        context = " ".join([
+        " ".join([
             embeddings[r["doc_id"]]["text"]
             for r in retrieved
         ])
@@ -417,7 +410,6 @@ class TestCompleteRAGWorkflow:
 
     def test_rag_with_hybrid_search(self):
         """Test RAG with hybrid search (vector + keyword)."""
-        query = "machine learning algorithms"
         
         # Vector search results
         vector_results = [
@@ -568,11 +560,6 @@ class TestCompleteAgentWorkflow:
     def test_full_agent_task_execution(self, tmp_path):
         """Test complete agent task execution workflow."""
         # Step 1: Initialize agent
-        agent_config = {
-            "name": "task_agent",
-            "capabilities": ["analyze", "plan", "execute"],
-            "memory": {}
-        }
         
         # Step 2: Receive task
         task = {
@@ -642,13 +629,7 @@ class TestCompleteAgentWorkflow:
 
     def test_agent_with_tool_usage(self):
         """Test agent workflow with tool usage."""
-        available_tools = {
-            "calculator": {"name": "calculator", "available": True},
-            "web_search": {"name": "web_search", "available": True},
-            "file_reader": {"name": "file_reader", "available": True}
-        }
         
-        task = "Calculate 25 * 4 and search for the result online"
         
         # Agent selects tools
         tool_sequence = []

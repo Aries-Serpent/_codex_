@@ -7,12 +7,11 @@ Provides root cause analysis, dependency conflict detection, and actionable reco
 """
 
 import click
-import json
 import yaml
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import subprocess
 

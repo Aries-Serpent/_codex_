@@ -14,15 +14,8 @@ Coverage goal: +15-18% (reaching 77-80% total)
 
 from __future__ import annotations
 
-import os
-import sys
 import json
-import time
-import tempfile
 import threading
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any, List
 import pytest
 
 
@@ -207,7 +200,7 @@ class TestNetworkFailuresAndRetries:
         
         try:
             ip = resolve_host("invalid.domain")
-        except ConnectionError as e:
+        except ConnectionError:
             # Fallback to localhost
             ip = "127.0.0.1"
             error_logged = True
@@ -291,7 +284,6 @@ class TestResourceExhaustionScenarios:
         """Test memory optimization in batch processing."""
         large_dataset = list(range(10000))
         batch_size = 100
-        max_memory_items = 500
         
         processed_count = 0
         
@@ -428,7 +420,7 @@ class TestConcurrentAccessAndLocking:
 
     def test_file_lock_prevents_concurrent_writes(self, tmp_path):
         """Test file lock prevents concurrent writes."""
-        lock_file = tmp_path / "test.lock"
+        tmp_path / "test.lock"
         
         # Simulate lock acquisition
         locks = {}
@@ -597,7 +589,6 @@ class TestConcurrentAccessAndLocking:
     def test_lock_timeout_prevents_deadlock(self):
         """Test lock timeout prevents indefinite waiting."""
         lock_acquired = False
-        timeout_seconds = 2.0
         
         def try_acquire_with_timeout(timeout):
             # Simulate timeout

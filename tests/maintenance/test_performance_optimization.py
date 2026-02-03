@@ -9,10 +9,8 @@ Phase: 17.0 - Continuous Improvement & Maintenance
 Tests: 15+
 """
 
-import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import pytest
 
@@ -153,7 +151,7 @@ class TestTestCaching:
 
     def test_pytest_cache_configured(self):
         """Verify pytest cache is configured."""
-        cache_dir = REPO_ROOT / ".pytest_cache"
+        REPO_ROOT / ".pytest_cache"
         # Cache directory should be gitignored
         gitignore = REPO_ROOT / ".gitignore"
         
@@ -182,6 +180,6 @@ class TestTestCaching:
         
         # Track heavy import ratio for monitoring (informational only)
         if total_files > 0:
-            heavy_import_ratio = files_with_heavy / total_files
+            files_with_heavy / total_files
             # Heavy imports are acceptable but should be monitored
             # This test passes but logs the ratio for awareness

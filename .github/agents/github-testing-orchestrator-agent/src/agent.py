@@ -7,13 +7,12 @@ Handles HA-TEST-001 through HA-TEST-006 from Human Admin Consolidated Action Tra
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 try:
     import yaml

@@ -4,7 +4,6 @@ Tests for codex.ast.metrics module.
 This module contains tests for code metrics aggregation and analysis.
 """
 
-import pytest
 
 
 class TestCodeMetrics:

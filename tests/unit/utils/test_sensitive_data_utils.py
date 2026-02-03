@@ -1,6 +1,5 @@
 """Unit tests for sensitive data utilities (Phase 23 Week 3 gapfill)."""
 
-import pytest
 
 from src.utils.sensitive_data import mask_sensitive_data, hash_sensitive_value
 

@@ -13,10 +13,7 @@ Phase: 20.4 Full Stack Integration & Cross-Phase Validation
 
 from __future__ import annotations
 
-import time
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Any, Dict
 
 import pytest
 
@@ -328,8 +325,6 @@ class TestSystemLevelValidation:
 
     def test_zero_downtime_deployment(self):
         """Test zero-downtime deployment strategy."""
-        old_version = {"replicas": 3, "traffic": 100}
-        new_version = {"replicas": 3, "traffic": 0}
         
         # Gradual traffic shift
         steps = [
@@ -403,7 +398,6 @@ class TestSystemLevelValidation:
 
     def test_disaster_recovery_drill(self):
         """Test disaster recovery drill."""
-        primary_region = {"status": "failed"}
         failover_region = {"status": "activating"}
         
         # Failover

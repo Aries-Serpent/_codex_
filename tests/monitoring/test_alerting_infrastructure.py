@@ -15,11 +15,9 @@ Phase: 20.1 Production Monitoring & Alerting
 
 from __future__ import annotations
 
-import json
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
 
 import pytest
 
@@ -248,7 +246,6 @@ class TestAlertTriggers:
 
     def test_alert_state_transition_pending_to_firing(self):
         """Test alert state transition from pending to firing."""
-        states = ["inactive", "pending", "firing", "resolved"]
         current_state = "pending"
         duration_met = True
         

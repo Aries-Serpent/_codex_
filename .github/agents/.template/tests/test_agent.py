@@ -1,7 +1,6 @@
 """Unit tests for [Agent Name]"""
 
 import pytest
-from pathlib import Path
 from ..src.agent import AgentClass
 
 

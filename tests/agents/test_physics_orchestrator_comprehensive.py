@@ -5,7 +5,6 @@ Strategy: Test all major classes, methods, and code paths to maximize coverage.
 Target: Increase physics_orchestrator.py from 20% to 60%+
 """
 
-import pytest
 from pathlib import Path
 
 

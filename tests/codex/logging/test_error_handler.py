@@ -8,11 +8,8 @@ from __future__ import annotations
 
 import importlib
 import logging
-import os
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -52,7 +49,7 @@ class TestCodexErrorHandlerInit:
         
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "new_logs"
-            handler = CodexErrorHandler(log_dir=log_dir)
+            CodexErrorHandler(log_dir=log_dir)
             assert log_dir.exists()
 
     def test_init_creates_error_log_file(self) -> None:

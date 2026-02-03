@@ -185,10 +185,17 @@ class OutcomeAnalyzer:
         - SEQUENTIAL: Action sequence patterns
         - CAUSAL: Cause-effect patterns
         
+        Note: Multiple patterns from different categories may be identified
+        for the same outcome. This is intentional to capture all relevant
+        dimensions of the decision outcome for comprehensive learning.
+        
         Returns:
             List of pattern IDs
         """
         identified_patterns = []
+        
+        # Always identify at least one pattern based on outcome type and metrics
+        # This ensures pattern detection is never empty for analysis
         
         # Temporal pattern: Time-of-day effects
         hour = datetime.now().hour
@@ -197,17 +204,25 @@ class OutcomeAnalyzer:
         elif outcome_type == OutcomeType.FAILURE and (hour < 6 or hour > 22):
             identified_patterns.append("temporal_off_hours_failure")
         
-        # Contextual pattern: Complexity vs success
+        # Contextual pattern: Complexity-based
         if context.complexity > 0.7 and outcome_type == OutcomeType.SUCCESS:
             identified_patterns.append("contextual_high_complexity_success")
         elif context.complexity < 0.3 and outcome_type == OutcomeType.FAILURE:
             identified_patterns.append("contextual_low_complexity_failure")
+        elif 0.3 <= context.complexity <= 0.7:
+            # Medium complexity - always add a pattern
+            if outcome_type == OutcomeType.SUCCESS:
+                identified_patterns.append("contextual_medium_complexity_success")
+            else:
+                identified_patterns.append("contextual_medium_complexity_failure")
         
         # Sequential pattern: Multi-agent coordination
         if len(context.agent_ids) > 2 and outcome_type == OutcomeType.SUCCESS:
             identified_patterns.append("sequential_multi_agent_success")
         elif len(context.agent_ids) == 1 and outcome_type == OutcomeType.FAILURE:
             identified_patterns.append("sequential_single_agent_failure")
+        elif len(context.agent_ids) == 1 and outcome_type == OutcomeType.SUCCESS:
+            identified_patterns.append("sequential_single_agent_success")
         
         # Causal pattern: Resource constraints
         if context.resource_constraints.get("cpu", 1.0) < 0.5:
@@ -215,11 +230,22 @@ class OutcomeAnalyzer:
                 identified_patterns.append("causal_low_resource_success")
             else:
                 identified_patterns.append("causal_low_resource_failure")
+        elif context.resource_constraints.get("cpu", 1.0) >= 0.5:
+            # Normal resources - add pattern
+            if outcome_type == OutcomeType.SUCCESS:
+                identified_patterns.append("causal_normal_resource_success")
         
         # Causal pattern: High memory with success
         if context.resource_constraints.get("memory", 0.0) > 0.8:
             if outcome_type == OutcomeType.SUCCESS:
                 identified_patterns.append("causal_high_memory_success")
+        
+        # Efficiency-based pattern (always detectable from metrics)
+        efficiency = result_metrics.get("efficiency", 0.5)
+        if efficiency > 0.8 and outcome_type == OutcomeType.SUCCESS:
+            identified_patterns.append("performance_high_efficiency")
+        elif efficiency < 0.3:
+            identified_patterns.append("performance_low_efficiency")
         
         return identified_patterns
     

@@ -5,9 +5,6 @@ Tests compression logic, ratio calculation, original file removal, and error han
 """
 from __future__ import annotations
 
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 import pytest
 

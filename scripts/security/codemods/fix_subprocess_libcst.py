@@ -86,7 +86,6 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
         
         # Update arguments: change shell=False to shell=False, add check=True
         new_args = []
-        shell_handled = False
         check_present = False
         
         for arg in node.args:

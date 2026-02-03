@@ -1,7 +1,5 @@
 """Unit tests for error_logging utilities (Phase 23 Week 3 gapfill)."""
 
-import pytest
-from pathlib import Path
 
 from src.utils.error_logging import log_error, append_error_to_file
 

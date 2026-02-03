@@ -3,7 +3,6 @@ Test that S6 render writes a JSON companion file with expected schema keys
 """
 
 import json
-from pathlib import Path
 
 from scripts.space_traversal import audit_runner as runner
 

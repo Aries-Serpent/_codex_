@@ -29,7 +29,7 @@ if "torch" not in sys.modules:
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from pydantic import BaseModel, ConfigDict, Field, PositiveInt, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, PositiveInt, ValidationError
 
 
 # Local config schema implementation for testing without torch dependency
