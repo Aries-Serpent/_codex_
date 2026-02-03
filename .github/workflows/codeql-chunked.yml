@@ -65,7 +65,7 @@ jobs:
       chunks: ${{ steps.discover.outputs.chunks }}
       should_run: ${{ steps.discover.outputs.should_run }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Discover and Size Chunks
         id: discover
@@ -134,7 +134,7 @@ jobs:
       security-events: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
@@ -190,7 +190,7 @@ jobs:
       security-events: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
@@ -199,7 +199,7 @@ jobs:
           cache-tier: common
 
       - name: Download All SARIF Artifacts
-        uses: actions/download-artifact@v4.1.3
+        uses: actions/download-artifact@v7
         with:
           pattern: sarif-*
           path: sarif-chunks
@@ -231,7 +231,7 @@ jobs:
     needs: chunk-discovery
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Generate Size Report
         run: |

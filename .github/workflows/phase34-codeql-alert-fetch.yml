@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Debug Workflow Inputs
         if: runner.debug == '1'
@@ -117,7 +117,7 @@ jobs:
           fi
 
       - name: Upload Alert Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-alert-inventory
           path: |
