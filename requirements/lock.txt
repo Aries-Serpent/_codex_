@@ -593,7 +593,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.1
+numpy==2.4.2
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
