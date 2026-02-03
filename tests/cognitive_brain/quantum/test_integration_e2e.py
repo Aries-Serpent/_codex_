@@ -161,8 +161,9 @@ class TestEndToEndWorkflows:
         assert isinstance(decompressed, dict)
         for key in test_pattern:
             assert key in decompressed
-            # Allow some reconstruction error (lossy compression)
-            assert abs(decompressed[key] - test_pattern[key]) < 0.5  # Relaxed tolerance
+            # Relaxed tolerance from 0.3 to 0.5 - PCA compression with small training
+            # data may have higher reconstruction error
+            assert abs(decompressed[key] - test_pattern[key]) < 0.5
 
     def test_auto_pruning_trigger(self):
         """Test automatic pruning when LTM reaches threshold."""
@@ -229,7 +230,10 @@ class TestEndToEndWorkflows:
         assert 0 <= health["ltm_utilization"] <= 100.0
         assert health["stm_size"] == 5
 
-    @pytest.mark.skip(reason="Integration test requires properly mocked AuditResult objects - see generate_complex_scenarios")
+    @pytest.mark.skip(
+        reason="Integration test requires properly mocked AuditResult objects. "
+        "TODO: generate_complex_scenarios returns tuples, need to create proper AuditResult mocks."
+    )
     def test_full_memory_augmented_assessment_workflow(self):
         """Test complete memory-augmented compliance assessment."""
         # Create mocks for required dependencies
@@ -332,7 +336,10 @@ class TestEndToEndWorkflows:
         # Newer pattern might score higher due to temporal decay
         assert len(results) == 2
 
-    @pytest.mark.skip(reason="Integration test requires properly mocked AuditResult objects - see generate_complex_scenarios")
+    @pytest.mark.skip(
+        reason="Integration test requires properly mocked AuditResult objects. "
+        "TODO: generate_complex_scenarios returns tuples, need to create proper AuditResult mocks."
+    )
     def test_end_to_end_with_realistic_workload(self):
         """Test complete system with realistic workload."""
         # Create mocks for required dependencies
