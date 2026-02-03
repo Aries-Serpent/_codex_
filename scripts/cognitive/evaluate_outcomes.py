@@ -36,7 +36,7 @@ Part of AfterMath - evaluates execution outcomes
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 from datetime import datetime
 
 
@@ -59,7 +59,7 @@ def evaluate_outcomes(
         Evaluation results
     """
     actual_path = Path(actual_dir)
-    expected_path = Path(expected_dir)
+    Path(expected_dir)
     
     # Load validation report
     validation_file = actual_path / "validation_report.json"

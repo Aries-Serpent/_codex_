@@ -10,22 +10,22 @@ Use Cases:
 - Joint decision-making for PII + secret exposure
 """
 
-from typing import Dict, Any, Optional
 from dataclasses import dataclass
+from typing import Any, Dict, Optional
 
-from cognitive_brain.quantum.entanglement import EntanglementManager
 from cognitive_brain.integrations.compliance_integration import (
-    QuantumComplianceAssessor,
-    ComplianceAssessment,
     AuditResult,
+    ComplianceAssessment,
+    QuantumComplianceAssessor,
 )
+from cognitive_brain.quantum.entanglement import EntanglementManager
 
 
 @dataclass
 class EntangledAssessmentResult:
     """
     Result of entangled compliance + security assessment.
-    
+
     Attributes:
         compliance: Compliance assessment result
         security: Security assessment result (mocked for now)
@@ -33,6 +33,7 @@ class EntangledAssessmentResult:
         redundancy_avoided: Whether redundant action was avoided
         pair_id: ID of the entangled pair used
     """
+
     compliance: ComplianceAssessment
     security: Dict[str, Any]  # Mock security result
     correlation: float
@@ -42,27 +43,34 @@ class EntangledAssessmentResult:
 
 class MockSecurityScanner:
     """Mock security scanner for testing entangled assessments."""
-    
+
     def scan_for_secrets(self, audit: AuditResult) -> Dict[str, Any]:
         """
         Mock security scan.
-        
+
         Returns dict with decision matching compliance for high risk.
         """
         # For high risk compliance issues, security usually agrees
         if audit.risk_level == "high":
             # Check violations for security-sensitive keywords
             violations_str = " ".join(audit.violations).lower()
-            if "secret" in violations_str or "credential" in violations_str or "pii" in violations_str:
+            if (
+                "secret" in violations_str
+                or "credential" in violations_str
+                or "pii" in violations_str
+            ):
                 decision = "BLOCK"  # High correlation with compliance
             else:
                 decision = "MONITOR"
         else:
             decision = "ALLOW"
-        
+
         return {
             "decision": decision,
-            "secrets_found": any("secret" in v.lower() or "credential" in v.lower() for v in audit.violations),
+            "secrets_found": any(
+                "secret" in v.lower() or "credential" in v.lower()
+                for v in audit.violations
+            ),
             "confidence": 0.85,
             "scan_time_ms": 5.0,
         }
@@ -71,18 +79,18 @@ class MockSecurityScanner:
 class EntangledComplianceSecurityAssessor:
     """
     Coordinates compliance and security audits via entanglement.
-    
+
     Benefits:
     - Reduced redundant scans (30% reduction target)
     - Correlated decision-making (>0.80 correlation)
     - Faster response time
-    
+
     Rayleigh Metrics:
     - NA: 2.0 (two-agent coordination)
     - Correlation: > 0.80
     - Latency: < 10ms overhead
     """
-    
+
     def __init__(
         self,
         entanglement_mgr: EntanglementManager,
@@ -91,7 +99,7 @@ class EntangledComplianceSecurityAssessor:
     ):
         """
         Initialize entangled assessor.
-        
+
         Args:
             entanglement_mgr: EntanglementManager instance
             compliance_assessor: QuantumComplianceAssessor instance
@@ -104,58 +112,54 @@ class EntangledComplianceSecurityAssessor:
         self.redundant_actions_avoided = 0
         self.total_assessments = 0
         self._initialized_correlation = False
-    
+
     def setup_entanglement(self, correlation_strength: float = 0.85) -> str:
         """
         Create entanglement between compliance + security agents.
-        
+
         Args:
             correlation_strength: Target correlation coefficient (0-1)
-        
+
         Returns:
             Pair ID of created entanglement
         """
         self.pair_id = self.entanglement.create_entanglement(
-            "compliance-checker",
-            "security-scan",
-            correlation_strength
+            "compliance-checker", "security-scan", correlation_strength
         )
         return self.pair_id
-    
-    def assess_with_entanglement(
-        self,
-        audit: AuditResult
-    ) -> EntangledAssessmentResult:
+
+    def assess_with_entanglement(self, audit: AuditResult) -> EntangledAssessmentResult:
         """
         Perform entangled compliance + security assessment.
-        
+
         Process:
         1. Compliance check (agent1)
         2. Collapse entangled security state (agent2)
         3. Validate correlation
         4. Avoid redundant scan if possible
-        
+
         Args:
             audit: Audit result to assess
-        
+
         Returns:
             EntangledAssessmentResult with both assessments
         """
         if not self.pair_id:
-            raise ValueError("Entanglement not set up. Call setup_entanglement() first.")
-        
+            raise ValueError(
+                "Entanglement not set up. Call setup_entanglement() first."
+            )
+
         self.total_assessments += 1
-        
+
         # Step 1: Compliance assessment
         compliance_result = self.compliance.assess_compliance(audit)
         compliance_decision = compliance_result.decision
-        
+
         # Step 2: Check entangled state for security decision
         suggested_security_decision = self.entanglement.collapse_entangled_state(
-            self.pair_id,
-            compliance_decision
+            self.pair_id, compliance_decision
         )
-        
+
         # Step 3: Decide if full security scan is needed
         # High correlation means we can trust the suggested decision
         # But we need at least 2 observations to measure correlation
@@ -164,9 +168,9 @@ class EntangledComplianceSecurityAssessor:
         except ValueError:
             # Not enough observations yet, set low correlation
             correlation = 0.0
-        
+
         redundancy_avoided = False
-        
+
         if correlation > 0.75 and suggested_security_decision:
             # Trust entangled state, avoid full scan
             security_result = {
@@ -174,7 +178,7 @@ class EntangledComplianceSecurityAssessor:
                 "secrets_found": False,
                 "confidence": 0.80,
                 "scan_time_ms": 0.5,  # Fast, no full scan
-                "from_entanglement": True
+                "from_entanglement": True,
             }
             redundancy_avoided = True
             self.redundant_actions_avoided += 1
@@ -182,38 +186,36 @@ class EntangledComplianceSecurityAssessor:
             # Perform full security scan
             security_result = self.security.scan_for_secrets(audit)
             security_result["from_entanglement"] = False
-        
+
         # Step 4: Update entanglement with observed correlation
         self.entanglement.update_correlation(
-            self.pair_id,
-            compliance_decision,
-            security_result["decision"]
+            self.pair_id, compliance_decision, security_result["decision"]
         )
         self._initialized_correlation = True
-        
+
         return EntangledAssessmentResult(
             compliance=compliance_result,
             security=security_result,
             correlation=correlation,
             redundancy_avoided=redundancy_avoided,
-            pair_id=self.pair_id
+            pair_id=self.pair_id,
         )
-    
+
     def get_redundancy_reduction(self) -> float:
         """
         Calculate percentage of redundant actions avoided.
-        
+
         Returns:
             Redundancy reduction ratio (0.0 to 1.0)
         """
         if self.total_assessments == 0:
             return 0.0
         return self.redundant_actions_avoided / self.total_assessments
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """
         Get assessment statistics.
-        
+
         Returns:
             Dict with statistics
         """
@@ -224,7 +226,7 @@ class EntangledComplianceSecurityAssessor:
             except ValueError:
                 # Not enough observations yet
                 correlation = 0.0
-        
+
         return {
             "total_assessments": self.total_assessments,
             "redundant_actions_avoided": self.redundant_actions_avoided,

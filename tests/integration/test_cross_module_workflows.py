@@ -16,10 +16,6 @@ Target: 20-30 tests for Cross-Module Workflows
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
@@ -102,8 +98,6 @@ class TestRAGBuildQueryWorkflow:
         index_file.write_text(json.dumps(index))
         
         # Execute query
-        query = "machine learning"
-        query_embedding = [0.1] * 10  # Mock query embedding
         
         # Simple similarity search
         results = []
@@ -163,7 +157,7 @@ class TestTokenizationTrainingPipeline:
     def test_tokenizer_initialization(self, temp_workspace):
         """Verify tokenizer initialization."""
         try:
-            from codex_ml.tokenization import load_tokenizer
+            from codex_ml.tokenization import load_tokenizer  # noqa: F401 - Testing optional dependency availability
             
             # Should be able to initialize tokenizer
             # (will skip if dependencies not available)

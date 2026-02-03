@@ -9,10 +9,8 @@ Phase: 14.4 - Final Gaps & Branch Coverage
 Target: 100% branch coverage for training modules
 """
 
-import os
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -129,7 +127,6 @@ class TestCheckpointBranches:
     def test_checkpoint_save_enabled_branch(self) -> None:
         """Test checkpoint save enabled branch."""
         save_strategy = "epoch"
-        current_epoch = 5
         if save_strategy == "epoch":
             save = True
         elif save_strategy == "steps":
@@ -411,7 +408,7 @@ class TestModelLoadingBranches:
     def test_model_local_path_branch(self) -> None:
         """Test model loading from local path branch."""
         model_path = "/models/bert-base"
-        is_local = Path(model_path).exists() if model_path.startswith("/") else False
+        Path(model_path).exists() if model_path.startswith("/") else False
         with patch.object(Path, "exists", return_value=True):
             if model_path.startswith("/"):
                 source = "local"

@@ -1,7 +1,6 @@
 """Complete MLflow integration tests."""
 
 import pytest
-from pathlib import Path
 from codex_ml.tracking.mlflow_wrapper import MLflowTracker, init_tracking
 
 

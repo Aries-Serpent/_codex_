@@ -4,9 +4,7 @@ Tests for codex.archive.plan module.
 This module contains tests for archive planning functionality.
 """
 
-import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 
 class TestPlanEntry:

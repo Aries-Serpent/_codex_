@@ -10,38 +10,38 @@ This module provides quantum-inspired features for enhanced agent intelligence:
 All features are gated by environment variable flags for gradual rollout.
 """
 
-from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.base import QuantumFeature, QuantumState
-from cognitive_brain.quantum.coherence_monitor import (
-    CoherenceMonitor,
-    Alert,
-    AlertLevel,
-    AlertThreshold
-)
 from cognitive_brain.quantum.ab_testing import (
+    EXP_1_CONFIG,
+    EXP_2_CONFIG,
+    EXP_3_CONFIG,
     ABTestFramework,
     ExperimentConfig,
     ExperimentResult,
     Variant,
-    EXP_1_CONFIG,
-    EXP_2_CONFIG,
-    EXP_3_CONFIG
+)
+from cognitive_brain.quantum.base import QuantumFeature, QuantumState
+from cognitive_brain.quantum.coherence_monitor import (
+    Alert,
+    AlertLevel,
+    AlertThreshold,
+    CoherenceMonitor,
+)
+from cognitive_brain.quantum.config import QuantumConfig
+from cognitive_brain.quantum.entanglement import (
+    CorrelationMeasurement,
+    EntangledPair,
+    EntanglementManager,
 )
 from cognitive_brain.quantum.superposition import (
+    Decision,
     SuperpositionEngine,
     SuperpositionState,
-    Decision,
-    quantum_superposition
-)
-from cognitive_brain.quantum.entanglement import (
-    EntanglementManager,
-    EntangledPair,
-    CorrelationMeasurement
+    quantum_superposition,
 )
 from cognitive_brain.quantum.uncertainty import (
-    UncertaintyOptimizer,
     ExecutionMetrics,
-    ExecutionPriority
+    ExecutionPriority,
+    UncertaintyOptimizer,
 )
 
 # Backward compatibility aliases

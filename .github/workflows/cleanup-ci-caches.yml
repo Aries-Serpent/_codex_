@@ -1,0 +1,91 @@
+name: Cleanup CI Caches
+
+on:
+  workflow_dispatch:
+    inputs:
+      cache_type:
+        description: 'Cache type to clear'
+        required: true
+        type: choice
+        options:
+          - all
+          - pip
+          - pytest
+          - huggingface
+          - models
+        default: 'all'
+
+permissions:
+  actions: write  # Required to delete caches
+
+jobs:
+  cleanup:
+    name: Clear ${{ inputs.cache_type }} caches
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Clear GitHub Actions caches via API
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cacheType = '${{ inputs.cache_type }}';
+            console.log(`🧹 Clearing caches of type: ${cacheType}`);
+            
+            // Fetch all caches
+            const { data: caches } = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref
+            });
+            
+            // Define patterns for each cache type
+            const patterns = {
+              all: /.*/,
+              pip: /pip/i,
+              pytest: /pytest/i,
+              huggingface: /huggingface|hf|models/i,
+              models: /models|transformers/i
+            };
+            
+            const pattern = patterns[cacheType] || patterns.all;
+            const cachesToDelete = caches.actions_caches.filter(c => pattern.test(c.key));
+            
+            console.log(`Found ${cachesToDelete.length} caches matching pattern`);
+            
+            // Delete matching caches
+            let deleted = 0;
+            for (const cache of cachesToDelete) {
+              try {
+                await github.rest.actions.deleteActionsCacheById({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  cache_id: cache.id
+                });
+                console.log(`✅ Deleted cache: ${cache.key} (${cache.size_in_bytes} bytes)`);
+                deleted++;
+              } catch (error) {
+                console.error(`❌ Failed to delete cache ${cache.key}: ${error.message}`);
+              }
+            }
+            
+            console.log(`\n📊 Summary: Deleted ${deleted}/${cachesToDelete.length} caches`);
+      
+      - name: Clear local Python caches
+        run: |
+          echo "🧹 Clearing local Python caches..."
+          find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
+          find . -type f -name '*.pyc' -delete 2>/dev/null || true
+          find . -type f -name '*.pyo' -delete 2>/dev/null || true
+          rm -rf .pytest_cache .ruff_cache .mypy_cache 2>/dev/null || true
+          echo "✅ Local caches cleared"
+      
+      - name: Summary
+        run: |
+          echo "### Cache Cleanup Complete 🧹" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache Type:** ${{ inputs.cache_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ✅ Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- **Next Steps:** Re-run failed workflows to use fresh caches" >> $GITHUB_STEP_SUMMARY

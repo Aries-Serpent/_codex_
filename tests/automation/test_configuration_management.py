@@ -15,10 +15,8 @@ Phase: 20.2 Advanced Automation
 
 from __future__ import annotations
 
-import json
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from datetime import datetime
+from typing import Any, Dict
 
 import pytest
 
@@ -136,7 +134,6 @@ class TestConfigVersioning:
 
     def test_rollback_capability(self):
         """Test configuration rollback capability."""
-        current_version = "2.0.0"
         available_versions = ["1.0.0", "1.1.0", "2.0.0"]
         rollback_to = "1.1.0"
         

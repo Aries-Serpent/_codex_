@@ -6,11 +6,10 @@ Strategy: Test all classes, workflow execution, and state management
 Focus: WorkflowFrequency, StepStatus, WorkflowStep, Workflow, WorkflowNavigator
 """
 
-import pytest
-from pathlib import Path
-import json
 import tempfile
+from pathlib import Path
 
+import pytest
 
 # ============================================================================
 # ENUM TESTS
@@ -67,7 +66,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_with_command(self):
         """Test WorkflowStep with command."""
-        from agents.workflow_navigator import WorkflowStep, StepStatus
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(
             id="test_step", action="Echo test", command="echo 'test'", optional=True
@@ -79,7 +78,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_with_command(self):
         """Test executing a step with a command."""
-        from agents.workflow_navigator import WorkflowStep, StepStatus
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="echo_step", action="Echo hello", command="echo hello")
 
@@ -93,7 +92,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_no_action(self):
         """Test executing a step with no action."""
-        from agents.workflow_navigator import WorkflowStep, StepStatus
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="empty_step", action="Empty step")
 
@@ -104,7 +103,7 @@ class TestWorkflowStep:
 
     def test_workflow_step_execute_with_uses(self):
         """Test executing a step that references another workflow."""
-        from agents.workflow_navigator import WorkflowStep, StepStatus
+        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(
             id="delegate_step", action="Use another workflow", uses="other_workflow"
@@ -241,7 +240,11 @@ class TestWorkflowNavigator:
 
     def test_register_workflow(self):
         """Test registering a new workflow."""
-        from agents.workflow_navigator import WorkflowNavigator, Workflow, WorkflowFrequency
+        from agents.workflow_navigator import (
+            Workflow,
+            WorkflowFrequency,
+            WorkflowNavigator,
+        )
 
         nav = WorkflowNavigator()
 
@@ -263,9 +266,9 @@ class TestWorkflowNavigator:
     def test_execute_workflow(self):
         """Test executing a workflow."""
         from agents.workflow_navigator import (
-            WorkflowNavigator,
             Workflow,
             WorkflowFrequency,
+            WorkflowNavigator,
             WorkflowStep,
         )
 
@@ -306,7 +309,9 @@ class TestWorkflowNavigator:
         nav = WorkflowNavigator()
 
         # get_workflow_suggestions expects a Dict, not a string
-        suggestions = nav.get_workflow_suggestions({"recent_commits": False, "test_coverage": 50})
+        suggestions = nav.get_workflow_suggestions(
+            {"recent_commits": False, "test_coverage": 50}
+        )
 
         assert isinstance(suggestions, list)
 
@@ -403,7 +408,11 @@ class TestWorkflowState:
 
     def test_save_workflow_state(self):
         """Test saving workflow state."""
-        from agents.workflow_navigator import WorkflowNavigator, Workflow, WorkflowFrequency
+        from agents.workflow_navigator import (
+            Workflow,
+            WorkflowFrequency,
+            WorkflowNavigator,
+        )
 
         with tempfile.TemporaryDirectory() as tmpdir:
             workspace = Path(tmpdir)
@@ -441,9 +450,9 @@ class TestWorkflowIntegration:
     def test_full_workflow_lifecycle(self):
         """Test complete workflow lifecycle: create, register, execute."""
         from agents.workflow_navigator import (
-            WorkflowNavigator,
             Workflow,
             WorkflowFrequency,
+            WorkflowNavigator,
             WorkflowStep,
         )
 

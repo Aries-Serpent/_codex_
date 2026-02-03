@@ -18,7 +18,11 @@ def _dummy_tokenizer():
         pad_token="<pad>",
         eos_token_id=0,
         bos_token_id=0,
-        __call__=lambda texts, return_tensors=None, padding=True, truncation=True, max_length=8: {
+        __call__=lambda texts,
+        return_tensors=None,
+        padding=True,
+        truncation=True,
+        max_length=8: {
             "input_ids": [[0]],
             "attention_mask": [[1]],
         },
@@ -54,7 +58,9 @@ def test_engine_bootstrap(monkeypatch, tmp_path):
             )
         ),
     )
-    monkeypatch.setattr(eng, "DataCollatorForLanguageModeling", lambda *a, **k: lambda x: x)
+    monkeypatch.setattr(
+        eng, "DataCollatorForLanguageModeling", lambda *a, **k: lambda x: x
+    )
     monkeypatch.setattr(
         eng, "TrainingArguments", lambda **k: types.SimpleNamespace(output_dir=tmp_path)
     )

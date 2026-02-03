@@ -10,8 +10,6 @@ to quickly increase coverage from 0% to 20-30% for these modules:
 """
 
 import pytest
-from pathlib import Path
-
 
 # ============================================================================
 # EXCEPTIONS MODULE (0% -> target 80%+)
@@ -24,11 +22,11 @@ class TestExceptionsModule:
     def test_import_exceptions(self):
         """Test all exceptions can be imported."""
         from agents.exceptions import (
-            AgentError,
-            AgentImportError,
             AgentConfigError,
-            AgentValidationError,
+            AgentError,
             AgentExecutionError,
+            AgentImportError,
+            AgentValidationError,
             ValidationError,
         )
 
@@ -78,7 +76,7 @@ class TestExceptionsModule:
 
     def test_exception_hierarchy(self):
         """Test exception hierarchy."""
-        from agents.exceptions import AgentError, AgentConfigError
+        from agents.exceptions import AgentConfigError, AgentError
 
         # AgentConfigError should be a subclass of AgentError
         with pytest.raises(AgentError):
@@ -87,10 +85,10 @@ class TestExceptionsModule:
     def test_physics_exceptions(self):
         """Test physics-specific exceptions."""
         from agents.exceptions import (
-            PhysicsError,
+            CausalityViolationError,
             ConvergenceError,
             InvariantViolationError,
-            CausalityViolationError,
+            PhysicsError,
         )
 
         assert PhysicsError is not None

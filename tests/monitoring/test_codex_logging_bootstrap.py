@@ -17,7 +17,11 @@ def test_logging_bootstrap(tmp_path):
     cfg = {
         "tensorboard": {"enable": True, "logdir": str(tmp_path / "tb")},
         "wandb": {"enable": True, "project": "test"},
-        "mlflow": {"enable": True, "tracking_uri": str(tmp_path / "mlruns"), "experiment": "test"},
+        "mlflow": {
+            "enable": True,
+            "tracking_uri": str(tmp_path / "mlruns"),
+            "experiment": "test",
+        },
     }
     args = SimpleNamespace(hydra_cfg=cfg)
     loggers = _codex_logging_bootstrap(args)

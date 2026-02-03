@@ -4,8 +4,6 @@ Tests for Context Management System
 Comprehensive tests for all context management modules.
 """
 
-import pytest
-from datetime import datetime
 from pathlib import Path
 import tempfile
 
@@ -412,7 +410,7 @@ class TestPriorityPruner:
 
     def test_prune_basic(self):
         """Test basic pruning."""
-        from src.context_management.pruning import PriorityPruner, PruneStrategy
+        from src.context_management.pruning import PriorityPruner
 
         pruner = PriorityPruner()
 

@@ -8,9 +8,8 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import pytest
 import numpy as np
-from pathlib import Path
+import pytest
 
 
 class TestBranchCoverage_PhysicsOrchestrator:
@@ -18,7 +17,11 @@ class TestBranchCoverage_PhysicsOrchestrator:
 
     def test_assess_situation_with_forces(self):
         """Test assess_situation with various force configurations"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState, ForceVector
+        from agents.physics_orchestrator import (
+            DecisionState,
+            ForceVector,
+            PhysicsOrchestrator,
+        )
 
         orch = PhysicsOrchestrator()
 
@@ -34,7 +37,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
 
     def test_assess_situation_with_constraints(self):
         """Test assess_situation with constraints"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
 
@@ -50,7 +53,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
 
     def test_optimize_path_no_ranked_paths(self):
         """Test optimize_path with no paths"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         state = DecisionState("start", "end")
@@ -60,7 +63,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
 
     def test_evolve_state_multiple_timesteps(self):
         """Test evolve_state with multiple timesteps"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
+        from agents.physics_orchestrator import EnergyState, PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
@@ -99,7 +102,7 @@ class TestBranchCoverage_AgentMemory:
 
         memory = AgentMemory()
         success = memory.update("nonexistent_key", "new_value")
-        assert success == False
+        assert not success
 
     def test_retrieve_with_key_parameter(self):
         """Test retrieve with key parameter"""
@@ -190,10 +193,10 @@ class TestIntegrationDepth_MultiModule:
 
     def test_orchestrator_with_memory_integration(self):
         """Test PhysicsOrchestrator using AgentMemory"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
         from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
-        orch = PhysicsOrchestrator()
+        PhysicsOrchestrator()
         memory = AgentMemory()
 
         # Store decision state in memory
@@ -206,8 +209,7 @@ class TestIntegrationDepth_MultiModule:
 
     def test_mental_map_with_quantum_integration(self):
         """Test MentalMapping with QuantumGameTheory concepts"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
-        from agents.quantum_game_theory import StrategyState
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -216,7 +218,9 @@ class TestIntegrationDepth_MultiModule:
         node2 = model.create_node(NodeType.CONCEPT, {"name": "strategy_red"})
 
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         # Calculate metrics

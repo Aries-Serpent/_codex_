@@ -22,17 +22,15 @@ Test Categories:
 - Performance characteristics
 """
 
-import pytest
 import tempfile
-import sqlite3
 from pathlib import Path
-from typing import Dict, Any, List
+
+import pytest
+
 from agents.agent_memory import (
     AgentMemory,
-    MemoryEntry,
     ContextFrame,
-    PatternLibrary,
-    AgentMemorySystem,
+    MemoryEntry,
 )
 
 
@@ -119,7 +117,9 @@ class TestMemoryEntry:
 
     def test_memory_entry_access_tracking(self):
         """Test access count tracking."""
-        entry = MemoryEntry(memory_id="mem_006", category="fact", content="Test", context={})
+        entry = MemoryEntry(
+            memory_id="mem_006", category="fact", content="Test", context={}
+        )
 
         assert entry.access_count == 0
 
@@ -216,14 +216,29 @@ class TestAgentMemory:
                 context={"test": True},
             )
 
-            result = memory_system.add_memory(entry)
-            assert result is not None
+            # add_memory returns None, verify it doesn't raise an exception
+            memory_system.add_memory(entry)
+
+            # Verify memory was stored if retrieval method exists
+            if hasattr(memory_system, "get_memory") or hasattr(
+                memory_system, "retrieve_memory"
+            ):
+                get_method = getattr(memory_system, "get_memory", None) or getattr(
+                    memory_system, "retrieve_memory"
+                )
+                retrieved = get_method("test_001")
+                assert retrieved is not None
 
     def test_retrieve_memory_by_id(self, memory_system):
         """Test retrieving memory by ID."""
-        if hasattr(memory_system, "add_memory") and hasattr(memory_system, "get_memory"):
+        if hasattr(memory_system, "add_memory") and hasattr(
+            memory_system, "get_memory"
+        ):
             entry = MemoryEntry(
-                memory_id="retrieve_001", category="fact", content="Retrieve test", context={}
+                memory_id="retrieve_001",
+                category="fact",
+                content="Retrieve test",
+                context={},
             )
 
             memory_system.add_memory(entry)
@@ -234,11 +249,16 @@ class TestAgentMemory:
 
     def test_search_memories_by_category(self, memory_system):
         """Test searching memories by category."""
-        if hasattr(memory_system, "add_memory") and hasattr(memory_system, "search_memories"):
+        if hasattr(memory_system, "add_memory") and hasattr(
+            memory_system, "search_memories"
+        ):
             # Add multiple memories
             for i in range(5):
                 entry = MemoryEntry(
-                    memory_id=f"cat_{i}", category="decision", content=f"Decision {i}", context={}
+                    memory_id=f"cat_{i}",
+                    category="decision",
+                    content=f"Decision {i}",
+                    context={},
                 )
                 memory_system.add_memory(entry)
 
@@ -247,7 +267,9 @@ class TestAgentMemory:
 
     def test_search_memories_by_tags(self, memory_system):
         """Test searching memories by tags."""
-        if hasattr(memory_system, "add_memory") and hasattr(memory_system, "search_memories"):
+        if hasattr(memory_system, "add_memory") and hasattr(
+            memory_system, "search_memories"
+        ):
             entry = MemoryEntry(
                 memory_id="tagged_001",
                 category="pattern",
@@ -274,7 +296,9 @@ class TestAgentMemory:
 
     def test_search_vectors_by_similarity(self, memory_system):
         """Test vector similarity search."""
-        if hasattr(memory_system, "add_vector") and hasattr(memory_system, "search_vectors"):
+        if hasattr(memory_system, "add_vector") and hasattr(
+            memory_system, "search_vectors"
+        ):
             # Add vectors
             memory_system.add_vector("vec_001", [1.0, 0.0, 0.0])
             memory_system.add_vector("vec_002", [0.9, 0.1, 0.0])
@@ -322,7 +346,9 @@ class TestAgentMemory:
 
     def test_load_pattern(self, memory_system):
         """Test loading a saved pattern."""
-        if hasattr(memory_system, "save_pattern") and hasattr(memory_system, "load_pattern"):
+        if hasattr(memory_system, "save_pattern") and hasattr(
+            memory_system, "load_pattern"
+        ):
             pattern = {"name": "factory", "type": "creational"}
             memory_system.save_pattern("factory", pattern)
 
@@ -339,7 +365,10 @@ class TestAgentMemory:
             memory1 = AgentMemory(db_path=str(temp_db))
             if hasattr(memory1, "add_memory"):
                 entry = MemoryEntry(
-                    memory_id="persist_001", category="fact", content="Persistent data", context={}
+                    memory_id="persist_001",
+                    category="fact",
+                    content="Persistent data",
+                    context={},
                 )
                 memory1.add_memory(entry)
 
@@ -383,7 +412,10 @@ class TestAgentMemory:
             start = time.time()
             for i in range(100):
                 entry = MemoryEntry(
-                    memory_id=f"bulk_{i}", category="fact", content=f"Fact {i}", context={}
+                    memory_id=f"bulk_{i}",
+                    category="fact",
+                    content=f"Fact {i}",
+                    context={},
                 )
                 memory_system.add_memory(entry)
 
@@ -394,7 +426,9 @@ class TestAgentMemory:
 
     def test_search_performance(self, memory_system):
         """Test search performance with many entries."""
-        if hasattr(memory_system, "add_memory") and hasattr(memory_system, "search_memories"):
+        if hasattr(memory_system, "add_memory") and hasattr(
+            memory_system, "search_memories"
+        ):
             # Add many entries
             for i in range(50):
                 entry = MemoryEntry(
@@ -408,7 +442,7 @@ class TestAgentMemory:
             import time
 
             start = time.time()
-            results = memory_system.search_memories(category="decision")
+            memory_system.search_memories(category="decision")
             duration = time.time() - start
 
             # Search should be fast
@@ -430,14 +464,18 @@ class TestAgentMemoryEdgeCases:
 
     def test_empty_memory_content(self, temp_db):
         """Test handling empty memory content."""
-        entry = MemoryEntry(memory_id="empty_001", category="fact", content="", context={})
+        entry = MemoryEntry(
+            memory_id="empty_001", category="fact", content="", context={}
+        )
 
         assert entry.content == ""
 
     def test_very_long_memory_content(self, temp_db):
         """Test storing very long content."""
         long_content = "A" * 10000  # 10KB of text
-        entry = MemoryEntry(memory_id="long_001", category="fact", content=long_content, context={})
+        entry = MemoryEntry(
+            memory_id="long_001", category="fact", content=long_content, context={}
+        )
 
         assert len(entry.content) == 10000
 
@@ -455,13 +493,18 @@ class TestAgentMemoryEdgeCases:
     def test_unicode_in_memory(self):
         """Test Unicode content."""
         entry = MemoryEntry(
-            memory_id="unicode_001", category="fact", content="テスト 测试 тест", context={}
+            memory_id="unicode_001",
+            category="fact",
+            content="テスト 测试 тест",
+            context={},
         )
 
         assert "テスト" in entry.content
 
     def test_null_context(self):
         """Test handling null context."""
-        entry = MemoryEntry(memory_id="null_ctx_001", category="fact", content="Test", context={})
+        entry = MemoryEntry(
+            memory_id="null_ctx_001", category="fact", content="Test", context={}
+        )
 
         assert entry.context == {}

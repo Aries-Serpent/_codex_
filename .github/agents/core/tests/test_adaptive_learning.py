@@ -9,7 +9,6 @@ Comprehensive test suite covering:
 - Performance tests
 """
 import pytest
-from unittest.mock import MagicMock, patch
 
 import sys
 import os
@@ -22,7 +21,6 @@ from adaptive_learning import (
     RewardShaper,
     ExperienceReplayBuffer,
     Experience,
-    LearningState,
 )
 
 

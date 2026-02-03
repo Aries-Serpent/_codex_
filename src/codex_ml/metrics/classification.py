@@ -18,7 +18,7 @@ from .base import BaseMetric
 
 
 def _to_numpy(arr: Any) -> np.ndarray:
-    if isinstance(arr, torch.Tensor):
+    if torch.is_tensor(arr):
         return arr.detach().cpu().numpy()
     return np.asarray(arr)
 

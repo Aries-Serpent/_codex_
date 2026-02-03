@@ -12,8 +12,6 @@ Tests focus on:
 import pytest
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
-import json
 
 # Import with graceful fallback for torch
 try:
@@ -77,7 +75,8 @@ def simple_dataloader():
     """Fixture providing a simple dataloader."""
     if not HAS_TORCH:
         pytest.skip("PyTorch not available")
-    dataset = SimpleDataset(size=32, input_dim=10)
+    # Increased from size=32 to size=100 to prevent StopIteration errors
+    dataset = SimpleDataset(size=100, input_dim=10)
     return DataLoader(dataset, batch_size=8, shuffle=False)
 
 
@@ -95,8 +94,9 @@ class TestBasicTrainingIteration:
         """Test that a single training step executes without error."""
         optimizer = Adam(simple_model.parameters(), lr=0.001)
         
-        # Get one batch
-        batch = next(iter(simple_dataloader))
+        # Get one batch - create iterator explicitly for Python 3.12+ compatibility
+        dataloader_iter = iter(simple_dataloader)
+        batch = next(dataloader_iter)
         
         # Forward pass
         outputs = simple_model(**batch)
@@ -301,7 +301,6 @@ class TestEarlyStopping:
     def test_early_stopping_improvement(self):
         """Test that early stopping doesn't trigger when improving."""
         best_loss = float('inf')
-        patience = 3
         patience_counter = 0
         
         losses = [1.0, 0.9, 0.8, 0.7, 0.6]  # Continuously improving
@@ -368,10 +367,11 @@ class TestGradientAccumulation:
         model2.load_state_dict(model1.state_dict())
         
         opt1 = Adam(model1.parameters(), lr=0.001)
-        opt2 = Adam(model2.parameters(), lr=0.001)
+        Adam(model2.parameters(), lr=0.001)
         
-        # Model 1: Normal update with batch
-        batch = next(iter(simple_dataloader))
+        # Model 1: Normal update with batch - create iterator explicitly for Python 3.12+ compatibility
+        dataloader_iter = iter(simple_dataloader)
+        batch = next(dataloader_iter)
         outputs1 = model1(**batch)
         loss1 = outputs1['loss']
         loss1.backward()

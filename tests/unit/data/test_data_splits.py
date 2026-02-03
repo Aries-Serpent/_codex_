@@ -93,7 +93,7 @@ def test_split_error_conditions():
     """Test split_dataset handles error conditions."""
     torch = pytest.importorskip("torch")
     
-    dataset = torch.utils.data.TensorDataset(
+    torch.utils.data.TensorDataset(
         torch.randn(10, 5),
         torch.randint(0, 2, (10,))
     )

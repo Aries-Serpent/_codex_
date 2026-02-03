@@ -40,7 +40,7 @@ def test_prepare_repo_status_prompt(tmp_path: Path) -> None:
     scorecard_path = tmp_path / "repo_audit_scorecard.md"
     output_path = tmp_path / "repo_status_update_prompt.txt"
 
-    policy_map = write_policy_mapping(policy_path)
+    write_policy_mapping(policy_path)
     run_gates(repo_root=repo_root, output_path=gate_results_path)
 
     prompt_path = prepare_repo_status_prompt(

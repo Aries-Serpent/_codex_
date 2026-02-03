@@ -7,7 +7,6 @@ Test module for session logger error.
 import json
 import os
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from codex_ml.logging.session_logger import SessionLogger
 

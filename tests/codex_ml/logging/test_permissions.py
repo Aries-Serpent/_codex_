@@ -89,8 +89,6 @@ def test_batch_logging_permissions():
 
 def test_tracking_writer_permissions():
     """Verify tracking writer also uses correct permissions."""
-    import sys
-    import os
     
     # Check if codex_ml.tracking is available
     try:

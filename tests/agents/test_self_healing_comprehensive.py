@@ -6,10 +6,9 @@ Strategy: Test all main classes and their core methods
 Focus: DetectedIssue, RemediationAction, DiagnosticResult, SelfHealingEngine
 """
 
-import pytest
 from pathlib import Path
-from datetime import datetime
 
+import pytest
 
 # ============================================================================
 # ISSUE TYPE AND SEVERITY ENUMS
@@ -55,7 +54,7 @@ class TestDetectedIssue:
 
     def test_detected_issue_creation(self):
         """Test basic DetectedIssue creation."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.TEST_FAILURE,
@@ -70,7 +69,7 @@ class TestDetectedIssue:
 
     def test_detected_issue_with_all_fields(self):
         """Test DetectedIssue with all optional fields."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.IMPORT_ERROR,
@@ -97,7 +96,7 @@ class TestDetectedIssue:
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue.to_dict() method."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.BUILD_FAILURE,
@@ -116,11 +115,15 @@ class TestDetectedIssue:
 
     def test_detected_issue_auto_title(self):
         """Test that title is auto-generated from description."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
-        long_desc = "This is a very long description that should be truncated for the title"
+        long_desc = (
+            "This is a very long description that should be truncated for the title"
+        )
         issue = DetectedIssue(
-            issue_type=IssueType.LINT_ERROR, severity=IssueSeverity.LOW, description=long_desc
+            issue_type=IssueType.LINT_ERROR,
+            severity=IssueSeverity.LOW,
+            description=long_desc,
         )
 
         assert issue.title == long_desc[:50]
@@ -255,7 +258,8 @@ class TestSelfHealingEngineCore:
         if len(issues) > 0:
             # Check if import error was detected
             assert any(
-                "import" in str(issue).lower() or "numpy" in str(issue).lower() for issue in issues
+                "import" in str(issue).lower() or "numpy" in str(issue).lower()
+                for issue in issues
             )
 
     def test_detect_dependency_conflict(self):
@@ -287,7 +291,12 @@ class TestSelfHealingEngineCore:
 
     def test_suggest_remediation(self):
         """Test suggesting remediation for an issue."""
-        from agents.self_healing import SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import (
+            DetectedIssue,
+            IssueSeverity,
+            IssueType,
+            SelfHealingEngine,
+        )
 
         engine = SelfHealingEngine()
 
@@ -305,7 +314,7 @@ class TestSelfHealingEngineCore:
 
     def test_apply_remediation(self):
         """Test applying a remediation action (dry run)."""
-        from agents.self_healing import SelfHealingEngine, RemediationAction
+        from agents.self_healing import RemediationAction, SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -363,7 +372,7 @@ class TestIssuePatternMatching:
 
     def test_register_custom_pattern(self):
         """Test registering custom issue detection pattern."""
-        from agents.self_healing import SelfHealingEngine, IssueType
+        from agents.self_healing import IssueType, SelfHealingEngine
 
         engine = SelfHealingEngine()
 

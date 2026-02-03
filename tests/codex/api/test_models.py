@@ -1,7 +1,6 @@
 """Tests for codex/api/models.py module."""
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestApiModelsImports:

@@ -15,18 +15,16 @@ Phase: 20.1 Production Monitoring & Alerting
 
 from __future__ import annotations
 
-import json
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
 
 import pytest
-
 
 # ============================================================================
 # Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def alert_rule_config() -> Dict[str, Any]:
@@ -128,6 +126,7 @@ def sample_alert() -> Dict[str, Any]:
 # Alert Rule Tests
 # ============================================================================
 
+
 class TestAlertRules:
     """Tests for alert rule configuration and validation."""
 
@@ -170,14 +169,14 @@ class TestAlertRules:
     def test_alert_duration_parsing(self, alert_rule_config: Dict[str, Any]):
         """Test parsing of alert duration strings."""
         duration_str = alert_rule_config["condition"]["duration"]
-        
+
         # Parse duration (e.g., "5m" -> 300 seconds)
         value = int(duration_str[:-1])
         unit = duration_str[-1]
-        
+
         multipliers = {"s": 1, "m": 60, "h": 3600, "d": 86400}
         duration_seconds = value * multipliers.get(unit, 1)
-        
+
         assert duration_seconds == 300
 
     def test_alert_threshold_validation(self, alert_rule_config: Dict[str, Any]):
@@ -191,6 +190,7 @@ class TestAlertRules:
 # Alert Trigger Tests
 # ============================================================================
 
+
 class TestAlertTriggers:
     """Tests for alert trigger conditions."""
 
@@ -198,7 +198,7 @@ class TestAlertTriggers:
         """Test that exceeding threshold triggers alert."""
         threshold = alert_rule_config["condition"]["threshold"]
         current_value = 85.5
-        
+
         should_trigger = current_value >= threshold
         assert should_trigger is True
 
@@ -206,7 +206,7 @@ class TestAlertTriggers:
         """Test that staying below threshold doesn't trigger alert."""
         threshold = alert_rule_config["condition"]["threshold"]
         current_value = 75.0
-        
+
         should_trigger = current_value >= threshold
         assert should_trigger is False
 
@@ -214,7 +214,7 @@ class TestAlertTriggers:
         """Test that alert requires sustained condition."""
         required_duration_seconds = 300
         condition_start = time.time() - 200  # Started 200s ago
-        
+
         duration_met = (time.time() - condition_start) >= required_duration_seconds
         assert duration_met is False
 
@@ -222,7 +222,7 @@ class TestAlertTriggers:
         """Test alert triggers when duration is met."""
         required_duration_seconds = 300
         condition_start = time.time() - 400  # Started 400s ago
-        
+
         duration_met = (time.time() - condition_start) >= required_duration_seconds
         assert duration_met is True
 
@@ -232,7 +232,7 @@ class TestAlertTriggers:
             {"metric": "cpu", "value": 85, "threshold": 80, "met": True},
             {"metric": "memory", "value": 90, "threshold": 85, "met": True},
         ]
-        
+
         all_met = all(c["met"] for c in conditions)
         assert all_met is True
 
@@ -242,39 +242,39 @@ class TestAlertTriggers:
             {"metric": "cpu", "value": 50, "threshold": 80, "met": False},
             {"metric": "memory", "value": 90, "threshold": 85, "met": True},
         ]
-        
+
         any_met = any(c["met"] for c in conditions)
         assert any_met is True
 
     def test_alert_state_transition_pending_to_firing(self):
         """Test alert state transition from pending to firing."""
-        states = ["inactive", "pending", "firing", "resolved"]
         current_state = "pending"
         duration_met = True
-        
+
         if current_state == "pending" and duration_met:
             new_state = "firing"
         else:
             new_state = current_state
-        
+
         assert new_state == "firing"
 
     def test_alert_state_transition_firing_to_resolved(self):
         """Test alert state transition from firing to resolved."""
         current_state = "firing"
         condition_met = False
-        
+
         if current_state == "firing" and not condition_met:
             new_state = "resolved"
         else:
             new_state = current_state
-        
+
         assert new_state == "resolved"
 
 
 # ============================================================================
 # Notification Channel Tests
 # ============================================================================
+
 
 class TestNotificationChannels:
     """Tests for notification channel configuration."""
@@ -286,7 +286,9 @@ class TestNotificationChannels:
         assert "webhook_url" in slack["config"]
         assert "channel" in slack["config"]
 
-    def test_pagerduty_channel_config(self, notification_channels: List[Dict[str, Any]]):
+    def test_pagerduty_channel_config(
+        self, notification_channels: List[Dict[str, Any]]
+    ):
         """Test PagerDuty notification channel configuration."""
         pd = next(c for c in notification_channels if c["type"] == "pagerduty")
         assert "integration_key" in pd["config"]
@@ -312,7 +314,7 @@ class TestNotificationChannels:
             "summary": sample_alert["annotations"]["summary"],
             "timestamp": sample_alert["started_at"],
         }
-        
+
         assert "title" in payload
         assert "severity" in payload
         assert "summary" in payload
@@ -321,10 +323,10 @@ class TestNotificationChannels:
         """Test notification rate limiting."""
         max_notifications_per_hour = 10
         current_count = 8
-        
+
         can_send = current_count < max_notifications_per_hour
         assert can_send is True
-        
+
         current_count = 10
         can_send = current_count < max_notifications_per_hour
         assert can_send is False
@@ -334,6 +336,7 @@ class TestNotificationChannels:
 # Escalation Policy Tests
 # ============================================================================
 
+
 class TestEscalationPolicies:
     """Tests for alert escalation policies."""
 
@@ -341,7 +344,7 @@ class TestEscalationPolicies:
         """Test escalation steps are in correct order."""
         steps = escalation_policy["steps"]
         delays = [s["delay_minutes"] for s in steps]
-        
+
         assert delays == sorted(delays)
 
     def test_initial_notification_immediate(self, escalation_policy: Dict[str, Any]):
@@ -349,7 +352,9 @@ class TestEscalationPolicies:
         first_step = escalation_policy["steps"][0]
         assert first_step["delay_minutes"] == 0
 
-    def test_escalation_includes_notify_targets(self, escalation_policy: Dict[str, Any]):
+    def test_escalation_includes_notify_targets(
+        self, escalation_policy: Dict[str, Any]
+    ):
         """Test each escalation step has notify targets."""
         for step in escalation_policy["steps"]:
             assert "notify" in step
@@ -364,13 +369,13 @@ class TestEscalationPolicies:
         """Test determining current escalation step based on time."""
         alert_age_minutes = 20
         steps = escalation_policy["steps"]
-        
+
         current_step = None
         for step in reversed(steps):
             if alert_age_minutes >= step["delay_minutes"]:
                 current_step = step
                 break
-        
+
         assert current_step is not None
         assert current_step["delay_minutes"] == 15
 
@@ -378,6 +383,7 @@ class TestEscalationPolicies:
 # ============================================================================
 # Alert Silencing Tests
 # ============================================================================
+
 
 class TestAlertSilencing:
     """Tests for alert silencing functionality."""
@@ -392,7 +398,7 @@ class TestAlertSilencing:
             "comment": "Maintenance window",
             "created_by": "admin@example.com",
         }
-        
+
         assert "matchers" in silence
         assert "starts_at" in silence
         assert "ends_at" in silence
@@ -401,7 +407,7 @@ class TestAlertSilencing:
         """Test silence matcher evaluation against alert."""
         matcher = {"label": "service", "value": "api"}
         alert_labels = sample_alert["labels"]
-        
+
         matches = alert_labels.get(matcher["label"]) == matcher["value"]
         assert matches is True
 
@@ -410,7 +416,7 @@ class TestAlertSilencing:
         now = datetime.utcnow()
         starts_at = now - timedelta(hours=1)
         ends_at = now + timedelta(hours=1)
-        
+
         is_active = starts_at <= now <= ends_at
         assert is_active is True
 
@@ -419,7 +425,7 @@ class TestAlertSilencing:
         now = datetime.utcnow()
         starts_at = now - timedelta(hours=3)
         ends_at = now - timedelta(hours=1)
-        
+
         is_active = starts_at <= now <= ends_at
         assert is_active is False
 
@@ -427,6 +433,7 @@ class TestAlertSilencing:
 # ============================================================================
 # Alert Acknowledgment Tests
 # ============================================================================
+
 
 class TestAlertAcknowledgment:
     """Tests for alert acknowledgment functionality."""
@@ -437,7 +444,7 @@ class TestAlertAcknowledgment:
         alert["acknowledged"] = True
         alert["acknowledged_by"] = "user@example.com"
         alert["acknowledged_at"] = datetime.utcnow().isoformat()
-        
+
         assert alert["acknowledged"] is True
         assert "acknowledged_by" in alert
 
@@ -445,7 +452,7 @@ class TestAlertAcknowledgment:
         """Test that acknowledgment stops further escalation."""
         is_acknowledged = True
         should_escalate = not is_acknowledged
-        
+
         assert should_escalate is False
 
     def test_acknowledged_alert_still_visible(self, sample_alert: Dict[str, Any]):
@@ -453,7 +460,7 @@ class TestAlertAcknowledgment:
         alert = sample_alert.copy()
         alert["acknowledged"] = True
         alert["status"] = "firing"  # Still firing
-        
+
         # Acknowledged alerts should still appear in active alerts
         is_active = alert["status"] == "firing"
         assert is_active is True
@@ -462,6 +469,7 @@ class TestAlertAcknowledgment:
 # ============================================================================
 # Alert Aggregation Tests
 # ============================================================================
+
 
 class TestAlertAggregation:
     """Tests for alert aggregation and grouping."""
@@ -473,14 +481,14 @@ class TestAlertAggregation:
             {"id": "2", "labels": {"service": "api", "host": "host-2"}},
             {"id": "3", "labels": {"service": "db", "host": "host-3"}},
         ]
-        
+
         groups = {}
         for alert in alerts:
             service = alert["labels"]["service"]
             if service not in groups:
                 groups[service] = []
             groups[service].append(alert)
-        
+
         assert len(groups["api"]) == 2
         assert len(groups["db"]) == 1
 
@@ -491,24 +499,24 @@ class TestAlertAggregation:
             {"fingerprint": "fp-1", "labels": {"service": "api"}},  # Duplicate
             {"fingerprint": "fp-2", "labels": {"service": "db"}},
         ]
-        
+
         seen = set()
         unique = []
         for alert in alerts:
             if alert["fingerprint"] not in seen:
                 seen.add(alert["fingerprint"])
                 unique.append(alert)
-        
+
         assert len(unique) == 2
 
     def test_alert_fingerprint_generation(self):
         """Test alert fingerprint generation."""
         labels = {"service": "api", "host": "server-01", "alertname": "HighCPU"}
-        
+
         # Sort labels for consistent fingerprint
         sorted_labels = sorted(labels.items())
         fingerprint = hash(tuple(sorted_labels))
-        
+
         assert fingerprint is not None
         assert isinstance(fingerprint, int)
 
@@ -518,6 +526,6 @@ class TestAlertAggregation:
             "api": [{"id": "1"}, {"id": "2"}],
             "db": [{"id": "3"}],
         }
-        
+
         total_alerts = sum(len(alerts) for alerts in grouped_alerts.values())
         assert total_alerts == 3

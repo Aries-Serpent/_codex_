@@ -11,19 +11,21 @@ for unifying legacy agents/ with modern cognitive architecture.
 Version: 0.1.0 (Phase 7.1)
 Status: Infrastructure Setup with ABCs
 """
+
 from __future__ import annotations
 
 # Export base classes for agent inheritance
 try:
     from .base import (
-        Planner,
+        ActionResult,
+        Decision,
         MemoryInterface,
-        PhysicsOfThought,
         ObservationData,
         OrientationResult,
-        Decision,
-        ActionResult,
+        PhysicsOfThought,
+        Planner,
     )
+
     _base_available = True
 except ImportError:
     # Base module not yet available in all environments

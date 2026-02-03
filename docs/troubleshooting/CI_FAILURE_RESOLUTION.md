@@ -147,6 +147,14 @@ Check Error Type
      │                                   ▼
      │                            Run python -m py_compile
      │
+     ├── unexpected cfg condition ─► Rust Feature Missing
+     │                                   │
+     │                                   ▼
+     │                            Add feature to Cargo.toml
+     │                                   │
+     │                                   ▼
+     │                            Run validation script
+     │
      └── Other ──────────────────► Check workflow logs
                                          │
                                          ▼
@@ -185,7 +193,25 @@ Check Error Type
 3. Run `cargo clippy` for linting
 4. Verify Cargo.lock is up to date
 
-### 4. Workflow Permission Issues
+### 4. Rust Feature Configuration Errors
+
+**Symptom:** `unexpected cfg condition value: "feature_name"` during clippy
+
+**Solution:**
+1. Add the missing feature to `Cargo.toml` `[features]` section
+2. Run validation script: `python scripts/ci/validate_cargo_features.py`
+3. Ensure feature dependencies are correct (e.g., `python = ["extension-module"]`)
+4. For PyO3 projects, ensure `extension-module` depends on `pyo3/extension-module`
+
+**Example Fix:**
+```toml
+[features]
+default = []
+python = ["extension-module"]
+extension-module = ["pyo3/extension-module"]
+```
+
+### 5. Workflow Permission Issues
 
 **Symptom:** `Resource not accessible by integration`
 
@@ -222,8 +248,101 @@ If you encounter a CI failure not covered in this guide:
 
 ---
 
+## Incident Report: Rust cfg Feature Validation Failure (Batch CI Triage #3106)
+
+### Problem Summary
+
+| Field | Value |
+|-------|-------|
+| **Date** | 2026-01-19 |
+| **Batch Report** | Issue #3106 |
+| **Workflow** | `rust_swarm_ci.yml` |
+| **Job** | `rust_tests` |
+| **Error** | `unexpected cfg condition value: "python"` |
+| **Impact** | 10 CI failures across multiple issues |
+| **Resolution** | Added proper Cargo.toml features configuration |
+
+### Symptoms
+
+```
+error: unexpected `cfg` condition value: `python`
+  --> src/lib.rs:47:7
+   |
+47 | #[cfg(feature = "python")]
+   |       ^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `default`
+   = help: consider adding `python` as a feature in `Cargo.toml`
+```
+
+### Root Cause Analysis
+
+The Rust source code (`src/lib.rs`) used `#[cfg(feature = "python")]` conditional compilation attributes, but the `python` feature was not properly declared in `Cargo.toml`. When `cargo clippy --all-targets --all-features --locked -- -D warnings` ran in CI, the `-D warnings` flag promoted this warning to an error.
+
+**Before (Broken):**
+```toml
+[features]
+default = []
+# python feature was missing!
+```
+
+**After (Fixed):**
+```toml
+[features]
+default = []
+python = ["extension-module"]
+extension-module = ["pyo3/extension-module"]
+```
+
+### Affected Issues
+
+The following 10 issues were part of the batch failure group:
+- #2915, #2914, #2913, #2912, #2910, #2909, #2908, #2907, #2906, #2905
+
+### Solution Implemented
+
+1. **Immediate Fix:** Added `python` and `extension-module` features to `Cargo.toml`
+2. **Prevention Script:** Created `scripts/ci/validate_cargo_features.py`
+3. **CI Integration:** Added validation step to `rust_swarm_ci.yml`
+4. **Testing:** Added comprehensive tests in `tests/ci/test_validate_cargo_features.py`
+
+### Reusable Pattern: Feature Configuration Validation
+
+This incident established a reusable pattern for preventing similar Rust feature configuration issues:
+
+#### Pattern: Pre-flight Cargo.toml Validation
+
+**Purpose:** Validate that all features used in Rust source code are declared in `Cargo.toml`
+
+**Implementation:**
+1. **Validation Script** (`scripts/ci/validate_cargo_features.py`):
+   - Parses `Cargo.toml` to extract declared features
+   - Scans `src/lib.rs` for `#[cfg(feature = "X")]` usages
+   - Reports any undeclared features as errors
+
+2. **CI Integration** (`.github/workflows/rust_swarm_ci.yml`):
+   ```yaml
+   - name: Validate Cargo.toml features
+     run: python scripts/ci/validate_cargo_features.py
+   ```
+
+3. **Key Validations:**
+   - `[features]` section exists
+   - `python` feature declared (for PyO3 bindings)
+   - `extension-module` feature depends on `pyo3/extension-module`
+   - All `#[cfg(feature = "X")]` features in source code are declared
+
+**When to Apply:**
+- Any Rust project using conditional compilation
+- PyO3 Python extensions
+- Multi-feature library crates
+- Projects running clippy with `-D warnings`
+
+---
+
 ## Version History
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 1.1.0 | 2026-02-02 | Copilot | Added Rust cfg feature validation failure incident (#3106) |
 | 1.0.0 | 2026-01-22 | Copilot | Initial creation after fixing json import issue |

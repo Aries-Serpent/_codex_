@@ -27,8 +27,9 @@ class TestMentalMappingExpanded:
 
     def test_mental_node_creation(self):
         """Test MentalNode can be created."""
-        from agents.mental_mapping import MentalNode, NodeType
         from datetime import datetime
+
+        from agents.mental_mapping import MentalNode, NodeType
 
         node = MentalNode(
             node_id="test-1",
@@ -43,7 +44,7 @@ class TestMentalMappingExpanded:
 
     def test_mental_edge_creation(self):
         """Test MentalEdge can be created."""
-        from agents.mental_mapping import MentalEdge, EdgeType
+        from agents.mental_mapping import EdgeType, MentalEdge
 
         edge = MentalEdge(
             edge_id="edge1",
@@ -70,8 +71,9 @@ class TestMentalMappingExpanded:
 
     def test_add_node(self):
         """Test adding a node to the model."""
-        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
         from datetime import datetime
+
+        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
 
         model = MentalMappingModel()
         node = MentalNode(
@@ -92,7 +94,7 @@ class TestQuantumGameTheoryExpanded:
 
     def test_payoff_operator_creation(self):
         """Test PayoffOperator can be created."""
-        from agents.quantum_game_theory import PayoffOperator, NUMPY_AVAILABLE
+        from agents.quantum_game_theory import NUMPY_AVAILABLE, PayoffOperator
 
         if not NUMPY_AVAILABLE:
             pytest.skip("PayoffOperator requires numpy")
@@ -110,17 +112,19 @@ class TestQuantumGameTheoryExpanded:
 
     def test_quantum_game_state_creation(self):
         """Test QuantumGameState can be created."""
-        from agents.quantum_game_theory import QuantumGameState, TeamType
+        from agents.quantum_game_theory import QuantumGameState
 
         try:
-            state = QuantumGameState(blue_strategies=["defend"], red_strategies=["attack"])
+            state = QuantumGameState(
+                blue_strategies=["defend"], red_strategies=["attack"]
+            )
             assert state is not None
         except (ImportError, AttributeError, TypeError):
             pytest.skip("QuantumGameState requires numpy")
 
     def test_classical_game_engine_init(self):
         """Test ClassicalGameEngine initialization."""
-        from agents.quantum_game_theory import ClassicalGameEngine, NUMPY_AVAILABLE
+        from agents.quantum_game_theory import NUMPY_AVAILABLE, ClassicalGameEngine
 
         if not NUMPY_AVAILABLE:
             pytest.skip("ClassicalGameEngine requires numpy")
@@ -142,7 +146,9 @@ class TestQuantumGameTheoryExpanded:
             )
 
             assert engine is not None
-            assert hasattr(engine, "compute_nash_equilibrium") or hasattr(engine, "calculate")
+            assert hasattr(engine, "compute_nash_equilibrium") or hasattr(
+                engine, "calculate"
+            )
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"ClassicalGameEngine initialization failed: {e}")
 

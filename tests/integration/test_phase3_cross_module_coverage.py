@@ -13,13 +13,7 @@ Coverage goal: +15-18% (reaching 77-80% total)
 
 from __future__ import annotations
 
-import os
-import sys
 import json
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, call
-from typing import Dict, Any, List
 import pytest
 
 
@@ -359,7 +353,6 @@ class TestRAGToAgentFlow:
             "doc3": {"text": "Python data science", "score": 0.88}
         }
         
-        query = "Python coding"
         top_k = 2
         
         # Retrieve top-k documents
@@ -449,7 +442,7 @@ class TestRAGToAgentFlow:
 
     def test_rag_caches_embeddings(self, tmp_path):
         """Test RAG caches embeddings for reuse."""
-        cache_path = tmp_path / "embedding_cache.json"
+        tmp_path / "embedding_cache.json"
         
         cache = {}
         
@@ -469,7 +462,6 @@ class TestRAGToAgentFlow:
     def test_agent_handles_no_rag_results(self):
         """Test agent handles cases with no RAG results."""
         rag_results = []
-        user_query = "Unknown topic"
         
         if not rag_results:
             response = {
@@ -527,7 +519,6 @@ class TestRAGToAgentFlow:
 
     def test_agent_streaming_response_with_rag(self):
         """Test agent can stream responses with RAG context."""
-        rag_context = "Context from documents"
         
         # Simulate streaming
         response_chunks = [

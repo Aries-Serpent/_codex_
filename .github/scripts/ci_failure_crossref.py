@@ -4,7 +4,6 @@ Cross-reference CI failures with workflow analysis.
 """
 
 import json
-from pathlib import Path
 
 # Load workflow analysis
 with open('workflow_analysis.json', 'r') as f:

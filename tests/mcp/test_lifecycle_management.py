@@ -7,7 +7,7 @@ Follows the High Maturity Achievement Plan requirements.
 
 import asyncio
 import pytest
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import Mock, AsyncMock
 from src.services.mcp.lifecycle import LifecycleManager
 
 

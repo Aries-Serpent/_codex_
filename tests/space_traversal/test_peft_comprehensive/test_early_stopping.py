@@ -6,9 +6,8 @@ This module tests:
 - Integration with training configurations
 """
 
-import math
 import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 
 # Test early stopping

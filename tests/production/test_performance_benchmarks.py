@@ -5,13 +5,9 @@ Tests performance characteristics for training, data loading, and API operations
 All tests are deterministic with fixed seeds and no external dependencies.
 """
 
-import pytest
 import time
 import numpy as np
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
 import json
-import tempfile
 
 
 # Training Loop Performance Tests
@@ -30,11 +26,11 @@ def test_training_loop_iteration_time():
         # Simulate forward pass
         inputs = np.random.randn(batch_size, input_dim).astype(np.float32)
         weights = np.random.randn(input_dim, output_dim).astype(np.float32)
-        output = np.dot(inputs, weights)
+        np.dot(inputs, weights)
         
         # Simulate backward pass
         grad = np.random.randn(batch_size, output_dim).astype(np.float32)
-        weight_grad = np.dot(inputs.T, grad)
+        np.dot(inputs.T, grad)
     
     elapsed = time.perf_counter() - start
     
@@ -56,9 +52,9 @@ def test_training_gradient_computation_performance():
         
         start = time.perf_counter()
         for _ in range(100):
-            output = np.dot(inputs, weights)
+            np.dot(inputs, weights)
             grad = np.random.randn(batch_size, output_dim).astype(np.float32)
-            weight_grad = np.dot(inputs.T, grad)
+            np.dot(inputs.T, grad)
         elapsed = time.perf_counter() - start
         
         results[batch_size] = elapsed
@@ -103,7 +99,7 @@ def test_loss_computation_performance():
         
         # Cross-entropy loss
         log_probs = -np.log(probs[np.arange(batch_size), labels])
-        loss = np.mean(log_probs)
+        np.mean(log_probs)
     
     elapsed = time.perf_counter() - start
     assert elapsed < 1.0, f"1000 loss computations took {elapsed:.3f}s"
@@ -148,8 +144,8 @@ def test_batch_generation_speed():
     start = time.perf_counter()
     num_batches = 0
     for i in range(0, dataset_size, batch_size):
-        batch_data = dataset[i:i+batch_size]
-        batch_labels = labels[i:i+batch_size]
+        dataset[i:i+batch_size]
+        labels[i:i+batch_size]
         num_batches += 1
     elapsed = time.perf_counter() - start
     
@@ -248,7 +244,7 @@ def test_api_prediction_latency():
         
         start = time.perf_counter()
         output = np.dot(input_data, weights)
-        probabilities = np.exp(output) / np.sum(np.exp(output))
+        np.exp(output) / np.sum(np.exp(output))
         elapsed = time.perf_counter() - start
         
         latencies.append(elapsed)
@@ -277,7 +273,7 @@ def test_api_batch_prediction_throughput():
         start = time.perf_counter()
         num_iterations = 1000
         for _ in range(num_iterations):
-            output = np.dot(inputs, weights)
+            np.dot(inputs, weights)
         elapsed = time.perf_counter() - start
         
         samples_per_second = (num_iterations * batch_size) / elapsed
@@ -305,7 +301,7 @@ def test_api_json_serialization_performance():
     start = time.perf_counter()
     for _ in range(100):
         json_str = json.dumps(response)
-        parsed = json.loads(json_str)
+        json.loads(json_str)
     elapsed = time.perf_counter() - start
     
     assert elapsed < 1.0, f"100 JSON serialize/deserialize cycles took {elapsed:.3f}s"
@@ -335,7 +331,7 @@ def test_api_request_validation_performance():
     
     start = time.perf_counter()
     for _ in range(10000):
-        is_valid = validate_request(valid_request)
+        validate_request(valid_request)
     elapsed = time.perf_counter() - start
     
     validations_per_second = 10000 / elapsed
@@ -365,7 +361,7 @@ def test_api_rate_limiting_overhead():
     
     start = time.perf_counter()
     for i in range(1000):
-        allowed = check_rate_limit('client-1')
+        check_rate_limit('client-1')
     elapsed = time.perf_counter() - start
     
     assert elapsed < 0.1, f"1000 rate limit checks took {elapsed:.3f}s"
@@ -496,7 +492,7 @@ def test_sparse_computation_efficiency():
     # Dense computation
     start = time.perf_counter()
     result_dense = np.dot(sparse, vector)
-    dense_elapsed = time.perf_counter() - start
+    time.perf_counter() - start
     
     # Sparse computation (using masks)
     start = time.perf_counter()
@@ -505,7 +501,7 @@ def test_sparse_computation_efficiency():
         nonzero_idx = np.nonzero(mask[i, :])[0]
         if len(nonzero_idx) > 0:
             result_sparse[i] = np.dot(sparse[i, nonzero_idx], vector[nonzero_idx])
-    sparse_elapsed = time.perf_counter() - start
+    time.perf_counter() - start
     
     # Both should produce same result
     # Note: Increased tolerance to account for accumulated floating-point errors in sparse computation

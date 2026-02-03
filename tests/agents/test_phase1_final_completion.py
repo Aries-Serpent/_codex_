@@ -12,24 +12,25 @@ Based on Physics Reference Table: Coverage Uplift Paths
 """
 
 import pytest
-from agents.physics_orchestrator import (
-    PhysicsInspiredOrchestrator,
-    ActionType,
-    DecisionState,
-    ForceVector,
-    ActionPath,
-)
-from agents.quantum_game_theory import (
-    QuantumInspiredGameEngine,
-    StrategyState,
-    PayoffOperator,
-    NUMPY_AVAILABLE,
-)
+
 from agents.mental_mapping import (
     MentalMappingModel,
     MentalNode,
-    ReasoningStep,
     NodeType,
+    ReasoningStep,
+)
+from agents.physics_orchestrator import (
+    ActionPath,
+    ActionType,
+    DecisionState,
+    ForceVector,
+    PhysicsInspiredOrchestrator,
+)
+from agents.quantum_game_theory import (
+    NUMPY_AVAILABLE,
+    PayoffOperator,
+    QuantumInspiredGameEngine,
+    StrategyState,
 )
 
 

@@ -9,10 +9,8 @@ Phase: 16.4 - Final Polish & 100% Coverage
 Tests: 25+
 """
 
-import ast
-import os
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import List
 
 import pytest
 
@@ -83,7 +81,7 @@ class TestTestDiscovery:
         
         # Check for non-standard names
         all_py_files = list(TESTS_DIR.rglob("*.py"))
-        non_test_files = [
+        [
             f for f in all_py_files
             if not f.name.startswith("test_")
             and f.name != "conftest.py"

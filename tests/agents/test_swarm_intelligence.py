@@ -14,8 +14,8 @@ Test Categories:
 """
 
 import pytest
-from typing import Tuple, List
-from agents.physics_orchestrator import SwarmParticle, SwarmIntelligence
+
+from agents.physics_orchestrator import SwarmIntelligence, SwarmParticle
 
 
 class TestSwarmParticle:
@@ -61,7 +61,9 @@ class TestSwarmParticle:
 
     def test_particle_negative_coordinates(self):
         """Test particle with negative coordinates."""
-        particle = SwarmParticle(position=(-10.0, -20.0, -5.0), velocity=(-0.5, 0.3, -0.1))
+        particle = SwarmParticle(
+            position=(-10.0, -20.0, -5.0), velocity=(-0.5, 0.3, -0.1)
+        )
 
         assert particle.position[0] < 0
         assert particle.position[1] < 0
@@ -290,12 +292,12 @@ class TestSwarmIntelligenceIntegration:
         # First initialization
         bounds1 = [(-1.0, 1.0), (-1.0, 1.0)]
         swarm.initialize_swarm(bounds1)
-        first_positions = [p.position for p in swarm.particles]
+        [p.position for p in swarm.particles]
 
         # Reinitialize with different bounds
         bounds2 = [(-10.0, 10.0), (-10.0, 10.0)]
         swarm.initialize_swarm(bounds2)
-        second_positions = [p.position for p in swarm.particles]
+        [p.position for p in swarm.particles]
 
         # Should have new positions
         assert len(swarm.particles) == 5

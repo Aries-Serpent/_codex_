@@ -188,7 +188,7 @@ def _create_pytorch_scheduler(
     This is a fallback when transformers is not available.
     """
     try:
-        import torch
+        import torch  # noqa: F401 - Testing optional dependency availability
         from torch.optim import lr_scheduler
     except ImportError as e:
         logger.debug(f"ImportError: {e}")

@@ -15,7 +15,6 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Generator
-from unittest.mock import patch
 
 import pytest
 
@@ -170,7 +169,7 @@ class TestChunkSize:
         
         expected_dirs = ["src/codex", "agents", "training", "scripts"]
         for dir_path in expected_dirs:
-            full_path = repo_root / dir_path
+            repo_root / dir_path
             # Note: Some dirs may not exist in all environments
             # This is a structural test, not a file existence test
             assert isinstance(dir_path, str)

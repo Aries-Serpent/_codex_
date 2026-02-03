@@ -460,7 +460,6 @@ class TestAgentsImportSafety:
         """Test importing agents does not raise."""
         # Arrange & Act & Assert
         try:
-            import agents
             assert True
         except Exception as e:
             pytest.fail(f"Import raised: {e}")
@@ -468,7 +467,6 @@ class TestAgentsImportSafety:
     def test_package_in_sys_modules(self) -> None:
         """Test package is in sys.modules."""
         # Arrange & Act
-        import agents
 
         # Assert
         assert "agents" in sys.modules

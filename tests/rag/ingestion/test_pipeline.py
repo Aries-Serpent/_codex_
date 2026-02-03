@@ -15,8 +15,6 @@ from codex.rag.ingestion.pipeline import (
     IngestionStatus,
 )
 from codex.rag.ingestion.validator import ValidationConfig
-from codex.rag.ingestion.preprocessor import PreprocessingConfig
-from codex.rag.ingestion.chunker import ChunkingConfig
 
 
 class TestIngestionStatus:

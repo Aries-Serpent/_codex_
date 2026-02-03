@@ -4,8 +4,9 @@ Test Codex Repro Manifest
 Test module for codex repro manifest.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
+
 import yaml
 
 import tools.codex_repro_manifest as repro

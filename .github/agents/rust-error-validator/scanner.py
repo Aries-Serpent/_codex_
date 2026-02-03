@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Rust Error Handling Validator - Scans for panic risks"""
 import click
-import re
 from pathlib import Path
 from typing import List
 from dataclasses import dataclass

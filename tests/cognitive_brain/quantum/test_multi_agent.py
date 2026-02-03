@@ -8,26 +8,24 @@ correlation measurement, and performance validation.
 <!-- AFTERMATH: Validation Framework -->
 """
 
-import pytest
 from datetime import datetime
-from typing import Dict, Tuple
+
+import pytest
 
 from cognitive_brain.quantum.ghz_states import (
     GHZStateManager,
-    GHZState,
-    SUPPORTED_AGENT_COUNTS,
 )
 from cognitive_brain.quantum.multi_agent_coordinator import (
-    MultiAgentCoordinator,
     AgentDecision,
+    MultiAgentCoordinator,
     VotingStrategy,
 )
 
 # Import TopologyManager only if available (optional component)
 try:
     from cognitive_brain.quantum.topology_manager import (
-        TopologyManager,
         NetworkTopology,
+        TopologyManager,
     )
 
     HAS_TOPOLOGY_MANAGER = True
@@ -122,7 +120,9 @@ class TestGHZStateCreation:
 
         # For freshly created GHZ state, all correlations should be 1.0
         for correlation in corr_matrix.values():
-            assert correlation == 1.0, f"Initial correlation should be 1.0: {correlation}"
+            assert correlation == 1.0, (
+                f"Initial correlation should be 1.0: {correlation}"
+            )
 
 
 # =============================================================================
@@ -178,7 +178,9 @@ class TestAgentCoordination:
         """Test weighted voting consensus strategy."""
         coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.WEIGHTED)
         coordinator.register_agent("agent_1", role="analyzer", weight=1.0)
-        coordinator.register_agent("agent_2", role="validator", weight=2.0)  # Higher weight
+        coordinator.register_agent(
+            "agent_2", role="validator", weight=2.0
+        )  # Higher weight
         coordinator.register_agent("agent_3", role="executor", weight=1.0)
 
         decisions = [
@@ -195,13 +197,17 @@ class TestAgentCoordination:
 
     def test_consensus_confidence_based(self):
         """Test confidence-based consensus strategy."""
-        coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.CONFIDENCE_BASED)
+        coordinator = MultiAgentCoordinator(
+            voting_strategy=VotingStrategy.CONFIDENCE_BASED
+        )
         coordinator.register_agent("agent_1", role="analyzer")
         coordinator.register_agent("agent_2", role="validator")
         coordinator.register_agent("agent_3", role="executor")
 
         decisions = [
-            AgentDecision("agent_1", "approve", 0.95, datetime.now()),  # Highest confidence
+            AgentDecision(
+                "agent_1", "approve", 0.95, datetime.now()
+            ),  # Highest confidence
             AgentDecision("agent_2", "reject", 0.75, datetime.now()),
             AgentDecision("agent_3", "reject", 0.70, datetime.now()),
         ]
@@ -218,7 +224,10 @@ class TestAgentCoordination:
         coordinator.register_agent("agent_1", role="analyzer")
         coordinator.register_agent("agent_2", role="validator")
 
-        context = {"scenario": "test_scenario", "features": {"risk": 0.7, "compliance": 0.8}}
+        context = {
+            "scenario": "test_scenario",
+            "features": {"risk": 0.7, "compliance": 0.8},
+        }
 
         decision = coordinator.coordinate_decision(context)
 
@@ -424,11 +433,12 @@ class TestPerformance:
             coordinator.register_agent(f"agent_{i}", role="analyzer")
 
         decisions = [
-            AgentDecision(f"agent_{i}", "approve", 0.8 + i * 0.05, datetime.now()) for i in range(3)
+            AgentDecision(f"agent_{i}", "approve", 0.8 + i * 0.05, datetime.now())
+            for i in range(3)
         ]
 
         start_time = datetime.now()
-        consensus = coordinator.reach_consensus(decisions)
+        coordinator.reach_consensus(decisions)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
@@ -445,18 +455,20 @@ class TestPerformance:
         ]
 
         start_time = datetime.now()
-        consensus = coordinator.reach_consensus(decisions)
+        coordinator.reach_consensus(decisions)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
 
-    @pytest.mark.skipif(not HAS_TOPOLOGY_MANAGER, reason="TopologyManager not available")
+    @pytest.mark.skipif(
+        not HAS_TOPOLOGY_MANAGER, reason="TopologyManager not available"
+    )
     def test_topology_configuration_speed(self):
         """Test topology configuration performance."""
         manager = TopologyManager()
 
         start_time = datetime.now()
-        adj_matrix = manager.configure_topology(NetworkTopology.MESH, 6)
+        manager.configure_topology(NetworkTopology.MESH, 6)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 10, f"Configuration time {latency_ms}ms too slow"
@@ -467,7 +479,7 @@ class TestPerformance:
         agent_ids = [f"agent_{i}" for i in range(6)]
 
         start_time = datetime.now()
-        state = manager.create_ghz_state(agent_ids)
+        manager.create_ghz_state(agent_ids)
         latency_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         assert latency_ms < 50, f"Creation time {latency_ms}ms too slow"

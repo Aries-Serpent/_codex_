@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import json
 import re
-import tempfile
 import time
 from collections import defaultdict
 from pathlib import Path

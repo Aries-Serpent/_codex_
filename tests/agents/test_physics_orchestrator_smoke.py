@@ -9,8 +9,6 @@ Targets:
 - Path optimization logic
 """
 
-import pytest
-from typing import List, Dict, Any
 import math
 
 
@@ -56,7 +54,10 @@ class TestForceVectorOperations:
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
-            name="diagonal_force", magnitude=10.0, direction=math.pi / 4, priority=1.0  # 45 degrees
+            name="diagonal_force",
+            magnitude=10.0,
+            direction=math.pi / 4,
+            priority=1.0,  # 45 degrees
         )
 
         x, y = force.get_components()
@@ -69,7 +70,10 @@ class TestForceVectorOperations:
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(
-            name="3d_force", magnitude=5.0, direction=[1.0, 2.0, 3.0], priority=2.0  # 3D vector
+            name="3d_force",
+            magnitude=5.0,
+            direction=[1.0, 2.0, 3.0],
+            priority=2.0,  # 3D vector
         )
 
         x, y = force.get_components()
@@ -205,12 +209,17 @@ class TestPhysicsOrchestratorDecisionMaking:
 
     def test_assess_situation_basic(self):
         """Test basic situation assessment."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orch = PhysicsInspiredOrchestrator()
 
         state = DecisionState(
-            current_position="backlog", goal_position="production", available_resources=0.8
+            current_position="backlog",
+            goal_position="production",
+            available_resources=0.8,
         )
 
         # Assess the situation
@@ -222,10 +231,10 @@ class TestPhysicsOrchestratorDecisionMaking:
     def test_orchestrate_decision_simple(self):
         """Test simple orchestration."""
         from agents.physics_orchestrator import (
-            PhysicsInspiredOrchestrator,
-            DecisionState,
             ActionPath,
             ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
         )
 
         orch = PhysicsInspiredOrchestrator()
@@ -241,9 +250,13 @@ class TestPhysicsOrchestratorDecisionMaking:
 
     def test_optimize_path_selection(self):
         """Test path optimization."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath, ActionType
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            PhysicsInspiredOrchestrator,
+        )
 
-        orch = PhysicsInspiredOrchestrator()
+        PhysicsInspiredOrchestrator()
 
         paths = [
             ActionPath(

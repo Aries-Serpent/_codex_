@@ -9,11 +9,10 @@ Phase: 16.2 - End-to-End Testing
 Tests: 15+
 """
 
-import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple
 
 import pytest
 

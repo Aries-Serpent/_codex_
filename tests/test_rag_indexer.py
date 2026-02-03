@@ -5,6 +5,7 @@ Tests for RAG Indexer Module
 import json
 import tempfile
 from pathlib import Path
+import importlib.util
 
 import numpy as np
 import pytest
@@ -22,8 +23,16 @@ try:
 except ImportError:
     RAG_INDEXER_AVAILABLE = False
 
+# Check if sentence_transformers is available
+try:
+    if importlib.util.find_spec("sentence_transformers") is None:
+        raise ImportError
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 pytestmark = pytest.mark.skipif(
-    not RAG_INDEXER_AVAILABLE,
+    not RAG_INDEXER_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
     reason="RAG indexer dependencies (sentence_transformers, faiss) not installed"
 )
 

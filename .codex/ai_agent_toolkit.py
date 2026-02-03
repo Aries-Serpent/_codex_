@@ -94,8 +94,8 @@ class EnvironmentValidator:
         result = {
             "gh_cli_available": False,
             "gh_authenticated": False,
-            "github_token_set": False,
-            "gh_token_set": False,
+            "github_token_set": "disabled",  # nosec B105
+            "gh_token_set": "disabled",  # nosec B105
             "actions_context": False,
             "workarounds": [],
             "error": None

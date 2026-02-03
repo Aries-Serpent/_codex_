@@ -54,22 +54,19 @@ def sample_data_dir(tmp_path: Path) -> Path:
     """Create a sample data directory with multiple files."""
     data_dir = tmp_path / "data"
     data_dir.mkdir()
-    
+
     # Create multiple data files
     (data_dir / "train.jsonl").write_text('{"text": "train"}\n')
     (data_dir / "valid.jsonl").write_text('{"text": "valid"}\n')
     (data_dir / "test.jsonl").write_text('{"text": "test"}\n')
-    
+
     return data_dir
 
 
 @pytest.fixture
 def sample_dataset() -> list[dict[str, Any]]:
     """Create a sample in-memory dataset."""
-    return [
-        {"id": i, "text": f"Sample text {i}", "score": i * 0.1}
-        for i in range(100)
-    ]
+    return [{"id": i, "text": f"Sample text {i}", "score": i * 0.1} for i in range(100)]
 
 
 # =============================================================================
@@ -103,7 +100,7 @@ class TestDataLoader:
 
     def test_handles_missing_file(self, tmp_path: Path) -> None:
         """Test handling of missing files."""
-        missing = tmp_path / "missing.jsonl"
+        tmp_path / "missing.jsonl"
         # with pytest.raises(FileNotFoundError):
         #     loader.load_jsonl(missing)
         pass  # Placeholder
@@ -119,9 +116,7 @@ class TestDataLoader:
     def test_loads_large_file_efficiently(self, tmp_path: Path) -> None:
         """Test efficient loading of large files."""
         large_file = tmp_path / "large.jsonl"
-        large_file.write_text("\n".join(
-            json.dumps({"id": i}) for i in range(10000)
-        ))
+        large_file.write_text("\n".join(json.dumps({"id": i}) for i in range(10000)))
         # import time
         # start = time.time()
         # records = loader.load_jsonl(large_file)
@@ -141,18 +136,12 @@ class TestDataValidation:
 
     def test_validates_required_fields(self) -> None:
         """Test validation of required fields."""
-        schema = {"id": int, "text": str}
-        valid_record = {"id": 1, "text": "sample"}
-        invalid_record = {"id": 1}  # Missing text
         # assert validation.validate_record(valid_record, schema)
         # assert not validation.validate_record(invalid_record, schema)
         pass  # Placeholder
 
     def test_validates_field_types(self) -> None:
         """Test validation of field types."""
-        schema = {"id": int, "score": float}
-        valid_record = {"id": 1, "score": 0.5}
-        invalid_record = {"id": "not_int", "score": 0.5}
         # assert validation.validate_record(valid_record, schema)
         # assert not validation.validate_record(invalid_record, schema)
         pass  # Placeholder
@@ -168,14 +157,13 @@ class TestDataValidation:
 
     def test_detects_duplicate_ids(self, sample_dataset: list) -> None:
         """Test detection of duplicate IDs."""
-        dataset_with_dups = sample_dataset + [{"id": 0, "text": "duplicate"}]
+        sample_dataset + [{"id": 0, "text": "duplicate"}]
         # duplicates = validation.find_duplicates(dataset_with_dups, key="id")
         # assert len(duplicates) == 1
         pass  # Placeholder
 
     def test_detects_missing_values(self) -> None:
         """Test detection of missing values."""
-        records = [{"id": 1, "text": "a"}, {"id": 2, "text": None}]
         # missing = validation.find_missing(records, field="text")
         # assert len(missing) == 1
         pass  # Placeholder
@@ -215,10 +203,7 @@ class TestDataSplit:
 
     def test_stratified_split(self) -> None:
         """Test stratified splitting by label."""
-        labeled_data = [
-            {"id": i, "label": "A" if i < 50 else "B"}
-            for i in range(100)
-        ]
+        [{"id": i, "label": "A" if i < 50 else "B"} for i in range(100)]
         # train, test = split.stratified_split(labeled_data, test_size=0.2)
         # train_a = sum(1 for r in train if r["label"] == "A")
         # train_b = sum(1 for r in train if r["label"] == "B")

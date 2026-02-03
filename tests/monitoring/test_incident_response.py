@@ -15,17 +15,15 @@ Phase: 20.1 Production Monitoring & Alerting
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
 
 import pytest
-
 
 # ============================================================================
 # Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def incident_config() -> Dict[str, Any]:
@@ -164,6 +162,7 @@ def runbook_config() -> Dict[str, Any]:
 # Incident Detection Tests
 # ============================================================================
 
+
 class TestIncidentDetection:
     """Tests for incident detection functionality."""
 
@@ -184,7 +183,13 @@ class TestIncidentDetection:
 
     def test_incident_status_valid(self, incident_config: Dict[str, Any]):
         """Test incident status is valid."""
-        valid_statuses = ["detected", "investigating", "identified", "monitoring", "resolved"]
+        valid_statuses = [
+            "detected",
+            "investigating",
+            "identified",
+            "monitoring",
+            "resolved",
+        ]
         assert incident_config["status"] in valid_statuses
 
     def test_affected_services_listed(self, incident_config: Dict[str, Any]):
@@ -197,6 +202,7 @@ class TestIncidentDetection:
 # Incident Classification Tests
 # ============================================================================
 
+
 class TestIncidentClassification:
     """Tests for incident classification."""
 
@@ -208,7 +214,7 @@ class TestIncidentClassification:
             "minor_feature_impact": "P3",
             "cosmetic_issue": "P4",
         }
-        
+
         impact = "critical_service_down"
         severity = impact_scores.get(impact, "P3")
         assert severity == "P1"
@@ -216,7 +222,7 @@ class TestIncidentClassification:
     def test_classify_by_affected_users(self):
         """Test classifying incident by affected user count."""
         affected_users = 5000
-        
+
         if affected_users > 1000:
             severity = "P1"
         elif affected_users > 100:
@@ -225,7 +231,7 @@ class TestIncidentClassification:
             severity = "P3"
         else:
             severity = "P4"
-        
+
         assert severity == "P1"
 
     def test_auto_upgrade_severity(self):
@@ -233,18 +239,19 @@ class TestIncidentClassification:
         current_severity = "P2"
         duration_minutes = 45
         upgrade_threshold_minutes = 30
-        
+
         if duration_minutes > upgrade_threshold_minutes and current_severity == "P2":
             new_severity = "P1"
         else:
             new_severity = current_severity
-        
+
         assert new_severity == "P1"
 
 
 # ============================================================================
 # Incident Escalation Tests
 # ============================================================================
+
 
 class TestIncidentEscalation:
     """Tests for incident escalation."""
@@ -269,7 +276,7 @@ class TestIncidentEscalation:
         """Test on-call team is assigned by severity."""
         p1_config = escalation_matrix["P1"]
         p4_config = escalation_matrix["P4"]
-        
+
         assert p1_config["on_call_team"] == "sre"
         assert p4_config["on_call_team"] == "platform"
 
@@ -283,6 +290,7 @@ class TestIncidentEscalation:
 # Incident Communication Tests
 # ============================================================================
 
+
 class TestIncidentCommunication:
     """Tests for incident communication."""
 
@@ -294,7 +302,7 @@ class TestIncidentCommunication:
             "message": f"Investigating: {incident_config['title']}",
             "timestamp": datetime.utcnow().isoformat(),
         }
-        
+
         assert "incident_id" in status_update
         assert "status" in status_update
         assert "message" in status_update
@@ -302,13 +310,13 @@ class TestIncidentCommunication:
     def test_notification_template(self, incident_config: Dict[str, Any]):
         """Test notification message template."""
         template = f"""
-        🚨 Incident Alert: {incident_config['severity']}
-        
-        Title: {incident_config['title']}
-        Impact: {incident_config['impact']}
-        Status: {incident_config['status']}
+        🚨 Incident Alert: {incident_config["severity"]}
+
+        Title: {incident_config["title"]}
+        Impact: {incident_config["impact"]}
+        Status: {incident_config["status"]}
         """
-        
+
         assert incident_config["severity"] in template
         assert incident_config["title"] in template
 
@@ -316,7 +324,7 @@ class TestIncidentCommunication:
         """Test stakeholder notifications by severity."""
         p1_notify = escalation_matrix["P1"]["notify"]
         p4_notify = escalation_matrix["P4"]["notify"]
-        
+
         # P1 should notify executives
         assert "email-executives" in p1_notify
         # P4 should be less urgent
@@ -327,6 +335,7 @@ class TestIncidentCommunication:
 # Incident Timeline Tests
 # ============================================================================
 
+
 class TestIncidentTimeline:
     """Tests for incident timeline tracking."""
 
@@ -335,12 +344,16 @@ class TestIncidentTimeline:
         timestamps = [event["timestamp"] for event in incident_timeline]
         assert timestamps == sorted(timestamps)
 
-    def test_timeline_has_detection_event(self, incident_timeline: List[Dict[str, Any]]):
+    def test_timeline_has_detection_event(
+        self, incident_timeline: List[Dict[str, Any]]
+    ):
         """Test timeline includes detection event."""
         detection_events = [e for e in incident_timeline if e["type"] == "detection"]
         assert len(detection_events) == 1
 
-    def test_timeline_has_resolution_event(self, incident_timeline: List[Dict[str, Any]]):
+    def test_timeline_has_resolution_event(
+        self, incident_timeline: List[Dict[str, Any]]
+    ):
         """Test timeline includes resolution event."""
         resolution_events = [e for e in incident_timeline if e["type"] == "resolution"]
         assert len(resolution_events) == 1
@@ -352,14 +365,16 @@ class TestIncidentTimeline:
             for field in required_fields:
                 assert field in event
 
-    def test_calculate_time_to_acknowledge(self, incident_timeline: List[Dict[str, Any]]):
+    def test_calculate_time_to_acknowledge(
+        self, incident_timeline: List[Dict[str, Any]]
+    ):
         """Test calculating time to acknowledge."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         ack = next(e for e in incident_timeline if e["type"] == "acknowledgment")
-        
+
         detect_time = datetime.fromisoformat(detection["timestamp"])
         ack_time = datetime.fromisoformat(ack["timestamp"])
-        
+
         tta_minutes = (ack_time - detect_time).total_seconds() / 60
         assert tta_minutes > 0
 
@@ -367,10 +382,10 @@ class TestIncidentTimeline:
         """Test calculating time to resolve."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         resolution = next(e for e in incident_timeline if e["type"] == "resolution")
-        
+
         detect_time = datetime.fromisoformat(detection["timestamp"])
         resolve_time = datetime.fromisoformat(resolution["timestamp"])
-        
+
         ttr_minutes = (resolve_time - detect_time).total_seconds() / 60
         assert ttr_minutes > 0
 
@@ -378,6 +393,7 @@ class TestIncidentTimeline:
 # ============================================================================
 # Runbook Automation Tests
 # ============================================================================
+
 
 class TestRunbookAutomation:
     """Tests for runbook automation."""
@@ -399,7 +415,9 @@ class TestRunbookAutomation:
 
     def test_approval_required_steps(self, runbook_config: Dict[str, Any]):
         """Test approval-required steps are identified."""
-        approval_steps = [s for s in runbook_config["steps"] if s.get("requires_approval")]
+        approval_steps = [
+            s for s in runbook_config["steps"] if s.get("requires_approval")
+        ]
         assert len(approval_steps) > 0
 
     def test_runbook_trigger_specified(self, runbook_config: Dict[str, Any]):
@@ -411,6 +429,7 @@ class TestRunbookAutomation:
 # ============================================================================
 # Post-Incident Review Tests
 # ============================================================================
+
 
 class TestPostIncidentReview:
     """Tests for post-incident review process."""
@@ -424,14 +443,28 @@ class TestPostIncidentReview:
             "timeline": [],
             "root_cause": "Connection pool exhaustion due to leaked connections",
             "impact": {"users_affected": 5000, "duration_minutes": 30},
-            "contributing_factors": ["Missing connection timeout", "No pool monitoring"],
-            "action_items": [
-                {"action": "Add connection pool monitoring", "owner": "sre", "due": "2026-01-26"},
-                {"action": "Implement connection timeout", "owner": "platform", "due": "2026-01-23"},
+            "contributing_factors": [
+                "Missing connection timeout",
+                "No pool monitoring",
             ],
-            "lessons_learned": ["Monitor all resource pools", "Set timeouts on all connections"],
+            "action_items": [
+                {
+                    "action": "Add connection pool monitoring",
+                    "owner": "sre",
+                    "due": "2026-01-26",
+                },
+                {
+                    "action": "Implement connection timeout",
+                    "owner": "platform",
+                    "due": "2026-01-23",
+                },
+            ],
+            "lessons_learned": [
+                "Monitor all resource pools",
+                "Set timeouts on all connections",
+            ],
         }
-        
+
         required_sections = ["summary", "root_cause", "impact", "action_items"]
         for section in required_sections:
             assert section in postmortem
@@ -442,7 +475,7 @@ class TestPostIncidentReview:
             {"action": "Fix bug", "owner": "dev", "due": "2026-01-26"},
             {"action": "Add monitoring", "owner": "sre", "due": "2026-01-23"},
         ]
-        
+
         for item in action_items:
             assert "owner" in item
             assert len(item["owner"]) > 0
@@ -452,27 +485,33 @@ class TestPostIncidentReview:
         action_items = [
             {"action": "Fix bug", "owner": "dev", "due": "2026-01-26"},
         ]
-        
+
         for item in action_items:
             assert "due" in item
             # Validate date format
             datetime.fromisoformat(item["due"])
 
-    def test_incident_metrics_calculation(self, incident_timeline: List[Dict[str, Any]]):
+    def test_incident_metrics_calculation(
+        self, incident_timeline: List[Dict[str, Any]]
+    ):
         """Test incident metrics calculation."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         ack = next(e for e in incident_timeline if e["type"] == "acknowledgment")
         resolution = next(e for e in incident_timeline if e["type"] == "resolution")
-        
+
         detect_time = datetime.fromisoformat(detection["timestamp"])
         ack_time = datetime.fromisoformat(ack["timestamp"])
         resolve_time = datetime.fromisoformat(resolution["timestamp"])
-        
+
         metrics = {
             "time_to_detect_minutes": 0,  # Assumed instant for alert-triggered
-            "time_to_acknowledge_minutes": (ack_time - detect_time).total_seconds() / 60,
-            "time_to_resolve_minutes": (resolve_time - detect_time).total_seconds() / 60,
+            "time_to_acknowledge_minutes": (ack_time - detect_time).total_seconds()
+            / 60,
+            "time_to_resolve_minutes": (resolve_time - detect_time).total_seconds()
+            / 60,
         }
-        
+
         assert metrics["time_to_acknowledge_minutes"] > 0
-        assert metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"]
+        assert (
+            metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"]
+        )

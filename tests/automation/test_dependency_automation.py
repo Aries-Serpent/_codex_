@@ -4,14 +4,9 @@ This module tests automated dependency management including
 version updates, compatibility checks, and security patching.
 """
 
-import json
 import re
-import tempfile
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any
+from datetime import datetime
 
-import pytest
 
 
 class TestVersionDetection:
@@ -35,8 +30,8 @@ class TestVersionDetection:
         match = re.match(r"(\d+)\.(\d+)\.(\d+)(-(.+))?", version_str)
         
         major = int(match.group(1))
-        minor = int(match.group(2))
-        patch = int(match.group(3))
+        int(match.group(2))
+        int(match.group(3))
         prerelease = match.group(5)
         
         assert major == 2

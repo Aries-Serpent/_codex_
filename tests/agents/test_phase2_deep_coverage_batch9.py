@@ -12,8 +12,8 @@ Systematically applies integration and exception handling:
 Target: +3-4% coverage gain (62% → 66%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_PhysicsIntegration:
@@ -82,7 +82,7 @@ class TestPhase2_PhysicsIntegration:
         x = 3.0
         y = 4.0
         r = np.sqrt(x**2 + y**2)
-        theta = np.arctan2(y, x)
+        np.arctan2(y, x)
         assert abs(r - 5.0) < 1e-10
 
 
@@ -228,7 +228,6 @@ class TestPhase2_ErrorPropagation:
     def test_linear_error_propagation(self):
         """Test linear error propagation"""
         # σ_f = |df/dx| * σ_x
-        x = 5.0
         sigma_x = 0.1
         # f(x) = 2x, df/dx = 2
         df_dx = 2.0
@@ -354,7 +353,6 @@ class TestPhase2_NumericalStability:
         """Test avoiding catastrophic cancellation"""
         # Bad: (x + y) - (x - y) when x ≈ y
         # Good: 2y
-        x = 1.0e10
         y = 1.0
         # Use stable formula
         result = 2 * y

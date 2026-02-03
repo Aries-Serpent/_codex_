@@ -2,7 +2,6 @@
 import pytest
 from pathlib import Path
 import tempfile
-import json
 
 # Import from the script
 import sys

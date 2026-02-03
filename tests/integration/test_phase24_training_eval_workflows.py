@@ -1,14 +1,12 @@
 """Phase 24 training/evaluation workflow tests."""
 
 import pytest
-from omegaconf import OmegaConf
 
 
 @pytest.mark.integration
 def test_phase24_simple_trainer_init():
     """Test Phase 24 SimpleTrainer initialization."""
     # Mock trainer config
-    config = {"epochs": 10, "batch_size": 32}
     # Verify trainer can be initialized
 
 

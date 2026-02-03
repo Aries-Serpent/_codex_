@@ -15,11 +15,10 @@ Usage:
 """
 
 import ast
-import json
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, Optional
+from typing import Dict, List, Set
 import argparse
 
 

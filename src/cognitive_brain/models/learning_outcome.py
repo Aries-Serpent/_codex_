@@ -7,14 +7,16 @@ Integrates with AfterMath feedback system for continuous improvement.
 AfterMath: Phase 8.3 - Adaptive Learning Engine
 PDA: Active - Outcome tracking and pattern extraction
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Any
 from enum import Enum
+from typing import Any, Dict, List
 
 
 class OutcomeType(Enum):
     """Types of decision outcomes."""
+
     SUCCESS = "success"
     FAILURE = "failure"
     PARTIAL = "partial"
@@ -24,17 +26,18 @@ class OutcomeType(Enum):
 
 class PatternCategory(Enum):
     """Categories of identified patterns."""
-    TEMPORAL = "temporal"        # Time-based patterns
-    CONTEXTUAL = "contextual"    # Context-dependent patterns
-    SEQUENTIAL = "sequential"    # Action sequence patterns
-    CAUSAL = "causal"           # Cause-effect patterns
+
+    TEMPORAL = "temporal"  # Time-based patterns
+    CONTEXTUAL = "contextual"  # Context-dependent patterns
+    SEQUENTIAL = "sequential"  # Action sequence patterns
+    CAUSAL = "causal"  # Cause-effect patterns
 
 
 @dataclass
 class DecisionContext:
     """
     Context in which a decision was made.
-    
+
     Attributes:
         task_type: Type of task being solved
         complexity: Estimated complexity (0-1)
@@ -43,26 +46,29 @@ class DecisionContext:
         agent_ids: Agents involved in decision
         metadata: Additional contextual information
     """
+
     task_type: str
     complexity: float
     resource_constraints: Dict[str, float]
     time_pressure: float = 0.5
     agent_ids: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate decision context."""
         if not 0.0 <= self.complexity <= 1.0:
             raise ValueError(f"Complexity must be in [0,1], got {self.complexity}")
         if not 0.0 <= self.time_pressure <= 1.0:
-            raise ValueError(f"Time pressure must be in [0,1], got {self.time_pressure}")
+            raise ValueError(
+                f"Time pressure must be in [0,1], got {self.time_pressure}"
+            )
 
 
 @dataclass
 class LearningOutcome:
     """
     Structured outcome of a decision for learning purposes.
-    
+
     Attributes:
         outcome_id: Unique identifier
         decision_id: Associated decision ID
@@ -73,9 +79,10 @@ class LearningOutcome:
         patterns_identified: Detected patterns
         lessons_learned: Extracted lessons
         timestamp: When outcome was recorded
-        
+
     PDA: [DATA] Learning outcome container for adaptive algorithms
     """
+
     outcome_id: str
     decision_id: str
     outcome_type: OutcomeType
@@ -85,7 +92,7 @@ class LearningOutcome:
     patterns_identified: List[str] = field(default_factory=list)
     lessons_learned: List[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
-    
+
     def __post_init__(self):
         """Validate learning outcome."""
         if not -1.0 <= self.reward <= 1.0:
@@ -100,7 +107,7 @@ class LearningOutcome:
 class Pattern:
     """
     Identified pattern in decision-making.
-    
+
     Attributes:
         pattern_id: Unique identifier
         category: Pattern category
@@ -110,6 +117,7 @@ class Pattern:
         examples: Example instances
         applicability: When pattern applies
     """
+
     pattern_id: str
     category: PatternCategory
     description: str
@@ -117,7 +125,7 @@ class Pattern:
     support_count: int = 0
     examples: List[str] = field(default_factory=list)
     applicability: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate pattern."""
         if not 0.0 <= self.confidence <= 1.0:
@@ -130,22 +138,23 @@ class Pattern:
 class PatternSet:
     """
     Collection of related patterns.
-    
+
     Attributes:
         patterns: List of patterns
         domain: Problem domain
         extraction_date: When patterns were extracted
         statistics: Pattern set statistics
     """
+
     patterns: List[Pattern]
     domain: str
     extraction_date: datetime = field(default_factory=datetime.now)
     statistics: Dict[str, Any] = field(default_factory=dict)
-    
+
     def get_by_category(self, category: PatternCategory) -> List[Pattern]:
         """Get patterns by category."""
         return [p for p in self.patterns if p.category == category]
-    
+
     def get_high_confidence(self, threshold: float = 0.8) -> List[Pattern]:
         """Get high-confidence patterns."""
         return [p for p in self.patterns if p.confidence >= threshold]

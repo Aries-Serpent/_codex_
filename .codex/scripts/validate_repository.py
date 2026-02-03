@@ -16,8 +16,10 @@ from typing import Tuple
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent.parent
 
+
 class ValidationResult:
     """Tracks validation results."""
+
     def __init__(self):
         self.passed = []
         self.failed = []
@@ -62,7 +64,10 @@ def validate_package_structure(results: ValidationResult):
         if '"services*"' not in content and "'services*'" not in content:
             results.add_pass("services* correctly excluded from pyproject.toml")
         else:
-            results.add_fail("services* exclusion", "services* found in include list (should be excluded)")
+            results.add_fail(
+                "services* exclusion",
+                "services* found in include list (should be excluded)",
+            )
 
     # Check src/ directory exists
     src_dir = REPO_ROOT / "src"
@@ -90,19 +95,26 @@ def validate_imports(results: ValidationResult):
         for py_file in src_dir.rglob("*.py"):
             with open(py_file) as f:
                 content = f.read()
-                for line_no, line in enumerate(content.split('\n'), 1):
+                for line_no, line in enumerate(content.split("\n"), 1):
                     # Skip comments and strings (basic heuristic)
                     stripped = line.strip()
-                    if stripped.startswith('#'):
+                    if stripped.startswith("#"):
                         continue
                     # Look for "from services." (not "from src.services.")
                     if "from services." in line and "from src.services." not in line:
                         # Additional check: not in a string literal
-                        if not ('"from services."' in line or "'from services.'" in line):
-                            bad_imports.append(f"{py_file.relative_to(REPO_ROOT)}:{line_no}")
+                        if not (
+                            '"from services."' in line or "'from services.'" in line
+                        ):
+                            bad_imports.append(
+                                f"{py_file.relative_to(REPO_ROOT)}:{line_no}"
+                            )
 
         if bad_imports:
-            results.add_fail("src/ imports", f"Found incorrect 'from services.' imports in src/: {bad_imports[:3]}")
+            results.add_fail(
+                "src/ imports",
+                f"Found incorrect 'from services.' imports in src/: {bad_imports[:3]}",
+            )
         else:
             results.add_pass("No incorrect 'from services.' imports in src/")
 
@@ -134,7 +146,7 @@ def validate_tests(results: ValidationResult, quick: bool = True):
                 ["pytest", "tests/services/workflow/", "-v", "--tb=short"],
                 capture_output=True,
                 text=True,
-                cwd=REPO_ROOT
+                cwd=REPO_ROOT,
             )
             if result.returncode == 0:
                 results.add_pass("Service workflow tests passed")
@@ -145,7 +157,9 @@ def validate_tests(results: ValidationResult, quick: bool = True):
                     truncated_output = f"{output[:half]}\n...\n{output[-half:]}"
                 else:
                     truncated_output = output
-                results.add_fail("Service workflow tests", f"Tests failed:\n{truncated_output}")
+                results.add_fail(
+                    "Service workflow tests", f"Tests failed:\n{truncated_output}"
+                )
         except Exception as e:
             results.add_warning("Service workflow tests", f"Could not run tests: {e}")
 
@@ -232,10 +246,11 @@ def validate_build(results: ValidationResult):
 
     # Check if build module is available
     try:
-        import build
         results.add_pass("build module is available")
     except Exception as e:
-        results.add_warning("build module", f"Unavailable or broken (e.g., not installed). Details: {e}")
+        results.add_warning(
+            "build module", f"Unavailable or broken (e.g., not installed). Details: {e}"
+        )
         return
 
     # Try to build the package
@@ -269,18 +284,22 @@ def validate_build(results: ValidationResult):
 
             # Check wheel contents
             import zipfile
+
             dist_dir = REPO_ROOT / "dist"
             wheels = list(dist_dir.glob("*.whl"))
             if wheels:
                 wheel_path = wheels[-1]  # Get latest wheel
-                with zipfile.ZipFile(wheel_path, 'r') as zf:
+                with zipfile.ZipFile(wheel_path, "r") as zf:
                     files = zf.namelist()
                     # Check that services/ is NOT in the wheel
-                    services_files = [f for f in files if f.startswith('services/')]
+                    services_files = [f for f in files if f.startswith("services/")]
                     if not services_files:
                         results.add_pass("services/ correctly excluded from wheel")
                     else:
-                        results.add_fail("wheel contents", f"services/ found in wheel: {services_files[:3]}")
+                        results.add_fail(
+                            "wheel contents",
+                            f"services/ found in wheel: {services_files[:3]}",
+                        )
         else:
             output = stderr or ""
             if len(output) > 500:
@@ -297,7 +316,9 @@ def main():
     parser = argparse.ArgumentParser(description="Validate _codex_ repository")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--skip-tests", action="store_true", help="Skip test execution")
-    parser.add_argument("--skip-build", action="store_true", help="Skip build validation")
+    parser.add_argument(
+        "--skip-build", action="store_true", help="Skip build validation"
+    )
     args = parser.parse_args()
 
     print("=" * 70)

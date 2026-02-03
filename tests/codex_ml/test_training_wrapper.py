@@ -6,11 +6,8 @@ Tests for the training.py compatibility wrapper module.
 
 from __future__ import annotations
 
-import importlib
 import sys
-from pathlib import Path
 from types import ModuleType
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -87,7 +84,6 @@ class TestPackageLoading:
 
     def test_sys_modules_registered(self) -> None:
         """Test package is registered in sys.modules."""
-        from codex_ml import training
         
         # The package should be in sys.modules
         assert "codex_ml.training" in sys.modules

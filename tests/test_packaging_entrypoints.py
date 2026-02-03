@@ -6,8 +6,6 @@ Test module for packaging entrypoints.
 
 from __future__ import annotations
 
-from importlib import import_module
-from importlib.util import find_spec
 from pathlib import Path
 
 # Prefer stdlib tomllib (3.11+) with tomli fallback for 3.9/3.10

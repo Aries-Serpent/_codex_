@@ -36,7 +36,7 @@ Parses task allocation JSON for execution
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 def parse_tasks(allocation_path: str, output_path: str) -> Dict[str, Any]:

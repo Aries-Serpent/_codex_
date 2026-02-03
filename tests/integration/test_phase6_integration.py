@@ -12,7 +12,6 @@ All tests validate backward compatibility and performance.
 
 import pytest
 import tempfile
-import shutil
 from pathlib import Path
 import time
 import yaml

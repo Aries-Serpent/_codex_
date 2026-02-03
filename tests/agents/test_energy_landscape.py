@@ -12,11 +12,11 @@ Test Categories:
 - System entropy calculations
 """
 
-import pytest
 import math
-from typing import Dict, Any
 
-from agents.physics_orchestrator import EnergyState, EnergyLandscape
+import pytest
+
+from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
 
 class TestEnergyState:
@@ -111,7 +111,9 @@ class TestEnergyState:
     def test_boltzmann_probability_temperature_protection(self):
         """Test Boltzmann probability protects against zero temperature."""
         state = EnergyState(
-            configuration={}, energy=50.0, temperature=0.0  # Should be clamped to 0.01
+            configuration={},
+            energy=50.0,
+            temperature=0.0,  # Should be clamped to 0.01
         )
         # Should not raise ZeroDivisionError
         prob = state.boltzmann_probability()
@@ -133,13 +135,19 @@ class TestEnergyLandscape:
 
         # Add states with varying energies
         landscape.add_state(
-            EnergyState(configuration={"x": 1}, energy=10.0, entropy=1.0, state_id="low")
+            EnergyState(
+                configuration={"x": 1}, energy=10.0, entropy=1.0, state_id="low"
+            )
         )
         landscape.add_state(
-            EnergyState(configuration={"x": 2}, energy=50.0, entropy=2.0, state_id="medium")
+            EnergyState(
+                configuration={"x": 2}, energy=50.0, entropy=2.0, state_id="medium"
+            )
         )
         landscape.add_state(
-            EnergyState(configuration={"x": 3}, energy=100.0, entropy=3.0, state_id="high")
+            EnergyState(
+                configuration={"x": 3}, energy=100.0, entropy=3.0, state_id="high"
+            )
         )
 
         return landscape
@@ -316,10 +324,14 @@ class TestEnergyLandscapeIntegration:
         landscape = EnergyLandscape(temperature=2.0)
 
         # State A: Low energy, low entropy
-        state_a = EnergyState(configuration={"type": "A"}, energy=10.0, entropy=1.0, state_id="A")
+        state_a = EnergyState(
+            configuration={"type": "A"}, energy=10.0, entropy=1.0, state_id="A"
+        )
 
         # State B: Higher energy, much higher entropy
-        state_b = EnergyState(configuration={"type": "B"}, energy=15.0, entropy=10.0, state_id="B")
+        state_b = EnergyState(
+            configuration={"type": "B"}, energy=15.0, entropy=10.0, state_id="B"
+        )
 
         landscape.add_state(state_a)
         landscape.add_state(state_b)
@@ -348,7 +360,7 @@ class TestEnergyLandscapeIntegration:
         landscape_hot.add_state(EnergyState({"x": 1}, energy=10.0, entropy=1.0))
         landscape_hot.add_state(EnergyState({"x": 2}, energy=100.0, entropy=1.0))
 
-        selected_hot = landscape_hot.select_state()
+        landscape_hot.select_state()
         # Current implementation is deterministic, but probabilities are closer
         prob_low_cold = landscape_cold.gibbs_probability(landscape_cold.states[0])
         prob_low_hot = landscape_hot.gibbs_probability(landscape_hot.states[0])

@@ -17,20 +17,20 @@ Tests cover core functionality including:
 """
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
 
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
 from generate_audit_dashboard import (
+    SUPPORTED_EXTENSIONS,
     format_size,
     format_timestamp,
-    scan_directory,
-    load_manifest,
     generate_html_dashboard,
-    SUPPORTED_EXTENSIONS,
+    load_manifest,
+    scan_directory,
 )
 
 
@@ -242,7 +242,10 @@ class TestGenerateHtmlDashboard:
         ]
 
         generate_html_dashboard(
-            audit_artifacts=malicious_artifacts, reports=[], manifest={}, output_path=output_path
+            audit_artifacts=malicious_artifacts,
+            reports=[],
+            manifest={},
+            output_path=output_path,
         )
 
         content = output_path.read_text()
@@ -257,7 +260,9 @@ class TestGenerateHtmlDashboard:
         output_path = tmp_path / "index.html"
         malicious_manifest = {
             "version": "<script>alert('version')</script>",
-            "weights": {"<script>alert('key')</script>": "<script>alert('value')</script>"},
+            "weights": {
+                "<script>alert('key')</script>": "<script>alert('value')</script>"
+            },
             "artifacts": [
                 {
                     "name": "<img src=x onerror=alert(2)>",
@@ -270,7 +275,10 @@ class TestGenerateHtmlDashboard:
         }
 
         generate_html_dashboard(
-            audit_artifacts=[], reports=[], manifest=malicious_manifest, output_path=output_path
+            audit_artifacts=[],
+            reports=[],
+            manifest=malicious_manifest,
+            output_path=output_path,
         )
 
         content = output_path.read_text()
@@ -352,7 +360,10 @@ class TestEdgeCases:
         # Should handle gracefully without crashing
         try:
             generate_html_dashboard(
-                audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
+                audit_artifacts=artifacts,
+                reports=[],
+                manifest={},
+                output_path=output_path,
             )
         except KeyError:
             # Expected if fields are required

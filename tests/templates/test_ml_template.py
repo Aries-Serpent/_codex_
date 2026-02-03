@@ -15,43 +15,45 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
+
 
 # Conditional imports for optional dependencies
 def _check_torch_available() -> bool:
     """Check if PyTorch is installed and functional.
-    
+
     This function performs a comprehensive check to ensure PyTorch is not just
     importable but actually functional. It verifies:
     1. The torch module can be imported
     2. Core tensor functionality exists (torch.tensor, torch.zeros)
     3. A simple tensor operation can be executed
-    
+
     Returns:
         bool: True if PyTorch is fully functional, False otherwise.
     """
     try:
         import torch
-        
+
         # Verify core tensor functionality exists
-        required_attrs = ('tensor', 'zeros', 'ones', 'empty', 'Tensor')
+        required_attrs = ("tensor", "zeros", "ones", "empty", "Tensor")
         for attr in required_attrs:
             if not hasattr(torch, attr):
                 return False
-        
+
         # Verify neural network module exists
-        if not hasattr(torch, 'nn') or not hasattr(torch.nn, 'Module'):
+        if not hasattr(torch, "nn") or not hasattr(torch.nn, "Module"):
             return False
-        
+
         # Try to create and manipulate a simple tensor to verify functionality
         test_tensor = torch.zeros(1)
         _ = test_tensor + 1  # Basic operation
-        
+
         return True
     except Exception:
         return False
+
 
 TORCH_AVAILABLE = _check_torch_available()
 
@@ -67,10 +69,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # Skip Markers
 # =============================================================================
 
-requires_torch = pytest.mark.skipif(
-    not TORCH_AVAILABLE,
-    reason="PyTorch not installed"
-)
+requires_torch = pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not installed")
 
 
 # =============================================================================
@@ -147,9 +146,7 @@ class TestModelCreation:
     """Test model creation and initialization."""
 
     @requires_torch
-    def test_creates_model_from_config(
-        self, sample_model_config: dict
-    ) -> None:
+    def test_creates_model_from_config(self, sample_model_config: dict) -> None:
         """Test creating a model from configuration."""
         # model = factory.create_model(sample_model_config)
         # assert model is not None
@@ -157,9 +154,7 @@ class TestModelCreation:
         pass  # Placeholder
 
     @requires_torch
-    def test_initializes_weights_correctly(
-        self, sample_model_config: dict
-    ) -> None:
+    def test_initializes_weights_correctly(self, sample_model_config: dict) -> None:
         """Test model weight initialization."""
         # model = factory.create_model(sample_model_config)
         # Check that weights are initialized
@@ -168,9 +163,7 @@ class TestModelCreation:
         pass  # Placeholder
 
     @requires_torch
-    def test_model_has_expected_layers(
-        self, sample_model_config: dict
-    ) -> None:
+    def test_model_has_expected_layers(self, sample_model_config: dict) -> None:
         """Test model has expected layers."""
         # model = factory.create_model(sample_model_config)
         # assert hasattr(model, "encoder")
@@ -209,9 +202,7 @@ class TestTrainingLoop:
         pass  # Placeholder
 
     @requires_torch
-    def test_training_respects_max_epochs(
-        self, sample_training_config
-    ) -> None:
+    def test_training_respects_max_epochs(self, sample_training_config) -> None:
         """Test that training respects max epochs setting."""
         sample_training_config["max_epochs"] = 2
         # result = trainer.train(sample_training_config, sample_dataset)
@@ -238,18 +229,14 @@ class TestCheckpointing:
     """Test model checkpointing functionality."""
 
     @requires_torch
-    def test_saves_checkpoint(
-        self, mock_model, temp_checkpoint_dir
-    ) -> None:
+    def test_saves_checkpoint(self, mock_model, temp_checkpoint_dir) -> None:
         """Test saving a checkpoint."""
         # checkpoint.save(mock_model, temp_checkpoint_dir / "ckpt.pt")
         # assert (temp_checkpoint_dir / "ckpt.pt").exists()
         pass  # Placeholder
 
     @requires_torch
-    def test_loads_checkpoint(
-        self, mock_model, temp_checkpoint_dir
-    ) -> None:
+    def test_loads_checkpoint(self, mock_model, temp_checkpoint_dir) -> None:
         """Test loading a checkpoint."""
         # checkpoint.save(mock_model, temp_checkpoint_dir / "ckpt.pt")
         # loaded = checkpoint.load(temp_checkpoint_dir / "ckpt.pt")
@@ -270,9 +257,7 @@ class TestCheckpointing:
         pass  # Placeholder
 
     @requires_torch
-    def test_checkpoint_retention_policy(
-        self, mock_model, temp_checkpoint_dir
-    ) -> None:
+    def test_checkpoint_retention_policy(self, mock_model, temp_checkpoint_dir) -> None:
         """Test checkpoint retention policy (keep best K)."""
         # Save multiple checkpoints
         # for i in range(10):
@@ -296,9 +281,7 @@ class TestEvaluation:
     """Test model evaluation functionality."""
 
     @requires_torch
-    def test_evaluation_returns_metrics(
-        self, mock_model, sample_dataset
-    ) -> None:
+    def test_evaluation_returns_metrics(self, mock_model, sample_dataset) -> None:
         """Test that evaluation returns metrics."""
         # metrics = evaluator.evaluate(mock_model, sample_dataset)
         # assert "loss" in metrics
@@ -306,9 +289,7 @@ class TestEvaluation:
         pass  # Placeholder
 
     @requires_torch
-    def test_evaluation_is_deterministic(
-        self, mock_model, sample_dataset
-    ) -> None:
+    def test_evaluation_is_deterministic(self, mock_model, sample_dataset) -> None:
         """Test that evaluation is deterministic."""
         # metrics1 = evaluator.evaluate(mock_model, sample_dataset, seed=42)
         # metrics2 = evaluator.evaluate(mock_model, sample_dataset, seed=42)
@@ -338,9 +319,7 @@ class TestReproducibility:
 
     @requires_torch
     @pytest.mark.determinism
-    def test_model_output_is_deterministic(
-        self, mock_model
-    ) -> None:
+    def test_model_output_is_deterministic(self, mock_model) -> None:
         """Test that model output is deterministic."""
         # torch.manual_seed(42)
         # input_tensor = torch.randn(1, 10)
@@ -368,9 +347,7 @@ class TestDistributedTraining:
         pass  # Placeholder
 
     @requires_torch
-    def test_model_wrapping_for_distributed(
-        self, mock_model
-    ) -> None:
+    def test_model_wrapping_for_distributed(self, mock_model) -> None:
         """Test model wrapping for distributed training."""
         # wrapped = distributed.wrap_model(mock_model)
         # assert wrapped is not None
@@ -401,9 +378,7 @@ class TestMemory:
         pass  # Placeholder
 
     @requires_torch
-    def test_gradient_accumulation_reduces_memory(
-        self, sample_training_config
-    ) -> None:
+    def test_gradient_accumulation_reduces_memory(self, sample_training_config) -> None:
         """Test gradient accumulation reduces memory usage."""
         # config_small_batch = sample_training_config.copy()
         # config_small_batch["batch_size"] = 2
@@ -423,9 +398,7 @@ class TestPerformance:
 
     @requires_torch
     @pytest.mark.perf
-    def test_training_throughput(
-        self, sample_training_config, sample_dataset
-    ) -> None:
+    def test_training_throughput(self, sample_training_config, sample_dataset) -> None:
         """Test training throughput."""
         # import time
         # start = time.time()
@@ -437,9 +410,7 @@ class TestPerformance:
 
     @requires_torch
     @pytest.mark.perf
-    def test_inference_latency(
-        self, mock_model
-    ) -> None:
+    def test_inference_latency(self, mock_model) -> None:
         """Test inference latency."""
         # import time
         # input_tensor = torch.randn(1, 10)

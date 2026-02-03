@@ -114,13 +114,17 @@ def test_set_seed_sets_cudnn_deterministic_flags():
     mock_torch.cuda.is_available = Mock(return_value=False)
     mock_backends = Mock()
     mock_cudnn = Mock()
+    # Configure mock to allow attribute assignment and retrieval
+    mock_cudnn.deterministic = False
+    mock_cudnn.benchmark = True
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends
 
     with patch("src.common.randomness.torch", mock_torch):
         set_seed(42)
-        assert mock_cudnn.deterministic == True
-        assert mock_cudnn.benchmark == False
+        # Check that the attributes were set correctly
+        assert mock_cudnn.deterministic is True
+        assert mock_cudnn.benchmark is False
 
 
 def test_set_seed_handles_cudnn_exception_gracefully():

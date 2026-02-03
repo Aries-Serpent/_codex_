@@ -9,10 +9,7 @@ Phase: 16.2 - End-to-End Testing
 Tests: 10+
 """
 
-import json
-import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 import pytest
 

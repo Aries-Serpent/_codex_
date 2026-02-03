@@ -9,8 +9,6 @@ Tests for:
 - ContextCache
 """
 
-import pytest
-from datetime import datetime, timedelta
 import tempfile
 import os
 
@@ -144,7 +142,7 @@ class TestContextPriorityQueue:
         # Ensure we're over target before pruning
         assert initial_tokens > 1000, f"Initial tokens {initial_tokens} should be > 1000"
 
-        pruned = queue.prune_to_tokens(1000)
+        queue.prune_to_tokens(1000)
 
         assert queue.token_count <= 1000
 
@@ -226,7 +224,7 @@ class TestSlidingWindowManager:
         for i in range(10):
             window.add(f"Content {i} " * 50)
 
-        pruned = window.prune_to_tokens(1000)
+        window.prune_to_tokens(1000)
         assert window.total_tokens <= 1000
 
 
@@ -266,7 +264,7 @@ class TestHierarchicalMemory:
 
     def test_retrieve(self):
         """Test retrieval from memory."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import HierarchicalMemory
 
         memory = HierarchicalMemory()
 

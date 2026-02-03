@@ -170,7 +170,7 @@ version: 1.0.0
         manifest = sandbox_repo / "manifest.yaml"
         task = json.dumps({"type": "generate_tests", "module": "sample"})
 
-        result = subprocess.run(
+        subprocess.run(
             [
                 sys.executable,
                 str(AGENT_CLI),

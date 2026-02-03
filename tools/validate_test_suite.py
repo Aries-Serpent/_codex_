@@ -7,9 +7,8 @@ Provides detailed metrics on test quality and expected coverage impact.
 """
 
 import ast
-import json
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from dataclasses import dataclass
 from collections import defaultdict
 

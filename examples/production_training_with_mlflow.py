@@ -18,7 +18,6 @@ from typing import Dict, Any
 # Import existing training infrastructure
 from codex_ml.training.mlflow_integration import MLflowTracker, is_mlflow_available
 from codex_ml.training.loop import run_minimal_training
-from codex_ml.logging.metrics import MetricLogger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

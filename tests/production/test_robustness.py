@@ -9,10 +9,7 @@ import pytest
 import sqlite3
 import threading
 import time
-import tempfile
-from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
-import json
 import queue
 
 
@@ -31,7 +28,7 @@ def test_network_timeout_handling():
             try:
                 result = fetch_with_timeout(url)
                 return result
-            except Exception as e:
+            except Exception:
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(0.01 * (attempt + 1))  # Exponential backoff
@@ -117,7 +114,7 @@ def test_circuit_breaker_pattern():
                 self.failure_count = 0
                 self.state = 'closed'
                 return result
-            except Exception as e:
+            except Exception:
                 self.failure_count += 1
                 self.last_failure_time = time.time()
                 
@@ -155,7 +152,7 @@ def test_database_connection_recovery(tmp_path):
             try:
                 conn = sqlite3.connect(str(db_path))
                 return conn
-            except sqlite3.Error as e:
+            except sqlite3.Error:
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(0.01)
@@ -291,8 +288,8 @@ def test_database_connection_pooling():
     
     # Get connections
     conn1 = pool.get_connection()
-    conn2 = pool.get_connection()
-    conn3 = pool.get_connection()
+    pool.get_connection()
+    pool.get_connection()
     
     assert conn1['status'] == 'active'
     assert pool.active_connections == 3
@@ -344,7 +341,7 @@ def test_partial_write_recovery(tmp_path):
             # Atomic rename
             temp_path.replace(file_path)
             return True
-        except Exception as e:
+        except Exception:
             # Clean up temporary file on failure
             if temp_path.exists():
                 temp_path.unlink()

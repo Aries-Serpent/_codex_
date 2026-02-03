@@ -12,12 +12,8 @@ import argparse
 import json
 import os
 import sys
-import subprocess
-import time
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime
-from collections import defaultdict
+from typing import Dict, Optional
 
 # Add parent paths for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'src'))

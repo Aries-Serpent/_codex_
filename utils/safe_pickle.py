@@ -21,7 +21,7 @@ import os
 import pickle
 import secrets
 from pathlib import Path
-from typing import Any, Optional, Set
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

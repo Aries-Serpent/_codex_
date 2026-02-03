@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from packaging import version
 
 from codex_ml.plugins.entry_points import (
     PluginInfo,

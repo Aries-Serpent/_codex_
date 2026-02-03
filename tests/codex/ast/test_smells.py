@@ -4,8 +4,6 @@ Tests for codex.ast.smells module.
 This module contains tests for the code smell detection engine.
 """
 
-import pytest
-import ast
 from pathlib import Path
 
 

@@ -803,7 +803,7 @@ def mock_sentence_transformer(monkeypatch):
             return iter([])
     
     try:
-        import sentence_transformers
+        import sentence_transformers  # noqa: F401 - Testing optional dependency availability
         monkeypatch.setattr(
             "sentence_transformers.SentenceTransformer", 
             MockSentenceTransformer
@@ -815,3 +815,39 @@ def mock_sentence_transformer(monkeypatch):
     return MockSentenceTransformer
 
 
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_audit_artifacts(tmp_path_factory):
+    """
+    Create audit_artifacts directory for tests using pytest's temporary directory system.
+    
+    This fixture runs once per test session and ensures the directory
+    structure required by depth gating tests exists in an isolated temp location.
+    Sets the CODEX_AUDIT_DIR environment variable to point to the temporary directory.
+    """
+    # Use pytest's temp directory factory for isolated test artifacts
+    audit_dir = tmp_path_factory.mktemp("audit_artifacts")
+    
+    # Create required files
+    context_index = audit_dir / "context_index.json"
+    context_index.write_text(json.dumps({
+        "version": "1.0",
+        "contexts": [],
+        "metadata": {
+            "created": "test-session",
+            "purpose": "test-fixture"
+        }
+    }, indent=2))
+    
+    # Set environment variable so tests can find the temp audit directory
+    original_audit_dir = os.environ.get("CODEX_AUDIT_DIR")
+    os.environ["CODEX_AUDIT_DIR"] = str(audit_dir)
+    
+    yield audit_dir
+    
+    # Restore original environment variable
+    if original_audit_dir is not None:
+        os.environ["CODEX_AUDIT_DIR"] = original_audit_dir
+    else:
+        os.environ.pop("CODEX_AUDIT_DIR", None)

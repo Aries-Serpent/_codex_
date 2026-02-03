@@ -7,9 +7,7 @@ Tests configuration loading, dataset parsing, and preprocessing.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any, Mapping
 
 import pytest
 
@@ -24,7 +22,6 @@ from codex_ml.ingest import (
     _read_json,
     _read_jsonl,
     _read_text,
-    ingest,
     ingest_sample,
     load_dataset,
 )

@@ -5,8 +5,6 @@ Tests reproducibility, determinism, checkpointing, validation, and safeguards.
 Following High Maturity Achievement Plan patterns (target: 15-20 tests).
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestFunctionalTrainingDetector:

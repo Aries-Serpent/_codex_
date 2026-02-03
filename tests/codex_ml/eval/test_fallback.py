@@ -8,7 +8,6 @@ Tests synthetic data metrics, token encoding, and perplexity proxy.
 from __future__ import annotations
 
 import math
-from typing import Any
 
 import pytest
 

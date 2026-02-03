@@ -9,6 +9,7 @@ from __future__ import annotations
 import pytest
 
 from agents.exceptions import (
+    PACKAGE_NAME,
     AgentConfigError,
     AgentError,
     AgentExecutionError,
@@ -21,7 +22,6 @@ from agents.exceptions import (
     EntanglementError,
     GaugeError,
     InvariantViolationError,
-    PACKAGE_NAME,
     PhysicsError,
     ValidationError,
 )
@@ -186,21 +186,22 @@ class TestExceptionHierarchy:
             InvariantViolationError("test"),
             CausalityViolationError("test"),
         ]
-        
+
         for exc in exceptions:
             assert isinstance(exc, AgentError)
 
     def test_can_catch_with_base_class(self) -> None:
         """Verify all exceptions can be caught with AgentError."""
+
         def raise_import_error():
             raise AgentImportError("test")
-        
+
         def raise_config_error():
             raise AgentConfigError("test")
-        
+
         def raise_physics_error():
             raise PhysicsError("test")
-        
+
         for func in [raise_import_error, raise_config_error, raise_physics_error]:
             try:
                 func()

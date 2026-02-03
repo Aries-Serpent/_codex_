@@ -12,13 +12,15 @@ Supports:
 - Downloading paginated datasets
 """
 
-import os
-import sys
 import json
 import math
-import requests
-from typing import Dict, Any, Optional, List
+import os
+import sys
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import requests
+
 
 class GitHubVariableManager:
     """Manage GitHub repository variables via REST API"""
@@ -31,7 +33,7 @@ class GitHubVariableManager:
         self.headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28"
+            "X-GitHub-Api-Version": "2022-11-28",
         }
 
     def create_or_update(self, name: str, value: str) -> bool:
@@ -61,7 +63,7 @@ class GitHubVariableManager:
             response = requests.get(url, headers=self.headers, timeout=30)
 
             if response.status_code == 200:
-                return response.json().get('value')
+                return response.json().get("value")
             elif response.status_code == 404:
                 print(f"❌ Variable '{name}' not found")
                 return None
@@ -98,7 +100,7 @@ class GitHubVariableManager:
             response = requests.get(self.base_url, headers=self.headers, timeout=30)
 
             if response.status_code == 200:
-                return response.json().get('variables', [])
+                return response.json().get("variables", [])
             else:
                 print(f"❌ Failed to list variables: {response.status_code}")
                 return []
@@ -110,7 +112,7 @@ class GitHubVariableManager:
         """Upload a large dataset as paginated variables"""
         # Read dataset
         try:
-            with open(dataset_path, 'rb') as f:
+            with open(dataset_path, "rb") as f:
                 data = f.read()
         except IOError as e:
             print(f"❌ Failed to read dataset: {e}")
@@ -131,34 +133,40 @@ class GitHubVariableManager:
             chunk_data = data[start:end]
             # Try to decode as text, fallback to base64 if binary
             try:
-                chunks.append(chunk_data.decode('utf-8'))
+                chunks.append(chunk_data.decode("utf-8"))
             except UnicodeDecodeError:
                 import base64
-                chunks.append(base64.b64encode(chunk_data).decode('ascii'))
+
+                chunks.append(base64.b64encode(chunk_data).decode("ascii"))
 
         # Generate index
         index = {
             "dataset_id": dataset_id,
             "pages": pages,
             "schema": "json",
-            "keys": [f"DATASET_{dataset_id.upper()}_P{str(i+1).zfill(3)}" for i in range(pages)],
+            "keys": [
+                f"DATASET_{dataset_id.upper()}_P{str(i + 1).zfill(3)}"
+                for i in range(pages)
+            ],
             "created_at": datetime.utcnow().isoformat() + "Z",
             "total_size_bytes": total_size,
-            "compression": "none"
+            "compression": "none",
         }
 
         # Upload index
         index_var = f"DATASET_{dataset_id.upper()}_INDEX"
         print(f"📤 Uploading index: {index_var}")
-        if not self.create_or_update(index_var, json.dumps(index, separators=(',', ':'))):
+        if not self.create_or_update(
+            index_var, json.dumps(index, separators=(",", ":"))
+        ):
             return False
 
         # Upload pages
         for i, chunk in enumerate(chunks):
-            page_var = f"DATASET_{dataset_id.upper()}_P{str(i+1).zfill(3)}"
-            print(f"📤 Uploading page {i+1}/{pages}: {page_var} ({len(chunk)} chars)")
+            page_var = f"DATASET_{dataset_id.upper()}_P{str(i + 1).zfill(3)}"
+            print(f"📤 Uploading page {i + 1}/{pages}: {page_var} ({len(chunk)} chars)")
             if not self.create_or_update(page_var, chunk):
-                print(f"❌ Failed to upload page {i+1}, aborting")
+                print(f"❌ Failed to upload page {i + 1}, aborting")
                 return False
 
         print(f"✅ Successfully uploaded {pages} pages totaling {total_size} bytes")
@@ -181,16 +189,16 @@ class GitHubVariableManager:
             print(f"❌ Invalid JSON in index: {e}")
             return False
 
-        pages = index['pages']
-        keys = index['keys']
-        total_size = index.get('total_size_bytes', 0)
+        pages = index["pages"]
+        keys = index["keys"]
+        total_size = index.get("total_size_bytes", 0)
 
         print(f"📊 Dataset has {pages} pages, total size: {total_size} bytes")
 
         # Download pages
         chunks = []
         for i, key in enumerate(keys):
-            print(f"📥 Downloading page {i+1}/{pages}: {key}")
+            print(f"📥 Downloading page {i + 1}/{pages}: {key}")
             chunk = self.get(key)
             if chunk is None:
                 print(f"❌ Failed to download page: {key}")
@@ -198,24 +206,27 @@ class GitHubVariableManager:
             chunks.append(chunk)
 
         # Assemble
-        assembled = ''.join(chunks)
+        assembled = "".join(chunks)
 
         # Check if data was base64 encoded
         if len(assembled) != total_size:
             try:
                 import base64
+
                 assembled_bytes = base64.b64decode(assembled)
-                print(f"📦 Decoded base64 data")
+                print("📦 Decoded base64 data")
             except Exception:
-                assembled_bytes = assembled.encode('utf-8')
+                assembled_bytes = assembled.encode("utf-8")
         else:
-            assembled_bytes = assembled.encode('utf-8')
+            assembled_bytes = assembled.encode("utf-8")
 
         # Write to file
         try:
-            with open(output_path, 'wb') as f:
+            with open(output_path, "wb") as f:
                 f.write(assembled_bytes)
-            print(f"✅ Downloaded and assembled {len(assembled_bytes)} bytes to {output_path}")
+            print(
+                f"✅ Downloaded and assembled {len(assembled_bytes)} bytes to {output_path}"
+            )
             return True
         except IOError as e:
             print(f"❌ Failed to write output: {e}")
@@ -235,30 +246,37 @@ class GitHubVariableManager:
             "ECOSYSTEM_COORD_SEED": "51",
             "WANDB_MODE": "offline",
             "CI_DURATION_NORMALIZATION_MS": "1000",
-
             # Audit Infrastructure
-            "AUDIT_SAFEGUARD_KEYWORDS": json.dumps([
-                "sha256", "checksum", "rng", "seed", "offline",
-                "WANDB_MODE", "deterministic", "nosec"
-            ]),
+            "AUDIT_SAFEGUARD_KEYWORDS": json.dumps(
+                [
+                    "sha256",
+                    "checksum",
+                    "rng",
+                    "seed",
+                    "offline",
+                    "WANDB_MODE",
+                    "deterministic",
+                    "nosec",
+                ]
+            ),
             "AUDIT_MAX_READ_BYTES": "200000",
-            "AUDIT_WEIGHTS": json.dumps({
-                "functionality": 0.25,
-                "consistency": 0.20,
-                "tests": 0.25,
-                "safeguards": 0.15,
-                "documentation": 0.15
-            }),
+            "AUDIT_WEIGHTS": json.dumps(
+                {
+                    "functionality": 0.25,
+                    "consistency": 0.20,
+                    "tests": 0.25,
+                    "safeguards": 0.15,
+                    "documentation": 0.15,
+                }
+            ),
             "AUDIT_LOW_THRESHOLD": "0.70",
             "AUDIT_REGRESSION_DELTA": "0.02",
-            "AUDIT_OUTPUT_DIRS": json.dumps({
-                "reports": "reports",
-                "artifacts": "audit_artifacts"
-            }),
-
+            "AUDIT_OUTPUT_DIRS": json.dumps(
+                {"reports": "reports", "artifacts": "audit_artifacts"}
+            ),
             # Pre-deploy gates
             "PREDEPLOY_ENABLED": "false",  # Disabled by default
-            "AUDIT_PREDEPLOY_GATE": "false"  # Disabled by default
+            "AUDIT_PREDEPLOY_GATE": "false",  # Disabled by default
         }
 
         success = True
@@ -268,6 +286,7 @@ class GitHubVariableManager:
                 success = False
 
         return success
+
 
 def main():
     """CLI entry point"""
@@ -290,9 +309,9 @@ def main():
         sys.exit(1)
 
     # Get credentials from environment
-    owner = os.getenv('GITHUB_OWNER', 'Aries-Serpent')
-    repo = os.getenv('GITHUB_REPO', '_codex_')
-    token = os.getenv('GITHUB_TOKEN')
+    owner = os.getenv("GITHUB_OWNER", "Aries-Serpent")
+    repo = os.getenv("GITHUB_REPO", "_codex_")
+    token = os.getenv("GITHUB_TOKEN")
 
     if not token:
         print("❌ GITHUB_TOKEN environment variable required")
@@ -303,12 +322,12 @@ def main():
     command = sys.argv[1]
 
     try:
-        if command == 'set' and len(sys.argv) >= 4:
+        if command == "set" and len(sys.argv) >= 4:
             name = sys.argv[2]
             value = sys.argv[3]
             sys.exit(0 if manager.create_or_update(name, value) else 1)
 
-        elif command == 'get' and len(sys.argv) >= 3:
+        elif command == "get" and len(sys.argv) >= 3:
             name = sys.argv[2]
             value = manager.get(name)
             if value:
@@ -317,11 +336,11 @@ def main():
             else:
                 sys.exit(1)
 
-        elif command == 'delete' and len(sys.argv) >= 3:
+        elif command == "delete" and len(sys.argv) >= 3:
             name = sys.argv[2]
             sys.exit(0 if manager.delete(name) else 1)
 
-        elif command == 'list':
+        elif command == "list":
             variables = manager.list_all()
             if variables:
                 print(f"\n{'Name':<40} {'Updated':<30}")
@@ -333,17 +352,21 @@ def main():
                 print("No variables found")
             sys.exit(0)
 
-        elif command == 'upload' and len(sys.argv) >= 4:
+        elif command == "upload" and len(sys.argv) >= 4:
             dataset_path = sys.argv[2]
             dataset_id = sys.argv[3]
-            sys.exit(0 if manager.upload_paginated_dataset(dataset_path, dataset_id) else 1)
+            sys.exit(
+                0 if manager.upload_paginated_dataset(dataset_path, dataset_id) else 1
+            )
 
-        elif command == 'download' and len(sys.argv) >= 4:
+        elif command == "download" and len(sys.argv) >= 4:
             dataset_id = sys.argv[2]
             output_path = sys.argv[3]
-            sys.exit(0 if manager.download_paginated_dataset(dataset_id, output_path) else 1)
+            sys.exit(
+                0 if manager.download_paginated_dataset(dataset_id, output_path) else 1
+            )
 
-        elif command == 'init-v10':
+        elif command == "init-v10":
             print("🚀 Initializing V10 variables...")
             sys.exit(0 if manager.create_v10_variables() else 1)
 
@@ -358,8 +381,10 @@ def main():
     except Exception as e:
         print(f"\n❌ Unexpected error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

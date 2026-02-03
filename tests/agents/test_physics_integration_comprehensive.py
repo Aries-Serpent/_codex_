@@ -18,11 +18,11 @@ Test Categories:
 """
 
 import pytest
-from typing import Dict, Any, List
+
 from agents.physics_integration import (
-    HybridPhysicsOrchestrator,
     ADVANCED_PHYSICS_AVAILABLE,
     PHYSICS_ORCHESTRATOR_AVAILABLE,
+    HybridPhysicsOrchestrator,
 )
 
 
@@ -120,7 +120,9 @@ class TestHybridPhysicsOrchestrator:
 
     # ========== ADVANCED PHYSICS INTEGRATION TESTS ==========
 
-    @pytest.mark.skipif(not ADVANCED_PHYSICS_AVAILABLE, reason="Advanced physics not available")
+    @pytest.mark.skipif(
+        not ADVANCED_PHYSICS_AVAILABLE, reason="Advanced physics not available"
+    )
     def test_advanced_physics_integration(self, orchestrator):
         """Test integration with advanced physics orchestrator."""
         assert orchestrator.advanced_orchestrator is not None
@@ -323,7 +325,11 @@ class TestPhysicsIntegrationEdgeCases:
         """Test handling null/None values."""
         orch = HybridPhysicsOrchestrator()
 
-        decision_space = {"current_position": None, "goal_position": "target", "metadata": None}
+        decision_space = {
+            "current_position": None,
+            "goal_position": "target",
+            "metadata": None,
+        }
 
         try:
             result = orch.orchestrate_with_all_paradigms(decision_space)
@@ -359,7 +365,10 @@ class TestPhysicsIntegrationPerformance:
 
         start = time.time()
         for i in range(10):
-            decision_space = {"current_position": f"state_{i}", "goal_position": f"target_{i}"}
+            decision_space = {
+                "current_position": f"state_{i}",
+                "goal_position": f"target_{i}",
+            }
             result = orch.orchestrate_with_all_paradigms(decision_space)
             assert result is not None
 

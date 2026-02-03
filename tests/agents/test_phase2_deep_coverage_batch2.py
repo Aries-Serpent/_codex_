@@ -12,8 +12,8 @@ Systematically applies advanced physics-guided patterns:
 Target: +12-15% coverage gain (34% → 48%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_AdvancedPhysics_SpinorDimension:
@@ -63,7 +63,9 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
         # run_optimization takes (fitness_fn, bounds, max_iterations)
         bounds = [(-10.0, 10.0), (-10.0, 10.0)]
-        result = swarm.run_optimization(lambda x: -sum(xi**2 for xi in x), bounds, max_iterations=5)
+        result = swarm.run_optimization(
+            lambda x: -sum(xi**2 for xi in x), bounds, max_iterations=5
+        )
         assert result is not None
 
 
@@ -142,8 +144,10 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         red_state = StrategyState("red", np.array([0.6, 0.4]))
 
         # Use entanglement_strength instead of entangled
-        entangled_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
-        assert entangled_state.entangled == True
+        entangled_state = QuantumGameState(
+            blue_state, red_state, entanglement_strength=0.5
+        )
+        assert entangled_state.entangled
 
     def test_measurement_collapse(self):
         """Test quantum measurement and state collapse"""
@@ -177,10 +181,14 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
         # Use node_id strings, not node objects
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
         model.connect_nodes(
-            source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node2.node_id,
+            target_id=node3.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         result = model.bfs(start_node=node1)
@@ -188,14 +196,16 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_dfs_traversal(self):
         """Test depth-first search traversal"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         result = model.dfs(start_node=node1)
@@ -203,7 +213,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_shortest_path(self):
         """Test shortest path finding (Eq #39: ΔS optimization)"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
@@ -211,10 +221,14 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node3 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
         model.connect_nodes(
-            source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node2.node_id,
+            target_id=node3.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         path = model.shortest_path(source=node1, target=node3)
@@ -226,7 +240,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
-        nodes = [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
+        [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
 
         clusters = model.cluster_nodes()
         assert clusters is not None
@@ -244,14 +258,16 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
     def test_graph_metrics(self):
         """Test graph metric calculations"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
         model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
         )
 
         metrics = model.calculate_metrics()
@@ -569,8 +585,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
     def test_physics_mental_integration(self):
         """Test physics orchestrator + mental mapping integration"""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
         from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         model = MentalMappingModel()
@@ -582,8 +598,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
     def test_quantum_developer_integration(self):
         """Test quantum game theory + developer orchestrator integration"""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue = np.array([0.5, 0.5])
         red = np.array([0.5, 0.5])
@@ -609,7 +625,9 @@ class TestPhase2_Integration_AdvancedPatterns:
         memory.store_memory(key="concept_node", value=str(node.node_id))
 
         retrieved = memory.retrieve_memory("concept_node")
-        assert retrieved is not None or retrieved is None  # May not find if not persisted
+        assert (
+            retrieved is not None or retrieved is None
+        )  # May not find if not persisted
 
 
 class TestPhase2_ErrorPaths_AdvancedCases:
@@ -630,7 +648,9 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         from agents.physics_orchestrator import ActionPath, ActionType
 
         # Negative energy should be handled - use valid parameter names
-        path = ActionPath(action_type=ActionType.RESEARCH, description="test", energy=-10.0)
+        path = ActionPath(
+            action_type=ActionType.RESEARCH, description="test", energy=-10.0
+        )
         assert path is not None
 
     def test_empty_strategy_array(self):

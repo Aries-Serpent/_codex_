@@ -83,23 +83,41 @@ def read_zaf(source: str | os.PathLike[str]) -> dict[str, Any]:
             manifest: dict[str, Any] = {}
             if "manifest.json" in archive.namelist():
                 manifest = json.loads(archive.read("manifest.json"))
+            
+            # Extract all files from the archive
+            files: dict[str, bytes] = {}
+            for name in archive.namelist():
+                if name != "manifest.json":
+                    files[name] = archive.read(name)
     except Exception as exc:  # pragma: no cover - defensive guard
         raise ZendeskAppPackageError(str(exc)) from exc
-    return {"archive_path": path, "manifest": manifest}
+    return {"archive_path": path, "manifest": manifest, "files": files}
 
 
-def scaffold_template(package: dict[str, Any], out_dir: str | os.PathLike[str]) -> Path:
+def scaffold_template(package: dict[str, Any], out_dir: str | os.PathLike[str]) -> list[Path]:
     """Create a project scaffold from a parsed ZAF legacy package."""
 
     destination = Path(out_dir)
     destination.mkdir(parents=True, exist_ok=True)
+    
+    written: list[Path] = []
+    
     archive = package.get("archive_path")
     if archive is not None:
-        extract_legacy_app(Path(archive), destination)
+        written.extend(extract_legacy_app(Path(archive), destination))
+    
     manifest = package.get("manifest", {})
     normalised = _normalise_manifest(manifest)
-    (destination / "manifest.json").write_text(json.dumps(normalised, indent=2), encoding="utf-8")
-    return destination
+    manifest_path = destination / "manifest.json"
+    manifest_path.write_text(json.dumps(normalised, indent=2), encoding="utf-8")
+    written.append(manifest_path)
+    
+    # Create README.md
+    readme_path = destination / "README.md"
+    readme_path.write_text("# Zendesk App\n\nScaffolded from legacy ZAF package.\n", encoding="utf-8")
+    written.append(readme_path)
+    
+    return written
 
 
 def _normalise_manifest(manifest: dict[str, Any]) -> dict[str, Any]:

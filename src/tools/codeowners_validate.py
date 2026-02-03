@@ -81,7 +81,8 @@ def heuristic_coverage(rules: list[CodeownersRule]) -> dict[str, bool]:
         "src": any(p.startswith("src") or p.startswith("/src") for p in pats),
         "tests": any(p.startswith("tests") or p.startswith("/tests") for p in pats),
         "docs": any(
-            p.startswith("docs") or p.startswith("/docs") or p.startswith(".github") for p in pats
+            p.startswith("docs") or p.startswith("/docs") or p.startswith(".github")
+            for p in pats
         ),
     }
 
@@ -111,7 +112,9 @@ def validate_codeowners_text(text: str) -> CodeownersReport:
         coverage=cov,
         errors=errs,
         warnings=warns,
-        rules=[{"pattern": r.pattern, "owners": r.owners, "line": r.line_no} for r in rules],
+        rules=[
+            {"pattern": r.pattern, "owners": r.owners, "line": r.line_no} for r in rules
+        ],
     )
 
 

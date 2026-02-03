@@ -16,35 +16,34 @@ Physics Reference Tables Applied:
 """
 
 import pytest
+
 from agents.mental_mapping import (
+    EdgeType,
     MentalMappingModel,
     MentalNode,
-    MentalEdge,
     NodeType,
-    EdgeType,
     ReasoningStep,
 )
 from agents.physics_orchestrator import (
-    PhysicsInspiredOrchestrator,
-    DecisionState,
-    ForceVector,
     ActionPath,
     ActionType,
+    DecisionState,
     DiffusionFlowModel,
     EnergyLandscape,
+    ForceVector,
+    PhysicsInspiredOrchestrator,
     SwarmIntelligence,
 )
 from agents.quantum_game_theory import (
-    QuantumInspiredGameEngine,
-    ClassicalGameEngine,
-    BlueRedTeamSimulator,
-    QuantumGameState,
-    StrategyState,
-    PayoffOperator,
-    TeamType,
     NUMPY_AVAILABLE,
+    BlueRedTeamSimulator,
+    ClassicalGameEngine,
+    PayoffOperator,
+    QuantumGameState,
+    QuantumInspiredGameEngine,
+    StrategyState,
+    TeamType,
 )
-
 
 # =============================================================================
 # MENTAL MAPPING TESTS (Corrected API: MentalMappingModel)
@@ -75,7 +74,9 @@ class TestPhase2_MentalMappingModel_Corrected:
         node2 = model.create_node(NodeType.HYPOTHESIS, "Hypothesis 1")
 
         edge = model.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.LEADS_TO
+            source_id=node1.node_id,
+            target_id=node2.node_id,
+            edge_type=EdgeType.LEADS_TO,
         )
         assert edge is not None
 
@@ -159,7 +160,10 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
     def test_force_vector_creation(self):
         """Table 4, Eq #1: ForceVector with actual signature"""
         force = ForceVector(
-            name="test_force", magnitude=0.8, direction=1.57, priority=1.0  # ~90 degrees
+            name="test_force",
+            magnitude=0.8,
+            direction=1.57,
+            priority=1.0,  # ~90 degrees
         )
         assert force.name == "test_force"
         assert force.magnitude == 0.8
@@ -167,7 +171,10 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
     def test_force_vector_components(self):
         """Table 4, Eq #6: Operator wiring - vector decomposition"""
         force = ForceVector(
-            name="diagonal", magnitude=1.0, direction=0.785, priority=1.0  # 45 degrees
+            name="diagonal",
+            magnitude=1.0,
+            direction=0.785,
+            priority=1.0,  # 45 degrees
         )
         x, y = force.get_components()
         assert x > 0
@@ -320,17 +327,22 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_quantum_game_state_creation(self):
         """Table 4, Eq #1: Game state initialization"""
-        blue_strategy_state = StrategyState(team=TeamType.BLUE, strategies=["defend", "monitor"])
-        red_strategy_state = StrategyState(team=TeamType.RED, strategies=["attack", "probe"])
+        blue_strategy_state = StrategyState(
+            team=TeamType.BLUE, strategies=["defend", "monitor"]
+        )
+        red_strategy_state = StrategyState(
+            team=TeamType.RED, strategies=["attack", "probe"]
+        )
 
-        state = QuantumGameState(blue_state=blue_strategy_state, red_state=red_strategy_state)
+        state = QuantumGameState(
+            blue_state=blue_strategy_state, red_state=red_strategy_state
+        )
         assert state is not None
         assert state.dimension == 4  # 2x2 strategies
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_strategy_state_creation(self):
         """Table 4, Eq #1: Strategy state (not StrategySpace)"""
-        import numpy as np
 
         strategies = ["s1", "s2"]
 
@@ -381,7 +393,9 @@ class TestPhase2_CrossModule_Integration:
         """Table 1, Eq #4: Decision tracking integration"""
         # Create physics-based decision
         path = ActionPath(
-            action_type=ActionType.OPTIMIZE, description="Optimize code", potential_energy=20.0
+            action_type=ActionType.OPTIMIZE,
+            description="Optimize code",
+            potential_energy=20.0,
         )
 
         # Track in mental map
@@ -427,7 +441,9 @@ class TestPhase2_Properties_And_Getters:
     def test_action_path_calculated_properties(self):
         """Table 4, Eq #3: ActionPath calculated fields"""
         path = ActionPath(
-            action_type=ActionType.AUDIT, description="Audit code", potential_energy=25.0
+            action_type=ActionType.AUDIT,
+            description="Audit code",
+            potential_energy=25.0,
         )
 
         # Check default calculated fields

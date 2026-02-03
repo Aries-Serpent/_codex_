@@ -5,7 +5,6 @@ Test module for facade contract.
 """
 
 import importlib
-from types import SimpleNamespace
 
 import pytest
 

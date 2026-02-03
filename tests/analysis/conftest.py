@@ -14,5 +14,5 @@ def pytest_collection_modifyitems(items):
     """Modify test items to skip torch-related fixtures."""
     for item in items:
         # Remove the ensure_cpu_device fixture if it's auto-used
-        if hasattr(item, 'fixturenames') and 'ensure_cpu_device' in item.fixturenames:
-            item.fixturenames.remove('ensure_cpu_device')
+        if hasattr(item, "fixturenames") and "ensure_cpu_device" in item.fixturenames:
+            item.fixturenames.remove("ensure_cpu_device")

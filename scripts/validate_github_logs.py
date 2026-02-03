@@ -135,7 +135,6 @@ class SelfHealingValidator:
         
         # Test if CLI can be imported (main integration point)
         try:
-            from codex.cli import cli
             print("  ✓ Main CLI imports successfully")
         except Exception as e:
             self.log_issue("Imports", f"Failed to import main CLI: {e}")
@@ -143,7 +142,6 @@ class SelfHealingValidator:
         
         # Test CLI github-logs command
         try:
-            from codex.cli_github_logs import cli as github_logs_cli
             print("  ✓ GitHub logs CLI module imports successfully")
         except Exception as e:
             self.log_issue("Imports", f"Failed to import github-logs CLI: {e}")

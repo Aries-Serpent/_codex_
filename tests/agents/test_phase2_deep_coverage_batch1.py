@@ -10,23 +10,6 @@ Systematically applies physics-guided dimensional tunneling to:
 Target: +3-5% coverage gain
 """
 
-import pytest
-from agents.physics_orchestrator import (
-    PhysicsInspiredOrchestrator,
-    ForceVector,
-    ActionPath,
-    DecisionState,
-)
-from agents.quantum_game_theory import (
-    QuantumInspiredGameEngine,
-    QuantumGameState,
-    StrategyState,
-    PayoffOperator,
-)
-from agents.mental_mapping import MentalMappingModel
-from agents.agent_memory import AgentMemory
-from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
-
 
 class TestPhase2_PhysicsOrchestrator_TimeDimension:
     """
@@ -47,8 +30,9 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
 
     def test_decision_state_time_evolution(self):
         """Test decision state evolution with time steps"""
-        from agents.physics_orchestrator import DecisionState
         import numpy as np
+
+        from agents.physics_orchestrator import DecisionState
 
         current = np.array([0.0, 0.0, 0.0])
         goal = np.array([10.0, 10.0, 10.0])
@@ -93,7 +77,10 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
     def test_orchestrator_assess_situation(self):
         """Test situation assessment with probability conservation"""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator, DecisionState
+        from agents.physics_orchestrator import (
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Create a proper DecisionState object
@@ -117,8 +104,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_strategy_state_initialization(self):
         """Test StrategyState with correct parameters"""
-        from agents.quantum_game_theory import StrategyState
         import numpy as np
+
+        from agents.quantum_game_theory import StrategyState
 
         strategies = np.array([0.5, 0.5])
         state = StrategyState(team="blue", strategies=strategies)
@@ -127,8 +115,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_quantum_game_state_basic(self):
         """Test QuantumGameState initialization"""
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
         import numpy as np
+
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue_state = StrategyState("blue", np.array([0.7, 0.3]))
         red_state = StrategyState("red", np.array([0.6, 0.4]))
@@ -138,12 +127,13 @@ class TestPhase2_QuantumGame_StateDimension:
         )
         assert game_state.blue_state is not None
         assert game_state.red_state is not None
-        assert game_state.entangled == False
+        assert not game_state.entangled
 
     def test_payoff_operator_creation(self):
         """Test PayoffOperator with matrix and players"""
-        from agents.quantum_game_theory import PayoffOperator
         import numpy as np
+
+        from agents.quantum_game_theory import PayoffOperator
 
         matrix = np.array([[3, 0], [5, 1]])
         operator = PayoffOperator(payoff_matrix=matrix, players=["blue", "red"])
@@ -152,8 +142,9 @@ class TestPhase2_QuantumGame_StateDimension:
 
     def test_quantum_game_engine_initialization(self):
         """Test game engine with complete parameters"""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
         import numpy as np
+
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         blue_strategies = np.array([0.5, 0.5])
         red_strategies = np.array([0.5, 0.5])
@@ -192,14 +183,17 @@ class TestPhase2_MentalMapping_GraphDimension:
 
     def test_connect_nodes_operation(self):
         """Test connecting nodes with edge_type"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
 
         model.connect_nodes(
-            source=node1.node_id, target=node2.node_id, edge_type=EdgeType.SIMILAR_TO, properties={}
+            source=node1.node_id,
+            target=node2.node_id,
+            edge_type=EdgeType.SIMILAR_TO,
+            properties={},
         )
         assert True  # Connection successful
 
@@ -355,9 +349,10 @@ class TestPhase2_Integration_CouplingDimension:
 
     def test_cross_module_physics_quantum(self):
         """Test physics orchestrator + quantum game integration"""
+        import numpy as np
+
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
         from agents.quantum_game_theory import QuantumInspiredGameEngine
-        import numpy as np
 
         orchestrator = PhysicsInspiredOrchestrator()
         blue = np.array([0.5, 0.5])
@@ -371,8 +366,8 @@ class TestPhase2_Integration_CouplingDimension:
 
     def test_cross_module_mental_memory(self):
         """Test mental mapping + agent memory integration"""
-        from agents.mental_mapping import MentalMappingModel
         from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -412,8 +407,9 @@ class TestPhase2_EdgeCases_Invariants:
 
     def test_empty_force_list(self):
         """Test handling empty force list"""
-        from agents.physics_orchestrator import DecisionState
         import numpy as np
+
+        from agents.physics_orchestrator import DecisionState
 
         decision = DecisionState(
             current_position=np.array([0.0, 0.0, 0.0]),
@@ -432,8 +428,9 @@ class TestPhase2_EdgeCases_Invariants:
 
     def test_minimal_strategy_state(self):
         """Test minimal StrategyState"""
-        from agents.quantum_game_theory import StrategyState
         import numpy as np
+
+        from agents.quantum_game_theory import StrategyState
 
         state = StrategyState("blue", np.array([1.0, 0.0]))
         assert state.team == "blue"

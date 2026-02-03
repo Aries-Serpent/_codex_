@@ -12,8 +12,7 @@ Analyzes all GitHub Actions workflows to:
 import json
 import re
 import sys
-from collections import defaultdict
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set

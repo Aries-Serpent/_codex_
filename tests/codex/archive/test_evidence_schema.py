@@ -1,7 +1,6 @@
 """Tests for codex/archive/evidence_schema.py module."""
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 
 
@@ -41,7 +40,7 @@ class TestEvidenceSchemaValidation:
 
     def test_valid_evidence_structure(self):
         """Test validation of valid evidence structure."""
-        evidence = {
+        {
             "type": "file",
             "path": "/test/path",
             "hash": "abc123",

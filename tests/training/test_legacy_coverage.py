@@ -11,11 +11,8 @@ Created: 2026-01-18 (Phase 14.1)
 
 from __future__ import annotations
 
-import json
 import tempfile
-from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

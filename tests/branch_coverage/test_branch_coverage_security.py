@@ -10,8 +10,7 @@ Target: 100% branch coverage for security modules
 """
 
 import os
-from pathlib import Path
-from typing import Any, Dict, Optional, Set
+from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest

@@ -8,9 +8,8 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import pytest
 import numpy as np
-from pathlib import Path
+import pytest
 
 
 class TestIntegration_CompleteWorkflows:
@@ -18,14 +17,12 @@ class TestIntegration_CompleteWorkflows:
 
     def test_complete_decision_workflow(self):
         """Test complete decision-making workflow"""
-        from agents.physics_orchestrator import (
-            PhysicsOrchestrator,
-            DecisionState,
-            ActionPath,
-            ActionType,
-            ForceVector,
-        )
         from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import (
+            DecisionState,
+            ForceVector,
+            PhysicsOrchestrator,
+        )
 
         # Initialize components
         orchestrator = PhysicsOrchestrator()
@@ -50,8 +47,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_mental_map_workflow_integration(self):
         """Test mental mapping workflow with memory integration"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
         from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -64,10 +61,14 @@ class TestIntegration_CompleteWorkflows:
 
         # Connect nodes using node IDs
         model.connect_nodes(
-            source_id=problem.node_id, target_id=solution1.node_id, edge_type=EdgeType.LEADS_TO
+            source_id=problem.node_id,
+            target_id=solution1.node_id,
+            edge_type=EdgeType.LEADS_TO,
         )
         model.connect_nodes(
-            source_id=problem.node_id, target_id=solution2.node_id, edge_type=EdgeType.LEADS_TO
+            source_id=problem.node_id,
+            target_id=solution2.node_id,
+            edge_type=EdgeType.LEADS_TO,
         )
 
         # Calculate and store metrics
@@ -80,8 +81,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_quantum_game_with_orchestrator(self):
         """Test quantum game theory integrated with physics orchestrator"""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine, StrategyState, TeamType
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine, TeamType
 
         # Create game
         blue = np.array([0.6, 0.4])
@@ -101,8 +102,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_developer_orchestrator_complete_pipeline(self):
         """Test complete code generation and validation pipeline"""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
         from agents.agent_memory import AgentMemory
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         memory = AgentMemory()
@@ -133,8 +134,8 @@ class TestIntegration_CompleteWorkflows:
 
     def test_workflow_navigator_with_memory(self):
         """Test WorkflowNavigator integrated with AgentMemory"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep, StepStatus
         from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         memory = AgentMemory()
@@ -167,8 +168,8 @@ class TestIntegration_DataFlow:
 
     def test_data_flow_physics_to_memory(self):
         """Test data flowing from physics calculations to memory"""
-        from agents.physics_orchestrator import HamiltonianEvolver
         from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
         memory = AgentMemory()
@@ -178,7 +179,8 @@ class TestIntegration_DataFlow:
 
         # Store results
         memory.store_memory(
-            key="hamiltonian_shape", value=str(H.shape) if hasattr(H, "shape") else str(type(H))
+            key="hamiltonian_shape",
+            value=str(H.shape) if hasattr(H, "shape") else str(type(H)),
         )
 
         # Retrieve
@@ -193,8 +195,8 @@ class TestIntegration_DataFlow:
         model = MentalMappingModel()
 
         # Create nodes representing strategies
-        n1 = model.create_node(NodeType.CONCEPT, {"strategy": "aggressive"})
-        n2 = model.create_node(NodeType.CONCEPT, {"strategy": "defensive"})
+        model.create_node(NodeType.CONCEPT, {"strategy": "aggressive"})
+        model.create_node(NodeType.CONCEPT, {"strategy": "defensive"})
 
         # Use graph metrics to inform quantum strategy
         metrics = model.calculate_metrics()
@@ -223,7 +225,10 @@ class TestIntegration_DataFlow:
 
         # Create workflow based on stored data
         # WorkflowStep uses id and action parameters
-        steps = [WorkflowStep(id=f"step{i}", action=f"Step {i}") for i in range(int(step_count))]
+        steps = [
+            WorkflowStep(id=f"step{i}", action=f"Step {i}")
+            for i in range(int(step_count))
+        ]
         workflow_id = navigator.create_workflow("stored_workflow", steps)
 
         # Workflow has a steps attribute
@@ -244,7 +249,9 @@ class TestIntegration_StateManagement:
         # Quantum state with similar parameters
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
-        quantum_state = QuantumGameState(blue, red, entanglement_strength=energy_state.entropy)
+        quantum_state = QuantumGameState(
+            blue, red, entanglement_strength=energy_state.entropy
+        )
 
         # States should be related
         assert quantum_state.entanglement_strength == energy_state.entropy
@@ -252,7 +259,7 @@ class TestIntegration_StateManagement:
     def test_state_persistence_memory_workflow(self):
         """Test state persistence through memory"""
         from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep, StepStatus
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         memory = AgentMemory()
         navigator1 = WorkflowNavigator()
@@ -269,8 +276,8 @@ class TestIntegration_StateManagement:
         memory.store_memory(key="step_index", value=str(navigator1.current_step_index))
 
         # Restore in new navigator - retrieve_memory with key returns value directly
-        navigator2 = WorkflowNavigator()
-        stored_id = memory.retrieve_memory(key="workflow_id")
+        WorkflowNavigator()
+        memory.retrieve_memory(key="workflow_id")
         stored_index = int(memory.retrieve_memory(key="step_index"))
 
         # State should be restorable
@@ -282,9 +289,9 @@ class TestIntegration_MultiModuleChains:
 
     def test_five_module_chain(self):
         """Test workflow involving 5 different modules"""
-        from agents.physics_orchestrator import PhysicsOrchestrator, DecisionState
         from agents.agent_memory import AgentMemory
         from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
         from agents.quantum_game_theory import StrategyState
         from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
@@ -299,7 +306,7 @@ class TestIntegration_MultiModuleChains:
 
         # Module 3: Mental Mapping
         model = MentalMappingModel()
-        node = model.create_node(NodeType.PROBLEM, {"assessment": "stored"})
+        model.create_node(NodeType.PROBLEM, {"assessment": "stored"})
 
         # Module 4: Quantum
         strategy = StrategyState("blue", np.array([0.5, 0.5]))
@@ -307,7 +314,7 @@ class TestIntegration_MultiModuleChains:
         # Module 5: Workflow
         navigator = WorkflowNavigator()
         steps = [WorkflowStep("analyze", "Analyze")]
-        workflow_id = navigator.create_workflow("analysis", steps)
+        navigator.create_workflow("analysis", steps)
 
         # All modules participated
         assert all([orchestrator, memory, model, strategy, navigator])
@@ -322,8 +329,8 @@ class TestIntegration_MultiModuleChains:
 
         # Cycle 1: Memory -> Graph
         memory.store_memory(key="node_type", value="PROBLEM")
-        node_type_str = memory.retrieve_memory("node_type")
-        node = model.create_node(NodeType.PROBLEM, {"from_memory": True})
+        memory.retrieve_memory("node_type")
+        model.create_node(NodeType.PROBLEM, {"from_memory": True})
 
         # Cycle 2: Graph -> Memory
         metrics = model.calculate_metrics()
@@ -344,8 +351,8 @@ class TestIntegration_ParameterPropagation:
 
     def test_temperature_propagation(self):
         """Test temperature parameter propagating through modules"""
-        from agents.physics_orchestrator import EnergyLandscape
         from agents.advanced_physics_calculators import FluidChannel
+        from agents.physics_orchestrator import EnergyLandscape
 
         # Set temperature in one module
         landscape = EnergyLandscape(temperature=300.0)
@@ -368,7 +375,7 @@ class TestIntegration_ParameterPropagation:
 
         # Evolve through Hamiltonian
         evolver = HamiltonianEvolver(grid_size=8)
-        H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=1.0)
+        evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=1.0)
 
         # Energy should be conserved (in principle)
         assert initial.energy == 100.0
@@ -386,7 +393,7 @@ class TestIntegration_ErrorRecovery:
         model = MentalMappingModel()
 
         # Try to retrieve non-existent memory
-        result = memory.retrieve_memory("nonexistent")
+        memory.retrieve_memory("nonexistent")
 
         # System should continue working
         node = model.create_node(NodeType.PROBLEM, {"recovered": True})
@@ -394,8 +401,8 @@ class TestIntegration_ErrorRecovery:
 
     def test_recovery_from_graph_error(self):
         """Test recovery from graph operation errors"""
-        from agents.mental_mapping import MentalMappingModel
         from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         memory = AgentMemory()
@@ -414,7 +421,7 @@ class TestIntegration_PerformanceScaling:
 
     def test_large_graph_operations(self):
         """Test operations on large graphs"""
-        from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 

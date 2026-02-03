@@ -6,9 +6,7 @@ Maps test files to source code for gap identification
 
 import os
 import re
-from pathlib import Path
-from typing import Dict, List, Set
-from collections import defaultdict
+from typing import Set
 
 
 def extract_test_patterns(test_file: str) -> Set[str]:
@@ -16,19 +14,25 @@ def extract_test_patterns(test_file: str) -> Set[str]:
     tested_items = set()
 
     try:
-        with open(test_file, 'r') as f:
+        with open(test_file, "r") as f:
             content = f.read()
 
             # Look for class instantiations
-            class_patterns = re.findall(r'\b(\w+Provider|\w+Retriever|\w+Indexer|\w+Cache|\w+Chunker)\(', content)
+            class_patterns = re.findall(
+                r"\b(\w+Provider|\w+Retriever|\w+Indexer|\w+Cache|\w+Chunker)\(",
+                content,
+            )
             tested_items.update(class_patterns)
 
             # Look for function calls
-            func_patterns = re.findall(r'from codex\.rag\.\w+ import (\w+)', content)
+            func_patterns = re.findall(r"from codex\.rag\.\w+ import (\w+)", content)
             tested_items.update(func_patterns)
 
             # Look for direct function calls
-            direct_calls = re.findall(r'(?:embeddings|indexer|retriever|monitoring|utils|gpu_utils)\.(\w+)\(', content)
+            direct_calls = re.findall(
+                r"(?:embeddings|indexer|retriever|monitoring|utils|gpu_utils)\.(\w+)\(",
+                content,
+            )
             tested_items.update(direct_calls)
 
     except Exception as e:
@@ -49,42 +53,40 @@ def analyze_detailed_coverage() -> str:
     test_mapping = {
         "embeddings.py": [
             "tests/test_rag_embeddings.py",
-            "tests/rag/test_embeddings_comprehensive.py"
+            "tests/rag/test_embeddings_comprehensive.py",
         ],
         "indexer.py": [
             "tests/test_rag_indexer.py",
             "tests/rag/test_indexer_comprehensive.py",
-            "tests/rag/test_chunking.py"
+            "tests/rag/test_chunking.py",
         ],
         "retriever.py": [
             "tests/test_rag_retriever.py",
             "tests/rag/test_retriever_comprehensive.py",
             "tests/rag/test_quantum_retrieval.py",
-            "tests/test_rag_cached_retriever.py"
+            "tests/test_rag_cached_retriever.py",
         ],
-        "monitoring.py": [
-            "tests/test_rag_monitoring.py"
-        ],
+        "monitoring.py": ["tests/test_rag_monitoring.py"],
         "postprocess.py": [
             "tests/test_rag_postprocess.py",
-            "tests/rag/test_postprocess_utils.py"
+            "tests/rag/test_postprocess_utils.py",
         ],
         "prompt.py": [
             "tests/test_rag_prompt.py",
-            "tests/rag/test_prompt_comprehensive.py"
+            "tests/rag/test_prompt_comprehensive.py",
         ],
         "utils.py": [
             "tests/test_rag_integration.py",
-            "tests/rag/test_rag_integration.py"
+            "tests/rag/test_rag_integration.py",
         ],
-        "gpu_utils.py": []  # No dedicated tests found
+        "gpu_utils.py": [],  # No dedicated tests found
     }
 
     report.append("## Current Test Coverage Summary\n\n")
     report.append("### Core Modules\n\n")
 
     for module, test_files in test_mapping.items():
-        module_name = module.replace('.py', '')
+        module.replace(".py", "")
         report.append(f"#### {module}\n\n")
 
         if test_files:
@@ -301,15 +303,25 @@ def analyze_detailed_coverage() -> str:
     report.append("### Priority 1: CRITICAL (Must Fix)\n\n")
     report.append("| Module | Component | Lines | Reason |\n")
     report.append("|--------|-----------|-------|--------|\n")
-    report.append("| gpu_utils.py | All functions | 135 | Core GPU functionality, 0% coverage |\n")
-    report.append("| utils.py | safe_model_load() | ~80 | Used by all providers, untested |\n")
-    report.append("| embeddings.py | TfidfEmbeddingProvider | ~100 | Alternative embedding method |\n\n")
+    report.append(
+        "| gpu_utils.py | All functions | 135 | Core GPU functionality, 0% coverage |\n"
+    )
+    report.append(
+        "| utils.py | safe_model_load() | ~80 | Used by all providers, untested |\n"
+    )
+    report.append(
+        "| embeddings.py | TfidfEmbeddingProvider | ~100 | Alternative embedding method |\n\n"
+    )
 
     report.append("### Priority 2: HIGH (Should Fix)\n\n")
     report.append("| Module | Component | Lines | Reason |\n")
     report.append("|--------|-----------|-------|--------|\n")
-    report.append("| monitoring.py | Export functions | ~100 | Production monitoring critical |\n")
-    report.append("| providers/ | All providers | 402 | Alternative backends need tests |\n")
+    report.append(
+        "| monitoring.py | Export functions | ~100 | Production monitoring critical |\n"
+    )
+    report.append(
+        "| providers/ | All providers | 402 | Alternative backends need tests |\n"
+    )
     report.append("| utils.py | ProvenanceMetadata | ~50 | Data integrity |\n\n")
 
     report.append("### Priority 3: MEDIUM (Nice to Have)\n\n")
@@ -434,9 +446,15 @@ def analyze_detailed_coverage() -> str:
     report.append("   - Generate final coverage report\n\n")
 
     report.append("## Conclusion\n\n")
-    report.append("The RAG module has **good foundation coverage (~58%)** for core functionality ")
-    report.append("but has **critical gaps** in utility functions (gpu_utils, utils) and alternative ")
-    report.append("providers. Focusing test efforts on these areas will provide the most value.\n\n")
+    report.append(
+        "The RAG module has **good foundation coverage (~58%)** for core functionality "
+    )
+    report.append(
+        "but has **critical gaps** in utility functions (gpu_utils, utils) and alternative "
+    )
+    report.append(
+        "providers. Focusing test efforts on these areas will provide the most value.\n\n"
+    )
 
     report.append("**Key Insights:**\n")
     report.append("- ✅ Main workflows (embed, index, retrieve) are well-tested\n")
@@ -452,16 +470,16 @@ if __name__ == "__main__":
     report = analyze_detailed_coverage()
 
     output_file = "RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md"
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         f.write(report)
 
-    print(f"✅ Detailed coverage gap analysis complete!")
+    print("✅ Detailed coverage gap analysis complete!")
     print(f"📄 Report saved to: {output_file}")
-    print(f"\n📊 Key Findings:")
-    print(f"  - Current estimated coverage: ~58%")
-    print(f"  - Target coverage: 80%")
-    print(f"  - Gap: ~3,500 lines (+22%)")
-    print(f"\n🎯 Priority 1 Gaps:")
-    print(f"  - gpu_utils.py: 0% → 80% (135 lines)")
-    print(f"  - utils.py: 40% → 85% (105 lines)")
-    print(f"  - TfidfEmbeddingProvider: 0% → 90% (100 lines)")
+    print("\n📊 Key Findings:")
+    print("  - Current estimated coverage: ~58%")
+    print("  - Target coverage: 80%")
+    print("  - Gap: ~3,500 lines (+22%)")
+    print("\n🎯 Priority 1 Gaps:")
+    print("  - gpu_utils.py: 0% → 80% (135 lines)")
+    print("  - utils.py: 40% → 85% (105 lines)")
+    print("  - TfidfEmbeddingProvider: 0% → 90% (100 lines)")

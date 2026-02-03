@@ -12,8 +12,8 @@ Systematically covers edge cases and boundary conditions:
 Target: +3-4% coverage gain (66% → 70%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_EdgeCases_ZeroHandling:
@@ -150,7 +150,6 @@ class TestPhase2_EdgeCases_CurrentBounds:
     def test_current_bound_enforcement(self):
         """Test |j| ≤ c constraint (Eq #22)"""
         j = 1.5
-        c = 1.0
         c_eff = 2.0
         # Should satisfy |j| ≤ c_eff
         bounded = abs(j) <= c_eff
@@ -375,16 +374,16 @@ class TestPhase2_EdgeCases_Conditionals:
 
     def test_truthy_values(self):
         """Test truthy values"""
-        assert bool(1) == True
-        assert bool("text") == True
-        assert bool([1]) == True
+        assert bool(1)
+        assert bool("text")
+        assert bool([1])
 
     def test_falsy_values(self):
         """Test falsy values"""
-        assert bool(0) == False
-        assert bool("") == False
-        assert bool([]) == False
-        assert bool(None) == False
+        assert not bool(0)
+        assert not bool("")
+        assert not bool([])
+        assert not bool(None)
 
     def test_short_circuit_evaluation(self):
         """Test short-circuit AND"""
@@ -393,7 +392,7 @@ class TestPhase2_EdgeCases_Conditionals:
             raise ValueError("Should not be called")
 
         result = False and raises_error()
-        assert result == False
+        assert not result
 
     def test_ternary_operator(self):
         """Test ternary conditional"""
@@ -472,11 +471,11 @@ class TestPhase2_EdgeCases_ComparativeOperations:
 
     def test_none_comparison(self):
         """Test None comparisons"""
-        assert None == None
+        assert None is None
         assert None is None
         # Note: None < None raises TypeError in Python 3
         # Just verify None comparisons work correctly
-        assert (None == None) is True
+        assert (None is None) is True
 
 
 if __name__ == "__main__":

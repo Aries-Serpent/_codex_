@@ -15,8 +15,6 @@ import math
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -511,8 +509,6 @@ class TestMemoryEdgeCases:
         assert a is b  # Same object
         
         # Large integers are not cached
-        c = 1000
-        d = 1000
         # Note: this may or may not be the same object depending on implementation
 
     def test_string_interning(self):

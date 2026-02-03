@@ -13,8 +13,6 @@ import threading
 import time
 import uuid
 from pathlib import Path
-from typing import Any, Dict
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -151,7 +149,7 @@ class TestInitDb:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "subdir" / "test.db"
-            result = init_db(db_path)
+            init_db(db_path)
             assert db_path.parent.exists()
 
     def test_creates_database_file(self) -> None:
@@ -159,7 +157,7 @@ class TestInitDb:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
-            result = init_db(db_path)
+            init_db(db_path)
             assert db_path.exists()
 
     def test_returns_path(self) -> None:

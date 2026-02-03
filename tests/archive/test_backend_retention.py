@@ -95,7 +95,9 @@ def test_delete_approval_blocked_by_legal_hold(archive_backend: ArchiveBackend) 
         )
 
 
-def test_delete_apply_scrubs_only_single_reference(archive_backend: ArchiveBackend) -> None:
+def test_delete_apply_scrubs_only_single_reference(
+    archive_backend: ArchiveBackend,
+) -> None:
     """Blob bytes are only scrubbed when the artifact has a single reference."""
 
     first = _archive_sample(

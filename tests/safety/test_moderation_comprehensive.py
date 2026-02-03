@@ -10,11 +10,7 @@ Phase: 3.2 - Safety Module Testing
 
 from __future__ import annotations
 
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
-from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -94,7 +90,7 @@ class TestModerationSettingsAdvanced:
         settings = ModerationSettings(enabled=True)
         
         # Create adapter with settings
-        adapter = ModerationAdapter(settings)
+        ModerationAdapter(settings)
         
         # Original settings should be unchanged
         assert settings.enabled is True

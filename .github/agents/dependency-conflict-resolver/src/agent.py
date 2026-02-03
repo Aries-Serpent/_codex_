@@ -19,7 +19,6 @@ Usage:
 
 import re
 import json
-import subprocess
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Set, Any
 from dataclasses import dataclass, field
@@ -369,7 +368,7 @@ class DependencyConflictResolver:
         dep_counter: Dict[str, int] = {}
         
         for dep in self.dependencies.values():
-            key = f"{dep.name}_{dep_counter.get(dep.name, 0)}"
+            f"{dep.name}_{dep_counter.get(dep.name, 0)}"
             dep_counter[dep.name] = dep_counter.get(dep.name, 0) + 1
             
             if dep.name not in dep_groups:

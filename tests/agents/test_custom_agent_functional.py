@@ -11,10 +11,7 @@ Phase: 19 - Agent Validation
 Tests: 100+
 """
 
-import os
-import re
 from pathlib import Path
-from typing import Any
 
 import pytest
 import yaml
@@ -145,7 +142,9 @@ class TestAgentDirectoryStructure:
         assert agent_path.exists(), f"Agent directory not found: {agent_dir}"
 
     @pytest.mark.parametrize("agent_dir", AGENT_DIRECTORIES)
-    def test_agent_directory_is_directory(self, agents_dir: Path, agent_dir: str) -> None:
+    def test_agent_directory_is_directory(
+        self, agents_dir: Path, agent_dir: str
+    ) -> None:
         """Test that each agent path is a directory."""
         agent_path = agents_dir / agent_dir
         if agent_path.exists():
@@ -169,7 +168,9 @@ class TestAgentConfigFiles:
             content = config_path.read_text()
             assert len(content) > 0, f"Agent config is empty: {config_file}"
 
-    @pytest.mark.parametrize("config_file", [f for f in AGENT_CONFIG_FILES if f.endswith(".yml")])
+    @pytest.mark.parametrize(
+        "config_file", [f for f in AGENT_CONFIG_FILES if f.endswith(".yml")]
+    )
     def test_yaml_config_valid_syntax(self, agents_dir: Path, config_file: str) -> None:
         """Test that YAML config files have valid syntax."""
         config_path = agents_dir / config_file
@@ -180,8 +181,12 @@ class TestAgentConfigFiles:
             except yaml.YAMLError as e:
                 pytest.fail(f"Invalid YAML in {config_file}: {e}")
 
-    @pytest.mark.parametrize("config_file", [f for f in AGENT_CONFIG_FILES if f.endswith(".md")])
-    def test_markdown_config_has_frontmatter(self, agents_dir: Path, config_file: str) -> None:
+    @pytest.mark.parametrize(
+        "config_file", [f for f in AGENT_CONFIG_FILES if f.endswith(".md")]
+    )
+    def test_markdown_config_has_frontmatter(
+        self, agents_dir: Path, config_file: str
+    ) -> None:
         """Test that markdown config files have valid structure."""
         config_path = agents_dir / config_file
         if config_path.exists():
@@ -215,7 +220,10 @@ class TestAgentDocumentation:
         doc_path = agents_dir / doc_file
         if doc_path.exists():
             content = doc_path.read_text().lower()
-            has_usage = any(keyword in content for keyword in ["usage", "how to", "example", "invoke"])
+            has_usage = any(
+                keyword in content
+                for keyword in ["usage", "how to", "example", "invoke"]
+            )
             assert has_usage, f"Agent doc missing usage info: {doc_file}"
 
 
@@ -227,16 +235,21 @@ class TestAgentCallableInterface:
         # Check for agent invocation patterns in docs or registry
         readme = agents_dir / "README.md"
         registry = agents_dir / "AGENT_REGISTRY.md"
-        
+
         # Check README or Registry for invocation patterns
         found_pattern = False
         for doc in [readme, registry]:
             if doc.exists():
                 content = doc.read_text()
-                if "@" in content or "invoke" in content.lower() or "call" in content.lower() or "agent" in content.lower():
+                if (
+                    "@" in content
+                    or "invoke" in content.lower()
+                    or "call" in content.lower()
+                    or "agent" in content.lower()
+                ):
                     found_pattern = True
                     break
-        
+
         assert found_pattern, "No agent invocation pattern found in docs"
 
     @pytest.mark.parametrize("agent_dir", AGENT_DIRECTORIES[:10])  # Test first 10
@@ -247,10 +260,17 @@ class TestAgentCallableInterface:
             files = list(agent_path.iterdir())
             file_names = [f.name.lower() for f in files]
             has_config = any(
-                "prompt" in n or "config" in n or "agent" in n or ".yml" in n or ".yaml" in n or ".md" in n
+                "prompt" in n
+                or "config" in n
+                or "agent" in n
+                or ".yml" in n
+                or ".yaml" in n
+                or ".md" in n
                 for n in file_names
             )
-            assert has_config or len(files) > 0, f"Agent directory has no config: {agent_dir}"
+            assert has_config or len(files) > 0, (
+                f"Agent directory has no config: {agent_dir}"
+            )
 
 
 class TestAgentIntegration:
@@ -309,7 +329,9 @@ class TestCodexAgentSpecifications:
 
     def test_codex_agents_dir_exists(self, codex_agents_dir: Path) -> None:
         """Test that .codex/agents/ directory exists."""
-        assert codex_agents_dir.exists(), f"Codex agents dir not found: {codex_agents_dir}"
+        assert codex_agents_dir.exists(), (
+            f"Codex agents dir not found: {codex_agents_dir}"
+        )
 
     def test_custom_agent_specs_exists(self, codex_agents_dir: Path) -> None:
         """Test that custom agent specifications exist."""
@@ -330,8 +352,14 @@ class TestAgentCoverage:
     def test_minimum_agent_count(self, agents_dir: Path) -> None:
         """Test that we have a minimum number of agents."""
         if agents_dir.exists():
-            agent_dirs = [d for d in agents_dir.iterdir() if d.is_dir() and not d.name.startswith(".")]
-            assert len(agent_dirs) >= 30, f"Expected 30+ agent directories, found {len(agent_dirs)}"
+            agent_dirs = [
+                d
+                for d in agents_dir.iterdir()
+                if d.is_dir() and not d.name.startswith(".")
+            ]
+            assert len(agent_dirs) >= 30, (
+                f"Expected 30+ agent directories, found {len(agent_dirs)}"
+            )
 
     def test_minimum_config_files(self, agents_dir: Path) -> None:
         """Test that we have a minimum number of config files."""
@@ -390,7 +418,9 @@ class TestAgentFunctionality:
         agent_path = agents_dir / "flaky-triage-agent"
         assert agent_path.exists(), "Flaky triage agent not found"
 
-    def test_dependency_vulnerability_scanner_functional(self, agents_dir: Path) -> None:
+    def test_dependency_vulnerability_scanner_functional(
+        self, agents_dir: Path
+    ) -> None:
         """Test that dependency vulnerability scanner is functional."""
         config = agents_dir / "dependency-vulnerability-scanner.agent.md"
         assert config.exists(), "Dependency vulnerability scanner config not found"
@@ -415,7 +445,9 @@ class TestAgentSummary:
             pytest.skip("Agents directory not found")
 
         # Count agents
-        agent_dirs = [d for d in agents_dir.iterdir() if d.is_dir() and not d.name.startswith(".")]
+        agent_dirs = [
+            d for d in agents_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
+        ]
         config_files = list(agents_dir.glob("*.agent.*"))
         doc_files = [f for f in agents_dir.glob("*.md") if "agent" in f.name.lower()]
 
@@ -424,7 +456,7 @@ class TestAgentSummary:
         total_configs = len(config_files)
         total_docs = len(doc_files)
 
-        print(f"\n=== Agent Summary ===")
+        print("\n=== Agent Summary ===")
         print(f"Agent Directories: {total_agents}")
         print(f"Config Files: {total_configs}")
         print(f"Documentation Files: {total_docs}")

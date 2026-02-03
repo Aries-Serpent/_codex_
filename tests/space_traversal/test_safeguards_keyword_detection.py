@@ -5,7 +5,6 @@ Tests keyword detection, context-aware patterns, density calculation,
 and validation following High Maturity Achievement Plan (target: 15-20 tests).
 """
 
-import pytest
 from pathlib import Path
 import tempfile
 

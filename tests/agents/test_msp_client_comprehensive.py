@@ -10,9 +10,9 @@ Coverage targets:
 - Timeout handling
 """
 
+from unittest.mock import Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
 
 try:
     from agents.msp_client import MSPClient
@@ -77,7 +77,9 @@ class TestMSPClientMocked:
         """Test basic request structure."""
         # Mock the request method if it exists
         if hasattr(mock_client, "request"):
-            with patch.object(mock_client, "request", return_value={"status": "success"}):
+            with patch.object(
+                mock_client, "request", return_value={"status": "success"}
+            ):
                 result = mock_client.request("GET", "/test")
                 assert result == {"status": "success"}
 
@@ -115,7 +117,9 @@ class TestMSPClientMocked:
 
             with patch.object(mock_client, "request", side_effect=mock_request):
                 if hasattr(mock_client, "request_with_retry"):
-                    result = mock_client.request_with_retry("GET", "/test", max_retries=3)
+                    result = mock_client.request_with_retry(
+                        "GET", "/test", max_retries=3
+                    )
                     assert result["status"] == "success"
                     assert call_count == 3
 
@@ -220,7 +224,8 @@ class TestMSPClientAuthentication:
             headers = client._build_headers()
             # Check for API key in various possible header names
             has_auth = any(
-                key.lower() in ["authorization", "x-api-key", "api-key"] for key in headers.keys()
+                key.lower() in ["authorization", "x-api-key", "api-key"]
+                for key in headers.keys()
             )
             assert has_auth or "secret_key_123" in str(headers.values())
 
@@ -253,7 +258,7 @@ class TestMSPClientConfiguration:
         client = MSPClient()
 
         # Should have session or connection management
-        has_session = hasattr(client, "session") or hasattr(client, "_session")
+        hasattr(client, "session") or hasattr(client, "_session")
         # Connection pooling is optional but good practice
         assert True  # Pass if client initializes
 

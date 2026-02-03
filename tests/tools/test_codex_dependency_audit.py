@@ -4,8 +4,8 @@ Test Codex Dependency Audit
 Test module for codex dependency audit.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import tools.codex_dependency_audit as da
 

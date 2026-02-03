@@ -7,7 +7,6 @@ Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
 Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
 """
 
-import os
 import re
 import sys
 from pathlib import Path

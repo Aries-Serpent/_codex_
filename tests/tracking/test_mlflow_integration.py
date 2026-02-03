@@ -17,7 +17,6 @@ import pytest
 
 # Import tracking writers
 from src.codex_ml.tracking.writers import (
-    BaseWriter,
     CompositeWriter,
     MLflowWriter,
     NdjsonWriter,

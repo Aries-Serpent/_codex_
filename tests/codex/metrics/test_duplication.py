@@ -4,10 +4,8 @@ Tests for codex.metrics.duplication module.
 This module contains tests for duplication detection and ratio calculation.
 """
 
-import pytest
-import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestDuplicateBlock:

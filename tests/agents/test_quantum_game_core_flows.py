@@ -9,17 +9,17 @@ Coverage targets:
 Target coverage: 33.40% → 85%+
 """
 
-import pytest
 import numpy as np
+import pytest
+
 from agents.quantum_game_theory import (
-    TeamType,
-    StrategyState,
-    PayoffOperator,
-    QuantumGameState,
-    ClassicalGameEngine,
-    QuantumInspiredGameEngine,
-    BlueRedTeamSimulator,
     NUMPY_AVAILABLE,
+    BlueRedTeamSimulator,
+    ClassicalGameEngine,
+    QuantumGameState,
+    QuantumInspiredGameEngine,
+    StrategyState,
+    TeamType,
 )
 
 
@@ -84,9 +84,9 @@ class TestClassicalGameEngine:
         assert np.isclose(classical_engine.pi_red.sum(), 1.0)
 
         # Probabilities should have changed (unless at equilibrium)
-        assert not np.array_equal(classical_engine.pi_blue, initial_blue) or not np.array_equal(
-            classical_engine.pi_red, initial_red
-        )
+        assert not np.array_equal(
+            classical_engine.pi_blue, initial_blue
+        ) or not np.array_equal(classical_engine.pi_red, initial_red)
 
     def test_run_dynamics_convergence(self, classical_engine):
         """Test that dynamics converge over multiple steps."""
@@ -117,7 +117,10 @@ class TestClassicalGameEngine:
     def test_gibbs_sampling_temperature_effects(self, classical_engine):
         """Test that beta (inverse temperature) affects sampling."""
         # Create two engines with different beta values
-        blue_payoff, red_payoff = classical_engine.payoff_blue, classical_engine.payoff_red
+        blue_payoff, red_payoff = (
+            classical_engine.payoff_blue,
+            classical_engine.payoff_red,
+        )
 
         # Low beta (high temperature) → more random
         low_beta_engine = ClassicalGameEngine(
@@ -218,7 +221,9 @@ class TestQuantumInspiredGameEngine:
         initial_theta_red = 0.1
 
         new_blue, new_red = quantum_engine.quantum_policy_gradient_step(
-            theta_blue=initial_theta_blue, theta_red=initial_theta_red, learning_rate=0.05
+            theta_blue=initial_theta_blue,
+            theta_red=initial_theta_red,
+            learning_rate=0.05,
         )
 
         # Thetas should have updated
@@ -415,7 +420,12 @@ class TestIntegrationScenarios:
 
         # Run quantum
         sim_quantum = BlueRedTeamSimulator(
-            blue_strats, red_strats, payoff_b, payoff_r, mode="quantum", entanglement=0.3
+            blue_strats,
+            red_strats,
+            payoff_b,
+            payoff_r,
+            mode="quantum",
+            entanglement=0.3,
         )
         results_quantum = sim_quantum.run_simulation(10, 0.1)
 

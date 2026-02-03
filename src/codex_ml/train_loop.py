@@ -43,7 +43,7 @@ import sys
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
@@ -447,7 +447,12 @@ def _set_seed(seed: Optional[int]) -> int:
 
 
 def _now_ts() -> str:
-    return datetime.now(UTC).isoformat()
+    """Generate ISO 8601 timestamp with 'Z' suffix.
+    
+    Returns:
+        Timestamp string like "2026-02-01T12:34:56.789Z"
+    """
+    return datetime.now(UTC).isoformat().replace('+00:00', 'Z')
 
 
 _LEGACY_NDJSON = is_legacy_mode()

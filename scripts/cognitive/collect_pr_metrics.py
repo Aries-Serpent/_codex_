@@ -35,11 +35,10 @@ Part of Perception Layer - collects Pull Request data for analysis
 """
 import argparse
 import json
-import os
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 def collect_pr_metrics(lookback_days: int, output_path: str) -> Dict[str, Any]:

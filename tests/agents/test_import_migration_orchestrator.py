@@ -11,13 +11,13 @@ Test Categories:
 - End-to-end workflow integration
 """
 
-import pytest
-from pathlib import Path
-from typing import Dict, Any
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
 
-from agents.physics_orchestrator import ImportMigrationOrchestrator, ImportMigration
+import pytest
+
+from agents.physics_orchestrator import ImportMigration, ImportMigrationOrchestrator
 
 
 class TestImportMigration:
@@ -58,7 +58,10 @@ class TestImportMigration:
     def test_properties_different_lengths(self):
         """Test properties vary with import length."""
         short_migration = ImportMigration(
-            file_path="/test/file.py", old_import="import x", new_import="import y", line_number=1
+            file_path="/test/file.py",
+            old_import="import x",
+            new_import="import y",
+            line_number=1,
         )
         short_migration.calculate_properties()
 
@@ -187,7 +190,9 @@ from training.pipeline import Pipeline
         orchestrator.assess_imports(temp_repo)
 
         # module3.py should not contribute any migrations
-        module3_migrations = [m for m in orchestrator.migrations if "module3.py" in m.file_path]
+        module3_migrations = [
+            m for m in orchestrator.migrations if "module3.py" in m.file_path
+        ]
         assert len(module3_migrations) == 0
 
     def test_assess_imports_handles_nested_directories(self, orchestrator, temp_repo):
@@ -195,7 +200,9 @@ from training.pipeline import Pipeline
         orchestrator.assess_imports(temp_repo)
 
         # Should find nested.py
-        nested_migrations = [m for m in orchestrator.migrations if "nested.py" in m.file_path]
+        nested_migrations = [
+            m for m in orchestrator.migrations if "nested.py" in m.file_path
+        ]
         assert len(nested_migrations) > 0
 
     def test_deliberate_migrations(self, orchestrator, temp_repo):
@@ -460,7 +467,7 @@ def test():
         # Execute all
         ranked = orchestrator.deliberate_migrations()
         selected = orchestrator.optimize_migration_plan(ranked, energy_budget=1000.0)
-        results = orchestrator.execute_migrations(selected, dry_run=False)
+        orchestrator.execute_migrations(selected, dry_run=False)
 
         # All migrations should succeed
         app_file = complex_repo / "app.py"

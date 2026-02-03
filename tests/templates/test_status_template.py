@@ -312,7 +312,9 @@ def test_json_schema_version_constraint() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    template_version = schema["properties"]["metadata"]["properties"]["template_version"]
+    template_version = schema["properties"]["metadata"]["properties"][
+        "template_version"
+    ]
     assert template_version["const"] == "v1.1"
 
 
@@ -323,7 +325,9 @@ def test_json_schema_v12_version_constraint() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    template_version = schema["properties"]["metadata"]["properties"]["template_version"]
+    template_version = schema["properties"]["metadata"]["properties"][
+        "template_version"
+    ]
     assert template_version["const"] == "v1.2"
 
 

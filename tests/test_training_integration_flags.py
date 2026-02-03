@@ -5,12 +5,10 @@ Test module for training integration flags.
 """
 
 import contextlib
-import importlib
 import sys
 import types
-from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict, Iterator, List
 
 import numpy as np
 import pytest

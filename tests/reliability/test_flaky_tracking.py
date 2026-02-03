@@ -10,10 +10,7 @@ import random
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 class TestFlakyTestIdentification:
@@ -61,8 +58,7 @@ class TestFlakyTestIdentification:
         
         for threshold in timing_thresholds:
             # Simulate timing-sensitive assertion
-            simulated_execution_time = random.uniform(0.01, 0.2)
-            would_fail_at_threshold = simulated_execution_time > threshold
+            random.uniform(0.01, 0.2)
             
             # Track timing sensitivity
             is_timing_sensitive = threshold < 0.5  # Lower thresholds are risky

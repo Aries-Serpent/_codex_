@@ -12,8 +12,8 @@ Systematically applies integration and coupling patterns:
 Target: +4-5% coverage gain (70% → 75%)
 """
 
-import pytest
 import numpy as np
+import pytest
 
 
 class TestPhase2_MultiModuleIntegration:
@@ -40,8 +40,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_mental_mapping_with_agent_memory(self):
         """Test integration between MentalMapping and AgentMemory"""
-        from agents.mental_mapping import MentalMappingModel
         from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
 
         mental_map = MentalMappingModel()
         memory = AgentMemory()
@@ -62,8 +62,8 @@ class TestPhase2_MultiModuleIntegration:
 
     def test_self_healing_with_physics_integration(self):
         """Test integration between SelfHealing and PhysicsIntegration"""
-        from agents.self_healing import SelfHealingEngine
         from agents.physics_integration import PhysicsIntegration
+        from agents.self_healing import SelfHealingEngine
 
         healing = SelfHealingEngine()
         integration = PhysicsIntegration()
@@ -316,10 +316,10 @@ class TestPhase2_DistributedIntegration:
         def release_lock(process_id):
             lock_holders.discard(process_id)
 
-        assert acquire_lock("p1") == True
-        assert acquire_lock("p2") == False
+        assert acquire_lock("p1")
+        assert not acquire_lock("p2")
         release_lock("p1")
-        assert acquire_lock("p2") == True
+        assert acquire_lock("p2")
 
     def test_partition_tolerance(self):
         """Test handling network partitions"""
@@ -436,7 +436,6 @@ class TestPhase2_StateManagement:
 
     def test_state_machine_transitions(self):
         """Test state machine with multiple transitions"""
-        states = ["idle", "processing", "completed", "error"]
         current = "idle"
 
         # Transition: idle -> processing
@@ -546,7 +545,7 @@ class TestPhase2_PerformanceIntegration:
 
         # Acquire
         if pool["available"] > 0:
-            conn = pool["connections"][0]
+            pool["connections"][0]
             pool["available"] -= 1
 
         # Release

@@ -145,7 +145,7 @@ class TestReleaseReporter:
         }
         release_info = {"version": "v1.0.0"}
         
-        with patch.object(reporter.brain, 'record_pattern') as mock_record:
+        with patch.object(reporter.brain, 'record_pattern'):
             report = reporter.generate_aftermath_report(
                 validation_results, decision_result, execution_result, release_info
             )

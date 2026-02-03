@@ -10,12 +10,8 @@ from __future__ import annotations
 import json
 import logging
 import os
-import uuid
-from pathlib import Path
-from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from codex_ml.codex_structured_logging import (
     JsonFormatter,
@@ -23,7 +19,6 @@ from codex_ml.codex_structured_logging import (
     _prepare_session_payload,
     _utc_iso,
     get_session_id,
-    get_session_logger,
     init_json_logging,
     set_session_id,
 )
@@ -269,8 +264,8 @@ class TestSessionId:
 
     def test_set_session_id_returns_resolved(self) -> None:
         """Test that set_session_id returns resolved ID."""
-        with patch("codex_ml.codex_structured_logging._session_id_ctx") as mock_ctx:
-            with patch("codex_ml.codex_structured_logging._session_logger_ctx") as mock_logger_ctx:
+        with patch("codex_ml.codex_structured_logging._session_id_ctx"):
+            with patch("codex_ml.codex_structured_logging._session_logger_ctx"):
                 with patch("codex_ml.codex_structured_logging.SessionLogger"):
                     result = set_session_id("test-session-id")
                     

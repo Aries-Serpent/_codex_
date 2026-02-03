@@ -255,7 +255,6 @@ class SemanticPatternClusterer:
 
         # Simple K-means-like clustering
         clusters: List[SemanticCluster] = []
-        assigned: Set[str] = set()
 
         # Initialize cluster centroids
         step = max(1, len(pattern_ids) // num_clusters)

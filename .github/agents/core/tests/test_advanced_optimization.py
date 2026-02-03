@@ -14,11 +14,9 @@ Tests:
 import pytest
 from ..advanced_optimization import (
     ExperimentConfig,
-    ExperimentResult,
     EXP7Validator,
     EXP8Validator,
     ValidationRunner,
-    OptimizationState,
     RandomSearchOptimizer,
     EvolutionaryOptimizer,
     BayesianOptimizer,

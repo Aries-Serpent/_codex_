@@ -14,12 +14,8 @@ Phase: 20.3 Self-Healing Infrastructure
 
 from __future__ import annotations
 
-import json
-import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from datetime import datetime
+from typing import Any, Dict
 
 import pytest
 
@@ -101,7 +97,6 @@ class TestStateRestoration:
 
     def test_partial_state_restoration(self):
         """Test partial state restoration."""
-        full_state = {"service_a": {"data": "a"}, "service_b": {"data": "b"}}
         partial_restore = {"service_a": {"data": "a"}}
         
         # Only restore service_a
@@ -156,7 +151,6 @@ class TestRollbackProcedures:
     def test_rollback_basic(self):
         """Test basic rollback operation."""
         before_state = {"counter": 100}
-        after_state = {"counter": 150}
         
         # Rollback to before state
         rolled_back = before_state
@@ -201,7 +195,7 @@ class TestRollbackProcedures:
         ]
         
         # Operation 3 failed, should rollback 2 and 3
-        failed_op = operations[2]
+        operations[2]
         to_rollback = [2, 3]  # Reverse order
         
         assert len(to_rollback) == 2
@@ -311,7 +305,6 @@ class TestTransactionRecovery:
 
     def test_transaction_idempotency(self):
         """Test transaction idempotency during recovery."""
-        transaction = {"id": "tx_001", "operation": "insert", "data": {"id": 1}}
         
         # Applying same transaction twice should have same result
         applied_once = {"id": 1, "count": 1}
@@ -337,7 +330,7 @@ class TestTransactionRecovery:
         ]
         
         # Can only commit tx_003 if dependencies are committed
-        tx_003 = transactions[2]
+        transactions[2]
         dependency = transactions[1]
         
         can_commit = dependency["status"] == "committed"
@@ -556,7 +549,6 @@ class TestIdempotency:
 
     def test_idempotent_service_restart(self):
         """Test service restart is idempotent."""
-        service_status = "running"
         
         # Restart should result in same state
         status_after_restart_1 = "running"

@@ -33,7 +33,6 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 import argparse
-import base64
 import json
 import math
 import os

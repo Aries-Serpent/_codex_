@@ -4,8 +4,8 @@ Test Codex Config Validate
 Test module for codex config validate.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import tools.codex_config_validate as cv
 

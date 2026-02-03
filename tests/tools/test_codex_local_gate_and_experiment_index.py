@@ -9,12 +9,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from tools import codex_dataset_index
-from tools import codex_experiment_index
-from tools import codex_local_gate_runner
+from tools import codex_dataset_index, codex_experiment_index, codex_local_gate_runner
 
 
-def test_local_gate_runner_uses_default_gate_when_config_missing(tmp_path: Path) -> None:
+def test_local_gate_runner_uses_default_gate_when_config_missing(
+    tmp_path: Path,
+) -> None:
     json_out = tmp_path / "report.json"
     rc = codex_local_gate_runner.main(
         [

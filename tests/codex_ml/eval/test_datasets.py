@@ -7,13 +7,10 @@ preset datasets, hash computation, and dataset loading.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import tempfile
 import warnings
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -300,7 +297,7 @@ class TestLoadDataset:
 
     def test_hf_text_field_deprecation_warning(self) -> None:
         """Test hf_text_field raises deprecation warning."""
-        with warnings.catch_warnings(record=True) as w:
+        with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             try:
                 # This will fail because it's not a valid HF dataset,
