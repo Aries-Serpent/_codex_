@@ -23,3 +23,4 @@ size 89
 {"step": "data.safety", "err": "dataset sample sanitized", "ctx": "{\"path\": \"/tmp/pytest-of-runner/pytest-2/test_loader_explicit_safety_fi0/data.jsonl\", \"prompt_allowed\": false, \"prompt_blocked_rules\": [\"deny.secret.credit_card\"], \"completion_allowed\": false, \"completion_blocked_rules\": [\"deny.secret.credit_card\"]}", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
 {"step": "env_log", "err": "Object of type MagicMock is not JSON serializable", "ctx": "env", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
 {"step": "hydra_snapshot", "err": "Object of type MagicMock is not JSON serializable", "ctx": "env", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
+{"ts": "2026-02-03T19:17Z", "step": "POOL", "step_description": "fix executor", "error": "no concurrent.futures", "context": "configure thread pool"}
