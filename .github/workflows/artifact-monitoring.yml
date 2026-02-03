@@ -48,7 +48,7 @@ jobs:
 
       - name: Download previous state
         id: download_state
-        uses: actions/download-artifact@v4.1.3
+        uses: actions/download-artifact@v7
         with:
           name: monitor-state
           path: .codex/monitoring/state/
