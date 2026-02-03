@@ -77,8 +77,10 @@ class BleuMetric(MetricAdapter):
             # Each prediction should have one or more references
             refs_list = [[ref] for ref in self._references]
 
+            # Note: max_ngram_order is not supported in newer sacrebleu versions
+            # The library uses n-gram order 4 by default
             bleu = sacrebleu.corpus_bleu(
-                self._predictions, refs_list, max_ngram_order=self.max_order
+                self._predictions, refs_list
             )
 
             return {
