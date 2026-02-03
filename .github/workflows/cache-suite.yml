@@ -70,7 +70,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Set up Python with LIVE tier cache
         uses: ./.github/actions/setup-python-cached
@@ -119,7 +119,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Set up Python with cached dependencies
         uses: ./.github/actions/setup-python-cached
@@ -191,7 +191,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Set up Python with cached dependencies
         uses: ./.github/actions/setup-python-cached
@@ -277,7 +277,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Validate live tier cache
         uses: ./.github/actions/setup-python-cached
