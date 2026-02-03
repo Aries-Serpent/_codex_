@@ -1,8 +1,7 @@
 """Comprehensive tests for RAG retriever module."""
 
 import json
-from datetime import UTC, datetime
-from pathlib import Path
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -248,7 +247,7 @@ class TestRetrieverQuery:
                 retriever = Retriever(index_dir=str(temp_index_dir))
                 
                 # top_k <= 0 should use default
-                results = retriever.query("test", top_k=0)
+                retriever.query("test", top_k=0)
                 # Should not raise error
 
     def test_query_with_min_score(self, temp_index_dir, mock_faiss_index, mock_sentence_transformer):

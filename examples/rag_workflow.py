@@ -105,14 +105,14 @@ def example_2_cached_retrieval():
     # First query - cache miss
     print(f"\nFirst query: '{query}'")
     start1 = time.time()
-    results1 = cached.query_with_cache(query, top_k=5)
+    cached.query_with_cache(query, top_k=5)
     time1 = (time.time() - start1) * 1000
     print(f"⏱️  Time: {time1:.2f}ms (cache miss)")
     
     # Second query - cache hit
     print(f"\nSecond query: '{query}'")
     start2 = time.time()
-    results2 = cached.query_with_cache(query, top_k=5)
+    cached.query_with_cache(query, top_k=5)
     time2 = (time.time() - start2) * 1000
     print(f"⚡ Time: {time2:.2f}ms (cache hit)")
     
@@ -243,7 +243,7 @@ def example_5_monitoring():
     
     for query in queries:
         start = time.time()
-        results = retriever.query(query, top_k=3)
+        retriever.query(query, top_k=3)
         duration_ms = (time.time() - start) * 1000
         
         # Track metrics

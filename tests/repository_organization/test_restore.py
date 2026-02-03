@@ -5,10 +5,6 @@ Tests category listing, file restoration, dry-run mode, and error handling.
 """
 from __future__ import annotations
 
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 import pytest
 

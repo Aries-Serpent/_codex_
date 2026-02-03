@@ -49,12 +49,9 @@ Never log secret values or names in clear text. Use redaction utilities.
 
 import os
 import sys
-import json
 import base64
 import subprocess
 from typing import Dict, List, Optional, Tuple
-from datetime import datetime, UTC
-from pathlib import Path
 import logging
 
 logging.basicConfig(

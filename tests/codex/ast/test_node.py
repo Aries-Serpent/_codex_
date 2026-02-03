@@ -4,7 +4,6 @@ Tests for codex.ast.node module.
 This module contains tests for standardized AST node representation.
 """
 
-import pytest
 from pathlib import Path
 
 

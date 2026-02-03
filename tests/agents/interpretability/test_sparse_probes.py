@@ -5,9 +5,6 @@ This module contains comprehensive tests for sparse linear probes used for
 interpretability of agent state vectors.
 """
 
-import pytest
-import math
-from unittest.mock import patch, MagicMock
 
 
 class TestSparseLinearProbe:

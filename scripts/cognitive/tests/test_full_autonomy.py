@@ -37,7 +37,6 @@ Tests self-healing, autonomous decision-making, multi-agent coalitions, and safe
 
 import pytest
 import numpy as np
-from pathlib import Path
 
 
 class TestSelfHealing:

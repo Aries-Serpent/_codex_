@@ -36,7 +36,7 @@ Handles failures and rolls back to safe state
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, Any
 from datetime import datetime
 
 

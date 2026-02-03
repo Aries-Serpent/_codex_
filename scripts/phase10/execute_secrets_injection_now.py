@@ -42,9 +42,7 @@ Never log secret values or names in clear text.
 
 import os
 import sys
-import json
 import subprocess
-from pathlib import Path
 
 # WARNING: Do NOT log secret names or values in clear text.
 # Use redaction for any sensitive information.

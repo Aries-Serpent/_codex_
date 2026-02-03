@@ -262,7 +262,6 @@ def test_concurrent_tool_execution():
 
 def test_tool_timeout_pattern():
     """Test tool timeout handling pattern."""
-    import signal
 
     registry = MCPToolRegistry()
 

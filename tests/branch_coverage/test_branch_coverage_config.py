@@ -11,8 +11,8 @@ Target: 100% branch coverage for config modules
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
+from unittest.mock import patch
 
 import pytest
 

@@ -5,9 +5,7 @@ This module contains tests for the Intent Inferer that combines
 heuristics and LLM-based analysis for code intent inference.
 """
 
-import pytest
 from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
 
 
 class TestInputSpec:

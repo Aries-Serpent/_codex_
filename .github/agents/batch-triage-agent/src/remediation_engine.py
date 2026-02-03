@@ -5,10 +5,9 @@ Generates automated remediation suggestions and applies low-risk fixes
 with appropriate approval gates and safety checks.
 """
 
-import json
 import logging
 import shlex
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Any

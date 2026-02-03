@@ -11,11 +11,8 @@ Comprehensive test suite for data persistence critical paths including:
 All tests are deterministic and isolated using tmp_path fixtures.
 """
 
-import json
 import sqlite3
 import time
-from pathlib import Path
-from unittest.mock import Mock, patch
 
 import pytest
 
@@ -370,7 +367,7 @@ class TestRollbackScenarios:
         with manager.connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE email = ?", ("valid@example.com",))
-            row = cursor.fetchone()
+            cursor.fetchone()
             # Depending on DB behavior, might be None (rolled back) or present
             # Just verify duplicate wasn't inserted
             cursor.execute("SELECT COUNT(*) FROM users WHERE email = ?", ("test@example.com",))

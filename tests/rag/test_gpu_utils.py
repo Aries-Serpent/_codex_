@@ -5,11 +5,8 @@ Tests all functions in src/codex/rag/gpu_utils.py to achieve 80%+ coverage.
 Priority 1 - CRITICAL gap (0% → 80%)
 """
 
-import logging
-import sys
 from unittest.mock import MagicMock, Mock, patch
 
-import pytest
 
 from src.codex.rag.gpu_utils import (
     check_cuda_available,

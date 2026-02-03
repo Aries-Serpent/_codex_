@@ -7,7 +7,7 @@ Analyzes code structure and identifies coverage gaps without running tests.
 import ast
 import os
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 from dataclasses import dataclass, field
 
 

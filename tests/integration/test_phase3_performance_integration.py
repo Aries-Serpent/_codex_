@@ -14,14 +14,8 @@ Coverage goal: +15-18% (reaching 77-80% total)
 
 from __future__ import annotations
 
-import os
-import sys
 import json
 import time
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any, List
 import pytest
 
 
@@ -45,7 +39,7 @@ class TestTrainingLargeDatasets:
         # Load in batches
         batches_loaded = 0
         for i in range(0, dataset_size, batch_size):
-            batch_end = min(i + batch_size, dataset_size)
+            min(i + batch_size, dataset_size)
             # Simulate batch loading
             batches_loaded += 1
         
@@ -89,8 +83,6 @@ class TestTrainingLargeDatasets:
 
     def test_dataloader_num_workers_performance(self):
         """Test dataloader performance with different worker counts."""
-        dataset_size = 10000
-        batch_size = 100
         
         worker_configs = [0, 2, 4, 8]
         throughput = {}
@@ -225,7 +217,6 @@ class TestRAGLargeCorpus:
     def test_index_building_performance(self):
         """Test index building performance."""
         num_vectors = 50000
-        vector_dim = 768
         
         # Simulate index building time
         # Flat index: O(n) time
@@ -475,7 +466,6 @@ class TestAgentOrchestrationLoad:
 
     def test_agent_coordination_overhead(self):
         """Test coordination overhead with multiple agents."""
-        num_agents = 10
         
         # Without coordination
         time_per_task = 0.1
@@ -650,7 +640,7 @@ class TestConcurrentCLIOperations:
         # Process in batches
         num_batches = 0
         for i in range(0, len(operations), batch_size):
-            batch = operations[i:i + batch_size]
+            operations[i:i + batch_size]
             # Process batch
             num_batches += 1
         

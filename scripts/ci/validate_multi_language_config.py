@@ -15,7 +15,7 @@ import sys
 import json
 import re
 from pathlib import Path
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
 
@@ -210,7 +210,6 @@ class MultiLanguageValidator:
         if not go_files:
             return
         
-        declared_tags = set()
         used_tags = set()
         
         # Find declared build tags in files

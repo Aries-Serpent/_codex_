@@ -12,13 +12,10 @@ import pytest
 import threading
 import time
 import concurrent.futures
-from typing import List, Dict, Any
 import tempfile
 from pathlib import Path
 
 from agents.agent_memory import AgentMemory, MemoryEntry
-from agents.physics_orchestrator import PhysicsInspiredOrchestrator, ActionPath
-from agents.workflow_navigator import WorkflowNavigator
 from agents.physics_integration import HybridPhysicsOrchestrator
 
 
@@ -237,7 +234,7 @@ class TestMemoryPressure:
                 # Search should still be fast
                 start = time.time()
                 if hasattr(memory, "search_memories"):
-                    results = memory.search_memories(category="fact")
+                    memory.search_memories(category="fact")
                 search_duration = time.time() - start
 
                 assert search_duration < 2.0  # 2 seconds for search

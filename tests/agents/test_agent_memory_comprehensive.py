@@ -24,15 +24,11 @@ Test Categories:
 
 import pytest
 import tempfile
-import sqlite3
 from pathlib import Path
-from typing import Dict, Any, List
 from agents.agent_memory import (
     AgentMemory,
     MemoryEntry,
     ContextFrame,
-    PatternLibrary,
-    AgentMemorySystem,
 )
 
 
@@ -414,7 +410,7 @@ class TestAgentMemory:
             import time
 
             start = time.time()
-            results = memory_system.search_memories(category="decision")
+            memory_system.search_memories(category="decision")
             duration = time.time() - start
 
             # Search should be fast

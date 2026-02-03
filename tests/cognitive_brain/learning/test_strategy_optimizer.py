@@ -8,7 +8,6 @@ AfterMath: Phase 8.3 Pre-commit 3-4 - Strategy Optimizer Testing
 """
 import pytest
 import numpy as np
-from typing import List
 
 from cognitive_brain.learning.rl_algorithms import (
     QLearning,
@@ -464,7 +463,7 @@ def test_strategy_improvement_target():
     )
     
     # Check improvement
-    improvement = results['improvement_percentage']
+    results['improvement_percentage']
     
     # Note: Due to simple linear data, improvement may vary
     # Test that optimization ran and tracked improvement

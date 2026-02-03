@@ -9,10 +9,7 @@ Tests for validating DeepSpeed configurations including:
 """
 
 import json
-from pathlib import Path
-from typing import Any, Dict
 
-import pytest
 
 
 class TestDeepSpeedZeROStages:

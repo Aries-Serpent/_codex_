@@ -2,7 +2,6 @@
 Tests for Enhanced Inference Server with Authentication and Circuit Breaker
 """
 
-import os
 from unittest.mock import Mock, patch
 
 import pytest
@@ -227,7 +226,7 @@ class TestInferenceServerWithAuth:
 
         # Metrics should show circuit breaker state if available
         resp = client.get("/metrics")
-        data = resp.json()
+        resp.json()
         # Circuit breaker may or may not be present depending on import
 
     def test_root_endpoint_shows_auth_status(self):
@@ -270,7 +269,7 @@ class TestCircuitBreakerIntegration:
         """Test circuit breaker is called during prediction"""
         # Skip if circuit breaker not available
         try:
-            from codex_ml.serving.resilience import CircuitBreaker
+            from codex_ml.serving.resilience import CircuitBreaker  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 

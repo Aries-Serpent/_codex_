@@ -158,7 +158,7 @@ class TestCLIEdgeCases:
     
     def test_cli_command_chain_execution(self):
         """Test CLI command pipeline/chain execution"""
-        from unittest.mock import MagicMock, call
+        from unittest.mock import MagicMock
         import subprocess
         
         with patch('subprocess.run') as mock_run:
@@ -277,7 +277,6 @@ class TestCLIEdgeCases:
     def test_cli_sigint_handling(self):
         """Test CLI SIGINT (Ctrl+C) handling"""
         import signal
-        from unittest.mock import MagicMock
         
         cleanup_called = []
         
@@ -337,7 +336,6 @@ class TestCLIEdgeCases:
     
     def test_cli_signal_during_subprocess(self):
         """Test signal handling when subprocess is running"""
-        import signal
         import subprocess
         from unittest.mock import MagicMock, patch
         
@@ -488,7 +486,6 @@ class TestCLIEdgeCases:
     
     def test_cli_concurrent_io_operations(self):
         """Test CLI thread-safe I/O operations"""
-        import sys
         import threading
         
         output_buffer = StringIO()
@@ -514,8 +511,6 @@ class TestCLIEdgeCases:
     
     def test_cli_io_encoding_errors(self):
         """Test CLI handling of encoding errors"""
-        import sys
-        from io import BytesIO, TextIOWrapper
         
         # Invalid UTF-8 sequence
         invalid_utf8 = b'\xff\xfe invalid utf8 \x80\x81'
@@ -581,7 +576,7 @@ class TestCLIEdgeCases:
             import pathlib
             try:
                 # In real implementation, this would be validated
-                resolved = pathlib.Path(dangerous_path).resolve()
+                pathlib.Path(dangerous_path).resolve()
                 # Should reject paths outside allowed directories
             except (ValueError, OSError):
                 pass  # Expected for malicious paths

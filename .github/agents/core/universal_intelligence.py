@@ -3193,7 +3193,7 @@ class UniversalController:
         Returns:
             Dictionary of constraint → satisfied
         """
-        assessment = self.metacog.get_self_assessment()
+        self.metacog.get_self_assessment()
         
         # Check negative transfer
         neg_transfer_ok = True

@@ -16,8 +16,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict
 
 import pytest
 
@@ -94,7 +93,7 @@ class TestLivenessProbes:
 
     def test_liveness_probe_basic_success(self, health_check_config):
         """Test basic liveness probe returns healthy."""
-        config = health_check_config["liveness"]
+        health_check_config["liveness"]
         
         # Simulate liveness check
         result = {
@@ -127,7 +126,7 @@ class TestLivenessProbes:
         config = health_check_config["liveness"]
         timeout = config["timeout_seconds"]
         
-        start_time = time.time()
+        time.time()
         # Simulate check that takes too long
         elapsed = 6  # Exceeds 5 second timeout
         
@@ -140,7 +139,6 @@ class TestLivenessProbes:
         success_threshold = config["success_threshold"]
         
         # After failure, only need 1 success to recover
-        failures = 2
         successes = 1
         
         assert successes >= success_threshold
@@ -151,7 +149,6 @@ class TestLivenessProbes:
         config = health_check_config["liveness"]
         interval = config["interval_seconds"]
         
-        checks_performed = 0
         time_elapsed = 30  # seconds
         expected_checks = time_elapsed // interval
         
@@ -168,7 +165,7 @@ class TestReadinessProbes:
 
     def test_readiness_probe_basic_success(self, health_check_config):
         """Test basic readiness probe returns ready."""
-        config = health_check_config["readiness"]
+        health_check_config["readiness"]
         
         result = {
             "ready": True,
@@ -412,7 +409,6 @@ class TestGracefulDegradation:
 
     def test_reduced_functionality_in_degraded_mode(self):
         """Test reduced functionality during degradation."""
-        degraded_mode = True
         
         available_features = ["core", "essential"]
         disabled_features = ["analytics", "reporting", "cache"]

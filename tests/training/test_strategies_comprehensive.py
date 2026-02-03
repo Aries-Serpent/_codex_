@@ -12,14 +12,12 @@ Target Coverage: 70%+
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from codex_ml.training.strategies import (
-    BackendStrategy,
     FunctionalStrategy,
     LegacyStrategy,
     NoOpCallback,

@@ -13,9 +13,7 @@ Phase: 20.4 Full Stack Integration & Cross-Phase Validation
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict
 
 import pytest
 

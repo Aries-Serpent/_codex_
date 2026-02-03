@@ -33,7 +33,6 @@ Last Updated: 2026-01-16
 Update maturity documentation from AST analysis.
 Compares current codebase against baseline to detect regressions.
 """
-import json
 import sys
 from datetime import datetime
 from pathlib import Path

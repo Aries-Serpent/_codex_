@@ -12,8 +12,6 @@ Tests focus on:
 import pytest
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
-import json
 
 # Import with graceful fallback for torch
 try:
@@ -303,7 +301,6 @@ class TestEarlyStopping:
     def test_early_stopping_improvement(self):
         """Test that early stopping doesn't trigger when improving."""
         best_loss = float('inf')
-        patience = 3
         patience_counter = 0
         
         losses = [1.0, 0.9, 0.8, 0.7, 0.6]  # Continuously improving
@@ -370,7 +367,7 @@ class TestGradientAccumulation:
         model2.load_state_dict(model1.state_dict())
         
         opt1 = Adam(model1.parameters(), lr=0.001)
-        opt2 = Adam(model2.parameters(), lr=0.001)
+        Adam(model2.parameters(), lr=0.001)
         
         # Model 1: Normal update with batch - create iterator explicitly for Python 3.12+ compatibility
         dataloader_iter = iter(simple_dataloader)

@@ -10,7 +10,6 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.errors import MCPError
 
 
 def test_jsonrpc_version_compliance():

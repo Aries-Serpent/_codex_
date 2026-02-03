@@ -15,12 +15,8 @@ Tests cover:
 from __future__ import annotations
 
 import json
-import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path
-from unittest.mock import Mock, patch
 
-import pytest
 
 from codex_ml.features.feature_store import (
     Feature,
@@ -54,7 +50,7 @@ class TestFeatureStore:
         store_path = tmp_path / "features"
         assert not store_path.exists()
 
-        store = FeatureStore(store_path)
+        FeatureStore(store_path)
         assert store_path.exists()
         assert store_path.is_dir()
 

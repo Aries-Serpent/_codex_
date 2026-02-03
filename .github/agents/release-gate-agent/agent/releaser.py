@@ -169,7 +169,7 @@ class ReleaseExecutor:
                 check=True
             )
             return version
-        except subprocess.SubprocessError as e:
+        except subprocess.SubprocessError:
             # Best-effort: if tagging fails, return version anyway
             return version
     
@@ -195,7 +195,7 @@ class ReleaseExecutor:
             
             return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
         
-        except subprocess.SubprocessError as e:
+        except subprocess.SubprocessError:
             # Best-effort: return constructed URL if gh CLI fails
             return f"https://github.com/{self.repo_owner}/{self.repo_name}/releases/tag/{git_tag}"
     

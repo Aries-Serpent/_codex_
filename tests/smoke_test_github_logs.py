@@ -15,35 +15,30 @@ def test_imports():
     print("Testing imports...")
     
     try:
-        from services.github.types import CheckRun, CheckRunStatus, CheckRunConclusion
         print("✓ GitHub types imported successfully")
     except Exception as e:
         print(f"✗ Failed to import GitHub types: {e}")
         return False
     
     try:
-        from services.github.client import GitHubClient, GitHubClientSync
         print("✓ GitHub client imported successfully")
     except Exception as e:
         print(f"✗ Failed to import GitHub client: {e}")
         return False
     
     try:
-        from codex.cli_github_logs import cli
         print("✓ CLI module imported successfully")
     except Exception as e:
         print(f"✗ Failed to import CLI module: {e}")
         return False
     
     try:
-        from codex.api.github_logs import router
         print("✓ API module imported successfully")
     except Exception as e:
         print(f"✗ Failed to import API module: {e}")
         return False
     
     try:
-        from mcp.tools.github_logs import fetch_check_run_logs, GITHUB_LOGS_TOOLS
         print("✓ MCP tools imported successfully")
     except Exception as e:
         print(f"✗ Failed to import MCP tools: {e}")

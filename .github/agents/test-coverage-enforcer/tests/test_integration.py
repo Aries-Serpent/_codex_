@@ -7,17 +7,15 @@ Tests end-to-end workflows and real file system interactions.
 
 import pytest
 import tempfile
-import shutil
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.agent import (
     TestCoverageEnforcer,
-    CoverageReport,
     EnforcementResult,
 )
 

@@ -9,13 +9,9 @@ Phase: 4.3 Part 1 - Edge Cases & Boundary Conditions
 Target: 40-50 tests for robust error handling
 """
 
-import os
 import sys
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
 
-import pytest
 
 
 # ============================================================================
@@ -333,7 +329,7 @@ class TestUnicodeEncodingBranches:
         """Test UTF-8 decode success."""
         data = b"Hello World"
         try:
-            decoded = data.decode('utf-8')
+            data.decode('utf-8')
             result = "success"
         except UnicodeDecodeError:
             result = "error"
@@ -343,7 +339,7 @@ class TestUnicodeEncodingBranches:
         """Test UTF-8 decode error handling."""
         data = b"\xff\xfe"
         try:
-            decoded = data.decode('utf-8')
+            data.decode('utf-8')
             result = "success"
         except UnicodeDecodeError:
             result = "error"

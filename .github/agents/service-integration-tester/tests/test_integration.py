@@ -12,7 +12,6 @@ Tests full workflows including:
 
 import pytest
 import json
-import subprocess
 import tempfile
 from pathlib import Path
 import yaml
@@ -278,7 +277,7 @@ class TestEndToEndContractValidation:
             base_url=base_url,
             expected_status=204
         )
-        delete_result = tester.test_endpoint_sync(delete_endpoint, expected_status=204)
+        tester.test_endpoint_sync(delete_endpoint, expected_status=204)
         
         # All operations recorded
         assert len(tester.test_results) == 5
@@ -346,7 +345,7 @@ class TestPerformanceWorkflows:
         for _ in range(10):
             tester.test_endpoint_sync(endpoint)
         
-        metrics = tester.get_metrics()
+        tester.get_metrics()
         
         # Check if any requests exceeded threshold
         slow_requests = [
@@ -423,7 +422,7 @@ class TestFileOperations:
             output_path = Path(f.name)
         
         try:
-            report = tester.generate_report(output_path)
+            tester.generate_report(output_path)
             
             assert output_path.exists()
             assert output_path.stat().st_size > 0

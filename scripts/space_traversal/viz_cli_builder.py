@@ -53,7 +53,6 @@ Example:
     )
 """
 
-from datetime import datetime
 from pathlib import Path
 
 __all__ = ["generate_cli_builder", "CLI_BUILDER_TEMPLATE"]

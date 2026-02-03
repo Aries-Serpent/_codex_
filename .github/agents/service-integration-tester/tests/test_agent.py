@@ -16,7 +16,7 @@ import pytest
 import json
 import re
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
 import tempfile
 import yaml
 
@@ -28,12 +28,10 @@ from agent import (
     ServiceIntegrationTester,
     TestStatus,
     EndpointMethod,
-    MockDataType,
     Endpoint,
     ServiceContract,
     IntegrationTestSuite,
     TestResult,
-    TestMetrics,
 )
 
 
@@ -634,7 +632,7 @@ class TestMetricsAndReporting:
             output_path = Path(f.name)
         
         try:
-            report = tester.generate_report(output_path)
+            tester.generate_report(output_path)
             
             assert output_path.exists()
             content = output_path.read_text()

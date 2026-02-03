@@ -12,8 +12,6 @@ Comprehensive test coverage for:
 """
 
 import json
-import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -227,14 +225,12 @@ class TestQueryCommand:
         # Check that output contains valid JSON
         # Try to find JSON in the output
         lines = result.stdout.strip().split("\n")
-        json_found = False
         for i in range(len(lines)):
             # Try to parse from this line onwards
             try:
                 remaining = "\n".join(lines[i:])
                 json_output = json.loads(remaining)
                 if isinstance(json_output, (list, dict)):
-                    json_found = True
                     break
             except (json.JSONDecodeError, ValueError):
                 continue
@@ -614,7 +610,7 @@ class TestIntegration:
         """Test full build and query workflow."""
         # Skip if sentence-transformers not available
         try:
-            import sentence_transformers
+            import sentence_transformers  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("sentence-transformers not installed")
         

@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -65,7 +64,7 @@ class TestDetectedIssue:
     @pytest.fixture
     def DetectedIssue(self):
         """Import DetectedIssue class."""
-        from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
+        from agents.self_healing import DetectedIssue
         return DetectedIssue
 
     @pytest.fixture

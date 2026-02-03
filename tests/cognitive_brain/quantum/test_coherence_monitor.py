@@ -12,7 +12,6 @@ from pathlib import Path
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.coherence_monitor import (
     CoherenceMonitor,
-    Alert,
     AlertLevel,
     AlertThreshold
 )

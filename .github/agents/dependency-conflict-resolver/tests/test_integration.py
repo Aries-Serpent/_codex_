@@ -134,7 +134,7 @@ class TestEndToEndJavaScriptResolution(unittest.TestCase):
             self.assertEqual(len(graph), 5)
             
             # Detect conflicts
-            conflicts = resolver.detect_conflicts()
+            resolver.detect_conflicts()
             
             # Generate report
             report = resolver.generate_resolution_plan()
@@ -203,14 +203,14 @@ anyhow = "1.0"
             self.assertGreaterEqual(len(deps), 2)
             
             # Build graph
-            graph = resolver.build_dependency_graph(deps)
+            resolver.build_dependency_graph(deps)
             
             # All dependencies should be Rust ecosystem
             for dep in deps:
                 self.assertEqual(dep.ecosystem, Ecosystem.RUST)
             
             # Detect conflicts
-            conflicts = resolver.detect_conflicts()
+            resolver.detect_conflicts()
             
             # Generate report
             report = resolver.generate_resolution_plan()
@@ -372,7 +372,7 @@ requests>=2.28.0rc1
             self.assertGreater(len(deps), 0)
             
             resolver.build_dependency_graph(deps)
-            conflicts = resolver.detect_conflicts()
+            resolver.detect_conflicts()
             
             # Pre-release shouldn't cause false conflicts
             # (in real implementation, would handle semver properly)
@@ -419,7 +419,7 @@ class TestGraphVisualization(unittest.TestCase):
             resolver.build_dependency_graph(deps)
             
             # Save to file
-            visualization = resolver.visualize_dependency_graph(output_file)
+            resolver.visualize_dependency_graph(output_file)
             
             # Verify file was created
             self.assertTrue(output_file.exists())

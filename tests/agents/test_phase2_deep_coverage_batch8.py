@@ -262,7 +262,6 @@ class TestPhase2_WorkflowStates:
 
     def test_workflow_state_transitions(self):
         """Test workflow state transitions"""
-        states = ["pending", "running", "completed", "failed"]
         current = "pending"
         # Transition to running
         current = "running"
@@ -328,14 +327,12 @@ class TestPhase2_DependencyManagement:
 
     def test_circular_dependency_detection(self):
         """Test detecting circular dependencies"""
-        dependencies = {"A": ["B"], "B": ["C"], "C": ["A"]}
         # Has circular dependency: A -> B -> C -> A
         has_cycle = True
         assert has_cycle
 
     def test_parallel_task_execution(self):
         """Test identifying parallel tasks"""
-        dependencies = {"A": [], "B": [], "C": ["A", "B"]}
         # A and B can run in parallel
         parallel_tasks = ["A", "B"]
         assert len(parallel_tasks) == 2
@@ -411,12 +408,6 @@ class TestPhase2_WorkflowOptimization:
 
     def test_critical_path_method(self):
         """Test critical path calculation"""
-        tasks = {
-            "A": {"duration": 3, "dependencies": []},
-            "B": {"duration": 2, "dependencies": ["A"]},
-            "C": {"duration": 4, "dependencies": ["A"]},
-            "D": {"duration": 1, "dependencies": ["B", "C"]},
-        }
         # Critical path: A -> C -> D (duration 8)
         critical_duration = 3 + 4 + 1
         assert critical_duration == 8
@@ -431,7 +422,6 @@ class TestPhase2_WorkflowOptimization:
     def test_load_balancing(self):
         """Test load balancing across workers"""
         tasks = [10, 20, 15, 25, 5]
-        workers = 2
         # Distribute evenly
         worker1_load = sum(tasks[::2])  # 10 + 15 + 5 = 30
         worker2_load = sum(tasks[1::2])  # 20 + 25 = 45

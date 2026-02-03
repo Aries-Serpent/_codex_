@@ -150,7 +150,6 @@ class TestPhase2_EdgeCases_CurrentBounds:
     def test_current_bound_enforcement(self):
         """Test |j| ≤ c constraint (Eq #22)"""
         j = 1.5
-        c = 1.0
         c_eff = 2.0
         # Should satisfy |j| ≤ c_eff
         bounded = abs(j) <= c_eff

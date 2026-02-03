@@ -11,7 +11,6 @@ Target: 95% coverage threshold
 from __future__ import annotations
 
 import os
-import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Generator
@@ -244,7 +243,7 @@ class TestFileSystemEdgeCases:
     def test_path_normalization(self) -> None:
         """Test path normalization."""
         path1 = Path("/foo/bar/../baz")
-        path2 = Path("/foo/baz")
+        Path("/foo/baz")
         
         # Resolve may behave differently
         assert str(path1) == "/foo/bar/../baz"

@@ -6,7 +6,6 @@ Measures throughput, latency, and resource utilization.
 
 import time
 import statistics
-from typing import List, Dict
 from unittest.mock import patch, MagicMock
 import pytest
 from fastapi.testclient import TestClient

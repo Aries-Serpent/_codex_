@@ -6,7 +6,7 @@ Tests the AuthMiddleware, APIKeyValidator, RateLimiter, and related components.
 
 import pytest
 import time
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock
 
 # Import the modules we're testing
 import sys
@@ -19,11 +19,10 @@ from codex.auth.middleware import (
     AuthResult,
     APIKeyValidator,
     RateLimiter,
-    require_auth,
     get_current_user,
     get_current_scopes,
 )
-from codex.auth.token_manager import TokenManager, TokenType
+from codex.auth.token_manager import TokenManager
 
 
 class TestAuthConfig:

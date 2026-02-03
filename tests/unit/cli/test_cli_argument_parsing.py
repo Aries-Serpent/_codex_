@@ -1,7 +1,6 @@
 """Unit tests for CLI argument parsing and trainer wiring (Phase 23 Week 1)."""
 
 import pytest
-from omegaconf import OmegaConf
 
 import src.cli as cli
 

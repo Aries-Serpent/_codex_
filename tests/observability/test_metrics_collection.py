@@ -4,8 +4,7 @@ Tests for observability metrics collection infrastructure.
 """
 
 import pytest
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 import time
 
 
@@ -56,7 +55,6 @@ class TestCounterMetrics:
 
     def test_counter_resets_on_restart(self):
         """Test counter resets on service restart."""
-        counter_before = {"value": 100}
         counter_after_restart = {"value": 0}
         assert counter_after_restart["value"] == 0
 

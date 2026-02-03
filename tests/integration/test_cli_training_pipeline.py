@@ -17,9 +17,6 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
@@ -118,9 +115,9 @@ class TestConfigurationLoading:
     def test_load_valid_yaml_config(self, minimal_config):
         """Verify loading valid YAML configuration."""
         try:
-            from codex.utils.config_loader import load_config, get_loader
+            from codex.utils.config_loader import load_config, get_loader  # noqa: F401 - Testing optional dependency availability
             
-            loader = get_loader()
+            get_loader()
             # Config loading should not raise
             assert minimal_config.exists()
         except ImportError:
@@ -197,7 +194,7 @@ class TestTrainingPipelineInitialization:
 
     def test_initialize_with_mixed_precision(self, minimal_config):
         """Verify mixed precision training initialization."""
-        config_data = minimal_config.read_text()
+        minimal_config.read_text()
         # Config should support mixed precision settings
         assert minimal_config.exists()
 

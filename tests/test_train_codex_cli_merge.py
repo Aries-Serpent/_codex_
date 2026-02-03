@@ -6,7 +6,6 @@ Test module for train codex cli merge.
 
 import argparse
 
-import pytest
 
 from cli import train_codex
 

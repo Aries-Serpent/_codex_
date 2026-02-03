@@ -4,8 +4,6 @@ Tests for codex.analyze.static.analyzer module.
 This module contains tests for the static analyzer.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestLintIssue:

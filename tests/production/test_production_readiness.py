@@ -9,19 +9,12 @@ Phase: 15.4 - Production Readiness Validation
 Target: Validate all production code paths
 """
 
-import gc
-import os
-import sys
-import tempfile
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 # ============================================================================
@@ -131,7 +124,7 @@ class TestProductionErrorHandling:
             return True
         
         # 3 failures, 7 successes
-        results = [process_with_tracking(i < 3) for i in range(10)]
+        [process_with_tracking(i < 3) for i in range(10)]
         
         error_rate = error_counts["errors"] / error_counts["total"]
         assert error_rate == 0.3

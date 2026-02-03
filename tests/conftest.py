@@ -803,7 +803,7 @@ def mock_sentence_transformer(monkeypatch):
             return iter([])
     
     try:
-        import sentence_transformers
+        import sentence_transformers  # noqa: F401 - Testing optional dependency availability
         monkeypatch.setattr(
             "sentence_transformers.SentenceTransformer", 
             MockSentenceTransformer

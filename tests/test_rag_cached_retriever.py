@@ -371,14 +371,14 @@ class TestCachedRetriever:
         query = "Python programming"
         
         # First query
-        results1 = retriever.query_with_cache(query, top_k=3)
+        retriever.query_with_cache(query, top_k=3)
         assert retriever.query_cache.misses == 1
         
         # Wait for expiration
         time.sleep(1.1)
         
         # Second query after expiration - should be cache miss
-        results2 = retriever.query_with_cache(query, top_k=3)
+        retriever.query_with_cache(query, top_k=3)
         assert retriever.query_cache.misses == 2
 
     def test_clear_cache(self, sample_index):
@@ -473,7 +473,7 @@ class TestCachedRetriever:
         assert retriever.query_cache.hits == 1
         
         # Different min_score should miss cache
-        results3 = retriever.query_with_cache(query, top_k=5, min_score=0.7)
+        retriever.query_with_cache(query, top_k=5, min_score=0.7)
         assert retriever.query_cache.misses == 2
 
     def test_cache_stats_with_no_activity(self, sample_index):

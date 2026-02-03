@@ -14,7 +14,7 @@ import pytest
 def _torch_available():
     """Check if PyTorch is available."""
     try:
-        import torch
+        import torch  # noqa: F401 - Testing optional dependency availability
         return True
     except ImportError:
         return False

@@ -9,10 +9,8 @@ This module provides tests to validate CI workflows:
 - Matrix configurations
 """
 
-import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Set
 
 import pytest
 
@@ -283,7 +281,6 @@ class TestPythonSetupValidation:
                     content = workflow.read_text()
                     if "pip install" in content:
                         # Caching is optional but recommended
-                        has_cache = "cache" in content or "actions/cache" in content
                         # Just verify - don't fail
                         pass
                 except Exception:
@@ -369,7 +366,6 @@ class TestArtifactValidation:
                     
                     # If generating reports, should upload artifacts
                     if "coverage" in content.lower():
-                        has_upload = "actions/upload-artifact" in content
                         # Just check - don't require
                         pass
                 except Exception:

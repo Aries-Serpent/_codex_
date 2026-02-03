@@ -10,7 +10,6 @@ Target: 100% branch coverage for CLI modules
 """
 
 import os
-import sys
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch

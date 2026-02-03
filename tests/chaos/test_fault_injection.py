@@ -4,8 +4,7 @@ Tests for chaos engineering fault injection scenarios.
 """
 
 import pytest
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 import time
 
 
@@ -15,7 +14,7 @@ class TestNetworkFaultInjection:
     def test_simulated_network_timeout(self):
         """Test handling of network timeout."""
         timeout_seconds = 5
-        start = time.time()
+        time.time()
         # Simulate timeout handling
         elapsed = 0.1  # Simulated
         assert elapsed < timeout_seconds
@@ -118,8 +117,6 @@ class TestResourceFaultInjection:
 
     def test_thread_pool_exhaustion(self):
         """Test handling of thread pool exhaustion."""
-        max_threads = 50
-        active_threads = 50
         queued_tasks = 10
         assert queued_tasks > 0  # Tasks waiting
 
@@ -137,7 +134,6 @@ class TestResourceFaultInjection:
 
     def test_log_disk_full(self):
         """Test handling when log disk is full."""
-        log_available_mb = 0
         # Should switch to memory logging or drop
         fallback_enabled = True
         assert fallback_enabled
@@ -159,7 +155,6 @@ class TestServiceFaultInjection:
 
     def test_simulated_slow_dependency(self):
         """Test handling of slow dependency."""
-        normal_response_time_ms = 50
         slow_response_time_ms = 5000
         timeout_ms = 10000
         assert slow_response_time_ms < timeout_ms

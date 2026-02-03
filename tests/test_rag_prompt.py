@@ -1,5 +1,4 @@
 """Tests for RAG prompt assembly"""
-import pytest
 from src.codex.rag.prompt import (
     PromptTemplate,
     PromptConfig,

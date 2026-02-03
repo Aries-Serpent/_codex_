@@ -18,7 +18,6 @@ Test Categories:
 """
 
 import pytest
-from typing import Dict, Any, List
 from agents.physics_integration import (
     HybridPhysicsOrchestrator,
     ADVANCED_PHYSICS_AVAILABLE,

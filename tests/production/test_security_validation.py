@@ -9,9 +9,7 @@ import pytest
 import sqlite3
 import html
 import re
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
-from codex.security.sanitization import sanitize_html, sanitize_integer, sanitize_string
+from codex.security.sanitization import sanitize_html, sanitize_integer
 
 
 # SQL Injection Prevention Tests
@@ -180,7 +178,6 @@ def test_csrf_token_validation():
 
 def test_csrf_token_expiration():
     """Test CSRF token expiration logic."""
-    import time
     from datetime import datetime, timedelta
     
     creation_time = datetime.now()

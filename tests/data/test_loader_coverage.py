@@ -12,16 +12,14 @@ AI Agency Policy Compliance: ✅
 from __future__ import annotations
 
 import json
-import os
-import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterator
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING, Iterator
+from unittest.mock import MagicMock
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 # =============================================================================
 # Constants
@@ -115,9 +113,9 @@ class TestModuleImport:
             from codex_ml.data.loader import (
                 CacheManifest,
                 DataPreparationError,
-                load_dataset,
-                load_texts,
-                stream_texts,
+                load_dataset,  # noqa: F401 - Testing optional dependency availability
+                load_texts,  # noqa: F401 - Testing optional dependency availability
+                stream_texts,  # noqa: F401 - Testing optional dependency availability
             )
             assert CacheManifest is not None
             assert DataPreparationError is not None

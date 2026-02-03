@@ -436,7 +436,6 @@ class TestPhase2_StateManagement:
 
     def test_state_machine_transitions(self):
         """Test state machine with multiple transitions"""
-        states = ["idle", "processing", "completed", "error"]
         current = "idle"
 
         # Transition: idle -> processing
@@ -546,7 +545,7 @@ class TestPhase2_PerformanceIntegration:
 
         # Acquire
         if pool["available"] > 0:
-            conn = pool["connections"][0]
+            pool["connections"][0]
             pool["available"] -= 1
 
         # Release

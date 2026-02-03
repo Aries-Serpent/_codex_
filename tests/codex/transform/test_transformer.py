@@ -4,8 +4,6 @@ Tests for codex.transform.transformer module.
 This module contains tests for code transformation and patch generation.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestTier:

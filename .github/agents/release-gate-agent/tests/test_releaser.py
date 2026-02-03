@@ -107,10 +107,10 @@ class TestReleaseExecutor:
         }
         release_info = {"version": "v1.0.0", "release_notes": "Initial release"}
         
-        with patch.object(executor, '_create_git_tag', return_value="v1.0.0") as mock_tag, \
-             patch.object(executor, '_create_github_release', return_value="https://github.com/test/repo/releases/tag/v1.0.0") as mock_release, \
-             patch.object(executor, '_trigger_deployment', return_value="deployed") as mock_deploy, \
-             patch.object(executor, '_monitor_release_health', return_value="healthy") as mock_health:
+        with patch.object(executor, '_create_git_tag', return_value="v1.0.0"), \
+             patch.object(executor, '_create_github_release', return_value="https://github.com/test/repo/releases/tag/v1.0.0"), \
+             patch.object(executor, '_trigger_deployment', return_value="deployed"), \
+             patch.object(executor, '_monitor_release_health', return_value="healthy"):
             
             result = executor.act(decision_result, release_info)
         

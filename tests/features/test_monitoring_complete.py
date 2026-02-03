@@ -1,7 +1,6 @@
 """Complete Feature Health Monitoring tests."""
 
 import pytest
-import time
 from datetime import datetime, timedelta
 from codex_ml.features.monitoring import FeatureHealthMonitor, FeatureHealthStatus, HealthAlert
 

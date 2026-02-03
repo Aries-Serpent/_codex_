@@ -409,7 +409,7 @@ def test_conservation_enforcer_no_auto_repair(simple_state):
     enforcer = ConservationEnforcer(auto_repair=False)
 
     # Violate conservation
-    original_prob = simple_state.tasks["task_1"].spinor.total_probability
+    simple_state.tasks["task_1"].spinor.total_probability
     simple_state.tasks["task_1"].spinor.components *= 2.0
 
     repaired, was_repaired = enforcer.enforce_probability_conservation(
@@ -433,7 +433,7 @@ def test_full_symmetry_workflow(multi_task_state):
     # Initialize all components
     gauge = U1GaugeTransform()
     trans = TranslationSymmetry()
-    time_trans = TimeTranslationSymmetry()
+    TimeTranslationSymmetry()
     checker = GaugeChecker()
     enforcer = ConservationEnforcer()
 
@@ -442,13 +442,13 @@ def test_full_symmetry_workflow(multi_task_state):
     assert initial_check["all_passed"]
 
     # 2. Apply U(1) transformation
-    transformed = gauge.apply_global(multi_task_state, np.pi / 4)
+    gauge.apply_global(multi_task_state, np.pi / 4)
     u1_result = gauge.verify_invariance(multi_task_state)
     assert u1_result.is_invariant
 
     # 3. Apply translation
     displacement = np.array([0.1, 0.0, 0.0, 0.0, 0.0])
-    translated = trans.apply_translation(multi_task_state, displacement)
+    trans.apply_translation(multi_task_state, displacement)
 
     # 4. Enforce conservation
     repaired, was_repaired = enforcer.enforce_probability_conservation(multi_task_state)

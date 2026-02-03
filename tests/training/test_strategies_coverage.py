@@ -12,13 +12,13 @@ AI Agency Policy Compliance: ✅
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING
+from unittest.mock import MagicMock
 
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 
 # =============================================================================
@@ -262,7 +262,7 @@ class TestStrategyInterface:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
             
             strategy = resolve_strategy("functional")
-            config = UnifiedTrainingConfig(model_name="test")
+            UnifiedTrainingConfig(model_name="test")
             # Strategy should be configurable
             assert strategy is not None
         except ImportError:

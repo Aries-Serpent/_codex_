@@ -45,7 +45,7 @@ def main() -> int:
     scorecard_path = repo_root / "artifacts" / "repo_audit_scorecard.md"
     output_prompt = repo_root / "artifacts" / "repo_status_update_prompt.txt"
 
-    policy_map = write_policy_mapping(policy_path)
+    write_policy_mapping(policy_path)
     run_gates(repo_root=repo_root, output_path=gate_path)
     prepare_repo_status_prompt(
         gate_results_path=gate_path,

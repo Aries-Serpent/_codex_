@@ -9,11 +9,9 @@ Phase: 4.1 - Branch Coverage Analysis
 Target: 100% branch coverage for utility modules
 """
 
-import os
-import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, List
+from unittest.mock import patch
 
 import pytest
 
@@ -30,7 +28,7 @@ class TestErrorHandlingBranches:
         """Test try-except success branch."""
         error_occurred = False
         try:
-            result = 1 + 1
+            pass
         except Exception:
             error_occurred = True
         assert error_occurred is False
@@ -39,7 +37,7 @@ class TestErrorHandlingBranches:
         """Test try-except error branch."""
         error_occurred = False
         try:
-            result = 1 / 0
+            pass
         except Exception:
             error_occurred = True
         assert error_occurred is True
@@ -87,7 +85,7 @@ class TestErrorHandlingBranches:
         """Test finally block always executed - success case."""
         finally_executed = False
         try:
-            result = 1 + 1
+            pass
         except Exception:
             pass
         finally:
@@ -98,7 +96,7 @@ class TestErrorHandlingBranches:
         """Test finally block always executed - error case."""
         finally_executed = False
         try:
-            result = 1 / 0
+            pass
         except Exception:
             pass
         finally:

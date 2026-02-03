@@ -12,7 +12,6 @@ Target Coverage: 70%+
 
 from __future__ import annotations
 
-from typing import Any, Optional
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest

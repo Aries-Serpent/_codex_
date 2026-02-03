@@ -6,7 +6,7 @@ Analyzes test markers to identify tests that may no longer need to be skipped.
 import json
 import sys
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List
 
 
@@ -52,7 +52,7 @@ class StaleMarkerChecker:
         # Note: max_age_days is not yet implemented - requires timestamp tracking
         
         stale_markers = []
-        now = datetime.now()
+        datetime.now()
         
         for marker in self.markers:
             # Check if marker has a vague or missing reason

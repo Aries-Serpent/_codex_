@@ -35,7 +35,6 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 # Offload structure configuration
 OFFLOAD_ROOT = Path("misc/repo-owner-review")

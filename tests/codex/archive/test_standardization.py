@@ -4,7 +4,6 @@ Tests for codex.archive.standardization module.
 This module contains tests for SLSA L3 standardization layer.
 """
 
-import pytest
 from unittest.mock import patch, MagicMock
 
 

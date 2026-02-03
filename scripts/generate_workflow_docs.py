@@ -50,7 +50,6 @@ Last Updated: 2026-01-16
 import yaml
 import sys
 from pathlib import Path
-from typing import Dict, Any
 
 def generate_workflow_readme(workflow_path: Path) -> Path:
     """
@@ -177,7 +176,6 @@ def generate_workflow_readme(workflow_path: Path) -> Path:
     
     # Try to identify secrets from the workflow
     workflow_str = str(workflow)
-    secrets = []
     if 'secrets.' in workflow_str:
         # This is a heuristic - would need more sophisticated parsing
         readme += "[Secrets referenced in workflow - see workflow file for details]\n"

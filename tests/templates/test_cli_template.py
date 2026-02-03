@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    pass
 
 # Module under test - update this import
 # from codex_ml.cli import main as cli_main
@@ -106,7 +106,7 @@ class TestCLICommands:
     def test_command_with_valid_input_succeeds(self, temp_config_file: Path) -> None:
         """Test that a valid command succeeds."""
         # Replace with actual command and expected behavior
-        result = subprocess.run(
+        subprocess.run(
             [sys.executable, "-m", "codex_ml.cli", "validate", str(temp_config_file)],
             capture_output=True,
             text=True,
@@ -122,7 +122,7 @@ class TestCLICommands:
     ) -> None:
         """Test that invalid input produces appropriate error."""
         nonexistent = tmp_path / "does_not_exist.yaml"
-        result = subprocess.run(
+        subprocess.run(
             [sys.executable, "-m", "codex_ml.cli", "validate", str(nonexistent)],
             capture_output=True,
             text=True,
@@ -142,7 +142,7 @@ class TestCLICommands:
             check=False,
             cwd=REPO_ROOT,
         )
-        output = result.stdout + result.stderr
+        result.stdout + result.stderr
         # Should indicate missing arguments
         # assert "required" in output.lower() or "missing" in output.lower() or result.returncode != 0
         pass  # Placeholder - implement actual test
@@ -166,14 +166,13 @@ class TestCLIOutput:
             cwd=REPO_ROOT,
         )
         if result.returncode == 0 and result.stdout.strip():
-            import json
             # Should not raise
             # json.loads(result.stdout)
             pass  # Placeholder
 
     def test_table_output_has_headers(self, temp_data_dir: Path) -> None:
         """Test that table output includes headers."""
-        result = subprocess.run(
+        subprocess.run(
             [sys.executable, "-m", "codex_ml.cli", "list", "--format", "table"],
             capture_output=True,
             text=True,
@@ -235,7 +234,7 @@ class TestCLIEnvironment:
     ) -> None:
         """Test that CLI respects verbose environment variable."""
         monkeypatch.setenv("CODEX_VERBOSE", "1")
-        result = subprocess.run(
+        subprocess.run(
             [sys.executable, "-m", "codex_ml.cli", "--help"],
             capture_output=True,
             text=True,
@@ -290,7 +289,7 @@ def test_cli_commands_exit_codes(
     command: list[str], expected_exit_code: int
 ) -> None:
     """Test CLI commands return expected exit codes."""
-    result = subprocess.run(
+    subprocess.run(
         [sys.executable, "-m", "codex_ml.cli"] + command,
         capture_output=True,
         text=True,

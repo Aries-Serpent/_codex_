@@ -10,7 +10,6 @@ import types
 from pathlib import Path
 from typing import Any, Dict, Iterable
 
-import pytest
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:

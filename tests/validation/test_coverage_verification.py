@@ -8,15 +8,9 @@ This module provides tests to verify coverage metrics:
 - Coverage trend tracking
 """
 
-import json
-import os
 import re
-import subprocess
-import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
-import pytest
 
 
 # =============================================================================

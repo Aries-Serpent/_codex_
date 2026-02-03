@@ -145,7 +145,7 @@ def measure_decision_quality_improvement(
         ]
         
         # Reach consensus
-        consensus = coordinator.reach_consensus(decisions, strategy=VotingStrategy.WEIGHTED)
+        coordinator.reach_consensus(decisions, strategy=VotingStrategy.WEIGHTED)
         
         # Simulate quality based on consensus and agent diversity
         quality = np.random.uniform(0.75, 0.95)
@@ -251,7 +251,7 @@ def measure_consensus_latency(
             ]
             
             start_time = datetime.now()
-            consensus = coordinator.reach_consensus(decisions, strategy=VotingStrategy.MAJORITY)
+            coordinator.reach_consensus(decisions, strategy=VotingStrategy.MAJORITY)
             latency_ms = (datetime.now() - start_time).total_seconds() * 1000
             
             latencies.append(latency_ms)
@@ -436,7 +436,7 @@ def main():
     np.random.seed(args.seed)
     
     # Run validation
-    results = run_validation(
+    run_validation(
         agent_counts=[3, 4, 5, 6],
         num_scenarios=args.scenarios,
         num_agents=args.agents

@@ -4,8 +4,6 @@ Tests for codex.archive.config module.
 This module contains tests for configuration helpers.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestCoerceBool:

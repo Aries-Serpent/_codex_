@@ -24,16 +24,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from phase8_9_emergent_behavior import (
     # PRE-COMMIT 1: Emergent Pattern Detection
-    PatternType, EmergentPattern, TemporalSnapshot, EmergentPatternDetector,
+    PatternType, EmergentPatternDetector,
     
     # PRE-COMMIT 2: Self-Improvement Loops
-    PerformanceBaseline, ImprovementAction, SelfImprovementEngine,
+    SelfImprovementEngine,
     
     # PRE-COMMIT 3: Capability Discovery
     CapabilityType, Capability, CapabilityTaxonomy, CapabilityDiscoverer,
     
     # PRE-COMMIT 4: Meta-Meta-Learning
-    LearningStrategy, MetaStrategy, MetaMetaLearner,
+    LearningStrategy, MetaMetaLearner,
     
     # PRE-COMMIT 5: Hierarchical Planning
     Goal, Subgoal, Plan, ExecutionResult, HierarchicalPlanner,
@@ -47,12 +47,8 @@ from phase8_9_emergent_behavior import (
     # Constants
     K1_PHASE_8_9_TARGET, QUANTUM_ADVANTAGE_8_9_TARGET,
     RANDOM_SEED_8_9,
-    PATTERN_NOVELTY_THRESHOLD, PATTERN_COMPLEXITY_THRESHOLD, PATTERN_STABILITY_WINDOW,
-    IMPROVEMENT_THRESHOLD, ROLLBACK_THRESHOLD, BASELINE_HISTORY_SIZE,
-    CAPABILITY_TAXONOMY_DEPTH, COMBINATION_SEARCH_MAX,
-    META_META_RECURSION_DEPTH, STRATEGY_EVOLUTION_GENERATIONS,
-    PLANNING_MAX_DEPTH, SUBGOAL_BRANCHING_FACTOR,
-    SWARM_SIZE, CONSENSUS_THRESHOLD, COHERENCE_DECAY,
+    PATTERN_NOVELTY_THRESHOLD, IMPROVEMENT_THRESHOLD, ROLLBACK_THRESHOLD, BASELINE_HISTORY_SIZE,
+    CAPABILITY_TAXONOMY_DEPTH, META_META_RECURSION_DEPTH, PLANNING_MAX_DEPTH, SWARM_SIZE, CONSENSUS_THRESHOLD, COHERENCE_DECAY,
 )
 
 

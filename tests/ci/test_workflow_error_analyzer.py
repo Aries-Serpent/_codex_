@@ -10,13 +10,11 @@ Tests cover:
 """
 
 import pytest
-from pathlib import Path
 
 from scripts.ci.analyze_workflow_errors import (
     analyze_log_content,
     find_recurring_patterns,
     AnalysisResult,
-    ErrorMatch,
     ERROR_PATTERNS,
 )
 

@@ -38,7 +38,6 @@ Displays metrics and success rates for the self-healing CI system.
 import click
 import yaml
 import glob
-from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from typing import Dict, List

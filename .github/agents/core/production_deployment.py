@@ -875,7 +875,7 @@ class HealthEndpointTest(ProductionTest):
     def run(self) -> Tuple[bool, str]:
         """Run health endpoint test."""
         try:
-            results = self.endpoint.run_checks()
+            self.endpoint.run_checks()
             status = self.endpoint.get_overall_status()
             
             if status in (HealthStatus.HEALTHY, HealthStatus.DEGRADED):

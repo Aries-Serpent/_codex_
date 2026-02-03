@@ -145,8 +145,6 @@ class TestConfigEdgeCases:
 
     def test_config_merge_conflicts(self):
         """Test config merge with conflicting values"""
-        config1 = {"key": "value1"}
-        config2 = {"key": "value2"}
         # Should handle merge conflicts
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
