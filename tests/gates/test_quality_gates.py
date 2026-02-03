@@ -94,7 +94,7 @@ def test_logging_initialization(monkeypatch, tmp_path):
     loggers = cl._codex_logging_bootstrap(SimpleNamespace(hydra_cfg=cfg))
     assert isinstance(loggers.tb, DummyWriter)
     assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj"
-    # Fix: Compare actual URI value, not literal string "uri"
+    # Verify that the mlflow tracking URI and experiment from the config are propagated
     assert calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp"
 
 
