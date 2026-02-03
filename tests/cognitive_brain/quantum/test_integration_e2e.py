@@ -8,8 +8,6 @@ compression, and memory-guided decisions.
 import time
 from unittest.mock import MagicMock
 
-import pytest
-
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,
@@ -19,12 +17,19 @@ from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
 
 
+# Create a default config for testing
+def _get_test_config() -> QuantumConfig:
+    """Create a QuantumConfig for testing with quantum_mode disabled."""
+    return QuantumConfig()
+
+
 class TestEndToEndWorkflows:
     """Integration tests for complete cognitive brain workflows."""
 
     def test_full_pattern_lifecycle(self):
         """Test complete pattern lifecycle: store → consolidate → retrieve."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
 
         # Store patterns in STM
         patterns = []
@@ -54,7 +59,8 @@ class TestEndToEndWorkflows:
 
     def test_memory_guided_decision_cache_hit(self):
         """Test memory-guided decision with cache hit."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
 
         # Store high-confidence pattern
         reference_pattern = MemoryPattern(
@@ -80,7 +86,8 @@ class TestEndToEndWorkflows:
 
     def test_memory_guided_decision_cache_miss(self):
         """Test memory-guided decision with cache miss."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
 
         # Store pattern
         pattern = MemoryPattern(
@@ -137,7 +144,8 @@ class TestEndToEndWorkflows:
 
     def test_auto_pruning_trigger(self):
         """Test automatic pruning when LTM reaches threshold."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=20)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=20)
 
         # Fill LTM to 80% capacity (trigger threshold)
         for i in range(16):  # 16/20 = 80%
@@ -161,7 +169,8 @@ class TestEndToEndWorkflows:
 
     def test_cache_health_monitoring_calculation(self):
         """Test cache health metrics calculation."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
 
         # Add patterns and simulate usage
         for i in range(5):
@@ -197,7 +206,15 @@ class TestEndToEndWorkflows:
 
     def test_full_memory_augmented_assessment_workflow(self):
         """Test complete memory-augmented compliance assessment."""
-        assessor = MemoryAugmentedComplianceAssessor()
+        # Create mocks for required dependencies
+        config = _get_test_config()
+        mock_monitor = MagicMock()
+        mock_repository = MagicMock()
+        assessor = MemoryAugmentedComplianceAssessor(
+            config=config,
+            monitor=mock_monitor,
+            repository=mock_repository,
+        )
 
         scenarios = generate_complex_scenarios(10, seed=42)
 
@@ -222,7 +239,8 @@ class TestEndToEndWorkflows:
 
     def test_consolidation_with_compression(self):
         """Test pattern consolidation with compression enabled."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
         compressor = PatternCompressor(n_components=2)
 
         # Train compressor
@@ -252,7 +270,8 @@ class TestEndToEndWorkflows:
 
     def test_temporal_decay_in_retrieval(self):
         """Test temporal decay affects retrieval scores."""
-        manager = QuantumMemoryManager(stm_capacity=10, ltm_capacity=100)
+        config = _get_test_config()
+        manager = QuantumMemoryManager(config, stm_capacity=10, ltm_capacity=100)
 
         # Store old pattern
         old_pattern = MemoryPattern(
@@ -279,7 +298,15 @@ class TestEndToEndWorkflows:
 
     def test_end_to_end_with_realistic_workload(self):
         """Test complete system with realistic workload."""
-        assessor = MemoryAugmentedComplianceAssessor()
+        # Create mocks for required dependencies
+        config = _get_test_config()
+        mock_monitor = MagicMock()
+        mock_repository = MagicMock()
+        assessor = MemoryAugmentedComplianceAssessor(
+            config=config,
+            monitor=mock_monitor,
+            repository=mock_repository,
+        )
         scenarios = generate_complex_scenarios(50, seed=42)
 
         results = []

@@ -297,6 +297,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             **tokenizer_kwargs,
         )
         if getattr(tokenizer, "pad_token", None) is None:
+            # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+            # Note: "pad_token" and "eos_token" are tokenizer configuration, not credentials
             logger.warning(
                 "Tokenizer '%s' has no pad_token; falling back to eos_token. "
                 "This may affect training behaviour.",
