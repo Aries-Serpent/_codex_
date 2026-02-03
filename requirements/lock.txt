@@ -95,7 +95,7 @@ faiss-cpu==1.7.4
     #   google-auth
     #   mlflow-skinny
     #   mlflow-tracing
-celery==5.5.3
+celery==5.6.2
     # via dvc-task
 certifi==2026.1.4
     # via
@@ -478,7 +478,7 @@ jupyterlab-widgets==3.0.15
     # via ipywidgets
 kiwisolver==1.4.9
     # via matplotlib
-kombu==5.6.0
+kombu==5.6.2
     # via
     #   celery
     #   dvc-task
@@ -866,7 +866,7 @@ pygtrie==2.5.0
     #   dvc-data
     #   scmrepo
     #   sqltrie
-pyjwt==2.10.1
+pyjwt==2.11.0
     # via codex-ml (pyproject.toml)
 pynvml==13.0.1
     # via codex-ml (pyproject.toml)
