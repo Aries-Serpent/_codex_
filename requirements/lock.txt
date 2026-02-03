@@ -439,7 +439,7 @@ jsonschema==4.25.1
     #   ray
 jsonschema-specifications==2025.9.1
     # via jsonschema
-jupyter-client==8.6.3
+jupyter-client==8.8.0
     # via
     #   ipykernel
     #   jupyter-server
@@ -526,7 +526,7 @@ mistune==3.1.4
     # via
     #   great-expectations
     #   nbconvert
-mlflow==3.5.0
+mlflow==3.9.0
     # via codex-ml (pyproject.toml)
 mlflow-skinny==3.5.0rc0
     # via mlflow
@@ -845,7 +845,7 @@ pydantic==2.12.3
     #   wandb
 pydantic-core==2.41.4
     # via pydantic
-pydantic-settings==2.11.0
+pydantic-settings==2.12.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1033,7 +1033,7 @@ sentencepiece==0.2.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-sentry-sdk==2.50.0
+sentry-sdk==2.51.0
     # via wandb
 setuptools==80.9.0
     # via
