@@ -407,7 +407,7 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
