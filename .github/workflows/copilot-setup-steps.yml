@@ -56,7 +56,7 @@ on:
 env:
   PYTHON_VERSION: "3.12"
   NODE_VERSION: "20"
-  RUST_VERSION: "1.75"
+  RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
 jobs:
   copilot-setup-steps:
