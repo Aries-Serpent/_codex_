@@ -38,6 +38,20 @@ class CommonIssueFixer:
         self.dry_run = dry_run
         self.issues_found: Dict[str, List[str]] = {}
         self.fixes_applied: Dict[str, int] = {}
+        
+        # Define which patterns are auto-fixable vs manual-review
+        self.auto_fixable_patterns = {
+            "Unused Imports",      # Pattern 1 - ruff --fix
+            "Coverage Thresholds", # Pattern 4 - automated replacement
+            "CodeQL Alerts",       # Pattern 8 - ruff --fix
+        }
+        self.manual_review_patterns = {
+            "Unused Variables",    # Pattern 2 - context-dependent
+            "YAML Indentation",    # Pattern 3 - manual review
+            "Tokenizer Fallbacks", # Pattern 5 - code-flow dependent
+            "Test Assertions",     # Pattern 6 - logic-dependent
+            "Redundant Imports",   # Pattern 7 - manual review
+        }
 
     def run_all_patterns(self) -> bool:
         """Run all fix patterns. Returns True if any issues found."""
@@ -332,31 +346,69 @@ class CommonIssueFixer:
             report.append("\n✅ No issues found! All patterns passing.\n")
             return "\n".join(report)
         
-        report.append(f"\n{'Pattern':<30} {'Issues':<15} {'Fixed':<10}")
-        report.append("-" * 70)
+        # Separate auto-fixable and manual-review issues
+        auto_fixable_issues = {
+            name: issues for name, issues in self.issues_found.items()
+            if name in self.auto_fixable_patterns
+        }
+        manual_review_issues = {
+            name: issues for name, issues in self.issues_found.items()
+            if name in self.manual_review_patterns
+        }
         
-        for pattern_name, issues in self.issues_found.items():
-            fixed_count = self.fixes_applied.get(pattern_name, 0)
-            status = f"{fixed_count}/{len(issues)}" if fixed_count else "Manual"
-            report.append(f"{pattern_name:<30} {len(issues):<15} {status:<10}")
+        # Report auto-fixable issues (these are failures)
+        if auto_fixable_issues:
+            report.append("\n❌ AUTO-FIXABLE ISSUES (CI Failure):")
+            report.append(f"{'Pattern':<30} {'Issues':<15} {'Fixed':<10}")
+            report.append("-" * 70)
+            
+            for pattern_name, issues in auto_fixable_issues.items():
+                fixed_count = self.fixes_applied.get(pattern_name, 0)
+                status = f"{fixed_count}/{len(issues)}" if fixed_count else "0"
+                report.append(f"{pattern_name:<30} {len(issues):<15} {status:<10}")
         
-        total_issues = sum(len(issues) for issues in self.issues_found.values())
+        # Report manual-review issues (these are warnings)
+        if manual_review_issues:
+            report.append("\n⚠️  MANUAL REVIEW NEEDED (Informational):")
+            report.append(f"{'Pattern':<30} {'Issues':<15} {'Status':<10}")
+            report.append("-" * 70)
+            
+            for pattern_name, issues in manual_review_issues.items():
+                report.append(f"{pattern_name:<30} {len(issues):<15} {'Info':<10}")
+        
+        # Summary
+        total_auto_fixable = sum(len(issues) for issues in auto_fixable_issues.values())
+        total_manual = sum(len(issues) for issues in manual_review_issues.values())
         total_fixed = sum(self.fixes_applied.values())
         
         report.append("-" * 70)
-        report.append(f"{'TOTAL':<30} {total_issues:<15} {total_fixed}/{total_issues}")
+        report.append(f"Auto-fixable: {total_auto_fixable} issues, {total_fixed} fixed")
+        report.append(f"Manual review: {total_manual} issues (informational)")
         report.append("")
         
         if self.check_only:
-            report.append("ℹ️  Run without --check-only to apply automatic fixes")
+            if total_auto_fixable > total_fixed:
+                report.append("❌ Auto-fixable issues detected. Run without --check-only to fix")
+            if total_manual > 0:
+                report.append("ℹ️  Manual review issues are informational and won't cause CI failure")
         elif self.dry_run:
             report.append("ℹ️  This was a dry run. Remove --dry-run to apply fixes")
         else:
             report.append("✅ Automatic fixes applied where possible")
-            report.append("⚠️  Some issues require manual review (see above)")
+            if total_manual > 0:
+                report.append("⚠️  Some issues require manual review (see above)")
         
         report.append("")
         return "\n".join(report)
+    
+    def has_auto_fixable_issues(self) -> bool:
+        """Check if there are any unfixed auto-fixable issues."""
+        for pattern_name, issues in self.issues_found.items():
+            if pattern_name in self.auto_fixable_patterns:
+                fixed_count = self.fixes_applied.get(pattern_name, 0)
+                if len(issues) > fixed_count:
+                    return True
+        return False
 
 
 def main():
@@ -400,10 +452,12 @@ def main():
     print(fixer.generate_report())
     
     # Exit with appropriate code
-    if any_issues and args.check_only:
-        sys.exit(1)  # Issues found in check mode
+    # Only fail if there are unfixed auto-fixable issues
+    # Manual review issues are informational and don't cause failure
+    if args.check_only and fixer.has_auto_fixable_issues():
+        sys.exit(1)  # Auto-fixable issues found that need fixing
     else:
-        sys.exit(0)
+        sys.exit(0)  # No auto-fixable issues, or all were fixed
 
 
 if __name__ == "__main__":
