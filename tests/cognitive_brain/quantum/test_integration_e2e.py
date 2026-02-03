@@ -6,12 +6,16 @@ compression, and memory-guided decisions.
 """
 
 import time
+from unittest.mock import MagicMock
+
+import pytest
 
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,
 )
 from cognitive_brain.quantum.compression import PatternCompressor
+from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
 
 
