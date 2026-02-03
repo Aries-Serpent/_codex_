@@ -4,6 +4,7 @@ Test Entry Point Collision
 Test module for entry point collision.
 """
 
+import sys
 import types
 import warnings
 
@@ -19,12 +20,9 @@ def test_entry_point_collision_skips(monkeypatch) -> None:
         def load(self):
             return self._obj
 
-    def fake_entry_points():
-        class Eps:
-            def select(self, group: str):
-                return [Ep("dup", types.SimpleNamespace())]
-
-        return Eps()
+    def fake_iter_entry_points(group: str):
+        """Return fake entry points for testing collision detection."""
+        return [Ep("dup", types.SimpleNamespace())]
 
     reg = Registry("x")
 
@@ -32,7 +30,9 @@ def test_entry_point_collision_skips(monkeypatch) -> None:
     class Local:
         pass
 
-    monkeypatch.setattr("codex_ml.plugins.registry.metadata.entry_points", fake_entry_points)
+    # Get the actual module from sys.modules (not the shadowed function)
+    registry_module = sys.modules["codex_ml.plugins.registry"]
+    monkeypatch.setattr(registry_module, "_iter_entry_points", fake_iter_entry_points)
 
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always")
