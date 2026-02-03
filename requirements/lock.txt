@@ -593,7 +593,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.4.1
+numpy==2.4.2
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -1164,7 +1164,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==4.57.6
+transformers==5.0.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
