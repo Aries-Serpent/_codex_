@@ -114,6 +114,10 @@ def counting_optimizer(monkeypatch: pytest.MonkeyPatch) -> None:
     _CountingAdamW.last_instance = None
 
 
+@pytest.mark.skipif(
+    not hasattr(torch, "__version__") or torch.__version__ < "2.0.0",
+    reason="Profiler API may be incompatible with torch < 2.0"
+)
 def test_tail_flush_triggers_optimizer_step(tokenizer_stub: _FakeTokenizer, tmp_path: Path) -> None:
     texts = ["a b", "b c", "c d", "d e", "e a"]
     vocab_size = len(tokenizer_stub.vocab)

@@ -69,6 +69,15 @@ class ContentDiffResult:
     lines_removed: int = 0
     lines_modified: int = 0
     
+    @property
+    def has_changes(self) -> bool:
+        """Check if there are any changes between old and new content.
+        
+        Returns:
+            True if changes were detected, False otherwise
+        """
+        return self.change_type != ChangeType.NO_CHANGE
+    
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
         return {
