@@ -26,7 +26,7 @@ Phase 8.1.1 Enhancements:
 import logging
 from collections import deque
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -237,7 +237,7 @@ class QuantumMemoryManager:
 
         # Calculate similarity scores
         similarities = []
-        current_time = datetime.now()
+        current_time = datetime.now(timezone.utc)
 
         for pattern in search_space:
             # Cosine similarity
@@ -453,7 +453,7 @@ class QuantumMemoryManager:
         Returns:
             Number of patterns pruned
         """
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         max_age_delta = timedelta(hours=max_age_hours)
 
         pruned_count = 0
@@ -562,7 +562,7 @@ class QuantumMemoryManager:
         ltm_size = len(self.ltm)
 
         # Calculate average age
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         if ltm_size > 0:
             ages = [
                 (now - p.timestamp).total_seconds() / 3600 for p in self.ltm.values()
