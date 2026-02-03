@@ -98,12 +98,61 @@ jobs:
           # Exit with actual code (continue-on-error prevents blocking)
           exit ${EXIT_CODE:-0}
 
-      - name: Upload SARIF results to GitHub Security
-        if: always()
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: semgrep-results.sarif
-          category: semgrep
+      - name: Chunk SARIF results
+        if: always() && hashFiles('semgrep-results.sarif') != ''
+        run: |
+          echo "🔧 Chunking SARIF to comply with GitHub 5000-result limit..."
+          python scripts/chunk_sarif.py \
+            semgrep-results.sarif \
+            sarif-chunks/ \
+            --chunk-size 4999 \
+            --base-name semgrep \
+            --verbose
+
+      - name: Upload chunked SARIF to GitHub Security
+        if: always() && hashFiles('sarif-chunks/*.sarif') != ''
+        run: |
+          echo "📤 Uploading SARIF chunks to GitHub Code Scanning..."
+          
+          CHUNKS=(sarif-chunks/*.sarif)
+          CHUNK_COUNT=${#CHUNKS[@]}
+          
+          if [ "$CHUNK_COUNT" -eq 0 ]; then
+            echo "⚠️  No SARIF files found to upload"
+            exit 0
+          fi
+          
+          echo "Found $CHUNK_COUNT chunk(s) to upload"
+          
+          for i in "${!CHUNKS[@]}"; do
+            sarif_file="${CHUNKS[$i]}"
+            chunk_num=$((i + 1))
+            
+            echo "Uploading chunk $chunk_num/$CHUNK_COUNT: $sarif_file"
+            
+            # Extract chunk suffix for category
+            chunk_suffix=$(basename "$sarif_file" .sarif | sed 's/semgrep-chunk-//')
+            
+            # Upload via GitHub API
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/${{ github.repository }}/code-scanning/sarifs" \
+              -F "sarif=@$sarif_file" \
+              -F "commit_sha=${{ github.sha }}" \
+              -F "ref=${{ github.ref }}" \
+              -F "checkout_uri=${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}" \
+              -F "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              -F "tool_name=Semgrep" \
+              -F "category=semgrep-chunk-$chunk_suffix" \
+              && echo "✅ Chunk $chunk_num uploaded" \
+              || echo "❌ Chunk $chunk_num failed"
+          done
+          
+          echo "✅ Upload complete: $CHUNK_COUNT chunks processed"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Semgrep results as artifact
         if: always()
@@ -113,6 +162,7 @@ jobs:
           path: |
             semgrep-results.sarif
             semgrep-results.txt
+            sarif-chunks/
           retention-days: 30
 
       - name: Comment on PR with findings
@@ -124,6 +174,14 @@ jobs:
             let comment = '## 🔍 Semgrep Security Scan Results\n\n';
 
             try {
+              // Check for chunking
+              if (fs.existsSync('sarif-chunks')) {
+                const chunkFiles = fs.readdirSync('sarif-chunks').filter(f => f.endsWith('.sarif'));
+                if (chunkFiles.length > 1) {
+                  comment += `📊 Results uploaded in **${chunkFiles.length} chunks** due to GitHub's 5000-result limit\n\n`;
+                }
+              }
+
               if (fs.existsSync('semgrep-results.txt')) {
                 const results = fs.readFileSync('semgrep-results.txt', 'utf8');
                 const lines = results.split('\n');
