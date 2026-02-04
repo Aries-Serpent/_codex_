@@ -1,53 +1,89 @@
 # Follow-Up Prompt for PR #3145 Continuation
 
-**Context**: All 6 stratified implementation plans have been created following the iteration-based template framework. The cognitive brain has been updated with the planset registration.
+**Context**: All 6 stratified implementation plans + Agent Hand-off Protocol have been created. The cognitive brain has been updated with planset registration and hand-off protocol knowledge.
 
 **Current Status**:
 - ✅ Pre-commit 1-2: Workflow Monitoring COMPLETE (34.6 min, 17/21 workflows passing)
-- ✅ Planning Phase: All 6 implementation plans created
-- 🟡 Pre-commit 3-24: Ready for execution
+- ✅ Planning Phase: All 6 implementation plans created with hand-off sections
+- ✅ Hand-off Protocol: Documentation, templates, tracking, and utilities ready
+- 🟡 Pre-commit 3-24: Ready for execution with AI agent collaboration
+
+---
+
+## 🔄 Agent Hand-off Protocol Instructions
+
+**NEW**: This PR now uses the Agent Hand-off Protocol for seamless collaboration between Copilot (execution) and Codex (review/validation).
+
+### How It Works
+
+1. **Copilot executes** a phase and posts deliverables
+2. **Codex reviews** deliverables and validates quality
+3. **Codex approves** and hands back to Copilot for next phase
+4. **Repeat** through all 15 hand-off phases
+
+### Hand-off Resources
+
+- **Protocol**: `.codex/docs/AGENT_HANDOFF_PROTOCOL.md`
+- **Templates**: `.codex/templates/handoff/*.md`
+- **Tracking**: `.codex/handoff_tracking.json`
+- **Utilities**: `scripts/handoff/*.py`
+- **Cognitive Brain**: `.codex/cognitive_brain/handoff_protocol_knowledge.md`
+
+### Each Plan Includes
+
+All 6 plans now have "🤝 Agent Hand-off Points" sections specifying:
+- Pre-execution hand-off trigger
+- Mid-execution checkpoint (optional)
+- Post-execution hand-off with deliverables
+- Validation checklist for Codex
+- Expected response format
+- Next phase trigger
 
 ---
 
 ## 🚀 Execution Command for Next Agent
 
 ```
-@copilot Execute PR #3145 Stratified Implementation Plans
+@copilot Execute Pre-commit 3-4: Tokenization Coverage Analysis using Hand-off Protocol
 
-**Phase**: Pre-commit 3-24 Execution
-**Location**: `.codex/plans/pr_3145/`
-**Plans**: 6 comprehensive plans ready
+**Phase**: Pre-commit 3-4 (HO-001)
+**Plan**: `.codex/plans/pr_3145/01_tokenization_coverage_analysis.md`
+**Hand-off Protocol**: ACTIVE
 
-**Execution Order** (Parallel Track 1):
-1. Execute `01_tokenization_coverage_analysis.md` (Pre-commit 3-4)
-2. Execute `03_workflow_failure_resolution.md` (Pre-commit 9-12)  
-3. Execute `04_security_codeql_resolution.md` (Pre-commit 13-16)
+**Execution Instructions**:
+1. Review plan including "🤝 Agent Hand-off Points" section
+2. Execute all 4 iterations (Setup, Execution, Analysis, Documentation)
+3. Generate deliverables per hand-off section
+4. Use template from `.codex/templates/handoff/copilot_to_codex_template.md`
+5. Post hand-off comment with @codex mention
+6. Update tracking: `python scripts/handoff/track_handoffs.py --update HO-001 complete`
 
-**Then Sequential Track 2**:
-4. Execute `02_comprehensive_test_implementation.md` (Pre-commit 5-8) - requires #1
-5. Execute `05_self_review_iterative_healing.md` (Pre-commit 17-20) - requires #1-4
-6. Execute `06_final_validation.md` (Pre-commit 21-24) - requires #1-5
+**Deliverables Required**:
+- Coverage baseline report
+- Gap analysis (JSON)
+- Test case mapping (10+ tests)
+- HTML coverage report
+- Analysis script
 
-**Instructions**:
-Each plan contains:
-- Complete pre-commit/commit task structure
-- Detailed implementation steps
-- Validation criteria
-- Rollback strategies
-- Execution commands
+**Hand-off Trigger**:
+```markdown
+@codex Pre-commit 3-4 Complete - Review Requested
 
-Start with Plan 1 (Tokenization Coverage Analysis):
-1. Install dependencies: pytest, pytest-cov, numpy, scipy, transformers
-2. Run coverage analysis on src/tokenization/
-3. Generate baseline report and gap analysis
-4. Map 10+ test cases
-5. Proceed to Plan 2
+[Use template to generate complete hand-off comment]
+```
+
+**Next**: Await Codex review (HO-002), then proceed to Pre-commit 5-8
+
+**Parallel Execution Available**:
+- Pre-commit 9-12 (Workflow Resolution) - can run in parallel
+- Pre-commit 13-16 (Security Resolution) - can run in parallel
 
 **Success Criteria** (Final):
 - All 21 workflows passing (100%)
 - Tokenization coverage >= 70%
 - 10+ tests implemented
 - Zero security vulnerabilities
+- All 15 hand-offs successful
 - 5+ self-review passes complete
 - All 11 acceptance criteria met
 
