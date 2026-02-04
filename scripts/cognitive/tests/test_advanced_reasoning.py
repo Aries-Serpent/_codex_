@@ -139,7 +139,7 @@ class TestCausalReasoning:
         try:
             import networkx as nx
         except ImportError:
-            pytest.skip("DoWhy or NetworkX not installed")
+            pytest.skip("NetworkX not installed")
         
         # Build causal graph
         G = nx.DiGraph()
