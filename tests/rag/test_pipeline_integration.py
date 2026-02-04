@@ -9,8 +9,7 @@ Coverage Target: End-to-end RAG pipeline
 """
 
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
-from typing import List, Dict, Any, Optional
+from typing import Dict, Any
 from dataclasses import dataclass
 
 

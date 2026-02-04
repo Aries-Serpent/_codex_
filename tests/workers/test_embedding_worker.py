@@ -12,11 +12,9 @@ Tests cover:
 Phase 48: Coverage improvement for 0% coverage module.
 """
 
-import json
 import os
 import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock
 
 
 class TestDefaultPreprocess:

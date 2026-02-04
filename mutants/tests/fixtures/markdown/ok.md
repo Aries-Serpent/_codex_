@@ -1,4 +1,0 @@
-```diff
-- old
-+ new
-```text

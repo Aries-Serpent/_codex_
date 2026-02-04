@@ -9,7 +9,6 @@ Coverage Target: src/mcp 32% → 45%+
 
 import pytest
 from enum import Enum, auto
-from unittest.mock import patch, MagicMock, AsyncMock
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
@@ -157,7 +156,7 @@ class TestSessionPool:
         pool = SessionPool(max_size=2)
         
         s1 = pool.acquire()
-        s2 = pool.acquire()
+        _ = pool.acquire()  # Exhaust pool
         
         with pytest.raises(RuntimeError):
             pool.acquire()  # Pool exhausted

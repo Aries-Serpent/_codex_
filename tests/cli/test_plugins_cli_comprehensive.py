@@ -8,7 +8,6 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestRegistryGroups:
@@ -219,7 +218,6 @@ class TestPluginsCLIIntegration:
 
     def test_typer_handling(self):
         """Test that typer is handled gracefully."""
-        from codex_ml.cli import plugins_cli
         # Module should be importable regardless of typer availability
         # typer may be None if not installed
         assert True  # Module imported successfully

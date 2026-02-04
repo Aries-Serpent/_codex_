@@ -20,7 +20,6 @@ def demo_cli_app_development():
     try:
         from agents.developer_orchestrator import (
             create_developer_orchestrator,
-            AppType,
         )
     except ImportError:
         print("⚠ Developer orchestrator not available")
@@ -289,7 +288,6 @@ def demo_physics_integration():
 
     try:
         from agents.developer_orchestrator import create_developer_orchestrator
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
     except ImportError:
         print("⚠ Physics modules not available. Install with: pip install numpy")
         return

@@ -1,7 +1,6 @@
 """Tests for model loading functionality in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
+from unittest.mock import MagicMock
 
 
 class TestModelLoading:

@@ -1,1 +1,0 @@
-"""Extensibility capability comprehensive tests."""

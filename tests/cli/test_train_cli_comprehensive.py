@@ -8,7 +8,7 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -56,7 +56,7 @@ class TestConfigConversion:
     def test_cfg_to_dict_with_omegaconf(self):
         """Test _cfg_to_dict with OmegaConf DictConfig."""
         try:
-            from omegaconf import DictConfig, OmegaConf
+            from omegaconf import OmegaConf
             cfg = OmegaConf.create({'model': 'gpt2', 'epochs': 10})
             from codex_ml.cli.train import _cfg_to_dict
             result = _cfg_to_dict(cfg)

@@ -9,8 +9,7 @@ Coverage Target: src/services 28% → 40%+
 
 import pytest
 from enum import Enum, auto
-from unittest.mock import patch, MagicMock
-from typing import Dict, Any, List, Optional, Callable
+from typing import Dict, Any, Optional
 from dataclasses import dataclass, field
 from collections import deque
 import time
@@ -214,7 +213,7 @@ class TestWorkerPool:
         assert len(pool.workers) == 4
         
         w1 = pool.acquire_worker()
-        w2 = pool.acquire_worker()
+        _ = pool.acquire_worker()  # Acquire second worker
         
         assert len(pool.available) == 2
         
@@ -241,7 +240,8 @@ class TestWorkerPool:
         balancer = LoadBalancer(["w1", "w2", "w3"])
         
         jobs = [Job(f"job-{i}", {}) for i in range(9)]
-        assignments = [balancer.assign_job(j) for j in jobs]
+        for j in jobs:
+            balancer.assign_job(j)
         
         # Should be evenly distributed
         assert balancer.job_counts["w1"] == 3

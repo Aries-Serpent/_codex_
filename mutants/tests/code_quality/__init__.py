@@ -1,1 +1,0 @@
-"""Code quality test package."""

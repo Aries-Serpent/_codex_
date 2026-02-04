@@ -12,8 +12,7 @@ Phase 48: Coverage improvement for 0% coverage module.
 
 import os
 import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 
 class TestInitExperiment:

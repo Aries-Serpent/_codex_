@@ -236,7 +236,7 @@ class TestOptionalDependencies:
     def test_config_schema_optional(self):
         """Test that config_schema is handled as optional."""
         try:
-            from codex_ml.cli.validate import TrainConfig, validate_config_file
+            from codex_ml.cli.validate import validate_config_file
             # May be None if not available
             if validate_config_file is not None:
                 assert callable(validate_config_file)

@@ -8,7 +8,6 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch
 
 
 class TestMetricFunctions:

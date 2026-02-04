@@ -8,8 +8,6 @@ Coverage Target: src/mcp 17% → 35%+
 """
 
 import pytest
-from unittest.mock import patch, MagicMock, AsyncMock
-from typing import Dict, Any, List, Optional
 
 
 class TestToolHandlers:

@@ -1,1 +1,0 @@
-"""Template validation test package."""

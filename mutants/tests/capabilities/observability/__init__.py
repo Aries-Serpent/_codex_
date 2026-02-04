@@ -1,1 +1,0 @@
-"""Observability capability comprehensive tests."""

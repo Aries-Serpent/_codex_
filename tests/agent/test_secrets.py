@@ -77,7 +77,6 @@ class TestModuleImports:
         """Test that GitHubSecretsManager is a dataclass."""
         try:
             from src.agent.secrets import GitHubSecretsManager
-            from dataclasses import fields
             # Dataclasses have a __dataclass_fields__ attribute
             assert hasattr(GitHubSecretsManager, '__dataclass_fields__')
         except ImportError:

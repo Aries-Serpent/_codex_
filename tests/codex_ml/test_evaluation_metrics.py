@@ -1,7 +1,5 @@
 """Tests for evaluation metrics in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
 
 
 class TestEvaluationMetrics:

@@ -1,7 +1,5 @@
 """Tests for checkpoint recovery functionality in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
 
 
 class TestCheckpointRecovery:
@@ -118,7 +116,6 @@ class TestCheckpointRecovery:
         """Test checkpoint cloud upload."""
         # Arrange
         upload_to_cloud = True
-        bucket = "s3://checkpoints"
         
         # Assert
         assert upload_to_cloud is True

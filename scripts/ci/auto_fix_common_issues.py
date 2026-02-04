@@ -444,9 +444,9 @@ def main():
     if args.pattern:
         print(f"Running pattern {args.pattern} only...")
         # Run specific pattern (simplified for this example)
-        any_issues = fixer.run_all_patterns()
+        fixer.run_all_patterns()
     else:
-        any_issues = fixer.run_all_patterns()
+        fixer.run_all_patterns()
     
     # Print report
     print(fixer.generate_report())

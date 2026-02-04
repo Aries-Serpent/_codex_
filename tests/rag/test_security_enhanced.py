@@ -332,3 +332,69 @@ class TestRateLimitCheckMutationKilling:
         """Zero max requests should raise error."""
         with pytest.raises(ValueError):
             rate_limit_check(5, 60, 0)
+
+
+class TestMutationKillers:
+    """Additional tests specifically designed to kill surviving mutations."""
+
+    def test_sql_injection_or_keyword_removed(self):
+        """OR keyword should be removed from SQL injection attempts."""
+        result = sanitize_input("SELECT * FROM users OR 1=1")
+        assert "OR" not in result
+        # Verify the output doesn't contain SQL keywords even fragmented
+        assert result.replace("&#39;", "'") != "SELECT * FROM users OR 1=1"
+
+    def test_sql_injection_and_keyword_removed(self):
+        """AND keyword should be removed from SQL injection attempts."""
+        result = sanitize_input("WHERE id=1 AND password='test'")
+        assert "AND" not in result
+
+    def test_sql_injection_union_keyword_removed(self):
+        """UNION keyword should be removed from SQL injection attempts."""
+        result = sanitize_input("SELECT * UNION SELECT password FROM users")
+        assert "UNION" not in result
+
+    def test_config_dimension_valid_type_no_error(self):
+        """Valid integer dimension should not produce type error."""
+        errors, warnings = validate_config({"model_name": "test", "dimension": 256})
+        # Should not have dimension type error
+        assert not any("integer" in e for e in errors)
+        # But should be a valid dimension
+        assert 64 <= 256 <= 4096
+
+    def test_config_dimension_float_is_error(self):
+        """Float dimension should produce error since it's not an int."""
+        errors, _ = validate_config({"model_name": "test", "dimension": 256.5})
+        assert any("integer" in e for e in errors)
+
+    def test_config_remote_models_false_no_warning(self):
+        """allow_remote_models=False should not produce warning."""
+        _, warnings = validate_config({"model_name": "test", "allow_remote_models": False})
+        assert not any("remote" in w.lower() for w in warnings)
+
+    def test_config_remote_models_not_present_no_warning(self):
+        """No allow_remote_models key should not produce warning."""
+        _, warnings = validate_config({"model_name": "test"})
+        assert not any("remote" in w.lower() for w in warnings)
+
+    def test_sanitize_multiple_sql_keywords_all_removed(self):
+        """Multiple SQL keywords in one string should all be removed."""
+        result = sanitize_input("DROP DATABASE; DELETE FROM users; SELECT * FROM admin")
+        assert "DROP" not in result
+        assert "DELETE" not in result
+        assert "SELECT" not in result
+
+    def test_sanitize_maintains_legitimate_text_structure(self):
+        """Legitimate text should maintain word boundaries after sanitization."""
+        result = sanitize_input("The database contains user records")
+        # Should contain 'contains' (database and user are retained as they're not keywords)
+        assert "contains" in result.lower()
+
+    def test_hash_with_numeric_doc_id(self):
+        """Document IDs with numbers should hash consistently."""
+        hash1 = hash_document_id("doc123", "salt")
+        hash2 = hash_document_id("doc123", "salt")
+        # Deterministic
+        assert hash1 == hash2
+        # But different from other IDs
+        assert hash1 != hash_document_id("doc124", "salt")

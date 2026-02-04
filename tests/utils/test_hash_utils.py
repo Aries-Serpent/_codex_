@@ -8,9 +8,7 @@ Phase 54: HIGH Priority Module Tests
 Coverage Target: src/utils 30% → 45%+
 """
 
-import pytest
 import hashlib
-from unittest.mock import patch, MagicMock
 
 
 class TestEigenstateHashPatterns:

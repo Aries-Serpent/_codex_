@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import json
-import pytest
-from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestEmitZendeskConfig:
@@ -62,7 +60,6 @@ class TestEmitZendeskConfig:
     def test_emit_zendesk_config_creates_triggers(self, mock_mapping, mock_cdm, tmp_path):
         """Test that triggers.json is created."""
         from codex_crm.zd_admin.generate import emit_zendesk_config
-        from codex_crm.cdm.loader import FieldDef
 
         mock_cdm.return_value = {"assignment": []}
         mock_mapping.return_value = {}
@@ -83,7 +80,6 @@ class TestEmitZendeskConfig:
     def test_emit_zendesk_config_creates_sla(self, mock_mapping, mock_cdm, tmp_path):
         """Test that sla.json is created."""
         from codex_crm.zd_admin.generate import emit_zendesk_config
-        from codex_crm.cdm.loader import FieldDef
 
         mock_cdm.return_value = {"assignment": []}
         mock_mapping.return_value = {}
@@ -104,7 +100,6 @@ class TestEmitZendeskConfig:
     def test_emit_zendesk_config_creates_mappings(self, mock_mapping, mock_cdm, tmp_path):
         """Test that mappings.json is created."""
         from codex_crm.zd_admin.generate import emit_zendesk_config
-        from codex_crm.cdm.loader import FieldDef
 
         mock_cdm.return_value = {"assignment": []}
         mock_mapping.return_value = {"scope1": {"key1": "value1"}}
