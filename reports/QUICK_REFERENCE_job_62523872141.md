@@ -8,18 +8,18 @@
 
 ## Key Finding
 **File**: `tests/framework/__init__.py` (line 9)  
-**Issue**: Imports from `test_generator.py` at module level  
+**Issue**: Imports from `generator.py` at module level  
 **Result**: Pytest collection hangs (62s timeout)
 
 ## Why It Fails
 ```
-tests/framework/test_generator.py  ← has "test_" prefix
+tests/framework/generator.py  ← has "test_" prefix
                 ↓
        pytest tries to collect it
                 ↓
     imports tests.framework package
                 ↓
-  __init__.py imports from test_generator.py
+  __init__.py imports from generator.py
                 ↓
          CIRCULAR DEPENDENCY
                 ↓
@@ -31,14 +31,14 @@ tests/framework/test_generator.py  ← has "test_" prefix
 ### Option 1: Rename (Fastest)
 ```bash
 cd tests/framework/
-git mv test_generator.py generator_utils.py
+git mv generator.py generator.py
 sed -i 's/test_generator/generator_utils/' __init__.py
 ```
 
 ### Option 2: Move Out
 ```bash
 mkdir -p tests/_utils/
-git mv tests/framework/test_generator.py tests/_utils/
+git mv tests/framework/generator.py tests/_utils/
 # Update imports in __init__.py
 ```
 

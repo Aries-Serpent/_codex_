@@ -69,7 +69,7 @@
 
 ## 🎯 Key Findings
 
-**Root Cause**: tests/framework/__init__.py imports from test_generator.py (which has test_ prefix)  
+**Root Cause**: tests/framework/__init__.py imports from generator.py (which has test_ prefix)  
 **Failure Type**: Circular import during pytest collection  
 **Duration**: 62 second hang before timeout  
 **Exit Code**: 2  
@@ -81,7 +81,7 @@
 
 ```bash
 cd tests/framework/
-git mv test_generator.py generator_utils.py
+git mv generator.py generator_utils.py
 sed -i 's/test_generator/generator_utils/' __init__.py
 ```
 

@@ -48,15 +48,15 @@ Based on log analysis and codebase inspection, the most likely causes are:
 #### 1. **Import-Time Execution During Collection** (HIGH PROBABILITY)
 
 **Evidence:**
-- `tests/framework/__init__.py` imports from `test_generator.py` at module level:
+- `tests/framework/__init__.py` imports from `generator.py` at module level:
   ```python
   from .test_generator import UnitTestGenerator, OrchestrationFlowSpec
   ```
-- The file `test_generator.py` has a `test_` prefix, causing pytest to treat it as a test file
+- The file `generator.py` has a `test_` prefix, causing pytest to treat it as a test file
 - When pytest discovers `tests/framework/`, it:
   1. Tries to import `tests.framework`
   2. Triggers the `__init__.py` import
-  3. Attempts to import from `test_generator.py` 
+  3. Attempts to import from `generator.py` 
   4. This creates a circular dependency or triggers collection hooks prematurely
 
 **Impact:** This circular import or premature hook execution could cause pytest's collection phase to hang indefinitely.
@@ -123,18 +123,18 @@ Based on log analysis and codebase inspection, the most likely causes are:
 
 ### Immediate Fix (High Priority)
 
-**Option 1: Rename test_generator.py**
+**Option 1: Rename generator.py**
 ```bash
 cd tests/framework/
-git mv test_generator.py generator_utils.py
+git mv generator.py generator_utils.py
 # Update __init__.py
 sed -i 's/from \.test_generator/from .generator_utils/' __init__.py
 ```
 
-**Option 2: Move test_generator.py out of tests/**
+**Option 2: Move generator.py out of tests/**
 ```bash
 mkdir -p tests/_utils/
-git mv tests/framework/test_generator.py tests/_utils/generator_utils.py
+git mv tests/framework/generator.py tests/_utils/generator_utils.py
 # Update imports
 ```
 
@@ -221,7 +221,7 @@ python -m pytest tests/ -v --tb=short
 ```
 tests/framework/
 ├── __init__.py          # Imports from test_generator
-└── test_generator.py    # Has test_ prefix, triggers pytest collection
+└── generator.py    # Has test_ prefix, triggers pytest collection
 ```
 
 ---
