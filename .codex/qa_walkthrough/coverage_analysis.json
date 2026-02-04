@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "2026-02-04T05:53:00.000000+00:00",
+    "timestamp": "2026-02-04T06:08:00.000000+00:00",
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
     "baseline_date": "2026-01-21",
-    "last_update": "2026-02-04T05:53:00.000000+00:00",
-    "phase": "45",
-    "phase_status": "HIGH_PRIORITY_CLI_TESTS_ADDED"
+    "last_update": "2026-02-04T06:08:00.000000+00:00",
+    "phase": "46",
+    "phase_status": "HIGH_PRIORITY_CLI_MODULES_TESTED"
   },
   "source_modules": {
     "src/mcp": {
@@ -240,12 +240,12 @@
   },
   "test_coverage": {
     "total_source_files": 1052,
-    "files_with_tests": 190,
-    "files_without_tests": 862,
-    "estimated_coverage_percent": 18.06,
+    "files_with_tests": 192,
+    "files_without_tests": 860,
+    "estimated_coverage_percent": 18.25,
     "line_coverage_percent": 0.0,
-    "total_test_files": 2054,
-    "total_test_functions": 16893,
+    "total_test_files": 2056,
+    "total_test_functions": 16968,
     "phase_20_summary": {
       "phase_20_1_tests": 40,
       "phase_20_2_tests": 104,
@@ -301,10 +301,23 @@
       "impact": "src/codex_ml/cli/ module coverage improvement",
       "mutation_testing_config": "configs/mutmut/rag_security.ini"
     },
+    "phase_46_contribution": {
+      "test_files_added": 2,
+      "test_functions_added": 75,
+      "files": [
+        "tests/cli/test_quantum_orchestrator_cli_comprehensive.py",
+        "tests/cli/test_codex_ml_cli_comprehensive.py"
+      ],
+      "impact": "High-priority quantum_orchestrator and codex_ml CLI coverage",
+      "modules_covered": [
+        "src/codex/quantum_orchestrator/cli.py",
+        "src/codex_ml/cli/codex_cli.py"
+      ]
+    },
     "combined_totals": {
       "baseline_before_phase_20": 2087,
       "after_phase_20": 2231,
-      "current_total": 16893,
+      "current_total": 16968,
       "note": "Test function count includes all test methods, not just unique test files"
     },
     "methodology": {
