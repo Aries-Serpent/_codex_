@@ -44,17 +44,19 @@ elif grep -q "syntax error" "$LOG_FILE"; then
 elif grep -q "SARIF upload" "$LOG_FILE"; then
     echo "🔒 Detected: SARIF upload issue"
     grep -i "SARIF" "$LOG_FILE" | head -5
-elif grep -q "coverage.*below\|fail-under" "$LOG_FILE"; then
+elif grep -Eq "coverage.*below|fail-under" "$LOG_FILE"; then
     echo "📊 Detected: Coverage threshold not met"
-    grep -i "coverage\|fail-under" "$LOG_FILE" | head -5
-elif grep -q "SyntaxError\|linting" "$LOG_FILE"; then
+    grep -Ei "coverage|fail-under" "$LOG_FILE" | head -5
+elif grep -Eq "SyntaxError|linting" "$LOG_FILE"; then
     echo "✨ Detected: Code quality issue"
-    grep -i "SyntaxError\|linting\|ruff\|black" "$LOG_FILE" | head -5
-elif grep -q "FAILED.*test_\|AssertionError" "$LOG_FILE"; then
+    grep -Ei "SyntaxError|linting|ruff|black" "$LOG_FILE" | head -5
+elif grep -Eq "FAILED.*test_|AssertionError" "$LOG_FILE"; then
     echo "🧪 Detected: Test failure"
-    grep -i "FAILED\|AssertionError" "$LOG_FILE" | head -10
+    grep -Ei "FAILED|AssertionError" "$LOG_FILE" | head -10
 else
     echo "❓ Unknown failure pattern - manual review required"
+    # Ensure directory exists before appending
+    mkdir -p .codex/logs
     echo "$RUN_ID" >> .codex/logs/manual_review_needed.txt
 fi
 

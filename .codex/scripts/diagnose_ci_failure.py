@@ -16,11 +16,13 @@ from pathlib import Path
 from typing import Any
 
 
+# NOTE: `auto_fix` values are human-readable suggestions and are not dynamically
+# formatted. They describe the remediation action for operators to take manually.
 ERROR_PATTERNS: dict[str, dict[str, Any]] = {
     "missing_dependency": {
         "pattern": r"ModuleNotFoundError: No module named ['\"]([^'\"]+)['\"]",
         "diagnosis": "Missing Python dependency",
-        "auto_fix": "pip install {module}",
+        "auto_fix": "Install the missing module with pip (e.g., pip install <module>)",
         "priority": "high",
     },
     "sarif_upload": {

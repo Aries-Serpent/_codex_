@@ -3,7 +3,8 @@
 # Monitors GitHub Actions workflow runs and detects failures
 #
 # Usage:
-#   ./ci_monitor.sh [--max-duration SECONDS] [--poll-interval SECONDS]
+#   ./ci_monitor.sh [MAX_DURATION_SECONDS] [POLL_INTERVAL_SECONDS]
+#   Example: ./ci_monitor.sh 3000 30
 #
 # Environment:
 #   GITHUB_REPOSITORY - Repository in owner/repo format (default: Aries-Serpent/_codex_)
@@ -13,6 +14,17 @@ set -euo pipefail
 REPO="${GITHUB_REPOSITORY:-Aries-Serpent/_codex_}"
 MAX_DURATION="${1:-3000}"  # 50 minutes default
 POLL_INTERVAL="${2:-30}"
+
+# Validate numeric inputs to prevent command injection
+if ! [[ "$MAX_DURATION" =~ ^[0-9]+$ ]]; then
+    echo "Error: MAX_DURATION must be a positive integer" >&2
+    exit 1
+fi
+if ! [[ "$POLL_INTERVAL" =~ ^[0-9]+$ ]]; then
+    echo "Error: POLL_INTERVAL must be a positive integer" >&2
+    exit 1
+fi
+
 START_TIME=$(date +%s)
 
 # Colors for output
@@ -107,7 +119,7 @@ main() {
         current_time=$(date +%s)
         elapsed=$((current_time - START_TIME))
         
-        if [ $elapsed -ge $MAX_DURATION ]; then
+        if [[ "$elapsed" -ge "$MAX_DURATION" ]]; then
             log_warning "Maximum monitoring duration reached (${MAX_DURATION}s)"
             break
         fi
@@ -116,14 +128,14 @@ main() {
         
         in_progress=$(monitor_workflows)
         
-        # Check if all workflows completed
-        if [ "$in_progress" = "0" ]; then
+        # Check if all workflows completed (use [[ for safer string comparison)
+        if [[ "$in_progress" == "0" ]]; then
             log_success "All workflows completed"
             break
         fi
         
         log_info "Waiting ${POLL_INTERVAL}s before next poll..."
-        sleep $POLL_INTERVAL
+        sleep "$POLL_INTERVAL"
     done
     
     log_success "Monitoring complete"
