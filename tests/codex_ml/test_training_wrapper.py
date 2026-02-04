@@ -93,10 +93,15 @@ class TestCompatibilityShim:
     """Tests for backward compatibility."""
 
     def test_import_training_directly(self) -> None:
-        """Test importing training module directly works."""
+        """Test importing training module and accessing exports."""
         try:
             import codex_ml.training
             assert codex_ml.training is not None
+            
+            # Test that we can access exported items if available
+            if hasattr(codex_ml.training, '__all__'):
+                for item in codex_ml.training.__all__:
+                    assert hasattr(codex_ml.training, item), f"Missing export: {item}"
         except ImportError:
             pytest.skip("training module not fully configured")
 
