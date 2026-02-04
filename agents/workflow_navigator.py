@@ -101,6 +101,10 @@ class Workflow:
     entry_points: list[str] = field(default_factory=list)
     category: str = "general"
 
+    def __len__(self) -> int:
+        """Return the number of steps in the workflow."""
+        return len(self.steps)
+
     def to_dict(self) -> dict:
         """Convert to dictionary for serialization"""
         return {

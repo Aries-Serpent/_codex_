@@ -145,10 +145,10 @@ class TestMethodVariations_MentalMapping:
                 edge_type=EdgeType.LEADS_TO,
             )
 
-        # Test BFS from each node
+        # Test BFS from each node - pass node_id (string), not node object
         for node in nodes:
-            result = model.bfs(start_node=node)
-            assert len(result) > 0
+            result = model.bfs(start_node=node.node_id)
+            assert len(result) > 0, f"BFS returned empty result for node {node.node_id}"
 
 
 class TestMethodVariations_AgentMemory:
