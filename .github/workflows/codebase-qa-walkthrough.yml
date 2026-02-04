@@ -115,6 +115,9 @@ jobs:
     steps:
       - name: Check trigger conditions
         id: check
+        env:
+          # Use environment variable to safely handle comment body with special characters
+          COMMENT_BODY: ${{ github.event.comment.body || '' }}
         run: |
           SHOULD_RUN="true"
           REVIEW_DEPTH="${{ inputs.review_depth || 'standard' }}"
@@ -122,9 +125,7 @@ jobs:
 
           # Check if triggered by comment
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
-            COMMENT_BODY='${{ github.event.comment.body }}'
-
-            # Check for QA trigger phrases
+            # Check for QA trigger phrases using env var (safely handles special chars)
             if echo "$COMMENT_BODY" | grep -qiE "@copilot qa (walkthrough|review|check)|@copilot quality assurance"; then
               echo "✅ Triggered by comment with QA command"
 
