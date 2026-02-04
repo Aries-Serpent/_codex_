@@ -61,11 +61,16 @@ class TestDocumentIngestion:
                 "has_code": "```" in content,
             }
         
-        metadata = extract_metadata("Hello world! ```python\nprint('test')```", "test.md")
+        # Simple test content without code blocks for accurate word count
+        metadata = extract_metadata("Hello world example", "test.md")
         
         assert metadata["filename"] == "test.md"
-        assert metadata["word_count"] == 3  # Hello world! ```python
-        assert metadata["has_code"] is True
+        assert metadata["word_count"] == 3  # Hello world example
+        assert metadata["has_code"] is False
+        
+        # Test with code block
+        metadata_with_code = extract_metadata("Code: ```python\nprint('test')```", "code.md")
+        assert metadata_with_code["has_code"] is True
 
     def test_duplicate_detection(self):
         """Duplicate documents are detected."""

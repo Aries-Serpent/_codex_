@@ -245,10 +245,12 @@ class TestLearningRateSchedulerCallback:
         
         callback = StepLRCallback(initial_lr=0.01, step_size=10, gamma=0.1)
         
+        # Loop from 1 to 30, triggers at epochs 10, 20, 30 (3 times)
         for epoch in range(1, 31):
             callback.on_epoch_end(epoch)
         
-        assert callback.current_lr == pytest.approx(0.00001)  # 0.01 * 0.1 * 0.1 * 0.1
+        # 0.01 * 0.1 * 0.1 * 0.1 = 0.00001 (triggered at epochs 10, 20, 30)
+        assert callback.current_lr == pytest.approx(0.00001, rel=1e-6)
 
     def test_warmup_scheduler(self):
         """Warmup scheduler increases LR during warmup."""

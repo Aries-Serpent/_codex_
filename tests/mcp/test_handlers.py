@@ -32,15 +32,24 @@ class TestToolHandlers:
 
     def test_tools_call_handler(self):
         """tools/call executes tool and returns result."""
+        import ast
+        
         def handle_tools_call(params):
             tool_name = params.get("name")
             arguments = params.get("arguments", {})
             
             if tool_name == "calculate":
                 expr = arguments.get("expression", "0")
-                # Safe eval for simple expressions
+                # Use ast.literal_eval for safe evaluation of literals only
+                # For arithmetic, use a simple parser instead of eval
                 try:
-                    result = eval(expr, {"__builtins__": {}})
+                    # Only allow simple integer literals for safety
+                    # In production, use a proper expression parser
+                    parts = expr.replace("+", " ").split()
+                    if all(p.isdigit() for p in parts) and "+" in expr:
+                        result = sum(int(p) for p in parts)
+                    else:
+                        result = ast.literal_eval(expr)
                     return {"content": [{"type": "text", "text": str(result)}]}
                 except Exception as e:
                     return {"isError": True, "content": [{"type": "text", "text": str(e)}]}

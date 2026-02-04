@@ -120,6 +120,10 @@ class TestEpochManagement:
     def test_learning_rate_schedule(self):
         """Learning rate schedule follows pattern."""
         def step_lr(initial_lr, epoch, step_size, gamma):
+            if step_size <= 0:
+                raise ValueError("step_size must be positive")
+            if epoch < 0:
+                raise ValueError("epoch must be non-negative")
             return initial_lr * (gamma ** (epoch // step_size))
         
         initial_lr = 0.01
@@ -134,6 +138,31 @@ class TestEpochManagement:
         
         # LR at epoch 20 (second step)
         assert step_lr(initial_lr, 20, step_size, gamma) == pytest.approx(0.0001)
+
+    def test_learning_rate_schedule_edge_cases(self):
+        """Learning rate schedule handles edge cases."""
+        def step_lr(initial_lr, epoch, step_size, gamma):
+            if step_size <= 0:
+                raise ValueError("step_size must be positive")
+            if epoch < 0:
+                raise ValueError("epoch must be non-negative")
+            return initial_lr * (gamma ** (epoch // step_size))
+        
+        # Test with zero step_size
+        with pytest.raises(ValueError, match="step_size must be positive"):
+            step_lr(0.01, 10, 0, 0.1)
+        
+        # Test with negative epoch
+        with pytest.raises(ValueError, match="epoch must be non-negative"):
+            step_lr(0.01, -1, 10, 0.1)
+        
+        # Test with gamma > 1 (increasing LR)
+        result = step_lr(0.01, 10, 10, 2.0)
+        assert result == pytest.approx(0.02)  # LR doubles
+        
+        # Test with gamma = 1 (no change)
+        result = step_lr(0.01, 20, 10, 1.0)
+        assert result == pytest.approx(0.01)
 
 
 class TestCheckpointing:
