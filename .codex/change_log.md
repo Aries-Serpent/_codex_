@@ -882,3 +882,62 @@ Generated comprehensive failure analysis for PR #3133 (0D_base_ → main):
 - `.codex/plans/pr_3145/test_case_mapping.md`
 - `.codex/plans/path_100_2026-02-04-15-00-30-UTC_tokenization-coverage.md`
 - `.github/agents/tokenization-coverage-agent.md`
+
+---
+
+## 📝 2026-02-04T19:00:00Z - CI Log Analysis: Core Tests Collection Failure
+
+### 🔴 Investigation Results
+**Agent**: ci-log-retrieval-agent  
+**Workflow Run**: 21683424653  
+**Job ID**: 62523872141  
+**Job Name**: Core Tests (Python 3.12)  
+**Exit Code**: 2
+
+#### Issue Summary
+**Type**: Test Collection Timeout/Hang  
+**Duration**: 62 seconds before timeout  
+**Impact**: Complete test execution blockage, zero coverage generated
+
+#### Root Cause Analysis
+**Primary Issue**: `tests/framework/__init__.py` line 9  
+**Problem**: Module-level import from file named `test_generator.py`
+
+```python
+# tests/framework/__init__.py
+from .test_generator import UnitTestGenerator, OrchestrationFlowSpec
+```
+
+**Failure Mechanism**:
+1. pytest discovers `tests/framework/test_generator.py` (has `test_` prefix)
+2. Attempts to import `tests.framework` module
+3. `__init__.py` triggers import from `test_generator.py`
+4. Creates circular dependency or premature collection hook execution
+5. Collection phase hangs indefinitely (no output, no error traceback)
+
+**Secondary Issues**:
+- Multiple conftest.py files use module-level `pytest.importorskip()`
+- Potential for hook recursion during collection phase
+
+**No Import/Syntax Errors**: Failure occurred BEFORE test file parsing phase
+
+#### Recommended Remediation
+1. **Immediate**: Rename `test_generator.py` → `generator_utils.py`
+2. **Alternative**: Move file outside `tests/` directory
+3. **Refactor**: Remove module-level imports from `tests/framework/__init__.py`
+4. **Enhancement**: Migrate `pytest.importorskip()` calls to pytest hooks
+
+#### Artifacts Generated
+- **Full Analysis**: `reports/ci_log_analysis_job_62523872141.md`
+- **Summary**: `reports/ci_failure_summary.txt`
+- **Raw Logs**: `artifacts/ci_logs/job_62523872141_core_tests.log`
+- **Metadata**: `artifacts/ci_logs/job_62523872141_metadata.json`
+
+#### Verification Command
+```bash
+timeout 30 python -m pytest tests/ --collect-only -q
+```
+
+**Analysis Confidence**: High (95%)  
+**Status**: Investigation Complete, Awaiting Fix Implementation
+
