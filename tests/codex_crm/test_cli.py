@@ -1,0 +1,186 @@
+"""Comprehensive tests for codex_crm.cli module."""
+
+from __future__ import annotations
+
+import argparse
+import pytest
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+
+class TestBuildParser:
+    """Tests for build_parser function."""
+
+    def test_parser_creation(self):
+        """Test that parser is created successfully."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        assert isinstance(parser, argparse.ArgumentParser)
+
+    def test_parser_has_subcommands(self):
+        """Test that parser has expected subcommands."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        # Check subparsers exist by trying to parse known commands
+        with pytest.raises(SystemExit):
+            parser.parse_args([])  # No command should fail
+
+    def test_apply_zd_subcommand(self):
+        """Test apply-zd subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["apply-zd"])
+        assert args.command == "apply-zd"
+        assert args.out == ".codex/crm/zendesk"
+
+    def test_apply_zd_custom_output(self):
+        """Test apply-zd with custom output."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["apply-zd", "--out", "/custom/path"])
+        assert args.out == "/custom/path"
+
+    def test_apply_d365_subcommand(self):
+        """Test apply-d365 subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["apply-d365"])
+        assert args.command == "apply-d365"
+        assert args.out == ".codex/crm/d365"
+
+    def test_import_pa_zip_subcommand(self):
+        """Test import-pa-zip subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["import-pa-zip", "--in", "input.zip", "--out", "output/"])
+        assert args.command == "import-pa-zip"
+        assert args.source == "input.zip"
+        assert args.out == "output/"
+
+    def test_import_zaf_zip_subcommand(self):
+        """Test import-zaf-zip subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["import-zaf-zip", "--in", "app.zip", "--out", "scaffold/"])
+        assert args.command == "import-zaf-zip"
+        assert args.source == "app.zip"
+        assert args.out == "scaffold/"
+
+    def test_gen_diagram_subcommand(self):
+        """Test gen-diagram subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args([
+            "gen-diagram",
+            "--flow", "test_flow",
+            "--steps", "step1;step2;step3",
+            "--out", "diagram.mmd"
+        ])
+        assert args.command == "gen-diagram"
+        assert args.flow == "test_flow"
+        assert args.steps == "step1;step2;step3"
+        assert args.out == "diagram.mmd"
+
+    def test_evidence_pack_subcommand(self):
+        """Test evidence-pack subcommand parsing."""
+        from codex_crm.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["evidence-pack", "--out", "evidence/"])
+        assert args.command == "evidence-pack"
+        assert args.out == "evidence/"
+
+
+class TestMainFunction:
+    """Tests for main function."""
+
+    @patch("codex_crm.cli.emit_zendesk_config")
+    def test_main_apply_zd(self, mock_emit):
+        """Test main with apply-zd command."""
+        from codex_crm.cli import main
+
+        result = main(["apply-zd", "--out", "/tmp/zd"])
+        assert result == 0
+        mock_emit.assert_called_once_with("/tmp/zd")
+
+    @patch("codex_crm.cli.emit_d365_config")
+    def test_main_apply_d365(self, mock_emit):
+        """Test main with apply-d365 command."""
+        from codex_crm.cli import main
+
+        result = main(["apply-d365", "--out", "/tmp/d365"])
+        assert result == 0
+        mock_emit.assert_called_once_with("/tmp/d365")
+
+    @patch("codex_crm.cli.write_evidence")
+    def test_main_evidence_pack(self, mock_write):
+        """Test main with evidence-pack command."""
+        from codex_crm.cli import main
+
+        result = main(["evidence-pack", "--out", "/tmp/evidence"])
+        assert result == 0
+        mock_write.assert_called_once_with("/tmp/evidence")
+
+    @patch("codex_crm.cli.flow_to_mermaid")
+    def test_main_gen_diagram(self, mock_flow, tmp_path):
+        """Test main with gen-diagram command."""
+        from codex_crm.cli import main
+
+        mock_flow.return_value = "graph TD\n  A --> B"
+        output_file = tmp_path / "test.mmd"
+
+        result = main([
+            "gen-diagram",
+            "--flow", "test",
+            "--steps", "A;B",
+            "--out", str(output_file)
+        ])
+        assert result == 0
+        mock_flow.assert_called_once_with("test", ["A", "B"])
+
+    def test_main_gen_diagram_steps_parsing(self, tmp_path):
+        """Test that steps are parsed correctly."""
+        from codex_crm.cli import main
+
+        output_file = tmp_path / "test.mmd"
+
+        with patch("codex_crm.cli.flow_to_mermaid") as mock_flow:
+            mock_flow.return_value = "graph TD"
+            main([
+                "gen-diagram",
+                "--flow", "flow",
+                "--steps", "  step1 ; step2 ; ; step3  ",
+                "--out", str(output_file)
+            ])
+            # Should strip whitespace and filter empty
+            mock_flow.assert_called_once_with("flow", ["step1", "step2", "step3"])
+
+
+class TestConstants:
+    """Tests for module constants."""
+
+    def test_default_output_root(self):
+        """Test default output root constant."""
+        from codex_crm.cli import DEFAULT_OUTPUT_ROOT
+
+        assert DEFAULT_OUTPUT_ROOT == Path(".codex") / "crm"
+
+    def test_default_zendesk_output(self):
+        """Test default Zendesk output constant."""
+        from codex_crm.cli import DEFAULT_ZENDESK_OUTPUT
+
+        assert DEFAULT_ZENDESK_OUTPUT == Path(".codex") / "crm" / "zendesk"
+
+    def test_default_d365_output(self):
+        """Test default D365 output constant."""
+        from codex_crm.cli import DEFAULT_D365_OUTPUT
+
+        assert DEFAULT_D365_OUTPUT == Path(".codex") / "crm" / "d365"
