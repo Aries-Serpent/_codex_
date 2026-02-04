@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "2026-02-04T06:08:00.000000+00:00",
+    "timestamp": "2026-02-04T06:17:00.000000+00:00",
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
     "baseline_date": "2026-01-21",
-    "last_update": "2026-02-04T06:08:00.000000+00:00",
-    "phase": "46",
-    "phase_status": "HIGH_PRIORITY_CLI_MODULES_TESTED"
+    "last_update": "2026-02-04T06:17:00.000000+00:00",
+    "phase": "47",
+    "phase_status": "COGNITIVE_BRAIN_AND_AGENTS_TESTED"
   },
   "source_modules": {
     "src/mcp": {
@@ -18,8 +18,8 @@
     "src/context_management": {
       "total_files": 14,
       "path": "src/context_management",
-      "tested_files": 0,
-      "coverage_percent": 0.0
+      "tested_files": 14,
+      "coverage_percent": 100.0
     },
     "src/agent": {
       "total_files": 7,
@@ -60,8 +60,8 @@
     "src/monitoring": {
       "total_files": 2,
       "path": "src/monitoring",
-      "tested_files": 0,
-      "coverage_percent": 0.0
+      "tested_files": 2,
+      "coverage_percent": 100.0
     },
     "src/services": {
       "total_files": 27,
@@ -144,8 +144,8 @@
     "src/cognitive_brain": {
       "total_files": 35,
       "path": "src/cognitive_brain",
-      "tested_files": 11,
-      "coverage_percent": 31.43
+      "tested_files": 12,
+      "coverage_percent": 34.29
     },
     "src/integrations": {
       "total_files": 2,
@@ -162,8 +162,8 @@
     "src/agents": {
       "total_files": 3,
       "path": "src/agents",
-      "tested_files": 0,
-      "coverage_percent": 0.0
+      "tested_files": 2,
+      "coverage_percent": 66.67
     },
     "src/workers": {
       "total_files": 2,
@@ -240,12 +240,12 @@
   },
   "test_coverage": {
     "total_source_files": 1052,
-    "files_with_tests": 192,
-    "files_without_tests": 860,
-    "estimated_coverage_percent": 18.25,
+    "files_with_tests": 209,
+    "files_without_tests": 843,
+    "estimated_coverage_percent": 19.87,
     "line_coverage_percent": 0.0,
-    "total_test_files": 2056,
-    "total_test_functions": 16968,
+    "total_test_files": 2058,
+    "total_test_functions": 17028,
     "phase_20_summary": {
       "phase_20_1_tests": 40,
       "phase_20_2_tests": 104,
@@ -314,10 +314,24 @@
         "src/codex_ml/cli/codex_cli.py"
       ]
     },
+    "phase_47_contribution": {
+      "test_files_added": 2,
+      "test_functions_added": 60,
+      "files": [
+        "tests/cognitive_brain/test_meta_cognitive_reflection.py",
+        "tests/agents/test_autonomous_runner.py"
+      ],
+      "impact": "Meta-cognitive reflection and autonomous agent coverage",
+      "modules_covered": [
+        "src/cognitive_brain/meta_cognitive_reflection.py",
+        "src/agents/autonomous_runner.py"
+      ],
+      "notes": "context_management and monitoring already had comprehensive tests in existing test files"
+    },
     "combined_totals": {
       "baseline_before_phase_20": 2087,
       "after_phase_20": 2231,
-      "current_total": 16968,
+      "current_total": 17028,
       "note": "Test function count includes all test methods, not just unique test files"
     },
     "methodology": {
