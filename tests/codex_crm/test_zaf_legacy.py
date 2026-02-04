@@ -197,9 +197,8 @@ class TestNormaliseEntryPath:
     def test_normalise_rejects_path_traversal(self):
         """Test that path traversal is rejected."""
         from codex_crm.zaf_legacy.reader import _normalise_entry_path
-        from zipfile import ZipInfo
 
-        entry = ZipInfo("../../../etc/passwd")
+        entry = zipfile.ZipInfo("../../../etc/passwd")
         
         with pytest.raises(ValueError, match="escapes"):
             _normalise_entry_path(entry)
