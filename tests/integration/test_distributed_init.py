@@ -37,9 +37,26 @@ class TestAccelerateInitGuard:
 
     def test_is_gpu_available(self):
         """Test GPU availability detection."""
-        # Should return bool without raising
-        result = is_gpu_available()
-        assert isinstance(result, bool)
+        # Import the mock module
+        from unittest.mock import patch
+        
+        # Test with GPU not available
+        with patch('torch.cuda.is_available') as mock_cuda:
+            mock_cuda.return_value = False  # Return actual bool, not MagicMock
+            
+            result = is_gpu_available()
+            
+            assert isinstance(result, bool)
+            assert result is False
+        
+        # Test with GPU available
+        with patch('torch.cuda.is_available') as mock_cuda:
+            mock_cuda.return_value = True  # Return actual bool, not MagicMock
+            
+            result = is_gpu_available()
+            
+            assert isinstance(result, bool)
+            assert result is True
 
     def test_get_distributed_env_info(self):
         """Test distributed environment variable collection."""
@@ -83,8 +100,22 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
-        result = safe_accelerate_init()
-
+        from unittest.mock import MagicMock, patch
+        
+        # Mock torch.cuda.is_available to return actual bool
+        with patch('torch.cuda.is_available') as mock_cuda:
+            mock_cuda.return_value = False  # Return actual bool, not MagicMock
+            
+            # Mock accelerate.PartialState if accelerate is available
+            with patch('accelerate.PartialState', create=True) as mock_partial_state:
+                mock_state = MagicMock()
+                mock_state.distributed_type = 'DistributedType.NO'
+                mock_state.num_processes = 1
+                mock_state.process_index = 0
+                mock_partial_state.return_value = mock_state
+                
+                result = safe_accelerate_init()
+        
         # Verify result structure
         assert isinstance(result, AccelerateInitResult)
         assert isinstance(result.success, bool)
