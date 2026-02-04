@@ -1,12 +1,12 @@
 {
   "metadata": {
-    "timestamp": "2026-02-04T02:39:00.000000+00:00",
+    "timestamp": "2026-02-04T05:45:00.000000+00:00",
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
     "baseline_date": "2026-01-21",
-    "last_update": "2026-02-04T02:39:00.000000+00:00",
-    "phase": "41",
-    "phase_status": "COMPLETE_QA_WALKTHROUGH_UPDATE"
+    "last_update": "2026-02-04T05:45:00.000000+00:00",
+    "phase": "44",
+    "phase_status": "COVERAGE_IMPROVEMENT_IN_PROGRESS"
   },
   "source_modules": {
     "src/mcp": {
@@ -240,12 +240,12 @@
   },
   "test_coverage": {
     "total_source_files": 1052,
-    "files_with_tests": 185,
-    "files_without_tests": 867,
-    "estimated_coverage_percent": 17.59,
+    "files_with_tests": 190,
+    "files_without_tests": 862,
+    "estimated_coverage_percent": 18.06,
     "line_coverage_percent": 0.0,
-    "total_test_files": 2040,
-    "total_test_functions": 16710,
+    "total_test_files": 2054,
+    "total_test_functions": 16893,
     "phase_20_summary": {
       "phase_20_1_tests": 40,
       "phase_20_2_tests": 104,
@@ -272,17 +272,46 @@
         "src/codex/analyze/static/analyzer.py"
       ]
     },
+    "phase_42_contribution": {
+      "test_files_added": 10,
+      "test_functions_added": 85,
+      "files": [
+        "tests/cli/test_migrate_data.py",
+        "tests/cli/test_codex_cli_comprehensive.py",
+        "tests/cli/test_deploy_comprehensive.py",
+        "tests/cli/test_validate_comprehensive.py",
+        "tests/cli/test_infer_comprehensive.py",
+        "tests/cli/test_generate_comprehensive.py",
+        "tests/cli/test_tokenizer_comprehensive.py",
+        "tests/cli/test_config_cli_comprehensive.py",
+        "tests/cli/test_main_cli_comprehensive.py"
+      ],
+      "impact": "CLI module coverage improvement"
+    },
+    "phase_44_contribution": {
+      "test_files_added": 5,
+      "test_functions_added": 98,
+      "files": [
+        "tests/cli/test_train_cli_comprehensive.py",
+        "tests/cli/test_eval_cli_comprehensive.py",
+        "tests/cli/test_feature_store_cli_comprehensive.py",
+        "tests/cli/test_tracking_cli_comprehensive.py",
+        "tests/cli/test_plugins_cli_comprehensive.py"
+      ],
+      "impact": "src/codex_ml/cli/ module coverage improvement",
+      "mutation_testing_config": "configs/mutmut/rag_security.ini"
+    },
     "combined_totals": {
       "baseline_before_phase_20": 2087,
       "after_phase_20": 2231,
-      "current_total": 15640,
+      "current_total": 16893,
       "note": "Test function count includes all test methods, not just unique test files"
     },
     "methodology": {
       "test_function_count_method": "grep -r 'def test_' tests/ --include='*.py'",
       "explanation": "Total test functions counted by scanning all test files for 'def test_' patterns. This includes all test methods in test classes and standalone test functions.",
-      "previous_count_note": "Previous counts (2,231) were based on unique test file estimations. The current count (15,640+) reflects actual test function/method count.",
-      "verified_date": "2026-01-21"
+      "previous_count_note": "Previous counts (2,231) were based on unique test file estimations. The current count (16,893) reflects actual test function/method count.",
+      "verified_date": "2026-02-04"
     }
   },
   "coverage_targets": {
