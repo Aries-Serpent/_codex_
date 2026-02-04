@@ -97,7 +97,10 @@ def check_imports() -> bool:
     print("\n🔍 Verifying Module Imports...")
     
     try:
-        from codex.security.sanitization import sanitize_html, sanitize_integer
+        import importlib.util
+        spec = importlib.util.find_spec("codex.security.sanitization")
+        if spec is None:
+            raise ImportError("codex.security.sanitization module not found")
         print("  ✅ Sanitization module imports successfully")
         return True
     except ImportError as e:

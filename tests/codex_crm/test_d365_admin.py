@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import csv
-import pytest
-from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestEmitD365Config:
@@ -33,7 +31,6 @@ class TestEmitD365Config:
     def test_emit_d365_config_creates_tables(self, mock_cdm, tmp_path):
         """Test that tables.csv is created."""
         from codex_crm.d365_admin.generate import emit_d365_config
-        from codex_crm.cdm.loader import FieldDef
 
         mock_cdm.return_value = {"assignment": []}
 
@@ -88,7 +85,6 @@ class TestEmitD365Config:
     def test_emit_d365_config_creates_slas(self, mock_cdm, tmp_path):
         """Test that slas.csv is created."""
         from codex_crm.d365_admin.generate import emit_d365_config
-        from codex_crm.cdm.loader import FieldDef
 
         mock_cdm.return_value = {"assignment": []}
 

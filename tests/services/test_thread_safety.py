@@ -1,7 +1,6 @@
 """Tests for thread safety in services module."""
 
-from unittest.mock import MagicMock, patch
-import pytest
+from unittest.mock import MagicMock
 
 
 class TestThreadSafety:

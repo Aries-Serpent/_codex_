@@ -9,9 +9,7 @@ Tests cover Click-based CLI for tombstone archive operations:
 """
 
 import pytest
-import json
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from click.testing import CliRunner
 
 
@@ -271,7 +269,7 @@ class TestLoadConfig:
             from src.codex.archive.cli import _load_config
             with patch("src.codex.archive.config.ArchiveAppConfig.load") as mock_load:
                 mock_load.return_value = Mock()
-                result = _load_config()
+                _load_config()
                 mock_load.assert_called_with(config_file=None)
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -285,7 +283,7 @@ class TestLoadConfig:
             
             with patch("src.codex.archive.config.ArchiveAppConfig.load") as mock_load:
                 mock_load.return_value = Mock()
-                result = _load_config(config_file)
+                _load_config(config_file)
                 mock_load.assert_called_with(config_file=config_file)
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -308,7 +306,6 @@ class TestModuleImports:
         """Test click is imported."""
         try:
             from src.codex.archive import cli
-            import click
             # Should be able to access click through the module
             assert hasattr(cli, 'cli')
         except ImportError:

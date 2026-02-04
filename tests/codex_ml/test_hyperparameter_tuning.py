@@ -1,7 +1,5 @@
 """Tests for hyperparameter tuning in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
 
 
 class TestHyperparameterTuning:
@@ -24,7 +22,6 @@ class TestHyperparameterTuning:
 
     def test_random_search(self):
         """Test random search."""
-        method = "random"
         n_iter = 100
         assert n_iter > 0
 
@@ -91,7 +88,6 @@ class TestHyperparameterTuning:
     def test_objective_function(self):
         """Test objective function."""
         objective = "minimize"
-        metric = "loss"
         assert objective in ["minimize", "maximize"]
 
     def test_parallel_trials(self):

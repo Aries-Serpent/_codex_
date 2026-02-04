@@ -11,10 +11,8 @@ This module tests the main Codex CLI commands including:
 Phase: 46 - Coverage Improvement
 """
 
-import json
 import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from click.testing import CliRunner
 
 

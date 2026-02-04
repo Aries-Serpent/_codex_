@@ -10,8 +10,6 @@ Coverage Target: src/mcp 17% → 35%+
 
 import pytest
 import json
-from unittest.mock import patch, MagicMock, AsyncMock
-from io import StringIO, BytesIO
 
 
 class TestStdioTransport:

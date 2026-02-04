@@ -391,3 +391,7 @@ output/
 .test_markers.json
 docs/test_markers_report.md
 docs/stale_markers_report.md
+
+# Mutation testing
+mutants/
+.mutmut-cache/

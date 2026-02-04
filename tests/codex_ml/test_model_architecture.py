@@ -1,7 +1,5 @@
 """Tests for model architecture in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
 
 
 class TestModelArchitecture:

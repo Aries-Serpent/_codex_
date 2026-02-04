@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 import io
-import csv
 
 
 class TestFieldDef:

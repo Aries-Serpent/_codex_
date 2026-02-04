@@ -10,8 +10,7 @@ Coverage Target: Training workflow completion
 
 import pytest
 from enum import Enum, auto
-from unittest.mock import patch, MagicMock
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from dataclasses import dataclass, field
 
 

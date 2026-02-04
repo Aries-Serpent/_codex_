@@ -8,9 +8,9 @@ Coverage Target: src/services 11% → 28%+
 """
 
 import pytest
-from enum import Enum, auto
-from unittest.mock import patch, MagicMock
-from datetime import datetime, timedelta
+from enum import Enum
+from unittest.mock import MagicMock
+from datetime import datetime
 
 
 class HealthStatus(Enum):

@@ -8,9 +8,8 @@ Phase 54: HIGH Priority Module Tests
 Coverage Target: src/security 38% → 55%+
 """
 
-import pytest
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestInputValidation:
@@ -97,7 +96,6 @@ class TestSQLInjectionPrevention:
         """Parameterized queries are safe from injection."""
         # Simulate parameterized query (value is not interpolated)
         query_template = "SELECT * FROM users WHERE id = ?"
-        user_input = "1; DROP TABLE users"
         
         # In parameterized queries, input is treated as data not code
         assert "?" in query_template

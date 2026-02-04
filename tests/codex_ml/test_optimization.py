@@ -1,7 +1,5 @@
 """Tests for optimization functionality in codex_ml."""
 
-from unittest.mock import MagicMock, patch
-import pytest
 
 
 class TestOptimization:
@@ -108,7 +106,6 @@ class TestOptimization:
     def test_scheduler_step(self):
         """Test step learning rate scheduler."""
         # Arrange
-        scheduler_type = "step"
         step_size = 10
         
         # Assert
@@ -117,7 +114,6 @@ class TestOptimization:
     def test_scheduler_exponential(self):
         """Test exponential learning rate scheduler."""
         # Arrange
-        scheduler_type = "exponential"
         gamma = 0.95
         
         # Assert

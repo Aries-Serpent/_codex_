@@ -8,8 +8,7 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import sys
+from unittest.mock import patch, MagicMock
 
 
 class TestFeatureStoreImports:
@@ -43,7 +42,6 @@ class TestFeatureRegistration:
     def test_register_creates_feature_group(self, mock_store_class):
         """Test register command creates feature group."""
         try:
-            from codex_ml.cli.feature_store import register
             from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
             
@@ -90,7 +88,7 @@ class TestFeatureRegistration:
             mock_store_class.return_value = mock_store
             
             runner = CliRunner()
-            result = runner.invoke(app, [
+            runner.invoke(app, [
                 'register', 'test_features', '1.0.0',
                 '--store-path', '/custom/path'
             ])

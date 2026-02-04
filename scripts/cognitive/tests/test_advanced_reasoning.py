@@ -137,7 +137,6 @@ class TestCausalReasoning:
     def test_causal_graph_construction(self):
         """Test building causal graphs"""
         try:
-            from dowhy import CausalModel
             import networkx as nx
         except ImportError:
             pytest.skip("DoWhy or NetworkX not installed")

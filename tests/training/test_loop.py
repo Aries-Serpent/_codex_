@@ -10,7 +10,6 @@ Coverage Target: src/training 47% → 60%+
 
 import pytest
 from enum import Enum, auto
-from unittest.mock import patch, MagicMock
 
 
 class TrainingState(Enum):

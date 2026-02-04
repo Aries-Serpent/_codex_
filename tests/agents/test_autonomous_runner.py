@@ -9,7 +9,6 @@ Tests the autonomous agent execution capabilities including:
 
 import json
 import pytest
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 
@@ -377,7 +376,7 @@ class TestEdgeCases:
                 
                 agent = AutonomousAgent(reports_dir=tmp_path)
                 
-                result = await agent.execute("Test", model_preference="gpt-4-turbo")
+                await agent.execute("Test", model_preference="gpt-4-turbo")
                 
                 mock_client_instance.select_model.assert_called_with(
                     preferred_model="gpt-4-turbo"
@@ -400,7 +399,7 @@ class TestEdgeCases:
                 
                 agent = AutonomousAgent(reports_dir=tmp_path)
                 
-                result = await agent.execute("Test", model_preference="auto")
+                await agent.execute("Test", model_preference="auto")
                 
                 mock_client_instance.select_model.assert_called_with(
                     preferred_model=None

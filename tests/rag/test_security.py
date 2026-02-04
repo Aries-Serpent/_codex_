@@ -9,7 +9,6 @@ Coverage Target: src/rag 33% → 50%+
 """
 
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
 
 
 class TestRAGInputSanitization:

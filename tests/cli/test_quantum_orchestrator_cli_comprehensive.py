@@ -10,10 +10,7 @@ This module tests the Quantum Orchestrator CLI commands including:
 Phase: 46 - Coverage Improvement
 """
 
-import json
 import pytest
-from pathlib import Path
-from unittest.mock import MagicMock, patch
 from click.testing import CliRunner
 
 
@@ -382,7 +379,12 @@ class TestModuleImports:
                 TaskVector,
                 create_observable_orchestrator,
             )
+            # Verify all components are importable
             assert DiracSpinor is not None
             assert OrchestratorState is not None
+            assert PhysicsConstants is not None
+            assert TaskState is not None
+            assert TaskVector is not None
+            assert create_observable_orchestrator is not None
         except ImportError:
             pytest.skip("quantum_orchestrator components not available")

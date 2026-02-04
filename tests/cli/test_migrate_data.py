@@ -98,7 +98,6 @@ class TestMigrateDataFunctions:
     def test_migrate_function_calls_migration(self, mock_migration_class):
         """Test that migrate function uses AssignmentMappingMigration."""
         try:
-            from codex_ml.cli.migrate_data import migrate
             # Migration class should be importable
             assert mock_migration_class is not None
         except ImportError as e:

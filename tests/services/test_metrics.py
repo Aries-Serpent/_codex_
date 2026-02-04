@@ -8,10 +8,7 @@ Coverage Target: src/services 11% → 28%+
 """
 
 import pytest
-import time
-from unittest.mock import patch, MagicMock
 from collections import defaultdict
-from typing import Dict, List, Any
 
 
 class TestCounterMetrics:

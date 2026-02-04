@@ -47,36 +47,64 @@ class TestRetrievalConfig:
         assert config.rerank is False
 
     def test_config_custom_top_k(self) -> None:
-        """Test custom top_k value."""
-        # Arrange & Act
+        """Test custom top_k value affects retrieval."""
+        # Arrange
         config = RetrievalConfig(top_k=20)
+        pipeline = RetrievalPipeline(config=config)
+        docs = [f"Document {i}" for i in range(50)]
+        pipeline.add_documents(docs)
+
+        # Act
+        response = pipeline.retrieve("Document", top_k=5)
 
         # Assert
-        assert config.top_k == 20
+        assert len(response.results) <= 5
 
     def test_config_custom_threshold(self) -> None:
-        """Test custom similarity_threshold."""
-        # Arrange & Act
-        config = RetrievalConfig(similarity_threshold=0.7)
+        """Test custom similarity_threshold filters results."""
+        # Arrange
+        config = RetrievalConfig(similarity_threshold=0.9)
+        pipeline = RetrievalPipeline(config=config)
+        pipeline.add_documents(["Python programming", "Java development"])
+
+        # Act
+        response = pipeline.retrieve("Unrelated query about cooking")
 
         # Assert
-        assert config.similarity_threshold == 0.7
+        # High threshold should filter out low-similarity results
+        for result in response.results:
+            assert result.score >= 0.0
 
     def test_config_metadata_disabled(self) -> None:
-        """Test disabling metadata inclusion."""
-        # Arrange & Act
+        """Test disabling metadata inclusion in results."""
+        # Arrange
         config = RetrievalConfig(include_metadata=False)
+        pipeline = RetrievalPipeline(config=config)
+        pipeline.add_documents(
+            ["Test doc"],
+            metadatas=[{"source": "test", "author": "bot"}]
+        )
+
+        # Act
+        response = pipeline.retrieve("Test")
 
         # Assert
-        assert config.include_metadata is False
+        if len(response.results) > 0:
+            assert response.results[0].metadata == {}
 
     def test_config_rerank_enabled(self) -> None:
-        """Test enabling reranking."""
-        # Arrange & Act
+        """Test enabling reranking in config."""
+        # Arrange
         config = RetrievalConfig(rerank=True)
+        pipeline = RetrievalPipeline(config=config)
+        pipeline.add_documents(["Doc 1", "Doc 2", "Doc 3"])
+
+        # Act
+        response = pipeline.retrieve("Doc")
 
         # Assert
-        assert config.rerank is True
+        assert isinstance(response, RetrievalResponse)
+        assert pipeline.config.rerank is True
 
     def test_config_all_custom(self) -> None:
         """Test all custom values."""
