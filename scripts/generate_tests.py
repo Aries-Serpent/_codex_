@@ -45,7 +45,7 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.framework.test_generator import UnitTestGenerator
+from tests.framework.generator import UnitTestGenerator
 from tests.specs.flow_specifications import (
     physics_orchestration_spec,
     diffusion_flow_spec,

@@ -5,7 +5,7 @@ This module enables systematic generation of comprehensive unit tests
 for orchestration flows with minimal manual effort.
 
 Usage:
-    from tests.framework.test_generator import UnitTestGenerator, OrchestrationFlowSpec
+    from tests.framework.generator import UnitTestGenerator, OrchestrationFlowSpec
 
     spec = OrchestrationFlowSpec(...)
     generator = UnitTestGenerator(spec)
