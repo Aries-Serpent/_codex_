@@ -433,7 +433,7 @@ This report documents the comprehensive test coverage expansion effort across cr
 ### Framework Files Created
 
 5. `tests/framework/__init__.py` - Framework package init
-6. `tests/framework/test_generator.py` - Test generation engine (5.6KB)
+6. `tests/framework/generator.py` - Test generation engine (5.6KB)
 7. `tests/specs/__init__.py` - Specifications package init
 8. `tests/specs/flow_specifications.py` - Pre-defined flow specs (4.1KB)
 9. `scripts/generate_tests.py` - CLI tool (2.7KB, executable)

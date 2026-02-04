@@ -44,7 +44,7 @@ The framework consists of two main components:
 A dataclass that defines the characteristics of an orchestration flow:
 
 ```python
-from tests.framework.test_generator import OrchestrationFlowSpec
+from tests.framework.generator import OrchestrationFlowSpec
 
 spec = OrchestrationFlowSpec(
     module_path="agents.my_module",
@@ -67,7 +67,7 @@ spec = OrchestrationFlowSpec(
 Generates comprehensive test suites from specifications:
 
 ```python
-from tests.framework.test_generator import UnitTestGenerator
+from tests.framework.generator import UnitTestGenerator
 
 generator = UnitTestGenerator(spec)
 
@@ -137,7 +137,7 @@ Common edge cases to consider:
 ### Step 4: Create the Specification
 
 ```python
-from tests.framework.test_generator import OrchestrationFlowSpec
+from tests.framework.generator import OrchestrationFlowSpec
 
 my_flow_spec = OrchestrationFlowSpec(
     module_path="agents.data_processor",
@@ -186,7 +186,7 @@ my_flow_spec = OrchestrationFlowSpec(
 ### Step 5: Generate Tests
 
 ```python
-from tests.framework.test_generator import UnitTestGenerator
+from tests.framework.generator import UnitTestGenerator
 
 generator = UnitTestGenerator(my_flow_spec)
 test_code = generator.generate_complete_test_suite()
@@ -510,7 +510,7 @@ def my_fixture():
 Extend the `UnitTestGenerator` class:
 
 ```python
-from tests.framework.test_generator import UnitTestGenerator
+from tests.framework.generator import UnitTestGenerator
 
 class CustomTestGenerator(UnitTestGenerator):
     def _generate_performance_tests(self) -> str:
@@ -558,7 +558,7 @@ jobs:
 ### Example 1: Simple Flow
 
 ```python
-from tests.framework.test_generator import OrchestrationFlowSpec, UnitTestGenerator
+from tests.framework.generator import OrchestrationFlowSpec, UnitTestGenerator
 
 spec = OrchestrationFlowSpec(
     module_path="agents.simple",
