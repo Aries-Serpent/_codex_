@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import sys
+import warnings
 
 import pytest
 
@@ -152,8 +153,6 @@ class TestAsyncDataLoaders:
         Python 3.12 warns about using asyncio.get_event_loop() outside
         of async contexts. This test ensures our code doesn't trigger that.
         """
-        import warnings
-        
         # Run a simple async operation
         async def test_op():
             await asyncio.sleep(0.001)

@@ -7,6 +7,7 @@ Uses pytest markers to skip tests on CPU-only runners or when ACCELERATE_TEST is
 import os
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -37,9 +38,6 @@ class TestAccelerateInitGuard:
 
     def test_is_gpu_available(self):
         """Test GPU availability detection."""
-        # Import the mock module
-        from unittest.mock import patch
-        
         # Test with GPU not available
         with patch('torch.cuda.is_available') as mock_cuda:
             mock_cuda.return_value = False  # Return actual bool, not MagicMock
@@ -100,8 +98,6 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
-        from unittest.mock import MagicMock, patch
-        
         # Mock torch.cuda.is_available to return actual bool
         with patch('torch.cuda.is_available') as mock_cuda:
             mock_cuda.return_value = False  # Return actual bool, not MagicMock
