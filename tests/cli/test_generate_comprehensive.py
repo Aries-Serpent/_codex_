@@ -6,7 +6,6 @@ Tests model generation CLI functionality.
 
 import subprocess
 import sys
-from unittest.mock import MagicMock, patch
 
 import pytest
 

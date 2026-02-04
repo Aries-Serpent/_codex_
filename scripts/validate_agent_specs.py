@@ -11,7 +11,6 @@ Usage:
 
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -95,6 +94,9 @@ def parse_agent_spec(path: Path) -> dict[str, Any] | None:
     except Exception as e:
         logger.error(f"Failed to parse {path}: {e}")
         return None
+    
+    # Explicit return for unhandled file extensions
+    return None
 
 
 def validate_spec(spec: dict[str, Any], schema: dict[str, Any]) -> list[str]:

@@ -4,12 +4,8 @@ Comprehensive tests for codex_ml.cli.codex_cli module.
 Tests the main CLI entry point and command-line interface functionality.
 """
 
-import json
 import subprocess
 import sys
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -116,7 +112,9 @@ class TestCodexCLIConstants:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_CONFIG
             assert DEFAULT_TOKENIZER_CONFIG is not None
             assert isinstance(DEFAULT_TOKENIZER_CONFIG, str)
-            assert "tokenization" in DEFAULT_TOKENIZER_CONFIG or "tokenizer" in DEFAULT_TOKENIZER_CONFIG.lower()
+            # Check path contains expected component (case-insensitive)
+            config_lower = DEFAULT_TOKENIZER_CONFIG.lower()
+            assert "tokenization" in config_lower or "tokenizer" in config_lower
         except ImportError as e:
             pytest.skip(f"Constant import failed: {e}")
 
@@ -126,7 +124,9 @@ class TestCodexCLIConstants:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_JSON
             assert DEFAULT_TOKENIZER_JSON is not None
             assert isinstance(DEFAULT_TOKENIZER_JSON, str)
-            assert "tokenizer" in DEFAULT_TOKENIZER_JSON.lower()
+            # Check path contains expected component (case-insensitive)
+            json_lower = DEFAULT_TOKENIZER_JSON.lower()
+            assert "tokenizer" in json_lower
         except ImportError as e:
             pytest.skip(f"Constant import failed: {e}")
 

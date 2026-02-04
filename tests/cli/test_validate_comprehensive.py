@@ -241,4 +241,4 @@ class TestOptionalDependencies:
             if validate_config_file is not None:
                 assert callable(validate_config_file)
         except ImportError:
-            pass
+            pass  # Module not available - skip test

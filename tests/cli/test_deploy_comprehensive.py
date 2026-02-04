@@ -9,7 +9,6 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
@@ -83,6 +82,7 @@ class TestDeployDryRun:
                     dry_run=False,
                     run_metadata_dir=Path("/fake/metadata")
                 )
+            # Test that error message contains expected text (not URL validation)
             assert "Only --dry-run deployments are permitted" in str(excinfo.value)
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
@@ -106,6 +106,7 @@ class TestDeployDryRun:
                         dry_run=True,
                         run_metadata_dir=Path("/fake/metadata")
                     )
+                # Test that error message contains expected text (not URL validation)
                 assert "missing rollout_ring" in str(excinfo.value)
             finally:
                 config_path.unlink(missing_ok=True)
