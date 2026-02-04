@@ -16,7 +16,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 
 def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
@@ -34,7 +34,6 @@ def fix_hardcoded_password_false(file_path: Path, dry_run: bool = False) -> int:
         return 0
     
     content = file_path.read_text()
-    original = content
     fixes = 0
     
     # Pattern: keys ending in _token/_password with False value
@@ -261,7 +260,7 @@ def main() -> int:
     
     # Verify fixes if not dry run
     if not args.dry_run:
-        counts = run_bandit_verification()
+        run_bandit_verification()
     
     print("\n" + "="*70)
     if args.dry_run:

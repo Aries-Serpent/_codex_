@@ -381,6 +381,7 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 |-------|---------|----------|--------|
 | **Artifact Monitor Agent** | Autonomous CI/CD health monitoring with pattern recognition and agent orchestration | [.github/agents/artifact-monitor-agent.md](.github/agents/artifact-monitor-agent.md) | ✅ Active |
 | **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
+| **Tokenization Coverage Agent** | Improve src/tokenization coverage with targeted tests and validation | [.github/agents/tokenization-coverage-agent.md](.github/agents/tokenization-coverage-agent.md) | ✅ Active |
 | **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
 | **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
 | **Security Alert Verification Agent** | Verify GitHub security alerts and propose remediation steps | [.github/agents/security-alert-verification-agent.md](.github/agents/security-alert-verification-agent.md) | ✅ Active |

@@ -1,0 +1,88 @@
+================================================================================
+TOKENIZATION COVERAGE GAP ANALYSIS
+================================================================================
+
+Overall Coverage: 25.00%
+Target Coverage: 70.00%
+Gap to Target: 45.00 percentage points
+Lines Covered: 112/448
+
+--------------------------------------------------------------------------------
+PER-FILE COVERAGE GAPS (Highest Priority First)
+--------------------------------------------------------------------------------
+
+1. 📄 cli.py
+   Path: src/tokenization/cli.py
+   Current Coverage: 12.45% (34/221 lines)
+   Gap to 70% Target: 57.55 percentage points
+   Lines Needed: ~120 additional lines
+   Missing Lines (sample): [24, 123, 124, 125, 126, '...', 580, 581, 582, 583, 584]
+   Priority: 🔴 CRITICAL
+
+2. 📄 loader.py
+   Path: src/tokenization/loader.py
+   Current Coverage: 20.41% (10/37 lines)
+   Gap to 70% Target: 49.59 percentage points
+   Lines Needed: ~15 additional lines
+   Missing Lines (sample): [30, 31, 32, 33, 34, '...', 91, 92, 94, 95, 97]
+   Priority: 🟡 HIGH
+
+3. 📄 train_tokenizer.py
+   Path: src/tokenization/train_tokenizer.py
+   Current Coverage: 20.53% (38/152 lines)
+   Gap to 70% Target: 49.47 percentage points
+   Lines Needed: ~68 additional lines
+   Missing Lines (sample): [53, 92, 93, 94, 95, '...', 255, 257, 258, 263, 264]
+   Priority: 🟡 HIGH
+
+4. 📄 api.py
+   Path: src/tokenization/api.py
+   Current Coverage: 64.52% (17/23 lines)
+   Gap to 70% Target: 5.48 percentage points
+   Lines Needed: ~0 additional lines
+   Missing Lines: [59, 65, 66, 69, 79, 87]
+   Priority: 🟢 MEDIUM
+
+5. 📄 sentencepiece_adapter.py
+   Path: src/tokenization/sentencepiece_adapter.py
+   Current Coverage: 83.33% (10/12 lines)
+   Gap to 70% Target: -13.33 percentage points
+   Lines Needed: ~-1 additional lines
+   Missing Lines: [44, 45]
+   Priority: ✅ COMPLETE
+
+6. 📄 adapter.py
+   Path: src/tokenization/adapter.py
+   Current Coverage: 100.00% (3/3 lines)
+   Gap to 70% Target: -30.00 percentage points
+   Lines Needed: ~0 additional lines
+   Priority: ✅ COMPLETE
+
+================================================================================
+SUMMARY RECOMMENDATIONS
+================================================================================
+
+🔴 CRITICAL Priority Files: 1
+   - cli.py: 12.45% (need 120 lines)
+
+🟡 HIGH Priority Files: 2
+   - loader.py: 20.41% (need 15 lines)
+   - train_tokenizer.py: 20.53% (need 68 lines)
+
+🟢 MEDIUM Priority Files: 1
+   - api.py: 64.52% (need 0 lines)
+
+✅ COMPLETE Files (≥70%): 2
+   - sentencepiece_adapter.py: 83.33%
+   - adapter.py: 100.00%
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Focus test implementation on CRITICAL priority files first
+2. Implement 10+ comprehensive tests per plan in Pre-commit 5-8
+3. Target high-impact functions with low/no coverage
+4. Use test patterns from .codex/docs/TEST_DEVELOPMENT_PATTERNS.md
+
+================================================================================

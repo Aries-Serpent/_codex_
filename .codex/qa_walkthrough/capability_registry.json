@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "generated_at": "2026-01-21T22:12:00.000000+00:00",
-    "total_agents": 109,
-    "active_agents": 50,
-    "version": "3.0",
+    "generated_at": "2026-02-04T02:39:00.000000+00:00",
+    "total_agents": 290,
+    "active_agents": 85,
+    "version": "4.0",
     "active_agent_definition": "Agents with has_tests=true OR production-ready documentation",
     "total_agent_definition": "All agent directories and specification files in .github/agents/"
   },

@@ -1,41 +1,41 @@
 {
   "metadata": {
-    "generated_at": "2026-01-27T16:46:54.643499+00:00",
+    "generated_at": "2026-02-04T02:39:00.000000+00:00",
     "repository": "_codex_",
-    "branch": "copilot/sub-pr-3020",
-    "last_commit": "f8845062960ede23dba07a07bbdd1dccdc86f110",
-    "phase": "37",
-    "phase_status": "COMPLETE_PENDING_CI",
-    "previous_phase": "21.1"
+    "branch": "copilot/qa-walkthrough-codebase-update",
+    "last_commit": "current",
+    "phase": "41",
+    "phase_status": "COMPLETE_QA_WALKTHROUGH_UPDATE",
+    "previous_phase": "37"
   },
   "directory_structure": {
     "src": {
-      "total_files": 1305,
-      "python_files": 1043,
+      "total_files": 1350,
+      "python_files": 1052,
       "path": "src"
     },
     "tests": {
-      "total_files": 2200,
-      "python_files": 1797,
+      "total_files": 2400,
+      "python_files": 2040,
       "path": "tests"
     },
     "docs": {
-      "total_files": 1400,
+      "total_files": 1500,
       "python_files": 2,
       "path": "docs"
     },
     ".github": {
-      "total_files": 1500,
-      "python_files": 260,
+      "total_files": 1600,
+      "python_files": 280,
       "path": ".github"
     },
     ".codex": {
-      "total_files": 600,
-      "python_files": 14,
+      "total_files": 700,
+      "python_files": 16,
       "path": ".codex"
     },
     "configs": {
-      "total_files": 270,
+      "total_files": 290,
       "python_files": 5,
       "path": "configs"
     }
@@ -76,12 +76,12 @@
     }
   },
   "repository_stats": {
-    "total_python_files": 4191,
-    "total_test_files": 1797,
-    "total_markdown_files": 2684,
-    "total_workflows": 88,
-    "total_custom_agents": 109,
-    "total_test_functions": 15640
+    "total_python_files": 4325,
+    "total_test_files": 2040,
+    "total_markdown_files": 2953,
+    "total_workflows": 107,
+    "total_custom_agents": 290,
+    "total_test_functions": 16710
   },
   "offload_structure": {
     "location": "misc/repo-owner-review/",

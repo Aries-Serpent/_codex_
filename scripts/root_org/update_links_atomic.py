@@ -26,7 +26,7 @@ from typing import List, Tuple
 
 # Import the reference validator
 try:
-    from validate_references import scan_repository, SCAN_DIRS, SCAN_EXTENSIONS, SKIP_DIRS
+    from validate_references import SCAN_DIRS, SCAN_EXTENSIONS, SKIP_DIRS
 except ImportError:
     # If running standalone, define minimal versions
     SCAN_DIRS = ['docs', '.github', 'scripts', 'src', 'tests', '.codex']

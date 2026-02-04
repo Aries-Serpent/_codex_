@@ -1,0 +1,308 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Aries-Serpent/_codex_/configs/schemas/agent_spec.schema.json",
+  "title": "Agent Specification Schema",
+  "description": "Canonical schema for _codex_ agent specifications. All 290+ agents must conform to this schema.",
+  "type": "object",
+  "required": ["id", "name", "status", "maturity"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the agent (kebab-case)",
+      "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$",
+      "minLength": 3,
+      "maxLength": 64,
+      "examples": ["ci-testing-agent", "qa-walkthrough-agent"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable display name for the agent",
+      "minLength": 3,
+      "maxLength": 128,
+      "examples": ["CI Testing Agent", "QA Walkthrough Agent"]
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the agent specification",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$",
+      "default": "1.0.0",
+      "examples": ["1.0.0", "2.1.0-beta"]
+    },
+    "directory": {
+      "type": "string",
+      "description": "Path to the agent's directory relative to repository root",
+      "examples": [".github/agents/ci-testing-agent"]
+    },
+    "file": {
+      "type": "string",
+      "description": "Single file agent specification (alternative to directory)",
+      "examples": ["qa-walkthrough-agent.md"]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current operational status of the agent",
+      "enum": ["active", "inactive", "deprecated", "experimental"],
+      "default": "active"
+    },
+    "maturity": {
+      "type": "string",
+      "description": "Development maturity level",
+      "enum": ["experimental", "alpha", "beta", "production", "deprecated"],
+      "default": "experimental"
+    },
+    "priority": {
+      "type": "string",
+      "description": "Execution priority for agent orchestration",
+      "enum": ["critical", "high", "medium", "low"],
+      "default": "medium"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Brief description of the agent's primary function",
+      "maxLength": 500,
+      "examples": ["Specialized agent for debugging and fixing CI/CD pipeline issues"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the agent's capabilities and use cases",
+      "maxLength": 2000
+    },
+    "capabilities": {
+      "type": "array",
+      "description": "List of capabilities this agent provides",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "uniqueItems": true,
+      "examples": [["ci_failure_diagnosis", "test_failure_analysis", "log_analysis"]]
+    },
+    "integration_points": {
+      "type": "array",
+      "description": "Systems and tools this agent integrates with",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "examples": [["github_actions", "pytest", "cognitive_brain"]]
+    },
+    "tools": {
+      "type": "array",
+      "description": "Scripts and utilities the agent uses",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["scripts/analyze_test_patterns.py", "scripts/ci_diagnostics.py"]]
+    },
+    "has_prompts": {
+      "type": "boolean",
+      "description": "Whether the agent has defined prompt templates",
+      "default": false
+    },
+    "has_tests": {
+      "type": "boolean",
+      "description": "Whether the agent has automated tests",
+      "default": false
+    },
+    "has_docs": {
+      "type": "boolean",
+      "description": "Whether the agent has documentation",
+      "default": false
+    },
+    "has_src": {
+      "type": "boolean",
+      "description": "Whether the agent has source code implementation",
+      "default": false
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Other agents this agent depends on",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+      },
+      "uniqueItems": true
+    },
+    "triggers": {
+      "type": "object",
+      "description": "Events that trigger this agent",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "push",
+              "pull_request",
+              "workflow_dispatch",
+              "schedule",
+              "issue_comment",
+              "release",
+              "manual"
+            ]
+          }
+        },
+        "schedule": {
+          "type": "string",
+          "description": "Cron expression for scheduled triggers",
+          "pattern": "^(@(annually|yearly|monthly|weekly|daily|hourly))|((\\*|\\d+|\\d+-\\d+|\\d+\\/\\d+)(\\s+(\\*|\\d+|\\d+-\\d+|\\d+\\/\\d+)){4})$"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Conditions that must be met for the trigger"
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Input parameters the agent accepts",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean", "array", "object"]
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "default": {},
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Outputs the agent produces",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean", "array", "object", "file"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "File path for file outputs"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Performance and success metrics",
+      "properties": {
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Success rate percentage"
+        },
+        "avg_execution_time": {
+          "type": "string",
+          "description": "Average execution time (e.g., '3.2min')"
+        },
+        "last_run": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of last execution"
+        },
+        "run_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of executions"
+        }
+      }
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when agent was created"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when agent was last updated"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author or maintainer of the agent"
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags for categorization and discovery",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "examples": [["testing", "ci-cd", "quality"]]
+    },
+    "category": {
+      "type": "string",
+      "description": "Primary category of the agent",
+      "enum": [
+        "testing",
+        "documentation",
+        "security",
+        "ci_cd",
+        "quality",
+        "ai",
+        "architecture",
+        "deployment",
+        "dependencies",
+        "validation",
+        "linting",
+        "monitoring",
+        "automation",
+        "coordination",
+        "analysis",
+        "migration",
+        "compliance",
+        "other"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "ci-testing-agent",
+      "name": "CI Testing Agent",
+      "version": "1.0.0",
+      "directory": ".github/agents/ci-testing-agent",
+      "status": "active",
+      "maturity": "production",
+      "priority": "high",
+      "purpose": "Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems",
+      "capabilities": [
+        "ci_failure_diagnosis",
+        "test_failure_analysis",
+        "build_problem_resolution",
+        "log_analysis"
+      ],
+      "integration_points": [
+        "github_actions",
+        "cognitive_brain",
+        "pytest",
+        "cargo"
+      ],
+      "has_prompts": false,
+      "has_tests": true,
+      "has_docs": true,
+      "has_src": true,
+      "category": "ci_cd",
+      "created": "2026-01-15T00:00:00Z",
+      "updated": "2026-02-04T02:55:00Z"
+    }
+  ]
+}

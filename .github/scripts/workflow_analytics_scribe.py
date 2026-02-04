@@ -23,8 +23,13 @@ from typing import Any, Dict, List, Tuple
 
 # Try to import scribe tools if available
 try:
-    from codex.agents.doc_test_scribe import analyzer, tokenizer
-    SCRIBE_AVAILABLE = True
+    import importlib.util
+    spec = importlib.util.find_spec("codex.agents.doc_test_scribe")
+    if spec is not None:
+        from codex.agents.doc_test_scribe import analyzer, tokenizer
+        SCRIBE_AVAILABLE = True
+    else:
+        SCRIBE_AVAILABLE = False
 except ImportError:
     SCRIBE_AVAILABLE = False
     print("⚠️ Doc-test-scribe tools not available, using basic analysis")

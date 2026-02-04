@@ -69,7 +69,7 @@ except ImportError:
     logger.warning("requests not available - install with: pip install requests")
 
 try:
-    from nacl import encoding, public
+    from nacl import public
     NACL_AVAILABLE = True
 except ImportError:
     NACL_AVAILABLE = False

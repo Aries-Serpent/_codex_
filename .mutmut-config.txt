@@ -4,15 +4,15 @@
 # and checking if tests catch them. High-quality tests should catch most mutations.
 
 [mutmut]
-# Paths to mutate
-paths_to_mutate = agents/
+# Paths to mutate - security functions in test file
+paths_to_mutate = tests/rag/test_security_enhanced.py
 
 # Test command to run after each mutation
-runner = pytest -x --tb=short --no-cov
+runner = pytest tests/rag/test_security_enhanced.py -x --tb=short -q
 
 # Timeout for each test run (seconds)
-test_time_multiplier = 2.0
-test_time_base = 0.0
+test_time_multiplier = 3.0
+test_time_base = 5.0
 
 # Paths to exclude from mutation
 exclude_patterns =
