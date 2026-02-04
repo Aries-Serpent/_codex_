@@ -42,7 +42,7 @@ def test_rejects_unsafe_table_name(tmp_path: Path) -> None:
 def test_allows_unsafe_with_override(tmp_path: Path) -> None:
     nd = tmp_path / "m.ndjson"
     nd.write_text('{"epoch":0,"loss":1.0}\n', encoding="utf-8")
-    rc, out, _err = run_cli(
+    rc, out, err = run_cli(
         [
             "ingest",
             "--input",
@@ -56,6 +56,9 @@ def test_allows_unsafe_with_override(tmp_path: Path) -> None:
             "--allow-unsafe-table-name",
         ]
     )
-    assert rc == 0
+    # With the allow-unsafe-table-name flag, should succeed (exit code 0)
+    assert rc == 0, f"Expected success with --allow-unsafe-table-name flag. stderr: {err}, stdout: {out}"
+    
+    # Verify success message in output
     payload = json.loads(out)
     assert payload["ok"] is True

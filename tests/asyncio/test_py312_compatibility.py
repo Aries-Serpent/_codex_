@@ -118,23 +118,17 @@ class TestRequestBatcherAsyncContext:
     async def test_request_batcher_async_context(self):
         """Test RequestBatcher works in Python 3.12 async context."""
         try:
-            from codex_ml.serving.optimizations import RequestBatcher
+            from codex_ml.serving.optimizations import BatchConfig, RequestBatcher
         except ImportError:
             pytest.skip("RequestBatcher not available")
         
-        # Mock the batch processing function
-        async def mock_batch_fn(batch):
-            await asyncio.sleep(0.001)
-            return [f"processed_{item}" for item in batch]
-        
-        batcher = RequestBatcher(
-            batch_fn=mock_batch_fn,
-            max_batch_size=10,
-            max_wait_time=0.1
-        )
+        # Create RequestBatcher with correct parameters
+        config = BatchConfig(max_batch_size=10, max_wait_ms=100)
+        batcher = RequestBatcher(config=config)
         
         # This should work without deprecated asyncio.get_event_loop() calls
         assert batcher is not None
+        assert batcher.config.max_batch_size == 10
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ only")
@@ -158,19 +152,29 @@ class TestAsyncDataLoaders:
         Python 3.12 warns about using asyncio.get_event_loop() outside
         of async contexts. This test ensures our code doesn't trigger that.
         """
+        import warnings
+        
         # Run a simple async operation
         async def test_op():
             await asyncio.sleep(0.001)
             return True
         
-        # Should not emit any warnings about event loop
-        with pytest.warns(None) as warning_list:
+        # Capture warnings
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter("always")
             result = await test_op()
         
         assert result is True
+        
         # Check no deprecation warnings about event loop
-        for warning in warning_list:
-            assert "event loop" not in str(warning.message).lower()
+        event_loop_warnings = [
+            w for w in warning_list 
+            if issubclass(w.category, (DeprecationWarning, RuntimeWarning))
+            and 'event loop' in str(w.message).lower()
+        ]
+        
+        assert len(event_loop_warnings) == 0, \
+            f"Unexpected event loop warnings: {event_loop_warnings}"
 
 
 @pytest.mark.asyncio
