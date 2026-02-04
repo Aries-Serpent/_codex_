@@ -77,6 +77,14 @@ repos:
         language: system
         pass_filenames: false
         
+      # Test file naming convention enforcement
+      - id: check-test-utility-naming
+        name: Check for test_*.py utility files (pytest collection risk)
+        entry: .pre-commit-scripts/check-test-utility-naming.sh
+        language: system
+        pass_filenames: false
+        # Run on all commits to catch existing problematic files
+        
       - id: pip-compile
         name: pip-compile (manual)
         entry: bash -c 'if [ -f requirements.in ]; then pip-compile requirements.in -o requirements.txt; fi'
