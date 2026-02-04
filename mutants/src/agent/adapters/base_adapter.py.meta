@@ -1,0 +1,10 @@
+{
+    "exit_code_by_key": {
+        "agent.adapters.base_adapter.x\u01c1BaseAdapter\u01c1get_default_model__mutmut_1": null,
+        "agent.adapters.base_adapter.x\u01c1BaseAdapter\u01c1get_default_model__mutmut_2": null,
+        "agent.adapters.base_adapter.x\u01c1BaseAdapter\u01c1estimate_cost__mutmut_1": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

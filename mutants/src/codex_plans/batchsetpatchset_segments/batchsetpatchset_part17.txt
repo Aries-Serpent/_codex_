@@ -1,0 +1,479 @@
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+cd "${REPO_ROOT}"
+
+if ! command -v python >/dev/null 2>&1; then
+  echo "[codex_quick_audit] python not found on PATH" >&2
+  exit 1
+fi
+
+echo "[codex_quick_audit] Running quick audit via codex_cli..."
+python tools/codex_cli.py quick-audit --repo-root "${REPO_ROOT}"
+RC=$?
+
+if [ "${RC}" -ne 0 ]; then
+  echo "[codex_quick_audit] Quick audit completed with non-zero status (${RC})." >&2
+else
+  echo "[codex_quick_audit] Quick audit completed successfully."
+fi
+
+exit "${RC}"
+```
+
+Make sure this file is executable after creation:
+
+* `chmod +x scripts/codex_quick_audit.sh`
+
+===============================================================================
+3) CLI Quickstart – docs/cli/codex_cli_quickstart.md
+====================================================
+
+Create/overwrite: docs/cli/codex_cli_quickstart.md
+
+````markdown
+# `_codex_` CLI Quickstart
+
+This document introduces the unified CLI:
+
+- `tools/codex_cli.py`
+
+which wraps the various local tools used for audit, reproducibility,
+and diagnostics.
+
+## 1. Installation & Invocation
+
+The CLI is part of the `_codex_` repository. From the repo root:
+
+```bash
+python tools/codex_cli.py --help
+````
+
+You can also use the convenience script:
+
+```bash
+scripts/codex_quick_audit.sh
+```
+
+which simply runs:
+
+```bash
+python tools/codex_cli.py quick-audit
+```
+
+## 2. Common Commands
+
+### 2.1 Quick Audit
+
+Run a best-effort local audit, generating a standard set of artifacts:
+
+```bash
+python tools/codex_cli.py quick-audit
+```
+
+Artifacts (depending on which tools are present):
+
+* `codex_env_snapshot.json`
+* `codex_dependency_report.json`
+* `codex_dataset_index.json`
+* `codex_dataset_index.md`
+* `codex_local_gate_report.json`
+* `codex_experiment_index.json`
+* `codex_gap_registry.yaml`
+* `codex_yaml_gap_report.md`
+* `codex_repro_manifest.json`
+
+If some tools are missing, the CLI prints a clear error for that step
+but attempts to continue with remaining steps.
+
+### 2.2 Environment Snapshot
+
+```bash
+python tools/codex_cli.py env snapshot \
+  --out codex_env_snapshot.json
+```
+
+### 2.3 Dependency Report
+
+```bash
+python tools/codex_cli.py deps report \
+  --out codex_dependency_report.json
+```
+
+### 2.4 Dataset Index
+
+```bash
+python tools/codex_cli.py dataset index \
+  --data-root data \
+  --json-out codex_dataset_index.json \
+  --md-out codex_dataset_index.md
+```
+
+### 2.5 Local Gates
+
+```bash
+python tools/codex_cli.py gates run \
+  --repo-root . \
+  --config codex_local_gate.yaml \
+  --json-out codex_local_gate_report.json
+```
+
+### 2.6 Experiment Index
+
+```bash
+python tools/codex_cli.py experiments index \
+  --runs-root runs \
+  --out codex_experiment_index.json
+```
+
+### 2.7 Gap Registry & YAML Coverage
+
+```bash
+python tools/codex_cli.py gap-registry update \
+  --audit _codex_status_update-2025-11-27.md \
+  --change-log codex_change_log.md \
+  --errors codex_error_questions.md \
+  --out codex_gap_registry.yaml
+
+python tools/codex_cli.py yaml-gaps check \
+  --gaps codex_gap_registry.yaml \
+  --yaml codex_task_sequence.yaml \
+  --out codex_yaml_gap_report.md
+```
+
+### 2.8 Task Sequence
+
+```bash
+python tools/codex_cli.py task-sequence run \
+  --yaml codex_task_sequence.yaml \
+  --repo-root . \
+  --change-log codex_change_log.md \
+  --errors codex_error_questions.md
+```
+
+### 2.9 Reproducibility Manifest
+
+```bash
+python tools/codex_cli.py repro-manifest build \
+  --out codex_repro_manifest.json
+```
+
+This command assumes the referenced artifacts exist (env, deps, gates,
+dataset index, experiment index). Running `quick-audit` first is
+recommended.
+
+````
+
+===============================================================================
+4) CLI Reference – docs/cli/codex_cli_reference.md
+===============================================================================
+
+Create/overwrite: docs/cli/codex_cli_reference.md
+
+```markdown
+# `_codex_` CLI Reference
+
+This document provides a more detailed reference for the unified CLI:
+
+- `tools/codex_cli.py`
+
+The CLI follows the structure:
+
+```text
+python tools/codex_cli.py <command> [subcommand] [options...]
+````
+
+## 1. Commands Overview
+
+Top-level commands:
+
+* `env`
+* `deps`
+* `dataset`
+* `mltest`
+* `gates`
+* `experiments`
+* `gap-registry`
+* `yaml-gaps`
+* `task-sequence`
+* `repro-manifest`
+* `quick-audit`
+
+Each command has one or more subcommands.
+
+## 2. `env` Command
+
+### 2.1 `env snapshot`
+
+Generate an environment snapshot.
+
+```bash
+python tools/codex_cli.py env snapshot \
+  --out codex_env_snapshot.json
+```
+
+Options:
+
+* `--out` (default: `codex_env_snapshot.json`)
+
+Delegates to:
+
+* `tools.codex_env_snapshot.main`
+
+## 3. `deps` Command
+
+### 3.1 `deps report`
+
+Generate a dependency report.
+
+```bash
+python tools/codex_cli.py deps report \
+  --out codex_dependency_report.json
+```
+
+Options:
+
+* `--out` (default: `codex_dependency_report.json`)
+
+Delegates to:
+
+* `tools.codex_dependency_report.main`
+
+## 4. `dataset` Command
+
+### 4.1 `dataset index`
+
+Build a dataset index for the `data/` tree.
+
+```bash
+python tools/codex_cli.py dataset index \
+  --data-root data \
+  --json-out codex_dataset_index.json \
+  --md-out codex_dataset_index.md
+```
+
+Options:
+
+* `--data-root` (default: `data`)
+* `--json-out` (default: `codex_dataset_index.json`)
+* `--md-out` (default: `codex_dataset_index.md`)
+
+Delegates to:
+
+* `tools.codex_dataset_index.main`
+
+## 5. `mltest` Command
+
+### 5.1 `mltest run`
+
+Run ML Test Score-style categories.
+
+```bash
+python tools/codex_cli.py mltest run \
+  --repo-root . \
+  --map codex_ml_test_map.yaml \
+  --all \
+  --json-out codex_mltest_results.json
+```
+
+Or, single category:
+
+```bash
+python tools/codex_cli.py mltest run \
+  --repo-root . \
+  --map codex_ml_test_map.yaml \
+  --category model \
+  --json-out codex_mltest_results.json
+```
+
+Options:
+
+* `--repo-root` (default: `.`)
+* `--map` (default: `codex_ml_test_map.yaml`)
+* `--all` (mutually exclusive with `--category`)
+* `--category` (mutually exclusive with `--all`)
+* `--json-out` (default: `codex_mltest_results.json`)
+
+Delegates to:
+
+* `tools.codex_mltest_runner.main`
+
+## 6. `gates` Command
+
+### 6.1 `gates run`
+
+Run local CI gates.
+
+```bash
+python tools/codex_cli.py gates run \
+  --repo-root . \
+  --config codex_local_gate.yaml \
+  --json-out codex_local_gate_report.json
+```
+
+Options:
+
+* `--repo-root` (default: `.`)
+* `--config` (default: `codex_local_gate.yaml`)
+* `--json-out` (default: `codex_local_gate_report.json`)
+
+Delegates to:
+
+* `tools.codex_local_gate_runner.main`
+
+## 7. `experiments` Command
+
+### 7.1 `experiments index`
+
+Build a local experiment index.
+
+```bash
+python tools/codex_cli.py experiments index \
+  --runs-root runs \
+  --out codex_experiment_index.json
+```
+
+Options:
+
+* `--runs-root` (default: `runs`)
+* `--out` (default: `codex_experiment_index.json`)
+
+Delegates to:
+
+* `tools.codex_experiment_index.main`
+
+## 8. `gap-registry` Command
+
+### 8.1 `gap-registry update`
+
+Rebuild the gap registry from audit + change log + errors.
+
+```bash
+python tools/codex_cli.py gap-registry update \
+  --audit _codex_status_update-2025-11-27.md \
+  --change-log codex_change_log.md \
+  --errors codex_error_questions.md \
+  --out codex_gap_registry.yaml
+```
+
+Options:
+
+* `--audit` (default: `_codex_status_update-2025-11-27.md`)
+* `--change-log` (default: `codex_change_log.md`)
+* `--errors` (default: `codex_error_questions.md`)
+* `--out` (default: `codex_gap_registry.yaml`)
+
+Delegates to:
+
+* `tools.codex_gap_registry.main`
+
+## 9. `yaml-gaps` Command
+
+### 9.1 `yaml-gaps check`
+
+Generate a YAML coverage report.
+
+```bash
+python tools/codex_cli.py yaml-gaps check \
+  --gaps codex_gap_registry.yaml \
+  --yaml codex_task_sequence.yaml \
+  --out codex_yaml_gap_report.md
+```
+
+Options:
+
+* `--gaps` (default: `codex_gap_registry.yaml`)
+* `--yaml` (default: `codex_task_sequence.yaml`)
+* `--out` (default: `codex_yaml_gap_report.md`)
+
+Delegates to:
+
+* `tools.codex_yaml_gap_check.main`
+
+## 10. `task-sequence` Command
+
+### 10.1 `task-sequence run`
+
+Run the Codex task sequence YAML.
+
+```bash
+python tools/codex_cli.py task-sequence run \
+  --yaml codex_task_sequence.yaml \
+  --repo-root . \
+  --change-log codex_change_log.md \
+  --errors codex_error_questions.md
+```
+
+Options:
+
+* `--yaml` (default: `codex_task_sequence.yaml`)
+* `--repo-root` (default: `.`)
+* `--change-log` (default: `codex_change_log.md`)
+* `--errors` (default: `codex_error_questions.md`)
+
+Delegates to:
+
+* `tools.codex_task_sequence_runner.main`
+
+## 11. `repro-manifest` Command
+
+### 11.1 `repro-manifest build`
+
+Build the reproducibility manifest.
+
+```bash
+python tools/codex_cli.py repro-manifest build \
+  --out codex_repro_manifest.json
+```
+
+Options:
+
+* `--out` (default: `codex_repro_manifest.json`)
+* `--env` (default: `codex_env_snapshot.json`)
+* `--deps` (default: `codex_dependency_report.json`)
+* `--gates` (default: `codex_local_gate_report.json`)
+* `--dataset-index` (default: `codex_dataset_index.json`)
+* `--experiment-index` (default: `codex_experiment_index.json`)
+
+Delegates to:
+
+* `tools.codex_repro_manifest.main`
+
+## 12. `quick-audit` Command
+
+### 12.1 `quick-audit`
+
+Run a best-effort sequence of core steps:
+
+```bash
+python tools/codex_cli.py quick-audit
+```
+
+This command wraps:
+
+1. `env snapshot`
+2. `deps report`
+3. `dataset index`
+4. `gates run`
+5. `experiments index`
+6. `gap-registry update`
+7. `yaml-gaps check`
+8. `repro-manifest build`
+
+Failures in any individual step are recorded via a non-zero overall
+exit code, but the CLI attempts to continue running later steps to
+maximize artifact generation.
+
+```
+
+===============================================================================
+5) After applying this batch
+===============================================================================
+
+After you apply all changes from this batch, run locally (not by me):
+
+- `python tools/codex_cli.py --help`
+- `python tools/codex_cli.py quick-audit`
+- `bash scripts/codex_quick_audit.sh`
+- Optionally:
+  - `python tools/codex_cli.py env snapshot`
+  - `python tools/codex_cli.py gates run`

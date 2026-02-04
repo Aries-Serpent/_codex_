@@ -1,0 +1,392 @@
+"""FastAPI endpoints for fetching GitHub Actions logs.
+
+Provides REST API endpoints to fetch logs from GitHub Actions workflows, jobs, and check runs.
+"""
+
+from __future__ import annotations
+
+import logging
+from enum import Enum
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Path, Query
+from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix="/github", tags=["github"])
+from inspect import signature as _mutmut_signature
+from typing import Annotated
+from typing import Callable
+from typing import ClassVar
+
+
+MutantDict = Annotated[dict[str, Callable], "Mutant"]
+
+
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+    """Forward call to original or mutated function, depending on the environment"""
+    import os
+    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
+    if mutant_under_test == 'fail':
+        from mutmut.__main__ import MutmutProgrammaticFailException
+        raise MutmutProgrammaticFailException('Failed programmatically')      
+    elif mutant_under_test == 'stats':
+        from mutmut.__main__ import record_trampoline_hit
+        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+        result = orig(*call_args, **call_kwargs)
+        return result
+    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    if not mutant_under_test.startswith(prefix):
+        result = orig(*call_args, **call_kwargs)
+        return result
+    mutant_name = mutant_under_test.rpartition('.')[-1]
+    if self_arg is not None:
+        # call to a class method where self is not bound
+        result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
+    else:
+        result = mutants[mutant_name](*call_args, **call_kwargs)
+    return result
+
+
+class CheckRunStatus(str, Enum):
+    """Valid check run status values."""
+    
+    QUEUED = "queued"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+
+
+class CheckRunLogsResponse(BaseModel):
+    """Response model for check run logs."""
+
+    check_run_id: int
+    owner: str
+    repo: str
+    check_run_name: str
+    check_run_status: str
+    check_run_conclusion: Optional[str]
+    check_run_url: str
+    logs: str
+
+
+class JobLogsResponse(BaseModel):
+    """Response model for job logs."""
+
+    job_id: int
+    owner: str
+    repo: str
+    logs: str
+
+
+class CheckRunInfo(BaseModel):
+    """Check run information."""
+
+    id: int
+    name: str
+    status: CheckRunStatus
+    conclusion: Optional[str]
+    html_url: str
+    started_at: Optional[str]
+    completed_at: Optional[str]
+
+
+class CheckRunsListResponse(BaseModel):
+    """Response model for listing check runs."""
+
+    owner: str
+    repo: str
+    ref: str
+    total_count: int
+    check_runs: list[CheckRunInfo]
+
+
+def x__get_github_client__mutmut_orig():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+        )
+
+
+def x__get_github_client__mutmut_1():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(None)
+        raise HTTPException(
+            status_code=500,
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+        )
+
+
+def x__get_github_client__mutmut_2():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            status_code=None,
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+        )
+
+
+def x__get_github_client__mutmut_3():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=None
+        )
+
+
+def x__get_github_client__mutmut_4():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+        )
+
+
+def x__get_github_client__mutmut_5():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            status_code=500,
+            )
+
+
+def x__get_github_client__mutmut_6():
+    """Get GitHub client instance."""
+    try:
+        from src.services.github.client import GitHubClientSync
+        return GitHubClientSync()
+    except ImportError as e:
+        logger.error(f"GitHub client not available: {e}")
+        raise HTTPException(
+            status_code=501,
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+        )
+
+x__get_github_client__mutmut_mutants : ClassVar[MutantDict] = {
+'x__get_github_client__mutmut_1': x__get_github_client__mutmut_1, 
+    'x__get_github_client__mutmut_2': x__get_github_client__mutmut_2, 
+    'x__get_github_client__mutmut_3': x__get_github_client__mutmut_3, 
+    'x__get_github_client__mutmut_4': x__get_github_client__mutmut_4, 
+    'x__get_github_client__mutmut_5': x__get_github_client__mutmut_5, 
+    'x__get_github_client__mutmut_6': x__get_github_client__mutmut_6
+}
+
+def _get_github_client(*args, **kwargs):
+    result = _mutmut_trampoline(x__get_github_client__mutmut_orig, x__get_github_client__mutmut_mutants, args, kwargs)
+    return result 
+
+_get_github_client.__signature__ = _mutmut_signature(x__get_github_client__mutmut_orig)
+x__get_github_client__mutmut_orig.__name__ = 'x__get_github_client'
+
+
+@router.get(
+    "/check-runs/{check_run_id}/logs",
+    response_model=CheckRunLogsResponse,
+    summary="Get check run logs",
+    description="Fetch logs from a GitHub Actions check run by ID.",
+)
+async def get_check_run_logs(
+    check_run_id: int = Path(..., description="Check run ID"),
+    owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
+    repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
+):
+    """Fetch logs from a GitHub Actions check run.
+    
+    Args:
+        check_run_id: The check run ID to fetch logs for.
+        owner: Repository owner.
+        repo: Repository name.
+    
+    Returns:
+        CheckRunLogsResponse containing check run details and logs.
+    
+    Raises:
+        HTTPException: If check run not found or logs unavailable.
+    """
+    try:
+        client = _get_github_client()
+        
+        # Fetch check run details
+        check_run = client.get_check_run(owner, repo, check_run_id)
+        
+        # Fetch logs
+        logs = client.get_check_run_logs(owner, repo, check_run_id)
+        
+        return CheckRunLogsResponse(
+            check_run_id=check_run_id,
+            owner=owner,
+            repo=repo,
+            check_run_name=check_run.name,
+            check_run_status=check_run.status,
+            check_run_conclusion=check_run.conclusion,
+            check_run_url=check_run.html_url,
+            logs=logs,
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
+        
+        # Convert GitHub client exceptions to HTTP exceptions
+        if "not found" in str(e).lower():
+            raise HTTPException(status_code=404, detail=str(e))
+        elif "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail=str(e))
+        elif "authentication" in str(e).lower():
+            raise HTTPException(status_code=401, detail=str(e))
+        else:
+            raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/jobs/{job_id}/logs",
+    response_model=JobLogsResponse,
+    summary="Get job logs",
+    description="Fetch logs from a GitHub Actions workflow job by ID.",
+)
+async def get_job_logs(
+    job_id: int = Path(..., description="Job ID"),
+    owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
+    repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
+):
+    """Fetch logs from a GitHub Actions workflow job.
+    
+    Args:
+        job_id: The job ID to fetch logs for.
+        owner: Repository owner.
+        repo: Repository name.
+    
+    Returns:
+        JobLogsResponse containing job logs.
+    
+    Raises:
+        HTTPException: If job not found or logs unavailable.
+    """
+    try:
+        client = _get_github_client()
+        
+        # Fetch logs
+        logs = client.get_job_logs(owner, repo, job_id)
+        
+        return JobLogsResponse(
+            job_id=job_id,
+            owner=owner,
+            repo=repo,
+            logs=logs,
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
+        
+        # Convert GitHub client exceptions to HTTP exceptions
+        if "not found" in str(e).lower():
+            raise HTTPException(status_code=404, detail=str(e))
+        elif "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail=str(e))
+        elif "authentication" in str(e).lower():
+            raise HTTPException(status_code=401, detail=str(e))
+        else:
+            raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/check-runs",
+    response_model=CheckRunsListResponse,
+    summary="List check runs",
+    description="List check runs for a git reference (commit, branch, or tag).",
+)
+async def list_check_runs(
+    owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
+    repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
+    ref: str = Query(..., description="Git reference (commit SHA, branch, or tag)"),
+    status: Optional[CheckRunStatus] = Query(None, description="Filter by status (queued, in_progress, completed)"),
+    check_name: Optional[str] = Query(None, description="Filter by check run name"),
+):
+    """List check runs for a git reference.
+    
+    Args:
+        owner: Repository owner.
+        repo: Repository name.
+        ref: Git reference (commit SHA, branch, or tag).
+        status: Optional status filter.
+        check_name: Optional check name filter.
+    
+    Returns:
+        CheckRunsListResponse containing list of check runs.
+    
+    Raises:
+        HTTPException: If request fails.
+    """
+    try:
+        client = _get_github_client()
+        
+        from src.services.github.types import CheckRunStatus
+        status_enum = CheckRunStatus(status) if status else None
+        
+        # Fetch check runs
+        check_runs = client.list_check_runs_for_ref(
+            owner, repo, ref,
+            check_name=check_name,
+            status=status_enum
+        )
+        
+        # Convert to response format
+        check_runs_info = [
+            CheckRunInfo(
+                id=run.id,
+                name=run.name,
+                status=run.status,
+                conclusion=run.conclusion,
+                html_url=run.html_url,
+                started_at=run.started_at.isoformat() if run.started_at else None,
+                completed_at=run.completed_at.isoformat() if run.completed_at else None,
+            )
+            for run in check_runs
+        ]
+        
+        return CheckRunsListResponse(
+            owner=owner,
+            repo=repo,
+            ref=ref,
+            total_count=len(check_runs_info),
+            check_runs=check_runs_info,
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to list check runs: {e}", exc_info=True)
+        
+        # Convert GitHub client exceptions to HTTP exceptions
+        if "not found" in str(e).lower():
+            raise HTTPException(status_code=404, detail=str(e))
+        elif "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail=str(e))
+        elif "authentication" in str(e).lower():
+            raise HTTPException(status_code=401, detail=str(e))
+        else:
+            raise HTTPException(status_code=500, detail=str(e))

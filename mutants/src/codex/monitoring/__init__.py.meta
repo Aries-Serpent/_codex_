@@ -1,0 +1,15 @@
+{
+    "exit_code_by_key": {
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1__init____mutmut_1": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1register__mutmut_1": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1get__mutmut_1": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1emit_counter__mutmut_1": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1emit_counter__mutmut_2": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1emit_counter__mutmut_3": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1emit_counter__mutmut_4": null,
+        "codex.monitoring.x\u01c1_MetricRegistry\u01c1emit_counter__mutmut_5": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

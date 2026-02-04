@@ -1,0 +1,14 @@
+{
+    "exit_code_by_key": {
+        "codex_plans.x_list_plan_documents__mutmut_1": null,
+        "codex_plans.x_list_plan_documents__mutmut_2": null,
+        "codex_plans.x_list_plan_documents__mutmut_3": null,
+        "codex_plans.x_list_plan_documents__mutmut_4": null,
+        "codex_plans.x_list_plan_documents__mutmut_5": null,
+        "codex_plans.x_list_plan_documents__mutmut_6": null,
+        "codex_plans.x_list_plan_documents__mutmut_7": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

@@ -1,0 +1,96 @@
+"""Codex AST Analysis Framework.
+
+Provides unified AST analysis across multiple languages (Python, YAML, JSON).
+
+Components:
+- node: StandardizedASTNode dataclass hierarchy (BLOCK-ARCH-001)
+- graph: DependencyGraph with cycle detection (BLOCK-ARCH-002)
+- metrics: CodeMetrics and MetricsAggregator (BLOCK-ARCH-003)
+- parser: UniversalParser using libcst/ast (FR-AST-001)
+- smells: CodeSmellDetector rules engine (FR-AST-007)
+- export: KnowledgeGraphExporter multi-format (FR-AST-011)
+- cli: CLI tools (analyze, audit, diff) (FR-AST-013)
+- language_registry: Multi-language support via tree-sitter
+- baseline: SQLite-backed baseline storage for incremental analysis
+- delta: Change detection (added/removed/modified)
+"""
+
+__version__ = "1.1.0"
+
+from .export import ExportFormat, ExportResult, KnowledgeGraphExporter, export_knowledge_graph
+from .graph import DependencyGraph
+from .metrics import CodeMetrics, MetricsAggregator
+from .node import NodeType, SourceLocation, StandardizedASTNode
+from .parser import ParseError, UniversalParser, parse_python
+from .smells import CodeSmell, CodeSmellDetector, SmellCategory, SmellSeverity, detect_smells
+
+# New components for incremental analysis
+from .baseline import BaselineManager
+from .delta import DeltaAnalyzer, DeltaResult
+from .language_registry import LanguageRegistry
+
+__all__ = [
+    # Node representation (BLOCK-ARCH-001)
+    "StandardizedASTNode",
+    "NodeType",
+    "SourceLocation",
+    # Dependency graph (BLOCK-ARCH-002)
+    "DependencyGraph",
+    # Metrics (BLOCK-ARCH-003)
+    "CodeMetrics",
+    "MetricsAggregator",
+    # Parser (FR-AST-001)
+    "UniversalParser",
+    "ParseError",
+    "parse_python",
+    # Code smells (FR-AST-007)
+    "CodeSmellDetector",
+    "CodeSmell",
+    "SmellSeverity",
+    "SmellCategory",
+    "detect_smells",
+    # Export (FR-AST-011)
+    "KnowledgeGraphExporter",
+    "ExportFormat",
+    "ExportResult",
+    "export_knowledge_graph",
+    # Language registry (multi-language support)
+    "LanguageRegistry",
+    # Baseline management (incremental analysis)
+    "BaselineManager",
+    # Delta analysis (change detection)
+    "DeltaAnalyzer",
+    "DeltaResult",
+]
+from inspect import signature as _mutmut_signature
+from typing import Annotated
+from typing import Callable
+from typing import ClassVar
+
+
+MutantDict = Annotated[dict[str, Callable], "Mutant"]
+
+
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+    """Forward call to original or mutated function, depending on the environment"""
+    import os
+    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
+    if mutant_under_test == 'fail':
+        from mutmut.__main__ import MutmutProgrammaticFailException
+        raise MutmutProgrammaticFailException('Failed programmatically')      
+    elif mutant_under_test == 'stats':
+        from mutmut.__main__ import record_trampoline_hit
+        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+        result = orig(*call_args, **call_kwargs)
+        return result
+    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    if not mutant_under_test.startswith(prefix):
+        result = orig(*call_args, **call_kwargs)
+        return result
+    mutant_name = mutant_under_test.rpartition('.')[-1]
+    if self_arg is not None:
+        # call to a class method where self is not bound
+        result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
+    else:
+        result = mutants[mutant_name](*call_args, **call_kwargs)
+    return result

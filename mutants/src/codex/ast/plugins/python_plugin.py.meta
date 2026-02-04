@@ -1,0 +1,17 @@
+{
+    "exit_code_by_key": {
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1can_parse__mutmut_1": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1can_parse__mutmut_2": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1can_parse__mutmut_3": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1can_parse__mutmut_4": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1parse__mutmut_1": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1parse__mutmut_2": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1parse__mutmut_3": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1parse__mutmut_4": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1validate__mutmut_1": null,
+        "codex.ast.plugins.python_plugin.x\u01c1PythonPlugin\u01c1validate__mutmut_2": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

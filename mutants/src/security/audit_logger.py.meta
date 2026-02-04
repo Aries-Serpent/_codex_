@@ -1,0 +1,21 @@
+{
+    "exit_code_by_key": {
+        "security.audit_logger.x__sha256_bytes__mutmut_1": null,
+        "security.audit_logger.x_log_audit_event__mutmut_1": null,
+        "security.audit_logger.x_log_audit_event__mutmut_2": null,
+        "security.audit_logger.x_log_audit_event__mutmut_3": null,
+        "security.audit_logger.x_log_audit_event__mutmut_4": null,
+        "security.audit_logger.x_log_audit_event__mutmut_5": null,
+        "security.audit_logger.x_log_audit_event__mutmut_6": null,
+        "security.audit_logger.x_log_audit_event__mutmut_7": null,
+        "security.audit_logger.x_log_audit_event__mutmut_8": null,
+        "security.audit_logger.x_log_audit_event__mutmut_9": null,
+        "security.audit_logger.x_log_audit_event__mutmut_10": null,
+        "security.audit_logger.x_log_audit_event__mutmut_11": null,
+        "security.audit_logger.x_log_audit_event__mutmut_12": null,
+        "security.audit_logger.x_log_audit_event__mutmut_13": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

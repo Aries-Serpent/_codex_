@@ -1,0 +1,32 @@
+{
+    "exit_code_by_key": {
+        "data.manifest.x__sha256_file__mutmut_1": null,
+        "data.manifest.x__sha256_file__mutmut_2": null,
+        "data.manifest.x__sha256_file__mutmut_3": null,
+        "data.manifest.x__sha256_file__mutmut_4": null,
+        "data.manifest.x__sha256_file__mutmut_5": null,
+        "data.manifest.x__sha256_file__mutmut_6": null,
+        "data.manifest.x__sha256_file__mutmut_7": null,
+        "data.manifest.x__sha256_file__mutmut_8": null,
+        "data.manifest.x__sha256_file__mutmut_9": null,
+        "data.manifest.x__sha256_file__mutmut_10": null,
+        "data.manifest.x__sha256_file__mutmut_11": null,
+        "data.manifest.x__sha256_file__mutmut_12": null,
+        "data.manifest.x__default_created_at__mutmut_1": null,
+        "data.manifest.x__default_created_at__mutmut_2": null,
+        "data.manifest.x__default_created_at__mutmut_3": null,
+        "data.manifest.x__default_created_at__mutmut_4": null,
+        "data.manifest.x__default_created_at__mutmut_5": null,
+        "data.manifest.x__default_created_at__mutmut_6": null,
+        "data.manifest.x__default_created_at__mutmut_7": null,
+        "data.manifest.x__default_created_at__mutmut_8": null,
+        "data.manifest.x__default_created_at__mutmut_9": null,
+        "data.manifest.x__default_created_at__mutmut_10": null,
+        "data.manifest.x__default_created_at__mutmut_11": null,
+        "data.manifest.x__default_created_at__mutmut_12": null,
+        "data.manifest.x__default_created_at__mutmut_13": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

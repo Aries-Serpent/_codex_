@@ -1,0 +1,21 @@
+{
+    "exit_code_by_key": {
+        "logging_config.x_configure_logging__mutmut_1": null,
+        "logging_config.x_configure_logging__mutmut_2": null,
+        "logging_config.x_configure_logging__mutmut_3": null,
+        "logging_config.x_configure_logging__mutmut_4": null,
+        "logging_config.x_configure_logging__mutmut_5": null,
+        "logging_config.x_configure_logging__mutmut_6": null,
+        "logging_config.x_configure_logging__mutmut_7": null,
+        "logging_config.x_configure_logging__mutmut_8": null,
+        "logging_config.x_configure_logging__mutmut_9": null,
+        "logging_config.x_configure_logging__mutmut_10": null,
+        "logging_config.x_configure_logging__mutmut_11": null,
+        "logging_config.x_configure_logging__mutmut_12": null,
+        "logging_config.x_configure_logging__mutmut_13": null,
+        "logging_config.x_configure_logging__mutmut_14": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

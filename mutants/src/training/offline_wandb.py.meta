@@ -1,0 +1,15 @@
+{
+    "exit_code_by_key": {
+        "training.offline_wandb.x_force_offline__mutmut_1": null,
+        "training.offline_wandb.x_force_offline__mutmut_2": null,
+        "training.offline_wandb.x_force_offline__mutmut_3": null,
+        "training.offline_wandb.x_force_offline__mutmut_4": null,
+        "training.offline_wandb.x_force_offline__mutmut_5": null,
+        "training.offline_wandb.x_force_offline__mutmut_6": null,
+        "training.offline_wandb.x_force_offline__mutmut_7": null,
+        "training.offline_wandb.x_force_offline__mutmut_8": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

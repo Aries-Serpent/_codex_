@@ -1,0 +1,358 @@
+        help="JSON output path (default: codex_experiment_index.json).",
+    )
+    args = parser.parse_args(argv)
+
+    runs_root = Path(args.runs_root).expanduser().resolve()
+    index = build_index(runs_root)
+
+    out_path = Path(args.out).expanduser().resolve()
+    out_path.write_text(json.dumps(index, indent=2, sort_keys=True), encoding="utf-8")
+
+    print(f"[codex_experiment_index] Wrote experiment index to {out_path}")
+    print(f"[codex_experiment_index] total_runs={len(index['runs'])}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+3) Tests – tests/tools/test_codex_local_gate_and_experiment_index.py
+====================================================================
+
+Create/overwrite: tests/tools/test_codex_local_gate_and_experiment_index.py
+
+```python
+from pathlib import Path
+import json
+import textwrap
+
+import tools.codex_local_gate_runner as local_gate
+import tools.codex_experiment_index as exp_index
+import yaml
+
+
+def test_local_gate_runner_uses_default_gates(tmp_path: Path, monkeypatch):
+    repo_root = tmp_path
+
+    # Create a tiny tests/tools layout so the default pytest commands have something to run.
+    tests_tools = repo_root / "tests" / "tools"
+    tests_tools.mkdir(parents=True, exist_ok=True)
+    (tests_tools / "test_dummy_gate.py").write_text(
+        "def test_dummy_gate():\n    assert True\n", encoding="utf-8"
+    )
+
+    # No config file: should fallback to defaults, but we don't assert on
+    # exact commands, just structure and existence of report.
+    json_out = repo_root / "codex_local_gate_report.json"
+    rc = local_gate.main(
+        [
+            "--repo-root",
+            str(repo_root),
+            "--config",
+            str(repo_root / "nonexistent_config.yaml"),
+            "--json-out",
+            str(json_out),
+        ]
+    )
+
+    # May return 0 or 1 depending on pytest behavior, but must emit a report.
+    assert json_out.exists()
+    data = json.loads(json_out.read_text(encoding="utf-8"))
+    assert "overall_returncode" in data
+    assert "results" in data
+    assert isinstance(data["results"], list)
+
+
+def test_local_gate_runner_with_custom_config(tmp_path: Path):
+    repo_root = tmp_path
+
+    tests_dir = repo_root / "tests" / "unit"
+    tests_dir.mkdir(parents=True, exist_ok=True)
+    (tests_dir / "test_unit_sample.py").write_text(
+        "def test_unit_sample():\n    assert True\n", encoding="utf-8"
+    )
+
+    cfg = repo_root / "codex_local_gate.yaml"
+    cfg.write_text(
+        yaml.safe_dump(
+            {
+                "gate_commands": [
+                    {
+                        "name": "pytest_unit",
+                        "cmd": "pytest tests/unit -q",
+                    }
+                ]
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    json_out = repo_root / "gate.json"
+    rc = local_gate.main(
+        [
+            "--repo-root",
+            str(repo_root),
+            "--config",
+            str(cfg),
+            "--json-out",
+            str(json_out),
+        ]
+    )
+    # Gate may pass/fail; we only assert report shape.
+    assert json_out.exists()
+    data = json.loads(json_out.read_text(encoding="utf-8"))
+    assert any(r["name"] == "pytest_unit" for r in data["results"])
+
+
+def test_experiment_index_handles_empty_runs_dir(tmp_path: Path):
+    runs_root = tmp_path / "runs"
+    runs_root.mkdir(parents=True, exist_ok=True)
+
+    index = exp_index.build_index(runs_root)
+    assert index["runs_dir"] == str(runs_root)
+    assert index["runs"] == []
+
+    out = tmp_path / "index.json"
+    rc = exp_index.main(
+        [
+            "--runs-root",
+            str(runs_root),
+            "--out",
+            str(out),
+        ]
+    )
+    assert rc == 0
+    assert out.exists()
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["runs_dir"] == str(runs_root)
+    assert data["runs"] == []
+
+
+def test_experiment_index_collects_meta(tmp_path: Path):
+    runs_root = tmp_path / "runs"
+    run1 = runs_root / "run-0001"
+    run1.mkdir(parents=True, exist_ok=True)
+    (run1 / "meta.json").write_text(
+        json.dumps(
+            {
+                "mode": "train",
+                "status": "completed",
+                "config_path": "conf/train.yaml",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    run2 = runs_root / "run-0002"
+    run2.mkdir(parents=True, exist_ok=True)
+    # No meta.json for run2; should still appear with unknown fields.
+    index = exp_index.build_index(runs_root)
+    assert len(index["runs"]) == 2
+
+    by_id = {r["run_id"]: r for r in index["runs"]}
+    assert by_id["run-0001"]["mode"] == "train"
+    assert by_id["run-0001"]["status"] == "completed"
+    assert by_id["run-0001"]["config_path"] == "conf/train.yaml"
+
+    assert by_id["run-0002"]["mode"] == "unknown"
+    assert by_id["run-0002"]["status"] == "unknown"
+```
+
+===============================================================================
+4) Documentation – docs/ci/local_gate_and_experiment_index.md
+=============================================================
+
+Create/overwrite: docs/ci/local_gate_and_experiment_index.md
+
+````markdown
+# Local Gate Runner & Experiment Index for `_codex_` (Scaffolding)
+
+This document describes the local CI "spine" and experiment indexing
+scaffolding implemented in:
+
+- `tools/codex_local_gate_runner.py`
+- `tools/codex_experiment_index.py`
+
+The goal is to provide **internal** structure that supports the audit
+requirements for:
+
+- Internal CI/Test (local gates, ML Test Score categories in other docs).
+- Experiment Tracking (runs directory, metadata).
+
+All behavior is **offline-only** and intended for developer use.
+
+## 1. Local Gate Runner
+
+Tool:
+
+- `tools/codex_local_gate_runner.py`
+
+Purpose:
+
+- Run a small, configurable set of shell commands (e.g. `pytest`) and
+  summarize their outcomes into a JSON report:
+
+  - `codex_local_gate_report.json`
+
+Inputs:
+
+- `--repo-root` (default: `.`)
+- `--config` (default: `codex_local_gate.yaml`)
+- `--json-out` (default: `codex_local_gate_report.json`)
+
+Config file (optional):
+
+```yaml
+gate_commands:
+  - name: "pytest_tools"
+    cmd: "pytest tests/tools -q"
+  - name: "pytest_codex_ml"
+    cmd: "pytest tests/codex_ml -q"
+````
+
+If the config file is missing or empty, the runner uses a built-in
+default set of pytest gates.
+
+Output JSON structure (simplified):
+
+```json
+{
+  "repo_root": "...",
+  "overall_returncode": 0,
+  "results": [
+    {
+      "name": "pytest_tools",
+      "cmd": "pytest tests/tools -q",
+      "returncode": 0,
+      "stdout": "...truncated...",
+      "stderr": "...truncated..."
+    }
+  ]
+}
+```
+
+The runner returns `overall_returncode` as its process exit code, so
+callers can choose to block on failures or treat them as advisory.
+
+## 2. Experiment Indexer
+
+Tool:
+
+* `tools/codex_experiment_index.py`
+
+Purpose:
+
+* Produce a lightweight, filesystem-based experiment index that can be
+  consumed by:
+
+  * `tools/codex_repro_manifest.py`
+  * Gap registry tooling
+  * Human operators
+
+Inputs:
+
+* `--runs-root` (default: `runs`)
+* `--out` (default: `codex_experiment_index.json`)
+
+Expected layout (flexible but encouraged):
+
+```text
+runs/
+  run-0001/
+    meta.json
+  run-0002/
+    meta.json
+```
+
+The `meta.json` file is optional; when present, recommended fields are:
+
+* `mode` (e.g. `"train"`, `"eval"`)
+* `status` (e.g. `"completed"`, `"failed"`)
+* `config_path` (e.g. `"conf/train.yaml"`)
+
+Output JSON structure (simplified):
+
+```json
+{
+  "runs_dir": "runs",
+  "runs": [
+    {
+      "run_id": "run-0001",
+      "path": "runs/run-0001",
+      "mode": "train",
+      "status": "completed",
+      "config_path": "conf/train.yaml"
+    }
+  ]
+}
+```
+
+Runs without `meta.json` are still indexed with `mode` and `status`
+set to `"unknown"`.
+
+## 3. Relationship to Reproducibility & Gap Registry
+
+The local gate report and experiment index feed into:
+
+* `tools/codex_repro_manifest.py`
+
+  * Uses `codex_local_gate_report.json` to summarize internal CI status.
+  * Uses `codex_experiment_index.json` to summarize experiment runs and
+    associated configs.
+
+* `tools/codex_gap_registry.py`
+
+  * Can incorporate:
+
+    * Repeated gate failures as tracked gaps.
+    * Missing or inconsistent experiment metadata as gaps.
+
+This provides a coherent backbone for:
+
+* Internal CI/Test capability from the audit.
+* Experiment Tracking capability from the audit.
+
+The current implementation is intentionally minimal and can be extended
+with:
+
+* Richer metadata (metrics, walltime, artifacts).
+* Cross-linking to configuration and dataset hashes.
+* Integration with external tracking backends, if desired, while
+  preserving the same JSON index contract.
+
+````
+
+===============================================================================
+5) Wire Local Gate & Experiment Index into codex_task_sequence.yaml
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply these
+minimal updates:
+
+1. **Local Gate step**
+
+Locate the phase that handles **Local Tests & Gates** or internal CI
+behavior. If such a phase exists, append a new step to run the local
+gate runner. For example (replace `<PHASE_ID>`):
+
+```yaml
+       - id: "<PHASE_ID>.G1"
+         description: >
+           Run the local gate runner to execute configured internal
+           CI-style commands (e.g. pytest subsets) and emit a JSON
+           summary at codex_local_gate_report.json. This step is
+           local-only and can be used by reproducibility manifests
+           and gap registry tooling.
+         actions:
+           - >
+             python tools/codex_local_gate_runner.py
+             --repo-root .
+             --config codex_local_gate.yaml
+             --json-out codex_local_gate_report.json
+         on_error:
+           strategy: record_and_continue
+````
+

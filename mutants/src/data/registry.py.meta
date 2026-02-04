@@ -1,0 +1,32 @@
+{
+    "exit_code_by_key": {
+        "data.registry.x_register__mutmut_1": null,
+        "data.registry.x_register__mutmut_2": null,
+        "data.registry.x_register__mutmut_3": null,
+        "data.registry.x_register__mutmut_4": null,
+        "data.registry.x_register__mutmut_5": null,
+        "data.registry.x_register__mutmut_6": null,
+        "data.registry.x_register__mutmut_7": null,
+        "data.registry.x_register__mutmut_8": null,
+        "data.registry.x_register__mutmut_9": null,
+        "data.registry.x_register_dataset__mutmut_1": null,
+        "data.registry.x_register_dataset__mutmut_2": null,
+        "data.registry.x_register_dataset__mutmut_3": null,
+        "data.registry.x_register_dataset__mutmut_4": null,
+        "data.registry.x_register_dataset__mutmut_5": null,
+        "data.registry.x_register_dataset__mutmut_6": null,
+        "data.registry.x_register_dataset__mutmut_7": null,
+        "data.registry.x_get__mutmut_1": null,
+        "data.registry.x_get__mutmut_2": null,
+        "data.registry.x_get__mutmut_3": null,
+        "data.registry.x_get__mutmut_4": null,
+        "data.registry.x_list_datasets__mutmut_1": null,
+        "data.registry.x_build__mutmut_1": null,
+        "data.registry.x_build__mutmut_2": null,
+        "data.registry.x_build__mutmut_3": null,
+        "data.registry.x_build__mutmut_4": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

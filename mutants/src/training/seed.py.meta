@@ -1,0 +1,15 @@
+{
+    "exit_code_by_key": {
+        "training.seed.x_ensure_global_seed__mutmut_1": null,
+        "training.seed.x_ensure_global_seed__mutmut_2": null,
+        "training.seed.x_ensure_global_seed__mutmut_3": null,
+        "training.seed.x_ensure_global_seed__mutmut_4": null,
+        "training.seed.x_ensure_global_seed__mutmut_5": null,
+        "training.seed.x_ensure_global_seed__mutmut_6": null,
+        "training.seed.x_ensure_global_seed__mutmut_7": null,
+        "training.seed.x_ensure_global_seed__mutmut_8": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

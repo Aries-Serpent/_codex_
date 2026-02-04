@@ -1,0 +1,26 @@
+{
+    "exit_code_by_key": {
+        "codex.utils.subprocess.x_run__mutmut_1": null,
+        "codex.utils.subprocess.x_run__mutmut_2": null,
+        "codex.utils.subprocess.x_run__mutmut_3": null,
+        "codex.utils.subprocess.x_run__mutmut_4": null,
+        "codex.utils.subprocess.x_run__mutmut_5": null,
+        "codex.utils.subprocess.x_run__mutmut_6": null,
+        "codex.utils.subprocess.x_run__mutmut_7": null,
+        "codex.utils.subprocess.x_run__mutmut_8": null,
+        "codex.utils.subprocess.x_run__mutmut_9": null,
+        "codex.utils.subprocess.x_run__mutmut_10": null,
+        "codex.utils.subprocess.x_run__mutmut_11": null,
+        "codex.utils.subprocess.x_run__mutmut_12": null,
+        "codex.utils.subprocess.x_run__mutmut_13": null,
+        "codex.utils.subprocess.x_run__mutmut_14": null,
+        "codex.utils.subprocess.x_run__mutmut_15": null,
+        "codex.utils.subprocess.x_run__mutmut_16": null,
+        "codex.utils.subprocess.x_run__mutmut_17": null,
+        "codex.utils.subprocess.x_run__mutmut_18": null,
+        "codex.utils.subprocess.x_run__mutmut_19": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}

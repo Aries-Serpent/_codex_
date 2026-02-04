@@ -1,0 +1,72 @@
+"""
+Interface Module
+
+This module provides functionality for interface.
+
+Usage:
+    from embeddings.interface import ...
+
+Classes:
+    [To be documented]
+
+Functions:
+    [To be documented]
+
+Author: Codex Team
+"""
+
+# Adapter interface for embedders
+from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)
+from abc import ABC, abstractmethod
+from typing import Any
+from inspect import signature as _mutmut_signature
+from typing import Annotated
+from typing import Callable
+from typing import ClassVar
+
+
+MutantDict = Annotated[dict[str, Callable], "Mutant"]
+
+
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+    """Forward call to original or mutated function, depending on the environment"""
+    import os
+    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
+    if mutant_under_test == 'fail':
+        from mutmut.__main__ import MutmutProgrammaticFailException
+        raise MutmutProgrammaticFailException('Failed programmatically')      
+    elif mutant_under_test == 'stats':
+        from mutmut.__main__ import record_trampoline_hit
+        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+        result = orig(*call_args, **call_kwargs)
+        return result
+    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    if not mutant_under_test.startswith(prefix):
+        result = orig(*call_args, **call_kwargs)
+        return result
+    mutant_name = mutant_under_test.rpartition('.')[-1]
+    if self_arg is not None:
+        # call to a class method where self is not bound
+        result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
+    else:
+        result = mutants[mutant_name](*call_args, **call_kwargs)
+    return result
+
+
+class EmbedderInterface(ABC):
+    """
+    Embedding provider interface.
+
+    Implementations MUST be import-safe (no exception at import time when credentials absent).
+    Provide synchronous `embed` for simplicity (worker can call in threadpool).
+    """
+
+    @abstractmethod
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def health_check(self) -> dict[str, Any]:
+        raise NotImplementedError

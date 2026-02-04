@@ -1,0 +1,230 @@
+|         E7 | Deployment (Packaging, Entry Points, Docker)    | CLI & tools exist                                   | No fully defined packaging metadata (pyproject/setup) and no basic Dockerfile skeleton aligned with “no GH Actions” rule.                            | Add packaging config + a minimal Docker image for local use, with docs and **no CI hooks**.               |
+|         E8 | Experiment Tracking Semantics                   | File-system experiment index exists                 | Need a consistent convention for runs (IDs, metadata, config linkage, dataset linkage), and docs tying it all together.                              | Codify simple “run layout” contract + minimal helper to start/finish runs and emit `meta.json`.           |
+|         E9 | Gap Registry & YAML Coverage Closure            | Registry + YAML gap check tools exist               | Need at least one **full run** where every known gap maps to YAML steps or has an explicit “deferred” reason.                                        | Run registry → YAML check loop; patch `codex_task_sequence.yaml` until no “gap without YAML step” remain. |
+|        E10 | Tests for All New Tools                         | Some tests added for recent tools                   | Coverage for: `codex_cli.py`, `codex_repro_manifest.py`, `codex_gap_registry.py`, `codex_yaml_gap_check.py`, task runner, etc. may still be thin.    | Add focused tests per tool (happy path + basic error) and wire into ML test map / local gates.            |
+|        E11 | Extensibility & Registries                      | Dataset + metrics registries in place               | Tokenizer/model/data/metric registries not yet harmonized into a clear “extensibility story” (how to plug new components).                           | Add short registry docs and a small example showing how to register a new dataset / metric / model.       |
+|        E12 | Top-Level Documentation & Architecture Overview | Several new doc pages exist                         | README / architecture docs may not yet fully reflect: task sequence, CLI, gap registry, metrics, data handling, etc.                                 | Update README + an “Architecture & Flows” doc; reference all core tools and how they fit together.        |
+
+You can treat this as the current “entropy frontier” for Codex to close.
+
+---
+
+## 2. Tailored Codex Prompt to Close Remaining Entropies
+
+Below is a **single, end-to-end prompt** you can paste directly into your ChatGPT Codex implementation GPT.
+
+It:
+
+* Assumes all prior patchsets (including the “Batch” series) are merged.
+* Instructs Codex to systematically close E1–E12.
+* Emphasizes **local/offline** behavior (no GitHub Actions).
+* Uses the same *file-path + diff-style* conventions we’ve been using.
+
+You can paste this as-is; Codex will then generate the concrete diffs / files.
+
+---
+
+```text
+You are ChatGPT @codex operating on the repository:
+
+  Aries-Serpent/_codex_
+
+You are working on a dedicated feature branch (for example):
+  feature/close-open-entropies-2025-11-XX
+
+Assumptions:
+- All previously provided patchsets/batches (including data handling, gap registry,
+  YAML gap check, local gate runner, experiment index, unified CLI, metrics eval,
+  quick audit, etc.) have been **successfully implemented** and tests are passing.
+- The audit file `_codex_status_update-2025-11-27.md` exists and reflects the prior
+  status before this “entropy closure” run.
+- Tools like:
+    - tools/codex_cli.py
+    - tools/codex_gap_registry.py
+    - tools/codex_yaml_gap_check.py
+    - tools/codex_task_sequence_runner.py
+    - tools/codex_local_gate_runner.py
+    - tools/codex_experiment_index.py
+    - tools/codex_dataset_index.py
+    - tools/codex_metrics_eval.py
+  are present in some form (even if needing refinement).
+
+Global constraints:
+- DO NOT add, modify, or enable any cost-incurring GitHub Actions or external CI workflows.
+- All checks and tools MUST be runnable locally/offline.
+- Prefer small, reviewable diffs while still delivering end-to-end completeness.
+- Use existing patterns and style from the repo wherever possible.
+
+Objective:
+Close the remaining “open entropies” across the codebase by:
+1. Auditing and completing the implementation in-place.
+2. Adding missing tests and docs.
+3. Ensuring every known gap maps to a step in `codex_task_sequence.yaml` or is
+   explicitly marked as “deferred” with rationale.
+4. Producing an updated status report and change log.
+
+Treat the following high-level entropies as the worklist:
+
+- E1: Tokenization & Model Wiring
+- E2: Training Engine & Training CLI
+- E3: Configuration / Hydra-style config tree & sweeps
+- E4: Logging & Monitoring (runtime + training metrics, local only)
+- E5: Checkpointing & Resume semantics (weights + optimizer + RNG + best-k)
+- E6: Security & Dependency Locking (lockfiles and a tiny secrets guard)
+- E7: Deployment (packaging metadata, entry points, minimal Docker image)
+- E8: Experiment Tracking semantics atop the runs/ layout
+- E9: Gap Registry & YAML Coverage Closure (gap ↔ YAML step mapping)
+- E10: Test Coverage for new tools
+- E11: Extensibility / Registry story
+- E12: Top-level documentation & architecture overview
+
+PHASE 0 – DISCOVERY & VALIDATION
+--------------------------------
+
+0.1 Scan the repo to locate the following key components and confirm their current state:
+
+- Tokenization / models / training loop:
+  - src/codex_ml/tokenization/** (or similar)
+  - src/codex_ml/training/loop.py
+  - any model init routines (e.g. src/codex_ml/models/**)
+- Config and Hydra-like structure:
+  - conf/**, configs/**, or similar
+- Logging & monitoring utilities:
+  - tools or modules used for runtime metrics, training logs, etc.
+- Checkpointing:
+  - src/codex_ml/checkpoint/** or similar
+- Experiment tracking:
+  - runs/ layout, tools/codex_experiment_index.py
+- Gap registry:
+  - tools/codex_gap_registry.py
+  - tools/codex_yaml_gap_check.py
+  - codex_gap_registry.yaml
+  - codex_task_sequence.yaml
+- Reproducibility & CLI:
+  - tools/codex_repro_manifest.py
+  - tools/codex_cli.py
+  - scripts/codex_quick_audit.sh
+- Existing docs and READMEs:
+  - README.md
+  - docs/**
+
+0.2 For each entropy E1–E12, briefly verify whether the repo already
+implements a solid solution. If something is already complete, mark it
+internally as “verified” and skip heavy rework; otherwise mark it as
+“needs patch”.
+
+PHASE 1 – IMPLEMENTATION PATCHES PER ENTROPY
+--------------------------------------------
+
+For each entropy marked “needs patch” in Phase 0, implement targeted,
+concrete changes using the following style:
+
+- Always specify file paths.
+- For new files: provide the complete file content.
+- For existing files: provide **unified diffs** with enough context
+  to apply cleanly, or if small, show the full updated file.
+- Keep diffs atomic and logically grouped.
+
+E1 – Tokenization & Model Wiring
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1.1 Locate the tokenization modules and model init paths. Ensure there are:
+- Fast tokenizer helper(s) (for HF or local tokenizers).
+- Proper vocab handling (special tokens, padding/truncation).
+- A clear entry point where model and tokenizer are wired together for training
+  and inference.
+
+1.2 If missing or incomplete:
+- Add/extend a module such as:
+    - src/codex_ml/tokenization/adapters.py
+  with:
+    - Tokenizer adapter abstraction.
+    - At least one concrete adapter (e.g. HuggingFace-based).
+- Ensure training loop references these adapters cleanly.
+
+1.3 Add tests:
+- tests/codex_ml/test_tokenization_integration.py
+  that:
+    - Constructs a toy tokenizer (real or stub).
+    - Verifies encode/decode round-trip and padding/truncation behavior.
+
+E2 – Training Engine & CLI
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2.1 Implement (or complete) a training CLI script such as:
+
+- tools/codex_train.py  (or src/codex_ml/cli/train.py with an entry point)
+
+Responsibilities:
+- Parse a config path (see E3).
+- Instantiate model, tokenizer, dataset, and training loop.
+- Support:
+    - seed setting
+    - resume from checkpoint
+    - basic logging hooks
+
+2.2 Add tests:
+- tests/codex_ml/test_training_cli_smoketest.py
+  that runs a tiny CPU-only smoke training run with:
+    - small synthetic dataset
+    - 1–2 steps per epoch
+  and verifies a checkpoint + minimal metrics/logs are produced.
+
+E3 – Config / Hydra Tree & Sweeps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+3.1 Normalize the config structure:
+- Ensure a single config root (e.g. conf/ or configs/) with subtrees:
+    - model/
+    - data/
+    - train/
+    - eval/
+    - logging/
+    - reproducibility/
+
+3.2 If Hydra (or similar) is used:
+- Add safe defaults (e.g. conf/config.yaml) that wire together a working minimal run.
+- Document how to run with overrides (even if not using Hydra, keep the struct
+  Hydra-friendly).
+
+3.3 Implement a *local-only* sweep pattern:
+- E.g., tools/codex_local_sweep.py that:
+    - Reads a list of configurations or overrides.
+    - Runs training sequentially (no parallel / no CI).
+    - Logs results to runs/ and summarises them.
+
+3.4 Add tests for the config loader / sweep script (smoke level).
+
+E4 – Logging & Monitoring
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+4.1 Add a small logging helper module, e.g.:
+
+- src/codex_ml/logging/runtime.py
+
+Features:
+- Context manager or lightweight API to:
+    - Log training loss, learning rate, and step/epoch.
+    - Optionally log simple system metrics (CPU %, RAM usage, GPU memory) using
+      psutil/NVML *only if present*, guarded with import checks.
+- Output format:
+    - NDJSON lines to a file in runs/RUN_ID/logs/metrics.ndjson.
+
+4.2 Integrate logger into:
+- training loop
+- possibly evaluation loop
+
+4.3 Add tests that:
+- Run a tiny training loop and confirm a metrics log file is created
+  with valid JSON lines.
+
+E5 – Checkpointing & Resume
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+5.1 Inspect checkpoint core modules. Ensure:
+- Checkpoints capture:
+    - model state
+    - optimizer state
+    - scheduler state
+    - global step/epoch
+    - RNG state (Python, NumPy, framework)

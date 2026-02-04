@@ -1,0 +1,335 @@
+    _write_json(json_out, report)
+    _write_markdown(md_out, report)
+
+    print(f"[codex_secret_scan] Wrote JSON to {json_out}")
+    print(f"[codex_secret_scan] Wrote Markdown to {md_out}")
+    print(f"[codex_secret_scan] total_hits={report['total_hits']}")
+    # Non-zero hits do NOT cause non-zero exit, to avoid breaking flows.
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+````
+
+===============================================================================
+2) Dependency pinning checker – tools/codex_dep_pin_check.py
+============================================================
+
+Create/overwrite: tools/codex_dep_pin_check.py
+
+```python
+#!/usr/bin/env python
+"""Local-only dependency pinning checker for `_codex_`.
+
+Purpose:
+- Inspect a small set of dependency files and flag obviously
+  unpinned or loosely pinned entries, as a *heuristic* safety check.
+
+Supported files (if present at repo root):
+
+- requirements.txt
+- requirements-dev.txt
+- requirements-local.txt
+- pyproject.toml  (very shallow parsing)
+- environment.yml (conda-style, shallow parsing)
+
+Output:
+
+- codex_dep_pin_report.json
+- codex_dep_pin_report.md
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, List, Optional
+
+
+@dataclass
+class DepIssue:
+    file: str
+    line_no: int
+    raw: str
+    reason: str
+
+
+_REQ_FILES = [
+    "requirements.txt",
+    "requirements-dev.txt",
+    "requirements-local.txt",
+]
+
+_PYPROJECT = "pyproject.toml"
+_ENV_YML = "environment.yml"
+
+
+def _scan_requirements(path: Path) -> List[DepIssue]:
+    issues: List[DepIssue] = []
+    if not path.exists():
+        return issues
+    lines = path.read_text(encoding="utf-8").splitlines()
+    for i, line in enumerate(lines, start=1):
+        raw = line.strip()
+        if not raw or raw.startswith("#"):
+            continue
+        # Very simple heuristics:
+        # - pinned: "pkg==1.2.3"
+        # - unpinned / loose / range: "pkg", "pkg>=1.0", "pkg<=2.0", etc.
+        if "==" not in raw:
+            issues.append(
+                DepIssue(
+                    file=str(path),
+                    line_no=i,
+                    raw=raw,
+                    reason="missing_exact_pin",
+                )
+            )
+    return issues
+
+
+def _scan_pyproject(path: Path) -> List[DepIssue]:
+    issues: List[DepIssue] = []
+    if not path.exists():
+        return issues
+    text = path.read_text(encoding="utf-8")
+    deps_block = []
+    in_block = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("[project.dependencies]"):
+            in_block = True
+            continue
+        if stripped.startswith("[") and stripped != "[project.dependencies]":
+            in_block = False
+        if in_block:
+            deps_block.append(line)
+
+    for i, line in enumerate(deps_block, start=1):
+        raw = line.strip()
+        if not raw or raw.startswith("#"):
+            continue
+        # Include simple TOML list forms as "dep = \"pkg>=1.2\"".
+        if "=" in raw:
+            _, value = raw.split("=", 1)
+            value = value.strip().strip(",").strip('"').strip("'")
+        else:
+            value = raw
+        if value and "==" not in value:
+            issues.append(
+                DepIssue(
+                    file=str(path),
+                    line_no=i,
+                    raw=raw,
+                    reason="pyproject_missing_exact_pin",
+                )
+            )
+    return issues
+
+
+def _scan_env_yml(path: Path) -> List[DepIssue]:
+    issues: List[DepIssue] = []
+    if not path.exists():
+        return issues
+    for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        raw = line.strip()
+        if not raw or raw.startswith("#") or raw.startswith("- "):
+            # We only inspect lines where deps are listed, but keep it very simple.
+            # Example conda format: "  - numpy=1.26" or "  - numpy>=1.20"
+            pass
+        # naive match for a conda-style dep line:
+        m = re.match(r"^\-\s+([A-Za-z0-9_\-]+)(.*)$", raw)
+        if not m:
+            continue
+        pkg, spec = m.groups()
+        spec = spec.strip()
+        if spec and "=" in spec and "==" in spec:
+            continue
+        if spec and "=" in spec and "==" not in spec:
+            reason = "env_yml_loose_pin"
+        else:
+            reason = "env_yml_missing_pin"
+        issues.append(
+            DepIssue(
+                file=str(path),
+                line_no=i,
+                raw=raw,
+                reason=reason,
+            )
+        )
+    return issues
+
+
+def run_check(repo_root: Path) -> Dict[str, object]:
+    repo_root = repo_root.expanduser().resolve()
+    issues: List[DepIssue] = []
+
+    for name in _REQ_FILES:
+        issues.extend(_scan_requirements(repo_root / name))
+
+    issues.extend(_scan_pyproject(repo_root / _PYPROJECT))
+    issues.extend(_scan_env_yml(repo_root / _ENV_YML))
+
+    return {
+        "repo_root": str(repo_root),
+        "total_issues": len(issues),
+        "issues": [asdict(i) for i in issues],
+    }
+
+
+def _write_json(path: Path, report: Dict[str, object]) -> None:
+    path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_markdown(path: Path, report: Dict[str, object]) -> None:
+    lines: List[str] = []
+    lines.append("# `_codex_` Dependency Pinning Report\n")
+    lines.append(f"- Repo root     : `{report.get('repo_root', '.')}`")
+    lines.append(f"- Total issues  : **{report.get('total_issues', 0)}**\n")
+
+    issues = report.get("issues") or []
+    if not issues:
+        lines.append("No obvious pinning issues were detected.\n")
+        path.write_text("\n".join(lines), encoding="utf-8")
+        return
+
+    lines.append("| File | Line | Reason | Raw |")
+    lines.append("| ---- | ---- | ------ | --- |")
+    for i in issues:
+        lines.append(
+            "| `{file}` | {line} | `{reason}` | `{raw}` |".format(
+                file=i.get("file"),
+                line=i.get("line_no"),
+                reason=i.get("reason"),
+                raw=str(i.get("raw", "")).replace("|", "\\|")[:160],
+            )
+        )
+    lines.append("")
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Check for obvious dependency pinning issues in `_codex_`."
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Repository root (default: .).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_dep_pin_report.json",
+        help="JSON report output (default: codex_dep_pin_report.json).",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=str,
+        default="codex_dep_pin_report.md",
+        help="Markdown report output (default: codex_dep_pin_report.md).",
+    )
+    args = parser.parse_args(argv)
+
+    repo_root = Path(args.repo-root).expanduser().resolve()  # type: ignore[attr-defined]
+    report = run_check(repo_root)
+
+    json_out = Path(args.json_out).expanduser().resolve()
+    md_out = Path(args.md_out).expanduser().resolve()
+    _write_json(json_out, report)
+    _write_markdown(md_out, report)
+
+    print(f"[codex_dep_pin_check] Wrote JSON to {json_out}")
+    print(f"[codex_dep_pin_check] Wrote Markdown to {md_out}")
+    print(f"[codex_dep_pin_check] total_issues={report['total_issues']}")
+    # As with secret scan, this is advisory; we do not fail the pipeline.
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+> **NOTE:** Please fix the line `repo_root = Path(args.repo-root)` to use `args.repo_root` when applying; if Codex copies directly, adjust to valid Python attribute syntax.
+
+===============================================================================
+3) Tests – tests/tools/test_codex_security_tools.py
+===================================================
+
+Create/overwrite: tests/tools/test_codex_security_tools.py
+
+```python
+from pathlib import Path
+import json
+
+import tools.codex_secret_scan as secret_scan
+import tools.codex_dep_pin_check as dep_check
+
+
+def test_secret_scan_reports_hits_for_simple_pattern(tmp_path: Path):
+    repo_root = tmp_path
+    # Create a dummy file with a simple API key-like pattern.
+    f = repo_root / "dummy.py"
+    f.write_text(
+        "API_KEY = 'api_key:ABCDEFGHIJKL1234567890'\n",
+        encoding="utf-8",
+    )
+
+    report = secret_scan.run_scan(repo_root)
+    assert "total_hits" in report
+    assert report["total_hits"] >= 0
+
+    # Ensure main() writes outputs cleanly.
+    json_out = tmp_path / "secret.json"
+    md_out = tmp_path / "secret.md"
+    rc = secret_scan.main(
+        [
+            "--root",
+            str(repo_root),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ]
+    )
+    assert rc == 0
+    assert json_out.exists()
+    assert md_out.exists()
+
+
+def test_dep_pin_check_detects_unpinned_requirements(tmp_path: Path):
+    repo_root = tmp_path
+    req = repo_root / "requirements.txt"
+    req.write_text(
+        "numpy\npydantic>=2.0\npytest==8.0.0\n",
+        encoding="utf-8",
+    )
+
+    report = dep_check.run_check(repo_root)
+    assert "total_issues" in report
+    # At least numpy and pydantic should be flagged.
+    assert report["total_issues"] >= 2
+    issues = report["issues"]
+    assert any("numpy" in i["raw"] for i in issues)
+
+    json_out = tmp_path / "dep.json"
+    md_out = tmp_path / "dep.md"
+    rc = dep_check.main(
+        [
+            "--repo-root",
+            str(repo_root),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ]
+    )
+    assert rc == 0
+    assert json_out.exists()
+    assert md_out.exists()
+

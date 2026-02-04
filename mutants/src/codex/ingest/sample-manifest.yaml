@@ -1,0 +1,43 @@
+# Codex Ingestion Manifest v1.0
+# Example manifest for Python code ingestion
+
+version: "1.0"
+
+source:
+  type: file
+  path: "./my_script.py"
+  # ref: "main"  # Optional: Git reference if using git-url
+
+entry_point: "main:main"  # Optional: module:function or CLI command
+
+sample_inputs:
+  - path: "samples/input1.txt"
+    description: "Basic input test case"
+  - path: "samples/input2.json"
+    description: "JSON configuration input"
+
+golden_outputs:
+  - input_ref: "samples/input1.txt"
+    expected_output: "samples/expected1.txt"
+    comparison_mode: exact
+  - input_ref: "samples/input2.json"
+    expected_output: "samples/expected2.json"
+    comparison_mode: fuzzy
+
+constraints:
+  max_runtime_seconds: 60
+  max_memory_mb: 512
+  allowed_network: false
+  allowed_file_write: false
+  forbidden_patterns:
+    - "eval("
+    - "exec("
+    - "__import__"
+
+metadata:
+  owner: "@mbaetiong"
+  privacy: private
+  allow_external_llm: true
+  tags:
+    - "utility"
+    - "data-processing"

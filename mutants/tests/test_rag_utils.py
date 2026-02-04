@@ -1,0 +1,294 @@
+"""
+Tests for RAG Utils Module
+
+This module tests the utility functions in src/codex/rag/utils.py,
+with specific focus on meta tensor handling and model loading.
+"""
+
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+# Conditional imports for RAG dependencies
+try:
+    from sentence_transformers import SentenceTransformer
+
+    import torch
+    from codex.rag.utils import (
+        ProvenanceMetadata,
+        check_for_meta_tensors,
+        safe_model_load,
+        safe_model_load_v2,
+    )
+    RAG_UTILS_AVAILABLE = True
+except ImportError:
+    RAG_UTILS_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(
+    not RAG_UTILS_AVAILABLE,
+    reason="RAG utils dependencies (torch, sentence_transformers) not installed"
+)
+
+
+class TestCheckForMetaTensors:
+    """Tests for check_for_meta_tensors function"""
+
+    def test_model_without_meta_tensors(self):
+        """Test detection on model without meta tensors"""
+        # Create a simple model without meta tensors
+        model = torch.nn.Linear(10, 5)
+        has_meta = check_for_meta_tensors(model)
+        assert has_meta is False
+
+    def test_model_with_meta_tensors(self):
+        """Test detection on model with meta tensors"""
+        # Create a model with meta tensors
+        with torch.device('meta'):
+            model = torch.nn.Linear(10, 5)
+        has_meta = check_for_meta_tensors(model)
+        assert has_meta is True
+
+    def test_empty_model(self):
+        """Test detection on model without parameters"""
+        model = torch.nn.Module()  # Empty module with no parameters
+        has_meta = check_for_meta_tensors(model)
+        assert has_meta is False
+
+    def test_model_with_buffers_on_meta(self):
+        """Test detection when buffers (not just parameters) are on meta device"""
+        class ModelWithBuffer(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                with torch.device('meta'):
+                    self.register_buffer('my_buffer', torch.zeros(5))
+
+        model = ModelWithBuffer()
+        has_meta = check_for_meta_tensors(model)
+        assert has_meta is True
+
+
+class TestSafeModelLoad:
+    """Tests for deprecated safe_model_load function"""
+
+    def test_deprecation_warning(self):
+        """Test that safe_model_load raises deprecation warning"""
+        model = torch.nn.Linear(10, 5)
+
+        with pytest.warns(DeprecationWarning, match="safe_model_load.*is deprecated"):
+            result = safe_model_load(model, device="cpu")
+
+        # Should return model unchanged
+        assert result is model
+
+
+class TestSafeModelLoadV2:
+    """Tests for safe_model_load_v2 function"""
+
+    def test_model_without_meta_tensors(self):
+        """Test loading model that doesn't have meta tensors"""
+        model = torch.nn.Linear(10, 5)
+
+        result = safe_model_load_v2(model, device="cpu")
+
+        # Should succeed and return model on CPU
+        assert result is not None
+        assert next(result.parameters()).device.type == "cpu"
+
+    def test_model_with_meta_tensors_reinit_strategy(self):
+        """Test that models with meta tensors are handled via to_empty()"""
+        # Create a model with meta tensors
+        with torch.device('meta'):
+            model = torch.nn.Linear(10, 5)
+
+        # The function should use to_empty() for meta tensors
+        result = safe_model_load_v2(model, device="cpu")
+
+        # Should succeed using to_empty() strategy
+        assert result is not None
+        # Verify model is now on CPU (not meta)
+        assert next(result.parameters()).device.type == "cpu"
+
+    def test_model_with_meta_tensors_to_empty_strategy(self):
+        """Test Strategy 2: Use to_empty() for meta tensors"""
+        # Create a model with meta tensors
+        with torch.device('meta'):
+            model = torch.nn.Linear(10, 5)
+
+        # to_empty() should handle meta tensors in PyTorch 2.0+
+        result = safe_model_load_v2(model, device="cpu")
+
+        assert result is not None
+        assert next(result.parameters()).device.type == "cpu"
+
+    def test_all_strategies_fail(self):
+        """Test behavior when model doesn't support to_empty()"""
+        # Create a mock model without to_empty support
+        mock_model = MagicMock()
+        mock_model.named_modules.return_value = []
+        mock_model.parameters.return_value = []
+        mock_model.buffers.return_value = []
+        mock_model.device = type('Device', (), {'type': 'meta'})()
+        del mock_model.to_empty  # Remove to_empty attribute
+
+        # Mock has_meta_tensors to return True
+        with patch('codex.rag.utils.has_meta_tensors', return_value=True):
+            with pytest.raises(AttributeError, match="Model does not support to_empty"):
+                safe_model_load_v2(mock_model, device="cpu")
+
+    def test_model_without_model_name(self):
+        """Test loading model without model_name (skips reinit strategy)"""
+        model = torch.nn.Linear(10, 5)
+
+        result = safe_model_load_v2(model, device="cpu")
+
+        assert result is not None
+        assert next(result.parameters()).device.type == "cpu"
+
+    def test_cuda_device_when_unavailable(self):
+        """Test behavior when CUDA device requested but unavailable"""
+        model = torch.nn.Linear(10, 5)
+
+        if not torch.cuda.is_available():
+            # When CUDA is not available, the function may fall back or raise an error
+            # depending on PyTorch behavior. Test that it handles this gracefully.
+            try:
+                result = safe_model_load_v2(model, device="cuda")
+                # If it succeeds, verify the result is valid
+                assert result is not None
+                # It may have fallen back to CPU
+                device_type = next(result.parameters()).device.type
+                assert device_type in ["cuda", "cpu"]
+            except (RuntimeError, AssertionError):
+                # This is acceptable when CUDA is not available
+                pass
+        else:
+            # If CUDA is available, it should work
+            result = safe_model_load_v2(model, device="cuda")
+            assert result is not None
+            assert next(result.parameters()).device.type == "cuda"
+
+
+class TestProvenanceMetadata:
+    """Tests for ProvenanceMetadata dataclass"""
+
+    def test_creation(self):
+        """Test creating ProvenanceMetadata"""
+        from datetime import datetime
+
+        prov = ProvenanceMetadata(
+            source_file=Path("test.md"),
+            line_range=(10, 20),
+            chunk_id="chunk_123",
+            indexed_at=datetime(2024, 1, 1, 12, 0, 0),
+            embedding_model="all-MiniLM-L6-v2",
+            retrieval_score=0.85,
+        )
+
+        assert prov.source_file == Path("test.md")
+        assert prov.line_range == (10, 20)
+        assert prov.chunk_id == "chunk_123"
+        assert prov.retrieval_score == 0.85
+
+    def test_to_dict(self):
+        """Test converting ProvenanceMetadata to dict"""
+        from datetime import datetime
+
+        prov = ProvenanceMetadata(
+            source_file=Path("test.md"),
+            line_range=(10, 20),
+            chunk_id="chunk_123",
+            indexed_at=datetime(2024, 1, 1, 12, 0, 0),
+            embedding_model="all-MiniLM-L6-v2",
+            retrieval_score=0.85,
+            char_range=(100, 200),
+            metadata={"key": "value"}
+        )
+
+        result = prov.to_dict()
+
+        assert result["source_file"] == "test.md"
+        assert result["line_range"] == (10, 20)
+        assert result["chunk_id"] == "chunk_123"
+        assert result["embedding_model"] == "all-MiniLM-L6-v2"
+        assert result["retrieval_score"] == 0.85
+        assert result["char_range"] == (100, 200)
+        assert result["metadata"] == {"key": "value"}
+
+    def test_from_dict(self):
+        """Test creating ProvenanceMetadata from dict"""
+        data = {
+            "source_file": "test.md",
+            "line_range": (10, 20),
+            "chunk_id": "chunk_123",
+            "indexed_at": "2024-01-01T12:00:00",
+            "embedding_model": "all-MiniLM-L6-v2",
+            "retrieval_score": 0.85,
+            "char_range": (100, 200),
+            "metadata": {"key": "value"}
+        }
+
+        prov = ProvenanceMetadata.from_dict(data)
+
+        assert prov.source_file == Path("test.md")
+        assert prov.line_range == (10, 20)
+        assert prov.chunk_id == "chunk_123"
+        assert prov.retrieval_score == 0.85
+        assert prov.char_range == (100, 200)
+        assert prov.metadata == {"key": "value"}
+
+    def test_round_trip(self):
+        """Test converting to dict and back"""
+        from datetime import datetime
+
+        original = ProvenanceMetadata(
+            source_file=Path("test.md"),
+            line_range=(10, 20),
+            chunk_id="chunk_123",
+            indexed_at=datetime(2024, 1, 1, 12, 0, 0),
+            embedding_model="all-MiniLM-L6-v2",
+            retrieval_score=0.85,
+        )
+
+        dict_repr = original.to_dict()
+        restored = ProvenanceMetadata.from_dict(dict_repr)
+
+        assert restored.source_file == original.source_file
+        assert restored.line_range == original.line_range
+        assert restored.chunk_id == original.chunk_id
+        assert restored.retrieval_score == original.retrieval_score
+
+
+class TestIntegrationMetaTensorHandling:
+    """Integration tests for meta tensor handling in real scenarios"""
+
+    @pytest.mark.slow
+    def test_sentence_transformer_loading_with_safe_model_load_v2(self):
+        """Test loading a real SentenceTransformer model with safe_model_load_v2"""
+        # Use a small model for faster testing
+        model_name = "sentence-transformers/all-MiniLM-L6-v2"
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Load model
+            model = SentenceTransformer(
+                model_name,
+                cache_folder=tmpdir,
+                trust_remote_code=False
+            )
+
+            # Apply safe_model_load_v2 - only accepts model and device parameters
+            model = safe_model_load_v2(
+                model,
+                device="cpu"
+            )
+
+            # Verify model is properly loaded
+            assert model is not None
+            assert not check_for_meta_tensors(model)
+
+            # Verify model can encode
+            text = "This is a test sentence."
+            embeddings = model.encode([text])
+            assert embeddings is not None
+            assert len(embeddings) > 0

@@ -1,0 +1,335 @@
+        default="codex_dataset_index.json",
+        help="JSON output path (default: codex_dataset_index.json).",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=str,
+        default="codex_dataset_index.md",
+        help="Markdown output path (default: codex_dataset_index.md).",
+    )
+    args = parser.parse_args(argv)
+
+    data_root = Path(args.data_root).expanduser().resolve()
+    if not data_root.exists():
+        # Best-effort: create empty index if directory is missing.
+        index = {
+            "data_root": str(data_root),
+            "total_files": 0,
+            "total_bytes": 0,
+            "files": [],
+            "files_by_kind": {},
+        }
+    else:
+        index = build_index(data_root)
+
+    json_out = Path(args.json_out).expanduser().resolve()
+    md_out = Path(args.md_out).expanduser().resolve()
+    _write_json(json_out, index)
+    _write_markdown(md_out, index)
+
+    print(f"[codex_dataset_index] Wrote JSON to {json_out}")
+    print(f"[codex_dataset_index] Wrote Markdown to {md_out}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+4) Tests – tests/codex_ml/test_dataset_splits_and_registry.py
+=============================================================
+
+Create/overwrite: tests/codex_ml/test_dataset_splits_and_registry.py
+
+```python
+from pathlib import Path
+
+from codex_ml.data.splits import assign_splits, split_id_lists
+from codex_ml.data.dataset_registry import (
+    DatasetRegistry,
+    get_global_registry,
+    list_datasets,
+    load_dataset,
+)
+import tools.codex_dataset_index as ds_index
+import json
+
+
+def test_assign_splits_is_deterministic():
+    ids = [f"id-{i}" for i in range(100)]
+    a1 = assign_splits(ids, seed=123, train_fraction=0.7, val_fraction=0.2, test_fraction=0.1)
+    a2 = assign_splits(reversed(ids), seed=123, train_fraction=0.7, val_fraction=0.2, test_fraction=0.1)
+
+    # Same mapping regardless of input ordering.
+    assert a1 == a2
+    assert set(a1.keys()) == set(ids)
+    assert {"train", "val", "test"}.issuperset(set(a1.values()))
+
+
+def test_split_id_lists_counts_match():
+    ids = [f"id-{i}" for i in range(50)]
+    splits = split_id_lists(ids, seed=42, train_fraction=0.6, val_fraction=0.2, test_fraction=0.2)
+
+    assert sorted(splits.keys()) == ["test", "train", "val"]
+    total = len(splits["train"]) + len(splits["val"]) + len(splits["test"])
+    assert total == len(ids)
+
+
+def test_dataset_registry_has_dummy_dataset():
+    reg = get_global_registry()
+    assert "dummy" in reg.list_datasets()
+
+    handle = reg.get("dummy")
+    assert handle.name == "dummy"
+    assert len(handle.ids) == 10
+    sample_id = handle.ids[0]
+    sample = handle.load_fn(sample_id)
+    assert sample["id"] == sample_id
+    assert "value" in sample
+
+
+def test_dataset_registry_custom_registration():
+    reg = DatasetRegistry()
+
+    def _factory():
+        from codex_ml.data.dataset_registry import DatasetHandle
+        ids = ["a", "b"]
+
+        def _load_fn(i: str):
+            return {"i": i}
+
+        return DatasetHandle(name="custom", ids=ids, load_fn=_load_fn)
+
+    reg.register("custom", _factory)
+    assert reg.has("custom")
+    h = reg.get("custom")
+    assert h.name == "custom"
+    assert h.ids == ["a", "b"]
+    assert h.load_fn("a")["i"] == "a"
+
+
+def test_dataset_index_builds_json_and_md(tmp_path: Path):
+    data_root = tmp_path / "data"
+    (data_root / "sub").mkdir(parents=True, exist_ok=True)
+    (data_root / "sub" / "a.json").write_text("{}", encoding="utf-8")
+    (data_root / "sub" / "b.txt").write_text("hello", encoding="utf-8")
+
+    index = ds_index.build_index(data_root)
+    assert index["total_files"] == 2
+    assert index["files_by_kind"]["json"] == 1
+    assert index["files_by_kind"]["text"] == 1
+
+    json_out = tmp_path / "index.json"
+    md_out = tmp_path / "index.md"
+    rc = ds_index.main(
+        [
+            "--data-root",
+            str(data_root),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ]
+    )
+    assert rc == 0
+    assert json_out.exists()
+    assert md_out.exists()
+
+    loaded = json.loads(json_out.read_text(encoding="utf-8"))
+    assert loaded["total_files"] == 2
+```
+
+===============================================================================
+5) Documentation – docs/data/dataset_handling_and_splits.md
+===========================================================
+
+Create/overwrite: docs/data/dataset_handling_and_splits.md
+
+````markdown
+# Data Handling & Deterministic Splits in `_codex_` (Scaffolding)
+
+This document describes the current data handling scaffolding for
+`_codex_` as implemented in:
+
+- `codex_ml.data.splits`
+- `codex_ml.data.dataset_registry`
+- `tools/codex_dataset_index.py`
+
+The goal is to make:
+
+- Train/val/test split assignment **deterministic** and reproducible.
+- Dataset usage more **discoverable** via a registry.
+- On-disk data more **inspectable** via a dataset index.
+
+## 1. Deterministic Splits
+
+Module:
+
+- `codex_ml.data.splits`
+
+Key pieces:
+
+- `SplitFractions` dataclass
+- `assign_splits(ids, seed, ...)`
+- `split_id_lists(ids, seed, ...)`
+
+Properties:
+
+- Given the same `ids` and `seed`, `assign_splits` is deterministic.
+- Input order does not matter; hashing uses `(id, seed)` only.
+- Fractions are normalized if they do not sum to 1.0.
+
+Example:
+
+```python
+from codex_ml.data.splits import assign_splits, split_id_lists
+
+ids = ["sample-1", "sample-2", "sample-3"]
+assignments = assign_splits(ids, seed=123)
+split_lists = split_id_lists(ids, seed=123)
+````
+
+These helpers are backend-agnostic; callers are expected to build
+framework-specific datasets/dataloaders on top.
+
+## 2. Dataset Registry
+
+Module:
+
+* `codex_ml.data.dataset_registry`
+
+Key concepts:
+
+* `DatasetRegistry` – in-memory registry of dataset factories.
+* `DatasetHandle` – simple holder for:
+
+  * `name`
+  * `ids`
+  * `load_fn(sample_id) -> sample`
+
+A global registry is exposed via:
+
+* `get_global_registry()`
+* `list_datasets()`
+* `load_dataset(name)`
+
+The registry includes a built-in `"dummy"` dataset used for tests and
+examples; real datasets can be registered in future work.
+
+## 3. Dataset Index Tool
+
+Tool:
+
+* `tools/codex_dataset_index.py`
+
+Purpose:
+
+* Scan a data root (default: `data/`) and record:
+
+  * Relative file paths
+  * Size in bytes
+  * A coarse `kind` based on extension
+
+Outputs:
+
+* `codex_dataset_index.json`
+* `codex_dataset_index.md`
+
+Example:
+
+```bash
+python tools/codex_dataset_index.py \
+  --data-root data \
+  --json-out codex_dataset_index.json \
+  --md-out codex_dataset_index.md
+```
+
+This index is intentionally shallow, but it provides:
+
+* A quick view of what datasets are present.
+* A concrete artifact for reproducibility manifests and gap registry.
+
+## 4. Relationship to Reproducibility & Gap Registry
+
+These data-handling components complement:
+
+* Reproducibility manifest:
+
+  * Can record the presence and high-level shape of `codex_dataset_index.*`.
+* Gap registry:
+
+  * Can track missing datasets, missing indexes, or inconsistent
+    split policies as explicit gaps.
+
+Future work can extend this scaffolding with:
+
+* Dataset hashing / versioning.
+* Integration with actual training datasets.
+* Richer metadata for complex dataset topologies.
+
+````
+
+===============================================================================
+6) Wire data-handling step into codex_task_sequence.yaml
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply this
+minimal extension:
+
+1. Locate the phase that best represents **Data Handling / Preparation**
+   or, if not present, the general **Preparation** or **Search &
+   Mapping** phase.
+
+2. Under that phase’s `steps` list, append a new step to run the dataset
+   index tool. For example (adjust `<PHASE_ID>` to the actual numeric id
+   of that phase):
+
+```yaml
+       - id: "<PHASE_ID>.D1"
+         description: >
+           Generate a lightweight dataset index from the local data/
+           directory. This records file paths, sizes, and coarse kinds
+           for reproducibility and inspection. The step is best-effort
+           and safe to run even when data/ is empty.
+         actions:
+           - >
+             python tools/codex_dataset_index.py
+             --data-root data
+             --json-out codex_dataset_index.json
+             --md-out codex_dataset_index.md
+         on_error:
+           strategy: record_and_continue
+````
+
+Replace `<PHASE_ID>` with the numeric id of that phase (e.g. `"2.D1"`
+if the phase id is 2). Keep indentation consistent with surrounding
+entries.
+
+If there is clearly a dedicated “Data Handling” phase and it already
+has steps, use that; otherwise, attaching to Preparation / Search &
+Mapping is acceptable as a first pass.
+
+===============================================================================
+7) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/codex_ml/test_dataset_splits_and_registry.py -q`
+* `pytest tests/codex_ml -q`
+* `python tools/codex_dataset_index.py --data-root data --json-out codex_dataset_index.json --md-out codex_dataset_index.md`
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* Split helpers behave deterministically and tests pass.
+* Dataset registry exposes the `"dummy"` dataset and can be extended.
+* Dataset index artifacts are created even when `data/` is empty.
+* The updated task sequence runs the dataset index step with
+  `record_and_continue` and does not break other phases.
+
+All changes remain local/offline and avoid any GitHub Actions or external CI.
+
+------
+

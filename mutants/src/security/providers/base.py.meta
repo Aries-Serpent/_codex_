@@ -1,0 +1,17 @@
+{
+    "exit_code_by_key": {
+        "security.providers.base.x\u01c1SecretProvider\u01c1revoke_secret__mutmut_1": null,
+        "security.providers.base.x\u01c1SecretProvider\u01c1list_secrets__mutmut_1": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1__init____mutmut_1": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1__init____mutmut_2": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1get__mutmut_1": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1get__mutmut_2": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1get__mutmut_3": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1get__mutmut_4": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1require__mutmut_1": null,
+        "security.providers.base.x\u01c1ProviderConfig\u01c1require__mutmut_2": null
+    },
+    "hash_by_function_name": {},
+    "durations_by_key": {},
+    "estimated_durations_by_key": {}
+}
