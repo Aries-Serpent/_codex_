@@ -300,6 +300,11 @@ from typing import Any, Dict, List, Optional
 
 When encountering test failures, apply these patterns in order:
 
+### Phase 0: Language-Specific Validation (2-5 min) 🆕
+- [ ] **Rust Projects:** Validate Cargo.toml features (Pattern 11)
+  - Run: `python scripts/ci/validate_cargo_features.py`
+  - Check: `cargo clippy --all-features -- -D warnings`
+
 ### Phase 1: Quick Wins (5-10 min)
 - [ ] Remove unused imports (Pattern 1)
 - [ ] Remove unused variables (Pattern 2)  
@@ -317,7 +322,8 @@ When encountering test failures, apply these patterns in order:
 - [ ] Clean up type imports (Pattern 10)
 
 ### Phase 4: Validation
-- [ ] Run `ruff check` on modified files
+- [ ] Run `ruff check` on modified Python files
+- [ ] Run `cargo clippy` on modified Rust files (if applicable)
 - [ ] Run `yamllint` on workflow files
 - [ ] Run affected tests locally
 - [ ] Check CodeQL alerts
@@ -328,8 +334,12 @@ When encountering test failures, apply these patterns in order:
 
 ### Detection Tools:
 ```bash
-# Unused imports
+# Python: Unused imports
 ruff check --select F401 tests/ src/
+
+# Rust: Feature validation 🆕
+python scripts/ci/validate_cargo_features.py
+cargo clippy --all-targets --all-features --locked -- -D warnings
 
 # YAML validation  
 yamllint .github/workflows/
@@ -343,14 +353,32 @@ git ls-files .codex/sessions/
 
 ### Auto-Fix Tools:
 ```bash
-# Auto-remove unused imports
+# Python: Auto-remove unused imports
 ruff check --select F401 --fix tests/ src/
 
-# Format code
+# Python: Format code
 black tests/ src/
 
-# Sort imports
+# Python: Sort imports
 isort tests/ src/
+
+# Rust: Format code 🆕
+cargo fmt --all
+
+# Rust: Auto-fix lints 🆕
+cargo clippy --fix --all-targets --all-features
+```
+
+### Validation Commands:
+```bash
+# Python test validation
+pytest tests/ -v --tb=short
+
+# Rust test validation 🆕
+cargo test --lib --release --locked --verbose
+
+# Rust feature inspection 🆕
+cargo metadata --format-version=1 | jq '.packages[0].features'
 ```
 
 ---
@@ -389,6 +417,148 @@ isort tests/ src/
 
 ---
 
+## Pattern 11: Rust Feature Configuration Validation 🆕
+
+**Frequency:** Rare (1 occurrence)  
+**Impact:** CRITICAL (blocks entire Rust CI pipeline)  
+**Category:** Rust/Cargo Build System
+
+### Problem Signature:
+```rust
+error: unexpected `cfg` condition value: `<feature_name>`
+  --> src/lib.rs:47:7
+   |
+47 | #[cfg(feature = "python")]
+   |       ^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `default`
+   = help: consider adding `<feature_name>` as a feature in `Cargo.toml`
+   = note: `-D unexpected-cfgs` implied by `-D warnings`
+```
+
+### Common Scenarios:
+- Missing `Cargo.toml` file entirely
+- `[features]` section missing or incomplete
+- Feature name mismatch between source and Cargo.toml
+- Transitive feature dependencies not declared
+
+### Examples from Batch CI Triage (2026-02-04):
+```toml
+# ISSUE: src/lib.rs uses #[cfg(feature = "python")] but Cargo.toml doesn't define it
+
+# SOLUTION: Add to Cargo.toml
+[features]
+default = []
+# Python bindings feature - enables extension-module for proper Python extension building
+python = ["extension-module"]
+extension-module = ["pyo3/extension-module"]
+```
+
+### Resolution Pattern:
+
+#### 1. Detection (Automated):
+```bash
+# Run validation script (already in CI)
+python scripts/ci/validate_cargo_features.py
+
+# Manual check
+cargo clippy --all-targets --all-features --locked -- -D warnings
+```
+
+#### 2. Identify Missing Features:
+```bash
+# Parse error output for feature names
+cargo clippy 2>&1 | grep "unexpected \`cfg\` condition value" | \
+  grep -oP 'feature = "\K[^"]+' | sort -u
+```
+
+#### 3. Add to Cargo.toml:
+```toml
+[features]
+# Add feature with descriptive comment
+<feature_name> = ["<dependency_feature>"]
+```
+
+#### 4. Validate Fix:
+```bash
+# Run clippy again
+cargo clippy --all-targets --all-features --locked -- -D warnings
+
+# Run tests
+cargo test --lib --release --locked
+
+# Verify validation script
+python scripts/ci/validate_cargo_features.py
+```
+
+### Prevention Strategy:
+
+#### Pre-Merge Validation (✅ Already Implemented):
+```yaml
+# .github/workflows/rust_swarm_ci.yml:56-57
+- name: Validate Cargo.toml features
+  run: python scripts/ci/validate_cargo_features.py
+```
+
+#### IDE Integration:
+```bash
+# Add to .vscode/tasks.json or similar
+{
+  "label": "Validate Rust Features",
+  "type": "shell",
+  "command": "python scripts/ci/validate_cargo_features.py && cargo clippy --all-features"
+}
+```
+
+### Related Tools:
+
+#### Validation Script:
+```python
+# scripts/ci/validate_cargo_features.py
+# Validates that all #[cfg(feature = "X")] have matching Cargo.toml entries
+# Prevents regressions by catching mismatches before CI
+```
+
+#### Cargo Commands:
+```bash
+# List all features
+cargo metadata --format-version=1 | jq '.packages[0].features'
+
+# Check feature-gated code
+cargo expand --features <feature_name>
+
+# Test with/without features
+cargo test --no-default-features
+cargo test --all-features
+```
+
+### Success Metrics:
+- ✅ Cargo clippy passes with `-D warnings`
+- ✅ All `#[cfg(feature = "X")]` blocks have matching features
+- ✅ Features are documented with comments
+- ✅ CI validation script passes
+- ✅ Tests pass with and without features
+
+### Integration Checklist:
+- [ ] Add feature to `[features]` section in Cargo.toml
+- [ ] Add descriptive comment explaining feature purpose
+- [ ] Declare any transitive dependencies (e.g., `pyo3/extension-module`)
+- [ ] Run `cargo clippy --all-features -- -D warnings`
+- [ ] Run `python scripts/ci/validate_cargo_features.py`
+- [ ] Test with feature enabled and disabled
+- [ ] Update documentation if feature affects public API
+
+### Historical Context:
+**Resolved:** 2026-02-04 (PR #3141, commit b01aeb0)  
+**Affected Runs:** 10 CI failures on 2026-01-19  
+**Resolution Time:** ~16 days  
+**Root Cause:** Complete Cargo.toml was added with proper feature definitions  
+**Analysis:** `.codex/BATCH_CI_TRIAGE_REPORT_2026_02_04.md`
+
+---
+
 **Generated:** 2026-02-02T04:35:00Z  
+**Updated:** 2026-02-04T02:30:00Z (Added Pattern 11)  
 **Status:** ✅ Complete - Ready for Reuse  
+**Patterns:** 11 total (expanded from original 10)  
 **Next:** Apply patterns to remaining fixes in Phase 2-3
