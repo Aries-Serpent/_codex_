@@ -37,6 +37,7 @@ pre-commit run --all-files
 **Quality Gates Enforced**:
 - **Meta Tensor Validator**: Prevents PyTorch meta tensor issues in ML model loading code
 - **Test Pattern Guardian**: Detects mock exhaustion and serialization issues in tests
+- **Test File Naming**: Prevents `test_*.py` naming for utility modules (pytest collection risk)
 - **Config Validator**: Ensures all Hydra configs referenced in tests exist
 - **Security Checks**: Command injection, unsafe XML, weak hashing detection
 - **Code Quality**: Trailing whitespace, YAML validation, large file checks
@@ -48,6 +49,60 @@ pre-commit run --all-files
 3. Commit again: `git commit`
 
 **Bypassing hooks** (only in emergencies): `git commit --no-verify`
+
+### Test File Naming Conventions
+
+**Critical Rule**: pytest collects **ANY** file matching `test_*.py` pattern for test execution.
+
+**✅ Correct Naming**:
+- `tests/test_feature.py` - Actual test file
+- `tests/framework/generator.py` - Utility module (no `test_` prefix)
+- `tests/helpers/utils.py` - Helper module (no `test_` prefix)
+- `conftest.py` - Pytest configuration (special name)
+
+**❌ Incorrect Naming** (causes pytest collection errors):
+- `tests/framework/test_generator.py` - Utility module with `test_` prefix ❌
+- `tests/helpers/test_utils.py` - Helper module with `test_` prefix ❌
+
+**Why This Matters**:
+- pytest attempts to collect and run ALL `test_*.py` files
+- Utility modules aren't designed to be test files
+- Causes collection errors (exit code 2) and blocks CI
+- Can lead to import errors and circular dependencies
+
+**If You Need to Rename**:
+```bash
+# Rename the file
+mv tests/framework/test_generator.py tests/framework/generator.py
+
+# Update imports in all files that reference it
+# Search for: from tests.framework.test_generator import
+# Replace with: from tests.framework.generator import
+```
+
+**Optional Dependencies in Tests**:
+For tests requiring optional dependencies (numpy, torch, etc.), use `pytest.importorskip()`:
+
+```python
+import pytest
+
+# Skip entire module if dependency missing
+numpy = pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
+
+def test_with_numpy():
+    """This test only runs if numpy is installed."""
+    arr = numpy.array([1, 2, 3])
+    assert len(arr) == 3
+```
+
+Or skip individual tests:
+```python
+@pytest.mark.skipif(not has_numpy, reason="requires numpy")
+def test_numpy_feature():
+    import numpy as np
+    # ...
+```
 
 ### Running Tests Locally
 

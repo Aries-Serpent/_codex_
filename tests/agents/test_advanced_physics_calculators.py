@@ -10,8 +10,10 @@ Tests all emerging physics paradigms:
 6. Relativistic Effects
 """
 
-import numpy as np
 import pytest
+
+# Skip entire module if numpy is not available (optional dependency)
+np = pytest.importorskip("numpy", reason="numpy required for advanced physics calculations")
 
 from agents.advanced_physics_calculators import (
     AdvancedPhysicsOrchestrator,

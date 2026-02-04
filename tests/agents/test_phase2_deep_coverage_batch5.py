@@ -12,8 +12,10 @@ Systematically applies dynamics and evolution patterns:
 Target: +3-4% coverage gain (43% → 47%)
 """
 
-import numpy as np
 import pytest
+
+# Skip entire module if numpy is not available (optional dependency)
+np = pytest.importorskip("numpy", reason="numpy required for physics calculations")
 
 
 class TestPhase2_TimeEvolution:
