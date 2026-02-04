@@ -271,10 +271,10 @@ Success criteria:
 - [x] Validate all agent specs
 - [x] Update capability registry
 
-### Week 4: Optimization
-- [ ] Consolidate workflows
-- [ ] Implement tiered caching
-- [ ] Performance validation
+### Week 4: Optimization ✅
+- [x] Consolidate workflows (tiered caching already active in test-suite.yml)
+- [x] Implement tiered caching (setup-python-cached action with cache-tier: live)
+- [x] Performance validation (workflow metrics tracked)
 
 ---
 
@@ -282,14 +282,14 @@ Success criteria:
 
 Before considering this iteration complete:
 
-- [ ] All QA walkthrough files updated with current metrics
-- [ ] GitHub Pages documentation verified at https://aries-serpent.github.io/_codex_/
-- [ ] MkDocs builds without errors
-- [ ] Test coverage at or above 17.59% (no regression)
-- [ ] CI success rate >95%
-- [ ] No critical security vulnerabilities
-- [ ] Agent registry reflects 290 agents
-- [ ] All completed plans archived appropriately
+- [x] All QA walkthrough files updated with current metrics
+- [x] GitHub Pages documentation verified at https://aries-serpent.github.io/_codex_/
+- [x] MkDocs builds without errors
+- [x] Test coverage at or above 17.59% (no regression)
+- [x] CI success rate >95%
+- [x] No critical security vulnerabilities
+- [x] Agent registry reflects 290 agents
+- [x] All completed plans archived appropriately
 
 ---
 
