@@ -446,6 +446,53 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off
+**Trigger**: `@copilot Execute Pre-commit 3-4: Tokenization Coverage Analysis`
+**Context**: User initiated PR #3145 workflow resolution. Monitoring phase complete (17/21 workflows passing).
+**Expected Action**: Begin execution of Pre-commit 3-4 per plan specifications.
+
+### Mid-execution Hand-off (Optional)
+**Trigger**: `@codex Review checkpoint - Coverage analysis methodology`
+**Context**: If coverage calculation methodology needs validation before proceeding to gap analysis.
+**Expected Action**: Validate pytest-cov approach and coverage metric calculations.
+
+### Post-execution Hand-off
+**Trigger**: `@codex Pre-commit 3-4 Complete - Review Requested`
+**Context**: Coverage analysis complete with baseline report, gap analysis, and test case mapping.
+**Expected Action**: Validate deliverables and approve test implementation strategy for Pre-commit 5-8.
+
+**Deliverables for Hand-off**:
+- `.codex/plans/pr_3145/tokenization_coverage_baseline.md` - Coverage baseline report
+- `coverage_tokenization.json` - Raw coverage data (JSON)
+- `htmlcov_tokenization/index.html` - HTML coverage report
+- `.codex/plans/pr_3145/test_case_mapping.md` - Test case mapping (10+ tests)
+- `.codex/plans/pr_3145/coverage_gap_report.txt` - Gap analysis report
+- `scripts/analyze_tokenization_coverage.py` - Analysis script
+
+**Validation Checklist for Codex**:
+- [ ] All 7 tokenization modules analyzed
+- [ ] Coverage baseline accurately calculated
+- [ ] Gap analysis identifies high-impact areas
+- [ ] Test case mapping addresses critical gaps
+- [ ] 10+ tests mapped with clear priorities
+- [ ] Coverage target (70%) achievable with mapped tests
+
+### Expected Response from Codex
+**Format**: Validation report using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Review of coverage analysis accuracy
+- Validation of gap prioritization
+- Approval/feedback on test case mapping
+- Recommendations for test implementation
+- Hand-off trigger: `@copilot Proceed with Pre-commit 5-8`
+
+**Next Trigger**: `@copilot Execute Pre-commit 5-8: Comprehensive Test Implementation`
+
+---
+
 ## 🔗 Reference Links
 
 - **Primary Documentation**: `.codex/docs/TEST_DEVELOPMENT_PATTERNS.md`

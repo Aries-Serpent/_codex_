@@ -571,6 +571,57 @@ All validation criteria met. PR #3145 is ready for merge.
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off
+**Trigger**: `@copilot Execute Pre-commit 21-24: Final Validation`
+**Context**: Self-review complete (Pre-commit 17-20). Zero concerns. All criteria met. Ready for final validation.
+**Expected Action**: Execute final validation (cognitive brain update, acceptance criteria verification, full testing).
+
+### Mid-execution Hand-off (Optional)
+**Trigger**: `@codex Review checkpoint - Acceptance criteria`
+**Context**: After verifying acceptance criteria, validate completeness before final report.
+**Expected Action**: Review acceptance criteria verification and manual checklist.
+
+### Post-execution Hand-off
+**Trigger**: `@codex Pre-commit 21-24 Complete - Merge Approval Requested`
+**Context**: Final validation complete. All 11 acceptance criteria met. Workflows: 21/21. Ready for merge.
+**Expected Action**: Provide final merge approval and generate completion report.
+
+**Deliverables for Hand-off**:
+- `.codex/cognitive_brain/pr_3145_phase_complete.md` - Cognitive brain status update
+- `.codex/plans/pr_3145/final_validation_report.md` - Comprehensive validation report
+- `.codex/plans/pr_3145/acceptance_criteria_verification.md` - All 11 criteria verified
+- `.codex/plans/pr_3145/manual_validation_checklist.md` - Manual validation complete
+- `.codex/plans/pr_3145/PR_3145_COMPLETION_REPORT.md` - Final completion report
+
+**Validation Checklist for Codex**:
+- [ ] All 21 workflows passing (100%)
+- [ ] Tokenization coverage ≥ 70%
+- [ ] 10+ tokenization tests implemented
+- [ ] Zero CodeQL vulnerabilities
+- [ ] Zero security scan failures
+- [ ] 5+ self-review iterations complete
+- [ ] Documentation updated
+- [ ] Pre-commit hooks pass
+- [ ] CI pipeline green
+- [ ] Cognitive brain updated
+- [ ] Manual validation complete
+
+### Expected Response from Codex
+**Format**: Merge approval using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Final validation results
+- Merge approval decision
+- Completion acknowledgment
+- Follow-up instructions (if needed)
+- Hand-off trigger: `@copilot APPROVED FOR MERGE` or `@copilot Generate follow-up for PR #3147`
+
+**Next Trigger**: `@copilot Generate follow-up prompt for PR #3147` (if needed) or END
+
+---
+
 ## 🔗 Reference Links
 
 - **Acceptance Criteria**: Comment #3847272620 on PR #3145

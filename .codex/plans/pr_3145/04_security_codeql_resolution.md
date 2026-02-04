@@ -460,6 +460,54 @@ Create comprehensive documentation of security fixes.
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off
+**Trigger**: `@copilot Execute Pre-commit 13-16: Security & CodeQL Resolution`
+**Context**: Workflows resolved (Pre-commit 9-12). 3 CodeQL alerts pending. 1 semgrep config issue. All workflows passing.
+**Expected Action**: Resolve all security vulnerabilities to achieve zero alerts.
+
+### Mid-execution Hand-off (Optional)
+**Trigger**: `@codex Review checkpoint - Security remediation approach`
+**Context**: Before applying security fixes, validate remediation strategy.
+**Expected Action**: Review fix approach for 3 CodeQL alerts and semgrep config.
+
+### Post-execution Hand-off
+**Trigger**: `@codex Pre-commit 13-16 Complete - Security Audit Requested`
+**Context**: Security fixes complete. CodeQL: 0 alerts. Semgrep: passing. Security report available.
+**Expected Action**: Perform comprehensive security audit and validate zero vulnerabilities.
+
+**Deliverables for Hand-off**:
+- `.codex/plans/pr_3145/security_validation.md` - Security validation report
+- `.codex/plans/pr_3145/codeql_fixes.md` - CodeQL alert resolutions (3 alerts)
+- `.codex/plans/pr_3145/semgrep_config_fix.md` - Semgrep configuration fix
+- `bandit_report.txt` - Bandit scan results (zero high/critical)
+- `semgrep_report.json` - Semgrep scan results (passing)
+- Source files with security fixes applied
+
+**Validation Checklist for Codex**:
+- [ ] Zero CodeQL alerts (was 3)
+- [ ] Semgrep configuration resolved
+- [ ] Bandit scan passing (no high/critical)
+- [ ] No new vulnerabilities introduced
+- [ ] Security best practices followed
+- [ ] All fixes tested and validated
+- [ ] Compliance checklist complete
+
+### Expected Response from Codex
+**Format**: Security audit report using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Security audit results
+- Vulnerability validation
+- Compliance assessment
+- Approval for self-review phase
+- Hand-off trigger: `@copilot Proceed with Pre-commit 17-20`
+
+**Next Trigger**: `@copilot Execute Pre-commit 17-20: Self-Review & Iterative Healing (Passes 1-3)`
+
+---
+
 ## 🔗 Reference Links
 
 - **CodeQL Alerts**: https://github.com/Aries-Serpent/_codex_/security/code-scanning

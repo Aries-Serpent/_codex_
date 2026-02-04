@@ -462,6 +462,54 @@ Create report showing coverage improvements.
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off
+**Trigger**: `@copilot Execute Pre-commit 5-8: Comprehensive Test Implementation`
+**Context**: Coverage analysis complete (Pre-commit 3-4). Codex approved test strategy. Baseline: 45.2%, target: 70%.
+**Expected Action**: Implement 10+ comprehensive tests per approved test case mapping.
+
+### Mid-execution Hand-off (Optional)
+**Trigger**: `@codex Review checkpoint - Test implementation progress`
+**Context**: After completing 50% of tests, validate approach before continuing.
+**Expected Action**: Review test quality, coverage trends, and implementation patterns.
+
+### Post-execution Hand-off
+**Trigger**: `@codex Pre-commit 5-8 Complete - Review Requested`
+**Context**: Test implementation complete with 4 test files, 10+ tests, coverage report.
+**Expected Action**: Validate test quality, coverage metrics, and edge case handling.
+
+**Deliverables for Hand-off**:
+- `tests/tokenization/test_loading_comprehensive.py` - Loader tests (3+ tests)
+- `tests/tokenization/test_vocabulary_comprehensive.py` - Vocabulary tests (3+ tests)
+- `tests/tokenization/test_encoding_comprehensive.py` - Encoding/decoding tests (2+ tests)
+- `tests/tokenization/test_error_handling_comprehensive.py` - Error handling tests (2+ tests)
+- `htmlcov_tokenization/index.html` - Updated coverage report (70%+ target)
+- `.codex/plans/pr_3145/test_implementation_summary.md` - Implementation summary
+
+**Validation Checklist for Codex**:
+- [ ] All 4 test files created and passing
+- [ ] 10+ tests implemented (12 recommended)
+- [ ] Coverage ≥ 70% achieved
+- [ ] Edge cases covered (tokenizer fallback, encoding errors)
+- [ ] Integration tests included
+- [ ] No test flakiness detected
+- [ ] Test patterns followed (pytest.raises, fixtures, etc.)
+
+### Expected Response from Codex
+**Format**: Validation report using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Test quality assessment
+- Coverage metric validation
+- Edge case analysis
+- Approval/feedback for workflow fixes
+- Hand-off trigger: `@copilot Proceed with Pre-commit 9-12`
+
+**Next Trigger**: `@copilot Execute Pre-commit 9-12: Workflow Failure Resolution`
+
+---
+
 ## 🔗 Reference Links
 
 - **Test Patterns**: `.codex/docs/TEST_DEVELOPMENT_PATTERNS.md`

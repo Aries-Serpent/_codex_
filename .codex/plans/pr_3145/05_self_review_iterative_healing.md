@@ -541,6 +541,59 @@ python scripts/validate_all_passes.py \
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off (Pass 1-3)
+**Trigger**: `@copilot Execute Pre-commit 17-20: Self-Review & Iterative Healing (Passes 1-3)`
+**Context**: Security resolved (Pre-commit 13-16). Zero vulnerabilities. All workflows passing. Ready for self-review.
+**Expected Action**: Execute 5-pass self-review (code, tests, docs, security, integration) with autonomous healing.
+
+### Mid-execution Hand-off (After Pass 3)
+**Trigger**: `@codex Review checkpoint - Healing validation`
+**Context**: Passes 1-3 complete (code quality, tests, documentation). Healing actions applied.
+**Expected Action**: Validate healing effectiveness and approve Passes 4-5.
+
+### Post-execution Hand-off (After Pass 5)
+**Trigger**: `@codex Pre-commit 17-20 Complete - Self-Review Approval Requested`
+**Context**: All 5 passes complete. Healing applied. Zero concerns remaining. Summary available.
+**Expected Action**: Review self-review results and approve final validation phase.
+
+**Deliverables for Hand-off (Passes 1-3)**:
+- `.codex/plans/pr_3145/self_review_pass_1.md` - Work completion review
+- `.codex/plans/pr_3145/self_review_pass_2.md` - Code quality review
+- `.codex/plans/pr_3145/self_review_pass_3.md` - Documentation review
+- `.codex/plans/pr_3145/healing_log.md` - Autonomous healing actions log
+- `.codex/plans/pr_3145/issues_found.md` - Issues identified (if any)
+
+**Deliverables for Hand-off (Passes 4-5)**:
+- `.codex/plans/pr_3145/self_review_pass_4.md` - Security review
+- `.codex/plans/pr_3145/self_review_pass_5.md` - Integration review
+- `.codex/plans/pr_3145/self_review_summary.md` - Complete summary
+- `.codex/plans/pr_3145/final_healing_log.md` - Final healing actions
+
+**Validation Checklist for Codex**:
+- [ ] All 5 review passes completed
+- [ ] Healing applied for all identified issues
+- [ ] Zero concerns remaining
+- [ ] Code quality excellent
+- [ ] Tests comprehensive and passing
+- [ ] Documentation accurate and complete
+- [ ] Security validated
+- [ ] Integration verified
+
+### Expected Response from Codex
+**Format**: Approval report using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Self-review validation
+- Healing effectiveness assessment
+- Final approval for validation phase
+- Hand-off trigger: `@copilot Proceed with Pre-commit 21-24`
+
+**Next Trigger**: `@copilot Execute Pre-commit 21-24: Final Validation`
+
+---
+
 ## 🔗 Reference Links
 
 - **AI CODEBASE AGENCY POLICY**: `.codex/CODEBASE_AGENCY_POLICY.md`

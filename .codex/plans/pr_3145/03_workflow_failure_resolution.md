@@ -371,6 +371,53 @@ Address identified QA validation failures.
 
 ---
 
+## 🤝 Agent Hand-off Points
+
+### Pre-execution Hand-off
+**Trigger**: `@copilot Execute Pre-commit 9-12: Workflow Failure Resolution`
+**Context**: Tests complete (Pre-commit 5-8). 4 workflows failing (Auto-Fix, Testing Suite, QA, Comprehensive Tests). 17/21 passing.
+**Expected Action**: Fix all 4 failing workflows to achieve 21/21 passing.
+
+### Mid-execution Hand-off (Optional)
+**Trigger**: `@codex Review checkpoint - Auto-fix application`
+**Context**: After running auto-fix script, validate fixes before workflow re-run.
+**Expected Action**: Review 66 auto-fixes for correctness and completeness.
+
+### Post-execution Hand-off
+**Trigger**: `@codex Pre-commit 9-12 Complete - Review Requested`
+**Context**: Workflow fixes complete. All 21/21 workflows passing. Auto-fix log available.
+**Expected Action**: Validate workflow health, review fixes, recommend improvements.
+
+**Deliverables for Hand-off**:
+- `.codex/plans/pr_3145/auto_fix_log.txt` - Auto-fix application log (66 fixes)
+- `.codex/plans/pr_3145/workflow_health_report.md` - Workflow status report (21/21 ✅)
+- `.codex/plans/pr_3145/workflow_fixes_summary.md` - Summary of all fixes applied
+- `.github/workflows/` - Updated workflow files (if modified)
+- `scripts/ci/auto_fix_common_issues.py` - Auto-fix script (if enhanced)
+
+**Validation Checklist for Codex**:
+- [ ] All 21 workflows passing (100% success rate)
+- [ ] Auto-Fix workflow resolved (66 issues addressed)
+- [ ] Testing Suite workflow resolved (numpy dependency fixed)
+- [ ] QA Walkthrough workflow resolved (validation passing)
+- [ ] Comprehensive Tests workflow resolved (caching fixed)
+- [ ] No new workflow failures introduced
+- [ ] Edge cases identified and documented
+
+### Expected Response from Codex
+**Format**: Validation report using `codex_to_copilot_template.md`
+
+**Expected Content**:
+- Workflow health validation
+- Fix quality assessment
+- Improvement recommendations
+- Approval for security phase
+- Hand-off trigger: `@copilot Proceed with Pre-commit 13-16`
+
+**Next Trigger**: `@copilot Execute Pre-commit 13-16: Security & CodeQL Resolution`
+
+---
+
 ## 🔗 Reference Links
 
 - **Auto-Fix Script**: `scripts/ci/auto_fix_common_issues.py`
