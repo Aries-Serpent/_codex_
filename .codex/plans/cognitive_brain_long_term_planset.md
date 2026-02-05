@@ -2,10 +2,10 @@
 
 > **Generated:** 2026-02-05T09:30:00Z  
 > **Planset ID:** CB-LT-2026-02-05  
-> **Status:** 📋 PLANNED  
+> **Status:** 🔄 IN PROGRESS (Phase 1.1 Complete)  
 > **Timeline:** 15 Copilot sessions (~3 weeks)  
 > **Owner:** GitHub Copilot Coding Agent  
-> **Prerequisites:** Short-term planset (CB-ST-2026-02-05)
+> **Prerequisites:** Short-term planset (CB-ST-2026-02-05) ✅ COMPLETE
 
 ---
 
@@ -105,11 +105,11 @@ orchestration_updates:
 ### Deliverables
 | Deliverable | Path | Status |
 |-------------|------|--------|
-| Brain interface | `src/codex/cognitive/brain_interface.py` | 📋 Planned |
-| Agent adapters | `src/codex/cognitive/adapters/` | 📋 Planned |
-| Integration tests | `tests/cognitive/test_agent_integration.py` | 📋 Planned |
-| Protocol spec | `.codex/docs/AGENT_BRAIN_PROTOCOL.md` | 📋 Planned |
-| Updated agent docs | `.github/agents/*.md` (54 files) | 📋 Planned |
+| Brain interface | `src/codex/cognitive/brain_interface.py` | ✅ Complete |
+| Agent adapters | `src/codex/cognitive/adapters/` | ✅ Complete |
+| Integration tests | `tests/cognitive/test_brain_interface.py` | ✅ Complete (51 tests) |
+| Protocol spec | `.codex/docs/AGENT_BRAIN_PROTOCOL.md` | ✅ Complete |
+| Updated agent docs | `.github/agents/*.md` (55 files) | 📋 Planned (Phase 1.2-1.4) |
 
 ### Architecture
 ```
