@@ -481,6 +481,49 @@ requests>=2.31.0
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
+---
 
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: testing  
+> **Adapter**: TestingAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical coverage monitoring patterns
+- **Submit Learnings**: Report coverage threshold enforcement outcomes
+- **Share Session State**: Maintain coverage tracking context
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+brain = AgentBrainInterface(agent_id="test-coverage-monitor")
+
+# Query patterns for coverage regressions
+patterns = brain.query_patterns("coverage dropped below threshold")
+
+# Report learning after investigation
+brain.submit_learning(
+    pattern_id="TFR-004",
+    outcome="success",
+    context={
+        "symptom": "Coverage dropped from 70% to 65%",
+        "resolution": "Identified untested new code, added tests",
+        "coverage_restored": True
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Cognitive Brain Updated**: 2026-02-05T15:46:00Z
 
 **Template Applied**: 2026-01-23T19:45:00Z

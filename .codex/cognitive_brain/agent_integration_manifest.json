@@ -1,0 +1,112 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-05T15:46:00Z",
+  "phase": "1.2",
+  "total_agents": 9,
+  "agents": {
+    "ci-testing-agent": {
+      "agent_id": "ci-testing-agent",
+      "category": "ci_cd",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "ci_diagnosis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/ci-testing-agent.md"
+    },
+    "ci-log-retrieval-agent": {
+      "agent_id": "ci-log-retrieval-agent",
+      "category": "ci_cd",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "ci_diagnosis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/ci-log-retrieval-agent.md"
+    },
+    "workflow-ci-fixer": {
+      "agent_id": "workflow-ci-fixer",
+      "category": "ci_cd",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "ci_diagnosis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/workflow-ci-fixer.agent.md"
+    },
+    "artifact-monitor-agent": {
+      "agent_id": "artifact-monitor-agent",
+      "category": "ci_cd",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "ci_diagnosis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/artifact-monitor-agent.md"
+    },
+    "coverage-roadmap-agent": {
+      "agent_id": "coverage-roadmap-agent",
+      "category": "testing",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "coverage_tracking"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/coverage-roadmap-agent.md"
+    },
+    "test-alignment-fixer": {
+      "agent_id": "test-alignment-fixer",
+      "category": "testing",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "coverage_tracking"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/test-alignment-fixer.agent.md"
+    },
+    "test-coverage-monitor": {
+      "agent_id": "test-coverage-monitor",
+      "category": "testing",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "coverage_tracking"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/test-coverage-monitor.agent.md"
+    },
+    "security-alert-verification-agent": {
+      "agent_id": "security-alert-verification-agent",
+      "category": "security",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "vulnerability_analysis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/security-alert-verification-agent.md"
+    },
+    "codeql-alert-resolution-agent": {
+      "agent_id": "codeql-alert-resolution-agent",
+      "category": "security",
+      "integration_date": "2026-02-05T15:46:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "vulnerability_analysis"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/codeql-alert-resolution-agent.md"
+    }
+  },
+  "categories": {
+    "ci_cd": {
+      "count": 4,
+      "agents": ["ci-testing-agent", "ci-log-retrieval-agent", "workflow-ci-fixer", "artifact-monitor-agent"]
+    },
+    "testing": {
+      "count": 3,
+      "agents": ["coverage-roadmap-agent", "test-alignment-fixer", "test-coverage-monitor"]
+    },
+    "security": {
+      "count": 2,
+      "agents": ["security-alert-verification-agent", "codeql-alert-resolution-agent"]
+    }
+  }
+}
