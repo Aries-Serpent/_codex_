@@ -23,7 +23,6 @@ Usage:
 import argparse
 import json
 import logging
-import re
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
