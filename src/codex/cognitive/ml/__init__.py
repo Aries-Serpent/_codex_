@@ -37,6 +37,16 @@ from .symptom_classifier import (
     SymptomClassifier,
     TfidfVectorizer,
 )
+from .integration import (
+    BrainMLBridge,
+    EnhancedAgentRouter,
+    IntegratedPipeline,
+    MLEnhancedPatternMatcher,
+    MLEnhancedQueryResult,
+    RoutingDecision,
+    create_integrated_pipeline,
+    enhance_brain_with_ml,
+)
 
 __all__ = [
     # Data Pipeline
@@ -61,4 +71,13 @@ __all__ = [
     "ResolutionIndex",
     "ResolutionRecommender",
     "SuccessPredictor",
+    # Integration
+    "BrainMLBridge",
+    "EnhancedAgentRouter",
+    "IntegratedPipeline",
+    "MLEnhancedPatternMatcher",
+    "MLEnhancedQueryResult",
+    "RoutingDecision",
+    "create_integrated_pipeline",
+    "enhance_brain_with_ml",
 ]
