@@ -25,7 +25,7 @@ class TestComplexWorkflows:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             
             # Initialize components
-            provider = TFIDFEmbeddingProvider()
+            TFIDFEmbeddingProvider()
             indexer = CodexIndexer()
             retriever = CodexRetriever()
             
@@ -192,7 +192,7 @@ class TestStressTests:
             start_time = time.time()
             for query in queries:
                 try:
-                    results = retriever.retrieve(query, top_k=10)
+                    retriever.retrieve(query, top_k=10)
                 except Exception:
                     pass
             duration = time.time() - start_time
@@ -240,7 +240,7 @@ class TestStressTests:
             # Process large dataset
             for batch_num in range(10):
                 texts = [f"Batch {batch_num} document {i}" for i in range(100)]
-                embeddings = provider.encode(texts)
+                provider.encode(texts)
                 # Don't store embeddings to test provider memory
             
             # Memory shouldn't grow excessively
@@ -423,7 +423,7 @@ class TestPerformanceBenchmarks:
                 texts = [f"Benchmark text {i}" for i in range(batch_size)]
                 
                 start = time.time()
-                embeddings = provider.encode(texts)
+                provider.encode(texts)
                 duration = time.time() - start
                 
                 throughput = batch_size / duration
@@ -450,7 +450,7 @@ class TestPerformanceBenchmarks:
             for top_k in top_k_values:
                 start = time.time()
                 try:
-                    results = retriever.retrieve("benchmark query", top_k=top_k)
+                    retriever.retrieve("benchmark query", top_k=top_k)
                 except Exception:
                     pass
                 latency = (time.time() - start) * 1000  # ms
@@ -509,7 +509,7 @@ class TestScalability:
                 texts = [f"Text {i}" for i in range(size)]
                 
                 start = time.time()
-                embeddings = provider.encode(texts)
+                provider.encode(texts)
                 duration = time.time() - start
                 times.append(duration)
             

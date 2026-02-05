@@ -91,7 +91,7 @@ def test_fail_helper(tmp_path, monkeypatch):
     monkeypatch.setattr("src.tokenization.cli._ERROR_REPORT_DIR", mock_dir)
     
     # Should raise typer.Exit (not SystemExit when using typer)
-    with pytest.raises((SystemExit, Exception)) as exc_info:  # typer raises click.exceptions.Exit
+    with pytest.raises((SystemExit, Exception)):  # typer raises click.exceptions.Exit
         _fail("test_step", "Test failure", {"context": "data"})
 
 

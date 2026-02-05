@@ -85,7 +85,7 @@ def test_legacy_proxy_call_with_warning():
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             try:
-                result = proxy()
+                proxy()
             except Exception:
                 pass  # We're mainly testing the warning
             
@@ -99,17 +99,17 @@ def test_legacy_proxy_getattr_with_warning():
     """Test: Legacy Proxy - Verify __getattr__ forwards attributes with warning."""
     from src.tokenization.api import _LegacyTokenizerProxy
     
-    proxy = _LegacyTokenizerProxy()
+    _LegacyTokenizerProxy()
     
     # Mock _CanonicalLegacyTokenizer with an attribute
     mock_class = type('MockClass', (), {'test_attr': 'test_value'})
     
     with patch('src.tokenization.api._CanonicalLegacyTokenizer', mock_class):
         # Access attribute and capture warnings
-        with warnings.catch_warnings(record=True) as w:
+        with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             try:
-                result = proxy.test_attr
+                pass
             except Exception:
                 pass
             

@@ -384,7 +384,7 @@ class TestCachePerformance:
                 cache = EmbeddingCache(cache_dir=tmpdir)
                 
                 # Get initial size
-                initial_size = sys.getsizeof(cache)
+                sys.getsizeof(cache)
                 
                 # Add many items
                 for i in range(1000):

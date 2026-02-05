@@ -151,7 +151,7 @@ class TestIndexerSecurity:
         try:
             from src.codex.rag.indexer import CodexIndexer
             
-            with tempfile.TemporaryDirectory() as tmpdir:
+            with tempfile.TemporaryDirectory():
                 # Test with path traversal attempts
                 traversal_paths = [
                     "../../../etc/passwd",

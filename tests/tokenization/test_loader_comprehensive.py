@@ -160,7 +160,7 @@ def test_load_from_model_name_remote(tmp_path):
         mock_load.return_value = mock_tokenizer
         
         # Call with allow_remote=True
-        result = _load_from_model_name(model_name, cache_dir, allow_remote=True)
+        _load_from_model_name(model_name, cache_dir, allow_remote=True)
         
         # Verify load_from_pretrained was called with correct arguments
         mock_load.assert_called_once()
@@ -184,7 +184,7 @@ def test_load_from_model_name_offline(tmp_path):
         mock_load.return_value = mock_tokenizer
         
         # Call with allow_remote=False
-        result = _load_from_model_name(model_name, cache_dir, allow_remote=False)
+        _load_from_model_name(model_name, cache_dir, allow_remote=False)
         
         # Verify local_files_only=True when allow_remote=False
         call_kwargs = mock_load.call_args[1]
@@ -205,7 +205,7 @@ def test_load_from_model_name_with_cache_dir(tmp_path):
         mock_tokenizer.pad_token_id = 0
         mock_load.return_value = mock_tokenizer
         
-        result = _load_from_model_name(model_name, cache_dir, allow_remote=True)
+        _load_from_model_name(model_name, cache_dir, allow_remote=True)
         
         # Verify cache_dir was passed as string
         call_kwargs = mock_load.call_args[1]
@@ -244,7 +244,7 @@ def test_load_tokenizer_with_model_name(tmp_path):
         mock_tokenizer = MagicMock()
         mock_load_model.return_value = mock_tokenizer
         
-        result = load_tokenizer(config, cache_dir=cache_dir, allow_remote=False)
+        load_tokenizer(config, cache_dir=cache_dir, allow_remote=False)
         
         # Verify _load_from_model_name was called with correct args
         mock_load_model.assert_called_once()
@@ -288,7 +288,7 @@ def test_load_tokenizer_with_vocab_file_alias(tmp_path):
         mock_tokenizer = MagicMock()
         mock_load_file.return_value = mock_tokenizer
         
-        result = load_tokenizer(config)
+        load_tokenizer(config)
         
         # Verify _load_from_file was called (vocab_file is recognized)
         mock_load_file.assert_called_once()
@@ -304,7 +304,7 @@ def test_load_tokenizer_with_model_name_or_path_alias():
         mock_tokenizer = MagicMock()
         mock_load_model.return_value = mock_tokenizer
         
-        result = load_tokenizer(config)
+        load_tokenizer(config)
         
         # Verify model name was recognized
         mock_load_model.assert_called_once()
@@ -323,7 +323,7 @@ def test_load_tokenizer_cache_dir_creation(tmp_path):
         mock_tokenizer = MagicMock()
         mock_load_model.return_value = mock_tokenizer
         
-        result = load_tokenizer(config, cache_dir=cache_dir)
+        load_tokenizer(config, cache_dir=cache_dir)
         
         # Verify cache directory was created
         assert cache_dir.exists()
@@ -360,7 +360,7 @@ def test_load_tokenizer_prefers_file_over_model():
                 mock_tokenizer = MagicMock()
                 mock_load_file.return_value = mock_tokenizer
                 
-                result = load_tokenizer(config)
+                load_tokenizer(config)
                 
                 # Verify file loader was called, not model loader
                 mock_load_file.assert_called_once()

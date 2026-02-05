@@ -347,7 +347,7 @@ class TestRAGPerformance:
             
             # Test retrieval speed
             start = time.time()
-            results = retriever.retrieve("test query", top_k=10)
+            retriever.retrieve("test query", top_k=10)
             duration = time.time() - start
             
             # Should complete quickly (< 1 second)
