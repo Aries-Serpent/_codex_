@@ -10,6 +10,7 @@ Phase 2.3 of Long-term Plan 2: ML-based Pattern Recognition
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -336,8 +337,12 @@ class EnhancedAgentRouter:
                 category = result.predicted_category
                 confidence = result.confidence
                 reasoning = f"ML classification: {category} ({confidence:.1%} confidence)"
-            except (RuntimeError, Exception):
-                pass
+            except Exception as exc:
+                # Prediction failures are non-fatal; fall back to default routing values.
+                logging.debug(
+                    "EnhancedAgentRouter: ML classifier prediction failed, using default routing",
+                    exc_info=exc,
+                )
         
         agents = self._bridge._get_agents_for_category(category)
         
