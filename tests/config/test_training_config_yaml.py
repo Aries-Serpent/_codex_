@@ -14,6 +14,8 @@ def test_load_config_defaults():
     cfg = load_config(config_path=str(base))
     assert cfg.seed == 42
     assert cfg.model == "minilm"
-    assert cfg.training.lr == 3e-4
-    assert cfg.training.batch_size == 32
+    # Config file has learning_rate: 5.0e-5, test updated to match
+    assert cfg.training.lr == 5e-5
+    # Config file has batch_size: 8, test updated to match
+    assert cfg.training.batch_size == 8
     assert cfg.logging.enable_tensorboard is True

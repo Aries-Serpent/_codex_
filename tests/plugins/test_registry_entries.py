@@ -84,6 +84,11 @@ def test_offline_trainer_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_offline_trainer_missing_config(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     pytest.importorskip("numpy")
     monkeypatch.setenv("CODEX_ML_FUNCTIONAL_TRAINER_CONFIG", str(tmp_path / "missing.json"))
+    
+    # Mock _repo_root to return a non-existent directory so fallback file won't be found
+    from codex_ml.plugins import registries
+    monkeypatch.setattr(registries, "_repo_root", lambda: tmp_path / "nonexistent_repo")
+    
     with pytest.raises(FileNotFoundError) as excinfo:
         registries.trainers.resolve_and_instantiate("offline:functional")
     assert "offline:functional" in str(excinfo.value)

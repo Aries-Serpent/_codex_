@@ -115,6 +115,9 @@ class TestAmpDtypeMapping:
         """Test bfloat16 dtype mapping."""
         import torch
         
+        # Ensure hf_loader module uses real torch, not stub
+        hf_loader.torch = torch
+        
         assert hf_loader._map_amp_dtype("bf16") == torch.bfloat16
         assert hf_loader._map_amp_dtype("bfloat16") == torch.bfloat16
         assert hf_loader._map_amp_dtype("BF16") == torch.bfloat16
@@ -122,6 +125,9 @@ class TestAmpDtypeMapping:
     def test_fp16_mapping(self, skip_without_torch: None) -> None:
         """Test float16 dtype mapping."""
         import torch
+        
+        # Ensure hf_loader module uses real torch, not stub
+        hf_loader.torch = torch
         
         assert hf_loader._map_amp_dtype("fp16") == torch.float16
         assert hf_loader._map_amp_dtype("float16") == torch.float16
