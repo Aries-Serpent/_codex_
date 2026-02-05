@@ -3,15 +3,13 @@
 
 import json
 import sys
-import time
-import subprocess
 from datetime import datetime
 
 # Workflow IDs from problem statement
 WORKFLOW_IDS = [
     21731916569,  # CodeQL - Code Quality / Analyze (go) (dynamic)
     21731917150,  # CodeQL / Analyze (javascript) (push)
-    21731917179,  # CodeQL Chunked Analysis  
+    21731917179,  # CodeQL Chunked Analysis
     21731917130,  # Deploy Pages (MkDocs)
     21731917110,  # Unified Security Suite
     21731917163,  # Code Quality Analysis
@@ -31,13 +29,13 @@ WORKFLOW_IDS = [
 
 def main():
     """Check status of all workflows using gh CLI."""
-    
+
     results = []
     in_progress = []
     queued = []
     failed = []
     success = []
-    
+
     for wf_id in sorted(WORKFLOW_IDS):
         try:
             # Use gh api to get workflow run status
@@ -49,13 +47,13 @@ def main():
                 text=True,
                 timeout=10
             )
-            
+
             if result.returncode == 0:
                 data = json.loads(result.stdout)
                 status = data.get('status')
                 conclusion = data.get('conclusion')
                 name = data.get('name')
-                
+
                 info = {
                     'id': wf_id,
                     'name': name,
@@ -64,7 +62,7 @@ def main():
                     'html_url': data.get('html_url'),
                 }
                 results.append(info)
-                
+
                 if status == 'in_progress':
                     in_progress.append(info)
                 elif status == 'queued':
@@ -76,10 +74,10 @@ def main():
                         failed.append(info)
             else:
                 print(f"Error fetching workflow {wf_id}: {result.stderr}", file=sys.stderr)
-                
+
         except Exception as e:
             print(f"Exception fetching workflow {wf_id}: {e}", file=sys.stderr)
-    
+
     # Print summary
     print("=" * 80)
     print(f"WORKFLOW STATUS REPORT - {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
@@ -90,7 +88,7 @@ def main():
     print(f"🔄 In Progress: {len(in_progress)}")
     print(f"⏳ Queued: {len(queued)}")
     print(f"❌ Failed: {len(failed)}")
-    
+
     if in_progress:
         print("\n" + "!" * 80)
         print("⚠️  WORKFLOWS STILL IN PROGRESS:")
@@ -98,7 +96,7 @@ def main():
         for wf in in_progress:
             print(f"\n  {wf['name']} (ID: {wf['id']})")
             print(f"    URL: {wf['html_url']}")
-    
+
     if queued:
         print("\n" + "!" * 80)
         print("⚠️  WORKFLOWS QUEUED:")
@@ -106,7 +104,7 @@ def main():
         for wf in queued:
             print(f"\n  {wf['name']} (ID: {wf['id']})")
             print(f"    URL: {wf['html_url']}")
-    
+
     if failed:
         print("\n" + "!" * 80)
         print("❌ WORKFLOWS FAILED:")
@@ -115,7 +113,7 @@ def main():
             print(f"\n  {wf['name']} (ID: {wf['id']})")
             print(f"    Conclusion: {wf['conclusion']}")
             print(f"    URL: {wf['html_url']}")
-    
+
     if not in_progress and not queued:
         print("\n" + "=" * 80)
         print("✅ ALL WORKFLOWS COMPLETE!")

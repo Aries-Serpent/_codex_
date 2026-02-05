@@ -8,10 +8,9 @@ and reports their status until all workflows complete.
 
 import json
 import sys
-import time
-from datetime import datetime
-from typing import Dict, List, Any
 from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -26,24 +25,24 @@ class WorkflowRun:
     updated_at: str
     run_number: int
     event: str
-    
+
     @property
     def is_complete(self) -> bool:
         """Check if workflow is complete."""
         return self.status == "completed"
-    
+
     @property
     def is_successful(self) -> bool:
         """Check if workflow completed successfully."""
         return self.is_complete and self.conclusion in ["success", "skipped"]
-    
+
     @property
     def display_status(self) -> str:
         """Get display-friendly status."""
         if self.status == "completed":
             emoji = {
                 "success": "✅",
-                "failure": "❌", 
+                "failure": "❌",
                 "cancelled": "🚫",
                 "skipped": "⏭️",
                 "action_required": "⚠️",
@@ -69,17 +68,17 @@ class WorkflowMonitorReport:
     skipped: int = 0
     action_required: int = 0
     workflows: List[WorkflowRun] = field(default_factory=list)
-    
+
     @property
     def all_complete(self) -> bool:
         """Check if all workflows are complete."""
         return self.in_progress == 0 and self.queued == 0
-    
+
     @property
     def has_failures(self) -> bool:
         """Check if any workflows failed."""
         return self.failed > 0
-    
+
     def update_from_workflows(self, workflows: List[WorkflowRun]):
         """Update statistics from workflow list."""
         self.workflows = workflows
@@ -91,15 +90,15 @@ class WorkflowMonitorReport:
         self.successful = sum(1 for w in workflows if w.conclusion == "success")
         self.skipped = sum(1 for w in workflows if w.conclusion == "skipped")
         self.action_required = sum(1 for w in workflows if w.conclusion == "action_required")
-    
+
     def print_summary(self):
         """Print a summary report."""
         print("\n" + "="*80)
-        print(f"📊 WORKFLOW MONITORING REPORT")
+        print("📊 WORKFLOW MONITORING REPORT")
         print(f"Commit SHA: {self.commit_sha[:8]}")
         print(f"Timestamp: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
         print("="*80)
-        print(f"\n📈 Overall Status:")
+        print("\n📈 Overall Status:")
         print(f"  Total Workflows: {self.total_workflows}")
         print(f"  ✅ Successful: {self.successful}")
         print(f"  ⏭️  Skipped: {self.skipped}")
@@ -107,21 +106,21 @@ class WorkflowMonitorReport:
         print(f"  ⚠️  Action Required: {self.action_required}")
         print(f"  🔄 In Progress: {self.in_progress}")
         print(f"  ⏳ Queued: {self.queued}")
-        
+
         if self.all_complete:
             print(f"\n{'='*80}")
-            print(f"✅ ALL WORKFLOWS COMPLETE!")
+            print("✅ ALL WORKFLOWS COMPLETE!")
             print(f"{'='*80}")
         else:
             print(f"\n{'='*80}")
             print(f"⏳ WAITING: {self.in_progress + self.queued} workflows still running")
             print(f"{'='*80}")
-        
+
     def print_detailed_status(self):
         """Print detailed status for each workflow."""
-        print(f"\n📋 Detailed Workflow Status:")
+        print("\n📋 Detailed Workflow Status:")
         print("-"*80)
-        
+
         # Group by status
         groups = {
             "In Progress": [w for w in self.workflows if w.status == "in_progress"],
@@ -131,7 +130,7 @@ class WorkflowMonitorReport:
             "Successful": [w for w in self.workflows if w.conclusion == "success"],
             "Skipped": [w for w in self.workflows if w.conclusion == "skipped"],
         }
-        
+
         for group_name, group_workflows in groups.items():
             if group_workflows:
                 print(f"\n{group_name} ({len(group_workflows)}):")
@@ -139,7 +138,7 @@ class WorkflowMonitorReport:
                     print(f"  {w.display_status} {w.name}")
                     print(f"    Run #{w.run_number} | Event: {w.event}")
                     print(f"    URL: {w.html_url}")
-    
+
     def save_to_file(self, filepath: str):
         """Save report to JSON file."""
         data = {
@@ -195,11 +194,11 @@ def load_workflow_runs(json_file: str) -> List[WorkflowRun]:
     """Load workflow runs from JSON file."""
     with open(json_file, 'r') as f:
         data = json.load(f)
-    
+
     workflows = []
     for run in data.get("workflow_runs", []):
         workflows.append(parse_workflow_data(run))
-    
+
     return workflows
 
 
@@ -209,34 +208,34 @@ def main():
         print("Usage: python workflow_monitor.py <workflow_runs.json> [commit_sha]")
         print("\nExpects a JSON file containing workflow runs data from GitHub API.")
         sys.exit(1)
-    
+
     json_file = sys.argv[1]
     commit_sha = sys.argv[2] if len(sys.argv) > 2 else "main"
-    
+
     # Load workflows
     workflows = load_workflow_runs(json_file)
-    
+
     # Create report
     report = WorkflowMonitorReport(commit_sha=commit_sha)
     report.update_from_workflows(workflows)
-    
+
     # Print report
     report.print_summary()
     report.print_detailed_status()
-    
+
     # Save report
     output_file = json_file.replace(".json", "_report.json")
     report.save_to_file(output_file)
-    
+
     # Exit code based on status
     if not report.all_complete:
-        print(f"\n⏳ Some workflows are still running. Please wait and check again.")
+        print("\n⏳ Some workflows are still running. Please wait and check again.")
         sys.exit(2)  # Still running
     elif report.has_failures:
-        print(f"\n❌ Some workflows failed. Please investigate.")
+        print("\n❌ Some workflows failed. Please investigate.")
         sys.exit(1)  # Failed
     else:
-        print(f"\n✅ All workflows completed successfully!")
+        print("\n✅ All workflows completed successfully!")
         sys.exit(0)  # Success
 
 
