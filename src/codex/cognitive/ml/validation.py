@@ -3,12 +3,17 @@ Long-term Plan 2 Phase 2.4: Validation & Tuning Module
 
 This module provides ML model validation, hyperparameter tuning,
 performance tracking, and model registry functionality.
+
+Security Note: This module uses the standard `random` module for
+hyperparameter search (random_search). This is intentional and acceptable
+because these random values are used for ML experimentation (selecting
+parameter combinations), not for security/cryptographic purposes.
 """
 
 from __future__ import annotations
 
 import json
-import random
+import random  # nosec B311 - used for ML hyperparameter search, not security
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum

@@ -297,6 +297,7 @@ class ContextIndex:
                         self._contexts[ctx.context_id] = ctx
                         self._index_context(ctx)
             except (json.JSONDecodeError, KeyError):
+                # Index file is corrupted - will reinitialize
                 pass
 
     def _index_context(self, ctx: CompressedContext) -> None:

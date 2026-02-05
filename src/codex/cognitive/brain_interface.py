@@ -372,16 +372,19 @@ class AgentBrainInterface:
                 self._objectives = []
                 
                 # Parse objectives from markdown
+                # Note: Substring checks below are for markdown heading detection,
+                # not for URL/domain validation. This is safe markdown parsing.
                 in_objectives = False
                 for line in content.split('\n'):
-                    if '## Current Objectives' in line or '### Primary' in line:
+                    if '## Current Objectives' in line or '### Primary' in line:  # nosec - markdown heading
                         in_objectives = True
                         continue
                     if in_objectives and line.startswith('- [ ]'):
                         objective = line.replace('- [ ]', '').strip()
                         self._objectives.append(objective)
                     elif in_objectives and line.startswith('- [x]'):
-                        pass  # Skip completed objectives
+                        # Skip completed objectives
+                        pass
                     elif in_objectives and line.startswith('#'):
                         in_objectives = False
                         

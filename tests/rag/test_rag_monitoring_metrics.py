@@ -10,7 +10,6 @@ Comprehensive testing for RAG monitoring and observability:
 
 import pytest
 import time
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestPerformanceMetrics:

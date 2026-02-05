@@ -9,7 +9,7 @@ Comprehensive testing for all RAG embedding providers:
 
 import pytest
 import numpy as np
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import tempfile
 from pathlib import Path
 
@@ -192,8 +192,7 @@ class TestLocalSentenceTransformerProvider:
                 
                 # Should be on CPU
                 if hasattr(provider, 'model'):
-                    # Check model device
-                    import torch
+                    # Check model device - device attribute returns string directly
                     if hasattr(provider.model, 'device'):
                         assert str(provider.model.device) == 'cpu'
             except (ImportError, OSError):

@@ -9,12 +9,10 @@ Tests cover:
 - TuningPipeline: Complete pipeline
 """
 
-import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest
 
 from codex.cognitive.ml.validation import (
     HyperparameterTuner,
@@ -104,7 +102,7 @@ class TestModelValidator:
         y = ["a", "b", "a", "b", "a"]
         
         validator = ModelValidator(n_folds=2)
-        metrics = validator.validate(model, X, y)
+        _ = validator.validate(model, X, y)  # Result validates internally
         
         # Should have called fit and predict
         assert model.fit.called

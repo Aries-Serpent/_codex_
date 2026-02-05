@@ -178,6 +178,7 @@ class BrainMLBridge:
                     ml_category = result.predicted_category
                     confidence = result.confidence
                 except (RuntimeError, Exception):
+                    # ML classifier failed - fall back to default category
                     pass
             
             # Get recommended agents based on category

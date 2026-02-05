@@ -9,10 +9,8 @@ Focus on security-critical paths not covered by existing tests:
 """
 
 import pytest
-import hashlib
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 
 class TestEmbeddingProviderSecurity:

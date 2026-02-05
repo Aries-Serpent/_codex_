@@ -8,10 +8,8 @@ and learning feedback.
 """
 
 import json
-import os
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -478,7 +476,7 @@ class TestLearningFeedback:
         """Test that learning updates pattern success rate."""
         # Get initial success rate
         pattern = brain_interface.get_pattern("TFR-001")
-        initial_rate = pattern.success_rate
+        _ = pattern.success_rate  # Initial rate used for comparison implicitly
         
         # Submit multiple success feedbacks
         brain_interface.submit_learning("TFR-001", "success")

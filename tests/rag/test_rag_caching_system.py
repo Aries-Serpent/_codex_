@@ -10,10 +10,7 @@ Comprehensive testing for RAG caching layer:
 
 import pytest
 import tempfile
-from pathlib import Path
 import time
-import hashlib
-from unittest.mock import Mock, patch
 
 
 class TestEmbeddingCache:

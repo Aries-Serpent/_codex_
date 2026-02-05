@@ -16,7 +16,6 @@ from validate_handoff import (
     HandoffValidator,
     ValidationResult,
     ValidationReport,
-    TRACKING_FILE,
 )
 
 

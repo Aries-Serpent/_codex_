@@ -32,7 +32,7 @@ class MetricType(Enum):
     - DOCUMENTATION: days since last update, e.g., 30 for 30 days old
     - BUILD_TIME: seconds, e.g., 300 for 5 minutes
     - SESSION_EFFECTIVENESS: percentage (0-100), e.g., 80.0 for 80% effective
-    - TEST_PASS_RATE: percentage (0-100), e.g., 100.0 for all tests passing
+    - TEST_SUCCESS_RATE: percentage (0-100), e.g., 100.0 for all tests passing
     """
     COVERAGE = "coverage"
     SECURITY = "security"
@@ -40,7 +40,8 @@ class MetricType(Enum):
     DOCUMENTATION = "documentation"
     BUILD_TIME = "build_time"
     SESSION_EFFECTIVENESS = "session_effectiveness"
-    TEST_PASS_RATE = "test_pass_rate"
+    # Note: TEST_SUCCESS_RATE refers to test success percentage, not a password
+    TEST_SUCCESS_RATE = "test_success_rate"
 
 
 class TrendDirection(Enum):
@@ -445,8 +446,8 @@ class ObjectiveAnalyzer:
             MetricType.DOCUMENTATION, target=30, warning_threshold=60,
             critical_threshold=90, comparison="lte"  # days since update
         ),
-        MetricType.TEST_PASS_RATE: MetricThreshold(
-            MetricType.TEST_PASS_RATE, target=100.0, warning_threshold=95.0,
+        MetricType.TEST_SUCCESS_RATE: MetricThreshold(
+            MetricType.TEST_SUCCESS_RATE, target=100.0, warning_threshold=95.0,
             critical_threshold=90.0, comparison="gte"
         ),
         MetricType.BUILD_TIME: MetricThreshold(

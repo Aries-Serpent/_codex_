@@ -158,8 +158,8 @@ class FeatureExtractor:
         features["word_count"] = float(len(text.split()))
         features["line_count"] = float(text.count("\n") + 1)
         
-        # Code indicators
-        features["has_python_traceback"] = 1.0 if "Traceback (most recent call last)" in text else 0.0
+        # Code indicators (text pattern matching for error detection, not URL validation)
+        features["has_python_traceback"] = 1.0 if "Traceback (most recent call last)" in text else 0.0  # nosec
         features["has_file_path"] = 1.0 if re.search(r"[\w/]+\.py", text) else 0.0
         features["has_line_number"] = 1.0 if re.search(r"line \d+", text, re.IGNORECASE) else 0.0
         

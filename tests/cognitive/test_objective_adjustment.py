@@ -8,13 +8,9 @@ Test coverage for:
 - Phase 3.4: Safety & Governance (SafetyGuard)
 """
 
-import json
-import pytest
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 import tempfile
-import os
 
 
 # ============================================================================
@@ -33,7 +29,7 @@ class TestMetricTypes:
         assert MetricType.CI_CD.value == "ci_cd"
         assert MetricType.DOCUMENTATION.value == "documentation"
         assert MetricType.BUILD_TIME.value == "build_time"
-        assert MetricType.TEST_PASS_RATE.value == "test_pass_rate"
+        assert MetricType.TEST_SUCCESS_RATE.value == "test_success_rate"
 
 
 class TestTrendDirection:
@@ -672,7 +668,7 @@ class TestAutonomousExecutor:
     
     def test_get_status(self):
         """Test getting executor status."""
-        from codex.cognitive.autonomous_executor import AutonomousExecutor, AutomationLevel
+        from codex.cognitive.autonomous_executor import AutonomousExecutor
         
         executor = AutonomousExecutor()
         status = executor.get_status()
@@ -938,7 +934,7 @@ class TestPlan3Integration:
             
             analyzer = ObjectiveAnalyzer(store=metric_store)
             adjuster = ObjectiveAdjuster(analyzer=analyzer, store=obj_store)
-            guard = SafetyGuard(audit_log=audit_log)
+            _ = SafetyGuard(audit_log=audit_log)  # Guard created but used implicitly via audit_log
             policy = ExecutionPolicy(AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS)
             executor = AutonomousExecutor(adjuster=adjuster, policy=policy)
             

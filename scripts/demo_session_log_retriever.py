@@ -5,7 +5,6 @@ Demo script showing how to use the Copilot Session Log Retriever.
 This creates sample session data and demonstrates all features.
 """
 
-import json
 import sqlite3
 import tempfile
 from pathlib import Path

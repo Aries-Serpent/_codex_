@@ -313,15 +313,15 @@ class WorkflowAnalyzer:
             name = data.get("name", path.stem)
             triggers = list(data.get("on", {}).keys()) if isinstance(data.get("on"), dict) else []
 
-            # Detect cache usage
+            # Detect cache usage (checking for action names/YAML keys)
             workflow_text = path.read_text()
-            uses_cache = "actions/cache" in workflow_text or "cache:" in workflow_text
+            uses_cache = "actions/cache" in workflow_text or "cache:" in workflow_text  # nosec
             cache_keys = re.findall(r"key:\s*['\"]?([^'\"}\n]+)", workflow_text)
 
-            # Detect approval requirements
+            # Detect approval requirements (YAML key detection, not URL validation)
             approval_required = (
-                "environment:" in workflow_text
-                or "needs-approval" in workflow_text.lower()
+                "environment:" in workflow_text  # nosec - YAML key detection
+                or "needs-approval" in workflow_text.lower()  # nosec
             )
 
             return WorkflowInfo(
@@ -334,14 +334,20 @@ class WorkflowAnalyzer:
                 cache_keys=cache_keys[:5],
                 dependencies=[],
                 outputs=[],
-                is_required="required" in workflow_text.lower(),
+                is_required="required" in workflow_text.lower(),  # nosec - YAML key detection
                 approval_required=approval_required,
             )
         except Exception:
+            # Workflow parsing failed - skip this file
             return None
 
     def _parse_workflow_basic(self, path: Path) -> WorkflowInfo | None:
-        """Basic workflow parsing without yaml library."""
+        """Basic workflow parsing without yaml library.
+        
+        Note: The substring checks below (e.g., 'push:' in content) are used
+        to detect YAML keys in workflow files, not for URL/domain validation.
+        This is safe as we're parsing local workflow files, not validating URLs.
+        """
         try:
             content = path.read_text()
 
@@ -349,25 +355,25 @@ class WorkflowAnalyzer:
             name_match = re.search(r'^name:\s*["\']?([^"\'}\n]+)', content, re.MULTILINE)
             name = name_match.group(1).strip() if name_match else path.stem
 
-            # Detect triggers
+            # Detect triggers (looking for YAML keys in workflow files)
             triggers = []
-            if "push:" in content:
+            if "push:" in content:  # nosec - YAML key detection, not URL validation
                 triggers.append("push")
-            if "pull_request:" in content:
+            if "pull_request:" in content:  # nosec - YAML key detection
                 triggers.append("pull_request")
-            if "schedule:" in content:
+            if "schedule:" in content:  # nosec - YAML key detection
                 triggers.append("schedule")
-            if "workflow_dispatch:" in content:
+            if "workflow_dispatch:" in content:  # nosec - YAML key detection
                 triggers.append("workflow_dispatch")
 
-            # Detect cache usage
-            uses_cache = "actions/cache" in content or "cache:" in content
+            # Detect cache usage (checking for action names/YAML keys)
+            uses_cache = "actions/cache" in content or "cache:" in content  # nosec
             cache_keys = re.findall(r"key:\s*['\"]?([^'\"}\n]+)", content)
 
-            # Detect approval
+            # Detect approval (YAML key detection, not URL validation)
             approval_required = (
-                "environment:" in content
-                or "needs-approval" in content.lower()
+                "environment:" in content  # nosec - YAML key detection
+                or "needs-approval" in content.lower()  # nosec
             )
 
             return WorkflowInfo(
@@ -380,10 +386,11 @@ class WorkflowAnalyzer:
                 cache_keys=cache_keys[:5],
                 dependencies=[],
                 outputs=[],
-                is_required="required" in content.lower(),
+                is_required="required" in content.lower(),  # nosec - YAML key detection
                 approval_required=approval_required,
             )
         except Exception:
+            # Workflow parsing failed - skip this file
             return None
 
     def find_pending_approval_workflows(self) -> list[WorkflowInfo]:

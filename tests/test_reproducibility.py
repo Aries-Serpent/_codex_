@@ -13,7 +13,6 @@ pytest.importorskip("torch")
 
 import numpy as np
 
-import torch
 from codex_ml.utils.repro import set_reproducible
 
 
@@ -22,7 +21,6 @@ def test_set_reproducible_reseeds_all():
     import torch as real_torch
     
     # Patch the seeding module to use real torch
-    import codex_ml.utils.seeding as seeding_module
     import sys
     # Temporarily replace torch in sys.modules to ensure seeding uses real torch
     original_torch = sys.modules.get('torch')

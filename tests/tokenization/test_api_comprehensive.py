@@ -20,8 +20,6 @@ def test_import_error_fallback_hf_adapter():
     # Mock the import to fail
     with patch.dict('sys.modules', {'codex_ml.tokenization.adapter': None}):
         # Force reimport to trigger fallback
-        import importlib
-        import src.tokenization.api as api_module
         
         # We can't easily force the fallback in the already-imported module,
         # so let's test the behavior directly

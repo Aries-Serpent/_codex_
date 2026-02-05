@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Analyze coverage gaps in tokenization module and generate detailed report."""
 import json
-from pathlib import Path
 from typing import Dict, List, Any
 
 

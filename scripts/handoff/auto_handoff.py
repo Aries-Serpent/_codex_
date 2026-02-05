@@ -123,6 +123,7 @@ class AutoHandoff:
                         if entry_time < self.cutoff_time:
                             continue
                 except (ValueError, AttributeError):
+                    # Timestamp parsing failed - include entry anyway
                     pass
                 
                 # Extract file operations
@@ -166,6 +167,7 @@ class AutoHandoff:
                 if success_rate > 0.8:  # High success patterns
                     patterns.append(f"{pattern_id}: {pattern.get('name', 'Unknown')}")
         except (json.JSONDecodeError, KeyError):
+            # Pattern store is corrupted or empty - return empty list
             pass
         
         return patterns[:5]  # Top 5
@@ -177,6 +179,7 @@ class AutoHandoff:
                 with open(TRACKING_FILE, 'r') as f:
                     return json.load(f)
             except json.JSONDecodeError:
+                # File is corrupted - will reinitialize
                 pass
         
         # Initialize new tracking data

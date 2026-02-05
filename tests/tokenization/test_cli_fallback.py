@@ -6,8 +6,6 @@ These tests work with the real typer implementation.
 """
 
 import json
-import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -60,7 +58,7 @@ def test_format_context_with_exception():
 
 def test_append_error_block(tmp_path, monkeypatch):
     """Test: _append_error_block - Verify error logging."""
-    from src.tokenization.cli import _append_error_block, _ERROR_REPORT_DIR
+    from src.tokenization.cli import _append_error_block
     
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
@@ -86,8 +84,7 @@ def test_append_error_block(tmp_path, monkeypatch):
 
 def test_fail_helper(tmp_path, monkeypatch):
     """Test: _fail - Verify error reporting and exit."""
-    from src.tokenization.cli import _fail, _ERROR_REPORT_DIR
-    import typer
+    from src.tokenization.cli import _fail
     
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
@@ -146,7 +143,6 @@ def test_load_tokenizer_helper(tmp_path):
 def test_vocab_command_with_limit(tmp_path, capsys):
     """Test: vocab command - Verify vocabulary display with limit."""
     from src.tokenization.cli import vocab
-    from typer import Exit
     
     tokenizer_path = tmp_path / "tokenizer"
     
@@ -313,7 +309,7 @@ def test_vocab_command_no_converter(tmp_path, capsys):
 
 def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
     """Test: inspect command - Handle manifest.json parse errors."""
-    from src.tokenization.cli import inspect, _ERROR_REPORT_DIR
+    from src.tokenization.cli import inspect
     
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()

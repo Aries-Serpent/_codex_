@@ -82,6 +82,7 @@ def load_action_log(
                         if entry_time < since:
                             continue
                     except (ValueError, TypeError):
+                        # Timestamp parsing failed - include entry anyway
                         pass
                 entries.append(entry)
             except json.JSONDecodeError:

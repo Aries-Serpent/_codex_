@@ -26,7 +26,7 @@ try:
     import importlib.util
     spec = importlib.util.find_spec("codex.agents.doc_test_scribe")
     if spec is not None:
-        from codex.agents.doc_test_scribe import analyzer, tokenizer
+        from codex.agents.doc_test_scribe import tokenizer
         SCRIBE_AVAILABLE = True
     else:
         SCRIBE_AVAILABLE = False

@@ -7,12 +7,10 @@ This module contains tests for:
 - Phase 4.3: Retrieval Optimization (retrieval_optimizer.py)
 - Phase 4.4: Workflow Optimization (workflow_optimizer.py)
 """
-import json
 import tempfile
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
-import pytest
 
 
 # ============================================================================
@@ -1004,7 +1002,7 @@ class TestPlan4Integration:
 
             # Compress session log
             log = "Session started. Fixed bug. Added tests. Session ended. " * 10
-            ctx = compressor.compress_session_log(log, "session-1")
+            _ = compressor.compress_session_log(log, "session-1")  # Result used implicitly
 
             # Get startup context
             startup = compressor.get_session_startup_context(max_tokens=500)

@@ -1,11 +1,10 @@
 """Tests for auto_handoff.py - Automated Agent Handoff Generator."""
 
 import json
-import os
 import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
@@ -17,7 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "handof
 from auto_handoff import (
     AutoHandoff,
     HandoffContext,
-    TRACKING_FILE,
     ACTION_LOG_PATH,
 )
 
