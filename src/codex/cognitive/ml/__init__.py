@@ -1,0 +1,64 @@
+"""ML-based Pattern Recognition for Cognitive Brain.
+
+This module provides machine learning capabilities for:
+- Symptom classification
+- Resolution recommendation
+- Success prediction
+- Pattern extraction from historical data
+
+Author: GitHub Copilot Coding Agent
+Date: 2026-02-05
+"""
+
+from __future__ import annotations
+
+from .data_pipeline import (
+    DataPipeline,
+    DataSourceType,
+    FeatureExtractor,
+    PatternDataset,
+    PatternSample,
+    RawDataRecord,
+    TrainingDataGenerator,
+    create_pipeline_from_defaults,
+)
+from .recommender import (
+    CosineSimilarity,
+    JaccardSimilarity,
+    Recommendation,
+    RecommendationResult,
+    ResolutionIndex,
+    ResolutionRecommender,
+    SuccessPredictor,
+)
+from .symptom_classifier import (
+    ClassificationResult,
+    NaiveBayesClassifier,
+    SymptomClassifier,
+    TfidfVectorizer,
+)
+
+__all__ = [
+    # Data Pipeline
+    "DataPipeline",
+    "DataSourceType",
+    "FeatureExtractor",
+    "PatternDataset",
+    "PatternSample",
+    "RawDataRecord",
+    "TrainingDataGenerator",
+    "create_pipeline_from_defaults",
+    # Symptom Classifier
+    "ClassificationResult",
+    "NaiveBayesClassifier",
+    "SymptomClassifier",
+    "TfidfVectorizer",
+    # Recommender
+    "CosineSimilarity",
+    "JaccardSimilarity",
+    "Recommendation",
+    "RecommendationResult",
+    "ResolutionIndex",
+    "ResolutionRecommender",
+    "SuccessPredictor",
+]
