@@ -117,6 +117,15 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      # Cognitive brain - Pre-commit file verification
+      - id: verify-expected-files
+        name: Verify expected files from action log are staged
+        entry: python scripts/hooks/pre_commit_verify.py --check-only --quiet
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
       # AST Code Smell Detection
       - id: ast-smell-check
         name: AST Code Smell Check (error-level only)

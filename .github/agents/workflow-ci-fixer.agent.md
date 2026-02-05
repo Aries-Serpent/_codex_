@@ -776,6 +776,49 @@ else:
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
+---
 
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: ci_cd  
+> **Adapter**: CICDAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical workflow syntax error patterns
+- **Submit Learnings**: Report YAML fix outcomes to improve future sessions
+- **Share Session State**: Maintain context for CI debugging
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+brain = AgentBrainInterface(agent_id="workflow-ci-fixer")
+
+# Query patterns for YAML syntax issues
+patterns = brain.query_patterns("YAML heredoc parsing error")
+
+# Report learning after fix
+brain.submit_learning(
+    pattern_id="CIF-004",
+    outcome="success",
+    context={
+        "symptom": "could not find expected ':'",
+        "resolution": "Replaced heredoc with echo commands",
+        "files_changed": [".github/workflows/build.yml"]
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Cognitive Brain Updated**: 2026-02-05T15:46:00Z
 
 **Template Applied**: 2026-01-23T19:45:00Z

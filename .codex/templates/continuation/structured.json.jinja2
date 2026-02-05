@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "generated": "{{ timestamp }}",
+  "session": {
+    "id": "{{ session_id }}",
+    "pr_number": {{ pr_number or 'null' }},
+    "status": "{{ status }}",
+    "started": "{{ started }}",
+    "ended": "{{ ended }}",
+    "duration_seconds": {{ duration_seconds }},
+    "phase": "{{ last_phase }}"
+  },
+  "tasks": {
+    "completed": {{ completed_tasks | tojson }},
+    "pending": {{ pending_tasks | tojson }},
+    "completion_rate": {{ completion_rate }}
+  },
+  "files": {
+    "created": {{ files_created | tojson }},
+    "modified": {{ files_modified | tojson }}
+  },
+  "patterns": {
+    "applied": {{ patterns_applied | tojson }},
+    "learned": {{ patterns_learned | tojson }}
+  },
+  "checkpoints": {{ checkpoints | tojson }},
+  "metrics": {
+    "tasks_completed": {{ tasks_completed }},
+    "tasks_pending": {{ tasks_pending }},
+    "files_created": {{ files_created_count }},
+    "files_modified": {{ files_modified_count }},
+    "patterns_applied": {{ patterns_applied_count }},
+    "checkpoints": {{ checkpoints_count }}
+  },
+  "recommended_actions": {{ recommended_actions | tojson }},
+  "references": {{ references | tojson }},
+  "activation_command": "{{ activation_command }}",
+  "blockers": {{ blockers | tojson }},
+  "cognitive_brain": {
+    "objectives_aligned": {{ objectives_aligned }},
+    "pattern_store_updated": {{ pattern_store_updated }}
+  }
+}

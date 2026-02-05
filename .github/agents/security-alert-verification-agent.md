@@ -47,4 +47,47 @@ Specialized GitHub Copilot agent for verifying GitHub security alert details, ma
 - JSON summary in `artifacts/`
 - Change log entries in `.codex/change_log.md`
 
-**Last Updated**: 2026-01-29T23:27:22Z
+---
+
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: security  
+> **Adapter**: SecurityAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical security alert patterns
+- **Submit Learnings**: Report triage outcomes to improve future sessions
+- **Share Session State**: Maintain context for security remediation
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+brain = AgentBrainInterface(agent_id="security-alert-verification-agent")
+
+# Query patterns for similar vulnerabilities
+patterns = brain.query_patterns("CVE dependency vulnerability")
+
+# Report learning after triage
+brain.submit_learning(
+    pattern_id="SEC-001",
+    outcome="success",
+    context={
+        "symptom": "GHSA-xxxx-xxxx high severity",
+        "resolution": "Upgraded dependency to patched version",
+        "cve": "CVE-2026-12345"
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Last Updated**: 2026-02-05T15:46:00Z

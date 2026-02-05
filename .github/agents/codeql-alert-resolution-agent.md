@@ -431,3 +431,48 @@ tail -f .codex/security/agent_actions.log
 **Next Review:** Weekly (Wednesdays 2 PM UTC)
 
 **Questions?** File an issue with label `agent:codeql-resolver` or contact @mbaetiong
+
+---
+
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: security  
+> **Adapter**: SecurityAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical CodeQL alert resolution patterns
+- **Submit Learnings**: Report fix outcomes to improve future sessions
+- **Share Session State**: Maintain context for security remediation
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+brain = AgentBrainInterface(agent_id="codeql-alert-resolution-agent")
+
+# Query patterns for similar CodeQL alerts
+patterns = brain.query_patterns("SQL injection vulnerability")
+
+# Report learning after fix
+brain.submit_learning(
+    pattern_id="SEC-002",
+    outcome="success",
+    context={
+        "symptom": "py/sql-injection in query.py",
+        "resolution": "Used parameterized query",
+        "files_changed": ["src/db/query.py"]
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Cognitive Brain Updated**: 2026-02-05T15:46:00Z

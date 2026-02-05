@@ -45,4 +45,51 @@ Specialized GitHub Copilot agent for retrieving GitHub Actions job logs (authent
 - Log archive in `artifacts/` (if permitted)
 - Change log entries in `.codex/change_log.md`
 
-**Last Updated**: 2026-01-29T23:58:48Z
+---
+
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: ci_cd  
+> **Adapter**: CICDAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical log failure patterns for faster diagnosis
+- **Submit Learnings**: Report log analysis outcomes to improve future sessions
+- **Share Session State**: Maintain context across agent transitions
+- **Check Objective Alignment**: Verify log retrieval aligns with repository objectives
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+# Initialize brain interface for this agent
+brain = AgentBrainInterface(agent_id="ci-log-retrieval-agent")
+
+# 1. Query patterns for similar failures
+patterns = brain.query_patterns("workflow timeout error")
+for pattern in patterns:
+    print(f"Pattern: {pattern['id']} (success: {pattern['success_rate']})")
+
+# 2. Report learning after analysis
+brain.submit_learning(
+    pattern_id="CIF-002",
+    outcome="success",
+    context={
+        "symptom": "Job timed out after 60 minutes",
+        "resolution": "Identified infinite loop in test suite",
+        "logs_analyzed": ["job_12345.log"]
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Last Updated**: 2026-02-05T15:46:00Z
