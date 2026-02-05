@@ -47,6 +47,23 @@ from .integration import (
     create_integrated_pipeline,
     enhance_brain_with_ml,
 )
+from .validation import (
+    HyperparameterTuner,
+    MetricType,
+    ModelRegistry,
+    ModelValidator,
+    ModelVersion,
+    PerformanceRecord,
+    PerformanceTracker,
+    TuningPipeline,
+    TuningResult,
+    ValidationMetrics,
+    create_registry,
+    create_tracker,
+    create_tuner,
+    create_tuning_pipeline,
+    create_validator,
+)
 
 __all__ = [
     # Data Pipeline
@@ -80,4 +97,20 @@ __all__ = [
     "RoutingDecision",
     "create_integrated_pipeline",
     "enhance_brain_with_ml",
+    # Validation & Tuning
+    "HyperparameterTuner",
+    "MetricType",
+    "ModelRegistry",
+    "ModelValidator",
+    "ModelVersion",
+    "PerformanceRecord",
+    "PerformanceTracker",
+    "TuningPipeline",
+    "TuningResult",
+    "ValidationMetrics",
+    "create_registry",
+    "create_tracker",
+    "create_tuner",
+    "create_tuning_pipeline",
+    "create_validator",
 ]

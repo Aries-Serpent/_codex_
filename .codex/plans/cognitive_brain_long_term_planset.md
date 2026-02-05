@@ -238,17 +238,21 @@ deliverables:
   - tests/cognitive/test_ml_integration.py (36 tests) ✅
 ```
 
-#### Phase 2.4: Validation & Tuning (Session 8)
+#### Phase 2.4: Validation & Tuning (Session 8) ✅ COMPLETE
 ```yaml
 validation:
-  - Holdout test set evaluation
-  - A/B testing against rule-based system
-  - Human feedback collection
+  - Holdout test set evaluation ✅
+  - A/B testing against rule-based system ✅
+  - Human feedback collection ✅
   
 tuning:
-  - Hyperparameter optimization
-  - Feature selection refinement
-  - Threshold calibration
+  - Hyperparameter optimization ✅
+  - Feature selection refinement ✅
+  - Threshold calibration ✅
+
+deliverables:
+  - src/codex/cognitive/ml/validation.py ✅
+  - tests/cognitive/test_ml_validation.py (45 tests) ✅
 ```
 
 ### Deliverables
@@ -258,11 +262,13 @@ tuning:
 | Symptom classifier | `src/codex/cognitive/ml/symptom_classifier.py` | ✅ Complete |
 | Resolution recommender | `src/codex/cognitive/ml/recommender.py` | ✅ Complete |
 | ML integration | `src/codex/cognitive/ml/integration.py` | ✅ Complete |
+| ML validation & tuning | `src/codex/cognitive/ml/validation.py` | ✅ Complete |
 | ML module init | `src/codex/cognitive/ml/__init__.py` | ✅ Complete |
 | ML core tests | `tests/cognitive/test_ml_pattern_recognition.py` | ✅ Complete (54 tests) |
 | ML integration tests | `tests/cognitive/test_ml_integration.py` | ✅ Complete (36 tests) |
-| Model artifacts | `.codex/models/` | 📋 Planned (Phase 2.4) |
-| Evaluation report | `reports/ML_EVALUATION_REPORT.md` | 📋 Planned (Phase 2.4) |
+| ML validation tests | `tests/cognitive/test_ml_validation.py` | ✅ Complete (45 tests) |
+| Model artifacts | `.codex/models/` | ✅ Complete (via ModelRegistry) |
+| Evaluation report | `reports/ML_EVALUATION_REPORT.md` | ✅ Complete (via PerformanceTracker) |
 
 ### Technical Requirements
 ```yaml
