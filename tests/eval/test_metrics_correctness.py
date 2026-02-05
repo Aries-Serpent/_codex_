@@ -24,6 +24,8 @@ def test_token_accuracy_known_value():
 def test_bleu_known_value():
     pytest.importorskip("nltk")
     score = M.bleu(["the cat sat"], ["the cat sat"], lowercase=False)
+    # Ensure score is not None (dependencies available)
+    assert score is not None, "BLEU returned None - check if sacrebleu/nltk is properly installed"
     assert score == pytest.approx(1.0)
 
 

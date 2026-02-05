@@ -145,10 +145,10 @@ class TestMethodVariations_MentalMapping:
                 edge_type=EdgeType.LEADS_TO,
             )
 
-        # Test BFS from each node
+        # Test BFS from each node - pass node_id (string), not node object
         for node in nodes:
-            result = model.bfs(start_node=node)
-            assert len(result) > 0
+            result = model.bfs(start_node=node.node_id)
+            assert len(result) > 0, f"BFS returned empty result for node {node.node_id}"
 
 
 class TestMethodVariations_AgentMemory:
@@ -361,17 +361,30 @@ class TestOptionalParameters_AllMethods:
 
     def test_all_optional_parameters_physics(self):
         """Test PhysicsOrchestrator methods with optional parameters"""
-        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
-        orch = PhysicsOrchestrator()
-        state = DecisionState("a", "b")
+        orch = PhysicsInspiredOrchestrator()
+        state = DecisionState(current_position="a", goal_position="b")
 
         # Test with defaults
         result = orch.assess_situation(state)
         assert result is not None or result is None
 
-        # Test optimize_path with optional parameters
-        result = orch.optimize_path(start="a", goal="b", max_iterations=5)
+        # Test optimize_path with correct parameters (ranked_paths and state)
+        test_path = ActionPath(
+            action_type=ActionType.ANALYZE,
+            description="Test path",
+            potential_energy=50.0,
+            confidence=0.8,
+            risk=0.3,
+            impact=0.7,
+        )
+        result = orch.optimize_path(ranked_paths=[test_path], state=state)
         assert result is not None or result is None
 
     def test_all_optional_parameters_memory(self):

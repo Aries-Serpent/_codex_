@@ -62,13 +62,14 @@ EXCLUDE_DIRS = {
     "misc/repo-owner-review",  # Already offloaded
 }
 
-# File patterns to consider for offload
+# File patterns to consider for offload  
+# Note: More specific patterns (paths) should be checked before generic patterns (extensions)
 OFFLOAD_PATTERNS = {
     "temp": ["temp/", "tmp/", "output/", ".tmp"],
-    "logs": ["*.log", "logs/"],
-    "coverage": ["coverage_", "*.coverage", "htmlcov/"],
     "artifacts": ["artifacts/gates/", "artifacts/validate_"],
     "reports": ["_codex_reports/", "reports/"],
+    "logs": ["*.log", "logs/"],
+    "coverage": ["coverage_", "*.coverage", "htmlcov/"],
 }
 
 

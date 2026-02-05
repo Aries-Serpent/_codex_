@@ -18,12 +18,27 @@ from codex_ml.utils.repro import set_reproducible
 
 
 def test_set_reproducible_reseeds_all():
-    set_reproducible(123)
-    r_py = random.random()
-    r_np = np.random.rand()
-    r_torch = torch.rand(1).item()
+    # Ensure real torch is imported before calling set_reproducible
+    import torch as real_torch
+    
+    # Patch the seeding module to use real torch
+    import codex_ml.utils.seeding as seeding_module
+    import sys
+    # Temporarily replace torch in sys.modules to ensure seeding uses real torch
+    original_torch = sys.modules.get('torch')
+    sys.modules['torch'] = real_torch
+    
+    try:
+        set_reproducible(123)
+        r_py = random.random()
+        r_np = np.random.rand()
+        r_torch = real_torch.rand(1).item()
 
-    set_reproducible(123)
-    assert random.random() == r_py
-    assert np.random.rand() == r_np
-    assert torch.rand(1).item() == r_torch
+        set_reproducible(123)
+        assert random.random() == r_py
+        assert np.random.rand() == r_np
+        assert real_torch.rand(1).item() == r_torch
+    finally:
+        # Restore original torch in sys.modules
+        if original_torch is not None:
+            sys.modules['torch'] = original_torch
