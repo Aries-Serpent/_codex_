@@ -324,9 +324,12 @@ class CommonIssueFixer:
                 cwd=self.repo_root
             )
             
-            if result.stdout:
+            # Only treat as issues if ruff found actual violations (exit code != 0)
+            # and the output doesn't contain "All checks passed"
+            if result.returncode != 0 and result.stdout:
                 for line in result.stdout.strip().split('\n'):
-                    if line:
+                    # Skip informational messages like "All checks passed!"
+                    if line and not line.startswith("All checks"):
                         issues.append(line)
         
         except FileNotFoundError:
