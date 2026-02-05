@@ -516,3 +516,9 @@ To create a new specialized agent:
 - Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong
+
+#### Session Management (1 agent)
+| Agent | Purpose | Location | Status |
+|-------|---------|----------|--------|
+| **Session Log Retrieval Agent** | Recall previous Copilot sessions, extract uncommitted work, search conversation history | [.github/agents/session-log-retrieval-agent.md](.github/agents/session-log-retrieval-agent.md) | ✅ Active |
+

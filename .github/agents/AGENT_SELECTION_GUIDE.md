@@ -615,3 +615,59 @@ route to the appropriate fix agent based on the diagnosis
 **For:** Future AI Agent Sessions  
 **Purpose:** Enable effective agent selection and orchestration  
 **Maintainer:** AI Agent Ecosystem Team
+
+---
+
+## Session Management Agents
+
+#### 📜 **Recall Previous Sessions**
+**Primary Agent:** `session-log-retrieval-agent`
+- **Use When:** Need to recall previous Copilot session work, extract uncommitted details, search conversation history
+- **Location:** `.github/agents/session-log-retrieval-agent.md`
+- **Best For:** Session continuity, recovering uncommitted work, conversation search
+
+**Tools:**
+- `python -m codex.logging.query_logs` - Query session database
+- `python -m codex.logging.session_query` - Session-specific queries
+- `python -m codex.logging.viewer` - Interactive log viewer
+
+**Example Activation:**
+```
+@copilot Use the Session Log Retrieval Agent to find what we discussed 
+about test coverage in yesterday's session and extract any uncommitted code.
+```
+
+**Common Use Cases:**
+1. **Resume Previous Work:** Get context from last session
+2. **Recover Uncommitted Code:** Extract code snippets discussed but not saved
+3. **Find Command History:** Retrieve commands executed previously
+4. **Search Conversations:** Find when topics were discussed
+5. **Session Audit:** Review what an agent did in a session
+
+**Query Examples:**
+```bash
+# Get last session summary
+python -m codex.logging.query_logs --order desc --limit 1 --format json
+
+# Find uncommitted work
+python -m codex.logging.query_logs --session-id <ID> --contains "uncommitted"
+
+# Search for errors
+python -m codex.logging.query_logs --contains "error|failed" --role assistant
+
+# Get command history
+python -m codex.logging.query_logs --contains "bash|git" --role tool
+```
+
+---
+
+## Updated Agent Selection Matrix
+
+| If Task Involves... | Primary Agent | Secondary Agents |
+|---------------------|---------------|------------------|
+| ... (previous rows) ... |
+| Recall previous session | session-log-retrieval-agent | cognitive-brain-manager |
+| Recover uncommitted work | session-log-retrieval-agent | - |
+| Search conversation history | session-log-retrieval-agent | - |
+| Command history | session-log-retrieval-agent | - |
+
