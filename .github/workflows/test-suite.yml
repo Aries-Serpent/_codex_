@@ -208,14 +208,18 @@ jobs:
           # Tier 3: Sequential coverage-run (last resort)
           echo "⚠️ Parallel coverage-run failed; falling back to sequential execution"
           rm -f .coverage .coverage.* coverage.xml junit.xml
-          coverage run -m pytest tests/ \
+          if coverage run -m pytest tests/ \
             --color=yes \
             --verbose \
             --junitxml=junit.xml \
             --continue-on-collection-errors \
-            --maxfail=10
-          
-          echo "✅ Sequential coverage-run completed"
+            --maxfail=10; then
+            echo "✅ Sequential coverage-run completed"
+            exit 0
+          else
+            echo "❌ All test tiers failed"
+            exit 1
+          fi
         env:
           PYTHONPATH: ${{ github.workspace }}
           CODEX_FORCE_CPU: "1"
