@@ -477,14 +477,122 @@ def test_data_passing():
 
 ---
 
+## Cognitive Brain Integration
+
+> **Added:** Phase 1.4 of Long-term Cognitive Brain Planset  
+> **Status:** ✅ COMPLETE
+
+### Brain-Aware Orchestration
+
+Orchestrating agents can now leverage the cognitive brain for smarter routing decisions:
+
+```python
+from codex.cognitive.orchestration import (
+    BrainAwareOrchestrator,
+    OrchestrationPattern,
+    create_orchestrator,
+)
+
+# Create a brain-aware orchestrator
+orchestrator = create_orchestrator("artifact-monitor-agent")
+
+# Make brain-informed routing decision
+decision = orchestrator.make_routing_decision("pytest collection error")
+print(f"Selected agents: {decision.selected_agents}")
+print(f"Pattern: {decision.pattern}")
+print(f"Confidence: {decision.confidence}")
+
+# Execute with pattern-based routing
+result = orchestrator.execute_sequential_chain(
+    decision.selected_agents,
+    task_fn=lambda agent_id: execute_agent(agent_id)
+)
+```
+
+### Orchestrating Agents with Brain Integration
+
+| Agent | Pattern | Brain Capability |
+|-------|---------|------------------|
+| artifact-monitor-agent | hierarchical | pattern_routing |
+| coverage-roadmap-agent | sequential_chain | test_coordination |
+| repository-hygiene-agent | hierarchical | cleanup_coordination |
+| integration-test-runner | parallel_fan_out | cross_component_testing |
+| rag-module-management-agent | hierarchical | rag_coordination |
+| reference-updater-agent | sequential_chain | atomic_updates |
+| root-organizer-agent | sequential_chain | safe_reorganization |
+| tokenization-coverage-agent | sequential_chain | tokenization_improvements |
+| workflow-management-agent | hierarchical | workflow_orchestration |
+| code-analysis-agent | parallel_fan_out | multi_analysis |
+| codex-reviewer-agent | conditional_routing | review_logic |
+
+### Brain Integration Features
+
+1. **Pattern-Based Routing**: Query cognitive brain patterns to select optimal agents
+2. **Success Rate Filtering**: Filter agents by minimum success rate threshold
+3. **Learning Aggregation**: Collect and aggregate learnings from orchestrated executions
+4. **Category-Aware Selection**: Select agents based on problem category
+
+### Usage Example: Smart CI Failure Routing
+
+```python
+from codex.cognitive.orchestration import create_orchestrator
+
+# Create orchestrator
+orchestrator = create_orchestrator("artifact-monitor-agent")
+
+# Query patterns for the symptom
+patterns = orchestrator.query_patterns("workflow failed")
+# Returns CIF-001 pattern with 88% success rate
+
+# Get recommended agents based on patterns
+agents = orchestrator.recommend_agents("workflow failed")
+# Returns: ['ci-testing-agent', 'ci-log-retrieval-agent', 'workflow-ci-fixer']
+
+# Execute with conditional routing
+result = orchestrator.execute_conditional_routing(
+    condition="workflow failed",
+    agents_map={
+        "ci_cd": ["workflow-ci-fixer"],
+        "testing": ["test-alignment-fixer"],
+        "default": ["ci-testing-agent"],
+    }
+)
+```
+
+### Integration API
+
+```python
+# Module: src/codex/cognitive/orchestration.py
+
+# Get all orchestrating agents
+from codex.cognitive.orchestration import get_orchestrating_agents
+agents = get_orchestrating_agents()  # Returns 11 agents
+
+# Integrate all orchestrating agents into manifest
+from codex.cognitive.orchestration import integrate_orchestrating_agents
+integrated = integrate_orchestrating_agents()  # Updates manifest
+
+# Get orchestrating agent count
+from codex.cognitive.orchestration import get_orchestrating_agent_count
+count = get_orchestrating_agent_count()  # Returns 11
+```
+
+---
+
 ## Future Enhancements
 
 ### Planned Features
 1. **Auto-discovery:** Agents auto-discover compatible chains
-2. **Learning:** System learns optimal chains from usage
-3. **Metrics:** Track chain success rates
+2. **Learning:** System learns optimal chains from usage ✅ (Phase 1.4)
+3. **Metrics:** Track chain success rates ✅ (Phase 1.4)
 4. **Visualization:** Graph of agent relationships
 5. **Versioning:** Chain compatibility across versions
+
+### Phase 1.4 Completed Features
+- ✅ Brain-aware orchestration with pattern matching
+- ✅ Learning aggregation from orchestrated executions
+- ✅ 11 orchestrating agents integrated with cognitive brain
+- ✅ Success rate-based agent filtering
 
 ---
 

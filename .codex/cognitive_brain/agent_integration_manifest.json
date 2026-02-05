@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-02-05T15:56:00Z",
-  "phase": "1.3",
-  "total_agents": 18,
+  "last_updated": "2026-02-05T16:05:00Z",
+  "phase": "1.4",
+  "total_agents": 29,
   "agents": {
     "ci-testing-agent": {
       "agent_id": "ci-testing-agent",
@@ -36,23 +36,27 @@
     },
     "artifact-monitor-agent": {
       "agent_id": "artifact-monitor-agent",
-      "category": "ci_cd",
-      "integration_date": "2026-02-05T15:46:00Z",
-      "capabilities": ["pattern_query", "learning_feedback", "session_state", "ci_diagnosis"],
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "pattern_routing", "hierarchical_delegation"],
       "patterns_accessed": 0,
       "learnings_submitted": 0,
       "last_access": null,
-      "doc_path": ".github/agents/artifact-monitor-agent.md"
+      "doc_path": ".github/agents/artifact-monitor-agent.md",
+      "orchestration_pattern": "hierarchical",
+      "delegates_to": ["ci-testing-agent", "ci-log-retrieval-agent", "workflow-ci-fixer"]
     },
     "coverage-roadmap-agent": {
       "agent_id": "coverage-roadmap-agent",
-      "category": "testing",
-      "integration_date": "2026-02-05T15:46:00Z",
-      "capabilities": ["pattern_query", "learning_feedback", "session_state", "coverage_tracking"],
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "test_coordination", "sequential_chain"],
       "patterns_accessed": 0,
       "learnings_submitted": 0,
       "last_access": null,
-      "doc_path": ".github/agents/coverage-roadmap-agent.md"
+      "doc_path": ".github/agents/coverage-roadmap-agent.md",
+      "orchestration_pattern": "sequential_chain",
+      "delegates_to": ["coverage-gapfill-agent", "test-enhancement-agent", "tokenization-coverage-agent"]
     },
     "test-alignment-fixer": {
       "agent_id": "test-alignment-fixer",
@@ -156,44 +160,122 @@
     },
     "repository-hygiene-agent": {
       "agent_id": "repository-hygiene-agent",
-      "category": "repository",
-      "integration_date": "2026-02-05T15:56:00Z",
-      "capabilities": ["pattern_query", "learning_feedback", "session_state", "repo_management"],
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "cleanup_coordination", "hierarchical_delegation"],
       "patterns_accessed": 0,
       "learnings_submitted": 0,
       "last_access": null,
-      "doc_path": ".github/agents/repository-hygiene-agent.md"
+      "doc_path": ".github/agents/repository-hygiene-agent.md",
+      "orchestration_pattern": "hierarchical",
+      "delegates_to": ["root-organizer-agent", "documentation-consolidator", "code-analysis-agent"]
     },
     "root-organizer-agent": {
       "agent_id": "root-organizer-agent",
-      "category": "repository",
-      "integration_date": "2026-02-05T15:56:00Z",
-      "capabilities": ["pattern_query", "learning_feedback", "session_state", "repo_management"],
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "safe_reorganization", "sequential_chain"],
       "patterns_accessed": 0,
       "learnings_submitted": 0,
       "last_access": null,
-      "doc_path": ".github/agents/root-organizer-agent.md"
+      "doc_path": ".github/agents/root-organizer-agent.md",
+      "orchestration_pattern": "sequential_chain",
+      "delegates_to": ["reference-updater-agent"]
     },
     "reference-updater-agent": {
       "agent_id": "reference-updater-agent",
-      "category": "repository",
-      "integration_date": "2026-02-05T15:56:00Z",
-      "capabilities": ["pattern_query", "learning_feedback", "session_state", "repo_management"],
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "atomic_updates", "sequential_chain"],
       "patterns_accessed": 0,
       "learnings_submitted": 0,
       "last_access": null,
-      "doc_path": ".github/agents/reference-updater-agent.md"
+      "doc_path": ".github/agents/reference-updater-agent.md",
+      "orchestration_pattern": "sequential_chain",
+      "delegates_to": ["link-validator-agent", "documentation-consolidator"]
+    },
+    "rag-module-management-agent": {
+      "agent_id": "rag-module-management-agent",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "rag_coordination", "hierarchical_delegation"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/rag-module-management-agent.md",
+      "orchestration_pattern": "hierarchical",
+      "delegates_to": ["rag-index-manager", "meta-tensor-validator", "rag-meta-tensor-regression-agent"]
+    },
+    "integration-test-runner": {
+      "agent_id": "integration-test-runner",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "cross_component_testing", "parallel_fan_out"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/integration-test-runner.agent.md",
+      "orchestration_pattern": "parallel_fan_out",
+      "delegates_to": ["test-alignment-fixer", "test-coverage-monitor"]
+    },
+    "tokenization-coverage-agent": {
+      "agent_id": "tokenization-coverage-agent",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "tokenization_improvements", "sequential_chain"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/tokenization-coverage-agent.md",
+      "orchestration_pattern": "sequential_chain",
+      "delegates_to": ["test-coverage-monitor"]
+    },
+    "workflow-management-agent": {
+      "agent_id": "workflow-management-agent",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "workflow_orchestration", "hierarchical_delegation"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/workflow-management-agent.md",
+      "orchestration_pattern": "hierarchical",
+      "delegates_to": ["workflow-ci-fixer", "artifact-monitor-agent"]
+    },
+    "code-analysis-agent": {
+      "agent_id": "code-analysis-agent",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "multi_analysis", "parallel_fan_out"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/code-analysis-agent.md",
+      "orchestration_pattern": "parallel_fan_out",
+      "delegates_to": []
+    },
+    "codex-reviewer-agent": {
+      "agent_id": "codex-reviewer-agent",
+      "category": "orchestration",
+      "integration_date": "2026-02-05T16:05:00Z",
+      "capabilities": ["pattern_query", "learning_feedback", "session_state", "review_logic", "conditional_routing"],
+      "patterns_accessed": 0,
+      "learnings_submitted": 0,
+      "last_access": null,
+      "doc_path": ".github/agents/codex-reviewer.agent.yml",
+      "orchestration_pattern": "conditional_routing",
+      "delegates_to": ["security-alert-verification-agent", "codeql-alert-resolution-agent"]
     }
   },
   "categories": {
     "ci_cd": {
-      "count": 4,
-      "agents": ["ci-testing-agent", "ci-log-retrieval-agent", "workflow-ci-fixer", "artifact-monitor-agent"],
+      "count": 3,
+      "agents": ["ci-testing-agent", "ci-log-retrieval-agent", "workflow-ci-fixer"],
       "phase": "1.2"
     },
     "testing": {
-      "count": 3,
-      "agents": ["coverage-roadmap-agent", "test-alignment-fixer", "test-coverage-monitor"],
+      "count": 2,
+      "agents": ["test-alignment-fixer", "test-coverage-monitor"],
       "phase": "1.2"
     },
     "security": {
@@ -211,10 +293,32 @@
       "agents": ["rag-index-manager", "meta-tensor-validator", "rag-meta-tensor-regression-agent"],
       "phase": "1.3"
     },
-    "repository": {
-      "count": 3,
-      "agents": ["repository-hygiene-agent", "root-organizer-agent", "reference-updater-agent"],
-      "phase": "1.3"
+    "orchestration": {
+      "count": 11,
+      "agents": [
+        "artifact-monitor-agent",
+        "coverage-roadmap-agent",
+        "repository-hygiene-agent",
+        "integration-test-runner",
+        "rag-module-management-agent",
+        "reference-updater-agent",
+        "root-organizer-agent",
+        "tokenization-coverage-agent",
+        "workflow-management-agent",
+        "code-analysis-agent",
+        "codex-reviewer-agent"
+      ],
+      "phase": "1.4"
+    }
+  },
+  "metadata": {
+    "plan_1_complete": true,
+    "phases_completed": ["1.1", "1.2", "1.3", "1.4"],
+    "total_tests": 145,
+    "integration_summary": {
+      "core_agents": 9,
+      "extended_agents": 9,
+      "orchestrating_agents": 11
     }
   }
 }
