@@ -1,0 +1,41 @@
+# Session Continuation Prompt - PR Comment Template
+
+> **Session:** {{ session_id }} | **PR:** #{{ pr_number }} | **Status:** {{ status }}
+
+## 📋 Quick Summary
+
+**Completed:** {{ tasks_completed }}/{{ tasks_total }} tasks  
+**Files:** {{ files_created_count }} created, {{ files_modified_count }} modified  
+**Last Phase:** {{ last_phase }}
+
+### ✅ Done
+{% for task in completed_tasks[-5:] %}
+- {{ task }}
+{% endfor %}
+{% if completed_tasks|length > 5 %}
+- ... and {{ completed_tasks|length - 5 }} more
+{% endif %}
+
+### 📝 Pending
+{% for task in pending_tasks[:5] %}
+- {{ task }}
+{% endfor %}
+{% if pending_tasks|length > 5 %}
+- ... and {{ pending_tasks|length - 5 }} more
+{% endif %}
+
+## 🔄 Continue With
+
+```
+@copilot {{ activation_command }}
+```
+
+{% if blockers %}
+## ⚠️ Blockers
+{% for blocker in blockers %}
+- {{ blocker }}
+{% endfor %}
+{% endif %}
+
+---
+*Generated: {{ timestamp }}*
