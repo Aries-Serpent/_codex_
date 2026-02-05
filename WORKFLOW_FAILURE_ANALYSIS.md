@@ -13,7 +13,7 @@ Both workflow failures are **FALSE POSITIVES**. Tests actually **PASSED and uplo
 1. **Testing Suite (21731917109)**: Test job completed successfully, but workflow marked as failure  
 2. **Comprehensive Tests (21731917123)**: Test job result propagated as failure to summary job
 
-**Root Cause:** The tiered fallback test execution strategy exits with code 0 after Tier 1 success, but the workflow still marks as failure. This indicates a race condition or timing issue in the test execution step.
+**Root Cause:** The tiered fallback test execution strategy in Tier 3 (sequential mode) lacks an explicit `exit 0` statement when tests pass. Combined with `set -euo pipefail`, this can cause the workflow to fail even when tests complete successfully. The workflow incorrectly exits with a non-zero code because subsequent coverage reporting commands may fail silently.
 
 ---
 
