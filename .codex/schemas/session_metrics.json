@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Session Metrics Schema",
+  "description": "Schema for tracking Copilot Coding Agent session metrics",
+  "version": "1.0.0",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Unique session identifier"
+    },
+    "pr_number": {
+      "type": ["integer", "null"],
+      "description": "Associated PR number"
+    },
+    "started": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session start timestamp"
+    },
+    "ended": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Session end timestamp"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Session duration in minutes"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["in_progress", "completed", "failed", "interrupted"],
+      "description": "Session status"
+    },
+    "tasks": {
+      "type": "object",
+      "properties": {
+        "completed": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of completed tasks"
+        },
+        "pending": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of pending tasks"
+        },
+        "completion_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Task completion rate (0-1)"
+        }
+      }
+    },
+    "patterns": {
+      "type": "object",
+      "properties": {
+        "applied": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Patterns applied during session"
+        },
+        "learned": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "New patterns learned"
+        },
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Pattern application success rate"
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Files created"
+        },
+        "modified": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Files modified"
+        },
+        "deleted": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Files deleted"
+        }
+      }
+    },
+    "commits": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Total commits in session"
+        },
+        "successful": {
+          "type": "integer",
+          "description": "Successful commits"
+        },
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Commit success rate"
+        }
+      }
+    },
+    "objectives": {
+      "type": "object",
+      "properties": {
+        "aligned": {
+          "type": "boolean",
+          "description": "Whether session aligned with objectives"
+        },
+        "alignment_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Objective alignment score (0-1)"
+        },
+        "primary_objective": {
+          "type": ["string", "null"],
+          "description": "Primary objective for session"
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "tests_passed": {
+          "type": "integer",
+          "description": "Number of tests passed"
+        },
+        "tests_failed": {
+          "type": "integer",
+          "description": "Number of tests failed"
+        },
+        "lint_errors": {
+          "type": "integer",
+          "description": "Number of linting errors"
+        },
+        "security_issues": {
+          "type": "integer",
+          "description": "Number of security issues"
+        }
+      }
+    }
+  },
+  "required": ["session_id", "started", "status"]
+}

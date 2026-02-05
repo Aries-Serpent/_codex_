@@ -164,11 +164,11 @@ phase_4_integration:
 ### Deliverables
 | Deliverable | Path | Status |
 |-------------|------|--------|
-| Metrics schema | `.codex/schemas/session_metrics.json` | 📋 Planned |
-| Collector script | `scripts/cognitive/metrics_collector.py` | 📋 Planned |
-| Dashboard generator | `scripts/cognitive/dashboard_generator.py` | 📋 Planned |
-| Dashboard output | `.codex/cognitive_brain/dashboard.md` | 📋 Planned |
-| Report template | `.codex/templates/weekly_report.md` | 📋 Planned |
+| Metrics schema | `.codex/schemas/session_metrics.json` | ✅ Complete |
+| Collector script | `scripts/cognitive/metrics_collector.py` | ✅ Complete |
+| Dashboard generator | `scripts/cognitive/dashboard_generator.py` | ✅ Complete |
+| Dashboard output | `.codex/cognitive_brain/dashboard.md` | ✅ Complete |
+| Report template | `.codex/templates/weekly_report.md` | ⏭️ Deferred |
 
 ### Metrics to Track
 ```yaml
@@ -191,11 +191,11 @@ aggregate_metrics:
 ```
 
 ### Acceptance Criteria
-- [ ] Real-time metrics collection
-- [ ] Weekly trend analysis
-- [ ] Visual dashboard in markdown
-- [ ] Alerting for degradation
-- [ ] Exportable reports
+- [x] Real-time metrics collection
+- [x] Weekly trend analysis
+- [x] Visual dashboard in markdown
+- [ ] Alerting for degradation (deferred)
+- [x] Exportable reports
 
 ---
 
