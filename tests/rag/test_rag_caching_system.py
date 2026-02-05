@@ -10,10 +10,7 @@ Comprehensive testing for RAG caching layer:
 
 import pytest
 import tempfile
-from pathlib import Path
 import time
-import hashlib
-from unittest.mock import Mock, patch
 
 
 class TestEmbeddingCache:
@@ -387,7 +384,7 @@ class TestCachePerformance:
                 cache = EmbeddingCache(cache_dir=tmpdir)
                 
                 # Get initial size
-                initial_size = sys.getsizeof(cache)
+                sys.getsizeof(cache)
                 
                 # Add many items
                 for i in range(1000):

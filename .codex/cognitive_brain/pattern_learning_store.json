@@ -1,0 +1,237 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-02-05T09:20:00Z",
+    "purpose": "Store learned patterns for session improvement",
+    "repository": "Aries-Serpent/_codex_"
+  },
+  "patterns": {
+    "test_failure_resolution": {
+      "id": "TFR-001",
+      "category": "testing",
+      "symptoms": [
+        "pytest collection error",
+        "exit code 2",
+        "ImportError in tests",
+        "ModuleNotFoundError"
+      ],
+      "diagnosis_steps": [
+        "Run pytest --collect-only to identify collection issues",
+        "Check for circular imports in test files",
+        "Verify all fixtures are properly defined",
+        "Check PYTHONPATH includes src/"
+      ],
+      "solutions": [
+        "Add missing imports or mock dependencies",
+        "Rename conflicting test files",
+        "Add sitecustomize.py stubs for optional deps",
+        "Use importlib.util.find_spec for optional module checks"
+      ],
+      "success_rate": 0.95,
+      "times_applied": 5,
+      "last_used": "2026-02-05T06:28:44Z",
+      "related_prs": ["#3155", "#3154", "#3153"]
+    },
+    "commit_verification": {
+      "id": "CV-001",
+      "category": "version_control",
+      "symptoms": [
+        "Files mentioned in logs not in commit",
+        "Expected files missing from PR",
+        "Incomplete implementation reports"
+      ],
+      "diagnosis_steps": [
+        "Compare action_log.ndjson with git diff",
+        "Check .gitignore for exclusion patterns",
+        "Verify file paths are relative to repo root"
+      ],
+      "solutions": [
+        "Use report_progress tool for commits",
+        "Verify .gitignore before commits",
+        "Cross-reference expected files list",
+        "Check /tmp files are not meant to be committed"
+      ],
+      "success_rate": 0.98,
+      "times_applied": 15,
+      "last_used": "2026-02-05T08:39:14Z",
+      "related_prs": ["#3159", "#3158", "#3157"]
+    },
+    "session_continuity": {
+      "id": "SC-001",
+      "category": "workflow",
+      "symptoms": [
+        "Context lost between sessions",
+        "Repeated discovery of same issues",
+        "Incomplete task handoff"
+      ],
+      "diagnosis_steps": [
+        "Check for continuation prompt in PR",
+        "Review cognitive brain status files",
+        "Query session logs for previous context"
+      ],
+      "solutions": [
+        "Generate continuation prompt at session end",
+        "Update cognitive brain with session state",
+        "Create session tracker document",
+        "Store learned patterns for reuse"
+      ],
+      "success_rate": 0.85,
+      "times_applied": 10,
+      "last_used": "2026-02-05T09:10:00Z",
+      "related_prs": ["#3159", "#3158"]
+    },
+    "agent_handoff": {
+      "id": "AH-001",
+      "category": "collaboration",
+      "symptoms": [
+        "Unclear handoff between agents",
+        "Missing context in handoff",
+        "Blocked waiting for response"
+      ],
+      "diagnosis_steps": [
+        "Check handoff protocol compliance",
+        "Verify deliverables are accessible",
+        "Confirm next actions are clear"
+      ],
+      "solutions": [
+        "Use structured handoff template",
+        "Include all deliverable links",
+        "Specify clear next actions",
+        "Add validation checklist"
+      ],
+      "success_rate": 0.92,
+      "times_applied": 8,
+      "last_used": "2026-02-04T15:05:00Z",
+      "related_prs": ["#3149", "#3147"]
+    },
+    "coverage_improvement": {
+      "id": "CI-001",
+      "category": "testing",
+      "symptoms": [
+        "Coverage below 70%",
+        "Uncovered critical paths",
+        "Missing edge case tests"
+      ],
+      "diagnosis_steps": [
+        "Run coverage analysis with --cov-report=term-missing",
+        "Identify uncovered lines in critical modules",
+        "Check for mocking of external dependencies"
+      ],
+      "solutions": [
+        "Target high-impact uncovered modules first",
+        "Use parametrized tests for edge cases",
+        "Mock external dependencies consistently",
+        "Apply quantum test prioritization"
+      ],
+      "success_rate": 0.90,
+      "times_applied": 12,
+      "last_used": "2026-02-04T15:12:05Z",
+      "related_prs": ["#3150", "#3148", "#3146"]
+    },
+    "workflow_failure_resolution": {
+      "id": "WFR-001",
+      "category": "ci_cd",
+      "symptoms": [
+        "GitHub Actions workflow failure",
+        "action_required status",
+        "Timeout or resource issues"
+      ],
+      "diagnosis_steps": [
+        "Use ci-log-retrieval-agent to fetch logs",
+        "Identify failure point in workflow",
+        "Check for flaky tests or race conditions"
+      ],
+      "solutions": [
+        "Fix specific failing step",
+        "Add retry logic for flaky operations",
+        "Optimize resource usage",
+        "Update workflow configuration"
+      ],
+      "success_rate": 0.88,
+      "times_applied": 7,
+      "last_used": "2026-02-05T06:28:44Z",
+      "related_prs": ["#3157", "#3152", "#3141"]
+    },
+    "security_remediation": {
+      "id": "SR-001",
+      "category": "security",
+      "symptoms": [
+        "CodeQL alerts",
+        "SARIF upload warnings",
+        "Dependency vulnerabilities"
+      ],
+      "diagnosis_steps": [
+        "Review CodeQL alert details",
+        "Check vulnerability database",
+        "Identify affected code paths"
+      ],
+      "solutions": [
+        "Apply targeted code fixes",
+        "Update vulnerable dependencies",
+        "Add security-focused tests",
+        "Use SARIF chunking for large reports"
+      ],
+      "success_rate": 0.95,
+      "times_applied": 6,
+      "last_used": "2026-02-03T22:21:54Z",
+      "related_prs": ["#3140", "#3139"]
+    },
+    "documentation_update": {
+      "id": "DU-001",
+      "category": "documentation",
+      "symptoms": [
+        "Outdated documentation",
+        "Missing cross-references",
+        "Broken links"
+      ],
+      "diagnosis_steps": [
+        "Run link validation",
+        "Check documentation freshness",
+        "Verify all references are current"
+      ],
+      "solutions": [
+        "Update stale documentation",
+        "Fix broken links",
+        "Add missing cross-references",
+        "Use reference-updater-agent for bulk updates"
+      ],
+      "success_rate": 0.97,
+      "times_applied": 10,
+      "last_used": "2026-02-05T08:39:14Z",
+      "related_prs": ["#3159", "#3157"]
+    }
+  },
+  "learning_log": [
+    {
+      "timestamp": "2026-02-05T09:20:00Z",
+      "session": "copilot/analyze-copilot-logs",
+      "pr": 3160,
+      "patterns_applied": ["commit_verification", "session_continuity"],
+      "patterns_learned": ["session_state_tracking"],
+      "outcome": "in_progress"
+    },
+    {
+      "timestamp": "2026-02-05T08:39:14Z",
+      "session": "copilot/consolidate-custom-agents",
+      "pr": 3159,
+      "patterns_applied": ["documentation_update", "commit_verification"],
+      "patterns_learned": ["agent_orchestration"],
+      "outcome": "success"
+    },
+    {
+      "timestamp": "2026-02-05T08:00:41Z",
+      "session": "copilot/implement-session-log-retrieval",
+      "pr": 3158,
+      "patterns_applied": ["commit_verification", "test_failure_resolution"],
+      "patterns_learned": ["session_log_retrieval"],
+      "outcome": "success"
+    }
+  ],
+  "statistics": {
+    "total_patterns": 8,
+    "total_applications": 73,
+    "average_success_rate": 0.925,
+    "most_used_pattern": "commit_verification",
+    "most_successful_pattern": "documentation_update"
+  }
+}

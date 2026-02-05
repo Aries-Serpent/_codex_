@@ -10,7 +10,6 @@ Comprehensive testing for RAG monitoring and observability:
 
 import pytest
 import time
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestPerformanceMetrics:
@@ -123,7 +122,7 @@ class TestMetricsAggregation:
                 if hasattr(metrics, 'get_latency_percentile'):
                     p50 = metrics.get_latency_percentile(50)
                     p95 = metrics.get_latency_percentile(95)
-                    p99 = metrics.get_latency_percentile(99)
+                    metrics.get_latency_percentile(99)
                     
                     # p95 should be higher than p50
                     assert p95 >= p50 or (p95 is not None and p50 is not None)
@@ -142,7 +141,7 @@ class TestMetricsAggregation:
                 start_time = time.time()
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
-                duration = time.time() - start_time
+                time.time() - start_time
                 
                 # Calculate throughput
                 if hasattr(metrics, 'get_throughput'):
@@ -425,7 +424,6 @@ class TestDashboardIntegration:
                 data = metrics.get_dashboard_data()
                 assert isinstance(data, dict)
                 # Should have key metrics
-                expected_keys = ["latency", "throughput", "error_rate"]
                 # May or may not have all keys
                 assert len(data) >= 0
         except (ImportError, AttributeError):

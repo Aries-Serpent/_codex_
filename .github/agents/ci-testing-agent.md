@@ -276,3 +276,84 @@ For detailed examples and extended troubleshooting:
 ---
 
 **Version 2.0.0 Notes**: Condensed from 30,351 to ~5,500 chars (82% reduction). Detailed examples moved to knowledge base. Focus on actionable quick reference.
+
+---
+
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: ci_cd  
+> **Adapter**: CICDAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical CI failure patterns for faster diagnosis
+- **Submit Learnings**: Report successful CI fixes to improve future sessions
+- **Share Session State**: Maintain context across agent transitions
+- **Check Objective Alignment**: Verify CI fixes align with repository objectives
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+# Initialize brain interface for this agent
+brain = AgentBrainInterface(agent_id="ci-testing-agent")
+
+# 1. Query patterns before diagnosis
+patterns = brain.query_patterns("pytest collection error")
+for pattern in patterns:
+    print(f"Pattern: {pattern['id']} (success: {pattern['success_rate']})")
+
+# 2. Check objective alignment
+alignment = brain.check_alignment("fix test import paths")
+if alignment["aligned"]:
+    # Proceed with fix
+    pass
+
+# 3. Report learning after resolution
+brain.submit_learning(
+    pattern_id="TFR-001",
+    outcome="success",
+    context={
+        "symptom": "ImportError: No module named 'X'",
+        "resolution": "Added missing import",
+        "files_changed": ["tests/test_module.py"]
+    }
+)
+
+# 4. Update session state
+brain.write_session_state({
+    "last_action": "CI diagnosis complete",
+    "findings": ["missing import", "incorrect path"],
+    "next_steps": ["add import", "update PYTHONPATH"]
+})
+```
+
+### Integration Pattern
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  ci-testing-agent                   │
+├─────────────────────────────────────────────────────┤
+│  1. CI Failure Detected                             │
+│         ↓                                           │
+│  2. Query Brain for Similar CI Failures             │
+│         ↓                                           │
+│  3. Apply Known Fix or Diagnose New Issue           │
+│         ↓                                           │
+│  4. Submit Learning (success/failure)               │
+│         ↓                                           │
+│  5. Update Session State for Handoff                │
+└─────────────────────────────────────────────────────┘
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Pattern Learning Store](../../.codex/cognitive_brain/pattern_learning_store.json)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Last Updated**: 2026-02-05T15:46:00Z

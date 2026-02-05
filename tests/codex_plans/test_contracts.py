@@ -46,7 +46,6 @@ class TestContractCompliance:
         """Test that function always returns a list, never None."""
         try:
             from src.codex_plans import list_plan_documents
-            import tempfile
             
             # Test with various inputs
             test_cases = [

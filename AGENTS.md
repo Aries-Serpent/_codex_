@@ -517,8 +517,9 @@ To create a new specialized agent:
 
 **Questions?** Create an issue or contact @mbaetiong
 
-#### Session Management (1 agent)
+#### Session Management (2 agents)
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
 | **Session Log Retrieval Agent** | Recall previous Copilot sessions, extract uncommitted work, search conversation history | [.github/agents/session-log-retrieval-agent.md](.github/agents/session-log-retrieval-agent.md) | ✅ Active |
+| **Session Analysis Agent** | Analyze Copilot sessions, verify commits, pattern learning, objective tracking, cognitive brain integration | [.github/agents/session-analysis-agent.md](.github/agents/session-analysis-agent.md) | ✅ Active |
 

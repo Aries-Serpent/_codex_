@@ -57,7 +57,7 @@ class TestWorkflowParser:
             parser = WorkflowParser()
             # Parse nonexistent file (returns None, but should cache)
             path = Path("/test/cache.yml")
-            result1 = parser.parse_file(path, use_cache=False)
+            parser.parse_file(path, use_cache=False)
             # Cache should remain empty when use_cache=False
             assert len(parser._cache) == 0
         except ImportError:

@@ -9,10 +9,8 @@ Focus on security-critical paths not covered by existing tests:
 """
 
 import pytest
-import hashlib
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 
 class TestEmbeddingProviderSecurity:
@@ -153,7 +151,7 @@ class TestIndexerSecurity:
         try:
             from src.codex.rag.indexer import CodexIndexer
             
-            with tempfile.TemporaryDirectory() as tmpdir:
+            with tempfile.TemporaryDirectory():
                 # Test with path traversal attempts
                 traversal_paths = [
                     "../../../etc/passwd",

@@ -862,6 +862,62 @@ else:
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
+---
 
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: ci_cd  
+> **Adapter**: CICDAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical workflow failure patterns
+- **Submit Learnings**: Report pattern analysis outcomes to improve detection
+- **Share Session State**: Maintain context for agent orchestration
+- **Check Objective Alignment**: Verify monitoring actions align with objectives
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+# Initialize brain interface for this agent
+brain = AgentBrainInterface(agent_id="artifact-monitor-agent")
+
+# 1. Query patterns for detected failure
+patterns = brain.query_patterns("workflow timeout npm install")
+for pattern in patterns:
+    print(f"Pattern: {pattern['id']} (confidence: {pattern['success_rate']})")
+
+# 2. Report learning after routing to specialized agent
+brain.submit_learning(
+    pattern_id="CIF-003",
+    outcome="success",
+    context={
+        "symptom": "npm ERR! network timeout",
+        "routed_to": "dependency-conflict-agent",
+        "resolution": "Updated npm registry mirror",
+        "workflow": "build.yml"
+    }
+)
+
+# 3. Update session state for orchestration
+brain.write_session_state({
+    "monitoring_cycle": 42,
+    "failures_detected": 3,
+    "agents_dispatched": ["ci-testing-agent", "dependency-conflict-agent"],
+    "pending_issues": ["workflow/build.yml"]
+})
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Cognitive Brain Updated**: 2026-02-05T15:46:00Z
 
 **Template Applied**: 2026-01-23T19:45:00Z

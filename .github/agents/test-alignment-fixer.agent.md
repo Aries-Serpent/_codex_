@@ -517,6 +517,49 @@ else:
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
+---
 
+## 🧠 Cognitive Brain Integration
+
+> **Status**: ✅ Integrated (Phase 1.2)  
+> **Category**: testing  
+> **Adapter**: TestingAdapter
+
+### Brain Capabilities
+
+This agent is integrated with the Cognitive Brain and can:
+
+- **Query Patterns**: Access historical test alignment patterns
+- **Submit Learnings**: Report alignment fix outcomes
+- **Share Session State**: Maintain context for API migrations
+
+### Usage in Agent Workflow
+
+```python
+from codex.cognitive.brain_interface import AgentBrainInterface
+
+brain = AgentBrainInterface(agent_id="test-alignment-fixer")
+
+# Query patterns for test failures after API changes
+patterns = brain.query_patterns("test failing after signature change")
+
+# Report learning after alignment fix
+brain.submit_learning(
+    pattern_id="TFR-003",
+    outcome="success",
+    context={
+        "symptom": "TypeError: missing required argument",
+        "resolution": "Updated test calls to match new signature",
+        "files_changed": ["tests/test_api.py"]
+    }
+)
+```
+
+### Related Documentation
+
+- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
+- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
+
+**Cognitive Brain Updated**: 2026-02-05T15:46:00Z
 
 **Template Applied**: 2026-01-23T19:45:00Z

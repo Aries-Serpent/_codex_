@@ -324,9 +324,13 @@ class CommonIssueFixer:
                 cwd=self.repo_root
             )
             
-            if result.stdout:
+            # Only treat as issues if ruff found actual violations (exit code != 0)
+            # Exit code 0 means no violations, so we skip processing stdout
+            if result.returncode != 0 and result.stdout:
                 for line in result.stdout.strip().split('\n'):
-                    if line:
+                    # Only add non-empty lines that look like ruff violations
+                    # Ruff violations have format: "path/file.py:line:col: CODE message"
+                    if line and ":" in line:
                         issues.append(line)
         
         except FileNotFoundError:

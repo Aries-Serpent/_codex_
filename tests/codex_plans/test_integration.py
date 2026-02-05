@@ -28,8 +28,8 @@ class TestPlanFileDetection:
             from src.codex_plans import list_plan_documents
             
             result = list_plan_documents()
-            # Check if Tasks_PR file exists
-            tasks_files = [p for p in result if "Tasks" in p.name]
+            # Check if Tasks_PR file exists - filter result implicitly
+            _ = [p for p in result if "Tasks" in p.name]  # Detection verification
             # File may or may not exist, just verify detection works
             assert isinstance(result, list)
         except ImportError:
@@ -211,11 +211,8 @@ class TestErrorHandling:
     def test_handles_permission_denied(self):
         """Test handling of permission denied errors."""
         try:
-            from src.codex_plans import list_plan_documents
-            import tempfile
-            import os
-            
-            # This test may not work on all systems
+            # This test requires special setup on some systems
+            # Skipping as it tests platform-specific behavior
             pytest.skip("Permission tests require special setup")
         except ImportError:
             pytest.skip("Module not available")
@@ -223,8 +220,6 @@ class TestErrorHandling:
     def test_handles_invalid_path_type(self):
         """Test handling of invalid path types."""
         try:
-            from src.codex_plans import list_plan_documents
-            
             # Test with string instead of Path (should work or error gracefully)
             # Function signature expects Path | None, but let's test robustness
             # We'll skip this as it tests implementation details
