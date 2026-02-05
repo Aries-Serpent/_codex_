@@ -293,7 +293,6 @@ class SafetyGuard:
             description="Default scope restrictions"
         )
         self.rate_limits = {r.action_type: r for r in (rate_limits or self.DEFAULT_RATE_LIMITS)}
-        self._blocked_rules: set[str] = set()
         self._paused = False
         self._rollback_history: list[RollbackRecord] = []
         self._rollback_counter = 0
@@ -323,8 +322,9 @@ class SafetyGuard:
     
     def block_rule(self, rule_id: str, by: str, reason: str = "") -> None:
         """Block a specific rule from executing."""
-        self._blocked_rules.add(rule_id)
-        self.scope.blocked_rules.append(rule_id)
+        # Use scope.blocked_rules as single source of truth
+        if rule_id not in self.scope.blocked_rules:
+            self.scope.blocked_rules.append(rule_id)
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
@@ -333,7 +333,6 @@ class SafetyGuard:
     
     def unblock_rule(self, rule_id: str, by: str) -> None:
         """Unblock a rule."""
-        self._blocked_rules.discard(rule_id)
         if rule_id in self.scope.blocked_rules:
             self.scope.blocked_rules.remove(rule_id)
         self.audit_log.log_event(
@@ -429,7 +428,7 @@ class SafetyGuard:
         """Get the current safety status."""
         return {
             "is_paused": self._paused,
-            "blocked_rules": list(self._blocked_rules),
+            "blocked_rules": self.scope.blocked_rules.copy(),
             "rate_limits": {
                 k: {"current": v.current_count, "max": v.max_count}
                 for k, v in self.rate_limits.items()

@@ -22,7 +22,18 @@ import math
 
 
 class MetricType(Enum):
-    """Types of metrics tracked by the analyzer."""
+    """
+    Types of metrics tracked by the analyzer.
+    
+    Units for each metric:
+    - COVERAGE: percentage (0-100), e.g., 75.0 for 75% coverage
+    - SECURITY: count of vulnerabilities, e.g., 0 for no vulnerabilities
+    - CI_CD: percentage pass rate (0-100), e.g., 95.0 for 95% pass rate
+    - DOCUMENTATION: days since last update, e.g., 30 for 30 days old
+    - BUILD_TIME: seconds, e.g., 300 for 5 minutes
+    - SESSION_EFFECTIVENESS: percentage (0-100), e.g., 80.0 for 80% effective
+    - TEST_PASS_RATE: percentage (0-100), e.g., 100.0 for all tests passing
+    """
     COVERAGE = "coverage"
     SECURITY = "security"
     CI_CD = "ci_cd"
