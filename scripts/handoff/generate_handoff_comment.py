@@ -14,7 +14,7 @@ import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 # Template paths

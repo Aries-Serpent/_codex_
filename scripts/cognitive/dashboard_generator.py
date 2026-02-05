@@ -158,7 +158,7 @@ def generate_dashboard(
     commits = metrics.get("commits", {})
     sessions = metrics.get("sessions", {})
     trends = metrics.get("trends", {})
-    quality = metrics.get("quality", {})
+    # quality metrics used for future enhancements
     
     # Calculate derived values
     duration = period.get("duration_minutes", 0)

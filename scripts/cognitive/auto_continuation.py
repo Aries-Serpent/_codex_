@@ -27,12 +27,9 @@ Usage:
 import argparse
 import json
 import logging
-import os
-import re
-import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -574,7 +571,7 @@ def main():
     # Load data sources
     action_log_path = repo_root / '.codex' / 'action_log.ndjson'
     pattern_store_path = repo_root / '.codex' / 'cognitive_brain' / 'pattern_learning_store.json'
-    objectives_path = repo_root / '.codex' / 'cognitive_brain' / 'objectives_tracker.md'
+    # objectives_tracker.md is loaded via pattern store
     
     # Extract context
     if args.from_action_log:

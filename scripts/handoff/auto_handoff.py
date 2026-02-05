@@ -20,8 +20,6 @@ Usage:
 
 import argparse
 import json
-import os
-import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
