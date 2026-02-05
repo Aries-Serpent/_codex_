@@ -3,7 +3,7 @@
 import json
 import os
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
@@ -99,7 +99,7 @@ class TestAutoHandoff:
     def test_cutoff_time_calculated(self):
         """Test cutoff time is calculated correctly."""
         handoff = AutoHandoff(hours=24)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         expected_cutoff = now - timedelta(hours=24)
         
         # Allow 1 second tolerance

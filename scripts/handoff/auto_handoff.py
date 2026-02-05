@@ -22,7 +22,7 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -52,7 +52,7 @@ class HandoffContext:
         self.phase = phase
         self.pr_number = pr_number
         self.session_id = session_id
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         
         # Extracted data
         self.completed_tasks: List[str] = []
@@ -89,7 +89,7 @@ class AutoHandoff:
     
     def __init__(self, hours: int = 24):
         self.hours = hours
-        self.cutoff_time = datetime.utcnow() - timedelta(hours=hours)
+        self.cutoff_time = datetime.now(timezone.utc) - timedelta(hours=hours)
     
     def extract_session_context(self) -> HandoffContext:
         """Extract context from current session's action log."""
@@ -186,10 +186,11 @@ class AutoHandoff:
     
     def _init_tracking_data(self) -> Dict[str, Any]:
         """Initialize new tracking data structure."""
+        now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         data = {
             "version": "1.0.0",
-            "created": datetime.utcnow().isoformat() + "Z",
-            "last_updated": datetime.utcnow().isoformat() + "Z",
+            "created": now_iso,
+            "last_updated": now_iso,
             "handoffs": [],
             "metrics": {
                 "total_handoffs": 0,
@@ -211,7 +212,7 @@ class AutoHandoff:
     
     def save_tracking_data(self, data: Dict[str, Any]) -> None:
         """Save tracking data to file."""
-        data["last_updated"] = datetime.utcnow().isoformat() + "Z"
+        data["last_updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
         with open(TRACKING_FILE, 'w') as f:
             json.dump(data, f, indent=2)
@@ -447,7 +448,7 @@ class AutoHandoff:
             if handoff["id"] == handoff_id:
                 old_status = handoff["status"]
                 handoff["status"] = status
-                handoff["updated"] = datetime.utcnow().isoformat() + "Z"
+                handoff["updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                 
                 if response_time_minutes:
                     handoff["response_time_minutes"] = response_time_minutes

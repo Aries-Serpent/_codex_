@@ -22,7 +22,7 @@ Usage:
 import argparse
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -83,7 +83,7 @@ class ValidationReport:
     
     def __init__(self, title: str = "Handoff Validation Report"):
         self.title = title
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         self.results: List[ValidationResult] = []
         self.summary: Dict[str, int] = {
             "total": 0,
@@ -193,7 +193,7 @@ class HandoffValidator:
     
     def _save_tracking_data(self, data: Dict[str, Any]):
         """Save handoff tracking data."""
-        data["last_updated"] = datetime.utcnow().isoformat() + "Z"
+        data["last_updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
         with open(TRACKING_FILE, 'w') as f:
             json.dump(data, f, indent=2)
@@ -359,8 +359,8 @@ class HandoffValidator:
         
         try:
             created = datetime.fromisoformat(created_str.replace("Z", "+00:00"))
-            created = created.replace(tzinfo=None)
-            elapsed = datetime.utcnow() - created
+            now_utc = datetime.now(timezone.utc)
+            elapsed = now_utc - created
             elapsed_minutes = elapsed.total_seconds() / 60
             
             if elapsed_minutes > timeout_minutes:
@@ -536,7 +536,7 @@ class HandoffValidator:
         # Update handoff
         handoff["status"] = "pending"
         handoff["retry_count"] = retry_count + 1
-        handoff["updated"] = datetime.utcnow().isoformat() + "Z"
+        handoff["updated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         
         # Update metrics
         metrics = self.tracking_data.get("metrics", {})
