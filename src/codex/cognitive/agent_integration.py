@@ -246,6 +246,25 @@ CORE_AGENTS = {
     "codeql-alert-resolution-agent": AgentCategory.SECURITY,
 }
 
+# Pre-defined extended agents for Phase 1.3
+EXTENDED_AGENTS = {
+    # Documentation Agents
+    "documentation-consolidator": AgentCategory.DOCUMENTATION,
+    "link-validator-agent": AgentCategory.DOCUMENTATION,
+    "doc-freshness-checker": AgentCategory.DOCUMENTATION,
+    # RAG/ML Agents
+    "rag-index-manager": AgentCategory.RAG_ML,
+    "meta-tensor-validator": AgentCategory.RAG_ML,
+    "rag-meta-tensor-regression-agent": AgentCategory.RAG_ML,
+    # Repository Agents
+    "repository-hygiene-agent": AgentCategory.REPOSITORY,
+    "root-organizer-agent": AgentCategory.REPOSITORY,
+    "reference-updater-agent": AgentCategory.REPOSITORY,
+}
+
+# All integrated agents (Phase 1.2 + Phase 1.3)
+ALL_INTEGRATED_AGENTS = {**CORE_AGENTS, **EXTENDED_AGENTS}
+
 
 def integrate_core_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
     """Integrate all core agents from Phase 1.2.
@@ -273,6 +292,80 @@ def integrate_core_agents(manifest_path: Path | str | None = None) -> list[Integ
 
     registry.save()
     return integrated
+
+
+def integrate_extended_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
+    """Integrate all extended agents from Phase 1.3.
+
+    This includes Documentation, RAG/ML, and Repository agents.
+
+    Args:
+        manifest_path: Optional custom manifest path.
+
+    Returns:
+        List of integrated agents.
+    """
+    registry = AgentIntegrationRegistry(manifest_path)
+
+    integrated = []
+    for agent_id, category in EXTENDED_AGENTS.items():
+        capabilities = ["pattern_query", "learning_feedback", "session_state"]
+        if category == AgentCategory.DOCUMENTATION:
+            capabilities.append("doc_analysis")
+        elif category == AgentCategory.RAG_ML:
+            capabilities.append("ml_operations")
+        elif category == AgentCategory.REPOSITORY:
+            capabilities.append("repo_management")
+
+        agent = registry.register(agent_id, category, capabilities)
+        integrated.append(agent)
+
+    registry.save()
+    return integrated
+
+
+def integrate_all_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
+    """Integrate all agents (Core + Extended) from Phases 1.2 and 1.3.
+
+    Args:
+        manifest_path: Optional custom manifest path.
+
+    Returns:
+        List of all integrated agents.
+    """
+    registry = AgentIntegrationRegistry(manifest_path)
+
+    integrated = []
+    for agent_id, category in ALL_INTEGRATED_AGENTS.items():
+        capabilities = ["pattern_query", "learning_feedback", "session_state"]
+        if category == AgentCategory.CI_CD:
+            capabilities.append("ci_diagnosis")
+        elif category == AgentCategory.TESTING:
+            capabilities.append("coverage_tracking")
+        elif category == AgentCategory.SECURITY:
+            capabilities.append("vulnerability_analysis")
+        elif category == AgentCategory.DOCUMENTATION:
+            capabilities.append("doc_analysis")
+        elif category == AgentCategory.RAG_ML:
+            capabilities.append("ml_operations")
+        elif category == AgentCategory.REPOSITORY:
+            capabilities.append("repo_management")
+
+        agent = registry.register(agent_id, category, capabilities)
+        integrated.append(agent)
+
+    registry.save()
+    return integrated
+
+
+def get_extended_agent_count() -> int:
+    """Get the count of extended agents for Phase 1.3."""
+    return len(EXTENDED_AGENTS)
+
+
+def get_total_agent_count() -> int:
+    """Get the total count of all integrated agents."""
+    return len(ALL_INTEGRATED_AGENTS)
 
 
 def get_brain_integration_section(agent_id: str, category: AgentCategory) -> str:
@@ -390,6 +483,16 @@ if __name__ == "__main__":
         print(f"Integrated {len(agents)} core agents:")
         for agent in agents:
             print(f"  - {agent.agent_id} ({agent.category.value})")
+    elif len(sys.argv) > 1 and sys.argv[1] == "--integrate-extended":
+        agents = integrate_extended_agents()
+        print(f"Integrated {len(agents)} extended agents:")
+        for agent in agents:
+            print(f"  - {agent.agent_id} ({agent.category.value})")
+    elif len(sys.argv) > 1 and sys.argv[1] == "--integrate-all":
+        agents = integrate_all_agents()
+        print(f"Integrated {len(agents)} total agents:")
+        for agent in agents:
+            print(f"  - {agent.agent_id} ({agent.category.value})")
     elif len(sys.argv) > 1 and sys.argv[1] == "--stats":
         registry = AgentIntegrationRegistry()
         stats = registry.get_stats()
@@ -397,4 +500,6 @@ if __name__ == "__main__":
     else:
         print("Usage:")
         print("  python -m codex.cognitive.agent_integration --integrate-core")
+        print("  python -m codex.cognitive.agent_integration --integrate-extended")
+        print("  python -m codex.cognitive.agent_integration --integrate-all")
         print("  python -m codex.cognitive.agent_integration --stats")

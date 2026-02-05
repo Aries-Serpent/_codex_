@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Tests for Agent Integration module (Phase 1.2).
+"""Tests for Agent Integration module (Phases 1.2 and 1.3).
 
 Tests the agent integration registry, core agent integration,
-and brain integration section generation.
+extended agent integration, and brain integration section generation.
 """
 
 from __future__ import annotations
@@ -14,13 +14,19 @@ from pathlib import Path
 import pytest
 
 from codex.cognitive.agent_integration import (
+    ALL_INTEGRATED_AGENTS,
     CORE_AGENTS,
+    EXTENDED_AGENTS,
     AgentCategory,
     AgentIntegrationRegistry,
     IntegratedAgent,
     get_brain_integration_section,
+    get_extended_agent_count,
+    get_total_agent_count,
     integrate_agent,
+    integrate_all_agents,
     integrate_core_agents,
+    integrate_extended_agents,
 )
 
 
@@ -420,3 +426,259 @@ class TestAgentCategory:
         assert AgentCategory("ci_cd") == AgentCategory.CI_CD
         assert AgentCategory("testing") == AgentCategory.TESTING
         assert AgentCategory("security") == AgentCategory.SECURITY
+
+
+# ============================================================================
+# Phase 1.3: Extended Agent Integration Tests
+# ============================================================================
+
+
+class TestExtendedAgentsDefinition:
+    """Tests for EXTENDED_AGENTS constant (Phase 1.3)."""
+
+    def test_all_documentation_agents_defined(self) -> None:
+        """Test that all documentation agents are defined."""
+        doc_agents = [
+            "documentation-consolidator",
+            "link-validator-agent",
+            "doc-freshness-checker",
+        ]
+        for agent in doc_agents:
+            assert agent in EXTENDED_AGENTS
+            assert EXTENDED_AGENTS[agent] == AgentCategory.DOCUMENTATION
+
+    def test_all_rag_ml_agents_defined(self) -> None:
+        """Test that all RAG/ML agents are defined."""
+        rag_ml_agents = [
+            "rag-index-manager",
+            "meta-tensor-validator",
+            "rag-meta-tensor-regression-agent",
+        ]
+        for agent in rag_ml_agents:
+            assert agent in EXTENDED_AGENTS
+            assert EXTENDED_AGENTS[agent] == AgentCategory.RAG_ML
+
+    def test_all_repository_agents_defined(self) -> None:
+        """Test that all repository agents are defined."""
+        repo_agents = [
+            "repository-hygiene-agent",
+            "root-organizer-agent",
+            "reference-updater-agent",
+        ]
+        for agent in repo_agents:
+            assert agent in EXTENDED_AGENTS
+            assert EXTENDED_AGENTS[agent] == AgentCategory.REPOSITORY
+
+    def test_total_extended_agents(self) -> None:
+        """Test total number of extended agents."""
+        assert len(EXTENDED_AGENTS) == 9
+
+    def test_get_extended_agent_count(self) -> None:
+        """Test get_extended_agent_count function."""
+        assert get_extended_agent_count() == 9
+
+
+class TestAllIntegratedAgents:
+    """Tests for ALL_INTEGRATED_AGENTS constant."""
+
+    def test_all_agents_combined(self) -> None:
+        """Test that all agents are combined correctly."""
+        assert len(ALL_INTEGRATED_AGENTS) == len(CORE_AGENTS) + len(EXTENDED_AGENTS)
+
+    def test_core_agents_in_all(self) -> None:
+        """Test that all core agents are in ALL_INTEGRATED_AGENTS."""
+        for agent_id in CORE_AGENTS:
+            assert agent_id in ALL_INTEGRATED_AGENTS
+
+    def test_extended_agents_in_all(self) -> None:
+        """Test that all extended agents are in ALL_INTEGRATED_AGENTS."""
+        for agent_id in EXTENDED_AGENTS:
+            assert agent_id in ALL_INTEGRATED_AGENTS
+
+    def test_get_total_agent_count(self) -> None:
+        """Test get_total_agent_count function."""
+        assert get_total_agent_count() == 18
+
+
+class TestIntegrateExtendedAgents:
+    """Tests for integrate_extended_agents function."""
+
+    def test_integrates_all_extended_agents(self) -> None:
+        """Test that all extended agents are integrated."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_extended_agents(manifest_path)
+            assert len(agents) == 9
+
+    def test_documentation_agents_have_doc_analysis(self) -> None:
+        """Test documentation agents have doc_analysis capability."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_extended_agents(manifest_path)
+            doc_agents = [a for a in agents if a.category == AgentCategory.DOCUMENTATION]
+            for agent in doc_agents:
+                assert "doc_analysis" in agent.capabilities
+
+    def test_rag_ml_agents_have_ml_operations(self) -> None:
+        """Test RAG/ML agents have ml_operations capability."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_extended_agents(manifest_path)
+            rag_agents = [a for a in agents if a.category == AgentCategory.RAG_ML]
+            for agent in rag_agents:
+                assert "ml_operations" in agent.capabilities
+
+    def test_repository_agents_have_repo_management(self) -> None:
+        """Test repository agents have repo_management capability."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_extended_agents(manifest_path)
+            repo_agents = [a for a in agents if a.category == AgentCategory.REPOSITORY]
+            for agent in repo_agents:
+                assert "repo_management" in agent.capabilities
+
+    def test_saves_manifest(self) -> None:
+        """Test that manifest is saved after integration."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_extended_agents(manifest_path)
+            assert manifest_path.exists()
+            data = json.loads(manifest_path.read_text())
+            assert data["total_agents"] == 9
+
+    def test_all_agents_have_base_capabilities(self) -> None:
+        """Test all extended agents have base capabilities."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_extended_agents(manifest_path)
+            for agent in agents:
+                assert "pattern_query" in agent.capabilities
+                assert "learning_feedback" in agent.capabilities
+                assert "session_state" in agent.capabilities
+
+
+class TestIntegrateAllAgents:
+    """Tests for integrate_all_agents function."""
+
+    def test_integrates_all_agents(self) -> None:
+        """Test that all agents (core + extended) are integrated."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_all_agents(manifest_path)
+            assert len(agents) == 18
+
+    def test_includes_all_categories(self) -> None:
+        """Test that all categories are represented."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_all_agents(manifest_path)
+            categories = {a.category for a in agents}
+            assert AgentCategory.CI_CD in categories
+            assert AgentCategory.TESTING in categories
+            assert AgentCategory.SECURITY in categories
+            assert AgentCategory.DOCUMENTATION in categories
+            assert AgentCategory.RAG_ML in categories
+            assert AgentCategory.REPOSITORY in categories
+
+    def test_category_counts(self) -> None:
+        """Test that category counts are correct."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            agents = integrate_all_agents(manifest_path)
+            by_category = {}
+            for agent in agents:
+                cat = agent.category.value
+                by_category[cat] = by_category.get(cat, 0) + 1
+            assert by_category["ci_cd"] == 4
+            assert by_category["testing"] == 3
+            assert by_category["security"] == 2
+            assert by_category["documentation"] == 3
+            assert by_category["rag_ml"] == 3
+            assert by_category["repository"] == 3
+
+    def test_saves_manifest_with_all(self) -> None:
+        """Test that manifest is saved with all agents."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_all_agents(manifest_path)
+            data = json.loads(manifest_path.read_text())
+            assert data["total_agents"] == 18
+
+
+class TestExtendedAgentAdapters:
+    """Tests for extended agent adapters in brain integration section."""
+
+    def test_docs_adapter(self) -> None:
+        """Test DocsAdapter for documentation agents."""
+        section = get_brain_integration_section(
+            "documentation-consolidator", AgentCategory.DOCUMENTATION
+        )
+        assert "DocsAdapter" in section
+
+    def test_rag_ml_adapter(self) -> None:
+        """Test RAGMLAdapter for RAG/ML agents."""
+        section = get_brain_integration_section(
+            "rag-index-manager", AgentCategory.RAG_ML
+        )
+        assert "RAGMLAdapter" in section
+
+    def test_repo_adapter(self) -> None:
+        """Test RepoAdapter for repository agents."""
+        section = get_brain_integration_section(
+            "repository-hygiene-agent", AgentCategory.REPOSITORY
+        )
+        assert "RepoAdapter" in section
+
+
+class TestRegistryWithExtendedAgents:
+    """Tests for registry behavior with extended agents."""
+
+    def test_list_by_category_documentation(self) -> None:
+        """Test listing agents by documentation category."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_extended_agents(manifest_path)
+            registry = AgentIntegrationRegistry(manifest_path)
+            doc_agents = registry.list_by_category(AgentCategory.DOCUMENTATION)
+            assert len(doc_agents) == 3
+
+    def test_list_by_category_rag_ml(self) -> None:
+        """Test listing agents by RAG/ML category."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_extended_agents(manifest_path)
+            registry = AgentIntegrationRegistry(manifest_path)
+            rag_agents = registry.list_by_category(AgentCategory.RAG_ML)
+            assert len(rag_agents) == 3
+
+    def test_list_by_category_repository(self) -> None:
+        """Test listing agents by repository category."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_extended_agents(manifest_path)
+            registry = AgentIntegrationRegistry(manifest_path)
+            repo_agents = registry.list_by_category(AgentCategory.REPOSITORY)
+            assert len(repo_agents) == 3
+
+    def test_stats_with_all_agents(self) -> None:
+        """Test stats with all agents integrated."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_all_agents(manifest_path)
+            registry = AgentIntegrationRegistry(manifest_path)
+            stats = registry.get_stats()
+            assert stats["total_agents"] == 18
+            assert "documentation" in stats["by_category"]
+            assert "rag_ml" in stats["by_category"]
+            assert "repository" in stats["by_category"]
+
+    def test_is_integrated_extended_agent(self) -> None:
+        """Test is_integrated for extended agents."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            integrate_extended_agents(manifest_path)
+            registry = AgentIntegrationRegistry(manifest_path)
+            assert registry.is_integrated("documentation-consolidator")
+            assert registry.is_integrated("rag-index-manager")
+            assert registry.is_integrated("repository-hygiene-agent")
+            assert not registry.is_integrated("unknown-agent")
