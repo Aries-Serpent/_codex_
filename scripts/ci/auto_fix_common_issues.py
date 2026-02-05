@@ -325,11 +325,12 @@ class CommonIssueFixer:
             )
             
             # Only treat as issues if ruff found actual violations (exit code != 0)
-            # and the output doesn't contain "All checks passed"
+            # Exit code 0 means no violations, so we skip processing stdout
             if result.returncode != 0 and result.stdout:
                 for line in result.stdout.strip().split('\n'):
-                    # Skip informational messages like "All checks passed!"
-                    if line and not line.startswith("All checks"):
+                    # Only add non-empty lines that look like ruff violations
+                    # Ruff violations have format: "path/file.py:line:col: CODE message"
+                    if line and ":" in line:
                         issues.append(line)
         
         except FileNotFoundError:
