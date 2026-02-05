@@ -127,13 +127,13 @@ class CognitiveBrainSessionManager:
         objectives: Optional[List[str]] = None
     ) -> SessionState:
         """Start a new session."""
-        now = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now(timezone.utc).isoformat()
         
         self.current_session = SessionState(
             session_id=session_id,
             pr_number=pr_number,
             phase="initialization",
-            started=now,
+            started=timestamp,
             status="in_progress",
             objectives=objectives or []
         )
@@ -183,8 +183,10 @@ class CognitiveBrainSessionManager:
         pattern.times_applied += 1
         pattern.last_used = datetime.now(timezone.utc).isoformat()
         
-        # Update success rate with exponential moving average
-        alpha = 0.1  # Learning rate
+        # Update success rate with exponential moving average (EMA).
+        # Alpha=0.1 weights: 10% current result, 90% historical average.
+        # This creates stability while still adapting to recent outcomes.
+        alpha = 0.1
         pattern.success_rate = alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
         
         if self.current_session:
@@ -275,12 +277,12 @@ class CognitiveBrainSessionManager:
         if not self.current_session:
             return "No active session to generate continuation from."
         
-        now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        timestamp = datetime.now(timezone.utc).isoformat()
         
         prompt = f"""## Session Continuation - PR #{self.current_session.pr_number or 'N/A'}
 
 **Last Session:** {self.current_session.started}
-**Generated:** {now}
+**Generated:** {timestamp}
 **Status:** {self.current_session.status}
 
 ### Completed Tasks

@@ -171,6 +171,8 @@ corrective_action: null
 - Session Tracker: `.codex/cognitive_brain/session_tracker.md`
 - Pattern Store: `.codex/cognitive_brain/pattern_learning_store.json`
 - Codebase Policy: `.codex/CODEBASE_AGENCY_POLICY.md`
+- **Short-term Planset:** `.codex/plans/cognitive_brain_short_term_planset.md`
+- **Long-term Planset:** `.codex/plans/cognitive_brain_long_term_planset.md`
 
 ---
 
