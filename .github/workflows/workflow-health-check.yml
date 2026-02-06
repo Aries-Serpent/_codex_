@@ -1,0 +1,96 @@
+name: Workflow Health Check (Quantum-Inspired)
+
+on:
+  # Run after any workflow completes
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+  
+  # Scheduled health checks
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to check (optional)'
+        required: false
+      full_analysis:
+        description: 'Run full quantum analysis'
+        type: boolean
+        default: false
+
+jobs:
+  quantum-health-check:
+    name: Quantum-Inspired Health Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests pyyaml numpy scipy
+      
+      - name: Run quantum health analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/quantum_workflow_health.py \
+            --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \
+            ${{ inputs.full_analysis && '--full-analysis' || '' }}
+      
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workflow-health-report
+          path: .codex/monitoring/health_report_*.json
+          retention-days: 30
+      
+      - name: Create issue on critical failures
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = JSON.parse(fs.readFileSync('.codex/monitoring/health_report_latest.json', 'utf8'));
+              
+              if (report.critical_failures > 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `🚨 Critical Workflow Health Alert: ${report.critical_failures} failures detected`,
+                  body: `## Quantum Workflow Health Analysis
+            
+            **Timestamp:** ${report.timestamp}
+            **Overall Health:** ${report.overall_health.toUpperCase()}
+            **Quantum Coherence:** ${report.quantum_coherence}
+            
+            ### Health Distribution
+            - ✅ Healthy: ${report.health_distribution.healthy}
+            - ⚠️ Degraded: ${report.health_distribution.degraded}
+            - 🚨 Critical: ${report.health_distribution.critical}
+            
+            ${report.tunneling_events > 0 ? `### Quantum Tunneling Events: ${report.tunneling_events}\n(Unexpected recoveries detected)\n\n` : ''}
+            
+            ### Critical Workflows
+            ${report.states.filter(s => s.measured_health === 'critical').map(s => `- **${s.name}** (ID: ${s.workflow_id}): ${s.conclusion}`).join('\n')}
+            
+            ---
+            *This issue was automatically created by the Quantum Workflow Health Monitor*`,
+                  labels: ['workflow-health', 'automated', 'critical']
+                });
+              }
+            } catch (error) {
+              console.error('Failed to create issue:', error);
+            }
