@@ -98,7 +98,7 @@ Modified:
 
 New Documentation:
   archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md                (detailed analysis)
-  WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md          (this file)
+  archive/sessions/2026-01/WORKFLOW_FIX_QUICK_REFERENCE.md          (this file)
 ```
 
 ---
