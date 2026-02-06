@@ -350,8 +350,13 @@ def test_distributed_barrier(mock_dist):
     config = DistributedConfig(enabled=True, world_size=2)
     manager = DistributedManager(config)
     
+    # Mock dist to appear initialized
     mock_dist.is_initialized.return_value = True
+    mock_dist.is_available.return_value = True
     mock_dist.barrier.return_value = None
+    
+    # Manually set the manager as initialized to trigger is_distributed
+    manager._initialized = True
     
     # Test barrier if method exists
     if hasattr(manager, "barrier"):

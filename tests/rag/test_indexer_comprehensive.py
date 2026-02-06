@@ -4,8 +4,28 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
+
+# Import with graceful fallback
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+
+try:
+    from sentence_transformers import SentenceTransformer  # noqa: F401
+    HAS_SENTENCE_TRANSFORMERS = True
+except ImportError:
+    HAS_SENTENCE_TRANSFORMERS = False
+
+# Skip all tests if required dependencies are missing
+if not HAS_NUMPY or not HAS_SENTENCE_TRANSFORMERS:
+    pytestmark = pytest.mark.skip(
+        reason="RAG tests require numpy and sentence-transformers. "
+        f"numpy={'available' if HAS_NUMPY else 'missing'}, "
+        f"sentence-transformers={'available' if HAS_SENTENCE_TRANSFORMERS else 'missing'}"
+    )
 
 from codex.rag.indexer import chunk_text, embed_chunks, load_index, persist_index
 

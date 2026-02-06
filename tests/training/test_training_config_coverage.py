@@ -247,13 +247,13 @@ class TestLearningRateScheduling:
         scheduler = StepLR(optimizer_with_model, step_size=5, gamma=0.1)
         
         # Initial LR
-        assert optimizer_with_model.param_groups[0]['lr'] == 0.1
+        assert abs(optimizer_with_model.param_groups[0]['lr'] - 0.1) < 1e-6
         
         # After 5 steps
         for _ in range(5):
             scheduler.step()
         
-        assert optimizer_with_model.param_groups[0]['lr'] == 0.01
+        assert abs(optimizer_with_model.param_groups[0]['lr'] - 0.01) < 1e-6
     
     def test_exponential_lr_scheduler(self, optimizer_with_model):
         """Test ExponentialLR scheduler."""
@@ -302,16 +302,16 @@ class TestLearningRateScheduling:
             optimizer_with_model,
             mode='min',
             factor=0.1,
-            patience=3,
+            patience=2,  # Reduced patience for faster test
         )
         
         initial_lr = optimizer_with_model.param_groups[0]['lr']
         
-        # Simulate non-improving metrics
-        for _ in range(4):
-            scheduler.step(1.0)  # Constant metric
+        # Simulate non-improving metrics (patience + 2 steps to trigger reduction)
+        for _ in range(5):
+            scheduler.step(1.0)  # Constant metric - no improvement
         
-        # LR should have been reduced after patience
+        # LR should have been reduced after patience exceeded
         assert optimizer_with_model.param_groups[0]['lr'] < initial_lr
     
     def test_linear_warmup_scheduling(self):
