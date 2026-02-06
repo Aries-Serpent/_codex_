@@ -315,6 +315,57 @@ class SuperpositionEngine:
 
         return state.coherence
 
+    def evaluate_superposition(
+        self,
+        decisions: List[tuple[str, callable]],
+        context: Dict[str, Any] = None,
+    ) -> Dict[str, Any]:
+        """
+        Convenience method to evaluate decisions in superposition.
+        
+        This combines create_superposition, evaluate_parallel, and collapse
+        into a single call for easier testing and simple use cases.
+        
+        Args:
+            decisions: List of (id, function) tuples
+            context: Optional context dict
+            
+        Returns:
+            Dictionary with decision, coherence, and other metrics
+        """
+        # Convert tuples to Decision objects
+        decision_objects = [
+            Decision(id=dec_id, evaluator=func, metadata=context or {})
+            for dec_id, func in decisions
+        ]
+        
+        # Create superposition
+        state = self.create_superposition(decision_objects)
+        
+        # Evaluate in parallel
+        scores = self.evaluate_parallel(state)
+        
+        # Update state with scores
+        state.scores = scores
+        state.evaluated = True
+        
+        # Calculate coherence
+        amplitudes = state.amplitudes
+        probabilities = [a**2 for a in amplitudes]
+        coherence = self._calculate_coherence(probabilities)
+        state.coherence = coherence
+        
+        # Collapse to best decision
+        best = self.collapse(state)
+        
+        return {
+            "decision": best.id,
+            "value": best.metadata.get("value"),
+            "coherence": coherence,
+            "scores": scores,
+            "amplitudes": amplitudes,
+        }
+
     def _calculate_coherence(self, probabilities: List[float]) -> float:
         """
         Calculate coherence from probability distribution.
