@@ -93,12 +93,14 @@ class PolicyEnforcer:
                     redacted = re.sub(pattern, replacement, redacted)
                     redactions_applied.append(replacement)
 
-        # Redact sensitive terms
+        # Redact sensitive terms (but avoid redacting already-redacted placeholders)
         sensitive_terms = self.denylist.get("sensitive_terms", [])
         for term in sensitive_terms:
             if term.lower() in redacted.lower():
-                # Case-insensitive replacement
-                redacted = re.sub(re.escape(term), "[REDACTED]", redacted, flags=re.IGNORECASE)
+                # Case-insensitive replacement, but not inside brackets []
+                # Use negative lookbehind and lookahead to avoid matching inside [REDACTED] markers
+                pattern = r'(?<!\[)' + re.escape(term) + r'(?![^\[]*\])'
+                redacted = re.sub(pattern, "[REDACTED]", redacted, flags=re.IGNORECASE)
                 redactions_applied.append(f"term:{term}")
 
         return redacted, redactions_applied

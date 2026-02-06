@@ -9,6 +9,9 @@ from typing import Any
 
 import pytest
 
+# Skip tests if great_expectations is not available
+pytest.importorskip("great_expectations", reason="great_expectations not installed")
+
 
 class _StubValidator:
     def __init__(self) -> None:
