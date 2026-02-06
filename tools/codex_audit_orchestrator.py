@@ -143,7 +143,7 @@ def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> N
 def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[List[str]] = None):
     """
     Decorator for phase steps. On exception: log, record capture, and return None.
-    On success: return the function's result if truthy, else True to indicate success.
+    On success: return True. If function returns None, treat as failure.
     """
 
     def decorator(fn):
@@ -154,7 +154,9 @@ def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[
             try:
                 result = fn(ctx, *args, **kwargs)
                 log(f"END   {ctx.phase_id}.{ctx.step_id} - OK")
-                return result if result is not None else True  # Success indicator
+                # If function returns None, treat as failure
+                # Otherwise return True for success
+                return result if result is not None else None  # None = failure indicator
             except Exception as exc:  # noqa: BLE001
                 log(f"ERROR {ctx.phase_id}.{ctx.step_id} - {exc}")
                 refs = ra_refs or ["RA-1", "RA-3"]

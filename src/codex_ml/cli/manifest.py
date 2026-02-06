@@ -67,11 +67,14 @@ if TYPER_AVAILABLE:
                     raise typer.Exit(2)
             
             typer.echo("Validation passed")
-            raise typer.Exit(0)
+            # Return normally for success (exit code 0)
             
         except json.JSONDecodeError as e:
             typer.echo(f"Error: invalid JSON: {e}")
             raise typer.Exit(2)
+        except typer.Exit:
+            # Re-raise typer.Exit to preserve exit code
+            raise
         except Exception as e:
             typer.echo(f"Error: {e}")
             raise typer.Exit(2)

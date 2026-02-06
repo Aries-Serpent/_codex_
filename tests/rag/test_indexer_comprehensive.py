@@ -4,8 +4,30 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
+
+# Import with graceful fallback
+try:
+    import numpy as np
+
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+
+try:
+    import sentence_transformers
+
+    HAS_SENTENCE_TRANSFORMERS = True
+except ImportError:
+    HAS_SENTENCE_TRANSFORMERS = False
+
+# Skip all tests if required dependencies are missing
+if not HAS_NUMPY or not HAS_SENTENCE_TRANSFORMERS:
+    pytestmark = pytest.mark.skip(
+        reason="RAG tests require numpy and sentence-transformers. "
+        f"numpy={'available' if HAS_NUMPY else 'missing'}, "
+        f"sentence-transformers={'available' if HAS_SENTENCE_TRANSFORMERS else 'missing'}"
+    )
 
 from codex.rag.indexer import chunk_text, embed_chunks, load_index, persist_index
 
@@ -64,7 +86,7 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=30, overlap=5)
 
         # At least one chunk should end with period
-        assert any(chunk[2].rstrip().endswith('.') for chunk in chunks)
+        assert any(chunk[2].rstrip().endswith(".") for chunk in chunks)
 
     def test_chunk_size_validation(self):
         """Test chunk_size must be positive."""
@@ -133,7 +155,7 @@ class TestChunkText:
 
         assert len(chunks) >= 1
         # Should preserve newlines in chunks
-        combined = ''.join([c[2] for c in chunks])
+        combined = "".join([c[2] for c in chunks])
         # Most of original text should be in chunks
         assert len(combined) > 0
 
@@ -186,7 +208,7 @@ class TestEmbedChunks:
             (20, 30, "Chunk three"),
         ]
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
             embeddings = embed_chunks(chunks)
 
             assert isinstance(embeddings, np.ndarray)
@@ -199,10 +221,10 @@ class TestEmbedChunks:
 
         model_profile = {
             "model_name": "sentence-transformers/paraphrase-MiniLM-L6-v2",
-            "cache_dir": "/tmp/cache"
+            "cache_dir": "/tmp/cache",
         }
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model) as mock_st:
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model) as mock_st:
             embed_chunks(chunks, model_profile=model_profile)
 
             # Check model was initialized with correct params
@@ -214,7 +236,7 @@ class TestEmbedChunks:
         """Test embedding uses default model when no profile provided."""
         chunks = [(0, 10, "Test")]
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model) as mock_st:
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model) as mock_st:
             embed_chunks(chunks)
 
             # Should use default model
@@ -229,7 +251,7 @@ class TestEmbedChunks:
         mock_st.__version__ = "2.2.0"
         mock_st.SentenceTransformer.side_effect = ImportError("sentence-transformers not installed")
 
-        with patch.dict('sys.modules', {'sentence_transformers': mock_st}):
+        with patch.dict("sys.modules", {"sentence_transformers": mock_st}):
             with pytest.raises(ImportError, match="sentence-transformers"):
                 embed_chunks([(0, 10, "Test")])
 
@@ -240,7 +262,7 @@ class TestEmbedChunks:
             (5, 10, "World"),
         ]
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
             embed_chunks(chunks)
 
             # Check that encode was called with the text parts
@@ -263,7 +285,7 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = len(chunks)
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
             index_path = persist_index(
@@ -271,7 +293,7 @@ class TestPersistIndex:
                 embeddings=embeddings,
                 chunks=chunks,
                 tenant_id="test_tenant",
-                index_dir=str(tmp_path)
+                index_dir=str(tmp_path),
             )
 
             assert index_path.exists()
@@ -281,10 +303,7 @@ class TestPersistIndex:
         """Test persisting empty embeddings raises error."""
         with pytest.raises(ValueError, match="Cannot persist empty embeddings"):
             persist_index(
-                index_name="test",
-                embeddings=np.array([]),
-                chunks=[],
-                index_dir=str(tmp_path)
+                index_name="test", embeddings=np.array([]), chunks=[], index_dir=str(tmp_path)
             )
 
     def test_persist_index_mismatch_error(self, tmp_path):
@@ -294,10 +313,7 @@ class TestPersistIndex:
 
         with pytest.raises(ValueError, match="Mismatch"):
             persist_index(
-                index_name="test",
-                embeddings=embeddings,
-                chunks=chunks,
-                index_dir=str(tmp_path)
+                index_name="test", embeddings=embeddings, chunks=chunks, index_dir=str(tmp_path)
             )
 
     def test_persist_index_creates_directory_structure(self, tmp_path):
@@ -308,7 +324,7 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = 2
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -317,7 +333,7 @@ class TestPersistIndex:
                 embeddings=embeddings,
                 chunks=chunks,
                 tenant_id="tenant1",
-                index_dir=str(tmp_path)
+                index_dir=str(tmp_path),
             )
 
             # Check directory structure
@@ -328,15 +344,12 @@ class TestPersistIndex:
         embeddings = np.random.randn(2, 384).astype(np.float32)
         chunks = [(0, 10, "One"), (10, 20, "Two")]
 
-        metadata = {
-            "source": "test_source",
-            "version": "1.0"
-        }
+        metadata = {"source": "test_source", "version": "1.0"}
 
         mock_index = MagicMock()
         mock_index.ntotal = 2
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -345,7 +358,7 @@ class TestPersistIndex:
                 embeddings=embeddings,
                 chunks=chunks,
                 metadata=metadata,
-                index_dir=str(tmp_path)
+                index_dir=str(tmp_path),
             )
 
             # Load and verify metadata
@@ -365,7 +378,7 @@ class TestPersistIndex:
         mock_index = MagicMock()
         mock_index.ntotal = 2
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -373,7 +386,7 @@ class TestPersistIndex:
                 index_name="test_index",
                 embeddings=embeddings,
                 chunks=chunks,
-                index_dir=str(tmp_path)
+                index_dir=str(tmp_path),
             )
 
             # Load and verify chunks
@@ -391,13 +404,10 @@ class TestPersistIndex:
         embeddings = np.random.randn(1, 384).astype(np.float32)
         chunks = [(0, 10, "Test")]
 
-        with patch('codex.rag.indexer.faiss', None):
+        with patch("codex.rag.indexer.faiss", None):
             with pytest.raises(ImportError):
                 persist_index(
-                    index_name="test",
-                    embeddings=embeddings,
-                    chunks=chunks,
-                    index_dir=str(tmp_path)
+                    index_name="test", embeddings=embeddings, chunks=chunks, index_dir=str(tmp_path)
                 )
 
 
@@ -406,13 +416,9 @@ class TestLoadIndex:
 
     def test_load_index_not_found(self, tmp_path):
         """Test loading non-existent index raises error."""
-        with patch('codex.rag.indexer.faiss'):
+        with patch("codex.rag.indexer.faiss"):
             with pytest.raises(FileNotFoundError):
-                load_index(
-                    index_name="nonexistent",
-                    tenant_id="test",
-                    index_dir=str(tmp_path)
-                )
+                load_index(index_name="nonexistent", tenant_id="test", index_dir=str(tmp_path))
 
     def test_load_index_basic(self, tmp_path):
         """Test loading a valid index."""
@@ -423,9 +429,7 @@ class TestLoadIndex:
         # Create mock files
         (index_dir / "index.faiss").touch()
 
-        chunks_data = [
-            {"id": 0, "text": "Chunk 1", "start": 0, "end": 10}
-        ]
+        chunks_data = [{"id": 0, "text": "Chunk 1", "start": 0, "end": 10}]
         with open(index_dir / "chunks.json", "w") as f:
             json.dump(chunks_data, f)
 
@@ -435,13 +439,11 @@ class TestLoadIndex:
 
         mock_faiss_index = MagicMock()
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.read_index.return_value = mock_faiss_index
 
             index, chunks, meta = load_index(
-                index_name="test_index",
-                tenant_id="tenant1",
-                index_dir=str(tmp_path)
+                index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path)
             )
 
             assert index is not None
@@ -450,13 +452,9 @@ class TestLoadIndex:
 
     def test_load_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
-        with patch('codex.rag.indexer.faiss', None):
+        with patch("codex.rag.indexer.faiss", None):
             with pytest.raises(ImportError):
-                load_index(
-                    index_name="test",
-                    tenant_id="test",
-                    index_dir=str(tmp_path)
-                )
+                load_index(index_name="test", tenant_id="test", index_dir=str(tmp_path))
 
     def test_load_index_missing_chunks_file(self, tmp_path):
         """Test loading index with missing chunks file."""
@@ -466,16 +464,12 @@ class TestLoadIndex:
 
         # No chunks.json file created
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
 
             # Should handle missing chunks gracefully or raise appropriate error
             try:
-                load_index(
-                    index_name="test_index",
-                    tenant_id="tenant1",
-                    index_dir=str(tmp_path)
-                )
+                load_index(index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path))
             except (FileNotFoundError, json.JSONDecodeError):
                 # Expected behavior
                 pass
@@ -491,16 +485,12 @@ class TestLoadIndex:
 
         # No metadata.json file
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.read_index.return_value = MagicMock()
 
             # Should handle missing metadata
             try:
-                load_index(
-                    index_name="test_index",
-                    tenant_id="tenant1",
-                    index_dir=str(tmp_path)
-                )
+                load_index(index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path))
             except (FileNotFoundError, json.JSONDecodeError):
                 # Expected behavior
                 pass

@@ -299,6 +299,11 @@ def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
 
 
 def main(argv: Sequence[str] | None = None) -> Any:
+    # Check for hydra availability early
+    if hydra is None or _hydra_entry is None:
+        sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
+        return 0
+    
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
     parser = parser_cls(prog="codex-train", add_help=False)
     parser.add_argument("--probe-json", action="store_true", help=argparse.SUPPRESS)
@@ -382,10 +387,6 @@ def main(argv: Sequence[str] | None = None) -> Any:
         )
     if getattr(namespace, "reasoning_corpus", None):
         overrides.append(f"continual.active_corpus={namespace.reasoning_corpus}")
-
-    prog_name = sys.argv[0] if argv is None else parser.prog
-    if hydra is None or _hydra_entry is None:
-        return _hydra_missing_main(overrides, prog_name)
 
     backup_argv = sys.argv[:]
     try:

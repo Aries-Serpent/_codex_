@@ -13,29 +13,27 @@ Target Coverage: 70%+
 from __future__ import annotations
 
 import os
-from unittest.mock import MagicMock, patch
-
-import pytest
 
 # Mock torch before importing distributed module
 import sys
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Create mock torch module
 mock_torch = MagicMock()
 mock_torch.distributed = MagicMock()
 mock_torch.nn.parallel.DistributedDataParallel = MagicMock
-sys.modules['torch'] = mock_torch
-sys.modules['torch.distributed'] = mock_torch.distributed
-sys.modules['torch.nn'] = mock_torch.nn
-sys.modules['torch.nn.parallel'] = mock_torch.nn.parallel
+sys.modules["torch"] = mock_torch
+sys.modules["torch.distributed"] = mock_torch.distributed
+sys.modules["torch.nn"] = mock_torch.nn
+sys.modules["torch.nn.parallel"] = mock_torch.nn.parallel
 
-from codex_ml.training.distributed import (
+from codex_ml.training.distributed import (  # noqa: E402
     DistributedConfig,
     DistributedManager,
     distributed_context,
 )
-
 
 # =============================================================================
 # Test Data & Fixtures
@@ -46,9 +44,13 @@ from codex_ml.training.distributed import (
 def clean_env(monkeypatch):
     """Clean environment of distributed variables."""
     env_vars = [
-        "WORLD_SIZE", "RANK", "LOCAL_RANK",
-        "MASTER_ADDR", "MASTER_PORT",
-        "DISTRIBUTED_ENABLED", "DISTRIBUTED_BACKEND"
+        "WORLD_SIZE",
+        "RANK",
+        "LOCAL_RANK",
+        "MASTER_ADDR",
+        "MASTER_PORT",
+        "DISTRIBUTED_ENABLED",
+        "DISTRIBUTED_BACKEND",
     ]
     for var in env_vars:
         monkeypatch.delenv(var, raising=False)
@@ -90,7 +92,7 @@ def test_distributed_config_custom():
         rank=3,
         local_rank=2,
         master_addr="10.0.0.1",
-        master_port="12345"
+        master_port="12345",
     )
     assert config.enabled is True
     assert config.backend == "gloo"
@@ -130,15 +132,9 @@ def test_distributed_config_from_env_explicit_enabled(monkeypatch, clean_env):
 
 def test_distributed_config_to_env():
     """Test DistributedConfig.to_env exports to environment dict."""
-    config = DistributedConfig(
-        enabled=True,
-        backend="nccl",
-        world_size=4,
-        rank=1,
-        local_rank=0
-    )
+    config = DistributedConfig(enabled=True, backend="nccl", world_size=4, rank=1, local_rank=0)
     env_dict = config.to_env()
-    
+
     assert env_dict["DISTRIBUTED_ENABLED"] == "true"
     assert env_dict["DISTRIBUTED_BACKEND"] == "nccl"
     assert env_dict["WORLD_SIZE"] == "4"
@@ -149,9 +145,7 @@ def test_distributed_config_to_env():
 def test_distributed_config_advanced_settings():
     """Test DistributedConfig advanced DDP settings."""
     config = DistributedConfig(
-        find_unused_parameters=True,
-        broadcast_buffers=False,
-        gradient_as_bucket_view=False
+        find_unused_parameters=True, broadcast_buffers=False, gradient_as_bucket_view=False
     )
     assert config.find_unused_parameters is True
     assert config.broadcast_buffers is False
@@ -184,10 +178,10 @@ def test_distributed_manager_initialize(mock_dist):
     """Test DistributedManager.initialize sets up process group."""
     config = DistributedConfig(enabled=True, world_size=2, rank=0)
     manager = DistributedManager(config)
-    
+
     mock_dist.is_initialized.return_value = False
     mock_dist.is_available.return_value = True
-    
+
     # Call initialize if method exists
     if hasattr(manager, "initialize"):
         manager.initialize()
@@ -199,9 +193,9 @@ def test_distributed_manager_cleanup(mock_dist):
     """Test DistributedManager cleanup."""
     manager = DistributedManager()
     manager._initialized = True
-    
+
     mock_dist.is_initialized.return_value = True
-    
+
     # Call cleanup if method exists
     if hasattr(manager, "cleanup"):
         manager.cleanup()
@@ -211,7 +205,7 @@ def test_distributed_manager_device_selection():
     """Test DistributedManager selects correct device."""
     config = DistributedConfig(local_rank=2)
     manager = DistributedManager(config)
-    
+
     # Should determine device based on local_rank
     assert hasattr(manager, "_device") or hasattr(manager, "device")
 
@@ -226,7 +220,7 @@ def test_distributed_context_manager(mock_manager_class):
     """Test distributed_context as context manager."""
     mock_manager = MagicMock()
     mock_manager_class.return_value = mock_manager
-    
+
     with distributed_context() as manager:
         assert manager is not None
 
@@ -234,10 +228,10 @@ def test_distributed_context_manager(mock_manager_class):
 def test_distributed_context_function_signature():
     """Test distributed_context accepts config parameter."""
     config = DistributedConfig(enabled=False)
-    
+
     # Test that function can be called with config
     result = distributed_context(config) if callable(distributed_context) else None
-    
+
     # Context manager should work
     if result and hasattr(result, "__enter__"):
         with result as manager:
@@ -255,10 +249,10 @@ def test_wrap_model_with_ddp(mock_torch, mock_ddp):
     """Test wrapping model with DistributedDataParallel."""
     mock_model = MagicMock()
     mock_ddp.return_value = mock_model
-    
+
     config = DistributedConfig(enabled=True, local_rank=0)
     manager = DistributedManager(config)
-    
+
     # Test wrapping if method exists
     if hasattr(manager, "wrap_model"):
         wrapped = manager.wrap_model(mock_model)
@@ -269,10 +263,10 @@ def test_wrap_model_with_ddp(mock_torch, mock_ddp):
 def test_get_device(mock_torch):
     """Test device selection based on local_rank."""
     mock_torch.cuda.is_available.return_value = True
-    
+
     config = DistributedConfig(local_rank=1)
     manager = DistributedManager(config)
-    
+
     # Test device getter if exists
     if hasattr(manager, "device") or hasattr(manager, "get_device"):
         device = manager.device if hasattr(manager, "device") else manager.get_device()
@@ -286,14 +280,9 @@ def test_get_device(mock_torch):
 
 def test_distributed_config_round_trip():
     """Test DistributedConfig can be exported and re-imported."""
-    original = DistributedConfig(
-        enabled=True,
-        world_size=4,
-        rank=2,
-        backend="gloo"
-    )
+    original = DistributedConfig(enabled=True, world_size=4, rank=2, backend="gloo")
     env_dict = original.to_env()
-    
+
     # Simulate loading from environment
     with patch.dict(os.environ, env_dict):
         restored = DistributedConfig.from_env()
@@ -307,10 +296,10 @@ def test_distributed_manager_multiple_instances():
     """Test multiple DistributedManager instances."""
     config1 = DistributedConfig(rank=0)
     config2 = DistributedConfig(rank=1)
-    
+
     manager1 = DistributedManager(config1)
     manager2 = DistributedManager(config2)
-    
+
     assert manager1.config.rank == 0
     assert manager2.config.rank == 1
 
@@ -325,7 +314,7 @@ def test_distributed_manager_disabled_mode():
     """Test DistributedManager in disabled mode."""
     config = DistributedConfig(enabled=False)
     manager = DistributedManager(config)
-    
+
     assert manager.config.enabled is False
     assert manager._initialized is False
 
@@ -339,6 +328,7 @@ def test_launch_distributed_function_exists():
     """Test launch_distributed function is available."""
     try:
         from codex_ml.training.distributed import launch_distributed
+
         assert callable(launch_distributed)
     except ImportError:
         pytest.skip("launch_distributed not available")
@@ -349,10 +339,15 @@ def test_distributed_barrier(mock_dist):
     """Test distributed barrier synchronization."""
     config = DistributedConfig(enabled=True, world_size=2)
     manager = DistributedManager(config)
-    
+
+    # Mock dist to appear initialized
     mock_dist.is_initialized.return_value = True
+    mock_dist.is_available.return_value = True
     mock_dist.barrier.return_value = None
-    
+
+    # Manually set the manager as initialized to trigger is_distributed
+    manager._initialized = True
+
     # Test barrier if method exists
     if hasattr(manager, "barrier"):
         manager.barrier()

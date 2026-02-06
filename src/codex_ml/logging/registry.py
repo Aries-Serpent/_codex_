@@ -28,8 +28,26 @@ def get_logger(name: str) -> Callable[[str], None]:
 class _NDJSONMetricsLogger:
     """Simple NDJSON logger that can append optional system metrics."""
 
-    def __init__(self, path: Path, *, include_sys_metrics: bool = False) -> None:
-        self._logger = NDJSONLogger(path)
+    def __init__(
+        self,
+        path: Path,
+        *,
+        sys_metrics: bool = False,  # Support both parameter names
+        include_sys_metrics: bool | None = None,
+        max_bytes: int | None = None,
+        backup_count: int = 1,
+        max_age_s: int | float | None = None,
+    ) -> None:
+        # Support both sys_metrics and include_sys_metrics for compatibility
+        if include_sys_metrics is None:
+            include_sys_metrics = sys_metrics
+        
+        self._logger = NDJSONLogger(
+            path,
+            max_bytes=max_bytes,
+            backup_count=backup_count,
+            max_age_s=max_age_s,
+        )
         self._include_sys_metrics = include_sys_metrics and _HAS_PSUTIL and psutil is not None
 
     def _system_metrics(self) -> dict[str, float]:  # pragma: no cover - env dependent
@@ -38,12 +56,15 @@ class _NDJSONMetricsLogger:
         try:
             proc = psutil.Process()
             mem = proc.memory_info()
-            return {
+            metrics = {
                 "mem_rss_mb": mem.rss / (1024 * 1024),
                 "mem_vms_mb": mem.vms / (1024 * 1024),
             }
+            # Add CPU percent if available
+            if hasattr(psutil, 'cpu_percent'):
+                metrics["cpu_percent"] = psutil.cpu_percent(interval=None)
+            return metrics
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             return {}
 
@@ -81,4 +102,8 @@ __all__ = [
     "build_loggers",
     "get_logger",
     "register_logger",
+    "NDJSONLogger",  # Export the metrics logger for tests
 ]
+
+# Export _NDJSONMetricsLogger as NDJSONLogger for backward compatibility with tests
+NDJSONLogger = _NDJSONMetricsLogger
