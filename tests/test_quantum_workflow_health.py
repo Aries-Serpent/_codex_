@@ -11,9 +11,12 @@ These tests use quantum mechanics principles:
 import pytest
 import math
 import os
+import json
+import tempfile
 from scripts.quantum_workflow_health import (
     QuantumWorkflowState,
-    QuantumWorkflowHealthAnalyzer
+    QuantumWorkflowHealthAnalyzer,
+    ComplexEncoder
 )
 
 
@@ -138,6 +141,122 @@ class TestQuantumWorkflowState:
         # Tunneling indicator: healthy result with high imaginary amplitude
         if state.measured_health == 'healthy':
             assert abs(state.health_amplitude.imag) > 0.5  # Tunneling signature
+
+
+class TestComplexNumberSerialization:
+    """Test JSON serialization of complex numbers"""
+    
+    def test_complex_encoder_serializes_complex_numbers(self):
+        """ComplexEncoder should convert complex numbers to JSON-serializable format"""
+        test_data = {
+            'value': complex(3.14, 2.71),
+            'nested': {
+                'amplitude': complex(0.9, 0.1)
+            }
+        }
+        
+        # Should serialize without raising TypeError
+        json_str = json.dumps(test_data, cls=ComplexEncoder)
+        
+        # Verify deserialization structure
+        result = json.loads(json_str)
+        assert result['value']['real'] == 3.14
+        assert result['value']['imag'] == 2.71
+        assert result['nested']['amplitude']['real'] == 0.9
+        assert result['nested']['amplitude']['imag'] == 0.1
+    
+    def test_quantum_state_serialization_with_complex_amplitude(self):
+        """QuantumWorkflowState with complex amplitude should serialize to JSON"""
+        state = QuantumWorkflowState(
+            workflow_id=123,
+            name="Test Workflow",
+            status="completed",
+            conclusion="success",
+            health_amplitude=complex(0.8, 0.2),
+            phase=1.57,
+            entangled_with=[456, 789]
+        )
+        
+        # Measure to get complete state
+        state.measure_health()
+        
+        # Convert to dict and serialize
+        state_dict = state.__dict__
+        
+        # Should serialize without TypeError
+        json_str = json.dumps(state_dict, cls=ComplexEncoder)
+        result = json.loads(json_str)
+        
+        # Verify complex number was properly serialized
+        assert 'health_amplitude' in result
+        assert result['health_amplitude']['real'] == 0.8
+        assert result['health_amplitude']['imag'] == 0.2
+    
+    def test_full_health_report_json_serialization(self):
+        """Full health report with quantum states should serialize to JSON file"""
+        analyzer = QuantumWorkflowHealthAnalyzer(
+            github_token='fake_token',
+            repo='test/repo'
+        )
+        
+        states = [
+            QuantumWorkflowState(
+                workflow_id=1,
+                name="Workflow 1",
+                status="completed",
+                conclusion="success",
+                health_amplitude=complex(0.9, 0.1),
+                phase=0.5,
+                entangled_with=[]
+            ),
+            QuantumWorkflowState(
+                workflow_id=2,
+                name="Workflow 2",
+                status="completed",
+                conclusion="failure",
+                health_amplitude=complex(0.3, 0.7),
+                phase=1.0,
+                entangled_with=[1]
+            )
+        ]
+        
+        # Measure all states
+        for state in states:
+            state.measure_health()
+        
+        # Create report structure similar to analyze_health output
+        from dataclasses import asdict
+        report = {
+            'timestamp': '2024-01-01T00:00:00',
+            'total_workflows': len(states),
+            'health_distribution': {'healthy': 1, 'degraded': 0, 'critical': 1},
+            'critical_failures': 1,
+            'overall_health': 'degraded',
+            'quantum_coherence': 0.75,
+            'states': [asdict(s) for s in states]
+        }
+        
+        # Write to temporary file using ComplexEncoder
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            temp_path = f.name
+            json.dump(report, f, indent=2, cls=ComplexEncoder)
+        
+        try:
+            # Verify file can be read back
+            with open(temp_path, 'r') as f:
+                loaded_report = json.load(f)
+            
+            # Verify structure
+            assert loaded_report['total_workflows'] == 2
+            assert len(loaded_report['states']) == 2
+            
+            # Verify complex numbers were serialized
+            assert 'health_amplitude' in loaded_report['states'][0]
+            assert 'real' in loaded_report['states'][0]['health_amplitude']
+            assert 'imag' in loaded_report['states'][0]['health_amplitude']
+        finally:
+            # Clean up
+            os.unlink(temp_path)
 
 
 class TestQuantumHealthAnalyzer:

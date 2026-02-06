@@ -22,6 +22,14 @@ import math
 import requests
 
 
+class ComplexEncoder(json.JSONEncoder):
+    """Custom JSON encoder for complex numbers"""
+    def default(self, obj):
+        if isinstance(obj, complex):
+            return {'real': obj.real, 'imag': obj.imag}
+        return super().default(obj)
+
+
 @dataclass
 class QuantumWorkflowState:
     """Represents workflow in quantum superposition"""
@@ -282,11 +290,11 @@ def main():
     report_file = f'.codex/monitoring/health_report_{timestamp}.json'
     
     with open(report_file, 'w') as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent=2, cls=ComplexEncoder)
     
     # Also save as "latest"
     with open('.codex/monitoring/health_report_latest.json', 'w') as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent=2, cls=ComplexEncoder)
     
     # Print summary
     print("\n" + "="*70)

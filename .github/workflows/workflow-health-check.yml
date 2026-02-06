@@ -92,5 +92,6 @@ jobs:
                 });
               }
             } catch (error) {
-              console.error('Failed to create issue:', error);
+              core.warning('Failed to create issue: ' + error.message);
+              // Don't fail the workflow if report is missing
             }
