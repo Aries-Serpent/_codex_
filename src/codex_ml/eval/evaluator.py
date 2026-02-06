@@ -129,6 +129,60 @@ def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     return evaluate_model(model, tokenizer, texts)
 
 
+def lite_sequence_evaluation(
+    predictions: Sequence[str], references: Sequence[str]
+) -> dict[str, float]:
+    """
+    Lightweight sequence evaluation without heavy dependencies.
+    
+    Computes basic text metrics for sequence-to-sequence tasks.
+    
+    Args:
+        predictions: Predicted text sequences
+        references: Reference/target text sequences
+        
+    Returns:
+        Dictionary with metrics: token_accuracy, exact_match, perplexity_proxy, samples
+    """
+    if not predictions or not references:
+        return {
+            "token_accuracy": 0.0,
+            "exact_match": 0.0,
+            "perplexity_proxy": float('inf'),
+            "samples": 0.0,
+        }
+    
+    n_samples = min(len(predictions), len(references))
+    exact_matches = sum(p == r for p, r in zip(predictions, references))
+    
+    # Token-level accuracy (simple word-based)
+    total_tokens = 0
+    correct_tokens = 0
+    for pred, ref in zip(predictions, references):
+        pred_tokens = pred.split()
+        ref_tokens = ref.split()
+        total_tokens += len(ref_tokens)
+        # Count matching tokens at same positions
+        for i in range(min(len(pred_tokens), len(ref_tokens))):
+            if pred_tokens[i] == ref_tokens[i]:
+                correct_tokens += 1
+    
+    token_acc = correct_tokens / total_tokens if total_tokens > 0 else 0.0
+    exact_match = exact_matches / n_samples if n_samples > 0 else 0.0
+    
+    # Perplexity proxy: lower is better, based on length mismatch
+    avg_length_diff = sum(abs(len(p.split()) - len(r.split())) 
+                          for p, r in zip(predictions, references)) / n_samples
+    perplexity_proxy = 1.0 + avg_length_diff  # Simple proxy
+    
+    return {
+        "token_accuracy": token_acc,
+        "exact_match": exact_match,
+        "perplexity_proxy": perplexity_proxy,
+        "samples": float(n_samples),
+    }
+
+
 def evaluate_constant(predictions: Sequence[Any], targets: Sequence[Any]) -> float:
     """Return a dummy accuracy-style score for smoke tests."""
     if not predictions:
