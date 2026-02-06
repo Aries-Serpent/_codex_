@@ -12,6 +12,7 @@ import json
 import math
 import os
 import tempfile
+from dataclasses import asdict
 
 import pytest
 
@@ -222,7 +223,6 @@ class TestComplexNumberSerialization:
             state.measure_health()
 
         # Create report structure similar to analyze_health output
-        from dataclasses import asdict
         report = {
             'timestamp': '2024-01-01T00:00:00',
             'total_workflows': len(states),

@@ -13,6 +13,7 @@ Principles Applied:
 import argparse
 import json
 import math
+import os
 import random
 import sys
 from dataclasses import asdict, dataclass
@@ -263,7 +264,6 @@ def main():
     args = parser.parse_args()
 
     # Get GitHub token from environment
-    import os
     token = os.getenv('GITHUB_TOKEN')
     if not token:
         print("Error: GITHUB_TOKEN environment variable not set")
@@ -283,7 +283,6 @@ def main():
     results = analyzer.analyze_health(states)
 
     # Save results
-    import os
     os.makedirs('.codex/monitoring', exist_ok=True)
 
     timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
