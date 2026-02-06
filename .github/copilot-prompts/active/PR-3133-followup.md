@@ -32,7 +32,7 @@
 ### Files Modified
 
 **Analysis Documents Created**:
-- README_PR_3133_ANALYSIS.md
+- docs/analysis/PR_3133_ANALYSIS.md
 - .codex/PR_3133_FINAL_CHECK_ANALYSIS.md (24 KB)
 - reports/PR_3133_EXECUTIVE_SUMMARY.md
 - reports/PR_3133_CI_LOG_SUMMARY.md
@@ -193,7 +193,7 @@ pytest tests/ --cov=src --cov-fail-under=90
 **Primary**:
 - `.codex/POST_MERGE_TASKS_3133.md` - Detailed task breakdown
 - `.codex/PR_3133_FINAL_CHECK_ANALYSIS.md` - Comprehensive analysis
-- `README_PR_3133_ANALYSIS.md` - Quick navigation
+- `docs/analysis/PR_3133_ANALYSIS.md` - Quick navigation
 
 **Policy**:
 - `.codex/CODEBASE_AGENCY_POLICY.md` - Mandatory compliance

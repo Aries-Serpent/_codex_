@@ -95,7 +95,7 @@ export RAG_EMBEDDING_PROVIDER=tfidf
 pytest --cov=src/tokenization \
        --cov-report=term-missing \
        --cov-report=html:htmlcov_tokenization \
-       --cov-report=json:coverage_tokenization.json \
+       --cov-report=json:coverage_reports/coverage_tokenization.json \
        tests/ \
        -v \
        --tb=short
@@ -103,7 +103,7 @@ pytest --cov=src/tokenization \
 # Generate coverage summary
 python -c "
 import json
-with open('coverage_tokenization.json', 'r') as f:
+with open('coverage_reports/coverage_tokenization.json', 'r') as f:
     data = json.load(f)
     totals = data['totals']
     print(f\"Coverage: {totals['percent_covered']:.2f}%\")
@@ -113,7 +113,7 @@ with open('coverage_tokenization.json', 'r') as f:
 
 **Files to Create**:
 - `htmlcov_tokenization/` (HTML coverage report directory)
-- `coverage_tokenization.json` (JSON coverage data)
+- `coverage_reports/coverage_tokenization.json` (JSON coverage data)
 - `.coverage` (pytest-cov data file)
 
 **Validation**:
@@ -142,7 +142,7 @@ Identify specific lines and functions lacking test coverage in each module.
 import json
 from pathlib import Path
 
-def analyze_coverage_gaps(coverage_file='coverage_tokenization.json'):
+def analyze_coverage_gaps(coverage_file='coverage_reports/coverage_tokenization.json'):
     """Analyze coverage gaps and generate detailed report."""
     with open(coverage_file, 'r') as f:
         data = json.load(f)
@@ -310,7 +310,7 @@ Document comprehensive baseline coverage metrics and gaps.
 See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 
 ### Artifacts
-- JSON Data: `coverage_tokenization.json`
+- JSON Data: `coverage_reports/coverage_tokenization.json`
 - HTML Report: `htmlcov_tokenization/index.html`
 - Analysis Script: `scripts/analyze_tokenization_coverage.py`
 ```
@@ -465,7 +465,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 
 **Deliverables for Hand-off**:
 - `.codex/plans/pr_3145/tokenization_coverage_baseline.md` - Coverage baseline report
-- `coverage_tokenization.json` - Raw coverage data (JSON)
+- `coverage_reports/coverage_tokenization.json` - Raw coverage data (JSON)
 - `htmlcov_tokenization/index.html` - HTML coverage report
 - `.codex/plans/pr_3145/test_case_mapping.md` - Test case mapping (10+ tests)
 - `.codex/plans/pr_3145/coverage_gap_report.txt` - Gap analysis report
@@ -521,7 +521,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
    pytest --cov=src/tokenization \
           --cov-report=term-missing \
           --cov-report=html:htmlcov_tokenization \
-          --cov-report=json:coverage_tokenization.json \
+          --cov-report=json:coverage_reports/coverage_tokenization.json \
           tests/ -v --tb=short
    ```
 4. Create analysis script: `scripts/analyze_tokenization_coverage.py` (see Iteration 3.1)
@@ -536,7 +536,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 - Baseline report documents current state
 
 **Output Artifacts**:
-- `coverage_tokenization.json`
+- `coverage_reports/coverage_tokenization.json`
 - `htmlcov_tokenization/index.html`
 - `scripts/analyze_tokenization_coverage.py`
 - `.codex/plans/pr_3145/coverage_gap_report.txt`

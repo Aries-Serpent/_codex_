@@ -1,0 +1,112 @@
+{
+  "plan_version": "2.0.0",
+  "batch_name": "Batch 3 - Workflow Reports (LOW-MEDIUM Risk)",
+  "created": "2026-02-06",
+  "physics_model": {
+    "energy_level": 5,
+    "path_stability": "minimize_churn",
+    "field_tracking": ["timestamp", "commit_sha", "file_hash"],
+    "pattern_enforcement": "strict",
+    "redundancy": "rollback_enabled",
+    "balance": "zero_break_guarantee"
+  },
+  "relocations": [
+    {
+      "source": "./README_WORKFLOW_FIXES.md",
+      "target": "archive/reports/workflows/README_WORKFLOW_FIXES.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_ANALYSIS_REPORT.md",
+      "target": "archive/reports/workflows/WORKFLOW_ANALYSIS_REPORT.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_FAILURE_ANALYSIS.md",
+      "target": "archive/reports/workflows/WORKFLOW_FAILURE_ANALYSIS.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_FIXES_8be6870.md",
+      "target": "archive/reports/workflows/WORKFLOW_FIXES_8be6870.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_FIXES_APPLICATION_CHECKLIST.md",
+      "target": "archive/reports/workflows/WORKFLOW_FIXES_APPLICATION_CHECKLIST.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_FIXES_DIFF.md",
+      "target": "archive/reports/workflows/WORKFLOW_FIXES_DIFF.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_FIXES_INDEX.md",
+      "target": "archive/reports/workflows/WORKFLOW_FIXES_INDEX.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
+      "target": "archive/reports/workflows/archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
+      "type": "file",
+      "risk_level": "MEDIUM",
+      "validation_required": true,
+      "references_count": 1,
+      "notes": "Referenced in docs/ci/INDEX.md - will be updated"
+    },
+    {
+      "source": "./WORKFLOW_MONITORING_REPORT.md",
+      "target": "archive/reports/workflows/WORKFLOW_MONITORING_REPORT.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_MONITORING_SESSION_2026_02_06.md",
+      "target": "archive/reports/workflows/WORKFLOW_MONITORING_SESSION_2026_02_06.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_STATUS_SUMMARY.md",
+      "target": "archive/reports/workflows/WORKFLOW_STATUS_SUMMARY.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    },
+    {
+      "source": "./WORKFLOW_VERIFICATION_ANALYSIS.md",
+      "target": "archive/reports/workflows/WORKFLOW_VERIFICATION_ANALYSIS.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": true,
+      "references_count": 0
+    }
+  ]
+}

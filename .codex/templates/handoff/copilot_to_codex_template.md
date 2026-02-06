@@ -137,7 +137,7 @@ Replace the following placeholders when generating a comment:
 ### 📦 Deliverables
 
 - Coverage baseline report: [tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)
-- Gap analysis: [coverage_tokenization.json](coverage_tokenization.json)
+- Gap analysis: [coverage_tokenization.json](coverage_reports/coverage_tokenization.json)
 - Test case mapping: [test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)
 - Analysis script: [analyze_tokenization_coverage.py](scripts/analyze_tokenization_coverage.py)
 

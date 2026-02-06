@@ -14,11 +14,11 @@ This index helps you navigate the RAG coverage analysis documentation.
 
 **New to this analysis?** Start with:
 1. `PHASE_21_1_COMPLETION_SUMMARY.md` - Overview and status
-2. `RAG_COVERAGE_QUICK_REFERENCE.md` - Quick lookup
+2. `RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md` - Quick lookup
 
 **Ready to implement Phase 21.2?** Use:
 1. `RAG_COVERAGE_ANALYSIS_PHASE_21_1.md` - Complete guide with test code
-2. `RAG_COVERAGE_QUICK_REFERENCE.md` - Priority reminders
+2. `RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md` - Priority reminders
 
 **Need detailed gap information?** See:
 1. `RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md` - Module-by-module analysis
@@ -35,7 +35,7 @@ This index helps you navigate the RAG coverage analysis documentation.
 | Document | Size | Purpose | When to Use |
 |----------|------|---------|-------------|
 | **RAG_COVERAGE_ANALYSIS_PHASE_21_1.md** | 27K | Complete analysis with test code examples | Creating new tests |
-| **RAG_COVERAGE_QUICK_REFERENCE.md** | 3.7K | Priority summary and quick facts | Daily reference |
+| **RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md** | 3.7K | Priority summary and quick facts | Daily reference |
 | **RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md** | 12K | Detailed module analysis | Understanding gaps |
 
 ### For Project Management
@@ -60,7 +60,7 @@ This index helps you navigate the RAG coverage analysis documentation.
 → Go to `RAG_COVERAGE_ANALYSIS_PHASE_21_1.md` → Section "1. gpu_utils.py Test Suite"
 
 ### "I need to know what's Priority 1"
-→ Go to `RAG_COVERAGE_QUICK_REFERENCE.md` → Section "Priority 1: CRITICAL"
+→ Go to `RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md` → Section "Priority 1: CRITICAL"
 
 ### "I want to understand why utils.py has low coverage"
 → Go to `RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md` → Section "5. utils.py"
@@ -118,7 +118,7 @@ This index helps you navigate the RAG coverage analysis documentation.
 - Section "Priority-Ordered Test Creation Plan" - What to do first
 - Section "Test Execution Commands" - How to validate
 
-### 2. RAG_COVERAGE_QUICK_REFERENCE.md (147 lines, 3.7K)
+### 2. RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md (147 lines, 3.7K)
 
 **Purpose:** Quick lookup during development  
 **Contains:**
@@ -227,7 +227,7 @@ python3 analyze_rag_coverage.py
 ```
 PHASE_21_1_COMPLETION_SUMMARY.md (Start here)
     ↓
-    ├─→ RAG_COVERAGE_QUICK_REFERENCE.md (Daily use)
+    ├─→ RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md (Daily use)
     │
     ├─→ RAG_COVERAGE_ANALYSIS_PHASE_21_1.md (Implementation guide)
     │   └─→ Detailed test code examples
@@ -249,7 +249,7 @@ analyze_rag_coverage.py → Generates basic reports
 Before starting Phase 21.2, ensure you have:
 
 - [ ] Read `PHASE_21_1_COMPLETION_SUMMARY.md`
-- [ ] Bookmarked `RAG_COVERAGE_QUICK_REFERENCE.md`
+- [ ] Bookmarked `RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md`
 - [ ] Reviewed Priority 1 gaps in `RAG_COVERAGE_ANALYSIS_PHASE_21_1.md`
 - [ ] Set up pytest-cov in your environment
 - [ ] Created `tests/rag/providers/` directory structure

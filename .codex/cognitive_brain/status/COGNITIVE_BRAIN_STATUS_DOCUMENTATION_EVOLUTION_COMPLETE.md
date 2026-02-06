@@ -109,7 +109,7 @@ The **Integrated Documentation Evolution & Improvement** initiative has been suc
 4. `.codex/admin_docs_audit_summary.md` (7.6 KB): Executive summary
 5. `.codex/admin_docs_action_checklist.md` (6.4 KB): Action items
 6. `.codex/AUDIT_INDEX.md` (4.3 KB): Master index
-7. `.codex/QUICK_REFERENCE.md` (2.2 KB): Quick lookup
+7. `.codex/archive/sessions/2026-01/QUICK_REFERENCE.md` (2.2 KB): Quick lookup
 8. `.codex/documentation_evolution_progress.json` (v3.0.0): Progress tracker
 
 ### Phase Reports

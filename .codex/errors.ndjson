@@ -24,3 +24,5 @@ size 89
 {"step": "env_log", "err": "Object of type MagicMock is not JSON serializable", "ctx": "env", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
 {"step": "hydra_snapshot", "err": "Object of type MagicMock is not JSON serializable", "ctx": "env", "redactions": {"err": {"secrets": 0, "pii": 0}, "ctx": {"secrets": 0, "pii": 0}}}
 {"ts": "2026-02-03T19:17Z", "step": "POOL", "step_description": "fix executor", "error": "no concurrent.futures", "context": "configure thread pool"}
+{"ts": "2026-02-06T04:41Z", "step": "POOL", "step_description": "fix executor", "error": "no concurrent.futures", "context": "configure thread pool"}
+{"ts": "2026-02-06T04:49Z", "step": "POOL", "step_description": "fix executor", "error": "no concurrent.futures", "context": "configure thread pool"}

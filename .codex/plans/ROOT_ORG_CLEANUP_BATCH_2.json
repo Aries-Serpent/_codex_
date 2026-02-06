@@ -1,0 +1,79 @@
+{
+  "plan_version": "2.0.0",
+  "batch_name": "Batch 2 - More Session Reports & Misc Files (LOW Risk)",
+  "created": "2026-02-06",
+  "physics_model": {
+    "energy_level": 5,
+    "path_stability": "minimize_churn",
+    "field_tracking": ["timestamp", "commit_sha", "file_hash"],
+    "pattern_enforcement": "strict",
+    "redundancy": "rollback_enabled",
+    "balance": "zero_break_guarantee"
+  },
+  "relocations": [
+    {
+      "source": "./SESSION_DELIVERABLES_SUMMARY.md",
+      "target": "archive/sessions/2026-01/SESSION_DELIVERABLES_SUMMARY.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./SKELETON_TEST_ENHANCEMENTS.md",
+      "target": "archive/sessions/2026-01/SKELETON_TEST_ENHANCEMENTS.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./TEST_ENHANCEMENT_SUMMARY.txt",
+      "target": "archive/sessions/2026-01/TEST_ENHANCEMENT_SUMMARY.txt",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./archive/sessions/2026-01/QUICK_REFERENCE.md",
+      "target": "archive/sessions/2026-01/archive/sessions/2026-01/QUICK_REFERENCE.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./QUICK_REFERENCE_SESSION_LOG_RETRIEVER.md",
+      "target": "archive/sessions/2026-01/QUICK_REFERENCE_SESSION_LOG_RETRIEVER.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./coverage_reports/coverage_tokenization.json",
+      "target": "coverage_reports/coverage_reports/coverage_tokenization.json",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./.codex/metrics/metrics_fallback.ndjson",
+      "target": ".codex/metrics/.codex/metrics/metrics_fallback.ndjson",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./prepare_notebooklm.sh",
+      "target": "scripts/prepare_notebooklm.sh",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    }
+  ]
+}

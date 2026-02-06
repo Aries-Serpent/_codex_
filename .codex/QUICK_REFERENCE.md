@@ -93,7 +93,7 @@ cat .codex/admin_docs_audit.json | jq '.all_files[] | select(.file | contains("F
 | `.codex/admin_docs_audit.json` | Raw data (machine-readable) |
 | `.codex/admin_docs_audit_summary.md` | Executive summary |
 | `.codex/admin_docs_action_checklist.md` | Step-by-step actions |
-| `.codex/QUICK_REFERENCE.md` | This file |
+| `.codex/archive/sessions/2026-01/QUICK_REFERENCE.md` | This file |
 | `admin_docs_audit.py` | Audit script |
 
 ---

@@ -49,7 +49,7 @@
    - Success criteria and validation commands
    - **Use This:** For Phase 21.2 test generation
 
-2. **RAG_COVERAGE_QUICK_REFERENCE.md** (147 lines)
+2. **RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md** (147 lines)
    - Executive summary
    - Priority 1 & 2 gaps at a glance
    - Time estimates and success criteria
@@ -270,7 +270,7 @@ pytest tests/rag/ tests/test_rag*.py \
 ### Files Referenced
 
 - `RAG_COVERAGE_ANALYSIS_PHASE_21_1.md` - Main analysis
-- `RAG_COVERAGE_QUICK_REFERENCE.md` - Quick lookup
+- `RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md` - Quick lookup
 - `RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md` - Detailed gaps
 - `RAG_COVERAGE_ANALYSIS.md` - Statistical summary
 

@@ -75,7 +75,7 @@ Raise `src/tokenization/` coverage from the current baseline (25%) to **100%** b
 PYENV_VERSION=3.11.14 PYTHONPATH=src pytest \
   --cov=src/tokenization \
   --cov-report=term-missing \
-  --cov-report=json:coverage_tokenization.json \
+  --cov-report=json:coverage_reports/coverage_tokenization.json \
   tests/ -v --tb=short
 
 # Gap analysis
@@ -117,7 +117,7 @@ PYENV_VERSION=3.11.14 PYTHONPATH=src python scripts/analyze_tokenization_coverag
 - Training + API ≥65%
 
 **Verification Commands:**
-- PYENV_VERSION=3.11.14 PYTHONPATH=src pytest --cov=src/tokenization --cov-report=term-missing --cov-report=json:coverage_tokenization.json tests/ -v --tb=short
+- PYENV_VERSION=3.11.14 PYTHONPATH=src pytest --cov=src/tokenization --cov-report=term-missing --cov-report=json:coverage_reports/coverage_tokenization.json tests/ -v --tb=short
 - PYENV_VERSION=3.11.14 PYTHONPATH=src python scripts/analyze_tokenization_coverage.py
 ```
 

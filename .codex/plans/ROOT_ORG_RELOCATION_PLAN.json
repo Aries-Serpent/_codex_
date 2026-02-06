@@ -617,8 +617,8 @@
       "validation_required": false
     },
     {
-      "source": "./PHASE_2_QUICK_REFERENCE.md",
-      "target": "docs/archive/phases/PHASE_2_QUICK_REFERENCE.md",
+      "source": "./PHASE_2_archive/sessions/2026-01/QUICK_REFERENCE.md",
+      "target": "docs/archive/phases/PHASE_2_archive/sessions/2026-01/QUICK_REFERENCE.md",
       "type": "file",
       "size_bytes": 2539,
       "references_count": 0,
@@ -842,8 +842,8 @@
       "validation_required": false
     },
     {
-      "source": "./WORKFLOW_FIXES_SUMMARY.md",
-      "target": "docs/ci/WORKFLOW_FIXES_SUMMARY.md",
+      "source": "./archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
+      "target": "docs/ci/archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
       "type": "file",
       "size_bytes": 9475,
       "references_count": 0,
@@ -851,8 +851,8 @@
       "validation_required": false
     },
     {
-      "source": "./WORKFLOW_FIX_QUICK_REFERENCE.md",
-      "target": "docs/ci/WORKFLOW_FIX_QUICK_REFERENCE.md",
+      "source": "./WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md",
+      "target": "docs/ci/WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md",
       "type": "file",
       "size_bytes": 3552,
       "references_count": 0,

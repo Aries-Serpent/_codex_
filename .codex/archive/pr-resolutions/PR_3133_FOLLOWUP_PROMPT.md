@@ -151,7 +151,7 @@
 - `.codex/POST_MERGE_TASKS_3133.md` - Detailed task breakdown
 - `.codex/PR_3133_FINAL_CHECK_ANALYSIS.md` - Complete CI analysis
 - `.codex/PR_3133_RESOLUTION_STATUS.md` - Resolution summary
-- `README_PR_3133_ANALYSIS.md` - Navigation guide
+- `docs/analysis/PR_3133_ANALYSIS.md` - Navigation guide
 
 **Coverage Roadmap**:
 - `.codex/plans/COMPREHENSIVE_100_PERCENT_COVERAGE_PLANSET.md`

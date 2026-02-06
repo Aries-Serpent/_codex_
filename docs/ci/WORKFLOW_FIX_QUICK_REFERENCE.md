@@ -97,8 +97,8 @@ Modified:
   .github/workflows/semgrep_sarif.yml      (+92 lines)
 
 New Documentation:
-  WORKFLOW_FIXES_SUMMARY.md                (detailed analysis)
-  WORKFLOW_FIX_QUICK_REFERENCE.md          (this file)
+  archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md                (detailed analysis)
+  archive/sessions/2026-01/WORKFLOW_FIX_QUICK_REFERENCE.md          (this file)
 ```
 
 ---

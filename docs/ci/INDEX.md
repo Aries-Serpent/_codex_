@@ -14,8 +14,8 @@ Comprehensive CI/CD failure analysis, fixes, and validation reports.
 - [Fix Summary PR#2852](FIX_SUMMARY_PR_2852.md)
 
 ## Workflow Documentation
-- [Workflow Fixes Summary](WORKFLOW_FIXES_SUMMARY.md) - GitHub Actions workflow improvements
-- [Workflow Fix Quick Reference](WORKFLOW_FIX_QUICK_REFERENCE.md) - Quick lookup guide
+- [Workflow Fixes Summary](archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md) - GitHub Actions workflow improvements
+- [Workflow Fix Quick Reference](WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md) - Quick lookup guide
 
 ## Related Documentation
 - [Root Organization Validation Workflow](ROOT_ORG_VALIDATION.md)

@@ -4,7 +4,7 @@ import json
 from typing import Dict, List, Any
 
 
-def analyze_coverage_gaps(coverage_file: str = 'coverage_tokenization.json') -> List[Dict[str, Any]]:
+def analyze_coverage_gaps(coverage_file: str = 'coverage_reports/coverage_tokenization.json') -> List[Dict[str, Any]]:
     """Analyze coverage gaps and generate detailed report."""
     with open(coverage_file, 'r') as f:
         data = json.load(f)

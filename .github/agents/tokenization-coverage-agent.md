@@ -14,7 +14,7 @@ Specialized GitHub Copilot agent for closing coverage gaps in `src/tokenization/
 
 ## Core Responsibilities
 
-1. **Coverage Gap Prioritization**: Use `coverage_tokenization.json` and `.codex/plans/pr_3145/test_case_mapping.md` to rank gaps.
+1. **Coverage Gap Prioritization**: Use `coverage_reports/coverage_tokenization.json` and `.codex/plans/pr_3145/test_case_mapping.md` to rank gaps.
 2. **Test Implementation Guidance**: Generate test scaffolding for CLI, loader, training, and API shims.
 3. **Coverage Validation**: Run focused coverage reports and interpret line-level gaps.
 4. **Edge-Case Verification**: Ensure error paths, offline/remote behaviors, and CLI fallbacks are exercised.
@@ -28,7 +28,7 @@ Specialized GitHub Copilot agent for closing coverage gaps in `src/tokenization/
 
 ## Required Inputs
 
-- Coverage report: `coverage_tokenization.json`
+- Coverage report: `coverage_reports/coverage_tokenization.json`
 - Coverage baseline: `.codex/plans/pr_3145/tokenization_coverage_baseline.md`
 - Test mapping: `.codex/plans/pr_3145/test_case_mapping.md`
 - Hand-off protocol: `.codex/docs/AGENT_HANDOFF_PROTOCOL.md`

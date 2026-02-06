@@ -225,7 +225,7 @@ All security-related changes have been reviewed and approved:
 
 - **Cognitive Brain Status**: `.codex/COGNITIVE_BRAIN_STATUS.md`
 - **Session Summary**: `.codex/SESSION_SUMMARY_PR2785.md`
-- **Workflow Fixes**: `WORKFLOW_FIXES_SUMMARY.md`
+- **Workflow Fixes**: `archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md`
 - **Architecture Diagram**: `.codex/diagrams/cognitive-brain-architecture.mmd`
 
 ---

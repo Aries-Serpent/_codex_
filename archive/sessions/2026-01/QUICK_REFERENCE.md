@@ -14,7 +14,7 @@ All P0 critical issues have been **FIXED** and validated.
 | Undefined Name | `src/codex/cli/main.py:39-40` | Added sys.stderr fallback |
 | Undefined Name | `src/codex/logging/db_manager.py:27-28` | Moved logger init earlier |
 | YAML Syntax | `.pre-commit-config.yaml:45,62,79` | Multiline format |
-| YAML Multiple Docs | `_codex_/codex_index.yaml:320` | Removed `---` |
+| YAML Multiple Docs | `.codex/codex_index.yaml:320` | Removed `---` |
 
 **Total P0 Fixed:** 7 issues  
 **Time:** 30 minutes
@@ -40,7 +40,7 @@ All P0 critical issues have been **FIXED** and validated.
 # Verify all fixes work
 python3 -m py_compile src/codex/rag/benchmarks/embedding_bench.py  # ✅ PASS
 python3 -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))"  # ✅ PASS
-python3 -c "import yaml; yaml.safe_load(open('_codex_/codex_index.yaml'))"  # ✅ PASS
+python3 -c "import yaml; yaml.safe_load(open('.codex/codex_index.yaml'))"  # ✅ PASS
 ```
 
 ---
@@ -64,7 +64,7 @@ Total Issues Found: 141
 2. `src/codex/cli/main.py`
 3. `src/codex/logging/db_manager.py`
 4. `.pre-commit-config.yaml`
-5. `_codex_/codex_index.yaml`
+5. `.codex/codex_index.yaml`
 
 ---
 

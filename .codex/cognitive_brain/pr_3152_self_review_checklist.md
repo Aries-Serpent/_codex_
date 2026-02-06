@@ -124,7 +124,7 @@
 - [x] Proper formatting (Markdown)
 
 ### User-Facing Documentation
-- [x] **WORKFLOW_FIXES_SUMMARY.md** - Quick 2-min reference ✅
+- [x] **archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md** - Quick 2-min reference ✅
 - [x] **WORKFLOW_ANALYSIS_REPORT.md** - Complete analysis ✅
 - [x] **WORKFLOW_STATUS_SUMMARY.md** - Quick reference ✅
 - [x] **README_WORKFLOW_FIXES.md** - Package guide ✅
