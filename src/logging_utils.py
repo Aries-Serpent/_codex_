@@ -10,7 +10,7 @@ import os
 import time
 from collections.abc import Iterator, Mapping, MutableMapping
 from contextlib import contextmanager, suppress
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -282,7 +282,12 @@ def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> Loggin
         if hasattr(config, "to_container"):
             data = config.to_container(resolve=True)  # type: ignore[attr-defined]
         else:
-            data = dict(config)
+            # Use asdict() for dataclasses to handle slots=True compatibility
+            # Fall back to dict() for regular mappings
+            if hasattr(config, "__dataclass_fields__"):
+                data = asdict(config)  # type: ignore[arg-type]
+            else:
+                data = dict(config)
         resolved = LoggingConfig(**data)
 
     writer = (
