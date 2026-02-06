@@ -309,9 +309,9 @@ Expected: All files exist at documented locations
 ## 📚 Related Resources
 
 ### Fixed Documents
-- [PR_3133_ANALYSIS.md](docs/analysis/PR_3133_ANALYSIS.md) - PR analysis with fixed archive links
-- [archive/INDEX.md](docs/archive/INDEX.md) - Archive index with corrected paths
-- [ci/INDEX.md](docs/ci/INDEX.md) - CI docs with updated workflow references
+- [PR_3133_ANALYSIS.md](PR_3133_ANALYSIS.md) - PR analysis with fixed archive links
+- [archive/INDEX.md](../archive/INDEX.md) - Archive index with corrected paths
+- [ci/INDEX.md](../ci/INDEX.md) - CI docs with updated workflow references
 
 ### Archive Locations
 - **PR #3133 Artifacts**: `.codex/archive/pr-resolutions/`
@@ -391,6 +391,6 @@ All critical broken documentation links have been successfully resolved. The "Wo
 **Quality**: Production-Ready
 
 For questions or follow-up, see:
-- [Link Validation Fix Summary](docs/analysis/LINK_VALIDATION_FIX_SUMMARY.md)
-- [Link Validator Script](scripts/fix_broken_doc_links.py)
-- [CI Validation Script](.github/scripts/validate-links.py)
+- [Link Validation Fix Summary](LINK_VALIDATION_FIX_SUMMARY.md)
+- [Link Validator Script](../../scripts/fix_broken_doc_links.py)
+- [CI Validation Script](../../.github/scripts/validate-links.py)
