@@ -62,7 +62,7 @@ This report documents compliance with the **AI Agency Policy** requirement to ad
 
 #### Issue 2: Remaining Root Files (In-Scope) ⏳
 **Files:**
-- `README_PR_3133_ANALYSIS.md`
+- `docs/analysis/PR_3133_ANALYSIS.md`
 - `AGENTS.md`
 
 **Status:** ⏳ Planned for Phase 2  

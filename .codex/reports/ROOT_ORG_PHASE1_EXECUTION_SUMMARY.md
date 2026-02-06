@@ -148,7 +148,7 @@ Successfully executed Phase 1 of root folder cleanup, moving **30 files** from r
 - `CITATION.cff` *(not counted in list above - configuration)*
 
 **To Be Moved in Phase 2 (1):**
-- `README_PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
+- `docs/analysis/PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
 
 **High-Risk Deferred (1):**
 - `AGENTS.md` (6 references - manageable, not 293 as originally thought)
@@ -302,7 +302,7 @@ Full compliance with Physics Model directives:
 ## Next Steps (Phase 2)
 
 ### Immediate Priorities
-1. ⏳ Move `README_PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
+1. ⏳ Move `docs/analysis/PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
 2. ⏳ Investigate directory duplication (`_codex` vs `_codex_`)
 3. ⏳ Consolidate config directories (`config` vs `configs` vs `conf`)
 

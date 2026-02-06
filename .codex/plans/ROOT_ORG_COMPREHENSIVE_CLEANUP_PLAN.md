@@ -158,7 +158,7 @@ These are temporary session tracking files that should be archived:
   3. Validate in staging before production
   4. Consider creating redirect/symlink for transition period
   
-**README_PR_3133_ANALYSIS.md** - ⚠️ MOVE
+**docs/analysis/PR_3133_ANALYSIS.md** - ⚠️ MOVE
 - **Current:** Root
 - **Proposed:** `docs/analysis/PR_3133_ANALYSIS.md`
 - **Risk:** LOW-MEDIUM (likely 1-5 references)
@@ -464,15 +464,15 @@ python scripts/root_org/organize_root_incremental.py \
 
 ### Priority 2: MEDIUM Risk Moves (1-5 references)
 
-**File:** `README_PR_3133_ANALYSIS.md`
+**File:** `docs/analysis/PR_3133_ANALYSIS.md`
 - **Target:** `docs/analysis/PR_3133_ANALYSIS.md`
 - **Expected Refs:** 1-3
 - **Validation:** Run reference scan first
 - **Action:** Automated move + reference update
 
 **Execution Steps:**
-1. Validate references: `python scripts/root_org/validate_references.py README_PR_3133_ANALYSIS.md`
-2. Execute move: `python scripts/root_org/organize_root_incremental.py --file README_PR_3133_ANALYSIS.md --target docs/analysis/PR_3133_ANALYSIS.md`
+1. Validate references: `python scripts/root_org/validate_references.py docs/analysis/PR_3133_ANALYSIS.md`
+2. Execute move: `python scripts/root_org/organize_root_incremental.py --file docs/analysis/PR_3133_ANALYSIS.md --target docs/analysis/PR_3133_ANALYSIS.md`
 3. Verify: Check all updated files
 
 ---

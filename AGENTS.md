@@ -1,10 +1,20 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2026-02-02 - CI Automation System Deployed)  
+<!-- 
+🤖 CHATGPT CODEX AGENT ENTRY POINT 🤖
+This file serves as the primary entry point for ChatGPT Codex Agents interacting with this repository.
+It provides essential orientation, operational guidelines, and navigation to all agent resources.
+
+⚠️ IMPORTANT: This file MUST remain in the repository root for easy agent access.
+DO NOT MOVE this file - it is intentionally placed here as the first point of contact.
+-->
+
+> **Status:** ✅ UP-TO-DATE (2026-02-06 - Root Organization Phase 2)  
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
-> **Genesis Status:** Phase 1 Complete - Pre-Token Setup
-> **Workflows:** 49 active (100% parity, 19 consolidated)
-> **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
+> **Genesis Status:** Phase 1 Complete - Pre-Token Setup  
+> **Root Organization:** Phase 2 In Progress (Documentation cleanup)  
+> **Workflows:** 49 active (100% parity, 19 consolidated)  
+> **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)  
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 > 
 > **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  

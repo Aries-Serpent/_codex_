@@ -19,7 +19,7 @@ Context:
 - All reference updates automated
 
 Phase 2 Objectives:
-1. Move README_PR_3133_ANALYSIS.md → docs/analysis/PR_3133_ANALYSIS.md
+1. Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/PR_3133_ANALYSIS.md
 2. Plan and execute AGENTS.md migration (6 references confirmed)
 3. Validate all documentation links
 4. Update Cognitive Brain status
@@ -49,8 +49,8 @@ Safety Requirements:
 
 ### Files to Move
 
-#### File 1: README_PR_3133_ANALYSIS.md
-**Source:** `/README_PR_3133_ANALYSIS.md`  
+#### File 1: docs/analysis/PR_3133_ANALYSIS.md
+**Source:** `/docs/analysis/PR_3133_ANALYSIS.md`  
 **Target:** `docs/analysis/PR_3133_ANALYSIS.md`  
 **Risk Level:** MEDIUM (estimated 1-3 references)  
 **Priority:** HIGH (documentation should not be in root)
@@ -58,7 +58,7 @@ Safety Requirements:
 **Steps:**
 1. Scan for references using `validate_references.py`
 2. Create `docs/analysis/` directory if not exists
-3. Execute `git mv README_PR_3133_ANALYSIS.md docs/analysis/PR_3133_ANALYSIS.md`
+3. Execute `git mv docs/analysis/PR_3133_ANALYSIS.md docs/analysis/PR_3133_ANALYSIS.md`
 4. Update all references atomically
 5. Verify no broken links
 6. Commit with message: `docs: Move PR 3133 analysis to docs/analysis/`
@@ -107,17 +107,17 @@ Before starting Phase 2:
 
 ## 🔍 Reference Analysis Required
 
-### For README_PR_3133_ANALYSIS.md
+### For docs/analysis/PR_3133_ANALYSIS.md
 
 Run this command:
 ```bash
-python scripts/root_org/validate_references.py README_PR_3133_ANALYSIS.md
+python scripts/root_org/validate_references.py docs/analysis/PR_3133_ANALYSIS.md
 ```
 
 Expected output:
 ```json
 {
-  "file": "README_PR_3133_ANALYSIS.md",
+  "file": "docs/analysis/PR_3133_ANALYSIS.md",
   "references": [
     {"file": "...", "line": ..., "type": "..."}
   ],
@@ -143,8 +143,8 @@ python scripts/root_org/validate_references.py AGENTS.md
 ```bash
 cd /home/runner/work/_codex_/_codex_
 
-# Check README_PR_3133_ANALYSIS.md
-python scripts/root_org/validate_references.py README_PR_3133_ANALYSIS.md > /tmp/refs_pr3133.json
+# Check docs/analysis/PR_3133_ANALYSIS.md
+python scripts/root_org/validate_references.py docs/analysis/PR_3133_ANALYSIS.md > /tmp/refs_pr3133.json
 
 # Check AGENTS.md (re-verify count)
 python scripts/root_org/validate_references.py AGENTS.md > /tmp/refs_agents.json
@@ -154,14 +154,14 @@ cat /tmp/refs_pr3133.json
 cat /tmp/refs_agents.json
 ```
 
-### Step 2: Move README_PR_3133_ANALYSIS.md
+### Step 2: Move docs/analysis/PR_3133_ANALYSIS.md
 ```bash
 # Create target directory
 mkdir -p docs/analysis
 
 # Execute move with batch script
 python scripts/root_org/organize_root_incremental.py \
-  --file README_PR_3133_ANALYSIS.md \
+  --file docs/analysis/PR_3133_ANALYSIS.md \
   --target docs/analysis/PR_3133_ANALYSIS.md \
   --update-refs \
   --validate
@@ -212,7 +212,7 @@ git status
 ## 📊 Success Criteria
 
 ### Required Outcomes
-- [ ] README_PR_3133_ANALYSIS.md moved successfully
+- [ ] docs/analysis/PR_3133_ANALYSIS.md moved successfully
 - [ ] AGENTS.md moved successfully
 - [ ] All references updated (100%)
 - [ ] Zero broken links
@@ -244,7 +244,7 @@ python scripts/root_org/rollback_move.py --operation last
 git reset --hard HEAD^
 
 # Or reset specific files
-git checkout HEAD -- README_PR_3133_ANALYSIS.md
+git checkout HEAD -- docs/analysis/PR_3133_ANALYSIS.md
 git checkout HEAD -- AGENTS.md
 ```
 
@@ -376,7 +376,7 @@ Before starting Phase 2:
 - Review dependencies
 
 **Stage 2: Execution** (10 min)
-- Move README_PR_3133_ANALYSIS.md
+- Move docs/analysis/PR_3133_ANALYSIS.md
 - Move AGENTS.md
 - Update references
 

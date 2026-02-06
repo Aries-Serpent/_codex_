@@ -142,7 +142,7 @@ Root: 62 files (-30 files, -33%)
 - ✅ Requirements (9): requirements*.txt
 
 ### Files for Phase 2
-- ⏳ `README_PR_3133_ANALYSIS.md` → Move to `docs/analysis/`
+- ⏳ `docs/analysis/PR_3133_ANALYSIS.md` → Move to `docs/analysis/`
 - ⏳ `AGENTS.md` → Move to `docs/agents/` or `.github/agents/docs/`
   - Only 6 references (not 293 as originally thought)
   - Manageable with existing tools
@@ -167,7 +167,7 @@ All scripts from `scripts/root_org/`:
 ## 🚀 Next Steps
 
 ### Immediate (Next Session)
-1. ⏳ Move `README_PR_3133_ANALYSIS.md` to `docs/analysis/`
+1. ⏳ Move `docs/analysis/PR_3133_ANALYSIS.md` to `docs/analysis/`
 2. ⏳ Plan AGENTS.md migration (6 references to update)
 3. ⏳ Investigate directory duplications
 4. ⏳ Consolidate config directories

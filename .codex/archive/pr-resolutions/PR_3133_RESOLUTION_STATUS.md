@@ -198,7 +198,7 @@ All required artifacts successfully generated and available:
 
 **Analysis Documents Created** (7 files, 52 KB):
 
-1. **README_PR_3133_ANALYSIS.md** - Quick start navigation guide
+1. **docs/analysis/PR_3133_ANALYSIS.md** - Quick start navigation guide
 2. **.codex/PR_3133_FINAL_CHECK_ANALYSIS.md** - Comprehensive 24 KB analysis
 3. **reports/PR_3133_EXECUTIVE_SUMMARY.md** - Executive overview
 4. **reports/PR_3133_CI_LOG_SUMMARY.md** - Quick status dashboard
@@ -261,7 +261,7 @@ All documents are cross-referenced and organized for quick navigation.
 
 **Questions**: Create GitHub issue with `pr-3133` label  
 **Urgent Issues**: @mbaetiong  
-**Documentation**: See README_PR_3133_ANALYSIS.md for navigation
+**Documentation**: See docs/analysis/PR_3133_ANALYSIS.md for navigation
 
 ---
 

@@ -204,7 +204,7 @@ See: .codex/prompts/ROOT_ORG_PHASE2_FOLLOWUP_PROMPT.md
 ```
 
 **Phase 2 Objectives:**
-- Move README_PR_3133_ANALYSIS.md → docs/analysis/
+- Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/
 - Move AGENTS.md → appropriate location (6 refs)
 - Validate all documentation links
 - Update Cognitive Brain status

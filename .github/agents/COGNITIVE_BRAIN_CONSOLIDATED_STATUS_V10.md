@@ -1158,7 +1158,7 @@ else:
 ### Analysis Deliverables
 
 **7 Documents Created** (52 KB total):
-- `README_PR_3133_ANALYSIS.md` - Navigation guide
+- `docs/analysis/PR_3133_ANALYSIS.md` - Navigation guide
 - `.codex/PR_3133_FINAL_CHECK_ANALYSIS.md` - Comprehensive 24 KB analysis
 - `reports/PR_3133_EXECUTIVE_SUMMARY.md` - Executive overview
 - `reports/PR_3133_CI_LOG_SUMMARY.md` - Status dashboard  

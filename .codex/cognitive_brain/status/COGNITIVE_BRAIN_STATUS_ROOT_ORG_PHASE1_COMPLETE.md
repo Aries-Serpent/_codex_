@@ -68,7 +68,7 @@ scripts/
 ### Issues Identified
 1. **Linting Issues (Pre-existing):** 6 E501 line length violations in `.codex/reports/ci_workflow_analysis_artifacts_2026_01_30/workflow_analyzer.py`
 2. **Root Files Remaining:** 2 documentation files to be moved in Phase 2
-   - `README_PR_3133_ANALYSIS.md` (1 file)
+   - `docs/analysis/PR_3133_ANALYSIS.md` (1 file)
    - `AGENTS.md` (1 file)
 3. **Directory Duplication:** Investigation needed for `_codex` vs `_codex_`
 4. **Config Consolidation:** Multiple config directories need standardization
@@ -122,7 +122,7 @@ scripts/
 
 ### Phase 2: Remaining Documentation (Planned)
 **Objective:** Move final documentation files from root
-- Move `README_PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
+- Move `docs/analysis/PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
 - Investigate and plan `AGENTS.md` migration (6 references)
 - Update remaining references
 - Validate all documentation links
