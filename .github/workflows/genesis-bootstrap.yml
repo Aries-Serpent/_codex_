@@ -1,4 +1,4 @@
-name: Genesis Bootstrap - Agent Authority Activation (template)
+name: Art_Genesis Bootstrap - Agent Authority Activation (template)
 
 on:
   workflow_dispatch:

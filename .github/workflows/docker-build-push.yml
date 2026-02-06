@@ -1,7 +1,7 @@
 # Policy-proof workflow: NO external Marketplace actions used.
 # Uses raw git and docker CLI so it cannot be blocked by org/repo action restrictions.
 
-name: CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE)
+name: Art_CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE)
 
 permissions:
   contents: read

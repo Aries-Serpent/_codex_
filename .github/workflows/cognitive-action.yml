@@ -1,4 +1,4 @@
-name: Cognitive Action Executor
+name: Art_Cognitive Action Executor
 
 on:
   workflow_run:

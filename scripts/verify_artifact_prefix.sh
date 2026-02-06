@@ -3,7 +3,7 @@
 # Purpose: Verify all artifact-producing workflows have Art_ prefix
 # Date: 2026-02-06
 
-set -e
+set -e -o pipefail
 
 # Colors
 RED='\033[0;31m'
@@ -38,10 +38,10 @@ while IFS= read -r workflow; do
   
   if ! grep -q "^name: Art_" "$workflow"; then
     echo -e "${RED}❌ Missing prefix:${NC} $BASENAME"
-    ((MISSING++))
+    MISSING=$((MISSING + 1))
   else
     echo -e "${GREEN}✅ Has prefix:${NC} $BASENAME"
-    ((VALID++))
+    VALID=$((VALID + 1))
   fi
 done <<< "$ARTIFACT_WORKFLOWS"
 

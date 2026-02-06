@@ -1,4 +1,4 @@
-name: Audit & Improvement Pipeline
+name: Art_Audit & Improvement Pipeline
 
 on:
   workflow_dispatch:

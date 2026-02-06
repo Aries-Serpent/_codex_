@@ -1,4 +1,4 @@
-name: Determinism & Audit Validation
+name: Art_Determinism & Audit Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]

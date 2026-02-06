@@ -5,7 +5,7 @@
 #
 # Implements: R6 - Integrate self-healing into CI/CD
 
-name: Self-Healing CI
+name: Art_Self-Healing CI
 
 on:
   workflow_run:

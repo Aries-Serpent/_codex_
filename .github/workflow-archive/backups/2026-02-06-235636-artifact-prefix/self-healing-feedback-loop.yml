@@ -1,0 +1,38 @@
+name: Self-Healing Feedback Loop
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      hours_lookback:
+        description: 'Hours to look back for feedback'
+        required: false
+        type: number
+        default: 24
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  analyze-feedback:
+    name: Analyze Agent Feedback
+    runs-on: ubuntu-latest
+    outputs:
+      gaps_found: ${{ steps.analyze.outputs.gaps_found }}
+      feedback_count: ${{ steps.analyze.outputs.feedback_count }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'

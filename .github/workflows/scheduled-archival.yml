@@ -5,7 +5,7 @@
 #
 # Implements: R7, R8, R9 - Automated archival with approval gate
 
-name: Scheduled Archival
+name: Art_Scheduled Archival
 
 on:
   schedule:

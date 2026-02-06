@@ -1,4 +1,4 @@
-name: CI Diagnostic Automation
+name: Art_CI Diagnostic Automation
 
 on:
   workflow_run:

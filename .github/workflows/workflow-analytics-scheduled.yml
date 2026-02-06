@@ -1,4 +1,4 @@
-name: Scheduled Workflow Analytics
+name: Art_Scheduled Workflow Analytics
 
 on:
   schedule:

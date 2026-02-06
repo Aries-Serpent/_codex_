@@ -1,4 +1,4 @@
-name: HTML Visual Baseline Check
+name: Art_HTML Visual Baseline Check
 
 on:
   pull_request:

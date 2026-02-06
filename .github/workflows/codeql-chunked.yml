@@ -13,7 +13,7 @@
 #
 # yamllint disable rule:line-length
 ---
-name: CodeQL Chunked Analysis
+name: Art_CodeQL Chunked Analysis
 
 on:
   push:

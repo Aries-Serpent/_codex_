@@ -1,4 +1,4 @@
-name: Cognitive AfterMath Evaluator
+name: Art_Cognitive AfterMath Evaluator
 
 on:
   workflow_run:

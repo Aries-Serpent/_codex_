@@ -2,7 +2,7 @@
 # Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.3.2
 # Gradual rollout: Observation → Warning → Enforcement
 
-name: Code Quality Analysis
+name: Art_Code Quality Analysis
 
 on:
   pull_request:

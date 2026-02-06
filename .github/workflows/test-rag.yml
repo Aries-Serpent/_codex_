@@ -1,4 +1,4 @@
-name: RAG Module Tests
+name: Art_RAG Module Tests
 
 "on":
   push:

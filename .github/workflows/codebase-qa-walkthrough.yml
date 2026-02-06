@@ -1,4 +1,4 @@
-name: Codebase QA Walkthrough
+name: Art_Codebase QA Walkthrough
 
 # This workflow performs comprehensive QA analysis on code changes
 # Can be triggered by: AI agents, human admins, PRs, or issue comments

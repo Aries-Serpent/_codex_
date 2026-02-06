@@ -1,4 +1,4 @@
-name: Automated MFA Enrollment
+name: Art_Automated MFA Enrollment
 
 on:
   schedule:

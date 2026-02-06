@@ -1,4 +1,4 @@
-name: Scheduled Dependency Audit & SBOM
+name: Art_Scheduled Dependency Audit & SBOM
 
 on:
   schedule:

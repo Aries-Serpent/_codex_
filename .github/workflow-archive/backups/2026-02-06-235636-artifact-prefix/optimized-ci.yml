@@ -1,0 +1,39 @@
+name: CI — Optimized with Caching
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: optimized-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CODEX_FORCE_CPU: "1"
+  UV_CACHE_DIR: /tmp/.uv-cache
+  PIP_CACHE_DIR: /tmp/.pip-cache
+
+jobs:
+  # Dependency caching job
+  cache-dependencies:
+    name: Cache Dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12
+          cache-tier: 'live'

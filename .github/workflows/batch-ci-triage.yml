@@ -1,4 +1,4 @@
-name: Batch CI Failure Triage
+name: Art_Batch CI Failure Triage
 # Automated batch triage of post-merge CI/test failures with remediation suggestions
 
 on:

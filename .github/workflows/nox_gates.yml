@@ -1,4 +1,4 @@
-name: Nox Quality Gates
+name: Art_Nox Quality Gates
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: CI/CD Health Suite
+name: Art_CI/CD Health Suite
 
 "on":
   # Scheduled monitoring

@@ -1,0 +1,329 @@
+name: Comprehensive Tests with Caching
+
+on:
+  push:
+    branches: [ main, develop, copilot/** ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Python version matrix aligned with requires-python = ">=3.11" in pyproject.toml
+        python-version: ['3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Multi-tier caching strategy for optimal performance
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+
+      - name: Cache HuggingFace models
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/huggingface
+            ~/.cache/torch/sentence_transformers
+          key: ${{ runner.os }}-models-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-models-
+
+      - name: Cache pytest
+        uses: actions/cache@v5
+        with:
+          path: .pytest_cache
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+
+      - name: Free disk space
+        run: |
+          echo "=== Disk space BEFORE cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo docker system prune --all --force --volumes || true
+          sudo apt-get clean
+          echo "=== Disk space AFTER cleanup ==="
+          df -h
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          # Install pytest plugins with --no-cache-dir to prevent stale installations
+          pip install --no-cache-dir \
+            pytest==8.3.4 \
+            pytest-cov==5.0.0 \
+            pytest-xdist==3.8.0 \
+            pytest-timeout==2.3.1 \
+            'coverage>=7.10.6,<8' \
+            'sentence-transformers>=3.0'
+          # Verify plugin availability before editable install
+          python -c "import xdist; print(f'✅ pytest-xdist {xdist.__version__}')" || exit 1
+          # Then install the main package with test dependencies
+          pip install -e ".[test]"
+          python -m pytest --version
+          # Verify pytest-xdist is installed and working
+          python -c "import xdist; print(f'✓ pytest-xdist {xdist.__version__} installed')"
+
+      - name: Verify pytest plugins and test patterns
+        id: validate_plugins
+        run: |
+          # Validate pytest environment
+          python scripts/validate_test_env.py
+
+          # Analyze test patterns for issues
+          python scripts/analyze_test_patterns.py > test_pattern_report.txt || echo "✅ No high-severity test patterns detected" > test_pattern_report.txt
+          cat test_pattern_report.txt
+
+          # Exit if high-severity issues found
+          if grep -q "severity.*HIGH" test_pattern_report.txt; then
+            echo "❌ High-severity test patterns detected"
+            cat test_pattern_report.txt
+            exit 1
+          fi
+        # Note: continue-on-error removed to fail fast on plugin issues
+        # If this step fails, fix the plugin installation rather than masking the error
+
+      - name: Show test collection diagnostics
+        run: |
+          echo "=== Test Collection Diagnostics ==="
+          python -m pytest tests/ --collect-only -q | head -50 || echo "⚠️  Test collection may have issues"
+          echo ""
+          echo "=== Test Directory Structure ==="
+          find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
+          echo ""
+
+      - name: Install optional RAG dependencies
+        continue-on-error: true
+        run: |
+          pip install sentence-transformers faiss-cpu scikit-learn
+
+      - name: Run tests with coverage (layered fallbacks)
+        run: |
+          set -euo pipefail
+          
+          # Tier 1: Plugin-driven parallel with pytest-cov
+          echo "=== Tier 1: Plugin-driven parallel execution ==="
+          if pytest tests/ \
+            --color=yes \
+            --verbose \
+            --cov=src \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term \
+            --junitxml=junit.xml \
+            -n 4 \
+            --dist worksteal \
+            --maxfail=10; then
+            echo "✅ Plugin-driven parallel succeeded"
+            exit 0
+          fi
+          
+          # Tier 2: Coverage-run with parallel pytest
+          echo "⚠️ Plugin-driven parallel failed; trying coverage-run with parallel pytest"
+          rm -f .coverage .coverage.* coverage.xml junit.xml
+          if coverage run -m pytest tests/ \
+            --color=yes \
+            --verbose \
+            --junitxml=junit.xml \
+            -n 2 \
+            --dist worksteal \
+            --maxfail=10; then
+            echo "✅ Coverage-run parallel succeeded"
+            coverage combine || true
+            coverage xml || true
+            coverage html || true
+            coverage report || true
+            exit 0
+          fi
+          
+          # Tier 3: Sequential coverage-run (last resort)
+          echo "⚠️ Parallel coverage-run failed; falling back to sequential execution"
+          rm -f .coverage .coverage.* coverage.xml junit.xml
+          if coverage run -m pytest tests/ \
+            --color=yes \
+            --verbose \
+            --junitxml=junit.xml \
+            --maxfail=10; then
+            echo "✅ Sequential coverage-run completed"
+            exit 0
+          else
+            echo "❌ All test tiers failed"
+            exit 1
+          fi
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          CODEX_FORCE_CPU: "1"
+          RAG_EMBEDDING_PROVIDER: sentence-transformers
+          CODEX_ML_SUPPORTED_MODEL: dummy
+
+      - name: Combine and report coverage
+        if: always()
+        run: |
+          echo "=== Combining coverage data ==="
+          coverage combine || echo "No coverage data to combine (may be single .coverage file)"
+          
+          echo "=== Generating coverage reports ==="
+          coverage html || echo "HTML report generation failed"
+          coverage xml || echo "XML report generation failed"
+          
+          echo "=== Coverage summary ==="
+          coverage report --fail-under=70 || {
+            echo "⚠️ Soft gate: Coverage below 70%"
+            coverage report || true
+          }
+
+      - name: Validate coverage artifacts before upload
+        if: always()
+        run: |
+          # Validate that pytest actually generated coverage data
+          # Only create placeholders if coverage.xml is missing (which indicates test collection/execution issues)
+          if [ -f "coverage.xml" ]; then
+            echo "✅ Coverage XML generated by pytest"
+            # Verify it's not empty or malformed
+            if grep -q '<coverage' coverage.xml; then
+              echo "✅ Coverage XML appears valid"
+            else
+              echo "⚠️ Coverage XML exists but may be malformed"
+            fi
+          else
+            echo "⚠️ Coverage XML not found - creating placeholder to prevent upload failure"
+            python scripts/ensure_test_artifacts.py --all
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: python-${{ matrix.python-version }}
+          name: coverage-${{ matrix.python-version }}
+          fail_ci_if_error: false
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload JUnit test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: junit-report-${{ matrix.python-version }}
+          path: junit.xml
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload test pattern analysis
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: test-pattern-analysis-${{ matrix.python-version }}
+          path: test_pattern_report.txt
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Security scan with bandit
+        continue-on-error: true
+        run: |
+          pip install bandit
+          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/ -f txt -o bandit-report.txt || true
+          cat bandit-report.txt || echo "No security issues found"
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: security-scan-${{ matrix.python-version }}
+          path: |
+            bandit-report.json
+            bandit-report.txt
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Check disk space after run
+        if: always()
+        run: |
+          echo "=== Final disk space ==="
+          df -h
+          echo "=== Cache sizes ==="
+          du -sh ~/.cache/pip || echo "No pip cache"
+          du -sh ~/.cache/huggingface || echo "No HuggingFace cache"
+
+  # Summary job to enforce requirements
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    steps:
+      - name: Check test results
+        run: |
+          # Evaluate job outcome instead of hardcoded string comparison
+          # Possible values: success, failure, cancelled, skipped
+          TEST_RESULT="${{ needs.test.result }}"
+          
+          if [[ "${TEST_RESULT}" == "success" ]]; then
+            echo "✅ All tests passed"
+            exit 0
+          elif [[ "${TEST_RESULT}" == "failure" ]]; then
+            echo "❌ Tests failed"
+            exit 1
+          elif [[ "${TEST_RESULT}" == "cancelled" ]]; then
+            echo "⚠️ Tests cancelled"
+            exit 1
+          else
+            echo "⚠️ Unexpected test status: ${TEST_RESULT}"
+            exit 1
+          fi
+
+      - name: Summary
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Matrix: Python 3.12" >> $GITHUB_STEP_SUMMARY
+          echo "- Caching: pip + models + pytest" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage: Uploaded to Codecov" >> $GITHUB_STEP_SUMMARY

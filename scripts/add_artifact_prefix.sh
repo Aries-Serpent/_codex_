@@ -3,7 +3,7 @@
 # Purpose: Add Art_ prefix to all workflows producing downloadable artifacts
 # Date: 2026-02-06
 
-set -e
+set -e -o pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -16,15 +16,22 @@ NC='\033[0m' # No Color
 BACKUP_DIR=".github/workflow-archive/backups/$(date +%Y-%m-%d-%H%M%S)-artifact-prefix"
 mkdir -p "$BACKUP_DIR"
 
-# Workflows requiring Art_ prefix (42 total)
-# Source: ARTIFACT_PREFIX_REQUIREMENTS.md
+# Workflows requiring Art_ prefix
+# Source: ARTIFACT_PREFIX_REQUIREMENTS.md + verification script findings
 WORKFLOWS=(
   "agent-chain-orchestrator.yml"
+  "artifact-monitoring.yml"
   "audit-improvement-pipeline.yml"
   "auth-compliance-report.yml"
+  "auth-mfa-enrollment.yml"
+  "auth-security-audit.yml"
+  "auth-tests.yml"
   "batch-ci-triage.yml"
+  "cache-suite.yml"
+  "ci-diagnostic-automation.yml"
   "ci-health-suite.yml"
   "code-quality.yml"
+  "codebase-qa-walkthrough.yml"
   "codeql-analysis.yml"
   "codeql-chunked.yml"
   "cognitive-action.yml"
@@ -32,6 +39,7 @@ WORKFLOWS=(
   "cognitive-brain-feed.yml"
   "cognitive-decision.yml"
   "copilot-self-evolution.yml"
+  "copilot-setup-steps.yml"
   "coverage_report.yml"
   "data_validation.yml"
   "decode-validate-artifact.yml"
@@ -39,28 +47,41 @@ WORKFLOWS=(
   "documentation-link-checker.yml"
   "documentation-suite.yml"
   "docker-build-push.yml"
+  "flatten-repo-download.yml"
+  "generate-repository-structure.yml"
+  "genesis-bootstrap.yml"
   "html_visual_baseline.yml"
   "html_visual_regression.yml"
+  "notebooklm-sync.yml"
   "nox_gates.yml"
   "optimized-ci.yml"
+  "phase34-codeql-alert-fetch.yml"
   "post-merge-validation-optimized.yml"
   "pre-release-deployment.yml"
   "publish_dashboard_release.yml"
+  "pypi-publish.yml"
   "repo-organization.yml"
   "repository-health-monitoring.yml"
+  "root-org-validation.yml"
   "rust_swarm_ci.yml"
   "sbom.yml"
   "scheduled-archival.yml"
   "scheduled-dependency-audit.yml"
+  "security-scan.yml"
   "security-scanning-suite.yml"
   "security-suite.yml"
   "self-healing-ci.yml"
   "self-healing-feedback-loop.yml"
   "self-healing.yml"
+  "semgrep_sarif.yml"
   "test-comprehensive.yml"
   "test-rag.yml"
   "test-suite.yml"
+  "workflow-analytics-manual.yml"
+  "workflow-analytics-scheduled.yml"
   "workflow-health-check.yml"
+  "workflow-link-validation.yml"
+  "zendesk-knowledge-sync.yml"
 )
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -84,31 +105,31 @@ for workflow in "${WORKFLOWS[@]}"; do
   # Check if file exists
   if [ ! -f "$WORKFLOW_PATH" ]; then
     echo -e "${YELLOW}⚠️  Skipping${NC} $workflow ${RED}(not found)${NC}"
-    ((SKIPPED_NOTFOUND++))
+    SKIPPED_NOTFOUND=$((SKIPPED_NOTFOUND + 1))
     continue
   fi
   
   # Check if already has prefix
   if grep -q "^name: Art_" "$WORKFLOW_PATH"; then
     echo -e "${YELLOW}⏭️  Skipping${NC} $workflow ${YELLOW}(already has prefix)${NC}"
-    ((SKIPPED_EXISTING++))
+    SKIPPED_EXISTING=$((SKIPPED_EXISTING + 1))
     continue
   fi
   
   # Backup original
   if ! cp "$WORKFLOW_PATH" "$BACKUP_DIR/$workflow"; then
     echo -e "${RED}❌ Error backing up${NC} $workflow"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
     continue
   fi
   
   # Add Art_ prefix to name field
   if sed -i 's/^name: \(.*\)/name: Art_\1/' "$WORKFLOW_PATH"; then
     echo -e "${GREEN}✅ Updated${NC} $workflow"
-    ((UPDATED++))
+    UPDATED=$((UPDATED + 1))
   else
     echo -e "${RED}❌ Error updating${NC} $workflow"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
     # Restore from backup on error
     cp "$BACKUP_DIR/$workflow" "$WORKFLOW_PATH"
   fi

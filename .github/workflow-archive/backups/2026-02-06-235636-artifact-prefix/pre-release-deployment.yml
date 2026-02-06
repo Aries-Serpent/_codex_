@@ -1,0 +1,38 @@
+name: Pre-Release Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (e.g., 1.5.5)'
+        required: true
+        type: string
+      skip_tests:
+        description: 'Skip test execution (not recommended)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  validate:
+    name: Validation & Testing
+    runs-on: ubuntu-latest
+    outputs:
+      validation_passed: ${{ steps.validation.outputs.passed }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
