@@ -1,2 +1,4 @@
 {"ts": 1769379272.4030588, "step": 2, "metrics": {"accuracy": 0.9}}
 {"ts": 1769379272.4062397, "step": 1, "metrics": {"loss": 1.0}}
+{"ts": 1770353108.9455237, "step": 1, "metrics": {"loss": 1.0}}
+{"ts": 1770353108.9473372, "step": 2, "metrics": {"accuracy": 0.9}}

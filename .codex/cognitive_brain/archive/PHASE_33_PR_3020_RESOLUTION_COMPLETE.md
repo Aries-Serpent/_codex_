@@ -299,7 +299,7 @@ except Exception as e:
         xargs yamllint --strict || exit 0'
 ```
 
-- **File:** `_codex_/codex_index.yaml:320`
+- **File:** `.codex/codex_index.yaml:320`
 - **Error:** `---` separator creating invalid multi-document YAML
 - **Fix:** Removed document separator
 
@@ -373,7 +373,7 @@ Add validation report for link fixes
 ```
 fix: resolve all P0 critical issues (AI Agency Policy compliance)
 - .pre-commit-config.yaml
-- _codex_/codex_index.yaml
+- .codex/codex_index.yaml
 - src/codex/cli/main.py
 - src/codex/logging/db_manager.py
 - src/codex/rag/benchmarks/embedding_bench.py

@@ -278,7 +278,7 @@ Start here on every session:
 
 **Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
 **Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths  
-**Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
+**Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) → Primary files, priorities, orchestration map  
 **Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
 **Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 

@@ -14,7 +14,7 @@
 |------|------|--------|---------|
 | `/AGENTS.md` | 3.8 KB | ✅ Created | Root pointer to canonical guide |
 | `/_codex_/AGENTS.md` | 18 KB | ✅ Created | Canonical super-agent documentation |
-| `/_codex_/codex_index.yaml` | 9.9 KB | ✅ Created | Machine-readable manifest |
+| `/.codex/codex_index.yaml` | 9.9 KB | ✅ Created | Machine-readable manifest |
 | `/inventory.md` | 6.3 KB | ✅ Created | Complete file catalog |
 | `/validation.md` | 6.8 KB | ✅ Created | Validation report |
 | `/validate-codex-index.yml.template` | 5.4 KB | ✅ Created | Optional CI workflow (template) |
@@ -77,7 +77,7 @@ _codex_/
 
 - [x] Create root `/AGENTS.md` pointer
 - [x] Create canonical `/_codex_/AGENTS.md` with full content
-- [x] Create `/_codex_/codex_index.yaml` manifest
+- [x] Create `/.codex/codex_index.yaml` manifest
 - [x] Create `/inventory.md` file catalog
 - [x] Create `/validation.md` report
 - [x] Create `/validate-codex-index.yml.template` (optional CI)
@@ -116,7 +116,7 @@ _codex_/
   - Particle physics optimization formula
   - Validation checklist, maintainer instructions
 
-- **`/_codex_/codex_index.yaml`** — Machine-readable manifest (9.9 KB)
+- **`/.codex/codex_index.yaml`** — Machine-readable manifest (9.9 KB)
   - Primary files with priorities
   - Summaries for quick reference
   - Orchestration entrypoints
@@ -154,7 +154,7 @@ _codex_/
 
 ## Particle Physics-Inspired Framework
 
-**Included in:** `_codex_/AGENTS.md` and `_codex_/codex_index.yaml`
+**Included in:** `_codex_/AGENTS.md` and `.codex/codex_index.yaml`
 
 **Formula:**
 ```text
@@ -175,7 +175,7 @@ Where:
 
 ## Read-Depth Heuristics (Documented)
 
-1. **Manifests first**: Open `_codex_/codex_index.yaml` before scanning
+1. **Manifests first**: Open `.codex/codex_index.yaml` before scanning
 2. **Headers only (>50KB)**: Read first 3 lines + H2/H3 headings
 3. **First 200 tokens**: For markdown, read opening and stop unless needed
 4. **Prompts**: Read labeled blocks, skip transcripts
@@ -190,13 +190,13 @@ Where:
 | From | To | Type | Status |
 |------|-----|------|--------|
 | `/AGENTS.md` | `/_codex_/AGENTS.md` | Pointer | ✅ Valid |
-| `/AGENTS.md` | `/_codex_/codex_index.yaml` | Reference | ✅ Valid |
+| `/AGENTS.md` | `/.codex/codex_index.yaml` | Reference | ✅ Valid |
 | `/README.md` | `/AGENTS.md` | Quick-index | ✅ Valid |
-| `/README.md` | `/_codex_/codex_index.yaml` | Quick-index | ✅ Valid |
+| `/README.md` | `/.codex/codex_index.yaml` | Quick-index | ✅ Valid |
 | `/_codex_/AGENTS.md` | `/inventory.md` | Reference | ✅ Valid |
 | `/_codex_/AGENTS.md` | `/validation.md` | Reference | ✅ Valid |
 | `/inventory.md` | All 40+ files | Catalog | ✅ Valid |
-| `/_codex_/codex_index.yaml` | All primary files | Index | ✅ Valid |
+| `/.codex/codex_index.yaml` | All primary files | Index | ✅ Valid |
 
 ## Optional Enhancements (Not Required)
 
@@ -266,7 +266,7 @@ All validation checks passed:
 **Reference Documents:**
 - [AGENTS.md](../AGENTS.md) — Root pointer
 - [_codex_/AGENTS.md](_codex_/AGENTS.md) — Canonical guide
-- [_codex_/codex_index.yaml](_codex_/codex_index.yaml) — Machine manifest
+- [.codex/codex_index.yaml](.codex/codex_index.yaml) — Machine manifest
 - [inventory.md](../inventory.md) — File catalog
 - [validation.md](../validation.md) — Validation report
 
