@@ -138,9 +138,14 @@ class SignatureValidator:
                         if inspect.isclass(obj) and hasattr(obj, func_name):
                             return getattr(obj, func_name)
                 except Exception:
+                    # Best-effort lookup: ignore failures for individual modules
                     continue
-        except Exception:
-            pass
+        except Exception as e:
+            # Last-resort guard: log unexpected errors during implementation lookup
+            print(
+                f"⚠️  Unexpected error while looking up implementation for {func_name!r}: {e!r}",
+                file=sys.stderr,
+            )
         return None
     
     def _detect_mismatch(
