@@ -272,11 +272,10 @@ class TestMentalMappingCoreFlows:
         decision = mental_map.create_node(NodeType.DECISION, "Important decision")
         outcome = mental_map.create_node(NodeType.OUTCOME, "Good outcome")
 
-        # Trigger appraisal
+        # Trigger appraisal (uses positional arguments, not kwargs)
         mental_map._self_appraise_decision(
-            decision_id=decision.node_id,
-            outcome_id=outcome.node_id,
-            actual_results={"quality": 0.8},
+            decision.node_id,
+            outcome.node_id,
         )
 
         # Should create reflection
@@ -291,9 +290,8 @@ class TestMentalMappingCoreFlows:
         outcome = mental_map.create_node(NodeType.OUTCOME, "Excellent outcome")
 
         mental_map._self_appraise_decision(
-            decision_id=decision.node_id,
-            outcome_id=outcome.node_id,
-            actual_results={"success_rate": 0.95, "quality": 0.9},
+            decision.node_id,
+            outcome.node_id,
         )
 
         # Reflection should note success
@@ -308,9 +306,8 @@ class TestMentalMappingCoreFlows:
         outcome = mental_map.create_node(NodeType.OUTCOME, "Failed outcome")
 
         mental_map._self_appraise_decision(
-            decision_id=decision.node_id,
-            outcome_id=outcome.node_id,
-            actual_results={"success_rate": 0.2, "quality": 0.1},
+            decision.node_id,
+            outcome.node_id,
         )
 
         # Should create learning node from failure

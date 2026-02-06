@@ -29,13 +29,14 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Quick Reference
 
-📄 **[reports/PR_3133_EXECUTIVE_SUMMARY.md](reports/PR_3133_EXECUTIVE_SUMMARY.md)**
+📄 **[PR_3133_EXECUTIVE_SUMMARY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/pr-resolutions/PR_3133_ANALYSIS_INDEX.md)** (archived)
 - **Size**: 7.4 KB
 - **Read Time**: 3 minutes
 - **Best For**: Quick overview, status dashboard, immediate action items
 - **Contains**: TL;DR, root cause, resolution steps, confidence assessment
+- **Note**: Detailed reports have been archived to `.codex/archive/pr-resolutions/`
 
-📄 **[reports/PR_3133_CI_LOG_SUMMARY.md](reports/PR_3133_CI_LOG_SUMMARY.md)**
+📄 **[PR_3133_CI_LOG_SUMMARY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/pr-resolutions/PR_3133_RESOLUTION_STATUS.md)** (archived)
 - **Size**: 2.6 KB
 - **Read Time**: 1 minute
 - **Best For**: Quick status check, artifact links
@@ -43,7 +44,7 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Deep Analysis
 
-📄 **[.codex/PR_3133_FINAL_CHECK_ANALYSIS.md](.codex/PR_3133_FINAL_CHECK_ANALYSIS.md)**
+📄 **[PR_3133_FINAL_CHECK_ANALYSIS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)** (archived)
 - **Size**: 21 KB (most comprehensive)
 - **Read Time**: 15 minutes
 - **Best For**: Understanding root causes, workflow analysis, lessons learned
@@ -58,7 +59,7 @@ This analysis generated **5 documents**. Here's how to use them:
 
 ### For Technical Details
 
-📄 **[artifacts/PR_3133_log_retrieval_manifest.txt](artifacts/PR_3133_log_retrieval_manifest.txt)**
+📄 **PR_3133_log_retrieval_manifest.txt** (archived)
 - **Size**: 4.8 KB
 - **Read Time**: 5 minutes
 - **Best For**: Log retrieval details, API notes, artifact verification
@@ -67,10 +68,11 @@ This analysis generated **5 documents**. Here's how to use them:
   - Artifact cross-reference with download URLs
   - API endpoints and parameters used
   - Known limitations and issues
+- **Note**: Detailed artifacts are available in the GitHub Actions run
 
 ### For Audit Trail
 
-📄 **[.codex/change_log.md](.codex/change_log.md)** (updated)
+📄 **[.codex/change_log.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/change_log.md)** (project root)
 - **Read Time**: < 1 minute (latest entry only)
 - **Best For**: Historical record, audit trail
 - **Contains**: Entry documenting this analysis with references
@@ -256,4 +258,4 @@ Auto-Fix Check (FAILED: detected 1 alert)
 **Version**: 1.0  
 **Date**: 2026-02-03T17:20:00Z
 
-*For detailed analysis, see: [.codex/PR_3133_FINAL_CHECK_ANALYSIS.md](.codex/PR_3133_FINAL_CHECK_ANALYSIS.md)*
+*For detailed analysis, see: [.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/pr-resolutions/PR_3133_FINAL_CHECK_ANALYSIS.md)*
