@@ -1,0 +1,122 @@
+{
+  "chain": [
+    "workflow-health-monitor",
+    "coverage-roadmap-agent",
+    "ci-testing-agent",
+    "test-alignment-fixer"
+  ],
+  "agents": [
+    {
+      "name": "workflow-health-monitor",
+      "file": ".github/agents/workflow-health-monitor.agent.md",
+      "capabilities": [
+        {
+          "name": "monitor_workflows",
+          "input_types": [
+            "commit_sha",
+            "branch"
+          ],
+          "output_types": [
+            "health_report",
+            "failures"
+          ],
+          "cost": 1.0
+        },
+        {
+          "name": "analyze_failures",
+          "input_types": [
+            "workflow_id"
+          ],
+          "output_types": [
+            "failure_analysis"
+          ],
+          "cost": 2.0
+        }
+      ],
+      "prerequisites": [],
+      "entangled_with": [
+        "ci-testing-agent"
+      ]
+    },
+    {
+      "name": "coverage-roadmap-agent",
+      "file": ".github/agents/coverage-roadmap-agent.md",
+      "capabilities": [
+        {
+          "name": "analyze_coverage",
+          "input_types": [
+            "test_results"
+          ],
+          "output_types": [
+            "coverage_gaps"
+          ],
+          "cost": 2.5
+        }
+      ],
+      "prerequisites": [
+        "workflow-health-monitor"
+      ],
+      "entangled_with": [
+        "ci-testing-agent"
+      ]
+    },
+    {
+      "name": "ci-testing-agent",
+      "file": ".github/agents/ci-testing-agent.md",
+      "capabilities": [
+        {
+          "name": "debug_test_failures",
+          "input_types": [
+            "failure_analysis"
+          ],
+          "output_types": [
+            "test_fix_plan"
+          ],
+          "cost": 3.0
+        }
+      ],
+      "prerequisites": [
+        "workflow-health-monitor"
+      ],
+      "entangled_with": [
+        "coverage-roadmap-agent",
+        "test-alignment-fixer"
+      ]
+    },
+    {
+      "name": "test-alignment-fixer",
+      "file": ".github/agents/test-alignment-fixer.agent.md",
+      "capabilities": [
+        {
+          "name": "fix_test_alignment",
+          "input_types": [
+            "test_fix_plan"
+          ],
+          "output_types": [
+            "pr"
+          ],
+          "cost": 4.0
+        }
+      ],
+      "prerequisites": [
+        "ci-testing-agent"
+      ],
+      "entangled_with": []
+    }
+  ],
+  "entanglements": {
+    "workflow-health-monitor": [
+      "ci-testing-agent"
+    ],
+    "ci-testing-agent": [
+      "coverage-roadmap-agent",
+      "test-alignment-fixer"
+    ],
+    "test-alignment-fixer": [],
+    "coverage-roadmap-agent": [
+      "ci-testing-agent"
+    ],
+    "security-alert-verification-agent": []
+  },
+  "estimated_cost": 12.5
+}
