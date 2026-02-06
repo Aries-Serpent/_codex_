@@ -181,9 +181,19 @@ class TestPyprojectTomlParsing:
         
         # Check Python version requirement
         if "requires-python" in data["project"]:
-            # Repository supports Python >=3.10, check for valid version range
+            # Repository supports Python >=3.10, validate the requirement
             requires_python = data["project"]["requires-python"]
-            assert any(v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"])
+            # Use packaging library for robust version parsing if available
+            try:
+                from packaging.specifiers import SpecifierSet
+                spec = SpecifierSet(requires_python)
+                # Verify that 3.10, 3.11, or 3.12 are in the valid range
+                assert any(f"3.{minor}" in spec for minor in range(10, 13)), \
+                    f"Expected Python 3.10-3.12 support, got: {requires_python}"
+            except ImportError:
+                # Fallback to string matching if packaging is not available
+                assert any(v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"]), \
+                    f"Expected Python 3.10+ support, got: {requires_python}"
     
     def test_dependency_extraction(self):
         """Test extracting dependencies from pyproject.toml."""
