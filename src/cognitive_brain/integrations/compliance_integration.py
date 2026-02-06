@@ -12,7 +12,7 @@ PDA Loop + AfterMath Pattern:
 """
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import List
 
@@ -37,13 +37,26 @@ class AuditResult:
     """Compliance audit result"""
 
     audit_id: str
-    score: float  # 0.0 to 1.0
     risk_level: str  # "low", "medium", "high"
     remediation_cost: float  # Estimated cost to fix issues
-    business_impact: float  # Business value if approved (0-1)
-    violations: List[str]  # List of violation descriptions
+    score: float = None  # 0.0 to 1.0  
+    business_impact: float = 0.0  # Business value if approved (0-1)
+    violations: List[str] = field(default_factory=list)  # List of violation descriptions
+    repo_name: str = ""  # Optional repository name
+    compliance_score: float = None  # Alias for score
 
     def __post_init__(self):
+        # Support compliance_score as alias for score
+        if self.compliance_score is not None:
+            if self.score is None:
+                self.score = self.compliance_score
+        elif self.score is not None:
+            if self.compliance_score is None:
+                self.compliance_score = self.score
+        
+        # Validate score exists and is in range
+        if self.score is None:
+            raise ValueError("Either score or compliance_score must be provided")
         if not 0.0 <= self.score <= 1.0:
             raise ValueError("Score must be between 0.0 and 1.0")
         if not 0.0 <= self.business_impact <= 1.0:

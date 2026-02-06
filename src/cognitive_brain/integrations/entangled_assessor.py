@@ -93,19 +93,28 @@ class EntangledComplianceSecurityAssessor:
 
     def __init__(
         self,
-        entanglement_mgr: EntanglementManager,
-        compliance_assessor: QuantumComplianceAssessor,
+        compliance_assessor: QuantumComplianceAssessor = None,
         security_scanner: Optional[MockSecurityScanner] = None,
+        entanglement_mgr: EntanglementManager = None,
+        entanglement_manager: EntanglementManager = None,
+        config: Any = None,  # Accept but ignore for compatibility
     ):
         """
         Initialize entangled assessor.
 
         Args:
-            entanglement_mgr: EntanglementManager instance
+            entanglement_mgr: EntanglementManager instance (or use entanglement_manager)
+            entanglement_manager: Alternative name for entanglement_mgr
             compliance_assessor: QuantumComplianceAssessor instance
             security_scanner: Security scanner (defaults to mock)
+            config: Optional config (for compatibility, not used)
         """
-        self.entanglement = entanglement_mgr
+        # Support both parameter names
+        mgr = entanglement_mgr or entanglement_manager
+        if mgr is None:
+            raise ValueError("Either entanglement_mgr or entanglement_manager must be provided")
+        
+        self.entanglement = mgr
         self.compliance = compliance_assessor
         self.security = security_scanner or MockSecurityScanner()
         self.pair_id: Optional[str] = None
