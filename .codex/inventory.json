@@ -886,7 +886,7 @@
       "timestamp": "2026-01-21T03:50:18.834194"
     },
     {
-      "name": "PHASE_2_QUICK_REFERENCE.md",
+      "name": "PHASE_2_archive/sessions/2026-01/QUICK_REFERENCE.md",
       "type": "file",
       "classification": "relocatable",
       "target_location": "docs/archive/phases/",
@@ -1110,7 +1110,7 @@
       "timestamp": "2026-01-21T03:50:18.836194"
     },
     {
-      "name": "WORKFLOW_FIXES_SUMMARY.md",
+      "name": "archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
       "type": "file",
       "classification": "relocatable",
       "target_location": "docs/ci/",
@@ -1118,7 +1118,7 @@
       "timestamp": "2026-01-21T03:50:18.837194"
     },
     {
-      "name": "WORKFLOW_FIX_QUICK_REFERENCE.md",
+      "name": "WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md",
       "type": "file",
       "classification": "relocatable",
       "target_location": "docs/ci/",

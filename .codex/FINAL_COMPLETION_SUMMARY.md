@@ -41,7 +41,7 @@ Successfully completed all 7 phases of the PR #2785 continuation task as specifi
    - security-scan.yml (+56 lines): Bandit, Safety, pip-audit scanning
    - determinism.yml (+93 lines): Dual-run validation, seed detection
    - semgrep_sarif.yml (+92 lines): SAST scanning, SARIF upload
-3. ✅ Documented fixes in WORKFLOW_FIXES_SUMMARY.md
+3. ✅ Documented fixes in archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md
 4. ✅ Created quick reference guide
 5. ✅ Addressed code review nitpicks (EOF delimiter, permissions)
 
@@ -94,8 +94,8 @@ Successfully completed all 7 phases of the PR #2785 continuation task as specifi
    - CodeQL results
    - Security review sign-off
 6. ✅ Workflow documentation
-   - `WORKFLOW_FIXES_SUMMARY.md`
-   - `WORKFLOW_FIX_QUICK_REFERENCE.md`
+   - `archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md`
+   - `WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md`
 
 **Memory Storage**: Attempted but failed (4 patterns) - documented in session summary instead.
 
@@ -233,8 +233,8 @@ All 11 success criteria from `.codex/FOLLOWUP_PROMPT.md` achieved:
 3. `.codex/SESSION_SUMMARY_PR2785.md` (14,103 bytes)
 4. `.codex/diagrams/cognitive-brain-architecture.mmd` (4,396 bytes)
 5. `.codex/SECURITY_SUMMARY.md` (6,605 bytes)
-6. `WORKFLOW_FIXES_SUMMARY.md` (ci-testing-agent)
-7. `WORKFLOW_FIX_QUICK_REFERENCE.md` (ci-testing-agent)
+6. `archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md` (ci-testing-agent)
+7. `WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md` (ci-testing-agent)
 
 **Total Documentation**: 43,548+ bytes of comprehensive documentation
 

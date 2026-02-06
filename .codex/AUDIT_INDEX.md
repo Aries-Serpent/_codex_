@@ -8,7 +8,7 @@ This directory contains comprehensive audit reports and tools for documentation 
 
 | File | Purpose | Size | Audience |
 |------|---------|------|----------|
-| **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** | Fast lookup & key metrics | 2.1K | Everyone |
+| **[QUICK_REFERENCE.md](archive/sessions/2026-01/QUICK_REFERENCE.md)** | Fast lookup & key metrics | 2.1K | Everyone |
 | **[admin_docs_audit_summary.md](admin_docs_audit_summary.md)** | Executive summary & analysis | 7.5K | Management, Leads |
 | **[admin_docs_action_checklist.md](admin_docs_action_checklist.md)** | Step-by-step action items | 6.3K | Contributors, Teams |
 | **[admin_docs_audit.json](admin_docs_audit.json)** | Machine-readable data | 14K | Automation, CI/CD |

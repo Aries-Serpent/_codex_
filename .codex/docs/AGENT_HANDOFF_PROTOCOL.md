@@ -64,7 +64,7 @@ The Agent Hand-off Protocol enables seamless AI agent collaboration via PR comme
 **Completed**: Tokenization Coverage Analysis
 **Deliverables**:
 - Coverage baseline report: `.codex/plans/pr_3145/tokenization_coverage_baseline.md`
-- Gap analysis: `coverage_tokenization.json`
+- Gap analysis: `coverage_reports/coverage_tokenization.json`
 - Test case mapping: `.codex/plans/pr_3145/test_case_mapping.md`
 
 **Status**: ✅ Complete - All 7 tokenization modules analyzed
@@ -322,7 +322,7 @@ Follow plan in `.codex/plans/pr_3145/01_tokenization_coverage_analysis.md`
 
 **Deliverables**:
 - Coverage baseline: 45.2%
-- Gap analysis: [coverage_tokenization.json]
+- Gap analysis: [coverage_reports/coverage_tokenization.json]
 - Test mapping: [test_case_mapping.md]
 
 **Metrics**:

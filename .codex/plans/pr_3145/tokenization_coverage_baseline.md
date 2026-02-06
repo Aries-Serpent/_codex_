@@ -254,7 +254,7 @@
 ## 📂 Artifacts Generated
 
 ### Coverage Data
-- **JSON**: `coverage_tokenization.json` (machine-readable)
+- **JSON**: `coverage_reports/coverage_tokenization.json` (machine-readable)
 - **HTML**: `htmlcov_tokenization/index.html` (interactive report)
 - **Terminal**: Console output with line-by-line missing coverage
 
@@ -316,7 +316,7 @@
 - [x] Coverage projections calculated
 
 ### Artifacts Generated
-- [x] `coverage_tokenization.json`
+- [x] `coverage_reports/coverage_tokenization.json`
 - [x] `htmlcov_tokenization/index.html`
 - [x] `scripts/analyze_tokenization_coverage.py`
 - [x] `.codex/plans/pr_3145/coverage_gap_report.txt`

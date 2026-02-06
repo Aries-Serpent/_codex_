@@ -38,7 +38,7 @@
 - [ ] All file_relationships keys exist in files list
 - [ ] CODEBASE_MAP.md renders correctly in Markdown viewers
 - [ ] ARCHITECTURE_GUIDE.md contains architecture diagrams
-- [ ] QUICK_REFERENCE.md includes frequently accessed patterns
+- [ ] archive/sessions/2026-01/QUICK_REFERENCE.md includes frequently accessed patterns
 - [ ] README_dataset.md provides clear overview
 
 **ChatGPT Integration Verification**:
@@ -149,7 +149,7 @@ graph TD
 - System prompt effectiveness (8%)
 
 ### P2 Medium (25% - Enhancement)
-- QUICK_REFERENCE.md utility (10%)
+- archive/sessions/2026-01/QUICK_REFERENCE.md utility (10%)
 - Generation tool automation (10%)
 - Documentation templates (5%)
 
@@ -278,7 +278,7 @@ Every ChatGPT Project package should include:
 3. **`ARCHITECTURE_GUIDE.md`** - System architecture and design patterns
 4. **`manifest.json`** - File mappings (from MCP package system)
 5. **`README_dataset.md`** - Dataset overview
-6. **`QUICK_REFERENCE.md`** - Frequently accessed patterns and utilities
+6. **`archive/sessions/2026-01/QUICK_REFERENCE.md`** - Frequently accessed patterns and utilities
 
 ---
 
@@ -644,7 +644,7 @@ You are ChatGPT Assistant with access to a COMPLETE codebase uploaded as a flat-
    - Build file index with metadata
 
 5. **Scan Quick Reference**
-   - Parse `QUICK_REFERENCE.md`
+   - Parse `archive/sessions/2026-01/QUICK_REFERENCE.md`
    - Identify frequently used patterns
    - Note utility locations
 
@@ -778,7 +778,7 @@ Always include:
 ### Documentation
 - Update CODEBASE_MAP.md if adding module
 - Update ARCHITECTURE_GUIDE.md if changing architecture
-- Update QUICK_REFERENCE.md if adding utility
+- Update archive/sessions/2026-01/QUICK_REFERENCE.md if adding utility
 - Maintain provenance in all suggestions
 
 ## Error Handling
@@ -1000,7 +1000,7 @@ class NavigationSystemGenerator:
 - Feature docs: `docs/<feature_name>/`
 
 ### Quick Reference
-See QUICK_REFERENCE.md for common patterns and utilities.
+See archive/sessions/2026-01/QUICK_REFERENCE.md for common patterns and utilities.
 """
     
     def generate_tree(self) -> str:
@@ -1069,7 +1069,7 @@ if __name__ == "__main__":
 # 2. Generate NAVIGATION_INDEX.json
 # 3. Generate CODEBASE_MAP.md
 # 4. Copy ARCHITECTURE_GUIDE.md if exists
-# 5. Generate QUICK_REFERENCE.md
+# 5. Generate archive/sessions/2026-01/QUICK_REFERENCE.md
 # 6. Create manifest.json
 # 7. Create README_dataset.md
 # 8. Package everything with flat structure

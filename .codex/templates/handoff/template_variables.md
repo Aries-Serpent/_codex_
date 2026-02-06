@@ -220,7 +220,7 @@ This document provides a comprehensive reference for all variables used in Agent
 ```markdown
 ### Deliverables
 - Coverage baseline: [tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)
-- Gap analysis: [coverage_tokenization.json](coverage_tokenization.json)
+- Gap analysis: [coverage_tokenization.json](coverage_reports/coverage_tokenization.json)
 - Test mapping: [test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)
 ```
 

@@ -54,7 +54,7 @@ class LoggingConfig:
     mlflow_offline: bool = True
     mlflow_tracking_dir: str | Path = "./mlruns"
     enable_fallback_metrics: bool = True
-    fallback_metrics_path: str | Path = "metrics_fallback.ndjson"
+    fallback_metrics_path: str | Path = ".codex/metrics/metrics_fallback.ndjson"
 
 
 @dataclass(slots=True)

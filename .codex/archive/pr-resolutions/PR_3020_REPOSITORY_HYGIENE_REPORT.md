@@ -866,14 +866,14 @@ pipdeptree --warn silence | grep -i "not required"
 AGENTS.md, CHANGELOG.md, CITATION.cff, CODE_OF_CONDUCT.md, 
 COMPREHENSIVE_HEALTH_CHECK.md, CONTRIBUTING.md, Cargo.lock, Cargo.toml,
 Dockerfile, HEALTH_CHECK_ISSUES.json, LICENSE, LICENSES, 
-LINK_FIX_SUMMARY.md, MANIFEST.in, Makefile, PROMPTS, QUICK_REFERENCE.md,
+LINK_FIX_SUMMARY.md, MANIFEST.in, Makefile, PROMPTS, archive/sessions/2026-01/QUICK_REFERENCE.md,
 README.md, SECURITY.md, SESSION_SUMMARY_PR_3020_COMPLETE.md,
 VALIDATION_REPORT.md, [107 more files/directories...]
 ```
 
 **Analysis:**
 - ✅ **Keep in root**: README.md, LICENSE, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, Makefile, Dockerfile
-- ⚠️ **Move to `.codex/`**: AGENTS.md, SESSION_SUMMARY_*, HEALTH_CHECK_ISSUES.json, VALIDATION_REPORT.md, LINK_FIX_SUMMARY.md, COMPREHENSIVE_HEALTH_CHECK.md, QUICK_REFERENCE.md
+- ⚠️ **Move to `.codex/`**: AGENTS.md, SESSION_SUMMARY_*, HEALTH_CHECK_ISSUES.json, VALIDATION_REPORT.md, LINK_FIX_SUMMARY.md, COMPREHENSIVE_HEALTH_CHECK.md, archive/sessions/2026-01/QUICK_REFERENCE.md
 - ⚠️ **Move to `docs/`**: CITATION.cff (or keep if important for GitHub citation)
 - ⚠️ **Move to `scripts/`**: Various Python scripts (admin_docs_audit.py, fix_*.py, validate_*.py)
 - ⚠️ **Review**: `*.lock`, `*.toml`, config files - consolidate if possible
@@ -888,7 +888,7 @@ git mv COMPREHENSIVE_HEALTH_CHECK.md .codex/reports/
 git mv HEALTH_CHECK_ISSUES.json .codex/reports/
 git mv VALIDATION_REPORT.md .codex/reports/
 git mv LINK_FIX_SUMMARY.md .codex/reports/
-git mv QUICK_REFERENCE.md .codex/
+git mv archive/sessions/2026-01/QUICK_REFERENCE.md .codex/
 ```
 
 **Phase 2: Script Consolidation (2-3 hours)**

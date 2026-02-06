@@ -1,0 +1,95 @@
+{
+  "plan_version": "2.0.0",
+  "batch_name": "Batch 1 - Session Reports (LOW Risk)",
+  "created": "2026-02-06",
+  "physics_model": {
+    "energy_level": 5,
+    "path_stability": "minimize_churn",
+    "field_tracking": ["timestamp", "commit_sha", "file_hash"],
+    "pattern_enforcement": "strict",
+    "redundancy": "rollback_enabled",
+    "balance": "zero_break_guarantee"
+  },
+  "relocations": [
+    {
+      "source": "./DELIVERABLES_SUMMARY.txt",
+      "target": "archive/sessions/2026-01/DELIVERABLES_SUMMARY.txt",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./FINAL_VERIFICATION.md",
+      "target": "archive/sessions/2026-01/FINAL_VERIFICATION.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./GEM_INSTRUCTIONS.md",
+      "target": "archive/sessions/2026-01/GEM_INSTRUCTIONS.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./IMPLEMENTATION_PROGRESS_PHASE1.md",
+      "target": "archive/sessions/2026-01/IMPLEMENTATION_PROGRESS_PHASE1.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./IMPLEMENTATION_PROGRESS_PHASE2.md",
+      "target": "archive/sessions/2026-01/IMPLEMENTATION_PROGRESS_PHASE2.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./IMPLEMENTATION_PROGRESS_PHASE3.md",
+      "target": "archive/sessions/2026-01/IMPLEMENTATION_PROGRESS_PHASE3.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./NEXT_SESSION_INSTRUCTIONS.md",
+      "target": "archive/sessions/2026-01/NEXT_SESSION_INSTRUCTIONS.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./PROJECT_COMPLETE_SUMMARY.md",
+      "target": "archive/sessions/2026-01/PROJECT_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./SESSION_COMPLETE_PHASE1.md",
+      "target": "archive/sessions/2026-01/SESSION_COMPLETE_PHASE1.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    },
+    {
+      "source": "./SESSION_COMPLETE_SUMMARY.md",
+      "target": "archive/sessions/2026-01/SESSION_COMPLETE_SUMMARY.md",
+      "type": "file",
+      "risk_level": "LOW",
+      "validation_required": false,
+      "references_count": 0
+    }
+  ]
+}

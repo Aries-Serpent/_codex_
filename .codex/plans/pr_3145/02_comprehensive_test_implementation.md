@@ -335,7 +335,7 @@ pytest --cov=src/tokenization \
 
 # Compare with baseline
 python scripts/compare_coverage.py \
-    coverage_tokenization.json \
+    coverage_reports/coverage_tokenization.json \
     coverage_tokenization_final.json
 ```
 

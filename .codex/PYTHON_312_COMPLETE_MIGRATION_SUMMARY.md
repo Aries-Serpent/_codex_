@@ -417,7 +417,7 @@ echo "ROLLBACK: Python 3.11 support restored temporarily"
 
 **CI/CD Documentation:**
 - `docs/ci/CI_TEST_FIXES_PR2883.md`
-- `docs/ci/WORKFLOW_FIXES_SUMMARY.md`
+- `docs/ci/archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md`
 - `docs/troubleshooting/CI_FAILURE_RESOLUTION.md`
 
 **Developer Guides:**

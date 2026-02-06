@@ -317,7 +317,7 @@ except Exception as e:
 - Validation commands
 - Effort estimates
 
-**QUICK_REFERENCE.md** (2.4 KB)
+**archive/sessions/2026-01/QUICK_REFERENCE.md** (2.4 KB)
 - Quick status summary
 - Files modified
 - Next steps
@@ -379,7 +379,7 @@ fix: resolve all P0 critical issues (AI Agency Policy compliance)
 - src/codex/rag/benchmarks/embedding_bench.py
 - COMPREHENSIVE_HEALTH_CHECK.md (new)
 - HEALTH_CHECK_ISSUES.json (new)
-- QUICK_REFERENCE.md (new)
+- archive/sessions/2026-01/QUICK_REFERENCE.md (new)
 ```
 
 ---
@@ -553,7 +553,7 @@ None added in this phase.
 - `VALIDATION_REPORT.md` - Link validation results
 - `COMPREHENSIVE_HEALTH_CHECK.md` - Full health analysis
 - `HEALTH_CHECK_ISSUES.json` - Machine-readable tracking
-- `QUICK_REFERENCE.md` - Quick status reference
+- `archive/sessions/2026-01/QUICK_REFERENCE.md` - Quick status reference
 
 **Phase Context:**
 - [Phase 32 Complete](.codex/cognitive_brain/PHASE_32_COMPLETE.md)
@@ -602,7 +602,7 @@ None added in this phase.
 - [x] VALIDATION_REPORT.md
 - [x] COMPREHENSIVE_HEALTH_CHECK.md
 - [x] HEALTH_CHECK_ISSUES.json
-- [x] QUICK_REFERENCE.md
+- [x] archive/sessions/2026-01/QUICK_REFERENCE.md
 - [x] PHASE_33_PR_3020_RESOLUTION_COMPLETE.md (this document)
 - [x] PHASE_34_CONTINUATION_PROMPT.md
 - [x] PATH_TO_100_PERCENT_COVERAGE.md updated
