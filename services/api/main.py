@@ -504,7 +504,7 @@ async def api_key_middleware(request: Request, call_next):
     key = request.headers.get("x-api-key")
     expected = os.getenv("API_KEY")
     if expected and key != expected:
-        raise HTTPException(status_code=401, detail="unauthorized")
+        return JSONResponse({"detail": "unauthorized"}, status_code=401)
 
     try:
         csrf_header = request.headers.get("x-csrf-token")
