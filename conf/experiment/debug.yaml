@@ -1,0 +1,32 @@
+# Debug experiment configuration
+# Fast iteration for debugging
+
+# @package _global_
+
+defaults:
+  - /model: base
+  - /optimizer: adam
+  - /scheduler: constant
+
+experiment:
+  name: debug
+  seed: 42
+  max_epochs: 1
+  fast_dev_run: true
+
+training:
+  batch_size: 2
+  num_workers: 0
+  log_every_n_steps: 1
+  val_check_interval: 10
+
+model:
+  hidden_dim: 64
+  num_layers: 2
+
+optimizer:
+  lr: 1e-3
+
+logging:
+  verbose: true
+  save_checkpoints: false

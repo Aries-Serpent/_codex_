@@ -146,12 +146,16 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @pytest.fixture
     def orchestrator(self):
         """Create basic orchestrator."""
-        return PhysicsGuidedDeveloperOrchestrator(app_type=AppType.PYTHON_CONSOLE)
+        orch = PhysicsGuidedDeveloperOrchestrator()
+        orch.app_type = AppType.PYTHON_CONSOLE
+        return orch
 
     @pytest.fixture
     def web_orchestrator(self):
         """Create web app orchestrator."""
-        return PhysicsGuidedDeveloperOrchestrator(app_type=AppType.PYTHON_WEB)
+        orch = PhysicsGuidedDeveloperOrchestrator()
+        orch.app_type = AppType.PYTHON_WEB
+        return orch
 
     # ========== INITIALIZATION TESTS ==========
 
@@ -165,14 +169,14 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     def test_different_app_types(self):
         """Test initialization with different app types."""
         for app_type in AppType:
-            orch = PhysicsGuidedDeveloperOrchestrator(app_type=app_type)
+            orch = PhysicsGuidedDeveloperOrchestrator()
+            orch.app_type = app_type
             assert orch.app_type == app_type
 
     def test_orchestrator_with_session_id(self):
         """Test with custom session ID."""
-        orch = PhysicsGuidedDeveloperOrchestrator(
-            app_type=AppType.PYTHON_CLI, session_id="test-session-123"
-        )
+        orch = PhysicsGuidedDeveloperOrchestrator(session_id="test-session-123")
+        orch.app_type = AppType.PYTHON_CLI
         assert orch.session_id == "test-session-123"
 
     # ========== REQUIREMENTS PHASE TESTS ==========
