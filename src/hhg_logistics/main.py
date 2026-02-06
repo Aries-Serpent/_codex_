@@ -20,6 +20,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+logger = logging.getLogger(__name__)
+
 try:
     import hydra
 except ImportError as e:
@@ -30,8 +32,6 @@ from common.randomness import set_seed
 from omegaconf import DictConfig, OmegaConf
 
 from .pipeline import run_pipeline
-
-logger = logging.getLogger(__name__)
 
 
 @hydra.main(
