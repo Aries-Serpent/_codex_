@@ -128,8 +128,15 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
                 target = target.to(preds.device)
             common = min(preds.shape[-1], target.shape[-1])
             if common > 0:
-                accuracy_tensor = (preds[..., :common] == target[..., :common]).float()
-                record["token_accuracy"] = float(accuracy_tensor.mean().item())
+                # Create mask to ignore -100 labels (standard ignore_index)
+                mask = target[..., :common] != -100
+                if mask.any():
+                    masked_preds = preds[..., :common][mask]
+                    masked_target = target[..., :common][mask]
+                    accuracy_tensor = (masked_preds == masked_target).float()
+                    record["token_accuracy"] = float(accuracy_tensor.mean().item())
+                else:
+                    record["token_accuracy"] = 0.0
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
