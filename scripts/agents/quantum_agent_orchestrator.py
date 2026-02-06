@@ -13,7 +13,7 @@ import argparse
 import json
 import sys
 from dataclasses import dataclass, asdict, field
-from typing import List, Dict, Optional, Set
+from typing import List, Dict
 from pathlib import Path
 import numpy as np
 

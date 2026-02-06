@@ -14,8 +14,6 @@ import json
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from scripts.agents.quantum_agent_orchestrator import (
-    Agent,
-    AgentCapability,
     QuantumAgentOrchestrator,
     AgentQuantumState
 )
@@ -84,7 +82,6 @@ class TestQuantumAgentOrchestrator:
         orchestrator = QuantumAgentOrchestrator()
         
         # workflow-health-monitor outputs should entangle with ci-testing-agent inputs
-        health_monitor = orchestrator.agents['workflow-health-monitor']
         ci_testing = orchestrator.agents['ci-testing-agent']
         
         # ci-testing should be entangled with workflow-health-monitor

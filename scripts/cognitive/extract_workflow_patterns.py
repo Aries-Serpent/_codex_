@@ -19,7 +19,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import numpy as np
 import requests
@@ -236,7 +236,6 @@ class WorkflowPatternExtractor:
             return patterns
 
         failures = [r for r in runs if r.get("conclusion") == "failure"]
-        successes = [r for r in runs if r.get("conclusion") == "success"]
 
         failure_rate = len(failures) / total if total > 0 else 0
 
@@ -530,7 +529,7 @@ def main():
 
         # Feed to cognitive brain
         feeder = CognitiveBrainFeeder()
-        metadata = feeder.feed_patterns(patterns)
+        feeder.feed_patterns(patterns)
 
         print(f"\n✅ Pattern extraction complete!")
         print(f"📁 Cognitive brain database: {feeder.patterns_db}")

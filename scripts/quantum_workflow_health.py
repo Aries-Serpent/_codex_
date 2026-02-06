@@ -14,7 +14,7 @@ import argparse
 import json
 import sys
 from dataclasses import dataclass, asdict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 import random
 import math
@@ -75,20 +75,28 @@ class QuantumWorkflowState:
         else:
             self.measured_health = 'critical'
         
-        self.measurement_time = datetime.utcnow().isoformat()
+        self.measurement_time = datetime.now(timezone.utc).isoformat()
         return self.measured_health
     
     def apply_entanglement(self, other_states: List['QuantumWorkflowState']):
         """Apply entanglement effects from related workflows"""
+        amplitude_updated = False
         for other in other_states:
             if other.workflow_id in self.entangled_with:
                 # Entanglement causes correlation
                 if other.measured_health == 'critical':
                     # Reduce our health amplitude
                     self.health_amplitude *= 0.8
+                    amplitude_updated = True
                 elif other.measured_health == 'healthy':
                     # Increase our health amplitude
                     self.health_amplitude *= 1.1
+                    amplitude_updated = True
+        
+        if amplitude_updated:
+            # Invalidate cached measurement so it reflects the updated amplitude
+            self.measured_health = None
+            self.measurement_time = None
 
 
 class QuantumWorkflowHealthAnalyzer:
