@@ -289,32 +289,32 @@ class NdjsonSummarizer:
 def summarize_directory(
     run_dir: str | Path, fmt: str, destination: str | Path | None = None
 ) -> Path:
+    """Summarize metrics from a run directory to a specific format.
+    
+    Args:
+        run_dir: Directory containing metrics.ndjson files
+        fmt: Output format ('csv' or 'parquet')  
+        destination: Optional destination path
+        
+    Returns:
+        Path to the generated summary file
+    """
     summarizer = NdjsonSummarizer(run_dir)
     return summarizer.write(fmt, destination)
 
 
+# Convenience wrapper for backward compatibility with tests
+def summarize(run_dir: str | Path, fmt: str, destination: str | Path | None = None) -> Path:
+    """Convenience wrapper for summarize_directory.
+    
+    This function provides a simpler interface compatible with existing tests.
+    """
+    return summarize_directory(run_dir, fmt, destination)
+
+
 def _handle_summarize(args: argparse.Namespace) -> int:
-    run_dir = Path(args.input).expanduser().resolve()
-    try:
-        summarizer = NdjsonSummarizer(run_dir)
-        summary = summarizer.summarise()
-    except FileNotFoundError as exc:
-        logger.debug(f"FileNotFoundError: {exc}")
-        raise SystemExit(str(exc)) from exc
-    suffix = args.output.lower()
-    dest = (
-        Path(args.dest).expanduser().resolve()
-        if args.dest
-        else (run_dir / f"metrics_summary.{suffix}")
-    )
-    if suffix == "csv":
-        output_path = _write_csv(dest, summary)
-    elif suffix == "parquet":
-        output_path = _write_parquet(dest, summary)
-    else:  # pragma: no cover - argparse guards choices
-        raise SystemExit(f"Unsupported output format: {args.output}")
-    print(f"Wrote {output_path} ({len(summary)} rows)")
-    return 0
+    """Old handler - redirects to the new one."""
+    return _handle_summarize_cli(args)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -338,7 +338,8 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def summarize(args: argparse.Namespace) -> int:
+def _handle_summarize_cli(args: argparse.Namespace) -> int:
+    """Handle the summarize CLI command."""
     inp = Path(args.input).expanduser().resolve()
     pattern = getattr(args, "pattern", "metrics.ndjson*")
     try:
@@ -392,6 +393,6 @@ __all__ = [
     "NdjsonSummarizer",
     "build_parser",
     "main",
-    "summarize",
-    "summarize_directory",
+    "summarize",  # Simple wrapper for tests
+    "summarize_directory",  # Full-featured version
 ]
