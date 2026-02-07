@@ -371,7 +371,6 @@ def no_sentencepiece(monkeypatch):
     simulating an ImportError condition for testing fallback behavior.
     """
     import codex_ml.tokenization.sentencepiece_adapter as sp_adapter
-    original_spm = sp_adapter.spm
     monkeypatch.setattr(sp_adapter, "spm", None)
     yield
     # monkeypatch automatically restores original value

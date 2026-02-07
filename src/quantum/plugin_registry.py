@@ -171,15 +171,14 @@ class QuantumPluginRegistry:
             plugin: Plugin to register
         """
         self.plugins[plugin.name] = plugin
+        # add_node now creates edges: dependency → plugin (correct direction)
         self.dependency_graph.add_node(
             plugin.name, dependencies=plugin.dependencies, data={"plugin": plugin}
         )
 
-        for dep in plugin.dependencies:
-            self.dependency_graph.add_edge(plugin.name, dep)
-            # Mark as entangled
-            if plugin.name in self.plugins:
-                self.plugins[plugin.name].state = PluginState.ENTANGLED
+        # Mark plugins with dependencies as entangled
+        if plugin.dependencies and plugin.name in self.plugins:
+            self.plugins[plugin.name].state = PluginState.ENTANGLED
 
     def get_entangled_plugins(self, plugin_name: str) -> set[str]:
         """

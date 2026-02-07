@@ -187,6 +187,7 @@ def test_admin_create_tenant(client, test_tenant):
     try:
         tenant_registry.delete_tenant(new_tenant_id)
     except (ValueError, KeyError):
+        # Tenant may not exist or already deleted - safe to ignore in cleanup
         pass
 
 
