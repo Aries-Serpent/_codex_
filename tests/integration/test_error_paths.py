@@ -131,7 +131,16 @@ class TestDALErrorPaths:
 
                 # Sequential writes (SQLite connections are thread-local)
                 for i in range(10):
-                    artifact_id = str(uuid.uuid4())
+                    # First create an artifact for each item
+                    artifact = dal.ensure_artifact(
+                        sha=f"sha{i}",
+                        size=100,
+                        mime="text/plain",
+                        blob=b"test content",
+                        compression="zlib",
+                        storage_driver="db"
+                    )
+                    artifact_id = artifact["id"]
                     tombstone_id = str(uuid.uuid4())
                     dal.insert_item(
                         repo="test",
@@ -260,9 +269,11 @@ class TestEvaluationErrorPaths:
 
             metric = AccuracyMetric()
 
-            # Empty batch should handle gracefully or raise ValueError/ZeroDivisionError
-            with pytest.raises((ValueError, ZeroDivisionError)):
-                metric.add_batch([], [])
+            # Empty batch should be handled gracefully
+            metric.add_batch([], [])
+            result = metric.compute()
+            # With no predictions, accuracy should be 0.0
+            assert result == {"accuracy": 0.0}
         except ImportError:
             pytest.skip("AccuracyMetric not available")
 

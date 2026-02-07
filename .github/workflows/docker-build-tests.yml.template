@@ -1,0 +1,125 @@
+name: Art_Docker Build Tests
+
+on:
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Docker build target'
+        required: true
+        type: choice
+        options:
+          - all
+          - cpu-only
+          - gpu-only
+        default: 'all'
+      use_cache:
+        description: 'Use Docker layer cache'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker_builds:
+    name: Docker Build Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 90  # Generous timeout for Docker builds
+    
+    strategy:
+      matrix:
+        target: 
+          - ${{ (inputs.target == 'all' || inputs.target == 'cpu-only') && 'cpu-runtime' || '' }}
+          - ${{ (inputs.target == 'all' || inputs.target == 'gpu-only') && 'gpu-runtime' || '' }}
+      fail-fast: false  # Continue other builds if one fails
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
+      - name: Setup Python for tests
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-timeout
+
+      - name: Cache Docker layers
+        if: ${{ inputs.use_cache == true || github.event_name != 'workflow_dispatch' }}
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.target }}-${{ hashFiles('Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.target }}-
+            ${{ runner.os }}-buildx-
+
+      - name: Run Docker build test
+        id: docker_build
+        run: |
+          pytest tests/deployment/test_docker_build.py -m slow -v --tb=short
+        timeout-minutes: 60  # Step-level timeout
+        continue-on-error: false
+
+      - name: Capture Docker image info
+        if: success()
+        run: |
+          docker images | grep codex || true
+          docker inspect codex:test-${{ matrix.target }} || true
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: docker-build-logs-${{ matrix.target }}-${{ github.run_number }}
+          path: |
+            /tmp/docker-build-*.log
+            .pytest_cache/
+          retention-days: 30
+          if-no-files-found: warn
+
+  build_summary:
+    name: Docker Build Summary
+    runs-on: ubuntu-latest
+    needs: docker_builds
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # Docker Build Tests Summary
+          
+          ## Results
+          - **Workflow:** Docker Build Tests
+          - **Run ID:** ${{ github.run_id }}
+          - **Trigger:** ${{ github.event_name }}
+          - **Duration:** ${{ needs.docker_builds.outputs.duration }}
+          
+          ## Status
+          - **CPU Build:** ${{ needs.docker_builds.result }}
+          - **GPU Build:** ${{ needs.docker_builds.result }}
+          
+          ## Notes
+          These are long-running tests (10-30 minutes each) that validate
+          Docker image builds. They are excluded from the main coverage
+          workflow to keep CI/CD times reasonable.
+          
+          To run manually:
+          \`\`\`bash
+          pytest tests/deployment/test_docker_build.py -m slow -v
+          \`\`\`
+          EOF

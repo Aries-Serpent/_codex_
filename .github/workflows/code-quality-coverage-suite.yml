@@ -48,7 +48,7 @@ jobs:
       
       - name: Run tests with coverage
         run: |
-          coverage run -m pytest -q || true
+          coverage run -m pytest -q -m "not slow" || true
           coverage json -o .coverage.json
       
       - name: Generate coverage HTML report
