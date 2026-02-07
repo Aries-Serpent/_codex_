@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:32:42Z
+reason: "Phase 1 Group 1 - Consolidated into security-scanning-suite.yml"
+consolidated_into: "security-scanning-suite.yml"
+phase: "Phase 1 Consolidation"
+group: "Group 1 - Security Suites"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "security-scanning-suite.yml provides comprehensive CodeQL, dependency, and secret scanning"

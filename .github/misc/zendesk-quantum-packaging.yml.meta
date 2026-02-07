@@ -1,0 +1,8 @@
+moved_at: 2026-02-07T01:32:13Z
+reason: "Phase 1 Group 10 - Deprecated/experimental workflow"
+status: "Inactive - moved to misc folder"
+phase: "Phase 1 Consolidation"
+group: "Group 10 - Misc/Deprecated"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+notes: "One-time use, experimental, or deprecated workflows"

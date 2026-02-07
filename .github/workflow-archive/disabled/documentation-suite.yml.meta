@@ -1,0 +1,8 @@
+disabled_at: 2026-02-07T01:34:11Z
+reason: "Phase 1 Final - Consolidated into pages-mkdocs.yml"
+consolidated_into: "pages-mkdocs.yml"
+phase: "Phase 1 Consolidation"
+group: "Final - Documentation Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true

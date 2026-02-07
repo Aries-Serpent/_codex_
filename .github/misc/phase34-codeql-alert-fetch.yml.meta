@@ -1,0 +1,12 @@
+moved_at: 2026-02-07T03:47:26Z
+reason: "Phase 2 Week 3 - Phased utility workflow moved to misc/"
+moved_from: ".github/workflows/phase34-codeql-alert-fetch.yml"
+moved_to: ".github/misc/phase34-codeql-alert-fetch.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 3 - Low Usage Utilities"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+still_functional: true
+restore_instructions: "cp .github/misc/phase34-codeql-alert-fetch.yml .github/workflows/"
+notes: "Phase 3/4 CodeQL alert fetch - phased utility. Can be restored if needed."
+usage_pattern: "Manual or scheduled CodeQL alert processing"
+triggers: "workflow_dispatch, schedule"

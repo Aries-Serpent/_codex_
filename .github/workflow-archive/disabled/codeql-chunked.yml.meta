@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:31:44Z
+reason: "Phase 1 Group 6 - Standard CodeQL sufficient for repository size"
+consolidated_into: "codeql-analysis.yml (standard)"
+phase: "Phase 1 Consolidation"
+group: "Group 6 - CodeQL Analysis"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Repository size no longer requires chunking. Standard CodeQL analysis handles full codebase."

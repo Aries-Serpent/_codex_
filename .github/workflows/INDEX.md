@@ -15,44 +15,79 @@ This directory contains all GitHub Actions workflows for the _codex_ repository,
 - [Monitoring](#monitoring-workflows) - Repository and workflow monitoring
 - [Maintenance](#maintenance-workflows) - Cleanup and maintenance tasks
 
-## 📊 Consolidated Workflow Suites
+## 📊 Consolidated Workflow Suites (Phase 1 & 2)
 
-These are the new consolidated workflow suites that combine multiple workflows for improved efficiency:
+These are the unified workflow suites created during Phase 1 & 2 consolidation that combine multiple workflows for improved efficiency:
 
-### 🧪 [test-suite.yml](test-suite.yml)
-**Consolidated Testing Suite** - Replaces 6 individual test workflows
-- **Jobs:** Core tests, RAG tests, Auth tests, Integration tests, Determinism tests
-- **Triggers:** Pull requests, Push to main, Manual, workflow_call
-- **Cache Tier:** Live
-- **Replaces:** test-comprehensive.yml, test-rag.yml, auth-tests.yml, coverage_report.yml, determinism.yml, integration-gated.yml
+### 🧠 [cognitive-action-decision.yml](cognitive-action-decision.yml)
+**Cognitive Decision & Action Suite** - Unified cognitive decision-making and action execution
+- **Jobs:** Decision engine, Action executor, Full-cycle processing
+- **Triggers:** Schedule (6h), Manual, workflow_run
+- **Modes:** decision-only, action-only, full-cycle
+- **Replaces:** cognitive-decision.yml, cognitive-action.yml
 
-### 💾 [cache-suite.yml](cache-suite.yml)
-**Cache Management Suite** - Replaces 3 cache-related workflows
-- **Jobs:** Cache warmup, Cache cleanup, Cache management, Cache validation
-- **Triggers:** Schedule (6h warmup, daily cleanup, weekly management), Manual, workflow_call
-- **Cache Tier:** Live
-- **Replaces:** cache-warmup.yml, cache-management.yml, cache-cleanup.yml
+### 📊 [cognitive-analysis-feed.yml](cognitive-analysis-feed.yml)
+**Cognitive Analysis & Pattern Feed Suite** - Unified aftermath evaluation and pattern learning
+- **Jobs:** Aftermath evaluation, Pattern feeding, Learning analysis
+- **Triggers:** Schedule (daily), Manual, workflow_run
+- **Modes:** aftermath-only, pattern-feed-only, full-analysis
+- **Replaces:** cognitive-aftermath.yml, cognitive-brain-feed.yml
 
-### 🏥 [ci-health-suite.yml](ci-health-suite.yml)
-**CI/CD Health Monitoring Suite** - Replaces 5 monitoring workflows
-- **Jobs:** Health monitor, Artifact monitoring, Runner diagnostics, CI diagnostics
-- **Triggers:** Schedule (3h health, 6h diagnostics), Manual, workflow_call
-- **Cache Tier:** Common
-- **Replaces:** ci-health-monitor.yml, ci-diagnostic-automation.yml, artifact-monitoring.yml, repository-health-monitoring.yml, runner-diagnostics.yml
+### 🤖 [agent-orchestration-unified.yml](agent-orchestration-unified.yml)
+**Agent Orchestration Suite** - Unified multi-agent coordination
+- **Jobs:** Chain orchestration, Agent handoff, Multi-agent coordination
+- **Triggers:** Manual, workflow_run
+- **Modes:** chain-orchestration, handoff-execution, full-orchestration
+- **Replaces:** agent-chain-orchestrator.yml, agent_handoff.yml
+
+### 🔄 [copilot-evolution-suite.yml](copilot-evolution-suite.yml)
+**Copilot Evolution Suite** - Unified Copilot review and self-evolution
+- **Jobs:** Cascade review, Self-evolution, Full suite
+- **Triggers:** Schedule (4h), PR, Manual
+- **Modes:** evolution-only, review-only, full-suite
+- **Replaces:** copilot-cascade-review.yml, copilot-self-evolution.yml
+
+### 📋 [audit-qa-suite.yml](audit-qa-suite.yml)
+**Audit & QA Suite** - Unified audit and quality assurance
+- **Jobs:** Audit gap analysis, Codebase QA walkthrough, Quality checks
+- **Triggers:** Schedule (weekly), PR, Manual, workflow_call
+- **Modes:** audit-only, qa-only, full-suite
+- **Replaces:** audit-improvement-pipeline.yml, codebase-qa-walkthrough.yml
+
+### 🚀 [unified-deployment.yml](unified-deployment.yml)
+**Unified Deployment Suite** - Consolidated deployment operations
+- **Jobs:** Cognitive app deployment, Pre-release deployment
+- **Triggers:** Manual, workflow_run
+- **Modes:** cognitive-app, pre-release, full-deployment
+- **Replaces:** deploy-cognitive-app.yml, pre-release-deployment.yml
+
+### 📊 [code-quality-coverage-suite.yml](code-quality-coverage-suite.yml)
+**Code Quality & Coverage Suite** - Unified quality and coverage analysis
+- **Jobs:** Coverage reporting, Code quality analysis
+- **Triggers:** PR, Push, Manual, workflow_call
+- **Modes:** coverage-only, quality-only, full-analysis
+- **Replaces:** coverage_report.yml, code-quality.yml
+
+### 🔍 [data-quality-suite.yml](data-quality-suite.yml)
+**Data Quality & Determinism Suite** - Unified data validation and determinism testing
+- **Jobs:** Data validation, Determinism testing, Manifest validation
+- **Triggers:** PR, Push, Manual, workflow_call
+- **Modes:** validation-only, determinism-only, full-suite
+- **Replaces:** data_validation.yml, determinism.yml
+
+### 📈 [workflow-analytics-unified.yml](workflow-analytics-unified.yml)
+**Workflow Analytics Suite** - Unified workflow performance analytics
+- **Jobs:** Analytics collection, Trend analysis, Performance reporting
+- **Triggers:** Schedule, Manual, workflow_run
+- **Modes:** scheduled, manual, on-demand
+- **Replaces:** workflow-analytics-scheduled.yml, workflow-analytics-manual.yml
 
 ### 🔒 [security-scanning-suite.yml](security-scanning-suite.yml)
-**Security Scanning Suite** - Consolidates security scanning workflows
+**Security Scanning Suite** - Consolidated security scanning
 - **Jobs:** CodeQL scan, Dependency scan, Secret scan, SBOM generation
 - **Triggers:** Push, Pull request, Schedule (daily, weekly), Manual, workflow_call
 - **Cache Tier:** Common
-- **Replaces:** codeql-analysis.yml, dependency-scan.yml, security-scan.yml, semgrep_sarif.yml (partially)
-
-### 📚 [documentation-suite.yml](documentation-suite.yml)
-**Documentation Suite** - Consolidates documentation workflows
-- **Jobs:** MkDocs build, Link check, Deploy pages
-- **Triggers:** Push, Pull request, Manual, workflow_call
-- **Cache Tier:** Common
-- **Replaces:** pages-mkdocs.yml, api-documentation.yml, wiki-assemble.yml (partially), documentation-link-checker.yml
+- **Replaces:** Multiple security workflows (see Phase 1 report)
 
 ## 📂 Workflow Categories
 
@@ -62,10 +97,11 @@ Active workflows for running tests and collecting coverage:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [test-suite.yml](test-suite.yml) | 🆕 Consolidated testing suite | PR, Push, Manual | ✅ Active |
-| [test-comprehensive.yml](test-comprehensive.yml) | Comprehensive test execution | PR, Push | ✅ Active |
+| [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
 | [ml-tests.yml.disabled](ml-tests.yml.disabled) | ML model testing | Manual | ⏸️ Disabled |
+| [optimized-ci.yml](optimized-ci.yml) | Optimized CI pipeline | PR, Push | ✅ Active |
 | [rust_swarm_ci.yml](rust_swarm_ci.yml) | Rust swarm testing | PR, Push | ✅ Active |
+| [test-rag.yml](test-rag.yml) | RAG model testing | Manual | ✅ Active |
 
 ### Security Workflows
 
@@ -75,10 +111,7 @@ Security scanning, vulnerability detection, and compliance:
 |----------|-------------|---------|--------|
 | [security-scanning-suite.yml](security-scanning-suite.yml) | 🆕 Consolidated security scanning | PR, Push, Schedule | ✅ Active |
 | [codeql-analysis.yml](codeql-analysis.yml) | CodeQL security analysis | PR, Push, Schedule | ✅ Active |
-| [codeql-chunked.yml](codeql-chunked.yml) | Chunked CodeQL analysis | Schedule | ✅ Active |
 | [dependency-scan.yml](dependency-scan.yml) | Dependency vulnerability scan | Schedule | ✅ Active |
-| [security-scan.yml](security-scan.yml) | General security scanning | PR, Push | ✅ Active |
-| [security-suite.yml](security-suite.yml) | Security test suite | PR, Push | ✅ Active |
 | [semgrep_sarif.yml](semgrep_sarif.yml) | Semgrep SARIF analysis | PR, Push | ✅ Active |
 | [sbom.yml](sbom.yml) | Software Bill of Materials | Release | ✅ Active |
 
@@ -88,8 +121,9 @@ Pipeline health monitoring and diagnostics:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [ci-health-suite.yml](ci-health-suite.yml) | 🆕 Consolidated CI/CD health monitoring | Schedule, Manual | ✅ Active |
+| [artifact-monitoring.yml](artifact-monitoring.yml) | Artifact monitoring and tracking | Schedule | ✅ Active |
 | [batch-ci-triage.yml](batch-ci-triage.yml) | Batch CI issue triage | Schedule | ✅ Active |
+| [ci-health-monitor.yml](ci-health-monitor.yml) | CI/CD health monitoring | Schedule | ✅ Active |
 | [repository-health-monitoring.yml](repository-health-monitoring.yml) | Repository health checks | Schedule | ✅ Active |
 
 ### Cache Management Workflows
@@ -98,7 +132,7 @@ Cache optimization and maintenance:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [cache-suite.yml](cache-suite.yml) | 🆕 Consolidated cache management | Schedule, Manual | ✅ Active |
+| _No standalone cache management workflows - distributed caching pattern used_ | Each workflow manages its own cache | N/A | ℹ️ Info |
 
 ### Documentation Workflows
 
@@ -106,9 +140,9 @@ Documentation building, validation, and deployment:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [documentation-suite.yml](documentation-suite.yml) | 🆕 Consolidated documentation suite | PR, Push, Manual | ✅ Active |
-| [pages-mkdocs.yml](pages-mkdocs.yml) | MkDocs documentation build | Push to main | ✅ Active |
 | [documentation-link-checker.yml](documentation-link-checker.yml) | Documentation link validation | PR, Schedule | ✅ Active |
+| [pages-mkdocs.yml](pages-mkdocs.yml) | MkDocs documentation build | Push to main | ✅ Active |
+| [api-documentation.yml](api-documentation.yml) | API documentation generation | Push, Manual | ✅ Active |
 
 ### Deployment Workflows
 
@@ -116,7 +150,7 @@ Release and deployment management:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [pre-release-deployment.yml](pre-release-deployment.yml) | Pre-release deployment | Manual | ✅ Active |
+| [unified-deployment.yml](unified-deployment.yml) | 🆕 Unified deployment suite | Manual | ✅ Active |
 | [docker-build-push.yml](docker-build-push.yml) | Docker image build and push | Push, Release | ✅ Active |
 | [pypi-publish.yml](pypi-publish.yml) | PyPI package publishing | Release | ✅ Active |
 
@@ -127,10 +161,8 @@ Authentication, secrets, and token management:
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
-| [auth-security-audit.yml](auth-security-audit.yml) | Auth security audit | Schedule | ✅ Active |
-| [auth-secret-rotation.yml](auth-secret-rotation.yml) | Secret rotation | Schedule | ✅ Active |
-| [auth-token-rotation.yml](auth-token-rotation.yml) | Token rotation | Schedule | ✅ Active |
-| [auth-compliance-report.yml](auth-compliance-report.yml) | Auth compliance reporting | Schedule | ✅ Active |
+
+**Note:** Auth security, rotation, and compliance workflows exist as documentation (`.md` files) but are not yet implemented as active workflows. See `.github/workflows/*.md` for specifications.
 
 ### Cognitive Brain Workflows
 
@@ -138,11 +170,10 @@ AI agent operations and cognitive processes:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [autonomous-agent.yml](autonomous-agent.yml) | Autonomous agent execution | Schedule, Manual | ✅ Active |
+| [cognitive-action-decision.yml](cognitive-action-decision.yml) | 🆕 Decision & action suite | Schedule, Manual | ✅ Active |
+| [cognitive-analysis-feed.yml](cognitive-analysis-feed.yml) | 🆕 Analysis & pattern feed suite | Schedule, Manual | ✅ Active |
 | [cognitive-perception.yml](cognitive-perception.yml) | Cognitive perception | Schedule | ✅ Active |
-| [cognitive-decision.yml](cognitive-decision.yml) | Cognitive decision making | Schedule | ✅ Active |
-| [cognitive-action.yml](cognitive-action.yml) | Cognitive action execution | Schedule | ✅ Active |
-| [cognitive-aftermath.yml](cognitive-aftermath.yml) | Cognitive aftermath analysis | Schedule | ✅ Active |
+| [autonomous-agent.yml](autonomous-agent.yml) | Autonomous agent execution | Schedule, Manual | ✅ Active |
 
 ### Monitoring Workflows
 
@@ -151,8 +182,7 @@ Repository and workflow monitoring:
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
 | [artifact-monitoring.yml](artifact-monitoring.yml) | Artifact monitoring and tracking | Schedule | ✅ Active |
-| [workflow-analytics-scheduled.yml](workflow-analytics-scheduled.yml) | Scheduled workflow analytics | Schedule | ✅ Active |
-| [workflow-analytics-manual.yml](workflow-analytics-manual.yml) | Manual workflow analytics | Manual | ✅ Active |
+| [workflow-analytics-unified.yml](workflow-analytics-unified.yml) | 🆕 Unified workflow analytics | Schedule, Manual | ✅ Active |
 
 ### Maintenance Workflows
 
@@ -183,70 +213,93 @@ All consolidated workflows support `workflow_call` for programmatic invocation b
 
 ## 📖 Documentation
 
+- [Phase 1 Consolidation Report](../../.github/workflow-archive/phase1-consolidation/PHASE1_COMPLETION_REPORT.md) - Phase 1 consolidation details
+- [Phase 2 Consolidation Report](../../.github/workflow-archive/phase2-consolidation/PHASE2_FINAL_COMPLETION_REPORT.md) - Phase 2 consolidation details
 - [Consolidation Guide](CONSOLIDATION_GUIDE.md) - How workflows were consolidated
 - [Deprecation Plan](DEPRECATION_PLAN.md) - Deprecation timeline and process
 - [Optimization Summary](OPTIMIZATION_SUMMARY.md) - Performance improvements
-- [Cache Architecture](CACHE_ARCHITECTURE_DIAGRAMS.md) - Cache design and strategy
+- [Misc Workflows](../../.github/misc/README.md) - Low-usage workflows moved to misc/
 
 ## 🚀 Usage Examples
 
 ### Running Tests
 
 ```bash
-# Run all tests
-gh workflow run test-suite.yml -f test-scope=all
+# Run specific test workflow
+gh workflow run auth-tests.yml
 
-# Run specific test scope
-gh workflow run test-suite.yml -f test-scope=rag
+# Run RAG tests
+gh workflow run test-rag.yml
 
-# Via AI agent (workflow_call)
-uses: ./.github/workflows/test-suite.yml
-with:
-  test-scope: core
+# Run optimized CI
+gh workflow run optimized-ci.yml
 ```
 
-### Managing Cache
+### Running Unified Suites
 
 ```bash
-# Warm cache
-gh workflow run cache-suite.yml -f operation=warmup
+# Run cognitive decision only
+gh workflow run cognitive-action-decision.yml -f mode=decision-only
 
-# Clean cache
-gh workflow run cache-suite.yml -f operation=cleanup
+# Run full cognitive analysis
+gh workflow run cognitive-analysis-feed.yml -f mode=full-analysis
 
-# Run all cache operations
-gh workflow run cache-suite.yml -f operation=all
+# Run audit only
+gh workflow run audit-qa-suite.yml -f mode=audit-only
+
+# Run deployment
+gh workflow run unified-deployment.yml -f mode=cognitive-app
 ```
 
-### Monitoring CI Health
+### Managing Documentation
 
 ```bash
-# Full health check
-gh workflow run ci-health-suite.yml -f operation=all
+# Check documentation links
+gh workflow run documentation-link-checker.yml
 
-# Specific check
-gh workflow run ci-health-suite.yml -f operation=health-monitor
+# Build MkDocs
+gh workflow run pages-mkdocs.yml
+
+# Generate API docs
+gh workflow run api-documentation.yml
+```
+
+### Monitoring Workflows
+
+```bash
+# Run workflow analytics
+gh workflow run workflow-analytics-unified.yml -f mode=scheduled
+
+# Monitor CI health
+gh workflow run ci-health-monitor.yml
+
+# Check artifact status
+gh workflow run artifact-monitoring.yml
 ```
 
 ## 🔗 Related Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Agent Integration Guide](../../docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md)
+- [Phase 1 Consolidation Archive](../../.github/workflow-archive/phase1-consolidation/)
+- [Phase 2 Consolidation Archive](../../.github/workflow-archive/phase2-consolidation/)
+- [Misc Workflows Directory](../../.github/misc/)
 - [Workflow Validation Script](../../scripts/validate_workflows.py)
 - [Performance Monitoring](../../scripts/monitor_workflow_performance.py)
 
 ## 📞 Support
 
 For issues or questions about workflows:
-1. Check the [CI/CD Health Suite](ci-health-suite.yml) for automated diagnostics
-2. Review workflow run logs
-3. Create an issue with `ci-health` or `workflow-consolidation` label
-4. Contact @mbaetiong for critical issues
+1. Check [CI Health Monitor](ci-health-monitor.yml) for automated diagnostics
+2. Review workflow run logs in GitHub Actions
+3. Check [Phase 2 Completion Report](../../.github/workflow-archive/phase2-consolidation/PHASE2_FINAL_COMPLETION_REPORT.md) for consolidation details
+4. Create an issue with `ci-health` or `workflow-consolidation` label
+5. Contact @mbaetiong for critical issues
 
 ---
 
-**Last Updated:** 2026-01-26  
-**Total Workflows:** 94 (5 consolidated suites + 89 individual)  
+**Last Updated:** 2026-02-07  
+**Total Workflows:** 55 active workflows + 11 misc utilities  
+**Consolidated Suites:** 10 unified workflows  
 **Python Version:** 3.12  
-**Cache Coverage:** 75%  
-**Status:** Production Ready ✅
+**Cache Strategy:** Distributed (per-workflow)  
+**Status:** Phase 2 Complete ✅

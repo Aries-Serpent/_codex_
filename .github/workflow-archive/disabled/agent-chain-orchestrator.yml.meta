@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T02:52:21Z
+reason: "Phase 2 Week 1 - Consolidated into unified agent orchestration"
+consolidated_into: "agent-orchestration-unified.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 1 - Agent Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Agent workflows consolidated: chain orchestrator + handoff into single unified workflow"

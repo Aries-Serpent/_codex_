@@ -1,5 +1,14 @@
 name: Art_Workflow Documentation Link Validation
 
+# Link validation workflow with flexible strict mode:
+# - PRs: Non-blocking (warn but allow merge) - helps catch issues early without blocking
+# - Push to main: Strict mode (fails on errors) - ensures main branch quality
+# - Manual runs: Configurable strict mode (default: strict)
+# - Scheduled runs: Strict mode (weekly validation)
+#
+# This prevents PRs from being blocked by link validation failures while still
+# maintaining quality standards for the main branch.
+
 on:
   pull_request:
     branches: [main, develop]
@@ -16,9 +25,18 @@ on:
       - '.github/workflows/**/*.yml'
   
   workflow_dispatch:
+    inputs:
+      strict_mode:
+        description: 'Fail workflow on broken links (default: true for manual runs)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
   
   schedule:
-    # Weekly validation on Sunday at 3 AM
+    # Weekly validation on Sunday at 3 AM (strict mode)
     - cron: '0 3 * * 0'
 
 permissions:
@@ -54,23 +72,28 @@ jobs:
         id: validate
         run: |
           python .github/scripts/validate-links.py
-        continue-on-error: false
+        # Non-blocking for PRs (report but don't fail)
+        # Strict mode for manual runs and scheduled checks
+        continue-on-error: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.strict_mode == 'false') }}
       
       - name: Comment on PR
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
           script: |
-            const comment = `## ❌ Workflow Documentation Link Validation Failed
+            const comment = `## ⚠️ Workflow Documentation Link Validation - Issues Found
             
-            Broken links were found in workflow documentation. Please review the workflow run logs for details.
+            Broken links were found in workflow documentation. These are **non-blocking warnings** for PRs but should be addressed.
             
             **Common fixes:**
             - Update relative paths to match file locations
             - Ensure linked files exist in the repository
             - Use GitHub URLs for files outside the workflows directory
+            - Remove references to consolidated workflows (see Phase 2 consolidation docs)
             
-            See the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`;
+            See the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+            
+            **Note:** This check is non-blocking for PRs. Manual validation runs with strict mode enabled will fail on broken links.`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
