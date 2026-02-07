@@ -23,9 +23,9 @@ This folder contains deprecated, experimental, low-usage, or utility workflows t
 
 **Total**: 11 workflows
 - **Phase 1**: 4 workflows (inactive/deprecated)
-- **Phase 2 Week 3**: 7 workflows (low-usage utilities, still functional)
+- **Phase 2 Week 3**: 7 workflows (low-usage utilities, archived)
 
-All workflows in misc/ remain **functional** and can be triggered manually or via schedule. They are moved here to reduce clutter in the main workflows directory while preserving their functionality.
+**Important**: Workflows in `.github/misc/` are **archived and inactive**. GitHub Actions only scans `.github/workflows/` for executable workflows. To use these workflows, they must first be restored to `.github/workflows/`.
 
 ## Restoration
 

@@ -103,7 +103,7 @@ jobs:
             
             - Evaluation mode: ${{ inputs.evaluation_mode || 'full' }}
             - Triggered by: ${{ github.event_name }}
-            - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             
             git push
             echo "✅ Learning updates committed"
@@ -173,7 +173,7 @@ jobs:
             
             - Analysis period: ${{ inputs.days_back || '30' }} days
             - Triggered by: ${{ github.event_name }}
-            - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             
             git push
             echo "✅ Cognitive brain updated"
@@ -209,4 +209,4 @@ jobs:
           echo "### Execution Details" >> $GITHUB_STEP_SUMMARY
           echo "- Evaluation Mode: ${{ inputs.evaluation_mode || 'full' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Analysis Period: ${{ inputs.days_back || '30' }} days" >> $GITHUB_STEP_SUMMARY
-          echo "- Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
+          echo "- Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
