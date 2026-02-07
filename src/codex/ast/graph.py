@@ -111,9 +111,9 @@ class DependencyGraph:
         Returns:
             list of nodes in topological order (dependencies before dependents).
             
-            With edges dep→node (dependencies point to dependents), post-order DFS
-            builds stack as [leaf_deps, ..., roots]. This IS the correct order
-            (dependencies first), so return stack as-is WITHOUT reversing.
+            With edges dep→node (dependency points to dependent), post-order DFS
+            visits deepest nodes first, building stack as [deepest, ..., roots].
+            We need [roots, ..., deepest], so reverse the stack.
 
         Raises:
             ValueError: If graph contains cycles
@@ -136,8 +136,8 @@ class DependencyGraph:
             if node_id not in visited:
                 dfs(node_id)
 
-        # Return as-is: post-order gives correct order (dependencies before dependents)
-        return stack
+        # Reverse: post-order DFS gives [deepest, ..., roots], we need [roots, ..., deepest]
+        return stack[::-1]
 
     def get_transitive_deps(self, node_id: str) -> set[str]:
         """Get all transitive dependencies of a node."""
