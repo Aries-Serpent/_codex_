@@ -1132,7 +1132,18 @@ def run_functional_training(
     from codex_ml.training.functional_training import TrainConfig as TrainCfg, train as _ft_train
 
     def run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg):
-        """Adapter wrapping functional_training.train for legacy API."""
+        """Adapter wrapping functional_training.train for legacy API.
+
+        Args:
+            model: PyTorch model to train.
+            tokenizer: Tokenizer instance (unused by functional training).
+            train_ds: Training dataset (iterable of items coerced to strings).
+            val_ds: Validation dataset or None.
+            train_cfg: TrainConfig instance for functional_training.train.
+
+        Returns:
+            Dict of training metrics from functional_training.train.
+        """
         train_texts = [str(item) for item in train_ds] if train_ds else []
         val_texts = [str(item) for item in val_ds] if val_ds else None
         return _ft_train(train_texts, config=train_cfg, val_texts=val_texts, model=model)
