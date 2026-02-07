@@ -1,4 +1,13 @@
 {
+  "name": "zendesk_docs",
+  "version": "1.0.0",
+  "splits": {
+    "train": 0,
+    "val": 0,
+    "test": 0
+  },
+  "checksums": [],
+  "features": [],
   "apps": {
     "support_app_api": [
       "https://developer.zendesk.com/api-reference/apps/apps-support-api/ticket_sidebar/"
