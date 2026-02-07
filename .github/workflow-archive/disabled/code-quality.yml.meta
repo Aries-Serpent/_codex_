@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T03:40:44Z
+reason: "Phase 2 Week 2 - Consolidated into code quality & coverage suite"
+consolidated_into: "code-quality-coverage-suite.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 2 - Quality Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Quality workflows consolidated: coverage report + code quality analysis into unified suite"
