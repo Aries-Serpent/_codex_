@@ -30,7 +30,7 @@ class DependencyGraph:
         
         Note:
             For each dependency, creates edge: dependency → node_id
-            This ensures dependencies appear before dependents in topological order.
+            This ensures dependencies appear before dependent nodes in topological order.
         """
         self.nodes.add(node_id)
         if data:
