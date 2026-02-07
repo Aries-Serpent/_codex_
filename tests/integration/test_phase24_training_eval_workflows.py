@@ -13,11 +13,12 @@ def test_phase24_simple_trainer_init():
 @pytest.mark.integration
 def test_phase24_checkpoint_config_validation():
     """Test Phase 24 CheckpointConfig validation."""
-    from src.training.checkpoint import CheckpointConfig
+    from src.training.trainer import CheckpointConfig
     
-    config = CheckpointConfig(every=5, path="/tmp/ckpt")
-    assert config.every == 5
-    assert config.path == "/tmp/ckpt"
+    config = CheckpointConfig(directory="/tmp/ckpt", best_k=5, monitor="val_loss")
+    assert config.directory == "/tmp/ckpt"
+    assert config.best_k == 5
+    assert config.monitor == "val_loss"
 
 
 @pytest.mark.integration

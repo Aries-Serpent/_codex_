@@ -189,7 +189,7 @@ class WorkflowRun(BaseModel):
         frozen = True
 
 
-class WorkflowJob(BaseModel):
+class WorkflowJobExecution(BaseModel):
     """Workflow job execution metadata for service integration."""
     
     id: int
