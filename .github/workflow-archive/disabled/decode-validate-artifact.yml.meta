@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:34:11Z
+reason: "Phase 1 Final - Manual-only utility workflow (low usage)"
+consolidated_into: "None (can run manually when needed)"
+phase: "Phase 1 Consolidation"
+group: "Final - Utility Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: false
+notes: "workflow_dispatch only, rarely used. Can be re-enabled if needed."

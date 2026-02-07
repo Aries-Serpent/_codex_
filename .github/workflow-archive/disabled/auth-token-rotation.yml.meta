@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:33:23Z
+reason: "Phase 1 Group 5 - Administrative auth workflows (low usage)"
+consolidated_into: "None (administrative tasks can be run manually)"
+phase: "Phase 1 Consolidation"
+group: "Group 5 - Authentication Management"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: false
+notes: "Administrative tasks (compliance, MFA, OAuth sync, token rotation) can be run manually when needed. auth-tests.yml kept for CI testing."
