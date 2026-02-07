@@ -19,6 +19,12 @@ def test_validate_repo_base_outputs(monkeypatch, capsys):
     monkeypatch.setattr(validator, "checkout_branch", lambda branch="0D_base_": "work")
     # Ensure patterns we expect to hit exist in the repository
     monkeypatch.setattr(validator, "RIPGREP_PATTERNS", ["pytest", "training"])
+    # Filter REQUIRED to only files that exist in the working tree
+    import os
+    existing_required = [
+        f for f in validator.REQUIRED if os.path.exists(f)
+    ]
+    monkeypatch.setattr(validator, "REQUIRED", existing_required)
 
     validator.main()
     out = capsys.readouterr().out

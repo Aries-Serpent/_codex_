@@ -253,7 +253,8 @@ class TestFileSystemEdgeCases:
         rel_path = Path("./foo/bar")
         
         assert not rel_path.is_absolute()
-        assert str(rel_path).startswith(".")
+        # Path normalizes "./foo/bar" to "foo/bar" on Python 3.12+
+        assert "foo/bar" in str(rel_path)
     
     def test_path_with_spaces(self) -> None:
         """Test path with spaces."""

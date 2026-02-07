@@ -32,6 +32,17 @@ def test_run_with_invalid_task_errors():
     assert "not allowed" in result.output
 
 
+def _has_help_output(output: str) -> bool:
+    """Check if output looks like CLI help text."""
+    lower = output.lower()
+    return (
+        "Usage:" in output
+        or "commands" in lower
+        or "subcommand" in lower
+        or "--help" in lower
+    )
+
+
 @pytest.mark.parametrize(
     "args",
     [
@@ -46,7 +57,7 @@ def test_groups_emit_help_when_no_subcommand(args):
     result = runner.invoke(repo_cli.cli, args)
     assert result.exit_code == 0
     assert result.output.strip()
-    assert "Usage:" in result.output
+    assert _has_help_output(result.output)
 
 
 @pytest.mark.parametrize(

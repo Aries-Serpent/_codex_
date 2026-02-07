@@ -395,3 +395,8 @@ docs/stale_markers_report.md
 # Mutation testing
 mutants/
 .mutmut-cache/
+
+# Temporary artifacts
+_tmp_artifacts/
+parquet/
+uri/
