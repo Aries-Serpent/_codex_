@@ -36,8 +36,9 @@ jobs:
       fail-fast: false  # Continue other builds if one fails
     
     # Skip job if target doesn't match input filter
+    # inputs.target defaults to 'all' for schedule trigger (no inputs)
     if: |
-      inputs.target == 'all' ||
+      (inputs.target == '' || inputs.target == null || inputs.target == 'all') ||
       (inputs.target == 'cpu-only' && matrix.target == 'cpu-runtime') ||
       (inputs.target == 'gpu-only' && matrix.target == 'gpu-runtime')
 

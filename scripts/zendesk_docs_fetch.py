@@ -126,9 +126,17 @@ def main() -> int:
     stamp = dt.date.today().isoformat()
     outdir = OUTROOT / stamp
 
+    # Known schema fields to skip (not Zendesk sections)
+    schema_fields = {'name', 'version', 'splits', 'checksums', 'features'}
+
     planned: list[str] = []
     for section, buckets in manifest.items():
+        if section in schema_fields or not isinstance(buckets, dict):
+            continue
+            
         for bucket, urls in (buckets or {}).items():
+            if not isinstance(urls, list):
+                continue
             for url in urls:
                 planned.append(url)
                 if args.dry_run:
