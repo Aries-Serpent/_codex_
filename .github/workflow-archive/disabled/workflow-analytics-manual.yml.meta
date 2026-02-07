@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:30:57Z
+reason: "Phase 1 Group 7 - Consolidated into unified workflow"
+consolidated_into: "workflow-analytics-unified.yml"
+phase: "Phase 1 Consolidation"
+group: "Group 7 - Workflow Analytics"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Unified workflow supports scheduled, manual, and workflow_run triggers"

@@ -99,6 +99,23 @@ This agent specializes in GitHub Actions workflow management, including:
 - Use job-level conditionals for selective execution
 - Implement workflow_call for AI agent support
 
+**Pattern 2: Mode-Based Consolidation** (Phase 2 Pattern)
+- Unify related workflows into single file with mode selection
+- Use workflow_dispatch inputs for mode (e.g., decision-only, action-only, full-cycle)
+- Implement conditional job execution: `if: inputs.mode == 'X' || inputs.mode == 'full'`
+- Preserve all original triggers (schedule, workflow_run, pull_request)
+- Benefits: reduced maintenance, clearer ownership, backward compatibility
+
+**Phase 2 Unified Workflows** (.github/workflows/):
+- `cognitive-action-decision.yml` - Modes: decision-only, action-only, full-cycle
+- `cognitive-analysis-feed.yml` - Modes: aftermath-only, pattern-feed-only, full-analysis
+- `agent-orchestration-unified.yml` - Modes: chain-orchestration, handoff-execution, full-orchestration
+- `copilot-evolution-suite.yml` - Modes: evolution-only, review-only, full-suite
+- `audit-qa-suite.yml` - Modes: audit-only, qa-only, full-suite
+- `unified-deployment.yml` - Modes: cognitive-app-only, pre-release-only, full-deployment
+- `code-quality-coverage-suite.yml` - Modes: coverage-only, quality-only, full-suite
+- `data-quality-suite.yml` - Modes: validation-only, determinism-only, full-suite
+
 **Pattern 2: Tiered Caching**
 ```yaml
 cache-tier: live      # Critical, permanent

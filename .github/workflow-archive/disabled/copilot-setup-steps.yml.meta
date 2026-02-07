@@ -1,0 +1,8 @@
+disabled_at: 2026-02-07T01:34:11Z
+reason: "Phase 1 Final - Setup steps integrated into main copilot workflows"
+consolidated_into: "copilot-cascade-review.yml and copilot-self-evolution.yml"
+phase: "Phase 1 Consolidation"
+group: "Final - Copilot Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true

@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T01:34:11Z
+reason: "Phase 1 Final - Consolidated into html_visual_regression.yml"
+consolidated_into: "html_visual_regression.yml"
+phase: "Phase 1 Consolidation"
+group: "Final - Visual Testing"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Baseline creation handled by regression workflow"
