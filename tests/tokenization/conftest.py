@@ -362,6 +362,21 @@ if _SPM_STUB_FLAG:
 # If SentencePiece is entirely absent, individual tests handle skips via importorskip.
 
 
+@pytest.fixture
+def no_sentencepiece(monkeypatch):
+    """
+    Fixture to simulate missing sentencepiece module for import error testing.
+    
+    Temporarily sets the sentencepiece_adapter's spm attribute to None,
+    simulating an ImportError condition for testing fallback behavior.
+    """
+    import codex_ml.tokenization.sentencepiece_adapter as sp_adapter
+    original_spm = sp_adapter.spm
+    monkeypatch.setattr(sp_adapter, "spm", None)
+    yield
+    # monkeypatch automatically restores original value
+
+
 if _SPM_STUB_FLAG and _SPM_STUB is not None:
 
     @pytest.fixture(autouse=True)
