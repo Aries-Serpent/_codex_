@@ -1,0 +1,12 @@
+moved_at: 2026-02-07T03:47:26Z
+reason: "Phase 2 Week 3 - Low usage workflow moved to misc/"
+moved_from: ".github/workflows/genesis-bootstrap.yml"
+moved_to: ".github/misc/genesis-bootstrap.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 3 - Low Usage Utilities"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+still_functional: true
+restore_instructions: "cp .github/misc/genesis-bootstrap.yml .github/workflows/"
+notes: "Genesis bootstrap template - rarely used (if: true disabled). Can be restored to workflows/ if needed."
+usage_pattern: "Manual workflow_dispatch only, template mode"
+triggers: "workflow_dispatch"

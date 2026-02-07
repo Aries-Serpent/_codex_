@@ -1,0 +1,12 @@
+moved_at: 2026-02-07T03:47:26Z
+reason: "Phase 2 Week 3 - Low frequency workflow moved to misc/"
+moved_from: ".github/workflows/monthly-model-retraining.yml"
+moved_to: ".github/misc/monthly-model-retraining.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 3 - Low Usage Utilities"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+still_functional: true
+restore_instructions: "cp .github/misc/monthly-model-retraining.yml .github/workflows/"
+notes: "Monthly model retraining - low frequency (once per month). Can be restored if needed."
+usage_pattern: "Monthly scheduled execution"
+triggers: "schedule (monthly)"
