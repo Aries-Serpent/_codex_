@@ -30,17 +30,23 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
 
     assert payload["ok"] is True
     
-    # Fix: Handle both nested and flat JSON structures
+    # Handle nested JSON structure: mlflow.env.MLFLOW_TRACKING_URI
+    mlflow_section = payload.get("mlflow", {})
     mlflow_uri = (
-        payload.get("mlflow", {}).get("MLFLOW_TRACKING_URI") 
+        mlflow_section.get("MLFLOW_TRACKING_URI")
+        or (mlflow_section.get("env") or {}).get("MLFLOW_TRACKING_URI")
         or payload.get("MLFLOW_TRACKING_URI")
+        or (payload.get("env") or {}).get("MLFLOW_TRACKING_URI")
     )
     assert mlflow_uri and mlflow_uri.startswith("file:"), \
         f"Expected file:// URI, got: {mlflow_uri}"
     
+    wandb_section = payload.get("wandb", {})
     wandb_disabled = (
-        payload.get("wandb", {}).get("WANDB_DISABLED") 
+        wandb_section.get("WANDB_DISABLED")
+        or (wandb_section.get("env") or {}).get("WANDB_DISABLED")
         or payload.get("WANDB_DISABLED")
+        or (payload.get("env") or {}).get("WANDB_DISABLED")
     )
     assert wandb_disabled == "true", \
         f"Expected WANDB_DISABLED='true', got: {wandb_disabled}"

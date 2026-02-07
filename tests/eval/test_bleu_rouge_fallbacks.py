@@ -19,7 +19,18 @@ from codex_ml.metrics.registry import get_metric  # noqa: E402
 
 
 def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):
-    # Simulate missing optional deps
+    # Simulate missing optional deps by clearing cached modules
+    import sys
+
+    cached_modules = [
+        key
+        for key in sys.modules
+        if key.startswith("nltk")
+        or key.startswith("rouge_score")
+        or key.startswith("sacrebleu")
+    ]
+    saved = {key: sys.modules.pop(key) for key in cached_modules}
+
     real_import = builtins.__import__
 
     def fake_import(name, *args, **kwargs):
@@ -33,21 +44,25 @@ def test_bleu_rouge_fallbacks(monkeypatch, tmp_path: Path):
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
-    # Registry should return callables that yield None
-    bleu = get_metric("bleu")
-    rouge = get_metric("rougeL")
-    assert bleu(["a"], ["a"]) is None
-    assert rouge(["a"], ["a"]) is None
+    try:
+        # Registry should return callables that yield None
+        bleu = get_metric("bleu")
+        rouge = get_metric("rougeL")
+        assert bleu(["a"], ["a"]) is None
+        assert rouge(["a"], ["a"]) is None
 
-    # End-to-end: values are None in NDJSON when optional deps are absent
-    out = tmp_path
-    evaluate_datasets(["toy_copy_task"], ["bleu", "rougeL"], out)
-    nd = out / "metrics.ndjson"
-    rows = [json.loads(line) for line in nd.read_text().splitlines()]
-    assert len(rows) == 2
-    run_ids = {r["run_id"] for r in rows}
-    assert len(run_ids) == 1
-    assert all(r["split"] == "eval" for r in rows)
-    assert all(isinstance(r["timestamp"], str) and r["timestamp"] for r in rows)
-    assert all(r["value"] is None for r in rows)
-    assert all(r["tags"]["phase"] == "evaluation" for r in rows)
+        # End-to-end: values are None in NDJSON when optional deps are absent
+        out = tmp_path
+        evaluate_datasets(["toy_copy_task"], ["bleu", "rougeL"], out)
+        nd = out / "metrics.ndjson"
+        rows = [json.loads(line) for line in nd.read_text().splitlines()]
+        assert len(rows) == 2
+        run_ids = {r["run_id"] for r in rows}
+        assert len(run_ids) == 1
+        assert all(r["split"] == "eval" for r in rows)
+        assert all(isinstance(r["timestamp"], str) and r["timestamp"] for r in rows)
+        assert all(r["value"] is None for r in rows)
+        assert all(r["tags"]["phase"] == "evaluation" for r in rows)
+    finally:
+        # Restore cached modules
+        sys.modules.update(saved)

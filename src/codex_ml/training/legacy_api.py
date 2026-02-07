@@ -1051,7 +1051,7 @@ def run_functional_training(
         log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
         metrics_target = Path(cfg.metrics_out)
         metrics_root = metrics_target.parent if str(metrics_target.parent) else Path(".")
-        logger = FileLogger(
+        file_logger = FileLogger(
             root=metrics_root,
             formats=log_formats,
             filename_stem=metrics_target.stem,
@@ -1093,7 +1093,7 @@ def run_functional_training(
                     "train_loss": avg_loss,
                     "train_time_s": round(elapsed, 4),
                 }
-                logger.log({"phase": "train", **train_rec})
+                file_logger.log({"phase": "train", **train_rec})
                 metrics.append(train_rec)
 
                 if val_loader is not None and (epoch + 1) % eval_every == 0:
@@ -1107,7 +1107,7 @@ def run_functional_training(
                         metrics_fn=batch_metrics,
                     )
                     eval_rec = {"epoch": epoch + 1, **eval_metrics}
-                    logger.log({"phase": "eval", **eval_rec})
+                    file_logger.log({"phase": "eval", **eval_rec})
                     metrics.append(eval_rec)
 
                 if checkpoint_dir is not None:
@@ -1129,7 +1129,13 @@ def run_functional_training(
     import numpy as np
 
     from codex_ml.models.registry import get_model
-    from codex_ml.training.functional_training import TrainCfg, run_custom_trainer
+    from codex_ml.training.functional_training import TrainConfig as TrainCfg, train as _ft_train
+
+    def run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg):
+        """Adapter wrapping functional_training.train for legacy API."""
+        train_texts = [str(item) for item in train_ds] if train_ds else []
+        val_texts = [str(item) for item in val_ds] if val_ds else None
+        return _ft_train(train_texts, config=train_cfg, val_texts=val_texts, model=model)
 
     def _lookup(*keys: str, default: Any = None) -> Any:
         for key in keys:

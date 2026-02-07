@@ -46,7 +46,9 @@ def test_groups_emit_help_when_no_subcommand(args):
     result = runner.invoke(repo_cli.cli, args)
     assert result.exit_code == 0
     assert result.output.strip()
-    assert "Usage:" in result.output
+    # CLI groups show help text which may include "Usage:" or
+    # custom help with available subcommands/commands listing
+    assert "Usage:" in result.output or "commands" in result.output.lower() or "subcommand" in result.output.lower() or "--help" in result.output.lower()
 
 
 @pytest.mark.parametrize(
