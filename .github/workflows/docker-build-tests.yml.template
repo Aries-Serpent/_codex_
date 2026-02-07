@@ -32,10 +32,14 @@ jobs:
     
     strategy:
       matrix:
-        target: 
-          - ${{ (inputs.target == 'all' || inputs.target == 'cpu-only') && 'cpu-runtime' || '' }}
-          - ${{ (inputs.target == 'all' || inputs.target == 'gpu-only') && 'gpu-runtime' || '' }}
+        target: ['cpu-runtime', 'gpu-runtime']
       fail-fast: false  # Continue other builds if one fails
+    
+    # Skip job if target doesn't match input filter
+    if: |
+      inputs.target == 'all' ||
+      (inputs.target == 'cpu-only' && matrix.target == 'cpu-runtime') ||
+      (inputs.target == 'gpu-only' && matrix.target == 'gpu-runtime')
 
     steps:
       - name: Checkout code

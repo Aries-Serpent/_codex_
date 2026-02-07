@@ -154,8 +154,7 @@ class ThermodynamicOrchestrator:
             "final_temperature": self.global_temperature,
         }
 
-        # Build task lookup and track completed tasks
-        task_map = {task.name: task for task in self.tasks}
+        # Track completed tasks
         completed = set()
         remaining = list(self.tasks)
 

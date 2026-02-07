@@ -27,13 +27,18 @@ class DependencyGraph:
             node_id: The name/identifier of the node
             dependencies: Optional list of node IDs this node depends on
             data: Optional dictionary of node attributes
+        
+        Note:
+            For each dependency, creates edge: dependency → node_id
+            This ensures dependencies appear before dependent nodes in topological order.
         """
         self.nodes.add(node_id)
         if data:
             self.node_data[node_id] = data
         if dependencies:
             for dep in dependencies:
-                self.add_edge(node_id, dep)
+                # Edge from dependency to dependent (dep must come first)
+                self.add_edge(dep, node_id)
 
     def add_edge(self, source: str, target: str) -> None:
         """Add directed edge: source → target."""
@@ -104,7 +109,7 @@ class DependencyGraph:
         """Topological sort of DAG (fails if cycles exist).
 
         Returns:
-            list of nodes in topological order
+            list of nodes in topological order (dependencies before dependents)
 
         Raises:
             ValueError: If graph contains cycles
