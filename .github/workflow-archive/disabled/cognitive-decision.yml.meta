@@ -1,0 +1,9 @@
+disabled_at: 2026-02-07T02:51:40Z
+reason: "Phase 2 Week 1 - Consolidated into unified workflows"
+consolidated_into: "cognitive-action-decision.yml and cognitive-analysis-feed.yml"
+phase: "Phase 2 Consolidation"
+group: "Week 1 - Cognitive Workflows"
+backup_location: ".github/workflow-archive/backups/2025-12-28/"
+rollback_available: true
+functionality_preserved: true
+notes: "Cognitive workflows consolidated: action+decision into one, aftermath+feed into another"
