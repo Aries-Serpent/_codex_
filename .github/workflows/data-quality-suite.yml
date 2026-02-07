@@ -63,10 +63,12 @@ jobs:
 
       - name: Validate data manifests
         run: |
-          if [ -f "scripts/validate_manifest.py" ]; then
-            python scripts/validate_manifest.py --all
+          # Use validate_dataset.py which exists in the repository
+          if [ -f "scripts/validate_dataset.py" ]; then
+            python scripts/validate_dataset.py
           else
-            echo "Manifest validation script not found"
+            echo "❌ Error: Dataset validation script not found at scripts/validate_dataset.py"
+            exit 1
           fi
 
       - name: Check for data drift
@@ -74,7 +76,8 @@ jobs:
           if [ -f "scripts/check_data_drift.py" ]; then
             python scripts/check_data_drift.py
           else
-            echo "Data drift check script not found"
+            echo "⚠️  Warning: Data drift check script not found - skipping drift analysis"
+            echo "This is expected if drift detection is not yet implemented"
           fi
 
       - name: Upload validation results
@@ -108,7 +111,6 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
           # Clean apt caches
           sudo apt-get clean
@@ -152,17 +154,51 @@ jobs:
       - name: Run determinism tests (first pass)
         id: test_pass1
         run: |
-          pytest tests/ -v -m determinism --tb=short > determinism_pass1.log 2>&1 || true
-          echo "✅ First pass complete"
+          set +e
+          pytest tests/ -v -m determinism --tb=short > determinism_pass1.log 2>&1
+          echo "$?" > determinism_pass1_exit.txt
+          set -e
+          echo "✅ First pass complete (exit code: $(cat determinism_pass1_exit.txt))"
 
       - name: Run determinism tests (second pass)
         id: test_pass2
         run: |
-          pytest tests/ -v -m determinism --tb=short > determinism_pass2.log 2>&1 || true
-          echo "✅ Second pass complete"
+          set +e
+          pytest tests/ -v -m determinism --tb=short > determinism_pass2.log 2>&1
+          echo "$?" > determinism_pass2_exit.txt
+          set -e
+          echo "✅ Second pass complete (exit code: $(cat determinism_pass2_exit.txt))"
 
       - name: Compare results
         run: |
+          EXIT1=$(cat determinism_pass1_exit.txt)
+          EXIT2=$(cat determinism_pass2_exit.txt)
+          
+          # Check if logs exist
+          if [ ! -f "determinism_pass1.log" ] || [ ! -f "determinism_pass2.log" ]; then
+            echo "❌ Missing log files - determinism check failed"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Determinism check failed** - Missing log files" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          # Compare exit codes
+          if [ "$EXIT1" != "$EXIT2" ]; then
+            echo "❌ Exit codes differ - non-deterministic behavior"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Non-deterministic behavior** - Exit codes differ (pass1: $EXIT1, pass2: $EXIT2)" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          # If both runs failed, treat as non-deterministic
+          if [ "$EXIT1" != "0" ]; then
+            echo "❌ Both test runs failed with exit code $EXIT1"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Test failures detected** - Both runs failed with exit code $EXIT1" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          # Compare log outputs
           if diff -u determinism_pass1.log determinism_pass2.log > determinism_diff.log; then
             echo "✅ Deterministic behavior confirmed - results identical"
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -174,6 +210,7 @@ jobs:
             echo '```diff' >> $GITHUB_STEP_SUMMARY
             head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
           fi
 
       - name: Upload determinism reports
