@@ -23,8 +23,8 @@ except (ImportError, AttributeError):
 
     # Create mock for testing structure
     class MSPClient:
-        def __init__(self, endpoint=None, api_key=None, timeout=30):
-            self.endpoint = endpoint
+        def __init__(self, base_url=None, api_key=None, timeout=30):
+            self.base_url = base_url
             self.api_key = api_key
             self.timeout = timeout
 
@@ -38,16 +38,16 @@ class TestMSPClientInitialization:
         client = MSPClient()
 
         assert client is not None
-        assert hasattr(client, "endpoint") or hasattr(client, "url")
+        assert hasattr(client, "base_url") or hasattr(client, "url")
         assert hasattr(client, "timeout")
 
     def test_client_initialization_with_custom_endpoint(self):
-        """Test initialization with custom endpoint."""
-        custom_endpoint = "https://custom.msp.endpoint/api"
-        client = MSPClient(endpoint=custom_endpoint)
+        """Test initialization with custom base_url."""
+        custom_base_url = "https://custom.msp.endpoint/api"
+        client = MSPClient(base_url=custom_base_url)
 
-        endpoint_attr = getattr(client, "endpoint", getattr(client, "url", None))
-        assert endpoint_attr == custom_endpoint
+        base_url_attr = getattr(client, "base_url", getattr(client, "url", None))
+        assert base_url_attr == custom_base_url
 
     def test_client_initialization_with_api_key(self):
         """Test initialization with API key."""
@@ -70,7 +70,7 @@ class TestMSPClientMocked:
     @pytest.fixture
     def mock_client(self):
         """Create mocked MSP client."""
-        client = MSPClient(endpoint="https://test.msp/api", api_key="test_key")
+        client = MSPClient(base_url="https://test.msp/api", api_key="test_key")
         return client
 
     def test_client_request_structure(self, mock_client):
