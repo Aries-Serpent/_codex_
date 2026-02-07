@@ -1,4 +1,4 @@
-name: CI — Optimized with Caching
+name: Art_CI — Optimized with Caching
 
 on:
   workflow_dispatch:

@@ -1,0 +1,38 @@
+name: Cognitive Decision Engine
+
+on:
+  schedule:
+    - cron: '15 */6 * * *'  # Every 6 hours at :15
+  workflow_dispatch:
+    inputs:
+      force_analysis:
+        description: 'Force causal analysis even if no new data'
+        required: false
+        default: 'false'
+      risk_threshold:
+        description: 'Risk threshold for decisions (0-1)'
+        required: false
+        default: '0.7'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  decision_engine:
+    name: Execute Decision Engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'

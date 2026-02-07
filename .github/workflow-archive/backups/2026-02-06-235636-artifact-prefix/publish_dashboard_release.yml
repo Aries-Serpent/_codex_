@@ -1,0 +1,18 @@
+name: Publish Status Dashboard Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 10 * * 1" # weekly Monday 10:15 UTC
+
+jobs:
+  publish-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+

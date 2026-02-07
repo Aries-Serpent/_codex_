@@ -1,4 +1,4 @@
-name: Authentication Security Audit
+name: Art_Authentication Security Audit
 
 on:
   schedule:

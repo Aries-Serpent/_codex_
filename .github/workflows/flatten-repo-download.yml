@@ -1,4 +1,4 @@
-name: Flatten Repository Download
+name: Art_Flatten Repository Download
 
 # This workflow generates a flattened repository XML file using Repomix
 # and makes it available as a downloadable artifact for AI analysis

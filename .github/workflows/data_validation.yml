@@ -1,4 +1,4 @@
-name: Data Validation (Manifest & Drift)
+name: Art_Data Validation (Manifest & Drift)
 
 on:
   pull_request:

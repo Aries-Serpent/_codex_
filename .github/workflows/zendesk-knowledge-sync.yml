@@ -1,4 +1,4 @@
-name: Zendesk Knowledge Sync
+name: Art_Zendesk Knowledge Sync
 
 on:
   schedule:

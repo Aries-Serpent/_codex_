@@ -1,4 +1,4 @@
-name: Copilot Self-Evolution Pipeline
+name: Art_Copilot Self-Evolution Pipeline
 
 on:
   schedule:

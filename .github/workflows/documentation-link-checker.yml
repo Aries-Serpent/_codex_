@@ -1,4 +1,4 @@
-name: Documentation Link Checker
+name: Art_Documentation Link Checker
 
 on:
   push:

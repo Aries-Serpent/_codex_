@@ -1,4 +1,4 @@
-name: Phase 34 - CodeQL Alert Fetch
+name: Art_Phase 34 - CodeQL Alert Fetch
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Comprehensive Tests with Caching
+name: Art_Comprehensive Tests with Caching
 
 on:
   push:

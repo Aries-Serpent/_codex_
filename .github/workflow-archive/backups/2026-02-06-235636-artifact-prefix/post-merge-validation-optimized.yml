@@ -1,0 +1,23 @@
+name: Post-Merge Validation (Optimized)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Optimized with caching and parallelization
+# Target runtime: ≤ 10 minutes
+
+jobs:
+  validate-imports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12
+          cache-tier: 'live'

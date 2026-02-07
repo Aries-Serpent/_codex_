@@ -30,7 +30,7 @@
 #
 # ==============================================================================
 
-name: NotebookLM Live Sync (DEFERRED)
+name: Art_NotebookLM Live Sync (DEFERRED)
 
 on:
   # Manual trigger only - use GitHub Actions UI or gh CLI

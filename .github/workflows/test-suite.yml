@@ -1,4 +1,4 @@
-name: Testing Suite
+name: Art_Testing Suite
 
 "on":
   # Run on all PRs

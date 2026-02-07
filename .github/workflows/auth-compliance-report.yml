@@ -1,4 +1,4 @@
-name: Auth Compliance Report
+name: Art_Auth Compliance Report
 
 on:
   schedule:

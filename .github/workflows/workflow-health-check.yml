@@ -1,4 +1,4 @@
-name: Workflow Health Check (Quantum-Inspired)
+name: Art_Workflow Health Check (Quantum-Inspired)
 
 on:
   # Run after any workflow completes

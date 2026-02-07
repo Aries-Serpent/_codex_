@@ -1,4 +1,4 @@
-name: Generate Repository Structure
+name: Art_Generate Repository Structure
 
 on:
   workflow_dispatch:

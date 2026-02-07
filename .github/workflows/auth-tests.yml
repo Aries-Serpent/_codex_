@@ -1,4 +1,4 @@
-name: Authentication Tests
+name: Art_Authentication Tests
 
 on:
   push:

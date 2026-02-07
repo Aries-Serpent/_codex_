@@ -1,4 +1,4 @@
-name: "Copilot Agent Environment Setup"
+name: Art_"Copilot Agent Environment Setup"
 
 # This workflow customizes the ephemeral GitHub Actions environment where GitHub Copilot's
 # coding agent operates. It preinstalls dependencies, sets environment variables, and configures

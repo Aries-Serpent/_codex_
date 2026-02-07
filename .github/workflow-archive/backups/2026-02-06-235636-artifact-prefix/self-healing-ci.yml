@@ -1,0 +1,41 @@
+# Self-Healing CI Integration Workflow
+#
+# This workflow integrates the self-healing engine into CI/CD
+# to automatically detect and suggest fixes for common issues.
+#
+# Implements: R6 - Integrate self-healing into CI/CD
+
+name: Self-Healing CI
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Workflow run ID to analyze'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  analyze-failure:
+    name: Analyze Failed Run
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'

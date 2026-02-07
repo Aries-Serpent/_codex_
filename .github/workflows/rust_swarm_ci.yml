@@ -1,4 +1,4 @@
-name: Rust-Python Hybrid Swarm CI/CD
+name: Art_Rust-Python Hybrid Swarm CI/CD
 
 on:
   push: 

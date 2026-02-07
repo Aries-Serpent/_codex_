@@ -1,4 +1,4 @@
-name: decode-validate-artifact
+name: Art_decode-validate-artifact
 on:
   workflow_dispatch:
     inputs:

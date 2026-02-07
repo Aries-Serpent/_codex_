@@ -1,4 +1,4 @@
-name: Pre-Release Deployment
+name: Art_Pre-Release Deployment
 
 on:
   workflow_dispatch:

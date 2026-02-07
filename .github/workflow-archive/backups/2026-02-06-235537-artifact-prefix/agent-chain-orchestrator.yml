@@ -1,0 +1,116 @@
+name: Agent Chain Orchestrator (Quantum-Inspired)
+
+on:
+  # Triggered by workflow-health-monitor
+  workflow_run:
+    workflows: ["Workflow Health Check (Quantum-Inspired)"]
+    types: [completed]
+  
+  # Manual trigger with agent selection
+  workflow_dispatch:
+    inputs:
+      primary_agent:
+        description: 'Primary agent to activate'
+        required: true
+        type: choice
+        options:
+          - workflow-health-monitor
+          - ci-testing-agent
+          - test-alignment-fixer
+          - coverage-roadmap-agent
+          - security-alert-verification-agent
+        default: 'workflow-health-monitor'
+      chain_depth:
+        description: 'Maximum chain depth'
+        required: false
+        default: '3'
+      enable_quantum_optimization:
+        description: 'Enable quantum-inspired optimization'
+        type: boolean
+        default: true
+
+jobs:
+  orchestrate-agent-chain:
+    name: Orchestrate Entangled Agents
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install pyyaml numpy scipy
+      
+      - name: Initialize quantum agent network
+        id: init
+        run: |
+          python scripts/agents/quantum_agent_orchestrator.py \
+            --primary-agent "${{ inputs.primary_agent || 'workflow-health-monitor' }}" \
+            --chain-depth "${{ inputs.chain_depth || 3 }}" \
+            --enable-quantum "${{ inputs.enable_quantum_optimization || 'true' }}"
+      
+      - name: Upload chain execution plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-chain-plan-${{ github.run_number }}
+          path: .codex/agents/chain_plan.json
+          retention-days: 30
+      
+      - name: Generate execution summary
+        id: summary
+        run: |
+          echo "## 🔗 Agent Chain Orchestration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Primary Agent:** ${{ inputs.primary_agent || 'workflow-health-monitor' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Chain Depth:** ${{ inputs.chain_depth || 3 }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Quantum Optimization:** ${{ inputs.enable_quantum_optimization || 'true' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated Chain" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse and display chain
+          if [ -f .codex/agents/chain_plan.json ]; then
+            python -c "
+          import json
+          with open('.codex/agents/chain_plan.json') as f:
+              plan = json.load(f)
+          print('**Agents in Chain:**')
+          for i, agent_name in enumerate(plan['chain'], 1):
+              print(f'{i}. {agent_name}')
+          print(f'\n**Estimated Cost:** {plan[\"estimated_cost\"]:.1f} units')
+          print(f'\n**Total Entanglements:** {sum(len(v) for v in plan[\"entanglements\"].values())}')
+            " >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Agent Chain Orchestration Failed',
+              body: `
+              ## Agent Chain Orchestration Failure
+              
+              **Run:** ${{ github.run_id }}
+              **Primary Agent:** ${{ inputs.primary_agent || 'workflow-health-monitor' }}
+              **Chain Depth:** ${{ inputs.chain_depth || 3 }}
+              
+              Please investigate the failure and ensure all dependencies are properly configured.
+              
+              **Workflow:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              `,
+              labels: ['automation', 'agent-orchestration', 'quantum-system']
+            });
