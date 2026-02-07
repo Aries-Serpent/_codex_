@@ -86,15 +86,15 @@ gh workflow run test-suite.yml -f test-scope=rag
 # Tests run automatically on all PRs
 ```
 
-### 3. CI/CD Health Suite (`ci-health-suite.yml`)
+### 3. CI/CD Health Monitoring (Distributed)
 
-**Replaces:**
-- ci-health-monitor.yml
-- ci-diagnostic-automation.yml
-- artifact-monitoring.yml
-- repository-health-monitoring.yml
-- runner-diagnostics.yml
-- batch-ci-triage.yml (monitoring portion)
+**Note:** CI/CD health monitoring uses a distributed pattern rather than a consolidated suite.
+
+**Active Workflows:**
+- ci-health-monitor.yml - Core health monitoring
+- artifact-monitoring.yml - Artifact tracking  
+- repository-health-monitoring.yml - Repository health checks
+- batch-ci-triage.yml - Batch CI issue triage
 
 **Features:**
 - Automated health monitoring every 3 hours
@@ -105,11 +105,14 @@ gh workflow run test-suite.yml -f test-scope=rag
 
 **Usage:**
 ```bash
-# Full health check
-gh workflow run ci-health-suite.yml -f operation=all
+# Run CI health monitor
+gh workflow run ci-health-monitor.yml
 
-# Specific check
-gh workflow run ci-health-suite.yml -f operation=health-monitor
+# Check artifact status
+gh workflow run artifact-monitoring.yml
+
+# Monitor repository health
+gh workflow run repository-health-monitoring.yml
 ```
 
 ## AI Agent Integration
@@ -206,17 +209,18 @@ jobs:
 
 ### Cache Miss Issues
 ```bash
-# Validate cache configuration
-gh workflow run cache-suite.yml -f operation=validate
-
-# Force cache warmup
-gh workflow run cache-suite.yml -f operation=warmup
+# Each workflow manages its own cache - no centralized cache suite
+# Check specific workflow cache usage in GitHub Actions cache tab
+# Caches auto-expire after 7-30 days based on workflow configuration
 ```
 
 ### Workflow Syntax Errors
 ```bash
-# Run diagnostics
-gh workflow run ci-health-suite.yml -f operation=diagnostics
+# Run CI health monitor
+gh workflow run ci-health-monitor.yml
+
+# Run batch CI triage
+gh workflow run batch-ci-triage.yml
 ```
 
 ### Test Failures
@@ -230,15 +234,15 @@ gh workflow run test-suite.yml -f test-scope=core -f fail-fast=true
 1. **Always use cached actions**: Use `.github/actions/setup-python-cached` instead of direct `actions/setup-python`
 2. **Select appropriate cache tier**: Consider workflow frequency and criticality
 3. **Use workflow_call**: Enable AI agent integration from the start
-4. **Monitor health**: Let ci-health-suite track workflow performance
-5. **Keep live tier active**: Run cache-warmup regularly
+4. **Monitor health**: Use ci-health-monitor.yml to track workflow performance
+5. **Keep distributed caching**: Each workflow manages its own cache
 
 ## Future Enhancements
 
-- [ ] Security suite consolidation
-- [ ] Documentation suite consolidation
-- [ ] Self-healing suite consolidation
-- [ ] Cognitive brain workflow optimization
+- [x] Security suite consolidation (security-scanning-suite.yml)
+- [x] Cognitive workflow consolidation (Phase 2 Week 1)
+- [x] Agent workflow consolidation (Phase 2 Week 1)
+- [x] Deployment consolidation (Phase 2 Week 2)
 - [ ] Advanced cache analytics
 - [ ] Predictive failure detection
 
@@ -252,7 +256,7 @@ gh workflow run test-suite.yml -f test-scope=core -f fail-fast=true
 ## Support
 
 For issues or questions:
-1. Check [CI/CD Health Suite](ci-health-suite.yml) for automated diagnostics
+1. Check [CI Health Monitor](ci-health-monitor.yml) for automated diagnostics
 2. Review workflow run logs
 3. Create an issue with `ci-health` label
 4. Contact @mbaetiong for critical issues
