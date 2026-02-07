@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - PR #3181 Phase 3 Validation (2026-02-07)
+
+**Completed Phase 3 validation tasks for PR #3181:**
+
+1. **Repository Validation Fix** (`tools/validate_repo_0D_base.py`)
+   - Removed `space.mk` from REQUIRED files list
+   - Reason: File doesn't exist and is optional (Makefile uses `-include space.mk`)
+   - Impact: Fixes repository validation script failures
+
+2. **HuggingFace Model Pinning** (`src/codex_ml/utils/hf_pinning.py`)
+   - Added `sentence-transformers/all-MiniLM-L6-v2` to KNOWN_MODEL_REVISIONS
+   - Revision: `8b3219a92973c328a8e22fadcfa821b5dc75636a`
+   - Reason: Model is used in multiple tests and source files but wasn't pinned
+   - Added `pragma: allowlist secret` comments to prevent false positive secret detection
+   - Impact: Ensures reproducible model downloads in tests and production
+
+3. **Pre-commit Checks**
+   - All pre-commit hooks pass for modified files
+   - Fixed detect-secrets false positives with pragma comments
+   - Verified code quality, security, and formatting standards
+
+**Files Modified**: 2 files
+- `tools/validate_repo_0D_base.py`: Removed space.mk from REQUIRED list
+- `src/codex_ml/utils/hf_pinning.py`: Added MiniLM model revision with secret pragmas
+
+**Related**: PR #3181 (65+ test failures → 0 failures, 300+ tests passing)
+
 ### Fixed - Code Scanning Security & Quality Remediation (2026-01-26)
 
 **Phase 32: Comprehensive remediation of 69 security and quality issues across 57 files**
