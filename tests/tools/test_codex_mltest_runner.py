@@ -42,7 +42,7 @@ def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):
             "--category",
             "infrastructure",
             "--map",
-            "codex_ml_test_map.yaml",
+            str(tmp_path / "codex_ml_test_map.yaml"),
             "--json-summary",
             "summary.json",
         ]

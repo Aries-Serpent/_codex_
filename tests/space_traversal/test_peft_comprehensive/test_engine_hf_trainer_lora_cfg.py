@@ -22,21 +22,21 @@ from src.training.engine_hf_trainer import run_hf_trainer
 def test_hf_trainer_hydra_lora_cfg(monkeypatch, tmp_path):
     captured = {}
 
-    def fake_tok_from_pretrained(name, use_fast=True):
+    def fake_tok_from_pretrained(name, use_fast=True, **kwargs):
         class Tok:
             pad_token = None
             eos_token = "</s>"
             pad_token_id = 0
 
             def __call__(self, text, truncation=True):
-                return {"input_ids": [0]}
+                return {"input_ids": [0], "attention_mask": [1]}
 
             def save_pretrained(self, output_dir):
                 return None
 
         return Tok()
 
-    def fake_model_from_pretrained(name):
+    def fake_model_from_pretrained(name, **kwargs):
         class M(torch.nn.Module):
             def forward(self, input_ids=None, labels=None):
                 return types.SimpleNamespace(loss=torch.tensor(0.0))
