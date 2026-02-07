@@ -22,7 +22,7 @@ REQUIRED = [
     "scripts/space_traversal/audit_runner.py",
     "templates/audit/capability_matrix.md.j2",
     ".copilot-space/workflow.yaml",
-    "space.mk",
+    # "space.mk",  # Optional file (Makefile uses -include)
     "scripts/space_traversal/coverage_ingest.py",
     "scripts/space_traversal/detectors",
     "scripts/space_traversal/schemas",
