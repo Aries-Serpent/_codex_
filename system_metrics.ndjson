@@ -2,3 +2,4 @@
 {"event": "system", "ts": 1770526410.9316626, "cpu_count": 4, "memory": null, "swap": null, "load_avg": [0.31103515625, 0.34765625, 0.25830078125], "cpu_percent": 7.77587890625, "process": {"memory_info": {"rss": 805298176.0}}}
 {"event": "system", "ts": 1770526635.9560785, "cpu_count": 4, "memory": null, "swap": null, "load_avg": [0.7109375, 0.49169921875, 0.3330078125], "cpu_percent": 17.7734375, "process": {"memory_info": {"rss": 805330944.0}}}
 {"event": "system", "ts": 1770526747.0576208, "cpu_count": 4, "memory": null, "swap": null, "load_avg": [0.27490234375, 0.4150390625, 0.3251953125], "cpu_percent": 6.87255859375, "process": {"memory_info": {"rss": 821420032.0}}}
+{"event": "system", "ts": 1770526826.5027525, "cpu_count": 4, "memory": null, "swap": null, "load_avg": [0.24853515625, 0.36181640625, 0.3115234375], "cpu_percent": 6.21337890625, "process": {"memory_info": {"rss": 820510720.0}}}

@@ -936,15 +936,16 @@ def run_functional_training(
         if "transformers" not in missing_optional:
             missing_optional = list(missing_optional) + ["transformers"]
 
+        # Define tokens for manual encoding (used in fallback paths)
+        pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
+        unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
+
         try:
             from torch.utils.data import DataLoader
 
             import torch
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-
-            pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
-            unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
 
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [
@@ -953,10 +954,7 @@ def run_functional_training(
             ]
             return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
-        # Define tokens for manual encoding (torch available but not transformers)
-        pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
-        unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
-
+        # Continue with manual encoding (torch available but not transformers)
         def _encode_texts(
             texts: list[str], vocab: dict[str, int], *, update: bool
         ) -> list[list[int]]:
