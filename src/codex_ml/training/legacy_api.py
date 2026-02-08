@@ -942,7 +942,6 @@ def run_functional_training(
             import torch
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
 
             pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
             unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
