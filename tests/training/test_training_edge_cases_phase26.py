@@ -5,6 +5,9 @@ Coverage Target: src/training/engine_hf_trainer.py, src/codex_ml/training/unifie
 """
 
 import pytest
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 import numpy as np
 from unittest.mock import patch

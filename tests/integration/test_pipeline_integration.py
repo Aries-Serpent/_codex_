@@ -16,6 +16,9 @@ import json
 
 import pytest
 
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 

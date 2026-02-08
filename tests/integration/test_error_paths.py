@@ -10,6 +10,9 @@ from unittest.mock import Mock, patch
 import pytest
 
 
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 class TestTrainingErrorPaths:
     """Test training error paths."""
 

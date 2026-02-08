@@ -7,7 +7,10 @@ Test module for eval cli.
 import json
 from pathlib import Path
 
-import torch
+import pytest
+
+# Skip entire module if torch is not available or unloadable
+torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
 from codex_ml.evaluation import cli as eval_cli
 from typer.testing import CliRunner
 
