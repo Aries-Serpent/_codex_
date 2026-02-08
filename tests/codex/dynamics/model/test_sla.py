@@ -1,7 +1,7 @@
 """Unit tests for Dynamics 365 SLA Policy models."""
 
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 from src.codex.dynamics.model.sla import (
     SLAMetric,
@@ -57,7 +57,7 @@ class TestSLAPolicy:
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         assert policy.name == "test_policy"
         assert policy.metric == SLAMetric.FIRST_RESPONSE
@@ -76,7 +76,7 @@ class TestSLAPolicy:
             metric=SLAMetric.RESOLUTION,
             target_minutes=480,
             pause_conditions=[condition],
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         
         assert len(policy.pause_conditions) == 1
@@ -89,11 +89,11 @@ class TestSLAPolicy:
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
             business_hours_only=False,
         )
         
-        start = datetime.now()
+        start = datetime.now(UTC)
         deadline = policy.calculate_deadline(start)
         
         expected = start + timedelta(minutes=60)
@@ -105,14 +105,14 @@ class TestSLAPolicy:
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         
         policy2 = SLAPolicy(
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=120,  # Changed
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         
         patches = policy1.diff(policy2)
@@ -132,7 +132,7 @@ class TestSLAPolicy:
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
             pause_conditions=[condition],
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
             business_hours_only=True,
         )
         
@@ -151,7 +151,7 @@ class TestSLAPolicyRegistry:
         """Test creating a policy registry."""
         registry = SLAPolicyRegistry(
             policies=[],
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
         )
         assert len(registry.policies) == 0
     
@@ -159,14 +159,14 @@ class TestSLAPolicyRegistry:
         """Test adding a policy to registry."""
         registry = SLAPolicyRegistry(
             policies=[],
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
         )
         
         policy = SLAPolicy(
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         
         registry.add_policy(policy)
@@ -179,12 +179,12 @@ class TestSLAPolicyRegistry:
             metric=SLAMetric.FIRST_RESPONSE,
             target_minutes=60,
             version="1.0.0",
-            effective_date=datetime.now().isoformat(),
+            effective_date=datetime.now(UTC).isoformat(),
         )
         
         registry = SLAPolicyRegistry(
             policies=[policy],
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
         )
         
         retrieved = registry.get_policy("test_policy")

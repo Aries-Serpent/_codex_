@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import tarfile
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, UTC, UTC, timedelta
 
 import pytest
 
@@ -42,7 +42,7 @@ class TestIncrementalBackups:
         # Record backup metadata
         metadata = {
             "type": "full",
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "file_count": len(list(source_dir.iterdir())),
         }
 
@@ -151,7 +151,7 @@ class TestIncrementalBackups:
             {
                 "id": "backup_001",
                 "type": "full",
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "parent": None,
                 "file_count": 10,
             }
@@ -162,7 +162,7 @@ class TestIncrementalBackups:
             {
                 "id": "backup_002",
                 "type": "incremental",
-                "timestamp": (datetime.now() + timedelta(hours=1)).isoformat(),
+                "timestamp": (datetime.now(UTC) + timedelta(hours=1)).isoformat(),
                 "parent": "backup_001",
                 "file_count": 3,
             }
@@ -172,7 +172,7 @@ class TestIncrementalBackups:
             {
                 "id": "backup_003",
                 "type": "incremental",
-                "timestamp": (datetime.now() + timedelta(hours=2)).isoformat(),
+                "timestamp": (datetime.now(UTC) + timedelta(hours=2)).isoformat(),
                 "parent": "backup_002",
                 "file_count": 2,
             }
@@ -327,7 +327,7 @@ class TestChangeDetection:
 
         # Create change summary
         summary = {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "changes": changes,
             "total_changes": sum(len(v) for v in changes.values()),
         }

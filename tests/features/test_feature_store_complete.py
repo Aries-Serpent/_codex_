@@ -3,7 +3,7 @@
 import pytest
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, UTC, UTC
 from codex_ml.features.feature_store import (
     FeatureStore,
     FeatureGroup,
@@ -91,7 +91,7 @@ class TestFeatureStoreComplete:
 
         time.sleep(0.1)
 
-        timestamp_between = datetime.now()
+        timestamp_between = datetime.now(UTC)
         time.sleep(0.1)
 
         # Create v2
