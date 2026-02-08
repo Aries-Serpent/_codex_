@@ -31,6 +31,7 @@ from typing import Any, Mapping, Optional
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -929,6 +930,12 @@ def run_functional_training(
 
         from transformers import AutoTokenizer
     except Exception:  # pragma: no cover - optional dependencies
+        # Track failed optional dependencies
+        if "datasets" not in missing_optional:
+            missing_optional = list(missing_optional) + ["datasets"]
+        if "transformers" not in missing_optional:
+            missing_optional = list(missing_optional) + ["transformers"]
+
         try:
             from torch.utils.data import DataLoader
 
@@ -936,6 +943,10 @@ def run_functional_training(
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
+
+            pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
+            unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
+
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [
                 {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
@@ -943,8 +954,9 @@ def run_functional_training(
             ]
             return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
-            pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
-            unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
+        # Define tokens for manual encoding (torch available but not transformers)
+        pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
+        unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
 
         def _encode_texts(
             texts: list[str], vocab: dict[str, int], *, update: bool
@@ -1056,6 +1068,20 @@ def run_functional_training(
             formats=log_formats,
             filename_stem=metrics_target.stem,
         )
+
+        # Log metadata before training begins
+        log_run_metadata(
+            file_logger,
+            seed=getattr(cfg, "seed", None),
+            deterministic=deterministic_flag,
+            resume=resume,
+            dataset_format=dataset_format,
+            train_examples=len(train_texts),
+            eval_examples=len(val_texts) if val_texts else 0,
+            missing_optional=missing_optional,
+            extras={"log_formats": list(log_formats)},
+        )
+
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
         system_logger = None
