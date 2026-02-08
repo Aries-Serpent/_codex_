@@ -50,7 +50,7 @@ def test_content_differ_detects_changes():
     
     diff = differ.diff(old_content, new_content)
     assert diff.has_changes
-    assert len(diff.changes) > 0
+    assert len(diff.segments) > 0
 
 
 @pytest.mark.integration
