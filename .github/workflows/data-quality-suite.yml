@@ -202,7 +202,19 @@ jobs:
             exit 1
           fi
           
-          # If both runs failed, treat as non-deterministic
+          # Handle exit code 5 (no tests collected) as success
+          if [ "$EXIT1" = "5" ] && [ "$EXIT2" = "5" ]; then
+            echo "⚠️  No determinism tests found (exit code 5) - skipping validation"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️  **No determinism tests found** - Tests are not yet implemented" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To implement determinism tests:" >> $GITHUB_STEP_SUMMARY
+            echo "- Add @pytest.mark.determinism to tests in tests/templates/test_ml_template.py" >> $GITHUB_STEP_SUMMARY
+            echo "- Remove @pytest.mark.skip decorators when tests are ready" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+          
+          # If both runs failed with a non-zero exit code (excluding 5), treat as error
           if [ "$EXIT1" != "0" ]; then
             echo "❌ Both test runs failed with exit code $EXIT1"
             echo "" >> $GITHUB_STEP_SUMMARY
