@@ -189,7 +189,12 @@ def _importorskip_optional_dep(
         message = reason or f"{modname} is not installed"
         raise pytest.skip.Exception(message, allow_module_level=True)
 
-    return _ORIGINAL_IMPORTORSKIP(modname, minversion=minversion, reason=reason)
+    try:
+        return _ORIGINAL_IMPORTORSKIP(modname, minversion=minversion, reason=reason)
+    except (ImportError, OSError) as e:
+        # OSError can occur if libraries are missing (e.g., libtorch_global_deps.so)
+        message = reason or f"{modname} is not available: {e}"
+        raise pytest.skip.Exception(message, allow_module_level=True)
 
 
 pytest.importorskip = _importorskip_optional_dep

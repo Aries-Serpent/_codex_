@@ -27,10 +27,24 @@ def _load_real_module() -> ModuleType | None:
     origin = getattr(spec, "origin", None)
     if origin and Path(origin).resolve() == current_path:
         return None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[__name__] = module
-    spec.loader.exec_module(module)
-    return module
+    try:
+        module = importlib.util.module_from_spec(spec)
+        # Temporarily store this stub in sys.modules during loading
+        stub_backup = sys.modules.get(__name__)
+        sys.modules[__name__] = module
+        try:
+            spec.loader.exec_module(module)
+            return module
+        except (ImportError, OSError) as e:
+            # If torch fails to load, restore the stub
+            if stub_backup is not None:
+                sys.modules[__name__] = stub_backup
+            else:
+                sys.modules.pop(__name__, None)
+            return None
+    except Exception:
+        # Any other error, just return None
+        return None
 
 
 _real = _load_real_module()
