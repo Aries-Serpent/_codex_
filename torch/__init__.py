@@ -56,8 +56,13 @@ else:  # pragma: no cover - exercised in minimal test envs
     _MISSING_MSG = (
         "PyTorch is not installed in this environment. Install torch to enable these features."
     )
-    __all__: list[str] = ["nn", "utils"]
+    __all__: list[str] = ["nn", "utils", "Tensor"]
     IS_CODEX_STUB = True
+
+    # Stub Tensor class for compatibility with scipy and other libraries
+    class Tensor:  # pragma: no cover
+        """Stub Tensor class to prevent errors in scipy array API compat checks."""
+        pass
 
     def __getattr__(name: str):
         """Provide stub submodules or raise AttributeError."""
@@ -65,8 +70,11 @@ else:  # pragma: no cover - exercised in minimal test envs
         if name in ("nn", "utils"):
             import importlib
             return importlib.import_module(f"torch.{name}")
+        # Provide Tensor class for compatibility
+        if name == "Tensor":
+            return Tensor
         # Everything else raises error
         raise AttributeError(_MISSING_MSG)
 
     def __dir__() -> list[str]:  # pragma: no cover - simple stub helper
-        return ["nn", "utils"]
+        return ["nn", "utils", "Tensor"]
