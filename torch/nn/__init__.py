@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__all__ = ["Module"]
+__all__ = ["Module", "functional"]
 
 
 class Module:  # pragma: no cover - convenience stub
@@ -15,3 +15,7 @@ class Module:  # pragma: no cover - convenience stub
 
     def eval(self) -> "Module":
         return self.train(False)
+
+
+# Import functional submodule for torch.nn.functional access
+from torch.nn import functional  # noqa: E402, F401

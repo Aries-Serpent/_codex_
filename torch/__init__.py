@@ -56,11 +56,17 @@ else:  # pragma: no cover - exercised in minimal test envs
     _MISSING_MSG = (
         "PyTorch is not installed in this environment. Install torch to enable these features."
     )
-    __all__: list[str] = []
+    __all__: list[str] = ["nn", "utils"]
     IS_CODEX_STUB = True
 
-    def __getattr__(name: str) -> NoReturn:
+    def __getattr__(name: str):
+        """Provide stub submodules or raise AttributeError."""
+        # Allow importing submodules
+        if name in ("nn", "utils"):
+            import importlib
+            return importlib.import_module(f"torch.{name}")
+        # Everything else raises error
         raise AttributeError(_MISSING_MSG)
 
     def __dir__() -> list[str]:  # pragma: no cover - simple stub helper
-        return []
+        return ["nn", "utils"]

@@ -6,6 +6,10 @@ Test module for facade.
 
 # Basic façade tests using FastAPI TestClient and the default (mock) adapter
 import importlib
+import pytest
+
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
 from src.mcp.server.facade_fastapi import APP
 
