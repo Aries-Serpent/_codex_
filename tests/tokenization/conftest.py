@@ -233,9 +233,14 @@ if _TOKENIZERS_STUB_FLAG or _tokenizers_spec is None:
             for offset, tok in enumerate(sorted_tokens, start=len(base)):
                 self.vocab[tok] = offset
 
-        def encode(self, text: str) -> types.SimpleNamespace:
+        def encode(self, text: str) -> object:
+            """Return encoded result as a simple object with ids attribute."""
             ids = [self.vocab.get(tok, 1) for tok in str(text).split()]
-            return types.SimpleNamespace(ids=ids)
+            # Use a simple class instead of SimpleNamespace for hashability
+            class EncodeResult:
+                def __init__(self, ids):
+                    self.ids = ids
+            return EncodeResult(ids)
 
         def save(self, path: str) -> None:
             Path(path).write_text(json.dumps({"vocab": self.vocab}), encoding="utf-8")

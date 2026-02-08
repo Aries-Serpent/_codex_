@@ -7,7 +7,17 @@ import tempfile
 import numpy as np
 import pytest
 
-from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore
+try:
+    from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+    MAX_VECTORS = 1000000  # Default fallback
+
+pytestmark = pytest.mark.skipif(
+    not FAISS_AVAILABLE,
+    reason="FAISS not installed (pip install faiss-cpu)"
+)
 
 
 @pytest.fixture
