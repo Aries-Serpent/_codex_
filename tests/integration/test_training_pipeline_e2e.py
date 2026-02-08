@@ -11,6 +11,9 @@ Part of Post-Completion Phase 1.2: Training Pipeline Integration Tests
 from __future__ import annotations
 
 import pytest
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 from unittest.mock import Mock
 
 # Test availability flags

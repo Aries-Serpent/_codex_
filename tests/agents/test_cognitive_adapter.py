@@ -7,7 +7,7 @@ to the new cognitive architecture.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, UTC, UTC
 from typing import Any, Dict, Optional
 from unittest.mock import MagicMock, patch
 
@@ -144,8 +144,8 @@ class TestSimpleDictMemory:
         # Add history entries
         if key not in history:
             history[key] = []
-        history[key].append((datetime.now(), "value1"))
-        history[key].append((datetime.now(), "value2"))
+        history[key].append((datetime.now(UTC), "value1"))
+        history[key].append((datetime.now(UTC), "value2"))
 
         assert len(history[key]) == 2
 
@@ -158,7 +158,7 @@ class TestLegacyAgentAdapter:
         input_data = {"query": "test query", "context": "test context"}
 
         observation = MockObservationData(
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             source="legacy_agent",
             data=input_data,
             metadata={"agent_type": "TestAgent"},
@@ -191,7 +191,7 @@ class TestLegacyAgentAdapter:
             parameters=parameters,
             reasoning="Execute legacy agent process method",
             confidence=1.0,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
 
         assert decision.action == "process_legacy"
@@ -231,7 +231,7 @@ class TestOODALoop:
         # Observe
         input_data = {"query": "analyze code"}
         observation = MockObservationData(
-            timestamp=datetime.now(), source="user", data=input_data, metadata={}
+            timestamp=datetime.now(UTC), source="user", data=input_data, metadata={}
         )
 
         # Orient
@@ -248,7 +248,7 @@ class TestOODALoop:
             parameters=orientation.context,
             reasoning="User requested code analysis",
             confidence=0.95,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
 
         # Act
@@ -268,7 +268,7 @@ class TestOODALoop:
         """Test OODA loop with failure handling."""
         # Observe
         observation = MockObservationData(
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             source="system",
             data={"command": "invalid"},
             metadata={},
@@ -288,7 +288,7 @@ class TestOODALoop:
             parameters=orientation.context,
             reasoning="Low confidence, request clarification",
             confidence=0.3,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
 
         assert decision.confidence < 0.5

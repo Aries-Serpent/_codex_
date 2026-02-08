@@ -6,7 +6,7 @@ scheduled tasks, recurring jobs, and maintenance windows.
 
 import json
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, UTC, UTC, timedelta
 from pathlib import Path
 
 
@@ -94,17 +94,17 @@ class TestTaskExecution:
         task = {
             "name": "Run Tests",
             "command": "pytest tests/",
-            "scheduled_for": datetime.now(),
+            "scheduled_for": datetime.now(UTC),
         }
         
         execution = {
             "task": task["name"],
-            "started_at": datetime.now().isoformat(),
+            "started_at": datetime.now(UTC).isoformat(),
             "status": "running",
         }
         
         # Simulate completion
-        execution["completed_at"] = datetime.now().isoformat()
+        execution["completed_at"] = datetime.now(UTC).isoformat()
         execution["status"] = "success"
         execution["exit_code"] = 0
         
@@ -115,10 +115,10 @@ class TestTaskExecution:
         task = {
             "name": "Long Running Task",
             "timeout_minutes": 30,
-            "started_at": datetime.now() - timedelta(minutes=45),
+            "started_at": datetime.now(UTC) - timedelta(minutes=45),
         }
         
-        elapsed = (datetime.now() - task["started_at"]).total_seconds() / 60
+        elapsed = (datetime.now(UTC) - task["started_at"]).total_seconds() / 60
         is_timed_out = elapsed > task["timeout_minutes"]
         
         assert is_timed_out
@@ -249,7 +249,7 @@ class TestMaintenanceMonitoring:
         """Test predicting maintenance job completion time."""
         job = {
             "name": "large_backup",
-            "started_at": datetime.now() - timedelta(minutes=30),
+            "started_at": datetime.now(UTC) - timedelta(minutes=30),
             "progress_percent": 60,
         }
         
@@ -266,13 +266,13 @@ class TestMaintenanceMonitoring:
         """Test maintenance history retention policy."""
         retention_days = 30
         history = [
-            {"date": datetime.now() - timedelta(days=5), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=25), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=35), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=60), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=5), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=25), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=35), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=60), "job": "backup"},
         ]
         
-        cutoff = datetime.now() - timedelta(days=retention_days)
+        cutoff = datetime.now(UTC) - timedelta(days=retention_days)
         retained = [h for h in history if h["date"] >= cutoff]
         
         assert len(retained) == 2

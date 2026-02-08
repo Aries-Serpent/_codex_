@@ -123,8 +123,8 @@ class TestTestDeterminism:
             pass  # Acceptable
 
     def test_no_datetime_now_in_tests(self):
-        """Check for datetime.now() usage that could cause flakiness."""
-        datetime_patterns = ["datetime.now()", "datetime.utcnow()"]
+        """Check for datetime.now(UTC) usage that could cause flakiness."""
+        datetime_patterns = ["datetime.now(UTC)", "datetime.utcnow()"]
         datetime_usage = []
         
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:

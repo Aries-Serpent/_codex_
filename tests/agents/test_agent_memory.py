@@ -7,7 +7,7 @@ Tests MemoryEntry, ContextFrame, PatternLibrary, AgentMemory, and AgentMemorySys
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, UTC, UTC
 from pathlib import Path
 
 import pytest
@@ -95,7 +95,7 @@ class TestContextFrame:
         frame = ContextFrame(
             frame_id="frame1",
             task_description="Test task",
-            start_time=datetime.now().isoformat(),
+            start_time=datetime.now(UTC).isoformat(),
         )
 
         assert frame.frame_id == "frame1"
@@ -390,7 +390,7 @@ class TestAgentMemory:
         frame = ContextFrame(
             frame_id="f1",
             task_description="Test task",
-            start_time=datetime.now().isoformat(),
+            start_time=datetime.now(UTC).isoformat(),
         )
 
         memory.store_context_frame(frame)

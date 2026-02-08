@@ -2,6 +2,9 @@
 
 import os
 import pytest
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 import torch.nn as nn
 from unittest.mock import patch

@@ -55,7 +55,7 @@ class TestManageTenantIndices:
             
             yield files
 
-    def test_create_operation_success(self, temp_index_dir, sample_files):
+    def test_create_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test CREATE operation success"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -74,7 +74,7 @@ class TestManageTenantIndices:
         assert "Successfully created" in result.message
         assert "created_indices" in result.details
 
-    def test_create_operation_multiple_indices(self, temp_index_dir, sample_files):
+    def test_create_operation_multiple_indices(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test CREATE operation with multiple indices"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -116,7 +116,7 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "'create' operation requires 'files' parameter" in result.message
 
-    def test_update_operation_success(self, temp_index_dir, sample_files):
+    def test_update_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test UPDATE operation success"""
         # First create an index
         create_result = manage_tenant_indices(
@@ -142,7 +142,7 @@ class TestManageTenantIndices:
         assert update_result.operation == IndexOperation.UPDATE
         assert "Successfully updated" in update_result.message
 
-    def test_update_operation_nonexistent_index(self, temp_index_dir, sample_files):
+    def test_update_operation_nonexistent_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test UPDATE operation on non-existent index creates new one"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -168,7 +168,7 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "'update' operation requires 'files' parameter" in result.message
 
-    def test_delete_operation_success(self, temp_index_dir, sample_files):
+    def test_delete_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test DELETE operation success"""
         # First create an index
         create_result = manage_tenant_indices(
@@ -192,7 +192,7 @@ class TestManageTenantIndices:
         assert delete_result.operation == IndexOperation.DELETE
         assert "Successfully deleted" in delete_result.message
 
-    def test_delete_operation_multiple_indices(self, temp_index_dir, sample_files):
+    def test_delete_operation_multiple_indices(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test DELETE operation with multiple indices"""
         # Create multiple indices
         manage_tenant_indices(
@@ -227,7 +227,7 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "No indices deleted" in result.message
 
-    def test_delete_operation_partial_failure(self, temp_index_dir, sample_files):
+    def test_delete_operation_partial_failure(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test DELETE operation with some indices existing, some not"""
         # Create one index
         manage_tenant_indices(
@@ -250,7 +250,7 @@ class TestManageTenantIndices:
         assert "docs" in delete_result.details["deleted_indices"]
         assert len(delete_result.details["deleted_indices"]) == 1
 
-    def test_merge_operation_success(self, temp_index_dir, sample_files):
+    def test_merge_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test MERGE operation success"""
         # Create multiple indices
         for idx_name in ["docs", "api", "faq"]:
@@ -276,7 +276,7 @@ class TestManageTenantIndices:
         assert "Successfully merged" in merge_result.message
         assert merge_result.details["merged_name"] == "all_content"
 
-    def test_merge_operation_missing_merge_name(self, temp_index_dir, sample_files):
+    def test_merge_operation_missing_merge_name(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test MERGE operation fails without merge_name"""
         # Create indices
         manage_tenant_indices(
@@ -298,7 +298,7 @@ class TestManageTenantIndices:
         assert merge_result.success is False
         assert "'merge' operation requires 'merge_name' parameter" in merge_result.message
 
-    def test_merge_operation_single_index(self, temp_index_dir, sample_files):
+    def test_merge_operation_single_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test MERGE operation with only one index"""
         # Create one index
         manage_tenant_indices(
@@ -333,7 +333,7 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "No valid indices found" in result.message
 
-    def test_list_operation_success(self, temp_index_dir, sample_files):
+    def test_list_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test LIST operation success"""
         # Create some indices
         manage_tenant_indices(
@@ -374,7 +374,7 @@ class TestManageTenantIndices:
         assert result.success is True
         assert "No indices found" in result.message
 
-    def test_list_operation_multiple_tenants(self, temp_index_dir, sample_files):
+    def test_list_operation_multiple_tenants(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test LIST operation with multiple tenants"""
         # Create indices for different tenants
         manage_tenant_indices(
@@ -431,7 +431,7 @@ class TestManageTenantIndices:
         assert "Invalid operation" in result.message
         assert "create, update, delete, merge, list" in result.message
 
-    def test_operation_case_insensitive(self, temp_index_dir, sample_files):
+    def test_operation_case_insensitive(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test that operations are case-insensitive"""
         # Test uppercase
         result_upper = manage_tenant_indices(
@@ -456,7 +456,7 @@ class TestManageTenantIndices:
         
         assert result_mixed.success is True
 
-    def test_custom_chunk_parameters(self, temp_index_dir, sample_files):
+    def test_custom_chunk_parameters(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test CREATE with custom chunk_size and overlap"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -470,7 +470,7 @@ class TestManageTenantIndices:
         
         assert result.success is True
 
-    def test_tenant_directory_creation(self, temp_index_dir, sample_files):
+    def test_tenant_directory_creation(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test that tenant directories are created automatically"""
         tenant_dir = Path(temp_index_dir) / "customer_a"
         assert not tenant_dir.exists()
@@ -486,7 +486,7 @@ class TestManageTenantIndices:
         assert tenant_dir.exists()
         assert (tenant_dir / "docs").exists()
 
-    def test_create_with_error_in_one_index(self, temp_index_dir, sample_files):
+    def test_create_with_error_in_one_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test CREATE where one index succeeds and another might fail"""
         # This test ensures partial success is handled correctly
         result = manage_tenant_indices(
@@ -501,7 +501,7 @@ class TestManageTenantIndices:
         assert result.success is True
         assert len(result.details["created_indices"]) == 2
 
-    def test_result_structure(self, temp_index_dir, sample_files):
+    def test_result_structure(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test that TenantOperationResult has correct structure"""
         result = manage_tenant_indices(
             tenant_id="customer_a",

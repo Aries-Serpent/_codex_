@@ -130,7 +130,7 @@ class TestMSPClientEdgeCases:
     def test_client_with_empty_endpoint(self):
         """Test handling empty endpoint."""
         try:
-            client = MSPClient(endpoint="")
+            client = MSPClient(base_url="")
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject empty endpoint
@@ -139,7 +139,7 @@ class TestMSPClientEdgeCases:
     def test_client_with_invalid_endpoint_format(self):
         """Test handling invalid endpoint format."""
         try:
-            client = MSPClient(endpoint="not_a_valid_url")
+            client = MSPClient(base_url="not_a_valid_url")
             assert client is not None
         except (ValueError, AssertionError):
             # Acceptable to reject invalid URL
@@ -175,7 +175,7 @@ class TestMSPClientRequestResponse:
     @pytest.fixture
     def client(self):
         """Create test client."""
-        return MSPClient(endpoint="https://test.msp/api")
+        return MSPClient(base_url="https://test.msp/api")
 
     def test_get_request_format(self, client):
         """Test GET request formatting."""
@@ -276,7 +276,7 @@ class TestMSPClientIntegration:
 
     def test_complete_request_lifecycle(self):
         """Test complete request lifecycle."""
-        client = MSPClient(endpoint="https://test.msp/api", api_key="test")
+        client = MSPClient(base_url="https://test.msp/api", api_key="test")
 
         # Mock the entire request flow
         with patch("requests.request") as mock_request:

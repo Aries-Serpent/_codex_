@@ -8,6 +8,9 @@ import importlib.util
 
 import pytest
 
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 # Check if required dependencies are available
 try:
     import numpy as _  # noqa: F401 - Testing dependency availability

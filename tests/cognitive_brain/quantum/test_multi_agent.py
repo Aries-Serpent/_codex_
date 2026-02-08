@@ -8,7 +8,7 @@ correlation measurement, and performance validation.
 <!-- AFTERMATH: Validation Framework -->
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 import pytest
 
@@ -151,7 +151,7 @@ class TestAgentCoordination:
         coordinator.register_agent("agent_1", role="analyzer")
         coordinator.register_agent("agent_2", role="validator")
 
-        state = {"key": "value", "timestamp": datetime.now()}
+        state = {"key": "value", "timestamp": datetime.now(UTC)}
         coordinator.broadcast_update("agent_1", state)
 
         # Verify agent's last_active was updated (broadcast_update doesn't add to decision_history)
@@ -165,9 +165,9 @@ class TestAgentCoordination:
         coordinator.register_agent("agent_3", role="executor")
 
         decisions = [
-            AgentDecision("agent_1", "approve", 0.9, datetime.now()),
-            AgentDecision("agent_2", "approve", 0.85, datetime.now()),
-            AgentDecision("agent_3", "reject", 0.7, datetime.now()),
+            AgentDecision("agent_1", "approve", 0.9, datetime.now(UTC)),
+            AgentDecision("agent_2", "approve", 0.85, datetime.now(UTC)),
+            AgentDecision("agent_3", "reject", 0.7, datetime.now(UTC)),
         ]
 
         consensus = coordinator.reach_consensus(decisions)
@@ -184,9 +184,9 @@ class TestAgentCoordination:
         coordinator.register_agent("agent_3", role="executor", weight=1.0)
 
         decisions = [
-            AgentDecision("agent_1", "approve", 0.9, datetime.now()),
-            AgentDecision("agent_2", "reject", 0.85, datetime.now()),
-            AgentDecision("agent_3", "approve", 0.8, datetime.now()),
+            AgentDecision("agent_1", "approve", 0.9, datetime.now(UTC)),
+            AgentDecision("agent_2", "reject", 0.85, datetime.now(UTC)),
+            AgentDecision("agent_3", "approve", 0.8, datetime.now(UTC)),
         ]
 
         consensus = coordinator.reach_consensus(decisions)
@@ -206,10 +206,10 @@ class TestAgentCoordination:
 
         decisions = [
             AgentDecision(
-                "agent_1", "approve", 0.95, datetime.now()
+                "agent_1", "approve", 0.95, datetime.now(UTC)
             ),  # Highest confidence
-            AgentDecision("agent_2", "reject", 0.75, datetime.now()),
-            AgentDecision("agent_3", "reject", 0.70, datetime.now()),
+            AgentDecision("agent_2", "reject", 0.75, datetime.now(UTC)),
+            AgentDecision("agent_3", "reject", 0.70, datetime.now(UTC)),
         ]
 
         consensus = coordinator.reach_consensus(decisions)
@@ -433,13 +433,13 @@ class TestPerformance:
             coordinator.register_agent(f"agent_{i}", role="analyzer")
 
         decisions = [
-            AgentDecision(f"agent_{i}", "approve", 0.8 + i * 0.05, datetime.now())
+            AgentDecision(f"agent_{i}", "approve", 0.8 + i * 0.05, datetime.now(UTC))
             for i in range(3)
         ]
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         coordinator.reach_consensus(decisions)
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
 
@@ -450,13 +450,13 @@ class TestPerformance:
             coordinator.register_agent(f"agent_{i}", role="analyzer")
 
         decisions = [
-            AgentDecision(f"agent_{i}", "approve", 0.75 + i * 0.03, datetime.now())
+            AgentDecision(f"agent_{i}", "approve", 0.75 + i * 0.03, datetime.now(UTC))
             for i in range(6)
         ]
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         coordinator.reach_consensus(decisions)
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
 
@@ -467,9 +467,9 @@ class TestPerformance:
         """Test topology configuration performance."""
         manager = TopologyManager()
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         manager.configure_topology(NetworkTopology.MESH, 6)
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 10, f"Configuration time {latency_ms}ms too slow"
 
@@ -478,9 +478,9 @@ class TestPerformance:
         manager = GHZStateManager()
         agent_ids = [f"agent_{i}" for i in range(6)]
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         manager.create_ghz_state(agent_ids)
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 50, f"Creation time {latency_ms}ms too slow"
 
@@ -488,10 +488,10 @@ class TestPerformance:
         """Test scalability of agent registration."""
         coordinator = MultiAgentCoordinator()
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         for i in range(100):  # Register many agents
             coordinator.register_agent(f"agent_{i}", role="analyzer")
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 100, f"Registration time {latency_ms}ms too slow"
         assert len(coordinator.agents) == 100
@@ -503,9 +503,9 @@ class TestPerformance:
 
         state = manager.create_ghz_state(agent_ids)
 
-        start_time = datetime.now()
+        start_time = datetime.now(UTC)
         manager.update_correlations(state.state_id)
-        latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 20, f"Correlation update {latency_ms}ms too slow"
 

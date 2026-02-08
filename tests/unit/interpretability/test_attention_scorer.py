@@ -5,69 +5,89 @@ Tests attention weight extraction, importance scoring, and attention flow analys
 """
 
 import pytest
-import torch
-import numpy as np
 from unittest.mock import Mock
 
-from src.codex.interpretability.attention_scorer import AttentionScorer, AttentionAnalysis
+# Graceful import handling for optional dependencies
+try:
+    import torch
+    import numpy as np
+    HAS_DEPS = True
+except ImportError:
+    HAS_DEPS = False
+    torch = None
+    np = None
+    pytestmark = pytest.mark.skip("Required dependencies (torch, numpy) not available")
+
+# Only import if dependencies are available
+if HAS_DEPS:
+    from src.codex.interpretability.attention_scorer import AttentionScorer, AttentionAnalysis
+else:
+    AttentionScorer = None
+    AttentionAnalysis = None
 
 
-class MockTransformerModel(torch.nn.Module):
-    """Mock transformer model for testing."""
-    
-    def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
-        super().__init__()
-        self.num_layers = num_layers
-        self.num_heads = num_heads
-        self.seq_len = seq_len
-        self.hidden_dim = hidden_dim
-        # Pre-generate attention weights to avoid exhaustion
-        self._attention_weights = self._generate_mock_attention()
-        # Configure model attributes
-        self.config = type('Config', (), {
-            'num_hidden_layers': num_layers,
-            'num_attention_heads': num_heads,
-            'hidden_size': hidden_dim
-        })()
-    
-    def _generate_mock_attention(self):
-        """Generate realistic attention weight tensors."""
-        # Shape: [batch, num_layers, num_heads, seq_len, seq_len]
-        weights = []
-        for _ in range(self.num_layers):
-            layer_weights = torch.softmax(
-                torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
-                dim=-1
-            )
-            weights.append(layer_weights)
-        return weights
-    
-    def get_attention_weights(self, layer_idx=None):
-        """Return attention weights for specified layer or all layers."""
-        if layer_idx is not None:
-            return self._attention_weights[layer_idx]
-        return self._attention_weights
+# Conditional class definition - only define if torch is available
+if HAS_DEPS and torch is not None:
+    class MockTransformerModel(torch.nn.Module):
+        """Mock transformer model for testing."""
         
-    def forward(self, input_ids, attention_mask=None, output_attentions=False):
-        batch_size = input_ids.size(0)
-        seq_len = input_ids.size(1)
+        def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
+            super().__init__()
+            self.num_layers = num_layers
+            self.num_heads = num_heads
+            self.seq_len = seq_len
+            self.hidden_dim = hidden_dim
+            # Pre-generate attention weights to avoid exhaustion
+            self._attention_weights = self._generate_mock_attention()
+            # Configure model attributes
+            self.config = type('Config', (), {
+                'num_hidden_layers': num_layers,
+                'num_attention_heads': num_heads,
+                'hidden_size': hidden_dim
+            })()
         
-        # Generate mock attention weights
-        attentions = []
-        for _ in range(self.num_layers):
-            # Shape: (batch_size, num_heads, seq_len, seq_len)
-            attn = torch.softmax(
-                torch.randn(batch_size, self.num_heads, seq_len, seq_len),
-                dim=-1
-            )
-            attentions.append(attn)
+        def _generate_mock_attention(self):
+            """Generate realistic attention weight tensors."""
+            # Shape: [batch, num_layers, num_heads, seq_len, seq_len]
+            weights = []
+            for _ in range(self.num_layers):
+                layer_weights = torch.softmax(
+                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
+                    dim=-1
+                )
+                weights.append(layer_weights)
+            return weights
         
-        # Mock output
-        mock_output = Mock()
-        mock_output.attentions = attentions if output_attentions else None
-        mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
-        
-        return mock_output
+        def get_attention_weights(self, layer_idx=None):
+            """Return attention weights for specified layer or all layers."""
+            if layer_idx is not None:
+                return self._attention_weights[layer_idx]
+            return self._attention_weights
+            
+        def forward(self, input_ids, attention_mask=None, output_attentions=False):
+            batch_size = input_ids.size(0)
+            seq_len = input_ids.size(1)
+            
+            # Generate mock attention weights
+            attentions = []
+            for _ in range(self.num_layers):
+                # Shape: (batch_size, num_heads, seq_len, seq_len)
+                attn = torch.softmax(
+                    torch.randn(batch_size, self.num_heads, seq_len, seq_len),
+                    dim=-1
+                )
+                attentions.append(attn)
+            
+            # Mock output
+            mock_output = Mock()
+            mock_output.attentions = attentions if output_attentions else None
+            mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
+            
+            return mock_output
+else:
+    # Dummy class when torch is not available
+    class MockTransformerModel:
+        pass
 
 
 class TestAttentionScorer:
