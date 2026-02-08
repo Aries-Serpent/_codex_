@@ -779,10 +779,12 @@ def mock_sentence_transformer(monkeypatch):
     Use this fixture when you want to test RAG logic without loading real models.
     """
     class MockSentenceTransformer:
-        def __init__(self, model_name, cache_folder=None, device="cpu"):
+        def __init__(self, model_name, cache_folder=None, device="cpu", trust_remote_code=False, use_auth_token=None):
             self.model_name = model_name
             self.device = device
             self.cache_folder = cache_folder
+            self.trust_remote_code = trust_remote_code
+            self.use_auth_token = use_auth_token
             
         def encode(self, texts, batch_size=32, show_progress_bar=False, 
                    convert_to_numpy=True):

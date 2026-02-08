@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional, Protocol
 
 import numpy as np
 
+from codex.rag.utils import safe_model_to_device
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -82,8 +84,8 @@ class LocalSentenceTransformerProvider:
                 use_auth_token=use_auth_token if use_auth_token else None
             )
             
-            # Explicitly move all parameters to CPU (double-check)
-            self.model = self.model.to('cpu')
+            # Safely move to CPU, handling meta tensors if present
+            self.model = safe_model_to_device(self.model, 'cpu')
             self.model.eval()
             
             # Reset default device to avoid side effects
