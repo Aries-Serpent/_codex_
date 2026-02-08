@@ -34,8 +34,7 @@ class TestFAISSStoreFiltering:
             {"category": "tech", "score": 0.85, "author": "bob"},
         ]
 
-        # Add to store
-        store.create_index(dimension=3)
+        # Add to store (index is created automatically by add() if needed)
         store.add(vectors, metadata=metadata)
 
         return store
