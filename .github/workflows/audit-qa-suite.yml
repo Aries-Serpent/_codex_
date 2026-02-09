@@ -233,7 +233,7 @@ jobs:
         if: |
           inputs.post_comment != 'false' &&
           (github.event_name == 'pull_request' || github.event_name == 'issue_comment')
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
